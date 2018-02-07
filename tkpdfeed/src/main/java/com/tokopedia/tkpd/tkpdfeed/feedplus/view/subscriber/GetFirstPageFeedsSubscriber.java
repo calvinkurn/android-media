@@ -52,6 +52,8 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.BadgeViewM
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.ProductFeedTopAdsViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.ShopFeedTopAdsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.toppicks.ToppicksItemViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.toppicks.ToppicksViewModel;
 
@@ -59,6 +61,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Subscriber;
+
+import static com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.Data.DISPLAY_PRODUCT;
+import static com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.Data.DISPLAY_SHOP;
 
 /**
  * @author by nisie on 5/29/17.
@@ -294,8 +299,28 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         break;
                     case TYPE_TOPADS:
                         if (domain.getContent() != null
-                                && domain.getContent().getTopadsDomains() != null) {
-                            //TODO milhamj
+                                && domain.getContent().getTopadsDomains() != null
+                                && !domain.getContent().getTopadsDomains().isEmpty()) {
+                            List<Visitable> visitableList = new ArrayList<>();
+                            List<Data> topadsDomainList = domain.getContent().getTopadsDomains();
+                            for (Data topadsDomain : topadsDomainList) {
+                                if (topadsDomain.getDisplay().equalsIgnoreCase(
+                                        DISPLAY_SHOP)) {
+                                    visitableList.add(
+                                            new ShopFeedTopAdsViewModel(topadsDomain)
+                                    );
+                                } else if (topadsDomain.getDisplay().equalsIgnoreCase(
+                                        DISPLAY_PRODUCT)) {
+                                    visitableList.add(
+                                            new ProductFeedTopAdsViewModel(topadsDomain)
+                                    );
+                                }
+                            }
+                            if (!visitableList.isEmpty()) {
+                                FeedTopAdsViewModel feedTopAdsViewModel =
+                                        new FeedTopAdsViewModel(visitableList);
+                                listFeedView.add(feedTopAdsViewModel);
+                            }
                         }
                         break;
                     case TYPE_KOL_FOLLOWED:

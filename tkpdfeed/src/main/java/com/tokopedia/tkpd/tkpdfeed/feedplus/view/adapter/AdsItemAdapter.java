@@ -6,8 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.topads.AdsTypeFactoryImpl;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.topads.ShopFeedViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.LocalAdsClickListener;

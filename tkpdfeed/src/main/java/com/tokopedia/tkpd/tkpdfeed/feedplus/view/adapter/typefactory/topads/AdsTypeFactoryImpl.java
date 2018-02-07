@@ -3,14 +3,13 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.topads;
 import android.content.Context;
 import android.view.ViewGroup;
 
-import com.android.volley.toolbox.ImageLoader;
-import com.tokopedia.abstraction.base.view.adapter.exception.TypeNotSupportedException;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.base.adapter.exception.TypeNotSupportedException;
+import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.topads.ProductFeedViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.topads.ShopFeedViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.LocalAdsClickListener;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.ProductFeedViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.ShopFeedViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.ProductFeedTopAdsViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.ShopFeedTopAdsViewModel;
 
 /**
  * Created by milhamj on 18/01/18.
@@ -38,12 +37,12 @@ public class AdsTypeFactoryImpl implements AdsTypeFactory {
     }
 
     @Override
-    public int type(ShopFeedViewModel viewModel) {
+    public int type(ShopFeedTopAdsViewModel viewModel) {
         return ShopFeedViewHolder.LAYOUT;
     }
 
     @Override
-    public int type(ProductFeedViewModel viewModel) {
+    public int type(ProductFeedTopAdsViewModel viewModel) {
         return ProductFeedViewHolder.LAYOUT;
     }
 

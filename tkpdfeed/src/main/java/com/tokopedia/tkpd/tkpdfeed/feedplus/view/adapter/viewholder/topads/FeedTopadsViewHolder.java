@@ -14,14 +14,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.AdsItemAdapter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.TopAdsInfoBottomSheet;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.LocalAdsClickListener;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.ShopFeedViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.ShopFeedTopAdsViewModel;
 
 import java.util.List;
 
@@ -89,7 +89,7 @@ public class FeedTopadsViewHolder extends AbstractViewHolder<FeedTopAdsViewModel
     }
 
     private void switchDisplay(Visitable item) {
-        if (item instanceof ShopFeedViewModel) {
+        if (item instanceof ShopFeedTopAdsViewModel) {
             recyclerView.setLayoutManager(linearLayoutManager);
         } else {
             recyclerView.setLayoutManager(gridLayoutManager);

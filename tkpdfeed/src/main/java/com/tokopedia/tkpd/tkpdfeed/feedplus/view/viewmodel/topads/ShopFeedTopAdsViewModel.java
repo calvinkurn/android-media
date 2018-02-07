@@ -1,18 +1,18 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.Data;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.topads.AdsTypeFactory;
 
 /**
- * Created by errysuprayogi on 3/27/17.
+ * @author by errysuprayogi on 3/30/17.
  */
 
-public class ProductFeedViewModel implements Visitable<AdsTypeFactory> {
+public class ShopFeedTopAdsViewModel implements Visitable<AdsTypeFactory> {
 
     private Data data;
 
-    public ProductFeedViewModel(Data data) {
+    public ShopFeedTopAdsViewModel(Data data) {
         this.data = data;
     }
 

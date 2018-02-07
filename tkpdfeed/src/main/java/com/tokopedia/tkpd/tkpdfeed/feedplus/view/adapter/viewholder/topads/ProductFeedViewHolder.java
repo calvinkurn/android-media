@@ -8,21 +8,20 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.ImageLoader;
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.Data;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.Product;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.LocalAdsClickListener;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.ProductFeedViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.ProductFeedTopAdsViewModel;
 
 /**
  * Created by errysuprayogi on 3/27/17.
  * Copied to feed by milhamj 1/18/17.
  */
 
-public class ProductFeedViewHolder extends AbstractViewHolder<ProductFeedViewModel> implements
+public class ProductFeedViewHolder extends AbstractViewHolder<ProductFeedTopAdsViewModel> implements
         View.OnClickListener {
 
     @LayoutRes
@@ -48,7 +47,7 @@ public class ProductFeedViewHolder extends AbstractViewHolder<ProductFeedViewMod
     }
 
     @Override
-    public void bind(ProductFeedViewModel element) {
+    public void bind(ProductFeedTopAdsViewModel element) {
         data = element.getData();
         if (data.getProduct() != null) {
             bindProduct(data.getProduct());

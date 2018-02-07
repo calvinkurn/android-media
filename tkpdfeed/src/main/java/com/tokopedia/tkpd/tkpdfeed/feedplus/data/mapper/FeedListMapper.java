@@ -38,6 +38,8 @@ import java.util.List;
 
 import rx.functions.Func1;
 
+import static com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.Data.DISPLAY_PRODUCT;
+
 /**
  * @author ricoharisin .
  */
@@ -472,6 +474,7 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
         ArrayList<Data> topadDataDomainList = new ArrayList<>();
         if (topadList != null) {
             for (FeedQuery.Data.Topad topad : topadList) {
+                //TODO milhamj change display according to API
                 topadDataDomainList.add(
                         new Data(topad.id(),
                                 topad.ad_ref_key(),
@@ -484,10 +487,12 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                                         topad.product_click_url().toString(),
                                 topad.shop_click_url() == null ? "" :
                                         topad.shop_click_url().toString(),
-                                topad.shop() == null ? null : convertToTopadsShop(topad.shop()),
-                                topad.product() == null ? null : convertToTopadsProduct(topad.product
-                                        ()),
-                                false)
+                                topad.shop() == null ? null :
+                                        convertToTopadsShop(topad.shop()),
+                                topad.product() == null ? null :
+                                        convertToTopadsProduct(topad.product()),
+                                false,
+                                DISPLAY_PRODUCT)
                 );
             }
         }

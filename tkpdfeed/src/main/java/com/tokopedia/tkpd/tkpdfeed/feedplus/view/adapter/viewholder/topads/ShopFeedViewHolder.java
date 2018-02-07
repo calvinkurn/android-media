@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.Data;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.ImageProduct;
@@ -28,7 +28,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.LocalAdsClickListener;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.SpacesItemDecoration;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.SpannedGridLayoutManager;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.ShopFeedViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.ShopFeedTopAdsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,7 @@ import java.util.List;
  * Copied to feed by milhamj 1/18/17.
  */
 
-public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> implements View.OnClickListener {
+public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedTopAdsViewModel> implements View.OnClickListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_ads_shop_feed_plus;
@@ -119,7 +119,7 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
     }
 
     @Override
-    public void bind(ShopFeedViewModel element) {
+    public void bind(ShopFeedTopAdsViewModel element) {
         data = element.getData();
         Shop shop = data.getShop();
 

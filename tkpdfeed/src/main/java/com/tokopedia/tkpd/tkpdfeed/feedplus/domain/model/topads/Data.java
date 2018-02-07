@@ -5,6 +5,9 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads;
  * Copied to feed by milhamj 1/18/17.
  */
 public class Data {
+    public static final String DISPLAY_PRODUCT = "product";
+    public static final String DISPLAY_SHOP = "shop";
+
     private String id;
     private String adRefKey;
     private String redirect;
@@ -15,10 +18,11 @@ public class Data {
     private Shop shop;
     private Product product;
     private boolean favorite;
+    private String display;
 
-    public Data(String id, String adRefKey, String redirect, String stickerId,
-                String stickerImage, String productClickUrl, String shopClickUrl, Shop shop,
-                Product product, boolean favorite) {
+    public Data(String id, String adRefKey, String redirect, String stickerId, String
+            stickerImage, String productClickUrl, String shopClickUrl, Shop shop, Product
+            product, boolean favorite, String display) {
         this.id = id;
         this.adRefKey = adRefKey;
         this.redirect = redirect;
@@ -29,6 +33,7 @@ public class Data {
         this.shop = shop;
         this.product = product;
         this.favorite = favorite;
+        this.display = display;
     }
 
     public String getId() {
@@ -109,5 +114,13 @@ public class Data {
 
     public void setFavorite(boolean favorite) {
         this.favorite = favorite;
+    }
+
+    public String getDisplay() {
+        return display;
+    }
+
+    public void setDisplay(String display) {
+        this.display = display;
     }
 }
