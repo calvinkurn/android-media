@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 import android.content.Context;
 import android.graphics.Paint;
 import android.support.annotation.LayoutRes;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -108,6 +109,13 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 listener.onDynamicChannelClicked(channel.getHeader().getApplink());
             }
         });
+
+        if (!TextUtils.isEmpty(channel.getHeader().getApplink())) {
+            seeAllButton.setVisibility(View.VISIBLE);
+        } else {
+            seeAllButton.setVisibility(View.GONE);
+        }
+
         seeAllButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

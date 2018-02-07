@@ -256,6 +256,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onSectionItemClicked(String actionLink) {
+        if (TextUtils.isEmpty(actionLink)) {
+            return;
+        }
+
         if (getActivity() != null
                 && getActivity().getApplicationContext() instanceof TkpdCoreRouter
                 && ((TkpdCoreRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(actionLink)) {
@@ -503,8 +507,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void openApplink(String applink) {
-        ((TkpdCoreRouter) getActivity().getApplicationContext())
-                .actionApplinkFromActivity(getActivity(), applink);
+        if (!TextUtils.isEmpty(applink)) {
+            ((TkpdCoreRouter) getActivity().getApplicationContext())
+                    .actionApplinkFromActivity(getActivity(), applink);
+        }
     }
 
     @Override
