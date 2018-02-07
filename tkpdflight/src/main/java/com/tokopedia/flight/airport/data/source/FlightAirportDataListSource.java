@@ -109,7 +109,36 @@ public class FlightAirportDataListSource extends DataListSource<FlightAirportCou
         });
     }
 
-    public Observable<FlightAirportDB> getAirport(final Map<String, String> params){
-        return flightAirportDataListDBSource.getAirport(params);
+    public Observable<FlightAirportDB> getAirport(final Map<String, String> params) {
+        return flightAirportDataListDBSource.isDataAvailable().flatMap(new Func1<Boolean, Observable<FlightAirportDB>>() {
+            @Override
+            public Observable<FlightAirportDB> call(Boolean aBoolean) {
+                if (aBoolean) {
+                    return flightAirportDataListDBSource.getAirport(params);
+                } else {
+                    return getCloudData(new HashMap<String, Object>())
+                            .flatMap(new Func1<List<FlightAirportDB>, Observable<FlightAirportDB>>() {
+                                @Override
+                                public Observable<FlightAirportDB> call(List<FlightAirportDB> flightAirportDBS) {
+                                    return Observable.from(flightAirportDBS)
+                                            .filter(new Func1<FlightAirportDB, Boolean>() {
+                                                @Override
+                                                public Boolean call(FlightAirportDB flightAirportDB) {
+                                                    for (Map.Entry<String, String> entry : params.entrySet()) {
+                                                        if (entry.getKey().equals(FlightAirportDataListSource.CITY_CODE)) {
+                                                            return flightAirportDB.getCityCode().equalsIgnoreCase(entry.getValue());
+                                                        } else if (entry.getKey().equals(FlightAirportDataListSource.AIRPORT_ID)) {
+                                                            return flightAirportDB.getAirportId().equalsIgnoreCase(entry.getValue());
+                                                        }
+                                                    }
+
+                                                    return false;
+                                                }
+                                            });
+                                }
+                            });
+                }
+            }
+        });
     }
 }

@@ -24,6 +24,10 @@ import butterknife.ButterKnife;
 /**
  * Created by Nisie on 19/06/15.
  */
+
+/**
+ * Use base adapter with visitor pattern from tkpd abstraction
+ */
 @Deprecated
 public class BaseRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
