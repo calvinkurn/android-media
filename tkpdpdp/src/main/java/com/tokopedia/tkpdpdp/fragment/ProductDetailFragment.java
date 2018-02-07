@@ -1020,7 +1020,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         shopInfoView.renderData(productData);
                         presenter.updateRecentView(context,productData.getInfo().getProductId());
                         updateWishListStatus(productData.getInfo().getProductAlreadyWishlist());
-                        showProductCampaign();
                     }
                     if (resultCode==VariantActivity.SELECTED_VARIANT_RESULT_TO_BUY) {
                         onBuyClick();

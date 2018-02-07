@@ -126,7 +126,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         productPrice.setText(productDetailData.getInfo().getProductPrice());
         if(productDetailData.getCampaign() != null
                 && productDetailData.getCampaign().getActive()) {
-            textOriginalPrice.setText(productDetailData.getInfo().getProductPrice());
+            textOriginalPrice.setText(productDetailData.getCampaign().getOriginalPriceFmt());
             textOriginalPrice.setPaintFlags(
                     textOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
             );
@@ -137,6 +137,9 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
 
             textDiscount.setVisibility(VISIBLE);
             textOriginalPrice.setVisibility(VISIBLE);
+        } else {
+            textDiscount.setVisibility(View.GONE);
+            textOriginalPrice.setVisibility(View.GONE);
         }
 
     }

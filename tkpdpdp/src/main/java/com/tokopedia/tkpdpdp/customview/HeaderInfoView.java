@@ -98,6 +98,9 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         if(data != null && data.getCampaign() != null && data.getCampaign().getActive()) {
             renderProductCampaign(data.getCampaign());
         } else {
+            linearDiscountTimerHolder.setVisibility(GONE);
+            textDiscount.setVisibility(GONE);
+            textOriginalPrice.setVisibility(GONE);
             tvPriceFinal.setText(data.getInfo().getProductPrice());
         }
         if (data.getCashBack() != null && !data.getCashBack().getProductCashbackValue().isEmpty()) {
