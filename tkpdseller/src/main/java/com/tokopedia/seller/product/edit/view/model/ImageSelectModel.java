@@ -28,13 +28,13 @@ public class ImageSelectModel implements Parcelable{
     }
 
     public ImageSelectModel(String uriOrPath, String description, boolean isPrimary, long width, long height, long id, long status) {
-        setUriOrPath(uriOrPath);
         this.description = description;
         this.isPrimary = isPrimary;
         this.width = width;
         this.height = height;
         this.id = id;
         this.status = status;
+        setUriOrPath(uriOrPath);
     }
 
     public String getUriOrPath() {

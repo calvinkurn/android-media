@@ -190,7 +190,9 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
 
     public ProductCategoryViewModel getProductCategory() {
         ProductCategoryViewModel productCategory = new ProductCategoryViewModel();
-        productCategory.setCategoryId(categoryId);
+        if(categoryId != DEFAULT_CATEGORY_ID) {
+            productCategory.setCategoryId(categoryId);
+        }
         return productCategory;
     }
 
@@ -204,8 +206,10 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
 
     public ProductCatalogViewModel getProductCatalog() {
         ProductCatalogViewModel productCatalog = new ProductCatalogViewModel();
-        productCatalog.setCatalogId(catalogId);
-        productCatalog.setCatalogName(getCatalogName());
+        if(catalogId != DEFAULT_CATALOG_ID) {
+            productCatalog.setCatalogId(catalogId);
+            productCatalog.setCatalogName(getCatalogName());
+        }
         return productCatalog;
     }
 

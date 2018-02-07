@@ -25,5 +25,4 @@ public interface ProductDraftRepository {
     Observable<Long> updateDraftToUpload(long productId, ProductViewModel domainModel, boolean isUploading);
 
     Observable<Boolean> updateuploadingStatusDraft(long productId, boolean isUploading);
-
 }

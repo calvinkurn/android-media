@@ -60,6 +60,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     public static final String SAVED_PRD_VARIANT_SUBMIT = "svd_variant";
     public static final String SAVED_VARIANT_CAT = "svd_var";
     public static final String SAVED_OPTION_SUBMIT_LV_1 = "svd_opt_sub_lv1";
+    public static final int PREORDER_STATUS_ACTIVE = 1;
     private final FrameLayout infoIconAddProduct;
 
     private EditText descriptionEditText;
@@ -224,9 +225,11 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
 
     public List<ProductVideoViewModel> getVideoList() {
         List<ProductVideoViewModel> productVideoViewModelList = new ArrayList<>();
-        ProductVideoViewModel productVideoViewModel = new ProductVideoViewModel();
-        productVideoViewModel.setUrl("");
-        productVideoViewModelList.add(productVideoViewModel);
+        for(String videoId : getVideoIdList()) {
+            ProductVideoViewModel productVideoViewModel = new ProductVideoViewModel();
+            productVideoViewModel.setUrl(videoId);
+            productVideoViewModelList.add(productVideoViewModel);
+        }
         return productVideoViewModelList;
     }
 
@@ -262,8 +265,13 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
 
     public ProductPreorderViewModel getPreOrder() {
         ProductPreorderViewModel productPreorderViewModel = new ProductPreorderViewModel();
-        productPreorderViewModel.setPreorderProcessTime(getPreOrderValue());
-        productPreorderViewModel.setPreorderTimeUnit(getPreOrderUnit());
+        if(getPreOrderValue() > 0) {
+            productPreorderViewModel.setPreorderStatus(PREORDER_STATUS_ACTIVE);
+            productPreorderViewModel.setPreorderProcessTime(getPreOrderValue());
+            productPreorderViewModel.setPreorderTimeUnit(getPreOrderUnit());
+        }else{
+            productPreorderViewModel.setPreorderStatus(INACTIVE_PREORDER);
+        }
         return productPreorderViewModel;
     }
 

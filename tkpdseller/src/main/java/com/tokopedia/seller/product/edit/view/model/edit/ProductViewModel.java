@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.seller.base.view.adapter.ItemType;
 
-public class ProductViewModel {
+public class ProductViewModel implements ItemType {
 
+    public static final int TYPE = 382;
     @SerializedName("product_id")
     @Expose
     private long productId;
@@ -106,6 +108,25 @@ public class ProductViewModel {
     @SerializedName("product_name_editable")
     @Expose
     private boolean productNameEditable;
+
+    private int productStatusUpload;
+    private int productDraftId;
+
+    public int getProductDraftId() {
+        return productDraftId;
+    }
+
+    public void setProductDraftId(int productDraftId) {
+        this.productDraftId = productDraftId;
+    }
+
+    public int getProductStatusUpload() {
+        return productStatusUpload;
+    }
+
+    public void setProductStatusUpload(int productStatusUpload) {
+        this.productStatusUpload = productStatusUpload;
+    }
 
     public long getProductId() {
         return productId;
@@ -361,5 +382,10 @@ public class ProductViewModel {
 
     public boolean isProductNameEditable() {
         return productNameEditable;
+    }
+
+    @Override
+    public int getType() {
+        return TYPE;
     }
 }

@@ -1,6 +1,8 @@
 package com.tokopedia.seller.product.edit.data.source.cloud;
 
+import com.tokopedia.core.base.common.util.GetData;
 import com.tokopedia.seller.product.edit.data.source.cloud.api.ProductApi;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.ProductUploadResultModel;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.addproductsubmit.AddProductSubmitServiceModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.shop.open.data.model.response.DataResponse;
@@ -23,25 +25,25 @@ public class UploadProductCloud {
         this.productApi = productApi;
     }
 
-    public Observable<AddProductSubmitServiceModel> addProductSubmit(ProductViewModel productViewModel) {
+    public Observable<ProductUploadResultModel> addProductSubmit(ProductViewModel productViewModel) {
         return productApi.addProductSubmit(productViewModel)
-                .map(new Func1<Response<DataResponse<AddProductSubmitServiceModel>>, AddProductSubmitServiceModel>() {
+                .map(new GetData<DataResponse<ProductUploadResultModel>>())
+                .map(new Func1<DataResponse<ProductUploadResultModel>, ProductUploadResultModel>() {
                     @Override
-                    public AddProductSubmitServiceModel call(Response<DataResponse<AddProductSubmitServiceModel>> dataResponseResponse) {
-                        return null;
+                    public ProductUploadResultModel call(DataResponse<ProductUploadResultModel> productUploadResultModelDataResponse) {
+                        return productUploadResultModelDataResponse.getData();
                     }
                 });
-//                .map(new GetData<AddProductSubmitServiceModel>());
     }
 
-    public Observable<AddProductSubmitServiceModel> editProduct(ProductViewModel productViewModel) {
+    public Observable<ProductUploadResultModel> editProduct(ProductViewModel productViewModel) {
         return productApi.editProductSubmit(productViewModel, String.valueOf(productViewModel.getProductId()))
-                .map(new Func1<Response<DataResponse<AddProductSubmitServiceModel>>, AddProductSubmitServiceModel>() {
+                .map(new GetData<DataResponse<ProductUploadResultModel>>())
+                .map(new Func1<DataResponse<ProductUploadResultModel>, ProductUploadResultModel>() {
                     @Override
-                    public AddProductSubmitServiceModel call(Response<DataResponse<AddProductSubmitServiceModel>> dataResponseResponse) {
-                        return null;
+                    public ProductUploadResultModel call(DataResponse<ProductUploadResultModel> productUploadResultModelDataResponse) {
+                        return productUploadResultModelDataResponse.getData();
                     }
                 });
-//                .map(new GetData<AddProductSubmitServiceModel>());
     }
 }

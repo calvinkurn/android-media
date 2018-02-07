@@ -51,7 +51,7 @@ public class SaveDraftProductUseCase extends UseCase<Long> {
 
     private boolean isUploadProductDomainModel(RequestParams requestParams) {
         return requestParams.getObject(UPLOAD_PRODUCT_INPUT_MODEL)
-                instanceof UploadProductInputDomainModel;
+                instanceof ProductViewModel;
     }
 
     public static RequestParams generateUploadProductParam(ProductViewModel domainModel,
