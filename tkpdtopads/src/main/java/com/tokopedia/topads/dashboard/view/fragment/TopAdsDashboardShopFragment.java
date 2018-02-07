@@ -211,7 +211,7 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
     void onShopItemClicked() {
         Intent intent = new Intent(getActivity(), TopAdsDetailShopActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD, shopAd);
-        intent.putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT,false);
+        intent.putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT,true);
         startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
     }
 }
