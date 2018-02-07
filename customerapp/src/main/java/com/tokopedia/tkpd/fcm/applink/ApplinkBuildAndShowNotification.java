@@ -122,6 +122,10 @@ public class ApplinkBuildAndShowNotification {
     }
 
     public void showApplinkNotification(Bundle data){
+        showApplinkNotification(context, data);
+    }
+
+    public static void showApplinkNotification(Context context, Bundle data) {
         ApplinkPushNotificationBuildAndShow buildAndShow = new ApplinkPushNotificationBuildAndShow(data);
         Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
         buildAndShow.process(context, intent);

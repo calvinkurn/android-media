@@ -60,4 +60,5 @@
 
     <string name="promo_title_terms">Syarat &amp; Ketentuan</string>
 
+    <string name="payment_description_transfer_procedure">Mohon lakukan pembayaran pesanan Rp. %1$s ke %2$s %3$s sebelum %4$s. Untuk info lebih lanjut cek status pembayaran Anda.</string>
 </resources>
