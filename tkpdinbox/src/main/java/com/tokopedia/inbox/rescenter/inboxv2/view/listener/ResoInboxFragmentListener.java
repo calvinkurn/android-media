@@ -69,6 +69,8 @@ public interface ResoInboxFragmentListener {
 
         void getInbox();
 
+        void getInboxResetFilter();
+
         void getInboxWithParams(ResoInboxSortModel inboxSortModel, ResoInboxFilterModel inboxFilterModel);
 
         void getSingleItemInbox(int inboxId);

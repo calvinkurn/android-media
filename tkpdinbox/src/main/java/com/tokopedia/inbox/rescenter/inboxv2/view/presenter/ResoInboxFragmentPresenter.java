@@ -80,6 +80,12 @@ public class ResoInboxFragmentPresenter
         getInbox(new GetInboxSubscriber(context, mainView));
     }
 
+    @Override
+    public void getInboxResetFilter() {
+        filterModel = new ResoInboxSortFilterModel();
+        getInbox();
+    }
+
     private void getInbox(Subscriber subscriber) {
         if (isSeller)
             getInboxSellerUseCase.execute(
