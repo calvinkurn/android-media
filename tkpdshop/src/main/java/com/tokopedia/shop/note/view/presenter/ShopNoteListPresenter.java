@@ -1,10 +1,10 @@
-package com.tokopedia.shop.info.view.presenter;
+package com.tokopedia.shop.note.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.shop.info.data.source.cloud.model.ShopNote;
 import com.tokopedia.shop.info.domain.interactor.GetShopNoteListUseCase;
-import com.tokopedia.shop.info.view.listener.ShopNoteListView;
-import com.tokopedia.shop.info.view.mapper.ShopNoteViewModelMapper;
+import com.tokopedia.shop.note.view.listener.ShopNoteListView;
+import com.tokopedia.shop.note.view.mapper.ShopNoteViewModelMapper;
 
 import java.util.List;
 

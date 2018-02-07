@@ -1,4 +1,4 @@
-package com.tokopedia.shop.info.view.listener;
+package com.tokopedia.shop.note.view.listener;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;

@@ -6,7 +6,7 @@ import com.tokopedia.shop.info.di.scope.ShopInfoScope;
 import com.tokopedia.shop.info.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.info.view.activity.ShopPageActivity;
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment;
-import com.tokopedia.shop.info.view.fragment.ShopNoteListFragment;
+import com.tokopedia.shop.note.view.fragment.ShopNoteListFragment;
 
 import dagger.Component;
 

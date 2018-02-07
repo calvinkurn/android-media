@@ -1,4 +1,4 @@
-package com.tokopedia.shop.info.view.fragment;
+package com.tokopedia.shop.note.view.fragment;
 
 import android.os.Bundle;
 
@@ -8,10 +8,10 @@ import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent;
 import com.tokopedia.shop.info.di.module.ShopInfoModule;
-import com.tokopedia.shop.info.view.adapter.ShopNoteAdapterTypeFactory;
-import com.tokopedia.shop.info.view.adapter.ShopNoteTypeFactory;
-import com.tokopedia.shop.info.view.listener.ShopNoteListView;
-import com.tokopedia.shop.info.view.presenter.ShopNoteListPresenter;
+import com.tokopedia.shop.note.view.adapter.ShopNoteAdapterTypeFactory;
+import com.tokopedia.shop.note.view.adapter.ShopNoteTypeFactory;
+import com.tokopedia.shop.note.view.listener.ShopNoteListView;
+import com.tokopedia.shop.note.view.presenter.ShopNoteListPresenter;
 
 import javax.inject.Inject;
 

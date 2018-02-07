@@ -1,11 +1,10 @@
-package com.tokopedia.shop.info.view.adapter;
+package com.tokopedia.shop.note.view.adapter;
 
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.shop.info.data.source.cloud.model.ShopNote;
-import com.tokopedia.shop.info.view.model.ShopNoteViewModel;
+import com.tokopedia.shop.note.view.model.ShopNoteViewModel;
 
 /**
  * Created by alvarisi on 12/7/17.

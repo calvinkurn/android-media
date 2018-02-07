@@ -1,7 +1,7 @@
-package com.tokopedia.shop.info.view.model;
+package com.tokopedia.shop.note.view.model;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.shop.info.view.adapter.ShopNoteTypeFactory;
+import com.tokopedia.shop.note.view.adapter.ShopNoteTypeFactory;
 
 /**
  * Created by nathan on 2/6/18.
