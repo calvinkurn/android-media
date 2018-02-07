@@ -11,11 +11,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.detail.adapter.OrderCourierAdapter;
 import com.tokopedia.transaction.purchase.detail.model.detail.editmodel.CourierSelectionModel;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.CourierViewModel;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ListCourierViewModel;
+import com.tokopedia.transaction.purchase.listener.ToolbarChangeListener;
 
 import static com.tokopedia.transaction.purchase.detail.activity.ConfirmShippingActivity.SELECT_SERVICE_FRAGMENT_TAG;
 
@@ -23,11 +25,13 @@ import static com.tokopedia.transaction.purchase.detail.activity.ConfirmShipping
  * Created by kris on 1/3/18. Tokopedia
  */
 
-public class CourierSelectionFragment extends Fragment implements OrderCourierAdapter.OrderCourierAdapterListener{
+public class CourierSelectionFragment extends TkpdFragment implements OrderCourierAdapter.OrderCourierAdapterListener{
 
     private static final String ORDER_COURIER_EXTRAS = "ORDER_COURIER_EXTRAS";
 
     private OrderCourierFragmentListener listener;
+
+    private ToolbarChangeListener toolbarListener;
 
     public static CourierSelectionFragment createInstance(ListCourierViewModel model) {
         CourierSelectionFragment fragment = new CourierSelectionFragment();
@@ -45,6 +49,7 @@ public class CourierSelectionFragment extends Fragment implements OrderCourierAd
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(new OrderCourierAdapter((ListCourierViewModel)getArguments()
                 .getParcelable(ORDER_COURIER_EXTRAS), this));
+        toolbarListener.onChangeTitle(getString(R.string.label_select_courier));
         return view;
     }
 
@@ -52,12 +57,19 @@ public class CourierSelectionFragment extends Fragment implements OrderCourierAd
     public void onAttach(Context context) {
         super.onAttach(context);
         listener = (OrderCourierFragmentListener) context;
+        toolbarListener = (ToolbarChangeListener) context;
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         listener = (OrderCourierFragmentListener) activity;
+        toolbarListener = (ToolbarChangeListener) activity;
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 
     @Override
@@ -70,6 +82,7 @@ public class CourierSelectionFragment extends Fragment implements OrderCourierAd
                     .add(R.id.main_view, serviceSelectionFragment, SELECT_SERVICE_FRAGMENT_TAG)
                     .commit();
         } else {
+            toolbarListener.onChangeTitle(getString(R.string.title_confirm_shipment));
             CourierSelectionModel model = new CourierSelectionModel();
             model.setCourierName(courierViewModel.getCourierName());
             model.setCourierId(courierViewModel.getCourierId());

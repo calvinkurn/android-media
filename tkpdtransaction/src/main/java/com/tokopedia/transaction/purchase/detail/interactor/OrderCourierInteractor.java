@@ -3,6 +3,8 @@ package com.tokopedia.transaction.purchase.detail.interactor;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ListCourierViewModel;
 
+import java.util.Map;
+
 import rx.Subscriber;
 
 /**
@@ -18,5 +20,7 @@ public interface OrderCourierInteractor {
     );
 
     void confirmShipping(TKPDMapParam<String, String> params, Subscriber<String> subscriber);
+
+    void changeCourier(Map<String, String> params, Subscriber<String> subscriber);
 
 }

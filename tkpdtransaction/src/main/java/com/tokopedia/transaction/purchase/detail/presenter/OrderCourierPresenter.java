@@ -16,6 +16,8 @@ public interface OrderCourierPresenter {
 
     void onGetCourierList(Context context, OrderDetailData data);
 
+    void onProcessCourier(Context context, OrderDetailShipmentModel editableModel);
+
     void onConfirmShipping(Context context, OrderDetailShipmentModel editableModel);
 
 }

@@ -66,7 +66,8 @@
 
         <activity
             android:name=".purchase.detail.activity.OrderDetailActivity"
-            android:label="@string/title_activity_people_tx_details"/>
+            android:label="@string/title_activity_people_tx_details"
+            android:windowSoftInputMode="adjustPan"/>
 
         <activity
             android:name=".purchase.detail.activity.OrderHistoryActivity"
@@ -74,11 +75,16 @@
 
         <activity
             android:name=".purchase.detail.activity.ConfirmShippingActivity"
-            android:label="@string/title_activity_people_tx_details"/>
+            android:label="@string/title_confirm_shipment"/>
+
+        <activity
+            android:name=".purchase.detail.activity.CustomScannerBarcodeActivity"
+            android:label="@string/title_scan_awb"/>
 
         <service
             android:name=".purchase.services.TxActionIntentService"
             android:exported="false" />
+
         <service
             android:name=".cart.services.TopPayIntentService"
             android:exported="false" />

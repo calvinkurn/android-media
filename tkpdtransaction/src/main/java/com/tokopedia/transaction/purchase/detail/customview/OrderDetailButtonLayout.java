@@ -107,17 +107,12 @@ public class OrderDetailButtonLayout extends LinearLayout{
 
         Button confirmShipping;
         confirmShipping = mainView.findViewById(R.id.confirm_shipping);
-        confirmShipping.setOnClickListener(onConfirmShipping(context, presenter, data));
-        switchConfirmButtonMode(confirmShipping, buttonData.getConfirmShippingVisibility(),
-                buttonData.getChangeCourier());
-
-        /*Button changeCourier;
-        changeCourier = mainView.findViewById(R.id.change_courier);
-        changeCourier.setOnClickListener(onChangeCourier(context, presenter, data));
-        switchChangeCourierButtonColor(changeCourier,
-                buttonData.getAcceptOrderVisibility(),
-                buttonData.getConfirmShippingVisibility());
-        switchVisibilty(changeCourier, buttonData.getChangeCourier());*/
+        switchConfirmButtonMode(confirmShipping,
+                buttonData.getConfirmShippingVisibility(),
+                buttonData.getChangeCourier(),
+                data,
+                presenter,
+                context);
 
         Button requestPickup;
         requestPickup = mainView.findViewById(R.id.request_pickup);
@@ -339,21 +334,27 @@ public class OrderDetailButtonLayout extends LinearLayout{
 
     private void switchConfirmButtonMode(Button button,
                                          int confirmButtonVisibility,
-                                         int changeCourierButtonVisibility) {
-        if(confirmButtonVisibility == 0) button.setVisibility(GONE);
-        else if(confirmButtonVisibility == 1 && changeCourierButtonVisibility == 0) {
+                                         int changeCourierButtonVisibility,
+                                         OrderDetailData data,
+                                         OrderDetailPresenter presenter,
+                                         Context context) {
+        if(confirmButtonVisibility == OrderDetailTypeDef.HIDE_BUTTON
+                && changeCourierButtonVisibility == OrderDetailTypeDef.HIDE_BUTTON)
+            button.setVisibility(GONE);
+        else if(checkIfVisible(confirmButtonVisibility)
+                && changeCourierButtonVisibility == OrderDetailTypeDef.HIDE_BUTTON) {
             button.setVisibility(VISIBLE);
             button.setText(R.string.button_order_detail_confirm_shipping_alternative);
-        } else button.setVisibility(VISIBLE);
+            button.setOnClickListener(onConfirmShipping(context, presenter, data));
+        } else {
+            button.setVisibility(VISIBLE);
+            button.setOnClickListener(onChangeCourier(context, presenter, data));
+        }
     }
 
-    private void switchChangeCourierButtonColor(Button button,
-                                                int acceptOrderButtonVisibility,
-                                                int confirmButtonVisibility) {
-        if(acceptOrderButtonVisibility == 0 && confirmButtonVisibility == 0) {
-            button.setBackgroundResource(R.drawable.white_button_rounded);
-            button.setTextColor(getResources().getColor(R.color.black));
-        }
+    private boolean checkIfVisible(int visibility) {
+        return visibility == OrderDetailTypeDef.WHITE_BUTTON
+                || visibility == OrderDetailTypeDef.GREEN_BUTTON;
     }
 
 }

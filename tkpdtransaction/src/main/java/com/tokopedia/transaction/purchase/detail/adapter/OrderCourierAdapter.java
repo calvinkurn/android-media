@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -44,7 +43,7 @@ public class OrderCourierAdapter extends RecyclerView.Adapter<OrderCourierAdapte
         final CourierViewModel currentViewModel = modelList.get(position);
         ImageHandler.LoadImage(holder.courierLogo, currentViewModel.getCourierImageUrl());
         holder.courierName.setText(currentViewModel.getCourierName());
-        holder.courierCheckBox.setSelected(currentViewModel.isSelected());
+        holder.courierCheckBox.setChecked(currentViewModel.isSelected());
         holder.courierPlaceHolder.setOnClickListener(onCourierSelectedListener(currentViewModel));
         holder.courierCheckBox.setOnClickListener(onCourierSelectedListener(currentViewModel));
     }
@@ -82,9 +81,18 @@ public class OrderCourierAdapter extends RecyclerView.Adapter<OrderCourierAdapte
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                clearSelectedList();
+                courierViewModel.setSelected(true);
+                notifyDataSetChanged();
                 listener.onCourierSelected(courierViewModel);
             }
         };
+    }
+
+    private void clearSelectedList() {
+        for (int i = 0; i < modelList.size(); i++) {
+            modelList.get(i).setSelected(false);
+        }
     }
 
     public interface OrderCourierAdapterListener {

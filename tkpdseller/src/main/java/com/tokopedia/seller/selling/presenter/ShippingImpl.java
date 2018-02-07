@@ -361,8 +361,9 @@ public class ShippingImpl extends Shipping {
 
     @Override
     public void onOpenDetail(int pos, Context context) {
-        Model model = modelList.get(pos);
-        context.startActivity(ShippingConfirmationDetail.createInstance(context, model.orderShippingList, model.Permission, model.BuyerId, model.PdfUri, model.Pdf));
+        Intent intent = ((TransactionRouter)MainApplication
+                .getAppContext()).goToOrderDetail(context, modelList.get(pos).OrderId);
+        context.startActivity(intent);
     }
 
     private void finishTimeout() {

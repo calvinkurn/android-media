@@ -8,9 +8,15 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.exception.ResponseRuntimeException;
 import com.tokopedia.transaction.network.MyShopOrderActService;
+import com.tokopedia.transaction.network.ProductChangeService;
 import com.tokopedia.transaction.purchase.detail.domain.mapper.OrderDetailMapper;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.OrderDetailResponse;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
+import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
+import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -32,16 +38,20 @@ public class OrderDetailRepository implements IOrderDetailRepository {
 
     private MyShopOrderActService shopService;
 
+    private ProductChangeService productActService;
+
     public OrderDetailRepository(OrderDetailMapper mapper,
                                  OrderDetailService service,
                                  ReplacementActService replacementService,
                                  TXOrderActService orderActService,
-                                 MyShopOrderActService shopService) {
+                                 MyShopOrderActService shopService,
+                                 ProductChangeService productActService) {
         this.mapper = mapper;
         this.service = service;
         this.replacementService = replacementService;
         this.orderActService = orderActService;
         this.shopService = shopService;
+        this.productActService = productActService;
     }
 
     @Override
@@ -141,6 +151,83 @@ public class OrderDetailRepository implements IOrderDetailRepository {
                 return displayMessageToUser(tkpdResponseResponse);
             }
         });
+    }
+
+    @Override
+    public Observable<String> rejectOrderChangeProductVarian(
+            List<EmptyVarianProductEditable> emptyVarianProductEditables,
+            TKPDMapParam<String, String> productParam,
+            final TKPDMapParam<String, String> rejectParam
+    ) {
+        return rejectOrderMergedEditDescription(
+                emptyVarianProductEditables,
+                productParam,
+                rejectParam
+        );
+    }
+
+    private Observable<String> rejectOrderMergedEditDescription(
+            List<EmptyVarianProductEditable> emptyVarianProductEditables,
+            TKPDMapParam<String, String> productParam,
+            TKPDMapParam<String, String> rejectParam
+    ) {
+        List<Observable<String>> cartVarianObservableList = new ArrayList<>();
+        for (int i =0; i < emptyVarianProductEditables.size(); i++) {
+            TKPDMapParam<String, String> params = new TKPDMapParam<>();
+            params.putAll(productParam);
+            params.put("shop_id", emptyVarianProductEditables.get(i).getShopId());
+            params.put("product_id", emptyVarianProductEditables.get(i).getProductId());
+            params.put("product_description", emptyVarianProductEditables.get(i).getProductDescription());
+            cartVarianObservableList.add(productActService.getApi().editDescription(params));
+        }
+        cartVarianObservableList.add(processOrder(rejectParam));
+        return Observable.concat(cartVarianObservableList);
+    }
+
+    @Override
+    public Observable<String> rejectOrderWeightPrice(
+            List<WrongProductPriceWeightEditable> editables,
+            TKPDMapParam<String, String> productParam,
+            final TKPDMapParam<String, String> rejectParam) {
+        return rejectOrderMergedEditWeightPrice(
+                editables,
+                productParam,
+                rejectParam);
+    }
+
+    private Observable<String> rejectOrderMergedEditWeightPrice(
+            List<WrongProductPriceWeightEditable> editables,
+            TKPDMapParam<String, String> productParam,
+            TKPDMapParam<String, String> rejectParam
+    ) {
+        List<Observable<String>> cartWeightPriceObservableList = new ArrayList<>();
+        for (int i =0; i < editables.size(); i++) {
+            TKPDMapParam<String, String> params = new TKPDMapParam<>();
+            params.putAll(productParam);
+            params.put("shop_id", editables.get(i).getShopId());
+            params.put("product_id", editables.get(i).getProductId());
+            params.put(
+                    "product_price",
+                    editables.get(i).getProductPriceUnformatted()
+            );
+            params.put(
+                    "product_weight_value",
+                    editables.get(i).getProductWeightUnformatted()
+            );
+            params.put(
+                    "product_price_currency",
+                    String.valueOf(editables.get(i).getCurrencyMode())
+            );
+            params.put(
+                    "product_weight_unit",
+                    String.valueOf(editables.get(i).getWeightMode())
+            );
+            cartWeightPriceObservableList.add(
+                    productActService.getApi().editWeightPrice(params)
+            );
+        }
+        cartWeightPriceObservableList.add(processOrder(rejectParam));
+        return Observable.concat(cartWeightPriceObservableList);
     }
 
     private String displayMessageToUser(Response<TkpdResponse> tkpdResponseResponse) {

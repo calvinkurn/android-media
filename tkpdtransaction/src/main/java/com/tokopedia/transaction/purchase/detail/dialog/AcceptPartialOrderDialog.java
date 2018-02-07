@@ -74,7 +74,7 @@ public class AcceptPartialOrderDialog extends DialogFragment{
         final EditText[] ProdQty = new EditText[numberOfProducts];
         final LinearLayout[] ProductView = new LinearLayout[numberOfProducts];
         LinearLayout.LayoutParams viewParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        LinearLayout.LayoutParams prodParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams prodParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         prodParam.gravity = Gravity.CENTER_VERTICAL;
         viewParam.gravity = Gravity.CENTER_VERTICAL;
         TextView[] ProdNameList = new TextView[numberOfProducts];
@@ -108,7 +108,7 @@ public class AcceptPartialOrderDialog extends DialogFragment{
                 ArrayList<PartialDialogModels> newDialogPartialDetails = new ArrayList<PartialDialogModels>();
                 for(int i=0; i<numberOfProducts; i++) {
                     PartialDialogModels partialdetails = new PartialDialogModels();
-                    partialdetails.setItemDesc(data.getOrderId());
+                    partialdetails.setItemDesc(data.getItemList().get(i).getOrderDetailId());
                     partialdetails.setItemQty(ProdQty[i].getText().toString());
                     newDialogPartialDetails.add(partialdetails);
                 }

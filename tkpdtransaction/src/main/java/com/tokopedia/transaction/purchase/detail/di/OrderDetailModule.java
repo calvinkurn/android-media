@@ -5,6 +5,7 @@ import com.tokopedia.core.network.apiservices.transaction.OrderDetailService;
 import com.tokopedia.core.network.apiservices.transaction.TXOrderActService;
 import com.tokopedia.core.network.apiservices.transaction.TXOrderService;
 import com.tokopedia.transaction.network.MyShopOrderActService;
+import com.tokopedia.transaction.network.ProductChangeService;
 import com.tokopedia.transaction.purchase.detail.domain.OrderDetailRepository;
 import com.tokopedia.transaction.purchase.detail.domain.mapper.OrderDetailMapper;
 import com.tokopedia.transaction.purchase.detail.interactor.OrderDetailInteractorImpl;
@@ -67,13 +68,20 @@ public class OrderDetailModule {
 
     @Provides
     @OrderDetailScope
+    ProductChangeService provideproductActService() {
+        return new ProductChangeService();
+    }
+
+    @Provides
+    @OrderDetailScope
     OrderDetailRepository provideRepository() {
         return new OrderDetailRepository(
                 provideOrderDetailMapper(),
                 provideOrderDetailService(),
                 provideReplacementService(),
                 provideTransactionActionOrderService(),
-                provideShopActService());
+                provideShopActService(),
+                provideproductActService());
     }
 
     @Provides

@@ -4,6 +4,10 @@ package com.tokopedia.transaction.purchase.detail.domain;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.model.history.viewmodel.OrderHistoryData;
+import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
+import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
+
+import java.util.List;
 
 import rx.Observable;
 
@@ -30,4 +34,14 @@ public interface IOrderDetailRepository {
     Observable<String> retryPickup(TKPDMapParam<String, String> param);
 
     Observable<String> changeAwb(TKPDMapParam<String, String> param);
+
+    Observable<String> rejectOrderChangeProductVarian(List<EmptyVarianProductEditable> emptyVarianProductEditables,
+                                                      TKPDMapParam<String, String> productParam,
+                                                      TKPDMapParam<String, String> rejectParam);
+
+    Observable<String> rejectOrderWeightPrice(List<WrongProductPriceWeightEditable> editables,
+                                                      TKPDMapParam<String, String> productParam,
+                                                      TKPDMapParam<String, String> rejectParam);
+
+
 }

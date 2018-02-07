@@ -38,6 +38,15 @@ public class OrderDetailMapper {
         viewData.setOrderImage(responseData.getStatus().getImage());
 
         viewData.setBuyerName(responseData.getDetail().getReceiver().getName());
+        if(responseData.getDetail().getCustomer() != null) {
+            viewData.setBuyerUserName(responseData.getDetail().getCustomer().getName());
+            viewData.setBuyerId(responseData.getDetail().getCustomer().getId());
+        } else {
+            viewData.setBuyerUserName(responseData.getDetail().getReceiver().getName());
+            viewData.setBuyerId("");
+        }
+        viewData.setRequestCancel(responseData.getDetail().getRequestCancel() == 1);
+        viewData.setRequestCancelReason(responseData.getDetail().getRequestCancelReason());
         if (responseData.getDetail().getPaymentVerifiedDate() != null) {
             viewData.setPurchaseDate(responseData.getDetail().getPaymentVerifiedDate());
         } else {
@@ -47,7 +56,7 @@ public class OrderDetailMapper {
             viewData.setResponseTimeLimit(responseData.getDetail().getDeadline().getText());
             viewData.setDeadlineColorString(responseData.getDetail().getDeadline().getColor());
         }
-        if(responseData.getDetail().getShop() != null) {
+        if(responseData.getDetail().getShop() !=null) {
             viewData.setShopId(String.valueOf(responseData.getDetail().getShop().getId()));
             viewData.setShopName(responseData.getDetail().getShop().getName());
             viewData.setShopLogo(responseData.getDetail().getShop().getLogo());
@@ -90,21 +99,36 @@ public class OrderDetailMapper {
         viewData.setAwb(responseData.getDetail().getShipment().getAwb());
 
         viewData.setTotalItemQuantity(String.valueOf(responseData.getSummary().getTotalItem()));
+        viewData.setTotalItemWeight(responseData.getSummary().getTotalWeight());
         viewData.setAdditionalFee(responseData.getSummary().getAdditionalPrice());
         viewData.setDeliveryPrice(responseData.getSummary().getShippingPrice());
         viewData.setInsurancePrice(responseData.getSummary().getInsurancePrice());
         viewData.setProductPrice(responseData.getSummary().getItemsPrice());
         viewData.setTotalPayment(responseData.getSummary().getTotalPrice());
 
+        if(responseData.getDetail().getInsurance() != null) {
+            viewData.setShowInsuranceNotification(
+                    responseData.getDetail().getInsurance().getInsuranceType().equals("2")
+            );
+            viewData.setInsuranceNotification(responseData.getDetail().getInsurance()
+                    .getInsuranceNote());
+        }
+
         List<OrderDetailItemData> productList = new ArrayList<>();
         for (int i = 0; i < responseData.getProducts().size(); i++) {
             OrderDetailItemData product = new OrderDetailItemData();
             product.setProductId(String.valueOf(responseData.getProducts().get(i).getId()));
+            product.setOrderDetailId(responseData.getProducts().get(i).getOrderDetailId());
             product.setItemName(responseData.getProducts().get(i).getName());
             product.setDescription(responseData.getProducts().get(i).getNote());
             product.setItemQuantity(String.valueOf(responseData.getProducts().get(i).getQuantity()));
             product.setPrice(responseData.getProducts().get(i).getPrice());
+            product.setWeight(responseData.getProducts().get(i).getWeight());
             product.setImageUrl(responseData.getProducts().get(i).getThumbnail());
+            product.setCurrencyRate(responseData.getProducts().get(i).getCurrencyRate());
+            product.setCurrencyType(responseData.getProducts().get(i).getCurrencyType());
+            product.setPriceUnformatted(responseData.getProducts().get(i).getPriceUnformatted());
+            product.setWeightUnformatted(responseData.getProducts().get(i).getWeightUnformatted());
             productList.add(product);
         }
         viewData.setItemList(productList);
@@ -133,7 +157,7 @@ public class OrderDetailMapper {
 
         if (responseData.getDetail().getShipment().getInfo() != null &&
                 responseData.getDetail().getShipment().getInfo().getDriver() != null) {
-            viewData.setDriverName(
+            viewData.setDrivername(
                     responseData.getDetail().getShipment().getInfo().getDriver().getName()
             );
             viewData.setDriverImage(

@@ -246,8 +246,6 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
                                 .goToOrderDetail(
                                         getActivity(),
                                         model.OrderId);
-                        intent.putExtra(SellingDetailActivity.DATA_EXTRA, Parcels.wrap(model));
-                        intent.putExtra(SellingDetailActivity.TYPE_EXTRA, SellingDetailActivity.Type.TRANSACTION);
                         startActivity(intent);
                     }
 
