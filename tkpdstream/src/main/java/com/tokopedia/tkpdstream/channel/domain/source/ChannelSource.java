@@ -15,14 +15,14 @@ import rx.Observable;
  * @author by nisie on 2/3/18.
  */
 
-public class ChannelRepository {
+public class ChannelSource {
 
     GroupChatApi chatApi;
     ChannelMapper channelMapper;
 
     @Inject
-    public ChannelRepository(@StreamScope GroupChatApi chatApi,
-                             ChannelMapper channelMapper) {
+    public ChannelSource(@StreamScope GroupChatApi chatApi,
+                         ChannelMapper channelMapper) {
         this.chatApi = chatApi;
         this.channelMapper = channelMapper;
     }

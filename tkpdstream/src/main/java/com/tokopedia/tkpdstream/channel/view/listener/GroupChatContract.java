@@ -19,6 +19,6 @@ public interface GroupChatContract {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void getMessagesFirstTime();
+        void initMessageFirstTime();
     }
 }

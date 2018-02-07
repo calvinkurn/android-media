@@ -1,6 +1,6 @@
 package com.tokopedia.tkpdstream.channel.domain.usecase;
 
-import com.tokopedia.tkpdstream.channel.domain.source.ChannelRepository;
+import com.tokopedia.tkpdstream.channel.domain.source.ChannelSource;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelListViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -15,16 +15,16 @@ import rx.Observable;
 
 public class GetChannelListUseCase extends UseCase<ChannelListViewModel> {
 
-    ChannelRepository channelRepository;
+    ChannelSource channelSource;
 
     @Inject
-    public GetChannelListUseCase(ChannelRepository channelRepository) {
-        this.channelRepository = channelRepository;
+    public GetChannelListUseCase(ChannelSource channelSource) {
+        this.channelSource = channelSource;
     }
 
     @Override
     public Observable<ChannelListViewModel> createObservable(RequestParams requestParams) {
-        return channelRepository.getChannels(requestParams.getParameters());
+        return channelSource.getChannels(requestParams.getParameters());
     }
 
     public RequestParams createParamFirstTime() {

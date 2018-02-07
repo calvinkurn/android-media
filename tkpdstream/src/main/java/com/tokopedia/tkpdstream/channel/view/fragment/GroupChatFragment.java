@@ -74,7 +74,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter.getMessagesFirstTime();
+        presenter.initMessageFirstTime();
     }
 
     @Override
