@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
@@ -447,6 +448,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         attributes.setIdentifier(view.getDigitalIdentifierParam());
         attributes.setShowSubscribeFlag(true);
         attributes.setThankyouNative(true);
+        attributes.setThankyouNativeNew(true);
         requestBodyAtcDigital.setType("add_cart");
         requestBodyAtcDigital.setAttributes(attributes);
         return requestBodyAtcDigital;
