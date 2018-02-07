@@ -206,7 +206,11 @@ public class ResoInboxFragment
 
     @Override
     public void onRefresh() {
-        presenter.getInboxWithParams(inboxSortModel, inboxFilterModel);
+        if (inboxFilterModel.getSelectedFilterList().size() != 0) {
+            presenter.getInboxWithParams(inboxSortModel, inboxFilterModel);
+        } else {
+            presenter.getInbox();
+        }
     }
 
     private void sortButtonClicked() {
@@ -298,6 +302,7 @@ public class ResoInboxFragment
         adapter.addItem(result.getFilterListViewModel());
         adapter.addItem(new EmptyModel());
         adapter.notifyDataSetChanged();
+        updateFilterValue(result);
     }
 
     @Override

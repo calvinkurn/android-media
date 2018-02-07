@@ -144,7 +144,9 @@ public class InboxFilterFragment
             @Override
             public void onClick(View view) {
                 Calendar calendar = Calendar.getInstance();
-                calendar.setTime(new Date());
+                calendar.setTime(inboxFilterModel.getDateFrom() != null ?
+                        inboxFilterModel.getDateFrom() :
+                        new Date());
                 DatePickerDialog dialog = new DatePickerDialog(getActivity(), calendar,
                         new DatePickerDialog.OnDateSetListener(inboxFilterModel.getDateFrom(), FORMAT_DATE) {
                             @Override
@@ -162,7 +164,9 @@ public class InboxFilterFragment
             @Override
             public void onClick(View view) {
                 Calendar calendar = Calendar.getInstance();
-                calendar.setTime(new Date());
+                calendar.setTime(inboxFilterModel.getDateTo() != null ?
+                        inboxFilterModel.getDateTo() :
+                        new Date());
                 DatePickerDialog dialog = new DatePickerDialog(getActivity(), calendar,
                         new DatePickerDialog.OnDateSetListener(inboxFilterModel.getDateTo(), FORMAT_DATE) {
                             @Override
