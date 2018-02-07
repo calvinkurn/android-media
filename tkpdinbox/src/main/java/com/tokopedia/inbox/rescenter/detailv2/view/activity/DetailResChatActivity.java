@@ -14,6 +14,7 @@ import android.view.MenuItem;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.core.gcm.Constants;
@@ -86,6 +87,10 @@ public class DetailResChatActivity
             bundle.putString(PARAM_SHOP_NAME, shopNameSpanned);
         }
         destinationIntent.putExtras(bundle);
+        if (context instanceof TkpdCoreRouter){
+            Intent intent = ((TkpdCoreRouter) context).getHomeIntent(context);
+            taskStackBuilder.addNextIntent(intent);
+        }
         taskStackBuilder.addNextIntent(parentIntent);
         taskStackBuilder.addNextIntent(destinationIntent);
         return taskStackBuilder;

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.TaskStackBuilder;
 
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.AmountDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.OrderDetailDomain;
@@ -184,6 +185,10 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
         Intent detailResIntent = DetailResChatActivity.newBuyerInstance(context, resolutionId, shopName);
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        if (context instanceof TkpdCoreRouter){
+            Intent intent = ((TkpdCoreRouter) context).getHomeIntent(context);
+            taskStackBuilder.addNextIntent(intent);
+        }
         taskStackBuilder.addNextIntent(resInboxIntent);
         taskStackBuilder.addNextIntent(detailResIntent);
         return taskStackBuilder;

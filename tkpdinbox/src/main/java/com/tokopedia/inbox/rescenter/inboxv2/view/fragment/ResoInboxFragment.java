@@ -206,6 +206,7 @@ public class ResoInboxFragment
 
     @Override
     public void onRefresh() {
+        adapter.clearData();
         if (inboxFilterModel.getSelectedFilterList().size() != 0) {
             presenter.getInboxWithParams(inboxSortModel, inboxFilterModel);
         } else {
