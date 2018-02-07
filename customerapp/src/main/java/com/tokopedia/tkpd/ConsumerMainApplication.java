@@ -15,6 +15,7 @@ import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
+import com.sendbird.android.SendBird;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.gcm.Constants;
@@ -28,6 +29,7 @@ import com.tokopedia.tkpd.deeplink.DeepLinkReceiver;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
+import com.tokopedia.tkpdstream.SendbirdKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +61,12 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         IntentFilter intentFilter1 = new IntentFilter(Constants.ACTION_BC_RESET_APPLINK);
         LocalBroadcastManager.getInstance(this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
+
+        initSendbird();
+    }
+
+    private void initSendbird() {
+        SendBird.init(SendbirdKey.APP_ID, this);
     }
 
     private void generateConsumerAppBaseUrl() {

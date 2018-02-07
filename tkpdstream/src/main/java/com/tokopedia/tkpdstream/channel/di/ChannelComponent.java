@@ -1,6 +1,7 @@
 package com.tokopedia.tkpdstream.channel.di;
 
 import com.tokopedia.tkpdstream.channel.view.fragment.ChannelFragment;
+import com.tokopedia.tkpdstream.channel.view.fragment.GroupChatFragment;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
 
 import dagger.Component;
@@ -13,5 +14,8 @@ import dagger.Component;
 public interface ChannelComponent {
 
     void inject(ChannelFragment fragment);
+
+    void inject(GroupChatFragment fragment);
+
 
 }

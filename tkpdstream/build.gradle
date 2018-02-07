@@ -61,5 +61,5 @@ dependencies {
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
 
-
+    compile 'com.sendbird.sdk:sendbird-android-sdk:3.0.49'
 }

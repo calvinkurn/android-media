@@ -4,7 +4,7 @@
 
     <application android:label="@string/app_name">
         <activity
-            android:name=".channel.view.ChannelActivity"
+            android:name=".channel.view.activity.ChannelActivity"
             android:label="@string/activity_channel"
             android:screenOrientation="portrait">
         </activity>
