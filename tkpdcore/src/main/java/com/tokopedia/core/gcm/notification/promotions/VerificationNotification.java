@@ -6,7 +6,7 @@ import android.os.Bundle;
 
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.SessionHandler;
@@ -33,7 +33,7 @@ public class VerificationNotification extends BasePromoNotification {
             );
         } else {
             mNotificationPass.mIntent = NotificationUtils.configurePromoIntent(
-                    new Intent(mContext, SessionRouter.getLoginActivityClass()),
+                    new Intent(mContext, OldSessionRouter.getLoginActivityClass()),
                     data
             );
             data.putInt("keylogin1", TkpdState.DrawerPosition.LOGIN);

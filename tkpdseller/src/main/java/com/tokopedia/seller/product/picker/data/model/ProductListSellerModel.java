@@ -382,8 +382,29 @@ public class ProductListSellerModel {
         @SerializedName("product_rating_desc")
         @Expose
         private String productRatingDesc;
+        @SerializedName("product_variant")
+        @Expose
+        private int productVariant;
         private int productCashback;
         private int productCashbackAmount;
+
+        /**
+         *
+         * @return
+         *     The productVariant
+         */
+        public int getProductVariant() {
+            return productVariant;
+        }
+
+        /**
+         *
+         * @param productVariant
+         *     The product_variant
+         */
+        public void setProductVariant(int productVariant) {
+            this.productVariant = productVariant;
+        }
 
         /**
          *

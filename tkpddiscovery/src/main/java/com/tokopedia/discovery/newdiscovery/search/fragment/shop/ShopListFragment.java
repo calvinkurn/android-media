@@ -13,12 +13,14 @@ import android.view.ViewGroup;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.SearchTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.R;
@@ -305,6 +307,7 @@ public class ShopListFragment extends SearchSectionFragment
         Intent intent = new Intent(getContext(), ShopInfoActivity.class);
         intent.putExtras(ShopInfoActivity.createBundle(shopItem.getShopId(), shopItem.getShopDomain()));
         lastSelectedItemPosition = adapterPosition;
+        UnifyTracking.eventSearchResultShopItemClick(query, shopItem.getShopName());
         startActivityForResult(intent, REQUEST_CODE_GOTO_SHOP_DETAIL);
     }
 
@@ -345,7 +348,7 @@ public class ShopListFragment extends SearchSectionFragment
 
     @Override
     public void launchLoginActivity(Bundle extras) {
-        Intent intent = SessionRouter.getLoginActivityIntent(getContext());
+        Intent intent = OldSessionRouter.getLoginActivityIntent(getContext());
         intent.putExtras(extras);
         startActivityForResult(intent, REQUEST_CODE_LOGIN);
     }

@@ -70,7 +70,8 @@ public class KolCommentAdapter extends RecyclerView.Adapter<AbstractViewHolder> 
     }
 
     public KolCommentHeaderViewModel getHeader() {
-        if (list.get(0) instanceof KolCommentHeaderViewModel)
+        if (list.size() == 0) return null;
+        else if (list.get(0) instanceof KolCommentHeaderViewModel)
             return (KolCommentHeaderViewModel) list.get(0);
         else
             return null;

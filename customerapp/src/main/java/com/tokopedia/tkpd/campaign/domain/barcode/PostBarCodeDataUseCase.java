@@ -1,12 +1,8 @@
 package com.tokopedia.tkpd.campaign.domain.barcode;
 
-
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
-import com.tokopedia.tkpd.campaign.domain.CampaignDataRepository;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
 
@@ -16,14 +12,12 @@ import rx.Observable;
 
 public class PostBarCodeDataUseCase extends UseCase<CampaignResponseEntity> {
 
-    CampaignDataRepository campaignDataRepository;
+    private CampaignDataRepository campaignDataRepository;
 
     public static final String CAMPAIGN_ID ="tkp_campaign_id";
     public static final String CAMPAIGN_NAME = "tkp_campaign_name";
 
-
-    public PostBarCodeDataUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, CampaignDataRepository campaignDataRepository) {
-        super(threadExecutor,postExecutionThread);
+    public PostBarCodeDataUseCase(CampaignDataRepository campaignDataRepository) {
         this.campaignDataRepository = campaignDataRepository;
     }
 

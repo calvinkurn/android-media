@@ -9,6 +9,7 @@ import com.tokopedia.ride.bookingride.view.fragment.EditDeleteCreditCardFragment
 import com.tokopedia.ride.bookingride.view.fragment.ManagePaymentOptionsFragment;
 import com.tokopedia.ride.bookingride.view.fragment.PlaceAutocompleteFragment;
 import com.tokopedia.ride.bookingride.view.fragment.RideHomeMapFragment;
+import com.tokopedia.ride.bookingride.view.fragment.SelectLocationOnMapFragment;
 import com.tokopedia.ride.bookingride.view.fragment.UberProductFragment;
 import com.tokopedia.ride.common.ride.di.RideComponent;
 
@@ -23,6 +24,8 @@ public interface BookingRideComponent {
     void inject(RideHomeActivity activity);
 
     void inject(RideHomeMapFragment rideHomeMapFragment);
+
+    void inject(SelectLocationOnMapFragment selectLocationOnMapFragment);
 
     void inject(UberProductFragment uberProductFragment);
 

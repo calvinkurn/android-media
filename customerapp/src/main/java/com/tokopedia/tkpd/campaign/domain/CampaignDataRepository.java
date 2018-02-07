@@ -1,10 +1,8 @@
 package com.tokopedia.tkpd.campaign.domain;
 
-
-
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.tkpd.campaign.data.entity.CampaignRequestEntity;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
+
+import java.util.HashMap;
 
 import rx.Observable;
 
@@ -13,6 +11,6 @@ import rx.Observable;
  */
 
 public interface CampaignDataRepository {
-    Observable<CampaignResponseEntity> getCompaignData(TKPDMapParam<String, Object> params);
-    Observable<CampaignResponseEntity> getCampaignFromAudio(TKPDMapParam<String, Object> params) ;
+    Observable<CampaignResponseEntity> getCompaignData(HashMap<String, Object> params);
+    Observable<CampaignResponseEntity> getCampaignFromAudio(HashMap<String, Object> params) ;
 }

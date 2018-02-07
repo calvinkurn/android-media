@@ -7,15 +7,20 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.KolTracking;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author by nisie on 10/27/17.
@@ -106,9 +111,9 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
 
         MethodChecker.loadImageFitCenter(reviewImage, element.getKolImage());
 
-        if(TextUtils.isEmpty(element.getProductTooltip())) {
+        if (TextUtils.isEmpty(element.getProductTooltip())) {
             tooltipClickArea.setVisibility(View.GONE);
-        }else{
+        } else {
             tooltipClickArea.setVisibility(View.VISIBLE);
             tooltip.setText(element.getProductTooltip());
         }
@@ -139,6 +144,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             commentText.setText(String.valueOf(element.getTotalComment()));
         }
 
+        commentButton.setVisibility(element.isShowComment() ? View.VISIBLE : View.GONE);
         setListener(element);
     }
 
@@ -214,6 +220,23 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             @Override
             public void onClick(View v) {
                 UnifyTracking.eventKolContentCtaClick(element.isFollowed(), element.getTagsType());
+                List<KolTracking.Promotion> list = new ArrayList<>();
+                list.add(new KolTracking.Promotion(
+                        element.getId(),
+                        KolTracking.Promotion.createContentName(
+                                element.getTagsType(),
+                                element.getCardType())
+                        ,
+                        element.getName().equals("")? "-" : element.getName(),
+                        getAdapterPosition(),
+                        element.getLabel().equals("")? "-" : element.getLabel(),
+                        element.getContentId(),
+                        element.getContentLink().equals("")? "-" : element.getContentLink()
+                ));
+
+                TrackingUtils.eventTrackingEnhancedEcommerce(KolTracking.getKolClickTracking(list,
+                        Integer.parseInt(SessionHandler.getLoginID(MainApplication.getAppContext()))));
+
                 viewListener.onOpenKolTooltip(element.getPage(), getAdapterPosition(),
                         element.getContentLink());
             }

@@ -130,7 +130,7 @@ TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implements View.OnC
 
     private void removeHeader() {
         adsHeader.setVisibility(View.GONE);
-        GridLayoutManager.LayoutParams params = (GridLayoutManager.LayoutParams) container.getLayoutParams();
+        RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) container.getLayoutParams();
         params.setMargins(0, 0, 0, 0);
         container.setLayoutParams(params);
     }

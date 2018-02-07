@@ -94,8 +94,8 @@ public class BaseDiscoveryActivity
     }
 
     @Override
-    public void onHandleResponseHotlist(String url) {
-        startActivity(HotlistActivity.createInstanceUsingURL(this, url));
+    public void onHandleResponseHotlist(String url, String query) {
+        startActivity(HotlistActivity.createInstanceUsingURL(this, url, query));
         finish();
     }
 

@@ -6,14 +6,13 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.otp.data.ValidateOtpModel;
-import com.tokopedia.otp.domain.interactor.ValidateOtpUseCase;
+import com.tokopedia.otp.data.model.ValidateOtpModel;
+import com.tokopedia.otp.domainold.ValidateOtpUseCase;
 import com.tokopedia.otp.phoneverification.data.VerifyPhoneNumberModel;
 import com.tokopedia.otp.phoneverification.domain.MsisdnRepository;
 
 import rx.Observable;
 import rx.functions.Func1;
-import rx.functions.Func2;
 
 /**
  * Created by nisie on 3/7/17.

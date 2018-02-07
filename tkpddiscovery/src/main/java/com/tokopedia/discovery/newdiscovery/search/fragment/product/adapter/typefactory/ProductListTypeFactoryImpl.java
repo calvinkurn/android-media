@@ -68,7 +68,7 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
         } else if (type == GridProductItemViewHolder.LAYOUT) {
             viewHolder = new GridProductItemViewHolder(view, itemClickListener);
         } else if(type == HeaderViewHolder.LAYOUT){
-            viewHolder = new HeaderViewHolder(view, itemClickListener);
+            viewHolder = new HeaderViewHolder(view, itemClickListener, topAdsConfig);
         } else if (type == EmptySearchViewHolder.LAYOUT) {
             viewHolder = new EmptySearchViewHolder(view, itemClickListener, topAdsConfig);
         } else {

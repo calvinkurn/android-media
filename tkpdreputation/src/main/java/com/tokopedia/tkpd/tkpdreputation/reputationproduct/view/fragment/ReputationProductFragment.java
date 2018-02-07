@@ -63,7 +63,7 @@ import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.presenter.Reputa
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.product_review.ReviewProductDetailModel;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.product_review.ReviewProductModel;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.LabelUtils;
@@ -607,7 +607,7 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
         return new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
+                Intent intent = OldSessionRouter.getLoginActivityIntent(getActivity());
                 intent.putExtra("product_id", productID);
                 intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
                 intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);

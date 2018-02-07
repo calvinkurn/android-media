@@ -123,7 +123,7 @@ public class CategoryProductStyle2View extends
 
     @Override
     protected void onInstantCheckoutUnChecked() {
-        btnBuyDigital.setText(context.getString(R.string.label_btn_buy_digital));
+        setBtnBuyDigitalText(operatorSelected.getRule().getButtonText());
     }
 
     @Override
@@ -272,6 +272,7 @@ public class CategoryProductStyle2View extends
             @Override
             public void onUpdateDataDigitalRadioChooserSelectedRendered(Operator data) {
                 operatorSelected = data;
+                setBtnBuyDigitalText(operatorSelected.getRule().getButtonText());
                 if (!data.getClientNumberList().isEmpty()) {
                     renderClientNumberInputForm(operatorSelected);
                 }
@@ -372,6 +373,14 @@ public class CategoryProductStyle2View extends
         };
     }
 
+    private void setBtnBuyDigitalText(String buttonText) {
+        if (!TextUtils.isEmpty(buttonText)) {
+            btnBuyDigital.setText(buttonText);
+        } else {
+            btnBuyDigital.setText(context.getString(R.string.label_btn_buy_digital));
+        }
+    }
+
     private PreCheckoutProduct generatePreCheckoutData() {
         PreCheckoutProduct preCheckoutProduct = new PreCheckoutProduct();
         boolean canBeCheckout = false;
@@ -417,7 +426,6 @@ public class CategoryProductStyle2View extends
         preCheckoutProduct.setCanBeCheckout(canBeCheckout);
         return preCheckoutProduct;
     }
-
 
     private boolean hasLastOrderHistoryData() {
         return historyClientNumber != null && historyClientNumber.getLastOrderClientNumber() != null;

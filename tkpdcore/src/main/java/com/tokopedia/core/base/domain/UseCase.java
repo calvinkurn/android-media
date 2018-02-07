@@ -14,6 +14,7 @@ import rx.subscriptions.Subscriptions;
  * @author Kulomady on 2/1/17.
  */
 
+@Deprecated
 public abstract class UseCase<T> implements Interactor<T> {
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();

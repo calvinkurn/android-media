@@ -8,7 +8,6 @@ import android.os.Parcelable;
  */
 
 public class Product implements Parcelable {
-
     public static final int STATUS_OUT_OF_STOCK = 3;
     public static final int STATUS_INACTIVE = 2;
 

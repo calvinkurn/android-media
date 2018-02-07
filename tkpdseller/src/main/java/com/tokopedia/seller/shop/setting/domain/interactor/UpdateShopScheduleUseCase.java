@@ -4,7 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.shop.setting.SettingShopConstant;
+import com.tokopedia.seller.shop.setting.constant.ShopSettingConstant;
 import com.tokopedia.seller.shop.setting.constant.ShopCloseAction;
 import com.tokopedia.seller.shop.setting.domain.UpdateShopScheduleRepository;
 
@@ -45,10 +45,10 @@ public class UpdateShopScheduleUseCase extends UseCase<Boolean> {
     public static RequestParams cerateRequestParams(String closedNote, String closeStart,
                                           String closeEnd, @ShopCloseAction int closeAction){
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(SettingShopConstant.CLOSED_NOTE, closedNote);
-        requestParams.putString(SettingShopConstant.CLOSE_START, closeStart);
-        requestParams.putString(SettingShopConstant.CLOSE_END, closeEnd);
-        requestParams.putString(SettingShopConstant.CLOSE_ACTION, String.valueOf(closeAction));
+        requestParams.putString(ShopSettingConstant.CLOSED_NOTE, closedNote);
+        requestParams.putString(ShopSettingConstant.CLOSE_START, closeStart);
+        requestParams.putString(ShopSettingConstant.CLOSE_END, closeEnd);
+        requestParams.putString(ShopSettingConstant.CLOSE_ACTION, String.valueOf(closeAction));
         return requestParams;
     }
 }

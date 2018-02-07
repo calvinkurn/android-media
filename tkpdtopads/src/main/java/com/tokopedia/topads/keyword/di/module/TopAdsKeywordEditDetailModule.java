@@ -4,7 +4,7 @@ import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
-import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
+import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.seller.product.variant.data.cloud.api.TomeApi;
 import com.tokopedia.topads.keyword.data.repository.TopAdsKeywordRepositoryImpl;
 import com.tokopedia.topads.keyword.data.source.KeywordDashboardDataSouce;

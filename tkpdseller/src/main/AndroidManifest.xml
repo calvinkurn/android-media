@@ -9,7 +9,35 @@
 
         <activity
             android:name=".common.imageeditor.GalleryCropActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".shop.open.view.activity.ShopOpenRoutingActivity"
+            android:label="@string/title_open_shop"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".shop.open.view.activity.ShopOpenCreateSuccessActivity"
+            android:label="@string/title_shop_is_active"
             android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".shop.open.view.activity.ShopOpenReserveDomainSuccessActivity"
+            android:label="@string/title_shop_is_active"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".shop.open.view.activity.ShopOpenDomainActivity"
+            android:label="@string/title_open_shop"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".shop.open.view.activity.ShopOpenMandatoryActivity"
+            android:label="@string/title_shop_setting"
+            android:windowSoftInputMode="stateHidden"
+            android:exported="true"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".common.imageeditor.GalleryCropWatermarkActivity"
             android:screenOrientation="portrait"/>
@@ -74,7 +102,7 @@
             android:theme="@style/Theme.Tokopedia3" />
 
         <activity
-            android:name=".shop.ShopEditorActivity"
+            android:name=".shopsettings.edit.view.ShopEditorActivity"
             android:label="@string/shop_setting"
             android:theme="@style/ShopAppTheme" />
 
@@ -200,7 +228,7 @@
             android:name=".product.variant.view.activity.ProductVariantPickerActivity"
             android:label="@string/product_variant_label_title"
             android:screenOrientation="portrait" />
-        
+
         <activity
             android:name=".product.draft.view.activity.ProductDraftListActivity"
             android:exported="true"
@@ -237,7 +265,6 @@
             android:name=".reputation.view.activity.SellerReputationInfoActivity"
             android:label="@string/reputation_point_calculation"
             android:theme="@style/AppTheme" />
-
 
         <activity
             android:name=".shopsettings.ManageShopActivity"
@@ -296,17 +323,30 @@
             android:label="@string/title_activity_product_list_picker"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".common.gallery.GalleryCropActivity"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".selling.view.fragment.CustomScannerBarcodeActivity"
+            android:screenOrientation="sensorLandscape"
+            android:stateNotNeeded="true"
+            android:theme="@style/zxing_CaptureTheme"
+            android:windowSoftInputMode="stateAlwaysHidden"></activity>
 
         <service
             android:name=".selling.SellingService"
             android:exported="false" />
         <service
-            android:name=".shop.ShopEditService"
+            android:name=".shopsettings.edit.view.ShopEditService"
             android:exported="false" />
 
         <service
             android:name=".product.edit.view.service.UploadProductService"
             android:exported="false" />
+        <service
+            android:name=".transaction.neworder.view.presenter.OrderWidgetJobService"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
     </application>
 
 </manifest>

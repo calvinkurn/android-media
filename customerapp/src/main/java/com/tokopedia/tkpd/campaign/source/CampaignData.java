@@ -5,6 +5,8 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
 import com.tokopedia.tkpd.campaign.domain.CampaignDataRepository;
 
+import java.util.HashMap;
+
 import javax.inject.Inject;
 
 import rx.Observable;
@@ -23,7 +25,7 @@ public class CampaignData implements CampaignDataRepository {
     }
 
     @Override
-    public Observable<CampaignResponseEntity> getCompaignData(TKPDMapParam<String, Object> params) {
+    public Observable<CampaignResponseEntity> getCompaignData(HashMap<String, Object> params) {
         return campaignDataFactory.createCloudCampaignDataStore().getCampaign(params);
     }
     @Override

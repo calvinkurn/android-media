@@ -107,7 +107,7 @@ public class CategoryProductStyle3View extends
 
     @Override
     protected void onInstantCheckoutUnChecked() {
-        btnBuyDigital.setText(context.getString(R.string.label_btn_buy_digital));
+        if (operatorSelected != null) setBtnBuyDigitalText(operatorSelected.getRule().getButtonText());
     }
 
     @Override
@@ -263,6 +263,7 @@ public class CategoryProductStyle3View extends
             @Override
             public void onUpdateDataDigitalChooserSelectedRendered(Operator operator) {
                 operatorSelected = operator;
+                setBtnBuyDigitalText(operatorSelected.getRule().getButtonText());
                 if (!operator.getClientNumberList().isEmpty()) {
                     renderClientNumberInputForm(operator);
                 } else {
@@ -275,6 +276,14 @@ public class CategoryProductStyle3View extends
                 actionListener.onOperatorChooserStyle3Clicked(data, "");
             }
         };
+    }
+
+    private void setBtnBuyDigitalText(String buttonText) {
+        if (!TextUtils.isEmpty(buttonText)) {
+            btnBuyDigital.setText(buttonText);
+        } else {
+            btnBuyDigital.setText(context.getString(R.string.label_btn_buy_digital));
+        }
     }
 
     @NonNull

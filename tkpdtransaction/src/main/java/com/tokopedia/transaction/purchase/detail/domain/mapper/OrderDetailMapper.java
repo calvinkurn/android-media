@@ -4,7 +4,6 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.payment.utils.ErrorNetMessage;
 import com.tokopedia.transaction.exception.ResponseRuntimeException;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.Buttons;
-import com.tokopedia.transaction.purchase.detail.model.detail.response.Data;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.OrderDetailResponse;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ButtonData;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
@@ -43,7 +42,7 @@ public class OrderDetailMapper {
             viewData.setResponseTimeLimit(responseData.getDetail().getDeadline().getText());
             viewData.setDeadlineColorString(responseData.getDetail().getDeadline().getColor());
         }
-        if(responseData.getDetail().getShop() !=null) {
+        if(responseData.getDetail().getShop() != null) {
             viewData.setShopId(String.valueOf(responseData.getDetail().getShop().getId()));
             viewData.setShopName(responseData.getDetail().getShop().getName());
             viewData.setShopLogo(responseData.getDetail().getShop().getLogo());
@@ -119,6 +118,22 @@ public class OrderDetailMapper {
         buttonData.setTrackVisibility(buttons.getTrack());
         buttonData.setRequestPickupVisibility(buttons.getRequestPickup());
         viewData.setButtonData(buttonData);
+
+        if (responseData.getDetail().getShipment().getInfo() != null &&
+                responseData.getDetail().getShipment().getInfo().getDriver() != null) {
+            viewData.setDriverName(
+                    responseData.getDetail().getShipment().getInfo().getDriver().getName()
+            );
+            viewData.setDriverImage(
+                    responseData.getDetail().getShipment().getInfo().getDriver().getPhoto()
+            );
+            viewData.setDriverPhone(
+                    responseData.getDetail().getShipment().getInfo().getDriver().getPhone()
+            );
+            viewData.setDriverVehicle(
+                    responseData.getDetail().getShipment().getInfo().getDriver().getLicenseNumber()
+            );
+        }
 
         return viewData;
     }

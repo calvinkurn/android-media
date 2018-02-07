@@ -584,6 +584,8 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         presenter.onActivityResult(getActivity(), requestCode, resultCode, data);
+        resetData();
+        onRefresh(getView());
     }
 
     private void initialData() {

@@ -8,6 +8,7 @@ public class AddProductShopInfoDomainModel {
     private boolean isGoldMerchant;
     private boolean isFreeReturn;
     private String shopId;
+    private boolean officialStore;
 
     public String getShopId() {
         return shopId;
@@ -31,5 +32,13 @@ public class AddProductShopInfoDomainModel {
 
     public void setFreeReturn(boolean freeReturn) {
         isFreeReturn = freeReturn;
+    }
+
+    public void setOfficialStore(boolean officialStore) {
+        this.officialStore = officialStore;
+    }
+
+    public boolean isOfficialStore() {
+        return officialStore;
     }
 }

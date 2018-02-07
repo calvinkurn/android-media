@@ -45,6 +45,7 @@ import com.tokopedia.tkpd.beranda.domain.interactor.GetTopPicksUseCase;
 import com.tokopedia.tkpd.beranda.presentation.presenter.HomePresenter;
 import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractor;
 import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractorImpl;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.FeedPlusModule;
 
 import dagger.Module;
 import dagger.Provides;
@@ -53,7 +54,7 @@ import dagger.Provides;
  * @author by errysuprayogi on 11/28/17.
  */
 
-@Module(includes = {CategoryModule.class, BannerModule.class, BrandsModule.class, TopPicksModule.class, TickerModule.class})
+@Module(includes = {CategoryModule.class, BannerModule.class, BrandsModule.class, TopPicksModule.class, TickerModule.class, HomeFeedModule.class})
 public class HomeModule {
 
     @HomeScope

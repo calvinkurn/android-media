@@ -9,6 +9,8 @@ import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.var.TokoCashTypeDef;
 
+import java.util.ArrayList;
+
 /**
  * Created by nabillasabbaha on 11/13/17.
  */
@@ -50,6 +52,8 @@ public class TokoCashUtil {
                 : tokoCashData.getAction().getmAppLinks());
         data.setRedirectUrlActionButton(tokoCashData.getAction().getRedirectUrl() == null ? ""
                 : tokoCashData.getAction().getRedirectUrl());
+        data.setAbTags(tokoCashData.getAbTags() == null ? new ArrayList<String>()
+                : tokoCashData.getAbTags());
         return data;
     }
 

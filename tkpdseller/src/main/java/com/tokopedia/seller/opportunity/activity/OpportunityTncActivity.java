@@ -12,10 +12,6 @@ import com.tokopedia.seller.opportunity.analytics.OpportunityTrackingEventLabel;
 import com.tokopedia.seller.opportunity.fragment.OpportunityTncFragment;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityItemViewModel;
 
-/**
- * Created by nakama on 07/12/17.
- */
-
 public class OpportunityTncActivity extends BaseSimpleActivity implements OpportunityTncFragment.OnOpportunityFragmentListener{
 
     public static final String OPPORTUNITY_EXTRA_PARAM = "param_opp";

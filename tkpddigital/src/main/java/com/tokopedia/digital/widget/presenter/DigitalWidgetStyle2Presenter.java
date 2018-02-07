@@ -83,8 +83,8 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
         attributes.setClientNumber(orderClientNumber.getClientNumber());
         attributes.setCategoryId(Integer.valueOf(orderClientNumber.getCategoryId()));
         attributes.setOperatorId(Integer.valueOf(orderClientNumber.getOperatorId()));
-        if (!TextUtils.isEmpty(orderClientNumber.getLastProduct())) {
-            attributes.setProductId(Integer.valueOf(orderClientNumber.getLastProduct()));
+        if (!TextUtils.isEmpty(orderClientNumber.getProductId())) {
+            attributes.setProductId(Integer.valueOf(orderClientNumber.getProductId()));
         }
         lastOrder.setAttributes(attributes);
         return lastOrder;

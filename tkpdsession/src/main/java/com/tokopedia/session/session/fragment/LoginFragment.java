@@ -58,19 +58,19 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customView.LoginTextView;
-import com.tokopedia.core.customView.PasswordView;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.core.session.model.LoginViewModel;
 import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.session.activation.view.activity.ActivationActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.google.GoogleSignInActivity;
+import com.tokopedia.session.login.loginphonenumber.view.activity.LoginPhoneNumberActivity;
 import com.tokopedia.session.register.view.activity.SmartLockActivity;
-import com.tokopedia.session.session.google.GoogleActivity;
 import com.tokopedia.session.session.model.LoginModel;
 import com.tokopedia.session.session.presenter.Login;
 import com.tokopedia.session.session.presenter.LoginImpl;
@@ -105,6 +105,7 @@ public class
 LoginFragment extends Fragment implements LoginView {
 
     private static final String REGISTER = "Daftar";
+    private static final int REQUEST_PHONE_NUMBER = 101;
 
     // demo only
     int anTestInt = 0;
@@ -589,6 +590,16 @@ LoginFragment extends Fragment implements LoginView {
         }
     }
 
+    private LoginProviderModel.ProvidersBean getLoginPhoneNumberBean() {
+        LoginProviderModel.ProvidersBean phoneNumberBean = new LoginProviderModel.ProvidersBean();
+        phoneNumberBean.setColor("#FFFFFF");
+        phoneNumberBean.setName(getString(com.tokopedia.session.R.string.phone_number));
+        phoneNumberBean.setId("tokocash");
+        phoneNumberBean.setImage("");
+        phoneNumberBean.setImageResource(com.tokopedia.session.R.drawable.ic_phone);
+        return phoneNumberBean;
+    }
+
     @Override
     public void showProvider(List<LoginProviderModel.ProvidersBean> data) {
         accountSignIn.setEnabled(true);
@@ -596,7 +607,8 @@ LoginFragment extends Fragment implements LoginView {
         listProvider = data;
         if (listProvider != null && checkHasNoProvider()) {
             login.saveProvider(listProvider);
-
+            if (!GlobalConfig.isSellerApp())
+                listProvider.add(2, getLoginPhoneNumberBean());
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
@@ -612,7 +624,11 @@ LoginFragment extends Fragment implements LoginView {
                 }
                 LoginTextView tv = new LoginTextView(getActivity(), colorInt);
                 tv.setTextLogin(listProvider.get(i).getName());
-                tv.setImage(listProvider.get(i).getImage());
+                if (!TextUtils.isEmpty(listProvider.get(i).getImage())) {
+                    tv.setImage(listProvider.get(i).getImage());
+                } else if (listProvider.get(i).getImageResource() != 0) {
+                    tv.setImageResource(listProvider.get(i).getImageResource());
+                }
                 tv.setRoundCorner(10);
                 if (listProvider.get(i).getId().equalsIgnoreCase("facebook")) {
                     tv.setOnClickListener(new View.OnClickListener() {
@@ -628,6 +644,16 @@ LoginFragment extends Fragment implements LoginView {
                         public void onClick(View v) {
                             UnifyTracking.eventCTAAction(AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS);
                             LoginFragmentPermissionsDispatcher.onGooglePlusClickedWithCheck(LoginFragment.this);
+                        }
+                    });
+                } else if (listProvider.get(i).getId().equalsIgnoreCase("tokocash")) {
+                    final int finalI = i;
+
+                    tv.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            UnifyTracking.eventCTAAction(listProvider.get(finalI).getName());
+                            goToLoginWithPhoneNumber();
                         }
                     });
                 } else {
@@ -646,6 +672,11 @@ LoginFragment extends Fragment implements LoginView {
                 }
             }
         }
+    }
+
+    private void goToLoginWithPhoneNumber() {
+        Intent intent = LoginPhoneNumberActivity.getCallingIntent(getActivity());
+        startActivityForResult(intent, REQUEST_PHONE_NUMBER);
     }
 
     @NeedsPermission(Manifest.permission.GET_ACCOUNTS)
@@ -832,6 +863,12 @@ LoginFragment extends Fragment implements LoginView {
                         showProgress(false);
                     }
                     break;
+                case REQUEST_PHONE_NUMBER: {
+                    if (resultCode == Activity.RESULT_OK) {
+                        destroyActivity();
+                    }
+                    break;
+                }
                 default:
                     break;
             }

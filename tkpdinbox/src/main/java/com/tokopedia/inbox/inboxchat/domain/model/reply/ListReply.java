@@ -45,6 +45,9 @@ public class ListReply {
     @SerializedName("attachment_id")
     @Expose
     private int attachmentId;
+    @SerializedName("attachment")
+    @Expose
+    private Attachment attachment;
     @SerializedName("old_msg_id")
     @Expose
     private int oldMsgId;
@@ -190,5 +193,13 @@ public class ListReply {
 
     public void setOldMessageTitle(String oldMessageTitle) {
         this.oldMessageTitle = oldMessageTitle;
+    }
+
+    public Attachment getAttachment() {
+        return attachment;
+    }
+
+    public void setAttachment(Attachment attachment) {
+        this.attachment = attachment;
     }
 }

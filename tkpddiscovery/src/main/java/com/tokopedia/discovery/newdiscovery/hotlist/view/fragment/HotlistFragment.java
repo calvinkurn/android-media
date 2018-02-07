@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +19,13 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -78,6 +80,7 @@ public class HotlistFragment extends SearchSectionFragment
         ItemClickListener, TopAdsListener, TopAdsItemClickListener {
 
     private static final String EXTRA_URL = "extra_url";
+    private static final String EXTRA_SEARCH_QUERY = "extra_search_query";
     private static final String EXTRA_ALIAS = "extra_alias";
     private static final String EXTRA_QUERY_HOTLIST = "EXTRA_QUERY_HOTLIST";
     private static final String EXTRA_DISABLE_TOPADS = "EXTRA_DISABLE_TOPADS";
@@ -111,9 +114,10 @@ public class HotlistFragment extends SearchSectionFragment
         return fragment;
     }
 
-    public static Fragment createInstanceUsingURL(String url) {
+    public static Fragment createInstanceUsingURL(String url, String searchQuery) {
         Bundle args = new Bundle();
         args.putString(EXTRA_URL, url);
+        args.putString(EXTRA_SEARCH_QUERY, searchQuery);
         HotlistFragment fragment = new HotlistFragment();
         fragment.setArguments(args);
         return fragment;
@@ -333,7 +337,8 @@ public class HotlistFragment extends SearchSectionFragment
     }
 
     protected void setupAdapter() {
-        HotlistTypeFactory typeFactory = new HotlistAdapterTypeFactory(this);
+        String searchQuery = getArguments().getString(EXTRA_SEARCH_QUERY, "");
+        HotlistTypeFactory typeFactory = new HotlistAdapterTypeFactory(this, searchQuery);
         hotlistAdapter = new HotlistAdapter(this, typeFactory);
 
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), hotlistAdapter);
@@ -586,6 +591,13 @@ public class HotlistFragment extends SearchSectionFragment
         gotoProductDetail(mappingIntoProductItem(product), adapterPosition);
     }
 
+    @Override
+    public void onBannerAdsClicked(String appLink) {
+        if (!TextUtils.isEmpty(appLink)) {
+            ((TkpdCoreRouter) getActivity().getApplication()).actionApplink(getActivity(), appLink);
+        }
+    }
+
     private ProductItem mappingIntoProductItem(HotlistProductViewModel product) {
         ProductItem data = new ProductItem();
         data.setId(product.getProductID());
@@ -635,7 +647,7 @@ public class HotlistFragment extends SearchSectionFragment
         Bundle extras = new Bundle();
         extras.putInt(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
         extras.putString("product_id", productID);
-        Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
+        Intent intent = OldSessionRouter.getLoginActivityIntent(getActivity());
         intent.putExtras(extras);
         startActivity(intent);
     }

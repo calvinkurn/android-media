@@ -43,6 +43,7 @@ import com.tokopedia.digital.product.model.Operator;
 import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.ProductDigitalData;
 import com.tokopedia.digital.product.model.PulsaBalance;
+import com.tokopedia.digital.product.model.Validation;
 import com.tokopedia.digital.product.service.USSDAccessibilityService;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.ServerErrorHandlerUtil;
@@ -66,6 +67,7 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
     private static final String PULSA_CATEGORY_ID = "1";
     private static final String PAKET_DATA_CATEGORY_ID = "2";
     private static final String ROAMING_CATEGORY_ID = "20";
+    private static final int MAX_SIM_COUNT = 2;
 
     private IProductDigitalView view;
     private IProductDigitalInteractor productDigitalInteractor;
@@ -96,7 +98,19 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
     private boolean ussdTimeOut = false;
 
     private final String PARAM_IS_RESELLER = "is_reseller";
+    private final String PARAM_VALUE_IS_RESELLER = "1";
+
+    private final String PARAM_CATEGORY_ID = "category_id";
+    private final String PARAM_OPERATOR_ID = "operator_id";
+    private final String PARAM_CLIENT_NUMBER = "client_number";
+    private final String PARAM_PRODUCT_ID = "product_id";
+
+    private final String PARAM_SORT = "sort";
+    private final String PARAM_VALUE_SORT = "label";
+
     private final static String balance = "balance";
+
+    private CategoryData categoryData;
 
     public ProductDigitalPresenter(IProductDigitalView view,
                                    IProductDigitalInteractor productDigitalInteractor) {
@@ -106,25 +120,34 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
     }
 
     @Override
-    public void processGetCategoryAndBannerData() {
-        String categoryId = view.getCategoryId();
-
+    public void processGetCategoryAndBannerData(
+            String categoryId, String operatorId, String productId, String clientNumber
+    ) {
         TKPDMapParam<String, String> paramQueryCategory = new TKPDMapParam<>();
         if (GlobalConfig.isSellerApp()) {
-            paramQueryCategory.put(PARAM_IS_RESELLER, "1");
+            paramQueryCategory.put(PARAM_IS_RESELLER, PARAM_VALUE_IS_RESELLER);
         }
 
         TKPDMapParam<String, String> paramQueryBanner = new TKPDMapParam<>();
-        paramQueryBanner.put("category_id", categoryId);
+        paramQueryBanner.put(PARAM_CATEGORY_ID, categoryId);
 
         TKPDMapParam<String, String> paramQueryNumberList = new TKPDMapParam<>();
-        paramQueryNumberList.put("category_id", categoryId);
-        paramQueryNumberList.put("sort", "label");
+        paramQueryNumberList.put(PARAM_CATEGORY_ID, categoryId);
+        if (!TextUtils.isEmpty(operatorId)) {
+            paramQueryNumberList.put(PARAM_OPERATOR_ID, operatorId);
+        }
+        if (!TextUtils.isEmpty(productId)) {
+            paramQueryNumberList.put(PARAM_PRODUCT_ID, productId);
+        }
+        if (!TextUtils.isEmpty(clientNumber)) {
+            paramQueryNumberList.put(PARAM_CLIENT_NUMBER, clientNumber);
+        }
+        paramQueryNumberList.put(PARAM_SORT, PARAM_VALUE_SORT);
 
         view.showInitialProgressLoading();
 
         productDigitalInteractor.getCategoryAndBanner(
-                view.getCategoryId(),
+                categoryId,
                 view.getGeneratedAuthParamNetwork(paramQueryCategory),
                 view.getGeneratedAuthParamNetwork(paramQueryBanner),
                 view.getGeneratedAuthParamNetwork(paramQueryNumberList),
@@ -320,12 +343,16 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
                 HistoryClientNumber historyClientNumber =
                         productDigitalData.getHistoryClientNumber();
                 if (historyClientNumber.getLastOrderClientNumber() == null) {
+                    String lastSelectedOperatorId = getLastOperatorSelected(categoryData.getCategoryId());
+                    String lastSelectedProductId = getLastProductSelected(categoryData.getCategoryId());
                     String lastTypedClientNumber = getLastClientNumberTyped(categoryData.getCategoryId());
                     String verifiedNumber = SessionHandler.getPhoneNumber();
                     if (!TextUtils.isEmpty(lastTypedClientNumber)) {
                         historyClientNumber.setLastOrderClientNumber(
                                 new OrderClientNumber.Builder()
                                         .clientNumber(lastTypedClientNumber)
+                                        .operatorId(lastSelectedOperatorId)
+                                        .productId(lastSelectedProductId)
                                         .build());
                     } else if (isPulsaOrPaketDataOrRoaming(categoryData.getCategoryId()) &
                             !TextUtils.isEmpty(verifiedNumber)) {
@@ -351,6 +378,8 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
                                                    List<BannerData> bannerDataList,
                                                    List<BannerData> otherBannerDataList,
                                                    HistoryClientNumber historyClientNumber) {
+        this.categoryData = categoryData;
+
         if (categoryData.isSupportedStyle()) {
             switch (categoryData.getOperatorStyle()) {
                 case CategoryData.STYLE_PRODUCT_CATEGORY_1:
@@ -390,16 +419,7 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
             );
         }
 
-        if (!GlobalConfig.isSellerApp()
-                && categoryData.getSlug().equalsIgnoreCase(CategoryData.SLUG_PRODUCT_CATEGORY_PULSA)
-                && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                && view.isUserLoggedIn()) {
-            renderCheckPulsaBalanceDataToView();
-        }
-    }
-
-    private void renderCheckPulsaBalanceDataToView() {
-        view.renderCheckPulsaBalanceData();
+        renderCheckPulsa();
     }
 
     @Override
@@ -410,6 +430,7 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
                 dailUssdToCheckBalance(simSlot, ussdCode);
             } else {
                 view.showMessageAlert(view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed), view.getActivity().getString(R.string.message_ussd_title));
+                renderCheckPulsa();
             }
         } else {
             view.showAccessibilityAlertDialog();
@@ -554,9 +575,11 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
         List<Operator> selectedOperatorList = new ArrayList<>();
         String simOperatorName = DeviceUtil.getOperatorName(view.getActivity(), selectedSim);
         CategoryData categoryData = view.getCategoryDataState();
-        for (Operator operator : categoryData.getOperatorList()) {
-            if (DeviceUtil.verifyUssdOperator(simOperatorName, operator.getName())) {
-                selectedOperatorList.add(operator);
+        if(categoryData !=null && categoryData.getOperatorList() != null) {
+            for (Operator operator : categoryData.getOperatorList()) {
+                if (DeviceUtil.verifyUssdOperator(simOperatorName, operator.getName())) {
+                    selectedOperatorList.add(operator);
+                }
             }
         }
         return selectedOperatorList;
@@ -643,6 +666,84 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
             localCacheHandler.putString(TkpdCache.Key.KEY_USSD_SIM2, number);
         }
         localCacheHandler.applyEditor();
+    }
+
+    @Override
+    public boolean isCarrierSignalsNotAvailable(String carrierName) {
+        final String noSignalStr = view.getActivity().getString(R.string.label_no_signal);
+        final String noServiceStr = view.getActivity().getString(R.string.label_no_service);
+        if (carrierName == null) {
+            return false;
+        }
+        carrierName = carrierName.toLowerCase();
+        return (carrierName.contains(noServiceStr.toLowerCase()) || carrierName.contains(noSignalStr.toLowerCase()));
+
+    }
+
+    @Override
+    public void renderCheckPulsa() {
+        if (!GlobalConfig.isSellerApp()
+                && categoryData != null
+                && categoryData.getSlug().equalsIgnoreCase(CategoryData.SLUG_PRODUCT_CATEGORY_PULSA)
+                && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && view.isUserLoggedIn()) {
+            view.removeCheckPulsaCards();
+            CategoryData categoryDataState = view.getCategoryDataState();
+
+            if (isOperatorListAvailable(categoryDataState)) {
+                if (RequestPermissionUtil.checkHasPermission(view.getActivity(), Manifest.permission.READ_PHONE_STATE)) {
+                    List<Validation> validationList = categoryDataState.getClientNumberList().get(0).getValidation();
+                    boolean isCheckUssdButtonActive = true;
+
+                    for (int i = 0; i < MAX_SIM_COUNT; i++) {
+                        String carrierName = DeviceUtil.getOperatorName(view.getActivity(), i);
+                        Operator operator = getSelectedUssdOperator(i);
+                        String ussdCode = operator.getUssdCode();
+                        if (carrierName != null) {
+
+                            if (ussdCode == null || "".equalsIgnoreCase(ussdCode.trim())) {
+
+                                //show the card if signal is not available with error message
+                                if (isCarrierSignalsNotAvailable(carrierName)) {
+                                    String operatorErrorMsg = view.getActivity().getString(R.string.label_no_signal);
+                                    carrierName = operatorErrorMsg;
+                                    view.renderCheckPulsaBalanceData(i, ussdCode, getPhoneNumberForSim(i, operator, validationList), operatorErrorMsg, true, carrierName);
+                                    isCheckUssdButtonActive = true;
+                                } else {
+                                    //if check button was not active for previous sim, then do not show another card for inactive case
+                                    if (isCheckUssdButtonActive || i != (MAX_SIM_COUNT - 1)) {
+                                        view.renderCheckPulsaBalanceData(i, ussdCode, getPhoneNumberForSim(i, operator, validationList), view.getActivity().getString(R.string.label_operator_not_support), false, carrierName);
+                                        isCheckUssdButtonActive = false;
+                                    }
+                                }
+                            } else {
+                                view.renderCheckPulsaBalanceData(i, ussdCode, getPhoneNumberForSim(i, operator, validationList), null, true, carrierName);
+                            }
+                        }
+                    }
+                } else {
+                    view.renderCheckPulsaBalanceData(0, "", "", null, true, null);
+                }
+            }
+        }
+    }
+
+    private String getPhoneNumberForSim(int simIndex, Operator operator, List<Validation> validationList){
+        String phoneNumber = getUssdPhoneNumberFromCache(simIndex);
+        if (!DeviceUtil.validateNumberAndMatchOperator(validationList, operator, phoneNumber)) {
+            phoneNumber = getDeviceMobileNumber(simIndex);
+            if (!DeviceUtil.validateNumberAndMatchOperator(validationList, operator, phoneNumber)) {
+                phoneNumber = "";
+            }
+        }
+        return phoneNumber;
+    }
+
+    private boolean isOperatorListAvailable(CategoryData categoryDataState){
+
+        return (categoryDataState != null &&
+                categoryDataState.getOperatorList() != null &&
+                categoryDataState.getOperatorList().size() != 0);
     }
 }
 

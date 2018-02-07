@@ -19,7 +19,7 @@ public interface BaseDiscoveryContract {
 
         void setRequestOfficialStoreBanner(boolean requestOfficialStoreBanner);
 
-        void onHandleResponseHotlist(String url);
+        void onHandleResponseHotlist(String url, String query);
 
         void onHandleResponseSearch(ProductViewModel productViewModel);
 

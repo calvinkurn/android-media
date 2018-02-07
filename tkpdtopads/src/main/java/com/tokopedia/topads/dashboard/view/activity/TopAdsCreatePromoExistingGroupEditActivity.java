@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewProductListExistingGroupEditFragment;
 
@@ -15,7 +17,7 @@ import java.util.List;
  * Created by zulfikarrahman on 8/29/17.
  */
 
-public class TopAdsCreatePromoExistingGroupEditActivity extends TopAdsCreatePromoExistingGroupActivity {
+public class TopAdsCreatePromoExistingGroupEditActivity extends TopAdsCreatePromoExistingGroupActivity implements HasComponent<AppComponent> {
 
     @NonNull
     @Override
@@ -34,5 +36,11 @@ public class TopAdsCreatePromoExistingGroupEditActivity extends TopAdsCreateProm
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, groupId);
         intent.putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, itemIdToAdd);
         return intent;
+    }
+
+
+    @Override
+    public AppComponent getComponent() {
+        return getApplicationComponent();
     }
 }

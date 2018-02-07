@@ -15,6 +15,7 @@ import butterknife.Unbinder;
  * @author rizkyfadillah on 10/16/2017.
  */
 
+@Deprecated
 public abstract class BasePresenterFragmentV4<P> extends Fragment {
 
     private static final String TAG = BasePresenterFragment.class.getSimpleName();

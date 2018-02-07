@@ -3,6 +3,7 @@ package com.tokopedia.core.base.di.component;
 /**
  * @author kulomady on 1/9/17.
  */
-public interface HasComponent<C> {
+@Deprecated
+public interface HasComponent<C> extends com.tokopedia.abstraction.common.di.component.HasComponent<C> {
     C getComponent();
 }

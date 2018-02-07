@@ -46,7 +46,7 @@ public class GetOrderService extends IntentService implements GetNewOrderView {
 
 
     public void getNewOrder() {
-        if(SessionHandler.isV4Login(this) && SessionHandler.isUserSeller(this)) {
+        if(SessionHandler.isV4Login(this) && SessionHandler.isUserHasShop(this)) {
             presenter.getNewOrderAndCount();
         }else{
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);

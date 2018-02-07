@@ -55,6 +55,10 @@
     <string name="empty_shop_wording_subtitle">Nikmati transaksi yang mudah, aman, dan menguntungkan</string>
     <string name="manage_shop_wording_subtitle">Kelola pengaturan toko Anda untuk meningkatkan penjualan</string>
     <string name="empty_shop_wording_title">Buka toko sekarang, banyak lebihnya!</string>
+    <string name="top_up_button">Top Up</string>
     <string name="open_shop_wording_title">Atur Toko, Raih Keuntungan!</string>
 
+    <string name="promo_title_terms">Syarat &amp; Ketentuan</string>
+
+    <string name="title_scan_qr">Scan Kode QR</string>
 </resources>

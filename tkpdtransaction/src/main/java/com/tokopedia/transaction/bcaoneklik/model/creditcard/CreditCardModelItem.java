@@ -1,10 +1,15 @@
 package com.tokopedia.transaction.bcaoneklik.model.creditcard;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
 /**
  * Created by kris on 8/23/17. Tokopedia
  */
 
-public class CreditCardModelItem {
+public class CreditCardModelItem implements Parcelable {
 
     private String tokenId;
 
@@ -85,4 +90,48 @@ public class CreditCardModelItem {
     public void setCardTypeImage(String cardTypeImage) {
         this.cardTypeImage = cardTypeImage;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.tokenId);
+        dest.writeString(this.maskedNumber);
+        dest.writeString(this.expiryMonth);
+        dest.writeString(this.expiryYear);
+        dest.writeString(this.cardType);
+        dest.writeString(this.bank);
+        dest.writeString(this.image);
+        dest.writeString(this.cardTypeImage);
+    }
+
+    public CreditCardModelItem() {
+    }
+
+    protected CreditCardModelItem(Parcel in) {
+        this.tokenId = in.readString();
+        this.maskedNumber = in.readString();
+        this.expiryMonth = in.readString();
+        this.expiryYear = in.readString();
+        this.cardType = in.readString();
+        this.bank = in.readString();
+        this.image = in.readString();
+        this.cardTypeImage = in.readString();
+    }
+
+    public static final Creator<CreditCardModelItem> CREATOR = new Creator<CreditCardModelItem>() {
+        @Override
+        public CreditCardModelItem createFromParcel(Parcel source) {
+            return new CreditCardModelItem(source);
+        }
+
+        @Override
+        public CreditCardModelItem[] newArray(int size) {
+            return new CreditCardModelItem[size];
+        }
+    };
 }

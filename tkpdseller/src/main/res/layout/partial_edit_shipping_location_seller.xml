@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout
+        android:id="@+id/seller_city_text_input_layout"
+        style="@style/HintTextInputLayout"
+        android:hint="@string/title_city"
+        android:layout_marginTop="@dimen/padding_small"
+        >
+        <EditText
+            android:id="@+id/seller_text_edit_shipping_city"
+            style="@style/EditText.ShopSetting"
+            android:maxLength="@integer/open_shop_max_desc_char"
+            android:hint="@string/shop_open_hint_origin_destination"
+            android:clickable="true"
+            android:focusable="false"
+            />
+    </com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout>
+
+    <com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout
+        android:id="@+id/seller_text_input_layout_postal_code"
+        style="@style/HintTextInputLayout"
+        android:hint="@string/title_post_code"
+        android:layout_below="@id/seller_city_text_input_layout"
+        android:layout_marginTop="@dimen/padding_small">
+
+        <AutoCompleteTextView
+            android:id="@+id/seller_postal_code"
+            style="@style/EditText.ShopSetting"
+            android:completionThreshold="3"
+            android:hint="@string/hint_post_code"
+            android:digits="1234567890"
+            android:inputType="phone"
+            android:maxLength="5" />
+
+    </com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout>
+
+</RelativeLayout>

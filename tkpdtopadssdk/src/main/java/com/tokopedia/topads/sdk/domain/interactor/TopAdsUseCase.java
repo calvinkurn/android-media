@@ -104,6 +104,7 @@ public class TopAdsUseCase extends UseCase<TopAdsParams, AdsView> {
             @Override
             protected void onCancelled() {
                 super.onCancelled();
+                execute = false;
             }
         };
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {

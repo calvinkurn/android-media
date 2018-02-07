@@ -32,8 +32,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.FacebookContainer;
 import com.tokopedia.session.R;
 import com.tokopedia.session.register.view.fragment.RegisterInitialFragment;
-import com.tokopedia.session.session.interactor.LoginInteractor;
-import com.tokopedia.session.session.interactor.LoginInteractorImpl;
+import com.tokopedia.session.session.interactor.RegisterInteractor;
+import com.tokopedia.session.session.interactor.RegisterInteractorImpl;
 import com.tokopedia.session.session.model.LoginModel;
 
 import org.json.JSONObject;
@@ -54,16 +54,16 @@ public class RegisterInitialPresenterImpl extends RegisterInitialPresenter {
     RegisterInitialView view;
     LocalCacheHandler loginUuid;
     LocalCacheHandler providerListCache;
-    String PROVIDER_CACHE_KEY = "provider_cache";
+    String PROVIDER_CACHE_KEY = "provider_cache_register";
     String messageTAG = "Register Init";
-    LoginInteractor interactor;
+    RegisterInteractor interactor;
     String UUID_KEY = "uuid";
     String DEFAULT_UUID_VALUE = "";
 
     public RegisterInitialPresenterImpl(RegisterInitialFragment view) {
         super(view);
         this.view = view;
-        interactor = LoginInteractorImpl.createInstance(this);
+        interactor = RegisterInteractorImpl.createInstance();
         loginUuid = new LocalCacheHandler(view.getActivity(), LOGIN_UUID_KEY);
         providerListCache = new LocalCacheHandler(view.getActivity(), PROVIDER_LIST);
     }
@@ -236,7 +236,7 @@ public class RegisterInitialPresenterImpl extends RegisterInitialPresenter {
 
     @Override
     public void downloadProviderLogin(Context context) {
-        interactor.downloadProvider(context, new LoginInteractor.DiscoverLoginListener() {
+        interactor.downloadProvider(context, new RegisterInteractor.DiscoverLoginListener() {
             @Override
             public void onSuccess(LoginProviderModel result) {
                 view.removeProgressBar();

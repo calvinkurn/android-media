@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -21,20 +22,27 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
 import com.tokopedia.inbox.inboxchat.InboxChatConstant;
 import com.tokopedia.inbox.inboxchat.WebSocketInterface;
+import com.tokopedia.inbox.inboxchat.activity.ChatMarketingThumbnailActivity;
 import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
+import com.tokopedia.inbox.inboxchat.activity.SendMessageActivity;
+import com.tokopedia.inbox.inboxchat.activity.TemplateChatActivity;
 import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomAdapter;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;
@@ -43,8 +51,8 @@ import com.tokopedia.inbox.inboxchat.adapter.TemplateChatAdapter;
 import com.tokopedia.inbox.inboxchat.adapter.TemplateChatTypeFactory;
 import com.tokopedia.inbox.inboxchat.adapter.TemplateChatTypeFactoryImpl;
 import com.tokopedia.inbox.inboxchat.analytics.TopChatTrackingEventLabel;
-import com.tokopedia.inbox.inboxchat.data.factory.TemplateChatFactory;
 import com.tokopedia.inbox.inboxchat.di.DaggerInboxChatComponent;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
@@ -58,6 +66,7 @@ import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 
 import org.json.JSONException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -68,6 +77,7 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 
 import static com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity.PARAM_SENDER_ROLE;
+import static com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity.PARAM_WEBSOCKET;
 
 /**
  * Created by stevenfredian on 9/19/17.
@@ -77,12 +87,14 @@ public class ChatRoomFragment extends BaseDaggerFragment
         implements ChatRoomContract.View, InboxMessageConstant, InboxChatConstant
         , WebSocketInterface {
 
+    private static final String ENABLE_TOPCHAT = "topchat_template";
     @Inject
     ChatRoomPresenter presenter;
 
     @Inject
     SessionHandler sessionHandler;
 
+    public static final String FILELOC = "fileloc";
     private RecyclerView recyclerView;
     private RecyclerView templateRecyclerView;
     private ProgressBar progressBar;
@@ -109,6 +121,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private int mode;
     private View notifier;
     private LinearLayoutManager templateLayoutManager;
+
+    private RemoteConfig remoteConfig;
 
     public static ChatRoomFragment createInstance(Bundle extras) {
         ChatRoomFragment fragment = new ChatRoomFragment();
@@ -138,47 +152,82 @@ public class ChatRoomFragment extends BaseDaggerFragment
         recyclerView.setHasFixedSize(true);
         templateRecyclerView.setHasFixedSize(true);
         presenter.attachView(this);
+        prepareView();
         initListener();
+        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         return rootView;
+    }
+
+    private void prepareView() {
+        if (getArguments().getBoolean(SendMessageActivity.IS_HAS_ATTACH_BUTTON)) {
+            attachButton.setVisibility(View.VISIBLE);
+        } else {
+            attachButton.setVisibility(View.GONE);
+        }
+
+        if (!TextUtils.isEmpty(getArguments().getString(SendMessageActivity.PARAM_CUSTOM_MESSAGE,
+                ""))) {
+            String customMessage = "\n" + getArguments().getString(SendMessageActivity
+                    .PARAM_CUSTOM_MESSAGE, "");
+            replyColumn.setText(customMessage);
+        }
+    }
+
+    public boolean isAllowedTemplate(){
+        return (remoteConfig.getBoolean(ENABLE_TOPCHAT));
     }
 
 
     private void initListener() {
 
-        sendButton.setOnClickListener(getSendWithWebSocketListener());
-
-        replyIsTyping = replyWatcher.map(new Func1<String, Boolean>() {
-            @Override
-            public Boolean call(String s) {
-                return s.length() > 0;
-            }
-        });
-
-        replyIsTyping.subscribe(new Action1<Boolean>() {
-            @Override
-            public void call(Boolean aBoolean) {
-                try {
-                    if (aBoolean)
-                        presenter.setIsTyping(getArguments().getString(ChatRoomActivity
-                                .PARAM_MESSAGE_ID));
-                } catch (JSONException e) {
-                    e.printStackTrace();
+        if (needCreateWebSocket()) {
+            sendButton.setOnClickListener(getSendWithWebSocketListener());
+            replyIsTyping = replyWatcher.map(new Func1<String, Boolean>() {
+                @Override
+                public Boolean call(String s) {
+                    return s.length() > 0;
                 }
-            }
-        });
+            });
 
-        replyIsTyping.debounce(2, TimeUnit.SECONDS)
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        try {
-                            presenter.stopTyping(getArguments().getString(ChatRoomActivity
+            replyIsTyping.subscribe(new Action1<Boolean>() {
+                @Override
+                public void call(Boolean aBoolean) {
+                    try {
+                        if (aBoolean)
+                            presenter.setIsTyping(getArguments().getString(ChatRoomActivity
                                     .PARAM_MESSAGE_ID));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                });
+                }
+            });
+
+            replyIsTyping.debounce(2, TimeUnit.SECONDS)
+                    .subscribe(new Action1<Boolean>() {
+                        @Override
+                        public void call(Boolean aBoolean) {
+                            try {
+                                presenter.stopTyping(getArguments().getString(ChatRoomActivity
+                                        .PARAM_MESSAGE_ID));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+        } else {
+            sendButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    UnifyTracking.eventSendMessagePage();
+                    presenter.initMessage(replyColumn.getText().toString(),
+                            getArguments().getString(ChatRoomActivity.PARAM_SOURCE),
+                            getArguments().getString(ChatRoomActivity.PARAM_SENDER_ID),
+                            getArguments().getString(ChatRoomActivity.PARAM_USER_ID));
+                }
+            });
+
+        }
+
 
         attachButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -207,13 +256,75 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void addTemplateString(String message) {
-        UnifyTracking.eventClickTemplate(TopChatTrackingEventLabel.Category.INBOX_CHAT,
+        String labelCategory = TopChatTrackingEventLabel.Category.INBOX_CHAT;
+        if (!getArguments().getBoolean(PARAM_WEBSOCKET)) {
+            if (getArguments().getString(PARAM_SENDER_TAG).equals(ChatRoomActivity.ROLE_SELLER)) {
+                labelCategory = TopChatTrackingEventLabel.Category.SHOP_PAGE;
+            }
+            if (getArguments().getString(SendMessageActivity.PARAM_CUSTOM_MESSAGE,"").length()>0){
+                labelCategory = TopChatTrackingEventLabel.Category.PRODUCT_PAGE;
+            }
+        }
+
+        UnifyTracking.eventClickTemplate(labelCategory,
                 TopChatTrackingEventLabel.Action.TEMPLATE_CHAT_CLICK,
                 TopChatTrackingEventLabel.Name.INBOX_CHAT);
-        replyColumn.setText(String.format("%s %s", replyColumn.getText(), message));
-        replyColumn.setSelection(replyColumn.getText().length());
+        String text =  replyColumn.getText().toString();
+        int index = replyColumn.getSelectionStart();
+        replyColumn.setText(String.format("%s %s %s", text.substring(0,index) , message, text.substring(index)));
+        replyColumn.setSelection(message.length() + text.substring(0,index).length() +1);
     }
 
+    @Override
+    public void goToSettingTemplate() {
+        Intent intent = TemplateChatActivity.createInstance(getActivity());
+        startActivityForResult(intent, 100);
+        getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
+    }
+
+    @Override
+    public void onGoToGallery(Attachment attachment) {
+
+        ArrayList<String> strings = new ArrayList<>();
+        strings.add(attachment.getAttributes().getImageUrl());
+
+        ((PdpRouter) getActivity().getApplication()).openImagePreview(getActivity(), strings, new ArrayList<String>(), 1);
+    }
+
+    @Override
+    public void onGoToWebView(String url, String id) {
+        UnifyTracking.eventClickThumbnailMarketing(TopChatTrackingEventLabel.Category.INBOX_CHAT,
+                TopChatTrackingEventLabel.Action.CLICK_THUMBNAIL,
+                TopChatTrackingEventLabel.Name.INBOX_CHAT,
+                id
+                );
+        KeyboardHandler.DropKeyboard(getActivity(), getView());
+        startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(), url));
+    }
+
+    @Override
+    public boolean needCreateWebSocket() {
+        return getArguments().getBoolean(PARAM_WEBSOCKET);
+    }
+
+    @Override
+    public void hideNotifier() {
+        notifier.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onSuccessInitMessage() {
+        CommonUtils.UniversalToast(getActivity(), getString(R.string.success_send_msg));
+        getActivity().finish();
+    }
+
+
+    @Override
+    public void onErrorInitMessage(String s) {
+        adapter.removeLast();
+        NetworkErrorHelper.showSnackbar(getActivity(), s);
+        sendButton.setEnabled(true);
+    }
 
     private void initVar() {
         typeFactory = new ChatRoomTypeFactoryImpl(this);
@@ -232,7 +343,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
         templateAdapter = new TemplateChatAdapter(templateChatFactory);
 
-        presenter.getReply(mode);
+        if(needCreateWebSocket()) {
+            presenter.getReply(mode);
+        }else {
+            progressBar.setVisibility(View.GONE);
+        }
 
         adapter.notifyDataSetChanged();
         templateAdapter.notifyDataSetChanged();
@@ -254,6 +369,14 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 if (adapter.checkLoadMore(index)) {
                     presenter.onLoadMore();
                 }
+            }
+        });
+
+        recyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                KeyboardHandler.hideSoftKeyboard(getActivity());
+                return false;
             }
         });
 
@@ -405,7 +528,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void scrollToBottom() {
-        layoutManager.scrollToPosition(adapter.getList().size() - 1);
+        recyclerView.scrollToPosition(adapter.getItemCount());
     }
 
     @Override
@@ -459,7 +582,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
         adapter.addReply(item);
         finishLoading();
         replyColumn.setText("");
-        scrollToBottom();
 
         setResult();
     }
@@ -485,9 +607,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void setTemplate(List<Visitable> listTemplate) {
-        if(listTemplate == null){
+        if (listTemplate == null) {
             templateRecyclerView.setVisibility(View.GONE);
-        }else {
+        } else {
             templateRecyclerView.setVisibility(View.VISIBLE);
             templateAdapter.setList(listTemplate);
         }
@@ -513,8 +635,26 @@ public class ChatRoomFragment extends BaseDaggerFragment
         item.setDummy(true);
         item.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
         adapter.addReply(item);
+        recyclerView.scrollToPosition(adapter.getList().size()-1);
+    }
+
+
+    @Override
+    public void addDummyInitialMessage() {
+        MyChatViewModel item = new MyChatViewModel();
+        item.setMsg(getReplyMessage());
+        item.setReplyTime(MyChatViewModel.SENDING_TEXT);
+        item.setDummy(true);
+        item.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
+        adapter.addReply(item);
         scrollToBottom();
     }
+
+    @Override
+    public void disableAction() {
+        sendButton.setEnabled(false);
+    }
+
 
     private void setResult() {
         if (adapter != null && getActivity() != null) {
@@ -538,7 +678,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     public void restackList(Bundle data) {
 
-        if (toolbar  != null) {
+        if (toolbar != null) {
             mainHeader.setVisibility(View.VISIBLE);
             avatar = toolbar.findViewById(R.id.user_avatar);
             user = toolbar.findViewById(R.id.title);
@@ -652,7 +792,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         try {
             presenter.stopTyping(getArguments().getString(ChatRoomActivity
                     .PARAM_MESSAGE_ID));
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         presenter.closeWebSocket();
@@ -680,5 +820,20 @@ public class ChatRoomFragment extends BaseDaggerFragment
                         TopChatTrackingEventLabel.Name.CHAT_DETAIL);
             }
         };
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 100:
+                if (resultCode == Activity.RESULT_OK) {
+                    ArrayList<String> strings = data.getStringArrayListExtra("string");
+                    templateAdapter.update(strings);
+                    break;
+                }
+            default:
+                break;
+        }
     }
 }

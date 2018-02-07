@@ -2,8 +2,6 @@ package com.tokopedia.core.util;
 
 import android.app.Activity;
 
-import com.tokopedia.core.BuildConfig;
-
 import net.hockeyapp.android.LoginManager;
 import net.hockeyapp.android.UpdateManager;
 
@@ -18,6 +16,7 @@ public class HockeyAppHelper {
     private static Boolean ANONYMOUS_LOGIN = false;
     private static String HOCKEYAPP_KEY = KEY_MAINAPP;
 
+    private static final String HOCKEYAPP_DOWNLOAD_URL = "https://rink.hockeyapp.net/apps/528b17702bf941a581f15e188677306b";
 
     public static void handleLogin(Activity activity) {
         if (isAllow() && !ANONYMOUS_LOGIN) {
@@ -52,5 +51,9 @@ public class HockeyAppHelper {
 
     public static void setHockeyappKey(String key) {
         HOCKEYAPP_KEY = key;
+    }
+
+    public static String getHockeyappDownloadUrl() {
+        return HOCKEYAPP_DOWNLOAD_URL;
     }
 }

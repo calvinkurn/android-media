@@ -14,6 +14,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.design.base.BaseCustomView;
@@ -33,6 +34,10 @@ public class HotlistPromoView extends BaseCustomView {
     private TextView textPeriod;
     private TextView textMinTransaction;
 
+    public interface CallbackListener {
+        void onTncButtonClick(String promoTitle, String voucherCode);
+        void onCopyButtonClick(String titlePromo, String voucherCode);
+    }
     public HotlistPromoView(@NonNull Context context) {
         super(context);
         init();
@@ -61,14 +66,21 @@ public class HotlistPromoView extends BaseCustomView {
         init(attrs);
     }
 
-    public void renderData(final HotlistPromo data) {
+    public void renderData(final HotlistPromo data, final CallbackListener listener) {
         titlePromo.setText(data.getTitle());
         textPeriod.setText(generatePromoPeriod(data.getPromoPeriod()));
         textMinTransaction.setText(generateMinTransaction(data.getMinimunTransaction()));
         widgetCopyVoucher.setTextVoucherCode(data.getVoucherCode());
+        widgetCopyVoucher.setCallbackListener(new CopyPromoVoucher.CallbackListener() {
+            @Override
+            public void onCopyButtonClick() {
+                listener.onCopyButtonClick(data.getTitle(), data.getVoucherCode());
+            }
+        });
         buttonTermCondition.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                listener.onTncButtonClick(data.getTitle(), data.getVoucherCode());
                 onTermConditionClickListener(data);
             }
         });

@@ -2,9 +2,10 @@ package com.tokopedia.tkpd.campaign.source;
 
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.tkpd.campaign.data.entity.CampaignRequestEntity;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
 import com.tokopedia.tkpd.campaign.source.api.CampaignAPI;
+
+import java.util.HashMap;
 
 import rx.Observable;
 
@@ -20,7 +21,7 @@ public class CampaignDataStore {
         this.mCampaignAPI = mCampaignAPI;
     }
 
-    public Observable<CampaignResponseEntity> getCampaign(TKPDMapParam<String, Object> param) {
+    public Observable<CampaignResponseEntity> getCampaign(HashMap<String, Object> param) {
         return this.mCampaignAPI.getCampaign(param);
     }
 

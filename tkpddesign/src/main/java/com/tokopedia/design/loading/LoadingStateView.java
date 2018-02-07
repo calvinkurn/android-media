@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +27,7 @@ public class LoadingStateView extends FrameLayout {
     public static final int VIEW_CONTENT = 3;
 
     @LayoutRes
-    public static final int DEFAULT_LOADING_LAYOUT_RES = R.layout.widget_line_chart_container_loading;
+    public static final int DEFAULT_LOADING_LAYOUT_RES = R.layout.widget_container_loading;
 
     private FrameLayout frameLayout;
 
@@ -191,7 +192,11 @@ public class LoadingStateView extends FrameLayout {
         }
         View viewTemp = LayoutInflater.from(getContext()).inflate(layoutRes, frameLayout, false);
         viewTemp.setVisibility(View.GONE);
-        addView(viewTemp);
+        ViewGroup.LayoutParams layoutParams = viewTemp.getLayoutParams();
+        if (layoutParams instanceof FrameLayout.LayoutParams) {
+            ((LayoutParams) layoutParams).gravity = Gravity.CENTER;
+        }
+        addView(viewTemp, layoutParams);
         return viewTemp;
     }
 

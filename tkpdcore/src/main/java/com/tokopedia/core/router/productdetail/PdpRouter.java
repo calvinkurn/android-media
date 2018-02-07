@@ -1,6 +1,7 @@
 package com.tokopedia.core.router.productdetail;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -37,5 +38,4 @@ public interface PdpRouter {
             imageDesc, int position);
 
     Intent getProductReputationIntent(Context context);
-
 }

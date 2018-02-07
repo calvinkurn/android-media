@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/vg_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="@dimen/activity_horizontal_margin">
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="@dimen/image_width_l"
+                android:layout_height="@dimen/image_width_l"
+                android:src="@drawable/ic_icon_openshop_box" />
+
+            <TextView
+                style="@style/TextView.TitleBig"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_med"
+                android:text="@string/shop_open_label_logistic" />
+
+            <TextView
+                style="@style/TextView.Small"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/margin_ms"
+                android:layout_marginLeft="@dimen/margin_sm"
+                android:layout_marginRight="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/margin_ms"
+                android:gravity="center"
+                android:text="@string/shop_open_description_shop_setting_logistic"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/tv_pickup_location"
+                style="@style/TextView.Micro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/margin_ms"
+                android:layout_marginLeft="@dimen/margin_sm"
+                android:layout_marginRight="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/margin_ms"
+                android:gravity="center"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:text="@string/openshop_make_sure_pickup_location"
+                android:textAlignment="center" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/image_width_xxxl">
+
+                <LinearLayout
+                    android:id="@+id/vg_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true"
+                    android:orientation="vertical">
+
+                    <com.tokopedia.seller.shop.open.view.widget.ShopOpenCourierListViewGroup
+                        android:id="@+id/vg_courier_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingBottom="@dimen/padding_vs"
+                        android:paddingTop="@dimen/padding_vs" />
+
+                    <Button
+                        android:id="@+id/continue_button"
+                        style="@style/Button.Submit.Green.Full"
+                        android:layout_marginTop="@dimen/margin_sm"
+                        android:text="@string/title_next" />
+                </LinearLayout>
+
+                <include
+                    android:id="@+id/loading"
+                    layout="@layout/widget_container_loading" />
+            </FrameLayout>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+</FrameLayout>

@@ -3,7 +3,7 @@ package com.tokopedia.core.base.presentation;
 /**
  * @author kulomady on 11/20/16.
  */
-
-public interface CustomerView {
+@Deprecated
+public interface CustomerView extends com.tokopedia.abstraction.base.view.listener.CustomerView {
 
 }

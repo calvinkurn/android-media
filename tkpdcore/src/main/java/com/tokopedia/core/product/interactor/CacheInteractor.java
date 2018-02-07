@@ -27,9 +27,9 @@ public interface CacheInteractor {
 
     void saveReportTypeToCache(String data);
 
-    void getPromoWidgetCache(String targetType, String userId, GetPromoWidgetCacheListener listener);
+    void getPromoWidgetCache(String targetType, String userId, String shopType, GetPromoWidgetCacheListener listener);
 
-    void storePromoWidget(String targetType, String userId, DataPromoWidget dataPromoWidget);
+    void storePromoWidget(String targetType, String userId, String shopType, DataPromoWidget dataPromoWidget);
 
     interface GetProductDetailCacheListener {
         void onSuccess(ProductDetailData productDetailData);

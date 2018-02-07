@@ -33,6 +33,8 @@ import java.util.Locale;
 
 public class ProductManageEditPriceDialogFragment extends DialogFragment {
 
+    public static final String IS_OFFICIAL_STORE = "isOfficialStore";
+
     public interface ListenerDialogEditPrice {
         void onSubmitEditPrice(String productId, String price, String currencyId, String currencyText);
     }
@@ -48,6 +50,7 @@ public class ProductManageEditPriceDialogFragment extends DialogFragment {
     private String productPrice;
     private int productCurrencyId;
     private boolean isGoldMerchant;
+    private boolean isOfficialStore;
     private ListenerDialogEditPrice listenerDialogEditPrice;
 
     private SpinnerCounterInputView spinnerCounterInputViewPrice;
@@ -55,12 +58,13 @@ public class ProductManageEditPriceDialogFragment extends DialogFragment {
     private TextView cancelButton;
 
     public static ProductManageEditPriceDialogFragment createInstance(final String productId, String productPrice,
-                                                                      int productCurrencyId, boolean isGoldMerchant) {
+                                                                      int productCurrencyId, boolean isGoldMerchant, boolean isOfficialStore) {
         Bundle args = new Bundle();
         args.putString(PRODUCT_ID, productId);
         args.putString(PRODUCT_PRICE, productPrice);
         args.putInt(PRODUCT_CURRENCY_ID, productCurrencyId);
         args.putBoolean(IS_GOLD_MERCHANT, isGoldMerchant);
+        args.putBoolean(IS_OFFICIAL_STORE, isOfficialStore);
         ProductManageEditPriceDialogFragment fragment = new ProductManageEditPriceDialogFragment();
         fragment.setArguments(args);
         return fragment;
@@ -77,6 +81,7 @@ public class ProductManageEditPriceDialogFragment extends DialogFragment {
         productPrice = getArguments().getString(PRODUCT_PRICE);
         productCurrencyId = getArguments().getInt(PRODUCT_CURRENCY_ID);
         isGoldMerchant = getArguments().getBoolean(IS_GOLD_MERCHANT);
+        isOfficialStore = getArguments().getBoolean(IS_OFFICIAL_STORE);
     }
 
     @Override
@@ -189,7 +194,7 @@ public class ProductManageEditPriceDialogFragment extends DialogFragment {
     private boolean isPriceValid() {
         Pair<Double, Double> minMaxPrice = ViewUtils.minMaxPrice(
                 spinnerCounterInputViewPrice.getContext(),
-                Integer.parseInt(spinnerCounterInputViewPrice.getSpinnerValue()));
+                Integer.parseInt(spinnerCounterInputViewPrice.getSpinnerValue()), isOfficialStore);
 
         NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
         if (minMaxPrice.first > getPriceValue() || getPriceValue() > minMaxPrice.second) {

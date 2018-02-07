@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/full_page_loading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_med"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/TextView.Small"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_sm"
+                android:gravity="center"
+                android:text="@string/flight_review_checkout_loading_label" />
+        </LinearLayout>
+
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/container_full_page"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/grey_200"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/padding_med"
+                    android:paddingEnd="@dimen/padding_small"
+                    android:paddingLeft="@dimen/padding_small"
+                    android:paddingRight="@dimen/padding_small"
+                    android:paddingStart="@dimen/padding_small"
+                    android:paddingTop="@dimen/padding_med">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        style="@style/TextView.Micro.BlackSecondary"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/flight_booking_finish_transaction_label" />
+
+                    <com.tokopedia.flight.booking.widget.CountdownTimeView
+                        android:id="@+id/countdown_finish_transaction"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        app:ctv_hour_title="@string/flight_label_hours"
+                        app:ctv_minute_title="@string/flight_label_minute"
+                        app:ctv_second_title="@string/flight_label_second" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/TextView.Micro"
+                        android:layout_width="match_parent"
+                        android:layout_marginLeft="@dimen/margin_small"
+                        android:layout_marginRight="@dimen/margin_small"
+                        android:layout_marginTop="@dimen/margin_med"
+                        android:background="@drawable/bg_stroke_dash_green_flight"
+                        android:padding="@dimen/padding_small"
+                        android:text="@string/flight_label_warn_to_check_again" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/padding_med">
+
+                        <TextView
+                            style="@style/TextView.TitleBig.Bold"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@+id/review_detail_departure_flight"
+                            android:text="@string/flight_label_departure_flight" />
+
+                        <TextView
+                            android:id="@+id/review_detail_departure_flight"
+                            style="@style/TextView.Small.Green.Bold"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:text="@string/flight_label_detail"
+                            tools:text="Detail" />
+                    </RelativeLayout>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recycler_view_departure_flight"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        android:paddingBottom="@dimen/padding_med" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/container_flight_return"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_med"
+                    android:background="@color/white"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/padding_med">
+
+                        <TextView
+                            style="@style/TextView.TitleBig.Bold"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@+id/review_detail_return_flight"
+                            android:text="@string/flight_label_return_flight" />
+
+                        <TextView
+                            android:id="@+id/review_detail_return_flight"
+                            style="@style/TextView.Small.Green.Bold"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:text="@string/flight_label_detail"
+                            tools:text="Detail" />
+                    </RelativeLayout>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recycler_view_return_flight"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        android:paddingBottom="@dimen/padding_med"
+                        android:paddingLeft="@dimen/padding_med"
+                        android:paddingRight="@dimen/padding_med" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_med"
+                    android:background="@color/white"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/TextView.TitleBig.Bold"
+                        android:padding="@dimen/padding_med"
+                        android:text="@string/flight_label_passenger_data" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recycler_view_data_passenger"
+
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        android:paddingBottom="@dimen/padding_med"
+                        android:paddingLeft="@dimen/padding_med"
+                        android:paddingRight="@dimen/padding_med" />
+                </LinearLayout>
+
+                <com.tokopedia.design.voucher.VoucherCartView
+                    android:id="@+id/voucher_check_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_med">
+
+                </com.tokopedia.design.voucher.VoucherCartView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_med"
+                    android:background="@color/white"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/TextView.TitleBig.Bold"
+                        android:padding="@dimen/padding_med"
+                        android:text="@string/flight_label_detail_price" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recycler_view_detail_price"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        android:paddingLeft="@dimen/padding_med"
+                        android:paddingRight="@dimen/padding_med" />
+
+                    <LinearLayout
+                        android:id="@+id/voucher_applied_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingEnd="@dimen/padding_med"
+                        android:paddingLeft="@dimen/padding_med"
+                        android:paddingRight="@dimen/padding_med"
+                        android:paddingStart="@dimen/padding_med"
+                        android:paddingTop="@dimen/padding_med">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@drawable/bg_line_separator" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/margin_med">
+
+                            <TextView
+                                style="@style/TextView.Small"
+                                android:layout_alignParentLeft="true"
+                                android:layout_alignParentStart="true"
+                                android:layout_centerVertical="true"
+                                android:layout_toLeftOf="@+id/total_price"
+                                android:layout_toStartOf="@+id/total_price"
+                                android:text="@string/flight_label_price_total" />
+
+                            <TextView
+                                android:id="@+id/total_price"
+                                style="@style/TextView.Small"
+                                android:layout_alignParentEnd="true"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                tools:text="Rp. 500.0000" />
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="visible"
+                            tools:visibility="visible">
+
+                            <TextView
+                                style="@style/TextView.Small"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+                                android:layout_toLeftOf="@+id/tv_discount_voucher"
+                                android:text="@string/flight_review_diskon_voucher_label" />
+
+                            <TextView
+                                android:id="@+id/tv_discount_voucher"
+                                style="@style/TextView.Small"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                tools:text="Rp. 500.0000" />
+                        </RelativeLayout>
+                    </LinearLayout>
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginEnd="@dimen/margin_med"
+                        android:layout_marginLeft="@dimen/margin_med"
+                        android:layout_marginRight="@dimen/margin_med"
+                        android:layout_marginStart="@dimen/margin_med"
+                        android:layout_marginTop="@dimen/margin_med"
+                        android:background="@drawable/bg_line_separator" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_sm"
+                        android:layout_marginTop="@dimen/margin_vs"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/padding_med">
+
+                        <android.support.v7.widget.AppCompatTextView
+                            style="@style/TextView.Title.Bold"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/flight_booking_total_price_label" />
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/tv_total_final_price"
+                            style="@style/TextView.Title.Bold"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            tools:text="Rp45.846.900" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/background_apps"
+                    android:orientation="vertical"
+                    android:paddingBottom="@dimen/padding_small"
+                    android:paddingTop="@dimen/padding_small">
+
+                    <Button
+                        android:id="@+id/button_submit"
+                        style="@style/Button.Submit.Orange"
+                        android:layout_alignParentBottom="true"
+                        android:text="@string/flight_label_continued_payment" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </android.support.v4.widget.NestedScrollView>
+    </RelativeLayout>
+
+</RelativeLayout>
+

@@ -83,4 +83,81 @@
     <string name="profile_completion_end_message">Selamat! Akun Anda telah terverifikasi</string>
     <string name="profile_completion_end_subtext">Kini akun Anda menjadi lebih aman dan nikmati promo menarik hanya untuk Verified Account</string>
     <string name="see_your_profile">Lihat Profil Anda</string>
+
+    <string name="error_empty_provider">Gagal mendownload provider.</string>
+    <string name="facebook_error_not_authorized">Gagal login facebook. Silahkan coba lagi.</string>
+    <string name="default_datepicker">Tanggal / Bulan / Tahun</string>
+    <string name="terms_and_conditions">Syarat dan Ketentuan</string>
+    <string name="privacy">Kebijakan Privasi</string>
+    <string name="i_have_read_and_understand">Saya sudah membaca dan menyetujui</string>
+    <string name="you_must_agree">Untuk dapat menggunakan layanan Tokopedia, anda harus menyetujui Syarat dan Ketentuan dari Tokopedia</string>
+    <string name="day_month_year">Tanggal / Bulan / Tahun</string>
+    <string name="error_register_webview">Terjadi kesalahan. Mohon coba kembali.</string>
+    <string name="hi">Hai</string>
+    <string name="success_request_otp">Kode verifikasi telah dikirim.</string>
+
+    <!-- LOGIN PHONE NUMBER -->
+    <string name="login_with_phone_number">Masuk dengan Nomor Ponsel</string>
+    <string name="phone_number">Nomor Ponsel</string>
+    <string name="we_will_send_verification_code">Kami akan mengirimkan SMS kode verifikasi</string>
+    <string name="title_verify">Verifikasi</string>
+    <string name="verification_code_sent_to">Kode verifikasi telah dikirimkan ke</string>
+    <string name="verification_code_email_sent_to">Kode verifikasi telah dikirimkan melalui email ke</string>
+    <string name="verification_code_sms_sent_to">Kode verifikasi telah dikirimkan melalui SMS ke</string>
+    <string name="verification_code_call_sent_to">Kode verifikasi telah dikirimkan melalui panggilan telepon ke</string>
+    <string name="enter_verification_code">Masukkan Kode Verifikasi</string>
+    <string name="to_resend_otp">untuk kirim ulang</string>
+    <string name="please_wait_in">Mohon tunggu dalam</string>
+    <string name="countdown_finish_otp">Tidak menerima kode?\n Kirim ulang atau gunakan
+        metode verifikasi lain</string>
+    <string name="resend">Kirim ulang</string>
+    <string name="choose_verification_method">Pilih Metode Verifikasi</string>
+    <string name="pick_one_of_these_method_to_get_verification_code">Pilih salah satu metode
+        dibawah ini untuk\nmendapatkan kode verifikasi.</string>
+    <string name="verification_sms_to"><![CDATA[Melalui <b>SMS</b> ke nomor]]></string>
+    <string name="verification_call_to"><![CDATA[Melalui <b>panggilan telepon</b> ke
+    nomor]]></string>
+    <string name="verification_code_sent_to_call"><![CDATA[Kode verifikasi telah dikirimkan
+        lewat<br>panggilan telepon ke]]></string>
+    <string name="choose_account">Pilih Akun</string>
+    <string name="phone_number_not_connected_to_tokocash">Nomor Ponsel Belum\nTerhubung ke
+        TokoCash</string>
+    <string name="not_connected_tokocash_message">Untuk masuk dengan nomor ponsel akun TokoCash Anda, harap lakukan verifikasi nomor ponsel terlebih dahulu.</string>
+    <string name="login_with_other_method">Gunakan metode verifikasi lain</string>
+    <string name="login_with_other_method_2">Masuk dengan Pilihan Lainnya</string>
+    <string name="no_tokocash_account">Tidak ada Akun Tokopedia yang\nTerhubung ke TokoCash</string>
+    <string name="no_tokocash_account_message">Silakan gunakan pilihan lainnya untuk masuk. Untuk menggunakan pilihan ini, harap lakukan aktivasi TokoCash kembali dari akun Tokopedia Anda</string>
+    <string name="phone_number_not_connected">Nomor Ponsel Belum Terhubung</string>
+    <string name="no_account_connected">Tidak Ada Akun Terhubung</string>
+    <string name="prompt_choose_tokocash_account"><![CDATA[Anda memiliki <b>%1$d akun </b>dengan
+    nomor ponsel %2$s. Pilih salah satu akun untuk masuk.]]></string>
+    <string name="limit_otp_reached">Anda sudah 3 kali melakukan pengiriman ulang, silakan coba lagi dalam 60 menit.</string>
+    <string name="limit_otp_email_reached">Anda Sudah Melakukan 3 Kali Validasi. Silakan Mencoba Kembali 1 Jam Kemudian.</string>
+    <string name="phone_number_not_registered">Nomor ponsel belum terdaftar</string>
+    <string name="phone_number_invalid">Nomor ponsel tidak benar</string>
+    <string name="error_wrong_otp">Kode yang Anda masukkan salah</string>
+    <string name="login">Masuk</string>
+    <string name="use_other_method">gunakan metode verifikasi lain</string>
+    <string name="or_small">atau</string>
+    <string name="second">detik</string>
+    <string name="not_received_code">Tidak menerima kode?</string>
+    <string name="register">Daftar</string>
+
+    <!-- Change Phone Number strings -->
+    <string name="you_have">Anda memiliki:</string>
+    <string name="tokopedia_balance">Saldo Tokopedia</string>
+    <string name="if_you_change_phone_number_then">Apabila terjadi perubahan nomor ponsel:</string>
+    <string name="change_phone_number">Ubah Nomor Ponsel</string>
+    <string name="are_you_sure_change_phone_number">Yakin ingin mengubah nomor ponsel?</string>
+    <string name="for_your_safety">Demi keamanan, pengguna diharuskan memperbarui nomor ponsel yang bisa dihubungi secara berkala.</string>
+    <string name="old_phone_number">Nomor Ponsel Lama</string>
+    <string name="new_phone_number">Nomor Ponsel Baru</string>
+    <string name="back_to_setting">Kembali ke Pengaturan</string>
+    <string name="please_check_email">Silakan Cek Email Anda</string>
+    <string name="please_check_email_to_continue">Silahkan cek email Anda untuk melakukan ke tahap selanjutnya.</string>
+    <string name="emaiL_has_been_sent_to">Email konfirmasi untuk mengubah nomor ponsel sudah dikirim ke</string>
+    <string name="withdraw_tokopedia_balance">Tarik Saldo Tokopedia</string>
+    <string name="title_info">Info</string>
+    <string name="verification_for_security">Verifikasi untuk Keamanan</string>
+    <string name="we_will_send_email_to">Untuk memastikan akun ini benar milik Anda, kami akan mengirimkan kode verifikasi melalui email ke</string>
 </resources>

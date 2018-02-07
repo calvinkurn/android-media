@@ -1,6 +1,7 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.product;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -13,14 +14,17 @@ import android.view.ViewGroup;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.SearchTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
@@ -211,7 +215,7 @@ public class ProductListFragment extends SearchSectionFragment
             showBottomBarNavigation(false);
         } else {
             setProductList(initMappingProduct());
-            setHeaderTopAds(adapter.hasHeader());
+            setHeaderTopAds(true);
             showBottomBarNavigation(true);
         }
 
@@ -222,11 +226,6 @@ public class ProductListFragment extends SearchSectionFragment
         List<Visitable> list = new ArrayList<>();
         HeaderViewModel headerViewModel = new HeaderViewModel();
         headerViewModel.setSuggestionModel(productViewModel.getSuggestionModel());
-
-        if (productViewModel.getOfficialStoreBannerModel() != null
-                && !productViewModel.getOfficialStoreBannerModel().getBannerUrl().isEmpty()) {
-            headerViewModel.setOfficialStoreBannerModel(productViewModel.getOfficialStoreBannerModel());
-        }
 
         if (headerViewModel.hasHeader()) {
             list.add(headerViewModel);
@@ -282,7 +281,19 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void setProductList(List<Visitable> list) {
+        sendProductImpressionTrackingEvent(list);
         adapter.appendItems(list);
+    }
+
+    private void sendProductImpressionTrackingEvent(List<Visitable> list) {
+        String userId = SessionHandler.isV4Login(getContext()) ? SessionHandler.getLoginID(getContext()) : "";
+        List<Object> dataLayerList = new ArrayList<>();
+        for(Visitable object : list) {
+            if (object instanceof ProductItem) {
+                dataLayerList.add(((ProductItem) object).getProductAsObjectDataLayer(userId));
+            }
+        }
+        SearchTracking.eventImpressionSearchResultProduct(dataLayerList, getQueryKey());
     }
 
     @Override
@@ -459,7 +470,18 @@ public class ProductListFragment extends SearchSectionFragment
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
         intent.putExtras(bundle);
         intent.putExtra(ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
+        sendItemClickTrackingEvent(item);
         startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
+    }
+
+    private void sendItemClickTrackingEvent(ProductItem item) {
+        SearchTracking.trackEventClickSearchResultProduct(
+                item.getProductName(),
+                item.getProductID(),
+                item.getPrice(),
+                item.getPosition(),
+                SessionHandler.isV4Login(getContext()) ? SessionHandler.getLoginID(getContext()) : "",
+                productViewModel.getQuery());
     }
 
     @Override
@@ -470,6 +492,13 @@ public class ProductListFragment extends SearchSectionFragment
     @Override
     public void onSuggestionClicked(String suggestedQuery) {
         performNewProductSearch(suggestedQuery, true);
+    }
+
+    @Override
+    public void onBannerAdsClicked(String appLink) {
+        if (!TextUtils.isEmpty(appLink)) {
+            ((TkpdCoreRouter) getActivity().getApplication()).actionApplink(getActivity(), appLink);
+        }
     }
 
     @Override
@@ -486,6 +515,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onSuccessAddWishlist(int adapterPosition) {
+        UnifyTracking.eventSearchResultProductWishlistClick(true, getQueryKey());
         adapter.updateWishlistStatus(adapterPosition, true);
         enableWishlistButton(adapterPosition);
         adapter.notifyItemChanged(adapterPosition);
@@ -500,6 +530,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onSuccessRemoveWishlist(int adapterPosition) {
+        UnifyTracking.eventSearchResultProductWishlistClick(false, getQueryKey());
         adapter.updateWishlistStatus(adapterPosition, false);
         enableWishlistButton(adapterPosition);
         adapter.notifyItemChanged(adapterPosition);
@@ -508,7 +539,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void launchLoginActivity(Bundle extras) {
-        Intent intent = SessionRouter.getLoginActivityIntent(getContext());
+        Intent intent = OldSessionRouter.getLoginActivityIntent(getContext());
         intent.putExtras(extras);
         startActivityForResult(intent, REQUEST_CODE_LOGIN);
     }

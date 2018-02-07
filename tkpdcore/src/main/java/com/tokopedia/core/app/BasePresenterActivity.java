@@ -8,6 +8,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Angga.Prasetiyo on 09/11/2015.
  */
+@Deprecated
 public abstract class BasePresenterActivity<P> extends TActivity {
     private static final String TAG = BasePresenterActivity.class.getSimpleName();
 

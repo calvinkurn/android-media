@@ -48,8 +48,18 @@ public class AlbumLoader extends CursorLoader {
 
     private static final String BUCKET_ORDER_BY = "datetaken DESC";
 
-    public AlbumLoader(Context context) {
-        super(context, QUERY_URI, PROJECTION, SELECTION, SELECTION_ARGS, BUCKET_ORDER_BY);
+    public AlbumLoader(Context context, String[] selectionArgs) {
+        super(context, QUERY_URI, PROJECTION, SELECTION, selectionArgs, BUCKET_ORDER_BY);
+    }
+
+    public static CursorLoader createInstance(Context context, int galleryType){
+        String[] selectionArgs;
+        if(galleryType == GalleryType.ofImageOnly()){
+            selectionArgs = new String[]{String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE)};
+        }else{
+            selectionArgs = SELECTION_ARGS;
+        }
+        return new AlbumLoader(context, selectionArgs);
     }
 
     @Override

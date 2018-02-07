@@ -20,8 +20,6 @@
         style="@style/TextView.Small.BlackSecondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/result_count_padding"
-        android:paddingRight="@dimen/result_count_padding"
-        android:paddingTop="@dimen/result_count_padding"
+        android:padding="@dimen/result_count_padding"
         tools:text="7.828.192 Produk" />
 </LinearLayout>

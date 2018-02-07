@@ -12,9 +12,9 @@ import com.tokopedia.otp.data.factory.OtpSourceFactory;
 import com.tokopedia.otp.data.mapper.RequestOtpMapper;
 import com.tokopedia.otp.data.mapper.ValidateOtpMapper;
 import com.tokopedia.otp.data.repository.OtpRepositoryImpl;
-import com.tokopedia.otp.domain.OtpRepository;
-import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
-import com.tokopedia.otp.domain.interactor.ValidateOtpUseCase;
+import com.tokopedia.otp.domainold.OtpRepository;
+import com.tokopedia.otp.domainold.RequestOtpUseCase;
+import com.tokopedia.otp.domainold.ValidateOtpUseCase;
 import com.tokopedia.otp.phoneverification.data.factory.MsisdnSourceFactory;
 import com.tokopedia.otp.phoneverification.data.mapper.ChangePhoneNumberMapper;
 import com.tokopedia.otp.phoneverification.data.mapper.VerifyPhoneNumberMapper;
@@ -87,8 +87,8 @@ public class PhoneVerifModule {
     @PhoneVerifScope
     @Provides
     RequestOtpUseCase provideRequestOtpUseCase(ThreadExecutor threadExecutor,
-                                                         PostExecutionThread postExecutor,
-                                                         OtpRepository otpRepository){
+                                               PostExecutionThread postExecutor,
+                                               OtpRepository otpRepository){
 
         return new RequestOtpUseCase(threadExecutor, postExecutor, otpRepository);
     }
@@ -96,8 +96,8 @@ public class PhoneVerifModule {
     @PhoneVerifScope
     @Provides
     ValidateOtpUseCase provideValidateOtpUseCase(ThreadExecutor threadExecutor,
-                                                    PostExecutionThread postExecutor,
-                                                    OtpRepository otpRepository){
+                                                 PostExecutionThread postExecutor,
+                                                 OtpRepository otpRepository){
 
         return new ValidateOtpUseCase(threadExecutor, postExecutor, otpRepository);
     }

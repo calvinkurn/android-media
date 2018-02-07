@@ -16,6 +16,8 @@ import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.FilterPass;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -32,6 +34,7 @@ public class GetOpportunityUseCase extends UseCase<OpportunityModel> {
 
     private final ReplacementRepository repository;
 
+    @Inject
     public GetOpportunityUseCase(ThreadExecutor threadExecutor,
                                  PostExecutionThread postExecutionThread,
                                  ReplacementRepository repository) {

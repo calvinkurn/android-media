@@ -15,4 +15,6 @@ public interface ItemClickListener {
     void onHotlistDescClicked(String messageClickAble);
 
     void onProductClicked(HotlistProductViewModel productViewModel, int adapterPosition);
+
+    void onBannerAdsClicked(String appLink);
 }

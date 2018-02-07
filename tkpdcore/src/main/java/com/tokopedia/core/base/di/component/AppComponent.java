@@ -40,11 +40,13 @@ import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
+import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.util.SessionHandler;
 
 import dagger.Component;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 /**
@@ -147,4 +149,8 @@ public interface AppComponent {
     ApiCacheDataSource apiCacheDataSource();
 
     CacheApiClearAllUseCase cacheApiClearAllUseCase();
+
+    BearerInterceptor bearerInterceptor();
+
+    OkHttpClient.Builder getHttpClientBuilder();
 }

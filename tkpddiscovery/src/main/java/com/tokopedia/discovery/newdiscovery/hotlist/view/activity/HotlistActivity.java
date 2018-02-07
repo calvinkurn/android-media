@@ -25,6 +25,7 @@ public class HotlistActivity extends DiscoveryActivity
         implements HotlistContract.View {
 
     private static final String EXTRA_HOTLIST_PARAM_URL = "HOTLIST_URL";
+    private static final String EXTRA_HOTLIST_PARAM_QUERY = "EXTRA_HOTLIST_PARAM_QUERY";
     private static final String EXTRA_HOTLIST_PARAM_ALIAS = "HOTLIST_ALIAS";
 
     @Inject
@@ -43,10 +44,11 @@ public class HotlistActivity extends DiscoveryActivity
         return intent;
     }
 
-    public static Intent createInstanceUsingURL(Context context, String url) {
+    public static Intent createInstanceUsingURL(Context context, String url, String searchQuery) {
         Intent intent = new Intent(context, HotlistActivity.class);
         Bundle extras = new Bundle();
         extras.putString(EXTRA_HOTLIST_PARAM_URL, url);
+        extras.putString(EXTRA_HOTLIST_PARAM_QUERY, searchQuery);
         intent.putExtras(extras);
         return intent;
     }
@@ -72,10 +74,11 @@ public class HotlistActivity extends DiscoveryActivity
     private Fragment getHotlistFragment() {
         String url = getIntent().getExtras().getString(EXTRA_HOTLIST_PARAM_URL, "");
         String alias = getIntent().getExtras().getString(EXTRA_HOTLIST_PARAM_ALIAS, "");
+        String searchQuery = getIntent().getExtras().getString(EXTRA_HOTLIST_PARAM_QUERY, "");
         if (!alias.isEmpty()) {
             return HotlistFragment.createInstanceUsingAlias(alias);
         }
-        return HotlistFragment.createInstanceUsingURL(url);
+        return HotlistFragment.createInstanceUsingURL(url, searchQuery);
     }
 
     private void initInjector() {

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/string_picker_dialog_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/font_black_primary_70"
+        android:textSize="20sp" />
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/string_picker_dialog_input_layout"
+        style="@style/TextInputLayout"
+        android:layout_marginTop="20dp"
+        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout.VerySmall">
+
+        <EditText
+            android:id="@+id/string_picker_dialog_edit_text"
+            style="@style/EditText.GreenHighlight"
+            android:inputType="textCapWords" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp">
+
+        <TextView
+            android:id="@+id/string_picker_dialog_confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
+            android:text="@string/product_etalase_picker_add_etalase_add_button_dialog"
+            android:textColor="@color/tkpd_main_green" />
+
+        <TextView
+            android:id="@+id/string_picker_dialog_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_toLeftOf="@id/string_picker_dialog_confirm"
+            android:layout_toStartOf="@id/string_picker_dialog_confirm"
+            android:text="@string/product_etalase_picker_add_etalase_cancel_button_dialog"
+            android:textColor="@color/tkpd_main_green" />
+
+    </RelativeLayout>
+
+</LinearLayout>

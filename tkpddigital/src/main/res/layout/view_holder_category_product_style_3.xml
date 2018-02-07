@@ -84,4 +84,5 @@
         android:layout_marginBottom="@dimen/padding_med"
         android:layout_marginTop="@dimen/digital_padding_28"
         android:text="@string/label_btn_buy_digital"/>
+
 </LinearLayout>

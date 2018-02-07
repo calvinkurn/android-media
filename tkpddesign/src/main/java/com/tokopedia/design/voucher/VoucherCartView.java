@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -52,7 +53,7 @@ public class VoucherCartView extends BaseCustomView {
     }
 
     private void init(Context context) {
-        rootView = inflate(context, R.layout.widget_voucher_hachiko_cart, this);
+        rootView = inflate(context, R.layout.widget_voucher_cart, this);
         checkBoxVoucher = (CheckBox) rootView.findViewById(R.id.checkbox_voucher);
         holderInputVoucher = (RelativeLayout) rootView.findViewById(R.id.holder_input_voucher);
         holderVoucher = (RelativeLayout) rootView.findViewById(R.id.holder_voucher);

@@ -1,6 +1,7 @@
 package com.tokopedia.discovery.newdiscovery.category.presentation.product;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -18,19 +19,19 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
-import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.category.di.component.CategoryComponent;
 import com.tokopedia.discovery.newdiscovery.category.di.component.DaggerCategoryComponent;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
@@ -43,7 +44,6 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.listen
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ChildCategoryModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
-import com.tokopedia.discovery.newdiscovery.hotlist.domain.model.HotlistQueryModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
@@ -59,7 +59,6 @@ import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -332,6 +331,9 @@ public class ProductFragment extends SearchSectionFragment
                         switchLayoutType();
                         return true;
                     case 3:
+                        String currentCategoryId = productViewModel.getCategoryHeaderModel().getDepartementId();
+                        String currentRootCategoryId = productViewModel.getCategoryHeaderModel().getRootCategoryId();
+                        UnifyTracking.eventBottomCategoryNavigation(currentRootCategoryId, currentCategoryId);
                         Intent intent = CategoryNavigationActivity.createInstance(getActivity(), productViewModel.getCategoryHeaderModel().getDepartementId());
                         startActivityForResult(intent, CategoryNavigationActivity.DESTROY_BROWSE_PARENT);
                         getActivity().overridePendingTransition(com.tokopedia.core.R.anim.pull_up, android.R.anim.fade_out);
@@ -450,7 +452,7 @@ public class ProductFragment extends SearchSectionFragment
 
     @Override
     public void launchLoginActivity(Bundle extras) {
-        Intent intent = SessionRouter.getLoginActivityIntent(getContext());
+        Intent intent = OldSessionRouter.getLoginActivityIntent(getContext());
         intent.putExtras(extras);
         startActivityForResult(intent, REQUEST_CODE_LOGIN);
     }
@@ -596,6 +598,13 @@ public class ProductFragment extends SearchSectionFragment
                 child.getCategoryName(),
                 true
         );
+    }
+
+    @Override
+    public void onBannerAdsClicked(String appLink) {
+        if (!TextUtils.isEmpty(appLink)) {
+            ((TkpdCoreRouter) getActivity().getApplication()).actionApplink(getActivity(), appLink);
+        }
     }
 
     @Override

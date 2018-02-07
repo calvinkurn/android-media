@@ -20,12 +20,12 @@ import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.analytics.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileData;
+import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.home.model.HotListModel;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
@@ -36,6 +36,7 @@ import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -73,7 +74,7 @@ public class TrackingUtils extends TrackingConfig {
             CustomerWrapper customerWrapper = new CustomerWrapper.Builder()
                     .setFullName(profileData.getUserInfo().getUserName())
                     .setEmailAddress(profileData.getUserInfo().getUserEmail())
-                    .setPhoneNumber(normalizePhoneNumber(profileData.getUserInfo().getUserPhone()!= null ? profileData.getUserInfo().getUserPhone() : ""))
+                    .setPhoneNumber(normalizePhoneNumber(profileData.getUserInfo().getUserPhone() != null ? profileData.getUserInfo().getUserPhone() : ""))
                     .setCustomerId(profileData.getUserInfo().getUserId())
                     .setShopId(profileData.getShopInfo() != null ? profileData.getShopInfo().getShopId() : "")
                     .setSeller(profileData.getShopInfo() != null)
@@ -87,11 +88,10 @@ public class TrackingUtils extends TrackingConfig {
             PushManager.getInstance().refreshToken(MainApplication.getAppContext(), FCMCacheManager.getRegistrationId(MainApplication.getAppContext()));
     }
 
-    public static String getNetworkSpeed(Context context){
-        if(ConnectivityUtils.isConnected(context))
-        {
+    public static String getNetworkSpeed(Context context) {
+        if (ConnectivityUtils.isConnected(context)) {
             return ConnectivityUtils.getConnectionType(context);
-        }else{
+        } else {
             return ConnectivityUtils.CONN_UNKNOWN;
         }
     }
@@ -189,7 +189,7 @@ public class TrackingUtils extends TrackingConfig {
     }
 
     private static String normalizePhoneNumber(String phoneNum) {
-        if(!TextUtils.isEmpty(phoneNum))
+        if (!TextUtils.isEmpty(phoneNum))
             return phoneNum.replaceFirst("^0(?!$)", "62");
         else
             return "";
@@ -327,11 +327,11 @@ public class TrackingUtils extends TrackingConfig {
         builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_NAME, model.info.shopName);
         builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_ID, model.info.shopId);
         builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_LOCATION, model.info.shopLocation);
-        builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_OFFICIAL_STORE, model.info.getShopIsOfficial()==1);
+        builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_OFFICIAL_STORE, model.info.getShopIsOfficial() == 1);
         getMoEngine().sendEvent(
                 builder.build(),
                 model.info.shopAlreadyFavorited == 0 ?
-                AppEventTracking.EventMoEngage.SELLER_ADDED_FAVORITE :
+                        AppEventTracking.EventMoEngage.SELLER_ADDED_FAVORITE :
                         AppEventTracking.EventMoEngage.SELLER_REMOVE_FAVORITE
         );
     }
@@ -396,7 +396,7 @@ public class TrackingUtils extends TrackingConfig {
         }
     }
 
-    public static void sendMoEngageClickedNewOrder(){
+    public static void sendMoEngageClickedNewOrder() {
         PayloadBuilder builder = new PayloadBuilder();
         getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.CLICKED_NEW_ORDER);
     }
@@ -534,7 +534,7 @@ public class TrackingUtils extends TrackingConfig {
 
     public static void fragmentBasedAFEvent(String tag) {
         Map<String, Object> afValue = new HashMap<>();
-        if (tag.equals(SessionRouter.IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT) || tag.equals(SessionRouter.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT)) {
+        if (tag.equals(OldSessionRouter.IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT) || tag.equals(OldSessionRouter.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT)) {
             afValue.put(AFInAppEventParameterName.REGSITRATION_METHOD, "register_normal");
         } else if (tag.equals(HomeRouter.IDENTIFIER_CATEGORY_FRAGMENT)) {
             afValue.put(AFInAppEventParameterName.DESCRIPTION, Jordan.AF_SCREEN_HOME_MAIN);
@@ -647,6 +647,43 @@ public class TrackingUtils extends TrackingConfig {
 
     public static void eventImpressionHotlistProductFeatured(Hotlist hotlist) {
         getGTMEngine().eventImpressionHotlistProductFeatured(hotlist);
+    }
+
+    public static void impressionHotlistPromo(String hotlistName, String promoName, String promoCode) {
+        getGTMEngine().impressionHotlistTracking(hotlistName, promoName, promoCode);
+    }
+
+    public static void clickCopyButtonHotlistPromo(String hotlistName, String promoName, String promoCode) {
+        getGTMEngine().clickCopyButtonHotlistPromo(hotlistName, promoName, promoCode);
+    }
+
+    public static void clickTnCButtonHotlistPromo(String hotlistName, String promoName, String promoCode) {
+        getGTMEngine().clickTncButtonHotlistPromo(hotlistName, promoName, promoCode);
+    }
+
+    public static void eventTrackingEnhancedEcommerce(Map<String, Object> trackingData) {
+        getGTMEngine().clearEnhanceEcommerce();
+        getGTMEngine().eventTrackingEnhancedEcommerce(trackingData);
+    }
+
+    public static void eventImpressionPromoList(List<Object> list, String promoName) {
+        getGTMEngine().clearEnhanceEcommerce();
+        getGTMEngine().eventImpressionPromoList(list, promoName);
+    }
+
+    public static void eventClickPromoListItem(List<Object> list, String promoName) {
+        getGTMEngine().clearEnhanceEcommerce();
+        getGTMEngine().eventClickPromoListItem(list, promoName);
+    }
+
+
+
+    public static void eventCategoryLifestyleImpression(List<Object> list) {
+        getGTMEngine().eventImpressionCategoryLifestyle(list);
+    }
+
+    public static void eventCategoryLifestyleClick(String categoryUrl, List<Object> list) {
+        getGTMEngine().eventClickCategoryLifestyle(categoryUrl, list);
     }
 }
 

@@ -31,8 +31,10 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
 
     protected P productSelected;
     protected O operatorSelected;
-    protected H historyClientNumber;
+
     protected C data;
+    protected H historyClientNumber;
+
     protected BottomSheetView bottomSheetView;
 
     public void setActionListener(ActionListener actionListener) {

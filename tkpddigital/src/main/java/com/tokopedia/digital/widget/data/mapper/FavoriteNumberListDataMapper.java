@@ -23,8 +23,6 @@ public class FavoriteNumberListDataMapper implements IFavoriteNumberMapper {
                 orderClientNumbers.add(new OrderClientNumber.Builder()
                         .name(responseFavoriteNumber.getAttributes().getLabel())
                         .clientNumber(responseFavoriteNumber.getAttributes().getClientNumber())
-                        .lastUpdated(responseFavoriteNumber.getAttributes().getLastUpdated())
-                        .lastProduct(responseFavoriteNumber.getAttributes().getLastProduct())
                         .categoryId(responseFavoriteNumber.getRelationships().getCategory().getData().getId())
                         .operatorId(responseFavoriteNumber.getRelationships().getOperator().getData().getId())
                         .productId(responseFavoriteNumber.getAttributes().getLastProduct())

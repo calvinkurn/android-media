@@ -28,17 +28,6 @@
         <item name="layout_anchorGravity">bottom|right|end</item>
     </style>
 
-    <style name="LabelLayout">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:foreground">?android:attr/selectableItemBackground</item>
-        <item name="android:background">@color/white</item>
-        <item name="android:paddingTop">@dimen/margin_sm</item>
-        <item name="android:paddingLeft">@dimen/margin_sm</item>
-        <item name="android:paddingRight">@dimen/margin_sm</item>
-        <item name="android:paddingBottom">@dimen/margin_sm</item>
-    </style>
-
     <style name="LabelLayout.Border">
         <item name="android:background">@drawable/border_background_view_topads</item>
     </style>
@@ -96,7 +85,7 @@
         <item name="tabSelectedTextColor">@color/white</item>
     </style>
 
-    <style name="TabBar.White">
+    <style name="TabBar.WhiteSeller">
         <item name="tabTextColor">@color/tkpd_grey_text</item>
         <item name="tabGravity">fill</item>
         <item name="tabIndicatorHeight">3dp</item>
@@ -150,6 +139,94 @@
         <item name="android:background">@android:color/white</item>
         <item name="behavior_hideable">true</item>
         <item name="behavior_skipCollapsed">true</item>
+    </style>
+
+    <style name="ImageView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="ImageView.ShopSettingTitleImage">
+        <item name="android:layout_width">36dp</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:layout_marginBottom">24dp</item>
+        <item name="android:layout_marginTop">20dp</item>
+    </style>
+
+    <style name="TextInputLayout.ShopSetting">
+        <item name="hintTextAppearance">@style/TextAppearence.App.TextInputLayout</item>
+        <item name="counterEnabled">true</item>
+        <item name="counterMaxLength">48</item>
+        <item name="counterTextAppearance">@style/ShopOpenCounterTextInputStyle</item>
+    </style>
+
+    <style name="TextInputLayout.ShopSetting.DescShop">
+        <item name="counterMaxLength">140</item>
+    </style>
+
+
+    <style name="EditText.ShopSetting">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/black_70</item>
+        <item name="android:textColorHint">@color/black_38</item>
+    </style>
+
+    <style name="View">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="View.ShopSetting">
+        <item name="android:background">@drawable/rounded_corner_black_shop_open</item>
+    </style>
+
+    <style name="View.ShopSetting.ImagePicker">
+        <item name="android:layout_width">126dp</item>
+        <item name="android:layout_height">126dp</item>
+    </style>
+
+    <style name="View.ShopSetting.BrowseImage">
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">32dp</item>
+    </style>
+
+    <style name="View.ShopSetting.InfoImagePicker">
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingRight">20dp</item>
+        <item name="android:paddingTop">7dp</item>
+        <item name="android:paddingBottom">7dp</item>
+        <item name="android:background">@drawable/ic_bubble_logo</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="ShopOpenCounterTextInputStyle" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@color/black_38</item>
+        <item name="android:textSize">12sp</item>
+        <!--other parameters that you want to change -->
+    </style>
+
+    <style name="helperTextAppearance" parent="TextAppearance.Design.Error">
+        <item name="android:textColor">@color/font_black_secondary_54</item>
+    </style>
+
+    <style name="successTextAppearance" parent="TextAppearance.Design.Error">
+        <item name="android:textColor">@color/tkpd_main_green</item>
+    </style>
+
+    <style name="HintTextInputLayout" parent="TextInputLayout">
+        <item name="defaultTextColorLabel">@color/font_black_secondary_54</item>
+        <item name="focusedTextColorLabel">@color/font_black_secondary_54</item>
+        <item name="disabledTextColorLabel">@color/font_black_secondary_54</item>
+        <item name="android:theme">@style/HintTextInputLayoutColorLine</item>
+    </style>
+
+    <style name="HintTextInputLayoutColorLine" parent="TextInputLayoutColorLine">
+        <item name="android:textColorHint">@color/grey_300</item>
     </style>
 
 </resources>

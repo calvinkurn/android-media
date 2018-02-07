@@ -16,4 +16,5 @@ public interface IDigitalWidgetStyle1Presenter {
     void getOperatorById(String operatorId);
 
     void fetchDefaultProduct(String categoryId, String operatorId, String productId);
+
 }

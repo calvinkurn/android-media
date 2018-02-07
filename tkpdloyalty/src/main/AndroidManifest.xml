@@ -11,13 +11,16 @@
             android:label="Checkout"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
+
+        <activity
+            android:name=".view.activity.PromoListActivity"
+            android:label="@string/title_activity_promo"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
+
         <receiver
             android:name=".broadcastreceiver.TokoPointDrawerBroadcastReceiver"
             android:enabled="true"
-            tools:ignore="ExportedReceiver">
-            <intent-filter>
-                <action android:name="com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver.ACTION_GET_DRAWER_TOKOPOINT"/>
-            </intent-filter>
-        </receiver>
+            tools:ignore="ExportedReceiver"/>
     </application>
 </manifest>

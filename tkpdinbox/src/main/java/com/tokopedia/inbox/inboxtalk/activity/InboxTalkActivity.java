@@ -138,9 +138,7 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
     }
 
     private boolean checkHasNoShop() {
-        return SessionHandler.getShopID(this) == null
-                || SessionHandler.getShopID(this).equals("0")
-                || SessionHandler.getShopID(this).equals("");
+        return !SessionHandler.isUserHasShop(this);
     }
 
     private void getExtras() {

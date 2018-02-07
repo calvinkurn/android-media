@@ -6,7 +6,7 @@ import android.content.Intent;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.core.session.presenter.Session;
@@ -135,7 +135,7 @@ public class WelcomeFragmentPresenterImpl implements WelcomeFragmentPresenter {
 
     @Override
     public void loginFacebook(Context context) {
-        Intent intent = SessionRouter.getLoginActivityIntent(context);
+        Intent intent = OldSessionRouter.getLoginActivityIntent(context);
         intent.putExtra("login",DownloadService.FACEBOOK);
         intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
         intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
@@ -144,7 +144,7 @@ public class WelcomeFragmentPresenterImpl implements WelcomeFragmentPresenter {
 
     @Override
     public void loginGoogle(Context context) {
-        Intent intent = SessionRouter.getLoginActivityIntent(context);
+        Intent intent = OldSessionRouter.getLoginActivityIntent(context);
         intent.putExtra("login",DownloadService.GOOGLE);
         intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
         intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
@@ -153,7 +153,7 @@ public class WelcomeFragmentPresenterImpl implements WelcomeFragmentPresenter {
 
     @Override
     public void loginWebview(Context context, String url, String name) {
-        Intent intent = SessionRouter.getLoginActivityIntent(context);
+        Intent intent = OldSessionRouter.getLoginActivityIntent(context);
         intent.putExtra("login",DownloadService.WEBVIEW);
         intent.putExtra("url",url);
         intent.putExtra("name",name);

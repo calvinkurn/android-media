@@ -1,0 +1,72 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_margin="@dimen/margin_med"
+    android:padding="@dimen/padding_med"
+    tools:context="com.tokopedia.flight.booking.view.fragment.FlightBookingNewPriceDialogFragment">
+
+    <android.support.v7.widget.AppCompatTextView
+        style="@style/TextView.TitleBig.Bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/flight_booking_dialog_price_change_title" />
+
+    <android.support.v7.widget.AppCompatTextView
+        style="@style/TextView.Small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_sm"
+        android:text="@string/flight_booking_dialog_price_change_description" />
+
+    <android.support.v7.widget.AppCompatTextView
+        style="@style/TextView.Small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_sm"
+        android:text="@string/flight_booking_dialog_price_change_prev_price_label" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tv_old_price"
+        style="@style/TextView.Small.Bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_vs"
+        tools:text="Rp45.876.900" />
+
+    <android.support.v7.widget.AppCompatTextView
+        style="@style/TextView.Small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_sm"
+        android:text="@string/flight_booking_dialog_price_change_after_price_label" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tv_new_price"
+        style="@style/TextView.Title.Bold"
+        android:layout_marginTop="@dimen/margin_vs"
+        tools:text="Rp46.876.900" />
+
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tv_continue_process"
+        style="@style/TextView.Small.Green.Bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_med"
+        android:gravity="right"
+        android:text="@string/flight_booking_dialog_price_change_continue_label" />
+
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tv_find_another_flight"
+        style="@style/TextView.Small.Bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_med"
+        android:gravity="right"
+        android:text="@string/flight_booking_dialog_price_change_another_flights_label" />
+
+
+</LinearLayout>

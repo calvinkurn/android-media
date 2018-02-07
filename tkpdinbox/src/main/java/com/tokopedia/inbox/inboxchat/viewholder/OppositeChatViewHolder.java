@@ -7,6 +7,7 @@ import android.text.Spanned;
 import android.text.format.DateFormat;
 import android.text.style.BackgroundColorSpan;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
@@ -15,6 +16,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
+import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 
@@ -32,14 +34,17 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
     private TextView hour;
     private TextView date;
     private TextView name;
+    private TextView dot;
     private TextView label;
     private TextView oldMessage;
     private View oldMessageView;
+    private ImageView attachment;
 
     ChatRoomContract.View viewListener;
 
     @LayoutRes
     public static final int LAYOUT = R.layout.message_item_their;
+    private AttachmentChatHelper attachmentChatHelper;
 
     public OppositeChatViewHolder(View itemView, ChatRoomContract.View viewListener) {
         super(itemView);
@@ -51,12 +56,15 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
         label = (TextView) itemView.findViewById(R.id.label);
         oldMessage = (TextView) itemView.findViewById(R.id.old_message);
         oldMessageView = itemView.findViewById(R.id.old_message_container);
+        dot = itemView.findViewById(R.id.dot);
+        attachment = itemView.findViewById(R.id.image);
         position = getAdapterPosition();
+        attachmentChatHelper = new AttachmentChatHelper();
         this.viewListener = viewListener;
     }
 
     @Override
-    public void bind(OppositeChatViewModel element) {
+    public void bind(final OppositeChatViewModel element) {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,14 +116,12 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
             hour.setVisibility(View.GONE);
         }
 
-
-        element.getSenderId();
-
         name.setText(element.getSenderName());
 
         label.setText(element.getRole());
 
         name.setVisibility(View.GONE);
+        dot.setVisibility(View.GONE);
         label.setVisibility(View.GONE);
 
         if (element.getOldMessageTitle() != null && element.getOldMessageTitle().length() > 0) {
@@ -124,6 +130,8 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
         } else {
             oldMessageView.setVisibility(View.GONE);
         }
+
+        attachmentChatHelper.parse(attachment, message, element.getAttachment(), element.getRole(), element.getMsg(), viewListener);
     }
 
     private Spanned getOldMessageText(OppositeChatViewModel element) {

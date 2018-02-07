@@ -2,8 +2,9 @@ package com.tokopedia.sellerapp.utils;
 
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.seller.opportunity.common.util.OpportunityWhiteList;
 import com.tokopedia.seller.product.common.utils.ProductWhiteList;
-import com.tokopedia.seller.shop.common.domain.interactor.util.ShopWhiteList;
+import com.tokopedia.seller.shop.common.utils.ShopWhiteList;
 import com.tokopedia.topads.common.util.TopAdsWhiteList;
 
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ public class WhiteList {
         cacheApiWhiteList.addAll(ShopWhiteList.getWhiteList());
         cacheApiWhiteList.addAll(ProductWhiteList.getWhiteList());
         cacheApiWhiteList.addAll(TopAdsWhiteList.getWhiteList());
+        cacheApiWhiteList.addAll(OpportunityWhiteList.getWhiteList());
         return cacheApiWhiteList;
     }
 }

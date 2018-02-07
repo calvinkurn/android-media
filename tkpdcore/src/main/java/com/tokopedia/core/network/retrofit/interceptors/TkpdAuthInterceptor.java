@@ -7,6 +7,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 
+import org.apache.http.auth.AUTH;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,6 +23,8 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okio.Buffer;
 
+import static com.tokopedia.core.network.retrofit.utils.NetworkCalculator.AUTHORIZATION;
+
 /**
  * @author Angga.Prasetiyo on 27/11/2015.
  */
@@ -29,6 +32,10 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private static final String TAG = TkpdAuthInterceptor.class.getSimpleName();
     private static final int ERROR_FORBIDDEN_REQUEST = 403;
     private static final String ACTION_TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
+    private static final String BEARER = "Bearer";
+    private static final String AUTHORIZATION = "authorization";
+    private static final String TOKEN = "token";
+    private static final String ACCOUNTS_AUTHORIZATION = "accounts-authorization";
     private final String authKey;
 
     public TkpdAuthInterceptor(String authKey) {
@@ -42,7 +49,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private Lock lock = new ReentrantLock();
 
     @Override
-    public Response intercept(Chain chain) throws IOException{
+    public Response intercept(Chain chain) throws IOException {
         final Request originRequest = chain.request();
         Request.Builder newRequest = chain.request().newBuilder();
 
@@ -64,10 +71,10 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     }
 
     protected Response checkForceLogout(Chain chain, Response response, Request finalRequest) throws
-            IOException{
+            IOException {
         if (isNeedRelogin(response)) {
             refreshTokenWithRelogin();
-            if (finalRequest.header("authorization").contains("Bearer")) {
+            if (finalRequest.header(AUTHORIZATION).contains(BEARER)) {
                 Request newestRequest = recreateRequestWithNewAccessToken(chain);
                 return checkShowForceLogout(chain, newestRequest);
             } else {
@@ -82,7 +89,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         return response;
     }
 
-    protected Response checkShowForceLogout(Chain chain, Request newestRequest) throws IOException{
+    protected Response checkShowForceLogout(Chain chain, Request newestRequest) throws IOException {
         Response response = chain.proceed(newestRequest);
         if (isUnauthorized(newestRequest, response) || isNeedRelogin(response)) {
             ServerErrorHandler.showForceLogoutDialog();
@@ -93,11 +100,15 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     protected void checkResponse(String string, Response response) {
         String bodyResponse = string;
+
+        if (isOnBetaServer(response)) ServerErrorHandler.showForceHockeyAppDialog();
+
         if (isMaintenance(bodyResponse)) {
             ServerErrorHandler.showMaintenancePage();
         } else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {
             ServerErrorHandler.showServerErrorSnackbar();
-            ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
+            ServerErrorHandler.sendErrorNetworkAnalytics(response.request().url().toString(),
+                    response.code());
         } else if (isForbiddenRequest(bodyResponse, response.code())
                 && isTimezoneNotAutomatic()) {
             ServerErrorHandler.showTimezoneErrorSnackbar();
@@ -147,6 +158,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             case "PATCH":
             case "DELETE":
             case "POST":
+            case "PUT":
                 authHeaders = getHeaderMap(
                         originRequest.url().uri().getPath(),
                         generateParamBodyString(originRequest),
@@ -290,7 +302,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             //using peekBody instead of body in order to avoid consume response object, peekBody will automatically return new reponse
             String responseString = response.peekBody(512).string();
             return responseString.toLowerCase().contains("invalid_request")
-                    && request.header("authorization").contains("Bearer");
+                    && request.header(AUTHORIZATION).contains(BEARER)
+                    && !response.request().url().encodedPath().contains(TOKEN);
         } catch (IOException e) {
             e.printStackTrace();
             return false;
@@ -335,8 +348,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         generateHmacAuthRequest(newest, newestRequestBuilder);
         String freshAccessToken = SessionHandler.getAccessToken();
         newestRequestBuilder
-                .header("authorization", "Bearer " + freshAccessToken)
-                .header("accounts-authorization", "Bearer " + freshAccessToken);
+                .header(AUTHORIZATION, BEARER + " " + freshAccessToken)
+                .header(ACCOUNTS_AUTHORIZATION, BEARER + " " + freshAccessToken);
         return newestRequestBuilder.build();
     }
 
@@ -346,8 +359,12 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         generateHmacAuthRequest(newest, newestRequestBuilder);
         String freshAccessToken = SessionHandler.getAccessToken();
         newestRequestBuilder
-                .header("accounts-authorization", "Bearer " + freshAccessToken);
+                .header(ACCOUNTS_AUTHORIZATION, BEARER + " " + freshAccessToken);
         return newestRequestBuilder.build();
+    }
+
+    private Boolean isOnBetaServer(Response response) {
+        return response.header("is_beta", "0").equals("1");
     }
 
 }

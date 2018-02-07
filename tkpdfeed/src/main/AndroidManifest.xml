@@ -33,6 +33,13 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"/>
 
+        <activity
+            android:name=".feedplus.view.activity.KolFollowingListActivity"
+            android:label="@string/title_following_kol"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+
+
     </application>
 
 </manifest>

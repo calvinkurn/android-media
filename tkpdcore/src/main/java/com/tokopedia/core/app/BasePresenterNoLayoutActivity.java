@@ -13,6 +13,7 @@ import butterknife.ButterKnife;
  * @author by alifa on 5/5/17.
  */
 
+@Deprecated
 public abstract class BasePresenterNoLayoutActivity<P> extends BaseActivity {
     protected P presenter;
     protected boolean isAfterRotate;

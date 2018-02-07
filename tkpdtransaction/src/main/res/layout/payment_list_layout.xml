@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:visibility="visible"
-    tools:visibility="visible">
+    tools:visibility="visible"
+    android:background="@color/white">
 
     <com.tokopedia.core.customwidget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"

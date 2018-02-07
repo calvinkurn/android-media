@@ -4,79 +4,39 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.R;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdCache;
 
 /**
- * Created by okasurya on 11/29/17.
+ * Created by okasurya on 1/10/18.
  */
 
-public class AppRatingDialog {
-    private static final String PACKAGE_SELLER_APP = "com.tokopedia.sellerapp";
-    private static final String PACKAGE_CONSUMER_APP = "com.tokopedia.tkpd";
-    private static final String APPLINK_PLAYSTORE = "market://details?id=";
-    private static final String URL_PLAYSTORE = "https://play.google.com/store/apps/details?id=";
+public abstract class AppRatingDialog {
 
-    private Activity activity;
-    private RemoteConfig remoteConfig;
-    private LocalCacheHandler cacheHandler;
+    protected static final String PACKAGE_SELLER_APP = "com.tokopedia.sellerapp";
+    protected static final String PACKAGE_CONSUMER_APP = "com.tokopedia.tkpd";
+    protected static final String APPLINK_PLAYSTORE = "market://details?id=";
+    protected static final String URL_PLAYSTORE = "https://play.google.com/store/apps/details?id=";
 
-    public static void show(Activity activity) {
-        AppRatingDialog appRatingDialog = new AppRatingDialog(activity);
-        if(appRatingDialog.isDialogNeedToBeShown()) {
-            appRatingDialog.buildAlertDialog().show();
-            UnifyTracking.eventAppRatingImpression();
-        }
-    }
+    protected Activity activity;
+    protected RemoteConfig remoteConfig;
+    protected LocalCacheHandler cacheHandler;
+    @Nullable
+    protected AppRatingListener listener;
 
-    private AppRatingDialog(Activity activity) {
+    protected AppRatingDialog(Activity activity) {
         this.activity = activity;
         this.remoteConfig = new FirebaseRemoteConfigImpl(activity);
         cacheHandler = new LocalCacheHandler(activity, TkpdCache.APP_RATING);
     }
 
-    private AlertDialog buildAlertDialog() {
-        return new AlertDialog.Builder(activity)
-                .setTitle(
-                    remoteConfig.getString(
-                        TkpdCache.RemoteConfigKey.MAINAPP_RATING_TITLE,
-                        activity.getString(R.string.app_rating_title)
-                    )
-                )
-                .setMessage(
-                    remoteConfig.getString(
-                        TkpdCache.RemoteConfigKey.MAINAPP_RATING_MESSAGE,
-                        activity.getString(R.string.app_rating_message)
-                    )
-                )
-                .setPositiveButton(R.string.app_rating_button_rate, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        openPlayStore();
-                        saveVersionCodeForState();
-                        UnifyTracking.eventClickAppRating();
-                        dialog.dismiss();
-                    }
-                })
-                .setNegativeButton(R.string.app_rating_button_later, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        UnifyTracking.eventCancelAppRating();
-                        dialog.dismiss();
-                    }
-                })
-                .setCancelable(false)
-                .create();
-    }
-
-    private void openPlayStore() {
+    protected void openPlayStore() {
         try {
             activity.startActivity(
                     new Intent(
@@ -94,14 +54,6 @@ public class AppRatingDialog {
         }
     }
 
-    /**
-     * The value saved for state is app version code, for easier development in the future.
-     */
-    private void saveVersionCodeForState() {
-        cacheHandler.putInt(TkpdCache.Key.KEY_APP_RATING_VERSION, GlobalConfig.VERSION_CODE);
-        cacheHandler.applyEditor();
-    }
-
     private String getAppPackageName() {
         if(GlobalConfig.isSellerApp()) {
             return PACKAGE_SELLER_APP;
@@ -110,8 +62,43 @@ public class AppRatingDialog {
         return PACKAGE_CONSUMER_APP;
     }
 
-    private boolean isDialogNeedToBeShown() {
-        Integer appRatingVersion = cacheHandler.getInt(TkpdCache.Key.KEY_APP_RATING_VERSION);
-        return  appRatingVersion == null || appRatingVersion == -1;
+    protected void showDialog() {
+        if(isDialogNeedToBeShown()) {
+            AlertDialog alertDialog = buildAlertDialog();
+                alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        dismissDialog();
+                    }
+                });
+
+            alertDialog.show();
+            onShowDialog();
+        } else {
+            dismissDialog();
+        }
+    }
+
+    private void dismissDialog() {
+        if(listener != null) {
+            listener.onDismiss();
+        }
+    }
+
+    protected void setListener(AppRatingListener listener) {
+        this.listener = listener;
+    }
+
+    protected abstract AlertDialog buildAlertDialog();
+
+    protected abstract boolean isDialogNeedToBeShown();
+
+    /**
+     * This will be executed when dialog appear
+     */
+    protected abstract void onShowDialog();
+
+    public interface AppRatingListener {
+        void onDismiss();
     }
 }
