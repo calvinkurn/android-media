@@ -9,6 +9,7 @@ import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.orderlist.contract.FlightOrderListContract;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrdersUseCase;
+import com.tokopedia.flight.orderlist.domain.FlightSendEmailUseCase;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.view.viewmodel.mapper.FlightOrderViewModelMapper;
 
@@ -27,14 +28,17 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
         implements FlightOrderListContract.Presenter {
     private UserSession userSession;
     private FlightGetOrdersUseCase flightGetOrdersUseCase;
+    private FlightSendEmailUseCase sendEmailUseCase;
     private FlightOrderViewModelMapper flightOrderViewModelMapper;
 
     @Inject
     public FlightOrderListPresenter(UserSession userSession,
                                     FlightGetOrdersUseCase flightGetOrdersUseCase,
+                                    FlightSendEmailUseCase sendEmailUseCase,
                                     FlightOrderViewModelMapper flightOrderViewModelMapper) {
         this.userSession = userSession;
         this.flightGetOrdersUseCase = flightGetOrdersUseCase;
+        this.sendEmailUseCase = sendEmailUseCase;
         this.flightOrderViewModelMapper = flightOrderViewModelMapper;
     }
 
