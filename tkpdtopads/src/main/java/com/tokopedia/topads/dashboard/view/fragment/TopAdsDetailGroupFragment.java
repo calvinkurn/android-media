@@ -196,7 +196,7 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
 
             bottomSheetView.show();
 
-            isEnoughDeposit = false;
+            isEnoughDeposit = true;
             return;
         }
         if (listener != null) {

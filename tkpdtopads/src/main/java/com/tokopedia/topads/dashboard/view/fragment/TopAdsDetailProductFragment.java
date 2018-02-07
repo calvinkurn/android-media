@@ -203,7 +203,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
 
             bottomSheetView.show();
 
-            isEnoughDeposit = false;
+            isEnoughDeposit = true;
             return;
         }
         if (listener != null) {
