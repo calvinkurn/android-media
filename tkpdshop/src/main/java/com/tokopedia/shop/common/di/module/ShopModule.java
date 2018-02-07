@@ -6,9 +6,7 @@ import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.shop.common.data.interceptor.ShopAuthInterceptor;
 import com.tokopedia.shop.common.di.ShopQualifier;
 import com.tokopedia.shop.common.di.scope.ShopScope;
-import com.tokopedia.shop.info.data.source.cloud.api.ShopApi;
-import com.tokopedia.shop.info.di.ShopInfoQualifier;
-import com.tokopedia.shop.info.di.scope.ShopInfoScope;
+import com.tokopedia.shop.common.data.source.cloud.api.WS4ShopApi;
 
 import dagger.Module;
 import dagger.Provides;
@@ -25,8 +23,8 @@ public class ShopModule {
 
     @ShopScope
     @Provides
-    ShopApi provideShopApi(@ShopQualifier Retrofit retrofit){
-        return retrofit.create(ShopApi.class);
+    WS4ShopApi provideShopApi(@ShopQualifier Retrofit retrofit){
+        return retrofit.create(WS4ShopApi.class);
     }
 
     @ShopQualifier

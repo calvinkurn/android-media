@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.interfaces.merchant.shop.info.ShopInfo;
-import com.tokopedia.shop.info.data.source.cloud.api.ShopApi;
+import com.tokopedia.shop.common.data.source.cloud.api.WS4ShopApi;
 import com.tokopedia.shop.info.data.source.cloud.model.ResponseList;
 import com.tokopedia.shop.info.data.source.cloud.model.ShopNote;
 
@@ -25,11 +25,11 @@ public class ShopInfoCloudDataSource {
     public static final String SHOP_ID = "shop_id";
     public static final String SHOW_ALL = "show_all";
 
-    private ShopApi shopApi;
+    private WS4ShopApi shopApi;
     private UserSession userSession;
 
     @Inject
-    public ShopInfoCloudDataSource(ShopApi shopApi, UserSession userSession) {
+    public ShopInfoCloudDataSource(WS4ShopApi shopApi, UserSession userSession) {
         this.shopApi = shopApi;
         this.userSession = userSession;
     }

@@ -1,4 +1,4 @@
-package com.tokopedia.shop.info.data.source.cloud.api;
+package com.tokopedia.shop.common.data.source.cloud.api;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.interfaces.merchant.shop.info.ShopInfo;
@@ -18,7 +18,11 @@ import rx.Observable;
  * Created by Hendry on 4/20/2017.
  */
 
-public interface ShopApi {
+/**
+ * Should migrate to tome
+ */
+@Deprecated
+public interface WS4ShopApi {
 
     @FormUrlEncoded
     @POST(ShopUrl.SHOP_INFO_PATH)
