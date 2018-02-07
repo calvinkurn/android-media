@@ -830,9 +830,8 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
         viewModel.setProductWholesale(productDetailViewHolder.getProductWholesaleViewModels());
 
-        viewModel.setProductStock(productDetailViewHolder.getStatusStock());
-        viewModel.setProductStatus(productDetailViewHolder.isStockManaged() ? InvenageSwitchTypeDef.TYPE_ACTIVE : InvenageSwitchTypeDef.TYPE_NOT_ACTIVE);
         viewModel.setProductStock(productDetailViewHolder.getTotalStock());
+        viewModel.setProductStatus(productDetailViewHolder.getStatusStock());
         viewModel.setProductEtalase(productDetailViewHolder.getProductEtalase());
         viewModel.setProductCondition(productDetailViewHolder.getCondition());
         viewModel.setProductMustInsurance(productDetailViewHolder.isMustInsurance());
@@ -841,8 +840,8 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         viewModel.setProductFreeReturn(productDetailViewHolder.isFreeReturns());
         viewModel.setProductVideo(productAdditionalInfoViewHolder.getVideoList());
         viewModel.setProductPreorder(productAdditionalInfoViewHolder.getPreOrder());
-        viewModel.setProductStatus(getStatusUpload());
-        viewModel.setProductVariant(productAdditionalInfoViewHolder.getProductVariant());
+        viewModel.setProductStatusUpload(getStatusUpload());
+//        viewModel.setProductVariant(productAdditionalInfoViewHolder.getProductVariant());
         viewModel.setProductNameEditable(productInfoViewHolder.isNameEditable());
 
 //        viewModel.setVariantStringSelection(productAdditionalInfoViewHolder.getVariantStringSelection());

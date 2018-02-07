@@ -100,13 +100,13 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
                 if (productViewModels == null || productViewModels.size() == 0 ) {
                     getView().onSearchLoaded(new ArrayList<ProductDraftViewModel>(), 0);
                 } else {
-                    // map to View Model
-//                    List<ProductDraftViewModel> viewModelList = new ArrayList<>();
-//                    for (int i=0, sizei = productViewModels.size(); i<sizei; i++) {
-//                        UploadProductInputDomainModel domainModel = productViewModels.get(i);
-//                        viewModelList.add(ProductDraftListMapper.mapDomainToView(domainModel));
-//                    }
-//                    getView().onSearchLoaded(viewModelList, viewModelList.size());
+//                     map to View Model
+                    List<ProductDraftViewModel> viewModelList = new ArrayList<>();
+                    for (int i=0, sizei = productViewModels.size(); i<sizei; i++) {
+                        ProductViewModel domainModel = productViewModels.get(i);
+                        viewModelList.add(ProductDraftListMapper.mapDomainToView(domainModel));
+                    }
+                    getView().onSearchLoaded(viewModelList, viewModelList.size());
                 }
 
             }

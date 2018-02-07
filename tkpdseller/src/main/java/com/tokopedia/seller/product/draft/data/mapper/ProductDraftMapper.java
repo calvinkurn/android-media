@@ -54,12 +54,15 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
 
             ProductViewModel domainModel = mapDraftToDomain(draftModel);
             domainModel.setProductId(draftId);
+            domainModel.setProductDraftId((int) productDraftDataBase.getId());
             return domainModel;
         } else {
-            return CacheUtil.convertStringToModel(
+            ProductViewModel productViewModel = CacheUtil.convertStringToModel(
                     productDraftDataBase.getData(),
                     ProductViewModel.class
             );
+            productViewModel.setProductDraftId((int) productDraftDataBase.getId());
+            return productViewModel;
         }
     }
 
@@ -82,14 +85,13 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
         domainModel.setProductPrice(draftModel.getProductPrice());
         domainModel.setProductPriceCurrency(draftModel.getProductPriceCurrency());
         domainModel.setProductFreeReturn(mapToFreeReturn(draftModel.getProductReturnable()));
-//        domainModel.setProductStatus(draftModel.getProductUploadTo());
-//        domainModel.setProductInvenageSwitch(draftModel.getProductInvenageSwitch());
-//        domainModel.setProductInvenageValue(draftModel.getProductInvenageValue());
+        domainModel.setProductStatus(draftModel.getProductUploadTo());
+        domainModel.setProductStock(draftModel.getProductInvenageValue());
         domainModel.setProductWeight(draftModel.getProductWeight());
         domainModel.setProductWeightUnit(draftModel.getProductWeightUnit());
         domainModel.setProductPreorder(generateProductPreorder(draftModel));
 //        domainModel.setServerId(draftModel.getServerId());
-        domainModel.setProductStatus(draftModel.getProductStatus());
+        domainModel.setProductStatusUpload(draftModel.getProductStatus());
         domainModel.setProductId(Long.parseLong(draftModel.getProductId()));
         domainModel.setProductNameEditable(draftModel.getProductNameEditable() != 0);
 //        domainModel.setProductVariantDataSubmit(draftModel.getProductVariantDataSubmit());

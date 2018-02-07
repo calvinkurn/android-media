@@ -14,6 +14,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.constant.InvenageSwitchTypeDef;
+import com.tokopedia.seller.product.edit.constant.UploadToTypeDef;
 import com.tokopedia.seller.product.edit.di.component.DaggerProductDraftComponent;
 import com.tokopedia.seller.product.edit.di.module.ProductDraftModule;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductVideoViewModel;
@@ -125,7 +126,7 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
             productDetailViewHolder.setMinimumOrder((int)model.getProductMinOrder());
         }
         productDetailViewHolder.setStockStatus(model.getProductStatus());
-//        productDetailViewHolder.setStockManaged(model.getProductInvenageSwitch() == InvenageSwitchTypeDef.TYPE_ACTIVE);
+        productDetailViewHolder.setStockManaged(model.getProductStatus() == UploadToTypeDef.TYPE_ACTIVE && model.getProductStock() > 0);
         productDetailViewHolder.setTotalStock((int)model.getProductStock());
         if (model.getProductEtalase().getEtalaseId() > 0) {
             productDetailViewHolder.setEtalaseId(model.getProductEtalase().getEtalaseId());

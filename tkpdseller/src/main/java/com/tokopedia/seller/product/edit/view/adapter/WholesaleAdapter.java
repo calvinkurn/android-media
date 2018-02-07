@@ -28,7 +28,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
     private List<WholesaleModel> wholesaleModels;
-    private List<ProductWholesaleViewModel> productWholesaleViewModels;
     private Listener listener;
 
     public WholesaleAdapter() {
@@ -122,10 +121,6 @@ public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
         return null;
     }
 
-    public List<WholesaleModel> getWholesaleModels() {
-        return new ArrayList<>(wholesaleModels);
-    }
-
     public void addAllWholeSalePrice(List<ProductWholesaleViewModel> wholesalePrice) {
         for (int i = 0; i < wholesalePrice.size(); i++) {
 
@@ -156,11 +151,6 @@ public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
             productWholesaleViewModels.add(productWholesaleViewModel);
         }
         return productWholesaleViewModels;
-    }
-
-    public void addAllWholeSale(ArrayList<WholesaleModel> wholesaleModels) {
-        this.wholesaleModels.addAll(wholesaleModels);
-        notifyDataSetChanged();
     }
 
     public interface Listener {

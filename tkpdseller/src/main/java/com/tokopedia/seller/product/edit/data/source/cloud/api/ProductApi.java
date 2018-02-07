@@ -2,6 +2,7 @@ package com.tokopedia.seller.product.edit.data.source.cloud.api;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.seller.product.edit.constant.ProductUrl;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.ProductUploadResultModel;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.addproductsubmit.AddProductSubmitServiceModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.shop.open.data.model.response.DataResponse;
@@ -20,8 +21,8 @@ import rx.Observable;
 public interface ProductApi {
 
     @POST(ProductUrl.URL_ADD_PRODUCT)
-    Observable<Response<DataResponse<AddProductSubmitServiceModel>>> addProductSubmit(@Body ProductViewModel productViewModel);
+    Observable<Response<DataResponse<ProductUploadResultModel>>> addProductSubmit(@Body ProductViewModel productViewModel);
 
     @PATCH(ProductUrl.URL_EDIT_PRODUCT)
-    Observable<Response<DataResponse<AddProductSubmitServiceModel>>> editProductSubmit(@Body ProductViewModel productViewModel, @Path(ProductUrl.PRODUCT_ID) String productId);
+    Observable<Response<DataResponse<ProductUploadResultModel>>> editProductSubmit(@Body ProductViewModel productViewModel, @Path(ProductUrl.PRODUCT_ID) String productId);
 }

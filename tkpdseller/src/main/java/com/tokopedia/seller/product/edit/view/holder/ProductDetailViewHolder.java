@@ -75,6 +75,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
 
     private static final int MAX_WHOLESALE = 5;
     private static final int DEFAULT_ETALASE_ID = -1;
+    public static final int DEFAULT_STOCK_VALUE = 0;
     private final Locale dollarLocale = Locale.US;
     private final Locale idrLocale = new Locale("in", "ID");
     private RecyclerView recyclerViewWholesale;
@@ -408,7 +409,11 @@ public class ProductDetailViewHolder extends ProductViewHolder
     }
 
     public int getTotalStock() {
-        return (int) stockTotalCounterInputView.getDoubleValue();
+        if(isStockManaged()) {
+            return (int) stockTotalCounterInputView.getDoubleValue();
+        }else{
+            return DEFAULT_STOCK_VALUE;
+        }
     }
 
     public void setTotalStock(int value) {
@@ -618,7 +623,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
         savedInstanceState.putBoolean(IS_ENABLE_WHOLESALE, wholesaleExpandableOptionSwitch.isEnabled());
         savedInstanceState.putBoolean(IS_ON_WHOLESALE, editPriceImageButton.getVisibility() == View.VISIBLE);
         savedInstanceState.putParcelableArrayList(KEY_WHOLESALE,
-                new ArrayList<Parcelable>(wholesaleAdapter.getWholesaleModels()));
+                new ArrayList<Parcelable>(wholesaleAdapter.getProductWholesaleViewModels()));
         savedInstanceState.putInt(BUNDLE_SPINNER_POSITION, priceSpinnerCounterInputView.getSpinnerPosition());
         savedInstanceState.putDouble(BUNDLE_COUNTER_PRICE, priceSpinnerCounterInputView.getCounterValue());
         savedInstanceState.putBoolean(IS_WHOLESALE_VISIBLE, wholesaleExpandableOptionSwitch.getVisibility() == View.VISIBLE);
@@ -649,11 +654,11 @@ public class ProductDetailViewHolder extends ProductViewHolder
         stockTotalExpandableOptionSwitch.setVisibility(isStockTotalVisible ? View.VISIBLE : View.GONE);
 
         // wholesale must be executed at the last, because the wholesale will be cleared on when the price changes.
-        ArrayList<WholesaleModel> wholesaleModels = savedInstanceState.getParcelableArrayList(KEY_WHOLESALE);
+        ArrayList<ProductWholesaleViewModel> wholesaleModels = savedInstanceState.getParcelableArrayList(KEY_WHOLESALE);
         if (wholesaleModels == null) {
             wholesaleModels = new ArrayList<>();
         }
-        wholesaleAdapter.addAllWholeSale(wholesaleModels);
+        wholesaleAdapter.addAllWholeSalePrice(wholesaleModels);
         wholesaleAdapter.notifyDataSetChanged();
 
     }

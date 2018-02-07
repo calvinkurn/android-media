@@ -37,7 +37,7 @@ public class UploadProduct implements Func1<ProductViewModel, Observable<AddProd
         return Observable.just(productViewModel)
                 .doOnNext(notificationManager.getUpdateNotification())
                 .flatMap(new ProceedUploadProduct(notificationManager, uploadProductRepository, uploadImageUseCase))
-                .onErrorResumeNext(new AddProductStatusToError(productViewModel.getProductStatus()));
+                .onErrorResumeNext(new AddProductStatusToError(productViewModel.getProductStatusUpload()));
     }
 
     private class AddProductStatusToError implements Func1<Throwable, Observable<? extends AddProductDomainModel>> {
