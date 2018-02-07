@@ -11,6 +11,7 @@ import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.network.retrofit.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.common.exception.TomeException;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 
 import java.io.IOException;
@@ -45,7 +46,9 @@ public class ViewUtils {
             return ((ResponseV4ErrorException) t).getErrorList().get(0);
         } else if (t instanceof ResponseErrorException) {
             return getErrorMessage(t);
-        } else if (t instanceof UnknownHostException) {
+        } else if(t instanceof TomeException) {
+            return ((TomeException) t).getMessageError().get(0);
+        }else if (t instanceof UnknownHostException) {
             return context.getString(R.string.msg_no_connection);
         } else if (t instanceof SocketTimeoutException) {
             return context.getString(R.string.default_request_error_timeout);

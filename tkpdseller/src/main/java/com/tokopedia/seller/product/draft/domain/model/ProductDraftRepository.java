@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.draft.domain.model;
 
+import com.tokopedia.seller.product.draft.view.model.ProductDraftViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public interface ProductDraftRepository {
 
     Observable<Boolean> deleteDraft(long productId);
 
-    Observable<List<ProductViewModel>> getAllDraft();
+    Observable<List<ProductDraftViewModel>> getAllDraft();
 
     Observable<Long> getAllDraftCount();
 

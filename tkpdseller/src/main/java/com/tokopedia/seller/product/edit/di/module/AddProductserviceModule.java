@@ -8,12 +8,16 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
+import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.v4.NetworkConfig;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.seller.base.data.repository.UploadImageRepositoryImpl;
 import com.tokopedia.seller.base.data.source.UploadImageDataSource;
 import com.tokopedia.seller.base.domain.UploadImageRepository;
 import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
+import com.tokopedia.seller.product.edit.constant.ProductUrl;
 import com.tokopedia.seller.product.edit.data.mapper.UploadProductPictureInputMapper;
 import com.tokopedia.seller.product.edit.data.repository.GenerateHostRepositoryImpl;
 import com.tokopedia.seller.product.edit.data.repository.ImageProductUploadRepositoryImpl;
@@ -42,9 +46,13 @@ import com.tokopedia.seller.product.variant.repository.ProductVariantRepositoryI
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
+import com.tokopedia.seller.common.exception.model.TomeErrorResponse;
+import com.tokopedia.seller.shop.common.di.ShopScope;
 
 /**
  * @author sebastianuskh on 4/20/17.
@@ -103,8 +111,50 @@ public class AddProductserviceModule {
 
     @AddProductServiceScope
     @Provides
-    ProductApi provideTomeApiAddProduct(@TomeQualifier Retrofit retrofit){
+    ProductApi provideTomeApiAddProduct(@ProductTomeQualifier Retrofit retrofit){
         return retrofit.create(ProductApi.class);
+    }
+
+    @ProductTomeQualifier
+    @AddProductServiceScope
+    @Provides
+    Retrofit provideRetrofit(Retrofit.Builder retrofitBuilder, @ProductTomeQualifier OkHttpClient okHttpClient){
+        return retrofitBuilder.baseUrl(TkpdBaseURL.TOME_DOMAIN).client(okHttpClient).build();
+    }
+
+    @ProductTomeQualifier
+    @AddProductServiceScope
+    @Provides
+    public OkHttpClient provideOkHttpClientTomeBearerAuth(@ProductTomeQualifier HttpLoggingInterceptor httpLoggingInterceptor,
+                                                          BearerInterceptor bearerInterceptor,
+                                                          @ProductTomeQualifier TkpdErrorResponseInterceptor tkpdErrorResponseInterceptor
+    ) {
+        return new OkHttpClient.Builder()
+                .addInterceptor(bearerInterceptor)
+                .addInterceptor(tkpdErrorResponseInterceptor)
+                .addInterceptor(httpLoggingInterceptor)
+                .build();
+    }
+
+    @ProductTomeQualifier
+    @AddProductServiceScope
+    @Provides
+    public HttpLoggingInterceptor provideHttpLoggingInterceptor() {
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        } else {
+            logging.setLevel(HttpLoggingInterceptor.Level.NONE);
+        }
+        return logging;
+    }
+
+    @ProductTomeQualifier
+    @AddProductServiceScope
+    @Provides
+    //todo change this interceptor to HeaderErrorResponseInterceptor
+    public TkpdErrorResponseInterceptor provideResponseInterceptor() {
+        return new TkpdErrorResponseInterceptor(TomeErrorResponse.class);
     }
 
     @AddProductServiceScope

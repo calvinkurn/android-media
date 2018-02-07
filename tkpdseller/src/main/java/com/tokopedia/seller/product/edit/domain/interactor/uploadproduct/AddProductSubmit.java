@@ -24,7 +24,7 @@ public class AddProductSubmit implements Func1<ProductViewModel, Observable<AddP
 
     @Override
     public Observable<AddProductDomainModel> call(ProductViewModel productViewModel) {
-        if(productViewModel.getProductStatusUpload() == ProductStatus.ADD) {
+        if(productViewModel.getProductId() <= 0) {
             return uploadProductRepository
                     .addProductSubmit(productViewModel);
         }else{

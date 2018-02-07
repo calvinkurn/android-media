@@ -1,4 +1,4 @@
-package com.tokopedia.seller.shop.common.exception.model;
+package com.tokopedia.seller.common.exception.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

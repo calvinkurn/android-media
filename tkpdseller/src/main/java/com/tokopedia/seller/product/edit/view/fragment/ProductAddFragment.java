@@ -840,7 +840,6 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         viewModel.setProductFreeReturn(productDetailViewHolder.isFreeReturns());
         viewModel.setProductVideo(productAdditionalInfoViewHolder.getVideoList());
         viewModel.setProductPreorder(productAdditionalInfoViewHolder.getPreOrder());
-        viewModel.setProductStatusUpload(getStatusUpload());
 //        viewModel.setProductVariant(productAdditionalInfoViewHolder.getProductVariant());
         viewModel.setProductNameEditable(productInfoViewHolder.isNameEditable());
 

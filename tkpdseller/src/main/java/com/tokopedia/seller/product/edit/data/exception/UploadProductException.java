@@ -10,8 +10,6 @@ public class UploadProductException extends RuntimeException {
 
     private final Throwable throwable;
     private String productDraftId;
-    @ProductStatus
-    private int productStatus;
 
     public Throwable getThrowable() {
         return throwable;
@@ -25,19 +23,9 @@ public class UploadProductException extends RuntimeException {
         this.productDraftId = productDraftId;
     }
 
-    @ProductStatus
-    public int getProductStatus() {
-        return productStatus;
-    }
-
-    public void setProductStatus(int productStatus) {
-        this.productStatus = productStatus;
-    }
-
-    public UploadProductException(String productDraftId, int productStatus, Throwable throwable) {
+    public UploadProductException(String productDraftId, Throwable throwable) {
         super(throwable);
         this.productDraftId = productDraftId;
-        this.productStatus = productStatus;
         this.throwable = throwable;
     }
 }
