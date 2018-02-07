@@ -90,8 +90,8 @@ public class FeedDetailSubscriber extends Subscriber<List<DataFeedDetailDomain>>
         );
     }
 
-    private float getRating(int rating) {
-        return (float) rating / MAX_RATING * NUM_STARS;
+    private Double getRating(Double rating) {
+        return rating / MAX_RATING * NUM_STARS;
     }
 
     private boolean hasFeed(List<DataFeedDetailDomain> dataFeedDetailDomain) {

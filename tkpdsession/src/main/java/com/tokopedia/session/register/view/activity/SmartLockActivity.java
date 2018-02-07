@@ -168,7 +168,9 @@ public class SmartLockActivity extends AppCompatActivity implements
             bundle.putString(SmartLockActivity.USERNAME, credential.getId());
             bundle.putString(SmartLockActivity.PASSWORD, credential.getPassword());
             setResult(RESULT_OK, new Intent().putExtras(bundle));
-            Auth.CredentialsApi.disableAutoSignIn(mGoogleApiClient);
+            if (mGoogleApiClient!=null && mGoogleApiClient.isConnected()) {
+                Auth.CredentialsApi.disableAutoSignIn(mGoogleApiClient);
+            }
             finish();
         } else {
             // This is likely due to the credential being changed outside of

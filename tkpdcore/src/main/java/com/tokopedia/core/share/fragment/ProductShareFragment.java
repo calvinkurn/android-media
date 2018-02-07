@@ -397,6 +397,9 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
 
     @Override
     public void showDialogShareFb(String shortUrl) {
+        if (!isAdded()) {
+            return;
+        }
         shareDialog = new ShareDialog(this);
         callbackManager = CallbackManager.Factory.create();
         shareDialog.registerCallback(callbackManager, new

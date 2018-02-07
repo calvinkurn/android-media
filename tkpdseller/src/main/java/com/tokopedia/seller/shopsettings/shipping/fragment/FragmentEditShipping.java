@@ -27,6 +27,8 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
+import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Address;
+import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shopsettings.shipping.customview.CourierView;
@@ -39,11 +41,15 @@ import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenSho
 import com.tokopedia.seller.shopsettings.shipping.presenter.EditShippingPresenter;
 import com.tokopedia.seller.shopsettings.shipping.presenter.EditShippingPresenterImpl;
 
+import static com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationContract.Constant.INTENT_DATA_ADDRESS;
+
 /**
  * Created by Kris on 2/19/2016.
- TOKOPEDIA
+ * TOKOPEDIA
  */
-public class FragmentEditShipping extends Fragment implements EditShippingViewListener{
+public class FragmentEditShipping extends Fragment implements EditShippingViewListener {
+
+    private static final int GET_DISTRICT_RECCOMENDATION_REQUEST_CODE = 100;
 
     LinearLayout fragmentShipingMainLayout;
 
@@ -53,14 +59,13 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
 
     TextView submitButtonCreateShop;
 
-    private ShippingLocationDialog shippingLocationDialog;
     private EditShippingPresenter editShippingPresenter;
     private TkpdProgressDialog mainProgressDialog;
     private TkpdProgressDialog progressDialog;
     private InputMethodManager inputMethodManager;
     private int mapMode;
 
-    public static FragmentEditShipping createInstance(){
+    public static FragmentEditShipping createInstance() {
         FragmentEditShipping fragment = new FragmentEditShipping();
         Bundle bundle = new Bundle();
         bundle.putInt(MAP_MODE, SETTING_PAGE);
@@ -68,7 +73,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
         return fragment;
     }
 
-    public static FragmentEditShipping createShopInstance(){
+    public static FragmentEditShipping createShopInstance() {
         FragmentEditShipping fragment = new FragmentEditShipping();
         Bundle bundle = new Bundle();
         bundle.putInt(MAP_MODE, CREATE_SHOP_PAGE);
@@ -76,7 +81,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
         return fragment;
     }
 
-    public static FragmentEditShipping resumeShopInstance(Parcelable previousOpenShopState){
+    public static FragmentEditShipping resumeShopInstance(Parcelable previousOpenShopState) {
         FragmentEditShipping fragment = new FragmentEditShipping();
         Bundle bundle = new Bundle();
         bundle.putParcelable(RESUME_OPEN_SHOP_DATA_KEY, previousOpenShopState);
@@ -106,9 +111,9 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
         addressLayout.setViewListener(this);
         fragmentShippingHeader.setListener(editShippingPresenter);
         addressLayout.setListener(editShippingPresenter);
-        if(getArguments().containsKey(RESUME_OPEN_SHOP_DATA_KEY)){
+        if (getArguments().containsKey(RESUME_OPEN_SHOP_DATA_KEY)) {
             editShippingPresenter.setSavedInstance(getArguments());
-        }else {
+        } else {
             editShippingPresenter.setSavedInstance(savedInstanceState);
         }
     }
@@ -118,28 +123,28 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
         super.onResume();
         refreshView();
         NetworkErrorHelper.removeEmptyState(getView());
-        if(editShippingPresenter.getOpenShopModel() != null) {
+        if (editShippingPresenter.getOpenShopModel() != null) {
             editShippingPresenter.bindDataToViewOpenShop(editShippingPresenter.getOpenShopModel());
         } else if (editShippingPresenter.getShopModel() != null) {
             editShippingPresenter.bindDataToView(editShippingPresenter.getShopModel());
         } else getData();
     }
 
-    private void hideAllView(){
+    private void hideAllView() {
         fragmentShippingHeader.setVisibility(View.GONE);
         addressLayout.setVisibility(View.GONE);
         fragmentShipingMainLayout.setVisibility(View.GONE);
     }
 
-    private void getData(){
-        if(getArguments().getInt(MAP_MODE) == CREATE_SHOP_PAGE){
+    private void getData() {
+        if (getArguments().getInt(MAP_MODE) == CREATE_SHOP_PAGE) {
             getShippingDataCreateShop();
-        }else{
+        } else {
             getShippingData();
         }
     }
 
-    private void initiateVariables(View mainView){
+    private void initiateVariables(View mainView) {
         mapMode = getArguments().getInt(MAP_MODE);
         mainProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.MAIN_PROGRESS);
         mainProgressDialog.setCancelable(true);
@@ -149,7 +154,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
 
         fragmentShipingMainLayout = (LinearLayout) mainView.findViewById(R.id.fragment_shipping_main_layout);
         fragmentShippingHeader = (ShippingHeaderLayout) mainView.findViewById(R.id.fragment_shipping_header);
-        addressLayout = (ShippingAddressLayout)  mainView.findViewById(R.id.shipping_address_layout);
+        addressLayout = (ShippingAddressLayout) mainView.findViewById(R.id.shipping_address_layout);
         submitButtonCreateShop = (TextView) mainView.findViewById(R.id.submit_button_create_shop);
         submitButtonCreateShop.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,19 +164,18 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
         });
     }
 
-    private boolean isEditShipping(){
+    private boolean isEditShipping() {
         return getArguments().getInt(MAP_MODE) == SETTING_PAGE;
     }
 
-    private void getShippingData(){
+    private void getShippingData() {
         mainProgressDialog.showDialog();
         editShippingPresenter.fetchData();
     }
 
-    private void getShippingDataCreateShop(){
+    private void getShippingDataCreateShop() {
         editShippingPresenter.fetchDataOpenShop();
         fragmentShippingHeader.setVisibility(View.GONE);
-        fragmentShippingHeader.setEditShippingLocationButtonTitle(getActivity().getString(R.string.title_select_shop_location));
         mainProgressDialog.showDialog();
     }
 
@@ -202,6 +206,11 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     @Override
     public void setShopLocationData(ShopShipping shopData) {
         fragmentShippingHeader.renderData(shopData);
+    }
+
+    @Override
+    public String getDistrictAndCity() {
+        return fragmentShippingHeader.getDistrictAndCity();
     }
 
     @Override
@@ -241,18 +250,33 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     }
 
     @Override
+    public void setLocationProvinceCityDistrict() {
+        fragmentShippingHeader.updateLocationData(getString(R.string.hint_choose_city));
+    }
+
+    @Override
+    public void initializeZipCodes() {
+        fragmentShippingHeader.initializeZipCodes();
+    }
+
+    @Override
     public void refreshLocationViewListener(ShopShipping updatedShopShipping) {
         refreshView();
-        shippingLocationDialog.onSuccess();
         fragmentShippingHeader.updateLocationData(updatedShopShipping.provinceName,
                 updatedShopShipping.cityName,
                 updatedShopShipping.districtName);
     }
 
     @Override
+    public void refreshLocationViewListener(Address address) {
+        refreshView();
+        fragmentShippingHeader.updateLocationData(address.getProvinceName(),
+                address.getCityName(), address.getDistrictName());
+    }
+
+    @Override
     public void locationDialogTimeoutListener() {
         progressDialog.dismiss();
-        shippingLocationDialog.onTimeout();
     }
 
     @Override
@@ -267,7 +291,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
         FragmentManager fm = getActivity().getFragmentManager();
         EditShippingWebViewDialog dialog = EditShippingWebViewDialog
                 .openAdditionalOptionDialog(webResources, courierIndex);
-        if(getFragmentManager().findFragmentByTag("web_view_dialog") == null){
+        if (getFragmentManager().findFragmentByTag("web_view_dialog") == null) {
             dialog.setTargetFragment(FragmentEditShipping.this, ADDITIONAL_OPTION_REQUEST_CODE);
             dialog.show(fm, "web_view_dialog");
         }
@@ -285,7 +309,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
             @Override
             public void onRetryClicked() {
                 mainProgressDialog.showDialog();
-                if(mapMode == CREATE_SHOP_PAGE) editShippingPresenter.fetchDataOpenShop();
+                if (mapMode == CREATE_SHOP_PAGE) editShippingPresenter.fetchDataOpenShop();
                 else editShippingPresenter.fetchData();
             }
         });
@@ -296,12 +320,12 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
         NetworkErrorHelper.showEmptyState(getActivity(), getView(),
                 getString(R.string.msg_no_connection),
                 new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                if(mapMode == CREATE_SHOP_PAGE) editShippingPresenter.fetchDataOpenShop();
-                else editShippingPresenter.fetchData();
-            }
-        });
+                    @Override
+                    public void onRetryClicked() {
+                        if (mapMode == CREATE_SHOP_PAGE) editShippingPresenter.fetchDataOpenShop();
+                        else editShippingPresenter.fetchData();
+                    }
+                });
         getActivity().invalidateOptionsMenu();
     }
 
@@ -311,9 +335,9 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
         fragmentShippingHeader.setVisibility(View.VISIBLE);
         addressLayout.setVisibility(View.VISIBLE);
         fragmentShipingMainLayout.setVisibility(View.VISIBLE);
-        if(getArguments().getInt(MAP_MODE) == CREATE_SHOP_PAGE)
+        if (getArguments().getInt(MAP_MODE) == CREATE_SHOP_PAGE)
             submitButtonCreateShop.setVisibility(View.VISIBLE);
-        else if(getArguments().containsKey(RESUME_OPEN_SHOP_DATA_KEY)){
+        else if (getArguments().containsKey(RESUME_OPEN_SHOP_DATA_KEY)) {
             submitButtonCreateShop.setVisibility(View.VISIBLE);
         } else submitButtonCreateShop.setVisibility(View.GONE);
     }
@@ -335,13 +359,10 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     }
 
     @Override
-    public void editAddressSpinner() {
-        FragmentManager fm = getActivity().getFragmentManager();
-        shippingLocationDialog = ShippingLocationDialog
-                .createDialog(editShippingPresenter.getProvinceCityDistrictList(),
-                        editShippingPresenter.getShopInformation());
-        shippingLocationDialog.setTargetFragment(FragmentEditShipping.this, LOCATION_FRAGMENT_REQUEST_CODE);
-        shippingLocationDialog.show(fm, "location_dialog");
+    public void editAddress() {
+        startActivityForResult(DistrictRecommendationActivity.createInstance(getActivity(),
+                editShippingPresenter.getToken()),
+                GET_DISTRICT_RECCOMENDATION_REQUEST_CODE);
     }
 
     public boolean editShippingValid() {
@@ -355,10 +376,17 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == Activity.RESULT_OK){
-            switch (requestCode){
-                case LOCATION_FRAGMENT_REQUEST_CODE:
-                    changeLocationRequest(data);
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case GET_DISTRICT_RECCOMENDATION_REQUEST_CODE:
+                    Address address = data.getParcelableExtra(INTENT_DATA_ADDRESS);
+                    editShippingPresenter.setSelectedAddress(address);
+                    fragmentShippingHeader.initializeZipCodes();
+                    fragmentShippingHeader.updateLocationData(
+                            address.getProvinceName(),
+                            address.getCityName(),
+                            address.getDistrictName());
+                    changeLocationRequest(address.getDistrictId());
                     break;
                 case OPEN_MAP_CODE:
                     changeGoogleMapData(data);
@@ -371,12 +399,12 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
         }
     }
 
-    private void changeLocationRequest(Intent data) {
+    private void changeLocationRequest(int originId) {
         progressDialog.showDialog();
-        if(getArguments().getInt(MAP_MODE) == CREATE_SHOP_PAGE || getArguments().containsKey(RESUME_OPEN_SHOP_DATA_KEY)){
-            editShippingPresenter.fetchDataByLocationOpenShop(data.getStringExtra(SELECTED_LOCATION_ID_KEY));
-        } else{
-            editShippingPresenter.fetchDataByLocation(data.getStringExtra(SELECTED_LOCATION_ID_KEY));
+        if (getArguments().getInt(MAP_MODE) == CREATE_SHOP_PAGE || getArguments().containsKey(RESUME_OPEN_SHOP_DATA_KEY)) {
+            editShippingPresenter.fetchDataByLocationOpenShop(String.valueOf(originId));
+        } else {
+            editShippingPresenter.fetchDataByLocation(String.valueOf(originId));
         }
     }
 
@@ -385,18 +413,19 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     }
 
     private void additionalOptionRequest(Intent data) {
-        editShippingPresenter.setCourierAdditionalOptionConfig(data
-                .getIntExtra(MODIFIED_COURIER_INDEX_KEY, 0)
-                , data
-                .getStringExtra(EDIT_SHIPPING_RESULT_KEY));
+        editShippingPresenter.setCourierAdditionalOptionConfig(
+                data.getIntExtra(MODIFIED_COURIER_INDEX_KEY, 0),
+                data.getStringExtra(EDIT_SHIPPING_RESULT_KEY));
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        getActivity().getMenuInflater().inflate(R.menu.save_btn, menu);
-        MenuItem item = menu.findItem(R.id.action_send);
-        item.setTitle(getString(R.string.title_action_save_shipping));
+        if (isAdded() && getActivity() != null) {
+            getActivity().getMenuInflater().inflate(R.menu.save_btn, menu);
+            MenuItem item = menu.findItem(R.id.action_send);
+            item.setTitle(getString(R.string.title_action_save_shipping));
+        }
     }
 
     @Override
@@ -420,22 +449,22 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
         return super.onOptionsItemSelected(item);
     }
 
-    private void submitData(){
+    private void submitData() {
         editShippingPresenter.submitValue();
     }
 
-    private void refreshView(){
+    private void refreshView() {
         fragmentShipingMainLayout.removeAllViews();
         editShippingPresenter.refreshData();
     }
 
     void submitButtonOnClickListener() {
-        if(fragmentShipingMainLayout.getChildCount() > 1 && editShippingValid()){
+        if (fragmentShipingMainLayout.getChildCount() > 1 && editShippingValid()) {
             Intent intent = new Intent();
             intent.putExtra(EDIT_SHIPPING_DATA, getCurrentShippingConfiguration());
             getActivity().setResult(OPEN_SHOP_EDIT_SHIPPING_REQUEST_CODE, intent);
             getActivity().finish();
-        } else if(fragmentShipingMainLayout.getChildCount() < 1){
+        } else if (fragmentShipingMainLayout.getChildCount() < 1) {
             showErrorToast(getActivity().getString(R.string.title_select_shop_location));
             UnifyTracking.eventCreateShopFillLogisticError();
         }
@@ -473,14 +502,14 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if(getArguments().getInt(MAP_MODE) == CREATE_SHOP_PAGE){
+        if (getArguments().getInt(MAP_MODE) == CREATE_SHOP_PAGE) {
             editShippingPresenter.saveOpenShopModel();
             outState.putParcelable(CURRENT_OPEN_SHOP_MODEL,
                     editShippingPresenter.getOpenShopModel());
-        }
-        else {
+        } else {
             outState.putParcelable(CURRENT_COURIER_MODEL,
                     editShippingPresenter.getShopModel());
         }
     }
+
 }

@@ -7,18 +7,19 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.topads.R;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
+import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
-import com.tokopedia.topads.dashboard.view.model.Ad;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
-import com.tokopedia.topads.dashboard.view.presenter.TopAdsProductAdListPresenter;
-import com.tokopedia.topads.dashboard.view.presenter.TopAdsProductAdListPresenterImpl;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailProductActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsFilterProductActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
+import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyProductAdDataBinder;
+import com.tokopedia.topads.dashboard.view.model.Ad;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsProductAdListPresenter;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsProductAdListPresenterImpl;
 
 /**
  * Created by zulfikarrahman on 12/16/16.
@@ -59,7 +60,7 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
 
     @Override
     protected TopAdsEmptyAdDataBinder getEmptyViewDefaultBinder() {
-        TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyAdDataBinder(adapter);
+        TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyProductAdDataBinder(adapter);
         emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.top_ads_empty_product_title_promo_text));
         emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.top_ads_empty_product_promo_content_text));
         emptyGroupAdsDataBinder.setEmptyButtonItemText(getString(R.string.menu_top_ads_add_promo_product));
@@ -71,12 +72,14 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
     public void onItemClicked(Ad ad) {
         if (ad instanceof ProductAd) {
             Intent intent = new Intent(getActivity(), TopAdsDetailProductActivity.class);
-            intent.putExtra(TopAdsExtraConstant.EXTRA_AD, (ProductAd) ad);
+            intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, ad.getId());
+            intent.putExtra(TopAdsExtraConstant.EXTRA_AD, ad);
+            intent.putExtra(TopAdsExtraConstant.EXTRA_FORCE_REFRESH, true);
             startActivityForResult(intent, REQUEST_CODE_AD_CHANGE);
         }
     }
 
-    @Override
+
     public void goToFilter() {
         Intent intent = new Intent(getActivity(), TopAdsFilterProductActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, status);

@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.rescenter.detailv2.data.pojo;
 
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.NextActionResponse;
 
 import java.util.List;
 
@@ -11,6 +12,8 @@ import java.util.List;
 @SuppressWarnings("ALL")
 public class DetailResCenterEntity {
 
+    @SerializedName("nextAction")
+    private NextActionResponse nextAction;
     @SerializedName("last")
     private DetailResCenterLast last;
     @SerializedName("button")
@@ -90,5 +93,13 @@ public class DetailResCenterEntity {
 
     public void setBy(DetailResCenterBy by) {
         this.by = by;
+    }
+
+    public NextActionResponse getNextAction() {
+        return nextAction;
+    }
+
+    public void setNextAction(NextActionResponse nextAction) {
+        this.nextAction = nextAction;
     }
 }

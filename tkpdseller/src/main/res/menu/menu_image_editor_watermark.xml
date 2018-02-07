@@ -4,8 +4,10 @@
 
     <item
         android:id="@+id/main_action_watermark"
-        android:icon="@drawable/ic_branding_watermark"
-        android:title="@string/crop_image_menu_crop"
+        android:icon="@drawable/selector_ic_watermark"
+        android:checkable="true"
+        android:checked="false"
+        android:title="@string/crop_image_menu_watermark"
         app:showAsAction="always"/>
 
     <item

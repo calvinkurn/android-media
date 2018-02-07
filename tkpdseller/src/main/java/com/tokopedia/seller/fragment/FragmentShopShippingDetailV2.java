@@ -28,7 +28,10 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
@@ -61,6 +64,7 @@ import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShop;
 import com.tokopedia.seller.selling.presenter.listener.SellingView;
 import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
+import com.tokopedia.seller.selling.view.fragment.CustomScannerBarcodeActivity;
 
 import org.parceler.Parcels;
 
@@ -338,7 +342,8 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
                                                     .replace("XXX",
                                                             orderShippingList.getOrderDetail()
                                                                     .getDetailPdfUri())).toString(),
-                                    TkpdInboxRouter.TX_ASK_BUYER);
+                                    TkpdInboxRouter.TX_ASK_BUYER,
+                                    orderShippingList.getOrderCustomer().getCustomerImage());
                     startActivity(intent);
                 }
             }
@@ -481,7 +486,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
 
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     public void onScanBarcode() {
-        startActivityForResult(CommonUtils.requestBarcodeScanner(), REQUEST_CODE_BARCODE);
+        CommonUtils.requestBarcodeScanner(this, CustomScannerBarcodeActivity.class);
     }
 
     public void cancelDialog() {
@@ -641,12 +646,8 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        referenceNumber.setText(CommonUtils.getBarcode(requestCode, resultCode, data));
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_CODE_BARCODE) {
-                referenceNumber.setText(CommonUtils.getBarcode(data));
-            }
-        }
     }
 
     @Override
@@ -686,14 +687,27 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     }
 
     @Override
-    public void setData(int type, Bundle data) {
+    public void setData(final int type, Bundle data) {
         switch (type) {
             case SellingService.CONFIRM_SHIPPING:
             case SellingService.CANCEL_SHIPPING:
                 Data result = Parcels.unwrap(data.getParcelable(SellingService.MODEL_CONFIRM_SHIPPING_KEY));
+                progressDialog.dismiss();
                 if (result.getIsSuccess() == 1) {
-                    progressDialog.dismiss();
                     finishShipping(false);
+                }else{
+                    NetworkErrorHelper.showDialog(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            if (bundle != null) {
+                                if(type == SellingService.CONFIRM_SHIPPING) {
+                                    ((SellingDetailActivity) getActivity()).SellingAction(SellingService.CONFIRM_SHIPPING, bundle);
+                                }else{
+                                    ((SellingDetailActivity) getActivity()).SellingAction(SellingService.CANCEL_SHIPPING, bundle);
+                                }
+                            }
+                        }
+                    });
                 }
                 break;
         }

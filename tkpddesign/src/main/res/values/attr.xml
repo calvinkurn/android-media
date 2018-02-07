@@ -1,5 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <declare-styleable name="LabelView">
+        <attr name="lv_title" format="string" />
+        <attr name="lv_title_text_size" format="dimension" />
+        <attr name="lv_title_color" format="color" />
+        <attr name="lv_title_min_width" format="dimension" />
+        <attr name="lv_title_text_style">
+            <flag name="normal" value="0" />
+            <flag name="bold" value="1" />
+            <flag name="italic" value="2" />
+        </attr>
+        <attr name="lv_content" format="string" />
+        <attr name="lv_content_color" format="color" />
+        <attr name="lv_content_text_size" format="dimension" />
+        <attr name="lv_content_max_lines" format="integer" />
+        <attr name="lv_content_text_style">
+            <flag name="normal" value="0" />
+            <flag name="bold" value="1" />
+            <flag name="italic" value="2" />
+        </attr>
+        <attr name="lv_font_size" format="dimension" />
+        <attr name="lv_show_arrow" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="SelectionLabelView">
+        <attr name="slv_title" format="string" />
+    </declare-styleable>
+
     <declare-styleable name="SearchInputView">
         <attr name="siv_search_icon" format="reference" />
         <attr name="siv_search_text" format="string" />
@@ -51,10 +78,10 @@
     </declare-styleable>
 
     <declare-styleable name="TkpdTextInputLayout">
-        <attr name="success_focus_color" format="color" />
-        <attr name="success_leave_color" format="color" />
-        <attr name="success_text_appearance" format="reference" />
-        <attr name="prefix_string" format="string" />
+        <attr name="ttil_successFocusColor" format="color" />
+        <attr name="ttil_successLeaveColor" format="color" />
+        <attr name="ttil_successTextAppearance" format="reference" />
+        <attr name="ttil_prefixString" format="string|reference" />
     </declare-styleable>
 
     <declare-styleable name="TitleCardView">
@@ -105,14 +132,30 @@
     </declare-styleable>
 
     <declare-styleable name="BottomActionView">
+        <attr name="bav_1_display" format="boolean"/>
+        <attr name="bav_2_display" format="boolean"/>
         <attr name="bav_icon_1" format="reference" />
         <attr name="bav_label_1" format="reference" />
         <attr name="bav_icon_2" format="reference" />
         <attr name="bav_label_2" format="reference" />
     </declare-styleable>
 
-    <declare-styleable name="PriceSeekbarDynamicBackground">
-        <attr name="backColor" format="color" />
-        <attr name="foreColor" format="color" />
+    <declare-styleable name="DecimalRangeInputView">
+        <attr name="driv_label_min" format="string" />
+        <attr name="driv_label_max" format="string" />
+        <attr name="driv_typable" format="boolean" />
+        <attr name="driv_label_text_appearance" format="reference" />
+        <attr name="driv_value_text_appearance" format="reference" />
+        <attr name="driv_value_max_length" format="integer" />
     </declare-styleable>
+
+    <declare-styleable name="DynamicBackgroundSeekBar">
+        <attr name="dbsb_background_color" format="color" />
+        <attr name="dbsb_foreground_color" format="color" />
+    </declare-styleable>
+
+
+    <attr name="bottomSheetBuilderBackgroundColor" format="color" />
+    <attr name="bottomSheetBuilderItemTextColor" format="color" />
+    <attr name="bottomSheetBuilderTitleTextColor" format="color" />
 </resources>

@@ -13,6 +13,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
+import com.tokopedia.core.gcm.ApplinkUnsupported;
+import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.util.SessionHandler;
 
 /**
@@ -21,8 +23,6 @@ import com.tokopedia.core.util.SessionHandler;
  * all the router will moved to the each module's router
  */
 public interface TkpdCoreRouter {
-
-    void startInstopedActivity(Context context);
 
     void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult);
 
@@ -33,8 +33,6 @@ public interface TkpdCoreRouter {
     void goToManageProduct(Context context);
 
     void goToDraftProductList(Context context);
-
-    void goToManageEtalase(Context context);
 
     void clearEtalaseCache();
 
@@ -48,13 +46,29 @@ public interface TkpdCoreRouter {
 
     void actionAppLink(Context context, String linkUrl);
 
+    /**
+     * deprecated
+     *
+     * @param activity activity context
+     * @param linkUrl  applinkScheme
+     * @see #actionApplinkFromActivity(Activity, String)
+     */
+    @Deprecated
     void actionApplink(Activity activity, String linkUrl);
+
+    void actionApplinkFromActivity(Activity activity, String linkUrl);
 
     void actionApplink(Activity activity, String linkUrl, String extra);
 
     void actionOpenGeneralWebView(Activity activity, String mobileUrl);
 
     Intent getHomeIntent(Context context);
+
+    Intent getOnBoardingActivityIntent(Context context);
+
+    Intent getTrueCallerActivityIntent(Context context);
+
+    Intent getPhoneVerificationActivityIntent(Context context);
 
     Class<?> getHomeClass(Context context) throws ClassNotFoundException;
 
@@ -65,8 +79,6 @@ public interface TkpdCoreRouter {
 
 
     void onLogout(AppComponent appComponent);
-
-    void goToProfileCompletion(Context context);
 
     void goToCreateMerchantRedirect(Context context);
 
@@ -89,4 +101,52 @@ public interface TkpdCoreRouter {
     void goToAddProduct(Activity activity);
 
     boolean isInMyShop(Context context, String shopId);
+
+    Intent getForgotPasswordIntent(Context context, String email);
+
+    void invalidateCategoryMenuData();
+
+    ApplinkUnsupported getApplinkUnsupported(Activity activity);
+
+    Intent getIntentCreateShop(Context context);
+
+    Intent getSplashScreenIntent(Context context);
+
+    Class getDeepLinkClass();
+
+    Intent getIntentManageShop(Context context);
+
+    android.app.Fragment getFragmentShopSettings();
+
+    android.app.Fragment getFragmentSellingNewOrder();
+
+    Class getSellingActivityClass();
+
+    Intent getActivitySellingTransactionNewOrder(Context context);
+
+    Intent getActivitySellingTransactionConfirmShipping(Context context);
+
+    Intent getActivitySellingTransactionShippingStatus(Context context);
+
+    Intent getActivitySellingTransactionList(Context context);
+
+    Intent getActivitySellingTransactionOpportunity(Context context);
+
+    Intent getHomeHotlistIntent(Context context);
+
+    NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass,
+                                         Bundle data, String notifTitle);
+
+    android.app.Fragment getShopReputationFragment();
+
+    Intent getInboxReputationIntent(Context context);
+
+    Intent getResolutionCenterIntent(Context context);
+
+    String applink(Activity activity, String deeplink);
+
+    Intent getKolFollowingPageIntent(Context context, int userId);
+
+    Intent getChangePhoneNumberIntent(Context context, String email, String phoneNumber);
+
 }

@@ -81,14 +81,6 @@
                 android:text="@string/gm_statistic_see_detail"
                 android:textColor="@color/tkpd_main_green" />
 
-            <ImageView
-                android:layout_width="8dp"
-                android:layout_height="16dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/margin_ms"
-                android:layout_marginStart="@dimen/margin_ms"
-                android:src="@drawable/ic_set_date_next" />
-
         </LinearLayout>
     </LinearLayout>
 

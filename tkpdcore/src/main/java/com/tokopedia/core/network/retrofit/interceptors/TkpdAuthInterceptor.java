@@ -22,6 +22,8 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okio.Buffer;
 
+import static com.tokopedia.core.network.retrofit.utils.NetworkCalculator.AUTHORIZATION;
+
 /**
  * @author Angga.Prasetiyo on 27/11/2015.
  */
@@ -29,6 +31,10 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private static final String TAG = TkpdAuthInterceptor.class.getSimpleName();
     private static final int ERROR_FORBIDDEN_REQUEST = 403;
     private static final String ACTION_TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
+    private static final String BEARER = "Bearer";
+    private static final String AUTHORIZATION = "authorization";
+    private static final String TOKEN = "token";
+    private static final String ACCOUNTS_AUTHORIZATION = "accounts-authorization";
     private final String authKey;
 
     public TkpdAuthInterceptor(String authKey) {
@@ -51,25 +57,11 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         final Request finalRequest = newRequest.build();
         Response response = getResponse(chain, finalRequest);
 
-        if (isNeedRelogin(response)) {
-            doRelogin();
-            response = getResponse(chain, finalRequest);
-        }
-
         if (!response.isSuccessful()) {
             throwChainProcessCauseHttpError(response);
         }
 
-        if (isUnauthorized(finalRequest, response)) {
-            refreshToken();
-            Request newest = recreateRequestWithNewAccessToken(chain);
-            Response response1 = chain.proceed(newest);
-            if (isUnauthorized(newest, response1)) {
-                showForceLogoutDialog();
-                sendForceLogoutAnalytics(response1);
-            }
-            return response1;
-        }
+        checkForceLogout(chain, response, finalRequest);
 
         String bodyResponse = response.body().string();
         checkResponse(bodyResponse, response);
@@ -77,19 +69,48 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         return createNewResponse(response, bodyResponse);
     }
 
-    private void checkResponse(String string, Response response) {
+    protected Response checkForceLogout(Chain chain, Response response, Request finalRequest) throws
+            IOException {
+        if (isNeedRelogin(response)) {
+            refreshTokenWithRelogin();
+            if (finalRequest.header(AUTHORIZATION).contains(BEARER)) {
+                Request newestRequest = recreateRequestWithNewAccessToken(chain);
+                return checkShowForceLogout(chain, newestRequest);
+            } else {
+                Request newestRequest = recreateRequestWithNewAccessTokenAccountsAuth(chain);
+                return checkShowForceLogout(chain, newestRequest);
+            }
+        } else if (isUnauthorized(finalRequest, response)) {
+            refreshToken();
+            Request newest = recreateRequestWithNewAccessToken(chain);
+            return checkShowForceLogout(chain, newest);
+        }
+        return response;
+    }
+
+    protected Response checkShowForceLogout(Chain chain, Request newestRequest) throws IOException {
+        Response response = chain.proceed(newestRequest);
+        if (isUnauthorized(newestRequest, response) || isNeedRelogin(response)) {
+            ServerErrorHandler.showForceLogoutDialog();
+            ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
+        }
+        return response;
+    }
+
+    protected void checkResponse(String string, Response response) {
         String bodyResponse = string;
+
+        if (isOnBetaServer(response)) ServerErrorHandler.showForceHockeyAppDialog();
+
         if (isMaintenance(bodyResponse)) {
-            showMaintenancePage();
-        } else if (isRequestDenied(bodyResponse)) {
-            showForceLogoutDialog();
-            sendForceLogoutAnalytics(response);
+            ServerErrorHandler.showMaintenancePage();
         } else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {
-            showServerErrorSnackbar();
-            sendErrorNetworkAnalytics(response);
+            ServerErrorHandler.showServerErrorSnackbar();
+            ServerErrorHandler.sendErrorNetworkAnalytics(response.request().url().toString(),
+                    response.code());
         } else if (isForbiddenRequest(bodyResponse, response.code())
                 && isTimezoneNotAutomatic()) {
-            showTimezoneErrorSnackbar();
+            ServerErrorHandler.showTimezoneErrorSnackbar();
         }
     }
 
@@ -124,7 +145,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         generateHeader(authHeaders, originRequest, newRequest);
     }
 
-    Map<String, String> prepareHeader(Map<String, String> authHeaders, Request originRequest) {
+    protected Map<String, String> prepareHeader(Map<String, String> authHeaders, Request originRequest) {
 
         String contentTypeHeader = null;
         if (!"GET".equals(originRequest.method())
@@ -136,30 +157,60 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             case "PATCH":
             case "DELETE":
             case "POST":
-                authHeaders = getHeaderMap(
-                        originRequest.url().uri().getPath(),
-                        generateParamBodyString(originRequest),
-                        originRequest.method(),
-                        authKey,
-                        contentTypeHeader
-                );
+            case "PUT":
+                //add dirty validation here, because for now, only wsv4 support new hmac key
+                //it's really pain in the ass to find which endpoint is using web_service_v4 beside ws.tokopedia.com
+                if (originRequest.url().host().equals("ws.tokopedia.com")) {
+                    authHeaders = getHeaderMapNew(
+                            originRequest.url().uri().getPath(),
+                            generateParamBodyString(originRequest),
+                            originRequest.method(),
+                            AuthUtil.KEY.KEY_WSV4_NEW,
+                            contentTypeHeader
+                    );
+                } else {
+                    authHeaders = getHeaderMap(
+                            originRequest.url().uri().getPath(),
+                            generateParamBodyString(originRequest),
+                            originRequest.method(),
+                            authKey,
+                            contentTypeHeader
+                    );
+                }
                 break;
             case "GET":
-                authHeaders = getHeaderMap(
-                        originRequest.url().uri().getPath(),
-                        generateQueryString(originRequest),
-                        originRequest.method(),
-                        authKey,
-                        contentTypeHeader
-                );
+                if (originRequest.url().host().equals("ws.tokopedia.com")) {
+                    authHeaders = getHeaderMapNew(
+                            originRequest.url().uri().getPath(),
+                            generateQueryString(originRequest),
+                            originRequest.method(),
+                            AuthUtil.KEY.KEY_WSV4_NEW,
+                            contentTypeHeader
+                    );
+                } else {
+                    authHeaders = getHeaderMap(
+                            originRequest.url().uri().getPath(),
+                            generateQueryString(originRequest),
+                            originRequest.method(),
+                            authKey,
+                            contentTypeHeader
+                    );
+                }
                 break;
         }
         return authHeaders;
     }
 
+    //please use getHeaderMapNew() for new hmac key
+    @Deprecated
     protected Map<String, String> getHeaderMap(
             String path, String strParam, String method, String authKey, String contentTypeHeader) {
         return AuthUtil.generateHeaders(path, strParam, method, authKey, contentTypeHeader);
+    }
+
+    protected Map<String, String> getHeaderMapNew(
+            String path, String strParam, String method, String authKey, String contentTypeHeader) {
+        return AuthUtil.generateHeadersNew(path, strParam, method, authKey, contentTypeHeader);
     }
 
     void generateHeader(
@@ -202,7 +253,10 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         try {
             json = new JSONObject(response);
             JSONArray errorMessage = json.optJSONArray("message_error");
-            return errorMessage.length() > 0;
+            if (errorMessage != null)
+                return errorMessage.length() > 0;
+            else
+                return false;
         } catch (JSONException e) {
             e.printStackTrace();
             return false;
@@ -259,56 +313,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         return builder.build();
     }
 
-    /**
-     * @deprecated Use {@link ServerErrorHandler#showTimezoneErrorSnackbar()} instead.
-     */
-    @Deprecated
-    protected void showTimezoneErrorSnackbar() {
-        ServerErrorHandler.showTimezoneErrorSnackbar();
-    }
-
-    /**
-     * @deprecated Use {@link ServerErrorHandler#showMaintenancePage()} instead.
-     */
-    @Deprecated
-    protected void showMaintenancePage() {
-        ServerErrorHandler.showMaintenancePage();
-    }
-
-    /**
-     * @deprecated Use {@link ServerErrorHandler#showForceLogoutDialog()} instead.
-     */
-    @Deprecated
-    protected void showForceLogoutDialog() {
-        ServerErrorHandler.showForceLogoutDialog();
-    }
-
-    /**
-     * @deprecated Use {@link ServerErrorHandler#sendForceLogoutAnalytics(String)} instead.
-     */
-    @Deprecated
-    protected void sendForceLogoutAnalytics(Response response) {
-        ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
-    }
-
-    /**
-     * @deprecated Use {@link ServerErrorHandler#showServerErrorSnackbar()} instead.
-     */
-    @Deprecated
-    protected void showServerErrorSnackbar() {
-        ServerErrorHandler.showServerErrorSnackbar();
-    }
-
-    /**
-     * @deprecated Use {@link ServerErrorHandler#sendErrorNetworkAnalytics(String, int)} instead.
-     */
-    @Deprecated
-    protected void sendErrorNetworkAnalytics(Response response) {
-        ServerErrorHandler.sendErrorNetworkAnalytics(
-                response.request().url().toString(), response.code()
-        );
-    }
-
     protected Boolean isNeedRelogin(Response response) {
         try {
             //using peekBody instead of body in order to avoid consume response object, peekBody will automatically return new reponse
@@ -326,7 +330,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             //using peekBody instead of body in order to avoid consume response object, peekBody will automatically return new reponse
             String responseString = response.peekBody(512).string();
             return responseString.toLowerCase().contains("invalid_request")
-                    && request.header("authorization").contains("Bearer");
+                    && request.header(AUTHORIZATION).contains(BEARER)
+                    && !response.request().url().encodedPath().contains(TOKEN);
         } catch (IOException e) {
             e.printStackTrace();
             return false;
@@ -334,7 +339,11 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     }
 
     protected void doRelogin() {
-        SessionRefresh sessionRefresh = new SessionRefresh();
+        doRelogin("");
+    }
+
+    protected void doRelogin(String newAccessToken) {
+        SessionRefresh sessionRefresh = new SessionRefresh(newAccessToken);
         try {
             sessionRefresh.refreshLogin();
         } catch (IOException e) {
@@ -351,10 +360,39 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
-    private Request recreateRequestWithNewAccessToken(Chain chain) {
-        String freshAccessToken = SessionHandler.getAccessToken();
-        return chain.request().newBuilder()
-                .header("authorization", "Bearer " + freshAccessToken)
-                .build();
+    protected void refreshTokenWithRelogin() {
+        AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
+        try {
+            String newAccessToken = accessTokenRefresh.refreshToken();
+            doRelogin(newAccessToken);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
+    private Request recreateRequestWithNewAccessToken(Chain chain) throws IOException {
+        Request newest = chain.request();
+        Request.Builder newestRequestBuilder = chain.request().newBuilder();
+        generateHmacAuthRequest(newest, newestRequestBuilder);
+        String freshAccessToken = SessionHandler.getAccessToken();
+        newestRequestBuilder
+                .header(AUTHORIZATION, BEARER + " " + freshAccessToken)
+                .header(ACCOUNTS_AUTHORIZATION, BEARER + " " + freshAccessToken);
+        return newestRequestBuilder.build();
+    }
+
+    private Request recreateRequestWithNewAccessTokenAccountsAuth(Chain chain) throws IOException {
+        Request newest = chain.request();
+        Request.Builder newestRequestBuilder = chain.request().newBuilder();
+        generateHmacAuthRequest(newest, newestRequestBuilder);
+        String freshAccessToken = SessionHandler.getAccessToken();
+        newestRequestBuilder
+                .header(ACCOUNTS_AUTHORIZATION, BEARER + " " + freshAccessToken);
+        return newestRequestBuilder.build();
+    }
+
+    private Boolean isOnBetaServer(Response response) {
+        return response.header("is_beta", "0").equals("1");
+    }
+
 }

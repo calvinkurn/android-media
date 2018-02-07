@@ -107,7 +107,6 @@ public class WidgetNominalAdapter extends ArrayAdapter<Product> {
             holder.nominalTagTextview.setVisibility(View.GONE);
             holder.nominalDiskonTextView.setVisibility(View.GONE);
         }
-
     }
 
     private void renderEmptyStock(NormalViewHolder holder, Attributes product) {

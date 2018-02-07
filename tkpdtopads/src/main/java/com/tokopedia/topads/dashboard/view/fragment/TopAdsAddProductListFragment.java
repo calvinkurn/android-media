@@ -26,6 +26,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.common.utils.MenuTintUtils;
 import com.tokopedia.seller.common.utils.NetworkStatus;
 import com.tokopedia.topads.R;
 import com.tokopedia.seller.base.view.adapter.ItemType;
@@ -299,7 +300,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
 
     private void inject() {
         //[START] This is for dependent component
-        TopAdsManagementService topAdsSearchProductService = new TopAdsManagementService(new SessionHandler(getActivity()).getAccessToken(getActivity()));
+        TopAdsManagementService topAdsSearchProductService = new TopAdsManagementService(new SessionHandler(getActivity()));
         SessionHandler sessionHandler = new SessionHandler(getActivity());
         SearchProductEOFMapper searchProductMapper = new SearchProductEOFMapper();
         CloudTopAdsSearchProductDataSource cloudTopAdsSeachProductDataSource = new CloudTopAdsSearchProductDataSource(
@@ -355,12 +356,18 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         SearchView.SearchAutoComplete mSearchSrcTextView =
                 (SearchView.SearchAutoComplete)
                         searchView.findViewById(com.tokopedia.core.R.id.search_src_text);
-        mSearchSrcTextView.setTextColor(getResources().getColor(com.tokopedia.core.R.color.white));
+        mSearchSrcTextView.setTextColor(getResources().getColor(com.tokopedia.core.R.color.black_70));
         mSearchSrcTextView.setHintTextColor(
-                getResources().getColor(com.tokopedia.core.R.color.white)
+                getResources().getColor(com.tokopedia.core.R.color.black_70)
         );
 
+        updateOptionMenuColor(menu);
+
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    public void updateOptionMenuColor(Menu menu) {
+        MenuTintUtils.tintAllIcons(menu, com.tokopedia.seller.R.color.black_70);
     }
 
     @Override

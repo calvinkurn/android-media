@@ -171,7 +171,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                                             @Override
                                             public ShippingParamsPostModel call(ShippingParamsPostModel passData, Response<TkpdResponse> tkpdResponse) {
                                                 ActionResponseData result = tkpdResponse.body().convertDataObj(ActionResponseData.class);
-                                                if (result.isSuccess()) {
+                                                if (result != null && result.isSuccess()) {
                                                     passData.setStatusInputShipping(true);
                                                     passData.setPostKey(result.getPostKey());
                                                     passData.setToken(result.getToken());
@@ -381,8 +381,8 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
 
     @Override
     public void editShippingService(@NonNull final Context context,
-                                     @NonNull final ShippingParamsPostModel params,
-                                     @NonNull final PostShippingListener listener) {
+                                    @NonNull final ShippingParamsPostModel params,
+                                    @NonNull final PostShippingListener listener) {
         listener.onStart();
 
         compositeSubscription.add(

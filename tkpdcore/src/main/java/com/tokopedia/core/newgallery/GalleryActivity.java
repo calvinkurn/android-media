@@ -11,7 +11,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -19,17 +18,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.SparseArray;
-import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
 
 import com.bignerdranch.android.multiselector.ModalMultiSelectorCallback;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.FutureTarget;
-import com.tkpd.library.ui.floatbutton.FabSpeedDial;
-import com.tkpd.library.ui.floatbutton.ListenerFabClick;
-import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
@@ -52,18 +43,9 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 
-import org.parceler.Parcels;
-
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -73,12 +55,8 @@ import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.PermissionUtils;
 import permissions.dispatcher.RuntimePermissions;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
 import static com.tkpd.library.utils.CommonUtils.checkNotNull;
@@ -107,21 +85,17 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     public static final String TOKOPEDIA = "Tokopedia";
 
     public static final int RESULT_CODE = 323;
-    public static final int DEF_WIDTH_CMPR = 2048;
-    public static final int DEF_QLTY_COMPRESS = 95;
-    public static final int WIDTH_DOWNLOAD = 2048;
 
     String FRAGMENT;
     int position;
 
-    ImageGallery imageGallery;
+    ImageGallery imageGalleryPresenter;
+
     @BindView(R2.id.toolbar)
     Toolbar toolbar;
+
     private FragmentManager supportFragmentManager;
     private Unbinder unbinder;
-
-//    @BindView(R2.id.fab)
-//    FloatingActionButton fab;
 
     private boolean forceOpenCamera;
     private int maxSelection;
@@ -129,10 +103,9 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     private String imagePathCamera;
     private boolean isCameraOpen = false;
 
-    private FabSpeedDial fabSpeedDial;
-
     private TkpdProgressDialog progressDialog;
     private boolean compressToTkpd;
+    private boolean isFirstTime;
 
     /**
      * Call this to get image from image gallery
@@ -265,13 +238,13 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        isFirstTime = savedInstanceState == null;
+
         onRestoreSavedState(savedInstanceState);
 
         fetchExtras(getIntent());
         setContentView(R.layout.activity_gallery);
         unbinder = ButterKnife.bind(this);
-
-        fabSpeedDial = (FabSpeedDial) findViewById(R.id.fab_speed_dial);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -290,40 +263,8 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         });
 
 
-        imageGallery = new ImageGalleryImpl(this);
+        imageGalleryPresenter = new ImageGalleryImpl(this);
 
-//        if (fab != null)
-//            fab.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    GalleryActivityPermissionsDispatcher.onFabClickedWithCheck(GalleryActivity.this, view);
-//                }
-//            });
-
-//        fabSpeedDial.setListenerFabClick(new ListenerFabClick() {
-//            @Override
-//            public void onFabClick() {
-//                if (!fabSpeedDial.isShown()) {
-//                    fabSpeedDial.setVisibility(View.VISIBLE);
-//                }
-//            }
-//        });
-//
-//        fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
-//            @Override
-//            public boolean onMenuItemSelected(MenuItem menuItem) {
-//                int id = menuItem.getItemId();
-//
-//                if (id == R.id.action_instagram) {
-//                    GalleryActivityPermissionsDispatcher.onInstagramClickedWithCheck(GalleryActivity.this);
-//                } else if (id == R.id.action_camera) {
-//                    onCameraClicked();
-//                }
-//                return false;
-//            }
-//        });
-
-        fabSpeedDial.setVisibility(View.GONE);
     }
 
     private void onCameraClicked() {
@@ -339,28 +280,58 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
 
     @Override
     public void fetchImageFromDb() {
-        if (imageGallery != null) {
-            imageGallery.fetchImageUsingDb(this);
+        if (imageGalleryPresenter != null) {
+            imageGalleryPresenter.getItemAlbum();
+        }
+    }
+
+    @Override
+    public void fetchImageFromDb(String folderPath) {
+        if (imageGalleryPresenter != null) {
+            imageGalleryPresenter.getItemListAlbum(folderPath);
         }
     }
 
     @Override
     public void loadData(List<FolderModel> models) {
+       /* do nothing */
+    }
+
+    @Override
+    public void retrieveData(ArrayList<com.tokopedia.core.newgallery.model.ImageModel> dataAlbum) {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(ImageGalleryAlbumFragment.FRAGMENT_TAG);
         if (fragment != null && fragment instanceof ImageGalleryAlbumFragment) {
             ImageGalleryAlbumFragment imageGalleryAlbumFragment = (ImageGalleryAlbumFragment) fragment;
             // Load Data
-            imageGalleryAlbumFragment.loadData(models);
+            imageGalleryAlbumFragment.addDatas(dataAlbum);
         }
     }
 
     @Override
+    public void retrieveItemData(ArrayList<com.tokopedia.core.newgallery.model.ImageModel> data) {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(ImageGalleryFragment.FRAGMENT_TAG);
+        if (fragment != null && fragment instanceof ImageGalleryFragment) {
+            ((ImageGalleryFragment) fragment).addItems(data);
+        }
+    }
+
+    @Override
+    public boolean isNeedPermission() {
+        return PermissionUtils.hasSelfPermissions(this, new String[] {"android.permission.CAMERA","android.permission.READ_EXTERNAL_STORAGE"});
+    }
+
+    @Override
     public void moveToGallery(List<ImageModel> imageModels, int maxSelection) {
+        /* do nothing removed this later */
+    }
+
+    @Override
+    public void moveToGallery(int position, int maxSelection) {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(ImageGalleryFragment.FRAGMENT_TAG);
         if (fragment != null && fragment instanceof ImageGalleryFragment) {
             Log.d(TAG, messageTAG + ImageGalleryFragment.FRAGMENT_TAG + " already created!!!");
         } else {
-            Fragment imageGalleryFragment = ImageGalleryFragment.newInstance(imageModels, maxSelection);
+            Fragment imageGalleryFragment = ImageGalleryFragment.newInstance(imageGalleryPresenter.getFolderPath(position), maxSelection);
             moveToFragment(imageGalleryFragment, true, ImageGalleryFragment.FRAGMENT_TAG);
         }
     }
@@ -393,13 +364,18 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         if (SessionHandler.isFirstTimeAskedPermissionStorage(GalleryActivity.this)
                 || (Build.VERSION.SDK_INT >= 23
                 && shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)))
-            GalleryActivityPermissionsDispatcher.checkPermissionWithCheck(this);
+            GalleryActivityPermissionsDispatcher.initContentWithCheck(this);
         else
             RequestPermissionUtil.onFinishActivityIfNeverAskAgain(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+
+    }
+
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    public void initContent() {
         if (supportFragmentManager.findFragmentById(R.id.add_product_container) == null)
             initFragment(FRAGMENT);
 
-        if (forceOpenCamera && checkNotNull(fabSpeedDial)) {
+        if (forceOpenCamera ) {
             // fabSpeedDial.performClick();
             onCameraClicked();
         }
@@ -440,10 +416,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         Fragment fragment = supportFragmentManager.findFragmentByTag(ImageGalleryFragment.FRAGMENT_TAG);
         if (fragment != null && fragment instanceof ImageGalleryFragment && path != null) {
             if (compressToTkpd) {
-                String fileNameToMove = FileUtils.generateUniqueFileName();
-                File photo = FileUtils.writeImageToTkpdPath(
-                        FileUtils.compressImage(path, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
-                        fileNameToMove);
+                File photo = FileUtils.writeImageToTkpdPath(path);
                 if (photo != null) {
                     finishWithSingleImage(photo.getAbsolutePath());
                 }
@@ -462,10 +435,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                 ArrayList<String> tkpdPaths = new ArrayList<>();
                 for (int i = 0, sizei = paths.size(); i < sizei; i++) {
                     String path = paths.get(i);
-                    String fileNameToMove = FileUtils.generateUniqueFileName();
-                    File photo = FileUtils.writeImageToTkpdPath(
-                            FileUtils.compressImage(path, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
-                            fileNameToMove);
+                    File photo = FileUtils.writeImageToTkpdPath(path);
                     if (photo != null) {
                         tkpdPaths.add(photo.getAbsolutePath());
 
@@ -510,7 +480,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         }
     }
 
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void onFabClicked() {
         switch (FRAGMENT) {
             case ImageGalleryAlbumFragment.FRAGMENT_TAG:
@@ -543,11 +513,6 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         outState.putBoolean(IS_CAMERA_OPEN, isCameraOpen);
     }
 
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void checkPermission() {
-        CommonUtils.dumper("NISNISNIS GaleryActivity Storage");
-    }
-
     public void WarningDialog() {
         AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(this);
         myAlertDialog.setMessage(getString(R.string.dialog_no_memory_card));
@@ -572,12 +537,8 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                         case ImageGalleryAlbumFragment.FRAGMENT_TAG:
                         case ImageGalleryFragment.FRAGMENT_TAG:
                             if (imagePathCamera != null) {
-                                Intent intent = new Intent();
                                 if (compressToTkpd) {
-                                    String fileNameToMove = FileUtils.generateUniqueFileName();
-                                    File photo = FileUtils.writeImageToTkpdPath(
-                                            FileUtils.compressImage(imagePathCamera, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
-                                            fileNameToMove);
+                                    File photo = FileUtils.writeImageToTkpdPath(imagePathCamera);
                                     if (photo != null) {
                                         FileUtils.deleteAllCacheTkpdFile(imagePathCamera);
                                         finishWithSingleImage(photo.getAbsolutePath());
@@ -609,7 +570,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                                 public void onError(Throwable e) {
                                     hideProgressDialog();
                                     CommonUtils.UniversalToast(GalleryActivity.this,
-                                            ErrorHandler.getErrorMessage(e, GalleryActivity.this));
+                                            ErrorHandler.getErrorMessage(e));
                                 }
 
                                 @Override
@@ -662,11 +623,12 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         }
     }
 
-    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showRationaleForStorageAndCamera(final PermissionRequest request) {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onShowRationale(this, request, listPermission);
     }
@@ -696,20 +658,22 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
-    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showDeniedForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onPermissionDenied(this, listPermission);
     }
 
-    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showNeverAskForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onNeverAskAgain(this, listPermission);
     }
@@ -722,5 +686,13 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (unbinder != null)
+            unbinder.unbind();
+        imageGalleryPresenter.detach();
     }
 }

@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
+import com.microsoft.codepush.react.CodePush;
 import com.tokopedia.core.util.GlobalConfig;
 
 import java.util.Arrays;
@@ -37,15 +38,14 @@ public class ReactNativeHostFactory {
 
     private static ReactNativeHost createReactNativeHost(final Application application) {
         return new ReactNativeHost(application) {
-            @Nullable
             @Override
-            protected String getBundleAssetName() {
-                return "index.android.bundle";
+            protected String getJSBundleFile() {
+                return CodePush.getJSBundleFile();
             }
 
             @Override
             public boolean getUseDeveloperSupport() {
-                return GlobalConfig.isAllowDebuggingTools();
+                return GlobalConfig.DEBUG;
             }
 
             @Override
@@ -74,7 +74,7 @@ public class ReactNativeHostFactory {
 
             @Override
             protected String getJSMainModuleName() {
-                return "reactscript/index.android";
+                return "index.android";
             }
         };
     }
@@ -82,8 +82,8 @@ public class ReactNativeHostFactory {
     private static List<ReactPackage> getListPackages(Application application) {
         return Arrays.<ReactPackage>asList(
                 new MainReactPackage(),
-                new CoreReactPackage()/*,
-                new CodePush(getCodePushDeploymentKey(), application, GlobalConfig.isAllowDebuggingTools())*/
+                new CoreReactPackage(),
+                new CodePush(getCodePushDeploymentKey(), application, GlobalConfig.isAllowDebuggingTools())
         );
     }
 

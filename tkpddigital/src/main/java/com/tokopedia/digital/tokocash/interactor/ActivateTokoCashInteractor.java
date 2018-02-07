@@ -1,10 +1,12 @@
 package com.tokopedia.digital.tokocash.interactor;
 
-import com.tokopedia.digital.tokocash.domain.ActivateTokoCashRepository;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.digital.tokocash.domain.TokoCashRepository;
 import com.tokopedia.digital.tokocash.model.ActivateTokoCashData;
 
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -14,21 +16,28 @@ import rx.subscriptions.CompositeSubscription;
 
 public class ActivateTokoCashInteractor implements IActivateTokoCashInteractor {
 
-    private final ActivateTokoCashRepository repository;
+    private final TokoCashRepository repository;
     private final CompositeSubscription compositeSubscription;
+    private ThreadExecutor threadExecutor;
+    private PostExecutionThread postExecutionThread;
 
-    public ActivateTokoCashInteractor(ActivateTokoCashRepository repository) {
+    public ActivateTokoCashInteractor(CompositeSubscription compositeSubscription,
+                                      TokoCashRepository repository,
+                                      JobExecutor jobExecutor,
+                                      PostExecutionThread postExecutionThread) {
         this.repository = repository;
-        compositeSubscription = new CompositeSubscription();
+        this.compositeSubscription = compositeSubscription;
+        this.threadExecutor = jobExecutor;
+        this.postExecutionThread = postExecutionThread;
     }
 
     @Override
     public void requestOTPWallet(Subscriber<ActivateTokoCashData> subscriber) {
         compositeSubscription.add(
                 repository.requestOTPWallet()
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.from(threadExecutor))
+                        .subscribeOn(Schedulers.from(threadExecutor))
+                        .observeOn(postExecutionThread.getScheduler())
                         .subscribe(subscriber)
         );
     }
@@ -37,16 +46,10 @@ public class ActivateTokoCashInteractor implements IActivateTokoCashInteractor {
     public void activateTokoCash(String otpCode, Subscriber<ActivateTokoCashData> subscriber) {
         compositeSubscription.add(
                 repository.linkedWalletToTokoCash(otpCode)
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.from(threadExecutor))
+                        .subscribeOn(Schedulers.from(threadExecutor))
+                        .observeOn(postExecutionThread.getScheduler())
                         .subscribe(subscriber)
         );
-    }
-
-    @Override
-    public void onDestroy() {
-        if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
-            compositeSubscription.unsubscribe();
     }
 }

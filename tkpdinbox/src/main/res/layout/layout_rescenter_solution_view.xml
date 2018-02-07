@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:context="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:background="@color/white"
@@ -21,6 +22,7 @@
             android:textColor="@color/tkpd_main_green"
             android:textSize="@dimen/fontvs"
             android:textStyle="bold"
+            android:visibility="gone"
             />
 
         <LinearLayout
@@ -30,22 +32,23 @@
             android:layout_toLeftOf="@id/action_edit"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true">
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="@dimen/margin_vs">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_vs"
                 android:paddingTop="@dimen/padding_small"
                 android:paddingLeft="@dimen/padding_small"
                 android:paddingRight="@dimen/padding_small"
-                android:text="@string/title_section_last_solution"
-                android:textColor="#868686"
-                android:textSize="@dimen/font_small"
-                android:textStyle="bold"
+                android:text="@string/title_section_last_solution_v2"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/text_size_s_medium"
                 />
 
             <View
-                android:layout_width="50dp"
+                android:layout_width="20dp"
                 android:layout_height="1dp"
                 android:layout_marginTop="@dimen/margin_small"
                 android:layout_marginLeft="@dimen/margin_small"
@@ -54,40 +57,83 @@
                 />
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/tv_change"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/string_change"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/margin_small"
+            android:textSize="@dimen/text_size_small"
+            android:textColor="@color/tkpd_main_green"/>
+
     </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black_12"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="@dimen/padding_small">
+
         <TextView
-            android:id="@+id/tv_last_solution_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_section_last_solution_problem"
+            android:textSize="@dimen/text_size_xsmall"
+            android:textColor="@color/black_38"/>
+
+        <TextView
+            android:id="@+id/tv_last_problem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_vs"
-            android:text="Solusi dari Pembeli - 24 Juli 2016 10.10 WIB"
-            android:textColor="@color/label_text_color"
-            android:textSize="@dimen/fontvs"
+            android:text="Pembeli meminta tukar produk"
+            android:textSize="@dimen/text_size_s_medium"
+            android:textColor="@color/black_87"
             />
+
+        <TextView
+            android:id="@+id/tv_last_solution_title"
+            android:layout_marginTop="@dimen/margin_sm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_xsmall"
+            android:text="@string/title_section_last_solution_user_solution"
+            android:textColor="@color/black_38"/>
 
         <TextView
             android:id="@+id/tv_last_solution"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Pembeli meminta tukar produk"
-            android:textSize="@dimen/font_small"
-            android:textStyle="bold"
+            context:text="Pembeli meminta tukar produk"
+            android:textSize="@dimen/text_size_s_medium"
+            android:textColor="@color/black_87"
+            />
+
+        <TextView
+            android:layout_marginTop="@dimen/margin_sm"
+
+            android:id="@+id/tv_last_solution_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            context:text="Solusi dari Pembeli - 24 Juli 2016 10.10 WIB"
+            android:textColor="@color/label_text_color"
+            android:textSize="@dimen/text_size_xsmall"
             />
     </LinearLayout>
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/action_discuss"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/padding_small"
         android:gravity="center_vertical"
-        android:drawableRight="@drawable/ic_chevron_right"
         android:textColor="@color/tkpd_main_green"
         android:textSize="@dimen/font_small"
         android:textStyle="bold"

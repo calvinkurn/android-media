@@ -9,19 +9,9 @@ import com.tokopedia.seller.base.view.adapter.ItemType;
  */
 
 public class TopAdsProductViewModel extends GenericClass implements Comparable<TopAdsProductViewModel>, ItemType {
-    public static final Creator<TopAdsProductViewModel> CREATOR = new Creator<TopAdsProductViewModel>() {
-        @Override
-        public TopAdsProductViewModel createFromParcel(Parcel source) {
-            return new TopAdsProductViewModel(source);
-        }
-
-        @Override
-        public TopAdsProductViewModel[] newArray(int size) {
-            return new TopAdsProductViewModel[size];
-        }
-    };
     public static final int TYPE = 1;
     private int id;
+    private int departmentId;
     private String name;
     private String imageUrl;
     private boolean isPromoted;
@@ -30,17 +20,6 @@ public class TopAdsProductViewModel extends GenericClass implements Comparable<T
 
     public TopAdsProductViewModel() {
         super(TopAdsProductViewModel.class.getName());
-    }
-
-    protected TopAdsProductViewModel(Parcel in) {
-        super(in);
-        this.id = in.readInt();
-        this.name = in.readString();
-        this.imageUrl = in.readString();
-        this.isPromoted = in.readByte() != 0;
-        this.adId = in.readInt();
-        this.groupName = in.readString();
-        setClassName(in.readString());
     }
 
     public int getId() {
@@ -92,23 +71,6 @@ public class TopAdsProductViewModel extends GenericClass implements Comparable<T
     }
 
     @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeInt(this.id);
-        dest.writeString(this.name);
-        dest.writeString(this.imageUrl);
-        dest.writeByte(this.isPromoted ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.adId);
-        dest.writeString(this.groupName);
-        dest.writeString(super.getClassName());
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -144,4 +106,53 @@ public class TopAdsProductViewModel extends GenericClass implements Comparable<T
     public int getType() {
         return TYPE;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeInt(this.id);
+        dest.writeInt(this.departmentId);
+        dest.writeString(this.name);
+        dest.writeString(this.imageUrl);
+        dest.writeByte(this.isPromoted ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.adId);
+        dest.writeString(this.groupName);
+    }
+
+    public int getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(int departmentId) {
+        this.departmentId = departmentId;
+    }
+
+    protected TopAdsProductViewModel(Parcel in) {
+        super(in);
+        this.id = in.readInt();
+        this.departmentId = in.readInt();
+        this.name = in.readString();
+        this.imageUrl = in.readString();
+
+        this.isPromoted = in.readByte() != 0;
+        this.adId = in.readInt();
+        this.groupName = in.readString();
+    }
+
+    public static final Creator<TopAdsProductViewModel> CREATOR = new Creator<TopAdsProductViewModel>() {
+        @Override
+        public TopAdsProductViewModel createFromParcel(Parcel source) {
+            return new TopAdsProductViewModel(source);
+        }
+
+        @Override
+        public TopAdsProductViewModel[] newArray(int size) {
+            return new TopAdsProductViewModel[size];
+        }
+    };
 }

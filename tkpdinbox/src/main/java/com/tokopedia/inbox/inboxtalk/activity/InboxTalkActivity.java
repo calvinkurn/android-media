@@ -27,11 +27,8 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
-import com.tokopedia.core.review.var.Const;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity;
-import com.tokopedia.inbox.inboxmessage.fragment.InboxMessageFragment;
 import com.tokopedia.inbox.inboxtalk.fragment.InboxTalkFragment;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkResultReceiver;
@@ -46,12 +43,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static com.tokopedia.core.talkview.activity.TalkViewActivity.INBOX_TALK;
-import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.MESSAGE_ALL;
-import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.MESSAGE_ARCHIVE;
-import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.MESSAGE_SENT;
-import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.MESSAGE_TRASH;
 
 public class InboxTalkActivity extends DrawerPresenterActivity implements
         InboxTalkActivityView,
@@ -147,9 +138,7 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
     }
 
     private boolean checkHasNoShop() {
-        return SessionHandler.getShopID(this) == null
-                || SessionHandler.getShopID(this).equals("0")
-                || SessionHandler.getShopID(this).equals("");
+        return !SessionHandler.isUserHasShop(this);
     }
 
     private void getExtras() {

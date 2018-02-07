@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white"
+    android:fitsSystemWindows="true"
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/margin_large"
+    android:paddingRight="@dimen/margin_large"
+    android:paddingTop="@dimen/padding_vs"
+    android:paddingBottom="@dimen/padding_vs"
+    app:layout_collapseMode="parallax"
+    android:gravity="bottom"
+    app:layout_collapseParallaxMultiplier="0.6">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|end"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/departure_airport_code"
+            style="@style/TextView.TitleBig.Bold"
+            android:gravity="center"
+            tools:text="CGK" />
+
+        <TextView
+            android:id="@+id/departure_airport_name"
+            style="@style/TextView.Micro.BlackSecondary"
+            android:gravity="center"
+            tools:text="Jakarta"
+            android:singleLine="true"
+            android:ellipsize="end"/>
+    </LinearLayout>
+
+    <com.tokopedia.flight.common.view.ArrowFlightView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/padding_vs"
+        android:layout_marginRight="@dimen/padding_vs"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|start"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/arrival_airport_code"
+            style="@style/TextView.TitleBig.Bold"
+            tools:text="DPS" />
+
+        <TextView
+            android:id="@+id/arrival_airport_name"
+            style="@style/TextView.Micro.BlackSecondary"
+            android:gravity="center"
+            tools:text="Denpasar"
+            android:singleLine="true"
+            android:ellipsize="end"/>
+    </LinearLayout>
+</LinearLayout>

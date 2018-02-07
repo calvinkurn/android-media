@@ -10,20 +10,19 @@ import android.os.Parcelable;
 public class Status implements Parcelable {
 
     private String type;
-    private Attributes attributes;
+    private boolean isMaintenance;
+    private int minimunAndroidBuild;
 
     public Status() {
     }
 
     protected Status(Parcel in) {
         type = in.readString();
-        attributes = in.readParcelable(Attributes.class.getClassLoader());
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(type);
-        dest.writeParcelable(attributes, flags);
     }
 
     @Override
@@ -43,19 +42,27 @@ public class Status implements Parcelable {
         }
     };
 
+    public boolean isMaintenance() {
+        return isMaintenance;
+    }
+
     public String getType() {
         return type;
+    }
+
+    public int getMinimunAndroidBuild() {
+        return minimunAndroidBuild;
     }
 
     public void setType(String type) {
         this.type = type;
     }
 
-    public Attributes getAttributes() {
-        return attributes;
+    public void setMaintenance(boolean maintenance) {
+        isMaintenance = maintenance;
     }
 
-    public void setAttributes(Attributes attributes) {
-        this.attributes = attributes;
+    public void setMinimunAndroidBuild(int minimunAndroidBuild) {
+        this.minimunAndroidBuild = minimunAndroidBuild;
     }
 }

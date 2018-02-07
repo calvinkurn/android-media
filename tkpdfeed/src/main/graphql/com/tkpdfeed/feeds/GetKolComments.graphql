@@ -1,0 +1,20 @@
+query GetKolComments($idPost: Int!, $cursor: String, $limit: Int!) {
+    get_kol_list_comment(idPost: $idPost, cursor: $cursor, limit: $limit) {
+        error
+        data {
+            lastcursor
+            total_data
+            has_next_page
+            comment {
+                id
+                userID
+                userName
+                userPhoto
+                comment
+                create_time
+                isKol
+                isCommentOwner
+            }
+        }
+    }
+}

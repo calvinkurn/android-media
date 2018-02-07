@@ -36,11 +36,17 @@ public class AnalyticsCacheHandler {
 
     public void getUserDataCache(final GetUserDataListener listener){
 
-        Single<String> getData = Single.just(USER_DATA);
-        executor(getData, new SingleSubscriber<String>() {
+        Single<ProfileData> getData = Single.just(USER_DATA)
+                .map(new Func1<String, ProfileData>() {
+                    @Override
+                    public ProfileData call(String s) {
+                        return cacheManager.getConvertObjData(s, ProfileData.class);
+                    }
+                });
+        executor(getData, new SingleSubscriber<ProfileData>() {
             @Override
-            public void onSuccess(String value) {
-                listener.onSuccessGetUserData(cacheManager.getConvertObjData(USER_DATA, ProfileData.class));
+            public void onSuccess(ProfileData value) {
+                listener.onSuccessGetUserData(value);
             }
 
             @Override
@@ -53,11 +59,18 @@ public class AnalyticsCacheHandler {
 
     public void getUserAttrGraphQLCache(final GetUserDataListener listener){
 
-            Single<String> getData = Single.just(USER_ATTR);
-        executor(getData, new SingleSubscriber<String>() {
+            Single<UserAttribute.Data> getData = Single.just(USER_ATTR)
+                    .map(new Func1<String, UserAttribute.Data>() {
+                        @Override
+                        public UserAttribute.Data call(String s) {
+                            return cacheManager.getConvertObjData(USER_ATTR, UserAttribute.Data.class);
+                        }
+                    });
+        executor(getData, new SingleSubscriber<UserAttribute.Data>() {
+
             @Override
-            public void onSuccess(String value) {
-                listener.onSuccessGetUserAttr(cacheManager.getConvertObjData(USER_ATTR, UserAttribute.Data.class));
+            public void onSuccess(UserAttribute.Data data) {
+                listener.onSuccessGetUserAttr(data);
             }
 
             @Override
@@ -157,7 +170,6 @@ public class AnalyticsCacheHandler {
                 error.printStackTrace();
             }
         });
-
     }
 
     private void executor(Single single, SingleSubscriber subscriber){

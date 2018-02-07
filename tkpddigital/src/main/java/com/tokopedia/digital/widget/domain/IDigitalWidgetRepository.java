@@ -24,8 +24,6 @@ public interface IDigitalWidgetRepository {
 
     Observable<List<OperatorEntity>> getObservableOperators();
 
-    Observable<StatusEntity> getObservableStatus();
-
     Observable<DigitalNumberList> getObservableNumberList(TKPDMapParam<String, String> param);
 
 }

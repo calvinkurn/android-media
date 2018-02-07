@@ -46,7 +46,6 @@ public class RechargeNetworkInteractorImpl implements RechargeNetworkInteractor 
                         .subscribe(subscriber));
     }
 
-    @Override
     public void getStatus(Subscriber<Status> subscriber) {
         compositeSubscription.add(
                 repository.getObservableStatus()

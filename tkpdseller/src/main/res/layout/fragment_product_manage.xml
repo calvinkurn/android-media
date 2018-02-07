@@ -41,8 +41,10 @@
         android:paddingBottom="@dimen/padding_med"
         app:bav_icon_1="@drawable/ic_sort"
         app:bav_icon_2="@drawable/ic_bottom_action_filter"
+        app:bav_1_display="true"
         app:bav_label_1="@string/sort"
         app:bav_label_2="@string/filter"
+        app:bav_2_display="true"
         app:layout_anchor="@id/recycler_view"
         app:layout_anchorGravity="bottom|center_horizontal"
         app:layout_behavior="com.tokopedia.seller.common.widget.QuickReturnFooterBehavior" />

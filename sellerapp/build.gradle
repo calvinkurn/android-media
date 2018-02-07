@@ -225,13 +225,14 @@ dependencies {
         exclude group 'com.tokopedia.core'
         }
         compile (rootProject.ext.tkpdDependencies.core)*/
-    compile project(':tkpddiscovery')
+    compile project(':tkpdpdp')
     compile project(':tkpdtopads')
     compile project(':tkpdgm')
     compile project(':tkpdsession')
     compile project(':tkpdinbox')
     compile project(':tkpddigital')
     compile project(':tkpdtransaction')
+    compile project(':tkpdreputation')
 
     compile(rootProject.ext.miscDependencies.trueCaller) {
         exclude group: 'com.android.support'

@@ -10,18 +10,18 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.os.Build;
+import android.support.multidex.MultiDex;
+import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
-import com.github.anrwatchdog.ANRError;
-import com.github.anrwatchdog.ANRWatchDog;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowLog;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdCoreGeneratedDatabaseHolder;
-import com.tkpd.library.TkpdMultiDexApplication;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.fingerprint.LocationUtils;
@@ -31,6 +31,7 @@ import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.cache.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
+import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.network.di.module.NetModule;
 import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.util.BranchSdkUtils;
@@ -46,12 +47,7 @@ import io.branch.referral.Branch;
 import io.fabric.sdk.android.Fabric;
 import rx.Subscriber;
 
-/**
- * Example application for adding an L1 image cache to Volley.
- *
- * @author Trey Robinson
- */
-public abstract class MainApplication extends TkpdMultiDexApplication{
+public abstract class MainApplication extends BaseMainApplication{
 
 	public static final int DATABASE_VERSION = 7;
     public static final int DEFAULT_APPLICATION_TYPE = -1;
@@ -84,6 +80,13 @@ public abstract class MainApplication extends TkpdMultiDexApplication{
 
     public static MainApplication getInstance() {
         return instance;
+    }
+
+    @Override
+    protected void attachBaseContext(Context base)
+    {
+        super.attachBaseContext(base);
+        MultiDex.install(MainApplication.this);
     }
 
     public static boolean isAppIsInBackground(Context context) {
@@ -266,9 +269,8 @@ public abstract class MainApplication extends TkpdMultiDexApplication{
         init();
         initFacebook();
         initCrashlytics();
-        initializeAnalytics();
-        initANRWatchDogs();
         initStetho();
+        initializeAnalytics();
         PACKAGE_NAME = getPackageName();
         isResetTickerState = true;
 
@@ -278,8 +280,7 @@ public abstract class MainApplication extends TkpdMultiDexApplication{
         initDbFlow();
 
         daggerBuilder = DaggerAppComponent.builder()
-                .appModule(new AppModule(this))
-                .netModule(new NetModule());
+                .appModule(new AppModule(this));
         getApplicationComponent().inject(this);
 
         locationUtils = new LocationUtils(this);
@@ -289,6 +290,8 @@ public abstract class MainApplication extends TkpdMultiDexApplication{
         addToWhiteList();
         // initialize the Branch object
         initBranch();
+        NotificationUtils.setNotificationChannel(this);
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
 
@@ -341,20 +344,6 @@ public abstract class MainApplication extends TkpdMultiDexApplication{
         TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.MOENGAGE);
         TrackingUtils.setMoEngageExistingUser();
         TrackingUtils.enableDebugging(isDebug());
-    }
-
-    public void initANRWatchDogs() {
-        if (!BuildConfig.DEBUG) {
-            ANRWatchDog watchDog = new ANRWatchDog();
-            watchDog.setReportMainThreadOnly();
-            watchDog.setANRListener(new ANRWatchDog.ANRListener() {
-                @Override
-                public void onAppNotResponding(ANRError error) {
-                    //Crashlytics.logException(error);
-                }
-            });
-            watchDog.start();
-        }
     }
 
     public void initCrashlytics() {

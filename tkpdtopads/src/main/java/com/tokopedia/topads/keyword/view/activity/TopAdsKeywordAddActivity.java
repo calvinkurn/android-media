@@ -11,8 +11,8 @@ import android.support.v7.app.AlertDialog;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.topads.R;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.topads.R;
 import com.tokopedia.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.topads.keyword.helper.KeywordTypeMapper;
 import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordAddFragment;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 /**
  * Created by nathan on 5/15/17.
  */
-
+@Deprecated
 public class TopAdsKeywordAddActivity extends BaseSimpleActivity
         implements HasComponent<AppComponent>,
         TopAdsKeywordAddFragment.OnSuccessSaveKeywordListener {
@@ -133,5 +133,10 @@ public class TopAdsKeywordAddActivity extends BaseSimpleActivity
     @Override
     public AppComponent getComponent() {
         return getApplicationComponent();
+    }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
     }
 }

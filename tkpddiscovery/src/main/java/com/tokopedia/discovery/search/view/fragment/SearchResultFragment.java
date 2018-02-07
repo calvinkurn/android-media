@@ -17,8 +17,8 @@ import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.catalog.analytics.AppScreen;
+import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.search.domain.model.SearchItem;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
 import com.tokopedia.discovery.search.view.adapter.SearchAdapter;
@@ -104,6 +104,7 @@ public class SearchResultFragment extends TkpdBaseV4Fragment
     @Override
     public void onItemClicked(SearchItem item) {
         probeAnalytics(item);
+        ((DiscoveryActivity) getActivity()).dropKeyboard();
         if (item.getEventAction().equals("shop") && item.getApplink() != null) {
             List<String> segments = Uri.parse(item.getApplink()).getPathSegments();
             if (segments != null && segments.size() > 0) {
@@ -113,9 +114,9 @@ public class SearchResultFragment extends TkpdBaseV4Fragment
                 getActivity().startActivity(intent);
             }
         } else if (item.getSc() != null && !item.getSc().isEmpty()) {
-            ((BrowseProductActivity) getActivity()).sendQuery(item.getKeyword(), item.getSc());
+            ((DiscoveryActivity) getActivity()).onSuggestionProductClick(item.getKeyword(), item.getSc());
         } else {
-            ((BrowseProductActivity) getActivity()).sendQuery(item.getKeyword());
+            ((DiscoveryActivity) getActivity()).onSuggestionProductClick(item.getKeyword());
         }
     }
 
@@ -136,23 +137,23 @@ public class SearchResultFragment extends TkpdBaseV4Fragment
                 UnifyTracking.eventClickPopularSearch(item.getKeyword());
                 break;
             case AppEventTracking.GTM.SEARCH_AUTOCOMPLETE_IN_CAT :
-                UnifyTracking.eventClickAutoCompleteCategory(item.getSc(), item.getKeyword());
+                UnifyTracking.eventClickAutoCompleteCategory(item.getRecom(), item.getSc(), item.getKeyword());
                 break;
         }
     }
 
     @Override
     public void copyTextToSearchView(String text) {
-        ((BrowseProductActivity) getActivity()).setSearchQuery(text + " ");
+        ((DiscoveryActivity) getActivity()).setSearchQuery(text + " ");
     }
 
     @Override
     public void onDeleteRecentSearchItem(SearchItem item) {
-        ((BrowseProductActivity) getActivity()).deleteRecentSearch(item.getKeyword());
+        ((DiscoveryActivity) getActivity()).deleteRecentSearch(item.getKeyword());
     }
 
     @Override
     public void onDeleteAllRecentSearch() {
-        ((BrowseProductActivity) getActivity()).deleteAllRecentSearch();
+        ((DiscoveryActivity) getActivity()).deleteAllRecentSearch();
     }
 }

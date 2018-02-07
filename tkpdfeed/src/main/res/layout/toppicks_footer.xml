@@ -12,7 +12,6 @@
         android:layout_gravity="end"
         android:layout_marginRight="@dimen/margin_small"
         android:clickable="true"
-        android:drawableRight="@drawable/ic_chevron_right"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
         android:text="@string/see_all"

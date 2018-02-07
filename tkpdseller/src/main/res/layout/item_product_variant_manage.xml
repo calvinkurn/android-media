@@ -42,21 +42,15 @@
 
             <TextView
                 android:id="@+id/text_view_title"
-                style="@style/TextView.Subheading"
+                style="@style/TextView.Title"
                 tools:text="@string/app_id" />
 
             <TextView
                 android:id="@+id/text_view_content"
-                style="@style/TextView.Caption"
+                style="@style/TextView.Micro"
                 android:textColor="@color/black_38"
                 tools:text="@string/app_id" />
         </LinearLayout>
-
-        <ImageView
-            android:id="@+id/arrow_left"
-            android:layout_width="@dimen/image_width_xxs"
-            android:layout_height="@dimen/image_width_xxs"
-            android:src="@drawable/ic_arrow_right" />
 
     </LinearLayout>
 </FrameLayout>

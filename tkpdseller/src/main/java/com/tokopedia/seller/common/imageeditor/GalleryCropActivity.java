@@ -3,13 +3,12 @@ package com.tokopedia.seller.common.imageeditor;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.myproduct.fragment.ImageGalleryAlbumFragment;
 import com.tokopedia.core.newgallery.GalleryActivity;
+
 import java.util.ArrayList;
 
 /**
@@ -51,16 +50,11 @@ public class GalleryCropActivity extends GalleryActivity {
         moveToImageGalleryCamera(context, fragment, position, forceOpenCamera, maxImageSelection, false);
     }
 
-    protected static Intent createIntent(Context context, int position,
+    public static Intent createIntent(Context context, int position,
                                        boolean forceOpenCamera,
                                        int maxImageSelection,
                                        boolean compressToTkpd) {
-        Intent imageGallery = new Intent(context, GalleryActivity.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            imageGallery = new Intent(context, GalleryActivity.class);
-        } else {
-            imageGallery = new Intent(context, GalleryCropActivity.class);
-        }
+        Intent imageGallery = new Intent(context, GalleryCropActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(ADD_PRODUCT_IMAGE_LOCATION, position);
         bundle.putString(FRAGMENT_TO_SHOW, ImageGalleryAlbumFragment.FRAGMENT_TAG);
@@ -75,7 +69,7 @@ public class GalleryCropActivity extends GalleryActivity {
     public void finishWithSingleImage(String imageUrl){
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.add(imageUrl);
-        ImageEditorActivity.start(this,arrayList, null, true);
+        ImageEditorActivity.start(this,arrayList, true);
     }
 
     @Override

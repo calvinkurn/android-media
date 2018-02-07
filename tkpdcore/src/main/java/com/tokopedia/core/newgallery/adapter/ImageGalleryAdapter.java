@@ -18,9 +18,10 @@ import com.bignerdranch.android.multiselector.SwappingHolder;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.myproduct.fragment.ImageGalleryFragment;
-import com.tokopedia.core.myproduct.model.ImageModel;
+import com.tokopedia.core.newgallery.model.ImageModel;
 import com.tokopedia.core.newgallery.presenter.ImageGalleryView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.tkpd.library.utils.CommonUtils.checkNotNull;
@@ -30,25 +31,17 @@ import static com.tkpd.library.utils.CommonUtils.checkNotNull;
  */
 public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapter.ViewHolder> {
 
-    List<ImageModel> datas;
-    MultiSelector multiSelector;
-    int limit;
     public static final int UNLIMITED_SELECTION = -1;
+    private List<ImageModel> datas;
+    private MultiSelector multiSelector;
+    private int limit;
     private CountTitle countTitle;
     private ActionMode actionMode;
-
-    public ImageGalleryAdapter(List<ImageModel> datas, MultiSelector multiSelector) {
-        this(datas, multiSelector, UNLIMITED_SELECTION);
-    }
 
     public ImageGalleryAdapter(List<ImageModel> datas, MultiSelector multiSelector, int limit) {
         this.datas = datas;
         this.multiSelector = multiSelector;
         this.limit = limit;
-    }
-
-    public CountTitle getCountTitle() {
-        return countTitle;
     }
 
     public void setCountTitle(CountTitle countTitle) {
@@ -57,9 +50,7 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemLayoutView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.picture_galery_item, null);
-        return new ViewHolder(itemLayoutView);
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.picture_galery_item, parent, false));
     }
 
     @Override
@@ -72,18 +63,26 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
         return datas.size();
     }
 
+    public void addItems(ArrayList<ImageModel> data) {
+        datas.clear();
+        datas.addAll(data);
+        notifyDataSetChanged();
+    }
+
+    public interface CountTitle {
+        void onTitleChanged(int size);
+    }
+
     public class ViewHolder extends SwappingHolder
             implements View.OnClickListener, View.OnLongClickListener {
         ImageModel imageModel;
         ImageView mImageView;
-        //        RelativeLayout mBorder;
         WindowManager wm;
 
         public ViewHolder(View itemView) {
             super(itemView, multiSelector);
             setSelectionModeStateListAnimator(null);
             mImageView = (ImageView) itemView.findViewById(R.id.picture_gallery_imageview);
-//            mBorder	  = (RelativeLayout) itemView.findViewById(R.id.border_imageview_layout);
             wm = (WindowManager) itemView.getContext().getSystemService(Context.WINDOW_SERVICE);
             itemView.setOnClickListener(this);
             itemView.setLongClickable(true);
@@ -92,14 +91,10 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
 
         public void bindView(ImageModel imageModel) {
             this.imageModel = imageModel;
-            int imageWidth = (int) (getScreenWidth() - 4) / 3;
-            mImageView.setLayoutParams(new FrameLayout.LayoutParams(imageWidth, imageWidth));
-            ImageHandler.loadImageFit2(itemView.getContext(), mImageView,
-                   imageModel.getPath());
-//            ImageHandler.LoadImageCustom(Uri.fromFile(new File(imageModel.getPathFromMediaUri())).toString())
-//                    .fit()
-//                    .centerCrop().into(mImageView);
 
+            int dimen = (getScreenWidth() - 4) / 3;
+            mImageView.setLayoutParams(new FrameLayout.LayoutParams(dimen, dimen));
+            ImageHandler.loadImageFit2(itemView.getContext(), mImageView, imageModel.getPathFile());
         }
 
         public int getScreenWidth() {
@@ -117,12 +112,10 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
 
             int selectedItemSize = UNLIMITED_SELECTION;
 
-//            Toast.makeText(itemView.getContext(), ""+imageModel, Toast.LENGTH_SHORT).show();
-
             if (!multiSelector.tapSelection(this)) {
 
                 if (itemView.getContext() != null && itemView.getContext() instanceof ImageGalleryView) {
-                    ((ImageGalleryView) itemView.getContext()).sendResultImageGallery(imageModel.getPath());
+                    ((ImageGalleryView) itemView.getContext()).sendResultImageGallery(imageModel.getPathFile());
                 }
             } else {
                 if (limit != UNLIMITED_SELECTION && multiSelector.getSelectedPositions().size() > limit) {
@@ -139,15 +132,10 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
 
         @Override
         public boolean onLongClick(View v) {
-//            Toast.makeText(itemView.getContext(), "onLongClick !!", Toast.LENGTH_SHORT).show();
             ImageGalleryView imageGalleryView = (ImageGalleryView) itemView.getContext();
             actionMode = imageGalleryView.showActionMode(imageGalleryView.getMultiSelectorCallback(ImageGalleryFragment.FRAGMENT_TAG));
             multiSelector.setSelected(this, true);
             return true;
         }
-    }
-
-    public interface CountTitle {
-        void onTitleChanged(int size);
     }
 }

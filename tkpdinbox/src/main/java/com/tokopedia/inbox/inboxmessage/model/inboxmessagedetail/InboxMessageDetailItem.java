@@ -7,8 +7,8 @@ import android.text.Spanned;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.inboxreputation.model.inboxreputation.UserReputation;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.inbox.inboxmessage.model.UserReputation;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              android:padding="@dimen/price_range_separator_margin">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_vvs"
+        android:fontFamily="sans-serif"
+        android:lineSpacingExtra="8sp"
+        android:text="@string/buyer_reputation"
+        android:textColor="@color/font_black_primary_70"
+        android:textSize="@dimen/font_title"
+        android:textStyle="normal"
+        />
+
+    <TextView
+        android:fontFamily="sans-serif"
+        android:lineSpacingExtra="7sp"
+        android:text="@string/buyer_reputation_given_by_seller"
+        style="@style/TextView.Small.BlackDisabled"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/smiley_reputation_size"
+        android:layout_gravity="center_vertical"
+        android:layout_marginBottom="@dimen/margin_sm"
+        android:layout_marginTop="@dimen/margin_sm"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/smiley_good"
+            android:layout_width="@dimen/smiley_reputation_size"
+            android:layout_height="@dimen/smiley_reputation_size"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/margin_small"
+            android:maxHeight="@dimen/smiley_reputation_size"
+            android:maxWidth="@dimen/smiley_reputation_size"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_smiley_good"/>
+
+        <TextView
+            android:id="@+id/score_good"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/margin_small"
+            android:layout_toRightOf="@id/smiley_good"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="6sp"
+            tools:text="248"
+            style="@style/TextView.Micro.BlackDisabled"
+            />
+
+        <ImageView
+            android:id="@+id/smiley_neutral"
+            android:layout_width="@dimen/smiley_reputation_size"
+            android:layout_height="@dimen/smiley_reputation_size"
+            android:layout_marginRight="@dimen/margin_small"
+            android:layout_toRightOf="@id/score_good"
+            android:maxHeight="@dimen/smiley_reputation_size"
+            android:maxWidth="@dimen/smiley_reputation_size"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_smiley_netral"/>
+
+        <TextView
+            android:id="@+id/score_netral"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/margin_small"
+            android:layout_toRightOf="@id/smiley_neutral"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="6sp"
+            style="@style/TextView.Micro.BlackDisabled"
+            tools:text="2"
+            />
+
+        <ImageView
+            android:id="@+id/smiley_bad"
+            android:layout_width="@dimen/smiley_reputation_size"
+            android:layout_height="@dimen/smiley_reputation_size"
+            android:layout_marginRight="@dimen/margin_small"
+            android:layout_toRightOf="@id/score_netral"
+            android:maxHeight="@dimen/smiley_reputation_size"
+            android:maxWidth="@dimen/smiley_reputation_size"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_smiley_bad"/>
+
+        <TextView
+            android:id="@+id/score_bad"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/margin_small"
+            android:layout_toRightOf="@id/smiley_bad"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="6sp"
+            style="@style/TextView.Micro.BlackDisabled"
+            tools:text="0"
+            />
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/close_button"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/margin_small"
+        android:background="@color/tkpd_main_green"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:lineSpacingExtra="7sp"
+        android:text="@string/close"
+        style="@style/TextView.Small.WhitePrimary"
+        />
+</LinearLayout>

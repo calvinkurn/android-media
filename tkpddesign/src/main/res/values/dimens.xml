@@ -1,17 +1,14 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
 
-    <dimen name="font_display4">112sp</dimen>
-    <dimen name="font_display3">56sp</dimen>
-    <dimen name="font_display2">45sp</dimen>
-    <dimen name="font_display1">34sp</dimen>
-    <dimen name="font_headline">24sp</dimen>
-    <dimen name="font_title">20sp</dimen>
-    <dimen name="font_subheading">16sp</dimen>
-    <dimen name="font_body2">14sp</dimen>
-    <dimen name="font_body1">14sp</dimen>
-    <dimen name="font_caption">12sp</dimen>
-    <dimen name="font_button">14sp</dimen>
+    <dimen name="font_headline3">56sp</dimen>
+    <dimen name="font_headline2">45sp</dimen>
+    <dimen name="font_headline">34sp</dimen>
+    <dimen name="font_sub_headline">24sp</dimen>
+    <dimen name="font_title_big">20sp</dimen>
+    <dimen name="font_title">17sp</dimen>
+    <dimen name="font_small">14sp</dimen>
+    <dimen name="font_micro">12sp</dimen>
 
     <dimen name="font_loading_height_display4">112dp</dimen>
     <dimen name="font_loading_height_display3">56dp</dimen>
@@ -62,11 +59,23 @@
     <dimen name="padding_med">20dp</dimen>
     <dimen name="large_dp">30dp</dimen>
 
+    <dimen name="small_icon_size">24dp</dimen>
+    <dimen name="icon_size">36dp</dimen>
+    <dimen name="large_icon_size">48dp</dimen>
+
     <dimen name="text_input_margin_offset">-4dp</dimen>
+    <dimen name="text_input_margin_top_offset">-8dp</dimen>
+    <dimen name="text_input_margin_bottom_offset">-6dp</dimen>
+    <dimen name="text_input_horizontal_padding">4dp</dimen>
+    <dimen name="text_input_counter_horizontal_padding">2dp</dimen>
+
     <dimen name="spinner_decimal_spinner_width">80dp</dimen>
 
     <dimen name="height_widget_ticker">90dp</dimen>
     <dimen name="image_medal_size">20dp</dimen>
+
+    <dimen name="height_button_voucher">44dp</dimen>
+    <dimen name="font_small_caption_voucher">10dp</dimen>
 
     <dimen name="image_smiley_size">35dp</dimen>
 
@@ -83,4 +92,21 @@
     <dimen name="alphabetical_sidebar_magnifier_padding">10dp</dimen>
     <dimen name="alphabetical_sidebar_to_magnifier_distance">20dp</dimen>
     <dimen name="alphabetical_section_header_padding">16dp</dimen>
+
+    <dimen name="medal_size">20dp</dimen>
+    <dimen name="smiley_reputation_size">24dp</dimen>
+    <dimen name="reputation_view_smiley">14dp</dimen>
+
+    <dimen name="lv_min_title_width">100dp</dimen>
+
+    <dimen name="empty_min_width">200dp</dimen>
+    <dimen name="empty_max_width">250dp</dimen>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="toolbar_elevation">4dp</dimen>
+
+    <dimen name="range_input_margin_input_text">-4dp</dimen>
 </resources>

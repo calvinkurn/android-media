@@ -22,21 +22,14 @@
 
         <TextView
             android:id="@+id/text_view_date"
-            style="@style/TextView.Subheading.Green"
+            style="@style/TextView.Title.Green"
             tools:text="@string/app_name" />
 
         <TextView
             android:id="@+id/text_view_compared_date"
-            style="@style/TextView.Caption.BlackDisabled"
+            style="@style/TextView.Micro.BlackDisabled"
             android:visibility="gone"
             tools:text="@string/app_name" />
     </LinearLayout>
 
-
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/arrow_left"
-        android:layout_width="@dimen/image_width_xxxs"
-        android:layout_height="@dimen/image_width_xxs"
-        android:scaleType="fitCenter"
-        android:src="@drawable/ic_arrow_right" />
 </LinearLayout>

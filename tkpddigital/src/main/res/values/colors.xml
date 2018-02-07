@@ -12,4 +12,10 @@
     <color name="separator_tokocash">#f1f1f1</color>
     <color name="text_verifikasi_tokocash">#a6a6a6</color>
     <color name="digital_bg_verfikasi_tokocash">#e0e0e0</color>
+
+    <color name="filter_tokocash_selected">#42b549</color>
+    <color name="filter_inside_orange">#ed6b2e</color>
+    <color name="filter_inside_blue">#29bbd1</color>
+    <color name="filter_inside_green">#a2cf63</color>
+    <color name="filter_inside_green_medium">#42b549</color>
 </resources>

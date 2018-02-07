@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:id="@+id/holder_container"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:layout_marginBottom="@dimen/margin_small"
-              android:background="@drawable/bg_cart_item_normal_mode"
-              android:orientation="vertical"
-              app:cardBackgroundColor="@color/white"
-              app:cardElevation="2dp"
-              app:contentPadding="@null">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/holder_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/margin_small"
+    android:background="@drawable/bg_cart_item_normal_mode"
+    android:orientation="vertical"
+    app:cardBackgroundColor="@color/white"
+    app:cardElevation="2dp"
+    app:contentPadding="@null">
 
 
     <RelativeLayout
@@ -35,14 +35,14 @@
                 android:layout_gravity="center"
                 android:layout_marginBottom="@dimen/margin_vs"
                 android:textColor="@color/black"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tv_error_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:textColor="@color/label_color"/>
+                android:textColor="@color/label_color" />
         </LinearLayout>
 
         <TextView
@@ -60,7 +60,7 @@
             android:textColor="@color/black"
             android:textSize="@dimen/font_medium"
             android:textStyle="bold"
-            tools:text="Shop Name"/>
+            tools:text="Shop Name" />
 
         <ImageView
             android:id="@+id/btn_overflow"
@@ -71,14 +71,14 @@
             android:layout_below="@+id/holder_error"
             android:background="@drawable/overflow_selected"
             android:src="@drawable/ic_new_action_overflow_black"
-            tools:ignore="ContentDescription"/>
+            tools:ignore="ContentDescription" />
 
     </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/greyish_bg"/>
+        android:background="@color/greyish_bg" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_cart_product"
@@ -86,7 +86,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:visibility="visible"
-        tools:visibility="gone"/>
+        tools:visibility="gone" />
 
     <android.support.v7.widget.AppCompatCheckBox
         android:id="@+id/cb_dropshiper"
@@ -96,7 +96,7 @@
         android:text="@string/title_send_as_dropship"
         android:textColor="@color/black"
         android:textSize="@dimen/font_small"
-        app:backgroundTint="@color/colorPrimary"/>
+        app:backgroundTint="@color/colorPrimary" />
 
     <LinearLayout
         android:id="@+id/holder_dropshiper_form"
@@ -118,7 +118,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/label_hint_cart_item_dropshipper_name"
                 android:textColor="@color/black"
-                android:textColorHint="@color/grey_800"/>
+                android:textColorHint="@color/grey_800" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -133,14 +133,14 @@
                 android:hint="@string/label_hint_cart_item_dropshipper_phone"
                 android:inputType="phone"
                 android:textColor="@color/black"
-                android:textColorHint="@color/grey_800"/>
+                android:textColorHint="@color/grey_800" />
         </android.support.design.widget.TextInputLayout>
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/greyish_bg"/>
+        android:background="@color/greyish_bg" />
 
     <RelativeLayout
         android:id="@+id/holder_detail_cart_toggle"
@@ -159,7 +159,7 @@
             android:text="@string/title_details_info"
             android:textColor="@color/label_color"
             android:textSize="@dimen/font_small"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/iv_icon_detail_cart_toggle"
@@ -171,13 +171,13 @@
             android:layout_marginEnd="@dimen/margin_small"
             android:layout_marginRight="@dimen/margin_small"
             android:src="@drawable/arrow_drop_down"
-            tools:ignore="ContentDescription"/>
+            tools:ignore="ContentDescription" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_below="@+id/tv_1"
-            android:background="@color/greyish_bg"/>
+            android:background="@color/greyish_bg" />
 
     </RelativeLayout>
 
@@ -187,7 +187,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:expandable_layout_duration="400"
-        app:expandable_layout_expanded="false">
+        app:expandable_layout_expanded="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -202,7 +202,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/title_shipping_to"
                 android:textColor="@color/label_color"
-                android:textSize="@dimen/font_small"/>
+                android:textSize="@dimen/font_small" />
 
             <TextView
                 android:id="@+id/tv_shipping_address"
@@ -211,14 +211,14 @@
                 android:layout_marginBottom="@dimen/margin_vs"
                 android:textColor="@color/href_link"
                 android:textSize="@dimen/font_small"
-                tools:text="Test RPX"/>
+                tools:text="Test RPX" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/title_shipping_agency"
                 android:textColor="@color/label_color"
-                android:textSize="@dimen/font_small"/>
+                android:textSize="@dimen/font_small" />
 
             <TextView
                 android:id="@+id/tv_shipment"
@@ -227,14 +227,30 @@
                 android:layout_marginBottom="@dimen/margin_vs"
                 android:textColor="@color/href_link"
                 android:textSize="@dimen/font_small"
-                tools:text="JNE - YES"/>
+                tools:text="JNE - YES" />
 
-            <TextView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/title_use_insurance"
-                android:textColor="@color/label_color"
-                android:textSize="@dimen/font_small"/>
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_use_insurance"
+                    android:textColor="@color/label_color"
+                    android:textSize="@dimen/font_small" />
+
+                <ImageView
+                    android:id="@+id/img_insurance_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/margin_vvs"
+                    android:layout_marginStart="@dimen/margin_vvs"
+                    android:src="@drawable/info_icon" />
+
+            </LinearLayout>
 
             <Spinner
                 android:id="@+id/sp_use_insurance"
@@ -242,7 +258,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_vs"
-                android:textSize="@dimen/font_small"/>
+                android:textSize="@dimen/font_small" />
 
 
             <TextView
@@ -250,7 +266,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/title_left_stock"
                 android:textColor="@color/label_color"
-                android:textSize="@dimen/font_small"/>
+                android:textSize="@dimen/font_small" />
 
             <Spinner
                 android:id="@+id/sp_shipment_option_choosen"
@@ -258,9 +274,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_vs"
-                android:textSize="@dimen/font_small"/>
+                android:textSize="@dimen/font_small" />
 
             <LinearLayout
+                android:id="@+id/calculation_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -392,7 +409,7 @@
             android:text="@string/title_total"
             android:textColor="@color/black"
             android:textSize="@dimen/font_small"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <ProgressBar
             android:id="@+id/total_price_progress_bar"
@@ -408,8 +425,8 @@
             android:textColor="@color/black"
             android:textSize="@dimen/font_small"
             android:textStyle="bold"
-            tools:text="Rp 20.000,-"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:text="Rp 20.000,-" />
     </LinearLayout>
 
     <LinearLayout
@@ -430,12 +447,12 @@
             android:gravity="center"
             android:padding="@dimen/padding_small"
             android:text="@string/title_cancel"
-            android:textColor="#ffffff"/>
+            android:textColor="#ffffff" />
 
         <View
             android:layout_width="0.2dp"
             android:layout_height="match_parent"
-            android:background="#116216"/>
+            android:background="#116216" />
 
         <TextView
             android:id="@+id/btn_save"
@@ -445,7 +462,7 @@
             android:gravity="center"
             android:padding="@dimen/padding_small"
             android:text="@string/submit_but"
-            android:textColor="#ffffff"/>
+            android:textColor="#ffffff" />
     </LinearLayout>
 
 </LinearLayout>

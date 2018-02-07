@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/view_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/new_comment"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:fontFamily="sans-serif"
+            android:hint="@string/write_comment"
+            android:inputType="textMultiLine"
+            android:maxLines="5"
+            android:paddingEnd="@dimen/padding_small_sm"
+            android:paddingLeft="@dimen/padding_small_sm"
+            android:paddingRight="@dimen/padding_small_sm"
+            android:paddingStart="@dimen/padding_small_sm"
+            android:textSize="@dimen/font_small"
+            android:textStyle="normal"/>
+
+        <ImageView
+            android:id="@+id/send_but"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="@dimen/padding_small"
+            android:src="@drawable/ic_send_24dp_green"/>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@id/view_comment"
+        android:background="@color/grey_300"/>
+
+    <include
+        android:id="@+id/kol_comment_product"
+        layout="@layout/kol_comment_product"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/separator"
+        />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/comment_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/view_comment"/>
+</RelativeLayout>
+

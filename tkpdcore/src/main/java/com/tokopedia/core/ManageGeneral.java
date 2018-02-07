@@ -85,8 +85,7 @@ public class ManageGeneral extends TkpdActivity implements NotificationReceivedL
     }
 
     private boolean isUserDoesntHaveShop() {
-        String shopId = SessionHandler.getShopID(this);
-        return shopId.equals("0") || shopId.length() == 0;
+        return !SessionHandler.isUserHasShop(this);
     }
 
     private void actionSelectedTabWhenReserve() {
@@ -141,6 +140,11 @@ public class ManageGeneral extends TkpdActivity implements NotificationReceivedL
 
     @Override
     public void onRefreshCart(int status) {
+
+    }
+
+    @Override
+    public void onGetNotif(Bundle data) {
 
     }
 

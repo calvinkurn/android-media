@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 
 import com.crashlytics.android.Crashlytics;
@@ -17,12 +16,14 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.data.DataManagerImpl;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.database.manager.CategoryDatabaseManager;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.LoginBypassModel;
@@ -30,7 +31,6 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.PasswordGenerator.PGListener;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.welcome.WelcomeActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,15 +62,8 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!isTaskRoot()) {
-            final Intent intent = getIntent();
-            if (intent.hasCategory(Intent.CATEGORY_LAUNCHER) && Intent.ACTION_MAIN.equals(intent.getAction())) {
-                finish();
-                return;
-            }
-        }
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        setContentView(R.layout.activity_splash_screen);
+
         mReceiver = new DownloadResultReceiver(new Handler());
         mReceiver.setReceiver(this);
         sessionHandler = new SessionHandler(this);
@@ -84,14 +77,26 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
                         | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
                         | View.SYSTEM_UI_FLAG_IMMERSIVE);
+
+        fetchRemoteConfig();
+    }
+
+    private void fetchRemoteConfig() {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+        remoteConfig.fetch(null);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 //        new DiscoveryInteractorImpl().editProductDetail(this, "45469593", "", "");
-        handleBranchDefferedDeeplink();
         //  moveToHome();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        handleBranchDefferedDeeplink();
     }
 
     private void moveToHome() {
@@ -101,6 +106,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         Pgenerator = new PasswordGenerator(SplashScreen.this);
         InitNew();
         registerFCMDeviceID();
+        finishSplashScreen();
     }
 //        }, TIME_DELAY);
 
@@ -126,7 +132,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         return new GCMHandlerListener() {
             @Override
             public void onGCMSuccess(String regId) {
-                bypassV2Login();
+                //bypassV2Login();
             }
         };
     }
@@ -137,31 +143,9 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     }
 
     public void finishSplashScreen() {
-        Intent intent;
-        if (isSeller()) {
-//            if(!sessionHandler.getShopID().isEmpty() && !sessionHandler.getShopID().equals("0")) {
-//                // Means it is a Seller
-//                startActivity(new Intent(SplashScreen.this, SellerHomeActivity.class));
-//            } else {
-//                // Means it is buyer
-//                if(!TextUtils.isEmpty(sessionHandler.getLoginID())) {
-//                    intent = moveToCreateShop(this);
-//                    startActivity(intent);
-//                } else {
-//                    intent = new Intent(SplashScreen.this, WelcomeActivity.class);
-//                    startActivity(intent);
-//                }
-//            }
-            intent = new Intent(SplashScreen.this, WelcomeActivity.class);
-        } else {
-            intent = HomeRouter.getHomeActivity(this);
-        }
+        Intent intent = HomeRouter.getHomeActivity(this);
         startActivity(intent);
         finish();
-    }
-
-    private boolean isSeller() {
-        return getApplication().getClass().getSimpleName().equals("SellerMainApplication");
     }
 
     private void bypassV2Login() {
@@ -190,8 +174,6 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     private void resetAllDatabaseFlag() {
         LocalCacheHandler flagDB = new LocalCacheHandler(this, "DATABASE_VERSION" + MainApplication.DATABASE_VERSION);
         if (!flagDB.getBoolean("reset_db_flag", false)) {
-            Log.i("DATABASE DATABSE UWOOO", "clearing the database flag");
-            LocalCacheHandler.clearCache(this, CategoryDatabaseManager.KEY_STORAGE_NAME);
             LocalCacheHandler.clearCache(this, DataManagerImpl.SHIPPING_CITY_DURATION_STORAGE);
             if (getApplication() instanceof TkpdCoreRouter) {
                 ((TkpdCoreRouter) getApplication()).resetAddProductCache(this);
@@ -244,6 +226,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         if (branch == null){
             moveToHome();
         }else {
+            branch.setRequestMetadata("$google_analytics_client_id", TrackingUtils.getClientID());
             branch.initSession(new Branch.BranchReferralInitListener() {
                 @Override
                 public void onInitFinished(JSONObject referringParams, BranchError error) {
@@ -262,7 +245,6 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
 
                         }
                     } else {
-                        Log.d("deffered deeplink", "" + error.getMessage());
                         moveToHome();
                     }
                 }

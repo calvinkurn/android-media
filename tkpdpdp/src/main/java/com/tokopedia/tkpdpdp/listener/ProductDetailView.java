@@ -301,4 +301,8 @@ public interface ProductDetailView extends ViewListener {
     void showDinkFailed(String productName, String expired);
 
     void onPromoAdsClicked();
+
+    void restoreIsAppBarCollapsed(boolean isAppBarCollapsed);
+
+    boolean isSellerApp();
 }

@@ -259,7 +259,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                 break;
             case RevampedDynamicFilterActivity.REQUEST_CODE:
                 FilterMapAtribut.FilterMapValue filterMapValue =
-                        data.getParcelableExtra(RevampedDynamicFilterActivity.EXTRA_FILTERS);
+                        data.getParcelableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FILTERS);
                 mFilterMapAtribut.getFiltersMap()
                         .put(browseModel.getActiveTab(), filterMapValue);
                 browseModel.setFilterOptions(filterMapValue.getValue());

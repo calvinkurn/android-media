@@ -85,7 +85,6 @@ public class WidgetProductChooserView extends LinearLayout {
                 android.R.layout.simple_spinner_item, products, showPrice);
         spinnerNominal.setAdapter(adapter);
         spinnerNominal.setOnItemSelectedListener(getItemSelected(products));
-        spinnerNominal.setOnTouchListener(getOnTouchListener());
         setSpnNominalSelectionBasedStatus(products);
         setSpnNominalSelectionBasedLastOrder(products, lastOrder, lastProductSelected);
         checkStockProduct(products.get(spinnerNominal.getSelectedItemPosition()));
@@ -96,24 +95,13 @@ public class WidgetProductChooserView extends LinearLayout {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 listener.initDataView(products.get(i));
+                listener.trackingProduct();
                 checkStockProduct(products.get(i));
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
-            }
-        };
-    }
-
-    private OnTouchListener getOnTouchListener() {
-        return new OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    listener.trackingProduct();
-                }
-                return false;
             }
         };
     }
@@ -144,13 +132,13 @@ public class WidgetProductChooserView extends LinearLayout {
                 && lastOrder != null && lastOrder.getAttributes() != null) {
             int lastProductId = lastOrder.getAttributes().getProductId();
             for (int i = 0; i < productList.size(); i++) {
-                if (productList.get(i).getId() == (lastProductId)) {
+                if (Integer.valueOf(productList.get(i).getId()) == (lastProductId)) {
                     spinnerNominal.setSelection(i);
                 }
             }
         } else {
             for (int i = 0; i < productList.size(); i++) {
-                if (String.valueOf(productList.get(i).getId())
+                if (productList.get(i).getId()
                         .equalsIgnoreCase(lastProductSelected)) {
                     spinnerNominal.setSelection(i);
                 }

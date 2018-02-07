@@ -11,7 +11,7 @@
         android:orientation="vertical">
 
         <TextView
-            style="@style/TextView.Body1.BlackSecondary"
+            style="@style/TextView.Small.BlackSecondary"
             android:text="@string/product_label_product_about" />
 
     </LinearLayout>
@@ -98,7 +98,6 @@
         android:focusable="true"
         app:content="@string/product_label_choose"
         app:content_color="@color/tkpd_main_green"
-        app:label_show_arrow="true"
         app:title="@string/product_label_shop_window" />
 
     <com.tokopedia.design.text.SpinnerTextView

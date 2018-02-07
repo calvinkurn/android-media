@@ -41,6 +41,24 @@ public class Product implements Parcelable {
     @SerializedName("insurance_type")
     @Expose
     private Integer insuranceMode;
+    @SerializedName("insurance_type_info")
+    @Expose
+    private String insuranceTypeInfo;
+    @SerializedName("weight_product")
+    @Expose
+    private int weightProduct;
+    @SerializedName("weight_order_spid")
+    @Expose
+    private int weightOrderSpid;
+    @SerializedName("insurance_used_type")
+    @Expose
+    private int insuranceUsedType;
+    @SerializedName("insurance_used_info")
+    @Expose
+    private String insuranceUsedInfo;
+    @SerializedName("insurance_used_default")
+    @Expose
+    private int insuranceUsedDefault;
     @SerializedName("max_hours_id")
     @Expose
     private String maxHoursId;
@@ -195,6 +213,54 @@ public class Product implements Parcelable {
         this.insuranceMode = insuranceMode;
     }
 
+    public String getInsuranceTypeInfo() {
+        return insuranceTypeInfo;
+    }
+
+    public void setInsuranceTypeInfo(String insuranceTypeInfo) {
+        this.insuranceTypeInfo = insuranceTypeInfo;
+    }
+
+    public Integer getWeightProduct() {
+        return weightProduct;
+    }
+
+    public void setWeightProduct(Integer weightProduct) {
+        this.weightProduct = weightProduct;
+    }
+
+    public Integer getWeightOrderSpid() {
+        return weightOrderSpid;
+    }
+
+    public void setWeightOrderSpid(Integer weightOrderSpid) {
+        this.weightOrderSpid = weightOrderSpid;
+    }
+
+    public Integer getInsuranceUsedType() {
+        return insuranceUsedType;
+    }
+
+    public void setInsuranceUsedType(Integer insuranceUsedType) {
+        this.insuranceUsedType = insuranceUsedType;
+    }
+
+    public String getInsuranceUsedInfo() {
+        return insuranceUsedInfo;
+    }
+
+    public void setInsuranceUsedInfo(String insuranceUsedInfo) {
+        this.insuranceUsedInfo = insuranceUsedInfo;
+    }
+
+    public Integer getInsuranceUsedDefault() {
+        return insuranceUsedDefault;
+    }
+
+    public void setInsuranceUsedDefault(Integer insuranceUsedDefault) {
+        this.insuranceUsedDefault = insuranceUsedDefault;
+    }
+
     @Override
     public String toString() {
         return getShipperProductName();
@@ -223,6 +289,12 @@ public class Product implements Parcelable {
         descHoursId = in.readString();
         insurancePrice = in.readByte() == 0x00 ? null : in.readInt();
         insuranceMode = in.readByte() == 0x00 ? null : in.readInt();
+        insuranceTypeInfo = in.readString();
+        weightProduct = in.readInt();
+        weightOrderSpid = in.readInt();
+        insuranceUsedType = in.readInt();
+        insuranceUsedInfo = in.readString();
+        insuranceUsedDefault = in.readInt();
     }
 
     @Override
@@ -264,6 +336,12 @@ public class Product implements Parcelable {
             dest.writeByte((byte) (0x01));
             dest.writeInt(insuranceMode);
         }
+        dest.writeString(insuranceTypeInfo);
+        dest.writeInt(weightProduct);
+        dest.writeInt(weightOrderSpid);
+        dest.writeInt(insuranceUsedType);
+        dest.writeString(insuranceUsedInfo);
+        dest.writeInt(insuranceUsedDefault);
     }
 
     @SuppressWarnings("unused")

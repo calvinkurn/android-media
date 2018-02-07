@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
+import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailEditView;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
 
@@ -10,4 +11,5 @@ public interface TopAdsDetailEditGroupPresenter<T extends TopAdsDetailEditView> 
 
     void saveAd(TopAdsDetailGroupViewModel topAdsDetailGroupViewModel);
 
+    void getTopAdsSuggestionBid(GetSuggestionBody getSuggestionBody);
 }

@@ -123,7 +123,7 @@ public class CategoryProductStyle2View extends
 
     @Override
     protected void onInstantCheckoutUnChecked() {
-        btnBuyDigital.setText(context.getString(R.string.label_btn_buy_digital));
+        setBtnBuyDigitalText(operatorSelected.getRule().getButtonText());
     }
 
     @Override
@@ -272,6 +272,7 @@ public class CategoryProductStyle2View extends
             @Override
             public void onUpdateDataDigitalRadioChooserSelectedRendered(Operator data) {
                 operatorSelected = data;
+                setBtnBuyDigitalText(operatorSelected.getRule().getButtonText());
                 if (!data.getClientNumberList().isEmpty()) {
                     renderClientNumberInputForm(operatorSelected);
                 }
@@ -354,7 +355,8 @@ public class CategoryProductStyle2View extends
             @Override
             public void onDigitalChooserClicked(List<Product> data) {
                 actionListener.onProductChooserStyle1Clicked(
-                        data, operatorSelected != null ? operatorSelected.getRule().getProductText() : ""
+                        data, operatorSelected.getOperatorId(),
+                        operatorSelected != null ? operatorSelected.getRule().getProductText() : ""
                 );
             }
         };
@@ -369,6 +371,14 @@ public class CategoryProductStyle2View extends
                 actionListener.onButtonBuyClicked(generatePreCheckoutData());
             }
         };
+    }
+
+    private void setBtnBuyDigitalText(String buttonText) {
+        if (!TextUtils.isEmpty(buttonText)) {
+            btnBuyDigital.setText(buttonText);
+        } else {
+            btnBuyDigital.setText(context.getString(R.string.label_btn_buy_digital));
+        }
     }
 
     private PreCheckoutProduct generatePreCheckoutData() {
@@ -416,7 +426,6 @@ public class CategoryProductStyle2View extends
         preCheckoutProduct.setCanBeCheckout(canBeCheckout);
         return preCheckoutProduct;
     }
-
 
     private boolean hasLastOrderHistoryData() {
         return historyClientNumber != null && historyClientNumber.getLastOrderClientNumber() != null;

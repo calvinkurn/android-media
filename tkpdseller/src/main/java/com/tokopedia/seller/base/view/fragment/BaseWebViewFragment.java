@@ -2,6 +2,7 @@ package com.tokopedia.seller.base.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,17 +32,24 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_fragment_general_web_view, container, false);
+        View view = inflater.inflate(getLayout(), container, false);
         webView = (TkpdWebView) view.findViewById(R.id.webview);
         progressBar = (ProgressBar) view.findViewById(R.id.progressbar);
         return view;
+    }
+
+    protected int getLayout(){
+        return R.layout.fragment_fragment_general_web_view;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         progressBar.setIndeterminate(true);
-        loadWeb();
+
+        if(!TextUtils.isEmpty(getUrl())) {
+            loadWeb();
+        }
     }
 
     private void loadWeb() {
@@ -55,9 +63,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 if (newProgress == MAX_PROGRESS) {
-                    if (progressBar != null) {
-                        progressBar.setVisibility(View.GONE);
-                    }
+                    onLoadFinished();
                 }
                 super.onProgressChanged(view, newProgress);
             }
@@ -69,6 +75,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 return false;
             }
         });
+    }
+
+    protected void onLoadFinished(){
+        if (progressBar != null) {
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     @Override

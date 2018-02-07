@@ -60,6 +60,7 @@ public class GetProductListManageMapperView {
             productListPickerViewModel.setProductCashbackAmount(product.getProductCashbackAmount());
             productListPickerViewModel.setProductStock(product.getProductStock());
             productListPickerViewModel.setProductUsingStock(product.getProductUsingStock());
+            productListPickerViewModel.setProductVariant(product.getProductVariant());
             productManageViewModels.add(productListPickerViewModel);
         }
         return productManageViewModels;

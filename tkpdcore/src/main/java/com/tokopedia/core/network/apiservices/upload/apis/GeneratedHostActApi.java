@@ -19,6 +19,7 @@ import rx.Observable;
  * @author Angga.Prasetiyo on 10/12/2015.
  *         Added by m.normansyah on 22/12/2015, for manual purpose
  */
+@Deprecated
 public interface GeneratedHostActApi {
 
     @FormUrlEncoded
@@ -46,4 +47,8 @@ public interface GeneratedHostActApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.Upload.PATH_GENERATE_HOST_V2)
     Observable<Response<TkpdResponse>> generateHost3(@FieldMap Map<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Upload.PATH_GENERATE_HOST)
+    Observable<Response<TkpdResponse>> generateHost4(@FieldMap Map<String, String> params);
 }

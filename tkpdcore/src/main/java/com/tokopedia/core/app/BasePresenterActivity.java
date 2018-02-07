@@ -8,6 +8,11 @@ import butterknife.ButterKnife;
 /**
  * Created by Angga.Prasetiyo on 09/11/2015.
  */
+
+/**
+ * Extends one of BaseActivity from tkpd abstraction eg:BaseSimpleActivity, BaseStepperActivity, BaseTabActivity, etc
+ */
+@Deprecated
 public abstract class BasePresenterActivity<P> extends TActivity {
     private static final String TAG = BasePresenterActivity.class.getSimpleName();
 

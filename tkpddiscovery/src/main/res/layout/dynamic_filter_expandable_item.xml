@@ -20,14 +20,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            style="@style/TextView.Subheading.BlackPrimary"
+            style="@style/TextView.Title"
             tools:text="Dukungan Pengiriman"
             />
-
-        <View
-            android:layout_width="12dp"
-            android:layout_height="18dp"
-            android:background="@drawable/icon_arrow_right"/>
 
     </LinearLayout>
 

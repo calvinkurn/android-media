@@ -2,6 +2,7 @@ package com.tokopedia.core.network.apiservices.search.apis;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import java.util.Map;
 
@@ -27,4 +28,7 @@ public interface HotListApi {
 
     @GET(TkpdBaseURL.Search.PATH_GET_HOTLIST_BANNER)
     Observable<Response<TkpdResponse>> getHotListBanner(@QueryMap Map<String, String> params);
+
+    @GET(TkpdBaseURL.Search.PATH_GET_HOTLIST_BANNER)
+    Observable<Response<TkpdResponse>> getHotListBanner(@QueryMap TKPDMapParam<String, Object> params);
 }

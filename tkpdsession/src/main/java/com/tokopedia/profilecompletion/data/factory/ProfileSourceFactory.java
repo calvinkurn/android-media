@@ -3,6 +3,7 @@ package com.tokopedia.profilecompletion.data.factory;
 import android.content.Context;
 
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.profilecompletion.data.mapper.EditUserInfoMapper;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepository;
@@ -19,19 +20,22 @@ public class ProfileSourceFactory {
     private final AccountsService accountsService;
     private GetUserInfoMapper getUserInfoMapper;
     private EditUserInfoMapper editUserInfoMapper;
+    private final SessionHandler sessionHandler;
 
     public ProfileSourceFactory(Context context,
                                 AccountsService accountsService,
                                 GetUserInfoMapper getUserInfoMapper,
-                                EditUserInfoMapper editUserInfoMapper) {
+                                EditUserInfoMapper editUserInfoMapper,
+                                SessionHandler sessionHandler) {
         this.context = context;
         this.accountsService = accountsService;
         this.getUserInfoMapper = getUserInfoMapper;
         this.editUserInfoMapper = editUserInfoMapper;
+        this.sessionHandler = sessionHandler;
     }
 
     public CloudGetUserInfoSource createCloudGetUserInfoSource() {
-        return new CloudGetUserInfoSource(context, accountsService, getUserInfoMapper);
+        return new CloudGetUserInfoSource(context, accountsService, getUserInfoMapper, sessionHandler);
     }
 
     public CloudEditUserInfoSource createCloudEditUserInfoSource() {

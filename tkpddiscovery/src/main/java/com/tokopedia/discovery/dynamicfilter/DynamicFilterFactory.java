@@ -18,6 +18,7 @@ import rx.Observable;
  * Created by noiz354 on 7/11/16.
  * migrate retrofit 2 by Angga.Prasetiyo
  */
+@Deprecated
 public class DynamicFilterFactory {
 
     private static final String TAG = DynamicFilterFactory.class.getSimpleName();

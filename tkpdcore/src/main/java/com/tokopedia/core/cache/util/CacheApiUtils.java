@@ -33,7 +33,7 @@ import okio.Okio;
 public class CacheApiUtils {
 
     private static final int BYTE_COUNT = 2048;
-    private static final long DEFAULT_MAX_CONTENT_LENGTH = 250000L;
+    private static final long DEFAULT_MAX_CONTENT_LENGTH = Long.MAX_VALUE;
     private static final Charset UTF8 = Charset.forName("UTF-8");
     private static final String[] UNUSED_PARAM = {"hash", "device_time", "device_id"};
     private static final String PARAM_SEPARATOR = "-";

@@ -12,7 +12,6 @@ import android.os.Handler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.inboxreputation.intentservice.InboxReviewIntentService;
 import com.tokopedia.core.manage.people.bank.ManagePeopleBankConstant;
 import com.tokopedia.core.manage.people.bank.fragment.ManagePeopleBankFormFragment;
 import com.tokopedia.core.manage.people.bank.fragment.ManagePeopleBankFragment;
@@ -176,15 +175,15 @@ public class ManagePeopleBankActivity extends BasePresenterActivity
 
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
-        int type = resultData.getInt(InboxReviewIntentService.EXTRA_TYPE, 0);
+        int type = resultData.getInt(ManagePeopleBankIntentService.EXTRA_TYPE, 0);
         Fragment fragment = getFragment(type);
 
         if (fragment != null) {
             switch (resultCode) {
-                case InboxReviewIntentService.STATUS_SUCCESS:
+                case ManagePeopleBankIntentService.STATUS_SUCCESS:
                     onReceiveResultSuccess(fragment, resultData);
                     break;
-                case InboxReviewIntentService.STATUS_ERROR:
+                case ManagePeopleBankIntentService.STATUS_ERROR:
                     onReceiveResultError(fragment, resultData);
                     break;
             }
@@ -205,7 +204,7 @@ public class ManagePeopleBankActivity extends BasePresenterActivity
     }
 
     private void onReceiveResultSuccess(Fragment fragment, Bundle resultData) {
-        int type = resultData.getInt(InboxReviewIntentService.EXTRA_TYPE, 0);
+        int type = resultData.getInt(ManagePeopleBankIntentService.EXTRA_TYPE, 0);
         switch (type) {
             case ACTION_ADD_BANK_ACCOUNT:
                 ((ManagePeopleBankFormFragment) fragment).onSuccessAddBankAccount(resultData);
@@ -225,7 +224,7 @@ public class ManagePeopleBankActivity extends BasePresenterActivity
     }
 
     private void onReceiveResultError(Fragment fragment, Bundle resultData) {
-        int type = resultData.getInt(InboxReviewIntentService.EXTRA_TYPE, 0);
+        int type = resultData.getInt(ManagePeopleBankIntentService.EXTRA_TYPE, 0);
         switch (type) {
             case ACTION_ADD_BANK_ACCOUNT:
                 ((ManagePeopleBankFormFragment) fragment).onFailedAddBankAccount(resultData);

@@ -1,5 +1,6 @@
 package com.tokopedia.ride.history.view.viewmodel;
 
+import com.tokopedia.ride.common.configuration.PaymentMode;
 import com.tokopedia.ride.common.ride.domain.model.LocationLatLng;
 import com.tokopedia.ride.common.ride.utils.RideUtils;
 import com.tokopedia.ride.history.domain.model.RideHistory;
@@ -25,7 +26,9 @@ public class RideHistoryViewModelMapper {
         viewModel.setStatus(rideHistory.getStatus());
         viewModel.setTotalFare(RideUtils.formatStringToPriceString(rideHistory.getPayment().getTotalAmount(), rideHistory.getPayment().getCurrency()));
         viewModel.setTokoCashCharged(RideUtils.formatStringToPriceString(rideHistory.getPayment().getPaidAmount(), rideHistory.getPayment().getCurrency()));
-        viewModel.setPendingAmount(RideUtils.formatStringToPriceString(rideHistory.getPayment().getPendingAmount(), rideHistory.getPayment().getCurrency()));
+        viewModel.setPendingAmountDisplayFormat(RideUtils.formaNumberToPriceString(rideHistory.getPayment().getPendingAmount(), rideHistory.getPayment().getCurrency()));
+        viewModel.setPendingAmount(rideHistory.getPayment().getPendingAmount());
+        viewModel.setPaymentMethod(transformPaymentMethod(rideHistory.getPayment().getPaymentMethod()));
         viewModel.setCashback(rideHistory.getCashbackAmount());
         viewModel.setDiscount(rideHistory.getDiscountAmount());
         viewModel.setCashbackDisplayFormat(
@@ -81,5 +84,15 @@ public class RideHistoryViewModelMapper {
         }
 
         return urlBuffer.toString();
+    }
+
+    private String transformPaymentMethod(String paymentMethod) {
+        if (paymentMethod != null && paymentMethod.equalsIgnoreCase(PaymentMode.CC)) {
+            return PaymentMode.CC_DISPLAY_NAME;
+        } else if (paymentMethod != null && paymentMethod.equalsIgnoreCase(PaymentMode.WALLET)) {
+            return PaymentMode.WALLET_DISPLAY_NAME;
+        }
+
+        return PaymentMode.DEFAULT_DISPLAY_NAME;
     }
 }

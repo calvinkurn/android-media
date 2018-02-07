@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
+import com.appsflyer.AppsFlyerConversionListener;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.container.AppsflyerContainer;
@@ -13,6 +14,8 @@ import com.tokopedia.core.analytics.container.IMoengageContainer;
 import com.tokopedia.core.analytics.container.IPerformanceMonitoring;
 import com.tokopedia.core.analytics.container.MoEngageContainer;
 import com.tokopedia.core.analytics.container.PerfMonContainer;
+
+import java.util.Map;
 
 /**
  * Created by Hafizh Herdi on 2/11/2016.
@@ -41,14 +44,37 @@ public class Jordan {
     public AppsflyerContainer runFirstTimeAppsFlyer(String userID){
         AppsflyerContainer appsflyerContainer = AppsflyerContainer.newInstance(context);
         CommonUtils.dumper("Appsflyer login userid " + userID);
+
+        AppsFlyerConversionListener conversionListener = new AppsFlyerConversionListener() {
+            @Override
+            public void onInstallConversionDataLoaded(Map<String, String> map) {
+                // @TODO
+            }
+
+            @Override
+            public void onInstallConversionFailure(String s) {
+                // @TODO
+            }
+
+            @Override
+            public void onAppOpenAttribution(Map<String, String> map) {
+                // @TODO
+            }
+
+            @Override
+            public void onAttributionFailure(String s) {
+                // @TODO
+            }
+        };
+
         try {
             Bundle bundle = context.getPackageManager().getApplicationInfo(context.getPackageName(),
                     PackageManager.GET_META_DATA).metaData;
-            appsflyerContainer.initAppsFlyer(bundle.getString(AppEventTracking.AF.APPSFLYER_KEY), userID);
+            appsflyerContainer.initAppsFlyer(bundle.getString(AppEventTracking.AF.APPSFLYER_KEY), userID, conversionListener);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
             CommonUtils.dumper("Error key Appsflyer");
-            appsflyerContainer.initAppsFlyer(AppsflyerContainer.APPSFLYER_KEY, userID);
+            appsflyerContainer.initAppsFlyer(AppsflyerContainer.APPSFLYER_KEY, userID, conversionListener);
         }
         return appsflyerContainer;
     }

@@ -18,14 +18,14 @@
 
     <TextView
         android:id="@+id/empty_search_result_title"
-        style="@style/TextView.Subheading.BlackSecondary.Bold"
+        style="@style/TextView.Title.BlackSecondary.Bold"
         android:layout_marginTop="@dimen/empty_search_result_title_margin_top"
         android:gravity="center"
         tools:text="@string/empty_search_result_title_template"/>
 
     <TextView
         android:id="@+id/empty_search_result_content"
-        style="@style/TextView.Body1.BlackDisabled"
+        style="@style/TextView.Small.BlackDisabled"
         android:layout_marginTop="@dimen/empty_search_result_content_margin_top"
         android:gravity="center"
         android:maxLines="4"

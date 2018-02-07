@@ -19,9 +19,11 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.onboarding.ConstantOnBoarding;
 import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
@@ -29,7 +31,7 @@ import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.transaction.opportunity.domain.interactor.CancelReplacementUseCase;
 import com.tokopedia.transaction.opportunity.view.subsriber.CancelReplacementSubscriber;
-import com.tokopedia.transaction.purchase.activity.TxDetailActivity;
+import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractorImpl;
 import com.tokopedia.transaction.purchase.listener.TxListViewListener;
@@ -54,6 +56,7 @@ public class TxListPresenterImpl implements TxListPresenter {
     private final CancelReplacementUseCase cancelReplacementUseCase;
     private final SessionHandler sessionHandler;
     private static final int FREE_RETURN = 1;
+
     public TxListPresenterImpl(TxListViewListener viewListener,
                                CancelReplacementUseCase cancelReplacementUseCase,
                                SessionHandler sessionHandler) {
@@ -223,7 +226,9 @@ public class TxListPresenterImpl implements TxListPresenter {
 
     @Override
     public void processToDetailOrder(Context context, OrderData data, int typeInstance) {
-        viewListener.navigateToActivity(TxDetailActivity.createInstance(context, data));
+        viewListener.navigateToActivityRequest(OrderDetailActivity.createInstance(context,
+                data.getOrderDetail().getDetailOrderId()), OrderDetailActivity.REQUEST_CODE_ORDER_DETAIL);
+        //viewListener.navigateToActivity(TxDetailActivity.createInstance(context, data));
     }
 
     @Override
@@ -239,8 +244,7 @@ public class TxListPresenterImpl implements TxListPresenter {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 context);
         LayoutInflater li = LayoutInflater.from(context);
-        @SuppressLint("InflateParams")
-        final View promptsView = li.inflate(R.layout.dialog_package_not_rcv,
+        @SuppressLint("InflateParams") final View promptsView = li.inflate(R.layout.dialog_package_not_rcv,
                 null);
         alertDialogBuilder.setView(promptsView);
         TextView dShopName = (TextView) promptsView
@@ -372,9 +376,12 @@ public class TxListPresenterImpl implements TxListPresenter {
     public void processShowComplain(Context context, OrderData data) {
         Uri uri = Uri.parse(data.getOrderButton().getButtonResCenterUrl());
         String res_id = uri.getQueryParameter("id");
-        viewListener.navigateToActivity(
-                InboxRouter.getDetailResCenterActivityIntent(context, res_id)
-        );
+
+        if (MainApplication.getAppContext() instanceof TransactionRouter) {
+            Intent intent = ((TransactionRouter) MainApplication.getAppContext())
+                    .getDetailResChatIntentBuyer(context, res_id, data.getOrderShop().getShopName());
+            viewListener.navigateToActivity(intent);
+        }
     }
 
     @Override
@@ -382,7 +389,7 @@ public class TxListPresenterImpl implements TxListPresenter {
         netInteractor.unSubscribeObservable();
     }
 
-    
+
     @Override
     public void cancelReplacement(Context context, final OrderData orderData) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -429,6 +436,7 @@ public class TxListPresenterImpl implements TxListPresenter {
         btnComplain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                TrackingUtils.sendMoEngageShippingReceivedEvent(false);
                 dialog.dismiss();
             }
         });
@@ -436,6 +444,7 @@ public class TxListPresenterImpl implements TxListPresenter {
         btnFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                TrackingUtils.sendMoEngageShippingReceivedEvent(true);
                 confirmPurchaseOrder(context, dialog, orderData);
             }
         });
@@ -446,14 +455,15 @@ public class TxListPresenterImpl implements TxListPresenter {
     private void showComplainDialog(final Context context, final OrderData orderData) {
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_complain);
-        Button btnBack = (Button) dialog.findViewById(R.id.btnBack);
-        Button btnNotReceive = (Button) dialog.findViewById(R.id.btnNotReceive);
-        Button btnReceive = (Button) dialog.findViewById(R.id.btnReceive);
-        LinearLayout llFreeReturn = (LinearLayout) dialog.findViewById(R.id.llFreeReturn);
-        TextView tvFreeReturn = (TextView) dialog.findViewById(R.id.tvFreeReturn);
-        TextView tvComplainTitle = (TextView) dialog.findViewById(R.id.tvComplainTitle);
-        TextView tvComplainBody = (TextView) dialog.findViewById(R.id.tvComplainBody);
+        dialog.setContentView(com.tokopedia.transaction.R.layout.dialog_complaint);
+        Button btnBack = (Button) dialog.findViewById(com.tokopedia.transaction.R.id.cancel_button);
+        Button btnNotReceive = (Button) dialog.findViewById(com.tokopedia.transaction.R.id.not_receive_btn);
+        Button btnReceive = (Button) dialog.findViewById(com.tokopedia.transaction.R.id.receive_btn);
+        LinearLayout llFreeReturn = (LinearLayout) dialog.findViewById(com.tokopedia.transaction.R.id.layout_free_return);
+        TextView tvFreeReturn = (TextView) dialog.findViewById(com.tokopedia.transaction.R.id.tv_free_return);
+        TextView tvComplainTitle = (TextView) dialog.findViewById(com.tokopedia.transaction.R.id.complaint_title);
+        TextView tvComplainBody = (TextView) dialog.findViewById(com.tokopedia.transaction.R.id.complaint_body);
+
         tvComplainTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupTitle()));
         tvComplainBody.setText(orderData.getOrderDetail().getDetailComplaintPopupMsgV2() != null ?
                 Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupMsgV2()) :
@@ -468,7 +478,7 @@ public class TxListPresenterImpl implements TxListPresenter {
 //            llFreeReturn.setVisibility(View.VISIBLE);
 //            tvFreeReturn.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFreeReturnMsg()));
 //        }
-  
+
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -564,10 +574,13 @@ public class TxListPresenterImpl implements TxListPresenter {
         builder.setMessage(message).setPositiveButton(context.getString(R.string.title_ok),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Intent intent = new Intent(context, InboxReputationActivity.class);
-                        intent.putExtra("unread", true);
-                        dialog.dismiss();
-                        viewListener.navigateToActivity(intent);
+                        if (MainApplication.getAppContext() instanceof TransactionRouter) {
+                            Intent intent = ((TransactionRouter) MainApplication.getAppContext())
+                                    .getInboxReputationIntent(MainApplication.getAppContext());
+                            intent.putExtra("unread", true);
+                            dialog.dismiss();
+                            viewListener.navigateToActivity(intent);
+                        }
                     }
                 });
         Dialog alertDialog = builder.create();
@@ -582,9 +595,12 @@ public class TxListPresenterImpl implements TxListPresenter {
         builder.setMessage(message).setPositiveButton(context.getString(R.string.title_ok),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        viewListener.navigateToActivity(
-                                InboxRouter.getInboxResCenterActivityIntent(context)
-                        );
+                        if (MainApplication.getAppContext() instanceof TransactionRouter) {
+                            viewListener.navigateToActivity(((TransactionRouter) MainApplication.getAppContext())
+                                    .getResolutionCenterIntent(context)
+                            );
+
+                        }
                     }
                 });
         Dialog alertDialog = builder.create();
@@ -683,8 +699,7 @@ public class TxListPresenterImpl implements TxListPresenter {
                                       OrderData orderData) {
         if (orderData.getOrderDetail().getDetailOrderStatus()
                 .equals(context.getString(R.string.ORDER_DELIVERED))
-                || orderData.getOrderDetail()
-                .getDetailOrderStatus()
+                || orderData.getOrderDetail().getDetailOrderStatus()
                 .equals(context.getString(R.string.ORDER_DELIVERY_FAILURE))) {
             Map<String, String> params = new HashMap<>();
             params.put("order_id", orderData.getOrderDetail().getDetailOrderId());
@@ -696,7 +711,8 @@ public class TxListPresenterImpl implements TxListPresenter {
                         public void onSuccess(String message, JSONObject lucky) {
                             TxListUIReceiver.sendBroadcastForceRefreshListData(context);
                             viewListener.hideProgressLoading();
-                            processReview(context, message);
+                            viewListener.showToastSuccessMessage(
+                                    context.getString(com.tokopedia.transaction.R.string.success_finish_order_message));
                             dialog.dismiss();
                         }
 
@@ -716,7 +732,8 @@ public class TxListPresenterImpl implements TxListPresenter {
                         @Override
                         public void onSuccess(String message, JSONObject lucky) {
                             TxListUIReceiver.sendBroadcastForceRefreshListData(context);
-                            processReview(context, message);
+                            viewListener.showToastSuccessMessage(
+                                    context.getString(com.tokopedia.transaction.R.string.success_finish_order_message));
                             dialog.dismiss();
                         }
 
@@ -738,6 +755,13 @@ public class TxListPresenterImpl implements TxListPresenter {
                     processResolution(context, null);
                 }
                 break;
+            case OrderDetailActivity.REQUEST_CODE_ORDER_DETAIL:
+                if (resultCode == Activity.RESULT_OK) {
+                    viewListener.showToastSuccessMessage(
+                            context.getString(com.tokopedia.transaction.R.string.success_cancel_replacement));
+                } else {
+                    viewListener.resetData();
+                }
             default:
                 break;
         }

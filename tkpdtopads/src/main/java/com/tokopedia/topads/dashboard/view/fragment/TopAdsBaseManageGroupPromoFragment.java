@@ -14,8 +14,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
@@ -59,7 +59,6 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
 
     protected String itemIdToAdd;
 
-    @Override
     protected boolean isRetainInstance() {
         return false;
     }
@@ -76,22 +75,7 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
     }
 
     @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
     public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
 
     }
 

@@ -13,6 +13,7 @@ import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpdpdp.customview.DescriptionTextView;
 import com.tokopedia.tkpdpdp.customview.ProductVideoHorizontalScroll;
+import com.tokopedia.tkpdpdp.customview.YoutubeThumbnailViewHolder;
 
 import butterknife.ButterKnife;
 
@@ -20,7 +21,7 @@ import butterknife.ButterKnife;
  * @author by alifa on 5/22/17.
  */
 
-public class DescriptionActivity extends TActivity implements View.OnClickListener {
+public class DescriptionActivity extends TActivity implements View.OnClickListener,YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess {
 
     public static final String KEY_DESCRIPTION = "PRODUCT_DETAIL_DESCRIPTION";
     public static final String KEY_VIDEO = "PRODUCT_DETAIL_VIDEO";
@@ -29,6 +30,7 @@ public class DescriptionActivity extends TActivity implements View.OnClickListen
     private DescriptionTextView tvDesc;
     private ScrollView descriptionContainer;
     private ProductVideoHorizontalScroll productVideoHorizontalScroll;
+    private boolean isBackPressed;
 
 
     @Override
@@ -77,11 +79,37 @@ public class DescriptionActivity extends TActivity implements View.OnClickListen
         VideoData videoData = getIntent().getParcelableExtra(KEY_VIDEO);
         if (videoData != null) {
             productVideoHorizontalScroll.setVisibility(View.VISIBLE);
-            productVideoHorizontalScroll.renderData(videoData);
+            productVideoHorizontalScroll.renderData(videoData,this);
         } else {
             productVideoHorizontalScroll.setVisibility(View.GONE);
         }
     }
 
 
+
+    // Work Around IF your press back and youtube thumbnail doesn't intalized yet
+    @Override
+    public void onBackPressed() {
+        if(!thumbnailIntializing) {
+            super.onBackPressed();
+        } else {
+            isBackPressed = true;
+            return;
+        }
+
+    }
+
+    boolean thumbnailIntializing = false;
+    @Override
+    public void onIntializationStart() {
+        thumbnailIntializing = true;
+    }
+
+    @Override
+    public void onIntializationComplete() {
+        if(isBackPressed) {
+            super.onBackPressed();
+        }
+        thumbnailIntializing = false;
+    }
 }

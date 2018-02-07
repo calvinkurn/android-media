@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.product.customview.BaseView;
+import com.tokopedia.core.util.DateFormatUtils;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.DetailData;
@@ -29,8 +31,6 @@ public class DetailView extends BaseView<DetailData, DetailResCenterFragmentView
     private TextView textShopName;
     private TextView textAwbNumber;
     private TextView textInvoice;
-    private View viewResponseDeadline;
-    private TextView textResponseDeadline;
 
     public DetailView(Context context) {
         super(context);
@@ -67,8 +67,6 @@ public class DetailView extends BaseView<DetailData, DetailResCenterFragmentView
         textShopName = (TextView) view.findViewById(R.id.tv_shop_name);
         textAwbNumber = (TextView) view.findViewById(R.id.tv_awb_number);
         textInvoice = (TextView) view.findViewById(R.id.tv_invoice);
-        viewResponseDeadline = view.findViewById(R.id.view_response_deadline);
-        textResponseDeadline = (TextView) view.findViewById(R.id.tv_response_deadline);
     }
 
     @Override
@@ -79,17 +77,15 @@ public class DetailView extends BaseView<DetailData, DetailResCenterFragmentView
     @Override
     public void renderData(@NonNull final DetailData data) {
         setVisibility(VISIBLE);
+        boolean isSeller = SessionHandler.getLoginID(getContext())
+                .equals(data.getBuyerID());
         textAwbNumber.setText(data.getAwbNumber());
-        textComplaintDate.setText(data.getComplaintDate());
+        textComplaintDate.setText(data.getComplaintDateTimestamp());
         textCustomerName.setText(data.getBuyerName());
         textInvoice.setText(data.getInvoice());
         textShopName.setText(data.getShopName());
-        viewResponseDeadline.setVisibility(
-                data.isDeadlineVisibility() && data.getResponseDeadline() != null ?
-                        VISIBLE : GONE
-        );
-        textResponseDeadline.setText(data.getResponseDeadline());
-        generateDeadlineBackgroundView(textResponseDeadline);
+        viewShop.setVisibility(isSeller ? View.VISIBLE : View.GONE);
+        viewCustomer.setVisibility(!isSeller ? View.VISIBLE : GONE);
 
         textCustomerName.setOnClickListener(new OnClickListener() {
             @Override
@@ -114,7 +110,7 @@ public class DetailView extends BaseView<DetailData, DetailResCenterFragmentView
     public void generateDeadlineBackgroundView(View v) {
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
-        shape.setCornerRadii(new float[] { 8, 8, 8, 8, 8, 8, 8, 8 });
+        shape.setCornerRadii(new float[]{8, 8, 8, 8, 8, 8, 8, 8});
         shape.setColor(ContextCompat.getColor(getContext(), R.color.colorBlue));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             v.setBackground(shape);

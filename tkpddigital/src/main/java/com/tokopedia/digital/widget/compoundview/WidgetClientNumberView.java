@@ -24,7 +24,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.model.OrderClientNumber;
@@ -174,7 +173,7 @@ public class WidgetClientNumberView extends LinearLayout {
 
     public void setDropdownAutoComplete(List<OrderClientNumber> numberList) {
         adapter = new AutoCompleteTVAdapter(getContext(),
-                R.layout.item_autocomplete, numberList);
+                R.layout.item_autocomplete_widget, numberList);
 
         this.pulsaAutocompleteView.setAdapter(adapter);
         this.pulsaAutocompleteView.setThreshold(1);
@@ -187,6 +186,7 @@ public class WidgetClientNumberView extends LinearLayout {
         this.pulsaAutocompleteView.setOnItemClickListener(getItemClickListener());
         this.pulsaAutocompleteView.setOnFocusChangeListener(getFocusChangeListener());
         this.pulsaAutocompleteView.addTextChangedListener(getTextChangedListener());
+
         this.btnClear.setOnClickListener(getClickClearButtonListener());
         this.btnPhoneBook.setOnClickListener(getClickPhonebookListener());
     }
@@ -251,7 +251,6 @@ public class WidgetClientNumberView extends LinearLayout {
             @Override
             public void onClick(View v) {
                 setEmptyString();
-                setImgOperatorInvisible();
                 rechargeEditTextListener.onRechargeTextClear();
             }
         };

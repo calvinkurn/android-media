@@ -1,5 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.inbox">
 
     <application
@@ -11,148 +11,183 @@
         <!-- ACTIVITIES REGISTRY -->
         <!-- ======================================================= -->
         <activity
-            android:name="com.tokopedia.inbox.contactus.activity.ContactUsActivity"
-            android:screenOrientation="portrait"
+            android:name=".contactus.activity.ContactUsActivity"
             android:hardwareAccelerated="true"
-            android:label="@string/title_activity_contact_us" />
+            android:label="@string/title_activity_contact_us"
+            android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.inbox.inboxticket.activity.InboxTicketActivity"
-            android:screenOrientation="portrait"
+            android:name=".inboxticket.activity.InboxTicketActivity"
             android:hardwareAccelerated="true"
-            android:label="@string/title_activity_inbox_ticket" />
+            android:label="@string/title_activity_inbox_ticket"
+            android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.inbox.inboxticket.activity.InboxTicketDetailActivity"
-            android:screenOrientation="portrait"
+            android:name=".inboxticket.activity.InboxTicketDetailActivity"
             android:hardwareAccelerated="true"
-            android:label="@string/title_activity_inbox_ticket_detail" />
+            android:label="@string/title_activity_inbox_ticket_detail"
+            android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.inbox.rescenter.detail.activity.ResCenterActivity"
+            android:name=".rescenter.detail.activity.ResCenterActivity"
             android:label="@string/title_activity_res_center"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
         <activity
-            android:name="com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity"
+            android:name=".rescenter.inbox.activity.InboxResCenterActivity"
             android:label="@string/title_activity_res_center"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity"
+            android:name=".rescenter.create.activity.CreateResCenterActivity"
             android:label="@string/title_activity_create_reso_center"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.inbox.rescenter.edit.activity.EditResCenterActivity"
+            android:name=".rescenter.edit.activity.EditResCenterActivity"
             android:label="@string/title_activity_edit_resolution"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.inbox.rescenter.shipping.activity.InputShippingActivity"
+            android:name=".rescenter.shipping.activity.InputShippingActivity"
             android:label="@string/title_activity_input_shipping"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.inbox.inboxmessage.activity.SendMessageActivity"
+            android:name=".inboxchat.activity.SendMessageActivity"
             android:label="@string/title_activity_send_message"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateVisible" />
         <activity
-            android:name="com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity"
-            android:label="@string/title_inbox_message"
+            android:name=".inboxchat.activity.InboxChatActivity"
+            android:label="@string/title_inbox_chat"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            tools:ignore="UnusedAttribute" />
-        <activity
-            android:name="com.tokopedia.inbox.inboxmessage.activity.InboxMessageDetailActivity"
-            android:label="@string/title_inbox_message"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.tokopedia.inbox.inboxtalk.activity.InboxTalkActivity"
+            android:name=".inboxchat.activity.ChatRoomActivity"
+            android:label="@string/title_inbox_message"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name=".inboxtalk.activity.InboxTalkActivity"
             android:label="@string/title_activity_inbox_talk"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.inbox.rescenter.player.VideoPlayerActivity"
+            android:name=".rescenter.player.VideoPlayerActivity"
             android:label="@string/title_video_player"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.tokopedia.inbox.rescenter.detailv2.view.DetailResCenterActivity"
+            android:name=".rescenter.detailv2.view.activity.DetailResCenterActivity"
             android:label="@string/title_activity_res_center"
             android:parentActivityName=".rescenter.inbox.activity.InboxResCenterActivity"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.tokopedia.inbox.rescenter.historyawb.HistoryShippingActivity"
+            android:name=".rescenter.historyawb.HistoryShippingActivity"
             android:label="@string/title_activity_history_awb"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.tokopedia.inbox.rescenter.historyaddress.HistoryAddressActivity"
+            android:name=".rescenter.historyaddress.HistoryAddressActivity"
             android:label="@string/title_activity_history_address"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.tokopedia.inbox.rescenter.historyaction.HistoryActionActivity"
+            android:name=".rescenter.historyaction.HistoryActionActivity"
             android:label="@string/title_activity_history_action"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.tokopedia.inbox.rescenter.product.ListProductActivity"
+            android:name=".rescenter.product.ListProductActivity"
             android:label="@string/title_activity_list_product_rescenter"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.tokopedia.inbox.rescenter.product.ProductDetailActivity"
+            android:name=".rescenter.product.ProductDetailActivity"
             android:label="@string/title_activity_product_detail_rescenter"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".rescenter.createreso.view.activity.ProductProblemListActivity"
             android:label="@string/title_activity_product_problem"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.tokopedia.inbox.rescenter.createreso.view.activity.ProductProblemDetailActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="portrait" />
-
+            android:name=".rescenter.createreso.view.activity.ProductProblemDetailActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionListActivity"
+            android:name=".rescenter.createreso.view.activity.SolutionListActivity"
             android:label="@string/title_activity_solution_list"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionDetailActivity"
+            android:name=".rescenter.createreso.view.activity.SolutionDetailActivity"
             android:label="@string/title_activity_solution_detail"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.tokopedia.inbox.rescenter.createreso.view.activity.AttachmentActivity"
+            android:name=".rescenter.createreso.view.activity.AttachmentActivity"
             android:label="@string/title_activity_attachment"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="portrait" />
-
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.tokopedia.inbox.rescenter.createreso.view.activity.FreeReturnActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="portrait" />
-
+            android:name=".rescenter.createreso.view.activity.FreeReturnActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".rescenter.discussion.view.activity.ResCenterDiscussionActivity"
             android:label="@string/title_activity_rescenter_discussion"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            />
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".inboxchat.activity.TimeMachineActivity"
+            android:label="@string/title_time_machine_message"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".rescenter.detailv2.view.activity.DetailResChatActivity"
+            android:label="@string/title_activity_rescenter_discussion"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".rescenter.detailv2.view.activity.NextActionActivity"
+            android:label="@string/title_activity_rescenter_discussion"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".rescenter.detailv2.view.activity.TrackShippingActivity"
+            android:label="@string/title_track_shipping"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+<activity
+            android:name=".inboxchat.activity.ChatMarketingThumbnailActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".inboxmessageold.activity.InboxMessageActivity"
+            android:label="@string/title_inbox"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".inboxmessageold.activity.InboxMessageDetailActivity"
+            android:label="@string/title_inbox"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".inboxmessageold.activity.SendMessageActivityOld"
+            android:label="@string/title_activity_send_message"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <activity android:name=".inboxchat.activity.TemplateChatActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".inboxchat.activity.EditTemplateChatActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
 
         <!-- ======================================================= -->
         <!-- SERVICES REGISTRY -->
         <!-- ======================================================= -->
 
         <service
-            android:name="com.tokopedia.inbox.rescenter.detail.service.DetailResCenterService"
+            android:name=".rescenter.detail.service.DetailResCenterService"
             android:exported="false" />
         <service
-            android:name="com.tokopedia.inbox.rescenter.create.service.CreateResCenterService"
-            android:exported="false" />
-        <service
-            android:name="com.tokopedia.inbox.inboxmessage.intentservice.InboxMessageIntentService"
+            android:name=".rescenter.create.service.CreateResCenterService"
             android:exported="false" />
         <service
             android:name="com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService"
             android:exported="false" />
+        <service
+            android:name=".inboxmessageold.intentservice.InboxMessageIntentService"
+            android:exported="false" />
+
+        <activity android:name=".contactus.activity.ContactUsCreateTicketActivity"></activity>
     </application>
+
 </manifest>

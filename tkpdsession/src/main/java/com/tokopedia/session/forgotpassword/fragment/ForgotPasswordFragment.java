@@ -2,7 +2,6 @@ package com.tokopedia.session.forgotpassword.fragment;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
@@ -24,9 +23,7 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.router.SessionRouter;
-import com.tokopedia.core.session.presenter.SessionView;
-import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.forgotpassword.interactor.ForgotPasswordRetrofitInteractorImpl;
 import com.tokopedia.session.forgotpassword.listener.ForgotPasswordFragmentView;
 import com.tokopedia.session.forgotpassword.presenter.ForgotPasswordFragmentPresenter;
@@ -139,29 +136,34 @@ public class ForgotPasswordFragment extends BasePresenterFragment<ForgotPassword
             Email.setText(getArguments().getString(ARGS_EMAIL));
         }
 
-        String sourceString = "Belum punya akun? " + "Daftar Sekarang";
+        if (SessionHandler.isV4Login(getActivity())) {
+            registerButton.setVisibility(View.GONE);
+        } else {
+            registerButton.setVisibility(View.VISIBLE);
 
-        Spannable spannable = new SpannableString(sourceString);
+            String sourceString = "Belum punya akun? " + "Daftar Sekarang";
 
-        spannable.setSpan(new ClickableSpan() {
-                              @Override
-                              public void onClick(View view) {
+            Spannable spannable = new SpannableString(sourceString);
 
+            spannable.setSpan(new ClickableSpan() {
+                                  @Override
+                                  public void onClick(View view) {
+
+                                  }
+
+                                  @Override
+                                  public void updateDrawState(TextPaint ds) {
+                                      ds.setUnderlineText(true);
+                                      ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+                                  }
                               }
+                    , sourceString.indexOf("Daftar")
+                    , sourceString.length()
+                    , 0);
 
-                              @Override
-                              public void updateDrawState(TextPaint ds) {
-                                  ds.setUnderlineText(true);
-                                  ds.setColor(getResources().getColor(R.color.tkpd_main_green));
-                              }
-                          }
-                , sourceString.indexOf("Daftar")
-                , sourceString.length()
-                , 0);
+            registerButton.setText(spannable, TextView.BufferType.SPANNABLE);
+        }
 
-        registerButton.setText(spannable, TextView.BufferType.SPANNABLE);
-
-//        SendButton.setBackgroundResource(R.drawable.bg_rounded_corners);
     }
 
     private TextWatcher watcher(final TextInputLayout wrapper) {

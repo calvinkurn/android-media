@@ -86,6 +86,10 @@ public interface HotListView extends BaseView {
      */
     void moveToOtherActivity(Bundle bundle);
 
+    void openHotlistActivity(String url);
+
+    void openCategory(String categoryUrl);
+
     /**
      * @return current used adapter
      */
@@ -125,9 +129,8 @@ public interface HotListView extends BaseView {
     int getScreenRotation();
     /**
      * some clicked trigger to move to other activity
-     * @param bundle
-     * @param clazz
      */
-    void moveToOtherActivity(Intent intent);
+    void startIntentActivity(Intent intent);
 
+    void openSearch(String url);
 }

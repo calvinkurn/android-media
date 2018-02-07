@@ -309,3 +309,13 @@
 
 -dontwarn android.content.pm.PackageManager
 -dontwarn com.crashlytics.android.answers.shim.**
+-dontwarn com.nimbusds.jwt.SignedJWT
+-dontwarn com.nimbusds.jwt.JWTClaimsSet
+
+-dontwarn com.appsflyer.**
+-keep public class com.google.firebase.iid.FirebaseInstanceId {
+    public *;
+}
+-keep public class com.google.android.gms.iid.InstanceID {
+    public *;
+}

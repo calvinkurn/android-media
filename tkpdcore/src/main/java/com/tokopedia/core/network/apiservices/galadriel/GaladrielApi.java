@@ -36,9 +36,10 @@ public interface GaladrielApi {
     String DEVICE_TYPE = "device_type";
     String LANG = "lang";
     String USER_ID = "user_id";
+    String SHOP_TYPE = "shop_type";
 
     @GET(TkpdBaseURL.Galadriel.PATH_PROMO_WIDGET)
     Observable<Response<PromoWidgetResponse>> getPromoWidget(
             @Query(PLACEHOLDER) String placeholder, @Query(TARGET_TYPE) String targetType, @Query(DEVICE_TYPE) String deviceType,
-            @Query(LANG) String lang, @Query(USER_ID) String uerId);
+            @Query(LANG) String lang, @Query(USER_ID) String uerId, @Query(SHOP_TYPE) String shopType);
 }

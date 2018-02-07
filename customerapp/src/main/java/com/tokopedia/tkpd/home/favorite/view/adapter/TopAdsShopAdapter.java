@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
@@ -88,6 +89,9 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
                     .dontAnimate()
                     .placeholder(com.tokopedia.core.R.drawable.loading_page)
                     .error(com.tokopedia.core.R.drawable.error_drawable)
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                    .override(375, 97)
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, String model,
@@ -107,7 +111,6 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
                             return false;
                         }
                     })
-                    .centerCrop()
                     .into(holder.shopCover);
         }
     }
@@ -146,7 +149,7 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
             public void onClick(View view) {
                 Context context = view.getContext();
                 TopAdsUtil.clickTopAdsAction(context, item.getShopClickUrl());
-                UnifyTracking.eventFavoriteViewRecommendation(item.getShopName());
+                UnifyTracking.eventFavoriteViewRecommendation();
                 Intent intent = new Intent(context, ShopInfoActivity.class);
                 Bundle bundle = ShopInfoActivity.createBundle(
                         item.getShopId(),

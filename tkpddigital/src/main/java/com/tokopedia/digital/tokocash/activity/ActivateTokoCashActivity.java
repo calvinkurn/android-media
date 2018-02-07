@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.tokocash.fragment.ActivateTokoCashFragment;
 import com.tokopedia.digital.tokocash.fragment.RequestOTPWalletFragment;
@@ -17,6 +19,14 @@ import com.tokopedia.digital.tokocash.fragment.RequestOTPWalletFragment;
 
 public class ActivateTokoCashActivity extends BasePresenterActivity
         implements ActivateTokoCashFragment.ActionListener, RequestOTPWalletFragment.ActionListener {
+
+    @SuppressWarnings("unused")
+    @DeepLink(Constants.Applinks.WALLET_ACTIVATION)
+    public static Intent getcallingIntent(Context context, Bundle extras) {
+        Intent destination = ActivateTokoCashActivity.newInstance(context);
+        destination.putExtra(Constants.EXTRA_FROM_PUSH, true);
+        return destination;
+    }
 
     public static Intent newInstance(Context context) {
         return new Intent(context, ActivateTokoCashActivity.class);

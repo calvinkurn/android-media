@@ -15,19 +15,22 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.apiservices.transaction.TokoCashService;
+import com.tokopedia.core.network.apiservices.tokocash.TokoCashService;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
-import com.tokopedia.digital.tokocash.domain.ActivateTokoCashRepository;
+import com.tokopedia.digital.tokocash.domain.TokoCashRepository;
 import com.tokopedia.digital.tokocash.interactor.ActivateTokoCashInteractor;
 import com.tokopedia.digital.tokocash.listener.ActivateTokoCashView;
 import com.tokopedia.digital.tokocash.presenter.ActivateTokoCashPresenter;
 import com.tokopedia.digital.tokocash.presenter.IActivateTokoCashPresenter;
 
 import butterknife.BindView;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by nabillasabbaha on 7/24/17.
@@ -45,6 +48,7 @@ public class ActivateTokoCashFragment extends BasePresenterFragment<IActivateTok
 
     private ActionListener listener;
     private TkpdProgressDialog progressDialog;
+    private CompositeSubscription compositeSubscription;
 
     public static ActivateTokoCashFragment newInstance() {
         ActivateTokoCashFragment fragment = new ActivateTokoCashFragment();
@@ -81,8 +85,11 @@ public class ActivateTokoCashFragment extends BasePresenterFragment<IActivateTok
         SessionHandler sessionHandler = new SessionHandler(MainApplication.getAppContext());
         String acessToken = sessionHandler.getAccessToken(MainApplication.getAppContext());
         TokoCashService tokoCashService = new TokoCashService(acessToken);
+        compositeSubscription = new CompositeSubscription();
         ActivateTokoCashInteractor interactor = new ActivateTokoCashInteractor
-                (new ActivateTokoCashRepository(tokoCashService));
+                (compositeSubscription, new TokoCashRepository(tokoCashService),
+                        new JobExecutor(),
+                        new UIThread());
         presenter = new ActivateTokoCashPresenter(interactor, this);
     }
 
@@ -151,8 +158,9 @@ public class ActivateTokoCashFragment extends BasePresenterFragment<IActivateTok
 
     @Override
     public void onDestroyView() {
+        if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
+            compositeSubscription.unsubscribe();
         super.onDestroyView();
-        presenter.onDestroyView();
     }
 
     @Override

@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -24,9 +25,11 @@ import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
+import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
@@ -35,23 +38,28 @@ import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.core.var.TkpdState;
 
-
+/**
+ * Use webview fragment from tkpd abstraction
+ */
+@Deprecated
 public class FragmentGeneralWebView extends Fragment implements BaseWebViewClient.WebViewCallback,
         View.OnKeyListener {
-    private static final String TAG = FragmentGeneralWebView.class.getSimpleName();
-
     public static final String EXTRA_URL = "url";
     public static final String EXTRA_OVERRIDE_URL = "allow_override";
+    private static final String TAG = FragmentGeneralWebView.class.getSimpleName();
     private static final String SEAMLESS = "seamless";
     private static final String LOGIN_TYPE = "login_type";
     private static final String QUERY_PARAM_PLUS = "plus";
     private static final int LOGIN_GPLUS = 123453;
-
+    private static boolean isAlreadyFirstRedirect;
     private TkpdWebView WebViewGeneral;
     private OnFragmentInteractionListener mListener;
     private ProgressBar progressBar;
     private String url;
-    private static boolean isAlreadyFirstRedirect;
+
+    public FragmentGeneralWebView() {
+        // Required empty public constructor
+    }
 
     /**
      * @deprecated Use {@link FragmentGeneralWebView#createInstance(String, boolean)} ()} instead.
@@ -68,10 +76,6 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         args.putBoolean(EXTRA_OVERRIDE_URL, allowOverride);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    public FragmentGeneralWebView() {
-        // Required empty public constructor
     }
 
     @Override
@@ -114,46 +118,6 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         return fragmentView;
     }
 
-    private class MyWebClient extends WebViewClient {
-        @Override
-        public void onPageStarted(WebView view, String url, Bitmap favicon) {
-            super.onPageStarted(view, url, favicon);
-            Log.d(TAG, "initial url = " + url);
-            try {
-                //noinspection deprecation
-                getActivity().setProgressBarIndeterminateVisibility(true);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            progressBar.setVisibility(View.VISIBLE);
-        }
-
-        @SuppressWarnings("deprecation")
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            Log.d(TAG, "redirect url = " + url);
-            if (getActivity() != null && ((IDigitalModuleRouter) getActivity().getApplication())
-                    .isSupportedDelegateDeepLink(url)) {
-                ((IDigitalModuleRouter) getActivity().getApplication())
-                        .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
-                return true;
-            }
-            return overrideUrl(url);
-        }
-
-        @Override
-        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-            super.onReceivedSslError(view, handler, error);
-            handler.cancel();
-            progressBar.setVisibility(View.GONE);
-        }
-
-        public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-            super.onReceivedError(view, errorCode, description, failingUrl);
-            progressBar.setVisibility(View.GONE);
-        }
-    }
-
     public WebView getWebview() {
         return WebViewGeneral;
     }
@@ -186,6 +150,17 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             }
         } else {
             return false;
+        }
+    }
+
+    private void openDigitalPage(String applink) {
+        if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
+            if (((IDigitalModuleRouter) getActivity().getApplication())
+                    .isSupportedDelegateDeepLink(applink)) {
+                Bundle bundle = new Bundle();
+                ((IDigitalModuleRouter) getActivity().getApplication()).actionNavigateByApplinksUrl(getActivity(),
+                        applink, bundle);
+            }
         }
     }
 
@@ -246,7 +221,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     public boolean onOverrideUrl(String url) {
         String query = Uri.parse(url).getQueryParameter(LOGIN_TYPE);
         if (query != null && query.equals(QUERY_PARAM_PLUS)) {
-            Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
+            Intent intent = OldSessionRouter.getLoginActivityIntent(getActivity());
             intent.putExtra("login", DownloadService.GOOGLE);
             intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
             startActivityForResult(intent, LOGIN_GPLUS);
@@ -286,6 +261,63 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         void onWebViewErrorLoad();
 
         void onWebViewProgressLoad();
+    }
+
+    private class MyWebClient extends WebViewClient {
+        @Override
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            super.onPageStarted(view, url, favicon);
+            Log.d(TAG, "initial url = " + url);
+            try {
+                //noinspection deprecation
+                getActivity().setProgressBarIndeterminateVisibility(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @SuppressWarnings("deprecation")
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            Log.d(TAG, "redirect url = " + url);
+            if (getActivity() != null && ((IDigitalModuleRouter) getActivity().getApplication())
+                    .isSupportedDelegateDeepLink(url)) {
+                ((IDigitalModuleRouter) getActivity().getApplication())
+                        .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
+                return true;
+            } else if (getActivity() != null &&
+                    Uri.parse(url).getScheme().equalsIgnoreCase(Constants.APPLINK_CUSTOMER_SCHEME)) {
+                if (getActivity().getApplication() instanceof TkpdCoreRouter &&
+                        (((TkpdCoreRouter) getActivity().getApplication()).getApplinkUnsupported(getActivity()) != null)) {
+
+                    ((TkpdCoreRouter) getActivity().getApplication())
+                            .getApplinkUnsupported(getActivity())
+                            .showAndCheckApplinkUnsupported();
+                }
+            } else if (getActivity() != null &&
+                    getActivity().getApplication() instanceof TkpdCoreRouter) {
+                String applink = ((TkpdCoreRouter) getActivity().getApplication())
+                        .applink(getActivity(), url);
+                if (!TextUtils.isEmpty(applink)) {
+                    openDigitalPage(applink);
+                    return true;
+                }
+            }
+            return overrideUrl(url);
+        }
+
+        @Override
+        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+            super.onReceivedSslError(view, handler, error);
+            handler.cancel();
+            progressBar.setVisibility(View.GONE);
+        }
+
+        public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+            super.onReceivedError(view, errorCode, description, failingUrl);
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
 }

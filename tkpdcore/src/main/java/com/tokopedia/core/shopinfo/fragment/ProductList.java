@@ -411,6 +411,7 @@ public class ProductList extends V2BaseFragment {
                 etalaseAdapterModel.setEtalaseName(MethodChecker.fromHtml(etalaseModel.listOther.get(i).etalaseName).toString());
                 etalaseAdapterModel.setEtalaseId(etalaseModel.listOther.get(i).etalaseId);
                 etalaseAdapterModel.setUseAce(etalaseModel.listOther.get(i).useAce);
+                etalaseAdapterModel.setEtalaseBadge(etalaseModel.listOther.get(i).etalaseBadge);
                 etalaseList.add(etalaseAdapterModel);
             }
             for (int i = 0; i < totalEtalase; i++) {
@@ -418,6 +419,7 @@ public class ProductList extends V2BaseFragment {
                 etalaseAdapterModel.setEtalaseName(MethodChecker.fromHtml(etalaseModel.list.get(i).etalaseName).toString());
                 etalaseAdapterModel.setEtalaseId(etalaseModel.list.get(i).etalaseId);
                 etalaseAdapterModel.setUseAce(etalaseModel.list.get(i).useAce);
+                etalaseAdapterModel.setEtalaseBadge(etalaseModel.list.get(i).etalaseBadge);
                 etalaseList.add(etalaseAdapterModel);
             }
         } else {
@@ -477,7 +479,9 @@ public class ProductList extends V2BaseFragment {
 
                         @Override
                         public void onFailure(int connectionTypeError, String message) {
-                            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                            if (isAdded() && getActivity() != null) {
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
                 } else {
@@ -502,6 +506,7 @@ public class ProductList extends V2BaseFragment {
         if (productShopParam.getSelectedEtalase() != pos) {
             productShopParam.setEtalaseId(etalaseList.get(pos).getEtalaseId());
             productShopParam.setSelectedEtalase(pos);
+            adapter.setSelectedEtalasePos(productShopParam.getSelectedEtalase());
             if (getArguments().getInt(EXTRA_USE_ACE) == 1) {
                 productShopParam.setUseAce(etalaseList.get(pos).isUseAce());
             }
@@ -899,5 +904,16 @@ public class ProductList extends V2BaseFragment {
             }
         }
         return -1;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            if (getActivity() != null &&
+                    getActivity() instanceof ShopInfoActivity) {
+                ((ShopInfoActivity) getActivity()).swipeAble(true);
+            }
+        }
     }
 }

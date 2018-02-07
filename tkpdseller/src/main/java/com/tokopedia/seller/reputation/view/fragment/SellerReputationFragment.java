@@ -7,11 +7,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,11 +22,13 @@ import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
@@ -70,8 +74,9 @@ import rx.schedulers.Schedulers;
 /**
  * @author normansyahputa
  */
-public class SellerReputationFragment extends BasePresenterFragment<SellerReputationFragmentPresenter>
-        implements SellerReputationView, RetryDataBinder.OnRetryListener, DefaultErrorSubscriber.ErrorNetworkListener, DatePickerResultListener.DatePickerResult {
+public class SellerReputationFragment extends BaseDaggerFragment
+        implements SellerReputationView, RetryDataBinder.OnRetryListener,
+        DefaultErrorSubscriber.ErrorNetworkListener, DatePickerResultListener.DatePickerResult {
 
     public static final String TAG = "SellerReputationFragmen";
 
@@ -90,6 +95,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
     ReviewReputationUseCase reviewReputationUseCase;
     GCMHandler gcmHandler;
     ReviewReputationMergeUseCase reviewReputationMergeUseCase;
+    SellerReputationFragmentPresenter presenter;
 
     private SnackbarRetry snackbarRetry;
     private View rootView;
@@ -134,50 +140,54 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
             tempParcelables = savedInstanceState.getParcelableArrayList(
                     SellerReputationAdapter.KEY_LIST_DATA);
         }
-        return super.onCreateView(inflater, container, savedInstanceState);
+
+        return inflater.inflate(getFragmentLayout(), container, false);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(isRetainInstance());
+        Log.d(TAG, "ON CREATE");
+        if (getArguments() != null) {
+            setupArguments(getArguments());
+        }
+        initialPresenter();
     }
 
     @Override
+    protected void initInjector() {
+
+    }
+
     protected boolean isRetainInstance() {
         return false;
     }
 
-    @Override
     protected void onFirstTimeLaunched() {
         setActionsEnabled(false);
     }
 
-    @Override
     public void onSaveState(Bundle state) {
 
     }
 
-    @Override
     public void onRestoreState(Bundle savedState) {
 
     }
 
-    @Override
     protected boolean getOptionsMenuEnable() {
         return false;
     }
 
-    @Override
     protected void initialPresenter() {
         presenter = new SellerReputationFragmentPresenter();
         presenter.attachView(this);
     }
 
-    @Override
     protected void initialListener(Activity activity) {
     }
 
-    @Override
     protected void setupArguments(Bundle arguments) {
 
     }
@@ -189,12 +199,19 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
         adapter.setFragment(null);
     }
 
-    @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_seller_reputation;
     }
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initView(view);
+        initialVar();
+        setViewListener();
+        setActionVar();
+    }
+
     protected void initView(View view) {
         this.rootView = view;
         listViewBalance = (RecyclerView) view.findViewById(R.id.balance_list);
@@ -344,7 +361,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
 
     @Override
     public void dismissSnackbar() {
-        if(snackbarRetry != null) {
+        if (snackbarRetry != null) {
             snackbarRetry.hideRetrySnackbar();
         }
     }
@@ -377,7 +394,6 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
         presenter.loadMoreNetworkCall();
     }
 
-    @Override
     protected void setViewListener() {
         discardOnClickInfo();
     }
@@ -400,7 +416,6 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
         });
     }
 
-    @Override
     protected void initialVar() {
         if (tempParcelables != null) {
             adapter = SellerReputationAdapter.createInstance(getActivity(), tempParcelables);
@@ -436,7 +451,6 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
         datePickerResultListener = new DatePickerResultListener(this, GMStatHeaderViewHelper.MOVE_TO_SET_DATE);
     }
 
-    @Override
     protected void setActionVar() {
     }
 
@@ -612,7 +626,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
         };
     }
 
-    private void onRetryConnectionSnackBar(){
+    private void onRetryConnectionSnackBar() {
         dismissSnackbar();
         refreshHandler.setRefreshing(true);
         switch (presenter.getNetworkStatus()) {
@@ -709,5 +723,10 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
         presenter.setEndDate(eDate);
 
         presenter.setNetworkStatus(NetworkStatus.ONACTIVITYFORRESULT);
+    }
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_SELLER_REP_HISTORY;
     }
 }

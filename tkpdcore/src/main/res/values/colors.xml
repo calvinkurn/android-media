@@ -7,7 +7,10 @@
     <color name="selection">#905eba46</color>
     <color name="selector_lv">#64cdf4</color>
     <color name="white">#ffffff</color>
+    <color name="white_three">#fafafa</color>
+    <color name="white_four">#e0e0e0</color>
     <color name="holder_error">#FFADAD</color>
+    <color name="transparent">@android:color/transparent</color>
 
     <color name="colorGreen">#42B459</color>
     <color name="colorBlack">#494949</color>
@@ -24,6 +27,7 @@
     <color name="black_54">#8a000000</color>
     <color name="black_70">#b3000000</color>
     <color name="black_70b">#b3000000</color>
+    <color name="black_87">#de000000</color>
     <color name="black_twenty_percent">#1F000000</color>
     <color name="greyish_brown_two">#4b4b4b</color>
     <color name="tkpd_green_onboarding">#53BA51</color>
@@ -62,6 +66,7 @@
 
     <color name="black_seventy_percent_">#B3000000</color>
     <color name="tkpd_main_green">#42b549</color>
+    <color name="tkpd_main_green_70">#b342b549</color>
     <color name="accent">#ff33b5e5</color>
     <color name="dark_selectable_recycler">#CCCCCC</color>
 
@@ -93,7 +98,13 @@
     <color name="medium_green_70">#b242b549</color>
     <color name="bright_red">#eb3c0d</color>
     <color name="price_pdp">#ff5722</color>
+
+    <!--COLOR NEW ONBOARDING-->
+    <color name="green_nob">#42b549</color>
+    <color name="orange_nob">#f79b21</color>
+    <color name="blue_nob">#00bcd4</color>
     <color name="grey_hint">#e0e0e0</color>
+    <color name="grey_warm">#9e9e9e</color>
 
     <color name="color_complain_header">#c0000000</color>
     <color name="color_complain_body">#8a000000</color>
@@ -104,4 +115,20 @@
     <color name="sparator_btn_promote">#33AFAFAF</color>
     <color name="hint_search_view">#4D727272</color>
     <color name="devider">#c7c7c7</color>
+    <color name="light_green">#f3fef3</color>
+
+    <color name="black_tooltip">#96000000</color>
+    <color name="red_1">#ea1706</color>
+    <color name="yellow_1">#ffb03b</color>
+
+    <color name="yellow_background">#fffcd3</color>
+    <color name="yellow_border">#efe9a1</color>
+
+
+    <color name="red_template">#fdebec</color>
+    <color name="green_template">#f3fef3</color>
+    <color name="clicked_green">#8ad4efd5</color>
+    <color name="add_template_disabled">#26000000</color>
+
+
 </resources>

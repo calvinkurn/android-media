@@ -15,24 +15,24 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.topads.R;
+import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.design.text.TkpdTextInputLayout;
 import com.tokopedia.seller.product.edit.utils.ViewUtils;
-import com.tokopedia.design.text.SpinnerTextView;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.util.TopAdsComponentUtils;
+import com.tokopedia.topads.common.view.fragment.TopAdsBaseStepperFragment;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.view.adapter.TopAdsAutoCompleteAdapter;
+import com.tokopedia.topads.dashboard.view.widget.TopAdsCustomAutoCompleteTextView;
 import com.tokopedia.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordNewChooseGroupComponent;
 import com.tokopedia.topads.keyword.di.module.TopAdsKeywordNewChooseGroupModule;
 import com.tokopedia.topads.keyword.helper.KeywordTypeMapper;
-import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordAddActivity;
 import com.tokopedia.topads.keyword.view.listener.TopAdsKeywordNewChooseGroupView;
+import com.tokopedia.topads.keyword.view.model.TopAdsKeywordStepperModel;
 import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordNewChooseGroupPresenter;
-import com.tokopedia.topads.dashboard.view.adapter.TopAdsAutoCompleteAdapter;
-import com.tokopedia.topads.dashboard.view.widget.TopAdsCustomAutoCompleteTextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,19 +43,16 @@ import javax.inject.Inject;
  * Created by zulfikarrahman on 2/22/17.
  */
 
-public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment implements TopAdsKeywordNewChooseGroupView {
+public class TopAdsKeywordNewChooseGroupFragment extends TopAdsBaseStepperFragment<TopAdsKeywordStepperModel> implements TopAdsKeywordNewChooseGroupView {
 
     public static final String TAG = TopAdsKeywordNewChooseGroupFragment.class.getSimpleName();
-
+    public static final int ADD_REQUEST_CODE = 100;
+    private static final String EXTRA_CHOOSEN_GROUP = "EXTRA_CHOOSEN_GROUP";
     private static final String EXTRA_IS_POSITIVE = "is_pos";
-
     private static final String SAVED_GROUP_ID = "grp_id";
     private static final String SAVED_GROUP_NAME = "grp_nm";
     private static final String SAVED_KEYWORD_COUNT = "key_count";
     private static final String SAVED_SPINNER_POS = "spinner_pos";
-
-    public static final int ADD_REQUEST_CODE = 100;
-
     @Inject
     public TopAdsKeywordNewChooseGroupPresenter topAdsKeywordNewChooseGroupPresenter;
 
@@ -77,22 +74,54 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
     private TextView textKeywordExample;
 
     private @KeywordTypeDef int keywordType = -1;
+    private String groupId;
 
-    public static Fragment newInstance(boolean isPositiveKeyword) {
-        Fragment fragment = new TopAdsKeywordNewChooseGroupFragment();
-        Bundle args = new Bundle();
-        args.putBoolean(EXTRA_IS_POSITIVE, isPositiveKeyword);
-        fragment.setArguments(args);
-        return fragment;
+    public static Fragment newInstance() {
+        return new TopAdsKeywordNewChooseGroupFragment();
+    }
+
+    @Override
+    protected void saveStepperModel(TopAdsKeywordStepperModel stepperModel) {
+        stepperModel.setGroupId(chosenId);
+        stepperModel.setChoosenId(chosenId);
+        stepperModel.setGroupName(autoCompleteChooseGroup.getText().toString());
+        stepperModel.setKeywordType(keywordType);
+        stepperModel.setServerCount(keywordCount);
+        stepperModel.setMaxWords(getResources().getInteger(R.integer.top_ads_keyword_max_in_group) - keywordCount);
+        stepperModel.setLocalWords(new ArrayList<String>());
+    }
+
+    @Override
+    protected void initiateStepperModel() {
+        if(stepperModel == null)
+            stepperModel = new TopAdsKeywordStepperModel();
+    }
+
+    @Override
+    protected void goToNextPage() {
+        //validate if server max not reached
+        if (keywordCount >= getResources().getInteger(R.integer.top_ads_keyword_max_in_group)) {
+            CommonUtils.UniversalToast(getActivity(), getString(R.string.top_ads_keyword_per_group_reach_limit));
+            return;
+        }
+        // go to add keyword activity
+        if (stepperListener != null) {
+            stepperListener.goToNextPage(stepperModel);
+            // hide loading
+        }
+    }
+
+    @Override
+    protected void populateView(TopAdsKeywordStepperModel stepperModel) {
+
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            isPositive = bundle.getBoolean(EXTRA_IS_POSITIVE, true);
-        }
+        initiateStepperModel();
+        isPositive = stepperModel.isPositive();
+        groupId = stepperModel.getGroupId();
         adapterChooseGroup = new TopAdsAutoCompleteAdapter(getActivity(), R.layout.item_autocomplete_text);
     }
 
@@ -195,6 +224,12 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
             }
         });
 
+        if(groupId != null){
+            autoCompleteChooseGroup.setText(groupId);
+            autoCompleteChooseGroup.lockView();
+            topAdsKeywordNewChooseGroupPresenter.searchGroupName("");
+        }
+
         adapterChooseGroup.setListenerGetData(new TopAdsAutoCompleteAdapter.ListenerGetData() {
             @Override
             public ArrayList<String> getData() {
@@ -218,22 +253,7 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
         buttonNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //validate if server max not reached
-                if (keywordCount >= getResources().getInteger(R.integer.top_ads_keyword_max_in_group)) {
-                    CommonUtils.UniversalToast(getActivity(), getString(R.string.top_ads_keyword_per_group_reach_limit));
-                    return;
-                }
-                // go to add keyword activity
-                TopAdsKeywordAddActivity.start(TopAdsKeywordNewChooseGroupFragment.this,
-                        getActivity(),
-                        ADD_REQUEST_CODE,
-                        chosenId,
-                        autoCompleteChooseGroup.getText().toString(),
-                        keywordType,
-                        keywordCount,
-                        getResources().getInteger(R.integer.top_ads_keyword_max_in_group) - keywordCount,
-                        new ArrayList<String>()
-                );
+                onNextClicked();
             }
         });
     }
@@ -281,7 +301,7 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
     protected void initInjector() {
         DaggerTopAdsKeywordNewChooseGroupComponent.builder()
                 .topAdsKeywordNewChooseGroupModule(new TopAdsKeywordNewChooseGroupModule())
-                .appComponent(getComponent(AppComponent.class))
+                .topAdsComponent(TopAdsComponentUtils.getTopAdsComponent(this))
                 .build()
                 .inject(this);
         topAdsKeywordNewChooseGroupPresenter.attachView(this);
@@ -313,6 +333,12 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
         this.groupAds.addAll(groupAds);
         groupNames.clear();
         for (GroupAd groupAd : groupAds) {
+            if(groupId != null) {
+                if (groupAd.getName().equals(groupId)) {
+                    chosenId = groupAd.getId();
+                }
+                groupId = null; // this is just for the first time only
+            }
             groupNames.add(groupAd.getName());
         }
         autoCompleteChooseGroup.showDropDownFilter();

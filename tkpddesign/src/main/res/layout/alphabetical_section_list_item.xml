@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/alphabetical_section_header_padding"
         android:background="@color/white"
-        style="@style/TextView.Body1.Green.Bold"
+        style="@style/TextView.Small.Green.Bold"
         tools:text="Section Header"
         />
 

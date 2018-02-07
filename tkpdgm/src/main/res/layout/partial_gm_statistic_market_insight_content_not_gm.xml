@@ -25,7 +25,7 @@
             android:src="@drawable/ic_lock_icon_again" />
 
         <TextView
-            style="@style/TextView.Body1.WhiteDisabled"
+            style="@style/TextView.Small.WhiteDisabled"
             android:layout_marginLeft="10dp"
             android:gravity="center"
             android:text="@string/gm_statistic_get_access_to_see_gm_stat"
@@ -41,7 +41,7 @@
 
         <TextView
             android:id="@+id/market_insight_gmsubscribe_text"
-            style="@style/TextView.Body1.Green"
+            style="@style/TextView.Small.Green"
             android:layout_centerInParent="true"
             android:text="@string/gm_statistic_upgrade_to_gold_merchant" />
     </RelativeLayout>

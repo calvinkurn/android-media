@@ -6,6 +6,10 @@ import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsProductModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FavoriteCtaViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.ContentProductViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.AddFeedModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.blog.BlogViewModel;
@@ -16,13 +20,14 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromoCardViewMo
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromotedProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromotedShopViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.toppicks.ToppicksViewModel;
 
 /**
  * @author by nisie on 5/15/17.
  */
 
-public interface FeedPlusTypeFactory  {
+public interface FeedPlusTypeFactory {
 
     int type(ActivityCardViewModel viewModel);
 
@@ -51,6 +56,16 @@ public interface FeedPlusTypeFactory  {
     int type(EmptyTopAdsProductModel emptyModel);
 
     int type(ToppicksViewModel toppicksViewModel);
+
+    int type(KolViewModel kolViewModel);
+
+    int type(KolRecommendationViewModel kolRecommendationViewModel);
+
+    int type(FeedTopAdsViewModel feedTopAdsViewModel);
+
+    int type(FavoriteCtaViewModel favoriteCtaViewModel);
+
+    int type(ContentProductViewModel contentProductViewModel);
 
     AbstractViewHolder createViewHolder(View view, int viewType);
 }

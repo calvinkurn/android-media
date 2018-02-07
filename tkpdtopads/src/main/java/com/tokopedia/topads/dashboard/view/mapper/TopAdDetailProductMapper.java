@@ -65,6 +65,8 @@ public class TopAdDetailProductMapper {
         domainModel.setAdEndTime(viewModel.getEndTime());
         domainModel.setAdImage(viewModel.getImage());
         domainModel.setAdTitle(viewModel.getTitle());
+        domainModel.setSuggestionBidValue(viewModel.getSuggestionBidValue());
+        domainModel.setSuggestionBidButton(viewModel.getSuggestionBidButton());
         return domainModel;
     }
 

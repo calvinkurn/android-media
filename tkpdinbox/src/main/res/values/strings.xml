@@ -8,22 +8,31 @@
     <string name="detail_rescenter_deadline">Tombol Bantuan Akan Muncul Pada:</string>
 
     <string name="template_last_solution_provider">Solusi dari %1$s - %2$s</string>
+    <string name="template_last_solution_provider_v2"><i>Terakhir diubah oleh <b>%1$s</b> - %2$s</i></string>
     <string name="template_history_additional_information">%1$s - %2$s</string>
-    <string name="template_awb_additional_text">Terakhir Diubah - %1$s</string>
+    <string name="template_awb_additional_text">Terakhir diubah - %1$s</string>
 
     <string name="title_section_address_retur">Alamat Pengembalian</string>
     <string name="title_section_resolution_retur">No. Resi Pengembalian</string>
     <string name="title_section_last_solution">Solusi Terakhir</string>
+    <string name="title_section_last_solution_v2">Masalah &amp; Solusi</string>
+    <string name="title_section_last_solution_problem">Masalah</string>
+    <string name="title_section_last_solution_user_solution">Solusi dari Pembeli</string>
+    <string name="title_section_last_solution_user_solution_title">Solusi dari $who</string>
+    <string name="title_section_last_solution_user_solution_identifier">$who</string>
     <string name="title_section_product_resolution">Produk Yang Dikomplain</string>
     <string name="title_section_history_resolution">Riwayat Komplain</string>
+    <string name="title_section_prove">Lampiran Bukti</string>
+    <string name="title_section_prove_status">Keterangan Bukti:</string>
 
     <string name="action_track">Lacak</string>
+    <string name="action_add">Tambah</string>
     <string name="action_see_more_awb">Lihat Riwayat No. Resi</string>
     <string name="action_see_more_address">Lihat Riwayat Alamat Pengembalian</string>
     <string name="action_edit_solution">Ubah Solusi</string>
     <string name="action_accept_solution">Terima Solusi</string>
     <string name="action_accept_product">Komplain Selesai</string>
-    <string name="action_see_more_history">Lihat Riwayat Selengkapnya</string>
+    <string name="action_see_more_history">Riwayat Selengkapnya</string>
     <string name="action_see_more_product_complaint">Lihat Semua Produk Yang Dikomplain</string>
     <string name="action_discuss_with_buyer">Diskusi Dengan Pembeli</string>
     <string name="action_discuss_with_seller">Diskusi Dengan Penjual</string>
@@ -62,7 +71,33 @@
     <string name="is_it_helpful">Apakah jawaban ini membantu?</string>
     <string name="yes">Ya</string>
     <string name="no">Tidak</string>
+    <string name="time_machine">Untuk melihat percakapan sebelumnya,\nkunjungi Riwayat
+        Pesan</string>
+    <string name="time_machine_chat">Untuk melihat percakapan sebelumnya, kunjungi\nRiwayat
+        Pesan</string>
+
+    <string name="no_existing_chat"> Tidak Ada Chat</string>
+    <string name="no_existing_chat_user"> Tidak ada pengguna atau chat
+yang ditemukan</string>
+    <string name="please_try_chat"> Silakan mengirim chat untuk\nmemulai percakapan</string>
+    <string name="old_message_warn"> Pesan ini dikirim menggunakan Chat versi lama, dengan subjek: </string>
+    <string name="delete_message_warn"> Jumlah pesan yang bisa dihapus hanya </string>
+    <string name="delete_confirmation">Apakah anda yakin menghapus %1$d pesan?</string>
+    <string name="delete_choose">"Pilih chat yang dihapus"</string>
+    <string name="connected_websocket">"Terhubung!"</string>
+    <string name="is_typing">"sedang mengetik"</string>
+    <string name="just_now">"baru saja"</string>
+    <string name="delete_error">"Gagal mengirim pesan."</string>
+    <string name="delete_chat">"Hapus chat?"</string>
+    <string name="forever_deleted_chat">"Chat akan terhapus selamanya"</string>
+    <string name="search_chat_user">"Cari chat atau pengguna"</string>
+    <string name="delete">"Hapus"</string>
+    <string name="cancel">"Batal"</string>
+
     <string name="string_general_error">Terjadi kesalahan, mohon coba kembali.</string>
+    <string name="error_no_connection_retrying">Terjadi gangguan pada koneksi. Mencoba
+        menghubungkan...</string>
+    <string name="title_time_machine_message">Riwayat</string>
 
     <!--new create reso-->
     <string name="string_product_problem">1. Barang &amp; Masalah</string>
@@ -133,4 +168,111 @@
     <string name="string_edit_message">Tekan \"Ubah\" untuk mengubah solusi menjadi:</string>
     <string name="string_appeal_message">Solusi akan diubah menjadi </string>
     <string name="string_edit_button">Ubah</string>
+
+    <!--detail reso-->
+    <string name="string_title_next_step">Langkah Selanjutnya</string>
+    <string name="string_hint_write_message">Tulis Pesan</string>
+    <string name="string_detail_problem">Masalah</string>
+    <string name="string_buyer_solution">Solusi dari Pembeli</string>
+    <string name="string_accept_solution_title">Terima Solusi?</string>
+    <string name="string_accept_solution_title_yes">Terima</string>
+    <string name="string_cancel_complaint_title">Batalkan Komplain?</string>
+    <string name="string_cancel_ask_help_title">Minta Bantuan?</string>
+    <string name="string_cancel_finish_title">Selesaikan Komplain?</string>
+    <string name="string_error_min_max_words">Minimal 7 karakter dan maksimal 5000 karakter</string>
+    <string name="string_help_info">Anda dapat meminta bantuan \n<b>Customer Service Tokopedia</b> dalam waktu:</string>
+    <string name="string_help_info_2"><![CDATA[Anda dapat meminta bantuan <br><b>Customer Service Tokopedia</b>:]]></string>
+    <string name="string_ic_discussion">Diskusi</string>
+    <string name="string_change">Ubah</string>
+    <string name="string_get_help">Minta Bantuan</string>
+    <string name="string_title_create_recomplaint">Komplain Ulang</string>
+    <string name="string_back_to_complaint_list">Kembali ke Daftar Komplain</string>
+    <string name="action_input_awb_number">Masukkan No. Resi</string>
+    <string name="string_read_more">Selengkapnya</string>
+    <string name="string_read_more_close">Tutup</string>
+    <string name="string_from_buyer">Dari pembeli:</string>
+    <string name="string_from_seller">Dari penjual:</string>
+    <string name="string_from_admin">Dari admin:</string>
+
+    <!--chat bubble-->
+    <string name="string_buyer_problem2">Kendala dari Pembeli:</string>
+    <string name="string_buyer_solution2">Solusi dari Pembeli:</string>
+    <string name="string_buyer_prove">Bukti:</string>
+    <string name="string_buyer_text">Keterangan Bukti:</string>
+    <string name="string_complaint_product">Produk yang dikomplain:</string>
+    <string name="string_see_all_product">Lihat Semua Produk</string>
+    <string name="string_chat_track_awb">Lacak Paket</string>
+    <string name="string_chat_edit_awb">Ubah Resi</string>
+    <string name="string_chat_edit_address">Ubah Alamat</string>
+    <string name="string_seller_choice">Penjual dapat memilih untuk:</string>
+    <string name="string_complaint_title">Komplain untuk $store_name telah dibuat.</string>
+    <string name="string_complaint_title1">Komplain untuk</string>
+    <string name="string_complaint_title2">telah dibuat.</string>
+    <string name="string_complaint_title_identifier">$store_name</string>
+    <string name="string_tokopedia_system">Sistem Tokopedia</string>
+    <string name="string_tokopedia">Toped</string>
+    <string name="string_tokopedia_buyer_title">Pembeli</string>
+    <string name="string_tokopedia_seller_title">Penjual</string>
+    <string name="string_tokopedia_admin_title">Admin</string>
+    <string name="string_tokopedia_admin_username">Tokopedia Admin</string>
+    <string name="detail">Detail</string>
+    <string name="string_reload_page">Muat ulang</string>
+    <string name="string_address_format">Alamat Pengiriman:\na&#47;n: %1$s\n%2$s\n%3$s, %4$s, %5$s\n%6$s\nTelp: %7$s</string>
+    <string name="complaint_from">Komplain dari</string>
+    <string name="complaint_to">Komplain ke</string>
+    <string name="string_btn_change_address">Ubah Alamat</string>
+    <string name="string_admin_solution_early_title">Admin Tokopedia memberikan solusi awal:</string>
+    <string name="string_admin_solution_final_title">Admin Tokopedia memberikan solusi akhir:</string>
+    <string name="string_admin_solution_reason">Alasan:</string>
+    <string name="string_admin_solution_final">Admin memberikan solusi akhir</string>
+    <string name="string_track_awb">Lacak Paket</string>
+    <string name="string_edit_awb">Edit Resi</string>
+    <string name="string_awb_attachment">Lampiran:</string>
+    <string name="string_reason">Alasan:</string>
+    <string name="string_awb_format">Nomor Resi: %1$s (%2$s)</string>
+    <string name="string_common_chat_title">%1$s:</string>
+    <string name="string_sending_message">Sedang mengirim</string>
+
+
+    <!--Track Shipping-->
+    <string name="title_track_shipping">Lacak Paket</string>
+    <string name="string_awb_number">No. Resi :</string>
+    <string name="string_receiver_name">Nama Penerima :</string>
+    <string name="string_status">Status :</string>
+    <string name="string_awb_attachment_title">Lampiran Foto Resi: </string>
+    <string name="string_input_awb_title">Contoh Informasi yang Harus Terlihat:</string>
+
+    <!--success message-->
+    <string name="string_success_accept">Solusi telah diterima</string>
+    <string name="string_success_appeal">Anda berhasil melakukan proses naik banding</string>
+    <string name="string_success_cancel">Resolusi telah dibatalkan</string>
+    <string name="string_success_edit_awb">Terima kasih telah melakukan pengiriman</string>
+    <string name="string_success_edit_solution">Solusi berhasil diubah</string>
+    <string name="string_success_help">Tokopedia akan mempelajari kasus ini terlebih dahulu dan akan memberikan resolusi dalam waktu 3 hari</string>
+    <string name="string_success_input_awb">Terima kasih sudah melakukan pengiriman</string>
+    <string name="string_success_finish">Komplain ini telah dinyatakan selesai. Terima kasih.</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="add_template_chat_title">Tambah Template Pesan</string>
+    <string name="edit_template_chat_title">Ubah Template Pesan</string>
+    <string name="limited_template_chat_warning">Hapus salah satu template untuk bisa membuat template baru.</string>
+    <string name="minimum_template_chat_warning">Minimal harus memiliki 1 template.</string>
+    <string name="success_add_template_chat">Berhasil menambahkan template pesan</string>
+    <string name="success_edit_template_chat">Berhasil mengubah template pesan</string>
+    <string name="success_delete_template_chat">Template berhasil dihapus</string>
+    <string name="success_rearrange_template_chat">Berhasil mengubah urutan template</string>
+    <string name="success_switch_template_chat">Berhasil mengubah urutan template</string>
+    <string name="hint_template_chat">Silakan tambahkan template untuk membantu Anda melakukan Chat tanpa perlu mengetik pesan yang sama berulang kali.
+        \n\nContoh:\nHalo, barang ini ready ya. Silakan diorder</string>
+    <string name="delete_chat_template">"Hapus template?"</string>
+    <string name="forever_deleted_template">"Template akan terhapus selamanya"</string>
+    <string name="minimal_char_template">"Template pesan minimal 5 karakter"</string>
+    <string name="maximal_char_template">"Template pesan maksimal %1$d karakter"</string>
+
+    <string name="title_info_list_template">"Kelola Template Pesan"</string>
+    <string name="body_info_list_template">"Ubah dengan tekan tombol edit, atau atur urutan dengan tahan dan geser tombol drag."</string>
+    <string name="caption_switch_template">"Buat hingga 5 template untuk membantu Anda melakukan Chat tanpa perlu mengetik pesan yang sama berulang kali"</string>
+
 </resources>

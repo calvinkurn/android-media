@@ -17,19 +17,25 @@ public class HttpRequest {
 	private final String characterEncoding;
 	private final Map<String,String> parameters;
 	private final Map<String,String> headers;
+	private final String jsonBody;
 	
 	private HttpRequest(HttpRequestBuilder builder){
 		this.baseUrl = builder.baseUrl;
 		this.method = builder.method;
 		this.parameters = builder.parameters;
 		this.headers = builder.headers;
+		this.jsonBody = builder.json;
 		this.characterEncoding = builder.characterEncoding;
 	}
 	
 	public String getBaseUrl(){
 		return this.baseUrl.trim();
 	}
-	
+
+	public String getJsonBody() {
+		return jsonBody;
+	}
+
 	public HttpMethod getMethod(){
 		return this.method;
 	}
@@ -122,6 +128,7 @@ public class HttpRequest {
 		private String baseUrl;
 		private HttpMethod method;
 		private Map<String,String> parameters;
+		private String json;
 		private final Map<String,String> headers;
 		private String characterEncoding;
 		
@@ -138,6 +145,11 @@ public class HttpRequest {
 		
 		public HttpRequestBuilder setMethod(HttpMethod method){
 			this.method = method;
+			return this;
+		}
+
+		public HttpRequestBuilder addJsonBodyParameter(String json){
+			this.json = json;
 			return this;
 		}
 		

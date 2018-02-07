@@ -2,6 +2,7 @@ package com.tokopedia.topads.dashboard.view.presenter;
 
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetDetailProductUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsCreateDetailProductListUseCase;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetSuggestionUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductListUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsSaveDetailProductUseCase;
 import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailProductDomainModel;
@@ -25,8 +26,8 @@ public class TopAdsDetailNewProductPresenterImpl extends TopAdsDetailEditProduct
     public TopAdsDetailNewProductPresenterImpl(TopAdsGetDetailProductUseCase topAdsGetDetailProductUseCase,
                                                TopAdsSaveDetailProductUseCase topAdsSaveDetailProductUseCase,
                                                TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase,
-                                               TopAdsProductListUseCase topAdsProductListUseCase) {
-        super(topAdsGetDetailProductUseCase, topAdsSaveDetailProductUseCase, topAdsProductListUseCase);
+                                               TopAdsProductListUseCase topAdsProductListUseCase, TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase) {
+        super(topAdsGetDetailProductUseCase, topAdsSaveDetailProductUseCase, topAdsProductListUseCase, topAdsGetSuggestionUseCase);
         this.topAdsSaveDetailProductListUseCase = topAdsCreateDetailProductListUseCase;
     }
 

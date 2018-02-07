@@ -35,6 +35,9 @@ public class BrowseShopModel {
         @SerializedName("source")
         String source;
 
+        @SerializedName("q")
+        public String query;
+
         @SerializedName("shops")
         public Shops[] shops;
 

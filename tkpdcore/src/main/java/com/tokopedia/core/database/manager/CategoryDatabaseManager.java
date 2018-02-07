@@ -96,44 +96,5 @@ public class CategoryDatabaseManager implements DBOperation<CategoryDB> {
         return null;
     }
 
-    public int getDepartmentCount(int level, int depId){
-        long count = new Select()
-                .from(CategoryDB.class)
-                .where(CategoryDB_Table.levelId.is(level))
-                .and(CategoryDB_Table.parentId.is(depId)).count();
-        return (int)count;
-    }
 
-    public List<CategoryDB> getDepartementChild(int depId){
-        List<CategoryDB> categoryDBs = new Select()
-                .from(CategoryDB.class)
-                .where(CategoryDB_Table.departmentId.is(depId))
-                .queryList();
-        return categoryDBs;
-    }
-
-    public List<CategoryDB> getDepartmentChild(int level, int depId){
-        List<CategoryDB> categoryDBs = new Select()
-                .from(CategoryDB.class)
-                .where(CategoryDB_Table.levelId.is(level))
-                .and(CategoryDB_Table.parentId.is(depId))
-                .queryList();
-        return categoryDBs;
-    }
-
-    public List<CategoryDB> getDepartmentParent(){
-        List<CategoryDB> categoryDBs = new Select()
-                .from(CategoryDB.class)
-                .where(CategoryDB_Table.parentId.is(0))
-                .queryList();
-        return categoryDBs;
-    }
-
-    /**
-     * @return
-     */
-    public boolean isDepartmentParentFetch(){
-        List<CategoryDB> departmentParent = getDepartmentParent();
-        return departmentParent != null && departmentParent.size()>0;
-    }
 }

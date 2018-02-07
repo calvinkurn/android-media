@@ -1,6 +1,7 @@
 package com.tokopedia.digital.widget.presenter;
 
 import android.content.Context;
+import android.support.v4.util.Pair;
 import android.text.TextUtils;
 
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -30,6 +31,12 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
 
     private static final String PULSA_CATEGORY_ID = "1";
     private static final String PAKET_DATA_CATEGORY_ID = "2";
+    private static final String ROAMING_CATEGORY_ID = "20";
+
+    private final String PARAM_CATEGORY_ID = "category_id";
+    private final String PARAM_SORT = "sort";
+
+    private final String PARAM_VALUE_LABEL = "label";
 
     private final IDigitalWidgetInteractor widgetInteractor;
     private final IDigitalWidgetStyle1View view;
@@ -47,8 +54,9 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
     @Override
     public void fetchNumberList(String categoryId, boolean showLastOrder) {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put("category_id", categoryId);
-        param.put("sort", "label");
+        param.put(PARAM_CATEGORY_ID, categoryId);
+        param.put(PARAM_SORT, PARAM_VALUE_LABEL);
+
         widgetInteractor.getNumberList(getNumberListSubscriber(categoryId, showLastOrder),
                 AuthUtil.generateParamsNetwork(context, param));
     }
@@ -72,13 +80,12 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
                     if (digitalNumberList.getLastOrder() != null) {
                         LastOrder lastOrder = mapOrderClientNumberToLastOrder(digitalNumberList
                                 .getLastOrder());
-
                         view.renderLastOrder(lastOrder);
                     } else if (!TextUtils.isEmpty(getLastClientNumberTyped(categoryId))) {
-                        view.renderLastTypedClientNumber();
-                    } else if (isPulsaOrPaketData(categoryId) &
+                        view.renderLastTypedClientNumber(getLastClientNumberTyped(categoryId));
+                    } else if (isPulsaOrPaketDataOrRoaming(categoryId) &
                             !TextUtils.isEmpty(SessionHandler.getPhoneNumber())) {
-                        view.renderVerifiedNumber();
+                        view.renderVerifiedNumber(SessionHandler.getPhoneNumber());
                     }
                 }
             }
@@ -91,24 +98,25 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
         attributes.setClientNumber(orderClientNumber.getClientNumber());
         attributes.setCategoryId(Integer.valueOf(orderClientNumber.getCategoryId()));
         attributes.setOperatorId(Integer.valueOf(orderClientNumber.getOperatorId()));
-        if (!TextUtils.isEmpty(orderClientNumber.getLastProduct())) {
-            attributes.setProductId(Integer.valueOf(orderClientNumber.getLastProduct()));
+        if (!TextUtils.isEmpty(orderClientNumber.getProductId())) {
+            attributes.setProductId(Integer.valueOf(orderClientNumber.getProductId()));
         }
         lastOrder.setAttributes(attributes);
         return lastOrder;
     }
 
-    private boolean isPulsaOrPaketData(String categoryId) {
+    private boolean isPulsaOrPaketDataOrRoaming(String categoryId) {
         return (categoryId.equals(PULSA_CATEGORY_ID) ||
-                categoryId.equals(PAKET_DATA_CATEGORY_ID));
+                categoryId.equals(PAKET_DATA_CATEGORY_ID) ||
+                categoryId.equals(ROAMING_CATEGORY_ID));
     }
 
     @Override
     public void getOperatorById(String operatorId) {
-        widgetInteractor.getOperatorById(getOperatorModelSubscriber(), operatorId);
+        widgetInteractor.getOperatorById(getOperatorBydIdSubscriber(), operatorId);
     }
 
-    private Subscriber<Operator> getOperatorModelSubscriber() {
+    private Subscriber<Operator> getOperatorBydIdSubscriber() {
         return new Subscriber<Operator>() {
             @Override
             public void onCompleted() {
@@ -129,13 +137,18 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
     }
 
     @Override
-    public void validatePhonePrefix(String phonePrefix, int categoryId, Boolean validatePrefix) {
-        widgetInteractor.getProductsFromPrefix(getListProductSubscriber(), categoryId, phonePrefix,
-                validatePrefix);
+    public void getOperatorAndProductsByPrefix(String phonePrefix, int categoryId, boolean validatePrefix) {
+        widgetInteractor.getOperatorAndProductsFromPrefix(operatorAndProductsSubscriber(), categoryId,
+                phonePrefix);
     }
 
-    private Subscriber<List<Product>> getListProductSubscriber() {
-        return new Subscriber<List<Product>>() {
+    @Override
+    public void getOperatorAndProductsByOperatorId(int categoryId, String operatorId) {
+        widgetInteractor.getOperatorAndProductsByOperatorId(operatorAndProductsSubscriber(), categoryId, operatorId);
+    }
+
+    private Subscriber<Pair<Operator, List<Product>>> operatorAndProductsSubscriber() {
+        return new Subscriber<Pair<Operator, List<Product>>>() {
             @Override
             public void onCompleted() {
 
@@ -148,75 +161,20 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
             }
 
             @Override
-            public void onNext(List<Product> products) {
-                if (!products.isEmpty()) {
-                    processOperatorById(products);
-                    view.renderDataProducts(products);
-                } else {
-                    view.renderEmptyProduct(context.getString(R.string.error_message_product));
-                }
-            }
-        };
-    }
+            public void onNext(Pair<Operator, List<Product>> pairOperatorProducts) {
+                Operator operator = pairOperatorProducts.first;
+                List<Product> products = pairOperatorProducts.second;
 
-    private void processOperatorById(List<Product> products) {
-        String operatorId = String.valueOf(
-                products.get(0).getRelationships().getOperator().getData().getId());
-        widgetInteractor.getOperatorById(getOperatorSubscriber(), operatorId);
-    }
-
-    private Subscriber<Operator> getOperatorSubscriber() {
-        return new Subscriber<Operator>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                view.renderEmptyOperator(context.getString(R.string.error_message_operator));
-            }
-
-            @Override
-            public void onNext(Operator operator) {
-                if (operator != null)
+                if (operator != null) {
                     view.renderDataOperator(operator);
-                else
-                    view.renderEmptyOperator(context.getString(R.string.error_message_operator));
-            }
-        };
-    }
 
-    @Override
-    public void validateOperatorWithProducts(int categoryId, String operatorId) {
-        widgetInteractor.getProductsFromOperator(getListProductSubscriber(), categoryId, operatorId);
-    }
-
-    @Override
-    public void validateOperatorWithoutProducts(int categoryId, String operatorId) {
-        widgetInteractor.getProductsFromOperator(getListProductFromOperatorSubscriber(), categoryId, operatorId);
-    }
-
-    private Subscriber<List<Product>> getListProductFromOperatorSubscriber() {
-        return new Subscriber<List<Product>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                view.renderEmptyProduct(context.getString(R.string.error_message_product));
-            }
-
-            @Override
-            public void onNext(List<Product> products) {
-                if (!products.isEmpty()) {
-                    processOperatorById(products);
+                    if (!products.isEmpty()) {
+                        view.renderDataProducts(products, operator.getAttributes().getRule().isShowPrice());
+                    } else {
+                        view.renderEmptyProduct(context.getString(R.string.error_message_product));
+                    }
                 } else {
-                    view.renderEmptyProduct(context.getString(R.string.error_message_product));
+                    view.renderEmptyOperator(context.getString(R.string.error_message_operator));
                 }
             }
         };

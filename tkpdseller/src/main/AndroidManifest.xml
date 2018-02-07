@@ -6,15 +6,51 @@
     <application
         android:allowBackup="true"
         android:label="@string/app_name">
-        <activity
-            android:name="com.tokopedia.seller.common.imageeditor.ImageEditorActivity"
-            android:label="@string/title_activity_image_edit"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat"/>
 
         <activity
             android:name=".common.imageeditor.GalleryCropActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".shop.open.view.activity.ShopOpenRoutingActivity"
+            android:label="@string/title_open_shop"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".shop.open.view.activity.ShopOpenCreateSuccessActivity"
+            android:label="@string/title_shop_is_active"
             android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".shop.open.view.activity.ShopOpenReserveDomainSuccessActivity"
+            android:label="@string/title_shop_is_active"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".shop.open.view.activity.ShopOpenDomainActivity"
+            android:label="@string/title_open_shop"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".shop.open.view.activity.ShopOpenMandatoryActivity"
+            android:label="@string/title_shop_setting"
+            android:windowSoftInputMode="stateHidden"
+            android:exported="true"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".common.imageeditor.GalleryCropWatermarkActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".seller.info.view.activity.SellerInfoWebViewActivity"
+            android:label="@string/title_seller_info"
+            />
+
+        <activity android:name=".seller.info.view.activity.SellerInfoActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_seller_info"
+            android:exported="true"
+            />
 
         <activity
             android:name=".shopscore.view.activity.ShopScoreDetailActivity"
@@ -55,6 +91,9 @@
         <activity
             android:name=".instoped.InstopedSellerCropperActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".instoped.InstopedSellerCropWatermarkActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".common.datepicker.view.activity.DatePickerActivity"
@@ -63,7 +102,7 @@
             android:theme="@style/Theme.Tokopedia3" />
 
         <activity
-            android:name=".shop.ShopEditorActivity"
+            android:name=".shopsettings.edit.view.ShopEditorActivity"
             android:label="@string/shop_setting"
             android:theme="@style/ShopAppTheme" />
 
@@ -90,18 +129,7 @@
         <activity
             android:name=".product.edit.view.activity.ProductAddActivity"
             android:label="@string/title_activity_add_product"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="tkpdevel.com"
-                    android:scheme="http" />
-            </intent-filter>
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
 
@@ -119,28 +147,35 @@
         </activity>
 
         <activity
+            android:name="com.tokopedia.seller.common.imageeditor.ImageEditorActivity"
+            android:label="@string/title_activity_image_edit"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat"/>
+        <activity
+            android:name="com.tokopedia.seller.common.imageeditor.ImageEditorWatermarkActivity"
+            android:label="@string/title_activity_image_edit"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat"/>
+
+        <activity
             android:name=".product.edit.view.activity.ProductEditActivity"
             android:label="@string/title_activity_edit_product"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".product.edit.view.activity.ProductDraftAddActivity"
             android:label="@string/title_activity_add_product"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".product.edit.view.activity.ProductDraftEditActivity"
             android:label="@string/title_activity_edit_product"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".product.edit.view.activity.ProductDuplicateActivity"
             android:label="@string/title_activity_add_product"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".product.edit.view.activity.ProductScoringDetailActivity"
@@ -169,6 +204,11 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".product.edit.view.activity.ProductAddInfoActivity"
+            android:label="@string/product_desc_guide"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".product.edit.view.activity.YoutubeAddVideoActivity"
             android:label="@string/product_label_video"
             android:screenOrientation="portrait" />
@@ -188,7 +228,7 @@
             android:name=".product.variant.view.activity.ProductVariantPickerActivity"
             android:label="@string/product_variant_label_title"
             android:screenOrientation="portrait" />
-        
+
         <activity
             android:name=".product.draft.view.activity.ProductDraftListActivity"
             android:exported="true"
@@ -209,6 +249,10 @@
             android:name=".opportunity.activity.OpportunityDetailActivity"
             android:label="@string/title_opportunity_detail"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".opportunity.activity.OpportunityTncActivity"
+            android:label="@string/take_opportunity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".reputation.view.activity.SellerReputationDatePickerActivity"
@@ -221,7 +265,6 @@
             android:name=".reputation.view.activity.SellerReputationInfoActivity"
             android:label="@string/reputation_point_calculation"
             android:theme="@style/AppTheme" />
-
 
         <activity
             android:name=".shopsettings.ManageShopActivity"
@@ -280,17 +323,30 @@
             android:label="@string/title_activity_product_list_picker"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".common.gallery.GalleryCropActivity"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".selling.view.fragment.CustomScannerBarcodeActivity"
+            android:screenOrientation="sensorLandscape"
+            android:stateNotNeeded="true"
+            android:theme="@style/zxing_CaptureTheme"
+            android:windowSoftInputMode="stateAlwaysHidden"></activity>
 
         <service
             android:name=".selling.SellingService"
             android:exported="false" />
         <service
-            android:name=".shop.ShopEditService"
+            android:name=".shopsettings.edit.view.ShopEditService"
             android:exported="false" />
 
         <service
             android:name=".product.edit.view.service.UploadProductService"
             android:exported="false" />
+        <service
+            android:name=".transaction.neworder.view.presenter.OrderWidgetJobService"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
     </application>
 
 </manifest>

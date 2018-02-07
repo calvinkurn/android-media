@@ -35,4 +35,9 @@ public class TopAdsKeywordDetailNegativeActivity extends BaseSimpleActivity impl
     public AppComponent getComponent() {
         return getApplicationComponent();
     }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
+    }
 }

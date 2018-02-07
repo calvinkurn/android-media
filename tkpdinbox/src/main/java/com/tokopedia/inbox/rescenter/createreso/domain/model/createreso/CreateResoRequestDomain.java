@@ -14,6 +14,9 @@ public class CreateResoRequestDomain {
     private String orderId;
 
     @Nullable
+    private String resolutionId;
+
+    @Nullable
     private CreateValidateDomain createValidateDomain;
 
     @Nullable
@@ -68,5 +71,14 @@ public class CreateResoRequestDomain {
 
     public void setOrderId(@Nullable String orderId) {
         this.orderId = orderId;
+    }
+
+    @Nullable
+    public String getResolutionId() {
+        return resolutionId;
+    }
+
+    public void setResolutionId(@Nullable String resolutionId) {
+        this.resolutionId = resolutionId;
     }
 }

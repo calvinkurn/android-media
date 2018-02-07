@@ -23,8 +23,8 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
     public void onTokenRefresh() {
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         CommonUtils.dumper(TAG + " RefreshedToken: " + refreshedToken);
-        updateMoEngageToken(refreshedToken);
         propagateIDtoServer(refreshedToken);
+        updateMoEngageToken(refreshedToken);
     }
 
     @Override

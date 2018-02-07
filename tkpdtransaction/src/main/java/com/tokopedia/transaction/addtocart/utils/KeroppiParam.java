@@ -7,6 +7,7 @@ import com.tokopedia.transaction.addtocart.model.responseatcform.Destination;
 import com.tokopedia.transaction.addtocart.model.responseatcform.ProductDetail;
 import com.tokopedia.transaction.addtocart.model.responseatcform.Shop;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
+import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 
 /**
  * @author anggaprasetiyo on 11/18/16.
@@ -48,8 +49,16 @@ public class KeroppiParam {
         params.put(FROM, FROM_CLIENT);
         params.put(TOKEN, shop.getToken());
         params.put(UT, shop.getUt() + "");
+        params.put(PRODUCT_INSURANCE, productDetail.getProductMustInsurance() == 1 ? "1" : "0");
+        params.put(INSURANCE, "1");
+        params.put(ORDER_VALUE, getRawPrice(productDetail.getProductPrice()));
+        params.put(CAT_ID, productDetail.getProductCatId());
 
         return params;
+    }
+
+    private static String getRawPrice(String formattedPrice) {
+        return formattedPrice.replace("Rp ", "").replace(".", "");
     }
 
     public static TKPDMapParam<String, String> paramsKeroOrderData(OrderData orderData) {
@@ -69,7 +78,22 @@ public class KeroppiParam {
         params.put(TOKEN, orderData.getShop().getToken());
         params.put(UT, orderData.getShop().getUt() + "");
         params.put(APP_VERSION, GlobalConfig.VERSION_NAME);
+
+        params.put(CAT_ID, orderData.getCatId());
+        params.put(INSURANCE, "1");
+        params.put(PRODUCT_INSURANCE, isProductMustInsurance(orderData));
+        String rawPrice = getRawPrice(orderData.getPriceTotal());
+        params.put(ORDER_VALUE, rawPrice);
+
         return params;
+    }
+
+    private static String isProductMustInsurance(OrderData orderData) {
+        if (orderData.getMustInsurance() == null) {
+            return "0";
+        } else {
+            return String.valueOf(orderData.getMustInsurance());
+        }
     }
 
     private static String generatePath(String districtID, String postalCode, String lat,
@@ -101,16 +125,20 @@ public class KeroppiParam {
         params.put(TOKEN, token);
         params.put(ORDER_VALUE, cartItem.getCartTotalProductPrice());
         params.put(CAT_ID, cartItem.getCartCatId());
-        params.put(PRODUCT_INSURANCE, setInsurance(cartItem));
+        params.put(PRODUCT_INSURANCE, getProductInsurance(cartItem));
         params.put(UT, ut);
         params.put(INSURANCE, "1");
 
         return params;
     }
 
-    private static String setInsurance(CartItem cartItem) {
-        if (cartItem.getCartForceInsurance() == 1) {
-            return "1";
-        } else return "0";
+    private static String getProductInsurance(CartItem cartItem) {
+        for (CartProduct cartProduct : cartItem.getCartProducts()) {
+            if (cartProduct.getProductMustInsurance().equals("1")) {
+                return "1";
+            }
+        }
+        return "0";
     }
+
 }

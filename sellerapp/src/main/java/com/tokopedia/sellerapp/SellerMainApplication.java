@@ -25,7 +25,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
-import com.tokopedia.sellerapp.utils.WhitelistUtils;
+import com.tokopedia.sellerapp.utils.WhiteList;
 
 import java.util.List;
 
@@ -79,7 +79,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
                 intent.setData(Uri.parse(deepLinkUri.toString()));
                 startActivity(intent);
 
-            } else if (deepLinkUri.getScheme().equals(Constants.Schemes.APPLINKS)) {
+            } else if (deepLinkUri.getScheme().equals(Constants.Schemes.APPLINKS_SELLER)) {
                 Intent intent = new Intent(this, DeepLinkHandlerActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setData(Uri.parse(deepLinkUri.toString()));
@@ -104,6 +104,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     @Override
     public void onCreate() {
         HockeyAppHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
+        HockeyAppHelper.setAllowAnonymousLogin(true);
+        HockeyAppHelper.setHockeyappKey(HockeyAppHelper.KEY_SELLERAPP);
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION;
         GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
@@ -128,10 +130,12 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TkpdBaseURL.BASE_DOMAIN = SellerAppBaseUrl.BASE_DOMAIN;
         TkpdBaseURL.ACE_DOMAIN = SellerAppBaseUrl.BASE_ACE_DOMAIN;
         TkpdBaseURL.CLOVER_DOMAIN = SellerAppBaseUrl.BASE_CLOVER_DOMAIN;
+        TkpdBaseURL.BASE_API_DOMAIN = SellerAppBaseUrl.BASE_API_DOMAIN;
         TkpdBaseURL.TOPADS_DOMAIN = SellerAppBaseUrl.BASE_TOPADS_DOMAIN;
         TkpdBaseURL.MOJITO_DOMAIN = SellerAppBaseUrl.BASE_MOJITO_DOMAIN;
         TkpdBaseURL.HADES_DOMAIN = SellerAppBaseUrl.BASE_HADES_DOMAIN;
-        TkpdBaseURL.RECHARGE_API_DOMAIN = SellerAppBaseUrl.BASE_RECHARGE_API_DOMAIN;
+        TkpdBaseURL.DIGITAL_API_DOMAIN = SellerAppBaseUrl.BASE_DIGITAL_API_DOMAIN;
+        TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN = SellerAppBaseUrl.BASE_DIGITAL_WEBSITE_DOMAIN;
         TkpdBaseURL.ACCOUNTS_DOMAIN = SellerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         TkpdBaseURL.INBOX_DOMAIN = SellerAppBaseUrl.BASE_INBOX_DOMAIN;
         TkpdBaseURL.JS_DOMAIN = SellerAppBaseUrl.BASE_JS_DOMAIN;
@@ -146,6 +150,10 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TkpdBaseURL.TOME_DOMAIN = SellerAppBaseUrl.BASE_TOME_DOMAIN;
         TkpdBaseURL.SCROOGE_DOMAIN = SellerAppBaseUrl.BASE_PAYMENT_URL_DOMAIN;
         TkpdBaseURL.SCROOGE_CREDIT_CARD_DOMAIN = SellerAppBaseUrl.BASE_SCROOGE_CREDIT_CARD_DOMAIN;
+        TkpdBaseURL.CHAT_DOMAIN = SellerAppBaseUrl.CHAT_DOMAIN;
+        TkpdBaseURL.CHAT_WEBSOCKET_DOMAIN = SellerAppBaseUrl.CHAT_WEBSOCKET_DOMAIN;
+        TkpdBaseURL.WALLET_DOMAIN = SellerAppBaseUrl.BASE_WALLET;
+
     }
 
     private void generateSellerAppNetworkKeys() {
@@ -164,6 +172,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     @Override
     protected List<CacheApiWhiteListDomain> getWhiteList() {
-        return WhitelistUtils.getWhiteList();
+        return WhiteList.getWhiteList();
     }
 }

@@ -12,7 +12,6 @@ import android.widget.ListView;
 
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.seller.shopsettings.address.activity.ManageShopAddress;
-import com.tokopedia.seller.shopsettings.payment.PaymentEditor;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -21,8 +20,8 @@ import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.core.customadapter.SimpleListTabViewAdapter;
 import com.tokopedia.seller.shopsettings.notes.activity.ManageShopNotesActivity;
 import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
-import com.tokopedia.seller.shop.ShopEditorActivity;
-import com.tokopedia.seller.shop.presenter.ShopSettingView;
+import com.tokopedia.seller.shopsettings.edit.view.ShopEditorActivity;
+import com.tokopedia.seller.shopsettings.edit.presenter.ShopSettingView;
 
 import java.util.ArrayList;
 
@@ -51,14 +50,12 @@ public class FragmentSettingShop extends TkpdFragment{
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View mainView = inflater.inflate(R.layout.fragment_manage_general, container, false);
 		Name.clear();
 		ResID.clear();
 		Name.add(getString(R.string.title_shop_information_menu));
 		Name.add(getString(R.string.title_shipping_menu));
-		Name.add(getString(R.string.title_payment_menu));
 		Name.add(getString(R.string.title_etalase_menu));
 		Name.add(getString(R.string.title_notes_menu));
 		Name.add(getString(R.string.title_location_menu));
@@ -74,14 +71,13 @@ public class FragmentSettingShop extends TkpdFragment{
 		lvManage.setOnItemClickListener(new OnItemClickListener(){
 
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int pos,
-					long arg3) {
+			public void onItemClick(AdapterView<?> arg0, View arg1, int pos, long arg3) {
 				Intent intent = null;
 				switch(pos) {
 					case 0:
-                        intent = new Intent(getActivity(), ShopEditorActivity.class);
-                        intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.EDIT_SHOP_FRAGMENT_TAG);
-                        UnifyTracking.eventManageShopInfo();
+						intent = new Intent(getActivity(), ShopEditorActivity.class);
+						intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.EDIT_SHOP_FRAGMENT_TAG);
+						UnifyTracking.eventManageShopInfo();
 						startActivityForResult(intent, 0);
 						break;
 					case 1:
@@ -90,28 +86,22 @@ public class FragmentSettingShop extends TkpdFragment{
 						startActivity(intent);
 						break;
 					case 2:
-						UnifyTracking.eventManageShopPayment();
-						intent = new Intent(getActivity(), PaymentEditor.class);
-						startActivity(intent);
-						break;
-					case 3:
 						UnifyTracking.eventManageShopEtalase();
 						intent = new Intent(getActivity(), EtalaseShopEditor.class);
 						startActivity(intent);
 						break;
-					case 4:
+					case 3:
 						UnifyTracking.eventManageShopNotes();
 						intent = new Intent(getActivity(), ManageShopNotesActivity.class);
 						startActivity(intent);
 						break;
-					case 5:
+					case 4:
 						UnifyTracking.eventManageShopLocation();
 						intent = new Intent(getActivity(), ManageShopAddress.class);
 						startActivity(intent);
 						break;
 				}
 			}
-			
 		});
 		return mainView;
 	}
@@ -124,4 +114,3 @@ public class FragmentSettingShop extends TkpdFragment{
 		super.setUserVisibleHint(isVisibleToUser);
 	}
 }
-	

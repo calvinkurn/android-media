@@ -3,25 +3,13 @@ package com.tokopedia.seller.instoped;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.SparseArray;
-
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.instoped.model.InstagramMediaModel;
-import com.tokopedia.core.myproduct.utils.ImageDownloadHelper;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.newgallery.GalleryActivity;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
 import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
-import com.tokopedia.seller.product.manage.view.fragment.ProductManageSellerFragment;
+import com.tokopedia.seller.common.imageeditor.ImageEditorWatermarkActivity;
 
-import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -53,12 +41,7 @@ public class InstopedSellerCropperActivity extends InstopedSellerActivity {
     }
 
     private static Intent createIntent (Context context, int maxResult){
-        Intent moveToProductActivity;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            moveToProductActivity = new Intent(context, InstopedSellerActivity.class);
-        } else {
-            moveToProductActivity = new Intent(context, InstopedSellerCropperActivity.class);
-        }
+        Intent moveToProductActivity = new Intent(context, InstopedSellerCropperActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(FRAGMENT_TO_SHOW, InstagramAuth.TAG);
         bundle.putInt(MAX_RESULT, maxResult);
@@ -74,10 +57,10 @@ public class InstopedSellerCropperActivity extends InstopedSellerActivity {
         }
     }
 
-    private void finishWithSingleImage(String imageUrl){
+    protected void finishWithSingleImage(String imageUrl){
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.add(imageUrl);
-        ImageEditorActivity.start(this,arrayList, null, true);
+        ImageEditorActivity.start(this,arrayList, true);
     }
 
     @Override

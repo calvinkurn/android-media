@@ -12,6 +12,11 @@ def getArtifactVersionCode() {
     return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
 }
 
+def getTkpdAbstraction() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.abstraction : project(':tkpdabstraction');
+}
+
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
@@ -95,12 +100,13 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
+    compile getTkpdAbstraction()
+
     testCompile rootProject.ext.testDependencies.junit
     testCompile rootProject.ext.testDependencies.mockitorCore
     testCompile rootProject.ext.testDependencies.assertJ
 
     compile rootProject.ext.serviceDependencies.hockeyApp
-    compile rootProject.ext.serviceDependencies.anrWatchDogs
 
     compile rootProject.ext.supportLibDependencies.recyclerViewV7
     compile rootProject.ext.supportLibDependencies.supportV4
@@ -113,7 +119,6 @@ dependencies {
     compile rootProject.ext.playServicesDependencies.base
     compile rootProject.ext.playServicesDependencies.appIndexing
     compile rootProject.ext.playServicesDependencies.analytics
-    compile rootProject.ext.playServicesDependencies.gcm
     compile rootProject.ext.playServicesDependencies.firebase
     compile rootProject.ext.playServicesDependencies.location
     compile rootProject.ext.playServicesDependencies.maps
@@ -140,11 +145,12 @@ dependencies {
     compile rootProject.ext.networkDependencies.glide
 
     compile rootProject.ext.analyticsDependencies.appsflyer
-    compile (rootProject.ext.analyticsDependencies.moengage){
+    compile rootProject.ext.analyticsDependencies.installRef
+
+    compile(rootProject.ext.analyticsDependencies.moengage) {
         exclude group: 'com.moengage', module: 'moe-push-gcm'
     }
-    compile rootProject.ext.analyticsDependencies.moengageFCM
-    compile (rootProject.ext.analyticsDependencies.moengageMSG){
+    compile(rootProject.ext.analyticsDependencies.moengageMSG) {
         exclude group: 'com.android.support'
     }
 
@@ -153,16 +159,18 @@ dependencies {
 
     compile rootProject.ext.viewDependencies.recyclerMultiSelect
     compile rootProject.ext.viewDependencies.appIntro
-    compile (rootProject.ext.viewDependencies.ahBottomNavigation){
+    compile rootProject.ext.miscDependencies.lottie
+
+    compile(rootProject.ext.viewDependencies.ahBottomNavigation) {
         exclude group: 'com.android.support', module: 'design'
     }
 
-    compile rootProject.ext.miscDependencies.captureActivity
+    compile rootProject.ext.miscDependencies.scannerZxing
     compile rootProject.ext.miscDependencies.multiDex
     compile rootProject.ext.miscDependencies.parcelerApi
     apt rootProject.ext.miscDependencies.parceler
     compile rootProject.ext.miscDependencies.gson
-    compile (rootProject.ext.miscDependencies.facebook){
+    compile(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'
     }
     compile rootProject.ext.miscDependencies.rxAndroid
@@ -173,12 +181,11 @@ dependencies {
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
 
-    compile (rootProject.ext.debugToolsDependencies.chuck) {
+    compile(rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
         exclude group: 'com.squareup.okio'
         exclude group: 'com.android.support'
     }
-    compile rootProject.ext.debugToolsDependencies.stetho
     compile(rootProject.ext.analyticsDependencies.branch) {
         exclude module: 'answers-shim'
     }
@@ -186,6 +193,10 @@ dependencies {
     compile rootProject.ext.apolloDependencies.apolloRxSupport
     compile rootProject.ext.apolloDependencies.apolloRuntime
     compile rootProject.ext.apolloDependencies.apolloAndroidSupport
+
+    compile rootProject.ext.playServicesDependencies.firebase
+    compile rootProject.ext.playServicesDependencies.remoteConfig
+    compile rootProject.ext.debugToolsDependencies.stetho
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -1,25 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:minWidth="150dp"
     android:layout_height="match_parent"
     android:id="@id/container"
     android:gravity="center">
-
-    <android.support.design.widget.FloatingActionButton
-        android:layout_width="@dimen/fab_button_diameter"
-        android:layout_height="@dimen/fab_button_diameter"
-        android:src="@drawable/chevron_thin_right"
-        android:background="@color/white"
-        app:backgroundTint="@color/white"
-        app:borderWidth="0dp"
-        android:elevation="2dp" />
-
-    <Space
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/margin_small" />
 
     <TextView
         android:layout_width="wrap_content"

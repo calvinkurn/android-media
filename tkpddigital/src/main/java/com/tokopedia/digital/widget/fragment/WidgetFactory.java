@@ -18,11 +18,17 @@ public class WidgetFactory {
     public static final String STYLE_99 = "style_99";
 
     public static Fragment buildFragment(Category category, int position) {
-        String operatorStyle = category.getAttributes().getClientNumber().getOperatorStyle();
+        String operatorStyle = "";
+        if (category.getAttributes() != null && category.getAttributes().getClientNumber() != null &&
+                category.getAttributes().getClientNumber().getOperatorStyle() != null) {
+            operatorStyle = category.getAttributes().getClientNumber().getOperatorStyle();
+        }
+
         switch (operatorStyle) {
             case STYLE_ONE:
-            case STYLE_99:
                 return WidgetStyle1RechargeFragment.newInstance(category, position);
+            case STYLE_99:
+                return WidgetStyle99RechargeFragment.newInstance(category, position);
             case STYLE_TWO:
                 return WidgetStyle2RechargeFragment.newInstance(category, position);
             case STYLE_THREE:

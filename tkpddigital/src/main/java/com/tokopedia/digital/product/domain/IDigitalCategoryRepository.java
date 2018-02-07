@@ -13,11 +13,9 @@ import rx.Observable;
  */
 
 public interface IDigitalCategoryRepository {
+
     Observable<CategoryData> getCategory(
             String categoryId, TKPDMapParam<String, String> param
     );
 
-    Observable<List<BannerData>> getBanner(
-            TKPDMapParam<String, String> param
-    );
 }

@@ -11,19 +11,20 @@ import android.util.Log;
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
 import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
-import com.tokopedia.core.database.manager.DbManagerImpl;
-import com.tokopedia.core.database.model.CategoryDB;
-import com.tokopedia.core.fragment.FragmentShopPreview;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -33,16 +34,26 @@ import com.tokopedia.core.session.model.AccountsModel;
 import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.session.model.InfoModel;
 import com.tokopedia.core.session.model.SecurityModel;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
+import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
 import com.tokopedia.session.session.interactor.SignInInteractor;
 import com.tokopedia.session.session.interactor.SignInInteractorImpl;
 import com.tokopedia.session.session.presenter.Login;
+import com.tokopedia.tkpd.deeplink.WhitelistItem;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
+import com.tokopedia.tkpd.deeplink.di.component.DaggerDeeplinkComponent;
+import com.tokopedia.tkpd.deeplink.di.component.DeeplinkComponent;
+import com.tokopedia.tkpd.deeplink.domain.GetShopInfoUseCase;
+import com.tokopedia.tkpd.deeplink.domain.interactor.MapUrlUseCase;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
+import com.tokopedia.tkpd.home.ReactNativeDiscoveryActivity;
+import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -50,25 +61,39 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
+import rx.Subscriber;
+
 
 /**
  * @author by Angga.Prasetiyo on 14/12/2015.
  *         modified by Alvarisi
  */
 public class DeepLinkPresenterImpl implements DeepLinkPresenter {
+
     private static final String TAG = DeepLinkPresenterImpl.class.getSimpleName();
+
     private static final String FORMAT_UTF_8 = "UTF-8";
     private static final String AF_ONELINK_HOST = "tokopedia.onelink.me";
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
     private static final String OVERRIDE_URL = "override_url";
+
     private final Activity context;
     private final DeepLinkView viewListener;
-    SignInInteractor interactor;
+    private SignInInteractor interactor;
+    private MapUrlUseCase mapUrlUseCase;
 
-    public DeepLinkPresenterImpl(DeepLinkActivity activity) {
+    @Inject
+    GetShopInfoUseCase getShopInfoUseCase;
+
+    public DeepLinkPresenterImpl(DeepLinkActivity activity, MapUrlUseCase mapUrlUseCase) {
         this.viewListener = activity;
         this.context = activity;
         this.interactor = SignInInteractorImpl.createInstance(activity);
+        this.mapUrlUseCase = mapUrlUseCase;
+
+        initInjection(activity);
     }
 
     @Override
@@ -85,6 +110,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             case DeepLinkChecker.HOT_LIST:
                 return false;
             case DeepLinkChecker.CATALOG:
+                return false;
+            case DeepLinkChecker.DISCOVERY_PAGE:
                 return false;
             case DeepLinkChecker.PRODUCT:
                 return false;
@@ -119,6 +146,52 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         prepareOpenWebView(uriData);
     }
 
+    private void initInjection(DeepLinkActivity activity) {
+        DeeplinkComponent component = DaggerDeeplinkComponent.builder()
+                .appComponent(activity.getApplicationComponent())
+                .build();
+        component.inject(this);
+    }
+
+    @Override
+    public void mapUrlToApplink(Uri uri) {
+        final List<String> linkSegments = uri.getPathSegments();
+        StringBuilder finalSegments = new StringBuilder();
+        for (int i = 0; i < linkSegments.size(); i++) {
+            if (i != linkSegments.size() - 1) {
+                finalSegments.append(linkSegments.get(i)).append("/");
+            } else {
+                finalSegments.append(linkSegments.get(i));
+            }
+        }
+        mapUrlUseCase.execute(mapUrlUseCase.setRequestParam(finalSegments.toString()), mapUrlToApplinkSubscriber(uri));
+    }
+
+    private Subscriber<WhitelistItem> mapUrlToApplinkSubscriber(final Uri uriData) {
+        return new Subscriber<WhitelistItem>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(WhitelistItem deeplink) {
+                if (TextUtils.isEmpty(deeplink.applink)) {
+                    viewListener.initDeepLink();
+                } else {
+                    String screenName = AppScreen.SCREEN_NATIVE_RECHARGE;
+                    sendCampaignGTM(uriData.toString(), screenName);
+                    openDigitalPage(deeplink.applink);
+                }
+            }
+        };
+    }
+
     public void processDeepLinkAction(Uri uriData) {
         if (uriData.getHost().equals(AF_ONELINK_HOST)) {
             Log.d(TAG, "URI DATA = " + uriData.toString());
@@ -135,7 +208,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openHomepage();
                     break;
                 case DeepLinkChecker.CATEGORY:
-                    openCategory(linkSegment);
+                    openCategory(uriData.toString());
                     screenName = AppScreen.SCREEN_BROWSE_PRODUCT;
                     break;
                 case DeepLinkChecker.BROWSE:
@@ -147,9 +220,18 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     sendCampaignGTM(uriData.toString(), screenName);
                     openHotProduct(linkSegment, uriData);
                     break;
+                case DeepLinkChecker.HOT_LIST:
+                    screenName = AppScreen.SCREEN_HOME_HOTLIST;
+                    sendCampaignGTM(uriData.toString(), screenName);
+                    openHomepageHot();
+                    break;
                 case DeepLinkChecker.CATALOG:
                     openCatalogProduct(linkSegment, uriData);
                     screenName = AppScreen.SCREEN_CATALOG;
+                    break;
+                case DeepLinkChecker.DISCOVERY_PAGE:
+                    openDiscoveryPage(uriData.toString());
+                    screenName = AppScreen.SCREEN_DISCOVERY_PAGE;
                     break;
                 case DeepLinkChecker.PRODUCT:
                     openDetailProduct(linkSegment, uriData);
@@ -203,6 +285,18 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
     }
 
+    private void openDigitalPage(String applink) {
+        if (context.getApplication() instanceof IDigitalModuleRouter) {
+            if (((IDigitalModuleRouter) context.getApplication())
+                    .isSupportedDelegateDeepLink(applink)) {
+                Bundle bundle = new Bundle();
+                ((IDigitalModuleRouter) context.getApplication()).actionNavigateByApplinksUrl(context,
+                        applink, bundle);
+                context.finish();
+            }
+        }
+    }
+
     private void openPeluangPage() {
         Intent intent = SellerRouter.getActivitySellingTransactionOpportunity(context);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -222,7 +316,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 } else {
                     Intent intentHome = HomeRouter.getHomeActivity(context);
                     intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    Intent intentPhoneVerif = SessionRouter.getPhoneVerificationActivationActivityIntent(context);
+                    Intent intentPhoneVerif = OldSessionRouter.getPhoneVerificationActivationActivityIntent(context);
 
                     context.startActivities(new Intent[]
                             {
@@ -267,7 +361,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         data.setPasswordType(SignInInteractor.ACTIVATION_CODE);
         return data;
     }
-
 
     private void openInvoice(List<String> linkSegment, Uri uriData) {
         AppUtils.InvoiceDialogDeeplink(context, uriData.toString(), uriData.getQueryParameter("pdf"));
@@ -342,9 +435,36 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         return encodedUrl;
     }
 
-    private void openShopInfo(List<String> linkSegment, Uri uriData) {
-        Fragment fragment = FragmentShopPreview.createInstanceForDeeplink(linkSegment.get(0), uriData.toString());
-        viewListener.inflateFragment(fragment, "SHOP_INFO");
+    private void openShopInfo(final List<String> linkSegment, final Uri uriData) {
+        viewListener.showLoading();
+        RequestParams params = RequestParams.create();
+        params.putString("shop_domain", linkSegment.get(0));
+        getShopInfoUseCase.execute(params, new Subscriber<ShopModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                viewListener.finishLoading();
+                viewListener.networkError(uriData);
+//                prepareOpenWebView(uriData);
+            }
+
+            @Override
+            public void onNext(ShopModel shopModel) {
+                viewListener.finishLoading();
+                if (shopModel != null && shopModel.info != null) {
+                    viewListener.goToActivity(
+                            ShopInfoActivity.class,
+                            ShopInfoActivity.createBundle(shopModel.info.getShopId(), linkSegment.get(0))
+                    );
+                } else {
+                    prepareOpenWebView(uriData);
+                }
+            }
+        });
     }
 
     private void openDetailProduct(List<String> linkSegment, Uri uriData) {
@@ -366,26 +486,15 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openHotProduct(List<String> linkSegment, Uri uriData) {
-        Bundle bundle = new Bundle();
         if (isHotBrowse(linkSegment, uriData)) {
             return;
-        } else if (isHotAlias(uriData)) {
-            bundle.putString(BrowseProductRouter.EXTRAS_DISCOVERY_ALIAS, uriData.getQueryParameter("alk"));
-        } else if (isHotLink(linkSegment)) {
-            bundle.putString(BrowseProductRouter.EXTRAS_DISCOVERY_ALIAS, linkSegment.get(1));
-        } else return;
+        }
 
-        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, "0");
-        bundle.putInt(BrowseProductRouter.FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
-        bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_HOTLIST);
-        bundle.putString(BrowseProductRouter.EXTRA_SOURCE,
-                BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT);
-
-        Intent intent = BrowseProductRouter.getDefaultBrowseIntent(context);
+        Intent intent = BrowseProductRouter.getHotlistIntent(context, uriData.toString());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtras(bundle);
+
         context.startActivity(intent);
         context.finish();
     }
@@ -399,53 +508,64 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         context.finish();
     }
 
-    private void openCategory(List<String> linkSegment) {
-        String departmentId = "0";
-        StringBuilder iden = new StringBuilder(linkSegment.get(1));
-        for (int i = 2; i < linkSegment.size(); i++) {
-            iden.append("_").append(linkSegment.get(i));
-        }
-        CategoryDB dep =
-                DbManagerImpl.getInstance().getCategoryDb(iden.toString());
-        if (dep != null) {
-            departmentId = dep.getDepartmentId() + "";
-        }
-
-        String headerTitle = linkSegment.get(linkSegment.size() - 1);
-        IntermediaryActivity.moveTo(
-                context,
-                departmentId,
-                headerTitle
-        );
-        context.finish();
+    private void openDiscoveryPage(String url) {
+      context.startActivity(ReactNativeDiscoveryActivity.createCallingIntent(
+              context,
+              ReactConst.Screen.DISCOVERY_PAGE,
+              "",
+              DeepLinkChecker.getDiscoveryPageId(url))
+      );
     }
 
-
-    private void openBrowseProduct(List<String> linkSegment, Uri uriData) {
-        Bundle bundle = new Bundle();
-        String departmentId = "0";
-        String searchQuery = "";
-        departmentId = uriData.getQueryParameter("sc");
-        searchQuery = uriData.getQueryParameter("q");
-        String source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
-        bundle.putInt(BrowseProductRouter.FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
-        bundle.putBoolean(IS_DEEP_LINK_SEARCH, true);
-
-        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, departmentId);
-        bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_HOTLIST);
-        bundle.putString(BrowseProductRouter.EXTRAS_SEARCH_TERM, searchQuery);
-        bundle.putString(BrowseProductRouter.EXTRA_SOURCE, source);
-        Intent intent = BrowseProductRouter.getDefaultBrowseIntent(context);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtras(bundle);
+    private void openHomepageHot() {
+        Intent intent = HomeRouter.getHomeActivityInterfaceRouter(context);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOTLIST);
         context.startActivity(intent);
         context.finish();
     }
 
+    private void openCategory(String uriData) {
+        URLParser urlParser = new URLParser(uriData);
+        if (!urlParser.getParamKeyValueMap().isEmpty()) {
+            CategoryActivity.moveTo(
+                    context,
+                    uriData
+            );
+        } else {
+            context.startActivity(
+                    BrowseProductRouter.getIntermediaryIntent(context, urlParser.getDepIDfromURI(context))
+            );
+        }
+        context.finish();
+    }
 
+    private void openBrowseProduct(List<String> linkSegment, Uri uriData) {
+        Bundle bundle = new Bundle();
+        String departmentId = uriData.getQueryParameter("sc");
+        String searchQuery = uriData.getQueryParameter("q");
+        String source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
 
+        bundle.putInt(BrowseProductRouter.FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
+        bundle.putBoolean(IS_DEEP_LINK_SEARCH, true);
+        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, departmentId);
+        bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_HOTLIST);
+        bundle.putString(BrowseProductRouter.EXTRAS_SEARCH_TERM, searchQuery);
+        bundle.putString(BrowseProductRouter.EXTRA_SOURCE, source);
+
+        Intent intent;
+        if (TextUtils.isEmpty(departmentId)) {
+            intent = BrowseProductRouter.getSearchProductIntent(context);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtras(bundle);
+            context.startActivity(intent);
+            context.finish();
+        } else {
+            IntermediaryActivity.moveToClear(context, departmentId);
+        }
+    }
 
     private boolean isHotLink(List<String> linkSegment) {
         return (linkSegment.size() == 2);
@@ -458,7 +578,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private boolean isHotAlias(Uri uri) {
         return uri.getQueryParameter("alk") != null;
     }
-
 
     private boolean isSearch(List<String> linkSegment) {
         return linkSegment.size() > 0 && linkSegment.get(0).equals("search");
@@ -478,6 +597,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 && !linkSegment.get(0).equals("iklan")
                 && !linkSegment.get(0).equals("newemail.pl")
                 && !linkSegment.get(0).equals("search")
+                && !linkSegment.get(0).equals("discovery")
                 && !linkSegment.get(0).equals("hot")
                 && !linkSegment.get(0).equals("blog")
                 && !linkSegment.get(0).equals("about")
@@ -556,4 +676,5 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             }
         });
     }
+
 }

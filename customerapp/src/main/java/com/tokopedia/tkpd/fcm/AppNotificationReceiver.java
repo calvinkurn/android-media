@@ -25,17 +25,18 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
     }
 
     public void init(Application application) {
-        mAppNotificationReceiverUIBackground = new AppNotificationReceiverUIBackground(application);
+        if (mAppNotificationReceiverUIBackground == null)
+            mAppNotificationReceiverUIBackground = new AppNotificationReceiverUIBackground(application);
     }
 
     @Override
     public void onMoengageNotificationReceived(RemoteMessage message) {
-            PushManager.getInstance().getPushHandler().handlePushPayload(ConsumerMainApplication.getAppContext(), message.getData());
+        PushManager.getInstance().getPushHandler().handlePushPayload(ConsumerMainApplication.getAppContext(), message.getData());
     }
 
     public void onNotificationReceived(String from, Bundle bundle) {
-        if(bundle.containsKey(Constants.ARG_NOTIFICATION_ISPROMO)) {
-            bundle.putString(Constants.KEY_ORIGIN,Constants.ARG_NOTIFICATION_APPLINK_PROMO_LABEL);
+        if (bundle.containsKey(Constants.ARG_NOTIFICATION_ISPROMO)) {
+            bundle.putString(Constants.KEY_ORIGIN, Constants.ARG_NOTIFICATION_APPLINK_PROMO_LABEL);
         }
         mAppNotificationReceiverUIBackground.notifyReceiverBackgroundMessage(Observable.just(bundle));
     }

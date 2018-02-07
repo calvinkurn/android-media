@@ -53,6 +53,10 @@ public class DynamicFilterAdapter extends RecyclerView.Adapter<DynamicFilterView
         notifyDataSetChanged();
     }
 
+    public List<Filter> getFilterList() {
+        return list;
+    }
+
     public int getItemPosition(Filter filter) {
         return list.indexOf(filter);
     }

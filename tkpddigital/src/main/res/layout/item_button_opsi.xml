@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/opsi_btn"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_login_height"
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:background="@drawable/digital_green_button_rounded"
+        android:minHeight="0dp"
+        android:text="Pindahkan ke Saldo"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="@dimen/fonts" />
+
+</LinearLayout>

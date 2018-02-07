@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.data.source.cloud;
 import android.content.Context;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
@@ -11,7 +12,9 @@ import com.tokopedia.topads.dashboard.data.mapper.TopAdsDetailGroupMapper;
 import com.tokopedia.topads.dashboard.data.mapper.TopAdsSearchGroupMapper;
 import com.tokopedia.topads.dashboard.data.model.request.CreateGroupRequest;
 import com.tokopedia.topads.dashboard.data.model.request.EditGroupRequest;
+import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
 import com.tokopedia.topads.dashboard.data.model.response.DataResponseCreateGroup;
+import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.request.DataRequest;
@@ -20,7 +23,9 @@ import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailGroupDomainModel;
 import java.util.HashMap;
 import java.util.List;
 
+import retrofit2.Response;
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Created by zulfikarrahman on 2/20/17.
@@ -67,6 +72,18 @@ public class TopAdsGroupAdsDataSource {
         return topAdsManagementApi.editGroupAd(getSaveGroupDetailRequest(topAdsDetailGroupDomainModel)).map(topAdsDetailGroupDomainMapper);
     }
 
+    public Observable<GetSuggestionResponse> getSuggestion(GetSuggestionBody getSuggestionBody, String shopId){
+        DataRequest<GetSuggestionBody> dataRequest = new DataRequest<>();
+        getSuggestionBody.setShopId(Long.valueOf(shopId));
+        dataRequest.setData(getSuggestionBody);
+        return topAdsManagementApi.getSuggestion(dataRequest).map(new Func1<Response<GetSuggestionResponse>, GetSuggestionResponse>() {
+            @Override
+            public GetSuggestionResponse call(Response<GetSuggestionResponse> stringResponse) {
+                return stringResponse.body();
+            }
+        });
+    }
+
     private DataRequest<EditGroupRequest> getSaveGroupDetailRequest(TopAdsDetailGroupDomainModel topAdsDetailGroupDomainModel) {
         String toggleString;
         switch (Integer.parseInt(topAdsDetailGroupDomainModel.getStatus())) {
@@ -94,7 +111,9 @@ public class TopAdsGroupAdsDataSource {
                 topAdsDetailGroupDomainModel.getAdEndDate(),
                 topAdsDetailGroupDomainModel.getAdEndTime(),
                 topAdsDetailGroupDomainModel.getStickerId(),
-                TopAdsNetworkConstant.VALUE_SOURCE_ANDROID
+                TopAdsNetworkConstant.VALUE_SOURCE_ANDROID,
+                topAdsDetailGroupDomainModel.getSuggestionBidValue(),
+                topAdsDetailGroupDomainModel.getSuggestionBidButton()
         );
         dataRequest.setData(editGroupRequest);
         return dataRequest;

@@ -3,6 +3,7 @@ package com.tokopedia.ride.bookingride.view;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.ride.common.ride.domain.model.GetPending;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
 
@@ -51,6 +52,8 @@ public interface RideHomeContract {
         void hideMainLayout();
 
         void showMainLayout();
+
+        void showPendingFareInterrupt(GetPending getPending);
     }
 
     interface Presenter extends CustomerPresenter<View> {

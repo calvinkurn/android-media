@@ -59,10 +59,13 @@ public abstract class BaseWidgetRechargeFragment<P> extends BasePresenterFragmen
 
     protected Category category;
     protected int currentPosition;
+    protected boolean useCache;
+
     protected Unbinder unbinder;
     protected Bundle bundle;
+
     protected DigitalCheckoutPassData digitalCheckoutPassDataState;
-    protected String lastClientNumberTyped = "";
+
     protected String lastOperatorSelected = "";
     protected String lastProductSelected = "";
 
@@ -266,12 +269,6 @@ public abstract class BaseWidgetRechargeFragment<P> extends BasePresenterFragmen
         RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.READ_CONTACTS);
     }
 
-    protected void setRechargeEditTextCallback(WidgetClientNumberView widgetClientNumberView) {
-        if (widgetClientNumberView != null) {
-            widgetClientNumberView.getAutocompleteView().setOnFocusChangeListener(getOnFocusListener());
-        }
-    }
-
     protected void setRechargeEditTextTouchCallback(WidgetClientNumberView widgetClientNumberView) {
         if (widgetClientNumberView != null) {
             widgetClientNumberView.getAutocompleteView().setOnTouchListener(getOnTouchListener(widgetClientNumberView));
@@ -315,20 +312,6 @@ public abstract class BaseWidgetRechargeFragment<P> extends BasePresenterFragmen
             }
         };
     }
-
-    private View.OnFocusChangeListener getOnFocusListener() {
-        return new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (hasFocus) {
-                    trackingOnClientNumberFocusListener();
-//                    setParentToScroolToTop();
-                }
-            }
-        };
-    }
-
-    protected abstract void trackingOnClientNumberFocusListener();
 
     protected void showSnackbarErrorMessage(String message) {
         NetworkErrorHelper.showSnackbar(getActivity(), message);

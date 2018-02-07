@@ -380,6 +380,7 @@ public class CartPresenter implements ICartPresenter {
                             e.printStackTrace();
                         }
                         switchInsurancePrice(cartItemEditable, useInsurance);
+                        processRenderViewCartData(cartData);
                     }
                 });
     }
@@ -391,7 +392,7 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void processCheckVoucherCode(final int instantCheckVoucher) {
+    public void processCheckVoucherCode(final String voucherCode, final int instantCheckVoucher) {
         view.showProgressLoading();
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
         params.put(VOUCHER_CODE, view.getVoucherCodeCheckoutData());
@@ -422,7 +423,12 @@ public class CartPresenter implements ICartPresenter {
                         ) + responseTransform.getData().getVoucher().getVoucherAmountIdr();
                         if (voucherData.getVoucher().getVoucherAmount().equals("0"))
                             descVoucher = voucherData.getVoucher().getVoucherPromoDesc();
-                        view.renderSuccessCheckVoucher(descVoucher, instantCheckVoucher);
+                        view.renderSuccessCheckVoucher(
+                                voucherCode,
+                                responseTransform.getData().getVoucher().getVoucherAmountIdr(),
+                                descVoucher,
+                                instantCheckVoucher
+                        );
                         view.hideProgressLoading();
                     }
                 });
@@ -558,7 +564,7 @@ public class CartPresenter implements ICartPresenter {
         /*
             Branch.io block
          */
-        BranchSdkUtils.sendCommerceEvent(locaProducts,revenue,totalShipping);
+        BranchSdkUtils.sendCommerceEvent(locaProducts, revenue, totalShipping);
 
     }
 
@@ -570,10 +576,10 @@ public class CartPresenter implements ICartPresenter {
     }
 
     private void trackCanceledCart(CartItem canceledCartItem) {
-        if(canceledCartItem != null
+        if (canceledCartItem != null
                 && canceledCartItem.getCartProducts() != null
                 && !canceledCartItem.getCartProducts().isEmpty()) {
-            for(CartProduct cartProduct : canceledCartItem.getCartProducts()) {
+            for (CartProduct cartProduct : canceledCartItem.getCartProducts()) {
                 trackCanceledProduct(canceledCartItem, cartProduct);
             }
         }
@@ -621,6 +627,7 @@ public class CartPresenter implements ICartPresenter {
         List<String> partialDeliverStringList = new ArrayList<>();
         List<String> rateKeyList = new ArrayList<>();
         List<String> rateDataList = new ArrayList<>();
+        List<CartItem> cartItemList = new ArrayList<>();
 
         for (CartItemEditable data : cartItemEditables) {
             if (data.isDropShipper()) {
@@ -635,6 +642,7 @@ public class CartPresenter implements ICartPresenter {
                 rateKeyList.add(data.getCartCourierPrices().getKey());
                 rateDataList.add(data.getCartCourierPrices().getKeroValue());
             }
+            cartItemList.add(data.getCartItem());
         }
 
         StringBuilder dropShipperParamStringBuilder = new StringBuilder();
@@ -778,6 +786,7 @@ public class CartPresenter implements ICartPresenter {
         }
         view.renderButtonCheckVoucherListener();
         view.renderInstantPromo(data.getCartPromo());
+        view.renderPromoView(data.getIsCouponActive() == 1);
     }
 
     @Override
@@ -856,6 +865,9 @@ public class CartPresenter implements ICartPresenter {
                     courierPrices.setCartSubtotal(false);
                 }
                 courierPrices.setKeroValue(keroShipmentServices.get(i));
+                courierPrices.setCartInsuranceProd(cartRatesData.isInsuranced() ? 1 : 0);
+                courierPrices.setInsuranceUsedInfo(keroShipmentServices.get(i).getInsuranceUsedInfo());
+                courierPrices.setInsuranceUsedType(keroShipmentServices.get(i).getInsuranceUsedType());
             }
         }
 
@@ -867,6 +879,4 @@ public class CartPresenter implements ICartPresenter {
                 || (cartItem.getCartErrorMessage1() != null
                 && !cartItem.getCartErrorMessage1().equals("0"));
     }
-
-
 }

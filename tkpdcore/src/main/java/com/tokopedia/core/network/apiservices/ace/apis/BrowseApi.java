@@ -1,9 +1,11 @@
 package com.tokopedia.core.network.apiservices.ace.apis;
 
 
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.entity.discovery.BrowseShopModel;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import java.util.Map;
 
@@ -18,6 +20,22 @@ import rx.Observable;
  * description could be found at https://wiki.tokopedia.net/Search_api
  */
 public interface BrowseApi {
+
+    String DEFAULT_VALUE_OF_PARAMETER_DEVICE = "android";
+    String DEFAULT_VALUE_OF_PARAMETER_ROWS = "12";
+    String DEFAULT_VALUE_OF_PARAMETER_IMAGE_SIZE = "200";
+    String DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE = "true";
+    String DEFAULT_VALUE_OF_PARAMETER_SORT = "23";
+    String DEFAULT_VALUE_SOURCE_HOTLIST = "hot_product";
+    String DEFAULT_VALUE_SOURCE_SEARCH = "search";
+    String DEFAULT_VALUE_SOURCE_DIRECTORY = "directory";
+    String DEFAULT_VALUE_SOURCE_PRODUCT = "search_product";
+    String DEFAULT_VALUE_SOURCE_CATALOG = "search_catalog";
+    String DEFAULT_VALUE_SOURCE_SHOP = "search_shop";
+    String DEFAULT_VALUE_OF_PARAMETER_TERM = "true";
+    String DEFAULT_VALUE_OF_PARAMETER_BREADCRUMB = "false";
+    String DEFAULT_VALUE_OF_PARAMETER_START = "0";
+    String DEFAULT_VALUE_OF_PARAMETER_SC = "0";
 
     int CATALOG_OB_RELEASE_DATE = 1;
     int CATALOG_OB_RELEASE_DATE_COUNT_PRODUCT = 2;
@@ -70,6 +88,8 @@ public interface BrowseApi {
     String USER_ID = "user_id";
     String UNIQUE_ID = "unique_id";
     String RETURNABLES = "returnables";
+    String HOT_ID = "hot_id";
+    String REFINED = "rf";
 
     /**
      *
@@ -180,4 +200,30 @@ public interface BrowseApi {
     Observable<Response<BrowseProductModel>> browseProducts(
             @QueryMap Map<String, String> query
     );
+
+    @GET(TkpdBaseURL.Ace.PATH_SEARCH_PRODUCT)
+    Observable<Response<String>> browseProductsV3(
+            @QueryMap TKPDMapParam<String, Object> requestParams
+    );
+
+    @GET(TkpdBaseURL.Ace.PATH_BROWSE_SHOP)
+    Observable<Response<BrowseShopModel>> browseShops(
+            @QueryMap TKPDMapParam<String, Object> query
+    );
+
+    @GET(TkpdBaseURL.Ace.PATH_GET_ATTRIBUTE)
+    Observable<Response<String>> getAttribute(
+            @QueryMap TKPDMapParam<String, Object> requestParams
+    );
+
+    @GET(TkpdBaseURL.Ace.PATH_GET_DYNAMIC_ATTRIBUTE)
+    Observable<Response<String>> getDynamicAttribute(
+            @QueryMap TKPDMapParam<String, Object> requestParams
+    );
+
+    @GET(TkpdBaseURL.Ace.PATH_BROWSE_CATALOG)
+    Observable<Response<String>> browseCatalogRevamp(
+            @QueryMap TKPDMapParam<String, Object> parameters
+    );
+
 }

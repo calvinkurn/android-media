@@ -16,6 +16,7 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.topads.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
@@ -30,7 +31,7 @@ import com.tokopedia.showcase.ShowCasePreference;
 
 import java.util.ArrayList;
 
-public class TopAdsDetailProductActivity extends TActivity implements TopAdsDetailProductFragment.TopAdsDetailProductFragmentListener {
+public class TopAdsDetailProductActivity extends BaseSimpleActivity implements TopAdsDetailProductFragment.TopAdsDetailProductFragmentListener {
 
     public static final String TAG = TopAdsDetailProductFragment.class.getSimpleName();
 
@@ -68,24 +69,30 @@ public class TopAdsDetailProductActivity extends TActivity implements TopAdsDeta
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        inflateView(R.layout.activity_top_ads_detail_product);
-
-        ProductAd ad = null;
-        String adId = null;
-        if (getIntent() != null && getIntent().getExtras() != null) {
-            ad = getIntent().getExtras().getParcelable(TopAdsExtraConstant.EXTRA_AD);
-            adId = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
-        }
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG);
-        if (fragment == null) {
+    protected Fragment getNewFragment() {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(getTagFragment());
+        if(fragment != null){
+            return fragment;
+        }else{
+            ProductAd ad = null;
+            String adId = null;
+            if (getIntent() != null && getIntent().getExtras() != null) {
+                ad = getIntent().getExtras().getParcelable(TopAdsExtraConstant.EXTRA_AD);
+                adId = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
+            }
             fragment = TopAdsDetailProductFragment.createInstance(ad, adId);
+            return fragment;
         }
-        getSupportFragmentManager().beginTransaction().disallowAddToBackStack()
-                .replace(R.id.container, fragment,
-                        TAG)
-                .commit();
+    }
+
+    @Override
+    protected String getTagFragment() {
+        return TAG;
+    }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
     }
 
     @Override
@@ -105,7 +112,7 @@ public class TopAdsDetailProductActivity extends TActivity implements TopAdsDeta
         if (isTaskRoot()) {
             //coming from deeplink
             String deepLink = getIntent().getStringExtra(DeepLink.URI);
-            if(deepLink.contains(Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL)) {
+            if(deepLink!= null && deepLink.contains(Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL)) {
                 super.onBackPressed();
             } else {
                 Intent intent = new Intent(this, TopAdsDashboardActivity.class);
@@ -136,7 +143,7 @@ public class TopAdsDetailProductActivity extends TActivity implements TopAdsDeta
 
         final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar.getHeight() > 0) {
             int height = toolbar.getHeight();
             int width = toolbar.getWidth();

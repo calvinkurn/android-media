@@ -1,6 +1,7 @@
 package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
@@ -9,8 +10,11 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.topads.R;
 import com.tokopedia.seller.base.view.model.StepperModel;
+import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
+import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
@@ -45,7 +49,7 @@ public class TopAdsEditScheduleExistingGroupFragment extends TopAdsNewScheduleFr
         super.initInjector();
         DaggerTopAdsCreatePromoComponent.builder()
                 .topAdsCreatePromoModule(new TopAdsCreatePromoModule())
-                .appComponent(getComponent(AppComponent.class))
+                .topAdsComponent(TopAdsComponentUtils.getTopAdsComponent(this))
                 .build()
                 .inject(this);
         daggerPresenter.attachView(this);
@@ -72,6 +76,16 @@ public class TopAdsEditScheduleExistingGroupFragment extends TopAdsNewScheduleFr
     public void onSaveAdSuccess(TopAdsDetailAdViewModel topAdsDetailAdViewModel) {
         super.onSaveAdSuccess(topAdsDetailAdViewModel);
         getActivity().finish();
+    }
+
+    @Override
+    public void onSuggestionSuccess(GetSuggestionResponse s) {
+        /* just deal with abstraction */
+    }
+
+    @Override
+    public void onSuggestionError(@Nullable Throwable t) {
+        /* just deal with abstraction */
     }
 
     @Override

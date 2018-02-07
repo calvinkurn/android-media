@@ -1,10 +1,9 @@
 package com.tokopedia.topads.dashboard.view.activity;
 
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -20,8 +19,8 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.topads.R;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
+import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenter;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenterImpl;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
@@ -34,6 +33,7 @@ import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsStatisticAvgFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsStatisticConversionFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsStatisticCtrFragment;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsStatisticFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsStatisticImprFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsStatisticKlikFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsStatisticSpentFragment;
@@ -47,56 +47,40 @@ import java.util.List;
 
 public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<TopAdsStatisticActivityPresenter> implements TopAdsStatisticActivityViewListener {
 
-    ViewPager viewPager;
-    TabLayout tabLayout;
-    SwipeToRefresh swipeToRefresh;
+    private SwipeToRefresh swipeToRefresh;
 
     private List<Cell> cells;
-    int currentPositonPager;
-    ProgressDialog progressDialog;
-    SnackbarRetry snackbarRetry;
+    private int currentPositionPager;
+    private ProgressDialog progressDialog;
+    private SnackbarRetry snackbarRetry;
 
     @Override
-    protected BaseDatePickerPresenter getDatePickerPresenter() {
-        return new BaseDatePickerPresenterImpl(this);
+    protected void onCreate(Bundle savedInstanceState) {
+        if (getIntent().getExtras() != null) {
+            currentPositionPager = getIntent().getExtras().getInt(TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_KEY);
+        }
+        super.onCreate(savedInstanceState);
     }
 
     @Override
-    protected void setupBundlePass(Bundle bundle) {
-        currentPositonPager = bundle.getInt(TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_KEY);
-    }
-
-    @Override
-    protected void initialPresenter() {
-        super.initialPresenter();
-        presenter = new TopAdsStatisticActivityPresenterImpl(this, new TopAdsProductAdInteractorImpl
-                (new TopAdsManagementService(new SessionHandler(this).getAccessToken(this)), new TopAdsCacheDataSourceImpl(this)), this);
-    }
-
-    @Override
-    protected int getLayoutId() {
+    protected int getLayoutRes() {
         return R.layout.activity_top_ads_statistic;
     }
 
     @Override
-    protected void initView() {
-        super.initView();
-        viewPager = (ViewPager) findViewById(R.id.pager);
-        tabLayout = (TabLayout) findViewById(R.id.tab);
+    protected void setupLayout(Bundle savedInstanceState) {
+        super.setupLayout(savedInstanceState);
         swipeToRefresh = (SwipeToRefresh) findViewById(R.id.swipe_refresh_layout);
-        viewPager.setAdapter(getViewPagerAdapter());
-        tabLayout.setupWithViewPager(viewPager);
-        viewPager.setCurrentItem(currentPositonPager);
         progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.title_loading));
         snackbarRetry = getSnackbarWithAction();
-    }
-
-    @Override
-    protected void setViewListener() {
-        super.setViewListener();
-        viewPager.setOffscreenPageLimit(TopAdsConstant.OFFSCREEN_PAGE_LIMIT);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.label_top_ads_impression));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.label_top_ads_click));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.label_top_ads_ctr));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.label_top_ads_conversion));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.label_top_ads_average));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.label_top_ads_cost));
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -106,10 +90,7 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
             @Override
             public void onPageSelected(int position) {
                 trackingStatisticBar(position);
-                Fragment fragment = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, viewPager.getCurrentItem());
-                if (fragment != null && fragment instanceof TopAdsStatisticViewListener && cells != null) {
-                    ((TopAdsStatisticViewListener) fragment).updateDataCell(cells);
-                }
+                ((TopAdsStatisticViewListener) getCurrentFragment()).updateDataCell(cells);
             }
 
             @Override
@@ -127,21 +108,23 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
         });
     }
 
-    protected void loadData() {
-        presenter.getStatisticFromNet(startDate, endDate, getTypeStatistic(), SessionHandler.getShopID(this));
-        getSupportActionBar().setSubtitle(datePickerPresenter.getRangeDateFormat(startDate, endDate));
+    public View getDateLabelView() {
+        Fragment fragment = getCurrentFragment();
+        if (fragment != null && fragment.isVisible() && fragment instanceof TopAdsStatisticFragment) {
+            return ((TopAdsStatisticFragment) fragment).getDateLabelView();
+        } else {
+            return null;
+        }
     }
 
     @Override
-    public String getScreenName() {
-        return null;
+    protected void setupFragment(Bundle savedinstancestate) {
+        super.setupFragment(savedinstancestate);
+        viewPager.setCurrentItem(currentPositionPager);
     }
 
-    public PagerAdapter getViewPagerAdapter() {
-        return new TopAdsStatisticPagerAdapter(getFragmentManager(), getFragmentList());
-    }
-
-    public List<Fragment> getFragmentList() {
+    @Override
+    protected PagerAdapter getViewPagerAdapter() {
         List<Fragment> fragmentList = new ArrayList<>();
         fragmentList.add(TopAdsStatisticImprFragment.createInstance());
         fragmentList.add(TopAdsStatisticKlikFragment.createInstance());
@@ -149,7 +132,39 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
         fragmentList.add(TopAdsStatisticConversionFragment.createInstance());
         fragmentList.add(TopAdsStatisticAvgFragment.createInstance());
         fragmentList.add(TopAdsStatisticSpentFragment.createInstance());
-        return fragmentList;
+        return new TopAdsStatisticPagerAdapter(getSupportFragmentManager(), fragmentList);
+    }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
+    }
+
+    @Override
+    protected BaseDatePickerPresenter getDatePickerPresenter() {
+        BaseDatePickerPresenterImpl baseDatePickerPresenter = new BaseDatePickerPresenterImpl(this);
+        return baseDatePickerPresenter;
+    }
+
+    @Override
+    protected void initialPresenter() {
+        super.initialPresenter();
+        presenter = new TopAdsStatisticActivityPresenterImpl(this, new TopAdsProductAdInteractorImpl
+                (new TopAdsManagementService(new SessionHandler(this)), new TopAdsCacheDataSourceImpl(this)), this);
+    }
+
+    @Override
+    protected int getPageLimit() {
+        return TopAdsConstant.OFFSCREEN_PAGE_LIMIT;
+    }
+
+    protected void loadData() {
+        presenter.getStatisticFromNet(startDate, endDate, getTypeStatistic(), SessionHandler.getShopID(this));
+    }
+
+    @Override
+    public String getScreenName() {
+        return null;
     }
 
     @Override
@@ -193,24 +208,10 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
 
     @Override
     public void dismissLoading() {
-        progressDialog.dismiss();
-        swipeToRefresh.setRefreshing(false);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_top_ads_statistic, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int itemId = item.getItemId();
-
-        if (itemId == R.id.menu_date) {
-            openDatePicker();
+        if (!isFinishing() && progressDialog != null) {
+            progressDialog.dismiss();
         }
-        return super.onOptionsItemSelected(item);
+        swipeToRefresh.setRefreshing(false);
     }
 
     protected abstract int getTypeStatistic();
@@ -247,10 +248,10 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
     }
 
     private void trackingDateTopAds(int lastSelection, int selectionType) {
-        if(selectionType == DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE){
+        if (selectionType == DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE) {
             UnifyTracking.eventTopAdsProductStatistikDateCustom();
-        }else if(selectionType == DatePickerConstant.SELECTION_TYPE_PERIOD_DATE) {
-            switch (lastSelection){
+        } else if (selectionType == DatePickerConstant.SELECTION_TYPE_PERIOD_DATE) {
+            switch (lastSelection) {
                 case 0:
                     UnifyTracking.eventTopAdsProductStatistikDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_TODAY);
                     break;

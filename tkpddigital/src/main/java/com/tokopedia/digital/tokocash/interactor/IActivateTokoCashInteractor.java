@@ -13,6 +13,4 @@ public interface IActivateTokoCashInteractor {
     void requestOTPWallet(Subscriber<ActivateTokoCashData> subscriber);
 
     void activateTokoCash(String otpCode, Subscriber<ActivateTokoCashData> subscriber);
-
-    void onDestroy();
 }

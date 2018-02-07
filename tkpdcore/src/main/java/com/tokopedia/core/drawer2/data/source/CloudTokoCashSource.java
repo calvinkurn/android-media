@@ -2,16 +2,15 @@ package com.tokopedia.core.drawer2.data.source;
 
 import android.content.Context;
 
-import com.google.android.gms.auth.api.Auth;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.drawer2.data.factory.TokoCashSourceFactory;
 import com.tokopedia.core.drawer2.data.mapper.TokoCashMapper;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashModel;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.var.TkpdCache;
 
 import rx.Observable;
 import rx.functions.Action1;
@@ -49,7 +48,7 @@ public class CloudTokoCashSource {
             @Override
             public void call(TokoCashModel tokoCashModel) {
                 if (tokoCashModel != null && tokoCashModel.isSuccess()) {
-                    walletCache.setKey(TokoCashSourceFactory.KEY_TOKOCASH_DATA);
+                    walletCache.setKey(TkpdCache.Key.KEY_TOKOCASH_BALANCE_CACHE);
                     walletCache.setValue(CacheUtil.convertModelToString(tokoCashModel,
                             new TypeToken<TokoCashModel>() {
                             }.getType()));

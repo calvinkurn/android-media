@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:indeterminate="true"
+        android:visibility="visible" />
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/payment_method_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/keyline_1"
+        android:paddingRight="@dimen/keyline_1">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/layout_add_credit_card"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="?android:selectableItemBackground"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/keyline_1"
+        android:paddingRight="@dimen/keyline_1"
+        android:paddingTop="12dp">
+
+
+        <ImageView
+            android:id="@+id/img_add_icon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/shape_bg_border_green"
+            android:padding="8dp"
+            android:src="@drawable/ic_add"
+            android:tint="@color/colorPrimary" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="48dp"
+            android:text="@string/add_credit_card"
+            android:textColor="@color/colorPrimary" />
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/grey_300" />
+
+    </RelativeLayout>
+
+</LinearLayout>

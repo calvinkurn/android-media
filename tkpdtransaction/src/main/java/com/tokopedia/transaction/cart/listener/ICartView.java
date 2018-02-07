@@ -49,7 +49,10 @@ public interface ICartView extends IBaseView {
 
     void renderInvisibleErrorPaymentCart();
 
-    void renderSuccessCheckVoucher(String descVoucher, int instantVoucher);
+    void renderSuccessCheckVoucher(String voucherCode,
+                                   String amount,
+                                   String descVoucher,
+                                   int instantVoucher);
 
     void renderErrorCheckVoucher(String message);
 
@@ -117,4 +120,5 @@ public interface ICartView extends IBaseView {
 
     void renderInstantPromo(CartPromo cartPromo);
 
+    void renderPromoView(boolean isCouponActive);
 }

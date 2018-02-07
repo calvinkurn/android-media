@@ -1,9 +1,13 @@
 package com.tokopedia.ride.common.ride.data.source.cloud;
 
+import com.google.gson.JsonObject;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.ride.bookingride.data.entity.NearbyRidesEntity;
 import com.tokopedia.ride.common.ride.data.BookingRideDataStore;
 import com.tokopedia.ride.common.ride.data.entity.CancelReasonsResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
+import com.tokopedia.ride.common.ride.data.entity.GetPendingEntity;
+import com.tokopedia.ride.common.ride.data.entity.PaymentMethodListEntity;
 import com.tokopedia.ride.common.ride.data.entity.PriceEntity;
 import com.tokopedia.ride.common.ride.data.entity.PriceResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
@@ -17,7 +21,6 @@ import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestMapEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateResponseEntity;
-import com.tokopedia.ride.common.ride.data.entity.TipListEntity;
 import com.tokopedia.ride.common.ride.data.entity.UpdateDestinationEntity;
 import com.tokopedia.ride.common.ride.data.source.api.RideApi;
 
@@ -152,5 +155,30 @@ public class CloudBookingRideDataStore implements BookingRideDataStore {
     @Override
     public Observable<String> sendTip(TKPDMapParam<String, Object> parameters) {
         return mRideApi.sendTip(parameters);
+    }
+
+    @Override
+    public Observable<PaymentMethodListEntity> getPaymentMethodList(TKPDMapParam<String, Object> parameters) {
+        return mRideApi.getPaymentMethodList(parameters);
+    }
+
+    @Override
+    public Observable<NearbyRidesEntity> getNearbyCars(TKPDMapParam<String, Object> parameters) {
+        return mRideApi.getNearbyCars(parameters);
+    }
+
+    @Override
+    public Observable<String> requestApi(String url, TKPDMapParam<String, Object> parameters) {
+        return mRideApi.requestApi(url, parameters);
+    }
+
+    @Override
+    public Observable<JsonObject> payPendingAmount() {
+        return mRideApi.payPendingAmount();
+    }
+
+    @Override
+    public Observable<GetPendingEntity> getPendingAmount() {
+        return mRideApi.getPendingAmount();
     }
 }

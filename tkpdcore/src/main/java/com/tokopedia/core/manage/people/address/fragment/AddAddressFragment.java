@@ -189,13 +189,13 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
             this.mProvinces = savedState.getParcelableArrayList(ARG_STATE_PROVINCE);
             this.mCities = savedState.getParcelableArrayList(ARG_STATE_CITY);
             this.mDistricts = savedState.getParcelableArrayList(ARG_STATE_DISTRICT);
-            if (this.mProvinces != null && this.mProvinces.size() > 0){
+            if (this.mProvinces != null && this.mProvinces.size() > 0) {
                 setProvince(this.mProvinces);
             }
-            if (this.mCities != null && this.mCities.size() > 0){
+            if (this.mCities != null && this.mCities.size() > 0) {
                 setCity(this.mCities);
             }
-            if (this.mDistricts != null && this.mDistricts.size() > 0){
+            if (this.mDistricts != null && this.mDistricts.size() > 0) {
                 setDistrict(this.mDistricts);
             }
         }

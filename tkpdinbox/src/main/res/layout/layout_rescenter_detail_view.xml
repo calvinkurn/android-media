@@ -9,163 +9,148 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
         android:layout_marginBottom="@dimen/margin_small"
         android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/margin_small"
-            android:text="@string/detail_rescenter_date"
-            android:textColor="@color/label_text_color"
-            android:textSize="@dimen/fontvs" />
+            android:layout_weight="1"
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_complaint_date"
-            android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/margin_small"
+                android:text="@string/detail_rescenter_date"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/text_size_xsmall" />
+
+            <TextView
+                android:id="@+id/tv_complaint_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black_54"
+                android:textSize="@dimen/text_size_small" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/view_customer"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="right"
-            android:textColor="#464646"
-            android:textSize="@dimen/fonts" />
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/padding_small"
+            android:orientation="vertical"
+            android:layout_weight="1">
 
-    </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/margin_small"
+                android:text="@string/detail_rescenter_customer"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/text_size_xsmall" />
 
-    <LinearLayout
-        android:id="@+id/view_customer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="@dimen/padding_small"
-        android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tv_people_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/tkpd_main_green"
+                android:textSize="@dimen/text_size_small" />
 
-        <TextView
-            android:layout_width="wrap_content"
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/view_shop"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/margin_small"
-            android:text="@string/detail_rescenter_customer"
-            android:textColor="@color/label_text_color"
-            android:textSize="@dimen/fontvs" />
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:orientation="vertical"
+            android:layout_weight="1">
 
-        <TextView
-            android:id="@+id/tv_people_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:gravity="right"
-            android:textColor="@color/tkpd_main_green"
-            android:textSize="@dimen/fonts" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/margin_small"
+                android:text="@string/detail_rescenter_shop"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/text_size_xsmall" />
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tv_shop_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/tkpd_main_green"
+                android:textSize="@dimen/text_size_small" />
 
-    <LinearLayout
-        android:id="@+id/view_shop"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="@dimen/margin_small"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginRight="@dimen/margin_small"
-            android:text="@string/detail_rescenter_shop"
-            android:textColor="@color/label_text_color"
-            android:textSize="@dimen/fontvs" />
-
-        <TextView
-            android:id="@+id/tv_shop_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:gravity="right"
-            android:textColor="@color/tkpd_main_green"
-            android:textSize="@dimen/fonts" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="@dimen/margin_small"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/margin_small"
-            android:text="@string/detail_rescenter_awb_selling"
-            android:textColor="@color/label_text_color"
-            android:textSize="@dimen/fontvs" />
-
-        <TextView
-            android:id="@+id/tv_awb_number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="right"
-            android:textColor="@color/tkpd_main_green"
-            android:textIsSelectable="true"
-            android:textSize="@dimen/fonts" />
-
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="@dimen/margin_small"
         android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/margin_small"
-            android:text="@string/detail_rescenter_invoice_selling"
-            android:textColor="@color/label_text_color"
-            android:textSize="@dimen/fontvs" />
 
-        <TextView
-            android:id="@+id/tv_invoice"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:gravity="right"
-            android:textColor="@color/tkpd_main_green"
-            android:textSize="@dimen/fonts"
-            />
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/margin_small"
+                android:text="@string/detail_rescenter_awb_selling"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/text_size_xsmall" />
+
+            <TextView
+                android:id="@+id/tv_awb_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/tkpd_main_green"
+                android:textIsSelectable="true"
+                android:textSize="@dimen/text_size_small" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/margin_small"
+                android:text="@string/detail_rescenter_invoice_selling"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/text_size_xsmall" />
+
+            <TextView
+                android:id="@+id/tv_invoice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/tkpd_main_green"
+                android:textSize="@dimen/text_size_small"
+                />
+        </LinearLayout>
+
     </LinearLayout>
-
-    <RelativeLayout
-        android:id="@+id/view_response_deadline"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/padding_small">
-
-        <TextView
-            android:id="@+id/tv_response_deadline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:padding="@dimen/padding_vs"
-            android:textColor="@color/white"
-            android:textSize="@dimen/fonts" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/tv_response_deadline"
-            android:layout_marginRight="@dimen/margin_small"
-            android:text="@string/detail_rescenter_deadline"
-            android:textColor="#868686"
-            android:textSize="@dimen/fontvs" />
-
-    </RelativeLayout>
-
 </LinearLayout>

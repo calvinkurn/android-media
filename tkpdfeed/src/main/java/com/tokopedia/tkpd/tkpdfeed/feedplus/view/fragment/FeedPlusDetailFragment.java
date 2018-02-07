@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -31,7 +32,7 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.FeedPlusDetailActivity;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.DetailFeedAdapter;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.feeddetail.DetailFeedAdapter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactoryImpl;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedTrackingEventLabel;
@@ -83,7 +84,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
 
     @Override
     protected String getScreenName() {
-        return "";
+        return AppScreen.SCREEN_FEED_DETAIL;
     }
 
     @Override
@@ -429,16 +430,18 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     private void updateWishlistFromPDP(int position, boolean isWishlist) {
-        if (adapter.getList().get(position) instanceof FeedDetailViewModel
+        if (adapter != null
+                && adapter.getList() != null
                 && !adapter.getList().isEmpty()
                 && position < adapter.getList().size()
-                && adapter.getList().get(position) != null) {
+                && adapter.getList().get(position) != null
+                && adapter.getList().get(position) instanceof FeedDetailViewModel) {
             ((FeedDetailViewModel) adapter.getList().get(position)).setWishlist(isWishlist);
             adapter.notifyItemChanged(position);
         }
     }
 
     private void onProductShareClicked(@NonNull ShareData data) {
-        startActivity(ShareActivity.createIntent(getActivity(),data));
+        startActivity(ShareActivity.createIntent(getActivity(), data));
     }
 }

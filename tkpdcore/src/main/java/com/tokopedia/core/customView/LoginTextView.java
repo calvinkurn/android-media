@@ -128,7 +128,7 @@ public class LoginTextView extends LinearLayout {
         shape.setCornerRadii(new float[]{3, 3, 3, 3, 3, 3, 3, 3});
         shape.setColor(getBackgroundColor());
         if (getBackgroundColor() == Color.WHITE) shape.setStroke(1,
-                MethodChecker.getColor(getContext(), R.color.black_12));
+                MethodChecker.getColor(getContext(), R.color.black_38));
     }
 
     private int getInverseColor(int color) {
@@ -154,8 +154,10 @@ public class LoginTextView extends LinearLayout {
     }
 
     public void setImage(String image) {
-        ImageView imageView = (ImageView) findViewById(R.id.provider_image);
-        ImageHandler.loadImage2(imageView, image, R.drawable.ic_icon_toped_announce);
+        if(!TextUtils.isEmpty(image)) {
+            ImageView imageView = (ImageView) findViewById(R.id.provider_image);
+            ImageHandler.LoadImage(imageView, image);
+        }
     }
 
     public void setTextColorInverse() {
@@ -202,5 +204,10 @@ public class LoginTextView extends LinearLayout {
     public void setImageNextToText() {
         TextView textView = (TextView) findViewById(R.id.provider_name);
         textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1));
+    }
+
+    public void setImageResource(int imageResource) {
+        ImageView imageView = (ImageView) findViewById(R.id.provider_image);
+        ImageHandler.loadImageWithIdWithoutPlaceholder(imageView, imageResource);
     }
 }

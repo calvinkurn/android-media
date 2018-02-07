@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.SessionHandler;
@@ -16,7 +17,10 @@ import com.tokopedia.topads.R;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.data.model.data.BulkAction;
+import com.tokopedia.topads.dashboard.data.model.data.GroupAdBulkAction;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
+import com.tokopedia.topads.dashboard.data.model.data.ProductAdBulkAction;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
 import com.tokopedia.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductAdInteractorImpl;
@@ -89,7 +93,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
     protected void initialPresenter() {
         super.initialPresenter();
         presenter = new TopAdsDetailProductViewPresenterImpl(getActivity(), this, new TopAdsProductAdInteractorImpl(
-                new TopAdsManagementService(new SessionHandler(getActivity()).getAccessToken(getActivity())),
+                new TopAdsManagementService(new SessionHandler(getActivity())),
                 new TopAdsCacheDataSourceImpl(getActivity())));
     }
 
@@ -170,6 +174,31 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
         dailyBudget.setVisibility(View.GONE);
     }
 
+    @Override
+    public void onTurnOffAdSuccess(BulkAction dataResponseActionAds) {
+        fillToAdObject(dataResponseActionAds);
+        super.onTurnOffAdSuccess(dataResponseActionAds);
+    }
+
+    private void fillToAdObject(BulkAction dataResponseActionAds) {
+        if(dataResponseActionAds != null && dataResponseActionAds instanceof ProductAdBulkAction) {
+            Integer status = Integer.valueOf(((ProductAdBulkAction) dataResponseActionAds).getAds().get(0).getStatus());
+
+            CommonUtils.dumper("status from network -> "+status);
+            if(adFromIntent != null)
+                adFromIntent.setStatus(status);
+
+            if(ad != null)
+                ad.setStatus(status);
+        }
+    }
+
+    @Override
+    public void onTurnOnAdSuccess(BulkAction dataResponseActionAds) {
+        fillToAdObject(dataResponseActionAds);
+        super.onTurnOnAdSuccess(dataResponseActionAds);
+    }
+
     private boolean isHasGroupAd() {
         if (ad == null) {
             return false;
@@ -188,7 +217,8 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
         UnifyTracking.eventTopAdsProductClickDetailGroupPDP();
         if (isHasGroupAd()) {
             Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
-            intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, ad.getGroupId());
+            intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, Long.toString(ad.getGroupId()));
+            intent.putExtra(TopAdsExtraConstant.EXTRA_FORCE_REFRESH, true);
             startActivity(intent);
         }
     }

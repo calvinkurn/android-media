@@ -99,7 +99,7 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
     }
 
     protected int getFragmentLayout() {
-        return R.layout.fragment_base_list;
+        return R.layout.fragment_base_list_seller;
     }
 
     @Override

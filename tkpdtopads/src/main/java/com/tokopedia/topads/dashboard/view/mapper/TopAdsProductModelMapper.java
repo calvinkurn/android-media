@@ -19,6 +19,7 @@ public class TopAdsProductModelMapper {
         pd.setImageUrl(productDomain.getImageUrl());
         pd.setName(productDomain.getName());
         pd.setPromoted(productDomain.isPromoted());
+        pd.setDepartmentId(productDomain.getDepartmentId());
 
         return pd;
     }

@@ -68,10 +68,9 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
                     if (digitalNumberList.getLastOrder() != null) {
                         LastOrder lastOrder = mapOrderClientNumberToLastOrder(digitalNumberList
                                 .getLastOrder());
-
                         view.renderLastOrder(lastOrder);
                     } else if (getLastClientNumberTyped(categoryId) != null) {
-                        view.renderLastTypedClientNumber();
+                        view.renderLastTypedClientNumber(getLastClientNumberTyped(categoryId));
                     }
                 }
             }
@@ -84,8 +83,8 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
         attributes.setClientNumber(orderClientNumber.getClientNumber());
         attributes.setCategoryId(Integer.valueOf(orderClientNumber.getCategoryId()));
         attributes.setOperatorId(Integer.valueOf(orderClientNumber.getOperatorId()));
-        if (!TextUtils.isEmpty(orderClientNumber.getLastProduct())) {
-            attributes.setProductId(Integer.valueOf(orderClientNumber.getLastProduct()));
+        if (!TextUtils.isEmpty(orderClientNumber.getProductId())) {
+            attributes.setProductId(Integer.valueOf(orderClientNumber.getProductId()));
         }
         lastOrder.setAttributes(attributes);
         return lastOrder;
@@ -141,7 +140,7 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
 
     @Override
     public void validateOperatorWithProducts(int categoryId, String operatorId) {
-        widgetInteractor.getProductsFromOperator(getListProductSubscriber(), categoryId, operatorId);
+        widgetInteractor.getProductsByOperatorId(getListProductSubscriber(), categoryId, operatorId);
     }
 
     @Override
@@ -169,8 +168,8 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
     }
 
     @Override
-    public void fetchOperatorByCategory(int categoryId, boolean showLastOrder) {
-        widgetInteractor.getOperatorsFromCategory(getOperatorByCategorySubscriber(showLastOrder), categoryId);
+    public void getOperatorsByCategoryId(int categoryId, boolean showLastOrder) {
+        widgetInteractor.getOperatorsByCategoryId(getOperatorByCategorySubscriber(showLastOrder), categoryId);
     }
 
     private Subscriber<List<Operator>> getOperatorByCategorySubscriber(final boolean showLastOrder) {

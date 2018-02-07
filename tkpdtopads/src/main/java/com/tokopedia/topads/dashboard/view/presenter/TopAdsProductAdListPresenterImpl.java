@@ -25,7 +25,7 @@ public class TopAdsProductAdListPresenterImpl extends TopAdsAdListPresenterImpl<
 
     public TopAdsProductAdListPresenterImpl(Context context, BaseListViewListener topadsListViewListener) {
         super(context, topadsListViewListener);
-        this.productAdInteractor = new TopAdsProductAdInteractorImpl(new TopAdsManagementService(new SessionHandler(context).getAccessToken(context)), new TopAdsCacheDataSourceImpl(context));
+        this.productAdInteractor = new TopAdsProductAdInteractorImpl(new TopAdsManagementService(new SessionHandler(context)), new TopAdsCacheDataSourceImpl(context));
     }
 
     @Override

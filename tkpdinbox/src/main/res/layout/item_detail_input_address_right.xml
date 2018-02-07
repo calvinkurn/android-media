@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:context="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_marginLeft="80dp"
+    android:layout_marginRight="@dimen/margin_small"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_marginTop="@dimen/margin_vs"
+            android:id="@+id/cv_bubble_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="20dp"
+            android:minHeight="25dp"
+            android:layout_gravity="right"
+            android:foregroundGravity="right"
+            android:background="@drawable/bg_bubble_right">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    context:text="penjual memasukan alamat "
+                    android:textSize="@dimen/fontvs"
+                    android:padding="@dimen/padding_small"/>
+
+                <TextView
+                    android:id="@+id/tv_message"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/fontvs"
+                    android:paddingLeft="@dimen/padding_small"
+                    android:paddingRight="@dimen/padding_small"
+                    android:paddingBottom="@dimen/padding_small"/>
+
+                <FrameLayout
+                    android:id="@+id/ff_change_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_margin="1dp"
+                    android:background="@drawable/bg_bubble_button">
+
+                    <Button
+                        android:id="@+id/btn_change_address"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/transparent"
+                        android:text="@string/string_btn_change_address"
+                        android:textSize="@dimen/fontvs"
+                        android:textAllCaps="false"
+                        android:textColor="@color/tkpd_main_green"/>
+                </FrameLayout>
+            </LinearLayout>
+        </FrameLayout>
+
+        <include layout="@layout/item_detail_chat_date"
+            android:id="@+id/layout_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+    </LinearLayout>
+</RelativeLayout>

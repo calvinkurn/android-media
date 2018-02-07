@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.view.fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
@@ -13,15 +14,18 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
-import com.tokopedia.topads.R;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.base.view.model.StepperModel;
+import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.dashboard.constant.TopAdsSuggestionBidInteractionTypeDef;
+import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.utils.ViewUtils;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
-import com.tokopedia.topads.dashboard.view.widget.PrefixEditText;
-import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
+import com.tokopedia.seller.common.widget.PrefixEditText;
 
 /**
  * Created by zulfikarrahman on 8/7/17.
@@ -29,32 +33,31 @@ import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 
 public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends TopAdsDetailAdViewModel> extends BasePresenterFragment {
 
+    private static final String TAG = "TopAdsNewCostFragment";
+
     protected T stepperModel;
     protected StepperListener stepperListener;
-
+    protected Button submitButton;
+    protected ProgressDialog progressDialog;
+    protected TextView headerText;
+    protected TextView titleCost;
+    protected TextView titleSuggestionBidUse;
+    protected TextView titleSuggestionBid;
+    protected V detailAd;
     private TextInputLayout maxPriceInputLayout;
-    private PrefixEditText maxPriceEditText;
+    protected PrefixEditText maxPriceEditText;
     private RadioGroup budgetRadioGroup;
     private RadioButton budgetLifeTimeRadioButton;
     private RadioButton budgetPerDayRadioButton;
     private TextInputLayout budgetPerDayInputLayout;
     private View containerBudgetPerDay;
     private PrefixEditText budgetPerDayEditText;
-    protected Button submitButton;
-    protected ProgressDialog progressDialog;
-    protected TextView headerText;
-    protected TextView titleCost;
-
-    protected V detailAd;
+    protected long suggestionBidValue;
+    protected String defaultSuggestionBidButtonStatus;
 
     protected void onClickedNext() {
         showLoading();
         populateDataFromFields();
-    }
-
-    protected boolean isError() {
-        return (maxPriceInputLayout.isErrorEnabled() && maxPriceInputLayout.getError() != null) ||
-                (budgetPerDayInputLayout.isErrorEnabled() && budgetPerDayInputLayout.getError() != null);
     }
 
     protected abstract V initiateDetailAd();
@@ -68,7 +71,7 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
         budgetLifeTimeRadioButton = (RadioButton) view.findViewById(R.id.radio_button_budget_life_time);
         budgetPerDayRadioButton = (RadioButton) view.findViewById(R.id.radio_button_budget_per_day);
         budgetPerDayInputLayout = (TextInputLayout) view.findViewById(R.id.input_layout_budget_per_day);
-        containerBudgetPerDay = (View) view.findViewById(R.id.container_budget_per_day);
+        containerBudgetPerDay = view.findViewById(R.id.container_budget_per_day);
         budgetPerDayEditText = (PrefixEditText) view.findViewById(R.id.edit_text_budget_per_day);
         submitButton = (Button) view.findViewById(R.id.button_submit);
         headerText = (TextView) view.findViewById(R.id.header_text);
@@ -77,7 +80,25 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
         budgetPerDayEditText.setText(budgetPerDayEditText.getText());
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
+        titleSuggestionBid = (TextView) view.findViewById(R.id.text_suggestion_bid);
+        titleSuggestionBidUse = (TextView) view.findViewById(R.id.text_suggestion_bid_use);
+        titleSuggestionBidUse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                maxPriceEditText.setText(String.valueOf(suggestionBidValue));
+                onSuggestionBidClicked();
+            }
+        });
     }
+
+    @Override
+    protected void setActionVar() {
+        super.setActionVar();
+        loadSuggestionBid();
+        defaultSuggestionBidButtonStatus = TopAdsSuggestionBidInteractionTypeDef.NO_SUGGESTION;
+    }
+
+    protected abstract void loadSuggestionBid();
 
     @Override
     protected void initialVar() {
@@ -93,12 +114,8 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
             @Override
             public void onNumberChanged(double number) {
                 super.onNumberChanged(number);
-                String errorMessage = ViewUtils.getClickBudgetError(getActivity(), number);
-                if (!TextUtils.isEmpty(errorMessage)) {
-                    maxPriceInputLayout.setError(errorMessage);
-                } else {
-                    maxPriceInputLayout.setError(null);
-                }
+                checkMaxPrice(number);
+                onPriceChanged(number);
             }
         });
         budgetPerDayEditText.addTextChangedListener(new CurrencyIdrTextWatcher(budgetPerDayEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
@@ -147,6 +164,51 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
         progressDialog.setMessage(getString(R.string.title_loading));
     }
 
+    protected boolean isPriceError() {
+        boolean maxPriceError = maxPriceInputLayout.isErrorEnabled() && maxPriceInputLayout.getError() != null;
+        if (maxPriceError) {
+            return true;
+        }
+        boolean budgetPerDayError = budgetPerDayInputLayout.isErrorEnabled() && budgetPerDayInputLayout.getError() != null;
+        if (budgetPerDayRadioButton.isChecked() && budgetPerDayError) {
+            return true;
+        }
+        return false;
+    }
+
+    protected void onPriceChanged(double number) {
+
+    }
+
+    protected void onSuggestionBidClicked() {
+
+    }
+
+    protected void setSuggestionBidText(@Nullable GetSuggestionResponse data) {
+        if (data == null) {
+            return;
+        }
+        setSuggestionBidText(data.getData().get(0).getMedian(), data.getData().get(0).getMedianFmt());
+        if (TextUtils.isEmpty(maxPriceEditText.getTextWithoutPrefix())) {
+            maxPriceEditText.setText(String.valueOf(data.getData().get(0).getMedian()));
+        }
+    }
+
+    protected void setSuggestionBidText(long suggestionBidValue, @Nullable String suggestionBidText){
+        this.suggestionBidValue = suggestionBidValue;
+        titleSuggestionBid.setText(MethodChecker.fromHtml(getString(R.string.label_top_ads_max_price_description) + " <b>" + suggestionBidText + "</b> "));
+        titleSuggestionBidUse.setVisibility(View.VISIBLE);
+    }
+
+    private void checkMaxPrice(double number) {
+        String errorMessage = ViewUtils.getClickBudgetError(getActivity(), number);
+        if (!TextUtils.isEmpty(errorMessage)) {
+            maxPriceInputLayout.setError(errorMessage);
+        } else {
+            maxPriceInputLayout.setError(null);
+        }
+    }
+
     private void showBudgetPerDay(boolean show) {
         containerBudgetPerDay.setVisibility(show ? View.VISIBLE : View.GONE);
         if (!show && !budgetLifeTimeRadioButton.isChecked()) {
@@ -167,6 +229,7 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
 
     protected void populateDataFromFields() {
         String priceBid = maxPriceEditText.getTextWithoutPrefix();
+
         if (TextUtils.isEmpty(priceBid)) {
             detailAd.setPriceBid(0);
         } else {

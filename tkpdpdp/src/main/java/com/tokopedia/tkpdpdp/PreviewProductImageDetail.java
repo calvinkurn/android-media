@@ -37,6 +37,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customadapter.TouchImageAdapter;
 import com.tokopedia.core.customadapter.TouchImageAdapter.OnImageStateChange;
+import com.tokopedia.core.gcm.utils.NotificationChannelId;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 
@@ -58,6 +59,7 @@ public class PreviewProductImageDetail extends TActivity {
 
     public static final String FILELOC = "fileloc";
     public static final String IMG_POSITION = "img_pos";
+    private static final String IMAGE_DESC = "image_desc";
     private TouchViewPager vpImage;
     private Button tvDownload;
     private ImageView closeButton;
@@ -245,7 +247,7 @@ public class PreviewProductImageDetail extends TActivity {
         final NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         final NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(PreviewProductImageDetail.this);
+                new NotificationCompat.Builder(PreviewProductImageDetail.this, NotificationChannelId.GENERAL);
         notificationBuilder.setContentTitle(filenameParam)
                 .setContentText(getString(com.tokopedia.core.R.string.download_in_process))
                 .setSmallIcon(com.tokopedia.core.R.drawable.ic_stat_notify_white)
@@ -367,4 +369,14 @@ public class PreviewProductImageDetail extends TActivity {
         PreviewProductImageDetailPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
+    public static Intent getCallingIntent(Context context, ArrayList<String> images,
+                                          ArrayList<String> imageDesc, int position) {
+        Intent intent = new Intent(context, PreviewProductImageDetail.class);
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList(PreviewProductImageDetail.FILELOC, images);
+        bundle.putStringArrayList(PreviewProductImageDetail.IMAGE_DESC, imageDesc);
+        bundle.putInt(PreviewProductImageDetail.IMG_POSITION, position);
+        intent.putExtras(bundle);
+        return intent;
+    }
 }

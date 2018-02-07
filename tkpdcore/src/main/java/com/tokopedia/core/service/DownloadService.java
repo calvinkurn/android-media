@@ -18,7 +18,6 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.database.model.Bank;
-import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.City;
 import com.tokopedia.core.database.model.District;
 import com.tokopedia.core.database.model.Province;
@@ -125,9 +124,6 @@ public class DownloadService extends IntentService implements DownloadServiceCon
 
         /* Send optional extras to Download IntentService */
         switch (type) {
-            case DownloadServiceConstant.FETCH_DEPARTMENT:
-                Log.d(TAG, CategoryDB.class.getSimpleName() + " sedang diambil !!!");
-                break;
             case ANSWER_SECURITY_QUESTION:
                 SecurityQuestionViewModel answer = Parcels.unwrap(bundle.getParcelable(ANSWER_QUESTION_MODEL));
                 Log.d(TAG, SecurityQuestionPresenter.class.getSimpleName() + " try to answer security question : " + answer);
@@ -177,17 +173,9 @@ public class DownloadService extends IntentService implements DownloadServiceCon
         boolean isNeedLogin = intent.getBooleanExtra(IS_NEED_LOGIN, false);
 
         switch (type) {
-            case DownloadServiceConstant.FETCH_DEPARTMENT:
-                Bundle running = new Bundle();
-                running.putInt(TYPE, type);
-                receiver.send(STATUS_RUNNING, running);
-                DataManagerImpl.getDataManager()
-                        .getListDepartment2(this.getApplication(),
-                                this, 0);
-                break;
             case HOTLIST:
                 /* Update UI: Download Service is Running */
-                running = new Bundle();
+                Bundle running = new Bundle();
                 running.putInt(TYPE, type);
                 receiver.send(STATUS_RUNNING, running);
                 int page = intent.getIntExtra(PAGE_KEY, 1);
@@ -321,12 +309,6 @@ public class DownloadService extends IntentService implements DownloadServiceCon
     @Override
     public void setBank(List<Bank> banks) {
         throw new RuntimeException("Not supported yet");
-    }
-
-    @Override
-    public void setDepartments(List<CategoryDB> departments) {
-        // step-2 get provinces name
-        DataManagerImpl.getDataManager().getListProvince(this, this);
     }
 
     @Override

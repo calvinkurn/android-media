@@ -156,4 +156,5 @@ public class CatalogDetailActivity extends BasePresenterActivity implements ICat
     protected boolean isLightToolbarThemes() {
         return true;
     }
+
 }

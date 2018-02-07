@@ -9,13 +9,12 @@ public interface IDigitalWidgetStyle1Presenter {
 
     void fetchNumberList(String categoryId, boolean showLastOrder);
 
+    void getOperatorAndProductsByPrefix(String phonePrefix, int categoryId, boolean validatePrefix);
+
+    void getOperatorAndProductsByOperatorId(int categoryId, String operatorId);
+
     void getOperatorById(String operatorId);
 
-    void validatePhonePrefix(String phonePrefix, int categoryId, Boolean validatePrefix);
-
-    void validateOperatorWithProducts(int categoryId, String operatorId);
-
-    void validateOperatorWithoutProducts(int categoryId, String operatorId);
-
     void fetchDefaultProduct(String categoryId, String operatorId, String productId);
+
 }

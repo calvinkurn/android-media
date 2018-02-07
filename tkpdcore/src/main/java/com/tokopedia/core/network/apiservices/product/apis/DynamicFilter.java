@@ -14,6 +14,7 @@ import rx.Observable;
  * DynamicFilter
  * Created by noiz354 on 7/11/16.
  */
+@Deprecated
 public interface DynamicFilter {
     String DEVICE_ID = "device_id";
     String DEVICE_TIME = "device_time";

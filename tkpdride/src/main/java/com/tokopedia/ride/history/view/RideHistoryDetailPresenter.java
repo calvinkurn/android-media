@@ -1,11 +1,11 @@
 package com.tokopedia.ride.history.view;
 
-import android.support.annotation.NonNull;
-
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.bookingride.domain.GetPayPendingDataUseCase;
 import com.tokopedia.ride.common.configuration.RideStatus;
-import com.tokopedia.ride.common.ride.domain.model.LocationLatLng;
+import com.tokopedia.ride.common.ride.domain.model.PayPending;
 import com.tokopedia.ride.completetrip.domain.GiveDriverRatingUseCase;
 import com.tokopedia.ride.history.domain.GetSingleRideHistoryUseCase;
 import com.tokopedia.ride.history.domain.model.RideHistory;
@@ -25,12 +25,15 @@ import rx.Subscriber;
 public class RideHistoryDetailPresenter extends BaseDaggerPresenter<RideHistoryDetailContract.View> implements RideHistoryDetailContract.Presenter {
     private GetSingleRideHistoryUseCase getSingleRideHistoryUseCase;
     private GiveDriverRatingUseCase giveDriverRatingUseCase;
+    private GetPayPendingDataUseCase getPayPendingDataUseCase;
 
     @Inject
     public RideHistoryDetailPresenter(GetSingleRideHistoryUseCase getSingleRideHistoryUseCase,
-                                      GiveDriverRatingUseCase giveDriverRatingUseCase) {
+                                      GiveDriverRatingUseCase giveDriverRatingUseCase,
+                                      GetPayPendingDataUseCase getPayPendingDataUseCase) {
         this.getSingleRideHistoryUseCase = getSingleRideHistoryUseCase;
         this.giveDriverRatingUseCase = giveDriverRatingUseCase;
+        this.getPayPendingDataUseCase = getPayPendingDataUseCase;
     }
 
     @Override
@@ -51,7 +54,8 @@ public class RideHistoryDetailPresenter extends BaseDaggerPresenter<RideHistoryD
         }
     }
 
-    private void actionGetSingleHistory() {
+    @Override
+    public void actionGetSingleHistory() {
         getView().hideMainLayout();
         getView().showLoading();
         getSingleRideHistoryUseCase.execute(getView().getSingleHistoryParam(), new Subscriber<RideHistory>() {
@@ -123,6 +127,29 @@ public class RideHistoryDetailPresenter extends BaseDaggerPresenter<RideHistoryD
                     viewModel.getRating().setStar(String.valueOf(getView().getRateStars()));
                     getView().setHistoryViewModelData(viewModel);
                 }
+            }
+        });
+    }
+
+    @Override
+    public void payPendingFare() {
+        getView().showProgressDialog();
+        getPayPendingDataUseCase.execute(RequestParams.EMPTY, new Subscriber<PayPending>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().hideProgressLoading();
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(PayPending payPending) {
+                getView().hideProgressLoading();
+                getView().openScroogePage(payPending.getUrl(), payPending.getPostData());
             }
         });
     }

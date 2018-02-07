@@ -28,6 +28,7 @@ import rx.functions.Func1;
  */
 
 public class GetProductListSellingUseCase extends UseCase<ProductListSellerModel> {
+    public static final String VALUE_REQUEST_PRODUCT_VARIANT = "1";
     private final GetProductListSellingRepository getProductListSellingRepository;
     private final SellerModuleRouter sellerModuleRouter;
 
@@ -105,6 +106,7 @@ public class GetProductListSellingUseCase extends UseCase<ProductListSellerModel
         if (!pictureStatus.equals(PictureStatusProductOption.WITH_AND_WITHOUT)) {
             requestParams.putString(ProductListPickerConstant.QUERY_PICTURE_STATUS, pictureStatus);
         }
+        requestParams.putString(ProductListPickerConstant.REQUEST_PARAM_PRODUCT_VARIANT, VALUE_REQUEST_PRODUCT_VARIANT);
         return requestParams;
     }
 

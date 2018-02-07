@@ -42,10 +42,6 @@ public final class CurrencyFormatHelper {
 		}
 	}
 
-	/**
-	 * see setToRupiahCheckPrefix to check prefix in edit text
-	 */
-	@Deprecated
 	public static void SetToRupiah(EditText et){
 		try {
 			if(et.length()>0 && !LockTextWatcher){
@@ -154,6 +150,12 @@ public final class CurrencyFormatHelper {
 		return count;
 	}
 
+	/**
+	 * Use StringUtils instead
+	 * @param string
+	 * @return
+	 */
+	@Deprecated
 	public static String RemoveNonNumeric(String string){
 		String numeric;
 		numeric = string.replace(",", "");

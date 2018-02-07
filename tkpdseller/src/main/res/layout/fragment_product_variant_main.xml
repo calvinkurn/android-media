@@ -11,7 +11,6 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:content_color="@color/tkpd_main_green"
-        app:label_show_arrow="true"
         app:content="@string/product_label_choose"/>
 
     <View
@@ -25,7 +24,6 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:content_color="@color/tkpd_main_green"
-        app:label_show_arrow="true"
         app:content="@string/product_label_choose"/>
 
     <LinearLayout
@@ -36,7 +34,7 @@
         android:layout_marginTop="@dimen/activity_horizontal_margin">
 
         <TextView
-            style="@style/TextView.Body1.BlackSecondary"
+            style="@style/TextView.Small.BlackSecondary"
             android:text="@string/product_variant_manage_variant"
             android:layout_marginTop="@dimen/activity_horizontal_margin"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"

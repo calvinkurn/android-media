@@ -35,10 +35,10 @@ import com.tokopedia.gm.statistic.view.presenter.GMStatisticTransactionPresenter
 import com.tokopedia.gm.statistic.view.presenter.GMStatisticTransactionPresenterImpl;
 import com.tokopedia.gm.statistic.view.presenter.GMStatisticTransactionTablePresenter;
 import com.tokopedia.gm.statistic.view.presenter.GMStatisticTransactionTablePresenterImpl;
-import com.tokopedia.seller.product.edit.data.repository.ShopInfoRepositoryImpl;
-import com.tokopedia.seller.product.edit.data.source.ShopInfoDataSource;
-import com.tokopedia.seller.product.edit.data.source.cloud.api.ShopApi;
-import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
+import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.seller.shop.common.data.source.ShopInfoDataSource;
+import com.tokopedia.seller.shop.common.data.source.cloud.api.ShopApi;
+import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.seller.product.edit.domain.interactor.AddProductShopInfoUseCase;
 import com.tokopedia.seller.product.variant.data.cloud.api.TomeApi;
 

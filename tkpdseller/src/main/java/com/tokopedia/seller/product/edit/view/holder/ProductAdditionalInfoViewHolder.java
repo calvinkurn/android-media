@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatImageView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -12,6 +14,7 @@ import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
@@ -54,6 +57,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     public static final String SAVED_PRD_VARIANT_SUBMIT = "svd_variant";
     public static final String SAVED_VARIANT_CAT = "svd_var";
     public static final String SAVED_OPTION_SUBMIT_LV_1 = "svd_opt_sub_lv1";
+    private final FrameLayout infoIconAddProduct;
 
     private EditText descriptionEditText;
     private LabelView labelAddVideoView;
@@ -76,6 +80,13 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     public ProductAdditionalInfoViewHolder(View view) {
         videoIdList = new ArrayList<>();
         descriptionEditText = (EditText) view.findViewById(R.id.edit_text_description);
+        infoIconAddProduct = view.findViewById(R.id.info_icon_add_product_container);
+        infoIconAddProduct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.startInfoAddProduct();
+            }
+        });
         labelAddVideoView = (LabelView) view.findViewById(R.id.label_add_video_view);
         variantLabelView = (LabelView) view.findViewById(R.id.label_view_variant);
         preOrderExpandableOptionSwitch = (ExpandableOptionSwitch) view.findViewById(R.id.expandable_option_switch_pre_order);
@@ -379,6 +390,8 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
      *         this will delefate to {@link ProductAddFragment} for doing that
      */
     public interface Listener {
+
+        void startInfoAddProduct();
 
         void startYoutubeVideoActivity(ArrayList<String> videoIds);
 

@@ -21,7 +21,7 @@
 
         <TextView
             android:id="@+id/text_view_positive"
-            style="@style/TextView.Body1"
+            style="@style/TextView.Small"
             android:gravity="center"
             android:minWidth="@dimen/image_smiley_size"
             android:paddingTop="@dimen/padding_vs"
@@ -42,7 +42,7 @@
 
         <TextView
             android:id="@+id/text_view_neutral"
-            style="@style/TextView.Body1"
+            style="@style/TextView.Small"
             android:gravity="center"
             android:minWidth="@dimen/image_smiley_size"
             android:paddingTop="@dimen/padding_vs"
@@ -61,7 +61,7 @@
 
         <TextView
             android:id="@+id/text_view_negative"
-            style="@style/TextView.Body1"
+            style="@style/TextView.Small"
             android:gravity="center"
             android:minWidth="@dimen/image_smiley_size"
             android:paddingTop="@dimen/padding_vs"

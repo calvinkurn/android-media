@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:context="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/margin_vs">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_user_title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_title_system"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textSize="@dimen/font_micro"
+                context:text="sistem tokopedia"
+                android:paddingLeft="@dimen/padding_ms"
+                android:paddingRight="@dimen/padding_ms"
+                android:textAllCaps="false"
+                android:textColor="@color/black_38"/>
+
+            <ImageView
+                android:layout_width="5dp"
+                android:layout_height="5dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/margin_vs"
+                android:background="@drawable/bg_circle_warm_grey"/>
+
+            <TextView
+                android:id="@+id/tv_username"
+                android:layout_marginLeft="@dimen/margin_vs"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center|left"
+                android:textColor="@color/black_54"
+                android:gravity="center"
+                android:textSize="@dimen/text_size_xsmall"
+                android:foregroundGravity="center"
+                android:textStyle="bold"
+                context:text="user"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

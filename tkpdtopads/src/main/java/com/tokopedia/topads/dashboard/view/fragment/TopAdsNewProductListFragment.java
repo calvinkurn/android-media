@@ -17,7 +17,9 @@ import com.tokopedia.topads.R;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.base.view.listener.StepperListener;
+import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsAddProductListActivity;
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsNewProductListAdapter;
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyProductListDataBinder;
@@ -54,15 +56,6 @@ public abstract class TopAdsNewProductListFragment<T extends TopAdsProductListSt
     protected Button buttonNext;
     private RecyclerView recyclerView;
     protected ProgressDialog progressDialog;
-
-    protected void onNextClicked() {
-        showLoading();
-        if (stepperModel == null) {
-            initiateStepperModel();
-        }
-        stepperModel.setTopAdsProductViewModels(adapter.getData());
-        goToNextPage();
-    }
 
     protected abstract void initiateStepperModel();
 
@@ -118,7 +111,12 @@ public abstract class TopAdsNewProductListFragment<T extends TopAdsProductListSt
         buttonNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onNextClicked();
+                showLoading();
+                if (stepperModel == null) {
+                    initiateStepperModel();
+                }
+                stepperModel.setTopAdsProductViewModels(adapter.getData());
+                goToNextPage();
             }
         });
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));

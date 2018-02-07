@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordDetailNegativeActivity;
@@ -27,7 +28,9 @@ public class TopAdsKeywordNegativeListFragment extends TopAdsKeywordListFragment
 
     @Override
     protected void initDateLabelView(View view) {
-        // Do nothing
+        searchInputView = (SearchInputView) view.findViewById(R.id.search_input_view);
+        searchInputView.setDelayTextChanged(DEFAULT_DELAY_TEXT_CHANGED);
+        searchInputView.setListener(this);
     }
 
     @Override

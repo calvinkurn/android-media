@@ -14,20 +14,21 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.topads.R;
-import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.design.text.SpinnerTextView;
+import com.tokopedia.seller.product.edit.utils.ViewUtils;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordEditDetailComponent;
 import com.tokopedia.topads.keyword.di.module.TopAdsKeywordEditDetailModule;
 import com.tokopedia.topads.keyword.utils.EmptyCurrencyIdrTextWatcher;
+import com.tokopedia.topads.keyword.view.listener.TopAdsKeywordEditDetailView;
 import com.tokopedia.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordEditDetailPresenter;
 import com.tokopedia.topads.keyword.view.listener.TopAdsKeywordEditDetailView;
-import com.tokopedia.topads.dashboard.view.widget.PrefixEditText;
+import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 
 import javax.inject.Inject;
@@ -39,16 +40,14 @@ import javax.inject.Inject;
 public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment implements TopAdsKeywordEditDetailView {
     public static final String TAG = "TopAdsKeywordEditDetailFragment";
     public static final int DEFAULT_KELIPATAN = 50;
-
-    @Inject
-    TopAdsKeywordEditDetailPresenter presenter;
     protected SpinnerTextView topAdsKeywordType;
     protected EditText topAdsKeyword;
     protected PrefixEditText topAdsCostPerClick;
     protected TextView topAdsMaxPriceInstruction;
     protected ProgressDialog progressDialog;
     protected TextInputLayout textInputLayoutCostPerClick;
-
+    @Inject
+    TopAdsKeywordEditDetailPresenter presenter;
     private KeywordAd keywordAd;
     private String topAdsKeywordCostPerClickDesc;
 
@@ -62,7 +61,7 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     protected void initInjector() {
         DaggerTopAdsKeywordEditDetailComponent
                 .builder()
-                .appComponent(getComponent(AppComponent.class))
+                .topAdsComponent(TopAdsComponentUtils.getTopAdsComponent(this))
                 .topAdsKeywordEditDetailModule(new TopAdsKeywordEditDetailModule())
                 .build()
                 .inject(this);
@@ -129,7 +128,7 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
             public void onNumberChanged(double number) {
                 super.onNumberChanged(number);
                 String errorMessage =
-                        com.tokopedia.topads.dashboard.utils.ViewUtils.getClickBudgetError(getActivity(), number);
+                        com.tokopedia.topads.dashboard.utils.ViewUtils.getKeywordClickBudgetError(getActivity(), number);
                 if (!TextUtils.isEmpty(errorMessage)) {
                     textInputLayoutCostPerClick.setError(errorMessage);
                 } else {

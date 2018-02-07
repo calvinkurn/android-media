@@ -23,6 +23,8 @@ public class TopAdsDetailProductDomainModel {
     private String adEndTime;
     private String adImage;
     private String adTitle;
+    private long suggestionBidValue;
+    private String suggestionBidButton;
 
     public String getAdEndDate() {
         return adEndDate;
@@ -158,5 +160,21 @@ public class TopAdsDetailProductDomainModel {
 
     public void setAdTitle(String adTitle) {
         this.adTitle = adTitle;
+    }
+
+    public long getSuggestionBidValue() {
+        return suggestionBidValue;
+    }
+
+    public void setSuggestionBidValue(long suggestionBidValue) {
+        this.suggestionBidValue = suggestionBidValue;
+    }
+
+    public String getSuggestionBidButton() {
+        return suggestionBidButton;
+    }
+
+    public void setSuggestionBidButton(String suggestionBidButton) {
+        this.suggestionBidButton = suggestionBidButton;
     }
 }

@@ -156,6 +156,11 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
                 recyclerView.setBackgroundColor(getResources().getColor(R.color.white));
                 break;
             case FEED:
+                itemDecoration.setOrientation(DividerItemDecoration.HORIZONTAL_LIST);
+                recyclerView.setLayoutManager(new GridLayoutManager(getContext(), DEFAULT_SPAN_COUNT,
+                        GridLayoutManager.VERTICAL, false));
+                recyclerView.setBackgroundColor(getResources().getColor(R.color.white));
+                break;
             case FEED_EMPTY:
                 itemDecoration.setOrientation(DividerItemDecoration.VERTICAL_LIST);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

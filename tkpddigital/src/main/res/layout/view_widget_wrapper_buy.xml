@@ -37,10 +37,12 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
         android:layout_weight="0.40"
+        android:textAllCaps="false"
         android:minHeight="0dp"
         android:background="@drawable/btn_buy"
         android:text="@string/title_buy"
         android:layout_marginTop="@dimen/margin_small"
         android:layout_gravity="right"
         android:textColor="@color/white" />
+
 </LinearLayout>

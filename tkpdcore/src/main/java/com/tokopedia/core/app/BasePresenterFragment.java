@@ -7,13 +7,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.core.base.di.component.HasComponent;
+
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 /**
  *
  * Created by Angga.Prasetiyo on 30/10/2015.
+
+
+ /**
+ * Extends TkpdBaseV4Fragment from tkpd abstraction
  */
+@Deprecated
 public abstract class BasePresenterFragment<P> extends TkpdFragment {
     private static final String TAG = BasePresenterFragment.class.getSimpleName();
 
@@ -39,10 +46,19 @@ public abstract class BasePresenterFragment<P> extends TkpdFragment {
         super.onCreate(savedInstanceState);
         setRetainInstance(isRetainInstance());
         Log.d(TAG, "ON CREATE");
+        initInjector();
         if (getArguments() != null) {
             setupArguments(getArguments());
         }
         initialPresenter();
+    }
+
+    protected void initInjector() {
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <C> C getComponent(Class<C> componentType) {
+        return componentType.cast(((HasComponent<C>) getActivity()).getComponent());
     }
 
     protected abstract boolean isRetainInstance();

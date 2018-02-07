@@ -12,14 +12,14 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.TopAdsFilterListFragment;
 import com.tokopedia.topads.R;
-import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
+import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyKeywordAdDataBinder;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsAdListFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsGroupNewPromoFragment;
 import com.tokopedia.topads.keyword.constant.KeywordStatusTypeDef;
@@ -29,7 +29,6 @@ import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordDetailActivity;
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordFilterActivity;
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
 import com.tokopedia.topads.keyword.view.adapter.TopAdsKeywordAdapter;
-import com.tokopedia.topads.keyword.view.listener.KeywordListListener;
 import com.tokopedia.topads.keyword.view.model.BaseKeywordParam;
 import com.tokopedia.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordListPresenterImpl;
@@ -50,7 +49,6 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     @Inject
     TopAdsKeywordListPresenterImpl topAdsKeywordListPresenter;
     private boolean hasData;
-    private KeywordListListener.Listener keywordAdListener;
     private GroupTopAdsListener groupTopAdsListener;
 
     public static Fragment createInstance() {
@@ -66,9 +64,6 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     @Override
     public void onAttachListener(Context context) {
         super.onAttachListener(context);
-        if (context != null && context instanceof KeywordListListener.Listener) {
-            keywordAdListener = (KeywordListListener.Listener) context;
-        }
         if (context != null && context instanceof GroupTopAdsListener) {
             groupTopAdsListener = (GroupTopAdsListener) context;
         }
@@ -78,7 +73,7 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     protected void initInjector() {
         DaggerTopAdsKeywordComponent.builder()
                 .topAdsKeywordModule(new TopAdsKeywordModule())
-                .appComponent(getComponent(AppComponent.class))
+                .topAdsComponent(getTopAdsComponent())
                 .build()
                 .inject(this);
     }
@@ -97,7 +92,7 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
 
     @Override
     protected TopAdsEmptyAdDataBinder getEmptyViewDefaultBinder() {
-        TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyAdDataBinder(adapter);
+        TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyKeywordAdDataBinder(adapter);
         emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.top_ads_keyword_your_keyword_empty));
         emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.top_ads_keyword_please_use));
         emptyGroupAdsDataBinder.setEmptyButtonItemText(getString(R.string.top_ads_keyword_add_keyword));
@@ -175,7 +170,7 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
 
     @Override
     public void onItemClicked(KeywordAd ad) {
-        startActivityForResult(TopAdsKeywordDetailActivity.createInstance(getActivity(), ad, ""), REQUEST_CODE_AD_CHANGE);
+        startActivityForResult(TopAdsKeywordDetailActivity.createInstance(getActivity(), ad, ad.getId()), REQUEST_CODE_AD_CHANGE);
     }
 
     @Override
@@ -236,26 +231,12 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     protected void showViewList(@NonNull List list) {
         super.showViewList(list);
         hasData = true;
-        if (keywordAdListener != null) {
-            keywordAdListener.validateMenuItem();
-        }
     }
 
     @Override
     public void onLoadSearchError(Throwable t) {
         super.onLoadSearchError(t);
         hasData = false;
-        if (keywordAdListener != null) {
-            keywordAdListener.validateMenuItem();
-        }
-    }
-
-    @Override
-    protected void showViewEmptyList() {
-        super.showViewEmptyList();
-        if (keywordAdListener != null) {
-            keywordAdListener.validateMenuItem();
-        }
     }
 
     public boolean hasDataFromServer() {

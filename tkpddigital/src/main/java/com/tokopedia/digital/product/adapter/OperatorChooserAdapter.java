@@ -12,7 +12,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.fragment.DigitalChooserOperatorFragment;
-import com.tokopedia.digital.product.model.Operator;
+import com.tokopedia.digital.widget.model.operator.Operator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,8 +53,8 @@ public class OperatorChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         final Operator operator = operatorList.get(position);
         if (type == TYPE_HOLDER_OPERATOR_NAME_AND_IMAGE) {
             ItemNameAndImageHolder itemNameAndImageHolder = (ItemNameAndImageHolder) holder;
-            ImageHandler.LoadImage(itemNameAndImageHolder.operatorImage, operator.getImage());
-            itemNameAndImageHolder.operatorName.setText(operator.getName());
+            ImageHandler.LoadImage(itemNameAndImageHolder.operatorImage, operator.getAttributes().getImage());
+            itemNameAndImageHolder.operatorName.setText(operator.getAttributes().getName());
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {

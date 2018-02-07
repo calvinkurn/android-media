@@ -1,7 +1,12 @@
 package com.tokopedia.seller.opportunity.adapter;
 
 import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +14,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityItemViewModel;
 
@@ -33,6 +40,8 @@ public class OpportunityListAdapter extends BaseLinearRecyclerViewAdapter {
 
         View mainView;
 
+        TextView reputationPoint;
+
         public ViewHolder(View itemView) {
             super(itemView);
             productAvatar = (ImageView) itemView.findViewById(R.id.product_avatar);
@@ -40,13 +49,15 @@ public class OpportunityListAdapter extends BaseLinearRecyclerViewAdapter {
             productPrice = (TextView) itemView.findViewById(R.id.product_price);
             deadline = (TextView) itemView.findViewById(R.id.deadline);
             mainView = itemView.findViewById(R.id.opportunity_view);
+            reputationPoint = (TextView) itemView.findViewById(R.id.reputation_point);
 
             mainView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    list.get(getAdapterPosition()).setPosition(getAdapterPosition());
-                    listener.goToDetail(list.get(getAdapterPosition()));
-
+                    if (getAdapterPosition() >= 0 && getAdapterPosition() < list.size()) {
+                        list.get(getAdapterPosition()).setPosition(getAdapterPosition());
+                        listener.goToDetail(list.get(getAdapterPosition()));
+                    }
                 }
             });
 
@@ -102,8 +113,40 @@ public class OpportunityListAdapter extends BaseLinearRecyclerViewAdapter {
         holder.productPrice.setText(list.get(position).getOrderDetail().getDetailOpenAmountIdr());
         holder.deadline.setText(list.get(position).getOrderDeadline().getDeadlineProcess());
         String color = list.get(position).getOrderDeadline().getDeadlineColor();
-        if (color != null && !color.equals("")) {
-            holder.deadline.setBackgroundColor(Color.parseColor(color));
+
+        Drawable deadlineDrawable = holder.deadline.getBackground();
+        deadlineDrawable.clearColorFilter();
+        if (!TextUtils.isEmpty(color)) {
+            int colorInt = Color.parseColor(color);
+            ColorFilter cf = new
+                    PorterDuffColorFilter(colorInt, PorterDuff.Mode
+                    .MULTIPLY);
+            deadlineDrawable.setColorFilter(cf);
+        }
+
+        setReputationPoint(holder, list.get(position));
+    }
+
+    private void setReputationPoint(ViewHolder holder, OpportunityItemViewModel opportunityItemViewModel) {
+        if (opportunityItemViewModel.getReplacementMultiplierValue() != 0
+                && !TextUtils.isEmpty(opportunityItemViewModel.getReplacementMultiplierColor())
+                && !TextUtils.isEmpty(opportunityItemViewModel.getReplacementMultiplierText())) {
+            holder.reputationPoint.setVisibility(View.VISIBLE);
+
+            String color = opportunityItemViewModel.getReplacementMultiplierColor();
+            int colorInt = Color.parseColor(color);
+            Drawable reputationDrawable = holder.reputationPoint.getBackground();
+
+            ColorFilter cf = new
+                    PorterDuffColorFilter(colorInt, PorterDuff.Mode
+                    .MULTIPLY);
+            reputationDrawable.setColorFilter(cf);
+
+            holder.reputationPoint.setText(opportunityItemViewModel.getReplacementMultiplierText());
+            holder.reputationPoint.setTextColor(colorInt);
+
+        } else {
+            holder.reputationPoint.setVisibility(View.GONE);
         }
     }
 

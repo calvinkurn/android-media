@@ -1,7 +1,6 @@
 package com.tokopedia.seller.opportunity.presenter.subscriber;
 
 import com.tokopedia.core.database.model.PagingHandler;
-import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.entity.replacement.opportunitydata.DetailCancelRequest;
 import com.tokopedia.core.network.entity.replacement.opportunitydata.DetailPreorder;
 import com.tokopedia.core.network.entity.replacement.opportunitydata.OpportunityList;
@@ -16,9 +15,7 @@ import com.tokopedia.core.network.entity.replacement.opportunitydata.OrderProduc
 import com.tokopedia.core.network.entity.replacement.opportunitydata.OrderShipment;
 import com.tokopedia.core.network.entity.replacement.opportunitydata.OrderShop;
 import com.tokopedia.core.network.entity.replacement.opportunitydata.Paging;
-import com.tokopedia.core.network.retrofit.response.Error;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.data.OpportunityModel;
 import com.tokopedia.seller.opportunity.listener.OpportunityListView;
@@ -37,9 +34,6 @@ import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OrderProductVi
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OrderShipmentViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OrderShopViewModel;
 
-import java.io.IOException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -117,6 +111,13 @@ public class GetOpportunitySubscriber extends Subscriber<OpportunityModel> {
             opportunityItemViewModel.setOrderLast(getOrderLastViewModel(opportunityItem.getOrderLast()));
             opportunityItemViewModel.setOrderHistory(getOrderHistoryViewModel(opportunityItem.getOrderHistory()));
             opportunityItemViewModel.setOrderDestination(getOrderDestinationViewModel(opportunityItem.getOrderDestination()));
+            opportunityItemViewModel.setReplacementMultiplierColor(opportunityItem
+                    .getReplacementMultiplierColor() == null ? "" : opportunityItem
+                    .getReplacementMultiplierColor());
+            opportunityItemViewModel.setReplacementMultiplierText(opportunityItem
+                    .getReplacementMultiplierValueStr() == null ? "" : opportunityItem.getReplacementMultiplierValueStr());
+            opportunityItemViewModel.setReplacementMultiplierValue(opportunityItem.getReplacementMultiplierValue());
+            opportunityItemViewModel.setReplacementTnc(opportunityItem.getReplacementTnc());
             list.add(opportunityItemViewModel);
         }
         return list;

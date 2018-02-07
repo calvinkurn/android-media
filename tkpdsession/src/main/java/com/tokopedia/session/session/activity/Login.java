@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -117,6 +116,8 @@ public class Login extends BaseActivity implements SessionView
     public static final String INTENT_EXTRA_PARAM_PASSWORD = "INTENT_EXTRA_PARAM_PASSWORD";
     private static final String INTENT_EXTRA_PARAM_TOKEN_MODEL = "INTENT_EXTRA_PARAM_TOKEN_MODEL";
     private static final String INTENT_LOGIN_TYPE = "INTENT_LOGIN_TYPE";
+
+    public static final int TRUE_CALLER_REQUEST_CODE = 100;
     private static final int REQUEST_VERIFY_PHONE_NUMBER = 900;
     public static final String DEFAULT = "not";
     private static final int AUTOMATIC_LOGIN = 1;
@@ -166,22 +167,10 @@ public class Login extends BaseActivity implements SessionView
         if (context == null)
             return null;
 
-        if (SessionHandler.isMsisdnVerified()) {
-            Intent intent;
-            intent = SellerRouter.getAcitivityShopCreateEdit(context);
-            intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                    SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            return intent;
-        } else {
-            // TODO move to msisdn activity
-            /*Intent intent;
-            intent = new Intent(context, MsisdnActivity.class);
-            intent.putExtra(MsisdnActivity.SOURCE, Login.class.getSimpleName());
-            return intent;*/
-
-            return null;
-        }
+        Intent intent;
+        intent = SellerRouter.getActivityShopCreateEdit(context);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        return intent;
     }
 
     public static Intent getAutomaticLoginIntent(Context context, String email, String password) {
@@ -314,7 +303,6 @@ public class Login extends BaseActivity implements SessionView
                     getIntent().getParcelableExtra(INTENT_EXTRA_PARAM_TOKEN_MODEL));
             LoginService.startLogin(this, loginReceiver, bundle, DownloadServiceConstant.LOGIN_UNIQUE_CODE);
         }
-
     }
 
 
@@ -345,7 +333,7 @@ public class Login extends BaseActivity implements SessionView
         } catch (IllegalStateException e) {
             e.printStackTrace();
         }
-        fragmentTransaction.commit();
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
     @Override
@@ -385,19 +373,13 @@ public class Login extends BaseActivity implements SessionView
 
             case SELLER_HOME:
                 if (SessionHandler.isV4Login(this)) {
+                    SessionHandler.getShopID(this);
                     AppWidgetUtil.sendBroadcastToAppWidget(this);
-                    if (!SessionHandler.isUserSeller(this)) {
+                    if (!SessionHandler.isUserHasShop(this)) {
                         UnifyTracking.eventLoginCreateShopSellerApp();
                     }
-                    if (SessionHandler.isFirstTimeUser(this) || !SessionHandler.isUserSeller(this)) {
-                        //  Launch app intro
-                        Intent intent = SellerAppRouter.getSellerOnBoardingActivity(this);
-                        startActivity(intent);
-                        return;
-                    }
-
-                    Intent intent = null;
-                    if (SessionHandler.isUserSeller(this)) {
+                    Intent intent;
+                    if (SessionHandler.isUserHasShop(this)) {
                         intent = SellerAppRouter.getSellerHomeActivity(this);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent
                                 .FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -406,7 +388,7 @@ public class Login extends BaseActivity implements SessionView
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     }
                     intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
-                            HomeRouter.INIT_STATE_FRAGMENT_FEED);
+                            HomeRouter.INIT_STATE_FRAGMENT_HOME);
                     startActivity(intent);
                 }
                 break;
@@ -417,7 +399,7 @@ public class Login extends BaseActivity implements SessionView
         if (SessionHandler.isV4Login(this)) {
             Intent intent = HomeRouter.getHomeActivityInterfaceRouter(this);
             intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
-                    HomeRouter.INIT_STATE_FRAGMENT_FEED);
+                    HomeRouter.INIT_STATE_FRAGMENT_HOME);
             startActivity(intent);
         } else {
             Intent intent = HomeRouter.getHomeActivityInterfaceRouter(this);
@@ -486,9 +468,9 @@ public class Login extends BaseActivity implements SessionView
     @Override
     public void verifyTruecaller() {
         if (GlobalConfig.isSellerApp()) {
-            startActivityForResult(SellerAppRouter.getTruecallerIntent(this), 100);
+            startActivityForResult(SellerAppRouter.getTruecallerIntent(this), TRUE_CALLER_REQUEST_CODE);
         } else {
-            startActivityForResult(CustomerRouter.getTruecallerIntent(this), 100);
+            startActivityForResult(CustomerRouter.getTruecallerIntent(this), TRUE_CALLER_REQUEST_CODE);
         }
     }
 
@@ -945,6 +927,7 @@ public class Login extends BaseActivity implements SessionView
         super.onNewIntent(intent);
     }
 
+    @SuppressWarnings("Range")
     @Override
     public void showError(String text) {
         if (text != null) {
@@ -955,7 +938,7 @@ public class Login extends BaseActivity implements SessionView
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 100) {
+        if (requestCode == TRUE_CALLER_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 FragmentSecurityQuestion fragment = (FragmentSecurityQuestion) supportFragmentManager.findFragmentByTag(SECURITY_QUESTION_TAG);
                 if (data != null && data.getStringExtra("phone") != null) {
@@ -966,8 +949,24 @@ public class Login extends BaseActivity implements SessionView
                 }
             }
         } else if (requestCode == REQUEST_VERIFY_PHONE_NUMBER) {
-            loginToHome();
+            if (GlobalConfig.isSellerApp()) {
+                if (SessionHandler.isUserHasShop(this)) {
+                    Intent intent = SellerAppRouter.getSellerHomeActivity(this);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Intent intent = SellerRouter.getActivityShopCreateEdit(this);
+                    startActivity(intent);
+                    finish();
+                }
+            } else {
+                loginToHome();
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
         }
+
     }
 
     @Override
@@ -975,6 +974,7 @@ public class Login extends BaseActivity implements SessionView
 
     }
 
+    @SuppressWarnings("Range")
     @Override
     public void onServerError() {
         final Snackbar snackBar = SnackbarManager.make(this, getString(R.string.msg_server_error_2), Snackbar.LENGTH_INDEFINITE)
@@ -993,6 +993,7 @@ public class Login extends BaseActivity implements SessionView
         }, 10000);
     }
 
+    @SuppressWarnings("Range")
     @Override
     public void onTimezoneError() {
         final Snackbar snackBar = SnackbarManager.make(this, getString(R.string.check_timezone),

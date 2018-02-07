@@ -1,6 +1,9 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
+import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
+import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetDetailGroupUseCase;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetSuggestionUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductListUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsSaveDetailGroupUseCase;
 import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailGroupDomainModel;
@@ -18,11 +21,14 @@ public class TopAdsDetailEditGroupPresenterImpl<T extends TopAdsDetailEditView> 
 
     protected TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase;
     protected TopAdsSaveDetailGroupUseCase topAdsSaveDetailGroupUseCase;
+    protected TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase;
 
     public TopAdsDetailEditGroupPresenterImpl(TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase,
                                               TopAdsSaveDetailGroupUseCase topAdsSaveDetailGroupUseCase,
-                                              TopAdsProductListUseCase topAdsProductListUseCase) {
+                                              TopAdsProductListUseCase topAdsProductListUseCase,
+                                              TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase) {
         super(topAdsProductListUseCase);
+        this.topAdsGetSuggestionUseCase = topAdsGetSuggestionUseCase;
         this.topAdsGetDetailGroupUseCase = topAdsGetDetailGroupUseCase;
         this.topAdsSaveDetailGroupUseCase = topAdsSaveDetailGroupUseCase;
     }
@@ -50,6 +56,25 @@ public class TopAdsDetailEditGroupPresenterImpl<T extends TopAdsDetailEditView> 
         topAdsGetDetailGroupUseCase.execute(
                 TopAdsGetDetailGroupUseCase.createRequestParams(adId),
                 subscriber);
+    }
+
+    public void getTopAdsSuggestionBid(GetSuggestionBody getSuggestionBody){
+        topAdsGetSuggestionUseCase.execute(TopAdsGetSuggestionUseCase.createRequestParams(getSuggestionBody), new Subscriber<GetSuggestionResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(GetSuggestionResponse getSuggestionResponse) {
+
+            }
+        });
     }
 
     private Subscriber<TopAdsDetailGroupDomainModel> getDetailAdSubscriber(){

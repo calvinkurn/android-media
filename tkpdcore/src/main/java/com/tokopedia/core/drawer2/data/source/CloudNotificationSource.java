@@ -49,7 +49,6 @@ public class CloudNotificationSource {
             public void call(NotificationModel notificationModel) {
                 if (notificationModel != null && notificationModel.isSuccess()) {
                     NotificationData notificationData = notificationModel.getNotificationData();
-                    drawerCache.putInt(DrawerNotification.CACHE_INBOX_MESSAGE, notificationData.getInbox().getInboxMessage());
                     drawerCache.putInt(DrawerNotification.CACHE_INBOX_TALK, notificationData.getInbox().getInboxTalk());
                     drawerCache.putInt(DrawerNotification.CACHE_INBOX_REVIEW, notificationData.getInbox().getInboxReputation());
                     drawerCache.putInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER, notificationData.getResolution());
@@ -68,7 +67,8 @@ public class CloudNotificationSource {
 
                     drawerCache.putInt(DrawerNotification.CACHE_TOTAL_CART, notificationData.getTotalCart());
                     drawerCache.putInt(DrawerNotification.IS_HAS_CART, notificationData.getTotalCart() > 0 ? 1 : 0);
-                    drawerCache.putInt(DrawerNotification.CACHE_TOTAL_NOTIF, notificationData.getTotalNotif());
+                    drawerCache.putInt(DrawerNotification.CACHE_TOTAL_NOTIF, notificationData
+                            .getTotalNotif() - notificationData.getInbox().getInboxMessage());
                     drawerCache.putInt(DrawerNotification.CACHE_INCR_NOTIF, notificationData.getIncrNotif());
 
                     drawerCache.applyEditor();

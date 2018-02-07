@@ -6,35 +6,41 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.Px;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
-import com.tokopedia.topads.R;
+import com.tokopedia.design.button.BottomActionView;
+import com.tokopedia.design.label.DateLabelView;
+import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
-import com.tokopedia.design.label.DateLabelView;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenter;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenterImpl;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsAdListAdapter;
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsFilterViewListener;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsAdListPresenter;
 import com.tokopedia.topads.keyword.view.fragment.TopAdsBaseListFragment;
 import com.tokopedia.topads.keyword.view.listener.AdListMenuListener;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,45 +48,54 @@ import java.util.List;
 
 public abstract class TopAdsAdListFragment<P extends
         TopAdsAdListPresenter, T extends ItemType> extends TopAdsBaseListFragment<P, T> implements
-        AdListMenuListener, BaseListViewListener<T>, SearchView.OnQueryTextListener,
-        BaseListAdapter.Callback<T> {
+        AdListMenuListener, BaseListViewListener<T>, TopAdsFilterViewListener,
+        BaseListAdapter.Callback<T>,SearchInputView.Listener {
 
-    public interface OnAdListFragmentListener {
-        void startShowCase();
-    }
-
+    protected static final long DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(300);
     protected static final String EXTRA_STATUS = "EXTRA_STATUS";
     protected static final String EXTRA_KEYWORD = "EXTRA_KEYWORD";
-
     protected static final int REQUEST_CODE_AD_CHANGE = 2;
     protected static final int REQUEST_CODE_AD_FILTER = 3;
     protected static final int REQUEST_CODE_AD_ADD = 4;
-
-    private AppBarLayout appBarLayout;
-    private DateLabelView dateLabelView;
-    private FloatingActionButton fabAdd;
-    private MenuItem filterMenuItem;
-    private MenuItem searchMenuItem;
-
+    protected SearchInputView searchInputView;
     protected int status;
     protected String keyword;
-
+    private AppBarLayout appBarLayout;
+    private DateLabelView dateLabelView;
+    private BottomActionView buttonActionView;
+    private MenuItem menuAdd;
     private CoordinatorLayout.Behavior appBarBehaviour;
     private int scrollFlags;
     @Px
     private int tempTopPaddingRecycleView;
     @Px
     private int tempBottomPaddingRecycleView;
-
     private OnAdListFragmentListener listener;
-
     public TopAdsAdListFragment() {
         // Required empty public constructor
     }
 
     @Override
+    public void onSearchSubmitted(String newText) {
+        CommonUtils.hideKeyboard(getActivity(), getActivity().getCurrentFocus());
+        onSearch(newText);
+    }
+
+    @Override
+    public void onSearchTextChanged(String query) {
+        if (TextUtils.isEmpty(query)) {
+            onQueryTextSubmit(query);
+        }
+    }
+
+    protected TopAdsComponent getTopAdsComponent(){
+        return TopAdsComponentUtils.getTopAdsComponent(getActivity());
+    }
+
+    @Override
     protected BaseDatePickerPresenter getDatePickerPresenter() {
-        return new BaseDatePickerPresenterImpl(getActivity());
+        BaseDatePickerPresenterImpl baseDatePickerPresenter = new BaseDatePickerPresenterImpl(getActivity());
+        return baseDatePickerPresenter;
     }
 
     protected BaseListAdapter<T> getNewAdapter() {
@@ -106,28 +121,6 @@ public abstract class TopAdsAdListFragment<P extends
         super.initView(view);
         tempTopPaddingRecycleView = recyclerView.getPaddingTop();
         tempBottomPaddingRecycleView = recyclerView.getPaddingBottom();
-        fabAdd = (FloatingActionButton) view.findViewById(R.id.fab_add);
-        fabAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onCreateAd();
-            }
-        });
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (dy > 0) {
-                    if (fabAdd.isShown()) {
-                        fabAdd.hide();
-                    }
-                } else if (dy < 0) {
-                    if (!fabAdd.isShown()) {
-                        fabAdd.show();
-                    }
-                }
-            }
-        });
         initDateLabelView(view);
     }
 
@@ -142,7 +135,16 @@ public abstract class TopAdsAdListFragment<P extends
         });
         AppBarLayout.LayoutParams dateLabelViewLayoutParams = (AppBarLayout.LayoutParams) dateLabelView.getLayoutParams();
         scrollFlags = dateLabelViewLayoutParams.getScrollFlags();
-
+        searchInputView = (SearchInputView) view.findViewById(R.id.search_input_view);
+        searchInputView.setDelayTextChanged(DEFAULT_DELAY_TEXT_CHANGED);
+        searchInputView.setListener(this);
+        buttonActionView = (BottomActionView) view.findViewById(R.id.bottom_action_view);
+        buttonActionView.setButton1OnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToFilter();
+            }
+        });
         appBarBehaviour = new AppBarLayout.Behavior();
     }
 
@@ -215,12 +217,11 @@ public abstract class TopAdsAdListFragment<P extends
     }
 
     private void showOption(boolean show) {
-        fabAdd.setVisibility(show ? View.VISIBLE : View.GONE);
-        if (filterMenuItem != null) {
-            filterMenuItem.setVisible(show);
-        }
-        if (searchMenuItem != null) {
-            searchMenuItem.setVisible(show);
+        if(buttonActionView != null)
+            buttonActionView.setVisibility(show ? View.VISIBLE : View.GONE);
+        showSearchView(show);
+        if(menuAdd != null){
+            menuAdd.setVisible(show);
         }
     }
 
@@ -246,21 +247,11 @@ public abstract class TopAdsAdListFragment<P extends
         }
     }
 
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        if (TextUtils.isEmpty(newText)) {
-            onQueryTextSubmit(newText);
-        }
-        return true;
-    }
-
-    @Override
     public boolean onQueryTextSubmit(String query) {
         onSearch(query);
         return true;
     }
 
-    @Override
     public void onSearch(String keyword) {
         this.keyword = keyword;
         resetPageAndSearch();
@@ -278,10 +269,14 @@ public abstract class TopAdsAdListFragment<P extends
 
     protected void initMenuItem(final Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_top_ads_list, menu);
-        filterMenuItem = menu.findItem(R.id.menu_filter);
-        searchMenuItem = menu.findItem(R.id.menu_search);
-        SearchView searchView = (SearchView) searchMenuItem.getActionView();
-        searchView.setOnQueryTextListener(this);
+        menuAdd = menu.findItem(R.id.menu_add);
+        menuAdd.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                onCreateAd();
+                return true;
+            }
+        });
     }
 
     @Override
@@ -347,6 +342,45 @@ public abstract class TopAdsAdListFragment<P extends
     }
 
     public View getFab() {
-        return fabAdd;
+        if(menuAdd != null)
+            menuAdd.getActionView();
+        return null;
+    }
+
+    protected void showSearchView(boolean show) {
+        @Px int topPadding = 0;
+        @Px int bottomPadding = 0;
+        if (show) {
+            topPadding = tempTopPaddingRecycleView;
+            bottomPadding = tempBottomPaddingRecycleView;
+        }
+        recyclerView.setPadding(0, topPadding, 0, bottomPadding);
+        if (appBarLayout != null) {
+            AppBarLayout.LayoutParams dateLabelLayoutParams = (AppBarLayout.LayoutParams) searchInputView.getLayoutParams();
+            dateLabelLayoutParams.setScrollFlags(show ? scrollFlags : 0);
+            searchInputView.setLayoutParams(dateLabelLayoutParams);
+
+            CoordinatorLayout.LayoutParams appBarLayoutParams = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
+            appBarLayoutParams.setBehavior(show ? appBarBehaviour : null);
+            appBarLayout.setLayoutParams(appBarLayoutParams);
+        }
+        if (searchInputView != null) {
+            searchInputView.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    @Override
+    public View getFilterView() {
+        return buttonActionView;
+    }
+
+    @Nullable
+    @Override
+    public View getSearchView() {
+        return searchInputView;
+    }
+
+    public interface OnAdListFragmentListener {
+        void startShowCase();
     }
 }

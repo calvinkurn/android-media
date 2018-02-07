@@ -33,7 +33,8 @@ public class CreateResoWithoutAttachmentSubscriber extends Subscriber<CreateReso
         mainView.successCreateResoWithoutAttachment(String.valueOf(
                 createResoWithoutAttachmentDomain.getResolution().getId()),
                 createResoWithoutAttachmentDomain.getCacheKey(),
-                createResoWithoutAttachmentDomain.getSuccessMessage());
+                createResoWithoutAttachmentDomain.getSuccessMessage(),
+                createResoWithoutAttachmentDomain.getShop().getName());
     }
 
 }

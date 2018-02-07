@@ -3,6 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/relative_layout_product_scoring"
     style="@style/LabelLayout.BorderBottom"
+    android:paddingTop="@dimen/margin_small_sm"
+    android:paddingBottom="@dimen/margin_small_sm"
     app:layout_scrollFlags="scroll|snap|enterAlways">
 
     <LinearLayout
@@ -18,7 +20,7 @@
             android:layout_marginBottom="3dp">
 
             <TextView
-                style="@style/TextView.Caption.BlackSecondary"
+                style="@style/TextView.Micro.BlackSecondary"
                 android:layout_alignParentLeft="true"
                 android:layout_toLeftOf="@+id/text_score"
                 android:text="@string/product_title_activity_product_score"
@@ -26,7 +28,7 @@
 
             <TextView
                 android:id="@+id/text_score"
-                style="@style/TextView.Caption.BlackSecondary"
+                style="@style/TextView.Micro.BlackSecondary"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:text="@string/product_score_label_minus"
@@ -36,7 +38,7 @@
         <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
             android:id="@+id/progress_value_score"
             android:layout_width="match_parent"
-            android:layout_height="12dp"
+            android:layout_height="8dp"
             app:rcBackgroundColor="@color/black_five_percent"
             app:rcMax="100"
             app:rcProgress="0"
@@ -46,8 +48,8 @@
 
     <ImageView
         android:id="@+id/info_button"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"

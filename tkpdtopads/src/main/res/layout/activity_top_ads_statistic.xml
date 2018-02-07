@@ -1,28 +1,51 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_alignParentTop="true"
-    android:layout_centerHorizontal="true"
-    android:orientation="vertical">
+    android:fitsSystemWindows="true">
 
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tab"
-        style="@style/TabBar"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/tkpd_main_green"
-        app:tabMode="scrollable" />
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical">
 
-    <com.tokopedia.core.customwidget.SwipeToRefresh
-        android:id="@+id/swipe_refresh_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <com.tkpd.library.ui.widget.TouchViewPager
-            android:id="@+id/pager"
+        <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </com.tokopedia.core.customwidget.SwipeToRefresh>
-</LinearLayout>
+            android:layout_height="wrap_content"
+            android:background="@android:color/white">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
+            android:background="@color/tkpd_main_green"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="@style/AppBarTheme"
+            app:elevation="0dp"
+            app:layout_collapseMode="pin"
+            app:subtitleTextAppearance="@style/ToolbarSubtitleText"
+            app:titleTextAppearance="@style/ToolbarText" />
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tab_layout"
+            style="@style/TabBar.WhiteSeller"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            app:tabMode="scrollable" />
+        </android.support.design.widget.AppBarLayout>
+
+        <com.tokopedia.core.customwidget.SwipeToRefresh
+            android:id="@+id/swipe_refresh_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.tkpd.library.ui.widget.TouchViewPager
+                android:id="@+id/pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </com.tokopedia.core.customwidget.SwipeToRefresh>
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

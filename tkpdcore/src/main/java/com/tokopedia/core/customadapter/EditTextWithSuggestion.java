@@ -51,20 +51,20 @@ public class EditTextWithSuggestion extends EditText{
 	public EditTextWithSuggestion(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		this.context = context;
-		if(!SessionHandler.getShopID(context).equals("0")) Initiate();
+		if(SessionHandler.isUserHasShop(context)) Initiate();
 	}
 	
 	public EditTextWithSuggestion(Context context) {
 		super(context);
 		this.context = context;
-		if(!SessionHandler.getShopID(context).equals("0")) Initiate();
+		if(SessionHandler.isUserHasShop(context)) Initiate();
 	}
 	
 	public EditTextWithSuggestion(Context context, AttributeSet attrs,
 			int defStyle) {
 		super(context, attrs, defStyle);
 		this.context = context;
-		if(!SessionHandler.getShopID(context).equals("0")) Initiate();
+		if(SessionHandler.isUserHasShop(context)) Initiate();
 	}
 	
 	public void setOnSuggestionLoadingListener(onSuggestionLoadingListener listener){
@@ -122,7 +122,7 @@ public class EditTextWithSuggestion extends EditText{
 	protected void onTextChanged(final CharSequence text,final int start,
 			final int lengthBefore, final int lengthAfter) {
 		if(context == null) return;
-		if(!SessionHandler.getShopID(context).equals("0")){
+		if(SessionHandler.isUserHasShop(context)){
 			if(timerStart){
 				idle.cancel();
 				idle.purge();

@@ -30,6 +30,7 @@ public class CreateResoWithAttachmentUseCase extends UseCase<CreateSubmitDomain>
 
     public static final String ORDER_ID = "order_id";
     private static final String PARAM_LIST_ATTACHMENT = "LIST_ATTACHMENT";
+    public static final String RESOLUTION_ID = "resolutionID";
     private final UploadVideoUseCase uploadVideoUseCase;
 
     private CreateValidateUseCase createValidateUseCase;
@@ -56,6 +57,7 @@ public class CreateResoWithAttachmentUseCase extends UseCase<CreateSubmitDomain>
     public Observable<CreateSubmitDomain> createObservable(RequestParams requestParams) {
         final CreateResoRequestDomain createResoRequestDomain = new CreateResoRequestDomain();
         createResoRequestDomain.setOrderId(requestParams.getString(ORDER_ID, ""));
+        createResoRequestDomain.setResolutionId(requestParams.getString(RESOLUTION_ID, ""));
         return getObservableValidateCreateReso(requestParams, createResoRequestDomain)
                 .flatMap(getObservableGenerateHost(requestParams))
                 .flatMap(addGenerateHostResultToRequestModel(createResoRequestDomain))

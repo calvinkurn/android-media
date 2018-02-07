@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/grey_300"
+              android:orientation="horizontal"
+              android:padding="@dimen/padding_vs">
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_vs"
+        android:layout_weight="1"
+        android:background="@drawable/cards_ui_2"
+        android:orientation="horizontal"
+        android:padding="@dimen/padding_vs">
+
+        <ImageView
+            android:id="@+id/add_template"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/margin_vs"
+            android:src="@drawable/ic_add_black_48dp"
+            android:visibility="gone"
+            tools:visibility="gone"/>
+
+        <EditText
+            android:id="@+id/seller_reply_edit_text"
+            android:layout_width="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:scrollHorizontally="false"
+            android:hint="@string/hint_write_reply"
+            android:scrollbars="vertical"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="@dimen/margin_vs"
+            android:layout_marginLeft="@dimen/margin_vs"
+            android:layout_toRightOf="@id/add_template"
+            android:background="@android:color/transparent"/>
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/send_button"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center_vertical"
+        android:padding="@dimen/margin_vs"
+        android:src="@drawable/ic_send_grey_transparent"/>
+
+</LinearLayout>

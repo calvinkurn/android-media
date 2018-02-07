@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/credit_card_detail_root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/margin_xl"
+    android:paddingStart="@dimen/margin_xl"
+    android:paddingEnd="@dimen/margin_xl"
+    android:background="@color/white">
+
+    <FrameLayout android:id="@+id/rl_large_cc_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/credit_card_detail_bg_width"
+        android:layout_marginTop="@dimen/credit_card_detail_bg_height">
+        
+        <ImageView android:id="@+id/iv_credit_card_large"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            tools:ignore="ContentDescription" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/credit_card_detail_content_height"
+            android:layout_margin="@dimen/margin_med"
+            android:layout_gravity="bottom">
+
+            <ImageView android:id="@+id/iv_cc_chip_thumb"
+                android:layout_width="@dimen/chip_thumb_size"
+                android:layout_height="@dimen/chip_thumb_size"
+                android:src="@drawable/ic_chip_thumb_bright"
+                tools:ignore="ContentDescription" />
+
+            <TextView android:id="@+id/tv_credit_card_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:layout_below="@id/iv_cc_chip_thumb"
+                android:gravity="center_horizontal"
+                tools:text="1 2 3 4   5 6 7 8  1 1 2 2   3 3 3 3"
+                android:textSize="@dimen/font_medium"
+                android:textColor="@color/white" />
+
+            <TextView android:id="@+id/tv_credit_card_expiry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                tools:text="01/20"
+                android:textSize="@dimen/font_medium"
+                android:textColor="@color/white" />
+
+            <TextView android:id="@+id/tv_credit_card_expiry_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/tv_credit_card_expiry"
+                android:text="@string/label_month_year"
+                android:textColor="@color/white"
+                android:textSize="@dimen/fontvvs"
+                android:gravity="start" />
+
+            <ImageView
+                android:id="@+id/iv_credit_card_logo"
+                android:layout_width="@dimen/credit_card_logo_width"
+                android:layout_height="@dimen/credit_card_logo_height"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                tools:ignore="ContentDescription" />
+
+        </RelativeLayout>
+        
+    </FrameLayout>
+
+    <Button android:id="@+id/btn_delete_cc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_large"
+        android:layout_below="@id/rl_large_cc_container"
+        android:background="@drawable/button_edge"
+        android:text="@string/label_button_delete_cc"
+        android:textColor="@color/black_54"
+        android:textSize="@dimen/font_small"
+        android:textAllCaps="false" />
+
+</RelativeLayout>

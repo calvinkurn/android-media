@@ -9,6 +9,4 @@ public interface IRequestOTPWalletPresenter {
     void requestOTPWallet();
 
     void linkWalletToTokoCash(String otp);
-
-    void onDestroyView();
 }

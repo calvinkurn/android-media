@@ -25,6 +25,11 @@ public class TopAdsEditShopMainPageActivity extends BaseSimpleActivity implement
     }
 
     @Override
+    protected boolean isToolbarWhite() {
+        return true;
+    }
+
+    @Override
     protected Fragment getNewFragment() {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(getTagFragment());
         if(fragment != null){

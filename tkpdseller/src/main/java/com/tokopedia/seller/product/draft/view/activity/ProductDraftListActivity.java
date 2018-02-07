@@ -112,7 +112,7 @@ public class ProductDraftListActivity extends DrawerPresenterActivity
                             public void onError(Throwable e) {
                                 hideProgressDialog();
                                 NetworkErrorHelper.showCloseSnackbar(
-                                        getActivity(), ErrorHandler.getErrorMessage(e, getActivity()));
+                                        getActivity(), ErrorHandler.getErrorMessage(e));
                             }
 
                             @Override
@@ -195,10 +195,6 @@ public class ProductDraftListActivity extends DrawerPresenterActivity
         // no op
     }
 
-    @Override
-    public void onHadesTimeout() {
-        // no op
-    }
 
     @Override
     protected int setDrawerPosition() {

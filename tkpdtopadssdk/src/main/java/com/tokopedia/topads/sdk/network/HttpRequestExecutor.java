@@ -13,5 +13,5 @@ public interface HttpRequestExecutor {
  
 	abstract String executeAsGetRequest() throws MalformedURLException, UnsupportedEncodingException,IOException;
 	abstract String executeAsPostRequest() throws MalformedURLException, UnsupportedEncodingException,IOException;
- 
+	abstract String executeAsPostJsonRequest() throws MalformedURLException, UnsupportedEncodingException, IOException;
 }

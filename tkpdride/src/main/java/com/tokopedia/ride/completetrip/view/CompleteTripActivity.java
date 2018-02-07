@@ -22,7 +22,7 @@ import com.tokopedia.ride.common.ride.di.RideComponent;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
 
 public class CompleteTripActivity extends BaseActivity implements CompleteTripFragment.OnFragmentInteractionListener,
-        HasComponent<RideComponent>{
+        HasComponent<RideComponent> {
     private static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
     private static final String EXTRA_DRIVER_VEHICLE = "EXTRA_DRIVER_VEHICLE";
     private RideComponent rideComponent;

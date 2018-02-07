@@ -35,7 +35,7 @@
             android:layout_marginRight="@dimen/margin_med"
             android:layout_marginBottom="@dimen/margin_sm"
             android:text="@string/string_detail_create_complain"
-            android:textSize="@dimen/font_body2"
+            android:textSize="@dimen/font_small"
             android:textColor="@color/black_54"/>
 
         <TextView
@@ -44,7 +44,7 @@
             android:layout_marginLeft="@dimen/margin_med"
             android:layout_marginRight="@dimen/margin_med"
             android:text="@string/string_problem"
-            android:textSize="@dimen/font_body2"
+            android:textSize="@dimen/font_small"
             android:textStyle="bold"
             android:textColor="@color/black_54"/>
 
@@ -55,7 +55,7 @@
             android:layout_marginLeft="@dimen/margin_med"
             android:layout_marginRight="@dimen/margin_med"
             android:text="@string/string_detail_create_complain"
-            android:textSize="@dimen/font_body2"
+            android:textSize="@dimen/font_small"
             android:textColor="@color/black_54"/>
 
         <TextView
@@ -65,7 +65,7 @@
             android:layout_marginLeft="@dimen/margin_med"
             android:layout_marginRight="@dimen/margin_med"
             android:text="@string/string_create_complain_solution"
-            android:textSize="@dimen/font_body2"
+            android:textSize="@dimen/font_small"
             android:textStyle="bold"
             android:textColor="@color/black_54"/>
 
@@ -76,7 +76,7 @@
             android:layout_marginLeft="@dimen/margin_med"
             android:layout_marginRight="@dimen/margin_med"
             android:text="@string/string_detail_create_complain"
-            android:textSize="@dimen/font_body2"
+            android:textSize="@dimen/font_small"
             android:textColor="@color/black_54"/>
 
         <LinearLayout

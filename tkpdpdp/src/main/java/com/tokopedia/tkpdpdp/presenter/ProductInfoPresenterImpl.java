@@ -63,19 +63,16 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
                             .newInstance(generateProductPass(bundle, uri)),
                     ProductDetailFragment.class.getSimpleName());
         } else {
+            if (uri == null) {
+                return;
+            }
+
             List<String> uriSegments = uri.getPathSegments();
             String iden = uriSegments.get(1);
             for (int i = 2; i < uriSegments.size(); i++) {
                 iden = iden + "_" + uriSegments.get(i);
             }
-            CommonUtils.dumper(iden);
-            CategoryDB dep =
-                    new Select().from(CategoryDB.class)
-                            .where(CategoryDB_Table.categoryIdentifier.eq(iden))
-                            .querySingle();
-            String dep_id = dep.getDepartmentId()+"";
-            Intent moveIntent = BrowseProductRouter.getDefaultBrowseIntent(context);
-            moveIntent.putExtra("d_id", dep_id);
+            Intent moveIntent = BrowseProductRouter.getIntermediaryIntent(context,iden);
 
             viewListener.navigateToActivity(moveIntent);
         }

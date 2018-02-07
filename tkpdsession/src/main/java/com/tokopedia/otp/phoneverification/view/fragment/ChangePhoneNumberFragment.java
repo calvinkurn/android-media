@@ -126,9 +126,13 @@ public class ChangePhoneNumberFragment extends BasePresenterFragment<ChangePhone
         changePhoneNumberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                KeyboardHandler.DropKeyboard(getActivity(), phoneNumberEditText);
-                showLoading();
-                presenter.changePhoneNumber(phoneNumberEditText.getText().toString().replace("-", ""));
+                if(phoneNumberEditText!=null && !phoneNumberEditText.getText().toString().isEmpty()) {
+                    KeyboardHandler.DropKeyboard(getActivity(), phoneNumberEditText);
+                    showLoading();
+                    presenter.changePhoneNumber(phoneNumberEditText.getText().toString().replace("-", ""));
+                } else {
+                    NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.please_fill_phone_number));
+                }
             }
         });
     }

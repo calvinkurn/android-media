@@ -2,13 +2,13 @@ package com.tokopedia.topads.dashboard.view.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.topads.dashboard.domain.interactor.ListenerInteractor;
-import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGroupAdInteractor;
-import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGroupAdInteractorImpl;
+import com.tokopedia.seller.base.view.listener.BaseListViewListener;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.request.SearchAdRequest;
 import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
-import com.tokopedia.seller.base.view.listener.BaseListViewListener;
+import com.tokopedia.topads.dashboard.domain.interactor.ListenerInteractor;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGroupAdInteractor;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGroupAdInteractorImpl;
 
 import java.util.Date;
 import java.util.List;

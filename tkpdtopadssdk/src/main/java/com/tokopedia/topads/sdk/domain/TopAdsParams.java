@@ -13,9 +13,11 @@ public class TopAdsParams {
     public static final String KEY_DEVICE = "device";
     public static final String KEY_ITEM = "item";
     public static final String KEY_SRC = "src";
+    public static final String KEY_TEMPLATE_ID = "template_id";
+    public static final String KEY_SEARCH_NF = "search_nf";
     public static final String KEY_PAGE = "page";
     public static final String KEY_DEPARTEMENT_ID = "dep_id";
-    public static final String KEY_HOTLIST_ID = "hc";
+    public static final String KEY_HOTLIST_ID = "h";
     public static final String KEY_QUERY = "q";
     public static final String KEY_PMIN = "pmin";
     public static final String KEY_PMAX = "pmax";

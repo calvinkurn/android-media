@@ -470,7 +470,8 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
                                                     .replace("XXX",
                                                             order.getOrderDetail()
                                                                     .getDetailPdfUri())).toString(),
-                                    TkpdInboxRouter.TX_ASK_BUYER);
+                                    TkpdInboxRouter.TX_ASK_BUYER,
+                                    order.getOrderCustomer().getCustomerImage());
                     startActivity(intent);
                 }
 

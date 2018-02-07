@@ -1,5 +1,6 @@
 package com.tokopedia.payment.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -117,6 +118,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
         presenter.proccessUriPayment();
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private void setViewListener() {
         progressBar.setIndeterminate(true);
         scroogeWebView.getSettings().setJavaScriptEnabled(true);

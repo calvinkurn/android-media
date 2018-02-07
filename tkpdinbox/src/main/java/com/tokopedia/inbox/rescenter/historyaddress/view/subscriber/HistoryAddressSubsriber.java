@@ -41,6 +41,7 @@ public class HistoryAddressSubsriber extends Subscriber<HistoryAddressData> {
         if (domainData.isSuccess()) {
             fragmentView.setLoadingView(false);
             fragmentView.setViewData(mappingDomainView(domainData));
+            fragmentView.setResolutionStatus(domainData.getResolutionStatus());
             fragmentView.renderData();
         } else {
             fragmentView.onGetHistoryAwbFailed(domainData.getMessageError());
@@ -56,17 +57,23 @@ public class HistoryAddressSubsriber extends Subscriber<HistoryAddressData> {
             data.setActionByText(item.getActionByText() != null ? item.getActionByText() : "");
             data.setConversationID(item.getConversationID());
             data.setDate(item.getDate());
+            data.setCreateTimestamp(item.getCreateTimestamp());
             data.setLatest(i == 0);
-            data.setAddress(
-                    item.getStreet() + ", " +
-                            item.getDistrict() + ", " +
-                            item.getCity() + ", " +
-                            item.getProvince() + ", " +
-                            item.getPostalCode()
-            );
+            data.setAddress(getAddressFormat(item));
+            data.setReceiver(item.getReceiver());
+            data.setPhoneNumber(item.getPhoneNumber());
             historyAddressViewItems.add(data);
             i++;
         }
         return historyAddressViewItems;
+    }
+
+    private String getAddressFormat(HistoryAddressItemDomainData domainModel) {
+        return "<b>" + domainModel.getReceiver() + "</b>" + "<br>" + "<br>" +
+                domainModel.getStreet() + "<br>" +
+                domainModel.getDistrict() + ", " + domainModel.getCity()  + " - " +
+                domainModel.getPostalCode() + "<br>" +
+                domainModel.getProvince() + "<br>" +
+                "Telp: " + domainModel.getPhoneNumber();
     }
 }

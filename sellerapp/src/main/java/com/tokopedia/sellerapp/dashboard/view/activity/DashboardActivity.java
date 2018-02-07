@@ -1,20 +1,19 @@
 package com.tokopedia.sellerapp.dashboard.view.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.tokopedia.core.app.DrawerPresenterActivity;
-import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.view.fragment.DashboardFragment;
-import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 
 //import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 //import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
@@ -28,8 +27,8 @@ public class DashboardActivity extends DrawerPresenterActivity
 
     public static final String TAG = DashboardActivity.class.getSimpleName();
 
-    public static Intent createInstance(Activity activity) {
-        Intent intent = new Intent(activity, DashboardActivity.class);
+    public static Intent createInstance(Context context) {
+        Intent intent = new Intent(context, DashboardActivity.class);
         return intent;
     }
 
@@ -47,7 +46,7 @@ public class DashboardActivity extends DrawerPresenterActivity
     @Override
     protected void onResume() {
         super.onResume();
-        new GCMHandler(this).actionRegisterOrUpdateDevice(this);
+        FCMCacheManager.checkAndSyncFcmId(getApplicationContext());
         NotificationModHandler.showDialogNotificationIfNotShowing(this);
     }
 

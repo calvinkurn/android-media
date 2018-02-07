@@ -19,8 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@id/shop_content_panel"
-            android:layout_marginBottom="@dimen/margin_med"
-            android:layout_marginTop="60dp">
+            android:layout_marginBottom="@dimen/margin_med">
 
             <ImageView
                 android:id="@id/shop_avatar"

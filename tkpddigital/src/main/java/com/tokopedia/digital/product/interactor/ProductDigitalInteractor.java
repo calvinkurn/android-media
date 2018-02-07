@@ -24,8 +24,7 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.functions.Func3;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -61,7 +60,6 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
         compositeSubscription.add(
                 Observable.zip(
                         categoryRepository.getCategory(pathCategoryId, paramQueryCategory),
-                        Observable.just(new ArrayList<BannerData>()),
                         getObservableNumberList(paramQueryNumberList),
                         getZipFunctionProductDigitalData())
                         .subscribeOn(Schedulers.newThread())
@@ -83,12 +81,11 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
     }
 
     @NonNull
-    private Func3<CategoryData, List<BannerData>, DigitalNumberList,
-                ProductDigitalData> getZipFunctionProductDigitalData() {
-        return new Func3<CategoryData, List<BannerData>, DigitalNumberList, ProductDigitalData>() {
+    private Func2<CategoryData, DigitalNumberList, ProductDigitalData> getZipFunctionProductDigitalData() {
+        return new Func2<CategoryData, DigitalNumberList, ProductDigitalData>() {
             @Override
             public ProductDigitalData call(
-                    CategoryData categoryData, List<BannerData> bannerDatas,
+                    CategoryData categoryData,
                     DigitalNumberList digitalNumberList
             ) {
                 List<BannerData> bannerDataList = new ArrayList<>();

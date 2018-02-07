@@ -6,6 +6,7 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.widget.data.entity.category.CategoryEntity;
 import com.tokopedia.digital.widget.data.entity.operator.OperatorEntity;
 import com.tokopedia.digital.widget.data.entity.product.ProductEntity;
@@ -32,12 +33,9 @@ import rx.functions.Func1;
 public class DigitalWidgetRepository implements IDigitalWidgetRepository {
 
     private final static String KEY_CATEGORY = "RECHARGE_CATEGORY";
-    private final static String KEY_STATUS = "RECHARGE_STATUS";
     private final static String KEY_PRODUCT = "RECHARGE_PRODUCT";
     private final static String KEY_OPERATOR = "RECHARGE_OPERATOR";
     private final static String KEY_STATUS_CURRENT = "RECHARGE_STATUS_CURRENT";
-
-    private static int CACHE_DURATION = 60 * 30;
 
     private final DigitalEndpointService digitalEndpointService;
     private final IFavoriteNumberMapper favoriteNumberMapper;
@@ -96,7 +94,6 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
                                     CacheUtil.convertListModelToString(categoryEntity,
                                             new TypeToken<List<CategoryEntity>>() {
                                             }.getType()));
-                            globalCacheManager.setCacheDuration(CACHE_DURATION);
                             globalCacheManager.store();
                         }
                     }
@@ -150,7 +147,6 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
                             globalCacheManager.setValue(CacheUtil.convertListModelToString(productEntities,
                                     new TypeToken<List<ProductEntity>>() {
                                     }.getType()));
-                            globalCacheManager.setCacheDuration(CACHE_DURATION);
                             globalCacheManager.store();
                         }
                     }
@@ -204,44 +200,41 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
                             globalCacheManager.setValue(CacheUtil.convertListModelToString(operatorEntities,
                                     new TypeToken<List<OperatorEntity>>() {
                                     }.getType()));
-                            globalCacheManager.setCacheDuration(CACHE_DURATION);
                             globalCacheManager.store();
                         }
                     }
                 });
     }
 
-    @Override
     public Observable<StatusEntity> getObservableStatus() {
-        return Observable.concat(getObservableStatusDB(), getObservableStatusNetwork())
-                .first(new Func1<StatusEntity, Boolean>() {
+        return getObservableStatusNetwork()
+                .map(new Func1<StatusEntity, StatusEntity>() {
                     @Override
-                    public Boolean call(StatusEntity status) {
-                        return status != null && status.getAttributes() != null;
-                    }
-                })
-                .doOnNext(validateStatus(true));
-    }
-
-    private Observable<StatusEntity> getObservableStatusDB() {
-        return Observable.just(true)
-                .map(new Func1<Boolean, StatusEntity>() {
-                    @Override
-                    public StatusEntity call(Boolean aBoolean) {
-                        GlobalCacheManager manager = new GlobalCacheManager();
-                        return CacheUtil.convertStringToModel(
-                                manager.getValueString(KEY_STATUS),
+                    public StatusEntity call(StatusEntity status) {
+                        GlobalCacheManager globalCacheManager = new GlobalCacheManager();
+                        String currentStatusString = globalCacheManager.getValueString(KEY_STATUS_CURRENT);
+                        String statusString = CacheUtil.convertModelToString(status,
                                 new TypeToken<StatusEntity>() {
                                 }.getType());
+                        if (currentStatusString != null && !currentStatusString.equals(statusString)) {
+                            globalCacheManager.delete(KEY_CATEGORY);
+                            globalCacheManager.delete(KEY_OPERATOR);
+                            globalCacheManager.delete(KEY_PRODUCT);
 
-                    }
-                })
-                .onErrorReturn(new Func1<Throwable, StatusEntity>() {
-                    @Override
-                    public StatusEntity call(Throwable throwable) {
-                        return null;
+                            saveStatusToCache(statusString);
+                        } else if (currentStatusString == null) {
+                            saveStatusToCache(statusString);
+                        }
+                        return status;
                     }
                 });
+    }
+
+    private void saveStatusToCache(String statusString) {
+        GlobalCacheManager managerStatus = new GlobalCacheManager();
+        managerStatus.setKey(KEY_STATUS_CURRENT);
+        managerStatus.setValue(statusString);
+        managerStatus.store();
     }
 
     private Observable<StatusEntity> getObservableStatusNetwork() {
@@ -251,56 +244,19 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
                     public StatusEntity call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
                         return tkpdDigitalResponseResponse.body().convertDataObj(StatusEntity.class);
                     }
-                })
-                .doOnNext(new Action1<StatusEntity>() {
-                    @Override
-                    public void call(StatusEntity statusEntity) {
-                        GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-                        globalCacheManager.setKey(KEY_STATUS);
-                        globalCacheManager.setValue(CacheUtil.convertModelToString(statusEntity,
-                                new TypeToken<StatusEntity>() {
-                                }.getType()));
-                        globalCacheManager.setCacheDuration(CACHE_DURATION);
-                        globalCacheManager.store();
-                    }
                 });
-    }
-
-    private Action1<StatusEntity> validateStatus(final boolean isInitialGetStatus) {
-        return new Action1<StatusEntity>() {
-            @Override
-            public void call(StatusEntity status) {
-                GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-                String currentStatusString = globalCacheManager.getValueString(KEY_STATUS_CURRENT);
-                String statusString = CacheUtil.convertModelToString(status,
-                        new TypeToken<StatusEntity>() {
-                        }.getType());
-                if (currentStatusString != null && !currentStatusString.equals(statusString)) {
-                    globalCacheManager.delete(KEY_CATEGORY);
-                    globalCacheManager.delete(KEY_OPERATOR);
-                    globalCacheManager.delete(KEY_PRODUCT);
-
-                    GlobalCacheManager managerStatus = new GlobalCacheManager();
-                    managerStatus.setKey(KEY_STATUS_CURRENT);
-                    managerStatus.setValue(statusString);
-                    managerStatus.store();
-                } else if (currentStatusString != null && currentStatusString.equals(statusString)
-                        && !isInitialGetStatus) {
-                    throw new RuntimeException("Is no need to reload widget");
-                } else if (currentStatusString == null) {
-                    GlobalCacheManager managerStatus = new GlobalCacheManager();
-                    managerStatus.setKey(KEY_STATUS_CURRENT);
-                    managerStatus.setValue(statusString);
-                    managerStatus.store();
-                }
-            }
-        };
     }
 
     @Override
     public Observable<DigitalNumberList> getObservableNumberList(TKPDMapParam<String, String> param) {
         return digitalEndpointService.getApi().getNumberList(param)
-                .map(getFuncTransformNumberList());
+                .map(getFuncTransformNumberList())
+                .onErrorReturn(new Func1<Throwable, DigitalNumberList>() {
+                    @Override
+                    public DigitalNumberList call(Throwable throwable) {
+                        return new DigitalNumberList(new ArrayList<OrderClientNumber>(), null);
+                    }
+                });
     }
 
     private Func1<Response<TkpdDigitalResponse>, DigitalNumberList> getFuncTransformNumberList() {

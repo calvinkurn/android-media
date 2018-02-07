@@ -1,17 +1,12 @@
 package com.tokopedia.tkpd.fcm.appupdate;
 
 import android.app.Activity;
-import android.support.annotation.NonNull;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tokopedia.core.appupdate.ApplicationUpdate;
 import com.tokopedia.core.appupdate.model.DetailUpdate;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.tkpd.BuildConfig;
-import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.remoteconfig.RemoteConfigFetcher;
 
 /**
  * Created by okasurya on 7/25/17.
@@ -23,50 +18,33 @@ public class FirebaseRemoteAppUpdate implements ApplicationUpdate {
     private static final String MAINAPP_UPDATE_TITLE = "mainapp_update_title";
     private static final String MAINAPP_UPDATE_MESSAGE = "mainapp_update_message";
     private static final String MAINAPP_UPDATE_LINK = "mainapp_update_link";
-    private static final int CONFIG_CACHE_EXPIRATION = 1000;
 
-    private Activity activity;
-    private FirebaseRemoteConfig firebaseRemoteConfig;
+    private RemoteConfig remoteConfig;
 
     public FirebaseRemoteAppUpdate(Activity activity) {
-        this.activity = activity;
-        firebaseRemoteConfig = RemoteConfigFetcher.initRemoteConfig(activity);
+        remoteConfig = new FirebaseRemoteConfigImpl(activity);
     }
 
     @Override
     public void checkApplicationUpdate(final OnUpdateListener listener) {
-        if(firebaseRemoteConfig != null) {
-            firebaseRemoteConfig.setDefaults(R.xml.remote_config_default);
-            firebaseRemoteConfig.fetch(CONFIG_CACHE_EXPIRATION)
-                    .addOnCompleteListener(this.activity, new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                firebaseRemoteConfig.activateFetched();
-                            }
-                            DetailUpdate detailUpdate = getDetailUpdate();
-                            if (detailUpdate.isNeedUpdate() && BuildConfig.VERSION_CODE < detailUpdate.getLatestVersionCode()) {
-                                listener.onNeedUpdate(detailUpdate);
-                            } 
-                        }
-                    })
-                    .addOnFailureListener(this.activity, new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            listener.onError(e);
-                        }
-                    });
+        if(remoteConfig != null) {
+            DetailUpdate detailUpdate = getDetailUpdate();
+            if (detailUpdate.isNeedUpdate() && BuildConfig.VERSION_CODE < detailUpdate.getLatestVersionCode()) {
+                listener.onNeedUpdate(detailUpdate);
+            } else {
+                listener.onNotNeedUpdate();
+            }
         }
     }
 
     private DetailUpdate getDetailUpdate() {
         DetailUpdate detailUpdate = new DetailUpdate();
-        detailUpdate.setNeedUpdate(firebaseRemoteConfig.getBoolean(MAINAPP_IS_NEED_UPDATE));
-        detailUpdate.setLatestVersionCode(firebaseRemoteConfig.getLong(MAINAPP_LATEST_VERSION_CODE));
-        detailUpdate.setForceUpdate(firebaseRemoteConfig.getBoolean(MAINAPP_IS_FORCE_UPDATE));
-        detailUpdate.setUpdateTitle(firebaseRemoteConfig.getString(MAINAPP_UPDATE_TITLE));
-        detailUpdate.setUpdateMessage(firebaseRemoteConfig.getString(MAINAPP_UPDATE_MESSAGE));
-        detailUpdate.setUpdateLink(firebaseRemoteConfig.getString(MAINAPP_UPDATE_LINK));
+        detailUpdate.setNeedUpdate(remoteConfig.getBoolean(MAINAPP_IS_NEED_UPDATE));
+        detailUpdate.setLatestVersionCode(remoteConfig.getLong(MAINAPP_LATEST_VERSION_CODE));
+        detailUpdate.setForceUpdate(remoteConfig.getBoolean(MAINAPP_IS_FORCE_UPDATE));
+        detailUpdate.setUpdateTitle(remoteConfig.getString(MAINAPP_UPDATE_TITLE));
+        detailUpdate.setUpdateMessage(remoteConfig.getString(MAINAPP_UPDATE_MESSAGE));
+        detailUpdate.setUpdateLink(remoteConfig.getString(MAINAPP_UPDATE_LINK));
         return detailUpdate;
     }
 }

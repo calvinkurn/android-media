@@ -11,9 +11,12 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.DigitsKeyListener;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.digital.R;
@@ -177,11 +180,30 @@ public class DigitalSearchNumberFragment extends BasePresenterFragment
 
             }
         });
+
+        editTextSearchNumber.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (i == EditorInfo.IME_ACTION_DONE) {
+                    OrderClientNumber orderClientNumber = findNumber(textView.getText().toString(),
+                            numberListAdapter.getClientNumbers());
+                    if (orderClientNumber != null) {
+                        callback.onClientNumberClicked(orderClientNumber);
+                    } else {
+                        callback.onClientNumberClicked(new OrderClientNumber.Builder()
+                                .clientNumber(textView.getText().toString())
+                                .build());
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     private void filterData(String query) {
         List<OrderClientNumber> searchClientNumbers = new ArrayList<>();
-        if (!TextUtils.isEmpty(query) & !isContain(query)) {
+        if (!TextUtils.isEmpty(query) & !isContain(query, clientNumbers)) {
             searchClientNumbers.add(new OrderClientNumber.Builder()
                     .clientNumber(query)
                     .build());
@@ -195,7 +217,7 @@ public class DigitalSearchNumberFragment extends BasePresenterFragment
         numberListAdapter.notifyDataSetChanged();
     }
 
-    private boolean isContain(String number) {
+    private boolean isContain(String number, List<OrderClientNumber> clientNumbers) {
         boolean found = false;
         for (OrderClientNumber orderClientNumber : clientNumbers) {
             if (orderClientNumber.getClientNumber().equalsIgnoreCase(number)) {
@@ -204,6 +226,17 @@ public class DigitalSearchNumberFragment extends BasePresenterFragment
             }
         }
         return found;
+    }
+
+    private OrderClientNumber findNumber(String number, List<OrderClientNumber> clientNumbers) {
+        OrderClientNumber foundClientNumber = null;
+        for (OrderClientNumber orderClientNumber : clientNumbers) {
+            if (orderClientNumber.getClientNumber().equalsIgnoreCase(number)) {
+                foundClientNumber = orderClientNumber;
+                break;
+            }
+        }
+        return foundClientNumber;
     }
 
     @Override

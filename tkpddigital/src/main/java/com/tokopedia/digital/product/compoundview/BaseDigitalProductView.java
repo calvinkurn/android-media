@@ -31,8 +31,10 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
 
     protected P productSelected;
     protected O operatorSelected;
-    protected H historyClientNumber;
+
     protected C data;
+    protected H historyClientNumber;
+
     protected BottomSheetView bottomSheetView;
 
     public void setActionListener(ActionListener actionListener) {
@@ -162,19 +164,19 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
         void onButtonBuyClicked(PreCheckoutProduct preCheckoutProduct);
 
         void onProductChooserStyle1Clicked(
-                List<Product> productListData, String titleChooser
+                List<Product> productListData, String operatorId, String titleChooser
         );
 
         void onProductChooserStyle2Clicked(
                 List<Product> productListData, String titleChooser
         );
 
-        void onOperatorChooserStyle3Clicked(
-                List<Operator> operatorListData, String titleChooser
+        void onProductChooserStyle3Clicked(
+                List<Product> productListData, String operatorId, String titleChooser
         );
 
-        void onProductChooserStyle3Clicked(
-                List<Product> productListData, String titleChooser
+        void onOperatorChooserStyle3Clicked(
+                List<Operator> operatorListData, String titleChooser
         );
 
         void onCannotBeCheckoutProduct(String messageError);
@@ -264,7 +266,7 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
             return categoryName;
         }
 
-        void setCategoryName(String categoryName) {
+        public void setCategoryName(String categoryName) {
             this.categoryName = categoryName;
         }
 

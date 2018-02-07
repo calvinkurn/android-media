@@ -1,25 +1,43 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber;
 
+import android.text.TextUtils;
+
+import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.analytics.FeedTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.util.TimeConverter;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.InspirationItemDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.TopPicksDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.DataFeedDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FavoriteCtaDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.KolCtaDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.KolPostDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.KolRecommendationDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.KolRecommendationItemDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.ProductFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.PromotionFeedDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.inspiration.DataInspirationDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.inspiration.InspirationRecommendationDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.BadgeDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.LabelDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialStoreDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialStoreProductDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewBadgeDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewProductDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.KolTracking;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FavoriteCtaViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.LabelsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.ContentProductViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolRecommendItemViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignViewModel;
@@ -32,6 +50,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromoViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.BadgeViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.toppicks.ToppicksItemViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.toppicks.ToppicksViewModel;
 
@@ -50,16 +69,27 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     protected final FeedPlus.View viewListener;
     private static final String TYPE_OS_BRANDS = "official_store_brand";
     private static final String TYPE_OS_CAMPAIGN = "official_store_campaign";
-
+    private static final String TYPE_KOL_CTA = "kol_cta";
     private static final String TYPE_NEW_PRODUCT = "new_product";
     private static final String TYPE_PROMOTION = "promotion";
     private static final String TYPE_TOPPICKS = "toppick";
+    private static final String TYPE_INSPIRATION = "inspirasi";
+    private static final String TYPE_TOPADS = "topads";
+    private static final String TYPE_KOL = "kolpost";
+    private static final String TYPE_KOL_FOLLOWED = "followedkolpost";
+    private static final String TYPE_KOL_RECOMMENDATION = "kolrecommendation";
+    private static final String TYPE_FAVORITE_CTA = "favorite_cta";
+
     private final int page;
 
+    public static final String FEED_ENHANCE_ANALYTIC = "FEED_ENHANCE_ANALYTIC";
+    private static final String LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT";
+    private final LocalCacheHandler cache;
 
     public GetFirstPageFeedsSubscriber(FeedPlus.View viewListener, int page) {
         this.viewListener = viewListener;
         this.page = page;
+        this.cache = new LocalCacheHandler(viewListener.getActivity(), FEED_ENHANCE_ANALYTIC);
     }
 
     @Override
@@ -73,8 +103,16 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 ErrorHandler.getErrorMessage(e));
     }
 
+    private void clearCacheFeedAnalytic() {
+        if (page == 1) {
+            LocalCacheHandler.clearCache(viewListener.getActivity(), FEED_ENHANCE_ANALYTIC);
+        }
+    }
+
     @Override
     public void onNext(FeedResult feedResult) {
+
+        clearCacheFeedAnalytic();
 
         if (feedResult.getDataSource() == FeedResult.SOURCE_CLOUD)
             viewListener.clearData();
@@ -108,7 +146,6 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     private void addMainData(ArrayList<Visitable> listFeedView,
                              FeedDomain feedDomain, FeedResult feedResult) {
         addFeedData(listFeedView, feedDomain.getListFeed());
-        addInspirationData(listFeedView, feedDomain.getListInspiration());
         checkCanLoadNext(feedResult, listFeedView);
     }
 
@@ -131,8 +168,6 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     protected ArrayList<Visitable> convertToViewModel(FeedDomain feedDomain) {
         ArrayList<Visitable> listFeedView = new ArrayList<>();
         addFeedData(listFeedView, feedDomain.getListFeed());
-        if (listFeedView.size() > 1 && !(listFeedView.get(0) instanceof PromoCardViewModel))
-            addInspirationData(listFeedView, feedDomain.getListInspiration());
         return listFeedView;
     }
 
@@ -188,17 +223,9 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         return badgeList;
     }
 
-    private void addInspirationData(ArrayList<Visitable> listFeedView,
-                                    List<DataInspirationDomain> listInspiration) {
-        for (DataInspirationDomain domain : listInspiration) {
-            InspirationViewModel model = convertToInspirationViewModel(domain);
-            if (model.getListProduct() != null && model.getListProduct().size() > 0)
-                listFeedView.add(model);
-        }
-    }
-
     private void addFeedData(ArrayList<Visitable> listFeedView,
                              List<DataFeedDomain> listFeedDomain) {
+        int positionFeedProductCard = cache.getInt(LAST_POSITION_ENHANCE_PRODUCT, 0);
         if (listFeedDomain != null)
             for (DataFeedDomain domain : listFeedDomain) {
                 switch (domain.getContent().getType() != null ? domain.getContent().getType() : "") {
@@ -221,8 +248,22 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         break;
                     case TYPE_NEW_PRODUCT:
                         ActivityCardViewModel model = convertToActivityViewModel(domain);
-                        if (model.getListProduct() != null && !model.getListProduct().isEmpty())
+                        if (model.getListProduct() != null && !model.getListProduct().isEmpty()) {
+                            positionFeedProductCard++;
+
+                            String eventLabel = String.format("%s", "product upload");
+                            model.setEventLabel(eventLabel);
+                            model.setPositionFeedCard(positionFeedProductCard);
+
                             listFeedView.add(model);
+
+                            FeedTracking.eventImpressionFeedUploadedProduct(
+                                    model.getListProductAsObjectDataLayer(eventLabel, SessionHandler.getLoginID(viewListener.getActivity()), positionFeedProductCard),
+                                    eventLabel
+                            );
+                            cache.putInt(LAST_POSITION_ENHANCE_PRODUCT, positionFeedProductCard);
+                            cache.applyEditor();
+                        }
                         break;
                     case TYPE_PROMOTION:
                         PromoCardViewModel promo = convertToPromoViewModel(domain);
@@ -233,10 +274,169 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         ToppicksViewModel toppicks = convertToToppicksViewModel(domain);
                         if (toppicks.getList() != null && !toppicks.getList().isEmpty())
                             listFeedView.add(toppicks);
+                        break;
+                    case TYPE_INSPIRATION:
+                        InspirationViewModel inspirationViewModel = convertToInspirationViewModel(domain);
+                        if (inspirationViewModel != null
+                                && inspirationViewModel.getListProduct() != null
+                                && !inspirationViewModel.getListProduct().isEmpty()) {
+
+                            positionFeedProductCard++;
+                            String eventLabel = String.format("%s - %s", "inspirasi", inspirationViewModel.getSource());
+                            inspirationViewModel.setEventLabel(eventLabel);
+                            inspirationViewModel.setPositionFeedCard(positionFeedProductCard);
+
+                            listFeedView.add(inspirationViewModel);
+
+
+                            FeedTracking.eventImpressionFeedInspiration(
+                                    inspirationViewModel.getListProductAsObjectDataLayer(eventLabel, SessionHandler.getLoginID(viewListener.getActivity()), positionFeedProductCard),
+                                    eventLabel
+                            );
+                            cache.putInt(LAST_POSITION_ENHANCE_PRODUCT, positionFeedProductCard);
+                            cache.applyEditor();
+                        }
+                        break;
+                    case TYPE_TOPADS:
+                        break;
+                    case TYPE_KOL_FOLLOWED:
+                    case TYPE_KOL:
+                        if (domain.getContent() != null
+                                && domain.getContent().getKolPostDomain() != null) {
+                            KolViewModel kolViewModel = convertToKolViewModel(domain);
+                            listFeedView.add(kolViewModel);
+
+                            List<KolTracking.Promotion> list = new ArrayList<>();
+                            list.add(new KolTracking.Promotion(
+                                    kolViewModel.getId(),
+                                    KolTracking.Promotion.createContentName(
+                                            kolViewModel.getTagsType(),
+                                            kolViewModel.getCardType())
+                                    ,
+                                    kolViewModel.getName().equals("") ? "-" : kolViewModel.getName(),
+                                    listFeedView.size(),
+                                    kolViewModel.getLabel().equals("") ? "-" : kolViewModel.getLabel(),
+                                    kolViewModel.getContentId(),
+                                    kolViewModel.getContentLink().equals("") ? "-" : kolViewModel.getContentLink()
+                            ));
+                            TrackingUtils.eventTrackingEnhancedEcommerce(KolTracking.getKolImpressionTracking
+                                    (list, Integer.parseInt(SessionHandler.getLoginID(MainApplication.getAppContext()))));
+                        }
+                        break;
+                    case TYPE_KOL_RECOMMENDATION:
+                        if (domain.getContent() != null
+                                && domain.getContent().getKolRecommendations() != null
+                                && domain.getContent().getKolRecommendations()
+                                .getListRecommendation() != null
+                                && !domain.getContent().getKolRecommendations()
+                                .getListRecommendation().isEmpty()) {
+                            KolRecommendationViewModel kolRecommendationViewModel =
+                                    convertToKolRecommendationViewModel(domain.getContent().getKolRecommendations());
+                            listFeedView.add(kolRecommendationViewModel);
+
+                            List<KolTracking.Promotion> list = new ArrayList<>();
+                            for (KolRecommendItemViewModel recItem : kolRecommendationViewModel.getListRecommend()) {
+                                list.add(new KolTracking.Promotion(
+                                        recItem.getId(),
+                                        KolTracking.Promotion.createContentNameRecommendation(),
+                                        recItem.getName().equals("") ? "-" : recItem.getName(),
+                                        listFeedView.size(),
+                                        recItem.getLabel().equals("") ? "-" : recItem.getLabel(),
+                                        recItem.getId(),
+                                        recItem.getUrl().equals("") ? "-" : recItem.getUrl()
+                                ));
+                            }
+                            TrackingUtils.eventTrackingEnhancedEcommerce(KolTracking
+                                    .getKolImpressionTracking(list,
+                                            Integer.parseInt(SessionHandler.getLoginID(MainApplication.getAppContext()))));
+                        }
+                        break;
+                    case TYPE_FAVORITE_CTA:
+                        if (domain.getContent() != null
+                                && domain.getContent().getFavoriteCtaDomain() != null) {
+                            FavoriteCtaViewModel favoriteCtaViewModel =
+                                    convertToFavoriteCtaViewModel(domain.getContent().getFavoriteCtaDomain());
+                            listFeedView.add(favoriteCtaViewModel);
+                        }
+                        break;
+                    case TYPE_KOL_CTA:
+                        if (domain.getContent() != null
+                                && domain.getContent().getKolCtaDomain() != null) {
+                            ContentProductViewModel contentProductViewModel =
+                                    convertContentProductViewModel(domain.getContent().getKolCtaDomain());
+                            if (contentProductViewModel.isContentProductShowing())
+                                listFeedView.add(contentProductViewModel);
+                        }
+                        break;
                     default:
                         break;
                 }
             }
+
+    }
+
+    private FeedTopAdsViewModel convertToTopadsViewModel(int page) {
+        return new FeedTopAdsViewModel(page);
+    }
+
+    private KolRecommendationViewModel convertToKolRecommendationViewModel(KolRecommendationDomain domain) {
+        return new KolRecommendationViewModel(
+                domain.getExploreLink(),
+                domain.getHeaderTitle(),
+                convertToListKolRecommend(domain.getListRecommendation())
+        );
+    }
+
+    private FavoriteCtaViewModel convertToFavoriteCtaViewModel(FavoriteCtaDomain domain) {
+        return new FavoriteCtaViewModel(
+                domain.getTitle(),
+                domain.getSubtitle()
+        );
+    }
+
+    private ArrayList<KolRecommendItemViewModel> convertToListKolRecommend(List<KolRecommendationItemDomain> kolRecommendations) {
+        ArrayList<KolRecommendItemViewModel> list = new ArrayList<>();
+        for (KolRecommendationItemDomain recommendationDomain : kolRecommendations) {
+            list.add(new KolRecommendItemViewModel(
+                    recommendationDomain.getUserId(),
+                    recommendationDomain.getUserName(),
+                    recommendationDomain.getUserPhoto(),
+                    recommendationDomain.getUrl(),
+                    recommendationDomain.getInfo(),
+                    recommendationDomain.isFollowed()
+            ));
+        }
+        return list;
+    }
+
+    private KolViewModel convertToKolViewModel(DataFeedDomain domain) {
+        KolPostDomain kolPostDomain = domain.getContent().getKolPostDomain();
+        return new KolViewModel(
+                kolPostDomain.getHeaderTitle(),
+                kolPostDomain.getUserName(),
+                kolPostDomain.getUserPhoto(),
+                kolPostDomain.getLabel(),
+                kolPostDomain.isFollowed(),
+                kolPostDomain.getImageUrl(),
+                kolPostDomain.getCaption(),
+                kolPostDomain.getDescription(),
+                kolPostDomain.isLiked(),
+                kolPostDomain.getLikeCount(),
+                kolPostDomain.getCommentCount(),
+                page,
+                kolPostDomain.getUserUrl(),
+                kolPostDomain.getItemId(),
+                kolPostDomain.getId(),
+                TimeConverter.generateTime(kolPostDomain.getCreateTime()),
+                "",
+                kolPostDomain.getProductPrice(),
+                false,
+                kolPostDomain.getTagsType(),
+                kolPostDomain.getContentLink(),
+                kolPostDomain.getUserId(),
+                kolPostDomain.isShowComment(),
+                kolPostDomain.getCardType()
+        );
     }
 
     private ToppicksViewModel convertToToppicksViewModel(DataFeedDomain domain) {
@@ -296,7 +496,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 productDomain.getData().getUrl_app(),
                 productDomain.getData().getShop().getName(),
                 productDomain.getBrand_logo(),
-                productDomain.getData().getShop().getUrl_app(),
+                productDomain.getData().getShop().getUrl(),
                 convertLabels(productDomain.getData().getLabels()),
                 isFreeReturn(productDomain.getData().getBadges()));
     }
@@ -346,30 +546,38 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         );
     }
 
-    private InspirationViewModel convertToInspirationViewModel(
-            DataInspirationDomain domain) {
-        return new InspirationViewModel(domain.getTitle(),
-                convertToRecommendationListViewModel(domain));
+    private InspirationViewModel convertToInspirationViewModel(DataFeedDomain domain) {
+        if (domain.getContent() != null
+                && !domain.getContent().getInspirationDomains().isEmpty()) {
+            return new InspirationViewModel(
+                    domain.getContent().getInspirationDomains().get(0).getTitle(),
+                    convertToRecommendationListViewModel(domain.getContent().getInspirationDomains().get(0).getListInspirationItem()),
+                    domain.getContent().getInspirationDomains().get(0).getSource()
+            );
+        } else {
+            return null;
+        }
     }
 
     private ArrayList<InspirationProductViewModel> convertToRecommendationListViewModel(
-            DataInspirationDomain domains) {
+            List<InspirationItemDomain> domains) {
         ArrayList<InspirationProductViewModel> listRecommendation = new ArrayList<>();
-        if (domains.getRecommendation() != null && domains.getRecommendation().size() == 4)
-            for (InspirationRecommendationDomain recommendationDomain : domains.getRecommendation()) {
+        if (domains != null && domains.size() == 4)
+            for (InspirationItemDomain recommendationDomain : domains) {
                 listRecommendation.add(convertToRecommendationViewModel(recommendationDomain));
             }
         return listRecommendation;
     }
 
     private InspirationProductViewModel convertToRecommendationViewModel(
-            InspirationRecommendationDomain recommendationDomain) {
+            InspirationItemDomain recommendationDomain) {
         return new InspirationProductViewModel(recommendationDomain.getId(),
                 recommendationDomain.getName(),
                 recommendationDomain.getPrice(),
-                recommendationDomain.getImage_url(),
+                recommendationDomain.getImageUrl(),
                 recommendationDomain.getUrl(),
-                page);
+                page,
+                recommendationDomain.getPriceInt());
     }
 
     protected ActivityCardViewModel convertToActivityViewModel(DataFeedDomain domain) {
@@ -412,6 +620,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                             dataFeedDomain.getSource().getShop().getName(),
                             dataFeedDomain.getSource().getShop().getAvatar(),
                             domain.getWishlist(),
+                            domain.getPriceInt(),
                             page));
         }
         return listProduct;
@@ -438,6 +647,24 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         addSeeMorePromo(dataFeedDomain, listPromo);
 
         return listPromo;
+    }
+
+    private ContentProductViewModel convertContentProductViewModel(KolCtaDomain domain) {
+        if (!TextUtils.isEmpty(domain.getImageUrl())
+                || !TextUtils.isEmpty(domain.getApplink())
+                || !TextUtils.isEmpty(domain.getButtonTitle())
+                || !TextUtils.isEmpty(domain.getApplink())
+                || !TextUtils.isEmpty(domain.getTextHeader())
+                || !TextUtils.isEmpty(domain.getTextDescription()))
+            return new ContentProductViewModel(
+                    domain.getImageUrl(),
+                    domain.getApplink(),
+                    domain.getButtonTitle(),
+                    domain.getTextHeader(),
+                    domain.getTextDescription(),
+                    true);
+        return new ContentProductViewModel(
+                false);
     }
 
     private void addSeeMorePromo(DataFeedDomain dataFeedDomain, ArrayList<PromoViewModel> listPromo) {

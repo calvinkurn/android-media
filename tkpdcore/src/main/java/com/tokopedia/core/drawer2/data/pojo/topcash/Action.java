@@ -4,7 +4,10 @@ package com.tokopedia.core.drawer2.data.pojo.topcash;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 /**
  * @author kulomady on 11/08/16
@@ -15,11 +18,32 @@ public class Action implements Parcelable {
     private String mRedirectUrl;
     @SerializedName("text")
     private String mText;
-    @SerializedName("type")
-    private String mType;
+    @SerializedName("applinks")
+    private String mAppLinks;
+    @SerializedName("visibility")
+    private String mVisibility;
+
+    protected Action(Parcel in) {
+        mRedirectUrl = in.readString();
+        mText = in.readString();
+        mAppLinks = in.readString();
+        mVisibility = in.readString();
+    }
+
+    public static final Creator<Action> CREATOR = new Creator<Action>() {
+        @Override
+        public Action createFromParcel(Parcel in) {
+            return new Action(in);
+        }
+
+        @Override
+        public Action[] newArray(int size) {
+            return new Action[size];
+        }
+    };
 
     public String getRedirectUrl() {
-        if(mRedirectUrl == null) return "";
+        if (mRedirectUrl == null) return "";
         else return mRedirectUrl;
     }
 
@@ -35,18 +59,37 @@ public class Action implements Parcelable {
         mText = text;
     }
 
-    public String getType() {
-        return mType;
+
+    public String getmRedirectUrl() {
+        return mRedirectUrl;
     }
 
-    public void setType(String type) {
-        mType = type;
+    public void setmRedirectUrl(String mRedirectUrl) {
+        this.mRedirectUrl = mRedirectUrl;
     }
 
-    protected Action(Parcel in) {
-        mRedirectUrl = in.readString();
-        mText = in.readString();
-        mType = in.readString();
+    public String getmText() {
+        return mText;
+    }
+
+    public void setmText(String mText) {
+        this.mText = mText;
+    }
+
+    public String getmAppLinks() {
+        return mAppLinks;
+    }
+
+    public void setmAppLinks(String mAppLinks) {
+        this.mAppLinks = mAppLinks;
+    }
+
+    public String getmVisibility() {
+        return mVisibility;
+    }
+
+    public void setmVisibility(String mVisibility) {
+        this.mVisibility = mVisibility;
     }
 
     @Override
@@ -55,23 +98,10 @@ public class Action implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mRedirectUrl);
-        dest.writeString(mText);
-        dest.writeString(mType);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(mRedirectUrl);
+        parcel.writeString(mText);
+        parcel.writeString(mAppLinks);
+        parcel.writeString(mVisibility);
     }
-
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Action> CREATOR = new Parcelable.Creator<Action>() {
-        @Override
-        public Action createFromParcel(Parcel in) {
-            return new Action(in);
-        }
-
-        @Override
-        public Action[] newArray(int size) {
-            return new Action[size];
-        }
-    };
-
 }

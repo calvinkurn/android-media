@@ -3,6 +3,8 @@ package com.tokopedia.topads.dashboard.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.View;
@@ -12,6 +14,7 @@ import com.tokopedia.topads.R;
 import com.tokopedia.seller.base.view.model.StepperModel;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailEditView;
+import com.tokopedia.topads.dashboard.view.model.Ad;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailEditPresenter;
@@ -22,18 +25,20 @@ import javax.inject.Inject;
  * Created by zulfikarrahman on 8/15/17.
  */
 
-public abstract class TopAdsEditCostFragment<T extends TopAdsDetailEditPresenter, V extends TopAdsDetailAdViewModel>
+public abstract class TopAdsEditCostFragment<T extends TopAdsDetailEditPresenter, V extends TopAdsDetailAdViewModel, U extends Ad>
         extends TopAdsNewCostFragment<StepperModel, V> implements TopAdsDetailEditView {
 
     @Inject
     T daggerPresenter;
 
     protected String adId;
+    protected U adFromIntent;
 
     @Override
     protected void setupArguments(Bundle arguments) {
         super.setupArguments(arguments);
         adId = arguments.getString(TopAdsExtraConstant.EXTRA_AD_ID);
+        adFromIntent = arguments.getParcelable(TopAdsExtraConstant.EXTRA_AD);
     }
 
     @Override

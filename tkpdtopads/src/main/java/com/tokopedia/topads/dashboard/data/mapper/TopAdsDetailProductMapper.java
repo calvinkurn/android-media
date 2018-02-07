@@ -47,6 +47,8 @@ public class TopAdsDetailProductMapper implements Func1<Response<DataResponse<Li
             domainModel.setAdEndTime(dataModel.getAdEndTime());
             domainModel.setAdImage(dataModel.getAdImage());
             domainModel.setAdTitle(dataModel.getAdTitle());
+            domainModel.setSuggestionBidValue(dataModel.getSuggestionBidValue());
+            domainModel.setSuggestionBidButton(dataModel.getSuggestionBidButton());
             return domainModel;
         }else{
             return null;

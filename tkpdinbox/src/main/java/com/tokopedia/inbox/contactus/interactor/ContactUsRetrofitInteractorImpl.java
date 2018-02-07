@@ -1,19 +1,15 @@
 package com.tokopedia.inbox.contactus.interactor;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.inboxreputation.model.ImageUpload;
-import com.tokopedia.core.inboxreputation.model.actresult.ImageUploadResult;
-import com.tokopedia.core.inboxreputation.model.param.GenerateHostPass;
+import com.tokopedia.inbox.contactus.model.GenerateHostPass;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.apiservices.etc.ContactUsService;
 import com.tokopedia.core.network.apiservices.etc.ContactUsWsService;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.GeneratedHost;
@@ -28,8 +24,9 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.contactus.UploadImageContactUsParam;
 import com.tokopedia.inbox.contactus.model.ContactUsPass;
 import com.tokopedia.inbox.contactus.model.CreateTicketResult;
+import com.tokopedia.inbox.contactus.model.ImageUpload;
+import com.tokopedia.inbox.contactus.model.ImageUploadResult;
 import com.tokopedia.inbox.contactus.model.solution.SolutionResult;
-import com.tokopedia.inbox.inboxticket.interactor.InboxTicketRetrofitInteractor;
 
 import org.json.JSONException;
 

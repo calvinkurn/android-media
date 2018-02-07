@@ -20,32 +20,12 @@ import java.util.List;
 
 public interface IProductDigitalMapper {
 
-    BannerData transformBannerData(
-            ResponseBanner responseBanner
-    ) throws MapperDataException;
-
-    List<BannerData> transformBannerDataList(
-            List<ResponseCategoryDetailIncluded> responseCategoryDetailIncludedList
-    ) throws MapperDataException;
-
     CategoryData transformCategoryData(
             ResponseCategoryDetailData responseCategoryDetailData,
             List<ResponseCategoryDetailIncluded> responseCategoryDetailIncludedList
     ) throws MapperDataException;
 
-    OrderClientNumber transformOrderClientNumber(
-            ResponseLastOrderData lastOrderData
-    ) throws MapperDataException;
-
-    OrderClientNumber transformOrderClientNumber(
-            ResponseRecentNumberData responseRecentNumberData
-    ) throws MapperDataException;
-
-
     PulsaBalance transformPulsaBalance(
             ResponsePulsaBalance responsePulsaBalance);
 
-    List<CategoryData> transformCategoryDataList(
-            Object object
-    ) throws MapperDataException;
 }

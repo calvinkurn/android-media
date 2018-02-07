@@ -3,8 +3,6 @@ package com.tkpd.library.utils;
 import android.content.Context;
 import android.net.Uri;
 
-import com.tokopedia.core.database.manager.DbManagerImpl;
-import com.tokopedia.core.database.model.CategoryDB;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,9 +32,7 @@ public class URLParser {
 				iden = iden+"_"+Path.get(i);
 			}
 		}
-		CategoryDB dep =
-				DbManagerImpl.getInstance().getCategoryDb(iden);
-		return dep != null ? dep.getDepartmentId()+"" : "0";
+		return iden;
 	}
 
 	public String getQuery () {

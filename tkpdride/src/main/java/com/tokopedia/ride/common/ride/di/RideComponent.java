@@ -3,12 +3,11 @@ package com.tokopedia.ride.common.ride.di;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.cache.data.source.ApiCacheDataSource;
-import com.tokopedia.core.cache.domain.ApiCacheRepository;
-import com.tokopedia.core.cache.domain.interactor.CacheApiWhiteListUseCase;
+import com.tokopedia.core.drawer2.domain.TokoCashRepository;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
+import com.tokopedia.ride.bookingride.domain.GetLocationAddressUseCase;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.common.place.domain.PlaceRepository;
 import com.tokopedia.ride.common.ride.di.scope.RideScope;
@@ -25,7 +24,7 @@ import dagger.Component;
 public interface RideComponent {
 
     GCMHandler gcmHandler();
-    
+
     SessionHandler sessionHandler();
 
     ThreadExecutor threadExecutor();
@@ -41,4 +40,9 @@ public interface RideComponent {
     GetOverviewPolylineUseCase getOverviewPolylineUseCase();
 
     GiveDriverRatingUseCase giveDriverRatingUseCase();
+
+    TokoCashRepository getTokoCashRepository();
+
+    GetLocationAddressUseCase getLocationAddressUseCase();
+
 }

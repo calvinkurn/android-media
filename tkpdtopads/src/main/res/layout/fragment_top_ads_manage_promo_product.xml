@@ -19,7 +19,7 @@
 
             <TextView
                 android:id="@+id/title_choose_promo"
-                style="@style/TextView.Headline.BlackSecondary"
+                style="@style/TextView.SubHeadline.BlackSecondary"
                 android:layout_marginBottom="@dimen/margin_large"
                 android:text="@string/top_ads_label_choose_promo" />
 

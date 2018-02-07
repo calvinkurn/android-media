@@ -4,6 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.network.entity.intermediary.CategoryHadesModel;
 import com.tokopedia.discovery.intermediary.domain.IntermediaryRepository;
 import com.tokopedia.discovery.intermediary.domain.model.IntermediaryCategoryDomainModel;
 
@@ -16,6 +17,7 @@ import rx.Observable;
 public class GetIntermediaryCategoryUseCase extends UseCase<IntermediaryCategoryDomainModel> {
 
     private final IntermediaryRepository repository;
+    private CategoryHadesModel categoryHadesModel;
     private String categoryId = "";
 
     public GetIntermediaryCategoryUseCase(ThreadExecutor threadExecutor,
@@ -33,8 +35,16 @@ public class GetIntermediaryCategoryUseCase extends UseCase<IntermediaryCategory
         this.categoryId = categoryId;
     }
 
+    public CategoryHadesModel getCategoryHadesModel() {
+        return categoryHadesModel;
+    }
+
+    public void setCategoryHadesModel(CategoryHadesModel categoryHadesModel) {
+        this.categoryHadesModel = categoryHadesModel;
+    }
+
     @Override
     public Observable<IntermediaryCategoryDomainModel> createObservable(RequestParams requestParams) {
-        return repository.getCategoryIntermediary(categoryId);
+        return repository.getCategoryIntermediary(categoryId, categoryHadesModel);
     }
 }

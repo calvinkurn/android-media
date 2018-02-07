@@ -80,11 +80,11 @@ public class ImageGalleryEntry{
                     galleryListener.onFailed(e.getMessage());
                     Log.e(ImageGalleryView.TAG, messageTAG + e.getMessage());
                 }
-            }
-
-            ArrayList<String> imageUrls = data.getStringArrayListExtra(GalleryBrowser.IMAGE_URLS);
-            if (checkCollectionNotNull(imageUrls)) {
-                galleryListener.onSuccess(imageUrls);
+            } else {
+                ArrayList<String> imageUrls = data.getStringArrayListExtra(GalleryBrowser.IMAGE_URLS);
+                if (checkCollectionNotNull(imageUrls)) {
+                    galleryListener.onSuccess(imageUrls);
+                }
             }
         }
     }

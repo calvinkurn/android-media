@@ -38,6 +38,11 @@ def getTkpdDesign() {
             rootProject.ext.tkpdDependencies.design : project(':tkpddesign');
 }
 
+def getTkpdLoyalty() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.loyalty : project(':tkpdloyalty');
+}
+
 publishing {
     publications {
         aar(MavenPublication) {
@@ -121,6 +126,7 @@ dependencies {
     compile getTopAdsSdk()
     compile getTkpdPayment()
     compile getTkpdDesign()
+    compile getTkpdLoyalty()
 
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'

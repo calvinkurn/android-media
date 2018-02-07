@@ -15,6 +15,7 @@ import rx.Observable;
 
 public class GetProductProblemUseCase extends UseCase<ProductProblemResponseDomain> {
     public static final String ORDER_ID = "order_id";
+    public static final String PARAM_RESOLUTION_ID = "resolutionID";
 
     private ProductProblemRepository productProblemRepository;
 
@@ -30,9 +31,12 @@ public class GetProductProblemUseCase extends UseCase<ProductProblemResponseDoma
         return productProblemRepository.getProductProblemFromCloud(requestParams);
     }
 
-    public RequestParams getProductProblemUseCaseParam(String orderId) {
+    public RequestParams getProductProblemUseCaseParam(String orderId, String resolutionId) {
         RequestParams params = RequestParams.create();
         params.putString(ORDER_ID, orderId);
+        if (!resolutionId.isEmpty()) {
+            params.putString(PARAM_RESOLUTION_ID, resolutionId);
+        }
         return params;
     }
 

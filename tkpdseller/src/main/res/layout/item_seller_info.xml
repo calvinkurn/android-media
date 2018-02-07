@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:id="@+id/item_seller_info_container"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/image_seller_info"
+        android:layout_width="@dimen/image_width_xxl"
+        android:layout_height="@dimen/image_width_xl"
+        android:layout_marginTop="@dimen/margin_sm"
+        android:layout_marginBottom="@dimen/margin_sm"
+        android:layout_marginLeft="@dimen/margin_sm"
+        android:layout_marginStart="@dimen/margin_sm"
+        tools:src="@drawable/akun_lainnya"/>
+    
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/margin_sm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/padding_ms"
+        android:layout_marginStart="@dimen/padding_ms">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/text_date_description_section"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="harusnya makan nasi"
+                style="@style/TextView.Micro.BlackSecondary"/>
+
+            <TextView
+                android:id="@+id/text_date_description_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/grey_title"
+                android:textSize="@dimen/text_size_xxsmall"
+                tools:text="20 menit yang lalu"
+                android:layout_marginLeft="@dimen/padding_vvs"
+                android:layout_marginStart="@dimen/padding_vvs"/>
+        </LinearLayout>
+        
+
+
+        <TextView
+            android:id="@+id/text_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextView.Small"
+            android:layout_marginTop="@dimen/padding_vvs"
+            android:layout_marginRight="@dimen/margin_sm"
+            android:layout_marginEnd="@dimen/margin_sm"
+            tools:text="Nikmati Beli Ini Itu, Dapatkan Gratis Ongkir k...Halo makan nasi\nsekarang jadinya makan nasi"/>
+    </LinearLayout>
+</LinearLayout>

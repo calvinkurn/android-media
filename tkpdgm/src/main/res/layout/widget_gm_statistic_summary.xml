@@ -11,12 +11,12 @@
 
     <TextView
         android:id="@+id/text_view_title"
-        style="@style/TextView.Caption"
+        style="@style/TextView.Micro"
         tools:text="@string/app_id" />
 
     <TextView
         android:id="@+id/text_view_content"
-        style="@style/TextView.Display1"
+        style="@style/TextView.Headline"
         android:layout_marginTop="@dimen/padding_vs"
         tools:text="@string/app_id" />
 

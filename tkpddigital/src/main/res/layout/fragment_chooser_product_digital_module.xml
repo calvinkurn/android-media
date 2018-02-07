@@ -1,32 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/white"
-              android:orientation="vertical">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white"
+    android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/field_search"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/img_thumb_l"
-        android:layout_margin="@dimen/small_dp"
-        android:background="@color/digital_operator_search_bar_color"
-        android:drawableLeft="@drawable/search_operator"
-        android:drawablePadding="@dimen/padding_small"
-        android:drawableStart="@drawable/search_operator"
-        android:hint="@string/action_search"
-        android:inputType="text"
-        android:lines="1"
-        android:maxLines="1"
-        android:paddingEnd="@dimen/padding_med"
-        android:paddingLeft="@dimen/padding_med"
-        android:paddingRight="@dimen/padding_med"
-        android:paddingStart="@dimen/padding_med"/>
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_list_chooser"
-        android:layout_width="match_parent"
+        <EditText
+            android:id="@+id/field_search"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_height="@dimen/img_thumb_l"
+            android:layout_margin="@dimen/small_dp"
+            android:background="@color/digital_operator_search_bar_color"
+            android:drawableLeft="@drawable/search_operator"
+            android:drawablePadding="@dimen/padding_small"
+            android:drawableStart="@drawable/search_operator"
+            android:hint="@string/action_search"
+            android:inputType="text"
+            android:lines="1"
+            android:maxLines="1"
+            android:paddingEnd="@dimen/padding_med"
+            android:paddingLeft="@dimen/padding_med"
+            android:paddingRight="@dimen/padding_med"
+            android:paddingStart="@dimen/padding_med"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_list_chooser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_vs"/>
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/pb_main_loading"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_vs"/>
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
-</LinearLayout>
+</FrameLayout>

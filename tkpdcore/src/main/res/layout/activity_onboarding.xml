@@ -2,20 +2,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/tkpd_bg_color_grery">
-
-    <FrameLayout
-        android:id="@+id/background"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/main_view"
+    android:fillViewport="true">
 
     <com.github.paolorotolo.appintro.AppIntroViewPager
         android:id="@+id/view_pager"
-        android:fitsSystemWindows="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        />
 
     <LinearLayout
         android:id="@+id/bottom"
@@ -45,7 +42,7 @@
                 android:layout_gravity="center"
                 android:layoutDirection="ltr" />
 
-            <ImageButton
+            <TextView
                 android:id="@+id/skip"
                 style="@style/AppIntroButtonStyleCompat"
                 android:layout_width="wrap_content"
@@ -53,8 +50,9 @@
                 android:layout_gravity="start"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
-                app:srcCompat="@drawable/ic_skip_white"
-                tools:ignore="ContentDescription" />
+                android:textColor="@color/white"
+                tools:ignore="ContentDescription"
+                tools:text="Lewati"/>
 
             <ImageButton
                 android:id="@+id/back"

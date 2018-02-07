@@ -3,6 +3,7 @@ package com.tokopedia.digital.widget.compoundview;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +44,8 @@ public class WidgetWrapperBuyView extends LinearLayout {
     private static final String ARG_UTM_SOURCE_VALUE = "android";
     private static final String ARG_UTM_MEDIUM_VALUE = "widget";
 
+    private boolean isInsant;
+
     @BindView(R2.id.buy_with_credit_checkbox)
     CheckBox creditCheckbox;
     @BindView(R2.id.btn_buy)
@@ -55,6 +58,8 @@ public class WidgetWrapperBuyView extends LinearLayout {
     private Category category;
     private OnBuyButtonListener listener;
     private BottomSheetView bottomSheetView;
+
+    private String operatorLabel;
 
     public WidgetWrapperBuyView(Context context) {
         super(context);
@@ -86,13 +91,26 @@ public class WidgetWrapperBuyView extends LinearLayout {
         return new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                buyButton.setText(
-                        isChecked ? getResources().getString(R.string.title_button_pay)
-                                : getResources().getString(R.string.title_buy));
+                isInsant = isChecked;
+                if (isChecked) {
+                    buyButton.setText(getResources().getString(R.string.title_button_pay));
+                } else {
+                    buyButton.setText(operatorLabel);
+                }
 
                 listener.trackingCheckInstantSaldo(isChecked);
             }
         };
+    }
+
+    public void setBuyButtonText(String text) {
+        if (!TextUtils.isEmpty(text)) {
+            buyButton.setText(text);
+            this.operatorLabel = text;
+        } else{
+            buyButton.setText(getContext().getString(R.string.title_buy));
+            this.operatorLabel = getContext().getString(R.string.title_buy);
+        }
     }
 
     public boolean isCreditCheckboxChecked() {
@@ -108,7 +126,6 @@ public class WidgetWrapperBuyView extends LinearLayout {
         layoutCheckbox.setVisibility(
                 category.getAttributes().isInstantCheckoutAvailable() ? View.VISIBLE : View.GONE);
     }
-
 
     @OnClick(R2.id.btn_buy)
     public void buttonBuyClicked() {
@@ -131,21 +148,8 @@ public class WidgetWrapperBuyView extends LinearLayout {
     private void sendGTMClickBeli() {
         CommonUtils.dumper("GAv4 category clicked " + category.getId());
         CommonUtils.dumper("GAv4 clicked beli Pulsa");
-        String labelBeli;
-        switch (category.getId()) {
-            case 1:
-                labelBeli = AppEventTracking.EventLabel.PULSA_WIDGET;
-                break;
-            case 2:
-                labelBeli = AppEventTracking.EventLabel.PAKET_DATA_WIDGET;
-                break;
-            case 3:
-                labelBeli = AppEventTracking.EventLabel.PLN_WIDGET;
-                break;
-            default:
-                labelBeli = AppEventTracking.EventLabel.PULSA_BELI;
-        }
-        UnifyTracking.eventRechargeBuy(labelBeli);
+
+        UnifyTracking.eventRechargeBuy(category.getAttributes().getName(), isInsant ? "instant" : "no instant");
     }
 
     private String generateATokenRechargeCheckout() {
@@ -201,6 +205,10 @@ public class WidgetWrapperBuyView extends LinearLayout {
                 bottomSheetView.show();
             }
         });
+    }
+
+    public void resetInstantCheckout() {
+        creditCheckbox.setChecked(false);
     }
 
     public interface OnBuyButtonListener {

@@ -16,6 +16,7 @@ import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
@@ -181,19 +182,16 @@ public class FragmentFavorite extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        DaggerAppComponent daggerAppComponent = (DaggerAppComponent) DaggerAppComponent.builder()
-                .appModule(new AppModule(getContext()))
-                .build();
         DaggerFavoriteComponent daggerFavoriteComponent
                 = (DaggerFavoriteComponent) DaggerFavoriteComponent.builder()
-                .appComponent(daggerAppComponent)
+                .appComponent(MainApplication.getInstance().getApplicationComponent())
                 .build();
         daggerFavoriteComponent.inject(this);
     }
 
     @Override
     protected String getScreenName() {
-        return AppScreen.SCREEN_HOME_FAVORITE_SHOP;
+        return AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_SHOP_FAVORIT;
     }
 
     @Override

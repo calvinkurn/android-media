@@ -20,7 +20,20 @@
             android:text="@string/action_track"
             android:textColor="@color/tkpd_main_green"
             android:textSize="@dimen/fontvs"
-            android:textStyle="bold"
+            />
+
+        <TextView
+            android:id="@+id/action_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="@dimen/margin_vs"
+            android:padding="@dimen/padding_small"
+            android:layout_toLeftOf="@id/action_track"
+            android:text="@string/action_add"
+            android:textColor="@color/tkpd_main_green"
+            android:textSize="@dimen/fontvs"
+            android:visibility="gone"
             />
 
         <LinearLayout
@@ -33,19 +46,19 @@
             android:layout_alignParentStart="true">
 
             <TextView
-                android:layout_width="match_parent"
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/padding_small"
+                android:layout_marginTop="@dimen/margin_vs"
                 android:paddingLeft="@dimen/padding_small"
                 android:paddingRight="@dimen/padding_small"
+                android:paddingTop="@dimen/padding_small"
                 android:text="@string/title_section_resolution_retur"
-                android:textColor="#868686"
-                android:textSize="@dimen/font_small"
-                android:textStyle="bold"
-                />
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/text_size_s_medium"/>
 
             <View
-                android:layout_width="50dp"
+                android:layout_width="20dp"
                 android:layout_height="1dp"
                 android:layout_marginTop="@dimen/margin_small"
                 android:layout_marginLeft="@dimen/margin_small"
@@ -63,24 +76,31 @@
         android:padding="@dimen/padding_small">
 
         <TextView
-            android:id="@+id/tv_last_awb_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_vs"
-            android:text="@string/template_awb_additional_text"
-            android:textColor="@color/label_text_color"
-            android:textSize="@dimen/fontvs"
-            />
-
-        <TextView
             android:id="@+id/tv_awb_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="CGK1234567890"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/text_size_s_medium"
+            android:textColor="@color/black_87"
+            android:layout_marginBottom="@dimen/margin_vs"
             android:textStyle="bold"
             />
+
+        <TextView
+            android:id="@+id/tv_last_awb_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/template_awb_additional_text"
+            android:textColor="@color/label_text_color"
+            android:textSize="@dimen/text_size_xsmall"
+            android:textStyle="italic"
+            />
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black_12"/>
 
     <TextView
         android:id="@+id/action_awb_more"
@@ -89,10 +109,9 @@
         android:padding="@dimen/padding_small"
         android:gravity="center_vertical"
         android:text="@string/action_see_more_awb"
-        android:drawableRight="@drawable/ic_chevron_right"
         android:textColor="@color/tkpd_main_green"
         android:textSize="@dimen/font_small"
-        android:textStyle="bold"
+        android:fontFamily="sans-serif-medium"
         />
 
 </LinearLayout>

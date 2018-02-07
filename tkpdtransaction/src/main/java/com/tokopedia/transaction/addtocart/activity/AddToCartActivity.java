@@ -48,6 +48,8 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.addtocart.listener.AddToCartViewListener;
@@ -63,6 +65,7 @@ import com.tokopedia.transaction.addtocart.presenter.AddToCartPresenter;
 import com.tokopedia.transaction.addtocart.presenter.AddToCartPresenterImpl;
 import com.tokopedia.transaction.addtocart.receiver.ATCResultReceiver;
 import com.tokopedia.transaction.addtocart.services.ATCIntentService;
+import com.tokopedia.transaction.addtocart.utils.KeroppiConstants;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -105,6 +108,9 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     private List<Attribute> mShipmentRateAttrs;
     private Observable<Long> incrementObservable = Observable.interval(200, TimeUnit.MILLISECONDS);
     private SnackbarRetry snackbarRetry;
+    private String insuranceInfo;
+    private boolean mustReCalculateShippingRate;
+    private boolean hasRecalculateShippingRate;
 
     @BindView(R2.id.tv_ticker_gtm)
     TextView tvTickerGTM;
@@ -166,6 +172,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     TextView arrowMaxHour;
     @BindView(R2.id.desc_max_hour)
     TextView descMaxHour;
+    @BindView(R2.id.img_insurance_info)
+    ImageView imgInsuranceInfo;
 
     private ATCResultReceiver atcReceiver;
     private Subscription subscription;
@@ -299,10 +307,12 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             case 1:
                 spInsurance.setSelection(0);
                 spInsurance.setEnabled(false);
+                orderData.setMustInsurance(1);
                 break;
             default:
                 spInsurance.setSelection(1);
                 spInsurance.setEnabled(true);
+                orderData.setMustInsurance(0);
                 break;
         }
         if (data.getProductPreorder() != null
@@ -480,7 +490,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        presenter.calculateProduct(AddToCartActivity.this, orderData);
+                        presenter.calculateProduct(AddToCartActivity.this, orderData,
+                                mustReCalculateShippingRate);
                     }
                 });
         snackbarRetry.showRetrySnackbar();
@@ -581,14 +592,24 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                     android.R.layout.simple_spinner_item, list);
             serviceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spShippingService.setAdapter(serviceAdapter);
-            orderData.setShipment(((Attribute) parent.getAdapter()
-                    .getItem(position)).getShipperId());
+            String shipperId = ((Attribute) parent.getAdapter()
+                    .getItem(position)).getShipperId();
+            orderData.setShipment(shipperId);
             for (int i = 0; i < list.size(); i++) {
                 if (list.get(i).getShipperProductId().equals(orderData.getShipmentPackage())) {
                     spShippingService.setSelection(i);
                 }
             }
             tvErrorShipping.setVisibility(View.GONE);
+            mustReCalculateShippingRate = shipperId.equalsIgnoreCase(TkpdState.SHIPPING_ID.WAHANA);
+            if (mustReCalculateShippingRate) {
+                if (!hasRecalculateShippingRate) {
+                    presenter.calculateProduct(this, orderData, mustReCalculateShippingRate);
+                    hasRecalculateShippingRate = true;
+                }
+            } else {
+                hasRecalculateShippingRate = false;
+            }
         } else if (parent.getAdapter().getItem(position) instanceof Product) {
             orderData.setShipmentPackage(((Product) parent.getAdapter()
                     .getItem(position)).getShipperProductId());
@@ -609,6 +630,9 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 renderFormAddress(orderData.getAddress());
                 viewFieldLocation.setVisibility(View.GONE);
                 clearRetryInstantCourierSnackbar();
+                if (product.getInsuranceMode() != null) {
+                    setInsuranceInfoButtonVisibility(product);
+                }
             }
             if (product.getMaxHoursId() != null && product.getDescHoursId() != null) {
                 arrowMaxHour.setText(product.getMaxHoursId());
@@ -620,6 +644,44 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         } else if (parent.getAdapter().getItem(position) instanceof Insurance) {
             orderData.setInsurance(((Insurance) parent.getAdapter().getItem(position)).isInsurance()
                     ? Insurance.INSURANCE : Insurance.NOT_INSURANCE);
+        }
+    }
+
+    private void setInsuranceInfoButtonVisibility(Product product) {
+        setInsuranceSpinnerVisibility(product);
+
+        if (product.getShipperProductName().equals(getString(R.string.atc_selection_shipment_package_info))) {
+            imgInsuranceInfo.setVisibility(View.GONE);
+        } else {
+            if (product.getInsuranceUsedInfo() != null && product.getInsuranceUsedInfo().length() > 0) {
+                insuranceInfo = product.getInsuranceUsedInfo();
+                imgInsuranceInfo.setVisibility(View.VISIBLE);
+            } else {
+                imgInsuranceInfo.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    @Override
+    public void setInsuranceSpinnerVisibility(Product product) {
+        if (product.getInsuranceMode() != null) {
+            if (product.getInsuranceMode() == KeroppiConstants.InsuranceType.MUST) {
+                spInsurance.setEnabled(false);
+                spInsurance.setSelection(0);
+            } else if (product.getInsuranceMode() == KeroppiConstants.InsuranceType.NO) {
+                spInsurance.setEnabled(false);
+                spInsurance.setSelection(1);
+            } else if (product.getInsuranceMode() == KeroppiConstants.InsuranceType.OPTIONAL) {
+                spInsurance.setEnabled(true);
+                if (product.getInsuranceUsedDefault() == KeroppiConstants.InsuranceUsedDefault.YES) {
+                    spInsurance.setSelection(0);
+                } else if (product.getInsuranceUsedDefault() == KeroppiConstants.InsuranceUsedDefault.NO) {
+                    spInsurance.setSelection(1);
+                }
+            }
+        } else {
+            spInsurance.setEnabled(true);
+            spInsurance.setSelection(1);
         }
     }
 
@@ -758,6 +820,19 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         } else etQuantity.setText("1");
     }
 
+    @OnClick(R2.id.img_insurance_info)
+    void showInsuranceInfo() {
+        BottomSheetView bottomSheetView = new BottomSheetView(this);
+        bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
+                .BottomSheetFieldBuilder()
+                .setTitle(getString(R.string.title_bottomsheet_insurance))
+                .setBody(insuranceInfo)
+                .setImg(R.drawable.ic_insurance)
+                .build());
+
+        bottomSheetView.show();
+    }
+
     private OrderData createFinalOrderData() {
         OrderData finalOrder = this.orderData;
         finalOrder.setNotes(etRemark.getText().toString());
@@ -802,7 +877,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             tilAmount.setError(null);
             tilAmount.setErrorEnabled(false);
             presenter.calculateAllPrices(AddToCartActivity.this, orderData);
-            presenter.calculateProduct(AddToCartActivity.this, orderData);
+            presenter.calculateProduct(AddToCartActivity.this, orderData,
+                    mustReCalculateShippingRate);
         }
     }
 

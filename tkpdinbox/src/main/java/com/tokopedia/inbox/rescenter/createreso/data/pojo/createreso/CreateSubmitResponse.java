@@ -12,6 +12,10 @@ public class CreateSubmitResponse {
     @Expose
     private ResolutionResponse resolution;
 
+    @SerializedName("shop")
+    @Expose
+    private ShopResponse shop;
+
     @SerializedName("successMessage")
     @Expose
     private String successMessage;
@@ -31,6 +35,14 @@ public class CreateSubmitResponse {
 
     public void setSuccessMessage(String successMessage) {
         this.successMessage = successMessage;
+    }
+
+    public ShopResponse getShop() {
+        return shop;
+    }
+
+    public void setShop(ShopResponse shop) {
+        this.shop = shop;
     }
 
     @Override

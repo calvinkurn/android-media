@@ -17,14 +17,18 @@ public class TopAdsNetworkConstant {
     public static final String PATH_DASHBOARD_SHOP = "/v1.1/dashboard/shop";
     public static final String PATH_DASHBOARD_CREDIT = "/v1/tkpd_products";
 
-    public static final String PATH_BULK_ACTION_PRODUCT_AD = "/v2/promo/bulk";
-    public static final String PATH_BULK_ACTION_GROUP_AD = "/v2/promo/group/bulk";
-    public static final String PATH_DETAIL_PRODUCT_AD = "/v2/promo";
+    public static final String PATH_BULK_ACTION_PRODUCT_AD = "/v2.1/promo/bulk";
+    public static final String PATH_BULK_ACTION_GROUP_AD = "/v2.1/promo/group/bulk";
+    public static final String PATH_DETAIL_PRODUCT_AD = "/v2.1/promo";
 
-    public static final String PATH_CREATE_GROUP_AD = "v2/promo/group";
+    public static final String PATH_CREATE_GROUP_AD = "v2.1/promo/group";
 
-    public static final String PATH_EDIT_KEYWORD_DETAIL = "/v2/promo/keyword";
+    public static final String GET_DASHBOARD_KEYWORD = "/v1.1/dashboard/keywords";
+    public static final String ADD_KEYOWRD = "/v2.1/promo/keyword";
+    public static final String PATH_EDIT_KEYWORD_DETAIL = "/v2.1/promo/keyword";
     public static final String PATH_BULK_KEYWORD_DETAIL = PATH_EDIT_KEYWORD_DETAIL + "/bulk";
+
+    public static final String GET_SUGGESTION = "/v1/suggest";
 
     public static final String PARAM_AD = "ad";
     public static final String PARAM_SHOP_ID = "shop_id";
@@ -45,6 +49,7 @@ public class TopAdsNetworkConstant {
     public static final String PARAM_KEYWORD_AD_ID = "keyword_id";
     public static final String PARAM_ACTION = "action";
     public static final String PARAM_ITEM_ID = "item_id";
+    public static final String PARAM_SUGGESTION = "suggestion";
 
     public static final String VALUE_SOURCE_ANDROID = "android";
     public static final String VALUE_TOGGLE_ON = "on";
@@ -59,4 +64,14 @@ public class TopAdsNetworkConstant {
 
     public static final int TYPE_PRODUCT_STAT = 1;
     public static final int TYPE_PRODUCT_SHOP = 2;
+
+    public static final String CONTENT_TYPE_APPLICATION_JSON = "Content-Type: application/json";
+    public static final String SUGGESTION_TYPE_DEPARTMENT_ID = "dep_bid";
+    public static final String SUGGESTION_TYPE_GROUP_ID = "group_bid";
+    public static final String SUGGESTION_DATA_TYPE_DETAIL = "detail";
+    public static final String SUGGESTION_DATA_TYPE_SUMMARY = "summary";
+    public static final String SOURCE_GROUP_AD_LIST = "top_ads_group_ad_list";
+    public static final String SOURCE_NEW_COST_GROUP = "top_ads_new_cost_new_group";
+    public static final String SOURCE_NEW_COST_WITHOUT_GROUP = "top_ads_new_cost_without_group";
+    public static final String SHOP_ID = "shop_id";
 }

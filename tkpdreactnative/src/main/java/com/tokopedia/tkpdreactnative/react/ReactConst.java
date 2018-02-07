@@ -9,6 +9,8 @@ public interface ReactConst {
     String GET = "GET";
     String POST = "POST";
     String DELETE = "DELETE";
+    String PUT = "PUT";
+    String HEAD = "HEAD";
     String MAIN_MODULE = "MAIN";
     String KEY_SCREEN = "Screen";
     String SUB_PAGE = "SubPage";
@@ -20,6 +22,8 @@ public interface ReactConst {
         String OFFICIAL_STORE = "official-store";
         String PROMO = "promo-page";
         String PROMO_TERMS = "promo-terms";
+        String THANK_YOU_PAGE = "thankyou-page";
+        String DISCOVERY_PAGE = "discovery-page";
     }
 
     interface EventEmitter{
@@ -31,4 +35,15 @@ public interface ReactConst {
         String PAGE_DESTROYED = "PageDestroyed";
     }
 
+    interface Networking{
+        String WSAUTH = "wsauth";
+        String BEARER = "bearer";
+
+        String URL = "url";
+        String PARAMS = "params";
+        String METHOD = "method";
+        String ENCODING = "encoding";
+        String HEADERS = "headers";
+        String AUTHORIZATIONMODE = "authorizationMode";
+    }
 }

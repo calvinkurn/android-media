@@ -47,8 +47,9 @@ import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
 import com.tokopedia.seller.common.bottomsheet.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
+import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
 import com.tokopedia.seller.common.utils.KMNumbers;
-import com.tokopedia.seller.instoped.InstopedSellerCropperActivity;
+import com.tokopedia.seller.instoped.InstopedSellerCropWatermarkActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.utils.ViewUtils;
@@ -106,6 +107,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private ProductManageFilterModel productManageFilterModel;
     private ActionMode actionMode;
     private Boolean goldMerchant;
+    private boolean isOfficialStore;
 
     private BroadcastReceiver addProductReceiver = new BroadcastReceiver() {
         @Override
@@ -261,18 +263,18 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void onAddFromGallery() {
-        GalleryCropActivity.moveToImageGalleryCamera(getActivity(), this, DEFAULT_IMAGE_GALLERY_POSITION,
+        GalleryCropWatermarkActivity.moveToImageGalleryCamera(getActivity(), this, DEFAULT_IMAGE_GALLERY_POSITION,
                 false, MAX_NUMBER_IMAGE_SELECTED_FROM_GALLERY);
     }
 
-    @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
+    @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void onAddFromCamera() {
-        GalleryCropActivity.moveToImageGalleryCamera(getActivity(), this, DEFAULT_IMAGE_GALLERY_POSITION,
+        GalleryCropWatermarkActivity.moveToImageGalleryCamera(getActivity(), this, DEFAULT_IMAGE_GALLERY_POSITION,
                 true, MAX_NUMBER_IMAGE_SELECTED_FROM_CAMERA);
     }
 
     public void importFromInstagram() {
-        InstopedSellerCropperActivity.startInstopedActivityForResult(getContext(), ProductManageFragment.this,
+        InstopedSellerCropWatermarkActivity.startInstopedActivityForResult(getContext(), ProductManageFragment.this,
                 INSTAGRAM_SELECT_REQUEST_CODE, ProductManageSellerFragment.MAX_INSTAGRAM_SELECT);
         UnifyTracking.eventClickInstoped();
     }
@@ -461,14 +463,20 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     public void onItemChecked(ProductManageViewModel productManageViewModel, boolean checked) {
-        if (actionMode != null) {
-            int totalChecked = ((ProductManageListAdapter) adapter).getTotalChecked();
-            actionMode.setTitle(String.valueOf(totalChecked));
-            MenuItem deleteMenuItem = actionMode.getMenu().findItem(R.id.delete_product_menu);
-            deleteMenuItem.setVisible(totalChecked > 0);
-        } else {
-            ((ProductManageListAdapter) adapter).setChecked(productManageViewModel.getId(), checked);
+        if (checked && productManageViewModel.getProductVariant() == 1) {
+            NetworkErrorHelper.showCloseSnackbar(getActivity(), getString(R.string.product_manage_label_snackbar_variant));
+            ((ProductManageListAdapter) adapter).setChecked(productManageViewModel.getId(), false);
             adapter.notifyDataSetChanged();
+        }else {
+            if (actionMode != null) {
+                int totalChecked = ((ProductManageListAdapter) adapter).getTotalChecked();
+                actionMode.setTitle(String.valueOf(totalChecked));
+                MenuItem deleteMenuItem = actionMode.getMenu().findItem(R.id.delete_product_menu);
+                deleteMenuItem.setVisible(totalChecked > 0);
+            } else {
+                ((ProductManageListAdapter) adapter).setChecked(productManageViewModel.getId(), checked);
+                adapter.notifyDataSetChanged();
+            }
         }
     }
 
@@ -479,8 +487,9 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     @Override
-    public void onSuccessLoadGoldMerchantFlag(boolean goldMerchant) {
+    public void onSuccessGetShopInfo(boolean goldMerchant, boolean officialStore) {
         this.goldMerchant = goldMerchant;
+        isOfficialStore = officialStore;
     }
 
     @Override
@@ -570,7 +579,19 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     public void onClickOptionItem(ProductManageViewModel productManageViewModel) {
-        showActionProductDialog(productManageViewModel);
+        if (productManageViewModel.getProductVariant() == 1) {
+            showDialogVariant();
+        } else {
+            showActionProductDialog(productManageViewModel);
+        }
+    }
+
+    void showDialogVariant() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+        alertDialog.setTitle(R.string.product_manage_title_dialog_variant);
+        alertDialog.setMessage(R.string.product_manage_label_dialog_variant);
+        alertDialog.setPositiveButton(R.string.close, null);
+        alertDialog.show();
     }
 
     @Override
@@ -645,17 +666,18 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     private void onSetCashbackClicked(ProductManageViewModel productManageViewModel) {
-        if (GlobalConfig.isSellerApp()) {
-            if (goldMerchant) {
-                showOptionCashback(productManageViewModel.getProductId(), productManageViewModel.getProductPricePlain(),
-                        productManageViewModel.getProductCurrencySymbol(), productManageViewModel.getProductCashback());
-            } else {
-                showDialogActionGoToGMSubscribe();
-            }
+        if (goldMerchant == null) {
+            return;
+        }
+        if (!GlobalConfig.isSellerApp() && getActivity().getApplication() instanceof SellerModuleRouter) {
+            ((SellerModuleRouter) getActivity().getApplication()).goToGMSubscribe(getActivity());
+            return;
+        }
+        if (goldMerchant) {
+            showOptionCashback(productManageViewModel.getProductId(), productManageViewModel.getProductPricePlain(),
+                    productManageViewModel.getProductCurrencySymbol(), productManageViewModel.getProductCashback());
         } else {
-            if (getActivity().getApplication() instanceof SellerModuleRouter) {
-                ((SellerModuleRouter) getActivity().getApplication()).goToGMSubscribe(getActivity());
-            }
+            showDialogActionGoToGMSubscribe();
         }
     }
 
@@ -735,8 +757,11 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     private void showDialogChangeProductPrice(final String productId, String productPrice, @CurrencyTypeDef int productCurrencyId) {
+        if (!isAdded() || goldMerchant == null) {
+            return;
+        }
         ProductManageEditPriceDialogFragment productManageEditPriceDialogFragment =
-                ProductManageEditPriceDialogFragment.createInstance(productId, productPrice, productCurrencyId, goldMerchant);
+                ProductManageEditPriceDialogFragment.createInstance(productId, productPrice, productCurrencyId, goldMerchant, isOfficialStore);
         productManageEditPriceDialogFragment.setListenerDialogEditPrice(new ProductManageEditPriceDialogFragment.ListenerDialogEditPrice() {
             @Override
             public void onSubmitEditPrice(String productId, String price, String currencyId, String currencyText) {

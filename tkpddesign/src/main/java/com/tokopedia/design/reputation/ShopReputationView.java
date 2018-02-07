@@ -5,11 +5,14 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.DrawableRes;
+import android.support.design.widget.BottomSheetDialog;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -19,7 +22,7 @@ import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
 
 /**
- * Created by stevenfredian on 8/16/17.
+ * @author by stevenfredian on 8/16/17.
  */
 
 public class ShopReputationView extends BaseCustomView {
@@ -31,6 +34,7 @@ public class ShopReputationView extends BaseCustomView {
     public static final int MEDAL_TYPE_4 = 4;
 
     private LinearLayout reputationLayout;
+    private BottomSheetDialog dialog;
 
     private boolean showTooltip;
 
@@ -61,7 +65,7 @@ public class ShopReputationView extends BaseCustomView {
 
     private void init() {
         View view = inflate(getContext(), R.layout.widget_reputation_shop, this);
-        reputationLayout = (LinearLayout) view.findViewById(R.id.layout_reputation_view);
+        reputationLayout = view.findViewById(R.id.layout_reputation_view);
     }
 
     @Override
@@ -78,18 +82,20 @@ public class ShopReputationView extends BaseCustomView {
             level = 1;
             point = "0";
         }
-        updateMedalView(imageResource, level);
-        if (showTooltip && medalType != MEDAL_TYPE_0) {
-            setToolTip(point);
+        updateMedalView(reputationLayout, imageResource, level);
+        if (showTooltip) {
+            setToolTip(point, medalType, level);
         }
     }
 
-    private void updateMedalView(@DrawableRes int imageResource, int levelMedal) {
+    private void updateMedalView(LinearLayout reputationLayout,
+                                 @DrawableRes int imageResource,
+                                 int levelMedal) {
         int medalMargin = getContext().getResources().getDimensionPixelSize(R.dimen.margin_vvs);
         for (int i = 0; i < levelMedal; i++) {
             View medal = getGeneratedMedalImage(imageResource);
-            if (i < levelMedal ) {
-                LinearLayout.LayoutParams params= (LinearLayout.LayoutParams) medal.getLayoutParams();
+            if (i < levelMedal) {
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) medal.getLayoutParams();
                 params.rightMargin = medalMargin;
                 medal.setLayoutParams(params);
             }
@@ -97,25 +103,40 @@ public class ShopReputationView extends BaseCustomView {
         }
     }
 
-    private void setToolTip(final String point) {
+    private void setToolTip(final String pointValue,
+                            final int medalType,
+                            final int level) {
         reputationLayout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                View popup = View.inflate(getContext(), R.layout.item_tooltip_shop_reputation, null);
-                TextView pointTextView = (TextView) popup.findViewById(R.id.text_view_point);
-                pointTextView.setText(getContext().getString(R.string.reputation_shop_point, point));
-                final PopupWindow popWindow = new PopupWindow(popup, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
-                popWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                popWindow.setOutsideTouchable(true);
-                popWindow.setFocusable(false);
-                popWindow.showAsDropDown(v);
-                popWindow.setTouchInterceptor(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View view, MotionEvent motionEvent) {
-                        popWindow.dismiss();
-                        return true;
-                    }
-                });
+
+                dialog = new BottomSheetDialog(getContext());
+                dialog.setContentView(R.layout.seller_reputation_bottom_sheet_dialog);
+                TextView point = dialog.findViewById(R.id.reputation_point);
+
+                String pointText = TextUtils.isEmpty(pointValue)
+                        || pointValue.equals("0") ?
+                        getContext().getString(R.string.no_reputation_yet) :
+                        String.valueOf(pointValue) +
+                                " " + getContext().getString(R.string.point);
+
+                if (point != null) point.setText(pointText);
+
+                LinearLayout sellerReputation = dialog.findViewById(R.id
+                        .seller_reputation);
+
+                updateMedalView(sellerReputation, getIconResource(medalType), level);
+
+                Button closeButton = dialog.findViewById(R.id.close_button);
+
+                if (closeButton != null)
+                    closeButton.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
+                dialog.show();
             }
         });
     }

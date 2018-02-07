@@ -36,6 +36,8 @@ public class PromoAttributes implements Parcelable{
     @Expose
     private String userId;
 
+    private String shopType;
+
     public PromoAttributes() {
     }
 
@@ -95,6 +97,14 @@ public class PromoAttributes implements Parcelable{
         this.userId = userId;
     }
 
+    public String getShopType() {
+        return shopType;
+    }
+
+    public void setShopType(String shopType) {
+        this.shopType = shopType;
+    }
+
     protected PromoAttributes(Parcel in) {
         code = in.readString();
         codeHtml = in.readString();
@@ -103,6 +113,7 @@ public class PromoAttributes implements Parcelable{
         shortCondHtml = in.readString();
         targetType = in.readString();
         userId = in.readString();
+        shopType = in.readString();
     }
 
     @Override
@@ -119,6 +130,7 @@ public class PromoAttributes implements Parcelable{
         dest.writeString(shortCondHtml);
         dest.writeString(targetType);
         dest.writeString(userId);
+        dest.writeString(shopType);
     }
 
     @SuppressWarnings("unused")

@@ -35,7 +35,7 @@ public class ReactNetworkRepositoryImpl implements ReactNetworkRepository {
 
     @Override
     public Observable<String> getResponse(String url, String method, TKPDMapParam<String, String> params, Boolean isAuth) throws UnknownMethodException {
-        switch(method) {
+        switch (method) {
             case ReactConst.GET:
                 if (isAuth) {
                     if (isWSV4(url)) {
@@ -43,8 +43,7 @@ public class ReactNetworkRepositoryImpl implements ReactNetworkRepository {
                     } else {
                         return reactNetworkAuthFactory.createReactNetworkDataSource().get(url, params);
                     }
-                }
-                else return reactNetworkFactory.createReactNetworkDataSource().get(url, params);
+                } else return reactNetworkFactory.createReactNetworkDataSource().get(url, params);
             case ReactConst.POST:
                 if (isAuth) {
                     if (isWSV4(url)) {
@@ -52,8 +51,7 @@ public class ReactNetworkRepositoryImpl implements ReactNetworkRepository {
                     } else {
                         return reactNetworkAuthFactory.createReactNetworkDataSource().post(url, params);
                     }
-                }
-                else return reactNetworkFactory.createReactNetworkDataSource().post(url, params);
+                } else return reactNetworkFactory.createReactNetworkDataSource().post(url, params);
             case ReactConst.DELETE:
                 if (isAuth) {
                     return reactNetworkAuthFactory.createReactNetworkDataSource().delete(url);

@@ -20,7 +20,7 @@ public class EventTracking {
     }
 
     public EventTracking(String event, String category, String action, String label) {
-        Log.d("alifa", "EventTracking: " + event + " " + category + " " + action + " " + label
+        Log.d("GAv4", "EventTracking: " + event + " " + category + " " + action + " " + label
                 + " " + SessionHandler.getLoginID(MainApplication.getAppContext()));
         this.eventTracking.put("event", event);
         this.eventTracking.put("eventCategory", category);

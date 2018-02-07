@@ -1,11 +1,16 @@
 package com.tokopedia.core.myproduct.model;
 
+import android.text.TextUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by m.normansyah on 03/12/2015.
+ *
+ * this class too complicated
  */
+@Deprecated
 public class FolderModel {
     String path;
     List<ImageModel> imageModels;
@@ -28,6 +33,15 @@ public class FolderModel {
     public FolderModel(){
         path = null;
         imageModels = new ArrayList<>();
+    }
+
+    public static List<ImageModel> searchImageModels(List<FolderModel> folderModels, String bucketName) {
+        for (FolderModel folderModel : folderModels) {
+            if (!TextUtils.isEmpty(bucketName) && folderModel.getPath().equals(bucketName)) {
+                return folderModel.getImageModels();
+            }
+        }
+        return null;
     }
 
     public void addAll(ImageModel imageModel){
@@ -75,14 +89,6 @@ public class FolderModel {
 
         return !(path != null ? !path.equals(that.path) : that.path != null);
 
-    }
-
-    public static List<ImageModel> searchImageModels(List<FolderModel> folderModels, String bucketName){
-        for(FolderModel folderModel : folderModels){
-            if(folderModel.getPath().equals(bucketName))
-                return folderModel.getImageModels();
-        }
-        return null;
     }
 
     @Override

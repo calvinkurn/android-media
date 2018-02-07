@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.ImageGallery;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.myproduct.utils.FileUtils;
@@ -30,9 +31,10 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
+import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
 import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
-import com.tokopedia.seller.instoped.InstopedSellerCropperActivity;
+import com.tokopedia.seller.common.imageeditor.ImageEditorWatermarkActivity;
+import com.tokopedia.seller.instoped.InstopedSellerCropWatermarkActivity;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
@@ -42,6 +44,7 @@ import com.tokopedia.seller.product.edit.di.component.DaggerProductAddComponent;
 import com.tokopedia.seller.product.edit.di.module.ProductAddModule;
 import com.tokopedia.seller.product.edit.view.activity.CatalogPickerActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddInfoActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductScoringDetailActivity;
 import com.tokopedia.seller.product.edit.view.activity.YoutubeAddVideoActivity;
 import com.tokopedia.seller.product.edit.view.dialog.ImageAddDialogFragment;
@@ -117,6 +120,8 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
      */
     private ArrayList<String> imageUrlList;
     private Listener listener;
+    private View btnSave;
+    private View btnSaveAndAdd;
 
     public static ProductAddFragment createInstance(ArrayList<String> tkpdImageUrls) {
         ProductAddFragment fragment = new ProductAddFragment();
@@ -193,7 +198,8 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         productScoreViewHolder.setListener(this);
         presenter.attachView(this);
         presenter.getShopInfo();
-        view.findViewById(R.id.button_save).setOnClickListener(new View.OnClickListener() {
+        btnSave = view.findViewById(R.id.button_save);
+        btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isDataValid()) {
@@ -201,7 +207,8 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
                 }
             }
         });
-        view.findViewById(R.id.button_save_and_add).setOnClickListener(new View.OnClickListener() {
+        btnSaveAndAdd = view.findViewById(R.id.button_save_and_add);
+        btnSaveAndAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (isDataValid()) {
@@ -210,6 +217,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
             }
         });
         saveDefaultModel();
+        view.requestFocus();
         return view;
     }
 
@@ -257,28 +265,28 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     private void sendAnalyticsAdd(UploadProductInputViewModel viewModel) {
-        if(getStatusUpload() == ProductStatus.ADD) {
-            UnifyTracking.eventAddProductAdd(
-                    AnalyticsMapper.mapViewToAnalytic(viewModel,
-                            Integer.parseInt(getString(R.string.product_free_return_values_active)),
-                            productAdditionalInfoViewHolder.isShare()
-                    ));
-        } else if(getStatusUpload() == ProductStatus.EDIT){
-            UnifyTracking.eventAddProductEdit(
-                    AnalyticsMapper.mapViewToAnalytic(viewModel,
-                            Integer.parseInt(getString(R.string.product_free_return_values_active)),
-                            productAdditionalInfoViewHolder.isShare()
-                    ));
+        List<String>  listLabelAnalytics = AnalyticsMapper.mapViewToAnalytic(viewModel,
+                Integer.parseInt(getString(R.string.product_free_return_values_active)),
+                productAdditionalInfoViewHolder.isShare()
+        );
+        for (String labelAnalytics : listLabelAnalytics){
+            if(getStatusUpload() == ProductStatus.ADD) {
+                UnifyTracking.eventAddProductAdd(labelAnalytics);
+            } else if(getStatusUpload() == ProductStatus.EDIT){
+                UnifyTracking.eventAddProductEdit(labelAnalytics);
+            }
         }
     }
 
     private void sendAnalyticsAddMore(UploadProductInputViewModel viewModel) {
-        if(getStatusUpload() == ProductStatus.ADD) {
-            UnifyTracking.eventAddProductAddMore(
-                    AnalyticsMapper.mapViewToAnalytic(viewModel,
-                            Integer.parseInt(getString(R.string.product_free_return_values_active)),
-                            productAdditionalInfoViewHolder.isShare()
-                    ));
+        List<String>  listLabelAnalytics = AnalyticsMapper.mapViewToAnalytic(viewModel,
+                Integer.parseInt(getString(R.string.product_free_return_values_active)),
+                productAdditionalInfoViewHolder.isShare()
+        );
+        for (String labelAnalytics : listLabelAnalytics){
+            if(getStatusUpload() == ProductStatus.ADD) {
+                UnifyTracking.eventAddProductAddMore(labelAnalytics);
+            }
         }
     }
 
@@ -489,9 +497,10 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @Override
-    public void onSuccessLoadShopInfo(boolean isGoldMerchant, boolean isFreeReturn) {
+    public void onSuccessLoadShopInfo(boolean isGoldMerchant, boolean isFreeReturn, boolean officialStore) {
         productAdditionalInfoViewHolder.updateViewGoldMerchant(isGoldMerchant);
         productDetailViewHolder.setGoldMerchant(isGoldMerchant);
+        productDetailViewHolder.setOfficialStore(officialStore);
         productDetailViewHolder.updateViewFreeReturn(isFreeReturn);
         valueIndicatorScoreModel.setFreeReturnActive(isFreeReturn);
 
@@ -560,7 +569,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
             @Override
             public void clickAddProductFromInstagram(int position) {
                 int remainingEmptySlot = productImageViewHolder.getImagesSelectView().getRemainingEmptySlot();
-                InstopedSellerCropperActivity.startInstopedActivityForResult(getContext(), ProductAddFragment.this,
+                InstopedSellerCropWatermarkActivity.startInstopedActivityForResult(getContext(), ProductAddFragment.this,
                         INSTAGRAM_SELECT_REQUEST_CODE, remainingEmptySlot);
             }
         });
@@ -575,23 +584,28 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
             @Override
             public void clickEditImagePathFromCamera(int position) {
-                GalleryCropActivity.moveToImageGalleryCamera(getActivity(), ProductAddFragment.this, position,
+                GalleryCropWatermarkActivity.moveToImageGalleryCamera(getActivity(), ProductAddFragment.this, position,
                         true, 1,true);
             }
 
             @Override
             public void clickEditImagePathFromGallery(int position) {
-                GalleryCropActivity.moveToImageGallery(getActivity(), ProductAddFragment.this, position, 1, true);
+                GalleryCropWatermarkActivity.moveToImageGallery(getActivity(), ProductAddFragment.this, position, 1, true);
             }
 
             @Override
             public void clickEditImagePathFromInstagram(int position) {
-                InstopedSellerCropperActivity.startInstopedActivityForResult(getContext(), ProductAddFragment.this,
+                InstopedSellerCropWatermarkActivity.startInstopedActivityForResult(getContext(), ProductAddFragment.this,
                         INSTAGRAM_SELECT_REQUEST_CODE, 1);
             }
 
             @Override
             public void clickImageEditor(int position) {
+                if (ProductAddFragment.this.getStatusUpload() == ProductStatus.ADD) {
+                    UnifyTracking.eventClickImageInAddProduct(AppEventTracking.AddProduct.EVENT_ACTION_EDIT);
+                } else {
+                    UnifyTracking.eventClickImageInEditProduct(AppEventTracking.AddProduct.EVENT_ACTION_EDIT);
+                }
                 String uriOrPath = productImageViewHolder.getImagesSelectView().getImageAt(position).getUriOrPath();
                 if (!TextUtils.isEmpty(uriOrPath)) {
                     onImageEditor(uriOrPath);
@@ -644,7 +658,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     public void onImageEditor(String uriOrPath) {
         ArrayList<String> imageUrls = new ArrayList<>();
         imageUrls.add(uriOrPath);
-        ImageEditorActivity.start(getContext(), ProductAddFragment.this, imageUrls, null, !isEdittingDraft());
+        ImageEditorWatermarkActivity.start(getContext(), ProductAddFragment.this, imageUrls, !isEdittingDraft());
     }
 
     @Override
@@ -671,16 +685,21 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void goToGallery(int imagePosition) {
         int remainingEmptySlot = productImageViewHolder.getImagesSelectView().getRemainingEmptySlot();
-        GalleryCropActivity.moveToImageGallery(getActivity(), this, imagePosition, remainingEmptySlot, true);
+        GalleryCropWatermarkActivity.moveToImageGallery(getActivity(), this, imagePosition, remainingEmptySlot, true);
     }
 
     @TargetApi(16)
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void goToCamera(int imagePosition) {
         int remainingEmptySlot = productImageViewHolder.getImagesSelectView().getRemainingEmptySlot();
-        GalleryCropActivity.moveToImageGalleryCamera(getActivity(), this, imagePosition,
+        GalleryCropWatermarkActivity.moveToImageGalleryCamera(getActivity(), this, imagePosition,
                 true, remainingEmptySlot,true);
 
+    }
+
+    @Override
+    public void startInfoAddProduct() {
+        startActivity(new Intent(getActivity(), ProductAddInfoActivity.class));
     }
 
     @Override
@@ -772,8 +791,8 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     public void startAddWholeSaleDialog(WholesaleModel fixedPrice,
                                         @CurrencyTypeDef int currencyType,
-                                        WholesaleModel previousWholesalePrice) {
-        listener.startAddWholeSaleDialog(fixedPrice, currencyType, previousWholesalePrice);
+                                        WholesaleModel previousWholesalePrice, boolean officialStore) {
+        listener.startAddWholeSaleDialog(fixedPrice, currencyType, previousWholesalePrice, officialStore);
     }
 
     @Override
@@ -903,7 +922,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
         void startAddWholeSaleDialog(WholesaleModel fixedPrice,
                                      @CurrencyTypeDef int currencyType,
-                                     WholesaleModel previousWholesalePrice);
+                                     WholesaleModel previousWholesalePrice, boolean officialStore);
 
         void startUploadProductAndAddWithShare(Long productId);
 

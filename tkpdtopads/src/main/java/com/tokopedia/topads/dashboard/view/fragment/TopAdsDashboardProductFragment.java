@@ -94,9 +94,6 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
         groupSummaryLabelView.setContent(String.valueOf(totalAd.getTotalProductGroupAd()));
         itemSummaryLabelView.setContent(String.valueOf(totalAd.getTotalProductAd()));
         keywordLabelView.setContent(String.valueOf(totalAd.getTotalKeyword()));
-        groupSummaryLabelView.setVisibleArrow(true);
-        itemSummaryLabelView.setVisibleArrow(true);
-        keywordLabelView.setVisibleArrow(true);
         totalProductAd = totalAd.getTotalProductAd();
         totalGroupAd = totalAd.getTotalProductGroupAd();
         onLoadDataSuccess();

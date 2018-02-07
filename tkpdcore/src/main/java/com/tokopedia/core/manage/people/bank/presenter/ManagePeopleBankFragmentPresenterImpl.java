@@ -11,7 +11,6 @@ import com.tkpd.library.utils.data.DataReceiver;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.model.Bank;
-import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.City;
 import com.tokopedia.core.database.model.District;
 import com.tokopedia.core.database.model.Province;
@@ -99,11 +98,6 @@ public class ManagePeopleBankFragmentPresenterImpl implements ManagePeopleBankFr
                         cache.setExpire(86400);
                         cache.applyEditor();
                         getBankAccount();
-                    }
-
-                    @Override
-                    public void setDepartments(List<CategoryDB> departments) {
-
                     }
 
                     @Override

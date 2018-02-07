@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="promo_image_height">185dp</dimen>
+    <dimen name="item_banner_height_category">148dp</dimen>
+    <dimen name="item_banner_width_category">400dp</dimen>
+</resources>

@@ -12,8 +12,6 @@
 
     <dimen name="top_ads_filter_item_min_height">50dp</dimen>
 
-    <dimen name="lv_min_title_width">100dp</dimen>
-
     <!-- gmstat -->
     <dimen name="gmstat_height_header_date">52dp</dimen>
     <dimen name="gmstat_padding_item_left_right">16dp</dimen>
@@ -96,5 +94,10 @@
     <dimen name="gm_featured_product_drag_icon_height">20dp</dimen>
 
     <dimen name="product_manage_width_menu_popup_window">220dp</dimen>
+    <dimen name="margin_legacy_edittext_hint">4dp</dimen>
+    <dimen name="seller_info_radius_image_view">2dp</dimen>
+
+    <dimen name="opportunity_showcase_padding">12dp</dimen>
+
 
 </resources>

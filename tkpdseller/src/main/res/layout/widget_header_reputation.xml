@@ -12,10 +12,11 @@
         android:layout_alignParentTop="true"
         android:background="#e0e0e0" />
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/rl_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:paddingBottom="17dp"
         android:paddingLeft="17dp"
         android:paddingRight="11dp"
@@ -25,9 +26,12 @@
             android:id="@+id/calendar_icon"
             android:layout_width="19.5dp"
             android:layout_height="19.5dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
             android:src="@mipmap/ic_icon_calendar_02" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
         <TextView
             android:id="@+id/calendar_range"
@@ -36,26 +40,12 @@
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
             android:layout_marginRight="6dp"
-            android:layout_toLeftOf="@+id/calendar_arrow_icon"
-            android:layout_toStartOf="@+id/calendar_arrow_icon"
             android:gravity="end"
             android:textColor="#42b549"
             android:textSize="14sp"
             tools:text="26 Jul 2016 - 25 Des 2016" />
 
-        <ImageView
-            android:id="@+id/calendar_arrow_icon"
-            android:layout_width="@dimen/image_width_xxxs"
-            android:layout_height="@dimen/image_width_xxs"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="6dp"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="6dp"
-            android:src="@drawable/ic_arrow_up" />
-    </RelativeLayout>
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"

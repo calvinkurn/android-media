@@ -1,6 +1,7 @@
 package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -8,6 +9,8 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.util.TopAdsComponentUtils;
+import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailGroupActivity;
@@ -27,7 +30,7 @@ public class TopAdsNewProductListExistingGroupFragment extends TopAdsNewProductL
         super.initInjector();
         DaggerTopAdsCreatePromoComponent.builder()
                 .topAdsCreatePromoModule(new TopAdsCreatePromoModule())
-                .appComponent(getComponent(AppComponent.class))
+                .topAdsComponent(TopAdsComponentUtils.getTopAdsComponent(this))
                 .build()
                 .inject(this);
         daggerPresenter.attachView(this);
@@ -73,6 +76,14 @@ public class TopAdsNewProductListExistingGroupFragment extends TopAdsNewProductL
     public void onSaveAdError(String errorMessage) {
         hideLoading();
         showSnackBarError(errorMessage);
+    }
+
+    @Override
+    public void onSuggestionSuccess(GetSuggestionResponse s) { /* this class not do anything about this */ }
+
+    @Override
+    public void onSuggestionError(@Nullable Throwable t) {
+        /* just deal with abstraction */
     }
 
     @Override

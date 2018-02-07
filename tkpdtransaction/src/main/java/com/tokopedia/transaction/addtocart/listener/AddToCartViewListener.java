@@ -2,6 +2,7 @@ package com.tokopedia.transaction.addtocart.listener;
 
 import com.tokopedia.core.network.retrofit.utils.DialogNoConnection;
 import com.tokopedia.transaction.addtocart.model.kero.Attribute;
+import com.tokopedia.transaction.addtocart.model.kero.Product;
 import com.tokopedia.transaction.addtocart.model.responseatcform.AtcFormData;
 import com.tokopedia.transaction.addtocart.model.responseatcform.Destination;
 import com.tokopedia.transaction.addtocart.model.responseatcform.ProductDetail;
@@ -68,4 +69,7 @@ public interface AddToCartViewListener extends IBaseView {
     void enableQuantityTextWatcher();
 
     void changeQuantity(String quantity);
+
+    void setInsuranceSpinnerVisibility(Product product);
+
 }

@@ -70,6 +70,14 @@ public interface CompleteTripContract {
         RequestParams getTipParam();
 
         int getTipAmount();
+
+        void openScroogePage(String url, String postData);
+
+        void showProgressbar();
+
+        void showAddShortcutDialog();
+
+        void hideProgressbar();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -80,5 +88,11 @@ public interface CompleteTripContract {
         void handleRatingStarClick(float v);
 
         void sendTip(RequestParams tipParams);
+
+        void payPendingFare();
+
+        void showPopupToAddShortcutForFirstTime();
+
+        void setShortcutDialogIsShowninCache();
     }
 }

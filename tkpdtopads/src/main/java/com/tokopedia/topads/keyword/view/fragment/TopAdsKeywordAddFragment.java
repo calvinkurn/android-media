@@ -3,9 +3,7 @@ package com.tokopedia.topads.keyword.view.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -14,29 +12,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.response.Error;
 import com.tokopedia.core.network.retrofit.response.TextErrorObject;
-import com.tokopedia.topads.R;
 import com.tokopedia.seller.product.edit.utils.ViewUtils;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.util.TopAdsComponentUtils;
+import com.tokopedia.topads.common.view.fragment.TopAdsBaseStepperFragment;
 import com.tokopedia.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordAddComponent;
 import com.tokopedia.topads.keyword.di.module.TopAdsKeywordAddModule;
 import com.tokopedia.topads.keyword.view.adapter.KeywordAdapter;
 import com.tokopedia.topads.keyword.view.listener.TopAdsKeywordAddView;
+import com.tokopedia.topads.keyword.view.model.TopAdsKeywordStepperModel;
 import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordAddPresenter;
 import com.tokopedia.topads.keyword.view.widget.KeywordRecyclerView;
 
@@ -49,30 +46,21 @@ import javax.inject.Inject;
  * Created by hendry on 5/18/2017.
  */
 
-public class TopAdsKeywordAddFragment extends BaseDaggerFragment
+public class TopAdsKeywordAddFragment extends TopAdsBaseStepperFragment<TopAdsKeywordStepperModel>
         implements KeywordAdapter.OnKeywordAdapterListener, TopAdsKeywordAddView {
 
     public static final String TAG = TopAdsKeywordAddFragment.class.getSimpleName();
-
-    @Inject
-    TopAdsKeywordAddPresenter topAdsKeywordAddPresenter;
-
     public static final String EXTRA_GROUP_ID = "grp_id";
     public static final String EXTRA_KEYWORD_TYPE = "keyword_typ";
     public static final String EXTRA_SERVER_COUNT = "server_cnt";
     public static final String EXTRA_MAX_WORDS = "max_words";
     public static final String EXTRA_LOCAL_WORDS = "lcl_wrds";
     public static final String EXTRA_ERROR_WORDS = "err_wrds";
-
     public static final int MIN_WORDS = 5;
-
+    @Inject
+    TopAdsKeywordAddPresenter topAdsKeywordAddPresenter;
     OnSuccessSaveKeywordListener onSuccessSaveListener;
     private ArrayList<String> errorStringList = new ArrayList<>();
-
-    public interface OnSuccessSaveKeywordListener {
-        void onSuccessSave(ArrayList<String> keyWordsList);
-    }
-
     private ArrayList<String> localWords = new ArrayList<>();
     private int serverCount;
     private int maxKeyword;
@@ -87,6 +75,7 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
     private View buttonSave;
     private TkpdProgressDialog progressDialog;
 
+    @Deprecated
     public static TopAdsKeywordAddFragment newInstance(String groupId,
                                                        int keywordType,
                                                        int serverCount,
@@ -103,17 +92,43 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
         return fragment;
     }
 
+    public static TopAdsKeywordAddFragment newInstance() {
+        return new TopAdsKeywordAddFragment();
+    }
+
+    @Override
+    protected void saveStepperModel(TopAdsKeywordStepperModel stepperModel) {
+
+    }
+
+    @Override
+    protected void initiateStepperModel() {
+        if(stepperModel == null)
+            stepperModel = new TopAdsKeywordStepperModel();
+    }
+
+    @Override
+    protected void goToNextPage() {
+        trackingSaveKeyword();
+        showLoading();
+        topAdsKeywordAddPresenter.addKeyword(groupId, keywordType, keywordRecyclerView.getKeywordList());
+    }
+
+    @Override
+    protected void populateView(TopAdsKeywordStepperModel stepperModel) {
+
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Bundle args = getArguments();
-        groupId = args.getString(EXTRA_GROUP_ID);
-        keywordType = args.getInt(EXTRA_KEYWORD_TYPE);
-        serverCount = args.getInt(EXTRA_SERVER_COUNT);
-        maxKeyword = args.getInt(EXTRA_MAX_WORDS);
+        initiateStepperModel();
+        groupId = stepperModel.getGroupId();
+        keywordType = stepperModel.getKeywordType();
+        serverCount = stepperModel.getServerCount();
+        maxKeyword = stepperModel.getMaxWords();
         if (savedInstanceState == null) {
-            localWords = args.getStringArrayList(EXTRA_LOCAL_WORDS);
+            localWords = stepperModel.getLocalWords();
         } else {
             localWords = savedInstanceState.getStringArrayList(EXTRA_LOCAL_WORDS);
             errorStringList = savedInstanceState.getStringArrayList(EXTRA_ERROR_WORDS);
@@ -124,7 +139,7 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
     protected void initInjector() {
         DaggerTopAdsKeywordAddComponent.builder()
                 .topAdsKeywordAddModule(new TopAdsKeywordAddModule())
-                .appComponent(getComponent(AppComponent.class))
+                .topAdsComponent(TopAdsComponentUtils.getTopAdsComponent(this))
                 .build()
                 .inject(this);
         topAdsKeywordAddPresenter.attachView(this);
@@ -238,6 +253,9 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
         if (onSuccessSaveListener != null) {
             onSuccessSaveListener.onSuccessSave(keywordRecyclerView.getKeywordList());
         }
+        if (stepperListener != null) {
+            stepperListener.finishPage();
+        }
     }
 
     @Override
@@ -318,10 +336,6 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
         setCurrentMaxKeyword();
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    // START VALIDATOR
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-
     private boolean isValidateWordAndCheckLocalSuccess(String validKeyword) {
         // validate no more 5 words
         if (!hasValidWordLength(validKeyword)) {
@@ -329,11 +343,12 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
         }
 
         // validate if keyword has existed in local
-        if (keywordAlreadyInLocal(validKeyword)) {
-            return false;
-        }
-        return true;
+        return !keywordAlreadyInLocal(validKeyword);
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // START VALIDATOR
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
     private boolean hasInvalidChar(String keyword) {
         // check if contain alphanumeric
@@ -370,10 +385,6 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
         return false;
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    // END VALIDATOR
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -383,6 +394,10 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
         setServerKeyword();
         checkAddButtonEnabled();
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // END VALIDATOR
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
     private void setCurrentMaxKeyword() {
         textViewKeywordCurrentMax.setText(getString(R.string.top_ads_keywords_total_current_and_max,
@@ -436,5 +451,9 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
     public void onDetach() {
         super.onDetach();
         onSuccessSaveListener = null;
+    }
+
+    public interface OnSuccessSaveKeywordListener {
+        void onSuccessSave(ArrayList<String> keyWordsList);
     }
 }

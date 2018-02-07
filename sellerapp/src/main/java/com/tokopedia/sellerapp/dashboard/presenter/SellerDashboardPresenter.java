@@ -7,19 +7,19 @@ import com.tokopedia.core.common.ticker.model.Ticker;
 import com.tokopedia.core.common.ticker.usecase.GetTickerUseCase;
 import com.tokopedia.core.drawer2.data.pojo.notification.NotificationModel;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
+import com.tokopedia.core.drawer2.domain.interactor.NewNotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
 import com.tokopedia.core.drawer2.view.subscriber.NotificationSubscriber;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoUseCase;
 import com.tokopedia.seller.shop.setting.constant.ShopCloseAction;
 import com.tokopedia.seller.shop.setting.domain.interactor.UpdateShopScheduleUseCase;
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreMainDomainModel;
+import com.tokopedia.seller.shopscore.view.mapper.ShopScoreMapper;
+import com.tokopedia.seller.shopscore.view.model.ShopScoreViewModel;
 import com.tokopedia.sellerapp.dashboard.model.ShopModelWithScore;
 import com.tokopedia.sellerapp.dashboard.presenter.listener.NotificationListener;
 import com.tokopedia.sellerapp.dashboard.usecase.GetShopInfoWithScoreUseCase;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
-import com.tokopedia.seller.shopscore.view.mapper.ShopScoreMapper;
-import com.tokopedia.seller.shopscore.view.model.ShopScoreViewModel;
 
 import javax.inject.Inject;
 
@@ -32,19 +32,19 @@ import rx.Subscriber;
 public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboardView> {
     private final GetShopInfoWithScoreUseCase getShopInfoWithScoreUseCase;
     private final GetTickerUseCase getTickerUseCase;
-    private final NotificationUseCase notificationUseCase;
+    private final NewNotificationUseCase newNotificationUseCase;
     private final CacheApiClearAllUseCase cacheApiClearAllUseCase;
     private final UpdateShopScheduleUseCase updateShopScheduleUseCase;
 
     @Inject
     public SellerDashboardPresenter(GetShopInfoWithScoreUseCase getShopInfoWithScoreUseCase,
                                     GetTickerUseCase getTickerUseCase,
-                                    NotificationUseCase notificationUseCase,
+                                    NewNotificationUseCase newNotificationUseCase,
                                     CacheApiClearAllUseCase cacheApiClearAllUseCase,
                                     UpdateShopScheduleUseCase updateShopScheduleUseCase) {
         this.getShopInfoWithScoreUseCase = getShopInfoWithScoreUseCase;
         this.getTickerUseCase = getTickerUseCase;
-        this.notificationUseCase = notificationUseCase;
+        this.newNotificationUseCase = newNotificationUseCase;
         this.cacheApiClearAllUseCase = cacheApiClearAllUseCase;
         this.updateShopScheduleUseCase = updateShopScheduleUseCase;
     }
@@ -107,7 +107,7 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
     }
 
     public void getNotification(){
-        notificationUseCase.execute(NotificationUseCase.getRequestParam(true),getNotificationSubscriber());
+        newNotificationUseCase.execute(NotificationUseCase.getRequestParam(true),getNotificationSubscriber());
     }
 
     private Subscriber<NotificationModel> getNotificationSubscriber() {
@@ -178,7 +178,7 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
         getShopInfoWithScoreUseCase.unsubscribe();
         getTickerUseCase.unsubscribe();
         updateShopScheduleUseCase.unsubscribe();
-        notificationUseCase.unsubscribe();
         cacheApiClearAllUseCase.unsubscribe();
+        newNotificationUseCase.unsubscribe();
     }
 }

@@ -132,7 +132,7 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
 
     @Override
     public void onHistoryClicked(RideHistoryViewModel viewModel) {
-        RideGATracking.eventClickReceipt(getScreenName(),viewModel.getRequestTime(),viewModel.getTotalFare(),viewModel.getStatus());//16
+        RideGATracking.eventClickReceipt(getScreenName(), viewModel.getRequestTime(), viewModel.getTotalFare(), viewModel.getStatus());//16
         mOnFragmentInteractionListener.actionNavigateToDetail(viewModel);
     }
 
@@ -276,6 +276,10 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
                 presenter.actionRefreshHistoriesData();
             }
         };
+    }
+
+    public void actionRefreshHistoriesData() {
+        presenter.actionRefreshHistoriesData();
     }
 
     public interface OnFragmentInteractionListener {

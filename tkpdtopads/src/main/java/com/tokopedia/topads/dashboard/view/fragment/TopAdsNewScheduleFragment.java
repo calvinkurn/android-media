@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -19,8 +20,10 @@ import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.base.view.model.StepperModel;
 import com.tokopedia.seller.common.datepicker.view.widget.DatePickerLabelView;
+import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.view.dialog.DatePickerDialog;
 import com.tokopedia.topads.dashboard.view.dialog.TimePickerdialog;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailEditView;
@@ -316,6 +319,11 @@ public abstract class TopAdsNewScheduleFragment<T extends StepperModel, V extend
     public void onSaveAdError(String errorMessage) {
         hideLoading();
         showSnackBarError(errorMessage);
+    }
+
+    @Override
+    public void onSuggestionError(@Nullable Throwable t) {
+        /* just deal with abstraction */
     }
 
     @Override

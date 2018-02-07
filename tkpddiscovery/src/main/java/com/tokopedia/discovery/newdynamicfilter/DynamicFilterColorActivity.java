@@ -33,7 +33,7 @@ public class DynamicFilterColorActivity extends DynamicFilterDetailGeneralActivi
         if (activity != null) {
             Intent intent = new Intent(activity, DynamicFilterColorActivity.class);
             intent.putExtra(EXTRA_PAGE_TITLE, pageTitle);
-            intent.putParcelableArrayListExtra(EXTRA_OPTION_LIST, mappingParcelableOption(optionList));
+            intent.putParcelableArrayListExtra(EXTRA_OPTION_LIST, new ArrayList<>(optionList));
             intent.putExtra(EXTRA_IS_SEARCHABLE, isSearchable);
             intent.putExtra(EXTRA_SEARCH_HINT, searchHint);
             activity.startActivityForResult(intent, REQUEST_CODE);

@@ -160,7 +160,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
 
                     @Override
                     public void onNext(AddProductShopInfoDomainModel model) {
-                        getView().onSuccessLoadShopInfo(model.isGoldMerchant(), model.isFreeReturn());
+                        getView().onSuccessLoadShopInfo(model.isGoldMerchant(), model.isFreeReturn(), model.isOfficialStore());
                     }
                 });
     }

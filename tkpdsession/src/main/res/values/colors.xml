@@ -21,4 +21,13 @@
         <item>@color/green_90</item>
         <item>@color/green_100</item>
     </array>
+
+    <color name="grey_background">#f3f3f3</color>
+    <color name="separator_color">#e0e0e0</color>
+
+    <color name="shadow_color_1">#00CCCCCC</color>
+    <color name="shadow_color_2">#10CCCCCC</color>
+    <color name="shadow_color_3">#15CCCCCC</color>
+    <color name="shadow_color_4">#20CCCCCC</color>
+    <color name="shadow_color_5">#25CCCCCC</color>
 </resources>

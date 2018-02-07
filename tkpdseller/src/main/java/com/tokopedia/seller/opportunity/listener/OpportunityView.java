@@ -1,15 +1,17 @@
 package com.tokopedia.seller.opportunity.listener;
 
+import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.seller.opportunity.data.OpportunityNewPriceData;
 import com.tokopedia.seller.opportunity.presentation.ActionViewData;
 
 /**
  * Created by hangnadi on 2/27/17.
  */
-public interface OpportunityView {
+public interface OpportunityView extends CustomerView {
 
     void onActionDeleteClicked();
 
-    void onActionConfirmClicked();
+    void onReputationLabelClicked();
 
     void onActionSeeDetailProduct(String productId);
 
@@ -21,5 +23,9 @@ public interface OpportunityView {
 
     void onSuccessTakeOpportunity(ActionViewData actionViewData);
 
+    void onSuccessNewPrice(OpportunityNewPriceData opportunityNewPriceData);
+
     void onErrorTakeOpportunity(String errorMessage);
+
+    void onErrorPriceInfo(String errorMessage);
 }

@@ -21,12 +21,13 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.session.presenter.Session;
@@ -58,8 +59,6 @@ import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
-import static com.tokopedia.core.newgallery.GalleryActivity.DEF_QLTY_COMPRESS;
-import static com.tokopedia.core.newgallery.GalleryActivity.DEF_WIDTH_CMPR;
 
 /**
  * Created by nathan on 4/3/17.
@@ -99,7 +98,7 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
     @DeepLink(Constants.Applinks.PRODUCT_ADD)
     public static Intent getCallingApplinkAddProductMainAppIntent(Context context, Bundle extras) {
         Intent intent = null;
-        if (!SessionHandler.getShopID(context).isEmpty() && !SessionHandler.getShopID(context).equals("0")) {
+        if (SessionHandler.isUserHasShop(context)) {
             intent = new Intent(context, ProductAddActivity.class);
         } else {
             if (GlobalConfig.isSellerApp()) {
@@ -126,11 +125,7 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
             if(FileUtils.isInTkpdCache(new File(imageUrl))) {
                 imageUrls.add(imageUrl);
             } else {
-                String fileNameToMove = FileUtils.generateUniqueFileName();
-                File photo = FileUtils.writeImageToTkpdPath(
-                        FileUtils.compressImage(imageUrl, DEF_WIDTH_CMPR,
-                                DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
-                        fileNameToMove);
+                File photo = FileUtils.writeImageToTkpdPath(imageUrl);
                 if (photo != null) {
                     imageUrls.add(photo.getAbsolutePath());
                 }
@@ -238,7 +233,7 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
                 return false;
             }
         } else {
-            Intent intentLogin = SessionRouter.getLoginActivityIntent(this);
+            Intent intentLogin = OldSessionRouter.getLoginActivityIntent(this);
             intentLogin.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
             startActivity(intentLogin);
             finish();
@@ -277,7 +272,7 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             deleteNotUsedTkpdCacheImage();
-                            ProductAddActivity.super.onBackPressed();
+                            backPressedHandleTaskRoot();
                         }
                     }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface arg0, int arg1) {
@@ -291,12 +286,22 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
                     if (!doSave) {
                         UnifyTracking.eventClickAddProduct(AppEventTracking.Category.ADD_PRODUCT,
                                 AppEventTracking.EventLabel.SAVE_DRAFT);
-                        ProductAddActivity.super.onBackPressed();
+                        backPressedHandleTaskRoot();
                     }
                 }
             });
             AlertDialog dialog = alertDialogBuilder.create();
             dialog.show();
+        } else {
+            backPressedHandleTaskRoot();
+        }
+    }
+
+    private void backPressedHandleTaskRoot(){
+        if (isTaskRoot()) {
+            Intent homeIntent = ((TkpdCoreRouter) getApplication()).getHomeIntent(this);
+            startActivity(homeIntent);
+            finish();
         } else {
             super.onBackPressed();
         }
@@ -402,9 +407,9 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
     public void startAddWholeSaleDialog(
             WholesaleModel fixedPrice,
             @CurrencyTypeDef int currencyType,
-            WholesaleModel previousWholesalePrice) {
+            WholesaleModel previousWholesalePrice, boolean officialStore) {
         AddWholeSaleDialog addWholeSaleDialog = AddWholeSaleDialog.newInstance(
-                fixedPrice, currencyType, previousWholesalePrice
+                fixedPrice, currencyType, previousWholesalePrice, officialStore
         );
         addWholeSaleDialog.show(getSupportFragmentManager(), AddWholeSaleDialog.TAG);
         addWholeSaleDialog.setOnDismissListener(new AddWholeSaleDialog.OnDismissListener() {

@@ -23,15 +23,17 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.apiservices.transaction.TokoCashService;
+import com.tokopedia.core.network.apiservices.tokocash.TokoCashService;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.tokocash.domain.ActivateTokoCashRepository;
+import com.tokopedia.digital.tokocash.domain.TokoCashRepository;
 import com.tokopedia.digital.tokocash.interactor.ActivateTokoCashInteractor;
 import com.tokopedia.digital.tokocash.listener.RequestOTPWalletView;
 import com.tokopedia.digital.tokocash.presenter.IRequestOTPWalletPresenter;
@@ -46,6 +48,7 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by nabillasabbaha on 7/24/17.
@@ -79,6 +82,7 @@ public class RequestOTPWalletFragment extends BasePresenterFragment<IRequestOTPW
     private CountDownTimer countDownTimer;
     private TkpdProgressDialog progressDialog;
     private IncomingSmsReceiver incomingSmsReceiver;
+    private CompositeSubscription compositeSubscription;
 
     public static RequestOTPWalletFragment newInstance() {
         RequestOTPWalletFragment fragment = new RequestOTPWalletFragment();
@@ -126,7 +130,7 @@ public class RequestOTPWalletFragment extends BasePresenterFragment<IRequestOTPW
                             RequestPermissionUtil
                                     .getNeedPermissionMessage(Manifest.permission.READ_SMS)
                     )
-                    .setPositiveButton(com.tokopedia.core.R.string.button_ok, new DialogInterface.OnClickListener() {
+                    .setPositiveButton(com.tokopedia.core.R.string.title_ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             RequestOTPWalletFragmentPermissionsDispatcher
@@ -159,8 +163,11 @@ public class RequestOTPWalletFragment extends BasePresenterFragment<IRequestOTPW
         SessionHandler sessionHandler = new SessionHandler(MainApplication.getAppContext());
         String acessToken = sessionHandler.getAccessToken(MainApplication.getAppContext());
         TokoCashService tokoCashService = new TokoCashService(acessToken);
+        compositeSubscription = new CompositeSubscription();
         ActivateTokoCashInteractor interactor = new ActivateTokoCashInteractor
-                (new ActivateTokoCashRepository(tokoCashService));
+                (compositeSubscription, new TokoCashRepository(tokoCashService),
+                        new JobExecutor(),
+                        new UIThread());
         presenter = new RequestOTPWalletPresenter(interactor, this);
     }
 
@@ -361,7 +368,9 @@ public class RequestOTPWalletFragment extends BasePresenterFragment<IRequestOTPW
         if (incomingSmsReceiver != null)
             getActivity().unregisterReceiver(incomingSmsReceiver);
 
-        presenter.onDestroyView();
+        if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
+            compositeSubscription.unsubscribe();
+
         cacheHandler = null;
     }
 

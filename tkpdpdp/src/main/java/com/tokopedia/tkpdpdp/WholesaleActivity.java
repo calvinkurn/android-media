@@ -48,6 +48,7 @@ public class WholesaleActivity extends TActivity {
                     @Override
                     public void onClick(View v) {
                         finish();
+                        WholesaleActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
                     }
                 });
     }
@@ -70,5 +71,11 @@ public class WholesaleActivity extends TActivity {
         ArrayList<ProductWholesalePrice> productWholesalePrices =
                 getIntent().getParcelableArrayListExtra(KEY_WHOLESALE_DATA);
         wholesaleAdapter.setData(productWholesalePrices);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        WholesaleActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
     }
 }

@@ -139,6 +139,18 @@
                 android:layout_marginEnd="@dimen/margin_med"
                 android:layout_marginRight="@dimen/margin_med" />
 
+            <ImageView
+                android:id="@+id/retry_top_cash"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@+id/top_cash_value"
+                android:layout_marginEnd="@dimen/margin_med"
+                android:layout_marginRight="@dimen/margin_med"
+                android:src="@drawable/ic_new_action_refresh"
+                android:tint="@color/tkpd_main_green"
+                android:visibility="gone"/>
+
 
         </RelativeLayout>
 

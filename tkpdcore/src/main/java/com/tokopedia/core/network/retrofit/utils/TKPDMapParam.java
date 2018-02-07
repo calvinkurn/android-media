@@ -6,6 +6,14 @@ import java.util.HashMap;
  * TKPDMapParam
  * Created by anggaprasetiyo on 10/5/16.
  */
+
+/**
+ *
+ * Please use TKPDMapParam from tkpd abstraction
+ * @param <K>
+ * @param <V>
+ */
+@Deprecated
 public class TKPDMapParam<K, V> extends HashMap<K, V> {
     /**
      * @param key   key parameter

@@ -1,8 +1,16 @@
 package com.tokopedia.topads.dashboard.di.module;
 
+import android.content.Context;
+
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
+import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
+import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.seller.shop.common.data.source.ShopInfoDataSource;
+import com.tokopedia.seller.shop.common.data.source.cloud.api.ShopApi;
+import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.topads.dashboard.data.repository.GetDepositTopAdsRepositoryImpl;
 import com.tokopedia.topads.dashboard.data.source.GetDepositTopadsDataSource;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
@@ -39,5 +47,17 @@ public class TopAdsModule {
     @Provides
     public TopAdsManagementApi provideTopAdsManagementApi(@TopAdsQualifier Retrofit retrofit){
         return retrofit.create(TopAdsManagementApi.class);
+    }
+
+    @TopAdsScope
+    @Provides
+    public ShopInfoRepository provideShopInfoRepository(@ApplicationContext Context context, ShopInfoDataSource shopInfoDataSource){
+        return new ShopInfoRepositoryImpl(context, shopInfoDataSource);
+    }
+
+    @TopAdsScope
+    @Provides
+    public ShopApi provideShopApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
+        return retrofit.create(ShopApi.class);
     }
 }

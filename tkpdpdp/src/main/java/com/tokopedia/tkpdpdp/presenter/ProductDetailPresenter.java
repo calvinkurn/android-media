@@ -88,6 +88,8 @@ public interface ProductDetailPresenter {
 
     void saveStatePromoWidget(Bundle outState, String key, PromoAttributes promoAttributes);
 
+    void saveStateAppBarCollapsed(Bundle outState, String key, boolean isAppBarCollapsed);
+
     void processStateData(Bundle savedInstanceState);
 
     void processToCatalog(Context context, String catalogId);

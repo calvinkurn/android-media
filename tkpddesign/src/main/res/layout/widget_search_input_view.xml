@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_sm"
             android:layout_marginRight="@dimen/margin_sm"
-            android:textSize="@dimen/font_body1"
+            android:textSize="@dimen/font_small"
             android:layout_weight="1"
             android:background="@null"
             android:ellipsize="end"
@@ -47,7 +47,7 @@
             android:layout_width="@dimen/image_width_xxs"
             android:layout_height="@dimen/image_width_xxs"
             android:background="@null"
-            android:src="@drawable/ic_close"
+            android:src="@drawable/ic_ticker_action_close_12dp"
             android:visibility="gone" />
     </LinearLayout>
 

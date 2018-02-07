@@ -14,6 +14,18 @@ def getDpiId(String density) {
     return 0;
 }
 
+def getAbiId(String abi) {
+
+    def ABI_ID = ['null': 0, 'armeabi-v7a': 10, 'x86': 20]
+    if (abi != null)
+        return ABI_ID.get(abi);
+    return 0;
+}
+
+def generateBuildId(String density, String abi) {
+    return getAbiId(abi) + getDpiId(density);
+}
+
 def getAPKArchiveFolder(variant) {
     return "/Android/launching-android/" + "V" + variant.mergedFlavor.versionCode;
 }
@@ -73,8 +85,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 212001301;
-        defaultVersionName = "2.13";
+        defaultVersionCode = 218001101;
+        defaultVersionName = "2.18";
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -130,7 +142,8 @@ android {
                 applicationVariants.all { variant ->
                     variant.outputs.each { output ->
                         String density = output.getFilter(com.android.build.OutputFile.DENSITY);
-                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + getDpiId(density);
+                        String abi = output.getFilter(com.android.build.OutputFile.ABI);
+                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + generateBuildId(density, abi);
                     }
                     variant.assemble.doLast {
                         variant.outputs.each { output ->
@@ -153,9 +166,17 @@ android {
     splits {
         density {
             enable allowSplit()
-            exclude "tvdpi", "xxxhdpi", "ldpi" //Add or modify the supported density here`
-            compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
+            reset()
+            include "mdpi", "hdpi", "xhdpi", "xxhdpi"
+            compatibleScreens 'small', 'normal', 'large', 'xlarge'
         }
+        abi {
+            enable allowSplit()
+            reset()
+            include "armeabi-v7a", "x86"
+            universalApk false
+        }
+
     }
 
     defaultConfig {
@@ -176,7 +197,8 @@ android {
 
 
     dexOptions {
-        javaMaxHeapSize "4g"
+        javaMaxHeapSize "8g"
+        keepRuntimeAnnotatedClasses false
     }
 
     compileOptions {
@@ -198,14 +220,12 @@ android {
         }
     }
 
-//    variantFilter { variant ->
-//        def names = variant.flavors*.name
-//        // To check for a certain build type, use variant.buildType.name == "<buildType>"
-//        if (names.contains("staging") && names.contains("demo")) {
-//            // Gradle ignores any variants that satisfy the conditions above.
-//            setIgnore(true)
-//        }
-//    }
+    variantFilter { variant ->
+
+        if(variant.buildType.name.equals('release') && variant.getFlavors().get(0).name.equals('staging')) {
+            variant.setIgnore(true);
+        }
+    }
 }
 
 dependencies {
@@ -253,6 +273,10 @@ dependencies {
     compile project(':tkpdpdp')
     compile project(':tkpdfeed')
     compile project(':tkpdreactnative')
+    compile project(':tkpdloyalty')
+    compile project(':tkpdreputation')
+    compile project(':tkpdtokocash')
+    compile project(':tkpdflight')
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -268,9 +292,6 @@ dependencies {
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-
-    compile rootProject.ext.playServicesDependencies.firebase
-    compile rootProject.ext.playServicesDependencies.remoteConfig
 
     provided rootProject.ext.miscDependencies.javaxAnnotation
     compile rootProject.ext.miscDependencies.dagger

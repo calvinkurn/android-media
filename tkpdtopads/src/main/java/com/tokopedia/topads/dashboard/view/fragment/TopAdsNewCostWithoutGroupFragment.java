@@ -1,15 +1,18 @@
 package com.tokopedia.topads.dashboard.view.fragment;
 
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
+import com.tokopedia.topads.dashboard.constant.TopAdsSuggestionBidInteractionTypeDef;
+import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailEditView;
@@ -20,6 +23,7 @@ import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailNewProductPresenter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -37,7 +41,7 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
         super.initInjector();
         DaggerTopAdsCreatePromoComponent.builder()
                 .topAdsCreatePromoModule(new TopAdsCreatePromoModule())
-                .appComponent(getComponent(AppComponent.class))
+                .topAdsComponent(TopAdsComponentUtils.getTopAdsComponent(this))
                 .build()
                 .inject(this);
         topAdsDetailNewProductPresenter.attachView(this);
@@ -50,6 +54,17 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
     }
 
     @Override
+    protected void loadSuggestionBid() {
+        // get id from view model
+        List<String> ids = new ArrayList<>();
+        for (TopAdsProductViewModel topAdsProductViewModel : stepperModel.getTopAdsProductViewModels()) {
+            ids.add(topAdsProductViewModel.getDepartmentId() + "");
+        }
+
+        topAdsDetailNewProductPresenter.getSuggestionBid(ids, TopAdsNetworkConstant.SOURCE_NEW_COST_WITHOUT_GROUP);
+    }
+
+    @Override
     protected void initialVar() {
         super.initialVar();
         detailAd.setShopId(Long.parseLong(SessionHandler.getShopID(getActivity())));
@@ -58,7 +73,7 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
 
     @Override
     protected void onClickedNext() {
-        if(!isError()) {
+        if (!isPriceError()) {
             super.onClickedNext();
             if (stepperModel == null) {
                 stepperModel = new TopAdsCreatePromoWithoutGroupModel();
@@ -93,9 +108,9 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
     }
 
     private void trackingNewCostTopads() {
-        if(detailAd != null && detailAd.isBudget()) {
+        if (detailAd != null && detailAd.isBudget()) {
             UnifyTracking.eventTopAdsProductAddPromoWithoutGroupStep2(AppEventTracking.EventLabel.BUDGET_PER_DAY);
-        }else{
+        } else {
             UnifyTracking.eventTopAdsProductAddPromoWithoutGroupStep2(AppEventTracking.EventLabel.BUDGET_NOT_LIMITED);
         }
     }
@@ -104,6 +119,32 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
     public void onSaveAdError(String errorMessage) {
         hideLoading();
         showSnackBarError(errorMessage);
+    }
+
+    @Override
+    public void onSuggestionSuccess(GetSuggestionResponse s) {
+        setSuggestionBidText(s);
+        detailAd.setSuggestionBidValue(suggestionBidValue);
+        detailAd.setSuggestionBidButton(TopAdsSuggestionBidInteractionTypeDef.SUGGESTION_NOT_IMPLEMENTED);
+        defaultSuggestionBidButtonStatus = TopAdsSuggestionBidInteractionTypeDef.SUGGESTION_NOT_IMPLEMENTED;
+    }
+
+    @Override
+    public void onSuggestionError(@Nullable Throwable t) {
+        detailAd.setSuggestionBidButton(TopAdsSuggestionBidInteractionTypeDef.NO_SUGGESTION);
+    }
+
+    @Override
+    protected void onSuggestionBidClicked() {
+        detailAd.setSuggestionBidButton(TopAdsSuggestionBidInteractionTypeDef.SUGGESTION_IMPLEMENTED);
+    }
+
+    @Override
+    protected void onPriceChanged(double number) {
+        super.onPriceChanged(number);
+        if (suggestionBidValue != number) {
+            detailAd.setSuggestionBidButton(defaultSuggestionBidButtonStatus);
+        }
     }
 
     @Override

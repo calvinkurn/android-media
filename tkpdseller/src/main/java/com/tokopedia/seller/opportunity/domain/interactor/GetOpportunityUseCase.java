@@ -1,6 +1,7 @@
 package com.tokopedia.seller.opportunity.domain.interactor;
 
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -14,6 +15,8 @@ import com.tokopedia.seller.opportunity.domain.repository.ReplacementRepository;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.FilterPass;
 
 import java.util.ArrayList;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -31,6 +34,7 @@ public class GetOpportunityUseCase extends UseCase<OpportunityModel> {
 
     private final ReplacementRepository repository;
 
+    @Inject
     public GetOpportunityUseCase(ThreadExecutor threadExecutor,
                                  PostExecutionThread postExecutionThread,
                                  ReplacementRepository repository) {
@@ -51,8 +55,9 @@ public class GetOpportunityUseCase extends UseCase<OpportunityModel> {
         RequestParams param = RequestParams.create();
         param.putString(GetOpportunityUseCase.PAGE, String.valueOf(page));
         param.putString(GetOpportunityUseCase.PER_PAGE, GetOpportunityUseCase.DEFAULT_PER_PAGE);
-        if (query != null)
+        if (!TextUtils.isEmpty(query)) {
             param.putString(GetOpportunityUseCase.QUERY, query);
+        }
         if (listFilter != null && listFilter.size() > 0) {
             for (FilterPass filterPass : listFilter) {
                 if (param.getString(filterPass.getKey(), "").equals(""))

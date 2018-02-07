@@ -18,6 +18,10 @@ import com.tokopedia.core.base.adapter.viewholders.LoadingViewholder;
  * @author Kulomady on 1/25/17.
  */
 
+/**
+ * Use BaseAdapter (visitable pattern) from tkpd abstraction
+ */
+@Deprecated
 public class BaseAdapterTypeFactory implements AdapterTypeFactory {
 
     @Override

@@ -9,9 +9,29 @@ import android.os.Parcelable;
 
 public class ProductItem implements Parcelable {
 
+    public static final Parcelable.Creator<ProductItem> CREATOR = new Parcelable.Creator<ProductItem>() {
+        @Override
+        public ProductItem createFromParcel(Parcel source) {
+            return new ProductItem(source);
+        }
+
+        @Override
+        public ProductItem[] newArray(int size) {
+            return new ProductItem[size];
+        }
+    };
     String productImageUrl;
     String productName;
     private String productID;
+
+    public ProductItem() {
+    }
+
+    protected ProductItem(Parcel in) {
+        this.productImageUrl = in.readString();
+        this.productName = in.readString();
+        this.productID = in.readString();
+    }
 
     public String getProductImageUrl() {
         return productImageUrl;
@@ -48,25 +68,4 @@ public class ProductItem implements Parcelable {
         dest.writeString(this.productName);
         dest.writeString(this.productID);
     }
-
-    public ProductItem() {
-    }
-
-    protected ProductItem(Parcel in) {
-        this.productImageUrl = in.readString();
-        this.productName = in.readString();
-        this.productID = in.readString();
-    }
-
-    public static final Parcelable.Creator<ProductItem> CREATOR = new Parcelable.Creator<ProductItem>() {
-        @Override
-        public ProductItem createFromParcel(Parcel source) {
-            return new ProductItem(source);
-        }
-
-        @Override
-        public ProductItem[] newArray(int size) {
-            return new ProductItem[size];
-        }
-    };
 }

@@ -3,6 +3,7 @@ package com.tokopedia.core.util;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.webkit.WebView;
 
@@ -67,9 +68,10 @@ public class TkpdWebView extends WebView {
                 + "&" + osVersion;
 
         try {
-            if (Uri.parse(uri).getQuery() == null) {
+            if (!TextUtils.isEmpty(uri) && Uri.parse(uri).getQuery() == null) {
                 url += "?" + URLEncoder.encode(flags, FORMAT_UTF_8);
-            } else if (isSeamlessUrl(uri)
+            } else if (!TextUtils.isEmpty(uri) &&
+                    isSeamlessUrl(uri)
                     && (Uri.parse(uri).getQueryParameter(PARAM_URL)) != null
                     && Uri.parse(Uri.parse(uri).getQueryParameter(PARAM_URL)).getQuery() == null) {
                 url += "?" + URLEncoder.encode(flags, FORMAT_UTF_8);

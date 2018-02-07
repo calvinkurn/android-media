@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_above="@+id/button_submit"
+    android:layout_alignParentTop="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/grey_200"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/padding_med"
+            android:paddingLeft="@dimen/padding_small"
+            android:paddingRight="@dimen/padding_small"
+            android:paddingTop="@dimen/padding_med">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/padding_small"
+                android:paddingRight="@dimen/padding_small">
+
+                <ImageView
+                    android:id="@+id/icon_status"
+                    android:layout_width="@dimen/image_width_m"
+                    android:layout_height="@dimen/image_width_m"
+                    android:layout_marginRight="@dimen/margin_vs"
+                    app:srcCompat="@drawable/ic_flight_round" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/TextView.Micro.BlackDisabled"
+                        android:layout_toRightOf="@id/icon_status"
+                        android:text="@string/flight_label_status" />
+
+                    <TextView
+                        android:id="@+id/status_ticket"
+                        style="@style/TextView.Micro"
+                        tools:text="Tiket dibatalkan" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:background="@drawable/bg_line_separator" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/padding_vvvs"
+                android:paddingLeft="@dimen/padding_small"
+                android:paddingRight="@dimen/padding_small"
+                android:paddingTop="@dimen/padding_vvvs"
+                android:weightSum="2">
+
+                <TextView
+                    style="@style/TextView.Small.BlackSecondary"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:text="@string/flight_label_transaction_date" />
+
+                <TextView
+                    android:id="@+id/transaction_date"
+                    style="@style/TextView.Small.Bold"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    tools:text="1 Sep 2017, 05:00 WIB" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/payment_info_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/padding_vvvs"
+                    android:paddingLeft="@dimen/padding_small"
+                    android:paddingRight="@dimen/padding_small"
+                    android:paddingTop="@dimen/padding_vvvs"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:id="@+id/tv_payment_description_label"
+                        style="@style/TextView.Small.BlackSecondary"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        tools:text="Rekening Tujuan" />
+
+                    <TextView
+                        android:id="@+id/tv_payment_description"
+                        style="@style/TextView.Small"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        tools:text="1 Sep 2017, 05:00 WIB" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/padding_vvvs"
+                    android:paddingLeft="@dimen/padding_small"
+                    android:paddingRight="@dimen/padding_small"
+                    android:paddingTop="@dimen/padding_vvvs"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:id="@+id/tv_payment_cost_label"
+                        style="@style/TextView.Small.BlackSecondary"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="Jumlah Pembayaran" />
+
+                    <TextView
+                        android:id="@+id/tv_payment_cost"
+                        style="@style/TextView.Small.Bold"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:textColor="@color/flightPriceColor"
+                        tools:text="Rp100.000" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/padding_vvvs"
+                    android:paddingLeft="@dimen/padding_small"
+                    android:paddingRight="@dimen/padding_small"
+                    android:paddingTop="@dimen/padding_vvvs"
+                    android:weightSum="2">
+
+                    <TextView
+                        style="@style/TextView.Small.BlackSecondary"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="Batas Akhir Pembayaran" />
+
+                    <TextView
+                        android:id="@+id/tv_payment_due_date"
+                        style="@style/TextView.Small.Bold"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        tools:text="1 Nov 2018" />
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/margin_sm"
+                android:background="@drawable/bg_line_separator" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/padding_small"
+                android:paddingRight="@dimen/padding_small">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/container_download_eticket"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/TextView.Small.BlackSecondary"
+                        android:layout_marginEnd="@dimen/margin_vvs"
+                        android:layout_marginRight="@dimen/margin_vvs"
+                        android:text="@string/flight_label_order_id_detail" />
+
+                    <TextView
+                        android:id="@+id/order_id_detail"
+                        style="@style/TextView.Small"
+                        android:layout_marginRight="@dimen/margin_vs"
+                        tools:text="323088926194" />
+
+                    <ImageView
+                        android:id="@+id/copy_order_id"
+                        android:layout_width="@dimen/image_width_xs"
+                        android:layout_height="@dimen/image_width_xs"
+                        app:srcCompat="@drawable/ic_copy_order" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/container_download_eticket"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="top"
+                        android:layout_marginRight="@dimen/margin_vs"
+                        app:srcCompat="@drawable/ic_download_eticket" />
+
+                    <TextView
+                        style="@style/TextView.Small.Green"
+                        android:text="@string/flight_label_eticket" />
+
+                </LinearLayout>
+            </RelativeLayout>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+                android:id="@+id/recycler_view_flight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background_apps"
+                android:descendantFocusability="blocksDescendants"
+                android:nestedScrollingEnabled="false" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_med"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/layout_expendable_passenger"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/padding_med"
+                android:paddingRight="@dimen/padding_med">
+
+                <TextView
+                    android:id="@+id/title_expendable_passenger"
+                    style="@style/style_expandable_flight_detail_order_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/flight_label_passenger_data"
+                    android:textSize="18sp" />
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/image_expendable_passenger"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/medal_size"
+                    android:layout_gravity="center_vertical"
+                    app:srcCompat="@drawable/ic_arrow_up" />
+
+            </LinearLayout>
+
+            <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+                android:id="@+id/recycler_view_data_passenger"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:descendantFocusability="blocksDescendants"
+                android:nestedScrollingEnabled="false"
+                android:paddingLeft="@dimen/padding_med"
+                android:paddingRight="@dimen/padding_med" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_med"
+            android:layout_marginTop="@dimen/margin_med"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_med">
+
+                <TextView
+                    style="@style/TextView.TitleBig.Bold"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/container_download_invoice"
+                    android:text="@string/flight_label_detail_price"
+                    android:textSize="18sp" />
+
+                <LinearLayout
+                    android:id="@+id/container_download_invoice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="top"
+                        android:layout_marginRight="@dimen/margin_vs"
+                        app:srcCompat="@drawable/ic_download_eticket" />
+
+                    <TextView
+                        style="@style/TextView.Small.Green"
+                        android:text="@string/flight_label_invoice" />
+
+                </LinearLayout>
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view_detail_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:paddingLeft="@dimen/padding_med"
+                android:paddingRight="@dimen/padding_med" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_med">
+
+                <TextView
+                    style="@style/TextView.Small.Bold"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/total_price"
+                    android:text="@string/flight_label_price_total" />
+
+                <TextView
+                    android:id="@+id/total_price"
+                    style="@style/TextView.TitleBig.Bold"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    tools:text="Rp. 500.0000" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_med">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/padding_small">
+
+                <TextView
+                    style="@style/TextView.Micro"
+                    android:layout_marginRight="@dimen/margin_vvs"
+                    android:text="Untuk bantuan silakan klik" />
+
+                <TextView
+                    android:id="@+id/help"
+                    style="@style/TextView.Micro.Green"
+                    android:text="@string/di_sini" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/button_cancel"
+                style="@style/Button.Submit.White.Stroke"
+                android:text="@string/flight_label_cancel_ticket" />
+
+            <Button
+                android:id="@+id/button_reschedule"
+                style="@style/Button.Submit.White.Stroke"
+                android:text="@string/flight_label_reschedule_ticket" />
+
+            <Button
+                android:id="@+id/button_reorder"
+                style="@style/Button.Submit.Orange"
+                android:text="@string/flight_label_reorder"
+                android:visibility="gone"
+                tools:visibility="visible" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>

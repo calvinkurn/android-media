@@ -38,6 +38,7 @@ public class SearchProductEOFMapper implements Func1<Response<DataResponse<List<
             productDomain.setName(product.getName());
             productDomain.setPromoted(product.isPromoted());
             productDomain.setGroupName(product.getGroupName());
+            productDomain.setDepartmentId(product.getDepartmentId());
 
             productDomains.add(productDomain);
         }

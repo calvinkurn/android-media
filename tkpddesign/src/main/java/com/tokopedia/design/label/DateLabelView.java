@@ -23,7 +23,6 @@ public class DateLabelView extends BaseCustomView {
 
     private TextView dateTextView;
     private TextView comparedDateTextView;
-    private ImageView ivArrow;
     private ColorStateList defaultTextColor;
     private ColorStateList defaultCompareTextColor;
     private int grayColor;
@@ -51,7 +50,6 @@ public class DateLabelView extends BaseCustomView {
         View view = inflate(getContext(), R.layout.widget_date_label_view, this);
         dateTextView = (TextView) view.findViewById(R.id.text_view_date);
         comparedDateTextView = (TextView) view.findViewById(R.id.text_view_compared_date);
-        ivArrow = (ImageView) view.findViewById(R.id.arrow_left);
         defaultTextColor = dateTextView.getTextColors();
         defaultCompareTextColor = comparedDateTextView.getTextColors();
         grayColor = ContextCompat.getColor(getContext(), R.color.grey_400);
@@ -90,11 +88,9 @@ public class DateLabelView extends BaseCustomView {
         if (enabled) {
             dateTextView.setTextColor(defaultTextColor);
             comparedDateTextView.setTextColor(defaultCompareTextColor);
-            ivArrow.clearColorFilter();
         } else {
             dateTextView.setTextColor(grayColor);
             comparedDateTextView.setTextColor(grayColor);
-            ivArrow.setColorFilter(grayColor, PorterDuff.Mode.SRC_ATOP);
         }
     }
 }

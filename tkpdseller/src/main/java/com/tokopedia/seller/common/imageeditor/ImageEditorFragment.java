@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,6 +21,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.theartofdev.edmodo.cropper.CropImageView;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.seller.R;
 
@@ -43,6 +46,8 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
 
     public interface OnImageEditorFragmentListener {
         void onSuccessCrop(String localPath);
+
+        void addCroppedPath(String croppedPath);
     }
 
     public static ImageEditorFragment newInstance(String localPath) {
@@ -78,9 +83,14 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
         mCropImageView.setOnSetImageUriCompleteListener(this);
         mCropImageView.setOnCropImageCompleteListener(this);
 
-        File imgFile = new File(localPath);
+        final File imgFile = new File(localPath);
         if (imgFile.exists()) {
-            mCropImageView.setImageUriAsync(Uri.fromFile(imgFile));
+            mCropImageView.post(new Runnable() {
+                @Override
+                public void run() {
+                    mCropImageView.setImageUriAsync(Uri.fromFile(imgFile));
+                }
+            });
         }
     }
 
@@ -95,16 +105,33 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.main_action_crop) {
             // no need to crop if the rect is same and in local tkpd already
-            if (mCropImageView.getRotatedDegrees() == 0 &&
-                    (mCropImageView.getCropRect() == null ||
-                    mCropImageView.getCropRect().equals(mCropImageView.getWholeImageRect())) &&
-                    FileUtils.isInTkpdCache(new File(localPath))) {
+            if (checkIfSameWithPrevImage()) {
+                UnifyTracking.eventClickSaveEditImageProduct(AppEventTracking.ImageEditor.NO_ACTION);
                 onImageEditorFragmentListener.onSuccessCrop(localPath);
             } else {
+                boolean isRotate = mCropImageView.getRotatedDegrees() != 0;
+                boolean isCrop = false;
+                Rect cropRect = mCropImageView.getCropRect();
+                if (cropRect!= null) {
+                    isCrop = !cropRect.equals(mCropImageView.getWholeImageRect());
+                }
+                if (isRotate) {
+                    UnifyTracking.eventClickSaveEditImageProduct(AppEventTracking.ImageEditor.ROTATE);
+                }
+                if (isCrop) {
+                    UnifyTracking.eventClickSaveEditImageProduct(AppEventTracking.ImageEditor.CROP);
+                }
+
+                if (this instanceof ImageEditorWatermarkFragment) {
+                    if (((ImageEditorWatermarkFragment)this).isUseWatermark()) {
+                        UnifyTracking.eventClickSaveEditImageProduct(AppEventTracking.ImageEditor.WATERMARK);
+                    }
+                }
+
                 File file = FileUtils.getTkpdImageCacheFile(FileUtils.generateUniqueFileName());
                 croppedPath = file.getAbsolutePath();
                 mCropImageView.startCropWorkerTask(0, 0, CropImageView.RequestSizeOptions.NONE,
-                        Uri.fromFile(file), Bitmap.CompressFormat.JPEG, CROP_COMPRESSION);
+                        Uri.fromFile(file), Bitmap.CompressFormat.PNG, CROP_COMPRESSION);
             }
             return true;
         } else if (item.getItemId() == R.id.main_action_rotate) {
@@ -112,6 +139,13 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    protected boolean checkIfSameWithPrevImage() {
+        return mCropImageView.getRotatedDegrees() == 0 &&
+                (mCropImageView.getCropRect() == null ||
+                        mCropImageView.getCropRect().equals(mCropImageView.getWholeImageRect())) &&
+                FileUtils.isInTkpdCache(new File(localPath));
     }
 
     @Override
@@ -139,7 +173,8 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
             if (uri == null) {
                 Bitmap bitmap = result.getBitmap();
                 if (bitmap != null) {
-                    File file = FileUtils.writeImageToTkpdPath(bitmap, FileUtils.generateUniqueFileName());
+                    bitmap = processBitmap(bitmap);
+                    File file = FileUtils.writeImageToTkpdPath(bitmap);
                     if (file != null && file.exists()) {
                         String path = file.getAbsolutePath();
                         onImageEditorFragmentListener.onSuccessCrop(path);
@@ -147,6 +182,7 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
                 }
             } else {
                 if (!TextUtils.isEmpty(croppedPath)) {
+                    croppedPath = processCroppedPath(croppedPath);
                     onImageEditorFragmentListener.onSuccessCrop(croppedPath);
                 }
             }
@@ -154,6 +190,16 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
             Log.e("AIC", "Failed to crop image", result.getError());
             Toast.makeText(getActivity(), "Image crop failed: " + result.getError().getMessage(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    // will be override on child
+    protected Bitmap processBitmap(Bitmap bitmap) {
+        return bitmap;
+    }
+
+    // will be override on child
+    protected String processCroppedPath(String croppedPath) {
+        return croppedPath;
     }
 
     @SuppressWarnings("deprecation")

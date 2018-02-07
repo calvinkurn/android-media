@@ -1,19 +1,29 @@
 package com.tokopedia.core.myproduct.presenter;
 
-import android.content.Context;
-
 import com.tokopedia.core.myproduct.model.FolderModel;
 
 import java.util.List;
 
 /**
  * Created by m.normansyah on 03/12/2015.
+ *
+ * this class is abstract presenter
  */
 public interface ImageGallery {
     String TAG = "MNORMANSYAH";
     String messageTAG = "ImageGallery : ";
 
-    List<FolderModel> fetchImageUsingDb(Context context, String folderName);
+    @Deprecated
+    List<FolderModel> fetchImageUsingDb(String folderName);
 
-    List<FolderModel> fetchImageUsingDb(Context context);
+    @Deprecated
+    List<FolderModel> fetchImageUsingDb();
+
+    void getItemAlbum();
+
+    String getFolderPath(int position);
+
+    void getItemListAlbum(String folderPath);
+
+    void detach();
 }

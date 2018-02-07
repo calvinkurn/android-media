@@ -1,5 +1,6 @@
 package com.tokopedia.ride.common.ride.data;
 
+import com.tokopedia.ride.common.configuration.PaymentMode;
 import com.tokopedia.ride.common.ride.data.entity.ReceiptEntity;
 import com.tokopedia.ride.common.ride.data.entity.TipListEntity;
 import com.tokopedia.ride.common.ride.domain.model.Receipt;
@@ -39,6 +40,7 @@ public class ReceiptEntityMapper {
             String totalCharged = entity.getCurrencyCode() + " 0";
             if (entity.getPayment() != null) {
                 totalCharged = formatNumber(entity.getPayment().getTotalAmount(), entity.getPayment().getCurrencyCode());
+                receipt.setPaymentMethod(transformPaymentMethod(entity.getPayment().getPaymentMethod()));
             }
             receipt.setTotalCharged(totalCharged);
 
@@ -47,6 +49,7 @@ public class ReceiptEntityMapper {
             receipt.setCashbackDisplayFormat(formatNumber(entity.getCashbackAmount(), entity.getCurrencyCode()));
             receipt.setDiscountDisplayFormat(formatNumber(entity.getDiscountAmount(), entity.getCurrencyCode()));
             receipt.setTipList(transformTipList(entity.getTipList()));
+
 
             if (entity.getRideOffer() != null) {
                 receipt.setUberSignupUrl(entity.getRideOffer().getUrl());
@@ -142,5 +145,15 @@ public class ReceiptEntityMapper {
         }
 
         return currencyCode;
+    }
+
+    private String transformPaymentMethod(String paymentMethod) {
+        if (paymentMethod != null && paymentMethod.equalsIgnoreCase(PaymentMode.CC)) {
+            return PaymentMode.CC_DISPLAY_NAME;
+        } else if (paymentMethod != null && paymentMethod.equalsIgnoreCase(PaymentMode.WALLET)) {
+            return PaymentMode.WALLET_DISPLAY_NAME;
+        }
+
+        return PaymentMode.DEFAULT_DISPLAY_NAME;
     }
 }

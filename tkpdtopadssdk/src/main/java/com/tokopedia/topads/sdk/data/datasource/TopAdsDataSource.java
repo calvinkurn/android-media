@@ -1,6 +1,8 @@
 package com.tokopedia.topads.sdk.data.datasource;
 
 import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.domain.model.CpmModel;
+import com.tokopedia.topads.sdk.domain.model.MerlinRecomendation;
 import com.tokopedia.topads.sdk.domain.model.PreferedCategory;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 import com.tokopedia.topads.sdk.base.TKPDMapParam;
@@ -16,7 +18,11 @@ public interface TopAdsDataSource {
 
     TopAdsModel getTopAds(TKPDMapParam<String, String> params, int position);
 
+    CpmModel getTopAdsBanner(TKPDMapParam<String, String> param);
+
     PreferedCategory getPreferenceCategory();
+
+    MerlinRecomendation getMerlinRecomendation(String query);
 
     String clickTopAdsUrl(String url);
 

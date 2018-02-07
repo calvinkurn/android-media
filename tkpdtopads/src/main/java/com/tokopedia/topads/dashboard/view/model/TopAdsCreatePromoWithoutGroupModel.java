@@ -51,6 +51,8 @@ public class TopAdsCreatePromoWithoutGroupModel extends TopAdsProductListStepper
             detailProductViewModel.setPriceBid(detailProductCostViewModel.getPriceBid());
             detailProductViewModel.setPriceDaily(detailProductCostViewModel.getPriceDaily());
             detailProductViewModel.setBudget(detailProductCostViewModel.isBudget());
+            detailProductViewModel.setSuggestionBidValue(detailProductCostViewModel.getSuggestionBidValue());
+            detailProductViewModel.setSuggestionBidButton(detailProductCostViewModel.getSuggestionBidButton());
         }
     }
 }

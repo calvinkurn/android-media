@@ -39,7 +39,7 @@
 
         <TextView
             android:id="@+id/string_picker_dialog_confirm"
-            style="@style/TextView.Subheading.Green"
+            style="@style/TextView.Title.Green"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -52,7 +52,7 @@
 
         <TextView
             android:id="@+id/string_picker_dialog_cancel"
-            style="@style/TextView.Subheading.Green"
+            style="@style/TextView.Title.Green"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"

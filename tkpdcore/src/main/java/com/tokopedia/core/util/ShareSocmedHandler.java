@@ -225,7 +225,7 @@ public class ShareSocmedHandler {
     public static void ShareSpecific(final ShareData data, final Activity context, final String packageName, final String targetType, final Bitmap image, final String altUrl) {
         BranchSdkUtils.generateBranchLink(data, context, new BranchSdkUtils.GenerateShareContents() {
             @Override
-            public void onCreateShareContents(String shareContents, String shareUri,String branchUrl) {
+            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
                 ShareData(context, packageName, targetType, shareContents, shareUri, image, altUrl);
             }
         });
@@ -256,20 +256,25 @@ public class ShareSocmedHandler {
         share.putExtra(Intent.EXTRA_REFERRER, ProductUri);
         share.putExtra(Intent.EXTRA_TEXT, shareTxt);
 
-        List<ResolveInfo> resInfo = context.getPackageManager().queryIntentActivities(share, 0);
-        for (ResolveInfo info : resInfo) {
-            if (info.activityInfo.packageName.equals(packageName)) {
-                Resolved = true;
-                share.setPackage(info.activityInfo.packageName);
-            }
-        }
+        if (context != null) {
+            if (context.getPackageManager() != null) {
+                List<ResolveInfo> resInfo = context.getPackageManager().queryIntentActivities(share, 0);
 
-        if (Resolved) {
-            context.startActivity(share);
-        } else if (altUrl != null) {
-            context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(altUrl)));
-        } else
-            Toast.makeText(context, context.getString(R.string.error_apps_not_installed), Toast.LENGTH_SHORT).show();
+                for (ResolveInfo info : resInfo) {
+                    if (info.activityInfo.packageName.equals(packageName)) {
+                        Resolved = true;
+                        share.setPackage(info.activityInfo.packageName);
+                    }
+                }
+            }
+
+            if (Resolved) {
+                context.startActivity(share);
+            } else if (altUrl != null) {
+                context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(altUrl)));
+            } else
+                Toast.makeText(context, context.getString(R.string.error_apps_not_installed), Toast.LENGTH_SHORT).show();
+        }
     }
 
 
@@ -316,14 +321,14 @@ public class ShareSocmedHandler {
 
                             @Override
                             public void onError(Throwable e) {
-                                Log.e("STUART", e.getMessage());
+
                             }
 
                             @Override
                             public void onNext(final File file) {
                                 BranchSdkUtils.generateBranchLink(data, context, new BranchSdkUtils.GenerateShareContents() {
                                     @Override
-                                    public void onCreateShareContents(String shareContents, String shareUri,String branchUrl) {
+                                    public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
                                         ShareDataWithSpecificUri(file, targetType, image, context, shareContents, shareUri, packageName, altUrl);
 
                                     }
@@ -346,21 +351,23 @@ public class ShareSocmedHandler {
         share.putExtra(Intent.EXTRA_REFERRER, ProductUri);
         share.putExtra(Intent.EXTRA_HTML_TEXT, ProductUri);
         share.putExtra(Intent.EXTRA_TEXT, shareTxt);
-
-        List<ResolveInfo> resInfo = context.getPackageManager().queryIntentActivities(share, 0);
-        for (ResolveInfo info : resInfo) {
-            if (info.activityInfo.packageName.equals(packageName)) {
-                Resolved = true;
-                share.setPackage(info.activityInfo.packageName);
+        if (context != null) {
+            if (context.getPackageManager() != null) {
+                List<ResolveInfo> resInfo = context.getPackageManager().queryIntentActivities(share, 0);
+                for (ResolveInfo info : resInfo) {
+                    if (info.activityInfo.packageName.equals(packageName)) {
+                        Resolved = true;
+                        share.setPackage(info.activityInfo.packageName);
+                    }
+                }
             }
+            if (Resolved) {
+                context.startActivity(share);
+            } else if (altUrl != null) {
+                context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(altUrl)));
+            } else
+                Toast.makeText(context, context.getString(R.string.error_apps_not_installed), Toast.LENGTH_SHORT).show();
         }
-
-        if (Resolved) {
-            context.startActivity(share);
-        } else if (altUrl != null) {
-            context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(altUrl)));
-        } else
-            Toast.makeText(context, context.getString(R.string.error_apps_not_installed), Toast.LENGTH_SHORT).show();
     }
 
 
@@ -440,7 +447,7 @@ public class ShareSocmedHandler {
 
         boolean isShop = false;
         if (SessionHandler.isV4Login(context)) {
-            if (!SessionHandler.getShopID(context).equals("0")) {
+            if (SessionHandler.isUserHasShop(context)) {
                 isShop = true;
             }
         }
@@ -487,12 +494,12 @@ public class ShareSocmedHandler {
 
         BranchSdkUtils.generateBranchLink(data, context, new BranchSdkUtils.GenerateShareContents() {
             @Override
-            public void onCreateShareContents(String shareContents, String shareUri,String branchUrl) {
+            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
                 Intent share = new Intent(Intent.ACTION_SEND);
                 share.setType("text/plain");
                 share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
                 if (title != null) share.putExtra(Intent.EXTRA_SUBJECT, title);
-                    share.putExtra(Intent.EXTRA_TEXT, shareContents);
+                share.putExtra(Intent.EXTRA_TEXT, shareContents);
                 context.startActivity(Intent.createChooser(share, "Share link!"));
             }
         });

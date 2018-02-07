@@ -2,6 +2,7 @@ package com.tokopedia.core.drawer2.view.databinder;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,6 +86,7 @@ public class DrawerSellerHeaderDataBinder extends DataBinder<DrawerSellerHeaderD
     private Context context;
     private DrawerData data;
     private DrawerHeaderListener listener;
+    private String oldUserAvatar = "";
 
     public DrawerSellerHeaderDataBinder(DataBindAdapter dataBindAdapter,
                                         Context context,
@@ -128,9 +130,15 @@ public class DrawerSellerHeaderDataBinder extends DataBinder<DrawerSellerHeaderD
         holder.avatar.setVisibility(View.VISIBLE);
 //        holder.percentText.setVisibility(View.VISIBLE);
 
-        if (data.getDrawerProfile().getUserAvatar() != null)
-            ImageHandler.loadImage(context,holder.avatar, data.getDrawerProfile().getUserAvatar(),R.drawable.ic_image_avatar_boy,R.drawable.ic_image_avatar_boy);
-
+        if (data.getDrawerProfile().getUserAvatar() != null &&
+                !oldUserAvatar.equals(data.getDrawerProfile().getUserAvatar())) {
+            ImageHandler.loadImage(context,
+                    holder.avatar,
+                    data.getDrawerProfile().getUserAvatar(),
+                    R.drawable.ic_image_avatar_boy,
+                    R.drawable.ic_image_avatar_boy);
+            oldUserAvatar = data.getDrawerProfile().getUserAvatar();
+        }
         holder.name.setText(data.getDrawerProfile().getUserName());
 //        holder.percentText.setText(String.format("%s%%", String.valueOf(data.getProfileCompletion())));
 //        if(data.getProfileCompletion() == 100) {
