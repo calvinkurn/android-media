@@ -58,7 +58,6 @@ public class ShopNoteListFragment extends BaseListFragment<Visitable, ShopNoteTy
             if(visitable instanceof ShopNoteViewModel){
                 ShopNoteViewModel shopNoteViewModel = (ShopNoteViewModel) visitable;
                 startActivity(ShopNoteDetailActivity.createIntent(getActivity(), Long.toString(shopNoteViewModel.getShopNoteId())));
-
             }
         }
     }

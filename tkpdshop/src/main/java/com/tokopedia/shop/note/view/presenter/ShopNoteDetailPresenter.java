@@ -34,13 +34,18 @@ public class ShopNoteDetailPresenter extends BaseDaggerPresenter<ShopNoteDetailV
 
             @Override
             public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    getView().showError(e);
-                }
+                if (!isViewAttached())
+                    return;
+
+                getView().showError(e);
+
             }
 
             @Override
             public void onNext(ShopNoteDetail shopNoteDetail) {
+                if(!isViewAttached())
+                    return;
+
                 getView().render(shopNoteDetail);
             }
         });

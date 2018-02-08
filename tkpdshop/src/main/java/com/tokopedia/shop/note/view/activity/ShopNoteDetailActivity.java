@@ -27,7 +27,7 @@ public class ShopNoteDetailActivity extends BaseSimpleActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        shopNoteId = getIntent().getStringExtra(ShopParamConstant.SHOP_ID);
+        shopNoteId = getIntent().getStringExtra(ShopParamConstant.SHOP_NOTE_ID);
         super.onCreate(savedInstanceState);
     }
 
