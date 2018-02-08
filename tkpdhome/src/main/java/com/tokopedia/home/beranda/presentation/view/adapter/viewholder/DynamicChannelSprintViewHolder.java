@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
@@ -118,7 +119,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
 
         setupClickListeners(channel);
 
-        if (DynamicHomeChannel.Channels.LAYOUT_SPRINT.equals(channel.getLayout())) {
+        if (isSprintSale(channel)) {
             Date expiredTime = getExpiredTime(element);
             countDownView.setup(expiredTime, new CountDownView.CountDownListener() {
                 @Override
@@ -151,27 +152,51 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
         seeAllButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (isSprintSale(channel)) {
+                    HomePageTracking.eventClickSeeAllProductSprint();
+                } else {
+                    HomePageTracking.eventClickSeeAllDynamicChannel(channel.getHeader().getApplink());
+                }
                 listener.onDynamicChannelClicked(channel.getHeader().getApplink());
             }
         });
         itemContainer1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (isSprintSale(channel)) {
+                    HomePageTracking.eventEnhancedClickSprintSaleProduct(channel.getEnhanceClickSprintSaleHomePage(0, countDownView.getCurrentCountDown()));
+                } else {
+                    HomePageTracking.eventEnhancedClickDynamicChannelHomePage(channel.getEnhanceClickDynamicChannelHomePage(channel.getGrids()[0], 1));
+                }
                 listener.onDynamicChannelClicked(channel.getGrids()[0].getApplink());
             }
         });
         itemContainer2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (isSprintSale(channel)) {
+                    HomePageTracking.eventEnhancedClickSprintSaleProduct(channel.getEnhanceClickSprintSaleHomePage(1, countDownView.getCurrentCountDown()));
+                } else {
+                    HomePageTracking.eventEnhancedClickDynamicChannelHomePage(channel.getEnhanceClickDynamicChannelHomePage(channel.getGrids()[1], 2));
+                }
                 listener.onDynamicChannelClicked(channel.getGrids()[1].getApplink());
             }
         });
         itemContainer3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (isSprintSale(channel)) {
+                    HomePageTracking.eventEnhancedClickSprintSaleProduct(channel.getEnhanceClickSprintSaleHomePage(2, countDownView.getCurrentCountDown()));
+                } else {
+                    HomePageTracking.eventEnhancedClickDynamicChannelHomePage(channel.getEnhanceClickDynamicChannelHomePage(channel.getGrids()[2], 3));
+                }
                 listener.onDynamicChannelClicked(channel.getGrids()[2].getApplink());
             }
         });
+    }
+
+    private boolean isSprintSale(DynamicHomeChannel.Channels channel) {
+        return DynamicHomeChannel.Channels.LAYOUT_SPRINT.equals(channel.getLayout());
     }
 
     private Date getExpiredTime(DynamicChannelViewModel model) {

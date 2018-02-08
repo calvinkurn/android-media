@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.data.mapper;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
+import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.ErrorMessageException;
@@ -56,7 +57,19 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
             }
 
             if (homeData.getDynamicHomeChannel() != null && !homeData.getDynamicHomeChannel().getChannels().isEmpty()) {
+                int position = 0;
                 for(DynamicHomeChannel.Channels channel : homeData.getDynamicHomeChannel().getChannels()) {
+                    if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT)) {
+                        HomePageTracking.eventEnhancedImpressionSprintSaleHomePage(
+                                channel.getEnhanceImpressionSprintSaleHomePage()
+                        );
+                    } else {
+                        position++;
+                        channel.setPromoName(String.format("/ - p%d - %s", position, channel.getHeader().getName()));
+                        HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(
+                                channel.getEnhanceImpressionDynamicChannelHomePage()
+                        );
+                    }
                     list.add(mappingDynamicChannel(channel));
                 }
             }
@@ -89,7 +102,7 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
     private Visitable mappingUseCaseIcon(List<DynamicHomeIcon.UseCaseIcon> iconList) {
         CategorySectionViewModel viewModel = new CategorySectionViewModel();
         for (DynamicHomeIcon.UseCaseIcon icon : iconList) {
-            viewModel.addSection(new LayoutSections(icon.getName(), icon.getImageUrl(), icon.getApplinks(), icon.getUrl()));
+            viewModel.addSection(new LayoutSections(LayoutSections.ICON_USE_CASE, icon.getName(), icon.getImageUrl(), icon.getApplinks(), icon.getUrl()));
         }
         return viewModel;
     }
@@ -97,7 +110,7 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
     private Visitable mappingDynamicIcon(List<DynamicHomeIcon.DynamicIcon> iconList) {
         CategorySectionViewModel viewModel = new CategorySectionViewModel();
         for (DynamicHomeIcon.DynamicIcon icon : iconList) {
-            viewModel.addSection(new LayoutSections(icon.getName(), icon.getImageUrl(), icon.getApplinks(), icon.getUrl()));
+            viewModel.addSection(new LayoutSections(LayoutSections.ICON_DYNAMIC_CASE, icon.getName(), icon.getImageUrl(), icon.getApplinks(), icon.getUrl()));
         }
         return viewModel;
     }

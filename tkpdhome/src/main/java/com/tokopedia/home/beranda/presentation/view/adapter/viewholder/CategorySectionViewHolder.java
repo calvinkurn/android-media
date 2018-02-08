@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
@@ -79,9 +80,18 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    eventClickUseCase(sectionViewModel.getSectionList().get(position));
                     listener.onSectionItemClicked(getActionLink(sectionViewModel.getSectionList().get(position)));
                 }
             });
+        }
+
+        private void eventClickUseCase(LayoutSections layoutSections) {
+            if (layoutSections.getTypeCase() == LayoutSections.ICON_USE_CASE) {
+                HomePageTracking.eventClickHomeUseCase(layoutSections.getTitle());
+            } else {
+                HomePageTracking.eventClickDynamicIcons(layoutSections.getTitle());
+            }
         }
 
         private String getActionLink(LayoutSections layoutSections) {

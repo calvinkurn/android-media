@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
@@ -76,30 +77,45 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
         channelHeroImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
+                        element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getHero()[0], 1)
+                );
                 listener.onDynamicChannelClicked(element.getChannel().getHero()[0].getApplink());
             }
         });
         channelImage1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
+                        element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getGrids()[0], 2)
+                );
                 listener.onDynamicChannelClicked(element.getChannel().getGrids()[0].getApplink());
             }
         });
         channelImage2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
+                        element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getGrids()[1], 3)
+                );
                 listener.onDynamicChannelClicked(element.getChannel().getGrids()[1].getApplink());
             }
         });
         channelImage3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
+                        element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getGrids()[2], 4)
+                );
                 listener.onDynamicChannelClicked(element.getChannel().getGrids()[2].getApplink());
             }
         });
         channelImage4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
+                        element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getGrids()[3], 5)
+                );
                 listener.onDynamicChannelClicked(element.getChannel().getGrids()[3].getApplink());
             }
         });

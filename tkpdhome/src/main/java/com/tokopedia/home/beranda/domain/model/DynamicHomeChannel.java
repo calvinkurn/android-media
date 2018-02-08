@@ -1,8 +1,12 @@
 package com.tokopedia.home.beranda.domain.model;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.annotations.Expose;
+import com.tkpd.library.utils.CurrencyFormatHelper;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by henrypriyono on 26/01/18.
@@ -45,6 +49,7 @@ public class DynamicHomeChannel {
 
         @Expose
         private Header header;
+        private String promoName;
 
         public String getId() {
             return id;
@@ -100,6 +105,167 @@ public class DynamicHomeChannel {
 
         public void setHero(Hero[] hero) {
             this.hero = hero;
+        }
+
+        public Map<String, Object> getEnhanceImpressionSprintSaleHomePage() {
+            List<Object> list = convertProductEnhanceSprintSaleDataLayer(getGrids());
+            return DataLayer.mapOf(
+                    "event", "productView",
+                    "eventCategory", "homepage",
+                    "eventAction", "sprint sale impression",
+                    "eventLabel", "",
+                    "ecommerce", DataLayer.mapOf(
+                            "currencyCode", "IDR",
+                            "impressions", DataLayer.listOf(
+                                    list.toArray(new Object[list.size()])
+
+                            ))
+            );
+        }
+
+        private List<Object> convertProductEnhanceSprintSaleDataLayer(Grid[] grids) {
+            List<Object> list = new ArrayList<>();
+            for (int i = 0; i < grids.length; i++) {
+                Grid grid = grids[i];
+                list.add(
+                        DataLayer.mapOf(
+                                "name", grid.getName(),
+                                "id", grid.getId(),
+                                "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
+                                        grid.getPrice()
+                                )),
+                                "brand", "none / other",
+                                "category", "none / other",
+                                "variant", "none / other",
+                                "list", "/ - p1 - sprint sale",
+                                "position", i + 1
+                        )
+                );
+            }
+            return list;
+        }
+
+        public Map<String, Object> getEnhanceClickSprintSaleHomePage(int position, String countDown) {
+            return DataLayer.mapOf(
+                    "event", "productClick",
+                    "eventCategory", "homepage",
+                    "eventAction", "sprint sale click",
+                    "eventLabel", countDown,
+                    "ecommerce", DataLayer.mapOf(
+                            "currencyCode", "IDR",
+                            "click", DataLayer.mapOf(
+                                    "actionField", DataLayer.mapOf("list", "/ - p1 - sprint sale"),
+                                    "products", DataLayer.listOf(
+                                            DataLayer.mapOf(
+                                                    "name", getGrids()[position].getName(),
+                                                    "id", getGrids()[position].getId(),
+                                                    "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
+                                                            getGrids()[position].getPrice()
+                                                    )),
+                                                    "brand", "none / other",
+                                                    "category", "none / other",
+                                                    "variant", "none / other",
+                                                    "list", "/ - p1 - sprint sale",
+                                                    "position", position + 1
+                                            )
+                                    )
+                            )
+                    )
+            );
+        }
+
+        public Map<String, Object> getEnhanceImpressionDynamicChannelHomePage() {
+            List<Object> list = convertPromoEnhanceDynamicChannelDataLayer(getHero(), getGrids(), getPromoName());
+            return DataLayer.mapOf(
+                    "event", "promoView",
+                    "eventCategory", "homepage",
+                    "eventAction", "curated list banner impression",
+                    "eventLabel", getHeader().getName(),
+                    "ecommerce", DataLayer.mapOf(
+                            "promoView", DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
+                                            list.toArray(new Object[list.size()])
+                                    )
+                            )
+                    )
+            );
+        }
+
+        private List<Object> convertPromoEnhanceDynamicChannelDataLayer(Hero[] hero, Grid[] grids, String promoName) {
+            List<Object> list = new ArrayList<>();
+            if (hero != null) {
+                list.add(DataLayer.mapOf(
+                        "id", hero[0].getId(),
+                        "name", promoName,
+                        "creative", hero[0].getName(),
+                        "position", String.valueOf(1)
+                ));
+            }
+
+            if (grids != null) {
+                for (int i = 0; i < grids.length; i++) {
+                    Grid grid = grids[i];
+                    list.add(
+                            DataLayer.mapOf(
+                                    "id", grid.getId(),
+                                    "name", promoName,
+                                    "creative", grid.getName(),
+                                    "position", String.valueOf(i + 2)
+                            )
+                    );
+                }
+            }
+            return list;
+        }
+
+        public Map<String, Object> getEnhanceClickDynamicChannelHomePage(Hero hero, int position) {
+            return DataLayer.mapOf(
+                    "event", "promoClick",
+                    "eventCategory", "homepage",
+                    "eventAction", "curated list banner click",
+                    "eventLabel", String.format("%s - %s", getHeader().getName(), getHeader().getApplink()),
+                    "ecommerce", DataLayer.mapOf(
+                            "promoClick", DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
+                                            DataLayer.mapOf(
+                                                    "id", hero.getId(),
+                                                    "name", getPromoName(),
+                                                    "creative", hero.getName(),
+                                                    "position", String.valueOf(position)
+                                            )
+                                    )
+                            )
+                    )
+            );
+        }
+
+        public Map<String, Object> getEnhanceClickDynamicChannelHomePage(Grid grid, int position) {
+            return DataLayer.mapOf(
+                    "event", "promoClick",
+                    "eventCategory", "homepage",
+                    "eventAction", "curated list banner click",
+                    "eventLabel", String.format("%s - %s", getHeader().getName(), getHeader().getApplink()),
+                    "ecommerce", DataLayer.mapOf(
+                            "promoClick", DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
+                                            DataLayer.mapOf(
+                                                    "id", grid.getId(),
+                                                    "name", getPromoName(),
+                                                    "creative", grid.getName(),
+                                                    "position", String.valueOf(position)
+                                            )
+                                    )
+                            )
+                    )
+            );
+        }
+
+        public void setPromoName(String promoName) {
+            this.promoName = promoName;
+        }
+
+        public String getPromoName() {
+            return promoName;
         }
     }
 
