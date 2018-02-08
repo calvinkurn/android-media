@@ -33,6 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="3dp"
             android:fontFamily="sans-serif"
+            android:textColor="@color/black_70"
             android:textSize="16sp"
             android:textStyle="bold"
             tools:text="BAPE" />
@@ -76,6 +77,7 @@
         android:fontFamily="sans-serif"
         android:gravity="center"
         android:text="@string/ubah"
+        android:drawableTint="@color/grey"
         android:textAllCaps="false"
         android:textStyle="bold" />
 </LinearLayout>
