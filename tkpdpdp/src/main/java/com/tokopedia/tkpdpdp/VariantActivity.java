@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.Option;
@@ -36,6 +37,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     public static final String KEY_LEVEL1_SELECTED= "LEVEL1_OPTION";
     public static final String KEY_LEVEL2_SELECTED= "LEVEL2_OPTION";
     public static final String IDENTIFIER_COLOUR= "colour";
+    public static final String IDENTIFIER_SIZE = "size";
 
     public static final int SELECTED_VARIANT_RESULT = 99;
     public static final int SELECTED_VARIANT_RESULT_TO_BUY = 98;
@@ -360,6 +362,11 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             updateButton(child);
         }
         renderHeaderInfo();
+        if (productVariant.getVariant().get(level-1).getIdentifier().equals(IDENTIFIER_SIZE)) {
+            UnifyTracking.eventSelectSizeVariant(option.getValue());
+        } else if (productVariant.getVariant().get(level-1).getIdentifier().equals(IDENTIFIER_COLOUR)) {
+            UnifyTracking.eventSelectColorVariant(option.getValue());
+        }
     }
 
     @Override

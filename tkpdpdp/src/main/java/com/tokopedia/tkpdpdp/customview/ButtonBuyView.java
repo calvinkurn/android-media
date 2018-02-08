@@ -78,7 +78,7 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
     }
 
     @Override
-    public void renderData(@NonNull ProductDetailData data) {
+    public void renderData(@NonNull final ProductDetailData data) {
         if (data.getShopInfo().getShopIsOwner() == 1
                 || (data.getShopInfo().getShopIsAllowManage() == 1 || GlobalConfig.isSellerApp())) {
             tvpPromoHour.setText(getContext().getString(R.string.title_promo_per_hour));
@@ -110,13 +110,14 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
             tvBuy.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onBuyClick();
+                    listener.onBuyClick(ProductDetailView.SOURCE_BUTTON_BUY_PDP);
+
                 }
             });
             containerButtonBuy.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onBuyClick();
+                    listener.onBuyClick(ProductDetailView.SOURCE_BUTTON_BUY_PDP);
                 }
             });
         }

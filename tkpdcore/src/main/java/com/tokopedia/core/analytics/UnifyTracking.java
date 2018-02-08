@@ -72,11 +72,47 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventBuyPDPVariant(String eventLabel) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.PRODUCT_DETAIL,
+                AppEventTracking.Action.CLICK_BUY_VARIANT_PDP,
+                eventLabel
+        ).getEvent());
+    }
+
     public static void eventClickCartVariant(String eventLabel) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.SEARCH_RESULT,
                 AppEventTracking.Category.PRODUCT_DETAIL,
                 AppEventTracking.Action.CLICK_CART_BUTTON_VARIANT,
+                eventLabel
+        ).getEvent());
+    }
+
+    public static void eventSelectColorVariant(String eventLabel) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.PRODUCT_DETAIL,
+                AppEventTracking.Action.SELECT_COLOR_VARIANT,
+                eventLabel
+        ).getEvent());
+    }
+
+    public static void eventSelectSizeVariant(String eventLabel) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.PRODUCT_DETAIL,
+                AppEventTracking.Action.SELECT_SIZE_VARIANT,
+                eventLabel
+        ).getEvent());
+    }
+
+    public static void eventBuyPageVariant(String eventLabel) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.PRODUCT_DETAIL,
+                AppEventTracking.Action.CLICK_BUY_VARIANT_PAGE,
                 eventLabel
         ).getEvent());
     }

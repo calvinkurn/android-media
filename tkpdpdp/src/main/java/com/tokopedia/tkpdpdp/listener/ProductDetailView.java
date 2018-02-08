@@ -23,6 +23,9 @@ import java.util.List;
  */
 public interface ProductDetailView extends ViewListener {
 
+    String SOURCE_BUTTON_BUY_PDP = "BUTTON_BUY_PDP";
+    String SOURCE_BUTTON_BUY_VARIANT = "BUTTON_BUY_VARIANT";
+
     /**
      * Saat salah satu kategori product di klik.
      *
@@ -62,7 +65,7 @@ public interface ProductDetailView extends ViewListener {
     void onProductManagePromoteClicked(ProductDetailData productData);
 
 
-    void onBuyClick();
+    void onBuyClick(String source);
 
     void onImageZoomClick(int position);
 

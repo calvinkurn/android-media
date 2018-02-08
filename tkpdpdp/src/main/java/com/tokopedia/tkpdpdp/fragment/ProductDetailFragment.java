@@ -36,6 +36,7 @@ import com.appsflyer.AFInAppEventType;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
@@ -102,9 +103,14 @@ import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.TimeZone;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -397,12 +403,18 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     @Override
-    public void onBuyClick() {
+    public void onBuyClick(String source) {
         if (SessionHandler.isV4Login(getActivity())) {
             if (onClickBuyWhileRequestingVariant == false && productData.getInfo().getHasVariant() && productVariant == null) {
                 onClickBuyWhileRequestingVariant = true;
                 buttonBuyView.changeToLoading();
             } else if ( productVariant==null || productVariant!=null && variantLevel1!=null) {
+                if (!TextUtils.isEmpty(source) && source.equals(SOURCE_BUTTON_BUY_PDP) &&productData.getInfo().getHasVariant() ) {
+                    UnifyTracking.eventBuyPDPVariant(generateVariantString());
+                } else if (!TextUtils.isEmpty(source) && source.equals(SOURCE_BUTTON_BUY_VARIANT) && productData.getInfo().getHasVariant()) {
+                    Long timestamp = System.currentTimeMillis()/1000;
+                    UnifyTracking.eventBuyPageVariant(timestamp.toString() + "-" + generateVariantString());
+                }
                 String weightProduct = "";
                 switch (productData.getInfo().getProductWeightUnit()) {
                     case "gr":
@@ -444,11 +456,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void updateButtonBuyListener() {
         buttonBuyView.removeLoading();
         if (onClickBuyWhileRequestingVariant) {
-            onBuyClick();
-            return;
-        } else {
-            //TODO change this one line after hasVariant valid
-            onClickBuyWhileRequestingVariant = true;
+            onBuyClick(SOURCE_BUTTON_BUY_PDP);
         }
     }
 
@@ -551,6 +559,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         }
         startActivityForResult(intent,REQUEST_VARIANT);
         getActivity().overridePendingTransition(com.tokopedia.core.R.anim.pull_up,0);
+        if (productData.getInfo().getHasVariant() && productVariant !=null && variantLevel1 != null) {
+            UnifyTracking.eventClickVariant(generateVariantString());
+        }
 
     }
 
@@ -965,6 +976,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
                 intent.putExtra("product_id", String.valueOf(productData.getInfo().getProductId()));
                 navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_LOGIN);
+                if (productData.getInfo().getHasVariant()) UnifyTracking.eventClickCartVariant(generateVariantString());
             } else {
                 startActivity(TransactionCartRouter.createInstanceCartActivity(getActivity()));
             }
@@ -1022,7 +1034,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         updateWishListStatus(productData.getInfo().getProductAlreadyWishlist());
                     }
                     if (resultCode==VariantActivity.SELECTED_VARIANT_RESULT_TO_BUY) {
-                        onBuyClick();
+                        onBuyClick(SOURCE_BUTTON_BUY_VARIANT);
                     } else if (resultCode==VariantActivity.KILL_PDP_BACKGROUND) {
                         getActivity().finish();
                     }

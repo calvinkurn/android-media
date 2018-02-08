@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
@@ -132,6 +133,7 @@ public class PriceSimulationView extends BaseView<ProductDetailData, ProductDeta
                 bundle.putParcelable(VariantActivity.KEY_VARIANT_DATA, productVariant);
                 bundle.putParcelable(VariantActivity.KEY_PRODUCT_DETAIL_DATA, productDetailData);
                 listener.onVariantClicked(bundle);
+
             }
         });
         variantLayout.setVisibility(VISIBLE);
