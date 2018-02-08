@@ -1,5 +1,11 @@
 apply plugin: 'com.android.library'
 apply plugin: 'android-apt'
+apply plugin: 'com.jfrog.artifactory'
+apply plugin: 'maven-publish'
+apply plugin: 'maven'
+
+group = 'com.tokopedia.core'
+version = rootProject.ext.tkpdFlightVersion
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion

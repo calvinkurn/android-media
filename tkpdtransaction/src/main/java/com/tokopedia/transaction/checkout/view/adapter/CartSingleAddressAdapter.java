@@ -30,6 +30,7 @@ import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 import com.tokopedia.transaction.pickuppoint.view.customview.PickupPointLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -437,7 +438,8 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
 
         void bindViewHolder(CartSellerItemModel model) {
             // Initialize variables
-            List<CartItemModel> cartItemModels = model.getCartItemModels();
+            List<CartItemModel> cartItemModels = new ArrayList<>();
+            cartItemModels.addAll(model.getCartItemModels());
             CartItemModel mainProductItem = cartItemModels.remove(FIRST_ELEMENT);
 
             mIsExpandAllProduct = false;

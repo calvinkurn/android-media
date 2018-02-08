@@ -48,10 +48,15 @@
             android:layout_height="52dp"
             android:layout_margin="@dimen/margin_ms"
             android:background="@drawable/bg_button_green_enabled"
+            android:fontFamily="sans-serif-medium"
             android:foreground="?selectableItemBackground"
+            android:letterSpacing="0.07"
+            android:lineSpacingExtra="6sp"
             android:text="@string/label_button_pick_pickup_booth"
             android:textAllCaps="false"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="normal" />
 
     </LinearLayout>
 

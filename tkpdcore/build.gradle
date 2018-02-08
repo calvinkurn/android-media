@@ -8,6 +8,9 @@ apply plugin: 'maven-publish'
 apply plugin: 'maven'
 apply plugin: 'com.apollographql.android'
 
+group = 'com.tokopedia.core'
+version = rootProject.ext.tkpdCoreVersion
+
 def getArtifactVersionCode() {
     return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
 }
@@ -36,8 +39,8 @@ publishing {
     publications {
         aar(MavenPublication) {
             groupId 'com.tokopedia.core'
-            artifactId 'core'
-            version getArtifactVersionCode()
+            artifactId 'tkpdcore'
+            version rootProject.ext.tkpdCoreVersion
             artifact("$buildDir/outputs/aar/tkpdcore-release.aar")
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')

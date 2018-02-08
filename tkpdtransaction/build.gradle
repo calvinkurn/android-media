@@ -14,6 +14,10 @@ apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
 apply plugin: 'maven'
 
+group = 'com.tokopedia.core'
+version = rootProject.ext.tkpdTransactionVersion
+
+
 def getArtifactVersionCode() {
     return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
 }
@@ -43,12 +47,33 @@ def getTkpdLoyalty() {
             rootProject.ext.tkpdDependencies.loyalty : project(':tkpdloyalty');
 }
 
+
+def getTkpdCoreLocalMaven() {
+    return rootProject.ext.tkpdDependencies.core;
+}
+
+def getTopAdsSdkLocalMaven() {
+    return rootProject.ext.tkpdDependencies.topads;
+}
+
+def getTkpdPaymentLocalMaven() {
+    return rootProject.ext.tkpdDependencies.payment;
+}
+
+def getTkpdDesignLocalMaven() {
+    return rootProject.ext.tkpdDependencies.design;
+}
+
+def getTkpdLoyaltyLocalMaven() {
+    return rootProject.ext.tkpdDependencies.loyalty;
+}
+
 publishing {
     publications {
         aar(MavenPublication) {
-            groupId 'com.tokopedia.transaction'
-            artifactId 'transaction'
-            version getArtifactVersionCode()
+            groupId 'com.tokopedia.core'
+            artifactId 'tkpdtransaction'
+            version rootProject.ext.tkpdTransactionVersion
             artifact("$buildDir/outputs/aar/tkpdtransaction-release.aar")
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
@@ -88,7 +113,7 @@ artifactory {
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion "25.0.0"
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
@@ -122,11 +147,17 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile getTkpdCore()
-    compile getTopAdsSdk()
-    compile getTkpdPayment()
-    compile getTkpdDesign()
-    compile getTkpdLoyalty()
+//    compile getTkpdCore()
+//    compile getTopAdsSdk()
+//    compile getTkpdPayment()
+//    compile getTkpdDesign()
+//    compile getTkpdLoyalty()
+
+    compile getTkpdCoreLocalMaven()
+    compile getTopAdsSdkLocalMaven()
+    compile getTkpdPaymentLocalMaven()
+    compile getTkpdDesignLocalMaven()
+    compile getTkpdLoyaltyLocalMaven()
 
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'

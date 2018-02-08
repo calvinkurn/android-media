@@ -3,6 +3,9 @@ apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
 apply plugin: 'maven'
 
+group = 'com.tokopedia.core'
+version = rootProject.ext.tkpdTopAdsSDKVersion
+
 def getArtifactVersionCode() {
     return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
 }
@@ -10,9 +13,9 @@ def getArtifactVersionCode() {
 publishing {
     publications {
         aar(MavenPublication) {
-            groupId 'com.tokopedia.topads.sdk'
-            artifactId 'topads'
-            version getArtifactVersionCode()
+            groupId 'com.tokopedia.core'
+            artifactId 'tkpdtopadssdk'
+            version rootProject.ext.tkpdTopAdsSDKVersion
             artifact("$buildDir/outputs/aar/tkpdtopadssdk-release.aar")
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
@@ -51,7 +54,7 @@ artifactory {
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion "25.0.0"
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion

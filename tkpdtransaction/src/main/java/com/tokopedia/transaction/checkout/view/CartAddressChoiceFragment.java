@@ -1,6 +1,8 @@
 package com.tokopedia.transaction.checkout.view;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -11,6 +13,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.manage.people.address.ManageAddressConstant;
+import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
+import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
@@ -146,17 +151,53 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
 
     @OnClick(R2.id.tv_choose_other_address)
     void onChooseOtherAddressClick() {
+        FragmentManager fragmentManager = getActivity().getFragmentManager();
+        Fragment fragment = ShipmentAddressListFragment.newInstance();
 
+        String backStateName = fragment.getClass().getName();
+
+        boolean isFragmentPopped = fragmentManager.popBackStackImmediate(backStateName, 0);
+        if (!isFragmentPopped) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, fragment)
+                    .addToBackStack(backStateName)
+                    .commit();
+        }
+    }
+
+    @OnClick(R2.id.tv_change_address)
+    void onChangeAddressClick() {
+        AddressModel data = new AddressModel();
+//        data.setAddressId();
+//        data.setAddressName();
+//        data.setAddressStatus();
+//        data.setAddressStreet();
+//        data.setCityId();
+//        data.setCityName();
+//        data.setDistrictId();
+//        data.setDistrictName();
+        startActivityForResult(AddAddressActivity.createInstance(getActivity(), data), ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
     }
 
     @OnClick(R2.id.ll_add_new_address)
     void onAddNewAddress() {
-
+        startActivityForResult(AddAddressActivity.createInstance(getActivity()), ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
     }
 
     @OnClick(R2.id.ll_send_to_multiple_address)
     void onSendToMultipleAddress() {
+        FragmentManager fragmentManager = getActivity().getFragmentManager();
+        Fragment fragment = MultipleAddressFragment.newInstance();
 
+        String backStateName = fragment.getClass().getName();
+
+        boolean isFragmentPopped = fragmentManager.popBackStackImmediate(backStateName, 0);
+        if (!isFragmentPopped) {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.container, fragment)
+                    .addToBackStack(backStateName)
+                    .commit();
+        }
     }
 
     @OnClick(R2.id.bt_send_to_current_address)
@@ -164,5 +205,6 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
         Intent intent = new Intent();
         intent.putExtra(INTENT_EXTRA_RECIPIENT, presenter.getRecipientAddress());
         getActivity().setResult(Activity.RESULT_OK, intent);
+        getActivity().finish();
     }
 }

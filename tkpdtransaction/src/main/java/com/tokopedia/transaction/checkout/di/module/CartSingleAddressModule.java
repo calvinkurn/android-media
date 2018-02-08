@@ -10,7 +10,7 @@ import dagger.Provides;
 /**
  * @author Aghny A. Putra on 31/01/18.
  */
-@Module
+@Module(includes = {DataModule.class, ConverterDataModule.class})
 public class CartSingleAddressModule {
 
     @Provides

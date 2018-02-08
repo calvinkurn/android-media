@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="sans-serif-medium"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:textStyle="normal"
                 tools:text="Alfamart - Rawa Belong" />
 
@@ -45,7 +45,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
-            android:textSize="14sp"
+            android:lineSpacingExtra="4sp"
+            android:textSize="12sp"
             android:textStyle="normal"
             tools:text="Jl. Rw. Belong, RT.2/RW.6, Sukabumi Utara, Kebayoran Baru, Kota Jakarta Barat, Daerah Khu.." />
 
@@ -62,7 +63,7 @@
             android:fontFamily="sans-serif-medium"
             android:text="@string/label_show_map"
             android:textColor="@color/tkpd_main_green"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:textStyle="normal" />
     </LinearLayout>
 

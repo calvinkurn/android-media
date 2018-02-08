@@ -1,5 +1,5 @@
 ext {
-    supportLibraryVersion = '26.0.2'
+    supportLibraryVersion = '26.1.0'
     playServiceVersion = '11.0.4'
     butterKnifeVersion = '8.4.0'
     dbFlowVersion = '3.0.1'
@@ -8,24 +8,27 @@ ext {
     glideVersion = '3.7.0'
     permissionDispatcherVersion = '2.2.0'
     deeplinkDispatchVersion = '3.0.0-rc1'
-    tkpdUseCaseVersion = '1.+'
-    tkpdAbstractionVersion = '1.+'
-    tkpdCoreVersion = '1.+'
-    tkpdInboxVersion = '1.+'
-    tkpdSessionVersion = '1.+'
-    tkpdSellerVersion = '1.+'
-    tkpdTransactionVersion = '1.+'
-    tkpdDiscoveryVersion = '1.+'
-    tkpdDigitalVersion = '1.+'
-    tkpdTopAdsSDKVersion = '1.+'
-    tkpdPaymentVersion = '1.+'
-    tkpdPdpVersion = '1.+'
-    tkpdDesignVersion = '1.+'
-    tkpdFeedVersion = '1.+'
-    tkpdRideVersion = '1.+'
-    tkpdLoyaltyVersion = '1.+'
-    tkpdReactNativeVersion = '1.+'
-    tkpdFlightVersion = '1.+'
+    tkpdUseCaseVersion = '1.1.BOB-SNAPSHOT'
+    tkpdAbstractionVersion = '1.1.BOB-SNAPSHOT'
+    tkpdCoreVersion = '1.1.BOB-SNAPSHOT'
+    tkpdInboxVersion = '1.1.BOB-SNAPSHOT'
+    tkpdSessionVersion = '1.1.BOB-SNAPSHOT'
+    tkpdSellerVersion = '1.1.BOB-SNAPSHOT'
+    tkpdTransactionVersion = '1.1.BOB-SNAPSHOT'
+    tkpdDiscoveryVersion = '1.1.BOB-SNAPSHOT'
+    tkpdDigitalVersion = '1.1.BOB-SNAPSHOT'
+    tkpdTopAdsSDKVersion = '1.1.BOB-SNAPSHOT'
+    tkpdPaymentVersion = '1.1.BOB-SNAPSHOT'
+    tkpdPdpVersion = '1.1.BOB-SNAPSHOT'
+    tkpdDesignVersion = '1.1.BOB-SNAPSHOT'
+    tkpdFeedVersion = '1.1.BOB-SNAPSHOT'
+    tkpdRideVersion = '1.1.BOB-SNAPSHOT'
+    tkpdLoyaltyVersion = '1.1.BOB-SNAPSHOT'
+    tkpdReactNativeVersion = '1.1.BOB-SNAPSHOT'
+    tkpdReputationVersion = '1.1.BOB-SNAPSHOT'
+    tkpdTokocashVersion = '1.1.BOB-SNAPSHOT'
+    tkpdFlightVersion = '1.1.BOB-SNAPSHOT'
+    tkpdGmVersion = '1.1.BOB-SNAPSHOT'
     compileSdkVersion = 26
     minSdkVersion = 16
     targetSdkVersion = 26
@@ -54,30 +57,30 @@ ext {
     ]
 
     supportLibDependencies = [
-            recyclerViewV7: "com.android.support:recyclerview-v7:${supportLibraryVersion}",
-            supportV4     : "com.android.support:support-v4:${supportLibraryVersion}",
-            appCompactV7  : "com.android.support:appcompat-v7:${supportLibraryVersion}",
-            supportV13    : "com.android.support:support-v13:${supportLibraryVersion}",
-            design        : "com.android.support:design:${supportLibraryVersion}",
-            cardViewV7    : "com.android.support:cardview-v7:${supportLibraryVersion}",
-            exifinterface : "com.android.support:exifinterface:${supportLibraryVersion}",
-            constraintLayout : "com.android.support.constraint:constraint-layout:1.0.2"
+            recyclerViewV7  : "com.android.support:recyclerview-v7:${supportLibraryVersion}",
+            supportV4       : "com.android.support:support-v4:${supportLibraryVersion}",
+            appCompactV7    : "com.android.support:appcompat-v7:${supportLibraryVersion}",
+            supportV13      : "com.android.support:support-v13:${supportLibraryVersion}",
+            design          : "com.android.support:design:${supportLibraryVersion}",
+            cardViewV7      : "com.android.support:cardview-v7:${supportLibraryVersion}",
+            exifinterface   : "com.android.support:exifinterface:${supportLibraryVersion}",
+            constraintLayout: "com.android.support.constraint:constraint-layout:1.0.2"
     ]
 
     playServicesDependencies = [
-            plus            : "com.google.android.gms:play-services-plus:${playServiceVersion}",
-            base            : "com.google.android.gms:play-services-base:${playServiceVersion}",
-            appIndexing     : "com.google.firebase:firebase-appindexing:${playServiceVersion}",
-            analytics       : "com.google.android.gms:play-services-analytics:${playServiceVersion}",
-            firebase        : "com.google.firebase:firebase-messaging:${playServiceVersion}",
-            location        : "com.google.android.gms:play-services-location:${playServiceVersion}",
-            maps            : "com.google.android.gms:play-services-maps:${playServiceVersion}",
-            auth            : "com.google.android.gms:play-services-auth:${playServiceVersion}",
-            places          : "com.google.android.gms:play-services-places:${playServiceVersion}",
-            mapsUtils       : "com.google.maps.android:android-maps-utils:0.4",
-            remoteConfig    : "com.google.firebase:firebase-config:${playServiceVersion}",
-            perfMon         : "com.google.firebase:firebase-perf:${playServiceVersion}",
-            ads             : "com.google.android.gms:play-services-ads:${playServiceVersion}"
+            plus        : "com.google.android.gms:play-services-plus:${playServiceVersion}",
+            base        : "com.google.android.gms:play-services-base:${playServiceVersion}",
+            appIndexing : "com.google.firebase:firebase-appindexing:${playServiceVersion}",
+            analytics   : "com.google.android.gms:play-services-analytics:${playServiceVersion}",
+            firebase    : "com.google.firebase:firebase-messaging:${playServiceVersion}",
+            location    : "com.google.android.gms:play-services-location:${playServiceVersion}",
+            maps        : "com.google.android.gms:play-services-maps:${playServiceVersion}",
+            auth        : "com.google.android.gms:play-services-auth:${playServiceVersion}",
+            places      : "com.google.android.gms:play-services-places:${playServiceVersion}",
+            mapsUtils   : "com.google.maps.android:android-maps-utils:0.4",
+            remoteConfig: "com.google.firebase:firebase-config:${playServiceVersion}",
+            perfMon     : "com.google.firebase:firebase-perf:${playServiceVersion}",
+            ads         : "com.google.android.gms:play-services-ads:${playServiceVersion}"
     ]
 
     butterKnifeDependencies = [
@@ -103,11 +106,11 @@ ext {
     ]
 
     analyticsDependencies = [
-            appsflyer : "com.appsflyer:af-android-sdk:4.8.6@aar",
+            appsflyer  : "com.appsflyer:af-android-sdk:4.8.6@aar",
             installRef : "com.android.installreferrer:installreferrer:1.0",
             moengage   : "com.moengage:moe-android-sdk:8.2.00",
             moengageMSG: "com.moengage:addon-messaging:2.0.03",
-            branch:"io.branch.sdk.android:library:2.+"
+            branch     : "io.branch.sdk.android:library:2.+"
     ]
 
     deeplinkDispatchDependencies = [
@@ -145,7 +148,7 @@ ext {
             slidinguppanel        : "com.sothree.slidinguppanel:library:3.3.1",
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
             loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.3.0",
-            imagecropper         : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
+            imagecropper          : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion",
             codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.1.3"
     ]
@@ -176,25 +179,28 @@ ext {
     ]
 
     tkpdDependencies = [
-            usecase    : "com.tokopedia.usecase:usecase:${tkpdUseCaseVersion}",
-            abstraction: "com.tokopedia.abstraction:abstraction:${tkpdAbstractionVersion}",
-            core       : "com.tokopedia.core:core:${tkpdCoreVersion}",
-            inbox      : "com.tokopedia.inbox:inbox:${tkpdInboxVersion}",
-            session    : "com.tokopedia.session:session:${tkpdSessionVersion}",
-            transaction: "com.tokopedia.transaction:transaction:${tkpdTransactionVersion}",
-            discovery  : "com.tokopedia.discovery:discovery:${tkpdDiscoveryVersion}",
-            seller     : "com.tokopedia.seller:seller:${tkpdSellerVersion}",
-            digital    : "com.tokopedia.digital:digital:${tkpdDigitalVersion}",
-            topads     : "com.tokopedia.topads.sdk:topads:${tkpdTopAdsSDKVersion}",
-            payment    : "com.tokopedia.payment:payment:${tkpdPaymentVersion}",
-            tkpdpdp    : "com.tokopedia.tkpdpdp:tkpdpdp:${tkpdPdpVersion}",
-            design     : "com.tokopedia.design:design:${tkpdDesignVersion}",
-            feed       : "com.tokopedia.feed:feed:${tkpdFeedVersion}",
-            ride       : "com.tokopedia.ride:ride:${tkpdRideVersion}",
-            reactNative: "com.tokopedia.tkpdreactnative:reactnative:${tkpdReactNativeVersion}",
-            loyalty    : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}",
-            flight     : "com.tokopedia.flight:flight:${tkpdFlightVersion}",
-            flightNoOp : "com.tokopedia.flight:flight-no-op:${tkpdFlightVersion}",
+            usecase    : "com.tokopedia.core:tkpdusecase:${tkpdUseCaseVersion}",
+            abstraction: "com.tokopedia.core:tkpdabstraction:${tkpdAbstractionVersion}",
+            core       : "com.tokopedia.core:tkpdcore:${tkpdCoreVersion}",
+            inbox      : "com.tokopedia.core:tkpdinbox:${tkpdInboxVersion}",
+            session    : "com.tokopedia.core:tkpdsession:${tkpdSessionVersion}",
+            transaction: "com.tokopedia.core:tkpdtransaction:${tkpdTransactionVersion}",
+            discovery  : "com.tokopedia.core:tkpddiscovery:${tkpdDiscoveryVersion}",
+            seller     : "com.tokopedia.core:tkpdseller:${tkpdSellerVersion}",
+            digital    : "com.tokopedia.core:tkpddigital:${tkpdDigitalVersion}",
+            topads     : "com.tokopedia.core:tkpdtopadssdk:${tkpdTopAdsSDKVersion}",
+            payment    : "com.tokopedia.core:tkpdpayment:${tkpdPaymentVersion}",
+            tkpdpdp    : "com.tokopedia.core:tkpdpdp:${tkpdPdpVersion}",
+            design     : "com.tokopedia.core:tkpddesign:${tkpdDesignVersion}",
+            feed       : "com.tokopedia.core:tkpdfeed:${tkpdFeedVersion}",
+            ride       : "com.tokopedia.core:tkpdride:${tkpdRideVersion}",
+            reactNative: "com.tokopedia.core:tkpdreactnative:${tkpdReactNativeVersion}",
+            loyalty    : "com.tokopedia.core:tkpdloyalty:${tkpdLoyaltyVersion}",
+            flight     : "com.tokopedia.core:tkpdflight:${tkpdFlightVersion}",
+            flightNoOp : "com.tokopedia.core:tkpdflight-no-op:${tkpdFlightVersion}",
+            reputation : "com.tokopedia.core:tkpdreputation:${tkpdReputationVersion}",
+            tokocash   : "com.tokopedia.core:tkpdtokocash:${tkpdTokocashVersion}",
+            gm         : "com.tokopedia.core:tkpdgm:${tkpdGmVersion}"
     ]
 
     tkpdLibDependencies = [

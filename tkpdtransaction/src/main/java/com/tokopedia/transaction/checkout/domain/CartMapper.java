@@ -58,6 +58,6 @@ public class CartMapper implements ICartMapper {
             cartItemDataList.add(cartItemData);
         }
 
-        return null;
+        return cartItemDataList;
     }
 }

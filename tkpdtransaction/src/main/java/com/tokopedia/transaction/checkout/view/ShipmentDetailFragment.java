@@ -443,24 +443,6 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         }
     }
 
-    private void showSnackbarError(View view, String message) {
-        Snackbar snackbar = Snackbar
-                .make(view, message, Snackbar.LENGTH_LONG)
-                .setActionTextColor(ContextCompat.getColor(view.getContext(), R.color.black_70))
-                .setAction(R.string.label_action_snackbar_close, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                    }
-                });
-
-        View snackbarView = snackbar.getView();
-        snackbarView.setBackgroundColor(ContextCompat.getColor(view.getContext(), R.color.red_50));
-        TextView textView = snackbarView.findViewById(android.support.design.R.id.snackbar_text);
-        textView.setTextColor(ContextCompat.getColor(view.getContext(), R.color.black_54));
-        snackbar.show();
-    }
-
     private void setupPinPointMap() {
         GoogleApiAvailability availability = GoogleApiAvailability.getInstance();
         int resultCode = availability.isGooglePlayServicesAvailable(context);
@@ -612,7 +594,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
 
     @OnClick(R2.id.bt_save)
     void onSaveClick() {
-        showSnackbarError(this.getView(), "Anda belum menandai lokasi tujuan dalam peta");
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), "Anda belum menandai lokasi tujuan dalam peta");
     }
 
     @OnCheckedChanged(R2.id.switch_insurance)

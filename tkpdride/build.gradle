@@ -5,6 +5,9 @@ apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
 apply plugin: 'maven'
 
+group = 'com.tokopedia.core'
+version = rootProject.ext.tkpdRideVersion
+
 buildscript {
     repositories {
         mavenCentral()
@@ -26,9 +29,9 @@ def getTkpdCore() {
 publishing {
     publications {
         aar(MavenPublication) {
-            groupId 'com.tokopedia.ride'
-            artifactId 'ride'
-            version getArtifactVersionCode()
+            groupId 'com.tokopedia.core'
+            artifactId 'tkpdride'
+            version rootProject.ext.tkpdRideVersion
             artifact("$buildDir/outputs/aar/tkpdride-release.aar")
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
@@ -67,7 +70,7 @@ artifactory {
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion "25.0.0"
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion

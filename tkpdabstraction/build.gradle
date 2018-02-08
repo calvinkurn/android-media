@@ -4,6 +4,9 @@ apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
 apply plugin: 'maven'
 
+group = 'com.tokopedia.core'
+version = rootProject.ext.tkpdAbstractionVersion
+
 def getTkpdDesign() {
     return project.hasProperty('isArtifact') ?
             rootProject.ext.tkpdDependencies.design : project(':tkpddesign');
@@ -16,9 +19,9 @@ def getArtifactVersionCode() {
 publishing {
     publications {
         aar(MavenPublication) {
-            groupId 'com.tokopedia.abstraction'
-            artifactId 'abstraction'
-            version getArtifactVersionCode()
+            groupId 'com.tokopedia.core'
+            artifactId 'tkpdabstraction'
+            version rootProject.ext.tkpdAbstractionVersion
             artifact("$buildDir/outputs/aar/tkpdabstraction-release.aar")
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
