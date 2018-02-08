@@ -12,6 +12,6 @@ public class DbFlowDatabase {
 
     public static final String NAME = "tokopedia";
 
-    public static final int VERSION = 12;
+    public static final int VERSION = 15;
 
 }

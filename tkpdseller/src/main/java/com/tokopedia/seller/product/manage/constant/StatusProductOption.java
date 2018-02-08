@@ -1,0 +1,17 @@
+package com.tokopedia.seller.product.manage.constant;
+
+import android.support.annotation.StringDef;
+
+import static com.tokopedia.seller.product.manage.constant.ConditionProductOption.ALL_CONDITION;
+import static com.tokopedia.seller.product.manage.constant.ConditionProductOption.NEW;
+import static com.tokopedia.seller.product.manage.constant.ConditionProductOption.USED;
+
+/**
+ * Created by zulfikarrahman on 9/22/17.
+ */
+
+@StringDef({NEW, USED, ALL_CONDITION})
+public @interface StatusProductOption {
+    String EMPTY = "3";
+    String UNDER_SUPERVISION = "-1";
+}

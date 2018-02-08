@@ -7,7 +7,6 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview;
 public class RecentViewLabelDomain {
 
     String title;
-
     String color;
 
     public RecentViewLabelDomain(String title, String color) {
@@ -19,4 +18,7 @@ public class RecentViewLabelDomain {
         return title;
     }
 
+    public String getColor() {
+        return color;
+    }
 }

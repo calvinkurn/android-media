@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +19,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.customadapter.LazyListView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.shop.MyShopAddressActService;
@@ -34,6 +34,9 @@ import com.tokopedia.core.shoplocation.model.getshopaddress.ShopAddress;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoUseCase;
+import com.tokopedia.seller.shop.common.di.component.DaggerDeleteCacheComponent;
+import com.tokopedia.seller.shop.common.di.component.DeleteCacheComponent;
 import com.tokopedia.seller.shopsettings.address.adapter.ListViewManageShopLocation;
 
 import org.json.JSONArray;
@@ -42,6 +45,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import javax.inject.Inject;
 
 import retrofit2.Response;
 import rx.Subscriber;
@@ -65,16 +70,18 @@ public class ManageShopAddress extends TActivity {
     private ArrayList<String> LocationDistrictId = new ArrayList<String>();
     private ArrayList<String> LocationAddress = new ArrayList<String>();
 
-    private View mainView;
     private LazyListView LocationListView;
     private ListViewManageShopLocation LocationAdapter;
     private NoResultHandler noResult;
     private TkpdProgressDialog MainProgress;
-    private View MainView;
+    private View mainView;
     private String IsAllowShop = "1";
     private int mState = SHOW_MENU;
     private SessionHandler session = new SessionHandler(this);
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
+
+    @Inject
+    DeleteShopInfoUseCase deleteShopInfoUseCase;
 
     @Override
     public String getScreenName() {
@@ -89,19 +96,22 @@ public class ManageShopAddress extends TActivity {
         compositeSubscription = RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         inflateView(R.layout.activity_manage_shop_address);
-        mainView = findViewById(R.id.mainView);
-        noResult = new NoResultHandler(getWindow().getDecorView().getRootView());
         MainProgress = new TkpdProgressDialog(this, TkpdProgressDialog.MAIN_PROGRESS, getWindow().getDecorView().getRootView());
         MainProgress.setLoadingViewId(R.id.include_loading);
-        MainView = findViewById(R.id.main_view);
+        mainView = findViewById(R.id.main_view);
+        noResult = new NoResultHandler(mainView);
         LocationListView = (LazyListView) findViewById(R.id.listview_shop_location);
         LocationListView.AddLoadingView();
         LocationAdapter = new ListViewManageShopLocation(ManageShopAddress.this, LocationNameList, LocationAddressList, LocationPhoneList, LocationFaxList, LocationEmailList, IsAllowShop);
         LocationListView.setAdapter(LocationAdapter);
         LocationListView.RemoveLoadingView();
         MainProgress.showDialog();
-        MainView.setVisibility(View.GONE);
+        mainView.setVisibility(View.GONE);
         CheckCache();
+
+        DeleteCacheComponent deleteCacheComponent =
+                DaggerDeleteCacheComponent.builder().appComponent(getApplicationComponent()).build();
+        deleteCacheComponent.inject(this);
     }
 
     @Override
@@ -159,6 +169,9 @@ public class ManageShopAddress extends TActivity {
                                                 try {
                                                     ShopSettingCache.DeleteCache(ShopSettingCache.CODE_ADDRESS, ManageShopAddress.this);
                                                     ShopCache.DeleteCache(session.getShopID(), ManageShopAddress.this);
+                                                    if (deleteShopInfoUseCase!= null) {
+                                                        deleteShopInfoUseCase.executeSync(RequestParams.EMPTY);
+                                                    }
 
                                                     jsonObject = new JSONObject(response.getStringData());
                                                     Gson gson = new GsonBuilder().create();
@@ -244,6 +257,9 @@ public class ManageShopAddress extends TActivity {
         if (resultCode == RESULT_OK) {
             ShopSettingCache.DeleteCache(ShopSettingCache.CODE_ADDRESS, ManageShopAddress.this);
             ShopCache.DeleteCache(session.getShopID(), ManageShopAddress.this);
+            if (deleteShopInfoUseCase!= null) {
+                deleteShopInfoUseCase.executeSync(RequestParams.EMPTY);
+            }
             GetShopLocationsV4();
         }
     }
@@ -294,7 +310,7 @@ public class ManageShopAddress extends TActivity {
             e.printStackTrace();
         }
         MainProgress.dismiss();
-        MainView.setVisibility(View.VISIBLE);
+        mainView.setVisibility(View.VISIBLE);
         LocationAdapter.notifyDataSetChanged();
     }
 
@@ -347,7 +363,7 @@ public class ManageShopAddress extends TActivity {
             noResult.showMessage();
         }
         MainProgress.dismiss();
-        MainView.setVisibility(View.VISIBLE);
+        mainView.setVisibility(View.VISIBLE);
         LocationAdapter.notifyDataSetChanged();
     }
 
@@ -374,7 +390,6 @@ public class ManageShopAddress extends TActivity {
 
                             @Override
                             public void onError(Throwable e) {
-                                Log.e(getClass().getSimpleName(), e.getLocalizedMessage());
                                 MainProgress.dismiss();
                                 mState = HIDE_MENU;
                                 invalidateOptionsMenu();

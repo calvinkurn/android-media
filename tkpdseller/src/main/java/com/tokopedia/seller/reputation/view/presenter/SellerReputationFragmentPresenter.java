@@ -10,7 +10,10 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
+import com.tokopedia.seller.base.view.adapter.ItemType;
+import com.tokopedia.seller.common.utils.DefaultErrorSubscriber;
+import com.tokopedia.seller.common.utils.NetworkStatus;
+import com.tokopedia.seller.common.williamchart.util.GoldMerchantDateUtils;
 import com.tokopedia.seller.reputation.data.model.request.SellerReputationRequest;
 import com.tokopedia.seller.reputation.domain.interactor.ReviewReputationMergeUseCase;
 import com.tokopedia.seller.reputation.domain.interactor.ReviewReputationUseCase;
@@ -20,9 +23,6 @@ import com.tokopedia.seller.reputation.view.SellerReputationView;
 import com.tokopedia.seller.reputation.view.model.EmptyListModel;
 import com.tokopedia.seller.reputation.view.model.ReputationReviewModel;
 import com.tokopedia.seller.reputation.view.model.SetDateHeaderModel;
-import com.tokopedia.seller.topads.dashboard.utils.DefaultErrorSubscriber;
-import com.tokopedia.seller.base.view.adapter.ItemType;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsAddProductListPresenter;
 import com.tokopedia.seller.util.ShopNetworkController;
 
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<Selle
     public static final String REPUTATION_DATE = "dd-MM-yyyy";
     private SellerReputationRequest sellerReputationRequest;
     private SessionHandler sessionHandler;
-    private TopAdsAddProductListPresenter.NetworkStatus networkStatus;
+    private NetworkStatus networkStatus;
     private int networkCallCount = 0;
     private GCMHandler gcmHandler;
     private ReviewReputationUseCase reviewReputationUseCase;
@@ -59,7 +59,7 @@ public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<Selle
                 GoldMerchantDateUtils.getPreviousDate(Calendar.getInstance().getTimeInMillis(), 0));
 
         // set this flag to hit network
-        setNetworkStatus(TopAdsAddProductListPresenter.NetworkStatus.PULLTOREFRESH);
+        setNetworkStatus(NetworkStatus.PULLTOREFRESH);
 
         shopInfoParam = new ShopNetworkController.ShopInfoParam();
     }
@@ -73,7 +73,7 @@ public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<Selle
     }
 
     public void resetHitNetwork() {
-        setNetworkStatus(TopAdsAddProductListPresenter.NetworkStatus.NONETWORKCALL);
+        setNetworkStatus(NetworkStatus.NONETWORKCALL);
     }
 
     public void setStartDate(long startDate) {
@@ -144,11 +144,11 @@ public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<Selle
         );
     }
 
-    public TopAdsAddProductListPresenter.NetworkStatus getNetworkStatus() {
+    public NetworkStatus getNetworkStatus() {
         return networkStatus;
     }
 
-    public void setNetworkStatus(TopAdsAddProductListPresenter.NetworkStatus networkStatus) {
+    public void setNetworkStatus(NetworkStatus networkStatus) {
         this.networkStatus = networkStatus;
 
         switch (getNetworkStatus()) {

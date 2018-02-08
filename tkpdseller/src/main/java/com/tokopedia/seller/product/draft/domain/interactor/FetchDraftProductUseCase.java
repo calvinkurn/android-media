@@ -1,11 +1,11 @@
 package com.tokopedia.seller.product.draft.domain.interactor;
 
-import com.tokopedia.core.base.domain.CompositeUseCase;
+import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
-import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 
 import rx.Observable;
 
@@ -13,7 +13,7 @@ import rx.Observable;
  * Created by zulfikarrahman on 4/26/17.
  */
 
-public class FetchDraftProductUseCase extends CompositeUseCase<UploadProductInputDomainModel> {
+public class FetchDraftProductUseCase extends UseCase<UploadProductInputDomainModel> {
 
     public static final String DRAFT_PRODUCT_ID = "DRAFT_PRODUCT_ID";
     private ProductDraftRepository productDraftRepository;

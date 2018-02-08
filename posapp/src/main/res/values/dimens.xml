@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="posapp_margin_vs">4dp</dimen>
+    <dimen name="posapp_margin_s">8dp</dimen>
+    <dimen name="posapp_margin_m">16dp</dimen>
+    <dimen name="posapp_margin_l">24dp</dimen>
+    <dimen name="posapp_margin_xl">32dp</dimen>
+</resources>

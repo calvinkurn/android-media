@@ -40,14 +40,13 @@ public interface IDigitalCartView extends IBaseView {
 
     void renderVoucherInfoData(VoucherDigital voucherDigital);
 
-    void renderErrorCheckVoucher(String message);
+//    void renderErrorCheckVoucher(String message);
 
-    void renderErrorHttpCheckVoucher(String message);
+//    void renderErrorHttpCheckVoucher(String message);
 
-    void renderErrorNoConnectionCheckVoucher(String message);
+//    void renderErrorNoConnectionCheckVoucher(String message);
 
-    void renderErrorTimeoutConnectionCheckVoucher(String message);
-
+//    void renderErrorTimeoutConnectionCheckVoucher(String message);
 
     void renderToTopPay(CheckoutDigitalData checkoutDigitalData);
 
@@ -83,9 +82,9 @@ public interface IDigitalCartView extends IBaseView {
 
     String getWalletRefreshToken();
 
-    String getDigitalCategoryId();
+//    String getDigitalCategoryId();
 
-    String getVoucherCode();
+//    String getVoucherCode();
 
     CheckoutDataParameter getCheckoutData();
 

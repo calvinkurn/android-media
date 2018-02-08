@@ -8,8 +8,7 @@ import android.view.View;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.PromotedProductAdapter;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromotedProductViewModel;
 
 /**
@@ -61,7 +60,8 @@ public class PromotedProductViewHolder extends AbstractViewHolder<PromotedProduc
     @Override
     public void bind(PromotedProductViewModel promotedProductViewModel) {
         this.promotedProductViewModel = promotedProductViewModel;
-        adapter.setList(this.promotedProductViewModel.getListProduct());
+        this.promotedProductViewModel.setRowNumber(getAdapterPosition());
+        adapter.setData(this.promotedProductViewModel);
         infoView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -13,5 +13,8 @@
     <item name="root" type="id" />
     <item name="more" type="id" />
     <item name="close_but" type="id" />
+    <item name="rating" type="id" />
+    <item name="review_count" type="id" />
+    <item name="rating_review_container" type="id" />
 
 </resources>

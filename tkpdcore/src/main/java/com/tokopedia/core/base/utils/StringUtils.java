@@ -32,6 +32,18 @@ public class StringUtils {
         return shareUrl == null || shareUrl.length() == 0;
     }
 
+    public static boolean containInList(List<String> stringList, String stringToCheck){
+        if (stringList == null || TextUtils.isEmpty(stringToCheck)) {
+            return false;
+        }
+        for (int i=0, sizei = stringList.size(); i<sizei; i++) {
+            if (stringToCheck.equals(stringList.get(i))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static String omitPunctuationAndDoubleSpace(String stringToReplace){
         if (TextUtils.isEmpty(stringToReplace)){
             return "";

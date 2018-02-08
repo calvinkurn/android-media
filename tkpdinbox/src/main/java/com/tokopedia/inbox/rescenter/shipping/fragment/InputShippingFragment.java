@@ -10,9 +10,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -22,6 +25,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.create.customdialog.BaseUploadImageDialog;
@@ -68,11 +72,15 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
     View loadingView;
     @BindView(R2.id.main_view)
     View mainView;
+    @BindView(R2.id.confirm_button)
+    TextView confirmButton;
 
     private AttachmentAdapter attachmentAdapter;
     private InputShippingParamsGetModel paramsModel;
     private UploadImageShippingResCenterDialog uploadImageDialog;
     private ArrayList<AttachmentResCenterVersion2DB> attachmentData;
+
+    private boolean isConfirmButtonEnabled = false;
 
     public static Fragment newInstance(InputShippingParamsGetModel model) {
         InputShippingFragment fragment = new InputShippingFragment();
@@ -227,18 +235,114 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
                 EditText shippingRefNum = (EditText) view;
                 if(motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     if(motionEvent.getRawX() >= (shippingRefNum.getRight() - shippingRefNum.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        presenter.onScanBarcodeClick();
+                        InputShippingFragmentPermissionsDispatcher.scanBarcodeClickWithCheck(InputShippingFragment.this);
                         return true;
                     }
                 }
                 return false;
             }
         });
+
+        shippingRefNum.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                presenter.onShippingRefChanged(editable);
+            }
+        });
+
+        shippingSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                presenter.onShippingSpinnerChanged(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        attachmentAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                presenter.onListAttachmentChanged(attachmentAdapter.getItemCount());
+            }
+
+            @Override
+            public void onItemRangeChanged(int positionStart, int itemCount) {
+                super.onItemRangeChanged(positionStart, itemCount);
+                presenter.onListAttachmentChanged(attachmentAdapter.getItemCount());
+            }
+
+            @Override
+            public void onItemRangeChanged(int positionStart, int itemCount, Object payload) {
+                super.onItemRangeChanged(positionStart, itemCount, payload);
+                presenter.onListAttachmentChanged(attachmentAdapter.getItemCount());
+            }
+
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                super.onItemRangeInserted(positionStart, itemCount);
+                presenter.onListAttachmentChanged(attachmentAdapter.getItemCount());
+            }
+
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                super.onItemRangeRemoved(positionStart, itemCount);
+                presenter.onListAttachmentChanged(attachmentAdapter.getItemCount());
+            }
+
+            @Override
+            public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
+                super.onItemRangeMoved(fromPosition, toPosition, itemCount);
+                presenter.onListAttachmentChanged(attachmentAdapter.getItemCount());
+            }
+        });
+    }
+
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    public void scanBarcodeClick() {
+        presenter.onScanBarcodeClick(getActivity());
     }
 
     @Override
     public void renderInputShippingRefNum(String text) {
         shippingRefNum.setText(text);
+    }
+
+    @Override
+    public void setConfirmButtonEnabled() {
+        if(!isConfirmButtonEnabled) {
+            confirmButton.setClickable(true);
+            confirmButton.setEnabled(true);
+            confirmButton.setBackground(MethodChecker.getDrawable(getActivity(),R.drawable.bg_button_save_enable));
+            confirmButton.setTextColor(MethodChecker.getColor(getActivity(),R.color.white));
+
+            isConfirmButtonEnabled = true;
+        }
+    }
+
+    @Override
+    public void setConfirmButtonDisabled() {
+        if(isConfirmButtonEnabled) {
+            confirmButton.setClickable(false);
+            confirmButton.setEnabled(false);
+            confirmButton.setBackground(MethodChecker.getDrawable(getActivity(),R.drawable.bg_button_save_disable));
+            confirmButton.setTextColor(MethodChecker.getColor(getActivity(),R.color.black_38));
+
+            isConfirmButtonEnabled = false;
+        }
     }
 
     @Override

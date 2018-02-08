@@ -61,7 +61,7 @@ public class TopAdsUseCase extends UseCase<TopAdsParams, AdsView> {
 
             @Override
             protected TopAdsModel doInBackground(TopAdsParams... params) {
-                return dataSource.getTopAds(params[0].getParam());
+                return dataSource.getTopAds(params[0].getParam(), params[0].getAdsPosition());
             }
 
             @Override
@@ -84,14 +84,13 @@ public class TopAdsUseCase extends UseCase<TopAdsParams, AdsView> {
                             } else if (displayMode == DisplayMode.LIST) {
                                 visitables.add(ModelConverter.convertToShopListViewModel(data));
                             } else if (displayMode == DisplayMode.FEED) {
-                                if (i < 1) //Limited shop 1 item only
-                                    visitables.add(ModelConverter.convertToShopFeedViewModel(data, displayMode));
-                            } else if(displayMode == DisplayMode.FEED_EMPTY){
+                                visitables.add(ModelConverter.convertToShopFeedViewModel(data, displayMode));
+                            } else if (displayMode == DisplayMode.FEED_EMPTY) {
                                 visitables.add(ModelConverter.convertToShopFeedViewModel(data, displayMode));
                             }
                         }
                     }
-                    view.displayAds(visitables);
+                    view.displayAds(visitables, topAdsModel.getAdsPosition());
                 } else if (topAdsModel.getError() != null) {
                     view.notifyAdsErrorLoaded(topAdsModel.getError().getCode(),
                             topAdsModel.getError().getTitle());
@@ -105,6 +104,7 @@ public class TopAdsUseCase extends UseCase<TopAdsParams, AdsView> {
             @Override
             protected void onCancelled() {
                 super.onCancelled();
+                execute = false;
             }
         };
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {

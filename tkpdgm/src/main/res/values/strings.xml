@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">tkpdgm</string>
+    <string name="success_delete_n_product_text">Berhasil menghapus %1$d produk dari Produk Unggulan</string>
+    <string name="success_add_n_featured_product_text">Berhasil menambahkan %1$d Produk Unggulan di\n Halaman Toko Anda</string>
+    <string name="success_empty_delete_featured_product_empty">Berhasil menghapus semua produk dari Produk Unggulan</string>
+    <string name="undo_text">Undo</string>
+</resources>

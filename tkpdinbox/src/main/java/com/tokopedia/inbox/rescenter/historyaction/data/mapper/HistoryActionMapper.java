@@ -26,6 +26,7 @@ public class HistoryActionMapper implements Func1<Response<TkpdResponse>, Histor
                 HistoryActionEntity entity = response.body().convertDataObj(HistoryActionEntity.class);
                 domainData.setSuccess(true);
                 domainData.setListHistoryAddress(mappingEntityDomain(entity.getListHistoryAction()));
+                domainData.setResolutionStatus(entity.getResolutionStatus());
             } else {
                 domainData.setSuccess(false);
                 domainData.setMessageError(generateMessageError(response));
@@ -42,8 +43,15 @@ public class HistoryActionMapper implements Func1<Response<TkpdResponse>, Histor
         for (ListHistoryAction item : listHistoryActions) {
             HistoryActionItemDomainData data = new HistoryActionItemDomainData();
             data.setActionBy(item.getActionBy());
+            if (item.getCreateTime() != null) {
+                data.setDateTimestamp(item.getCreateTime().getCreateTimestamp());
+                data.setDate(item.getCreateTime().getCreateTimeStr());
+                data.setMonth(item.getCreateTime().getMonth());
+                data.setDateNumber(item.getCreateTime().getDateNumber());
+                data.setCreateTimestampStr(item.getCreateTime().getCreateTimestamp());
+                data.setTimeNumber(item.getCreateTime().getTimeNumber());
+            }
             data.setActionByText(item.getActionByStr());
-            data.setDate(item.getCreateTimeStr());
             data.setHistoryStr(item.getRemark());
             data.setConversationID(item.getResConvId());
             list.add(data);

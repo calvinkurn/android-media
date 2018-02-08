@@ -1,8 +1,8 @@
 package com.tokopedia.seller.reputation.util;
 
-import java.util.Locale;
+import com.tokopedia.seller.common.williamchart.util.GoldMerchantDateUtils;
 
-import static com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils.getPreviousDate;
+import java.util.Locale;
 
 /**
  * @author normansyahputa on 3/17/17.
@@ -14,6 +14,6 @@ public class ReputationDateUtils {
     private static final String TAG = "ReputationDateUtils";
 
     public static String getDateFormat(long date, int previousDateCount) {
-        return getPreviousDate(date, previousDateCount, DATE_FORMAT);
+        return GoldMerchantDateUtils.getPreviousDate(date, previousDateCount, DATE_FORMAT);
     }
 }

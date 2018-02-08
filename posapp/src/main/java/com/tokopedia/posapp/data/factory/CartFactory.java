@@ -8,13 +8,11 @@ import com.tokopedia.posapp.data.source.local.CartLocalSource;
  */
 
 public class CartFactory {
-    AddToCartMapper addToCartMapper;
+    public CartFactory() {
 
-    public CartFactory(AddToCartMapper addToCartMapper) {
-        this.addToCartMapper = addToCartMapper;
     }
 
-    public CartLocalSource getCartFromLocal() {
-        return new CartLocalSource(addToCartMapper);
+    public CartLocalSource local() {
+        return new CartLocalSource();
     }
 }

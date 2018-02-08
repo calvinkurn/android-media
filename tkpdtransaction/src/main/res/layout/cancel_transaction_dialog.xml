@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:minWidth="300dp"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_med">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/cancel_transaction_dialog_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_confirm_cancel_transaction"
+            android:textSize="@dimen/text_size_large"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/message_cancel_transaction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/med_dp"
+            android:textSize="@dimen/text_size_l_medium"
+            tools:text="Dana pembatalan transaksi senilai Rp400.000 akan dikembalikan ke TokoCash Anda" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_large"
+        android:gravity="end"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="@dimen/padding_vs"
+            android:paddingEnd="@dimen/padding_small"
+            android:paddingLeft="@dimen/padding_small"
+            android:paddingRight="@dimen/padding_small"
+            android:paddingStart="@dimen/padding_small"
+            android:text="@string/title_no"
+            android:textColor="@color/medium_green"
+            android:textSize="@dimen/text_size_l_medium"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/confirm_delete_transaction_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/padding_med"
+            android:layout_marginStart="@dimen/padding_med"
+            android:gravity="center"
+            android:paddingBottom="@dimen/padding_vs"
+            android:paddingEnd="@dimen/padding_small"
+            android:paddingLeft="@dimen/padding_small"
+            android:paddingRight="@dimen/padding_small"
+            android:paddingStart="@dimen/padding_small"
+            android:paddingTop="@dimen/padding_small"
+            android:text="@string/title_yes"
+            android:textColor="@color/medium_green"
+            android:textSize="@dimen/text_size_l_medium"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</LinearLayout>

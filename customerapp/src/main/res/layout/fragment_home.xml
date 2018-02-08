@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true">
+
+
+    <com.tokopedia.core.customwidget.SwipeToRefresh
+        android:id="@+id/sw_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:descendantFocusability="beforeDescendants"/>
+
+    </com.tokopedia.core.customwidget.SwipeToRefresh>
+
+    <com.tokopedia.tkpd.beranda.presentation.view.SectionContainer
+        android:id="@+id/tab_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabBackground="@color/white"
+            app:tabGravity="fill"
+            app:tabMode="fixed" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_hint" />
+    </com.tokopedia.tkpd.beranda.presentation.view.SectionContainer>
+
+</android.support.design.widget.CoordinatorLayout>

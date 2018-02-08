@@ -6,7 +6,7 @@ import android.view.View;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.core.base.adapter.model.RetryModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 
 /**
  * Created by stevenfredian on 5/31/17.

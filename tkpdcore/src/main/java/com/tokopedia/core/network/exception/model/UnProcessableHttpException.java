@@ -13,21 +13,23 @@ import java.io.IOException;
  */
 
 public class UnProcessableHttpException extends IOException {
-    public static final String CODE_DISTANCE_EXCEEDED = "distance_exceeded";
+    private static final String DEFAULT_MESSAGE = "Sorry, Please try again later";
 
     private String title;
     private String code;
 
     public UnProcessableHttpException() {
-        super("Request data is invalid, please check message");
+        super(DEFAULT_MESSAGE);
+        title = DEFAULT_MESSAGE;
     }
 
     public UnProcessableHttpException(String message, Throwable cause) {
         super(message, cause);
+        title = DEFAULT_MESSAGE;
     }
 
     public UnProcessableHttpException(String errorMessage) {
-        super("Request data is invalid, please check message");
+        super(DEFAULT_MESSAGE);
         JSONObject dataJsonObject = null;
         JSONObject jsonObject = null;
         try {
@@ -66,7 +68,7 @@ public class UnProcessableHttpException extends IOException {
                 }
             }
         } catch (Exception ex) {
-            title = "Request data is invalid, please check message";
+            title = DEFAULT_MESSAGE;
         }
     }
 

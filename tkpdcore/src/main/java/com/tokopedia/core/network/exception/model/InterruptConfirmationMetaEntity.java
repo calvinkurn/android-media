@@ -26,6 +26,9 @@ public class InterruptConfirmationMetaEntity {
     @SerializedName("interrupt")
     @Expose
     InterruptMetaEntity interruptEntity;
+    @SerializedName("pending_fare")
+    @Expose
+    InterruptMetaEntity pendingFareEntity;
 
     public TosAcceptConfirmationEntity getTosAcceptConfirmationEntity() {
         return tosAcceptConfirmationEntity;
@@ -49,5 +52,9 @@ public class InterruptConfirmationMetaEntity {
 
     public InterruptTokopediaConfirmationExceptionEntity getTosTokopediaConfirmationExceptionEntity() {
         return tosTokopediaConfirmationExceptionEntity;
+    }
+
+    public InterruptMetaEntity getPendingFareEntity() {
+        return pendingFareEntity;
     }
 }

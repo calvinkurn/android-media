@@ -9,7 +9,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.blog.BlogViewModel;
 
 /**
@@ -57,7 +57,8 @@ public class ImageBlogViewHolder extends AbstractViewHolder<BlogViewModel> {
                         viewModel.getUrl(),
                         viewModel.getTitle(),
                         viewModel.getImageUrl(),
-                        viewModel.getContent());
+                        viewModel.getContent(),
+                        viewModel.getPage() + "." + viewModel.getRowNumber());
             }
         });
     }

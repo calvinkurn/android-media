@@ -6,7 +6,6 @@ import android.app.DialogFragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,26 +22,32 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.base.presentation.BaseFragment;
-import com.tokopedia.ride.bookingride.di.ConfirmBookingDependencyInjection;
+import com.tokopedia.ride.bookingride.di.BookingRideComponent;
+import com.tokopedia.ride.bookingride.di.DaggerBookingRideComponent;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.view.ConfirmBookingContract;
+import com.tokopedia.ride.bookingride.view.ConfirmBookingPresenter;
 import com.tokopedia.ride.bookingride.view.activity.ApplyPromoActivity;
-import com.tokopedia.ride.bookingride.view.activity.TokoCashWebViewActivity;
+import com.tokopedia.ride.bookingride.view.activity.ManagePaymentOptionsActivity;
+import com.tokopedia.ride.bookingride.view.adapter.viewmodel.PaymentMethodViewModel;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.SeatViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingPassData;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+import com.tokopedia.ride.common.ride.di.RideComponent;
 import com.tokopedia.ride.ontrip.view.fragment.InterruptConfirmationDialogFragment;
 import com.tokopedia.ride.ontrip.view.fragment.InterruptDialogFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.OnClick;
 
@@ -55,8 +60,10 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     private static final int REQUEST_CODE_REMOVE_PROMO = 1014;
     private static final int REQUEST_CODE_INTERRUPT_DIALOG = 1015;
     private static final int REQUEST_CODE_INTERRUPT_TOKOPEDIA_DIALOG = 1016;
+    private static final int REQUEST_CODE_CHANGE_PAYMENT_METHOD = 1017;
     private static final String INTERRUPT_DIALOG_TAG = "interrupt_dialog";
     private static final String INTERRUPT_TOKOPEDIA_DIALOG_TAG = "interrupt_tokopedia_dialog";
+
 
     public static String EXTRA_CONFIRM_BOOKING_DATA = "EXTRA_CONFIRM_BOOKING_DATA";
     public static String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
@@ -78,11 +85,17 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     LinearLayout confirmPageContainer;
     private SnackbarRetry snackbarRetry;
 
-    ConfirmBookingContract.Presenter presenter;
+    @Inject
+    ConfirmBookingPresenter presenter;
+
     OnFragmentInteractionListener mListener;
     ConfirmBookingViewModel confirmBookingViewModel;
     ConfirmBookingPassData confirmBookingPassData;
     private boolean isOpenInterruptWebviewDialog;
+    private View paymentMethodLayout;
+    private ImageView paymentMethodImage;
+    private TextView paymentMethodTextView;
+    private TextView tokocashBalanceTextView;
 
     public interface OnFragmentInteractionListener {
         void actionChangeSeatCount(List<SeatViewModel> seatViewModels);
@@ -125,8 +138,6 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         confirmBookingViewModel = ConfirmBookingViewModel.createInitial();
         confirmBookingViewModel.setSeatCount(confirmBookingPassData.getSeatCount());
         initView(view);
-
-        presenter = ConfirmBookingDependencyInjection.createPresenter(getActivity());
         presenter.attachView(this);
         presenter.initialize();
 
@@ -172,6 +183,10 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         promoLayout = (LinearLayout) view.findViewById(R.id.layout_promo);
         progressLayout = (ProgressBar) view.findViewById(R.id.indeterminate_progress_bar);
         confirmPageContainer = (LinearLayout) view.findViewById(R.id.confirm_page_container);
+        paymentMethodLayout = (View) view.findViewById(R.id.layout_payment_method);
+        paymentMethodImage = (ImageView) view.findViewById(R.id.img_payment_method);
+        paymentMethodTextView = (TextView) view.findViewById(R.id.tv_payment_method);
+        tokocashBalanceTextView = (TextView) view.findViewById(R.id.tv_tokocash_balance);
     }
 
     @Override
@@ -202,6 +217,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         surgeRateTextView.setVisibility(View.GONE);
         mPromoResultLayout.setVisibility(View.GONE);
         mApplyPromoLayout.setVisibility(View.GONE);
+        paymentMethodLayout.setVisibility(View.GONE);
         bookingConfirmationButton.setEnabled(false);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             bookingConfirmationButton.setBackground(getResources().getDrawable(R.drawable.rounded_filled_theme_disable_bttn));
@@ -356,28 +372,18 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
-    @OnClick(R2.id.tv_topup_tokocash)
-    public void actionTopupButtonClicked() {
-        String seamlessURL = URLGenerator.generateURLSessionLogin(
-                (Uri.encode("https://wallet-staging.tokopedia.id/")),
-                getActivity()
+    @OnClick(R2.id.tv_promo_edit)
+    public void actionEditPromo() {
+        startActivityForResult(
+                ApplyPromoActivity.getCallingActivity(getActivity(), confirmBookingViewModel),
+                APPLY_PROMO_ACTIVITY_REQUEST_CODE
         );
-        Intent intent = TokoCashWebViewActivity.getCallingIntent(getActivity(), seamlessURL);
-        startActivityForResult(intent, WALLET_WEB_VIEW_REQUEST_CODE);
-
     }
 
-    @OnClick(R2.id.iv_promo_desc_close)
-    public void actionRemoveAppliedPromo() {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag("remove_product_fragment");
-        if (previousDialog != null) {
-            fragmentTransaction.remove(previousDialog);
-        }
-        fragmentTransaction.addToBackStack(null);
-        DialogFragment dialogFragment = RemovePromoDialogFragment.newInstance();
-        dialogFragment.setTargetFragment(this, REQUEST_CODE_REMOVE_PROMO);
-        dialogFragment.show(getFragmentManager().beginTransaction(), "remove_product_fragment");
+    @OnClick(R2.id.tv_change_payment_method)
+    public void actionChangePaymentMethod() {
+        //open manage payment activity
+        startActivityForResult(ManagePaymentOptionsActivity.getCallingActivity(getActivity(), ManagePaymentOptionsActivity.TYPE_CHANGE_PAYMENT_OPTION), REQUEST_CODE_CHANGE_PAYMENT_METHOD);
     }
 
     @Override
@@ -470,6 +476,9 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
                         mPromoResultLayout.setVisibility(View.VISIBLE);
                         mApplyPromoLayout.setVisibility(View.GONE);
                         mPromoResultTextView.setText(confirmBookingViewModel.getPromoDescription());
+                    } else {
+                        mPromoResultLayout.setVisibility(View.GONE);
+                        mApplyPromoLayout.setVisibility(View.VISIBLE);
                     }
                 }
                 break;
@@ -481,6 +490,17 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
                     mApplyPromoLayout.setVisibility(View.VISIBLE);
                 }
                 break;
+
+            case REQUEST_CODE_CHANGE_PAYMENT_METHOD:
+                if (resultCode == Activity.RESULT_OK) {
+                    PaymentMethodViewModel paymentMethodViewModel = data.getParcelableExtra(ManagePaymentOptionsFragment.KEY_CHANGE_PAYMENT_RESULT);
+                    if (paymentMethodViewModel != null) {
+                        showPaymentMethod(paymentMethodViewModel.getName(), paymentMethodViewModel.getImageUrl());
+                    } else {
+                        hidePaymentMethod();
+                    }
+                }
+                break;
             default:
         }
     }
@@ -488,7 +508,18 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     @Override
     public void onResume() {
         super.onResume();
-        //presenter.actionCheckBalance();
+        presenter.getPaymentMethodListFromCache();
+        presenter.getPaymentMethodList();
+    }
+
+    @Override
+    protected void initInjector() {
+        RideComponent component = getComponent(RideComponent.class);
+        BookingRideComponent bookingRideComponent = DaggerBookingRideComponent
+                .builder()
+                .rideComponent(component)
+                .build();
+        bookingRideComponent.inject(this);
     }
 
     @Override
@@ -500,6 +531,8 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     public void updateLocations(PlacePassViewModel source, PlacePassViewModel destination) {
         confirmBookingViewModel.setSource(source);
         confirmBookingViewModel.setDestination(destination);
+        confirmBookingPassData.setSource(source);
+        confirmBookingPassData.setDestination(destination);
         presenter.actionGetFareAndEstimate(getParam());
     }
 
@@ -511,6 +544,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     @Override
     public void openInterruptConfirmationWebView(String tosUrl) {
         if (!isOpenInterruptWebviewDialog) {
+            RideGATracking.eventOpenInterruptScreen(tosUrl);
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag(INTERRUPT_DIALOG_TAG);
             if (previousDialog != null) {
@@ -580,5 +614,36 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
             dialogFragment.show(getFragmentManager().beginTransaction(), INTERRUPT_TOKOPEDIA_DIALOG_TAG);
             isOpenInterruptWebviewDialog = true;
         }
+    }
+
+    @Override
+    public void showPaymentMethod(String label, String url) {
+        paymentMethodTextView.setText(label);
+        paymentMethodLayout.setVisibility(View.VISIBLE);
+
+        //set image
+        Glide.with(getActivity()).load(url)
+                .asBitmap()
+                .fitCenter()
+                .dontAnimate()
+                .error(R.drawable.ic_tokocash_icon)
+                .into(paymentMethodImage);
+
+    }
+
+    @Override
+    public void hidePaymentMethod() {
+        paymentMethodLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showTokoCashBalance(String tokoCashBalance) {
+        tokocashBalanceTextView.setVisibility(View.VISIBLE);
+        tokocashBalanceTextView.setText(tokoCashBalance);
+    }
+
+    @Override
+    public void hideTokoCashBalance() {
+        tokocashBalanceTextView.setVisibility(View.GONE);
     }
 }

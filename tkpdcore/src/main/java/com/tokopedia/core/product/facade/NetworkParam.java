@@ -15,6 +15,10 @@ public class NetworkParam {
     private static final String TAG = NetworkParam.class.getSimpleName();
 
     private static final String PARAM_PRODUCT_ID = "product_id";
+    private static final String PARAM_ITEM_ID = "item_id";
+    private static final String PARAM_USER_ID = "user_id";
+    private static final String PARAM_ADS_TYPE = "type";
+    private static final String PARAM_DEVICE_ID = "device";
     private static final String PARAM_PRODUCT_KEY = "product_key";
     private static final String PARAM_SHOP_DOMAIN = "shop_domain";
     private static final String PARAM_SHOP_ID = "shop_id";
@@ -30,6 +34,9 @@ public class NetworkParam {
     private static final String PARAM_PRODUCT_ETALASE_ID = "product_etalase_id";
     private static final String PARAM_PRODUCT_ETALASE_NAME = "product_etalase_name";
     private static final String PARAM_ID_FOR_OTHER_PRODUCT = "-id";
+    private static final String VALUE_DEVICE = "android";
+    private static final String PARAM_SOURCE = "source";
+    private static final String VALUE_SNEAK_PEAK = "sneak_peak";
 
 
     public static Map<String, String> paramProductDetail(ProductPass productPass) {
@@ -42,6 +49,7 @@ public class NetworkParam {
 
     public static TKPDMapParam<String, String> paramProductDetailTest2(ProductPass productPass) {
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
+        params.put(PARAM_DEVICE_ID, VALUE_DEVICE);
         params.put(PARAM_PRODUCT_ID, productPass.getProductId());
         params.put(PARAM_PRODUCT_KEY, productPass.getProductKey());
         params.put(PARAM_SHOP_DOMAIN, productPass.getShopDomain());
@@ -113,5 +121,46 @@ public class NetworkParam {
         Map<String, String> params = new HashMap<>();
         params.put(PARAM_PRODUCT_ID, productId + "");
         return params;
+    }
+
+    public static Map<String, String> paramProductTalk(String productId, String shopId) {
+        Map<String, String> param = new HashMap<>();
+        param.put(PARAM_PRODUCT_ID, productId);
+        param.put("page", String.valueOf(1));
+        param.put("per_page", String.valueOf(10));
+        param.put("shop_domain", shopId);
+        return param;
+    }
+
+    public static Map<String, String> paramTalkComment(String talkId, String shopId) {
+        Map<String, String> param = new HashMap<>();
+        param.put("page", String.valueOf(1));
+        param.put("talk_id", talkId);
+        param.put("shop_id", shopId);
+        return param;
+    }
+
+    public static Map<String, String> paramCheckAds(String shopId, String itemId, String userId, String adsType){
+        Map<String, String> params = new HashMap<>();
+        params.put(PARAM_SHOP_ID, shopId);
+        params.put(PARAM_ITEM_ID, itemId);
+        params.put(PARAM_USER_ID, userId);
+        params.put(PARAM_ADS_TYPE, adsType);
+        params.put(PARAM_DEVICE_ID, VALUE_DEVICE);
+        return params;
+    }
+
+    public static Map<String, String> paramProductSneakPeakTalk(String productId, String shopId) {
+        Map<String, String> param = paramProductTalk(productId, shopId);
+        param.put(PARAM_PER_PAGE, String.valueOf(1));
+        param.put(PARAM_SOURCE, VALUE_SNEAK_PEAK);
+        return param;
+    }
+
+    public static Map<String, String> paramSneakPeakTalkComment(String talkId, String shopId) {
+        Map<String, String> param = paramTalkComment(talkId, shopId);
+        param.put(PARAM_PER_PAGE, String.valueOf(1));
+        param.put(PARAM_SOURCE, VALUE_SNEAK_PEAK);
+        return param;
     }
 }

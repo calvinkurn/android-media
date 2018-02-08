@@ -36,6 +36,15 @@ public class Attributes {
     @SerializedName("identifier")
     @Expose
     private RequestBodyIdentifier identifier;
+    @SerializedName("is_reseller")
+    @Expose
+    private boolean isReseller;
+    @SerializedName("show_subscribe_flag")
+    @Expose
+    private boolean showSubscribeFlag;
+    @SerializedName("is_thankyou_native")
+    @Expose
+    private boolean isThankyouNative;
 
     public void setIdentifier(RequestBodyIdentifier identifier) {
         this.identifier = identifier;
@@ -67,5 +76,17 @@ public class Attributes {
 
     public void setFields(List<Field> fields) {
         this.fields = fields;
+    }
+
+    public void setReseller(boolean reseller) {
+        this.isReseller = reseller;
+    }
+
+    public void setShowSubscribeFlag(boolean showSubscribeFlag) {
+        this.showSubscribeFlag = showSubscribeFlag;
+    }
+
+    public void setThankyouNative(boolean thankyouNative) {
+        isThankyouNative = thankyouNative;
     }
 }

@@ -14,7 +14,7 @@
             <com.tokopedia.tkpdpdp.customview.PictureView
                 android:id="@+id/view_picture"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="700dp"
                 android:fitsSystemWindows="true"
                 android:orientation="vertical" />
 
@@ -27,7 +27,7 @@
             <com.tokopedia.posapp.view.widget.InstallmentSimulationView
                 android:id="@+id/view_price_simulation"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/margin_small" />
 
             <com.tokopedia.tkpdpdp.customview.VideoDescriptionLayout
@@ -52,13 +52,13 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             style="@style/Button.Submit.White"
-            android:text="Tambah Ke Keranjang"/>
+            android:text="@string/pdp_add_to_cart_title"/>
         <Button
             android:id="@+id/button_buy"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             style="@style/Button.Submit.Orange"
-            android:text="Beli"/>
+            android:text="@string/pdp_buy_label"/>
     </LinearLayout>
 </RelativeLayout>

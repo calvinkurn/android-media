@@ -1,5 +1,8 @@
 package com.tokopedia.core.instoped.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 
@@ -8,7 +11,7 @@ import com.tokopedia.core.var.TkpdState;
  * modified by m.normansyah on 4/18/2016
  * TODO : MOVE IT TO THE SELLER MODULE AFTER MYPRODUCT MOVED TO SELLER MODULE
  */
-public class InstagramMediaModel extends RecyclerViewItem {
+public class InstagramMediaModel extends RecyclerViewItem implements Parcelable{
     public InstagramMediaModel(){
         setType(TkpdState.RecyclerView.VIEW_INSTOPED);
     }
@@ -18,14 +21,13 @@ public class InstagramMediaModel extends RecyclerViewItem {
     public String standardResolution;
     public String captionText;
 
-
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(android.os.Parcel dest, int flags) {
+    public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
         dest.writeString(this.filter);
         dest.writeString(this.link);
@@ -34,7 +36,7 @@ public class InstagramMediaModel extends RecyclerViewItem {
         dest.writeString(this.captionText);
     }
 
-    protected InstagramMediaModel(android.os.Parcel in) {
+    protected InstagramMediaModel(Parcel in) {
         super(in);
         this.filter = in.readString();
         this.link = in.readString();
@@ -45,7 +47,7 @@ public class InstagramMediaModel extends RecyclerViewItem {
 
     public static final Creator<InstagramMediaModel> CREATOR = new Creator<InstagramMediaModel>() {
         @Override
-        public InstagramMediaModel createFromParcel(android.os.Parcel source) {
+        public InstagramMediaModel createFromParcel(Parcel source) {
             return new InstagramMediaModel(source);
         }
 

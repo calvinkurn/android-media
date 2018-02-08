@@ -4,8 +4,6 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.posapp.data.factory.OutletFactory;
 import com.tokopedia.posapp.domain.model.outlet.OutletDomain;
 
-import java.util.List;
-
 import rx.Observable;
 
 /**
@@ -21,6 +19,6 @@ public class OutletRepositoryImpl implements OutletRepository {
 
     @Override
     public Observable<OutletDomain> getOutlet(RequestParams requestParams) {
-        return outletFactory.getOutletFromCloud().getOutlet(requestParams);
+        return outletFactory.cloud().getOutlet(requestParams);
     }
 }

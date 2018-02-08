@@ -14,7 +14,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,10 +31,8 @@ import com.tkpd.library.ui.utilities.DatePickerV2;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.session.baseFragment.BaseFragment;
@@ -102,8 +99,6 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
         initPresenter();
 
         presenter.getStatusTransactionList(isVisibleToUser, SellingStatusTransactionImpl.Type.TRANSACTION);
-        ScreenTracking.screenLoca(AppScreen.SCREEN_LOCA_TXSTATUS);
-        ScreenTracking.eventLoca(AppScreen.SCREEN_LOCA_TXSTATUS);
         ScreenTracking.screen(AppScreen.SCREEN_TX_SHOP_TRANSACTION_SELLING_LIST);
         super.setUserVisibleHint(isVisibleToUser);
     }
@@ -211,7 +206,7 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
 
     @Override
     public void ariseRetry(int type, Object... data) {
-        Log.d(TAG, "ariseRetry type " + type);
+
     }
 
     @Override
@@ -468,7 +463,6 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
     @Override
     public void onResume() {
         super.onResume();
-        UnifyTracking.eventViewShopTransactionPage();
     }
 
     private void createEditRefDialog(final SellingStatusTxModel model) {
@@ -483,7 +477,8 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
 
             @Override
             public void onClick(View v) {
-                startActivityForResult(CommonUtils.requestBarcodeScanner(), 0);
+                CommonUtils.requestBarcodeScanner(FragmentSellingTransaction.this,
+                        CustomScannerBarcodeActivity.class);
             }
         });
         ConfirmButton.setOnClickListener(new View.OnClickListener() {

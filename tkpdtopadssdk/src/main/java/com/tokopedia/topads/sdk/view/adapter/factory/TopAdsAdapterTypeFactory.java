@@ -19,13 +19,8 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.TopAdsViewModel
 
 public class TopAdsAdapterTypeFactory implements TopAdsTypeFactory {
 
-    private ImageLoader imageLoader;
     private LocalAdsClickListener itemClickListener;
     public static int CLIENT_ADAPTER_VIEW_TYPE = -7238;
-
-    public TopAdsAdapterTypeFactory(Context context) {
-        imageLoader = new ImageLoader(context);
-    }
 
     public void setItemClickListener(LocalAdsClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;

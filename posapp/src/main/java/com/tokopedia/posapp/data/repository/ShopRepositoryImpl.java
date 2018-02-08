@@ -11,7 +11,7 @@ import rx.Observable;
  */
 
 public class ShopRepositoryImpl implements ShopRepository {
-    ShopFactory shopFactory;
+    private ShopFactory shopFactory;
 
     public ShopRepositoryImpl(ShopFactory shopFactory) {
         this.shopFactory = shopFactory;
@@ -19,6 +19,6 @@ public class ShopRepositoryImpl implements ShopRepository {
 
     @Override
     public Observable<ShopDomain> getShop(RequestParams requestParams) {
-        return shopFactory.getShopFromCloud().getShop(requestParams);
+        return shopFactory.cloud().getShop(requestParams);
     }
 }

@@ -8,14 +8,18 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -28,17 +32,18 @@ import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.inbox.contactus.ContactUsConstant;
-import com.tokopedia.inbox.contactus.adapter.ImageUploadAdapter;
-import com.tokopedia.inbox.contactus.listener.CreateTicketFormFragmentView;
-import com.tokopedia.inbox.contactus.model.solution.SolutionResult;
-import com.tokopedia.inbox.contactus.presenter.CreateTicketFormFragmentPresenter;
-import com.tokopedia.inbox.contactus.presenter.CreateTicketFormFragmentPresenterImpl;
-import com.tokopedia.core.inboxreputation.model.ImageUpload;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.inbox.contactus.ContactUsConstant;
+import com.tokopedia.inbox.contactus.activity.ContactUsCreateTicketActivity;
+import com.tokopedia.inbox.contactus.adapter.ImageUploadAdapter;
+import com.tokopedia.inbox.contactus.listener.CreateTicketFormFragmentView;
+import com.tokopedia.inbox.contactus.model.ImageUpload;
+import com.tokopedia.inbox.contactus.model.solution.SolutionResult;
+import com.tokopedia.inbox.contactus.presenter.CreateTicketFormFragmentPresenter;
+import com.tokopedia.inbox.contactus.presenter.CreateTicketFormFragmentPresenterImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,44 +64,32 @@ import permissions.dispatcher.RuntimePermissions;
 public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicketFormFragmentPresenter>
         implements CreateTicketFormFragmentView, ContactUsConstant {
 
-    public interface FinishContactUsListener {
-        void onFinishCreateTicket();
-    }
-
     @BindView(R2.id.main_category)
     EditText mainCategory;
-
     @BindView(R2.id.detail)
     EditText detail;
-
     @BindView(R2.id.attachment_note)
     TextView attachmentNote;
-
     @BindView(R2.id.main)
     View mainView;
-
     @BindView(R2.id.attachment)
     RecyclerView attachment;
-
     @BindView(R2.id.phone_number)
     EditText phoneNumber;
-
     @BindView(R2.id.name)
     EditText name;
-
     @BindView(R2.id.email)
     EditText email;
-
     @BindView(R2.id.name_text)
     TextView nameTitle;
-
     @BindView(R2.id.email_text)
     TextView emailTitle;
-
+    TextView detailTextView;
+    TextView attachmentLabelTextView;
     ImageUploadAdapter imageAdapter;
     TkpdProgressDialog progressDialog;
     ImageUploadHandler imageUploadHandler;
-
+    private FinishContactUsListener finishContactUsListener;
 
     public static CreateTicketFormFragment createInstance(Bundle extras) {
         CreateTicketFormFragment fragment = new CreateTicketFormFragment();
@@ -104,6 +97,50 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
         bundle.putAll(extras);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        detailTextView = (TextView) view.findViewById(R.id.detail_text);
+        attachmentLabelTextView = (TextView) view.findViewById(R.id.attachment_note);
+        return view;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof FinishContactUsListener) {
+            finishContactUsListener = (FinishContactUsListener) activity;
+        }
+    }
+
+    @Override
+    public void onAttach(Context activity) {
+        super.onAttach(activity);
+        if (activity instanceof FinishContactUsListener) {
+            finishContactUsListener = (FinishContactUsListener) activity;
+        }
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setInitFieldValue();
+    }
+
+    private void setInitFieldValue() {
+        if (getArguments() != null) {
+            if (!TextUtils.isEmpty(getArguments().getString(ContactUsCreateTicketActivity.PARAM_DESCRIPTION_TITLE, null))) {
+                detailTextView.setText(getArguments().getString(ContactUsCreateTicketActivity.PARAM_DESCRIPTION_TITLE));
+            }
+            if (!TextUtils.isEmpty(getArguments().getString(ContactUsCreateTicketActivity.PARAM_ATTACHMENT_TITLE, null))) {
+                attachmentLabelTextView.setText(getArguments().getString(ContactUsCreateTicketActivity.PARAM_ATTACHMENT_TITLE));
+            }
+            if (!TextUtils.isEmpty(getArguments().getString(ContactUsCreateTicketActivity.PARAM_DESCRIPTION, null))) {
+                detail.setText(getArguments().getString(ContactUsCreateTicketActivity.PARAM_DESCRIPTION));
+            }
+        }
     }
 
     @Override
@@ -140,15 +177,17 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_send)
+        if (item.getItemId() == R.id.action_send) {
             KeyboardHandler.DropKeyboard(getActivity(), getView());
-        presenter.sendTicket();
+            presenter.sendTicket();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     protected void initialPresenter() {
-        presenter = new CreateTicketFormFragmentPresenterImpl(this);
+        presenter = new CreateTicketFormFragmentPresenterImpl(this, finishContactUsListener);
     }
 
     @Override
@@ -168,7 +207,7 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
 
     @Override
     protected void initView(View view) {
-        if(SessionHandler.isV4Login(getActivity())){
+        if (SessionHandler.isV4Login(getActivity())) {
             nameTitle.setVisibility(View.GONE);
             name.setVisibility(View.GONE);
             email.setVisibility(View.GONE);
@@ -236,7 +275,7 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
         dialog.show();
     }
 
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void actionCamera() {
         imageUploadHandler.actionCamera();
     }
@@ -255,7 +294,6 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
     protected void setActionVar() {
 
     }
-
 
     @Override
     public String getTicketCategoryId() {
@@ -320,7 +358,6 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
             NetworkErrorHelper.showEmptyState(getActivity(), getView(), retryClickedListener);
         else
             NetworkErrorHelper.showEmptyState(getActivity(), getView(), error, retryClickedListener);
-
 
     }
 
@@ -391,11 +428,12 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
                 CreateTicketFormFragment.this, requestCode, grantResults);
     }
 
-    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showRationaleForStorageAndCamera(final PermissionRequest request) {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
     }
@@ -425,21 +463,31 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
         RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
-    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showDeniedForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
     }
 
-    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showNeverAskForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
+    }
+
+    public void setFinishContactUsListener(FinishContactUsListener finishContactUsListener) {
+        this.finishContactUsListener = finishContactUsListener;
+    }
+
+    public interface FinishContactUsListener {
+        void onFinishCreateTicket();
     }
 }

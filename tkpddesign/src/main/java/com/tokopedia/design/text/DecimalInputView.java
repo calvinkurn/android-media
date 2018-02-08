@@ -14,6 +14,7 @@ import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
+import com.tokopedia.design.utils.StringUtils;
 
 import java.text.DecimalFormat;
 
@@ -137,7 +138,7 @@ public class DecimalInputView extends BaseCustomView {
 
     public double getDoubleValue() {
         String valueString = CurrencyFormatHelper.removeCurrencyPrefix(getText());
-        valueString = CurrencyFormatHelper.RemoveNonNumeric(valueString);
+        valueString = StringUtils.removeComma(valueString);
         if (TextUtils.isEmpty(valueString)) {
             return 0;
         }
@@ -146,7 +147,7 @@ public class DecimalInputView extends BaseCustomView {
 
     public void setValue(double value) {
         DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
-        editText.setText(df.format(value));
+        editText.setText(String.valueOf(df.format(value)));
     }
 
     public EditText getEditText() {

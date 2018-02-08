@@ -1,14 +1,13 @@
 package com.tokopedia.seller.reputation.view.adapter;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +17,9 @@ import android.widget.TextView;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmstat.utils.DateHeaderFormatter;
-import com.tokopedia.seller.gmstat.utils.DateUtilHelper;
-import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
+import com.tokopedia.seller.reputation.util.DateHeaderFormatter;
+import com.tokopedia.seller.reputation.view.helper.DateUtilHelper;
+import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.reputation.view.helper.ReputationHeaderViewHelper;
 import com.tokopedia.seller.reputation.view.model.EmptyListModel;
 import com.tokopedia.seller.reputation.view.model.EmptySeparatorModel;
@@ -69,7 +68,7 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
         switch (viewType) {
             case ReputationReviewModel.VIEW_DEPOSIT:
                 View itemLayoutView = LayoutInflater.from(viewGroup.getContext())
-                        .inflate(R.layout.listview_seller_reputation, viewGroup, false);
+                        .inflate(R.layout.item_seller_reputation, viewGroup, false);
                 return new ViewHolder(itemLayoutView);
             case SetDateHeaderModel.TYPE:
                 itemLayoutView = LayoutInflater.from(viewGroup.getContext())
@@ -119,7 +118,6 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
             if (list.get(position) != null && list.get(position) instanceof ReputationReviewModel) {
                 ReputationReviewModel reputationReviewModel =
                         (ReputationReviewModel) list.get(position);
-                Log.d(TAG, String.format("bindDeposit %d %s", position, reputationReviewModel.getData().toString()));
                 ReputationReviewModel.Data data = reputationReviewModel.getData();
                 holder.date.setText(data.getDate());
                 String information = data.getInformation();
@@ -279,8 +277,7 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
 
         public void onClickHeader() {
             if (fragment != null) {
-                reputationViewHelper.setSelectionType(DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE);
-                reputationViewHelper.onClick(fragment, true);
+                reputationViewHelper.onClick(fragment);
                 return;
             }
         }
@@ -346,8 +343,7 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
                 @Override
                 public void onClick(View v) {
                     if (getFragment() != null) {
-                        dateUtilHelper.setSelectionType(DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE);
-                        dateUtilHelper.onClick(fragment, true);
+                        dateUtilHelper.onClick(fragment);
                     }
                 }
             });

@@ -22,6 +22,7 @@ public class AlbumMediaCollection implements LoaderManager.LoaderCallbacks<Curso
     private WeakReference<Context> mContext;
     private LoaderManager mLoaderManager;
     private AlbumMediaCallbacks mCallbacks;
+    private int galeryType = GalleryType.ofAll();
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -35,7 +36,7 @@ public class AlbumMediaCollection implements LoaderManager.LoaderCallbacks<Curso
             return null;
         }
 
-        return AlbumMediaLoader.newInstance(context, albumItem);
+        return AlbumMediaLoader.newInstance(context, albumItem, galeryType);
     }
 
     @Override
@@ -78,6 +79,10 @@ public class AlbumMediaCollection implements LoaderManager.LoaderCallbacks<Curso
         args.putParcelable(ARGS_ALBUM, target);
         args.putBoolean(ARGS_ENABLE_CAPTURE, enableCapture);
         mLoaderManager.initLoader(LOADER_ID, args, this);
+    }
+
+    public void setGaleryType(int galeryType) {
+        this.galeryType = galeryType;
     }
 
     public interface AlbumMediaCallbacks {

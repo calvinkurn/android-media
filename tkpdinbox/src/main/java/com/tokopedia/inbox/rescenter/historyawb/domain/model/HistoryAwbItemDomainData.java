@@ -11,6 +11,7 @@ public class HistoryAwbItemDomainData {
     private String actionByText;
     private List<AttachmentAwbDomainData> attachmentList;
     private String date;
+    private String createTimestamp;
     private String remark;
     private String conversationID;
     private String shipmentID;
@@ -96,5 +97,13 @@ public class HistoryAwbItemDomainData {
 
     public boolean isButtonTrack() {
         return buttonTrack;
+    }
+
+    public String getCreateTimestamp() {
+        return createTimestamp;
+    }
+
+    public void setCreateTimestamp(String createTimestamp) {
+        this.createTimestamp = createTimestamp;
     }
 }

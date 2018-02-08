@@ -111,4 +111,8 @@ public class ChooseAddressActivity extends BasePresenterActivity {
         ArrayList<Destination> onActivityBackPressed();
     }
 
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

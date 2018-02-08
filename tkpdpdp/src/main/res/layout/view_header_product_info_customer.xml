@@ -8,7 +8,7 @@
     android:padding="@dimen/padding_small">
 
     <TextView
-        android:id="@id/tv_name"
+        android:id="@+id/tv_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ellipsize="end"
@@ -16,7 +16,6 @@
         android:layout_marginRight="80dp"
         tools:text="Product Name"
         android:textColor="#b3000000"
-        android:textAllCaps="true"
         android:textSize="@dimen/text_size_l_medium"
         tools:ignore="HardcodedText" />
 
@@ -32,6 +31,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
         <TextView
             android:id="@id/tv_price"
@@ -58,6 +59,48 @@
             android:textSize="@dimen/fontvs"
             tools:text="10%OFF"
             android:visibility="gone"/>
+
+
+        <TextView
+            android:id="@+id/label_cashback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/bg_label"
+            android:paddingBottom="2dp"
+            android:paddingLeft="@dimen/padding_vs"
+            android:paddingRight="@dimen/padding_vs"
+            android:paddingTop="2dp"
+            android:text="Label"
+            android:textColor="@color/label_text_color"
+            android:textSize="10sp" />
+
+    </LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/text_official_store"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="@dimen/margin_small"
+        android:visibility="gone">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/blue_official_store"
+            android:layout_marginRight="@dimen/margin_vs"
+            android:textSize="@dimen/text_size_xsmall"
+            android:text="@string/headerview_label_official_store" />
+
+        <ImageView
+            android:id="@id/iv_official"
+            android:layout_width="@dimen/med_dp"
+            android:layout_height="@dimen/med_dp"
+            android:src="@drawable/ic_badge_official"
+            tools:ignore="ContentDescription" />
     </LinearLayout>
 
     <LinearLayout
@@ -95,44 +138,5 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/cashback_holder"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:visibility="gone">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="1dp"
-            android:textColor="@color/warm_grey"
-            android:text="@string/dapatkan"
-            android:textSize="@dimen/fontvs" />
-
-        <TextView
-            android:id="@+id/label_cashback"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="1dp"
-            android:textColor="@color/tkpd_main_green"
-            android:textSize="@dimen/fontvs" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="1dp"
-            android:textColor="@color/warm_grey"
-            android:text="@string/cashbak_info_tokocash"
-            android:textSize="@dimen/fontvs" />
-
-        <ImageView
-            android:layout_width="@dimen/margin_med"
-            android:layout_height="@dimen/margin_med"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_tokocash_icon" />
-
-
-    </LinearLayout>
 </LinearLayout>

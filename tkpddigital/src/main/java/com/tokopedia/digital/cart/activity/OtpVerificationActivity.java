@@ -496,4 +496,10 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
         setResult(RESULT_OTP_CANCELED, intent);
         finish();
     }
+
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

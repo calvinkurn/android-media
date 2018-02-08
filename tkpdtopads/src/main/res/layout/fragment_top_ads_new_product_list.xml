@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        style="@style/LabelLayout.BorderBottom"
+        android:id="@+id/container_header_add_product"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/TextView.SubHeadline.BlackSecondary"
+            android:layout_marginBottom="@dimen/margin_large"
+            android:text="@string/title_add_product_lowercase" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/image_pipe_count"
+                android:layout_width="20dp"
+                android:layout_height="15dp"
+                android:scaleType="fitXY"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/margin_vs"
+                android:src="@drawable/ic_pipe_count" />
+
+            <TextView
+                android:id="@+id/counter_product"
+                style="@style/TextView.Title.BlackSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/image_pipe_count"
+                android:text="@string/top_ads_label_total_selected_product" />
+
+            <TextView
+                android:id="@+id/add_product"
+                style="@style/TextView.Title.Green"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="@string/top_ads_keyword_add" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/container_button_next"
+        android:layout_below="@+id/container_header_add_product"
+        android:background="@color/white"
+        android:clipToPadding="false" />
+
+    <LinearLayout
+        android:id="@+id/container_button_next"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include layout="@layout/partial_separator_horizontal"/>
+        <Button
+            android:id="@+id/button_submit"
+            style="@style/Button.Submit.Green"
+            android:text="@string/label_top_ads_next" />
+    </LinearLayout>
+
+
+</RelativeLayout>

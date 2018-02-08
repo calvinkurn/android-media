@@ -30,23 +30,43 @@
         android:textSize="@dimen/fontm"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/user_favorite"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/button_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/user_name"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/tab_selector"
-        android:gravity="center"
-        android:src="@drawable/overflow_selected"
-        android:textColor="@color/href_link"
-        android:textSize="@dimen/fonts" />
+        android:layout_marginBottom="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/margin_vs"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/user_favorite"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@drawable/tab_selector"
+            android:gravity="center"
+            android:src="@drawable/overflow_selected"
+            android:textColor="@color/href_link"
+            android:textSize="@dimen/fonts" />
+
+        <TextView
+            android:id="@+id/user_following"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@drawable/tab_selector"
+            android:gravity="center"
+            android:src="@drawable/overflow_selected"
+            android:textColor="@color/href_link"
+            android:textSize="@dimen/fonts" />
+    </LinearLayout>
 
     <View
         android:id="@+id/user_separator"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_below="@+id/user_favorite"
+        android:layout_below="@+id/button_layout"
         android:layout_marginBottom="@dimen/margin_small"
         android:layout_marginTop="@dimen/margin_small"
         android:background="@color/tkpd_bg_color" />

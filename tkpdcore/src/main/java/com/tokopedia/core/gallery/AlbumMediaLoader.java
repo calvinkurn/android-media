@@ -27,6 +27,12 @@ public class AlbumMediaLoader extends CursorLoader {
                     MediaStore.Files.FileColumns.MEDIA_TYPE,
                     MediaStore.MediaColumns.SIZE
             );
+    private static final String SELECTION_ALL_IMAGE_ONLY =
+            String.format("(%s=?) AND %s>0",
+                    MediaStore.Files.FileColumns.MEDIA_TYPE,
+                    MediaStore.MediaColumns.SIZE
+            );
+
     private static final String[] SELECTION_ALL_ARGS = {
             String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE),
             String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO),
@@ -34,6 +40,13 @@ public class AlbumMediaLoader extends CursorLoader {
     private static final String SELECTION_ALBUM =
             String.format("(%s=? OR %s=?) AND %s=? AND %s>0",
                     MediaStore.Files.FileColumns.MEDIA_TYPE,
+                    MediaStore.Files.FileColumns.MEDIA_TYPE,
+                    BUCKET_ID,
+                    MediaStore.MediaColumns.SIZE
+            );
+
+    private static final String SELECTION_ALBUM_IMAGE_ONLY =
+            String.format("(%s=?) AND %s=? AND %s>0",
                     MediaStore.Files.FileColumns.MEDIA_TYPE,
                     BUCKET_ID,
                     MediaStore.MediaColumns.SIZE
@@ -53,26 +66,37 @@ public class AlbumMediaLoader extends CursorLoader {
         super(context, uri, projection, selection, selectionArgs, sortOrder);
     }
 
-    public static CursorLoader newInstance(Context context, AlbumItem albumItem) {
-        if (albumItem.isAll()) {
-            return new AlbumMediaLoader(
-                    context,
-                    QUERY_URI,
-                    PROJECTION,
-                    SELECTION_ALL,
-                    SELECTION_ALL_ARGS,
-                    ORDER_BY
-            );
-        } else {
-            return new AlbumMediaLoader(
-                    context,
-                    QUERY_URI,
-                    PROJECTION,
-                    SELECTION_ALBUM,
-                    getSelectionAlbumArgs(albumItem.getmId()),
-                    ORDER_BY
-            );
+    public static CursorLoader newInstance(Context context, AlbumItem albumItem, int galeryType) {
+        String[] selectionArgs;
+        String selectionAlbum;
+        if(galeryType ==GalleryType.ofImageOnly()){
+            if (albumItem.isAll()) {
+                selectionArgs = new String[] {
+                        String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE)
+                };
+                selectionAlbum = SELECTION_ALL_IMAGE_ONLY;
+            }else{
+                selectionArgs = new String[] {
+                        String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE),
+                        albumItem.getmId()
+                };
+                selectionAlbum = SELECTION_ALBUM_IMAGE_ONLY;
+            }
+        }else {
+            if (albumItem.isAll()) {
+                selectionArgs = SELECTION_ALL_ARGS;
+                selectionAlbum = SELECTION_ALL;
+            } else {
+                selectionArgs = getSelectionAlbumArgs(albumItem.getmId());
+                selectionAlbum = SELECTION_ALBUM;
+            }
         }
+        return new AlbumMediaLoader(context,
+                QUERY_URI,
+                PROJECTION,
+                selectionAlbum,
+                selectionArgs,
+                ORDER_BY);
     }
 
     @Override

@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.inboxreputation.model.ImageUpload;
+import com.tokopedia.inbox.contactus.model.ImageUpload;
 
 import java.io.File;
 import java.util.ArrayList;

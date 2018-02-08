@@ -11,6 +11,7 @@ import com.tokopedia.core.drawer2.data.factory.TokoCashSourceFactory;
 import com.tokopedia.core.drawer2.data.mapper.ProfileMapper;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -47,7 +48,7 @@ public class CloudProfileSource {
 
     public Observable<ProfileModel> getProfile(TKPDMapParam<String, Object> parameters) {
         return peopleService.getApi()
-                .getProfile2(parameters)
+                .getProfile2(AuthUtil.generateParamsNetwork2(context, parameters))
                 .map(profileMapper)
                 .doOnNext(setToCache());
     }
@@ -67,8 +68,10 @@ public class CloudProfileSource {
                     analyticsCacheHandler.setUserDataCache(profileModel.getProfileData());
 
                     if (profileModel.getProfileData().getShopInfo() != null &&
-                            profileModel.getProfileData().getShopInfo().getShopId() != null)
+                            profileModel.getProfileData().getShopInfo().getShopId() != null) {
                         sessionHandler.setShopId(profileModel.getProfileData().getShopInfo().getShopId());
+                        sessionHandler.setShopName(profileModel.getProfileData().getShopInfo().getShopName());
+                    }
                 }
             }
         };

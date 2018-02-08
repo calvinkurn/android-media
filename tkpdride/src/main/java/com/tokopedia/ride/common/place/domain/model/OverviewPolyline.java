@@ -1,7 +1,5 @@
 package com.tokopedia.ride.common.place.domain.model;
 
-import java.util.List;
-
 /**
  * Created by alvarisi on 3/18/17.
  */

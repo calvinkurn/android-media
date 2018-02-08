@@ -115,6 +115,9 @@ public class Slide {
         @Expose
         String updatedBy;
 
+        @SerializedName("applink")
+        String applink;
+
         public String getRedirectUrl() {
             return redirectUrl;
         }
@@ -217,6 +220,14 @@ public class Slide {
 
         public void setUpdatedBy(String updatedBy) {
             this.updatedBy = updatedBy;
+        }
+
+        public String getApplink() {
+            return applink;
+        }
+
+        public void setApplink(String applink) {
+            this.applink = applink;
         }
 
         @Override

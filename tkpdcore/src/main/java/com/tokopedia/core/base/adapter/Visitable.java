@@ -6,7 +6,6 @@ package com.tokopedia.core.base.adapter;
 
 public interface Visitable<T> {
 
-    int type(T favoriteTypeFactory);
-
+    int type(T typeFactory);
 
 }

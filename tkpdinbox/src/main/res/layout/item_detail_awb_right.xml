@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:context="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_marginLeft="80dp"
+    android:layout_marginRight="@dimen/margin_small"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_marginTop="@dimen/margin_vs"
+            android:id="@+id/cv_bubble_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="20dp"
+            android:minHeight="25dp"
+            android:layout_gravity="right"
+            android:foregroundGravity="right"
+            android:background="@drawable/bg_bubble_right">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    context:text="pembeli memasukan resi"
+                    android:textSize="@dimen/fontvs"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginLeft="@dimen/margin_small"
+                    android:layout_marginRight="@dimen/margin_small"/>
+
+                <TextView
+                    android:id="@+id/tv_message"
+                    android:layout_marginTop="@dimen/margin_vs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/fontvs"
+                    android:layout_marginRight="@dimen/padding_small"
+                    android:layout_marginLeft="@dimen/padding_small"
+                    android:layout_marginBottom="@dimen/padding_small"/>
+
+                <TextView
+                    android:id="@+id/tv_title_attachment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/fontvs"
+                    android:text="@string/string_awb_attachment"
+                    android:paddingLeft="@dimen/padding_small"
+                    android:paddingRight="@dimen/padding_small"
+                    android:paddingBottom="@dimen/padding_small"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_attachment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/padding_small"
+                    android:layout_marginLeft="@dimen/padding_small"
+                    android:layout_marginBottom="@dimen/padding_small"/>
+
+                <LinearLayout
+                    android:id="@+id/ff_button"
+                    android:layout_margin="1dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_bubble_button"
+                    android:orientation="horizontal">
+                    <Button
+                        android:id="@+id/btn_track"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="50dp"
+                        android:textSize="@dimen/fontvs"
+                        android:background="@color/transparent"
+                        android:textAllCaps="false"
+                        android:textColor="@color/tkpd_main_green"
+                        android:text="@string/string_track_awb"/>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/black_12"/>
+
+                    <Button
+                        android:id="@+id/btn_edit"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="50dp"
+                        android:background="@color/transparent"
+                        android:text="@string/string_edit_awb"
+                        android:textSize="@dimen/fontvs"
+                        android:textAllCaps="false"
+                        android:textColor="@color/tkpd_main_green"/>
+                </LinearLayout>
+            </LinearLayout>
+        </FrameLayout>
+
+        <include layout="@layout/item_detail_chat_date"
+            android:id="@+id/layout_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+    </LinearLayout>
+</RelativeLayout>

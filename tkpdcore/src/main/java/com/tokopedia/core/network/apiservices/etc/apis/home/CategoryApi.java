@@ -6,10 +6,14 @@ import com.tokopedia.core.network.entity.home.Brands;
 import com.tokopedia.core.network.entity.home.Slide;
 import com.tokopedia.core.network.entity.home.Ticker;
 
+import java.util.Map;
+
 import retrofit2.Response;
+import retrofit2.http.FieldMap;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 import rx.Observable;
 
 /**
@@ -57,18 +61,9 @@ public interface CategoryApi {
 
     String HEADER_USER_ID = "Tkpd-UserId";
 
-    //    @GET(API_V1_BANNERS)
     @GET(API_V1_SLIDES)
-    Observable<Response<Banner>> getBanners(
-            @Header(HEADER_USER_ID) String user_id,
-            @Query(PAGE_SIZE) String size,
-            @Query(FILTER_DEVICE) String device,
-            @Query(FILTER_STATE) String state,
-            @Query(FILTER_EXPIRED) String expired,
-            @Query(FILTER_SLIDE_TYPE) String slideType
-
-
-    );
+    Observable<Response<String>> getBanners(@Header(HEADER_USER_ID) String user_id,
+                                            @QueryMap Map<String, Object> params);
 
     @GET(API_V1_SLIDES)
     Observable<Response<Slide>> getSlides(

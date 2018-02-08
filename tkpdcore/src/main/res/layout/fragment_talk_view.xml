@@ -46,7 +46,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/tab_selector"
                 android:gravity="center_vertical"
-                android:singleLine="true"
+                android:maxLines="2"
                 android:text="Nama Produk"
                 android:textColor="@color/black"
                 android:textSize="@dimen/fonts" />

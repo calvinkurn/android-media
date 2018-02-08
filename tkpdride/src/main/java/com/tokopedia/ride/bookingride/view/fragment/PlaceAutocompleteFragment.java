@@ -18,30 +18,38 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.base.presentation.BaseFragment;
-import com.tokopedia.ride.bookingride.di.PlaceAutoCompleteDependencyInjection;
+import com.tokopedia.ride.bookingride.di.BookingRideComponent;
+import com.tokopedia.ride.bookingride.di.DaggerBookingRideComponent;
 import com.tokopedia.ride.bookingride.domain.GetPeopleAddressesUseCase;
 import com.tokopedia.ride.bookingride.domain.model.Paging;
 import com.tokopedia.ride.bookingride.view.PlaceAutoCompleteContract;
+import com.tokopedia.ride.bookingride.view.PlaceAutoCompletePresenter;
 import com.tokopedia.ride.bookingride.view.adapter.ItemClickListener;
 import com.tokopedia.ride.bookingride.view.adapter.PlaceAutoCompleteAdapter;
 import com.tokopedia.ride.bookingride.view.adapter.factory.PlaceAutoCompleteAdapterTypeFactory;
 import com.tokopedia.ride.bookingride.view.adapter.factory.PlaceAutoCompleteTypeFactory;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.PlaceAutoCompeleteViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+import com.tokopedia.ride.common.ride.di.RideComponent;
 
 import java.util.ArrayList;
 import java.util.Date;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -56,8 +64,10 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
     private static final String SHOW_SELECT_LOCATION_ON_MAP = "SHOW_SELECT_LOCATION_ON_MAP";
     public static final int REQUEST_CHECK_LOCATION_SETTING_REQUEST_CODE = 101;
 
+    @Inject
+    PlaceAutoCompletePresenter mPresenter;
+
     private PlaceAutoCompleteAdapter mAdapter;
-    private PlaceAutoCompleteContract.Presenter mPresenter;
     private Paging paging;
     private boolean isMarketPlaceSource;
 
@@ -115,9 +125,18 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
     }
 
     @Override
+    protected void initInjector() {
+        RideComponent component = getComponent(RideComponent.class);
+        BookingRideComponent bookingRideComponent = DaggerBookingRideComponent
+                .builder()
+                .rideComponent(component)
+                .build();
+        bookingRideComponent.inject(this);
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mPresenter = PlaceAutoCompleteDependencyInjection.createPresenter(getActivity());
         mPresenter.attachView(this);
         mPresenter.initialize();
 
@@ -192,6 +211,12 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
     @Override
     public void onPlaceSelected(PlaceAutoCompeleteViewModel address) {
         CommonUtils.closeKeyboard(getActivity(), mAutocompleteEditText.getWindowToken());
+        if(showAutodetectLocation) {
+            RideGATracking.eventClickSourceRecentAddress(getScreenName(),address.getAddress());
+        }else {
+            RideGATracking.eventClickDestinationRecentAddress(getScreenName(),address.getAddress());//14
+        }
+
         mPresenter.onPlaceSelected(address);
     }
 
@@ -293,6 +318,7 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
 
     @OnClick(R2.id.cabs_autocomplete_back_icon)
     public void actionBackIconClicked() {
+        RideGATracking.eventBackPress(getScreenName());
         getActivity().finish();
     }
 
@@ -308,6 +334,11 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
 
     @OnClick(R2.id.set_location_on_map_container)
     public void actionSelectLocationOnMapClicked() {
+        if(showAutodetectLocation) {
+            RideGATracking.eventClickSourceOpenMap(getScreenName());
+        }else {
+            RideGATracking.eventClickDestinationOpenMap(getScreenName());
+        }
         mOnFragmentInteractionListener.onSelectLocationOnMapSelected();
     }
 
@@ -416,6 +447,16 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
     @Override
     public void hideClearButton() {
         clearFieldImageView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showErrorNoInternetConnectionMessage(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void sendAutoDetectGAEvent(PlacePassViewModel placePassViewModel) {
+        RideGATracking.eventClickAutDetectLocation(getScreenName(),placePassViewModel.getAddress()); //9
     }
 
     @OnClick(R2.id.iv_cross)

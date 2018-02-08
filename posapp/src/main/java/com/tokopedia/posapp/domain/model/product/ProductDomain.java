@@ -7,33 +7,95 @@ import java.util.List;
 /**
  * Created by okasurya on 8/9/17.
  */
-
 public class ProductDomain {
-    private ProductInfoDomain productInfo;
-    private ShopInfoDomain shopInfo;
-    private List<ProductImageDomain> productImages;
+    private int productId;
+    private String productName;
+    private String productPrice;
+    private double productPriceUnformatted;
+    private String productUrl;
+    private String productDescription;
+    private String productImage;
+    private String productImage300;
+    private String productImageFull;
+    private String etalaseId;
 
-    public ProductInfoDomain getProductInfo() {
-        return productInfo;
+    public int getProductId() {
+        return productId;
     }
 
-    public void setProductInfo(ProductInfoDomain productInfo) {
-        this.productInfo = productInfo;
+    public void setProductId(int productId) {
+        this.productId = productId;
     }
 
-    public ShopInfoDomain getShopInfo() {
-        return shopInfo;
+    public String getProductName() {
+        return productName;
     }
 
-    public void setShopInfo(ShopInfoDomain shopInfo) {
-        this.shopInfo = shopInfo;
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
-    public List<ProductImageDomain> getProductImages() {
-        return productImages;
+    public String getProductPrice() {
+        return productPrice;
     }
 
-    public void setProductImages(List<ProductImageDomain> productImages) {
-        this.productImages = productImages;
+    public void setProductPrice(String productPrice) {
+        this.productPrice = productPrice;
+    }
+
+    public double getProductPriceUnformatted() {
+        return productPriceUnformatted;
+    }
+
+    public void setProductPriceUnformatted(double productPriceUnformatted) {
+        this.productPriceUnformatted = productPriceUnformatted;
+    }
+
+    public String getProductUrl() {
+        return productUrl;
+    }
+
+    public void setProductUrl(String productUrl) {
+        this.productUrl = productUrl;
+    }
+
+    public String getProductDescription() {
+        return productDescription;
+    }
+
+    public void setProductDescription(String productDescription) {
+        this.productDescription = productDescription;
+    }
+
+    public String getProductImage() {
+        return productImage;
+    }
+
+    public void setProductImage(String productImage) {
+        this.productImage = productImage;
+    }
+
+    public String getProductImage300() {
+        return productImage300;
+    }
+
+    public void setProductImage300(String productImage300) {
+        this.productImage300 = productImage300;
+    }
+
+    public String getProductImageFull() {
+        return productImageFull;
+    }
+
+    public void setProductImageFull(String productImageFull) {
+        this.productImageFull = productImageFull;
+    }
+
+    public String getEtalaseId() {
+        return etalaseId;
+    }
+
+    public void setEtalaseId(String etalaseId) {
+        this.etalaseId = etalaseId;
     }
 }

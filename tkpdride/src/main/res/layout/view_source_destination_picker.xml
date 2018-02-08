@@ -55,6 +55,20 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/crux_cabs_source_container">
 
+            <TextView
+                android:id="@+id/tv_destination_change"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:paddingRight="8dp"
+                android:text="@string/change_destination"
+                android:textSize="@dimen/font_small"
+                android:tint="@color/grey_500"
+                android:visibility="gone" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
@@ -74,6 +88,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/tv_destination_change"
                 android:layout_toRightOf="@id/crux_cabs_destination_icon"
                 android:background="?attr/selectableItemBackground"
                 android:ellipsize="marquee"
@@ -99,6 +114,8 @@
                 android:src="@drawable/blue_close_icon"
                 android:tint="@color/grey_500"
                 android:visibility="gone" />
+
+
         </RelativeLayout>
     </RelativeLayout>
 

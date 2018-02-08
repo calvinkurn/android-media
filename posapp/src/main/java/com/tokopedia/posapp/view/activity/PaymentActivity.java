@@ -1,103 +1,54 @@
 package com.tokopedia.posapp.view.activity;
 
+import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.LinearLayout;
 
-import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.posapp.R;
+import com.airbnb.deeplinkdispatch.DeepLink;
 
-import io.card.payment.CardIOActivity;
-import io.card.payment.CreditCard;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.posapp.deeplink.Constants;
+import com.tokopedia.posapp.react.PosReactConst;
+import com.tokopedia.posapp.view.fragment.ReactPaymentFragment;
+import com.tokopedia.tkpdreactnative.react.ReactConst;
+import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
+import com.tokopedia.tkpdreactnative.react.app.ReactNativeFragment;
 
 /**
- * Created by okasurya on 8/14/17.
+ * Created by okasurya on 9/12/17.
  */
 
-public class PaymentActivity extends BasePresenterActivity {
+public class PaymentActivity extends ReactFragmentActivity {
 
-    public static final int REQUEST_CARD_SCANNER = 7001;
+//    private static final String CHECKOUT_DATA = "checkout_data";
 
-    private LinearLayout cardScanner;
+    @DeepLink(Constants.Applinks.PAYMENT_CHECKOUT)
+    public static Intent getIntentFromDeeplink(Context context, Bundle extras) {
+        return new Intent(context, PaymentActivity.class).putExtras(extras);
+    }
 
-    @Override
-    protected void setupURIPass(Uri data) {
+    protected Bundle getPropsBundle() {
+        Bundle bundle = getReactNativeProps();
+        bundle.putString(ReactConst.KEY_SCREEN, PosReactConst.Screen.MAIN_POS_O2O);
+        bundle.putString(PosReactConst.Screen.PARAM_POS_PAGE,  PosReactConst.Page.PAYMENT);
+        bundle.putString(PosReactConst.USER_ID,  SessionHandler.getLoginID(this));
+//        bundle.putString(CHECKOUT_DATA, getIntent().getExtras().getString(CHECKOUT_DATA));
 
+        return bundle;
     }
 
     @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_payment;
-    }
-
-    @Override
-    protected void initView() {
-        setToolbar();
-        setupView();
-    }
-
-    @Override
-    protected void setViewListener() {
-        cardScanner.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openCardScanner();
-            }
-        });
-    }
-
-    @Override
-    protected void initVar() {
+    public void onBackPressed() {
 
     }
 
     @Override
-    protected void setActionVar() {
-
+    protected ReactNativeFragment getReactNativeFragment() {
+        return ReactPaymentFragment.newInstance(getPropsBundle());
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_CARD_SCANNER) {
-            if (data != null && data.hasExtra(CardIOActivity.EXTRA_SCAN_RESULT)) {
-                Intent intent = new Intent(this, CardDetailActivity.class);
-                intent.putExtras(data);
-                startActivity(intent);
-            }
-        }
-    }
-
-    private void setToolbar() {
-        getSupportActionBar().setTitle(R.string.payment_title);
-    }
-
-    private void setupView() {
-        cardScanner = (LinearLayout) findViewById(R.id.card_scanner);
-    }
-
-    private void openCardScanner() {
-        Intent scanIntent = new Intent(this, CardIOActivity.class);
-
-        scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_EXPIRY, true);
-        scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_CVV, false);
-        scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_POSTAL_CODE, false);
-        scanIntent.putExtra(CardIOActivity.EXTRA_SUPPRESS_MANUAL_ENTRY, true);
-
-        startActivityForResult(scanIntent, REQUEST_CARD_SCANNER);
+    protected String getToolbarTitle() {
+        return null;
     }
 }

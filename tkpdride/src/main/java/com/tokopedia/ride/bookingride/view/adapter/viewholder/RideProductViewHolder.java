@@ -3,8 +3,8 @@ package com.tokopedia.ride.bookingride.view.adapter.viewholder;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.bookingride.view.adapter.RideProductItemClickListener;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.RideProductViewModel;
 
@@ -38,8 +39,8 @@ public class RideProductViewHolder extends AbstractViewHolder<RideProductViewMod
     TextView productPriceTextView;
     @BindView(R2.id.tv_cab_base_fare)
     TextView baseFareTextView;
-    @BindView(R2.id.cab_price_estimate_layout)
-    FrameLayout priceEstimateContainerFrameLayout;
+    @BindView(R2.id.cab_price_layout)
+    LinearLayout priceEstimateContainerLinearLayout;
     @BindView(R2.id.price_progressbar)
     ProgressBar priceProgress;
     @BindView(R2.id.progress_bar_time)
@@ -60,24 +61,19 @@ public class RideProductViewHolder extends AbstractViewHolder<RideProductViewMod
         rideProductViewModel = element;
         productNameTextView.setText(element.getProductName());
         surgePriceImageView.setVisibility(element.isSurgePrice() ? View.VISIBLE : View.GONE);
-        productPriceTextView.setVisibility(element.getProductPriceFmt() == null ? View.GONE : View.VISIBLE);
+
+        priceEstimateContainerLinearLayout.setVisibility(element.isDestinationSelected() ? View.VISIBLE : View.GONE);
+        priceProgress.setVisibility(element.getProductPriceFmt() == null ? View.VISIBLE : View.GONE);
         productPriceTextView.setText(String.valueOf(element.getProductPriceFmt()));
-        baseFareTextView.setVisibility(!element.isEnabled() ? View.VISIBLE : View.GONE);
-        baseFareTextView.setText(String.valueOf(element.getBaseFare()));
+        productPriceTextView.setVisibility(element.getProductPriceFmt() == null ? View.GONE : View.VISIBLE);
 
         if (element.getTimeEstimate() != null) {
             timeEstimateTextView.setText(String.valueOf(element.getTimeEstimate()));
             timeEstimateTextView.setVisibility(View.VISIBLE);
             timeProgress.setVisibility(View.GONE);
         } else {
-            timeEstimateTextView.setVisibility(View.INVISIBLE);
+            timeEstimateTextView.setVisibility(View.GONE);
             timeProgress.setVisibility(View.VISIBLE);
-        }
-
-        if (element.getProductPriceFmt() == null) {
-            priceProgress.setVisibility(View.VISIBLE);
-        } else {
-            priceProgress.setVisibility(View.GONE);
         }
 
         Glide.with(context).load(element.getProductImage())
@@ -90,6 +86,8 @@ public class RideProductViewHolder extends AbstractViewHolder<RideProductViewMod
 
     @OnClick(R2.id.row_cab_list)
     public void actionOnProductClicked() {
+        RideGATracking.eventSelectRideOption(rideProductViewModel.getProductName(),rideProductViewModel.getTimeEstimate(),rideProductViewModel.getProductPriceFmt());
+
         itemClickListener.onProductSelected(rideProductViewModel);
     }
 }

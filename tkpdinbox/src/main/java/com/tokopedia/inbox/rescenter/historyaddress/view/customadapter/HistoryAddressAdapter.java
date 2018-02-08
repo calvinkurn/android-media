@@ -11,7 +11,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
+import com.tokopedia.core.util.DateFormatUtils;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.detailv2.view.animation.GlowingView;
 import com.tokopedia.inbox.rescenter.historyaddress.view.model.HistoryAddressViewItem;
 import com.tokopedia.inbox.rescenter.historyaddress.view.presenter.HistoryAddressFragmentView;
 
@@ -29,14 +32,18 @@ public class HistoryAddressAdapter extends BaseLinearRecyclerViewAdapter {
     private final HistoryAddressFragmentView fragmentView;
     private List<HistoryAddressViewItem> arraylist;
     private Context context;
+    private boolean isFinished;
+    public static final int STATUS_FINISHED = 500;
+    public static final int STATUS_CANCEL = 0;
 
     public HistoryAddressAdapter(HistoryAddressFragmentView fragmentView) {
         this.fragmentView = fragmentView;
         this.arraylist = new ArrayList<>();
     }
 
-    public void setArraylist(List<HistoryAddressViewItem> arraylist) {
+    public void setArraylist(List<HistoryAddressViewItem> arraylist, int resolutionStatus) {
         this.arraylist = arraylist;
+        this.isFinished = resolutionStatus == STATUS_CANCEL || resolutionStatus == STATUS_FINISHED;
     }
 
     public List<HistoryAddressViewItem> getArraylist() {
@@ -50,6 +57,7 @@ public class HistoryAddressAdapter extends BaseLinearRecyclerViewAdapter {
         TextView history;
         ImageView indicator;
         View lineIndicator;
+        GlowingView glowingView;
 
         public AddressViewHolder(View itemView) {
             super(itemView);
@@ -57,6 +65,7 @@ public class HistoryAddressAdapter extends BaseLinearRecyclerViewAdapter {
             history = (TextView) itemView.findViewById(R.id.tv_address_text);
             indicator = (ImageView) itemView.findViewById(R.id.indicator);
             lineIndicator = itemView.findViewById(R.id.line_indicator);
+            glowingView = (GlowingView) itemView.findViewById(R.id.view_glowing);
         }
     }
 
@@ -88,40 +97,39 @@ public class HistoryAddressAdapter extends BaseLinearRecyclerViewAdapter {
         context = holder.itemView.getContext();
         final HistoryAddressViewItem item = arraylist.get(position);
         renderData(holder, item);
-        renderView(holder, item);
+        renderView(holder, item, position);
     }
 
     private void renderData(AddressViewHolder holder, HistoryAddressViewItem item) {
         holder.date.setText(
-                context.getString(R.string.template_history_additional_information, item.getActionByText(), item.getDate())
+                context.getString(R.string.template_history_additional_information, item.getActionByText(),
+                        item.getCreateTimestamp())
         );
-        holder.history.setText(item.getAddress());
+        holder.history.setText(MethodChecker.fromHtml(item.getAddress()));
     }
 
-    private void renderView(AddressViewHolder holder, HistoryAddressViewItem item) {
+    private void renderView(AddressViewHolder holder, HistoryAddressViewItem item, int position) {
         setPadding(holder);
-        setIndicator(holder, item);
-        if (item.isLatest()) {
-            holder.date.setTypeface(Typeface.DEFAULT_BOLD);
-            holder.history.setTypeface(Typeface.DEFAULT_BOLD);
-            holder.history.setTextColor(ContextCompat.getColor(context, R.color.black));
-        } else {
-            holder.date.setTypeface(null, Typeface.NORMAL);
-            holder.history.setTypeface(null, Typeface.NORMAL);
-            holder.history.setTextColor(ContextCompat.getColor(context, R.color.label_text_color));
-        }
+        setIndicator(holder, item, position);
     }
 
 
-    private void setIndicator(AddressViewHolder holder, HistoryAddressViewItem item) {
-        holder.lineIndicator.setVisibility(
-                holder.getAdapterPosition() == getArraylist().size() - 1 ?
+    private void setIndicator(AddressViewHolder holder, HistoryAddressViewItem item, int position) {
+        holder.lineIndicator.setVisibility(position == (arraylist.size() - 1) ?
                         View.GONE : View.VISIBLE
         );
-
-        holder.indicator.setImageResource(
-                item.isLatest() ? R.drawable.ic_check_circle_48dp : R.drawable.ic_dot_grey_24dp
-        );
+        if (isFinished) {
+            holder.indicator.setImageResource(R.drawable.ic_dot_grey_24dp);
+        } else {
+            holder.indicator.setImageResource(
+                    item.isLatest() ? R.drawable.bg_circle_green : R.drawable.ic_dot_grey_24dp
+            );
+            holder.indicator.setVisibility(item.isLatest() ? View.GONE : View.VISIBLE);
+            holder.glowingView.setVisibility(item.isLatest() ? View.VISIBLE : View.GONE);
+            if (holder.glowingView.getVisibility() == View.VISIBLE) {
+                holder.glowingView.renderData(new Object());
+            }
+        }
     }
 
     private void setPadding(AddressViewHolder holder) {
@@ -152,5 +160,12 @@ public class HistoryAddressAdapter extends BaseLinearRecyclerViewAdapter {
     @Override
     public int getItemCount() {
         return arraylist.size() + super.getItemCount();
+    }
+
+    @Override
+    public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
+        if (holder instanceof AddressViewHolder) {
+            ((AddressViewHolder)holder).glowingView.renderData(new Object());
+        }
     }
 }

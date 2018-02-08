@@ -4,4 +4,21 @@
     <dimen name="search_icon_padding">16dp</dimen>
     <dimen name="search_view_text_padding">65dp</dimen>
     <dimen name="toolbar_height">48dp</dimen>
+    <dimen name="dynamic_filter_item_padding">16dp</dimen>
+    <dimen name="dynamic_filter_item_separator_height">16dp</dimen>
+    <dimen name="color_item_icon_size">40dp</dimen>
+    <dimen name="filter_detail_search_padding_top_bottom">14dp</dimen>
+    <dimen name="filter_detail_search_padding_side">17dp</dimen>
+    <dimen name="dynamic_filter_color_item_vertical_padding">8dp</dimen>
+    <dimen name="dynamic_filter_apply_button_height">52dp</dimen>
+    <dimen name="dynamic_filter_rating_item_vertical_padding">20dp</dimen>
+    <dimen name="filter_rating_width">88dp</dimen>
+    <dimen name="filter_rating_height">15dp</dimen>
+    <dimen name="filter_detail_sidebar_padding_right">5dp</dimen>
+    <dimen name="filter_detail_sidebar_margin_top">56dp</dimen>
+    <dimen name="category_nav_showcase_arrow">25dp</dimen>
+    <dimen name="search_suggestion_padding">16dp</dimen>
+    <dimen name="suggestion_text_view_extra_line_spacing">4sp</dimen>
+    <dimen name="result_count_padding">16dp</dimen>
+    <dimen name="height_banner_category_lifestyle">120dp</dimen>
 </resources>

@@ -11,12 +11,14 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
-import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
@@ -72,10 +74,12 @@ public class FragmentFavorite extends BaseDaggerFragment
     private boolean isTopAdsShopNetworkFailed;
     private View favoriteShopViewSelected;
     private TopAdsShopItem shopItemSelected;
+    private Trace trace;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        trace = TrackingUtils.startTrace("favorite_trace");
         super.onCreate(savedInstanceState);
     }
 
@@ -97,6 +101,11 @@ public class FragmentFavorite extends BaseDaggerFragment
         super.onDestroyView();
         unbinder.unbind();
         favoritePresenter.detachView();
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
@@ -173,20 +182,16 @@ public class FragmentFavorite extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        DaggerAppComponent daggerAppComponent = (DaggerAppComponent) DaggerAppComponent.builder()
-                .appModule(new AppModule(getContext()))
-                .activityModule(new ActivityModule(getActivity()))
-                .build();
         DaggerFavoriteComponent daggerFavoriteComponent
                 = (DaggerFavoriteComponent) DaggerFavoriteComponent.builder()
-                .appComponent(daggerAppComponent)
+                .appComponent(MainApplication.getInstance().getApplicationComponent())
                 .build();
         daggerFavoriteComponent.inject(this);
     }
 
     @Override
     protected String getScreenName() {
-        return AppScreen.SCREEN_HOME_FAVORITE_SHOP;
+        return AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_SHOP_FAVORIT;
     }
 
     @Override
@@ -201,6 +206,7 @@ public class FragmentFavorite extends BaseDaggerFragment
         favoriteAdapter.hideLoading();
         favoriteAdapter.clearData();
         favoriteAdapter.setElement(dataFavorite);
+        TrackingUtils.sendMoEngageOpenFavoriteEvent(dataFavorite.size());
     }
 
     @Override
@@ -219,6 +225,8 @@ public class FragmentFavorite extends BaseDaggerFragment
     public void hideRefreshLoading() {
         swipeToRefresh.setRefreshing(false);
         recylerviewScrollListener.resetState();
+        if(trace!=null)
+            trace.stop();
     }
 
 

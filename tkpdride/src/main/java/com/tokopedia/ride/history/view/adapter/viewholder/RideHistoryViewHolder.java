@@ -53,7 +53,7 @@ public class RideHistoryViewHolder extends AbstractViewHolder<RideHistoryViewMod
         mItem = element;
         rideStartTimeTextView.setText(RideUtils.convertTime(element.getRequestTime()));
         driverCarDisplayNameTextView.setText(element.getDriverCarDisplay());
-        rideFareTextView.setText(element.getFare());
+        rideFareTextView.setText(element.getTotalFare());
         if (element.getStatus().equalsIgnoreCase(RideStatus.COMPLETED)){
             rideStatusTextView.setTextColor(mContext.getResources().getColor(R.color.colorPrimary));
         }else {

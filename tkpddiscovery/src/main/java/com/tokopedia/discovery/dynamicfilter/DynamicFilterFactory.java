@@ -18,6 +18,7 @@ import rx.Observable;
  * Created by noiz354 on 7/11/16.
  * migrate retrofit 2 by Angga.Prasetiyo
  */
+@Deprecated
 public class DynamicFilterFactory {
 
     private static final String TAG = DynamicFilterFactory.class.getSimpleName();
@@ -29,14 +30,15 @@ public class DynamicFilterFactory {
     }
 
     public static Observable<Response<DynamicFilterModel>> createDynamicFilterObservable(
-            Context context, String source, String device, String sc) {
+            Context context, String source, String device, String sc, String query) {
 
-        Log.d(TAG, "Source " + source + " Device " + device + " SC " + sc);
+        Log.d(TAG, "Source " + source + " Device " + device + " SC " + sc + " q " + query);
 
         Map<String, String> params = new HashMap<>();
         params.put(DynamicFilter.SC, sc);
         params.put(DynamicFilter.DEVICE, device);
         params.put(DynamicFilter.SOURCE, source);
+        params.put(DynamicFilter.QUERY, query);
         Observable<Response<DynamicFilterModel>> responseObservable
                 = createDynamicFilter().browseCatalogs(AuthUtil.generateParams(context, params));
 

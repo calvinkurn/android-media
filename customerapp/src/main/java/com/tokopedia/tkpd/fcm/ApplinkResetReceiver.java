@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.tkpd.deeplink.DeepLinkReceiver;
 import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
 
 /**
@@ -13,7 +12,6 @@ import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
  */
 
 public class ApplinkResetReceiver extends BroadcastReceiver {
-    private static final String TAG = DeepLinkReceiver.class.getSimpleName();
 
     @Override
     public void onReceive(Context context, Intent intent) {

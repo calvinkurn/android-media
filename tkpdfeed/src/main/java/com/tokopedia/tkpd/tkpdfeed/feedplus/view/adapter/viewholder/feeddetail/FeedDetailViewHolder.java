@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.feeddetail;
 
 import android.support.annotation.LayoutRes;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -10,7 +11,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlusDetail;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 
 /**
@@ -65,14 +66,14 @@ public class FeedDetailViewHolder extends AbstractViewHolder<FeedDetailViewModel
         productName.setText(MethodChecker.fromHtml(feedDetailViewModel.getName()));
         productPrice.setText(feedDetailViewModel.getPrice());
 
-        if(feedDetailViewModel.getRating() > 0) {
-            productRating.setRating(feedDetailViewModel.getRating());
+        if (feedDetailViewModel.getRating() > 0) {
+            productRating.setRating((feedDetailViewModel.getRating().floatValue()));
             productRating.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             productRating.setVisibility(View.INVISIBLE);
         }
 
-        if (feedDetailViewModel.getCashback().equals(""))
+        if (TextUtils.isEmpty(feedDetailViewModel.getCashback()))
             cashback.setVisibility(View.GONE);
         else {
             cashback.setVisibility(View.VISIBLE);

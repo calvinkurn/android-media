@@ -14,6 +14,7 @@ public class TrackingDialogViewModel {
     private List<TrackingHistoryDialogViewModel> trackHistory;
     private boolean timeOut;
     private String messageError;
+    private boolean success;
 
     public String getMessageError() {
         return messageError;
@@ -22,8 +23,6 @@ public class TrackingDialogViewModel {
     public void setMessageError(String messageError) {
         this.messageError = messageError;
     }
-
-    private boolean success;
 
     public boolean isDelivered() {
         return delivered;

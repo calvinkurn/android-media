@@ -28,7 +28,9 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.model.ClientNumber;
+import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.Validation;
+import com.tokopedia.digital.widget.adapter.AutoCompleteTVAdapter;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -59,6 +61,7 @@ public class ClientNumberInputView extends LinearLayout {
     private ActionListener actionListener;
     private Context context;
     private ArrayAdapter<String> adapterAutoComplete;
+    private AutoCompleteTVAdapter autoCompleteTVAdapter;
     private ClientNumber clientNumber;
 
     public ClientNumberInputView(Context context) {
@@ -80,11 +83,6 @@ public class ClientNumberInputView extends LinearLayout {
         this.context = context;
         LayoutInflater.from(context).inflate(R.layout.view_holder_client_number_input, this, true);
         ButterKnife.bind(this);
-        adapterAutoComplete = new ArrayAdapter<>(
-                getContext(), com.tokopedia.core.R.layout.simple_spinner_tv_res
-        );
-        autoCompleteTextView.setAdapter(adapterAutoComplete);
-        autoCompleteTextView.setThreshold(1);
         initialTextWatcher();
         initBackgroundContactButtonAndClearButton();
         setImgOperatorInvisible();
@@ -131,6 +129,7 @@ public class ClientNumberInputView extends LinearLayout {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
+                    actionListener.onClientNumberHasFocus(((TextView) view).getText().toString());
                     if (autoCompleteTextView.getText().length() > 0) {
                         setBtnClearVisible();
                     } else {
@@ -141,11 +140,10 @@ public class ClientNumberInputView extends LinearLayout {
         };
     }
 
-    public void setAdapterAutoCompleteClientNumber(List<String> recentClientNumberList) {
-        adapterAutoComplete.clear();
-        adapterAutoComplete.notifyDataSetChanged();
-        adapterAutoComplete.addAll(recentClientNumberList);
-        adapterAutoComplete.notifyDataSetChanged();
+    public void setAdapterAutoCompleteClientNumber(List<OrderClientNumber> numberList) {
+        autoCompleteTVAdapter = new AutoCompleteTVAdapter(getContext(), R.layout.item_autocomplete, numberList);
+        autoCompleteTextView.setAdapter(autoCompleteTVAdapter);
+        autoCompleteTextView.setThreshold(1);
     }
 
     public String getText() {
@@ -252,6 +250,7 @@ public class ClientNumberInputView extends LinearLayout {
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
+                actionListener.onClientNumberCleared();
                 autoCompleteTextView.setText("");
             }
         };
@@ -333,6 +332,10 @@ public class ClientNumberInputView extends LinearLayout {
         void onClientNumberInputValid(String tempClientNumber);
 
         void onClientNumberInputInvalid();
+
+        void onClientNumberHasFocus(String clientNumber);
+
+        void onClientNumberCleared();
     }
 
 }

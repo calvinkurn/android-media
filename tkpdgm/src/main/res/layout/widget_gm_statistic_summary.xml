@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/margin_vs"
+    android:paddingLeft="@dimen/margin_sm"
+    android:paddingRight="@dimen/margin_sm"
+    android:paddingTop="@dimen/margin_sm">
+
+    <TextView
+        android:id="@+id/text_view_title"
+        style="@style/TextView.Micro"
+        tools:text="@string/app_id" />
+
+    <TextView
+        android:id="@+id/text_view_content"
+        style="@style/TextView.Headline"
+        android:layout_marginTop="@dimen/padding_vs"
+        tools:text="@string/app_id" />
+
+    <com.tokopedia.gm.statistic.view.widget.ArrowPercentageView
+        android:id="@+id/arrow_percentage_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="@dimen/margin_sm" />
+</LinearLayout>

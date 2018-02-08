@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.contactus;
 
-import com.tokopedia.core.inboxreputation.model.actresult.ImageUploadResult;
+
+import com.tokopedia.inbox.contactus.model.ImageUploadResult;
 
 import okhttp3.RequestBody;
 import retrofit2.http.Header;

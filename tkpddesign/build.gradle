@@ -81,6 +81,9 @@ android {
 
 dependencies {
     compile rootProject.ext.supportLibDependencies.design
+    compile rootProject.ext.supportLibDependencies.cardViewV7
+
+    compile rootProject.ext.networkDependencies.glide
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

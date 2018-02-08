@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
 
     <application
         android:allowBackup="true"
@@ -13,7 +14,11 @@
         android:supportsRtl="true">
         <activity
             android:name=".bookingride.view.activity.RideHomeActivity"
-            android:theme="@style/AppTheme.Ride.NoActionBar" />
+            android:theme="@style/AppTheme.Ride.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".bookingride.view.activity.GooglePlacePickerActivity"
             android:theme="@style/AppTheme.Ride.NoActionBar" />
@@ -23,17 +28,7 @@
         <activity
             android:name=".completetrip.view.CompleteTripActivity"
             android:theme="@style/AppTheme.Ride.NoActionBar" />
-
-        <service
-            android:name=".ontrip.service.GetCurrentRideRequestService"
-            android:exported="true"
-            android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE">
-            <intent-filter>
-                <action android:name="com.google.android.gms.gcm.ACTION_TASK_READY" />
-            </intent-filter>
-        </service>
-
-        <activity android:name=".bookingride.view.activity.TokoCashWebViewActivity" />
+        <activity android:name=".bookingride.view.activity.RideWebViewActivity" />
         <activity
             android:name=".history.view.RideHistoryActivity"
             android:theme="@style/AppTheme.Ride.NoActionBar" />
@@ -65,9 +60,30 @@
         <activity
             android:name=".ontrip.view.SendCancelReasonActivity"
             android:theme="@style/AppTheme.Ride.NoActionBar" />
+        <activity
+            android:name=".completetrip.view.PendingFareChooserActivity"
+            android:theme="@style/AppTheme.Ride.NoActionBar" />
+        <activity
+            android:name=".ontrip.view.TopupTokoCashChangeDestination"
+            android:theme="@style/AppTheme.Ride.NoActionBar" />
+        <activity
+            android:name=".bookingride.view.activity.AddCreditCardActivity"
+            android:theme="@style/AppTheme.Ride.NoActionBar" />
+        <activity
+            android:name=".bookingride.view.activity.ManagePaymentOptionsActivity"
+            android:theme="@style/AppTheme.Ride.NoActionBar" />
+        <activity
+            android:name=".bookingride.view.activity.EditDeleteCreditCardActivity"
+            android:theme="@style/AppTheme.Ride.NoActionBar" />
 
-        <activity android:name=".completetrip.view.PendingFareChooserActivity"
-            android:theme="@style/AppTheme.Ride.NoActionBar"/>
+        <service android:name=".ontrip.view.service.ActivityRecognizedService" />
+
+        <activity
+            android:name=".scrooge.ScroogeActivity"
+            android:theme="@style/AppTheme.Ride.NoActionBar" />
+        <activity
+            android:name=".bookingride.view.activity.PayPendingFareActivity"
+            android:theme="@style/AppTheme.Ride.NoActionBar"></activity>
     </application>
 
 </manifest>

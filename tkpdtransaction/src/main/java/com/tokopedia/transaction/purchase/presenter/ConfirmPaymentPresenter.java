@@ -22,8 +22,6 @@ public interface ConfirmPaymentPresenter {
     void processSubmitConfirmation(Context context, ConfirmPaymentData data,
                                    Form formData, FormEdit formEditData);
 
-    void setLocalyticsFlow(Context context, ConfirmationData data);
-
     void onDestroyView();
 
 }

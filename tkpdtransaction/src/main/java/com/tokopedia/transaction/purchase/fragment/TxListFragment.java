@@ -250,12 +250,14 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
 
     @Override
     public void showProgressLoading() {
-        progressDialog.showDialog();
+        if (progressDialog != null)
+            progressDialog.showDialog();
     }
 
     @Override
     public void hideProgressLoading() {
-        progressDialog.dismiss();
+        if (progressDialog != null)
+            progressDialog.dismiss();
     }
 
     @Override
@@ -264,6 +266,8 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
         if (view != null) Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
         else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
+
+
 
     @Override
     public void showDialog(Dialog dialog) {
@@ -524,6 +528,16 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
     }
 
     @Override
+    public void actionComplain(OrderData orderData) {
+        presenter.processComplain(getActivity(), orderData);
+    }
+
+    @Override
+    public void actionComplainConfirmDeliver(OrderData orderData) {
+        presenter.processComplainConfirmDeliver(getActivity(), orderData);
+    }
+
+    @Override
     public void onRefresh(View view) {
         if (!isLoading) {
             pagingHandler.resetPage();
@@ -570,6 +584,8 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         presenter.onActivityResult(getActivity(), requestCode, resultCode, data);
+        resetData();
+        onRefresh(getView());
     }
 
     private void initialData() {
@@ -612,8 +628,17 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
 
     @Override
     public void onSuccessCancelReplacement() {
-        hideProgressLoading();
-        onRefresh(getView());
+        if (getView() != null) {
+            Snackbar.make(getView(), getString(R.string.success_cancel_replacement), Snackbar
+                    .LENGTH_SHORT).show();
+            hideProgressLoading();
+            onRefresh(getView());
+        }
+    }
+
+    @Override
+    public void showToastSuccessMessage(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 }
 

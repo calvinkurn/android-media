@@ -1,16 +1,21 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.recentview;
 
 import android.support.annotation.LayoutRes;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.RecentView;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.LabelsAdapter;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.RecentView;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewDetailProductViewModel;
 
 /**
@@ -27,11 +32,10 @@ public class RecentViewDetailProductViewHolder extends AbstractViewHolder<Recent
     public ImageView productImage;
     public ImageView wishlist;
     public RatingBar productRating;
-    public TextView cashback;
-    public TextView wholesale;
-    public TextView preorder;
+    private RecyclerView labels;
     public TextView shopName;
     public TextView shopLocation;
+    public ImageView iconLocation;
 
     public ImageView freeReturn;
     public ImageView goldMerchant;
@@ -40,6 +44,7 @@ public class RecentViewDetailProductViewHolder extends AbstractViewHolder<Recent
     public View mainView;
 
     private final RecentView.View viewListener;
+    private LabelsAdapter labelsAdapter;
 
     public RecentViewDetailProductViewHolder(View itemView, RecentView.View viewListener) {
         super(itemView);
@@ -48,16 +53,22 @@ public class RecentViewDetailProductViewHolder extends AbstractViewHolder<Recent
         productImage = (ImageView) itemView.findViewById(R.id.product_image);
         wishlist = (ImageView) itemView.findViewById(R.id.wishlist);
         productRating = (RatingBar) itemView.findViewById(R.id.product_rating);
-        cashback = (TextView) itemView.findViewById(R.id.cashback);
-        wholesale = (TextView) itemView.findViewById(R.id.wholesale);
-        preorder = (TextView) itemView.findViewById(R.id.preorder);
+        labels = (RecyclerView) itemView.findViewById(R.id.labels);
         freeReturn = (ImageView) itemView.findViewById(R.id.free_return);
         mainView = itemView.findViewById(R.id.main_view);
         goldMerchant = (ImageView) itemView.findViewById(R.id.gold_merchant);
         officialStore = (ImageView) itemView.findViewById(R.id.official_store);
         shopName = (TextView) itemView.findViewById(R.id.shop_name);
         shopLocation = (TextView) itemView.findViewById(R.id.shop_location);
+        iconLocation = (ImageView)  itemView.findViewById(R.id.ic_location);
         this.viewListener = viewListener;
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(itemView.getContext
+                (), LinearLayoutManager.HORIZONTAL, false);
+        labels.setLayoutManager(layoutManager);
+        labelsAdapter = new LabelsAdapter();
+        labels.setAdapter(labelsAdapter);
+
     }
 
     @Override
@@ -78,37 +89,27 @@ public class RecentViewDetailProductViewHolder extends AbstractViewHolder<Recent
             productRating.setRating(element.getRating());
             productRating.setVisibility(View.VISIBLE);
         } else {
-            productRating.setVisibility(View.INVISIBLE);
+            productRating.setVisibility(View.GONE);
         }
 
-        if (element.getCashback().equals(""))
-            cashback.setVisibility(View.GONE);
-        else {
-            cashback.setVisibility(View.VISIBLE);
-            cashback.setText(element.getCashback());
+        if (!element.getLabels().isEmpty()) {
+            labels.setVisibility(View.VISIBLE);
+            labelsAdapter.setList(element.getLabels());
+        } else {
+            labels.setVisibility(View.GONE);
         }
-
-        if (element.isWholesale())
-            wholesale.setVisibility(View.VISIBLE);
-        else
-            wholesale.setVisibility(View.GONE);
 
         if (element.isFreeReturn())
             freeReturn.setVisibility(View.VISIBLE);
         else
             freeReturn.setVisibility(View.GONE);
-
-        if (element.isPreorder())
-            preorder.setVisibility(View.VISIBLE);
-        else
-            preorder.setVisibility(View.GONE);
 //
 //        wishlist.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
 //                viewListener.onWishlistClicked(
 //                        getAdapterPosition(),
-//                        element.getProductId(),
+//                        element.getContentId(),
 //                        element.isWishlist());
 //            }
 //        });
@@ -125,7 +126,15 @@ public class RecentViewDetailProductViewHolder extends AbstractViewHolder<Recent
         }
 
         shopName.setText(MethodChecker.fromHtml(element.getShopName()));
-        shopLocation.setText(element.getShopLocation());
+
+        if (element.isOfficial()) {
+            iconLocation.setImageDrawable(ContextCompat.getDrawable(MainApplication.getAppContext(),com.tokopedia.core.R.drawable.ic_icon_authorize_grey));
+            shopLocation.setText(MainApplication.getAppContext().getResources().getString(R.string.authorized)
+            );
+        } else {
+            shopLocation.setText(element.getShopLocation());
+            iconLocation.setImageDrawable(ContextCompat.getDrawable(MainApplication.getAppContext(),com.tokopedia.core.R.drawable.ic_icon_location_grey));
+        }
 
         mainView.setOnClickListener(new View.OnClickListener() {
             @Override

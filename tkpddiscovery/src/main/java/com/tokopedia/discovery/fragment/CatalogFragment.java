@@ -11,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -119,8 +120,8 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
     }
 
     public static CatalogFragment newInstance(int index) {
-
         Bundle args = new Bundle();
+        args.putInt(INDEX, index);
         CatalogFragment fragment = new CatalogFragment();
         fragment.setArguments(args);
         return fragment;
@@ -253,7 +254,17 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
         topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
             @Override
             public void onLoad(int page, int totalCount) {
-                presenter.loadMore(getActivity());
+                if (browseCatalogAdapter.getPagingHandlerModel() != null &&
+                        !TextUtils.isEmpty(browseCatalogAdapter.getPagingHandlerModel().getUriNext())) {
+                    presenter.loadMore(getActivity());
+                } else {
+                    topAdsRecyclerAdapter.shouldLoadAds(false);
+                    topAdsRecyclerAdapter.hideLoading();
+                    topAdsRecyclerAdapter.unsetEndlessScrollListener();
+                    if (getActivity() instanceof  BrowseProductActivity) {
+                        ((BrowseProductActivity) getActivity()).showBottomBar();
+                    }
+                }
             }
         });
         list_catalog.setAdapter(topAdsRecyclerAdapter);
@@ -308,6 +319,15 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
         browseCatalogAdapter.setPagingHandlerModel(pagingHandlerModel);
         browseCatalogAdapter.setGridView(((BrowseProductActivity) getActivity()).getGridType());
         browseCatalogAdapter.incrementPage();
+    }
+
+    @Override
+    public void displayEmptyResult() {
+        topAdsRecyclerAdapter.shouldLoadAds(false);
+        browseCatalogAdapter.setSearchNotFound();
+        browseCatalogAdapter.notifyItemInserted(1);
+        setLoading(false);
+        ((BrowseProductActivity) getActivity()).showLoading(false);
     }
 
     private int getLastItemPosition() {

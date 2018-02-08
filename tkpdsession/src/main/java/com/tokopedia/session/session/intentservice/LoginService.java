@@ -7,12 +7,14 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.gson.GsonBuilder;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
@@ -30,6 +32,8 @@ import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.core.session.model.LoginViewModel;
 import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.session.model.TokenModel;
+import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.EncoderDecoder;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.activation.view.viewmodel.LoginTokenViewModel;
 import com.tokopedia.session.session.model.LoginEmailModel;
@@ -148,6 +152,9 @@ public class LoginService extends IntentService implements DownloadServiceConsta
         Bundle bundle = new Bundle();
         AccountsParameter data = new AccountsParameter();
         AccountsService accountsService;
+
+        if(GlobalConfig.isPosApp())
+            data.setScope(Login.GRANT_020);
 
         running.putInt(TYPE, type);
         running.putBoolean(LOGIN_SHOW_DIALOG, true);
@@ -289,10 +296,11 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                         AccountsModel accountsModel = new GsonBuilder()
                                 .create().fromJson(jsonObject.toString(), AccountsModel.class);
                         setLoginSession(accountsModel);
+                        sessionHandler.setPhoneNumber(sessionHandler.getTempPhoneNumber(context));
+                        sessionHandler.setGoldMerchant(context, accountsModel.getShopIsGold());
                         result.putBoolean(LOGIN_MOVE_SECURITY, false);
                         result.putBoolean(LOGIN_ACTIVATION_RESENT, false);
                         result.putInt(VALIDATION_OF_DEVICE_ID, accountsModel.getIsRegisterDevice());
-                        SessionHandler.setGoldMerchant(getApplicationContext(), accountsModel.getShopIsGold());
                         result.putString(AppEventTracking.USER_ID_KEY, accountsModel.getUserId() + "");
                         result.putString(AppEventTracking.FULLNAME_KEY, accountsModel.getFullName());
                     }
@@ -321,9 +329,15 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                         if (accountsParameter.getErrorModel() == null) {
                             TokenModel tokenModel = accountsParameter.getTokenModel();
                             sessionHandler.setToken(tokenModel.getAccessToken(),
-                                    tokenModel.getTokenType()
+                                    tokenModel.getTokenType(), EncoderDecoder.Encrypt(tokenModel.getRefreshToken(), SessionHandler.getRefreshTokenIV(getApplicationContext()))
                             );
+
+                            if(!TextUtils.isEmpty(accountsParameter.getTokenModel().getScope())){
+                                sessionHandler.setScope(accountsParameter.getTokenModel().getScope());
+                            }
+
                         }
+
                         return Observable.just(accountsParameter);
                     }
                 })
@@ -353,7 +367,21 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                         if (accountsParameter.getInfoModel() != null
                                 && accountsParameter.getInfoModel().isCreatedPassword()
                                 && accountsParameter.getErrorModel() == null) {
-                            return getObservableMakeLogin(accountsParameter);
+
+                            if (GlobalConfig.isPosApp()) {
+                                if (!TextUtils.isEmpty(sessionHandler.getUserScope())) {
+                                    if (sessionHandler.getUserScope().contains(Login.GRANT_020)) {
+                                        return getObservableMakeLogin(accountsParameter);
+                                    } else {
+                                        CommonUtils.dumper("o2o scope cached denied");
+                                        return Observable.just(accountsParameter);
+                                    }
+                                } else {
+                                    return Observable.just(accountsParameter);
+                                }
+                            } else {
+                                return getObservableMakeLogin(accountsParameter);
+                            }
                         } else {
                             return Observable.just(accountsParameter);
                         }
@@ -395,7 +423,6 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                                 result.putParcelable(LOGIN_SECURITY_QUESTION_DATA, securityModel);
                                 result.putParcelable(ACCOUNTS, accountsParameter);
                             } else {
-                                sendLocalyticsUserAttr(data.getAccountsModel().getUserId() + "", data.getAccountsModel().getFullName(), data.getEmail());
                                 AccountsModel accountsModel = accountsParameter.getAccountsModel();
                                 setLoginSession(accountsModel);
                                 SessionHandler.setPhoneNumber(accountsParameter.getInfoModel().getPhone());
@@ -404,12 +431,13 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                                 result.putString(AppEventTracking.EMAIL_KEY, accountsParameter.getEmail());
                                 result.putInt(VALIDATION_OF_DEVICE_ID, accountsModel.getIsRegisterDevice());
                                 result.putParcelable(ACCOUNTS, accountsParameter);
-                                sessionHandler.setGoldMerchant(getApplicationContext(), accountsModel.getShopIsGold());
-
+                                SessionHandler.setGoldMerchant(getApplicationContext(), accountsModel.getShopIsGold());
                             }
 
                             result.putBoolean(LOGIN_MOVE_SECURITY, accountsParameter.isMoveSecurity());
                             result.putBoolean(LOGIN_ACTIVATION_RESENT, accountsParameter.isActivationResent());
+
+                            CommonUtils.dumper("o2o scope cached "+sessionHandler.getUserScope());
                             receiver.send(DownloadService.STATUS_FINISHED, result);
                         }
                         //showing error
@@ -433,7 +461,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
 
     public Observable<AccountsParameter> getObservableAccountsToken(AccountsParameter accountsParameter) {
         Bundle bundle = new Bundle();
-        Map<String, String> params = new HashMap<>();
+        final Map<String, String> params = new HashMap<>();
         Parcelable parcelable = accountsParameter.getParcelable();
 
         params.put(Login.GRANT_TYPE, accountsParameter.getGrantType());
@@ -442,26 +470,21 @@ public class LoginService extends IntentService implements DownloadServiceConsta
             case Login.GRANT_PASSWORD:
                 params.put(Login.USER_NAME, accountsParameter.getEmail());
                 params.put(Login.PASSWORD, accountsParameter.getPassword());
+                if(GlobalConfig.isPosApp()) {
+                    CommonUtils.dumper("o2o grant password scope o2o "+accountsParameter.getScope());
+                    params.put(Login.SCOPE, accountsParameter.getScope());
+                }
                 break;
             case Login.GRANT_SDK:
                 params.put(Login.SOCIAL_TYPE, String.valueOf(accountsParameter.getSocialType()));
                 if (Parcels.unwrap(parcelable) instanceof LoginFacebookViewModel) {
                     LoginFacebookViewModel loginFacebookViewModel = Parcels.unwrap(parcelable);
                     accountsParameter.setEmail(loginFacebookViewModel.getEmail());
-                    params.put(Login.SOCIAL_ID, loginFacebookViewModel.getFbId());
-                    params.put(Login.EMAIL_ACCOUNTS, loginFacebookViewModel.getEmail());
-                    params.put(Login.FULL_NAME, loginFacebookViewModel.getFullName());
-                    params.put(Login.BIRTHDATE, loginFacebookViewModel.getBirthday());
-                    params.put(Login.GENDER_ACCOUNTS, loginFacebookViewModel.getGender());
+                    params.put(Login.ACCESS_TOKEN, loginFacebookViewModel.getFbToken());
                 } else if (Parcels.unwrap(parcelable) instanceof LoginGoogleModel) {
                     LoginGoogleModel loginGoogleModel = Parcels.unwrap(parcelable);
                     accountsParameter.setEmail(loginGoogleModel.getEmail());
-                    params.put(Login.SOCIAL_ID, loginGoogleModel.getGoogleId());
-                    params.put(Login.EMAIL_ACCOUNTS, loginGoogleModel.getEmail());
-                    params.put(Login.PICTURE_ACCOUNTS, loginGoogleModel.getImageUrl());
-                    params.put(Login.FULL_NAME, loginGoogleModel.getFullName());
-                    params.put(Login.BIRTHDATE, loginGoogleModel.getBirthday());
-                    params.put(Login.GENDER_ACCOUNTS, loginGoogleModel.getGender());
+                    params.put(Login.ACCESS_TOKEN, loginGoogleModel.getAccessToken());
                 }
                 break;
             case Login.GRANT_WEBVIEW:
@@ -472,20 +495,29 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                 throw new RuntimeException("Invalid Observable to get Token");
         }
 
+        bundle.putBoolean(AccountsService.IS_BASIC, true);
         AccountsService accountService = new AccountsService(bundle);
         Observable<Response<String>> observable = accountService.getApi()
-                .getToken(AuthUtil
+                .getTokenOld(AuthUtil
                         .generateParams(getApplicationContext(), params));
         return Observable.zip(Observable.just(accountsParameter), observable, new Func2<AccountsParameter, Response<String>, AccountsParameter>() {
             @Override
             public AccountsParameter call(AccountsParameter accountsParameter, Response<String> stringResponse) {
                 String response = String.valueOf(stringResponse.body());
+
+                CommonUtils.dumper("o2o Response "+response);
+
                 ErrorModel errorModel = new GsonBuilder().create().fromJson(response, ErrorModel.class);
                 if (errorModel.getError() == null) {
                     TokenModel model = new GsonBuilder().create().fromJson(response, TokenModel.class);
                     accountsParameter.setTokenModel(model);
                 } else {
                     accountsParameter.setErrorModel(errorModel);
+                    try {
+                        GoogleAuthUtil.clearToken(getApplicationContext(), params.get(Login.ACCESS_TOKEN));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 return accountsParameter;
             }
@@ -523,7 +555,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
         params.put(Login.USER_ID, String.valueOf(accountsParameter.getInfoModel().getUserId()));
         params = MapNulRemover.removeNull(params);
         TokenModel tokenModel = accountsParameter.getTokenModel();
-        String authKey = tokenModel.getTokenType() + " " + tokenModel.getAccessToken();
+        String authKey = tokenModel.getTokenType() + " " + SessionHandler.getAccessToken();
         Bundle bundle = new Bundle();
         bundle.putString(AccountsService.AUTH_KEY, authKey);
         bundle.putString(AccountsService.WEB_SERVICE, AccountsService.WS);
@@ -575,13 +607,6 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                 accountsModel.getUserId() + "",
                 accountsModel.getFullName(), accountsModel.getShopId() + "",
                 accountsModel.getMsisdnIsVerifiedBoolean());
-    }
-
-    private void sendLocalyticsUserAttr(String userId, String fullName, String email) {
-        if (getApplicationContext() != null) {
-            Jordan.init(getApplicationContext()).getLocalyticsContainer()
-                    .tagUserAttributes(userId, fullName, email);
-        }
     }
 
     private void sendAuthenticateGTMEvent(@NonNull Object modelObject) {

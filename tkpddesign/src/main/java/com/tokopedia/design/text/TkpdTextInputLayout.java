@@ -77,23 +77,23 @@ public class TkpdTextInputLayout extends TextInputLayout implements TextWatcher 
                 attrs, R.styleable.TkpdTextInputLayout, defStyle, 0);
 
         mSuccessFocusColor = a.getColor(
-                R.styleable.TkpdTextInputLayout_success_focus_color,
+                R.styleable.TkpdTextInputLayout_ttil_successFocusColor,
                 COLOR_GREEN);
         mSuccessLeaveColor = a.getColor(
-                R.styleable.TkpdTextInputLayout_success_leave_color,
+                R.styleable.TkpdTextInputLayout_ttil_successLeaveColor,
                 mSuccessFocusColor);
         mSuccessTextAppearance = a.getResourceId(
-                R.styleable.TkpdTextInputLayout_success_text_appearance,
+                R.styleable.TkpdTextInputLayout_ttil_successTextAppearance,
                 android.support.v7.appcompat.R.style.TextAppearance_AppCompat_Caption);
         mPrefixString = a.getString(
-                R.styleable.TkpdTextInputLayout_prefix_string);
+                R.styleable.TkpdTextInputLayout_ttil_prefixString);
         a.recycle();
 
 
-        mPrefixLength = mPrefixString == null ? 0 : mPrefixString.length();
+        mPrefixLength = mPrefixString==null?0:mPrefixString.length();
 
         if (isCounterEnabled() && mPrefixLength > 0) {
-            setCounterMaxLength(getCounterMaxLength() + mPrefixLength);
+            setCounterMaxLength(getCounterMaxLength()+mPrefixLength);
         }
         // this is to initialize the indicatorView
         super.setErrorEnabled(true);
@@ -102,14 +102,14 @@ public class TkpdTextInputLayout extends TextInputLayout implements TextWatcher 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mIndicatorView = (ViewGroup) this.getChildAt(this.getChildCount() - 1);
+        mIndicatorView = (ViewGroup) this.getChildAt(this.getChildCount()-1);
 
         EditText editText = getEditText();
-        if (editText != null) {
+        if (editText!= null) {
             editText.setOnFocusChangeListener(new OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
-                    if (mSuccessView != null) {
+                    if (mSuccessView!= null) {
                         mSuccessView.setActivated(hasFocus);
                     }
                 }
@@ -119,17 +119,17 @@ public class TkpdTextInputLayout extends TextInputLayout implements TextWatcher 
         setCounterEnabled(isCounterEnabled());
     }
 
-    private void setCounterCheckPrefix() {
+    private void setCounterCheckPrefix (){
         if (isCounterEnabled() && mPrefixLength > 0 && !enabledPrefixCounter) {
             // get last view
-            mCounterView = (TextView) mIndicatorView.getChildAt(mIndicatorView.getChildCount() - 1);
+            mCounterView = (TextView) mIndicatorView.getChildAt(mIndicatorView.getChildCount()-1);
             mCounterView.addTextChangedListener(this);
             mCounterView.setText(getEditText().getText());
             enabledPrefixCounter = true;
         }
     }
 
-    private void removeCounterCheckPrefix() {
+    private void removeCounterCheckPrefix (){
         if (enabledPrefixCounter) {
             mCounterView.removeTextChangedListener(this);
             mCounterView = null;
@@ -147,7 +147,8 @@ public class TkpdTextInputLayout extends TextInputLayout implements TextWatcher 
                 removeCounterCheckPrefix();
                 super.setCounterEnabled(false);
             }
-        } else {
+        }
+        else {
             super.setCounterEnabled(enabled);
         }
     }
@@ -156,7 +157,7 @@ public class TkpdTextInputLayout extends TextInputLayout implements TextWatcher 
         if (mSuccessEnabled != enabled) {
             if (enabled) {
                 mSuccessView = new AppCompatTextView(getContext());
-                mSuccessView.setTypeface(getEditText() != null ? getEditText().getTypeface() : null);
+                mSuccessView.setTypeface(getEditText()!= null? getEditText().getTypeface() : null);
                 boolean useDefaultColor = false;
                 try {
                     TextViewCompat.setTextAppearance(mSuccessView, mSuccessTextAppearance);
@@ -180,12 +181,12 @@ public class TkpdTextInputLayout extends TextInputLayout implements TextWatcher 
                             android.support.v7.appcompat.R.style.TextAppearance_AppCompat_Caption);
                 }
 
-                int[][] states = new int[][]{
-                        new int[]{android.R.attr.state_activated}, // focused
-                        new int[]{-android.R.attr.state_activated}, // not focused
+                int[][] states = new int[][] {
+                        new int[] { android.R.attr.state_activated}, // focused
+                        new int[] {-android.R.attr.state_activated}, // not focused
                 };
 
-                int[] colors = new int[]{
+                int[] colors = new int[] {
                         mSuccessFocusColor,
                         mSuccessLeaveColor,
                 };
@@ -200,7 +201,6 @@ public class TkpdTextInputLayout extends TextInputLayout implements TextWatcher 
                 // ensure error view is added next to success view & indicator view is visible
                 super.setErrorEnabled(true);
                 mIndicatorView.addView(mSuccessView, 0);
-                mIndicatorView.setVisibility(View.VISIBLE);
             } else {
                 mSuccessShown = false;
                 mIndicatorView.removeView(mSuccessView);
@@ -229,7 +229,6 @@ public class TkpdTextInputLayout extends TextInputLayout implements TextWatcher 
 
         if (mSuccessShown) {
             super.setErrorEnabled(false); // to update state, make it visible gone
-            mIndicatorView.setVisibility(View.VISIBLE);
             mSuccessView.setText(successString);
             mSuccessView.setActivated(true);
             mSuccessView.setVisibility(VISIBLE);
@@ -242,25 +241,25 @@ public class TkpdTextInputLayout extends TextInputLayout implements TextWatcher 
         refreshDrawableState();
     }
 
-    public boolean isSuccess() {
+    public boolean isSuccess(){
         return mSuccessShown;
     }
 
     @Override
     public void setError(@Nullable CharSequence error) {
         // if success is shown, hide success to show error
-        if (!TextUtils.isEmpty(error) && mSuccessShown) {
+        if (! TextUtils.isEmpty(error) && mSuccessShown) {
             setSuccess(null);
         }
         super.setError(error);
     }
 
-    public void hideErrorSuccess() {
+    public void hideErrorSuccess(){
         setError(null);
         setSuccess(null);
     }
 
-    public void setErrorSuccessEnabled(boolean errorSuccessEnabled) {
+    public void setErrorSuccessEnabled(boolean errorSuccessEnabled){
         super.setErrorEnabled(errorSuccessEnabled);
         setSuccessEnabled(errorSuccessEnabled);
     }
@@ -279,11 +278,11 @@ public class TkpdTextInputLayout extends TextInputLayout implements TextWatcher 
     public void afterTextChanged(Editable s) {
         mCounterView.removeTextChangedListener(this);
         EditText editText = getEditText();
-        String text = editText == null ? "" : editText.getText().toString();
+        String text = editText == null?"": editText.getText().toString();
         mCounterView.setText(
                 (text.length() - mPrefixLength)
                         + " / " +
-                        (getCounterMaxLength() - mPrefixLength));
+                        (getCounterMaxLength() - mPrefixLength) );
         mCounterView.addTextChangedListener(this);
     }
 
@@ -292,7 +291,7 @@ public class TkpdTextInputLayout extends TextInputLayout implements TextWatcher 
         mPrefixLength = mPrefixString.length();
 
         if (isCounterEnabled() && mPrefixLength > 0) {
-            setCounterMaxLength(getCounterMaxLength() + mPrefixLength);
+            setCounterMaxLength(getCounterMaxLength()+mPrefixLength);
         }
         setCounterCheckPrefix();
     }

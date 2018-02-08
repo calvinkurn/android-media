@@ -4,13 +4,12 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.support.v13.app.FragmentPagerAdapter;
-import android.text.TextUtils;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.shopinfo.fragment.NotesList;
 import com.tokopedia.core.shopinfo.fragment.OfficialShopHomeFragment;
 import com.tokopedia.core.shopinfo.fragment.ProductList;
-import com.tokopedia.core.shopinfo.fragment.ShopReputationList;
 import com.tokopedia.core.shopinfo.fragment.ShopTalkFragment;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 
@@ -21,11 +20,12 @@ import java.util.ArrayList;
  */
 public class ShopTabPagerAdapter extends FragmentPagerAdapter {
 
-//    public static int[] TITLES = {R.string.title_product, R.string.title_talk_only, R.string.title_review, R.string.title_notes_menu};
+    //    public static int[] TITLES = {R.string.title_product, R.string.title_talk_only, R.string.title_review, R.string.title_notes_menu};
     public static String[] TITLES;
     private ArrayList<Fragment> fragments = new ArrayList<>();
     private ShopModel shopModel;
     private Context context;
+
     public ShopTabPagerAdapter(FragmentManager fm, ShopModel model) {
         super(fm);
     }
@@ -37,22 +37,27 @@ public class ShopTabPagerAdapter extends FragmentPagerAdapter {
         this.shopModel = shopModel;
     }
 
-    public void initOfficialShop(ShopModel shopModel){
+    public void initOfficialShop(ShopModel shopModel) {
         this.shopModel = shopModel;
         TITLES = context.getResources().getStringArray(R.array.official_store_tab_title);
         fragments.add(OfficialShopHomeFragment.newInstance(shopModel.info.shopOfficialTop));
-        fragments.add(ProductList.newInstance());
+        fragments.add(ProductList.newInstance(shopModel.useAce));
         fragments.add(ShopTalkFragment.createInstance());
-        fragments.add(ShopReputationList.create());
+        if(context.getApplicationContext() instanceof TkpdCoreRouter) {
+            fragments.add(((TkpdCoreRouter)context.getApplicationContext()).getShopReputationFragment());
+        }
         fragments.add(new NotesList());
         notifyDataSetChanged();
     }
 
-    public void initRegularShop(){
+    public void initRegularShop(ShopModel shopModel) {
+        this.shopModel = shopModel;
         TITLES = context.getResources().getStringArray(R.array.regular_store_tab_title);
-        fragments.add(ProductList.newInstance());
+        fragments.add(ProductList.newInstance(shopModel.useAce));
         fragments.add(ShopTalkFragment.createInstance());
-        fragments.add(ShopReputationList.create());
+        if(context.getApplicationContext() instanceof TkpdCoreRouter) {
+            fragments.add(((TkpdCoreRouter)context.getApplicationContext()).getShopReputationFragment());
+        }
         fragments.add(new NotesList());
         notifyDataSetChanged();
     }

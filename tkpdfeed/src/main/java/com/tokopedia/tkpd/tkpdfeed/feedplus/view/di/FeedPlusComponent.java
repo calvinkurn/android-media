@@ -3,6 +3,8 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.di;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusDetailFragment;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.KolCommentFragment;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.KolFollowingListFragment;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.RecentViewFragment;
 
 import dagger.Component;
@@ -20,5 +22,10 @@ public interface FeedPlusComponent {
     void inject(FeedPlusDetailFragment feedPlusDetailFragment);
 
     void inject(RecentViewFragment recentViewFragment);
+
+    void inject(KolCommentFragment kolCommentFragment);
+
+    void inject(KolFollowingListFragment kolFollowingListFragment);
+
 
 }

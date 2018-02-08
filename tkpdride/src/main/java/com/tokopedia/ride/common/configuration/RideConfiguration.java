@@ -2,16 +2,7 @@ package com.tokopedia.ride.common.configuration;
 
 import android.content.Context;
 
-import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.database.CacheUtil;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
-import com.tokopedia.ride.common.ride.data.RideRequestEntityMapper;
-import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
-import com.tokopedia.ride.common.ride.domain.model.RideRequest;
-
-import java.lang.reflect.Type;
 
 /**
  * Created by alvarisi on 3/27/17.
@@ -24,6 +15,7 @@ public class RideConfiguration {
     private static final String KEY_REQUEST_ID = "request_id";
     private static final String KEY_PRODUCT_NAME = "product_name";
     private static final String KEY_CANCELLATION_FEE = "cancellation_fee";
+    private static final String KEY_DEVICE_IN_VEHICLE = "in_vehicle";
     private static final String DEFAULT_EMPTY_VALUE = "";
 
     private static final String KEY_USER_STATE = "user_state";
@@ -86,5 +78,16 @@ public class RideConfiguration {
     public String getActiveCancellationFee() {
         LocalCacheHandler cache = new LocalCacheHandler(context, RIDE_CONFIGURATION);
         return cache.getString(KEY_CANCELLATION_FEE, DEFAULT_EMPTY_VALUE);
+    }
+
+    public void saveDeviceInVehicle(boolean inVehicle) {
+        LocalCacheHandler cache = new LocalCacheHandler(context, RIDE_CONFIGURATION);
+        cache.putBoolean(KEY_DEVICE_IN_VEHICLE, inVehicle);
+        cache.applyEditor();
+    }
+
+    public boolean isDeviceInVehicle() {
+        LocalCacheHandler cache = new LocalCacheHandler(context, RIDE_CONFIGURATION);
+        return cache.getBoolean(KEY_DEVICE_IN_VEHICLE, false);
     }
 }

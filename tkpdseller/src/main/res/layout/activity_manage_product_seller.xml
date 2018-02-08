@@ -17,6 +17,6 @@
         android:foreground="?attr/selectableItemBackground"
         tools:text="@string/product_manage_you_have_x_unfinished_product"/>
 
-    <include layout="@layout/partial_manage_product" />
+    <include layout="@layout/fragment_product_manage" />
 </LinearLayout>
 

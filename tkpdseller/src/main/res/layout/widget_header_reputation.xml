@@ -12,55 +12,40 @@
         android:layout_alignParentTop="true"
         android:background="#e0e0e0" />
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/rl_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:paddingBottom="17dp"
         android:paddingLeft="17dp"
         android:paddingRight="11dp"
         android:paddingTop="17dp">
 
-        <com.tokopedia.seller.gmstat.library.LoaderImageView
+        <ImageView
             android:id="@+id/calendar_icon"
             android:layout_width="19.5dp"
             android:layout_height="19.5dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            app:srcCompat="@mipmap/ic_icon_calendar_02"
-            app:use_gradient="true" />
+            android:src="@mipmap/ic_icon_calendar_02" />
 
-        <com.tokopedia.seller.gmstat.library.LoaderTextView
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <TextView
             android:id="@+id/calendar_range"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
             android:layout_marginRight="6dp"
-            android:layout_toLeftOf="@+id/calendar_arrow_icon"
-            android:layout_toStartOf="@+id/calendar_arrow_icon"
             android:gravity="end"
             android:textColor="#42b549"
             android:textSize="14sp"
-            app:gravity="right"
-            app:use_gradient="true"
-            app:width_weight="0.6"
             tools:text="26 Jul 2016 - 25 Des 2016" />
 
-        <com.tokopedia.seller.gmstat.library.LoaderImageView
-            android:id="@+id/calendar_arrow_icon"
-            android:layout_width="@dimen/topads_arrow_left_width"
-            android:layout_height="@dimen/topads_arrow_left_height"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="6dp"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="6dp"
-            app:srcCompat="@drawable/ic_arrow_up"
-            app:use_gradient="true" />
-    </RelativeLayout>
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"

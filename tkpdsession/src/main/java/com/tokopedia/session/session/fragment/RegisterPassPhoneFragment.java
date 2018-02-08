@@ -3,7 +3,6 @@ package com.tokopedia.session.session.fragment;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,8 +27,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.router.SessionRouter;
-import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.customView.PasswordView;
 import com.tokopedia.core.session.base.BaseFragment;
@@ -43,7 +41,6 @@ import com.tokopedia.session.session.presenter.RegisterNewNextView;
 import com.tokopedia.session.session.presenter.RegisterPassPhoneImpl;
 import com.tokopedia.session.session.presenter.RegisterThird;
 import com.tokopedia.session.session.presenter.RegisterThirdView;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
@@ -464,7 +461,7 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
     public void onStart() {
         super.onStart();
         ScreenTracking.screen(getScreenName());
-        TrackingUtils.fragmentBasedAFEvent(SessionRouter.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT);
+        TrackingUtils.fragmentBasedAFEvent(OldSessionRouter.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT);
     }
 
     private void sendGTMRegisterError(String label){

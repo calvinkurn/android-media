@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nsv_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="visible"
+    tools:ignore="ObsoleteLayoutParam">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:layout_marginBottom="@dimen/margin_sm"
+            android:padding="@dimen/padding_detail">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:textSize="@dimen/font_small"
+                android:textColor="@color/digital_voucher"
+                android:lineSpacingExtra="5sp"
+                android:text="@string/tokocash_desc_activation" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_vs"
+                android:layout_marginTop="@dimen/margin_sm"
+                android:text="@string/tokocash_phone_number"
+                android:textColor="@color/digital_voucher_notes"
+                android:textSize="@dimen/fontvs"/>
+
+            <TextView
+                android:id="@+id/wallet_phone_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_medium"
+                android:layout_marginTop="@dimen/margin_vs"
+                android:layout_marginBottom="@dimen/margin_vs" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/separator_tokocash"
+                android:layout_marginBottom="@dimen/margin_sm"/>
+
+            <Button
+                android:id="@+id/activation_btn"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/btn_height"
+                android:background="@drawable/btn_buy"
+                android:minHeight="0dp"
+                android:text="@string/tokocash_activation"
+                android:textSize="@dimen/fonts"
+                android:textColor="@color/white"
+                android:textAllCaps="false"/>
+
+            <TextView
+                android:id="@+id/syarat_ketentuan_tokocash"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/margin_small"
+                android:gravity="center_horizontal"
+                android:textSize="@dimen/fontvs"
+                android:textColor="@color/digital_voucher_notes"
+                android:text="@string/syarat_ketentuan_tokocash" />
+
+        </LinearLayout>
+
+        <include
+            layout="@layout/view_holder_benefit_tokocash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+
+</android.support.v4.widget.NestedScrollView>

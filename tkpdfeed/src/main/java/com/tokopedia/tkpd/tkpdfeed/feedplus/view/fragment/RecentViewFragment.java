@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,9 +15,10 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.productdetail.PdpRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.RecentView;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.WishlistListener;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.RecentView;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.WishlistListener;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.RecentViewDetailAdapter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.recentview.RecentViewTypeFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.recentview.RecentViewTypeFactoryImpl;
@@ -96,6 +98,10 @@ public class RecentViewFragment extends BaseDaggerFragment
     private void prepareView() {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
+        DividerItemDecoration dividerItemDecoration
+                = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
+        dividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.bg_line_separator));
+        recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.setAdapter(adapter);
     }
 
@@ -119,7 +125,12 @@ public class RecentViewFragment extends BaseDaggerFragment
     @Override
     public void onGoToProductDetail(String productId) {
         if (getActivity().getApplication() instanceof PdpRouter) {
-            ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productId);
+            ((PdpRouter) getActivity().getApplication()).goToProductDetail(
+                    getActivity(),
+                    ProductPass.Builder.aProductPass()
+                            .setProductId(productId)
+                            .build()
+            );
         }
     }
 
@@ -140,13 +151,14 @@ public class RecentViewFragment extends BaseDaggerFragment
     @Override
     public void onErrorGetRecentView(String errorMessage) {
         adapter.dismissLoading();
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(),
-                errorMessage, new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        presenter.getRecentViewProduct();
-                    }
-                });
+        if (getActivity() != null && getView() != null && presenter != null)
+            NetworkErrorHelper.showEmptyState(getActivity(), getView(),
+                    errorMessage, new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            presenter.getRecentViewProduct();
+                        }
+                    });
     }
 
     @Override

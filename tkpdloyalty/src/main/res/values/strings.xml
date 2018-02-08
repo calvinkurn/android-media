@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">tkpdloyalty</string>
+    <string name="show_case_finish">Mengerti</string>
+    <string name="label_coupon_period_time">Berlaku hingga:</string>
+    <string name="title_promo_code">Kode Promo</string>
+    <string name="title_coupon_code">Kode Kupon</string>
+    <string name="show_case_title">Kode Promo dan Kode Kupon tidak dapat digabung</string>
+    <string name="show_case_text">Penggunaan Kode Promo tidak dapat digabung dengan Kupon yang Anda miliki</string>
+    <string name="error_empty_voucher_code">Kode Voucher Harus Diisi</string>
+    <string name="label_title_error_response">Terjadi Kesalahan</string>
+    <string name="button_use_code">Gunakan Kode</string>
+    <string name="hint_voucher_user_code">Masukan Kode Promo</string>
+    <string name="label_copy_promo_code_loyalty_module">Salin Kode</string>
+    <string name="label_promo_code_loyalty_module">Kode Promo</string>
+    <string name="label_period_promo_loyalty_module">Priode Promo</string>
+    <string name="message_error_data_empty_get_promo_list">Promo tidak tersedia</string>
+</resources>

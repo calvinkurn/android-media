@@ -18,6 +18,11 @@ import rx.Observable;
  * migrate retrofit 2 by Angga.Prasetiyo
  */
 public interface ActionApi {
+    String PARAM_SHOP_ID = "shop_id";
+    String PARAM_SHOP_DOMAIN = "shop_domain";
+    String PARAM_SHOP_SRC = "src";
+    String PARAM_SHOP_AD_KEY = "ad_key";
+
     @FormUrlEncoded
     @POST("favorite-shop/fav_shop.pl")
     Observable<Response<TkpdResponse>> actionFavoriteShop(@FieldMap Map<String, String> params);

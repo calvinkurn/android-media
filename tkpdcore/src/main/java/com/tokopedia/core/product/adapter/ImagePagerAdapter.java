@@ -2,6 +2,7 @@ package com.tokopedia.core.product.adapter;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -37,8 +38,9 @@ public class ImagePagerAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, final int position) {
         ImageView imageView = new ImageView(context);
         String urlImage = productImages.get(position).getImageSrc();
-        if (!urlImage.isEmpty())
+        if (!TextUtils.isEmpty(urlImage)) {
             ImageHandler.loadImageFit2(context, imageView, urlImage);
+        }
         imageView.setOnClickListener(new OnClickImage(position));
         container.addView(imageView, 0);
         return imageView;

@@ -17,12 +17,18 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
-import com.tokopedia.ride.ontrip.di.OnTripDependencyInjection;
+import com.tokopedia.ride.common.ride.di.DaggerRideComponent;
+import com.tokopedia.ride.common.ride.di.RideComponent;
+import com.tokopedia.ride.ontrip.di.DaggerOnTripComponent;
+import com.tokopedia.ride.ontrip.di.OnTripComponent;
 import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
 import com.tokopedia.ride.ontrip.view.adapter.CancelReasonAdapter;
 
@@ -35,12 +41,17 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class SendCancelReasonActivity extends BaseActivity implements SendCancelReasonContract.View, CancelReasonAdapter.OnItemClickListener {
+import javax.inject.Inject;
+
+public class SendCancelReasonActivity extends BaseActivity implements SendCancelReasonContract.View,
+        CancelReasonAdapter.OnItemClickListener, HasComponent<RideComponent> {
     private static final String DATE_SERVER_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
     private static final String EXTRA_CANCELLATION_TIMESTAMP = "EXTRA_CANCELLATION_TIMESTAMP";
 
-    private SendCancelReasonPresenter presenter;
+    @Inject
+    SendCancelReasonPresenter presenter;
+
     private CancelReasonAdapter adapter;
     private List<String> reasons;
 
@@ -53,6 +64,7 @@ public class SendCancelReasonActivity extends BaseActivity implements SendCancel
     private Toolbar toolbar;
     private String selectedReason;
     private String requestId;
+    private RideComponent rideComponent;
 
     public static Intent getCallingIntent(Activity activity, String requestId, String timestamp) {
         Intent intent = new Intent(activity, SendCancelReasonActivity.class);
@@ -72,12 +84,17 @@ public class SendCancelReasonActivity extends BaseActivity implements SendCancel
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_cancel_reason);
+        initInjector();
         requestId = getIntent().getStringExtra(EXTRA_REQUEST_ID);
         setupUiVariable();
         setupViewListener();
-        presenter = OnTripDependencyInjection.createSendCancelReasonPresenter(this);
         presenter.attachView(this);
         presenter.initialize();
+    };
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_RIDE_CANCEL_REASON;
     }
 
     private void setupViewListener() {
@@ -224,6 +241,7 @@ public class SendCancelReasonActivity extends BaseActivity implements SendCancel
 
     @Override
     public void onItemClicked(String reason) {
+        RideGATracking.eventClickCancelReason(getScreenName(),reason);  //23
         adapter.setSelectedReason(reason);
         adapter.setReasons(this.reasons);
         this.selectedReason = reason;
@@ -261,6 +279,12 @@ public class SendCancelReasonActivity extends BaseActivity implements SendCancel
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        RideGATracking.eventBackPress(getScreenName());
+    }
+
+    @Override
     public void showErrorGetReasons() {
         NetworkErrorHelper.showEmptyState(this, mainLayout, new NetworkErrorHelper.RetryClickedListener() {
             @Override
@@ -270,4 +294,19 @@ public class SendCancelReasonActivity extends BaseActivity implements SendCancel
         });
     }
 
+    @Override
+    public RideComponent getComponent() {
+        if (rideComponent == null) initInjector();
+        return rideComponent;
+    }
+
+    private void initInjector() {
+        rideComponent = DaggerRideComponent.builder()
+                .appComponent(getApplicationComponent())
+                .build();
+        OnTripComponent component = DaggerOnTripComponent.builder()
+                .rideComponent(rideComponent)
+                .build();
+        component.inject(this);
+    }
 }

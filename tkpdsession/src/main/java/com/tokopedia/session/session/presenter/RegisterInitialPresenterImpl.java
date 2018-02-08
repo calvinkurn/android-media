@@ -3,6 +3,7 @@ package com.tokopedia.session.session.presenter;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.facebook.CallbackManager;
@@ -31,8 +32,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.FacebookContainer;
 import com.tokopedia.session.R;
 import com.tokopedia.session.register.view.fragment.RegisterInitialFragment;
-import com.tokopedia.session.session.interactor.LoginInteractor;
-import com.tokopedia.session.session.interactor.LoginInteractorImpl;
+import com.tokopedia.session.session.interactor.RegisterInteractor;
+import com.tokopedia.session.session.interactor.RegisterInteractorImpl;
 import com.tokopedia.session.session.model.LoginModel;
 
 import org.json.JSONObject;
@@ -53,16 +54,16 @@ public class RegisterInitialPresenterImpl extends RegisterInitialPresenter {
     RegisterInitialView view;
     LocalCacheHandler loginUuid;
     LocalCacheHandler providerListCache;
-    String PROVIDER_CACHE_KEY = "provider_cache";
+    String PROVIDER_CACHE_KEY = "provider_cache_register";
     String messageTAG = "Register Init";
-    LoginInteractor interactor;
+    RegisterInteractor interactor;
     String UUID_KEY = "uuid";
     String DEFAULT_UUID_VALUE = "";
 
     public RegisterInitialPresenterImpl(RegisterInitialFragment view) {
         super(view);
         this.view = view;
-        interactor = LoginInteractorImpl.createInstance(this);
+        interactor = RegisterInteractorImpl.createInstance();
         loginUuid = new LocalCacheHandler(view.getActivity(), LOGIN_UUID_KEY);
         providerListCache = new LocalCacheHandler(view.getActivity(), PROVIDER_LIST);
     }
@@ -79,12 +80,12 @@ public class RegisterInitialPresenterImpl extends RegisterInitialPresenter {
 
     @Override
     public void initData(Context context) {
-        if(view.checkHasNoProvider()){
+        if (view.checkHasNoProvider()) {
             view.addProgressBar();
-            List<LoginProviderModel.ProvidersBean> providerList= loadProvider();
-            if(providerList == null || providerListCache.isExpired()){
+            List<LoginProviderModel.ProvidersBean> providerList = loadProvider();
+            if (providerList == null || providerListCache.isExpired()) {
                 downloadProviderLogin(context);
-            }else {
+            } else {
                 view.removeProgressBar();
                 view.showProvider(providerList);
             }
@@ -116,9 +117,10 @@ public class RegisterInitialPresenterImpl extends RegisterInitialPresenter {
 
     }
 
-    private List<LoginProviderModel.ProvidersBean> loadProvider(){
+    private List<LoginProviderModel.ProvidersBean> loadProvider() {
         String cache = providerListCache.getString(PROVIDER_CACHE_KEY);
-        Type type = new TypeToken<List<LoginProviderModel.ProvidersBean>>(){}.getType();
+        Type type = new TypeToken<List<LoginProviderModel.ProvidersBean>>() {
+        }.getType();
         return new GsonBuilder().create().fromJson(cache, type);
     }
 
@@ -126,7 +128,7 @@ public class RegisterInitialPresenterImpl extends RegisterInitialPresenter {
     public void saveProvider(List<LoginProviderModel.ProvidersBean> listProvider) {
         String cache = new GsonBuilder().create().toJson(loadProvider());
         String listProviderString = new GsonBuilder().create().toJson(listProvider);
-        if(!cache.equals(listProviderString)){
+        if (!cache.equals(listProviderString)) {
             providerListCache.putString(PROVIDER_CACHE_KEY, listProviderString);
             providerListCache.setExpire(3600);
             providerListCache.applyEditor();
@@ -140,7 +142,7 @@ public class RegisterInitialPresenterImpl extends RegisterInitialPresenter {
 
     @Override
     public void setData(Context context, int type, Bundle data) {
-        switch (type){
+        switch (type) {
             case DownloadService.LOGIN_ACCOUNTS_INFO:
                 data.putString(UUID_KEY, getUUID());
                 InfoModel infoModel = data.getParcelable(DownloadServiceConstant.INFO_BUNDLE);
@@ -150,7 +152,7 @@ public class RegisterInitialPresenterImpl extends RegisterInitialPresenter {
                     ((SessionView) context).sendDataFromInternet(DownloadService.MAKE_LOGIN, data);
                 } else {
                     CreatePasswordModel createPasswordModel = new CreatePasswordModel();
-                    createPasswordModel = setModelFromParcelable(createPasswordModel,parcelable,infoModel);
+                    createPasswordModel = setModelFromParcelable(createPasswordModel, parcelable, infoModel);
                     data.putBoolean(DownloadServiceConstant.LOGIN_MOVE_REGISTER_THIRD, true);
                     data.putParcelable(DownloadServiceConstant.LOGIN_GOOGLE_MODEL_KEY, Parcels.wrap(createPasswordModel));
                     ((SessionView) context).moveToRegisterPassPhone(createPasswordModel, infoModel.getCreatePasswordList(), data);
@@ -184,12 +186,12 @@ public class RegisterInitialPresenterImpl extends RegisterInitialPresenter {
             @Override
             public void onSuccess(final LoginResult loginResult) {
                 Bundle parameters = new Bundle();
-                parameters.putString("fields","id,name,gender,birthday,email");
+                parameters.putString("fields", "id,name,gender,birthday,email");
 
-                if(loginResult.getAccessToken().getDeclinedPermissions().size()>0){
-                    doFacebookLogin(fragment,callbackManager);
+                if (loginResult.getAccessToken().getDeclinedPermissions().size() > 0) {
+                    doFacebookLogin(fragment, callbackManager);
 
-                }else {
+                } else {
                     GraphRequest request = GraphRequest.newMeRequest(
                             loginResult.getAccessToken(),
                             new GraphRequest.GraphJSONObjectCallback() {
@@ -199,7 +201,7 @@ public class RegisterInitialPresenterImpl extends RegisterInitialPresenter {
                                         GraphResponse response) {
                                     FacebookModel facebookModel =
                                             new GsonBuilder().create().fromJson(String.valueOf(object), FacebookModel.class);
-                                    loginFacebook(fragment.getActivity(), facebookModel,loginResult.getAccessToken().getToken());
+                                    loginFacebook(fragment.getActivity(), facebookModel, loginResult.getAccessToken().getToken());
                                 }
                             });
 
@@ -216,7 +218,7 @@ public class RegisterInitialPresenterImpl extends RegisterInitialPresenter {
 
             @Override
             public void onError(FacebookException e) {
-                if(e instanceof FacebookAuthorizationException){
+                if (e instanceof FacebookAuthorizationException) {
                     LoginManager.getInstance().logOut();
                 }
                 view.showError(fragment.getActivity().getString(R.string.msg_network_error));
@@ -234,7 +236,7 @@ public class RegisterInitialPresenterImpl extends RegisterInitialPresenter {
 
     @Override
     public void downloadProviderLogin(Context context) {
-        interactor.downloadProvider(context, new LoginInteractor.DiscoverLoginListener() {
+        interactor.downloadProvider(context, new RegisterInteractor.DiscoverLoginListener() {
             @Override
             public void onSuccess(LoginProviderModel result) {
                 view.removeProgressBar();
@@ -262,15 +264,21 @@ public class RegisterInitialPresenterImpl extends RegisterInitialPresenter {
     @Override
     public void loginFacebook(final Context context, FacebookModel facebookModel, String token) {
         LoginFacebookViewModel loginFacebookViewModel = new LoginFacebookViewModel();
-        loginFacebookViewModel.setFullName(facebookModel.getName());
-        loginFacebookViewModel.setGender(facebookModel.getGender());
-        loginFacebookViewModel.setBirthday(facebookModel.getBirthdayConverted());
-        loginFacebookViewModel.setFbToken(token);
-        loginFacebookViewModel.setFbId(facebookModel.getId());
-        loginFacebookViewModel.setEmail(facebookModel.getEmail());
+        if (facebookModel != null && !TextUtils.isEmpty(facebookModel.getName()))
+            loginFacebookViewModel.setFullName(facebookModel.getName());
+        if (facebookModel != null && !TextUtils.isEmpty(facebookModel.getGender()))
+            loginFacebookViewModel.setGender(facebookModel.getGender());
+        if (facebookModel != null && !TextUtils.isEmpty(facebookModel.getBirthdayConverted()))
+            loginFacebookViewModel.setBirthday(facebookModel.getBirthdayConverted());
+        if (!TextUtils.isEmpty(token))
+            loginFacebookViewModel.setFbToken(token);
+        if (facebookModel != null && !TextUtils.isEmpty(facebookModel.getId()))
+            loginFacebookViewModel.setFbId(facebookModel.getId());
+        if (facebookModel != null && !TextUtils.isEmpty(facebookModel.getEmail()))
+            loginFacebookViewModel.setEmail(facebookModel.getEmail());
 
-        if(context!=null&&context instanceof SessionView){
-                            Bundle bundle = new Bundle();
+        if (context != null && context instanceof SessionView) {
+            Bundle bundle = new Bundle();
             bundle.putParcelable(DownloadService.LOGIN_FACEBOOK_MODEL_KEY, Parcels.wrap(loginFacebookViewModel));
             bundle.putBoolean(DownloadService.IS_NEED_LOGIN, false);
 
@@ -281,28 +289,28 @@ public class RegisterInitialPresenterImpl extends RegisterInitialPresenter {
     }
 
     @Override
-    public void startLoginWithGoogle(Context context,String type, LoginGoogleModel loginGoogleModel) {
-        if(type != null && type.equals(LoginModel.GoogleType) && loginGoogleModel != null){
+    public void startLoginWithGoogle(Context context, String type, LoginGoogleModel loginGoogleModel) {
+        if (type != null && type.equals(LoginModel.GoogleType) && loginGoogleModel != null) {
             RegisterViewModel registerViewModel = new RegisterViewModel();
 
             // update data and UI
 //            if(registerViewModel!=null){
-            if(loginGoogleModel.getFullName()!=null){
+            if (loginGoogleModel.getFullName() != null) {
 //                    registerView.updateData(RegisterView.NAME, loginGoogleModel.getFullName());
                 registerViewModel.setmName(loginGoogleModel.getFullName());
             }
-            if(loginGoogleModel.getGender().contains("male")){
+            if (loginGoogleModel.getGender() == null || loginGoogleModel.getGender().contains("male")) {
 //                    registerView.updateData(RegisterView.GENDER, RegisterViewModel.GENDER_MALE);
                 registerViewModel.setmGender(RegisterViewModel.GENDER_MALE);
-            }else{
+            } else {
 //                    registerView.updateData(RegisterView.GENDER, RegisterViewModel.GENDER_FEMALE);
                 registerViewModel.setmGender(RegisterViewModel.GENDER_FEMALE);
             }
-            if(loginGoogleModel.getBirthday()!=null){
-                Log.d(messageTAG, " need to verify birthday : "+loginGoogleModel.getBirthday());
+            if (loginGoogleModel.getBirthday() != null) {
+                Log.d(messageTAG, " need to verify birthday : " + loginGoogleModel.getBirthday());
                 registerViewModel.setDateText(loginGoogleModel.getBirthday());
             }
-            if(loginGoogleModel.getEmail()!=null){
+            if (loginGoogleModel.getEmail() != null) {
                 registerViewModel.setmEmail(loginGoogleModel.getEmail());
             }
             loginGoogleModel.setUuid(getUUID());
@@ -312,7 +320,7 @@ public class RegisterInitialPresenterImpl extends RegisterInitialPresenter {
             bundle.putBoolean(DownloadService.IS_NEED_LOGIN, false);
 
             view.showProgress(true);
-            ((SessionView)context).sendDataFromInternet(DownloadService.REGISTER_GOOGLE, bundle);
+            ((SessionView) context).sendDataFromInternet(DownloadService.REGISTER_GOOGLE, bundle);
         }
     }
 
@@ -322,7 +330,7 @@ public class RegisterInitialPresenterImpl extends RegisterInitialPresenter {
         bundle.putBoolean(DownloadService.IS_NEED_LOGIN, false);
 
         view.showProgress(true);
-        ((SessionView)context).sendDataFromInternet(DownloadService.LOGIN_WEBVIEW, bundle);
+        ((SessionView) context).sendDataFromInternet(DownloadService.LOGIN_WEBVIEW, bundle);
     }
 
     public String getUUID() {

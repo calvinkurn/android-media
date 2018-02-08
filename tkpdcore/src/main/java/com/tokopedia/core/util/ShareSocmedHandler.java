@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
+import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -221,9 +222,18 @@ public class ShareSocmedHandler {
      * @author EkaCipta
      */
 
-    public static void ShareSpecific(Activity context, String packageName, String targetType, String shareTxt, String ProductUri, Bitmap image, String altUrl) {
+    public static void ShareSpecific(final ShareData data, final Activity context, final String packageName, final String targetType, final Bitmap image, final String altUrl) {
+        BranchSdkUtils.generateBranchLink(data, context, new BranchSdkUtils.GenerateShareContents() {
+            @Override
+            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
+                ShareData(context, packageName, targetType, shareContents, shareUri, image, altUrl);
+            }
+        });
+    }
+
+    private static void ShareData(Activity context, String packageName, String targetType, String shareTxt, String ProductUri, Bitmap image, String altUrl) {
         boolean Resolved = false;
-        Intent share = new Intent(android.content.Intent.ACTION_SEND);
+        Intent share = new Intent(Intent.ACTION_SEND);
         share.setType(targetType);
         File f = null;
         if (image != null)
@@ -244,27 +254,27 @@ public class ShareSocmedHandler {
             share.putExtra(Intent.EXTRA_STREAM, MethodChecker.getUri(context, f));
         }
         share.putExtra(Intent.EXTRA_REFERRER, ProductUri);
-//        share.putExtra(Intent.EXTRA_HTML_TEXT, ProductUri);
-//		 share.putExtra(Intent.EXTRA_TEXT, "Jual " + pName + " hanya " + pPrice + ", lihat gambar klik " + ProductUri);
         share.putExtra(Intent.EXTRA_TEXT, shareTxt);
 
-        List<ResolveInfo> resInfo = context.getPackageManager().queryIntentActivities(share, 0);
-        for (ResolveInfo info : resInfo) {
-            if (info.activityInfo.packageName.equals(packageName)) {
-                Resolved = true;
-//        		 share.setClassName(info.activityInfo.packageName, info.activityInfo.name );
-                share.setPackage(info.activityInfo.packageName);
+        if (context != null) {
+            if (context.getPackageManager() != null) {
+                List<ResolveInfo> resInfo = context.getPackageManager().queryIntentActivities(share, 0);
+
+                for (ResolveInfo info : resInfo) {
+                    if (info.activityInfo.packageName.equals(packageName)) {
+                        Resolved = true;
+                        share.setPackage(info.activityInfo.packageName);
+                    }
+                }
             }
+
+            if (Resolved) {
+                context.startActivity(share);
+            } else if (altUrl != null) {
+                context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(altUrl)));
+            } else
+                Toast.makeText(context, context.getString(R.string.error_apps_not_installed), Toast.LENGTH_SHORT).show();
         }
-
-        if (Resolved) {
-            //           context.startActivity(Intent.createChooser(share, shareTxt));
-            context.startActivity(share);
-        } else if (altUrl != null) {
-            context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(altUrl)));
-        } else
-            Toast.makeText(context, context.getString(R.string.error_apps_not_installed), Toast.LENGTH_SHORT).show();
-
     }
 
 
@@ -277,7 +287,7 @@ public class ShareSocmedHandler {
      * @author EkaCipta
      */
 
-    public static void ShareSpecificUri(final Activity context, final String packageName, final String targetType, final String shareTxt, final String ProductUri, final String image, final String altUrl) {
+    public static void ShareSpecificUri(final ShareData data, final Activity context, final String packageName, final String targetType, final String image, final String altUrl) {
         Observable.just(image)
                 .map(new Func1<String, File>() {
                     @Override
@@ -311,45 +321,51 @@ public class ShareSocmedHandler {
 
                             @Override
                             public void onError(Throwable e) {
-                                Log.e("STUART", e.getMessage());
+
                             }
 
                             @Override
-                            public void onNext(File file) {
-                                boolean Resolved = false;
-                                final Intent share = new Intent(android.content.Intent.ACTION_SEND);
-                                share.setType(targetType);
+                            public void onNext(final File file) {
+                                BranchSdkUtils.generateBranchLink(data, context, new BranchSdkUtils.GenerateShareContents() {
+                                    @Override
+                                    public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
+                                        ShareDataWithSpecificUri(file, targetType, image, context, shareContents, shareUri, packageName, altUrl);
 
-                                if (image != null) {
-                                    share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                                    share.putExtra(Intent.EXTRA_STREAM, MethodChecker.getUri(context, file));
-                                }
-                                share.putExtra(Intent.EXTRA_REFERRER, ProductUri);
-                                share.putExtra(Intent.EXTRA_HTML_TEXT, ProductUri);
-//		 share.putExtra(Intent.EXTRA_TEXT, "Jual " + pName + " hanya " + pPrice + ", lihat gambar klik " + ProductUri);
-                                share.putExtra(Intent.EXTRA_TEXT, shareTxt);
-
-                                List<ResolveInfo> resInfo = context.getPackageManager().queryIntentActivities(share, 0);
-                                for (ResolveInfo info : resInfo) {
-                                    if (info.activityInfo.packageName.equals(packageName)) {
-                                        Resolved = true;
-//        		 share.setClassName(info.activityInfo.packageName, info.activityInfo.name );
-                                        share.setPackage(info.activityInfo.packageName);
                                     }
-                                }
-
-                                if (Resolved) {
-                                    //           context.startActivity(Intent.createChooser(share, shareTxt));
-                                    context.startActivity(share);
-                                } else if (altUrl != null) {
-                                    context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(altUrl)));
-                                } else
-                                    Toast.makeText(context, context.getString(R.string.error_apps_not_installed), Toast.LENGTH_SHORT).show();
-
+                                });
                             }
                         }
                 );
 
+    }
+
+    private static void ShareDataWithSpecificUri(File file, String targetType, String image, Activity context, String shareTxt, String ProductUri, String packageName, String altUrl) {
+        boolean Resolved = false;
+        final Intent share = new Intent(Intent.ACTION_SEND);
+        share.setType(targetType);
+
+        if (image != null) {
+            share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            share.putExtra(Intent.EXTRA_STREAM, MethodChecker.getUri(context, file));
+        }
+        share.putExtra(Intent.EXTRA_REFERRER, ProductUri);
+        share.putExtra(Intent.EXTRA_HTML_TEXT, ProductUri);
+        share.putExtra(Intent.EXTRA_TEXT, shareTxt);
+
+        List<ResolveInfo> resInfo = context.getPackageManager().queryIntentActivities(share, 0);
+        for (ResolveInfo info : resInfo) {
+            if (info.activityInfo.packageName.equals(packageName)) {
+                Resolved = true;
+                share.setPackage(info.activityInfo.packageName);
+            }
+        }
+
+        if (Resolved) {
+            context.startActivity(share);
+        } else if (altUrl != null) {
+            context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(altUrl)));
+        } else
+            Toast.makeText(context, context.getString(R.string.error_apps_not_installed), Toast.LENGTH_SHORT).show();
     }
 
 
@@ -429,7 +445,7 @@ public class ShareSocmedHandler {
 
         boolean isShop = false;
         if (SessionHandler.isV4Login(context)) {
-            if (!SessionHandler.getShopID(context).equals("0")) {
+            if (SessionHandler.isUserHasShop(context)) {
                 isShop = true;
             }
         }
@@ -472,15 +488,19 @@ public class ShareSocmedHandler {
         return chooserIntent;
     }
 
-    public static void ShareIntentImageUri(Activity context, String title, String shareTxt,
-                                           String ProductUri, String imageUri) {
+    public static void ShareIntentImageUri(final ShareData data, final Activity context, final String title, String imageUri) {
 
-        Intent share = new Intent(Intent.ACTION_SEND);
-        share.setType("text/plain");
-        share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-        if (title != null) share.putExtra(Intent.EXTRA_SUBJECT, title);
-        share.putExtra(Intent.EXTRA_TEXT, shareTxt);
-        context.startActivity(Intent.createChooser(share, "Share link!"));
+        BranchSdkUtils.generateBranchLink(data, context, new BranchSdkUtils.GenerateShareContents() {
+            @Override
+            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
+                Intent share = new Intent(Intent.ACTION_SEND);
+                share.setType("text/plain");
+                share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+                if (title != null) share.putExtra(Intent.EXTRA_SUBJECT, title);
+                share.putExtra(Intent.EXTRA_TEXT, shareContents);
+                context.startActivity(Intent.createChooser(share, "Share link!"));
+            }
+        });
 
     }
 
@@ -599,6 +619,5 @@ public class ShareSocmedHandler {
         this.url = url;
         fbinterface = (FacebookInterface) activity;
     }
-
-
 }
+

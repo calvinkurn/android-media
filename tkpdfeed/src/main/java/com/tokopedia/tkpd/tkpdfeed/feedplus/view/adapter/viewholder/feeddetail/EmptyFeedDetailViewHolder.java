@@ -7,7 +7,7 @@ import android.widget.TextView;
 import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlusDetail;
 
 /**
  * @author by nisie on 6/22/17.

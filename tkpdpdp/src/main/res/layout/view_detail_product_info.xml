@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:paddingBottom="@dimen/margin_med"
-        android:paddingLeft="@dimen/margin_small"
+        android:paddingTop="@dimen/margin_small"
         android:paddingStart="@dimen/margin_small"
         android:background="@color/white">
 
@@ -18,14 +18,16 @@
             android:id="@id/tr_preorder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/padding_small"
+            android:paddingTop="@dimen/padding_small"
+            android:paddingBottom="@dimen/padding_small"
             android:layout_gravity="center_horizontal">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight=".50"
-                android:padding="@dimen/padding_small"
+                android:paddingTop="@dimen/padding_small"
+                android:paddingBottom="@dimen/padding_small"
                 android:text="@string/title_preorder"
                 android:textColor="#868686"
                 android:textSize="@dimen/fonts" />
@@ -36,6 +38,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight=".50"
                 android:padding="@dimen/padding_small"
+                android:layout_marginRight="@dimen/margin_small"
                 android:gravity="end"
                 android:textColor="#464646"
                 android:textSize="@dimen/fonts" />
@@ -45,14 +48,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:padding="@dimen/padding_small"
+            android:paddingTop="@dimen/padding_small"
+            android:paddingBottom="@dimen/padding_small"
             android:background="@drawable/layout_13">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight=".50"
-                android:padding="@dimen/padding_small"
+                android:paddingTop="@dimen/padding_small"
+                android:paddingBottom="@dimen/padding_small"
                 android:text="@string/title_success_rate"
                 android:textColor="#868686"
                 android:textSize="@dimen/fonts" />
@@ -63,6 +68,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight=".50"
                 android:padding="@dimen/padding_small"
+                android:layout_marginRight="@dimen/margin_small"
                 android:gravity="end"
                 android:textColor="#464646"
                 android:textSize="@dimen/fonts" />
@@ -72,14 +78,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:padding="@dimen/padding_small"
+            android:paddingTop="@dimen/padding_small"
+            android:paddingBottom="@dimen/padding_small"
             android:background="@drawable/layout_13">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight=".50"
-                android:padding="@dimen/padding_small"
+                android:paddingTop="@dimen/padding_small"
+                android:paddingBottom="@dimen/padding_small"
                 android:text="@string/title_condition"
                 android:textColor="#868686"
                 android:textSize="@dimen/fonts" />
@@ -90,6 +98,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight=".50"
                 android:padding="@dimen/padding_small"
+                android:layout_marginRight="@dimen/margin_small"
                 android:gravity="end"
                 android:textColor="#464646"
                 android:textSize="@dimen/fonts" />
@@ -100,14 +109,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:padding="@dimen/padding_small"
+            android:paddingTop="@dimen/padding_small"
+            android:paddingBottom="@dimen/padding_small"
             android:background="@drawable/layout_13">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight=".50"
-                android:padding="@dimen/padding_small"
+                android:paddingTop="@dimen/padding_small"
+                android:paddingBottom="@dimen/padding_small"
                 android:text="@string/title_min_order"
                 android:textColor="#868686"
                 android:textSize="@dimen/fonts" />
@@ -118,6 +129,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight=".50"
                 android:padding="@dimen/padding_small"
+                android:layout_marginRight="@dimen/margin_small"
                 android:gravity="end"
                 android:textColor="#464646"
                 android:textSize="@dimen/fonts" />
@@ -127,14 +139,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:padding="@dimen/padding_small"
+            android:paddingTop="@dimen/padding_small"
+            android:paddingBottom="@dimen/padding_small"
             android:background="@drawable/layout_13">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight=".50"
-                android:padding="@dimen/padding_small"
+                android:paddingTop="@dimen/padding_small"
+                android:paddingBottom="@dimen/padding_small"
                 android:text="@string/title_category"
                 android:textColor="#868686"
                 android:textSize="@dimen/fonts" />
@@ -170,6 +184,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/padding_small"
+                    android:layout_marginRight="@dimen/margin_small"
                     android:gravity="end"
                     android:textColor="@color/tkpd_main_green"
                     android:textSize="@dimen/fonts"
@@ -181,14 +196,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:padding="@dimen/padding_small"
+            android:paddingTop="@dimen/padding_small"
+            android:paddingBottom="@dimen/padding_small"
             android:background="@drawable/layout_13">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight=".50"
-                android:padding="@dimen/padding_small"
+                android:paddingTop="@dimen/padding_small"
+                android:paddingBottom="@dimen/padding_small"
                 android:text="@string/title_etalase"
                 android:textColor="#868686"
                 android:textSize="@dimen/fonts" />
@@ -199,6 +216,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight=".50"
                 android:padding="@dimen/padding_small"
+                android:layout_marginRight="@dimen/margin_small"
                 android:gravity="end"
                 android:textColor="@color/tkpd_main_green"
                 android:textSize="@dimen/fonts" />
@@ -209,14 +227,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:padding="@dimen/padding_small"
+            android:paddingTop="@dimen/padding_small"
+            android:paddingBottom="@dimen/padding_small"
             android:background="@drawable/layout_13">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight=".50"
-                android:padding="@dimen/padding_small"
+                android:paddingTop="@dimen/padding_small"
+                android:paddingBottom="@dimen/padding_small"
                 android:text="@string/table_policy_option"
                 android:textColor="#868686"
                 android:textSize="@dimen/fonts" />
@@ -232,7 +252,8 @@
                     android:id="@id/tv_returnable"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/padding_small"
+                    android:paddingTop="@dimen/padding_small"
+                    android:paddingBottom="@dimen/padding_small"
                     android:textColor="@color/black"
                     android:textSize="@dimen/fonts" />
 
@@ -242,6 +263,7 @@
                     android:layout_height="wrap_content"
                     android:padding="@dimen/padding_small"
                     android:paddingBottom="@dimen/padding_small"
+                    android:layout_marginRight="@dimen/margin_small"
                     android:text="@string/title_return_policy_condition"
                     android:textColor="@color/href_link"
                     android:textSize="@dimen/fonts"
@@ -254,7 +276,8 @@
             android:id="@id/tr_catalog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/padding_small"
+            android:paddingTop="@dimen/padding_small"
+            android:paddingBottom="@dimen/padding_small"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/layout_13">
 
@@ -262,7 +285,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight=".50"
-                android:padding="@dimen/padding_small"
+                android:paddingTop="@dimen/padding_small"
+                android:paddingBottom="@dimen/padding_small"
                 android:text="@string/title_catalog"
                 android:textColor="#868686"
                 android:textSize="@dimen/fonts" />
@@ -273,6 +297,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight=".50"
                 android:padding="@dimen/padding_small"
+                android:layout_marginRight="@dimen/margin_small"
                 android:textColor="@color/tkpd_main_green"
                 android:gravity="end"
                 android:textSize="@dimen/fonts" />

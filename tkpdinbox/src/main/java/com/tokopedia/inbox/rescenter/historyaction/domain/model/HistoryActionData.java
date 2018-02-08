@@ -11,6 +11,15 @@ public class HistoryActionData {
     private String messageError;
     private List<HistoryActionItemDomainData> listHistoryAddress;
     private int errorCode;
+    private int resolutionStatus;
+
+    public int getResolutionStatus() {
+        return resolutionStatus;
+    }
+
+    public void setResolutionStatus(int resolutionStatus) {
+        this.resolutionStatus = resolutionStatus;
+    }
 
     public boolean isSuccess() {
         return success;

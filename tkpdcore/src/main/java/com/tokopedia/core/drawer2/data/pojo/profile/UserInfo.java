@@ -105,4 +105,19 @@ public class UserInfo {
     public void setUserImage(String userImage) {
         this.userImage = userImage;
     }
+
+    @Override
+    public String toString() {
+        return "UserInfo{" +
+                "userMessenger='" + userMessenger + '\'' +
+                ", userBirth='" + userBirth + '\'' +
+                ", userName='" + userName + '\'' +
+                ", userReputation=" + userReputation +
+                ", userEmail='" + userEmail + '\'' +
+                ", userId='" + userId + '\'' +
+                ", userPhone='" + userPhone + '\'' +
+                ", userHobbies='" + userHobbies + '\'' +
+                ", userImage='" + userImage + '\'' +
+                '}';
+    }
 }

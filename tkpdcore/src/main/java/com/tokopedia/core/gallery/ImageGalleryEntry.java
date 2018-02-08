@@ -62,16 +62,15 @@ public class ImageGalleryEntry{
      * @param data
      */
     public static void onActivityForResult(GalleryListener galleryListener, int requestCode, int resultCode, Intent data){
-        if (requestCode == com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY && data != null) {
-            int position = data.getIntExtra(GalleryActivity.ADD_PRODUCT_IMAGE_LOCATION, GalleryActivity.ADD_PRODUCT_IMAGE_LOCATION_DEFAULT);
+        if ((requestCode == com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY ||
+            requestCode == GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE) && data != null) {
             String imageUrl = data.getStringExtra(GalleryActivity.IMAGE_URL);
             if (checkNotNull(imageUrl)) {
-                Log.d(ImageGalleryView.TAG, messageTAG + imageUrl + " & " + position);
 
                 try {
                     Pair<Boolean, String> checkImageResolution = VerificationUtils.checkImageResolution(galleryListener.getContext(), imageUrl);
                     if (imageUrl != null && checkImageResolution.getModel1()) {
-                        galleryListener.onSuccess(imageUrl, position);
+                        galleryListener.onSuccess(imageUrl);
                     } else {
                         galleryListener.onFailed(checkImageResolution.getModel2());
                         Log.e(ImageGalleryView.TAG, messageTAG + checkImageResolution.getModel2());
@@ -81,11 +80,11 @@ public class ImageGalleryEntry{
                     galleryListener.onFailed(e.getMessage());
                     Log.e(ImageGalleryView.TAG, messageTAG + e.getMessage());
                 }
-            }
-
-            ArrayList<String> imageUrls = data.getStringArrayListExtra(GalleryBrowser.IMAGE_URLS);
-            if (checkCollectionNotNull(imageUrls)) {
-                galleryListener.onSuccess(imageUrls);
+            } else {
+                ArrayList<String> imageUrls = data.getStringArrayListExtra(GalleryBrowser.IMAGE_URLS);
+                if (checkCollectionNotNull(imageUrls)) {
+                    galleryListener.onSuccess(imageUrls);
+                }
             }
         }
     }
@@ -95,7 +94,7 @@ public class ImageGalleryEntry{
      */
     public interface GalleryListener{
         void onSuccess(ArrayList<String> imageUrls);
-        void onSuccess(String path, int position);
+        void onSuccess(String path);
         void onFailed(String message);
 
         /**

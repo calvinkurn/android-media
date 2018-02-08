@@ -7,11 +7,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,11 +22,13 @@ import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
@@ -36,8 +40,11 @@ import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmstat.views.GMStatHeaderViewHelper;
-import com.tokopedia.seller.lib.datepicker.DatePickerResultListener;
+import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
+import com.tokopedia.seller.base.view.adapter.ItemType;
+import com.tokopedia.seller.common.datepicker.view.listener.DatePickerResultListener;
+import com.tokopedia.seller.common.utils.DefaultErrorSubscriber;
+import com.tokopedia.seller.common.utils.NetworkStatus;
 import com.tokopedia.seller.reputation.data.mapper.ReputationReviewMapper;
 import com.tokopedia.seller.reputation.data.repository.ReputationReviewRepositoryImpl;
 import com.tokopedia.seller.reputation.data.source.cloud.CloudReputationReviewDataSource;
@@ -50,13 +57,10 @@ import com.tokopedia.seller.reputation.view.SellerReputationView;
 import com.tokopedia.seller.reputation.view.activity.SellerReputationInfoActivity;
 import com.tokopedia.seller.reputation.view.adapter.SellerReputationAdapter;
 import com.tokopedia.seller.reputation.view.adapter.SimpleDividerItemDecoration;
+import com.tokopedia.seller.reputation.view.helper.GMStatHeaderViewHelper;
 import com.tokopedia.seller.reputation.view.helper.ReputationViewHelper;
 import com.tokopedia.seller.reputation.view.model.SetDateHeaderModel;
 import com.tokopedia.seller.reputation.view.presenter.SellerReputationFragmentPresenter;
-import com.tokopedia.seller.topads.dashboard.utils.DefaultErrorSubscriber;
-import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
-import com.tokopedia.seller.base.view.adapter.ItemType;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsAddProductListPresenter;
 import com.tokopedia.seller.util.ShopNetworkController;
 
 import java.util.ArrayList;
@@ -70,8 +74,9 @@ import rx.schedulers.Schedulers;
 /**
  * @author normansyahputa
  */
-public class SellerReputationFragment extends BasePresenterFragment<SellerReputationFragmentPresenter>
-        implements SellerReputationView, RetryDataBinder.OnRetryListener, DefaultErrorSubscriber.ErrorNetworkListener, DatePickerResultListener.DatePickerResult {
+public class SellerReputationFragment extends BaseDaggerFragment
+        implements SellerReputationView, RetryDataBinder.OnRetryListener,
+        DefaultErrorSubscriber.ErrorNetworkListener, DatePickerResultListener.DatePickerResult {
 
     public static final String TAG = "SellerReputationFragmen";
 
@@ -90,6 +95,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
     ReviewReputationUseCase reviewReputationUseCase;
     GCMHandler gcmHandler;
     ReviewReputationMergeUseCase reviewReputationMergeUseCase;
+    SellerReputationFragmentPresenter presenter;
 
     private SnackbarRetry snackbarRetry;
     private View rootView;
@@ -134,50 +140,54 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
             tempParcelables = savedInstanceState.getParcelableArrayList(
                     SellerReputationAdapter.KEY_LIST_DATA);
         }
-        return super.onCreateView(inflater, container, savedInstanceState);
+
+        return inflater.inflate(getFragmentLayout(), container, false);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(isRetainInstance());
+        Log.d(TAG, "ON CREATE");
+        if (getArguments() != null) {
+            setupArguments(getArguments());
+        }
+        initialPresenter();
     }
 
     @Override
+    protected void initInjector() {
+
+    }
+
     protected boolean isRetainInstance() {
         return false;
     }
 
-    @Override
     protected void onFirstTimeLaunched() {
         setActionsEnabled(false);
     }
 
-    @Override
     public void onSaveState(Bundle state) {
 
     }
 
-    @Override
     public void onRestoreState(Bundle savedState) {
 
     }
 
-    @Override
     protected boolean getOptionsMenuEnable() {
         return false;
     }
 
-    @Override
     protected void initialPresenter() {
         presenter = new SellerReputationFragmentPresenter();
         presenter.attachView(this);
     }
 
-    @Override
     protected void initialListener(Activity activity) {
     }
 
-    @Override
     protected void setupArguments(Bundle arguments) {
 
     }
@@ -189,12 +199,19 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
         adapter.setFragment(null);
     }
 
-    @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_seller_reputation;
     }
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initView(view);
+        initialVar();
+        setViewListener();
+        setActionVar();
+    }
+
     protected void initView(View view) {
         this.rootView = view;
         listViewBalance = (RecyclerView) view.findViewById(R.id.balance_list);
@@ -237,7 +254,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
 
     private void fetchData() {
         if (presenter.getNetworkStatus()
-                == TopAdsAddProductListPresenter.NetworkStatus.ONACTIVITYFORRESULT) {
+                == NetworkStatus.ONACTIVITYFORRESULT) {
             refreshHandler.setRefreshing(true);
             firstTimeNetworkCall();
         } else {
@@ -249,8 +266,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
                         .doOnNext(new Action1<Boolean>() {
                             @Override
                             public void call(Boolean aBoolean) {
-                                presenter.setNetworkStatus(
-                                        TopAdsAddProductListPresenter.NetworkStatus.PULLTOREFRESH);
+                                presenter.setNetworkStatus(NetworkStatus.PULLTOREFRESH);
                                 adapter.showLoadingFull(true);
                                 /*
                                 below is a must otherwise it will throw
@@ -291,7 +307,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
                 if (lastItemPosition == visibleItem
                         && adapter.getDataSize() < Integer.MAX_VALUE) {
                     presenter.incrementPage();
-                    presenter.setNetworkStatus(TopAdsAddProductListPresenter.NetworkStatus.LOADMORE);
+                    presenter.setNetworkStatus(NetworkStatus.LOADMORE);
                     presenter.loadMoreNetworkCall();
                 }
             }
@@ -345,7 +361,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
 
     @Override
     public void dismissSnackbar() {
-        if(snackbarRetry != null) {
+        if (snackbarRetry != null) {
             snackbarRetry.hideRetrySnackbar();
         }
     }
@@ -364,8 +380,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
                 }
 
                 presenter.resetPage();
-                presenter.setNetworkStatus(
-                        TopAdsAddProductListPresenter.NetworkStatus.PULLTOREFRESH);
+                presenter.setNetworkStatus(NetworkStatus.PULLTOREFRESH);
                 firstTimeNetworkCall();
             }
         };
@@ -379,7 +394,6 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
         presenter.loadMoreNetworkCall();
     }
 
-    @Override
     protected void setViewListener() {
         discardOnClickInfo();
     }
@@ -402,7 +416,6 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
         });
     }
 
-    @Override
     protected void initialVar() {
         if (tempParcelables != null) {
             adapter = SellerReputationAdapter.createInstance(getActivity(), tempParcelables);
@@ -425,8 +438,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
                 }
 
                 presenter.resetPage();
-                presenter.setNetworkStatus(
-                        TopAdsAddProductListPresenter.NetworkStatus.PULLTOREFRESH);
+                presenter.setNetworkStatus(NetworkStatus.PULLTOREFRESH);
                 firstTimeNetworkCall();
             }
         });
@@ -439,7 +451,6 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
         datePickerResultListener = new DatePickerResultListener(this, GMStatHeaderViewHelper.MOVE_TO_SET_DATE);
     }
 
-    @Override
     protected void setActionVar() {
     }
 
@@ -615,18 +626,17 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
         };
     }
 
-    private void onRetryConnectionSnackBar(){
+    private void onRetryConnectionSnackBar() {
         dismissSnackbar();
         refreshHandler.setRefreshing(true);
         switch (presenter.getNetworkStatus()) {
             case ONACTIVITYFORRESULT:
             case PULLTOREFRESH:
-                presenter.setNetworkStatus(TopAdsAddProductListPresenter.NetworkStatus.PULLTOREFRESH);
+                presenter.setNetworkStatus(NetworkStatus.PULLTOREFRESH);
                 firstTimeNetworkCall();
                 break;
             default:
-                presenter.setNetworkStatus(
-                        TopAdsAddProductListPresenter.NetworkStatus.RETRYNETWORKCALL);
+                presenter.setNetworkStatus(NetworkStatus.RETRYNETWORKCALL);
                 loadMoreCall();
                 break;
         }
@@ -712,7 +722,11 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
         presenter.setStartDate(sDate);
         presenter.setEndDate(eDate);
 
-        presenter.setNetworkStatus(
-                TopAdsAddProductListPresenter.NetworkStatus.ONACTIVITYFORRESULT);
+        presenter.setNetworkStatus(NetworkStatus.ONACTIVITYFORRESULT);
+    }
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_SELLER_REP_HISTORY;
     }
 }

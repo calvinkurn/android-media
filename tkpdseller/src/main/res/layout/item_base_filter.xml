@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:gravity="center_vertical"
+    android:minHeight="@dimen/top_ads_filter_item_min_height"
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/margin_sm"
+    android:paddingRight="@dimen/margin_sm">
+
+    <ImageView
+        android:id="@+id/image_view_status"
+        style="@style/ImageViewStatus"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/text_view_title"
+        style="@style/TextView.Title"
+        android:layout_marginLeft="@dimen/margin_sm"
+        android:layout_marginStart="@dimen/margin_sm"
+        tools:text="@string/app_name"/>
+</LinearLayout>

@@ -59,8 +59,6 @@ public class ChangeEmailActivity extends BasePresenterActivity {
     @Override
     protected void initView() {
 
-        setToolbar();
-
         ChangeEmailFragment fragment = ChangeEmailFragment.createInstance();
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         if (getFragmentManager().findFragmentById(R.id.container) == null) {
@@ -68,33 +66,6 @@ public class ChangeEmailActivity extends BasePresenterActivity {
         }
         fragmentTransaction.commit();
 
-    }
-
-    private void setToolbar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            View view = getWindow().getDecorView();
-            int flags = view.getSystemUiVisibility();
-
-            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-            view.setSystemUiVisibility(flags);
-            getWindow().setStatusBarColor(Color.WHITE);
-        }
-
-
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
-                .getColor(R.color.white)));
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.grey_700));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.setElevation(10);
-        }
-
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        Drawable upArrow = ContextCompat.getDrawable(this, android.support.v7.appcompat.R.drawable.abc_ic_ab_back_material);
-        if (upArrow != null) {
-            upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
-            getSupportActionBar().setHomeAsUpIndicator(upArrow);
-        }
     }
 
 
@@ -117,5 +88,10 @@ public class ChangeEmailActivity extends BasePresenterActivity {
         Intent intent = new Intent(context, ChangeEmailActivity.class);
         intent.putExtra(ChangeEmailFragment.EXTRA_EMAIL, oldEmail);
         return intent;
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

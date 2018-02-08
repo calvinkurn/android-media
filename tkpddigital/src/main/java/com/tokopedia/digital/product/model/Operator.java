@@ -14,7 +14,6 @@ public class Operator implements Parcelable {
     public static final String DEFAULT_TYPE_CONTRACT = "operator";
     private String operatorId;
     private String operatorType;
-
     private String name;
     private String image;
     private String lastorderUrl;
@@ -23,6 +22,13 @@ public class Operator implements Parcelable {
     private List<String> prefixList = new ArrayList<>();
     private List<ClientNumber> clientNumberList = new ArrayList<>();
     private List<Product> productList = new ArrayList<>();
+    private String ussdCode;
+
+    public void setUssdCode(String ussdCode) {
+        this.ussdCode = ussdCode;
+    }
+
+    public String getUssdCode() {return ussdCode;}
 
     public String getName() {
         return name;
@@ -104,7 +110,6 @@ public class Operator implements Parcelable {
         this.rule = rule;
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -122,6 +127,7 @@ public class Operator implements Parcelable {
         dest.writeStringList(this.prefixList);
         dest.writeList(this.clientNumberList);
         dest.writeList(this.productList);
+        dest.writeString(this.ussdCode);
     }
 
     public Operator() {
@@ -140,6 +146,7 @@ public class Operator implements Parcelable {
         in.readList(this.clientNumberList, ClientNumber.class.getClassLoader());
         this.productList = new ArrayList<Product>();
         in.readList(this.productList, Product.class.getClassLoader());
+        this.ussdCode = in.readString();
     }
 
     public static final Parcelable.Creator<Operator> CREATOR = new Parcelable.Creator<Operator>() {

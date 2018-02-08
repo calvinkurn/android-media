@@ -12,6 +12,11 @@ def getTkpdCore() {
             rootProject.ext.tkpdDependencies.core : project(':tkpdcore');
 }
 
+def getTkpdDesign() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.core : project(':tkpddesign');
+}
+
 publishing {
     publications {
         aar(MavenPublication) {
@@ -89,6 +94,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
     compile getTkpdCore()
+    compile getTkpdDesign()
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
@@ -106,5 +112,6 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
 }

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="red_deadline">#fce7e4</color>
+    <color name="reply_background">#f7f7f7</color>
+    <color name="seller_label">#d50000</color>
+    <color name="color_gray">#1f000000</color>
+
+</resources>

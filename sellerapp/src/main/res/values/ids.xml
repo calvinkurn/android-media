@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <item name="seller_home_latest_new_order" type="id" />
-    <item name="card_new_order" type="id" />
-    <item name="seller_home_new_order_container" type="id" />
-</resources>

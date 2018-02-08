@@ -34,5 +34,30 @@
     <string name="toko_cash_pending_title">Bonus Cashback</string>
     <string name="toko_cash_pending_proceed_button">Dapatkan Cashback Sekarang</string>
     <string name="toko_cash_pending_close_button">Tutup</string>
+    <string name="toko_cash_pending_body">Anda mendapatkan cashback TokoCash sebesar %s dari transaksi terakhir</string>
+
+    <string name="react_native_banner_official_title">Official Store</string>
+    <string name="official_store_term_conditions_title"><![CDATA[Syarat & Ketentuan]]></string>
+    <string name="deeplink_receiver_applink_update_button_title">Update</string>
+    <string name="deeplink_receiver_applink_update_button_cancel_title">Batal</string>
+
+    <!--tokocash history-->
+    <string name="toko_cash_title_page_date_range">Rentang Tanggal</string>
+    <string name="toko_cash_tab_choose_date">Pilih Tanggal</string>
+    <string name="toko_cash_tab_choose_date_range">Pilih Rentang Waktu</string>
+    <string name="lihat_semua">Lihat Semua</string>
+    <string name="kunjungi_sekarang">Kunjungi Sekarang</string>
+
+    <!--home-->
+    <string name="format_btn_category_more">+%d Kategori Lainnya</string>
+    <string name="buka_toko">Buka Toko</string>
+    <string name="manage_toko">Atur Toko</string>
+    <string name="empty_shop_wording_subtitle">Nikmati transaksi yang mudah, aman, dan menguntungkan</string>
+    <string name="manage_shop_wording_subtitle">Kelola pengaturan toko Anda untuk meningkatkan penjualan</string>
+    <string name="empty_shop_wording_title">Buka toko sekarang, banyak lebihnya!</string>
+    <string name="top_up_button">Top Up</string>
+    <string name="open_shop_wording_title">Atur Toko, Raih Keuntungan!</string>
+
+    <string name="promo_title_terms">Syarat &amp; Ketentuan</string>
 
 </resources>

@@ -54,7 +54,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static android.R.attr.data;
 import static com.tokopedia.core.service.constant.DownloadServiceConstant.LOGIN_ACCOUNTS_TOKEN;
 
 /**
@@ -477,14 +476,21 @@ public class LoginImpl implements Login {
                 if (data.getBoolean(DownloadService.LOGIN_MOVE_SECURITY, false)) {// move to security
                     AccountsParameter modelData = data.getParcelable("accounts");
                     SecurityModel loginSecurityModel = data.getParcelable(DownloadService.LOGIN_SECURITY_QUESTION_DATA);
+                    String email = "";
+                    if (modelData != null) {
+                        email = modelData.getEmail();
+                    } else if (data.getString(AppEventTracking.EMAIL_KEY) != null) {
+                        email = data.getString(AppEventTracking.EMAIL_KEY);
+                    }
                     loginView.moveToFragmentSecurityQuestion(
                             loginSecurityModel.getSecurity().getUser_check_security_1(),
                             loginSecurityModel.getSecurity().getUser_check_security_2(),
                             loginSecurityModel.getUser_id(),
-                            modelData.getEmail());
+                            email);
                     loginView.setSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION, ((AccountsParameter) data.get(LoginService.ACCOUNTS)).getEmail(), ((AccountsParameter) data.get(LoginService.ACCOUNTS)).getPassword());
                 } else if (sessionHandler.isV4Login()) {// go back to home
                     loginView.triggerSaveAccount();
+                    loginView.triggerClearCategoryData();
                     successLoginVia = (data.getInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, LOGIN_ACCOUNTS_TOKEN));
                     if (successLoginVia == LOGIN_ACCOUNTS_TOKEN) {
                         loginView.setSmartLock(SmartLockActivity.RC_SAVE, ((AccountsParameter) data.get(LoginService.ACCOUNTS)).getEmail(), ((AccountsParameter) data.get(LoginService.ACCOUNTS)).getPassword());

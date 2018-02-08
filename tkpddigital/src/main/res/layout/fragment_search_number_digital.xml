@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/digital_padding_8"
+            android:background="@color/grey_100">
+
+            <EditText
+                android:id="@+id/edittext_search_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:hint="@string/input_number"
+                android:imeOptions="actionDone"
+                android:inputType="numberDecimal"
+                android:padding="@dimen/digital_padding_12"
+                android:textColor="#212121"
+                android:textColorHint="@color/black_38"
+                android:textSize="@dimen/font_medium"
+                android:maxLines="1" />
+
+            <Button
+                android:layout_height="@dimen/digital_height_width_25"
+                android:layout_width="@dimen/digital_height_width_25"
+                android:id="@+id/btn_clear_number"
+                android:layout_gravity="end|center"
+                android:layout_marginRight="@dimen/margin_small"
+                android:layout_marginEnd="@dimen/margin_small"
+                android:background="@drawable/ic_clear_widget"
+                android:visibility="visible" />
+
+        </FrameLayout>
+
+    </FrameLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_marginTop="@dimen/digital_padding_16"
+        tools:listitem="@layout/item_autocomplete"
+        android:id="@+id/recyclerview_number_list"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <com.tokopedia.seller.common.widget.LabelView
+        android:id="@+id/cost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:content_color="@color/tkpd_main_green"
+        app:title="@string/top_ads_label_cost" />
+
+    <include layout="@layout/partial_separator_horizontal" />
+
+    <com.tokopedia.seller.common.widget.LabelView
+        android:id="@+id/schedule"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:content_color="@color/tkpd_main_green"
+        app:title="@string/top_ads_label_schedule_detail" />
+
+
+</merge>

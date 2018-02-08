@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/item_main_view"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="horizontal"
+              android:background="@color/white"
+              android:padding="@dimen/padding_small">
+
+    <ImageView
+        android:id="@+id/promo_icon"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_marginRight="@dimen/margin_small"
+        tools:src="@drawable/ic_market_place" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/promo_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_vs"
+            android:textSize="@dimen/text_size_large"
+            android:textStyle="bold"
+            tools:text="GRATIS ONGKIR" />
+
+        <TextView
+            android:id="@+id/promo_benefit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_vs"
+            tools:text="Hemat s/d Rp 40.000" />
+
+        <TextView
+            android:id="@+id/promo_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_vs"
+            tools:text="Nikmati gratis ongkir s.d Rp40.000 dan maksimum Rp30.000 untu Instant Kurir" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_vs"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/icon_time_grey"
+                android:layout_marginRight="@dimen/margin_vs"
+                android:layout_marginEnd="@dimen/margin_vs"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_coupon_period_time" />
+
+            <android.support.v7.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/grey_700"
+                android:layout_marginLeft="@dimen/margin_vvs"
+                android:layout_marginStart="@dimen/margin_vvs"
+                app:cardCornerRadius="4dp">
+                <TextView
+                    android:id="@+id/promo_expiry_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_vvs"
+                    android:textColor="@color/white"
+                    tools:text="10 Jam" />
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/promo_error_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:textColor="@color/red_500"
+            tools:text="Belum memenuhi nulai minimum Rp 100.000 untuk menggunakan kupon ini"
+            tools:visibility="visible" />
+
+    </LinearLayout>
+
+</LinearLayout>

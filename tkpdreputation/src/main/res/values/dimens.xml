@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="user_avatar">40dp</dimen>
+    <dimen name="notif_size">8dp</dimen>
+    <dimen name="footer_height">56dp</dimen>
+    <dimen name="padding_activity">16dp</dimen>
+    <dimen name="rating_width">208dp</dimen>
+    <dimen name="rating_height">36dp</dimen>
+    <dimen name="height_image_upload">74dp</dimen>
+    <dimen name="padding_activity_large">23dp</dimen>
+    <dimen name="button_height">52dp</dimen>
+    <dimen name="detail_reputation_avatar">40dp</dimen>
+    <dimen name="detail_reputation_product_image">52dp</dimen>
+    <dimen name="width_filter">128dp</dimen>
+    <dimen name="smiley_size">50dp</dimen>
+    <dimen name="opponent_smiley">17dp</dimen>
+    <dimen name="search_not_found_icon_size">75dp</dimen>
+    <dimen name="product_avatar">52dp</dimen>
+    <dimen name="label_deadline_width">80dp</dimen>
+    <dimen name="label_deadline_height">24dp</dimen>
+
+</resources>

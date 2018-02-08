@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -32,10 +33,9 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.OTPModel;
 import com.tokopedia.core.session.model.QuestionFormModel;
@@ -44,7 +44,6 @@ import com.tokopedia.core.session.presenter.SecurityQuestionPresenter;
 import com.tokopedia.core.session.presenter.SecurityQuestionPresenterImpl;
 import com.tokopedia.core.session.presenter.SecurityQuestionView;
 import com.tokopedia.core.session.presenter.SessionView;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -208,7 +207,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
             new android.support.v7.app.AlertDialog.Builder(getActivity())
                     .setMessage(RequestPermissionUtil.getNeedPermissionMessage(Manifest.permission.READ_SMS)
                     )
-                    .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+                    .setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             FragmentSecurityQuestionPermissionsDispatcher.checkSmsPermissionWithCheck(FragmentSecurityQuestion.this);
@@ -320,12 +319,12 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
     @Override
     public void showTrueCaller(boolean b) {
-        if (GlobalConfig.isSellerApp()) {
-            verifyTrueCaller.setVisibility(b ? View.VISIBLE : View.GONE);
-            if (b) UnifyTracking.eventTruecallerImpression();
-        } else {
-            verifyTrueCaller.setVisibility(View.GONE);
-        }
+        Drawable img = MethodChecker.getDrawable(getActivity(), R.drawable.truecaller);
+        img.setBounds(0, 0, 75, 75);
+        verifyTrueCaller.setCompoundDrawables(img, null, null, null);
+
+        verifyTrueCaller.setVisibility(b ? View.VISIBLE : View.GONE);
+        if (b) UnifyTracking.eventTruecallerImpression();
     }
 
     @Override
@@ -355,7 +354,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         changeNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = SessionRouter.getChangePhoneNumberRequestActivity(getActivity());
+                Intent intent = OldSessionRouter.getChangePhoneNumberRequestActivity(getActivity());
                 startActivity(intent);
             }
         });
@@ -388,10 +387,10 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 //        if (TrackingUtils.getGtmString(CAN_REQUEST_OTP_IMMEDIATELY).equals("true")
 //                && !verifyTrueCaller.isShown())
 //            presenter.doRequestOtp();
-        titleOTP.setText("Halo, " + SessionHandler.getTempLoginName(getActivity()));
+        titleOTP.setText("Hai " + SessionHandler.getTempLoginName(getActivity()) + ",");
 
 
-        Spannable spannable = new SpannableString(getString(R.string.action_send_otp_with_call));
+        Spannable spannable = new SpannableString(getString(R.string.action_send_otp_with_call_2));
 
         spannable.setSpan(new ClickableSpan() {
                               @Override
@@ -401,12 +400,11 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
                               @Override
                               public void updateDrawState(TextPaint ds) {
-                                  ds.setUnderlineText(true);
                                   ds.setColor(getResources().getColor(R.color.tkpd_main_green));
                               }
                           }
-                , getString(R.string.action_send_otp_with_call).indexOf("kirim")
-                , getString(R.string.action_send_otp_with_call).length()
+                , getString(R.string.action_send_otp_with_call_2).indexOf("lewat")
+                , getString(R.string.action_send_otp_with_call_2).length()
                 , 0);
 
         vSendOtpCall.setText(spannable, TextView.BufferType.SPANNABLE);
@@ -421,11 +419,10 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
                                @Override
                                public void updateDrawState(TextPaint ds) {
-                                   ds.setUnderlineText(true);
                                    ds.setColor(getResources().getColor(R.color.tkpd_main_green));
                                }
                            }
-                , getString(R.string.content_change_number).indexOf("Klik disini")
+                , getString(R.string.content_change_number).indexOf("klik disini")
                 , getString(R.string.content_change_number).length()
                 , 0);
 
@@ -442,7 +439,9 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
                 vInputOtp.setEnabled(true);
                 String phone = SessionHandler.getTempPhoneNumber(getActivity());
                 phone = phone.substring(phone.length() - 4);
-                String contentSecurity = String.format(getResources().getString(R.string.content_security_question_phone) + " <b>XXXX-XXXX- %s </b>", phone);
+                String contentSecurity = String.format
+                        ((getResources().getString(R.string.content_security_question_phone) + " " +
+                                "<b>****-****- %s </b>"), phone);
                 titleSecurity.setText(MethodChecker.fromHtml(contentSecurity));
                 changeNumber.setVisibility(View.VISIBLE);
                 vSendOtpCall.setVisibility(View.VISIBLE);

@@ -27,7 +27,7 @@
         android:gravity="center">
 
         <Button
-            android:id="@+id/button_login"
+            android:id="@+id/button_start_now"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_small"
-            android:layout_toRightOf="@id/button_login"
+            android:layout_toRightOf="@id/button_start_now"
             android:background="@drawable/green_button_rounded"
             android:padding="@dimen/padding_vs"
             android:text="@string/title_activity_register"

@@ -28,40 +28,20 @@ public class ProductDraftViewModel implements ItemType {
         return productId;
     }
 
-    public void setProductId(long productId) {
-        this.productId = productId;
-    }
-
     public String getPrimaryImageUrl() {
         return primaryImageUrl;
-    }
-
-    public void setPrimaryImageUrl(String primaryImageUrl) {
-        this.primaryImageUrl = primaryImageUrl;
     }
 
     public String getProductName() {
         return productName;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
     public int getCompletionPercent() {
         return completionPercent;
     }
 
-    public void setCompletionPercent(int completionPercent) {
-        this.completionPercent = completionPercent;
-    }
-
     public boolean isEdit() {
         return isEdit;
-    }
-
-    public void setEdit(boolean edit) {
-        isEdit = edit;
     }
 
     @Override

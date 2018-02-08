@@ -20,7 +20,7 @@
             android:padding="@dimen/padding_small">
 
             <TextView
-                style="@style/TextView.Body1"
+                style="@style/TextView.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/cardscan_success_label" />
@@ -58,7 +58,7 @@
 
                 <TextView
                     android:id="@+id/label_valid_thru"
-                    style="@style/TextView.Body1"
+                    style="@style/TextView.Small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/text_card_no"
@@ -83,7 +83,7 @@
 
                     <TextView
                         android:id="@+id/valid_thru_separator"
-                        style="@style/TextView.Body1"
+                        style="@style/TextView.Small"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="/" />
@@ -100,13 +100,13 @@
             </RelativeLayout>
 
             <TextView
-                style="@style/TextView.Body1"
+                style="@style/TextView.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/cardscan_cvv_message" />
 
             <com.tkpd.library.ui.widget.PinEntryEditText
-                android:id="@+id/input_vcc"
+                android:id="@+id/input_cvv"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_small"

@@ -6,14 +6,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.tkpd.library.ui.view.LinearLayoutManager;
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
@@ -135,9 +142,56 @@ public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFr
             @Override
             public void onClick(View v) {
                 refresh();
-
+                KeyboardHandler.DropKeyboard(context, search);
             }
         });
+
+        search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                refresh();
+                KeyboardHandler.DropKeyboard(context, search);
+                return true;
+            }
+        });
+
+        search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.length() == 0) {
+                    search.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                    refresh();
+                } else {
+                    search.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_24dp, 0);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) { }
+        });
+
+        search.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                final int DRAWABLE_RIGHT = 2;
+
+                if (search.getText() != null && search.getText().length() > 0) {
+                    if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                        if (motionEvent.getRawX() >= (search.getRight() -
+                                search.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                            search.setText("");
+                            refresh();
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+        });
+
     }
 
     private RecyclerView.OnScrollListener onScroll() {
@@ -284,6 +338,12 @@ public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFr
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        presenter.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
         presenter.onDestroyView();
     }
 

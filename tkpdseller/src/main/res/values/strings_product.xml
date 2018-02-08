@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Product -->
+    <!-- Product add -->
+    <string name="product_label_wholesale">Grosir</string>
+    <string name="product_label_po">PO</string>
     <string name="product_label_product_info">Info Produk</string>
     <string name="product_label_name">Nama Produk</string>
     <string name="product_label_catalog">Katalog</string>
@@ -20,8 +22,7 @@
     <string name="product_label_price_whole_sale">Harga Produk</string>
     <string name="product_label_maximum_whole_sale">Jumlah Maximal</string>
     <string name="product_label_manage_stock">Pengaturan Stok</string>
-    <string name="product_stock_available_value">1</string>
-    <string name="product_stock_not_available_value">2</string>
+
     <string name="product_label_stock_total">Jumlah Stok</string>
     <string name="product_label_status">Status</string>
     <string name="product_label_condition">Kondisi</string>
@@ -54,12 +55,25 @@
     <string name="product_currency_value_idr">1</string>
     <string name="product_currency_value_usd">2</string>
 
-
     <string name="product_weight_value_gram">1</string>
     <string name="product_weight_value_kg">2</string>
 
+    <string name="product_stock_available_value">1</string>
+    <string name="product_stock_not_available_value">2</string>
+    <string name="product_stock_value_default">@string/product_stock_available_value</string>
+
     <string name="product_pre_order_value_day">1</string>
     <string name="product_pre_order_value_week">2</string>
+    <string name="product_pre_order_value_default">@string/product_pre_order_value_day</string>
+
+    <string name="product_free_return_values_active">3</string>
+    <string name="product_free_return_values_inactive">0</string>
+
+    <string name="product_condition_value_new">1</string>
+    <string name="product_condition_value_recon">2</string>
+
+    <string name="product_insurance_value_optional">0</string>
+    <string name="product_insurance_value_yes">1</string>
 
     <string name="product_dialog_cancel_message">Apakah Anda yakin ingin keluar?</string>
     <string name="product_dialog_cancel_title">Perubahan yang Anda lakukan tidak akan tersimpan.</string>
@@ -70,19 +84,19 @@
     <string name="product_draft_dialog_cancel_message">Anda belum selesai menambahkan produk. Apakah Anda yakin ingin keluar?</string>
     <string name="product_draft_dialog_edit_cancel_message">Anda belum selesai mengubah produk. Apakah Anda yakin ingin keluar?</string>
 
-    <string name="product_free_return_values_active">3</string>
-    <string name="product_free_return_values_inactive">0</string>
     <string name="product_error_product_name_empty">Nama produk harus diisi</string>
     <string name="product_error_product_category_empty">Kategori harus diisi</string>
     <string name="product_minimum_price_rp">100</string>
-    <string name="product_maximum_price_rp">100,000,000</string>
+    <string name="product_maximum_price_rp_official_store">500,000,000</string>
+    <string name="product_maximum_price_rp_general">100,000,000</string>
     <string name="product_minimum_price_usd">1</string>
-    <string name="product_maximum_price_usd">7,500</string>
+    <string name="product_maximum_price_usd_official_store">37,000</string>
+    <string name="product_maximum_price_usd_general">7,500</string>
     <string name="product_error_product_price_not_valid">Harga harus diisi antara %1$s &#8212; %2$s</string>
     <string name="product_minimum_weight_gram">1</string>
-    <string name="product_maximum_weight_gram">100,000</string>
+    <string name="product_maximum_weight_gram">500,000</string>
     <string name="product_minimum_weight_kg">1</string>
-    <string name="product_maximum_weight_kg">100</string>
+    <string name="product_maximum_weight_kg">500</string>
     <string name="product_minimum_order">1</string>
     <string name="product_maximum_order">10,000</string>
     <string name="product_error_product_weight_not_valid">Berat harus diisi antara %1$s &#8212; %2$s</string>
@@ -90,9 +104,9 @@
     <string name="product_error_product_etalase_empty">Etalase harus diisi</string>
     <string name="product_error_product_picture_empty">Gambar harus diisi</string>
     <string name="product_minimum_pre_order_day">1</string>
-    <string name="product_maximum_pre_order_day">30</string>
+    <string name="product_maximum_pre_order_day">90</string>
     <string name="product_minimum_pre_order_week">1</string>
-    <string name="product_maximum_pre_order_week">4</string>
+    <string name="product_maximum_pre_order_week">13</string>
     <string name="product_error_product_pre_order_not_valid">Waktu Proses Preorder harus antara %1$s &#8212; %2$s</string>
     <string name="product_minimum_total_stock">1</string>
     <string name="product_maximum_total_stock">10,000</string>
@@ -134,4 +148,76 @@
     <string name="product_could_not_add_videos">tidak dapat menambahkan video</string>
     <string name="product_error_product_name_copy_duplicate">Nama produk harus diganti</string>
     <string name="product_etalase_picker_add_etalase_name_too_short">Nama etalase minimal 3 karakter</string>
+    <string name="product_draft_error_cannot_load_draft">Tidak bisa membuka draft product</string>
+
+    <!-- Draft -->
+    <string name="product_draft_delete_all_draft">Hapus Semua Draft</string>
+    <string name="product_draft_delete_all_draft_dialog_message">Yakin hapus semua Draft?</string>
+    <string name="product_draft_error_delete_draft">Terjadi kesalahan dalam menghapus semua draft. Silakan coba kembali.</string>
+    <string name="product_draft_success_delete_draft">Semua draft Produk berhasil dihapus</string>
+    <string name="product_draft_product_has_been_saved_as_draft">Produk berhasil disimpan dalam draft</string>
+    <string name="product_draft_draft_product_empty">Draft Produk Anda kosong</string>
+    <string name="product_draft_add_product">Tambah Produk</string>
+    <string name="product_draft_save_as_draft">Simpan Draft</string>
+
+    <!-- Variant -->
+    <string name="product_variant_label_title">Varian</string>
+    <string name="product_variant_item_picker_selected_title">%1$s %2$s terpilih</string>
+    <string name="product_variant_item_picker_add_image">Tambah Gambar</string>
+    <string name="product_variant_item_picker_add_variant_title_dialog">Tambah %1$s</string>
+    <string name="product_variant_item_picker_add_variant_hint_dialog">Nama %1$s</string>
+    <string name="product_variant_item_picker_add_variant_error_name_empty">Nama varian harus diisi</string>
+    <string name="product_variant_item_picker_add_variant_error_length_to_long">Opsi varian maksimal memiliki %1$d karakter</string>
+    <string name="product_variant_item_picker_add_variant_error_name_existed">Nama varian sudah ada</string>
+    <string name="product_variant_stock_empty">Kosong</string>
+    <string name="product_variant_stock_available">Tersedia</string>
+    <string name="product_variant_dialog_cancel_title">Perubahan tidak akan tersimpan</string>
+    <string name="product_variant_dialog_cancel_message">Yakin untuk keluar?</string>
+    <string name="product_variant_status">Status Produk</string>
+    <string name="product_variant_status_available">Tersedia</string>
+    <string name="product_variant_status_not_available">Kosong</string>
+    <string name="product_label_variant">Varian</string>
+    <string name="product_variant_option_x">Pilihan %1$s</string>
+    <string name="product_variant_standard_unit_x">Standar %1$s</string>
+    <string name="product_variant_manage_variant">Atur Varian</string>
+    <string name="product_variant_add_new_x">Tambah %1$s baru</string>
+    <string name="product_variant_max_limit">%1$d batas maksimum varian</string>
+    <string name="product_variant_max_variant_has_been_reached">Jumlah variant yang ditambahkan sudah mencapai maksimum</string>
+    <string name="product_variant_search_x">Cari %1$s</string>
+
+    <!-- Product manage -->
+    <string name="product_manage_item_stock">Stok %1$s</string>
+    <string name="product_manage_item_cashback">Cashback %1$d%%</string>
+    <string name="product_manage_menu_set_price">Atur Harga</string>
+    <string name="product_manage_menu_set_cashback">Atur &#37; cashback</string>
+    <string name="product_manage_filter_menu_etalase_all">Semua Produk</string>
+    <string name="product_manage_filter_menu_category_all">Semua Kategori</string>
+    <string name="product_manage_filter_menu_picture_both">Dengan &amp; Tanpa Gambar</string>
+    <string name="product_manage_filter_menu_with_picture">Dengan Gambar</string>
+    <string name="product_manage_filter_menu_without_picture">Tanpa Gambar</string>
+    <string name="product_manage_filter_menu_both_catalog">Dengan &amp; Tanpa Katalog</string>
+    <string name="product_manage_filter_menu_with_catalog">Dengan Katalog</string>
+    <string name="product_manage_filter_menu_without_catalog">Tanpa Katalog</string>
+    <string name="product_manage_filter_menu_both_condition">Semua Kondisi</string>
+    <string name="product_manage_filter_menu_condition_new">Baru</string>
+    <string name="product_manage_filter_menu_condition_old">Bekas</string>
+    <string name="product_manage_cashback_title">Atur Cashback</string>
+    <string name="product_manage_cashback_option">%1$s%% senilai %2$s %3$s</string>
+    <string name="product_manage_cashback_option_none">Tanpa Cashback</string>
+    <string name="product_manage_cashback_not_subscribe_message">Berikan bonus belanja berupa TokoCash kepada pembeli hingga 5&#37; dari harga produk. Dapatkan akses Atur Cashback dengan berlangganan Gold Merchant</string>
+    <string name="product_manage_filter_sold">Produk Terjual</string>
+    <string name="product_manage_filter_empty_stok">Stok Kosong</string>
+    <string name="product_manage_filter_pending">Pengawasan</string>
+    <string name="product_manage_filter_free_returns">Free Returns</string>
+    <string name="product_manage_filter_preorder">Preorder</string>
+    <string name="product_manage_filter_all_showcase">Semua Etalase</string>
+    <string name="product_manage_stock_empty">Kosong</string>
+    <string name="product_manage_label_change_search">Ubah pencarian produk Anda</string>
+    <string name="product_manage_label_product_list_empty">Daftar Produk Kosong</string>
+    <string name="product_manage_title_duplicate_product_menu">Duplikat</string>
+    <string name="product_manage_alert_gold_merchant">Berikan bonus belanja berupa TokoCash kepada pembeli hingga 5&#37; dari harga produk. Dapatkan akses Atur Cashback dengan berlangganan Gold Merchant.</string>
+    <string name="product_manage_label_subscribe_gold_merchant">Berlangganan</string>
+    <string name="product_manage_label_stock_counter">Stok %1$d</string>
+    <string name="product_manage_desc_product_on_supervision">Produk dalam Pengawasan %1$s</string>
+
 </resources>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_marginRight="80dp"
+    android:layout_marginLeft="@dimen/margin_small"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include layout="@layout/item_detail_chat_title"
+            android:id="@+id/layout_title1"/>
+
+        <FrameLayout
+            android:layout_marginTop="@dimen/margin_vs"
+            android:id="@+id/ff_bubble_left_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="120dp"
+            android:minHeight="25dp"
+            android:background="@drawable/bg_bubble_left"
+            android:padding="@dimen/padding_small">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black_54"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/fontvs"
+                    android:text="@string/string_admin_solution_final_title"/>
+
+                <TextView
+                    android:id="@+id/tv_content_final_solution"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black_54"
+                    android:textSize="@dimen/fontvs"
+                    android:layout_marginTop="@dimen/margin_vs"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black_54"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/fontvs"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:text="@string/string_admin_solution_reason"/>
+
+                <TextView
+                    android:id="@+id/tv_content_reason"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black_54"
+                    android:textSize="@dimen/fontvs"
+                    android:layout_marginTop="@dimen/margin_vs"/>
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <include layout="@layout/item_detail_chat_date"
+            android:id="@+id/layout_date_1"/>
+
+
+        <include layout="@layout/item_detail_chat_title"
+            android:id="@+id/layout_title2"
+            android:visibility="gone"/>
+
+        <FrameLayout
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/margin_vs"
+            android:id="@+id/ff_bubble_left_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="120dp"
+            android:minHeight="25dp"
+            android:background="@drawable/bg_bubble_left"
+            android:padding="@dimen/padding_small">
+
+            <TextView
+                android:id="@+id/tv_system_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black_54"
+                android:textStyle="bold"
+                android:textSize="@dimen/fontvs"
+                android:text="@string/string_admin_solution_final"/>
+
+        </FrameLayout>
+
+        <include layout="@layout/item_detail_chat_date"
+            android:id="@+id/layout_date_2"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

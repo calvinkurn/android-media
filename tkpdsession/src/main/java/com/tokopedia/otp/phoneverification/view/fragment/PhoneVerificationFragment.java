@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -31,12 +30,12 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.phoneverification.view.activity.ChangePhoneNumberActivity;
+import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.TokoCashWebViewActivity;
 import com.tokopedia.otp.phoneverification.view.listener.PhoneVerificationFragmentView;
 import com.tokopedia.otp.phoneverification.view.presenter.PhoneVerificationPresenter;
@@ -68,28 +67,30 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
         void onSuccessVerification();
     }
 
-    private static final String FORMAT = "%02d";
+    protected static final String FORMAT = "%02d";
     private static final String CACHE_PHONE_VERIF_TIMER = "CACHE_PHONE_VERIF_TIMER";
     private static final String HAS_PHONE_VERIF_TIMER = "HAS_PHONE_VERIF_TIMER";
     private static final int DEFAULT_COUNTDOWN_TIMER_SECOND = 90;
-    private static final long COUNTDOWN_INTERVAL_SECOND = 1000;
+    protected static final long COUNTDOWN_INTERVAL_SECOND = 1000;
 
-    TextView verifyButton;
-    TextView skipButton;
-    TextView phoneNumberEditText;
-    TextView changePhoneNumberButton;
-    TextView requestOtpButton;
-    TextView countdownText;
-    TextView requestOtpCallButton;
-    View inputOtpView;
-    EditText otpEditText;
-    TextView tokocashText;
+    protected TextView verifyButton;
+    protected TextView skipButton;
+    protected TextView phoneNumberEditText;
+    protected TextView changePhoneNumberButton;
+    protected TextView requestOtpButton;
+    protected TextView countdownText;
+    protected TextView requestOtpCallButton;
+    protected View inputOtpView;
+    protected EditText otpEditText;
+    protected TextView tokocashText;
 
-    CountDownTimer countDownTimer;
-    IncomingSmsReceiver smsReceiver;
-    TkpdProgressDialog progressDialog;
-    LocalCacheHandler cacheHandler;
+    protected CountDownTimer countDownTimer;
+    protected IncomingSmsReceiver smsReceiver;
+    protected TkpdProgressDialog progressDialog;
+    protected LocalCacheHandler cacheHandler;
     PhoneVerificationFragmentListener listener;
+
+    private boolean isMandatory = false;
 
     public static PhoneVerificationFragment createInstance(PhoneVerificationFragmentListener listener) {
         PhoneVerificationFragment fragment = new PhoneVerificationFragment();
@@ -97,9 +98,29 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
         return fragment;
     }
 
-    public PhoneVerificationFragment() {
+    public static PhoneVerificationFragment createInstance(PhoneVerificationFragmentListener listener, boolean canSkip) {
+        PhoneVerificationFragment fragment = new PhoneVerificationFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(PhoneVerificationActivationActivity.EXTRA_IS_MANDATORY, canSkip);
+        fragment.setArguments(args);
+        fragment.setPhoneVerificationListener(listener);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
         this.smsReceiver = new IncomingSmsReceiver();
         this.smsReceiver.setListener(this);
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void setupArguments(Bundle arguments) {
+        if (arguments!= null) {
+            if (arguments.containsKey(PhoneVerificationActivationActivity.EXTRA_IS_MANDATORY)) {
+                isMandatory = arguments.getBoolean(PhoneVerificationActivationActivity.EXTRA_IS_MANDATORY);
+            }
+        }
     }
 
     public void setPhoneVerificationListener(PhoneVerificationFragmentListener listener) {
@@ -110,7 +131,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
         return listener;
     }
 
-    private void findView(View view) {
+    protected void findView(View view) {
         verifyButton = (TextView) view.findViewById(R.id.verify_button);
         skipButton = (TextView) view.findViewById(R.id.skip_button);
         phoneNumberEditText = (TextView) view.findViewById(R.id.phone_number);
@@ -143,7 +164,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
                             RequestPermissionUtil
                                     .getNeedPermissionMessage(Manifest.permission.READ_SMS)
                     )
-                    .setPositiveButton(com.tokopedia.core.R.string.button_ok, new DialogInterface.OnClickListener() {
+                    .setPositiveButton(com.tokopedia.core.R.string.title_ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             PhoneVerificationFragmentPermissionsDispatcher
@@ -211,11 +232,6 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
 
     @Override
     protected void initialListener(Activity activity) {
-
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
 
     }
 
@@ -347,6 +363,12 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
             }
         });
 
+        if (isMandatory) {
+            skipButton.setVisibility(View.INVISIBLE);
+        } else {
+            skipButton.setVisibility(View.VISIBLE);
+        }
+
         tokocashText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -367,6 +389,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
 
     }
 
+    @SuppressWarnings("Range")
     @Override
     public void onSuccessRequestOtp(String status) {
         finishProgressDialog();
@@ -392,7 +415,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
             NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
-    private void finishProgressDialog() {
+    protected void finishProgressDialog() {
         if (progressDialog != null)
             progressDialog.dismiss();
     }
@@ -453,13 +476,18 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
         skipButton.setEnabled(isEnabled);
     }
 
-    private void startTimer() {
+    protected void startTimer() {
         if (cacheHandler.isExpired() || !cacheHandler.getBoolean(HAS_PHONE_VERIF_TIMER, false)) {
             cacheHandler.putBoolean(HAS_PHONE_VERIF_TIMER, true);
             cacheHandler.setExpire(DEFAULT_COUNTDOWN_TIMER_SECOND);
             cacheHandler.applyEditor();
         }
 
+        runAnimation();
+        otpEditText.requestFocus();
+    }
+
+    protected void runAnimation() {
         countDownTimer = new CountDownTimer(cacheHandler.getRemainingTime() * 1000, COUNTDOWN_INTERVAL_SECOND) {
             public void onTick(long millisUntilFinished) {
                 requestOtpButton.setVisibility(View.GONE);
@@ -477,10 +505,9 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
             }
 
         }.start();
-        otpEditText.requestFocus();
     }
 
-    private void enableOtpButton() {
+    protected void enableOtpButton() {
         requestOtpButton.setVisibility(View.VISIBLE);
         countdownText.setVisibility(View.GONE);
         MethodChecker.setBackground(requestOtpButton,

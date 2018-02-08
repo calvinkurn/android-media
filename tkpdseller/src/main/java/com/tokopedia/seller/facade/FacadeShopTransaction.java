@@ -115,18 +115,16 @@ public class FacadeShopTransaction {
                         new Subscriber<Response<TkpdResponse>>() {
                             @Override
                             public void onCompleted() {
-                                Log.e(STUART, FACADE_SHOP_TRANSACTION + "completed");
+
                             }
 
                             @Override
                             public void onError(Throwable e) {
                                 listener.OnError();
-                                Log.e(STUART, FACADE_SHOP_TRANSACTION + "on error");
                             }
 
                             @Override
                             public void onNext(Response<TkpdResponse> responseData) {
-                                Log.e(STUART, FACADE_SHOP_TRANSACTION + "on next");
                                 if(responseData.isSuccessful()) {
                                     TkpdResponse response = responseData.body();
 
@@ -207,19 +205,17 @@ public class FacadeShopTransaction {
                         new Subscriber<Response<TkpdResponse>>() {
                             @Override
                             public void onCompleted() {
-                                Log.e(STUART, FACADE_SHOP_TRANSACTION + "completed");
+
                             }
 
                             @Override
                             public void onError(Throwable e) {
                                 listener.OnError();
-                                Log.e(STUART, FACADE_SHOP_TRANSACTION + "on error");
                             }
 
                             @Override
                             public void onNext(Response<TkpdResponse> responseData) {
                                 if(responseData.isSuccessful()) {
-                                    Log.e(STUART, FACADE_SHOP_TRANSACTION + "on next");
                                     TkpdResponse response = responseData.body();
 
                                     if (response.getStringData() == null || response.getStringData().equals("{}")) {
@@ -298,7 +294,6 @@ public class FacadeShopTransaction {
      * @param listener
      */
     public void getTxListV4(PagingHandler page, String search, String filter, String startDate, String endDate, final GetStatusListener listener){
-        Log.d(STUART, "getTxListV4 params "+getOrderListParam(page, search, filter, startDate, endDate).toString());
         compositeSubscription.add(new MyShopOrderService().getApi().getOrderList(
                 AuthUtil.generateParams(context, getOrderListParam(page, search, filter, startDate, endDate))
         )
@@ -309,12 +304,11 @@ public class FacadeShopTransaction {
                         new Subscriber<Response<TkpdResponse>>() {
                             @Override
                             public void onCompleted() {
-                                Log.d(STUART, "onCompleted");
+
                             }
 
                             @Override
                             public void onError(Throwable e) {
-                                Log.e(STUART, "onError "+e.getLocalizedMessage());
                                 listener.OnError();
                             }
 
@@ -322,7 +316,6 @@ public class FacadeShopTransaction {
                             public void onNext(Response<TkpdResponse> responseData) {
                                 if(responseData.isSuccessful()) {
                                     TkpdResponse response = responseData.body();
-                                    Log.d(STUART, responseData.body().getStringData());
                                     if (response.getStringData() == null || response.getStringData().equals("{}")) {
                                         listener.OnNoResult();
                                         return;

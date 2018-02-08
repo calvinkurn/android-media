@@ -1,10 +1,14 @@
 package com.tokopedia.ride.common.ride.data;
 
+import com.google.gson.JsonObject;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.ride.bookingride.data.RideAddressCache;
 import com.tokopedia.ride.bookingride.data.RideAddressCacheImpl;
+import com.tokopedia.ride.bookingride.data.entity.NearbyRidesEntity;
 import com.tokopedia.ride.common.ride.data.entity.CancelReasonsResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
+import com.tokopedia.ride.common.ride.data.entity.GetPendingEntity;
+import com.tokopedia.ride.common.ride.data.entity.PaymentMethodListEntity;
 import com.tokopedia.ride.common.ride.data.entity.PriceEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
 import com.tokopedia.ride.common.ride.data.entity.PromoEntity;
@@ -15,6 +19,7 @@ import com.tokopedia.ride.common.ride.data.entity.RideHistoryResponse;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestMapEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateEntity;
+import com.tokopedia.ride.common.ride.data.entity.UpdateDestinationEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +33,11 @@ import rx.functions.Func1;
 
 public class DiskBookingRideDataStore implements BookingRideDataStore {
     private RideAddressCache addressCache;
+    private PaymentMethodListCache paymentMethodListCache;
 
     public DiskBookingRideDataStore() {
         this.addressCache = new RideAddressCacheImpl();
+        this.paymentMethodListCache = new PaymentMethodListCacheImpl();
     }
 
     @Override
@@ -125,6 +132,46 @@ public class DiskBookingRideDataStore implements BookingRideDataStore {
 
     @Override
     public Observable<CancelReasonsResponseEntity> getCancelReasons(TKPDMapParam<String, Object> parameters) {
+        return null;
+    }
+
+    @Override
+    public Observable<UpdateDestinationEntity> updateRequest(TKPDMapParam<String, Object> parameters) {
+        return null;
+    }
+
+    @Override
+    public Observable<String> sendTip(TKPDMapParam<String, Object> parameters) {
+        return null;
+    }
+
+    @Override
+    public Observable<PaymentMethodListEntity> getPaymentMethodList(TKPDMapParam<String, Object> parameters) {
+        return paymentMethodListCache.getCache().onErrorReturn(new Func1<Throwable, PaymentMethodListEntity>() {
+            @Override
+            public PaymentMethodListEntity call(Throwable throwable) {
+                return null;
+            }
+        });
+    }
+
+    @Override
+    public Observable<NearbyRidesEntity> getNearbyCars(TKPDMapParam<String, Object> parameters) {
+        return null;
+    }
+
+    @Override
+    public Observable<String> requestApi(String url, TKPDMapParam<String, Object> parameters) {
+        return null;
+    }
+
+    @Override
+    public Observable<JsonObject> payPendingAmount() {
+        return null;
+    }
+
+    @Override
+    public Observable<GetPendingEntity> getPendingAmount() {
         return null;
     }
 }

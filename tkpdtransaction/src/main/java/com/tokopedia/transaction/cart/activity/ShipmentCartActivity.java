@@ -6,9 +6,9 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.cart.fragment.ShipmentCartFragment;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
-import com.tokopedia.transaction.R;
 
 
 /**
@@ -54,7 +54,7 @@ public class ShipmentCartActivity extends BasePresenterActivity {
 
     @Override
     protected void setViewListener() {
-        getFragmentManager().beginTransaction().add(R.id.container,
+        getFragmentManager().beginTransaction().replace(R.id.container,
                 ShipmentCartFragment.newInstance(cartData)).commit();
     }
 
@@ -71,5 +71,10 @@ public class ShipmentCartActivity extends BasePresenterActivity {
     @Override
     public String getScreenName() {
         return null;
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

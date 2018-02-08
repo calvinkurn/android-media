@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/iv_arrow_icon"
+        android:layout_width="10dp"
+        android:layout_height="8dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="@dimen/margin_vs"
+        android:layout_marginRight="@dimen/margin_vs"
+        android:scaleType="fitXY"
+        tools:src="@drawable/ic_rectangle_up" />
+
+    <TextView
+        android:id="@+id/tv_percentage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_vs"
+        android:layout_marginRight="@dimen/margin_vs"
+        android:gravity="start"
+        android:minWidth="40dp"
+        android:textSize="14sp"
+        tools:text="100%"
+        tools:textColor="@color/tkpd_main_orange" />
+</LinearLayout>

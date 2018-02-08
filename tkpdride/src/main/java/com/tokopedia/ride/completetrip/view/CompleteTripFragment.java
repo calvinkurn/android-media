@@ -4,6 +4,7 @@ package com.tokopedia.ride.completetrip.view;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,15 +14,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.AppCompatTextView;
 import android.text.Html;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -41,26 +44,34 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.base.presentation.BaseFragment;
-import com.tokopedia.ride.completetrip.di.CompleteTripDependencyInjection;
+import com.tokopedia.ride.common.ride.di.RideComponent;
+import com.tokopedia.ride.common.ride.domain.model.Receipt;
+import com.tokopedia.ride.common.ride.utils.RideUtils;
+import com.tokopedia.ride.completetrip.di.CompleteTripComponent;
+import com.tokopedia.ride.completetrip.di.DaggerCompleteTripComponent;
 import com.tokopedia.ride.completetrip.domain.GetReceiptUseCase;
 import com.tokopedia.ride.completetrip.domain.GiveDriverRatingUseCase;
-import com.tokopedia.ride.completetrip.domain.model.Receipt;
-import com.tokopedia.ride.completetrip.view.viewmodel.TokoCashProduct;
+import com.tokopedia.ride.completetrip.domain.SendTipUseCase;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.ride.history.domain.GetSingleRideHistoryUseCase;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
+import com.tokopedia.ride.scrooge.ScroogePGUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
+import static com.tokopedia.ride.scrooge.ScroogePGUtil.REQUEST_CODE_OPEN_SCROOGE_PAGE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -92,10 +103,6 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     TextView totalChargedTextView;
     @BindView(R2.id.tv_sign_up_uber)
     TextView signUpUberTextView;
-    @BindView(R2.id.tv_source)
-    AppCompatTextView sourceTextView;
-    @BindView(R2.id.tv_destination)
-    AppCompatTextView destinationTextView;
     @BindView(R2.id.uber_signup_layout)
     LinearLayout uberSingupLayout;
     @BindView(R2.id.tv_signup_tnc)
@@ -124,25 +131,31 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     RelativeLayout ratingResultLayout;
     @BindView(R2.id.rb_rate_star_result)
     RatingBar ratingBarResult;
-
+    @BindView(R2.id.grid_layout_tip)
+    GridLayout tipLayout;
+    @BindView(R2.id.tip_seperator)
+    ImageView tipSeperator;
 
     @BindView(R2.id.pending_fare_layout)
     RelativeLayout pendingFareLayout;
+    @BindView(R2.id.layout_topup)
+    LinearLayout topupPendingFareLayout;
     @BindView(R2.id.tv_total_pending)
     TextView totalPendingTextView;
-    @BindView(R2.id.layout_tokocash_option)
-    RelativeLayout tokocashOptionRelativeLayout;
-    @BindView(R2.id.tv_tokocash_selected_product)
-    TextView tokocashSelectedProductTextView;
-    @BindView(R2.id.btn_topup_tokocash)
-    TextView topupButtonTextView;
+    @BindView(R2.id.label_total_charged)
+    TextView labelAmountChargedTextView;
 
-    CompleteTripContract.Presenter presenter;
+    @Inject
+    CompleteTripPresenter presenter;
     private String requestId;
     private DriverVehicleAddressViewModel driverVehicleAddressViewModel;
     private Receipt receipt;
     private DigitalCheckoutPassData passData;
     private OnFragmentInteractionListener interactionListener;
+    private int selectedTipIndex = -1;
+    private ArrayList<String> tipList;
+    private int tipAmount;
+    private ProgressDialog progressDialog;
 
     public interface OnFragmentInteractionListener {
         void actionSuccessRatingSubmited();
@@ -182,8 +195,17 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
         setInitialVariable();
     }
 
+    @Override
+    protected void initInjector() {
+        RideComponent component = getComponent(RideComponent.class);
+        CompleteTripComponent completeTripComponent = DaggerCompleteTripComponent
+                .builder()
+                .rideComponent(component)
+                .build();
+        completeTripComponent.inject(this);
+    }
+
     private void setInitialVariable() {
-        presenter = CompleteTripDependencyInjection.createPresenter(getActivity());
         requestId = getArguments().getString(EXTRA_REQUEST_ID);
         driverVehicleAddressViewModel = getArguments().getParcelable(EXTRA_DRIVER_VEHICLE_VIEW_MODEL);
     }
@@ -205,8 +227,6 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
                 driverVehicleAddressViewModel.getVehicle().getMake(),
                 driverVehicleAddressViewModel.getVehicle().getVehicleModel())
         );
-        sourceTextView.setText(driverVehicleAddressViewModel.getAddress() != null ? driverVehicleAddressViewModel.getAddress().getStartAddressName() : "");
-        destinationTextView.setText(driverVehicleAddressViewModel.getAddress() != null ? driverVehicleAddressViewModel.getAddress().getEndAddressName() : "");
 
         Glide.with(getActivity()).load(driverVehicleAddressViewModel.getDriver().getPictureUrl())
                 .asBitmap()
@@ -244,22 +264,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
         rateStarRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
-                if (ratingBar.getRating() > 0.0) {
-                    rateConfirmationButton.setEnabled(true);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        rateConfirmationButton.setBackground(getResources().getDrawable(R.drawable.rounded_filled_theme_bttn));
-                    } else {
-                        rateConfirmationButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.rounded_filled_theme_bttn));
-                    }
-                } else {
-                    rateConfirmationButton.setEnabled(false);
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        rateConfirmationButton.setBackground(getResources().getDrawable(R.drawable.rounded_filled_theme_disable_bttn));
-                    } else {
-                        rateConfirmationButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.rounded_filled_theme_disable_bttn));
-                    }
-                }
+                presenter.handleRatingStarClick(v);
             }
         });
     }
@@ -302,11 +307,12 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     }
 
     @Override
-    public void renderReceipt(Receipt receipt, boolean isPendingPaymentExists) {
+    public void renderReceipt(final Receipt receipt, boolean isPendingPaymentExists) {
         this.receipt = receipt;
         totalChargedTextView.setText(receipt.getTotalCharged());
         totalChargedTopTextView.setText(receipt.getTotalFare());
         totalFareValueTextView.setText(receipt.getTotalFare());
+        labelAmountChargedTextView.setText(receipt.getPaymentMethod() + " " + getString(R.string.label_charged));
 
         if (receipt.getUberSignupText() != null) {
             uberSingupLayout.setVisibility(View.VISIBLE);
@@ -344,34 +350,69 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
         }
 
         if (isPendingPaymentExists) {
-            passData = new DigitalCheckoutPassData();
-            passData.setCategoryId(receipt.getPendingPayment().getCategoryId());
-            passData.setOperatorId(receipt.getPendingPayment().getOperatorId());
-            Map<String, String> maps = splitQuery(Uri.parse(receipt.getPendingPayment().getTopupUrl()));
-            if (maps.get(DigitalCheckoutPassData.PARAM_UTM_CAMPAIGN) != null)
-                passData.setUtmCampaign(maps.get(DigitalCheckoutPassData.PARAM_UTM_CAMPAIGN));
-            if (maps.get(DigitalCheckoutPassData.PARAM_CLIENT_NUMBER) != null)
-                passData.setClientNumber(maps.get(DigitalCheckoutPassData.PARAM_CLIENT_NUMBER));
-            if (maps.get(DigitalCheckoutPassData.PARAM_UTM_SOURCE) != null)
-                passData.setUtmSource(maps.get(DigitalCheckoutPassData.PARAM_UTM_SOURCE));
-            if (maps.get(DigitalCheckoutPassData.PARAM_UTM_CONTENT) != null)
-                passData.setUtmContent(maps.get(DigitalCheckoutPassData.PARAM_UTM_CONTENT));
-            if (maps.get(DigitalCheckoutPassData.PARAM_IS_PROMO) != null)
-                passData.setIsPromo(maps.get(DigitalCheckoutPassData.PARAM_IS_PROMO));
-            if (maps.get(DigitalCheckoutPassData.PARAM_INSTANT_CHECKOUT) != null)
-                passData.setInstantCheckout(maps.get(DigitalCheckoutPassData.PARAM_INSTANT_CHECKOUT));
-
-
-            if (receipt.getPendingPayment().getTopUpOptions() != null && receipt.getPendingPayment().getTopUpOptions().size() > 0) {
-                TokoCashProduct product = receipt.getPendingPayment().getTopUpOptions().get(0);
-                tokocashSelectedProductTextView.setText(product.getTitle());
-                passData.setProductId(product.getId());
-            }
-
             totalPendingTextView.setText(receipt.getPendingPayment().getPendingAmount());
             pendingFareLayout.setVisibility(View.VISIBLE);
-        } else {
+            topupPendingFareLayout.setVisibility(View.VISIBLE);
             ratingLayout.setVisibility(View.VISIBLE);
+
+            //create tip buttons
+            LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+            tipList = null;
+            if (receipt.getTipList() != null && receipt.getTipList().getList() != null) {
+                tipList = receipt.getTipList().getFormattedCurrecyList();
+            }
+
+            if (tipList != null) {
+                tipLayout.removeAllViews();
+                for (int index = 0; index < tipList.size(); index++) {
+                    TextView tipButton = (TextView) inflater.inflate(R.layout.layout_tip_button, null);
+                    tipButton.setText(tipList.get(index));
+                    tipButton.setTag(index);
+                    tipButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //if last selected tip index is clicked again then un-select it.
+                            if (selectedTipIndex == (int) v.getTag()) {
+                                TextView button = (TextView) tipLayout.getChildAt(selectedTipIndex);
+                                button.setTextColor(ContextCompat.getColor(getActivity(), R.color.black));
+                                setButtonBackground(button, R.drawable.shape_bg_rounded_white_rectangle);
+                                tipAmount = 0;
+                                selectedTipIndex = -1;
+                                return;
+                            }
+
+
+                            selectedTipIndex = (int) v.getTag();
+                            tipAmount = receipt.getTipList().getList().get(selectedTipIndex);
+
+                            //redraw tip buttons to show selected item
+                            for (int count = 0; count < tipList.size(); count++) {
+                                TextView button = (TextView) tipLayout.getChildAt(count);
+                                int textColor = ContextCompat.getColor(getActivity(), R.color.black);
+                                int backgroundDrawableResId = R.drawable.shape_bg_rounded_white_rectangle;
+
+                                if (selectedTipIndex == count) {
+                                    textColor = ContextCompat.getColor(getActivity(), R.color.white);
+                                    backgroundDrawableResId = R.drawable.shape_bg_rounded_yellow_rectangle;
+                                }
+
+                                button.setTextColor(textColor);
+                                setButtonBackground(button, backgroundDrawableResId);
+                            }
+                        }
+                    });
+                    tipLayout.addView(tipButton);
+                }
+            }
+        }
+    }
+
+    private void setButtonBackground(View view, int backgroundDrawableResId) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            view.setBackground(getResources().getDrawable(backgroundDrawableResId));
+        } else {
+            view.setBackgroundDrawable(getResources().getDrawable(backgroundDrawableResId));
         }
     }
 
@@ -409,6 +450,8 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
 
     @OnClick(R2.id.uber_signup_layout)
     public void actionSignupClicked() {
+        RideGATracking.eventClickSignup();
+
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag("uber_singup_dialog");
         if (previousDialog != null) {
@@ -421,6 +464,8 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
 
     @OnClick(R2.id.tv_signup_tnc)
     public void actionTermsClicked() {
+        RideGATracking.eventClickTNC();
+
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag("uber_singup_dialog");
         if (previousDialog != null) {
@@ -433,7 +478,8 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
 
     @OnClick(R2.id.rate_confirmation)
     public void actionRateConfirmClicked() {
-        presenter.actionSendRating();
+        RideGATracking.eventClickSubmit(getRateStars(), getRateComment());
+        presenter.actionSubmitRatingAndDriverTip();
     }
 
     @Override
@@ -460,13 +506,23 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     }
 
     @Override
-    public void showRatingErrorLayout() {
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
+    public void showErrorInRating(String message) {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                presenter.actionSendRating();
+                presenter.actionSubmitRatingAndDriverTip();
             }
-        });
+        }).showRetrySnackbar();
+    }
+
+    @Override
+    public void showErrorInDriverTipping(String message) {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.sendTip(getTipParam());
+            }
+        }).showRetrySnackbar();
     }
 
     @Override
@@ -543,33 +599,35 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
                 }
 
                 break;
-            case TOKOCASH_PRODUCT_REQUEST_CODE:
-                if (resultCode == Activity.RESULT_OK) {
-                    TokoCashProduct product = data.getParcelableExtra(PendingFareChooserActivity.EXTRA_PRODUCT);
-                    tokocashSelectedProductTextView.setText(product.getTitle());
-                    passData.setProductId(product.getId());
+
+            case REQUEST_CODE_OPEN_SCROOGE_PAGE:
+                if (getActivity() != null) {
+                    if (resultCode == ScroogePGUtil.RESULT_CODE_SUCCESS) {
+                        closePage();
+                    } else {
+                        NetworkErrorHelper.showCloseSnackbar(getActivity(), getString(R.string.error_fail_pay_pending));
+                    }
                 }
                 break;
         }
     }
 
-    @OnClick(R2.id.layout_tokocash_option)
-    public void actionFareLayout() {
-        List<TokoCashProduct> products = receipt.getPendingPayment().getTopUpOptions();
-        startActivityForResult(PendingFareChooserActivity.getCallingIntent(getActivity(), products), TOKOCASH_PRODUCT_REQUEST_CODE);
+    @OnClick(R2.id.btn_pay_pending_fare)
+    public void actionPayPendingFare() {
+        presenter.payPendingFare();
     }
 
-    @OnClick(R2.id.btn_topup_tokocash)
-    public void actionTopupTokocash() {
-        if (passData == null) return;
-        if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
-            passData.setIdemPotencyKey(generateIdEmpotency(receipt.getRequestId()));
-            IDigitalModuleRouter digitalModuleRouter = (IDigitalModuleRouter) getActivity().getApplication();
-            startActivityForResult(
-                    digitalModuleRouter.instanceIntentCartDigitalProduct(passData),
-                    IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
-            );
-        }
+
+    @Override
+    public void showTipLayout() {
+        tipSeperator.setVisibility(View.VISIBLE);
+        tipLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideTipLayout() {
+        tipSeperator.setVisibility(View.GONE);
+        tipLayout.setVisibility(View.GONE);
     }
 
     private String generateIdEmpotency(String requestId) {
@@ -596,5 +654,98 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
             }
         }
         return queryPairs;
+    }
+
+    @Override
+    public void enableRatingSubmitButton() {
+        rateConfirmationButton.setEnabled(true);
+        rateConfirmationButton.setBackgroundResource(R.drawable.rounded_filled_theme_bttn);
+    }
+
+    @Override
+    public void disableRatingSubmitButton() {
+        rateConfirmationButton.setEnabled(false);
+        rateConfirmationButton.setBackgroundResource(R.drawable.rounded_filled_theme_disable_bttn);
+    }
+
+    @Override
+    public ArrayList<String> getFormmattedTipList() {
+        return tipList;
+    }
+
+    @Override
+    public RequestParams getTipParam() {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(SendTipUseCase.PARAM_TIP_AMOUNT, String.valueOf(getTipAmount()));
+        requestParams.putString(SendTipUseCase.PARAM_REQUEST_ID, requestId);
+        return requestParams;
+    }
+
+    @Override
+    public int getTipAmount() {
+        if (rateStarRatingBar.getRating() >= 4 && tipAmount > 0) {
+            return tipAmount;
+        }
+
+        return 0;
+    }
+
+    @Override
+    public void openScroogePage(String url, String postData) {
+        if (getActivity() != null) {
+            ScroogePGUtil.openScroogePage(this, url, true, postData, getString(R.string.title_pay_pending_fare));
+        }
+    }
+
+    @Override
+    public void showProgressbar() {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(getActivity());
+            progressDialog.setMessage(getString(R.string.message_please_wait));
+            progressDialog.setCancelable(false);
+        }
+
+        if (getActivity() != null && progressDialog != null && !progressDialog.isShowing()) {
+            progressDialog.show();
+        }
+    }
+
+    @Override
+    public void showAddShortcutDialog() {
+        if (getActivity() == null) {
+            return;
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(getString(R.string.dialog_title_add_uber_shortcut));
+        builder.setCancelable(true);
+
+        builder.setPositiveButton(
+                getString(R.string.title_ok),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        RideUtils.addUberShortcutOnLauncher(getActivity(), getString(R.string.label_book_uber_shortcut), getString(R.string.label_book_uber_shortcut));
+                        presenter.setShortcutDialogIsShowninCache();
+                        dialog.cancel();
+                    }
+                });
+
+        builder.setNegativeButton(
+                getString(R.string.btn_maybe_later),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        presenter.setShortcutDialogIsShowninCache();
+                        dialog.cancel();
+                    }
+                });
+
+        builder.create().show();
+    }
+
+    @Override
+    public void hideProgressbar() {
+        if (getActivity() != null && progressDialog != null) {
+            progressDialog.hide();
+        }
     }
 }

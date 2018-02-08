@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/banner_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/margin_med"
+    android:background="@color/background_apps"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/padding_med">
+
+    <com.tokopedia.design.banner.BannerView
+        android:id="@+id/banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/padding_med"
+        android:paddingTop="@dimen/padding_med"
+        android:visibility="gone" />
+
+</LinearLayout>

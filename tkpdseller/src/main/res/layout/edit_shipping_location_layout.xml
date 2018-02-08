@@ -1,108 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:background="@drawable/cards_ui_2"
-    android:padding="@dimen/padding_vs"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="@dimen/padding_vs">
 
     <TextView
         android:id="@+id/title_edit_shipping_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/title_shop_location"
-        android:textSize="@dimen/fonts"
+        android:layout_marginLeft="@dimen/margin_vs"
         android:layout_marginStart="@dimen/margin_vs"
-        android:textColor="@color/label_color"/>
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/province_text_input_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding_small"
-        android:layout_below="@id/title_edit_shipping_location"
-        android:layout_alignLeft="@id/title_edit_shipping_location">
-        <EditText
-            android:id="@id/text_edit_shipping_province"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/fontm"
-            android:clickable="true"
-            android:focusable="false"
-            android:hint="@string/title_province"
-            android:textColor="@color/black"/>
-    </android.support.design.widget.TextInputLayout>
+        android:text="@string/title_shop_location"
+        android:textColor="@color/label_color"
+        android:textSize="@dimen/fonts" />
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/city_text_input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/province_text_input_layout"
-        android:layout_alignLeft="@id/title_edit_shipping_location">
+        android:layout_alignLeft="@id/title_edit_shipping_location"
+        android:layout_below="@id/title_edit_shipping_location"
+        android:layout_marginTop="@dimen/padding_small"
+        android:hint="@string/title_city">
+
         <EditText
             android:id="@id/text_edit_shipping_city"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/fontm"
+            android:clickable="true"
+            android:focusable="false"
             android:textColor="@color/black"
-            android:clickable="true"
-            android:focusable="false"
-            android:hint="@string/title_city" />
+            android:textSize="@dimen/fontm" />
     </android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/district_text_input_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/city_text_input_layout"
-        android:layout_alignLeft="@id/title_edit_shipping_location">
-        <EditText
-            android:id="@id/text_edit_shipping_district"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/title_sub_district"
-            android:textSize="@dimen/fontm"
-            android:clickable="true"
-            android:focusable="false"
-            android:textColor="@color/black"/>
-    </android.support.design.widget.TextInputLayout>
-
-    <ImageView
-        android:id="@+id/edit_location_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/ic_settings_24dp"
-        android:layout_below="@id/district_text_input_layout"
-        android:layout_alignLeft="@id/title_edit_shipping_location"
-        android:paddingBottom="@dimen/margin_small"
-        android:contentDescription="@string/title_edit" />
-
-    <TextView
-        android:id="@+id/title_edit_shipping_change_location"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/setting_button"
-        android:text="@string/title_edit_shop_location"
-        android:gravity="center"
-        android:textSize="@dimen/fontm"
-        android:textStyle="bold"
-        android:textColor="@color/tkpd_light_green"
-        android:layout_below="@id/district_text_input_layout"
-        android:layout_toRightOf="@id/edit_location_icon"
-        android:layout_toEndOf="@id/edit_location_icon"
-        android:layout_marginLeft="@dimen/margin_vvs" />
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/text_input_layout_postal_code"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title_edit_shipping_change_location"
         android:layout_alignLeft="@id/title_edit_shipping_location"
-        android:layout_marginTop="@dimen/padding_small">
-        <EditText
+        android:layout_below="@id/city_text_input_layout"
+        android:layout_marginTop="@dimen/padding_small"
+        android:hint="@string/title_post_code">
+
+        <AutoCompleteTextView
             android:id="@+id/postal_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:completionThreshold="1"
             android:digits="1234567890"
-            android:hint="@string/title_post_code"
-            android:inputType="phone"/>
+            android:inputType="phone"
+            android:maxLength="5" />
+
     </android.support.design.widget.TextInputLayout>
+
 </RelativeLayout>

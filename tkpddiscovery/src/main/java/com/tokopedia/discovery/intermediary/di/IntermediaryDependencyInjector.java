@@ -10,11 +10,11 @@ import com.tokopedia.core.network.apiservices.hades.HadesService;
 import com.tokopedia.core.network.apiservices.hades.apis.HadesApi;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
-import com.tokopedia.core.network.apiservices.search.SearchService;
 import com.tokopedia.discovery.intermediary.data.mapper.IntermediaryCategoryMapper;
 import com.tokopedia.discovery.intermediary.data.repository.IntermediaryRepositoryImpl;
 import com.tokopedia.discovery.intermediary.data.source.IntermediaryDataSource;
 import com.tokopedia.discovery.intermediary.domain.IntermediaryRepository;
+import com.tokopedia.discovery.intermediary.domain.interactor.GetCategoryHeaderUseCase;
 import com.tokopedia.discovery.intermediary.domain.interactor.GetIntermediaryCategoryUseCase;
 import com.tokopedia.discovery.intermediary.view.IntermediaryPresenter;
 
@@ -42,8 +42,9 @@ public class IntermediaryDependencyInjector {
 
         GetIntermediaryCategoryUseCase getIntermediaryCategoryUseCase = new GetIntermediaryCategoryUseCase(
                 threadExecutor, postExecutionThread, repository);
+        GetCategoryHeaderUseCase getCategoryHeaderUseCase = new GetCategoryHeaderUseCase(threadExecutor, postExecutionThread, repository);
 
-        return  new IntermediaryPresenter(getIntermediaryCategoryUseCase);
+        return  new IntermediaryPresenter(getIntermediaryCategoryUseCase, getCategoryHeaderUseCase);
 
     }
 }

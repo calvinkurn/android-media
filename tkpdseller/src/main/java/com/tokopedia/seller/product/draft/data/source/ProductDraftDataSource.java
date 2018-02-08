@@ -1,6 +1,6 @@
 package com.tokopedia.seller.product.draft.data.source;
 
-import com.tokopedia.seller.product.data.source.db.model.ProductDraftDataBase;
+import com.tokopedia.seller.product.edit.data.source.db.model.ProductDraftDataBase;
 import com.tokopedia.seller.product.draft.data.source.db.ProductDraftDataManager;
 
 import java.util.List;
@@ -15,30 +15,40 @@ import rx.Observable;
 
 public class ProductDraftDataSource {
     private final ProductDraftDataManager productDraftDataManager;
+    private boolean hasUpdateBlankShopId = false;
 
     @Inject
     public ProductDraftDataSource(ProductDraftDataManager productDraftDataManager) {
         this.productDraftDataManager = productDraftDataManager;
     }
 
-    public Observable<Long> saveDraft(String productDraftDataBase, long draftId, boolean isUploading){
-        return productDraftDataManager.saveDraft(productDraftDataBase, draftId, isUploading);
+    public Observable<Long> saveDraft(String productDraftDataBase, long draftId, boolean isUploading, String shopId){
+        return productDraftDataManager.saveDraft(productDraftDataBase, draftId, isUploading, shopId);
     }
 
     public Observable<String> getDraft(long productId) {
         return productDraftDataManager.getDraft(productId);
     }
 
-    public Observable<List<ProductDraftDataBase>> getAllDraft() {
-        return productDraftDataManager.getAllDraft();
+    public Observable<List<ProductDraftDataBase>> getAllDraft(String shopId) {
+        updateBlankShopId(shopId);
+        return productDraftDataManager.getAllDraft(shopId);
     }
 
-    public Observable<Long> getAllDraftCount() {
-        return productDraftDataManager.getAllDraftCount();
+    private void updateBlankShopId(String shopId){
+        if (!hasUpdateBlankShopId) {
+            productDraftDataManager.updateBlankShopIdDraft(shopId);
+            hasUpdateBlankShopId = true;
+        }
     }
 
-    public Observable<Boolean> clearAllDraft() {
-        return productDraftDataManager.clearAllDraft();
+    public Observable<Long> getAllDraftCount(String shopId) {
+        updateBlankShopId(shopId);
+        return productDraftDataManager.getAllDraftCount(shopId);
+    }
+
+    public Observable<Boolean> clearAllDraft(String shopId) {
+        return productDraftDataManager.clearAllDraft(shopId);
     }
 
     public Observable<Boolean> deleteDraft(long productId) {

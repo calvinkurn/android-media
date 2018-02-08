@@ -28,6 +28,7 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionListActivity;
 import com.tokopedia.inbox.rescenter.detail.customview.DetailView;
 import com.tokopedia.inbox.rescenter.detail.customview.ReplyEditorView;
 import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
@@ -53,6 +54,7 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
+@Deprecated
 @RuntimePermissions
 public class DetailResCenterFragment extends BasePresenterFragment<DetailResCenterPresenter>
         implements DetailResCenterView {
@@ -393,7 +395,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
         dialog.show();
     }
 
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void actionCamera() {
         presenter.actionCamera();
     }
@@ -457,9 +459,13 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
     private Intent getIntentEditResCenter() {
         if (apiModelData.getDetail().getResolutionBy().getByCustomer() == 1) {
-            return EditResCenterActivity.newBuyerInstance(getActivity(), passData, apiModelData);
+//            return EditResCenterActivity.newBuyerInstance(getActivity(), passData, apiModelData);
+            return SolutionListActivity.newBuyerEditInstance(getActivity(),
+                    passData.getResCenterId());
         } else {
-            return EditResCenterActivity.newSellerInstance(getActivity(), passData, apiModelData);
+//            return EditResCenterActivity.newSellerInstance(getActivity(), passData, apiModelData);
+            return SolutionListActivity.newSellerEditInstance(getActivity(),
+                    passData.getResCenterId());
         }
     }
 
@@ -564,20 +570,22 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
         RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
-    @OnPermissionDenied({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnPermissionDenied({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showDeniedForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onPermissionDenied(getActivity(),listPermission);
     }
 
-    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showNeverAskForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onNeverAskAgain(getActivity(),listPermission);
     }

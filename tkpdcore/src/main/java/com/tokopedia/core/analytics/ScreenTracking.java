@@ -10,6 +10,7 @@ import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.container.AppsflyerContainer;
+import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
@@ -56,17 +57,20 @@ public class ScreenTracking extends TrackingUtils {
             authEvent.setUserFullName(SessionHandler.getLoginName(activity));
             authEvent.setUserID(SessionHandler.getGTMLoginID(activity));
             authEvent.setShopID(SessionHandler.getShopID(activity));
-            authEvent.setUserSeller(SessionHandler.getShopID(activity).equals("0") ? 0 : 1);
+            authEvent.setUserSeller(SessionHandler.isUserHasShop(activity) ? 1 : 0);
             authEvent.setAfUniqueId(getAfUniqueId() != null? getAfUniqueId() : AF_UNAVAILABLE_VALUE);
+
+            if(activity.getClass().getSimpleName().equals("ParentIndexHome")){
+                authEvent.setNetworkSpeed(TrackingUtils.getNetworkSpeed(activity));
+            }
+
         }
 
         public void execute() {
             if (mOpenScreenAnalytics == null || TextUtils.isEmpty(mOpenScreenAnalytics.getScreenName())) {
                 ScreenTracking.eventAuthScreen(authEvent, this.mActivity.getClass().getSimpleName());
-                ScreenTracking.screenLoca(this.mActivity.getClass().getSimpleName());
             } else {
                 ScreenTracking.eventAuthScreen(authEvent, mOpenScreenAnalytics.getScreenName());
-                ScreenTracking.screenLoca(mOpenScreenAnalytics.getScreenName());
             }
         }
     }
@@ -85,10 +89,6 @@ public class ScreenTracking extends TrackingUtils {
                 .sendScreen(screen);
     }
 
-    public static void screenLoca(String screenName){
-        getLocaEngine().tagScreen(screenName);
-    }
-
     public static void sendAFGeneralScreenEvent(String screenName){
         Map<String, Object> afValue = new HashMap<>();
         afValue.put(AFInAppEventParameterName.DESCRIPTION, screenName);
@@ -101,15 +101,8 @@ public class ScreenTracking extends TrackingUtils {
                 .sendScreen(screenName);
     }
 
-    public static void sendLocaCartEvent(Map<String, String> attributes){
-        String screenName = MainApplication.getAppContext().getString(R.string.cart_pg_1);
-        eventLoca(screenName, attributes);
-        screenLoca(screenName);
-        eventLocaInAppMessaging("event : Viewed " + screenName);
-
-    }
-
     public static void sendAFPDPEvent(final ProductDetailData data, final String eventName){
+        final AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler();
         getAFEngine().getAdsID(new AppsflyerContainer.AFAdsIDCallback() {
             @Override
             public void onGetAFAdsID(String adsID) {
@@ -124,6 +117,9 @@ public class ScreenTracking extends TrackingUtils {
                 values.put(AFInAppEventParameterName.PRICE, productPrice);
                 values.put(AFInAppEventParameterName.CURRENCY, "IDR");
                 values.put(AFInAppEventParameterName.QUANTITY, 1);
+                if(!analHandler.isAdsIdAvailable()){
+                    analHandler.setAdsId(adsID);
+                }
 
                 CommonUtils.dumper(TAG + "Appsflyer data " + adsID + " " + productID + " " + productPrice);
                 getAFEngine().sendTrackEvent(eventName, values);

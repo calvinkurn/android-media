@@ -5,4 +5,8 @@
     <dimen name="icon_official_store_size">35dp</dimen>
     <dimen name="icon_official_store_margin">11dp</dimen>
     <dimen name="icon_official_store_margin_l">15dp</dimen>
+    <dimen name="home_card_page_margin">15dp</dimen>
+    <dimen name="home_card_category_item_margin">8dp</dimen>
+    <dimen name="category_section_item_width">76dp</dimen>
+    <dimen name="margin_card_home">10dp</dimen>
 </resources>

@@ -71,12 +71,6 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
 
         initListener();
         initView();
-
-        TrackingUtils.eventLocaInAppMessaging("in-app : Clicked Developer Options");
-        TrackingUtils.eventLocaInApp("event : Clicked Developer Options");
-
-        CommonUtils.dumper("LocalTag : Clicked Developer Options");
-
     }
 
     private void initListener() {

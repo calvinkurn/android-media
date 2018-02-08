@@ -24,6 +24,10 @@ public interface ProductDetailContract {
 
         void setTroubleID(String troubleID);
 
+        String getProductName();
+
+        void setProductName(String productName);
+
         void inflateFragment();
 
     }

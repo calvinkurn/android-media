@@ -15,9 +15,9 @@ import android.widget.Button;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.fragment.BaseFilterContentFragment;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsFilterListFragment;
+import com.tokopedia.seller.base.view.fragment.TopAdsFilterListFragment;
 import com.tokopedia.seller.base.view.listener.BaseFilterContentViewListener;
-import com.tokopedia.seller.topads.dashboard.view.model.FilterTitleItem;
+import com.tokopedia.seller.base.view.model.FilterTitleItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ import java.util.List;
  * @author normansyahputa on 5/26/17.
  *         just move to new architecture.
  */
-public abstract class BaseFilterActivity extends TActivity implements TopAdsFilterListFragment.Callback, BaseFilterContentFragment.Callback {
+public abstract class BaseFilterActivity extends BaseToolbarActivity implements TopAdsFilterListFragment.Callback, BaseFilterContentFragment.Callback {
     protected TopAdsFilterListFragment topAdsFilterListFragment;
     protected List<Fragment> filterContentFragmentList;
     protected int selectedPosition = 0;
@@ -38,16 +38,10 @@ public abstract class BaseFilterActivity extends TActivity implements TopAdsFilt
     protected abstract Intent getDefaultIntentResult();
 
     protected int getLayoutId() {
-        return R.layout.activity_top_ads_filter;
+        return R.layout.activity_base_filter;
     }
 
     protected void initView() {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(false);
-        }
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
-        setSupportActionBar(toolbar);
         submitButton = (Button) findViewById(R.id.button_submit);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,8 +68,27 @@ public abstract class BaseFilterActivity extends TActivity implements TopAdsFilt
         if (getIntent().getExtras() != null) {
             setupBundlePass(getIntent().getExtras());
         }
-        setContentView(getLayoutId());
         initView();
+    }
+
+    @Override
+    protected void setupFragment(Bundle savedInstanceState) {
+        /* remain empty, override this for compatibility */
+    }
+
+    @Override
+    protected int getLayoutRes() {
+        return getLayoutId();
+    }
+
+    @Override
+    protected boolean isShowCloseButton() {
+        return true;
+    }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
     }
 
     protected void setupBundlePass(Bundle extras) {
@@ -123,7 +136,7 @@ public abstract class BaseFilterActivity extends TActivity implements TopAdsFilt
         changeContent(filterContentFragmentList.get(position));
     }
 
-    private void setFilterChangedResult() {
+    protected Intent setFilterChangedResult() {
         Intent intent = getDefaultIntentResult();
         // overwrite with changes
         for (Fragment topAdsFilterContentFragment : filterContentFragmentList) {
@@ -134,6 +147,7 @@ public abstract class BaseFilterActivity extends TActivity implements TopAdsFilt
             }
         }
         setResult(Activity.RESULT_OK, intent);
+        return intent;
     }
 
 
@@ -144,7 +158,7 @@ public abstract class BaseFilterActivity extends TActivity implements TopAdsFilt
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_top_ads_filter, menu);
+        getMenuInflater().inflate(R.menu.menu_base_filter, menu);
         return true;
     }
 

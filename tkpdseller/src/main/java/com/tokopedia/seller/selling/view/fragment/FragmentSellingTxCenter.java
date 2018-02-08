@@ -31,6 +31,8 @@ import java.util.ArrayList;
  */
 public class FragmentSellingTxCenter extends BaseFragment<PeopleTxCenter> implements PeopleTxCenterView {
     public static final String TYPE = "type";
+    private static final int TAB_OPPORTUNITY = 1;
+    public static final int TAB_SELLING_NOTIFICATION = 1;
     ListView TitleMenuListView;
 
     private RefreshHandler Refresh;
@@ -157,8 +159,6 @@ public class FragmentSellingTxCenter extends BaseFragment<PeopleTxCenter> implem
 
         if(getActivity()!= null) {
             presenter.fetchArguments(getArguments());
-            ScreenTracking.screenLoca(AppScreen.SCREEN_LOCA_TXCENTER);
-            ScreenTracking.eventLoca(AppScreen.SCREEN_LOCA_TXCENTER);
             ScreenTracking.screen(AppScreen.SCREEN_TX_SHOP_CENTER);
             super.setUserVisibleHint(isVisibleToUser);
             presenter.setLocalyticFlow(getActivity());
@@ -177,36 +177,12 @@ public class FragmentSellingTxCenter extends BaseFragment<PeopleTxCenter> implem
 
     private AdapterView.OnItemClickListener gridListener() {
         return new AdapterView.OnItemClickListener() {
+
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                if (!getArguments().getString("type").equals("people")) {
-                    if (position == 0) {
-                        listener.OnMenuClick(position + 1);
-                    } else if (position == 2) {
-                        listener.OnMenuClick(3);
-                    } else {
-                        listener.OnMenuClick(2);
-                    }
-                } else {
-                    switch (position) {
-                        case 0:
-                            listener.OnMenuClick(PEOPLE_CONFIRM);
-                            break;
-                        case 1:
-                            listener.OnMenuClick(PEOPLE_VERIFICATION);
-                            break;
-                        case 2:
-                            listener.OnMenuClick(PEOPLE_STATUS);
-                            break;
-                        case 3:
-                            listener.OnMenuClick(PEOPLE_CANCEL);
-                            break;
-                        case 4:
-                            listener.OnMenuClick(PEOPLE_ACCEPT);
-                            break;
-                    }
-                }
+
+                listener.OnMenuClick(position + TAB_OPPORTUNITY + TAB_SELLING_NOTIFICATION);
             }
         };
     }

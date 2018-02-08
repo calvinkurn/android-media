@@ -1,5 +1,6 @@
 package com.tokopedia.core.product.model.share;
 
+import android.app.Activity;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -19,8 +20,11 @@ public class ShareData implements Parcelable {
     public static final String DISCOVERY_TYPE = "Discovery";
     public static final String HOTLIST_TYPE = "Hotlist";
     public static final String RIDE_TYPE = "Ride";
-    private static final String ARG_UTM_MEDIUM = "Android%20Share%20Button";
+    private static final String ARG_UTM_MEDIUM = "Share";
     private static final String DEFAULT_EMPTY_FIELD = "";
+    public static final String APP_SHARE_TYPE = "App";
+    private static final String ARG_UTM_SOURCE = "Android";
+    public static final String FEED_TYPE = "feed";
 
     private String type = "";
     private String name;
@@ -30,6 +34,7 @@ public class ShareData implements Parcelable {
     private String imgUri;
     private String textContent;
     private String source;
+    private String id = "";
 
     public ShareData() {
     }
@@ -43,6 +48,7 @@ public class ShareData implements Parcelable {
         imgUri = in.readString();
         textContent = in.readString();
         source = in.readString();
+        id = in.readString();
     }
 
     @Override
@@ -55,6 +61,7 @@ public class ShareData implements Parcelable {
         dest.writeString(imgUri);
         dest.writeString(textContent);
         dest.writeString(source);
+        dest.writeString(id);
     }
 
     @Override
@@ -118,7 +125,7 @@ public class ShareData implements Parcelable {
         this.imgUri = imgUri;
     }
 
-    public String getTextContent() {
+    public String getTextContent(Activity activity) {
         if (getType() != null) {
             return (this.textContent != null) ? (this.textContent + "\n" + renderShareUri()) : renderShareUri();
         }
@@ -145,29 +152,69 @@ public class ShareData implements Parcelable {
         this.source = source;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String renderShareUri() {
         if (getUri() == null) {
             return "";
         }
-        String campaign = "Product";
+        String campaign = "Product%20Share";
         if (getType() != null)
-            campaign = getType();
+            campaign = getType() + "%20Share";
 
         String renderedUrl;
         if (!getType().equalsIgnoreCase(RIDE_TYPE)) {
             if (getUri().contains("?")) {
-                Uri uri = Uri.parse(String.format("%s&utm_source=%s&utm_campaign=%s&utm_medium=%s",
-                        getUri(), getSource(), campaign, ARG_UTM_MEDIUM));
+                Uri uri = Uri.parse(String.format("%s&utm_source=%s&utm_medium=%s&utm_campaign=%s&utm_content=%s",
+                        getUri(), ARG_UTM_SOURCE, ARG_UTM_MEDIUM, campaign, getSource()));
                 renderedUrl = uri.toString();
             } else {
-                Uri uri = Uri.parse(String.format("%s?utm_source=%s&utm_campaign=%s&utm_medium=%s",
-                        getUri(), getSource(), campaign, ARG_UTM_MEDIUM));
+                Uri uri = Uri.parse(String.format("%s?utm_source=%s&utm_medium=%s&utm_campaign=%s&utm_content=%s",
+                        getUri(), ARG_UTM_SOURCE, ARG_UTM_MEDIUM, campaign, getSource()));
                 renderedUrl = uri.toString();
             }
         } else {
             renderedUrl = getUri();
         }
         return renderedUrl;
+    }
+
+    public String renderBranchShareUri(String url) {
+        if (url == null) {
+            return "";
+        }
+        String campaign = "Product%20Share";
+        if (getType() != null)
+            campaign = getType() + "%20Share";
+
+        String renderedUrl;
+        if (!getType().equalsIgnoreCase(RIDE_TYPE)) {
+            if (url.contains("?")) {
+                Uri uri = Uri.parse(String.format("%s&utm_source=%s&utm_medium=%s&utm_campaign=%s&utm_content=%s",
+                        url, ARG_UTM_SOURCE, ARG_UTM_MEDIUM, campaign, getSource()));
+                renderedUrl = uri.toString();
+            } else {
+                Uri uri = Uri.parse(String.format("%s?utm_source=%s&utm_medium=%s&utm_campaign=%s&utm_content=%s",
+                        url, ARG_UTM_SOURCE, ARG_UTM_MEDIUM, campaign, getSource()));
+                renderedUrl = uri.toString();
+            }
+        } else {
+            renderedUrl = url;
+        }
+        return   renderedUrl;
+    }
+
+    public String getTextContentForBranch(String shortUrl) {
+        if (getType() != null) {
+            return (this.textContent != null) ? (this.textContent + "\n" + shortUrl) : shortUrl;
+        }
+        return String.valueOf(MethodChecker.fromHtml("Jual " + name + " hanya " + price + ", lihat gambar klik " + uri + "\n"));
     }
 
     public String[] getSplittedDescription(String splitWith) {
@@ -186,6 +233,7 @@ public class ShareData implements Parcelable {
         private String type;
         private String textContent;
         private String source;
+        private String id;
 
         private Builder() {
         }
@@ -234,6 +282,11 @@ public class ShareData implements Parcelable {
             return this;
         }
 
+        public Builder setId(String id) {
+            this.id = id;
+            return this;
+        }
+
         public Builder but() {
             return aShareData().setName(name).setPrice(price).setUri(uri).setDescription(description).setImgUri(imgUri);
         }
@@ -248,6 +301,7 @@ public class ShareData implements Parcelable {
             shareData.setType(type);
             shareData.setTextContent(textContent);
             shareData.setSource(source);
+            shareData.setId(id);
             return shareData;
         }
 

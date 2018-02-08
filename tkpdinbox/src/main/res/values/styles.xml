@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="error_appearance" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/black_38</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+
+    <style name="SwitchCompatStyle" >
+        <item name="thumbTint">@color/switch_template</item>
+        <item name="trackTint">@color/grey_300</item>
+    </style>
+
+</resources>

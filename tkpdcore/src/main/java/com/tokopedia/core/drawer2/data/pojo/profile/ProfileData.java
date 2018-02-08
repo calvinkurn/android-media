@@ -39,4 +39,11 @@ public class ProfileData {
     public void setUserInfo(UserInfo userInfo) {
         this.userInfo = userInfo;
     }
+
+    @Override
+    public String toString() {
+        return "data "+shopInfo.toString()+" "+userInfo.toString();
+    }
+
+
 }

@@ -1,14 +1,12 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.feeddetail;
 
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.LayoutRes;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
-import android.text.style.DynamicDrawableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.text.style.TypefaceSpan;
@@ -20,8 +18,8 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.TimeConverter;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlusDetail;
+import com.tokopedia.core.util.TimeConverter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
 
 /**

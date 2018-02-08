@@ -25,7 +25,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
-import com.tokopedia.core.geolocation.model.LocationPass;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
@@ -85,8 +85,6 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
     CardView cvShipment;
     @BindView(R2.id.iv_icon_geo_location)
     ImageView ivIconGeoLocation;
-    @BindView(R2.id.btn_change_value_location)
-    ImageView btnChangeValueLocation;
     @BindView(R2.id.tv_value_location)
     AppCompatTextView tvValueLocation;
     @BindView(R2.id.tv_error_geo_location)
@@ -186,7 +184,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
         );
         spShipment.setOnItemSelectedListener(getShipmentItemSelectionListener());
         spShipmentPackage.setOnItemSelectedListener(getShipmentPackageItemSelectionListener());
-        btnChangeValueLocation.setOnClickListener(getChangeLocationListener());
+        layoutValueLocation.setOnClickListener(getChangeLocationListener());
         tvValueLocation.setOnClickListener(getChangeLocationListener());
     }
 
@@ -313,6 +311,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
         calculateShipmentWrapper.setShopId(wrapper.getShopId());
         calculateShipmentWrapper.setAddressId(wrapper.getAddressId());
         calculateShipmentWrapper.setWeight(transactionPassData.getCartTotalWeight());
+        calculateShipmentWrapper.setShippingId(transactionPassData.getCartShipments().getShipmentId());
         presenter.processCalculateShipment(calculateShipmentWrapper);
     }
 

@@ -13,6 +13,8 @@ public class TopAdsParams {
     public static final String KEY_DEVICE = "device";
     public static final String KEY_ITEM = "item";
     public static final String KEY_SRC = "src";
+    public static final String KEY_TEMPLATE_ID = "template_id";
+    public static final String KEY_SEARCH_NF = "search_nf";
     public static final String KEY_PAGE = "page";
     public static final String KEY_DEPARTEMENT_ID = "dep_id";
     public static final String KEY_HOTLIST_ID = "h";
@@ -36,6 +38,7 @@ public class TopAdsParams {
     public static final String DEFAULT_KEY_ITEM = "2";
     public static final String DEFAULT_KEY_EP = "product";
     public static final String DEFAULT_KEY_DEVICE = "android";
+    public static final String DEFAULT_KEY_PAGE = "0";
     public static final String DEFAULT_KEY_SRC = "search";
 
     public static final String SRC_PRODUCT_FEED = "fav_product";
@@ -43,15 +46,25 @@ public class TopAdsParams {
 
 
     private final TKPDMapParam<String, String> param;
+    private int adsPosition;
 
 
     public TopAdsParams() {
         param = new TKPDMapParam<>();
         param.put(KEY_ITEM, DEFAULT_KEY_ITEM);
         param.put(KEY_DEVICE, DEFAULT_KEY_DEVICE);
+        param.put(KEY_PAGE, DEFAULT_KEY_PAGE);
     }
 
     public TKPDMapParam<String, String> getParam() {
         return param;
+    }
+
+    public int getAdsPosition() {
+        return adsPosition;
+    }
+
+    public void setAdsPosition(int adsPosition) {
+        this.adsPosition = adsPosition;
     }
 }

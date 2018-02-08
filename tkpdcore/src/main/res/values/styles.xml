@@ -17,9 +17,9 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
-    <style name="Theme.Tokopedia2.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.Tokopedia2.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
-    <style name="Theme.Tokopedia2.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="Theme.Tokopedia2.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
     <!-- RADITYA -->
     <!-- This for base Style -->
@@ -149,6 +149,7 @@
         <item name="android:textSize">12sp</item>
         <item name="android:typeface">sans</item>
     </style>
+
     <style name="StyledTilEditTextFloatingLabel" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/grey_700</item>
         <item name="android:textSize">@dimen/font_small</item>
@@ -219,14 +220,28 @@
         <item name="queryBackground">@color/white</item>
     </style>
 
-    <style name="checkBoxStyle" parent="Base.Theme.AppCompat">
+    <style name="checkBoxStyleCore" parent="Base.Theme.AppCompat">
         <item name="colorAccent">@color/tkpd_main_green</item>
         <item name="android:textColorSecondary">@color/black</item>
     </style>
 
+    <style name="checkBoxStyleSeller" parent="Base.Theme.AppCompat">
+        <item name="colorAccent">@color/tkpd_main_green</item>
+        <item name="android:textColorSecondary">@color/black_12</item>
+    </style>
+
+
     <style name="MediumText">
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Small.RatingBar" parent="@android:style/Widget.Holo.RatingBar">
+        <item name="android:progressDrawable">@drawable/tkpd_rating_bar</item>
+    </style>
+
+    <style name="Medium.RatingBar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/app_rating_bar</item>
     </style>
 
 </resources>

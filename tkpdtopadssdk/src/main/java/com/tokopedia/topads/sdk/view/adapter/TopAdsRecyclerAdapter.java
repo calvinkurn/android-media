@@ -54,10 +54,17 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         public void onLoadMore(int page, int totalItemsCount) {
             if (loadMore)
                 return;
-            if (loadListener != null && !unsetListener && placer.getItems().size() > itemTreshold) {
+            if (loadListener != null && !unsetListener && placer.getItemList().size() > itemTreshold) {
+                placer.increasePage();
                 showLoading();
                 loadListener.onLoad(placer.getPage(), totalItemsCount);
             }
+        }
+
+        @Override
+        public void onScroll(int lastVisiblePosition) {
+            if (loadListener instanceof OnScrollListener)
+                ((OnScrollListener) loadListener).onScroll(lastVisiblePosition);
         }
     };
 
@@ -73,7 +80,6 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                             placer.getAjustedPositionStart(), placer.getAjustedItemCount());
                     break;
             }
-            hideLoading();
         }
     };
 
@@ -81,12 +87,13 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             @NonNull Context context, @NonNull final RecyclerView.Adapter originalAdapter) {
         mOriginalAdapter = originalAdapter;
         mContext = context;
-        typeFactory = new TopAdsAdapterTypeFactory(context);
+        typeFactory = new TopAdsAdapterTypeFactory();
         placer = new TopAdsPlacer(this, context, typeFactory, dataObserver);
         mAdapterDataObserver = new RecyclerView.AdapterDataObserver() {
 
             @Override
             public void onChanged() {
+                hideLoading();
                 placer.setAjustedItemCount(mOriginalAdapter.getItemCount());
                 placer.onChanged();
             }
@@ -99,6 +106,7 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
             @Override
             public void onItemRangeInserted(final int positionStart, final int itemCount) {
+                hideLoading();
                 placer.onItemRangeInserted(positionStart, itemCount);
             }
 
@@ -106,7 +114,7 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             public void onItemRangeRemoved(int positionStart, int itemCount) {
                 positionStart = placer.getPositionStart(positionStart);
                 for (int i = positionStart; i < (positionStart + itemCount); i++) {
-                    placer.getItems().remove(i);
+                    placer.getItemList().remove(i);
                 }
                 notifyItemRangeRemoved(positionStart, itemCount);
             }
@@ -128,8 +136,13 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         return placer.getConfig();
     }
 
+    public void setHasHeader(boolean hasHeader, int headerCount) {
+        placer.setHasHeader(hasHeader, headerCount);
+    }
+
+
     public void setHasHeader(boolean hasHeader) {
-        placer.setHasHeader(hasHeader);
+        setHasHeader(hasHeader, 1);
     }
 
     public void setSpanSizeLookup(GridLayoutManager.SpanSizeLookup spanSizeLookup) {
@@ -163,6 +176,7 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public void setEndlessScrollListenerVisibleThreshold(int threshold) {
         this.endlessScrollListener.setVisibleThreshold(threshold);
+        this.itemTreshold = threshold;
     }
 
     public void unsetEndlessScrollListener() {
@@ -173,6 +187,10 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public void setEndlessScrollListener() {
         unsetListener = false;
         recyclerView.addOnScrollListener(endlessScrollListener);
+    }
+
+    public void clearAds() {
+        placer.clearAds();
     }
 
     @Override
@@ -234,7 +252,7 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
     }
 
-    private int getOriginalPosition(int position) {
+    public int getOriginalPosition(int position) {
         return placer.getItem(position).originalPos();
     }
 
@@ -283,20 +301,26 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     public boolean isLoading(int position) {
-        return position == placer.getItems().indexOf(loadingViewModel);
+        return position == placer.getItemList().indexOf(loadingViewModel);
+    }
+
+    public boolean isLoading() {
+        return placer.getItemList().contains(loadingViewModel);
     }
 
     public void reset() {
+        shouldLoadAds(true);
         loadMore = false;
         placer.reset();
         if (this.recyclerView != null) this.recyclerView.removeAllViews();
-        notifyDataSetChanged();
         endlessScrollListener.resetState();
+        clearAds();
+        notifyDataSetChanged();
     }
 
     public void showLoading() {
-        if (!placer.getItems().contains(loadingViewModel)) {
-            placer.getItems().add(loadingViewModel);
+        if (!placer.getItemList().contains(loadingViewModel)) {
+            placer.getItemList().add(loadingViewModel);
             recyclerView.post(new Runnable() {
                 @Override
                 public void run() {
@@ -308,8 +332,8 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     public void hideLoading() {
-        if (placer.getItems().contains(loadingViewModel)) {
-            placer.getItems().remove(loadingViewModel);
+        if (placer.getItemList().contains(loadingViewModel)) {
+            placer.getItemList().remove(loadingViewModel);
             notifyItemRemoved(placer.getItemCount());
         }
         loadMore = false;
@@ -322,6 +346,12 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public interface OnLoadListener {
 
         void onLoad(int page, int totalCount);
+
+    }
+
+    public interface OnScrollListener extends OnLoadListener {
+
+        void onScroll(int lastVisiblePosition);
 
     }
 

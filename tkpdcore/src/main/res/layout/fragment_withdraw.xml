@@ -1,6 +1,7 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                                                 xmlns:tools="http://schemas.android.com/tools"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -12,170 +13,196 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:background="@drawable/cards_ui_2"
             android:orientation="vertical"
-            android:padding="@dimen/padding_small"
-            android:visibility="invisible">
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/wrapper_total_balance"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:id="@+id/total_balance"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_small"
-                    android:enabled="false"
-                    android:hint="@string/title_available_amount" />
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/wrapper_total_withdrawal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:id="@+id/total_withdrawal"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_small"
-                    android:hint="@string/title_total_withdrawal"
-                    android:inputType="number"
-                    android:maxLength="14"
-                    android:selectAllOnFocus="true" />
-            </android.support.design.widget.TextInputLayout>
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/title_account_number"
-                android:textSize="@dimen/fontvvs" />
-
-            <Spinner
-                android:id="@+id/bank_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small" />
+            android:visibility="invisible"
+            tools:visibility="visible">
 
             <LinearLayout
-                android:id="@+id/add_bank_form"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/cards_ui_2"
                 android:orientation="vertical"
-                android:visibility="gone">
-
+                android:padding="@dimen/padding_small">
 
                 <android.support.design.widget.TextInputLayout
-                    android:id="@+id/wrapper_account_name"
+                    android:id="@+id/wrapper_total_balance"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <EditText
-                        android:id="@+id/account_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_small"
-                        android:hint="@string/title_account_name"
-                        android:inputType="text" />
-                </android.support.design.widget.TextInputLayout>
-
-
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/wrapper_account_number"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <EditText
-                        android:id="@+id/account_number"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_small"
-                        android:hint="@string/title_account_number"
-                        android:inputType="number" />
-                </android.support.design.widget.TextInputLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_small"
-                    android:text="@string/title_bank_name"
-                    android:textSize="@dimen/fontvvs" />
-
-                <TextView
-                    android:id="@+id/bank_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_small"
-                    android:background="@drawable/btn_shop"
-                    android:gravity="center"
-                    android:paddingBottom="@dimen/padding_small"
-                    android:paddingTop="@dimen/padding_small"
-                    android:text="@string/title_choose_bank" />
-
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/wrapper_bank_branch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <EditText
-                        android:id="@+id/bank_branch"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_small"
-                        android:hint="@string/title_branch"
-                        android:inputType="text" />
-                </android.support.design.widget.TextInputLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/otp_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/wrapper_otp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <EditText
-                        android:id="@+id/otp"
+                        android:id="@+id/total_balance"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/margin_small"
                         android:enabled="false"
-                        android:hint="@string/title_otp"
-                        android:inputType="number" />
+                        android:hint="@string/title_available_amount"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/wrapper_total_withdrawal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/total_withdrawal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:hint="@string/title_total_withdrawal"
+                        android:inputType="number"
+                        android:maxLength="14"
+                        android:selectAllOnFocus="true"/>
                 </android.support.design.widget.TextInputLayout>
 
                 <TextView
-                    android:id="@+id/send_otp"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_account_number_saldo"
+                    android:textSize="@dimen/fontvvs"/>
+
+                <Spinner
+                    android:id="@+id/bank_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_small"
-                    android:background="@drawable/btn_shop"
-                    android:gravity="center"
-                    android:padding="@dimen/padding_small" />
+                    android:layout_marginBottom="@dimen/margin_small"/>
+
+                <LinearLayout
+                    android:id="@+id/add_bank_form"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/wrapper_account_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <EditText
+                            android:id="@+id/account_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:hint="@string/title_account_name"
+                            android:inputType="text"/>
+                    </android.support.design.widget.TextInputLayout>
+
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/wrapper_account_number"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <EditText
+                            android:id="@+id/account_number"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:hint="@string/title_account_number_saldo"
+                            android:inputType="number"/>
+                    </android.support.design.widget.TextInputLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:text="@string/title_bank_name"
+                        android:textSize="@dimen/fontvvs"/>
+
+                    <TextView
+                        android:id="@+id/bank_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:background="@drawable/btn_shop"
+                        android:gravity="center"
+                        android:paddingBottom="@dimen/padding_small"
+                        android:paddingTop="@dimen/padding_small"
+                        android:text="@string/title_choose_bank"/>
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/wrapper_bank_branch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <EditText
+                            android:id="@+id/bank_branch"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:hint="@string/title_branch"
+                            android:inputType="text"/>
+                    </android.support.design.widget.TextInputLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/otp_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/wrapper_otp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <EditText
+                            android:id="@+id/otp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:enabled="false"
+                            android:hint="@string/title_otp"
+                            android:inputType="number"/>
+                    </android.support.design.widget.TextInputLayout>
+
+                    <TextView
+                        android:id="@+id/send_otp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:background="@drawable/btn_shop"
+                        android:gravity="center"
+                        android:padding="@dimen/padding_small"/>
+                </LinearLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/wrapper_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/title_password"
+                        android:inputType="textPassword"/>
+                </android.support.design.widget.TextInputLayout>
+
+
+                <TextView
+                    android:id="@+id/forgot_pass"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/padding_vs"
+                    android:text="@string/title_forgot_password"
+                    android:textColor="@color/tkpd_main_green"
+                    android:textSize="@dimen/text_size_small"/>
             </LinearLayout>
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/wrapper_password"
+            <TextView
+                android:id="@+id/bri"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:id="@+id/password"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_small"
-                    android:hint="@string/title_password"
-                    android:inputType="textPassword" />
-            </android.support.design.widget.TextInputLayout>
-
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:lineSpacingExtra="6sp"
+                android:padding="@dimen/padding_small"
+                android:text="@string/bri_transfer_info"
+                android:textColor="@color/red_500"
+                android:textSize="@dimen/text_size_small"/>
         </LinearLayout>
 
     </ScrollView>
@@ -184,6 +211,7 @@
         android:id="@+id/loading_layout"
         layout="@layout/loading_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        tools:visibility="gone"/>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -8,13 +8,16 @@ import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.drawer2.data.factory.NotificationSourceFactory;
 import com.tokopedia.core.drawer2.data.mapper.NotificationMapper;
+import com.tokopedia.core.drawer2.data.mapper.TopChatNotificationMapper;
 import com.tokopedia.core.drawer2.data.pojo.notification.NotificationData;
 import com.tokopedia.core.drawer2.data.pojo.notification.NotificationModel;
 import com.tokopedia.core.drawer2.data.repository.NotificationRepositoryImpl;
+import com.tokopedia.core.drawer2.data.source.TopChatNotificationSource;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.domain.NotificationRepository;
 import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
+import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.core.network.apiservices.user.NotificationService;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.util.GlobalConfig;
@@ -48,8 +51,16 @@ public class TxSummaryPresenterImpl implements TxSummaryPresenter {
                         new NotificationMapper(),
                         cacheHandler
                 );
+
+        ChatService chatService = new ChatService();
+        TopChatNotificationMapper topChatNotificationMapper = new TopChatNotificationMapper();
+
+        TopChatNotificationSource topChatNotificationSource = new TopChatNotificationSource(
+                chatService, topChatNotificationMapper, cacheHandler
+        );
+
         NotificationRepository notificationRepository =
-                new NotificationRepositoryImpl(notificationSourceFactory);
+                new NotificationRepositoryImpl(notificationSourceFactory, topChatNotificationSource);
         this.notificationUseCase =
                 new NotificationUseCase(
                         new JobExecutor(),
@@ -134,7 +145,7 @@ public class TxSummaryPresenterImpl implements TxSummaryPresenter {
     @Override
     public void getNotificationFromNetwork(final Context context) {
         notificationUseCase.execute(
-                notificationUseCase.getRequestParam(
+                NotificationUseCase.getRequestParam(
                         GlobalConfig.isSellerApp()), onGetNotification(context));
     }
 

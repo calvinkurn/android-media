@@ -9,8 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.base.di.module.ActivityModule;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.session.R;
 import com.tokopedia.session.login.view.di.DaggerReloginComponent;
 import com.tokopedia.session.login.view.presenter.ReloginPresenter;
@@ -50,17 +49,13 @@ public class ReloginActivity extends AppCompatActivity
     @Override
     public AppComponent getComponent() {
         return ((MainApplication) getApplication())
-                .getApplicationComponent(getActivityModule());
-    }
-
-    protected ActivityModule getActivityModule() {
-        return new ActivityModule(this);
+                .getApplicationComponent();
     }
 
     @Override
     public void onErrorRelogin(String errorMessage) {
         Intent intent = new Intent();
-        intent.putExtra(SessionRouter.PARAM_FORCE_LOGOUT_MESSAGE, errorMessage);
+        intent.putExtra(OldSessionRouter.PARAM_FORCE_LOGOUT_MESSAGE, errorMessage);
         setResult(Activity.RESULT_CANCELED, intent);
         finish();
     }
@@ -68,7 +63,7 @@ public class ReloginActivity extends AppCompatActivity
     @Override
     public void onSuccessRelogin() {
         Intent intent = new Intent();
-        intent.putExtra(SessionRouter.PARAM_FORCE_LOGOUT_MESSAGE, getString(R.string.default_relogin));
+        intent.putExtra(OldSessionRouter.PARAM_FORCE_LOGOUT_MESSAGE, getString(R.string.default_relogin));
         setResult(Activity.RESULT_OK, intent);
         finish();
     }

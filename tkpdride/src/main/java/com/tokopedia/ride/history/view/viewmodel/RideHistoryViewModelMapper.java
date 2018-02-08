@@ -1,6 +1,8 @@
 package com.tokopedia.ride.history.view.viewmodel;
 
+import com.tokopedia.ride.common.configuration.PaymentMode;
 import com.tokopedia.ride.common.ride.domain.model.LocationLatLng;
+import com.tokopedia.ride.common.ride.utils.RideUtils;
 import com.tokopedia.ride.history.domain.model.RideHistory;
 
 /**
@@ -22,17 +24,20 @@ public class RideHistoryViewModelMapper {
                 rideHistory.getVehicle().getLicensePlate())
         );
         viewModel.setStatus(rideHistory.getStatus());
-        viewModel.setFare(RideHistoryViewModel.formatStringToPriceString(rideHistory.getPayment().getTotalAmount(), rideHistory.getPayment().getCurrency()));
-        viewModel.setTotalFare(RideHistoryViewModel.formatStringToPriceString(rideHistory.getPayment().getTotalAmount(), rideHistory.getPayment().getCurrency()));
+        viewModel.setTotalFare(RideUtils.formatStringToPriceString(rideHistory.getPayment().getTotalAmount(), rideHistory.getPayment().getCurrency()));
+        viewModel.setTokoCashCharged(RideUtils.formatStringToPriceString(rideHistory.getPayment().getPaidAmount(), rideHistory.getPayment().getCurrency()));
+        viewModel.setPendingAmountDisplayFormat(RideUtils.formaNumberToPriceString(rideHistory.getPayment().getPendingAmount(), rideHistory.getPayment().getCurrency()));
+        viewModel.setPendingAmount(rideHistory.getPayment().getPendingAmount());
+        viewModel.setPaymentMethod(transformPaymentMethod(rideHistory.getPayment().getPaymentMethod()));
         viewModel.setCashback(rideHistory.getCashbackAmount());
         viewModel.setDiscount(rideHistory.getDiscountAmount());
         viewModel.setCashbackDisplayFormat(
-                RideHistoryViewModel.formatStringToPriceString(
+                RideUtils.formatStringToPriceString(
                         String.valueOf(Math.round(rideHistory.getCashbackAmount())), rideHistory.getPayment().getCurrency()
                 )
         );
         viewModel.setDiscountDisplayFormat(
-                RideHistoryViewModel.formatStringToPriceString(
+                RideUtils.formatStringToPriceString(
                         String.valueOf(Math.round(rideHistory.getDiscountAmount())), rideHistory.getPayment().getCurrency()
                 )
         );
@@ -79,5 +84,15 @@ public class RideHistoryViewModelMapper {
         }
 
         return urlBuffer.toString();
+    }
+
+    private String transformPaymentMethod(String paymentMethod) {
+        if (paymentMethod != null && paymentMethod.equalsIgnoreCase(PaymentMode.CC)) {
+            return PaymentMode.CC_DISPLAY_NAME;
+        } else if (paymentMethod != null && paymentMethod.equalsIgnoreCase(PaymentMode.WALLET)) {
+            return PaymentMode.WALLET_DISPLAY_NAME;
+        }
+
+        return PaymentMode.DEFAULT_DISPLAY_NAME;
     }
 }

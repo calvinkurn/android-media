@@ -15,7 +15,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Spanned;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,10 +30,13 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.AppUtils;
@@ -399,11 +401,17 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
             holder.viewDefaultDestination.setVisibility(View.VISIBLE);
             holder.viewPickupLocationCourier.setVisibility(View.GONE);
         }
-        if (payment.getPaymentProcessDayLeft() > 0 && orderDetail.getDetailPartialOrder().equals("1"))
-            holder.PartialButton.setVisibility(View.VISIBLE);
-        holder.Deadline.setText(payment.getPaymentProcessDueDate());
-        if (payment.getPaymentProcessDayLeft() < 0)
-            holder.AcceptButton.setVisibility(View.GONE);
+
+        if(payment != null){
+            if (payment.getPaymentProcessDayLeft() != null && payment.getPaymentProcessDayLeft() > 0 && orderDetail.getDetailPartialOrder().equals("1"))
+                holder.PartialButton.setVisibility(View.VISIBLE);
+            else if (payment.getPaymentProcessDayLeft() < 0)
+                holder.AcceptButton.setVisibility(View.GONE);
+            holder.Deadline.setText(payment.getPaymentProcessDueDate());
+        }else{
+            holder.Deadline.setText(orderDetail.getDetailPayDueDate());
+        }
+
         if (permission.equals("0")) {
             holder.AcceptButton.setVisibility(View.GONE);
             holder.RejectButton.setVisibility(View.GONE);
@@ -451,20 +459,23 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = InboxRouter.getSendMessageActivityIntent(getActivity());
-                Bundle bundle = new Bundle();
-                bundle.putString(InboxRouter.PARAM_USER_ID, order.getOrderCustomer().getCustomerId());
-                bundle.putString(InboxRouter.PARAM_OWNER_FULLNAME, order.getOrderCustomer().getCustomerName());
-                bundle.putString(InboxRouter.PARAM_CUSTOM_SUBJECT,
-                        order.getOrderDetail().getDetailInvoice());
-                bundle.putString(InboxRouter.PARAM_CUSTOM_MESSAGE,
-                        MethodChecker.fromHtml(
-                                getString(R.string.custom_content_message_ask_seller)
-                                        .replace("XXX",
-                                                order.getOrderDetail().getDetailPdfUri())).toString()
-                );
-                intent.putExtras(bundle);
-                startActivity(intent);
+                if (MainApplication.getAppContext() instanceof TkpdInboxRouter) {
+                    Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+                            .getAskBuyerIntent(getActivity(),
+                                    order.getOrderCustomer().getCustomerId(),
+                                    order.getOrderCustomer().getCustomerName(),
+                                    order.getOrderDetail().getDetailInvoice(),
+                                    MethodChecker.fromHtml(
+                                            getString(R.string.custom_content_message_ask_seller)
+                                                    .replace("XXX",
+                                                            order.getOrderDetail()
+                                                                    .getDetailPdfUri())).toString(),
+                                    TkpdInboxRouter.TX_ASK_BUYER,
+                                    order.getOrderCustomer().getCustomerImage());
+                    startActivity(intent);
+                }
+
+
             }
         };
     }
@@ -654,7 +665,6 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
     }
 
     private void onProceedFailed(String messageError) {
-        Log.e(TAG, "onProceedFailed " + messageError);
         if (messageError.toLowerCase().contains("pesanan tidak valid")) {
             holder.AcceptButton.setEnabled(false);
             holder.AcceptButton.setBackgroundResource(R.drawable.btn_shop);
@@ -675,7 +685,6 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d(getClass().getSimpleName(), "onActivityResult requestCode " + requestCode + " resultcode " + resultCode);
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case REQ_REJECT_ORDER:

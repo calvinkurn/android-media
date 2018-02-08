@@ -4,6 +4,8 @@ import com.tokopedia.core.network.apiservices.user.apis.InterruptApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.services.AuthService;
 
+import javax.inject.Inject;
+
 import retrofit2.Retrofit;
 
 /**
@@ -11,6 +13,11 @@ import retrofit2.Retrofit;
  */
 public class InterruptService extends AuthService<InterruptApi> {
     private static final String TAG = InterruptService.class.getSimpleName();
+
+    @Inject
+    public InterruptService() {
+        super();
+    }
 
     @Override
     protected void initApiService(Retrofit retrofit) {

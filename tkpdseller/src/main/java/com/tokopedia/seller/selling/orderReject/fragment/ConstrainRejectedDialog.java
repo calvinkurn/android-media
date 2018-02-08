@@ -86,7 +86,6 @@ public class ConstrainRejectedDialog extends DialogFragment {
     }
 
     public boolean validateForm(){
-        Log.d("Info Text Reason", "length "+reasonTxt.getText().toString().length());
         if(reasonTxt.getText().toString().isEmpty()){
             reasonTxt.setError(getString(R.string.desc_should_not_empty));
             return false;

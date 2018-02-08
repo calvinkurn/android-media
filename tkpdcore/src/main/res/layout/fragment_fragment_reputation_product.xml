@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/transparent"
+    android:background="@android:color/transparent"
     android:id="@id/container"
     android:orientation="vertical">
 
@@ -21,7 +21,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/view_rating_stats">
 
-        <android.support.v7.widget.RecyclerView
+        <com.tokopedia.core.customView.ReputationRecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

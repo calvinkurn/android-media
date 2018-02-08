@@ -13,18 +13,20 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.core.webview.fragment.BaseWebViewClient;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class RideHistoryNeedHelpActivity extends BaseActivity implements BaseWebViewClient.WebViewCallback {
+    public class RideHistoryNeedHelpActivity extends BaseActivity implements BaseWebViewClient.WebViewCallback {
     private static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
 
     private RideHistoryViewModel rideHistory;
@@ -46,9 +48,8 @@ public class RideHistoryNeedHelpActivity extends BaseActivity implements BaseWeb
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ride_history_need_help);
         unbinder = ButterKnife.bind(this);
-        rideHistory = (RideHistoryViewModel) getIntent().getParcelableExtra(EXTRA_REQUEST_ID);
+        rideHistory = getIntent().getParcelableExtra(EXTRA_REQUEST_ID);
         setupToolbar();
-
         init();
     }
 
@@ -112,6 +113,7 @@ public class RideHistoryNeedHelpActivity extends BaseActivity implements BaseWeb
 
     @Override
     public void onBackPressed() {
+        RideGATracking.eventBackPress(getScreenName());
         if (WebViewGeneral.canGoBack()) {
             WebViewGeneral.goBack();
         } else {
@@ -131,5 +133,15 @@ public class RideHistoryNeedHelpActivity extends BaseActivity implements BaseWeb
             finish();
         }
         return false;
+    }
+
+    @Override
+    public void onWebTitlePageCompleted(String title) {
+
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_RIDE_HISTORY_NEED_HELP;
     }
 }

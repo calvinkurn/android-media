@@ -8,6 +8,9 @@ import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.R;
 import com.tokopedia.core.customadapter.ImageUpload;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.inbox.contactus.interactor.ContactUsRetrofitInteractor;
+import com.tokopedia.inbox.contactus.interactor.ContactUsRetrofitInteractorImpl;
 import com.tokopedia.inbox.inboxticket.InboxTicketConstant;
 import com.tokopedia.inbox.inboxticket.activity.InboxTicketDetailActivity;
 import com.tokopedia.inbox.inboxticket.fragment.InboxTicketDetailFragment;
@@ -36,15 +39,16 @@ public class InboxTicketDetailFragmentPresenterImpl implements InboxTicketDetail
 
     InboxTicketDetailFragment viewListener;
     InboxTicketRetrofitInteractor networkInteractor;
+    ContactUsRetrofitInteractor contactUsRetrofitInteractor;
     InboxTicketCacheInteractor cacheInteractor;
     PagingHandler pagingHandler;
     InboxTicketDetailFragment.DoActionInboxTicketListener listener;
     ImageUploadHandler imageUploadHandler;
 
-
     public InboxTicketDetailFragmentPresenterImpl(InboxTicketDetailFragment viewListener) {
         this.viewListener = viewListener;
         this.networkInteractor = new InboxTicketRetrofitInteractorImpl();
+        this.contactUsRetrofitInteractor = new ContactUsRetrofitInteractorImpl();
         this.cacheInteractor = new InboxTicketCacheInteractorImpl();
         this.pagingHandler = new PagingHandler();
         this.listener = (InboxTicketDetailActivity) viewListener.getActivity();
@@ -117,6 +121,51 @@ public class InboxTicketDetailFragmentPresenterImpl implements InboxTicketDetail
         param.setTicketId(viewListener.getArguments().getString(InboxTicketFragment.TICKET_ID_BUNDLE));
         param.setPage(String.valueOf(pagingHandler.getPage()));
         return param.getViewMoreParam();
+    }
+
+
+    private Map<String, String> getCommentRatingParam(String isHelpful) {
+        InboxTicketParam param = new InboxTicketParam();
+        param.setCommentId(viewListener.getCommentId());
+        param.setRating(isHelpful);
+        param.setUserId(SessionHandler.getLoginID(viewListener.context));
+        return param.getCommentRatingParam();
+    }
+
+
+    @Override
+    public void commentRating(String isHelpful) {
+        contactUsRetrofitInteractor.commentRating(viewListener.getActivity(), getCommentRatingParam(isHelpful), new ContactUsRetrofitInteractor.CommentRatingListener() {
+            @Override
+            public void onSuccess(ReplyResult replyResult) {
+                viewListener.showCommentView();
+            }
+
+            @Override
+            public void onTimeout() {
+                showError(viewListener.getString(R.string.default_request_error_timeout));
+            }
+
+            @Override
+            public void onError(String error) {
+                showError(error);
+            }
+
+            @Override
+            public void onNullData() {
+                showError(viewListener.getString(R.string.default_request_error_null_data));
+            }
+
+            @Override
+            public void onNoConnectionError() {
+                showError(viewListener.getString(R.string.error_no_connection2));
+            }
+
+            @Override
+            public void onFailAuth() {
+                showError(viewListener.getString(R.string.default_request_error_unknown));
+            }
+        });
     }
 
     @Override
@@ -296,7 +345,9 @@ public class InboxTicketDetailFragmentPresenterImpl implements InboxTicketDetail
     @Override
     public void onDestroyView() {
         networkInteractor.unsubscribe();
+        contactUsRetrofitInteractor.unsubscribe();
     }
+
 
     private boolean isReplyValid() {
         if (viewListener.getComment().trim().equals("")) {

@@ -22,19 +22,25 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.base.presentation.BaseFragment;
-import com.tokopedia.ride.bookingride.di.ApplyPromoDependencyInjection;
+import com.tokopedia.ride.bookingride.di.BookingRideComponent;
+import com.tokopedia.ride.bookingride.di.DaggerBookingRideComponent;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPromoUseCase;
 import com.tokopedia.ride.bookingride.domain.model.Promo;
 import com.tokopedia.ride.bookingride.view.ApplyPromoContract;
+import com.tokopedia.ride.bookingride.view.ApplyPromoPresenter;
 import com.tokopedia.ride.bookingride.view.activity.ApplyPromoActivity;
 import com.tokopedia.ride.bookingride.view.adapter.OnGoingPromoAdapter;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
+import com.tokopedia.ride.common.ride.di.RideComponent;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 
 import java.util.Date;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -65,7 +71,9 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
     @BindView((R2.id.progress_bar_promo_list))
     ProgressBar mPromoListProgressBar;
 
-    ApplyPromoContract.Presenter presenter;
+    @Inject
+    ApplyPromoPresenter presenter;
+
     ConfirmBookingViewModel confirmBookingViewModel;
     OnGoingPromoAdapter onGoingPromoAdapter;
     OnFragmentInteractionListener interactionListener;
@@ -85,7 +93,6 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter = ApplyPromoDependencyInjection.createPresenter(getActivity());
         presenter.attachView(this);
         presenter.getOnGoingPromo();
         disableApplyButton();
@@ -93,6 +100,7 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
         if (confirmBookingViewModel != null && !TextUtils.isEmpty(confirmBookingViewModel.getPromoCode())) {
             promoEditText.setText(String.valueOf(confirmBookingViewModel.getPromoCode()));
             descriptionTextView.setText(String.valueOf(confirmBookingViewModel.getPromoDescription()));
+            descriptionTextView.setVisibility(View.VISIBLE);
         } else {
             descriptionTextView.setVisibility(View.GONE);
         }
@@ -139,12 +147,23 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
     }
 
     @Override
+    protected void initInjector() {
+        RideComponent component = getComponent(RideComponent.class);
+        BookingRideComponent bookingRideComponent = DaggerBookingRideComponent
+                .builder()
+                .rideComponent(component)
+                .build();
+        bookingRideComponent.inject(this);
+    }
+
+    @Override
     protected int getLayoutId() {
         return R.layout.fragment_apply_promo;
     }
 
     @OnClick(R2.id.tv_submit_promo)
     public void actionSubmitPromo() {
+        RideGATracking.eventClickApplyPromoSearch(getScreenName(),getPromo()); //19
         presenter.actionApplyPromo();
     }
 
@@ -298,6 +317,7 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
 
     @Override
     public void onItemClicked(String promoCode) {
+        RideGATracking.eventClickApplyOffers(getScreenName(),promoCode); //20
         promoEditText.setText(promoCode.toUpperCase());
         presenter.actionApplyPromo();
     }

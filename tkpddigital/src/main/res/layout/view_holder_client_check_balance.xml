@@ -1,0 +1,109 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/padding_prod"
+    android:paddingTop="@dimen/padding_prod">
+
+    <RelativeLayout
+        android:id="@+id/rl_holder_check_balance_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:padding="@dimen/padding_detail"
+        android:visibility="visible">
+
+        <RelativeLayout
+            android:id="@+id/rl_holder_check_balance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:visibility="visible">
+
+            <TextView
+                android:id="@+id/tv_check_balance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="true"
+                android:maxLines="1"
+                android:padding="@dimen/padding_vs"
+                android:text="@string/title_check_credit_balance"
+                android:textSize="@dimen/fonts" />
+
+            <TextView
+                android:id="@+id/tv_label_check_credit"
+                style="@style/TextTitleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_check_balance"
+                android:padding="@dimen/padding_vs"
+                android:text="" />
+
+
+            <TextView
+                android:id="@+id/btn_check_client_balance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="end|center"
+                android:layout_marginBottom="@dimen/margin_vs"
+                android:background="@drawable/green_button"
+                android:gravity="center"
+                android:paddingBottom="@dimen/padding_small"
+                android:paddingLeft="@dimen/padding_detail"
+                android:paddingRight="@dimen/padding_detail"
+                android:paddingTop="@dimen/padding_small"
+                android:text="@string/lable_button_check_balance"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_small" />
+
+            <TextView
+                android:id="@+id/tv_error_operator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_label_check_credit"
+                android:layout_alignLeft="@+id/tv_label_check_credit"
+                android:textColor="@color/bright_red"
+                android:padding="@dimen/padding_vs"
+                android:textSize="@dimen/fontvs"
+                android:visibility="visible" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_holder_check_balance_wait"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/padding_detail"
+            android:paddingTop="@dimen/padding_detail"
+            android:visibility="invisible">
+
+            <ProgressBar
+                android:id="@+id/check_balance_progressbar"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_below="@+id/tv_check_balance"
+                android:visibility="visible" />
+            <TextView
+                android:id="@+id/tv_loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/padding_detail"
+                android:text="@string/title_loading"
+                android:textSize="@dimen/font_medium"
+                android:visibility="visible" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+</LinearLayout>
+
+

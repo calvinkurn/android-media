@@ -33,7 +33,7 @@ public class ImageLoader {
         cacheParams.setMemCacheSizePercent(0.25f);
         imageFetcher = new ImageFetcher(context,
                 context.getResources().getDimensionPixelSize(R.dimen.image_thumbnail_size));
-        imageFetcher.setLoadingImage(R.drawable.ic_loading_toped);
+        imageFetcher.setLoadingImage(R.drawable.loading_page);
         imageFetcher.addImageCache(cacheParams);
     }
 
@@ -52,6 +52,10 @@ public class ImageLoader {
         }, false);
     }
 
+    public void loadImageWithMemoryCache(String url, ImageView imageView){
+        imageFetcher.loadImage(url, imageView);
+    }
+
     public void loadBadge(final LinearLayout container, List<Badge> badges) {
         container.removeAllViews();
         for (Badge badge : badges) {
@@ -65,6 +69,25 @@ public class ImageLoader {
                     }
                 }
             }, true);
+        }
+    }
+
+    public static int getRatingDrawable(int param) {
+        switch (param) {
+            case 0:
+                return R.drawable.ic_star_none;
+            case 1:
+                return R.drawable.ic_star_one;
+            case 2:
+                return R.drawable.ic_star_two;
+            case 3:
+                return R.drawable.ic_star_three;
+            case 4:
+                return R.drawable.ic_star_four;
+            case 5:
+                return R.drawable.ic_star_five;
+            default:
+                return R.drawable.ic_star_none;
         }
     }
 

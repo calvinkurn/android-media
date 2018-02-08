@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,18 +22,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.customView.OrderStatusView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
-import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.rxjava.RxUtils;
@@ -49,6 +53,7 @@ import com.tokopedia.seller.selling.model.orderShipping.OrderDetail;
 import com.tokopedia.seller.selling.model.orderShipping.OrderPayment;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShipment;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
+import com.tokopedia.seller.selling.view.fragment.CustomScannerBarcodeActivity;
 
 import org.parceler.Parcels;
 
@@ -305,22 +310,21 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = InboxRouter.getSendMessageActivityIntent(getActivity());
-                Bundle bundle = new Bundle();
-                bundle.putString(InboxRouter.PARAM_USER_ID, presenter.getOrderData()
-                        .getOrderCustomer().getCustomerId());
-                bundle.putString(InboxRouter.PARAM_OWNER_FULLNAME, presenter.getOrderData()
-                        .getOrderCustomer().getCustomerName());
-                bundle.putString(InboxRouter.PARAM_CUSTOM_SUBJECT,
-                        presenter.getOrderData().getOrderDetail().getDetailInvoice());
-                bundle.putString(InboxRouter.PARAM_CUSTOM_MESSAGE,
-                        MethodChecker.fromHtml(
-                                getString(R.string.custom_content_message_ask_seller)
-                                        .replace("XXX",
-                                                presenter.getOrderData().getOrderDetail().getDetailPdfUri())).toString()
-                );
-                intent.putExtras(bundle);
-                startActivity(intent);
+                if (MainApplication.getAppContext() instanceof TkpdInboxRouter) {
+                    Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+                            .getAskBuyerIntent(getActivity(),
+                                    presenter.getOrderData().getOrderCustomer().getCustomerId(),
+                                    presenter.getOrderData().getOrderCustomer().getCustomerName(),
+                                    presenter.getOrderData().getOrderDetail().getDetailInvoice(),
+                                    MethodChecker.fromHtml(
+                                            getString(R.string.custom_content_message_ask_seller)
+                                                    .replace("XXX",
+                                                            presenter.getOrderData().getOrderDetail()
+                                                                    .getDetailPdfUri())).toString(),
+                                    TkpdInboxRouter.TX_ASK_BUYER,
+                                    presenter.getOrderData().getOrderCustomer().getCustomerImage());
+                    startActivity(intent);
+                }
             }
         };
     }
@@ -415,9 +419,9 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
         editRefDialog.show();
     }
 
-    @NeedsPermission({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     public void onScanBarcodeClicked() {
-        startActivityForResult(CommonUtils.requestBarcodeScanner(), 0);
+        CommonUtils.requestBarcodeScanner(this, CustomScannerBarcodeActivity.class);
     }
 
     private boolean checkEditRef(EditText ref) {
@@ -532,11 +536,9 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        final EditText Ref = (EditText) editRefDialog.findViewById(R.id.ref_number);
+        Ref.setText(CommonUtils.getBarcode(requestCode, resultCode, data));
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 0 && resultCode == Activity.RESULT_OK) {
-            final EditText Ref = (EditText) editRefDialog.findViewById(R.id.ref_number);
-            Ref.setText(CommonUtils.getBarcode(data));
-        }
     }
 
     @Override

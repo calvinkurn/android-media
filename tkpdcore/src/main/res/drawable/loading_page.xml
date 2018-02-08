@@ -3,12 +3,15 @@
 
     <item>
         <inset
-            android:drawable="@drawable/ic_loading_toped"
+            android:drawable="@drawable/ic_loading_toped_new"
+
             android:insetBottom="@dimen/small_dp"
             android:insetLeft="@dimen/small_dp"
             android:insetRight="@dimen/small_dp"
-            android:insetTop="@dimen/small_dp" />
+            android:insetTop="@dimen/small_dp"
+            />
     </item>
-   
+
+
 
 </layer-list>

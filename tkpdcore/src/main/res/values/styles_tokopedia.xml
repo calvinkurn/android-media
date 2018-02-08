@@ -246,6 +246,13 @@
         <item name="actionModeStyle">@style/CustomActionMode</item>
         <item name="spinnerStyle">@style/Widget.AppCompat.Spinner.Underlined</item>
     </style>
+    
+    <style name="Theme.TextInputLayout" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:textColorHint">@color/colorGray</item>
+        <item name="android:textSize">16sp</item>
+        <item name="colorControlActivated">@color/green_600</item>
+        <item name="colorControlNormal">@color/grey_hint</item>
+    </style>
 
     <style name="Theme.Tokopedia3.Launcher" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@drawable/launch_screen</item>
@@ -287,12 +294,36 @@
 
     <style name="ToolbarText" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="ToolbarText.SansSerifMedium" parent="ToolbarText">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/black_70</item>
     </style>
 
     <style name="ToolbarSubtitleText" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
         <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
+    <style name="ToolbarSubtitleText.SansSerifMedium" parent="ToolbarSubtitleText">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/black_70</item>
+    </style>
+
+    <style name="WebViewToolbarText" parent="MediumText">
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/black_70</item>
+    </style>
+
+    <style name="WebViewToolbarSubtitleText"
+           parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/black_54</item>
+    </style>
     <!--
         <style name="UserVoiceTheme" parent="Theme.AppCompat.Light">
             <item name="android:popupMenuStyle">@style/PopupMenu.Tokopedia</item>
@@ -348,7 +379,7 @@
 
         <!-- No backgrounds, titles or window float -->
         <item name="windowNoTitle">true</item>
-        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
 
     </style>
 

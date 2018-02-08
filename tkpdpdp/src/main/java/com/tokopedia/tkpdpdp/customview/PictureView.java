@@ -7,7 +7,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.TextureView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -25,6 +27,11 @@ import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_ACTIVE;
+import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_PENDING;
+import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_WAREHOUSE;
+import static com.tokopedia.core.product.model.productdetail.ProductShopInfo.SHOP_STATUS_ACTIVE;
+
 /**
  * @author Angga.Prasetiyo on 29/10/2015.
  */
@@ -37,6 +44,7 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
     private TextView errorProductSubitle;
 
     private ImagePagerAdapter imagePagerAdapter;
+    private String urlTemporary;
 
     public PictureView(Context context) {
         super(context);
@@ -81,7 +89,7 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
 
     @Override
     public void renderData(@NonNull final ProductDetailData data) {
-        imagePagerAdapter = new ImagePagerAdapter(getContext(), new ArrayList<ProductImage>());
+        imagePagerAdapter = new ImagePagerAdapter(getContext(), new ArrayList<ProductImage>(), urlTemporary);
         vpImage.setAdapter(imagePagerAdapter);
         List<ProductImage> productImageList = data.getProductImages();
         if (productImageList.isEmpty()) {
@@ -101,21 +109,15 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
             indicator.notifyDataSetChanged();
             imagePagerAdapter.setActionListener(new PagerAdapterAction(data));
         }
-        if (data.getInfo().getProductStatus().equals("-1")) {
-            if (data.getInfo().getProductStatusMessage() != null && data.getInfo().getProductStatusTitle() != null) {
+        if (!data.getInfo().getProductStatus().equals(PRD_STATE_ACTIVE)) {
+            listener.onProductStatusError();
+            if (!TextUtils.isEmpty(data.getInfo().getProductStatusTitle())
+                    && !TextUtils.isEmpty(data.getInfo().getProductStatusMessage())) {
                 errorProductContainer.setVisibility(VISIBLE);
                 errorProductTitle.setText(data.getInfo().getProductStatusTitle());
                 errorProductSubitle.setText(data.getInfo().getProductStatusMessage());
             }
-            listener.onProductStatusError();
-        } else if (data.getInfo().getProductStatus().equals("3") &
-                data.getShopInfo().getShopStatus() == 1 && data.getInfo().getProductStatusTitle().length()>1) {
-            errorProductContainer.setVisibility(VISIBLE);
-            errorProductTitle.setText(data.getInfo().getProductStatusTitle());
-            errorProductSubitle.setText(data.getInfo().getProductStatusMessage());
-        } else if (!data.getInfo().getProductStatus().equals("1")) {
-            listener.onProductStatusError();
-        } else if (data.getShopInfo().getShopStatus()!=1) {
+        } else if (data.getShopInfo().getShopStatus() != SHOP_STATUS_ACTIVE) {
             errorProductContainer.setVisibility(VISIBLE);
             errorProductTitle.setText(data.getShopInfo().getShopStatusTitle() != null
                     && !data.getShopInfo().getShopStatusTitle().isEmpty()
@@ -124,7 +126,7 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
                     && !data.getShopInfo().getShopStatusMessage().isEmpty()
                     ? data.getShopInfo().getShopStatusMessage() : "");
 
-        }else {
+        } else {
             errorProductContainer.setVisibility(GONE);
         }
     }
@@ -134,8 +136,9 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
         productImage.setImageSrc300(productPass.getProductImage());
         productImage.setImageSrc(productPass.getProductImage());
         productImage.setImageDescription("");
-        imagePagerAdapter.add(productImage);
+        imagePagerAdapter.addFirst(productImage);
         indicator.notifyDataSetChanged();
+        urlTemporary = productPass.getProductImage();
     }
 
     private class PagerAdapterAction implements ImagePagerAdapter.OnActionListener {

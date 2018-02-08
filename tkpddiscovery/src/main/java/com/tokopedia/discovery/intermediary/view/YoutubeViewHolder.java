@@ -2,7 +2,6 @@ package com.tokopedia.discovery.intermediary.view;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +11,7 @@ import android.widget.RelativeLayout;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.intermediary.view.adapter.YoutubeIntermediaryActivity;
 
@@ -21,23 +21,19 @@ import com.tokopedia.discovery.intermediary.view.adapter.YoutubeIntermediaryActi
 
 public class YoutubeViewHolder extends RelativeLayout {
 
+    private final YouTubeThumbnailLoadInProcess youTubeThumbnailLoadInProcess;
     private RelativeLayout mainView;
     private ProgressBar loadingBar;
     private String videoUrl;
     private YouTubeThumbnailLoader youTubeThumbnailLoader;
+    private final String departmentId;
 
-    public YoutubeViewHolder(Context context, String videoUrl) {
+    public YoutubeViewHolder(Context context, String videoUrl, String departmentId,YouTubeThumbnailLoadInProcess youTubeThumbnailLoadInProcess) {
         super(context);
         this.videoUrl = videoUrl;
+        this.departmentId = departmentId;
+        this.youTubeThumbnailLoadInProcess = youTubeThumbnailLoadInProcess;
         initView(context, videoUrl);
-    }
-
-    public YoutubeViewHolder(Context context) {
-        super(context);
-    }
-
-    public YoutubeViewHolder(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
     }
 
     private void initView(Context context, final String youtubeVideoId) {
@@ -52,7 +48,8 @@ public class YoutubeViewHolder extends RelativeLayout {
         youTubeThumbnailView.initialize(getContext().getApplicationContext()
                         .getString(com.tokopedia.core.R.string.GOOGLE_API_KEY),
                 thumbnailInitializedListener(youtubeVideoId));
-
+        if(youTubeThumbnailLoadInProcess != null)
+            youTubeThumbnailLoadInProcess.onIntializationStart();
         youTubeThumbnailView.setOnClickListener(onYoutubeThumbnailClickedListener());
     }
 
@@ -62,6 +59,8 @@ public class YoutubeViewHolder extends RelativeLayout {
             @Override
             public void onInitializationSuccess(YouTubeThumbnailView youTubeThumbnailView,
                                                 final YouTubeThumbnailLoader loader) {
+                if(youTubeThumbnailLoadInProcess != null)
+                    youTubeThumbnailLoadInProcess.onIntializationComplete();
                 youTubeThumbnailLoader = loader;
                 loader.setVideo(youtubeVideoId);
                 mainView.setVisibility(VISIBLE);
@@ -86,6 +85,8 @@ public class YoutubeViewHolder extends RelativeLayout {
             @Override
             public void onInitializationFailure(YouTubeThumbnailView youTubeThumbnailView,
                                                 YouTubeInitializationResult result) {
+                if(youTubeThumbnailLoadInProcess != null)
+                    youTubeThumbnailLoadInProcess.onIntializationComplete();
                 loadingBar.setVisibility(GONE);
             }
         };
@@ -95,6 +96,7 @@ public class YoutubeViewHolder extends RelativeLayout {
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventVideoIntermediary(departmentId,videoUrl);
                 Intent intent = new Intent(getContext(), YoutubeIntermediaryActivity.class);
                 intent.putExtra(YoutubeIntermediaryActivity.EXTRA_YOUTUBE_VIDEO_URL, videoUrl);
                 getContext().startActivity(intent);
@@ -104,5 +106,10 @@ public class YoutubeViewHolder extends RelativeLayout {
 
     public void destroyReleaseProcess() {
         youTubeThumbnailLoader.release();
+    }
+
+    public interface YouTubeThumbnailLoadInProcess {
+        public void onIntializationStart();
+        public void onIntializationComplete();
     }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.core.gallery;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -8,7 +9,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,18 +17,27 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
+
+import java.io.File;
 
 import javax.annotation.Nonnull;
 
-public class GalleryActivity extends AppCompatActivity implements AlbumCollection.AlbumCallbacks, AdapterView.OnItemSelectedListener {
+public class GalleryActivity extends TActivity implements AlbumCollection.AlbumCallbacks, AdapterView
+        .OnItemSelectedListener, GallerySelectedFragment.ListenerSelected {
 
     private static final String TAG = "hangnadi";
-    private static final String BUNDLE_GALLERY_TYPE = "bundle_gallery_type";
-    private static final String BUNDLE_MAX_SELECTION = "bundle_max_selection";
-    private static final int DEFAULT_MAX_SELECTION = 1;
-    private static final int DEFAULT_GALLERY_TYPE = GalleryType.ofImageOnly();
-    private int typeGallery;
+    protected static final String BUNDLE_GALLERY_TYPE = "bundle_gallery_type";
+    protected static final String BUNDLE_MAX_SELECTION = "bundle_max_selection";
+    protected static final int DEFAULT_MAX_SELECTION = 1;
+    protected static final int DEFAULT_GALLERY_TYPE = GalleryType.ofImageOnly();
+    public static final String COMPRESS_TO_TKPD = "COMPRESS_TO_TKPD";
+    public static final String TOKOPEDIA = "Tokopedia";
+    public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 873;
+
+    private int typeGallery = GalleryType.ofAll();
     private int maxSelection;
 
     private View previewButton;
@@ -39,20 +48,22 @@ public class GalleryActivity extends AppCompatActivity implements AlbumCollectio
     private final AlbumCollection albumCollection = new AlbumCollection();
     private AlbumsSpinner albumSpinner;
     private AlbumAdapter albumAdapter;
+    private boolean compressToTkpd;
 
     public static Intent createIntent(Context context) {
         return createIntent(context, DEFAULT_GALLERY_TYPE);
     }
 
     public static Intent createIntent(Context context, int galleryType) {
-        return createIntent(context, galleryType, DEFAULT_MAX_SELECTION);
+        return createIntent(context, galleryType, DEFAULT_MAX_SELECTION, false);
     }
 
-    public static Intent createIntent(Context context, int galleryType, int maxSelection) {
+    public static Intent createIntent(Context context, int galleryType, int maxSelection, boolean compressToTkpd) {
         Intent intent = new Intent(context, GalleryActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(BUNDLE_GALLERY_TYPE, galleryType);
         bundle.putInt(BUNDLE_MAX_SELECTION, maxSelection);
+        bundle.putBoolean(COMPRESS_TO_TKPD, compressToTkpd);
         intent.putExtras(bundle);
         return intent;
     }
@@ -60,6 +71,7 @@ public class GalleryActivity extends AppCompatActivity implements AlbumCollectio
     protected void setupBundlePass(@Nonnull Bundle extras) {
         typeGallery = extras.getInt(BUNDLE_GALLERY_TYPE);
         maxSelection = extras.getInt(BUNDLE_MAX_SELECTION);
+        compressToTkpd = extras.getBoolean(COMPRESS_TO_TKPD);
     }
 
     protected void initView() {
@@ -111,6 +123,7 @@ public class GalleryActivity extends AppCompatActivity implements AlbumCollectio
         albumSpinner.setAdapter(albumAdapter);
         albumCollection.onCreate(this, this);
         albumCollection.onRestoreInstanceState(savedInstanceState);
+        albumCollection.setGalleryType(typeGallery);
         albumCollection.loadAlbums();
     }
 
@@ -155,7 +168,7 @@ public class GalleryActivity extends AppCompatActivity implements AlbumCollectio
     }
 
     private void inflateFragment(AlbumItem albumItem) {
-        Fragment fragment = GallerySelectedFragment.newInstance(albumItem);
+        Fragment fragment = GallerySelectedFragment.newInstance(albumItem, typeGallery);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, fragment, TAG)
                 .commit();
@@ -180,5 +193,36 @@ public class GalleryActivity extends AppCompatActivity implements AlbumCollectio
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
+    }
+
+    @Override
+    public void onSelectedImage(MediaItem item) {
+        if (compressToTkpd) {
+            File photo = FileUtils.writeImageToTkpdPath(item.getRealPath());
+            if (photo != null) {
+                finishWithPathFile(photo.getAbsolutePath());
+            }
+        } else {
+            finishWithMediaItem(item);
+        }
+    }
+
+    protected void finishWithPathFile(String absolutePath) {
+        Intent intent = new Intent();
+        intent.putExtra(GallerySelectedFragment.EXTRA_RESULT_SELECTION_PATH, absolutePath);
+        setResult(Activity.RESULT_OK, intent);
+        finish();
+    }
+
+    protected void finishWithMediaItem(MediaItem item) {
+        Intent intent = new Intent();
+        intent.putExtra(GallerySelectedFragment.EXTRA_RESULT_SELECTION, item);
+        setResult(Activity.RESULT_OK, intent);
+        finish();
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

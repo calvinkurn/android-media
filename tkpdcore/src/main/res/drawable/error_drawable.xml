@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<inset xmlns:android="http://schemas.android.com/apk/res/android"
-    android:drawable="@drawable/ic_loading_toped"
-    android:insetBottom="@dimen/small_dp"
-    android:insetLeft="@dimen/small_dp"
-    android:insetRight="@dimen/small_dp"
-    android:insetTop="@dimen/small_dp" />
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<item
+    android:drawable="@drawable/loading_page"
+     />
+
+</layer-list>

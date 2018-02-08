@@ -8,7 +8,8 @@ import com.tokopedia.core.drawer2.view.DrawerHelper;
 /**
  * Created by Nisie on 11/11/15.
  */
-public class TkpdCache {
+public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
+
     public static final String ADD = "ADD";
     public static final String NOTIFICATION_DATA = "NOTIFICATION_DATA";
     public static final String USER_INFO = "USER_INFO";
@@ -19,7 +20,7 @@ public class TkpdCache {
     public static final String LOCA_STATUS_UPDATE = "LOCA_STATUS_UPDATE";
     public static final String LOCA_GCM_NOTIFICATION = "LOCA_GCM_NOTIFICATION";
     public static final String GCM_NOTIFICATION = "GCM_NOTIFICATION";
-    public static final String STATUS_UPDATE = "STATUS_UPDATE";
+
     public static final String LOGIN_ID = "LOGIN_ID";
     public static final String REGISTERED = "REGISTERED";
     public static final String LOGIN_UUID = "LOGIN_UUID";
@@ -40,15 +41,19 @@ public class TkpdCache {
     public static final String APP_INFO = "APP_INFO";
     public static final String ALLOW_REFRESH = "ALLOW_REFRESH";
     public static final String EXCLUSION = "EXCLUSION";
-    public static String LAST_BCA = "LAST_BCA";
-    public static String LAST_MANDIRI = "LAST_MANDIRI";
-    public static String LAST_BRI = "LAST_BRI";
-    public static String LIST_REPORT_TYPE = "LIST_REPORT_TYPE";
     public static final String CACHE_RECHARGE_WIDGET_TAB_SELECTION = "CACHE_RECHARGE_WIDGET_TAB_SELECTION";
     public static final String DEFAULT_GRID_SETTINGS = "DEFAULT_GRID_SETTINGS";
     public static final String DIGITAL_LAST_INPUT_CLIENT_NUMBER = "DIGITAL_LAST_INPUT_CLIENT_NUMBER";
     public static final String DIGITAL_INSTANT_CHECKOUT_HISTORY = "DIGITAL_INSTANT_CHECKOUT_HISTORY";
-
+    public static final String DIGITAL_USSD_MOBILE_NUMBER = "DIGITAL_USSD_MOBILE_NUMBER";
+    public static final String CACHE_API = "CACHE_API";
+    public static String LAST_BCA = "LAST_BCA";
+    public static String LAST_MANDIRI = "LAST_MANDIRI";
+    public static String LAST_BRI = "LAST_BRI";
+    public static String LIST_REPORT_TYPE = "LIST_REPORT_TYPE";
+    public static final String DIGITAL_WIDGET_LAST_ORDER = "DIGITAL_WIDGET_LAST_ORDER";
+    public static final String FIREBASE_REMOTE_CONFIG = "FIREBASE_REMOTE_CONFIG";
+    public static final String APP_RATING = "APP_RATING";
 
     public static void clearAllCache(Context context) {
         LocalCacheHandler.clearCache(context, TkpdCache.USER_INFO);
@@ -60,7 +65,7 @@ public class TkpdCache {
         LocalCacheHandler.clearCache(context, TkpdCache.CACHE_PROMO);
     }
 
-    public class Key {
+    public class Key extends com.tokopedia.abstraction.constant.TkpdCache.Key {
 
         public static final String UNIVERSEARCH = "universearch";
         public static final String DISTRICT_ID = "district_id";
@@ -100,7 +105,6 @@ public class TkpdCache {
         public static final String NOTIFICATION_CODE = "notification_code";
         public static final String PREV_CODE = "prev_code";
         public static final String PREV_TIME = "prev_time";
-        public static final String STATUS = "status";
 
         public static final String TOTAL_NOTIF = "total_notif";
         public static final String MESSAGE_COUNT = "message_count";
@@ -193,8 +197,50 @@ public class TkpdCache {
         public static final String DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY = "DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY_";
 
         public static final String DIGITAL_CATEGORY_ITEM_LIST = "DIGITAL_CATEGORY_ITEM_LIST";
+        public static final String DIGITAL_LAST_ORDER = "DIGITAL_LAST_ORDER";
 
         public static final String KEY_TOKOCASH_DATA = "TOKOCASH_DATA";
+
+        public static final String KEY_LOCATION = "KEY_FP_LOCATION";
+        public static final String KEY_LOCATION_LAT = "KEY_FP_LOCATION_LAT";
+        public static final String KEY_LOCATION_LONG = "KEY_FP_LOCATION_LONG";
+
+        public static final String KEY_USSD_SIM1 = "KEY_USSD_SIM1";
+        public static final String KEY_USSD_SIM2 = "KEY_USSD_SIM2";
+
+        public static final String SHOW_HIDE_APP_SHARE_BUTTON_KEY = "SHOW_HIDE_APP_SHARE_BUTTON_KEY";
+        public static final String APP_SHARE_DESCRIPTION_KEY = "APP_SHARE_DESCRIPTION_KEY";
+        public static final String MAINAPP_ACTIVATE_BRANCH_LINKS_KEY = "MAINAPP_ACTIVATE_BRANCH_LINKS_KEY";
+
+        public static final String KEY_TOKOCASH_BALANCE_CACHE = "TOKOCASH_BALANCE_CACHE";
+
+        public static final String CONFIG_SHOW_HIDE_APP_SHARE_BUTTON = "mainapp_show_app_share_button";
+        public static final String CONFIG_APP_SHARE_DESCRIPTION = "app_share_description";
+        public static final String CONFIG_MAINAPP_ACTIVATE_BRANCH_LINKS = "mainapp_activate_branch_links";
+        public static final String HOME_CATEGORY_CACHE = "HOME_CATEGORY_CACHE";
+        public static final String HOME_BRAND_OS_CACHE = "HOME_BRAND_OS_CACHE";
+        public static final String HOME_BANNER_CACHE = "HOME_BANNER_CACHE";
+        public static final String HOME_TOP_PICK_CACHE = "HOME_TOP_PICK_CACHE";
+        public static final String HOME_TICKER_CACHE = "HOME_TICKER_CACHE";
+        public static final String KEY_TOKOPOINT_DRAWER_DATA = "KEY_TOKOPOINT_DRAWER_DATA";
+        public static final String KEY_APP_RATING_VERSION = "APP_RATING_VERSION";
+        public static final String KEY_ADVANCED_APP_RATING_VERSION = "ADVANCED_APP_RATING_VERSION";
+    }
+
+    public class RemoteConfigKey {
+        public static final String MAINAPP_SHOW_APP_SHARE_BUTTON = "mainapp_show_app_share_button";
+        public static final String APP_SHARE_DESCRIPTION = "app_share_description";
+        public static final String MAINAPP_ACTIVATE_BRANCH_LINKS = "mainapp_activate_branch_links";
+
+        public static final String TOKO_CASH_TOP_UP = "toko_cash_top_up";
+        public static final String TOKO_CASH_LABEL = "toko_cash_label";
+
+        public static final String MAINAPP_RATING_TITLE = "mainapp_rating_title";
+        public static final String MAINAPP_RATING_MESSAGE = "mainapp_rating_message";
+        public static final String MAINAPP_SHOW_SIMPLE_APP_RATING = "mainapp_show_simple_app_rating";
+        public static final String MAINAPP_SHOW_ADVANCED_APP_RATING = "mainapp_show_advanced_app_rating";
+
+        public static final String NOTIFICATION_LOGGER = "notification_logger";
     }
 
 }

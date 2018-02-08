@@ -46,8 +46,7 @@
                     android:layout_gravity="end|center_vertical"
                     android:layout_marginEnd="@dimen/margin_vs"
                     android:layout_marginRight="@dimen/margin_vs"
-                    android:contentDescription="@string/app_name"
-                    tools:src="@drawable/ic_close_24dp"/>
+                    android:contentDescription="@string/app_name"/>
 
                 <Button
                     android:id="@+id/btnClear"

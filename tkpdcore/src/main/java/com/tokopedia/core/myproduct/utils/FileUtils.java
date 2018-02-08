@@ -1,71 +1,84 @@
 package com.tokopedia.core.myproduct.utils;
 
+import android.annotation.TargetApi;
+import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.util.Log;
+import android.text.TextUtils;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.MainApplication;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
  * Created by m.normansyah on 12/8/15.
  */
 public class FileUtils {
-
     public static final String CACHE_TOKOPEDIA = "/cache/tokopedia/";
+    public static final String PNG = ".png";
+    public static final int DEF_WIDTH_CMPR = 2048;
+    public static final int DEF_QLTY_COMPRESS = 100;
 
     /**
      * example of result : /storage/emulated/0/Android/data/com.tokopedia.tkpd/1451274244/
-     * @param root
-     * @return
      */
-    public static String getFolderPathForUpload(String root){
-        return root+"/Android/data/"+ MainApplication.PACKAGE_NAME+"/"+(System.currentTimeMillis() / 1000L)+new Random().nextInt(1000) + "/";
+    public static String getFolderPathForUploadRandom() {
+        return getFolderPathForUpload() + (System.currentTimeMillis() / 1000L) + new Random().nextInt(1000) + "/";
     }
 
-    public static String getFolderPathForUploadNoRand(String root) {
-        return root + "/Android/data/" + MainApplication.PACKAGE_NAME + "/";
+    public static String getFolderPathForUpload() {
+        return Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/" + MainApplication.PACKAGE_NAME + "/";
     }
 
-    public static String getFileNameWithoutExt(String path) {
-        String fileName = path.substring(path.lastIndexOf("/") + 1);
-        int pos = fileName.lastIndexOf(".");
-        if (pos > 0) {
-            fileName = fileName.substring(0, pos);
+    public static String generateUniqueFileName() {
+        return String.valueOf(System.currentTimeMillis() / 1000L) + new Random().nextInt(1000);
+    }
+
+    @NonNull
+    private static File getTkpdCacheDirectory() {
+        String tkpdFolderPath = FileUtils.getFolderPathForUpload();
+
+        File tkpdRootdirectory = new File(tkpdFolderPath);
+        if (!tkpdRootdirectory.exists()) {
+            tkpdRootdirectory.mkdirs();
         }
-        return fileName;
+        File tkpdCachedirectory = new File(tkpdRootdirectory.getAbsolutePath() + CACHE_TOKOPEDIA);
+        if (!tkpdCachedirectory.exists()) {
+            tkpdCachedirectory.mkdirs();
+        }
+        return tkpdCachedirectory;
     }
 
-    public static String generateUniqueFileName(String path) {
-        return String.valueOf(path.hashCode()).replaceAll("-", "");
+    @NonNull
+    public static File getTkpdImageCacheFile(String fileName) {
+        File tkpdCachedirectory = getTkpdCacheDirectory();
+        return new File(tkpdCachedirectory.getAbsolutePath() + "/" + fileName + PNG);
     }
 
     /**
-     * will wrte the buffer to Tkpdpath with the filename supply. Extension will be .jpg
-     * example of result : /storage/emulated/0/Android/data/com.tokopedia.tkpd/cache/tokopedia/IMG_451274244.jpg
-     * @param buffer result of compressed image in jpeg
-     * @param fileName name of file to write to Tkpd Path
-     * @return
+     * write byte buffer to Cache File int TkpdCacheDirectory
+     * This "cache file" is a representation of the bytes.
      */
-    public static File writeImageToTkpdPath(byte[] buffer, String fileName) {
+    public static File writeImageToTkpdPath(byte[] buffer) {
         if (buffer != null) {
-            File photo = getTkpdCacheFile(fileName);
+            String fileName = FileUtils.generateUniqueFileName();
+            File photo = getTkpdImageCacheFile(fileName);
             if (photo.exists()) {
                 // photo already exist in cache
                 if (photo.length() == buffer.length) {
@@ -85,8 +98,41 @@ public class FileUtils {
         return null;
     }
 
-    public static File writeImageToTkpdPath(InputStream source, String fileName) {
-        File photo = getTkpdCacheFile(fileName);
+    /**
+     * compress the bitmap, then write to Tkpd Cache Directory
+     * The file represents the copy of the original bitmap and can be deleted/modified
+     * without changing the original image
+     */
+    public static File writeImageToTkpdPath(Bitmap bitmap) {
+        if (bitmap != null) {
+            ByteArrayOutputStream bao = new ByteArrayOutputStream();
+            byte[] bytes;
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, bao);
+            bytes = bao.toByteArray();
+            return writeImageToTkpdPath(bytes);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * copy the bitmap (might from gallery or camera path) to Tkpd Cache Directory
+     * The file represents the copy of the original bitmap and can be deleted/modified
+     * without changing the original image
+     */
+    public static File writeImageToTkpdPath(String galleryOrCameraPath) {
+        return writeImageToTkpdPath(convertLocalImagePathToBytes(galleryOrCameraPath, DEF_WIDTH_CMPR,
+                DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS));
+    }
+
+    /**
+     * copy the inputstream to Tkpd Cache Directory
+     * The file represents the copy of the original bitmap and can be deleted/modified
+     * without changing the original image
+     */
+    public static File writeImageToTkpdPath(InputStream source) {
+        String fileName = generateUniqueFileName();
+        File photo = getTkpdImageCacheFile(fileName);
 
         if (photo.exists()) {
             photo.delete();
@@ -94,20 +140,47 @@ public class FileUtils {
         if (writeStreamToFile(source, photo)) {
             return photo;
         }
-
         return null;
     }
 
-    @NonNull
-    private static File getTkpdCacheFile(String fileName){
-        String externalDirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-        String tkpdFolderPath = FileUtils.getFolderPathForUploadNoRand(externalDirPath);
-
-        File tkpdRootdirectory = new File(tkpdFolderPath);
-        if (!tkpdRootdirectory.exists()) {
-            tkpdRootdirectory.mkdirs();
+    /**
+     * check if the file is in tkpdcache directory.
+     */
+    public static boolean isInTkpdCache(File file) {
+        File tkpdCacheDirectory = getTkpdCacheDirectory();
+        String tkpdcacheDirPath = tkpdCacheDirectory.getAbsolutePath();
+        if (file.exists() && file.getAbsolutePath().contains(tkpdcacheDirPath)) {
+            return true;
         }
-        return new File(tkpdRootdirectory.getAbsolutePath() + CACHE_TOKOPEDIA+fileName +".jpg");
+        return false;
+    }
+
+    /**
+     * delete the inputted files (only process files in tkpd cache directory)
+     * If the files are not in tkpd cache directory, ignore those.
+     */
+    public static void deleteAllCacheTkpdFiles(ArrayList<String> filesToDelete) {
+        if (filesToDelete == null || filesToDelete.size() == 0) {
+            return;
+        }
+        for (int i = 0, sizei = filesToDelete.size(); i < sizei; i++) {
+            String filePathToDelete = filesToDelete.get(i);
+            deleteAllCacheTkpdFile(filePathToDelete);
+        }
+    }
+
+    /**
+     * delete the inputted file (only process files in tkpd cache directory)
+     * If the file is not in tkpd cache directory, ignore it.
+     */
+    public static void deleteAllCacheTkpdFile(String fileToDeletePath) {
+        if (TextUtils.isEmpty(fileToDeletePath)) {
+            return;
+        }
+        File fileToDelete = new File(fileToDeletePath);
+        if (isInTkpdCache(fileToDelete)) {
+            fileToDelete.delete();
+        }
     }
 
     // URI starts with "content://gmail-ls/"
@@ -115,8 +188,7 @@ public class FileUtils {
         File attach;
         try {
             InputStream attachment = context.getContentResolver().openInputStream(contentUri);
-            String fileName = FileUtils.generateUniqueFileName(contentUri.toString());
-            attach = FileUtils.writeImageToTkpdPath(attachment, fileName);
+            attach = FileUtils.writeImageToTkpdPath(attachment);
             if (attach == null) {
                 return null;
             }
@@ -126,14 +198,23 @@ public class FileUtils {
         }
     }
 
-    public static String getRealPathFromURI(Context context, Uri uri) {
+    public static String getTkpdPathFromURI(Context context, Uri uri) {
         InputStream is = null;
         if (uri.getAuthority() != null) {
             try {
                 is = context.getContentResolver().openInputStream(uri);
+                String path = getPathFromMediaUri(context, uri);
                 Bitmap bmp = BitmapFactory.decodeStream(is);
-                return writeToTempImageAndGetPathUri(context, bmp);
-            } catch (FileNotFoundException e) {
+                if (!TextUtils.isEmpty(path)) {
+                    bmp = ImageHandler.RotatedBitmap(bmp, path);
+                }
+                File file = writeImageToTkpdPath(bmp);
+                if (file != null) {
+                    return file.getAbsolutePath();
+                } else {
+                    return null;
+                }
+            } catch (Exception e) {
                 e.printStackTrace();
             } finally {
                 try {
@@ -146,28 +227,168 @@ public class FileUtils {
         return null;
     }
 
-    public static String writeToTempImageAndGetPathUri(Context inContext, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        return getPath(inContext, Uri.parse(path));
-    }
-
-    public static String getPath(Context context, Uri contentUri) {
+    public static String getPathFromMediaUri(Context context, Uri contentUri) {
 
         String res = "";
         String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
         if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                res = cursor.getString(column_index);
+            try {
+                if (cursor.moveToFirst()) {
+                    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                    res = cursor.getString(column_index);
+                    return res;
+                }
+            } catch (Exception e) {
+                return null;
             }
-            cursor.close();
+            finally {
+                cursor.close();
+            }
         } else {
             return contentUri.getPath();
         }
         return res;
+    }
+
+    /**
+     * Get a file path from a Uri. This will get the the path for Storage Access
+     * Framework Documents, as well as the _data field for the MediaStore and
+     * other file-based ContentProviders.
+     *
+     * @param context The context.
+     * @param uri     The Uri to query.
+     * @author paulburke
+     */
+
+    public static String getPath(final Context context, final Uri uri) {
+
+        final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+
+        // DocumentProvider
+        if (isKitKat && isDocumentURI(context, uri)) {
+            // ExternalStorageProvider
+            if (isExternalStorageDocument(uri)) {
+                final String docId = getDocumentID(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+
+                if ("primary".equalsIgnoreCase(type)) {
+                    return Environment.getExternalStorageDirectory() + "/" + split[1];
+                }
+
+                // TODO handle non-primary volumes
+            }
+            // DownloadsProvider
+            else if (isDownloadsDocument(uri)) {
+
+                final String id = getDocumentID(uri);
+                final Uri contentUri = ContentUris.withAppendedId(
+                        Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+
+                return getDataColumn(context, contentUri, null, null);
+            }
+            // MediaProvider
+            else if (isMediaDocument(uri)) {
+                final String docId = getDocumentID(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+
+                Uri contentUri = null;
+                if ("image".equals(type)) {
+                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                } else if ("video".equals(type)) {
+                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                } else if ("audio".equals(type)) {
+                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                }
+
+                final String selection = "_id=?";
+                final String[] selectionArgs = new String[]{
+                        split[1]
+                };
+
+                return getDataColumn(context, contentUri, selection, selectionArgs);
+            }
+        }
+        // MediaStore (and general)
+        else if ("content".equalsIgnoreCase(uri.getScheme())) {
+            return getDataColumn(context, uri, null, null);
+        }
+        // File
+        else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+
+        return null;
+    }
+
+    /**
+     * Get the value of the data column for this Uri. This is useful for
+     * MediaStore Uris, and other file-based ContentProviders.
+     *
+     * @param context       The context.
+     * @param uri           The Uri to query.
+     * @param selection     (Optional) Filter used in the query.
+     * @param selectionArgs (Optional) Selection arguments used in the query.
+     * @return The value of the _data column, which is typically a file path.
+     */
+    public static String getDataColumn(Context context, Uri uri, String selection,
+                                       String[] selectionArgs) {
+
+        Cursor cursor = null;
+        final String column = "_data";
+        final String[] projection = {
+                column
+        };
+
+        try {
+            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs,
+                    null);
+            if (cursor != null && cursor.moveToFirst()) {
+                final int column_index = cursor.getColumnIndexOrThrow(column);
+                return cursor.getString(column_index);
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+        return null;
+    }
+
+    @TargetApi(19)
+    private static boolean isDocumentURI(Context context, Uri uri) {
+        return DocumentsContract.isDocumentUri(context, uri);
+    }
+
+    @TargetApi(19)
+    private static String getDocumentID(Uri uri) {
+        return DocumentsContract.getDocumentId(uri);
+    }
+
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is ExternalStorageProvider.
+     */
+    public static boolean isExternalStorageDocument(Uri uri) {
+        return "com.android.externalstorage.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is DownloadsProvider.
+     */
+    public static boolean isDownloadsDocument(Uri uri) {
+        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is MediaProvider.
+     */
+    public static boolean isMediaDocument(Uri uri) {
+        return "com.android.providers.media.documents".equals(uri.getAuthority());
     }
 
     private static boolean writeBufferToFile(byte[] buffer, String path) {
@@ -182,6 +403,7 @@ public class FileUtils {
         }
 
     }
+
     private static boolean writeStreamToFile(InputStream source, File file) {
         OutputStream outStream;
         try {
@@ -203,8 +425,18 @@ public class FileUtils {
 
     }
 
-    public static byte[] compressImage(String imagePathToCompress, int maxWidth, int maxHeight, int compressionQuality) {
+    public static byte[] convertLocalImagePathToBytes(String imagePathToCompress, int maxWidth, int maxHeight, int compressionQuality) {
+        Bitmap tempPicToUpload = compressImageToBitmap(imagePathToCompress, maxWidth, maxHeight, compressionQuality);
+        ByteArrayOutputStream bao = new ByteArrayOutputStream();
+        if (tempPicToUpload != null) {
+            tempPicToUpload.compress(Bitmap.CompressFormat.PNG, compressionQuality, bao);
+            return bao.toByteArray();
+        }
+        return null;
+    }
 
+
+    public static Bitmap compressImageToBitmap(String imagePathToCompress, int maxWidth, int maxHeight, int compressionQuality) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
         BitmapFactory.Options checksize = new BitmapFactory.Options();
@@ -213,8 +445,7 @@ public class FileUtils {
         BitmapFactory.decodeFile(imagePathToCompress, checksize);
         options.inSampleSize = ImageHandler.calculateInSampleSize(checksize);
         Bitmap tempPic = BitmapFactory.decodeFile(imagePathToCompress, options);
-        ByteArrayOutputStream bao = new ByteArrayOutputStream();
-        Bitmap tempPicToUpload = null;
+        Bitmap tempPicToUpload;
         if (tempPic != null) {
             try {
                 tempPic = ImageHandler.RotatedBitmap(tempPic, imagePathToCompress);
@@ -226,31 +457,9 @@ public class FileUtils {
             } else {
                 tempPicToUpload = tempPic;
             }
-            tempPicToUpload.compress(Bitmap.CompressFormat.JPEG, compressionQuality, bao);
-            return bao.toByteArray();
+            return tempPicToUpload;
         }
         return null;
     }
 
-    /**
-     * example of result : /storage/emulated/0/Android/data/com.tokopedia.tkpd/1451274244/image.jpg
-     * @param root
-     * @param output
-     * @param extension
-     * @return
-     */
-    public static String getPathForUpload(String root, String output, String extension){
-        return root+"/Android/data/"+ MainApplication.PACKAGE_NAME+"/"+(System.currentTimeMillis() / 1000L) + "/"+output+"."+extension;
-    }
-
-    public static void writeStringAsFileExt(Context context, final String fileContents, String fileName) {
-        try {
-            File root = android.os.Environment.getExternalStorageDirectory();
-            FileWriter out = new FileWriter(new File(root.getAbsolutePath())+"/"+ fileName);//new File(context.getExternalFilesDir(null)
-            out.write(fileContents);
-            out.close();
-        } catch (IOException e) {
-            Log.e("Exception", "File write failed: " + e.toString());
-        }
-    }
 }

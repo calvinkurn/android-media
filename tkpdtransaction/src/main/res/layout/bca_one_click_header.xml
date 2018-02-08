@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bca_one_click_register_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="18dp"
+    android:background="@drawable/card_thick_edge"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@drawable/card_thick_edge"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/padding_med"
+            android:layout_marginRight="@dimen/padding_med"
+            android:text="@string/quick_payment"
+            android:textSize="@dimen/font_medium" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/small_dp"
+        android:paddingBottom="@dimen/small_dp"
+        android:paddingLeft="@dimen/padding_med"
+        android:paddingRight="@dimen/padding_med"
+        android:layout_marginTop="@dimen/margin_small">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_width="@dimen/btn_height"
+                android:layout_height="@dimen/btn_height"
+                android:src="@drawable/ic_logo_oneklik_bca" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/bca_one_click_register_button"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/btn_height"
+            android:layout_weight="1"
+            android:background="@drawable/btn_green_3dp"
+            android:gravity="center"
+            android:text="@string/title_register"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</LinearLayout>

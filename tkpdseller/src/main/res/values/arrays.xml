@@ -16,88 +16,10 @@
         <item>Des</item>
     </string-array>
 
-    <!-- Gm Stat =============================================================================== -->
-    <string-array name="gm_stat_gender">
-        <item>Pria</item>
-        <item>Wanita</item>
-    </string-array>
-
-    <!-- Top Ads =============================================================================== -->
-    <string-array name="top_ads_filter_status_list_entries">
-        <item>@string/label_top_ads_all_status</item>
-        <item>@string/label_top_ads_active</item>
-        <item>@string/label_top_ads_not_sent</item>
-        <item>@string/label_top_ads_not_active</item>
-    </string-array>
-    <string-array name="top_ads_filter_status_list_values">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-    </string-array>
-
-    <string-array name="top_ads_keyword_filter_status_list_entries">
-        <item>@string/label_top_ads_all_status</item>
-        <item>@string/label_top_ads_active</item>
-        <item>@string/label_top_ads_not_active</item>
-    </string-array>
-    <string-array name="top_ads_keyword_filter_status_list_values">
-        <item>0</item>
-        <item>1</item>
-        <item>3</item>
-    </string-array>
-
-    <string-array name="top_ads_filter_group_name_list_entries">
-        <item>@string/label_top_ads_all_product</item>
-        <item>@string/label_top_ads_inside_group</item>
-        <item>@string/label_top_ads_outside_group</item>
-    </string-array>
-    <string-array name="top_ads_filter_group_name_list_values">
-        <item>0</item>
-        <item>-1</item>
-        <item>-2</item>
-    </string-array>
-
-    <string-array name="top_ads_filter_status_promo_list_entries">
-        <item>@string/label_top_ads_all_status</item>
-        <item>@string/label_top_ads_not_promoted_yet</item>
-        <item>@string/label_top_ads_outside_group</item>
-        <item>@string/label_top_ads_inside_group</item>
-    </string-array>
-    <string-array name="top_ads_filter_status_promo_list_values">
-        <item>1</item>
-        <item>0</item>
-        <item>3</item>
-        <item>2</item>
-    </string-array>
-
-    <string-array name="top_ads_keyword_type_list_entries" >
-        <item>Phrase Match</item>
-        <item>Exact Match</item>
-    </string-array>
-    <string-array name="top_ads_keyword_type_positive_list_values" >
-        <item>11</item>
-        <item>21</item>
-    </string-array>
-
-    <string-array name="top_ads_keyword_type_entries">
-        <item>@string/top_ads_keyword_phrase_match</item>
-        <item>@string/top_ads_keyword_exact_match</item>
-    </string-array>
-    <string-array name="top_ads_keyword_type_values">
-        <item>1</item>
-        <item>2</item>
-    </string-array>
-
-    <string-array name="top_ads_keyword_type_negative_list_values" >
-        <item>12</item>
-        <item>22</item>
-    </string-array>
-
     <!-- Product =============================================================================== -->
     <string-array name="product_currency_entries">
         <item>Rp</item>
-        <item>$</item>
+        <item>US$</item>
     </string-array>
     <string-array name="product_currency_values">
         <item>@string/product_currency_value_idr</item>
@@ -114,8 +36,8 @@
     </string-array>
 
     <string-array name="product_stock_status_entries">
-        <item>Stock Tersedia</item>
-        <item>Stock Kosong</item>
+        <item>Stok Tersedia</item>
+        <item>Stok Kosong</item>
     </string-array>
     <string-array name="product_stock_status_values">
         <item>@string/product_stock_available_value</item>
@@ -127,8 +49,8 @@
         <item>Bekas</item>
     </string-array>
     <string-array name="product_condition_values">
-        <item>1</item>
-        <item>2</item>
+        <item>@string/product_condition_value_new</item>
+        <item>@string/product_condition_value_recon</item>
     </string-array>
 
     <string-array name="product_insurance_entries">
@@ -136,8 +58,8 @@
         <item>Ya</item>
     </string-array>
     <string-array name="product_insurance_values">
-        <item>0</item>
-        <item>1</item>
+        <item>@string/product_insurance_value_optional</item>
+        <item>@string/product_insurance_value_yes</item>
     </string-array>
 
     <string-array name="product_free_returns_entries">
@@ -157,4 +79,5 @@
         <item>@string/product_pre_order_value_day</item>
         <item>@string/product_pre_order_value_week</item>
     </string-array>
+
 </resources>

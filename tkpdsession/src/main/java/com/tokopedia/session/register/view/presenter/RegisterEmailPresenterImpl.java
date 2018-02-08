@@ -91,6 +91,10 @@ public class RegisterEmailPresenterImpl implements RegisterEmailPresenter, Regis
             default:
                 throw new RuntimeException("ERROR UNKNOWN ACTION");
         }
+
+        if(registerViewModel != null) {
+            UnifyTracking.eventMoRegister(registerViewModel.getName(), registerViewModel.getPhone());
+        }
     }
 
     private boolean isValidForm() {
@@ -159,6 +163,9 @@ public class RegisterEmailPresenterImpl implements RegisterEmailPresenter, Regis
 
     private void sendGTMRegisterError(String label) {
         UnifyTracking.eventRegisterError(label);
+
+
+
 
     }
 }

@@ -3,147 +3,7 @@ package com.tokopedia.core.var;
 import com.tokopedia.core.R;
 
 
-public class TkpdState {
-
-    public class RequestCode {
-        public static final int CODE_OPEN_DETAIL_REPUTATION = 100;
-        public static final int CODE_OPEN_DETAIL_PRODUCT_REVIEW = 1;
-        public static final int CODE_OPEN_FORM_PRODUCT_REVIEW = 2;
-    }
-
-    public class TroubleTicket {
-        public static final int TICKET_CLOSED = 2;
-        public static final int TICKET_OPEN = 1;
-        public static final int TICKET_RATING_BAD = 2;
-        public static final int TICKET_RATING_GOOD = 1;
-        public static final int TICKET_RATING_NEUTRAL = 0;
-        public static final int TICKET_VIEW_REPLYABLE = 1;
-        public static final int TICKET_VIEW_REPLYABLE_WITH_PROMPT = 2;
-        public static final int TICKET_VIEW_NOT_REPLYABLE = 3;
-        public static final int TICKET_VIEW_NOT_REPLYABLE_WITH_OPTION = 4;
-    }
-
-    public class DrawerPosition{
-		public static final int NO_ACCESS = 0;
-		public static final int INBOX_MESSAGE = 1;
-		public static final int INBOX_REVIEW = 2;
-		public static final int INBOX_TALK = 3;
-		public static final int INBOX_TICKET = 4;
-		public static final int INDEX_HOME = 5;
-		public static final int LOGIN = 6;
-		public static final int MANAGE_PEOPLE = 7;
-        public static final int MANAGE_PRODUCT = 8;
-        public static final int DRAFT_PRODUCT = 54;
-		public static final int MANAGE_SHOP = 9;
-		public static final int PEOPLE = 10;
-		public static final int PEOPLE_DEPOSIT = 11;
-		public static final int PEOPLE_TRANSACTION = 12;
-		public static final int SHOP_TRANSACTION = 13;
-		public static final int CREATE_SHOP = 14;
-		public static final int SHOP_INFO = 15;
-		public static final int GENERAL_SETTING = 16;
-		public static final int RESOLUTION_CENTER = 18;
-		public static final int REGISTER = 19;
-		public static final int DEVELOPER_OPTIONS = 20;
-		public static final int MANAGE_ETALASE = 21;
-        public static final int MANAGE_DRAFT_PRODUCT = 22;
-
-        public static final int PEOPLE_PAYMENT_STATUS = 201;
-        public static final int PEOPLE_ORDER_STATUS = 202;
-		public static final int PEOPLE_CONFIRM_SHIPPING = 203;
-		public static final int PEOPLE_TRANSACTION_LIST = 204;
-        public static final int PEOPLE_TRANSACTION_CANCELED = 205;
-
-		public static final int SHOP_NEW_ORDER = 301;
-		public static final int SHOP_CONFIRM_SHIPPING = 302;
-		public static final int SHOP_SHIPPING_STATUS = 303;
-		public static final int SHOP_TRANSACTION_LIST = 304;
-		public static final int SHOP = 300;
-
-		public static final int INBOX = 31;
-        public static final int WISHLIST = 32;
-        public static final int SECURITY_QUESTION = 33;
-        public static final int REGISTER_NEXT = 34;
-        public static final int ACTIVATION_RESENT = 35;
-        public static final int FORGOT_PASSWORD = 36;
-        public static final int HOTLIST = 37;
-        public static final int HOME = 38;
-        public static final int SETTINGS = 39;
-        public static final int REGISTER_THIRD = 40;
-        public static final int CONTACT_US = 41;
-        public static final int REPORT = 42;
-        public static final int LOGOUT = 43;
-        public static final int SELLER_INDEX_HOME = TkpdState.DrawerPosition.INDEX_HOME;
-        public static final int REGISTER_INITIAL = 45;
-        public static final int SELLER_GM_SUBSCRIBE = 46;
-        public static final int SELLER_GM_SUBSCRIBE_EXTEND = 47;
-        public static final int SELLER_PRODUCT_EXTEND = 53;
-        public static final int SELLER_TOP_ADS = 48;
-        public static final int SELLER_GM_STAT = 49;
-        public static final int GOLD_MERCHANT = 50;
-        public static final int HELP = 51;
-        public static final int SHOP_OPPORTUNITY_LIST = 52;
-    }
-
-    public class Application {
-        public static final int ACTIVITY = 1;
-        public static final int FRAGMENT_ACTIVITY = 2;
-    }
-
-    public class NetworkState {
-        public static final int NO_CONNECTION = 1;
-        public static final int TIMEOUT = 2;
-        public static final int SERVER_ERROR = 3;
-    }
-
-    /**
-     * @author EkaCipta
-     *         Tidak bisa passing intent code melalui fragment ke activity, jadi menggunakan result untuk passing code
-     */
-    public class TxActivityCode {
-        public static final int PaymentConfirmationSuccess = 101;
-        public static final int BuyerItemReceived = 102;
-        public static final int BuyerCreateResolution = 103;
-    }
-
-    /**
-     * @author EkaCipta
-     *         Nama package untuk program yang dipanggil
-     */
-    public class PackageName {
-        public static final String BlackBerry = "com.bbm";
-        public static final String Twitter = "com.twitter.android";
-        public static final String Instagram = "com.instagram.android";
-        public static final String Facebook = "com.facebook.katana";
-        public static final String Wechat = "con.tencent.mm";
-        public static final String Whatsapp = "com.whatsapp";
-        public static final String Pinterest = "com.pinterest";
-        public static final String Gplus = "com.google.android.apps.plus";
-        public static final String Line = "jp.naver.line.android";
-        public static final String TYPE_IMAGE = "image/jpeg";
-        public static final String TYPE_IMAGE_2 = "image/*";
-        public static final String TYPE_TEXT = "text/plain";
-        /**
-         * Format for twitter : "http://www.twitter.com/intent/tweet?url=YOURURL&text=YOURTEXT"
-         */
-        public static final String TWITTER_DEFAULT = "http://www.twitter.com/intent/tweet?";
-    }
-
-    public class OrderStatusState {
-        public static final int ORDER_WAITING_STATUS_FROM_SHIPPING_AGENCY = 501;
-        public static final int ORDER_SHIPPING = 500;
-        public static final int ORDER_SHIPPING_TRACKER_INVALID = 520;
-        public static final int ORDER_SHIPPING_REF_NUM_EDITED = 530;
-        public static final int ORDER_DELIVERED = 600;
-        public static final int ORDER_DELIVERY_FAILURE = 630;
-        public static final int ORDER_CONFLICTED = 601;
-        public static final int ORDER_OPPORTUNITY = 11;
-    }
-
-    public class BrowseProdState {
-        public static final int CATALOG = 1;
-        public static final int PRODUCT = 2;
-    }
+public class TkpdState extends com.tokopedia.abstraction.constant.TkpdState {
 
     public static class ResCenterSolution {
         public static final int SOLUTION_REFUND = 1;
@@ -216,16 +76,6 @@ public class TkpdState {
         }
     }
 
-    public class ResCenterCase {
-        public static final int ACCEPT = 1;
-        public static final int INPUT = 2;
-        public static final int INPUT_FINISH = 3;
-        public static final int ACCEPT_ADMIN_APPEAL = 4;
-        public static final int APPEAL = 5;
-        public static final int FINISH = 6;
-
-    }
-
     public static class ResCenterAct {
         public static final int ACCEPT = 1;
         public static final int INPUT = 2;
@@ -295,16 +145,174 @@ public class TkpdState {
         public static int RESO_BUYER = 1;
     }
 
-    public class UpdateState {
-        public static final int NO_UPDATE = 0;
-        public static final int MUST_UPDATE = 1;
-        public static final int OPTIONAL_UPDATE = 2;
-    }
-
     public static class StateView {
         public static final int GRID_3 = 0;
         public static final int GRID_2 = 1;
         public static final int LIST = 2;
+    }
+
+    public class RequestCode {
+        public static final int CODE_OPEN_DETAIL_REPUTATION = 100;
+        public static final int CODE_OPEN_DETAIL_PRODUCT_REVIEW = 1;
+        public static final int CODE_OPEN_FORM_PRODUCT_REVIEW = 2;
+    }
+
+    public class TroubleTicket {
+        public static final int TICKET_CLOSED = 2;
+        public static final int TICKET_OPEN = 1;
+        public static final int TICKET_RATING_BAD = 2;
+        public static final int TICKET_RATING_GOOD = 1;
+        public static final int TICKET_RATING_NEUTRAL = 0;
+        public static final int TICKET_VIEW_REPLYABLE = 1;
+        public static final int TICKET_VIEW_REPLYABLE_WITH_PROMPT = 2;
+        public static final int TICKET_VIEW_NOT_REPLYABLE = 3;
+        public static final int TICKET_VIEW_NOT_REPLYABLE_WITH_OPTION = 4;
+    }
+
+    public class DrawerPosition {
+        public static final int NO_ACCESS = 0;
+        public static final int INBOX_MESSAGE = 1;
+        public static final int INBOX_REVIEW = 2;
+        public static final int INBOX_TALK = 3;
+        public static final int INBOX_TICKET = 4;
+        public static final int INDEX_HOME = 5;
+        public static final int LOGIN = 6;
+        public static final int MANAGE_PEOPLE = 7;
+        public static final int MANAGE_PRODUCT = 8;
+        public static final int ADD_PRODUCT = 1001;
+        public static final int MANAGE_PAYMENT_AND_TOPUP = 55;
+        public static final int MANAGE_TRANSACTION_DIGITAL = 56;
+        public static final int MANAGE_PRICE_PRODUCT_DIGITAL = 57;
+        public static final int DRAFT_PRODUCT = 22;
+        public static final int MANAGE_SHOP = 9;
+        public static final int PEOPLE = 10;
+        public static final int PEOPLE_DEPOSIT = 11;
+        public static final int PEOPLE_TRANSACTION = 12;
+        public static final int SHOP_TRANSACTION = 13;
+        public static final int CREATE_SHOP = 14;
+        public static final int SHOP_INFO = 15;
+        public static final int GENERAL_SETTING = 16;
+        public static final int RESOLUTION_CENTER = 18;
+        public static final int SELLER_INFO = 193;
+		public static final int REGISTER = 19;
+        public static final int DEVELOPER_OPTIONS = 20;
+        public static final int MANAGE_ETALASE = 21;
+        public static final int PEOPLE_PAYMENT_STATUS = 201;
+        public static final int PEOPLE_ORDER_STATUS = 202;
+        public static final int PEOPLE_CONFIRM_SHIPPING = 203;
+        public static final int PEOPLE_TRANSACTION_LIST = 204;
+        public static final int PEOPLE_TRANSACTION_CANCELED = 205;
+
+        public static final int SHOP_NEW_ORDER = 301;
+        public static final int SHOP_CONFIRM_SHIPPING = 302;
+        public static final int SHOP_SHIPPING_STATUS = 303;
+        public static final int SHOP_TRANSACTION_LIST = 304;
+        public static final int SHOP = 300;
+
+        public static final int INBOX = 31;
+        public static final int WISHLIST = 32;
+        public static final int SECURITY_QUESTION = 33;
+        public static final int REGISTER_NEXT = 34;
+        public static final int ACTIVATION_RESENT = 35;
+        public static final int FORGOT_PASSWORD = 36;
+        public static final int HOTLIST = 37;
+        public static final int HOME = 38;
+        public static final int SETTINGS = 39;
+        public static final int REGISTER_THIRD = 40;
+        public static final int CONTACT_US = 41;
+        public static final int REPORT = 42;
+        public static final int LOGOUT = 43;
+        public static final int SELLER_INDEX_HOME = TkpdState.DrawerPosition.INDEX_HOME;
+        public static final int REGISTER_INITIAL = 45;
+        public static final int SELLER_GM_SUBSCRIBE = 46;
+        public static final int SELLER_GM_SUBSCRIBE_EXTEND = 47;
+        public static final int SELLER_PRODUCT_EXTEND = 53;
+        public static final int SELLER_PRODUCT_DIGITAL_EXTEND = 54;
+        public static final int SELLER_TOP_ADS = 48;
+        public static final int SELLER_GM_STAT = 49;
+        public static final int SELLER_MITRA_TOPPERS = 101;
+        public static final int GOLD_MERCHANT = 50;
+        public static final int HELP = 51;
+        public static final int SHOP_OPPORTUNITY_LIST = 52;
+
+        public static final int CATEGORY_NAVIGATION = 54;
+
+        public static final int FEATURED_PRODUCT = 99;
+
+        public static final int POS_TRANSACTION_HISTORY = 401;
+        public static final int POS_OUTLET = 402;
+
+        public static final int APPSHARE = 58;
+    }
+
+    public class Application {
+        public static final int ACTIVITY = 1;
+        public static final int FRAGMENT_ACTIVITY = 2;
+    }
+
+    public class NetworkState {
+        public static final int NO_CONNECTION = 1;
+        public static final int TIMEOUT = 2;
+        public static final int SERVER_ERROR = 3;
+    }
+
+    /**
+     * @author EkaCipta
+     *         Tidak bisa passing intent code melalui fragment ke activity, jadi menggunakan result untuk passing code
+     */
+    public class TxActivityCode {
+        public static final int PaymentConfirmationSuccess = 101;
+        public static final int BuyerItemReceived = 102;
+        public static final int BuyerCreateResolution = 103;
+    }
+
+    /**
+     * @author EkaCipta
+     *         Nama package untuk program yang dipanggil
+     */
+    public class PackageName {
+        public static final String BlackBerry = "com.bbm";
+        public static final String Twitter = "com.twitter.android";
+        public static final String Instagram = "com.instagram.android";
+        public static final String Facebook = "com.facebook.katana";
+        public static final String Wechat = "con.tencent.mm";
+        public static final String Whatsapp = "com.whatsapp";
+        public static final String Pinterest = "com.pinterest";
+        public static final String Gplus = "com.google.android.apps.plus";
+        public static final String Line = "jp.naver.line.android";
+        public static final String TYPE_IMAGE = "image/jpeg";
+        public static final String TYPE_IMAGE_2 = "image/*";
+        public static final String TYPE_TEXT = "text/plain";
+        /**
+         * Format for twitter : "http://www.twitter.com/intent/tweet?url=YOURURL&text=YOURTEXT"
+         */
+        public static final String TWITTER_DEFAULT = "http://www.twitter.com/intent/tweet?";
+    }
+
+    public class OrderStatusState {
+        public static final int ORDER_WAITING_STATUS_FROM_SHIPPING_AGENCY = 501;
+        public static final int ORDER_SHIPPING = 500;
+        public static final int ORDER_SHIPPING_TRACKER_INVALID = 520;
+        public static final int ORDER_SHIPPING_REF_NUM_EDITED = 530;
+        public static final int ORDER_DELIVERED = 600;
+        public static final int ORDER_DELIVERY_FAILURE = 630;
+        public static final int ORDER_CONFLICTED = 601;
+        public static final int ORDER_OPPORTUNITY = 11;
+    }
+
+    public class BrowseProdState {
+        public static final int CATALOG = 1;
+        public static final int PRODUCT = 2;
+    }
+
+    public class ResCenterCase {
+        public static final int ACCEPT = 1;
+        public static final int INPUT = 2;
+        public static final int INPUT_FINISH = 3;
+        public static final int ACCEPT_ADMIN_APPEAL = 4;
+        public static final int APPEAL = 5;
+        public static final int FINISH = 6;
+
     }
 
     public class TrackerState {
@@ -456,6 +464,7 @@ public class TkpdState {
     }
 
     public class SHIPPING_ID {
+        public static final String WAHANA = "6";
         public static final String GOJEK = "10";
     }
 

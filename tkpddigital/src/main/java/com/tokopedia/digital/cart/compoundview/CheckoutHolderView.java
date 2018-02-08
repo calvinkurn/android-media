@@ -73,7 +73,6 @@ public class CheckoutHolderView extends RelativeLayout {
         });
     }
 
-
     public void disableVoucherDiscount() {
         voucherDiscount = 0;
         tvDiscount.setText(getStringIdrFormat((double) this.voucherDiscount));
@@ -111,7 +110,6 @@ public class CheckoutHolderView extends RelativeLayout {
     public void disableCheckoutButton() {
         btnNext.setEnabled(false);
     }
-
 
     public interface IAction {
         void onClickButtonNext();

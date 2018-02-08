@@ -1,6 +1,10 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'android-apt'
 apply plugin: 'io.fabric'
+apply from: "../buildconfig/reactnative/react.gradle"
+apply from: "../buildconfig/reactnative/codepush.gradle"
+
 
 def getDpiId(String density) {
 
@@ -8,6 +12,18 @@ def getDpiId(String density) {
     if (density != null)
         return DPI_ID.get(density);
     return 0;
+}
+
+def getAbiId(String abi) {
+
+    def ABI_ID = ['null': 0, 'armeabi-v7a': 10, 'x86': 20]
+    if (abi != null)
+        return ABI_ID.get(abi);
+    return 0;
+}
+
+def generateBuildId(String density, String abi) {
+    return getAbiId(abi) + getDpiId(density);
 }
 
 def getAPKArchiveFolder(variant) {
@@ -69,8 +85,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 2080109;
-        defaultVersionName = "2.8.1.9";
+        defaultVersionCode = 218001101;
+        defaultVersionName = "2.18";
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -88,7 +104,7 @@ android {
             aidl.srcDirs = ['src/main/java']
             renderscript.srcDirs = ['src/main/java']
             res.srcDirs = ['src/main/res']
-            assets.srcDirs = ['assets']
+            assets.srcDirs = ['assets', 'src/main/assets', 'src/main/assets/']
         }
 
         instrumentTest.setRoot('tests')
@@ -126,7 +142,8 @@ android {
                 applicationVariants.all { variant ->
                     variant.outputs.each { output ->
                         String density = output.getFilter(com.android.build.OutputFile.DENSITY);
-                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + getDpiId(density);
+                        String abi = output.getFilter(com.android.build.OutputFile.ABI);
+                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + generateBuildId(density, abi);
                     }
                     variant.assemble.doLast {
                         variant.outputs.each { output ->
@@ -149,9 +166,17 @@ android {
     splits {
         density {
             enable allowSplit()
-            exclude "tvdpi", "xxxhdpi", "ldpi" //Add or modify the supported density here`
-            compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
+            reset()
+            include "mdpi", "hdpi", "xhdpi", "xxhdpi"
+            compatibleScreens 'small', 'normal', 'large', 'xlarge'
         }
+        abi {
+            enable allowSplit()
+            reset()
+            include "armeabi-v7a", "x86"
+            universalApk false
+        }
+
     }
 
     defaultConfig {
@@ -159,15 +184,21 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled = true
         applicationId "com.tokopedia.tkpd"
-        resConfigs "en", "id"
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
         vectorDrawables.useSupportLibrary = true
+        ndk {
+            abiFilters "armeabi-v7a", "x86"
+        }
+        packagingOptions {
+            exclude "lib/arm64-v8a/libgnustl_shared.so"
+        }
     }
 
 
     dexOptions {
-        javaMaxHeapSize "4g"
+        javaMaxHeapSize "8g"
+        keepRuntimeAnnotatedClasses false
     }
 
     compileOptions {
@@ -183,51 +214,55 @@ android {
         staging {
 
         }
-        alpha {
-        }
+
         live {
 
         }
     }
 
-//    variantFilter { variant ->
-//        def names = variant.flavors*.name
-//        // To check for a certain build type, use variant.buildType.name == "<buildType>"
-//        if (names.contains("staging") && names.contains("demo")) {
-//            // Gradle ignores any variants that satisfy the conditions above.
-//            setIgnore(true)
-//        }
-//    }
+    variantFilter { variant ->
+
+        if(variant.buildType.name.equals('release') && variant.getFlavors().get(0).name.equals('staging')) {
+            variant.setIgnore(true);
+        }
+    }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
 
-//    compile (rootProject.ext.tkpdDependencies.inbox) {
+//    compile(rootProject.ext.tkpdDependencies.inbox) {
 //        exclude group: 'com.tokopedia.core'
 //    }
-//    compile (rootProject.ext.tkpdDependencies.discovery) {
+//    compile(rootProject.ext.tkpdDependencies.discovery) {
 //        exclude group: 'com.tokopedia.core'
 //    }
-//    compile (rootProject.ext.tkpdDependencies.transaction) {
+//    compile(rootProject.ext.tkpdDependencies.transaction) {
 //        exclude group: 'com.tokopedia.core'
 //    }
-//    compile (rootProject.ext.tkpdDependencies.seller) {
+//    compile(rootProject.ext.tkpdDependencies.seller) {
 //        exclude group: 'com.tokopedia.core'
 //    }
-//    compile (rootProject.ext.tkpdDependencies.session) {
+//    compile(rootProject.ext.tkpdDependencies.session) {
 //        exclude group: 'com.tokopedia.core'
 //    }
-//    compile (rootProject.ext.tkpdDependencies.tkpdpdp) {
+//    compile(rootProject.ext.tkpdDependencies.tkpdpdp) {
 //        exclude group: 'com.tokopedia.core'
 //    }
-//    compile (rootProject.ext.tkpdDependencies.feed) {
+//    compile(rootProject.ext.tkpdDependencies.feed) {
 //        exclude group: 'com.tokopedia.core'
 //    }
-//    compile (rootProject.ext.tkpdDependencies.ride) {
+//    compile(rootProject.ext.tkpdDependencies.ride) {
+//        exclude group: 'com.tokopedia.core'
+//    }
+//    compile(rootProject.ext.tkpdDependencies.digital) {
+//        exclude group: 'com.tokopedia.core'
+//    }
+//    compile(rootProject.ext.tkpdDependencies.reactNative) {
 //        exclude group: 'com.tokopedia.core'
 //    }
 //    compile (rootProject.ext.tkpdDependencies.core)
+    //compile project(':tkpdcore')
     compile project(':tkpddiscovery')
     compile project(':tkpdtransaction')
     compile project(':tkpdseller')
@@ -237,6 +272,11 @@ dependencies {
     compile project(':tkpddigital')
     compile project(':tkpdpdp')
     compile project(':tkpdfeed')
+    compile project(':tkpdreactnative')
+    compile project(':tkpdloyalty')
+    compile project(':tkpdreputation')
+    compile project(':tkpdtokocash')
+    compile project(':tkpdflight')
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -253,15 +293,13 @@ dependencies {
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    compile rootProject.ext.playServicesDependencies.firebase
-
     provided rootProject.ext.miscDependencies.javaxAnnotation
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
 
     compile 'com.android.support:multidex:1.0.1'
 
-    compile (rootProject.ext.miscDependencies.trueCaller) {
+    compile(rootProject.ext.miscDependencies.trueCaller) {
         exclude group: 'com.android.support'
     }
 }

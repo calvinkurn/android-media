@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container_image_arrow"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerHorizontal="true"
+    android:layout_centerVertical="true"
+    android:layout_weight="1"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:layout_width="@dimen/image_width_xxxs"
+        android:layout_height="@dimen/image_width_xxxs"
+        app:srcCompat="@drawable/circle_green_stroke" />
+
+    <View
+        android:layout_width="20dp"
+        android:layout_height="5dp"
+        android:background="@drawable/bg_dash_stroke_flight" />
+
+    <android.support.v7.widget.AppCompatImageView
+        android:layout_width="@dimen/image_width_xxs"
+        android:layout_height="@dimen/image_width_xxs"
+        app:srcCompat="@drawable/ic_plane_flight" />
+</LinearLayout>

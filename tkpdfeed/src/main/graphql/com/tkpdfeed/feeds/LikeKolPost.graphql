@@ -1,0 +1,8 @@
+mutation LikeKolPost($idPost: Int!, $action: Int!) {
+	do_like_kol_post(idPost: $idPost, action: $action) {
+		error
+		data {
+			success
+		}
+	}
+}

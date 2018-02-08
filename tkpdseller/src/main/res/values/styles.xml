@@ -5,18 +5,6 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="TextView.Wholesale">
-        <item name="android:textSize">@dimen/text_size_medium</item>
-        <item name="android:textColor">@color/wholesale_color</item>
-    </style>
-
-    <style name="TextView.infoInputType">
-        <item name="android:textColor">@color/font_black_secondary_54</item>
-        <item name="android:textSize">12sp</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-
     <style name="EditText.Date">
         <item name="android:editable">false</item>
         <item name="android:focusable">false</item>
@@ -40,27 +28,31 @@
         <item name="layout_anchorGravity">bottom|right|end</item>
     </style>
 
-    <style name="LabelLayout">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:foreground">?android:attr/selectableItemBackground</item>
-        <item name="android:background">@color/white</item>
-        <item name="android:paddingTop">@dimen/top_ads_dashboard_padding_cards</item>
-        <item name="android:paddingLeft">@dimen/top_ads_dashboard_padding_cards</item>
-        <item name="android:paddingRight">@dimen/top_ads_dashboard_padding_cards</item>
-        <item name="android:paddingBottom">@dimen/top_ads_dashboard_padding_cards</item>
-    </style>
-
     <style name="LabelLayout.Border">
         <item name="android:background">@drawable/border_background_view_topads</item>
     </style>
 
     <style name="LabelLayout.BorderBottom">
-        <item name="android:background">@drawable/border_background_bottom</item>
+        <item name="android:background">@drawable/bg_border_bottom</item>
     </style>
 
     <style name="LabelLayout.BorderTop">
-        <item name="android:background">@drawable/border_background_top</item>
+        <item name="android:background">@drawable/bg_border_top</item>
+    </style>
+
+    <style name="BaseCardViewLayoutMatchParent">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">-2dp</item>
+        <item name="android:layout_marginRight">-2dp</item>
+        <item name="cardCornerRadius">0dp</item>
+        <item name="cardElevation">1dp</item>
+        <item name="cardPreventCornerOverlap">false</item>
+    </style>
+
+    <style name="CardViewLayoutMatchParent" parent="BaseCardViewLayoutMatchParent">
+        <item name="android:layout_marginLeft">-2dp</item>
+        <item name="android:layout_marginRight">-2dp</item>
     </style>
 
     <style name="LabelLayout.InnerExpandable">
@@ -81,23 +73,6 @@
         <item name="colorControlActivated">@color/tkpd_main_green</item>
     </style>
 
-    <style name="TopAdsProgressBar" parent="android:Widget.ProgressBar.Horizontal">
-        <item name="android:indeterminateOnly">false</item>
-        <item name="android:progressDrawable">@drawable/top_ads_progressbar</item>
-        <item name="android:minHeight">3dip</item>
-        <item name="android:maxHeight">3dip</item>
-    </style>
-
-    <style name="GMSubscribeContentTextviewSmall" parent="TextView">
-        <item name="android:textSize">12sp</item>
-        <item name="android:textColor">@color/gmsubscribe_autosubscribe_title_content</item>
-    </style>
-
-    <style name="GMSubscribeContentTextviewMedium" parent="TextView">
-        <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/gmsubscribe_content_textview_color</item>
-    </style>
-
     <style name="WhiteCheck">
         <item name="colorAccent">@color/tkpd_main_green</item>
     </style>
@@ -110,10 +85,12 @@
         <item name="tabSelectedTextColor">@color/white</item>
     </style>
 
-    <style name="TopAdsRadioExpandView">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginBottom">16dp</item>
+    <style name="TabBar.WhiteSeller">
+        <item name="tabTextColor">@color/tkpd_grey_text</item>
+        <item name="tabGravity">fill</item>
+        <item name="tabIndicatorHeight">3dp</item>
+        <item name="tabIndicatorColor">@color/tkpd_main_green</item>
+        <item name="tabSelectedTextColor">@android:color/black</item>
     </style>
 
     <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
@@ -122,69 +99,134 @@
         <item name="android:background">@color/white</item>
     </style>
 
-    <style name="EditText.GreenHighlight.TopAdsCustomAutoCompleteTextView">
-        <item name="android:drawableRight">@drawable/ic_close_green</item>
-        <item name="android:drawableEnd">@drawable/ic_close_green</item>
-        <item name="android:drawablePadding">8dp</item>
-        <item name="android:completionThreshold">1</item>
-        <item name="android:inputType">textNoSuggestions</item>
-    </style>
-
-    <style name="TopAdsCustomRadioGroup">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:orientation">vertical</item>
-    </style>
-
     <style name="ExpandableStyle" parent="style_expandable_option_default">
-        <item name="eo_header_style">@style/ExpandableHeaderStyle</item>
-        <item name="eo_text_option_style">@style/TextView.Subheading</item>
+        <item name="eo_text_option_style">@style/TextView.Title</item>
+        <item name="eo_header_style">@style/ExpandableHeaderStyleNoPadding</item>
         <item name="eo_switch_style">@style/ExpandableSwitchStyle</item>
     </style>
 
-    <style name="ExpandableHeaderStyle" parent="eo_header_style">
-        <item name="android:paddingLeft">0dp</item>
-        <item name="android:paddingRight">0dp</item>
-        <item name="android:paddingTop">0dp</item>
-        <item name="android:paddingBottom">0dp</item>
+    <style name="ExpandableStyleNoItemPadding" parent="style_expandable_option_default">
+        <item name="eo_header_style">@style/ExpandableHeaderStylePadding</item>
+        <item name="eo_text_option_style">@style/TextView.Title</item>
+        <item name="eo_switch_style">@style/ExpandableSwitchStyle</item>
+    </style>
+
+    <style name="ExpandableHeaderStylePadding" parent="eo_header_style">
+        <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingTop">@dimen/margin_small_sm</item>
+        <item name="android:paddingBottom">@dimen/margin_small_sm</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="ExpandableHeaderStyleNoPadding" parent="eo_header_style">
+        <item name="android:paddingLeft">@dimen/no_margin</item>
+        <item name="android:paddingRight">@dimen/no_margin</item>
+        <item name="android:paddingTop">@dimen/no_margin</item>
+        <item name="android:paddingBottom">@dimen/no_margin</item>
+        <item name="android:gravity">center_vertical</item>
     </style>
 
     <style name="ExpandableSwitchStyle" parent="eo_switch_style">
         <item name="theme">@style/ColorSwitchCompat</item>
     </style>
 
-    <style name="BasicThemeActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/tkpd_main_green</item>
-        <item name="actionMenuTextColor">@color/white</item>
-        <item name="android:spinnerItemStyle">?android:attr/spinnerItemStyle</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:popupMenuStyle">@style/PopupMenu.Tokopedia</item>
-        <item name="android:dropDownListViewStyle">@style/DropDownListView.Tokopedia</item>
-        <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Tokopedia</item>
-        <item name="android:actionBarStyle">@style/ActionBar.Solid.Tokopedia</item>
-        <item name="actionModeBackground">@color/tkpd_main_green</item>
-        <item name="android:actionModeBackground">@color/tkpd_main_green</item>
-        <item name="android:actionModeSplitBackground">@color/tkpd_main_green</item>
-        <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Tokopedia
-        </item>
-        <item name="android:homeAsUpIndicator">@drawable/ic_new_action_back</item>
-        <item name="android:windowBackground">@color/tkpd_bg_color_grery</item>
-        <item name="android:colorBackground">@color/tkpd_bg_color_grery</item>
-        <!-- Remove shadow from action bar -->
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="vpiTitlePageIndicatorStyle">@style/CustomTitlePageIndicator</item>
-        <item name="vpiTabPageIndicatorStyle">@style/CustomTabPageIndicator</item>
-        <item name="android:textAppearanceLargePopupMenu">@style/myPopupMenuTextAppearanceLarge
-        </item>
-        <item name="android:textAppearanceSmallPopupMenu">@style/myPopupMenuTextAppearanceSmall
-        </item>
-        <item name="android:actionOverflowButtonStyle">@style/OverFlow</item>
-        <item name="android:colorPrimary">@color/tkpd_dark_green</item>
-        <item name="android:statusBarColor">@color/green_600</item>
-        <!--<item name="android:textColorSecondary">@android:color/white</item>-->
-        <item name="android:actionModeStyle">@style/CustomActionMode</item>
-        <item name="actionModeStyle">@style/CustomActionMode</item>
-        <item name="spinnerStyle">@style/Widget.AppCompat.Spinner.Underlined</item>
+    <style name="BottomSheetBuilder.DialogStyle" parent="Theme.Design.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/BottomSheetBuilder.BottomSheetStyle</item>
+    </style>
+
+    <style name="BottomSheetBuilder.BottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/white</item>
+        <item name="behavior_hideable">true</item>
+        <item name="behavior_skipCollapsed">true</item>
+    </style>
+
+    <style name="ImageView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="ImageView.ShopSettingTitleImage">
+        <item name="android:layout_width">36dp</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:layout_marginBottom">24dp</item>
+        <item name="android:layout_marginTop">20dp</item>
+    </style>
+
+    <style name="TextInputLayout.ShopSetting">
+        <item name="hintTextAppearance">@style/TextAppearence.App.TextInputLayout</item>
+        <item name="counterEnabled">true</item>
+        <item name="counterMaxLength">48</item>
+        <item name="counterTextAppearance">@style/ShopOpenCounterTextInputStyle</item>
+    </style>
+
+    <style name="TextInputLayout.ShopSetting.DescShop">
+        <item name="counterMaxLength">140</item>
+    </style>
+
+
+    <style name="EditText.ShopSetting">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/black_70</item>
+        <item name="android:textColorHint">@color/black_38</item>
+    </style>
+
+    <style name="View">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="View.ShopSetting">
+        <item name="android:background">@drawable/rounded_corner_black_shop_open</item>
+    </style>
+
+    <style name="View.ShopSetting.ImagePicker">
+        <item name="android:layout_width">126dp</item>
+        <item name="android:layout_height">126dp</item>
+    </style>
+
+    <style name="View.ShopSetting.BrowseImage">
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">32dp</item>
+    </style>
+
+    <style name="View.ShopSetting.InfoImagePicker">
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingRight">20dp</item>
+        <item name="android:paddingTop">7dp</item>
+        <item name="android:paddingBottom">7dp</item>
+        <item name="android:background">@drawable/ic_bubble_logo</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="ShopOpenCounterTextInputStyle" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@color/black_38</item>
+        <item name="android:textSize">12sp</item>
+        <!--other parameters that you want to change -->
+    </style>
+
+    <style name="helperTextAppearance" parent="TextAppearance.Design.Error">
+        <item name="android:textColor">@color/font_black_secondary_54</item>
+    </style>
+
+    <style name="successTextAppearance" parent="TextAppearance.Design.Error">
+        <item name="android:textColor">@color/tkpd_main_green</item>
+    </style>
+
+    <style name="HintTextInputLayout" parent="TextInputLayout">
+        <item name="defaultTextColorLabel">@color/font_black_secondary_54</item>
+        <item name="focusedTextColorLabel">@color/font_black_secondary_54</item>
+        <item name="disabledTextColorLabel">@color/font_black_secondary_54</item>
+        <item name="android:theme">@style/HintTextInputLayoutColorLine</item>
+    </style>
+
+    <style name="HintTextInputLayoutColorLine" parent="TextInputLayoutColorLine">
+        <item name="android:textColorHint">@color/grey_300</item>
     </style>
 
 </resources>

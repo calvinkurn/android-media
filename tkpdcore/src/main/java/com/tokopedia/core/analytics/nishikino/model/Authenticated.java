@@ -37,6 +37,7 @@ public class Authenticated extends BaseGTMModel {
     public static final String KEY_SHOP_TYPE =          "shopType";
     private static final String KEY_GENDER =             "gender";
     private static final String KEY_AF_UNIQUE_ID =       "afUniqueId";
+    public static final String KEY_NETWORK_SPEED =      "networkSpeed";
 
 
     private Map<String, Object> contactInfo = new HashMap<>();
@@ -49,6 +50,7 @@ public class Authenticated extends BaseGTMModel {
 
     private String shopId;
     private String shopType;
+    private String networkSpeed;
 
     public void setUserDefaultShipping(){
         contactInfo.put(KEY_USER_DEF_SHIPPING, userDefaultShipping);
@@ -72,6 +74,14 @@ public class Authenticated extends BaseGTMModel {
 
     public void setUserID(Object userID){
         contactInfo.put(KEY_USER_ID, userID);
+    }
+
+    public void setNetworkSpeed(String networkSpeed){
+        this.networkSpeed = networkSpeed;
+    }
+
+    public String getNetworkSpeed() {
+        return networkSpeed;
     }
 
     public void setEmailCrypt(Object emailCrypt){

@@ -1,21 +1,44 @@
 package com.tokopedia.posapp.domain.model.cart;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.base.domain.DefaultParams;
+import com.tokopedia.posapp.domain.model.product.ProductDomain;
 
 /**
  * Created by okasurya on 8/22/17.
  */
 
 public class CartDomain implements DefaultParams {
-    private String productId;
+    @SerializedName("id")
+    @Expose
+    private Long id;
+    @SerializedName("productId")
+    @Expose
+    private int productId;
+    @SerializedName("product")
+    @Expose
+    private ProductDomain product;
+    @SerializedName("outletId")
+    @Expose
     private String outletId;
+    @SerializedName("quantity")
+    @Expose
     private int quantity;
 
-    public String getProductId() {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public int getProductId() {
         return productId;
     }
 
-    public void setProductId(String productId) {
+    public void setProductId(int productId) {
         this.productId = productId;
     }
 
@@ -33,5 +56,13 @@ public class CartDomain implements DefaultParams {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public ProductDomain getProduct() {
+        return product;
+    }
+
+    public void setProduct(ProductDomain product) {
+        this.product = product;
     }
 }

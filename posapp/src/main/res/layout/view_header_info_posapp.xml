@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@android:color/background_light"
-    android:padding="@dimen/padding_small">
+    android:padding="@dimen/padding_medium_prof_comp">
 
     <TextView
         android:id="@id/tv_name"
@@ -17,7 +17,7 @@
         tools:text="Product Name"
         android:textColor="#b3000000"
         android:textAllCaps="true"
-        android:textSize="@dimen/text_size_l_medium"
+        android:textSize="@dimen/text_size_large"
         tools:ignore="HardcodedText" />
 
     <TextView
@@ -25,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/warm_grey"
-        android:textSize="@dimen/text_size_medium"
+        android:textSize="@dimen/text_size_xxlarge"
         tools:text="Rp 0,00,-"
         android:visibility="gone"/>
 
@@ -56,17 +56,10 @@
             android:textColor="@color/white"
             android:textSize="@dimen/fontvs"
             tools:text="10%OFF"
-            android:visibility="visible"
+            android:visibility="gone"
             android:layout_toRightOf="@id/tv_price"
             android:layout_toEndOf="@id/tv_price"
             android:layout_centerVertical="true"/>
-
-        <com.tokopedia.posapp.view.widget.productquantity.ProductQuantityView
-            android:id="@+id/view_product_quantity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"/>
     </RelativeLayout>
 
     <LinearLayout

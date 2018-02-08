@@ -8,6 +8,7 @@ import android.os.Handler;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.manage.people.password.fragment.ManagePasswordFragment;
@@ -129,6 +130,8 @@ public class ManagePasswordActivity extends BasePresenterActivity<ManagePassword
     private void exit() {
         new GlobalCacheManager().deleteAll();
         SessionHandler.clearUserData(this);
+        TrackingUtils.eventMoEngageLogoutUser();
+
         Intent intent;
         if (GlobalConfig.isSellerApp()) {
             intent = new Intent(this, WelcomeActivity.class);
@@ -137,5 +140,10 @@ public class ManagePasswordActivity extends BasePresenterActivity<ManagePassword
         }
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

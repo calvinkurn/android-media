@@ -41,6 +41,7 @@ public class HistoryActionSubsriber extends Subscriber<HistoryActionData> {
         if (domainData.isSuccess()) {
             fragmentView.setLoadingView(false);
             fragmentView.setViewData(mappingDomainView(domainData));
+            fragmentView.setResolutionStatus(domainData.getResolutionStatus());
             fragmentView.renderData();
         } else {
             fragmentView.onGetHistoryAwbFailed(domainData.getMessageError());
@@ -56,8 +57,13 @@ public class HistoryActionSubsriber extends Subscriber<HistoryActionData> {
             data.setActionByText(item.getActionByText() != null ? item.getActionByText() : "");
             data.setConversationID(item.getConversationID());
             data.setDate(item.getDate());
-            data.setLatest(i == 0);
+            data.setDateTimestamp(item.getDateTimestamp());
+            data.setLatest(i == domainData.getListHistoryAddress().size() - 1);
             data.setHistoryText(item.getHistoryStr());
+            data.setDateNumber(item.getDateNumber());
+            data.setMonth(item.getMonth());
+            data.setTimeNumber(item.getTimeNumber());
+            data.setCreateTimestampStr(item.getCreateTimestampStr());
             historyActionViewItems.add(data);
             i++;
         }

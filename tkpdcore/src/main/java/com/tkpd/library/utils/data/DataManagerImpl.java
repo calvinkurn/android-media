@@ -9,7 +9,6 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tkpd.library.utils.data.api.DepartmentApi;
 import com.tkpd.library.utils.data.model.ListBank;
 import com.tkpd.library.utils.data.model.ListCity;
 import com.tkpd.library.utils.data.model.ListDistricts;
@@ -19,9 +18,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.CacheDuration;
 import com.tokopedia.core.database.DbFlowDatabase;
-import com.tokopedia.core.database.manager.CategoryDatabaseManager;
 import com.tokopedia.core.database.model.Bank;
-import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.City;
 import com.tokopedia.core.database.model.City_Table;
 import com.tokopedia.core.database.model.District;
@@ -65,69 +62,6 @@ public class DataManagerImpl implements DataManager {
     public static final String SHIPPING_CITY_DURATION_STORAGE = "shipping_city_storage";
     private static final String CACHE_DURATION = "cache_duration";
     public static DataManagerImpl dataManager;
-
-    Observable<com.tkpd.library.utils.data.model.Department> hitHades = RetrofitUtils.createRetrofit(TkpdBaseURL.HADES_DOMAIN).create(DepartmentApi.class)
-            .getAllCategory()
-            .map(
-                    new Func1<com.tkpd.library.utils.data.model.Department, com.tkpd.library.utils.data.model.Department>() {
-                        @Override
-                        public com.tkpd.library.utils.data.model.Department call(com.tkpd.library.utils.data.model.Department department) {
-                            List<CategoryDB> category = new ArrayList<CategoryDB>();
-
-                            for (com.tkpd.library.utils.data.model.Department.Categories level1 : department.getData().getCategories()) {
-                                if (level1.getName() != null &&
-                                        level1.getTree() != null &&
-                                        level1.getId() != null &&
-                                        level1.getIdentifier() != null)
-                                    category.add(new CategoryDB(
-                                            level1.getName(),
-                                            Integer.parseInt(level1.getTree()),
-                                            0,
-                                            0,
-                                            Integer.parseInt(level1.getId()),
-                                            level1.getIdentifier()));
-
-                                if (level1.getChild() != null)
-                                    for (com.tkpd.library.utils.data.model.Department.Child level2 : level1.getChild()) {
-                                        if (level2.getName() != null &&
-                                                level2.getTree() != null &&
-                                                level2.getId() != null &&
-                                                level2.getIdentifier() != null)
-                                            category.add(new CategoryDB(
-                                                    level2.getName(),
-                                                    Integer.parseInt(level2.getTree()),
-                                                    0,
-                                                    Integer.parseInt(level1.getId()),
-                                                    Integer.parseInt(level2.getId()),
-                                                    level2.getIdentifier()
-                                            ));
-
-                                        if (level2.getChild() != null)
-                                            for (com.tkpd.library.utils.data.model.Department.Child level3 : level2.getChild()) {
-                                                if (level3.getName() != null &&
-                                                        level3.getTree() != null &&
-                                                        level3.getId() != null &&
-                                                        level3.getIdentifier() != null)
-                                                    category.add(new CategoryDB(
-                                                            level3.getName(),
-                                                            Integer.parseInt(level3.getTree()),
-                                                            0,
-                                                            Integer.parseInt(level2.getId()),
-                                                            Integer.parseInt(level3.getId()),
-                                                            level3.getIdentifier()
-                                                    ));
-                                            }
-                                    }
-                            }
-
-                            CategoryDatabaseManager manager = new CategoryDatabaseManager();
-                            manager.setCategory(category);
-                            manager.store();
-
-                            return department;
-                        }
-                    }
-            );
 
     public static final DataManager getDataManager() {
         if (dataManager == null)
@@ -746,39 +680,6 @@ public class DataManagerImpl implements DataManager {
     }
 
 
-
-    @Override
-    public void getListDepartment2(Context context, final DataReceiver dataReceiver, int departmentId) {
-        dataReceiver.getSubscription().add(
-                hitHades
-                        .subscribeOn(Schedulers.immediate())
-                        .observeOn(AndroidSchedulers.mainThread())
-//                        .retry(5)
-                        .subscribe(
-                                new Subscriber<com.tkpd.library.utils.data.model.Department>() {
-                                    @Override
-                                    public void onCompleted() {
-                                        Log.e("MNORMANSYAH", "successfull fetch all department");
-                                    }
-
-                                    @Override
-                                    public void onError(Throwable e) {
-                                        Log.e("MNORMANSYAH", DataManagerImpl.class.getSimpleName() + " -> " + e.getLocalizedMessage());
-                                        if (e instanceof UnknownHostException) {
-                                            dataReceiver.onNetworkError("No Connection");
-                                        } else {
-                                            dataReceiver.onTimeout();
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onNext(com.tkpd.library.utils.data.model.Department department) {
-                                        dataReceiver.setDepartments(new ArrayList<CategoryDB>());
-                                    }
-                                }
-                        )
-        );
-    }
 
     private Boolean isShippingCityExpired() {
         long currTime = System.currentTimeMillis();

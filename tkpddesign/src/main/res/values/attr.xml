@@ -1,68 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="LabelView">
-        <attr name="title" format="string"/>
-        <attr name="content" format="string"/>
-        <attr name="content_color" format="color"/>
-        <attr name="title_textStyle">
-            <flag name="normal" value="0"/>
-            <flag name="bold" value="1" />
-            <flag name="italic" value="2" />
-        </attr>
-        <attr name="content_textStyle">
+        <attr name="lv_title" format="string" />
+        <attr name="lv_title_text_size" format="dimension" />
+        <attr name="lv_title_color" format="color" />
+        <attr name="lv_title_min_width" format="dimension" />
+        <attr name="lv_title_text_style">
             <flag name="normal" value="0" />
             <flag name="bold" value="1" />
             <flag name="italic" value="2" />
         </attr>
-        <attr name="content_small" format="boolean"/>
-        <attr name="content_max_lines" format="integer" />
-        <attr name="switch_enable" format="boolean"/>
-        <attr name="label_show_arrow" format="boolean"/>
+        <attr name="lv_content" format="string" />
+        <attr name="lv_content_color" format="color" />
+        <attr name="lv_content_text_size" format="dimension" />
+        <attr name="lv_content_max_lines" format="integer" />
+        <attr name="lv_content_text_style">
+            <flag name="normal" value="0" />
+            <flag name="bold" value="1" />
+            <flag name="italic" value="2" />
+        </attr>
+        <attr name="lv_font_size" format="dimension" />
+        <attr name="lv_show_arrow" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="SelectionLabelView">
+        <attr name="slv_title" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="SearchInputView">
+        <attr name="siv_search_icon" format="reference" />
+        <attr name="siv_search_text" format="string" />
+        <attr name="siv_search_hint" format="string" />
     </declare-styleable>
 
     <declare-styleable name="DecimalInputView">
-        <attr name="decimal_max_length" format="integer"/>
-        <attr name="decimal_input_hint" format="string"/>
-        <attr name="decimal_input_text" format="string"/>
+        <attr name="decimal_max_length" format="integer" />
+        <attr name="decimal_input_hint" format="string" />
+        <attr name="decimal_input_text" format="string" />
         <attr name="decimal_input_enabled" format="boolean" />
     </declare-styleable>
+
     <declare-styleable name="CounterInputView">
-        <attr name="counter_max_length" format="integer"/>
-        <attr name="counter_hint" format="string"/>
-        <attr name="counter_text" format="string"/>
-        <attr name="counter_min" format="integer"/>
-        <attr name="counter_show_counter_button" format="boolean"/>
+        <attr name="counter_max_length" format="integer" />
+        <attr name="counter_hint" format="string" />
+        <attr name="counter_text" format="string" />
+        <attr name="counter_min" format="integer" />
+        <attr name="counter_show_counter_button" format="boolean" />
         <attr name="counter_enabled" format="boolean" />
     </declare-styleable>
+
     <declare-styleable name="SpinnerTextView">
-        <attr name="spinner_hint" format="string"/>
-        <attr name="spinner_selection_index" format="integer"/>
-        <attr name="spinner_entries" format="reference"/>
-        <attr name="spinner_values" format="reference"/>
-        <attr name="spinner_enabled" format="boolean"/>
-        <attr name="spinner_text_size" format="dimension"/>
-        <attr name="spinner_hint_text_color" format="color"/>
-        <attr name="spinner_hint_appearence" format="integer"/>
+        <attr name="spinner_hint" format="string" />
+        <attr name="spinner_selection_index" format="integer" />
+        <attr name="spinner_entries" format="reference" />
+        <attr name="spinner_values" format="reference" />
+        <attr name="spinner_enabled" format="boolean" />
+        <attr name="spinner_text_size" format="dimension" />
+        <attr name="spinner_hint_text_color" format="color" />
+        <attr name="spinner_hint_appearence" format="integer" />
     </declare-styleable>
+
     <declare-styleable name="DefaultValueSpinnerTextView">
-        <attr name="default_value" format="string"/>
+        <attr name="default_value" format="string" />
     </declare-styleable>
+
     <declare-styleable name="SpinnerCounterInputView">
-        <attr name="spinner_decimal_max_length" format="integer"/>
-        <attr name="spinner_decimal_entries" format="reference"/>
-        <attr name="spinner_decimal_values" format="reference"/>
-        <attr name="spinner_decimal_selection_index" format="integer"/>
-        <attr name="spinner_decimal_spinner_hint" format="string"/>
-        <attr name="spinner_decimal_hint" format="string"/>
-        <attr name="spinner_decimal_min" format="integer"/>
-        <attr name="spinner_decimal_show_counter_button" format="boolean"/>
-        <attr name="spinner_decimal_enabled" format="boolean"/>
-        <attr name="spinner_decimal_spinner_width" format="dimension"/>
+        <attr name="spinner_decimal_max_length" format="integer" />
+        <attr name="spinner_decimal_entries" format="reference" />
+        <attr name="spinner_decimal_values" format="reference" />
+        <attr name="spinner_decimal_selection_index" format="integer" />
+        <attr name="spinner_decimal_spinner_hint" format="string" />
+        <attr name="spinner_decimal_hint" format="string" />
+        <attr name="spinner_decimal_min" format="integer" />
+        <attr name="spinner_decimal_show_counter_button" format="boolean" />
+        <attr name="spinner_decimal_enabled" format="boolean" />
+        <attr name="spinner_decimal_spinner_width" format="dimension" />
     </declare-styleable>
+
     <declare-styleable name="TkpdTextInputLayout">
-        <attr name="success_focus_color" format="color" />
-        <attr name="success_leave_color" format="color" />
-        <attr name="success_text_appearance" format="reference" />
-        <attr name="prefix_string" format="string" />
+        <attr name="ttil_successFocusColor" format="color" />
+        <attr name="ttil_successLeaveColor" format="color" />
+        <attr name="ttil_successTextAppearance" format="reference" />
+        <attr name="ttil_prefixString" format="string|reference" />
     </declare-styleable>
+
+    <declare-styleable name="TitleCardView">
+        <attr name="tcv_title" format="string" />
+        <attr name="tcv_title_text_size" format="dimension" />
+        <attr name="tcv_icon" format="reference" />
+        <attr name="tcv_loading_layout" format="reference" />
+        <attr name="tcv_empty_layout" format="reference" />
+        <attr name="tcv_error_layout" format="reference" />
+        <attr name="tcv_use_gradient_title" format="boolean" />
+        <attr name="tcv_title_height" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="TitleGroupView">
+        <attr name="tgv_title" format="string" />
+        <attr name="tgv_icon" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="LoadingStateView">
+        <attr name="lsv_loading_layout" format="reference" />
+        <attr name="lsv_empty_layout" format="reference" />
+        <attr name="lsv_error_layout" format="reference" />
+        <attr name="lsv_state" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="EmptyCardContentView">
+        <attr name="eccv_icon" format="reference" />
+        <attr name="eccv_title_text" format="string" />
+        <attr name="eccv_desc_text" format="string" />
+        <attr name="eccv_content_text" format="string" />
+        <attr name="eccv_action_text" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="TickerView">
+        <attr name="tckv_text_color" format="color" />
+        <attr name="tckv_highlight_color" format="color" />
+        <attr name="tckv_background_color" format="color" />
+        <attr name="tckv_indicator_on_color" format="color" />
+        <attr name="tckv_indicator_off_color" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="UserReputationView">
+        <attr name="usv_show_tooltip" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="ShopReputationView">
+        <attr name="srv_show_tooltip" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="BottomActionView">
+        <attr name="bav_1_display" format="boolean"/>
+        <attr name="bav_2_display" format="boolean"/>
+        <attr name="bav_icon_1" format="reference" />
+        <attr name="bav_label_1" format="reference" />
+        <attr name="bav_icon_2" format="reference" />
+        <attr name="bav_label_2" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="DecimalRangeInputView">
+        <attr name="driv_label_min" format="string" />
+        <attr name="driv_label_max" format="string" />
+        <attr name="driv_typable" format="boolean" />
+        <attr name="driv_label_text_appearance" format="reference" />
+        <attr name="driv_value_text_appearance" format="reference" />
+        <attr name="driv_value_max_length" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="DynamicBackgroundSeekBar">
+        <attr name="dbsb_background_color" format="color" />
+        <attr name="dbsb_foreground_color" format="color" />
+    </declare-styleable>
+
+
+    <attr name="bottomSheetBuilderBackgroundColor" format="color" />
+    <attr name="bottomSheetBuilderItemTextColor" format="color" />
+    <attr name="bottomSheetBuilderTitleTextColor" format="color" />
 </resources>

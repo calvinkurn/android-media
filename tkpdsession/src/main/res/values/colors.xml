@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <color name="green_50">#afd564</color>
+    <color name="green_60">#7fbe33</color>
+    <color name="green_70">#4dbc4a</color>
+    <color name="green_80">#27a02e</color>
+    <color name="green_90">#08841f</color>
+    <color name="green_100">#007014</color>
+
+    <color name="black_12">#1e000000</color>
+    <color name="grey_hint">#2e000000</color>
+    <color name="transparent_white">#00FFFFFF</color>
+
+    <array name="green_indicator">
+        <item>@color/green_50</item>
+        <item>@color/green_60</item>
+        <item>@color/green_70</item>
+        <item>@color/green_80</item>
+        <item>@color/green_90</item>
+        <item>@color/green_100</item>
+    </array>
+
+    <color name="grey_background">#f3f3f3</color>
+    <color name="separator_color">#e0e0e0</color>
+
+    <color name="shadow_color_1">#00CCCCCC</color>
+    <color name="shadow_color_2">#10CCCCCC</color>
+    <color name="shadow_color_3">#15CCCCCC</color>
+    <color name="shadow_color_4">#20CCCCCC</color>
+    <color name="shadow_color_5">#25CCCCCC</color>
+</resources>

@@ -7,6 +7,7 @@ import com.tokopedia.transaction.cart.model.calculateshipment.Shipment;
 import com.tokopedia.transaction.cart.model.cartdata.CartData;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartRatesData;
+import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
 import com.tokopedia.transaction.cart.model.savelocation.SaveLocationData;
 import com.tokopedia.transaction.cart.model.shipmentcart.EditShipmentCart;
 import com.tokopedia.transaction.cart.model.thankstoppaydata.ThanksTopPayData;

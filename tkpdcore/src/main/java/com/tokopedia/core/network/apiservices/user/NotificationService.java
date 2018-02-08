@@ -4,6 +4,8 @@ import com.tokopedia.core.network.apiservices.user.apis.NotificationApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.services.AuthService;
 
+import javax.inject.Inject;
+
 import retrofit2.Retrofit;
 
 /**
@@ -11,6 +13,10 @@ import retrofit2.Retrofit;
  */
 public class NotificationService extends AuthService<NotificationApi> {
     private static final String TAG = NotificationService.class.getSimpleName();
+
+    @Inject
+    public NotificationService() {
+    }
 
     @Override
     protected void initApiService(Retrofit retrofit) {

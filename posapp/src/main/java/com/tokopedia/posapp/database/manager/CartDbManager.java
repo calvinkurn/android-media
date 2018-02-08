@@ -1,61 +1,88 @@
 package com.tokopedia.posapp.database.manager;
 
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
-import com.raizlabs.android.dbflow.sql.language.Delete;
-import com.raizlabs.android.dbflow.sql.language.SQLite;
-import com.tokopedia.posapp.base.data.DbManagerOperation;
-import com.tokopedia.core.database.model.CartDB;
+import com.tokopedia.posapp.domain.model.DataStatus;
+import com.tokopedia.posapp.database.manager.base.PosDbOperation;
+import com.tokopedia.posapp.database.model.CartDb;
+import com.tokopedia.posapp.database.model.CartDb_Table;
+import com.tokopedia.posapp.domain.model.cart.CartDomain;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
+
 /**
- * Created by okasurya on 8/23/17.
+ * Created by okasurya on 9/15/17.
  */
 
-public class CartDbManager implements DbManagerOperation<CartDB, CartDB> {
-
+public class CartDbManager extends PosDbOperation<CartDomain, CartDb> {
     @Override
-    public void store(CartDB data) {
-        data.save();
+    protected List<CartDomain> mapToDomain(List<CartDb> cartDbs) {
+        List<CartDomain> cartDomains = new ArrayList<>();
+
+        if(cartDbs != null) {
+            for (CartDb cartDb : cartDbs) {
+                CartDomain cartDomain = mapToDomain(cartDb);
+                if (cartDomain != null) cartDomains.add(cartDomain);
+            }
+        }
+
+        return cartDomains;
     }
 
     @Override
-    public void update(CartDB data) {
-        data.update();
+    protected CartDomain mapToDomain(CartDb cartDb) {
+        if (cartDb != null) {
+            CartDomain cartDomain = new CartDomain();
+            cartDomain.setId(cartDb.getId());
+            cartDomain.setProductId(cartDb.getProductId());
+            cartDomain.setQuantity(cartDb.getQuantity());
+            cartDomain.setOutletId(cartDb.getOutletId());
+            return cartDomain;
+        }
+
+        return null;
     }
 
     @Override
-    public void delete(ConditionGroup conditions) {
-        Delete.table(CartDB.class, conditions);
+    protected List<CartDb> mapToDb(List<CartDomain> cartDomains) {
+        List<CartDb> cartDbs = new ArrayList<>();
+
+        if(cartDomains != null) {
+            for (CartDomain cartDomain : cartDomains) {
+                CartDb cartDb = mapToDb(cartDomain);
+                if (cartDb != null) cartDbs.add(cartDb);
+            }
+        }
+
+        return cartDbs;
     }
 
     @Override
-    public void deleteAll() {
-        Delete.table(CartDB.class);
+    protected CartDb mapToDb(CartDomain cartDomain) {
+        if (cartDomain != null) {
+            CartDb cartDb = new CartDb();
+            if(cartDomain.getId() != null) cartDb.setId(cartDomain.getId());
+            cartDb.setProductId(cartDomain.getProductId());
+            cartDb.setQuantity(cartDomain.getQuantity());
+            cartDb.setOutletId(cartDomain.getOutletId());
+            return cartDb;
+        }
+
+        return null;
     }
 
     @Override
-    public CartDB first(ConditionGroup conditions) {
-        return SQLite.select().from(CartDB.class).where(conditions).querySingle();
+    protected Class<CartDb> getDbClass() {
+        return CartDb.class;
     }
 
     @Override
-    public CartDB first() {
-        return SQLite.select().from(CartDB.class).querySingle();
-    }
-
-    @Override
-    public List<CartDB> getAllData(ConditionGroup conditions) {
-        return SQLite.select().from(CartDB.class).where(conditions).queryList();
-    }
-
-    @Override
-    public List<CartDB> getAllData() {
-        return SQLite.select().from(CartDB.class).queryList();
-    }
-
-    @Override
-    public boolean isTableEmpty() {
-        return getAllData().size() == 0;
+    public Observable<DataStatus> delete(CartDomain data) {
+        return executeDelete(
+                CartDb.class,
+                ConditionGroup.clause().and(CartDb_Table.productId.eq(data.getProductId()))
+        );
     }
 }

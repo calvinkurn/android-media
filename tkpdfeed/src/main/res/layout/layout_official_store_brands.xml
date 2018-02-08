@@ -1,0 +1,61 @@
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_brand_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/margin_small"
+    app:cardCornerRadius="0dip"
+    app:cardElevation="0dip">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/header_official_store_height"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_vertical"
+            android:text="@string/title_official_store"
+            android:textColor="@color/black_70"
+            android:textStyle="normal"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_300"/>
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@id/rv_brands_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_300"/>
+
+        <TextView
+            android:id="@+id/text_view_all_brands"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/header_official_store_height"
+            android:layout_gravity="end"
+            android:layout_marginRight="@dimen/margin_small"
+            android:clickable="true"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:text="@string/see_all"
+            android:textColor="@color/medium_green"
+            android:textSize="@dimen/unify_font_normal"
+            android:textStyle="normal"/>
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>

@@ -119,6 +119,9 @@ dependencies {
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
+
     compile rootProject.ext.miscDependencies.parcelerApi
     apt rootProject.ext.miscDependencies.parceler
 
@@ -128,19 +131,23 @@ dependencies {
 
     compile rootProject.ext.miscDependencies.rxJavaComputation
     compile rootProject.ext.miscDependencies.gson
-    compile rootProject.ext.miscDependencies.chips
     compile rootProject.ext.miscDependencies.roundCornerProgressBar
+    compile rootProject.ext.miscDependencies.loaderviewlibrary
+    compile (rootProject.ext.miscDependencies.imagecropper){
+        exclude group: "com.android.support"
+    }
+    compile rootProject.ext.supportLibDependencies.exifinterface
+
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
+
+    compile rootProject.ext.supportLibDependencies.constraintLayout
+
+    provided rootProject.ext.miscDependencies.javaxAnnotation
 
     compile(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }
-
-    compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
-
-    provided rootProject.ext.miscDependencies.javaxAnnotation
-    compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
 
     compile(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"

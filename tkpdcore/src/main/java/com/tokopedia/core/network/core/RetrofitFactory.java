@@ -49,6 +49,22 @@ public class RetrofitFactory {
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
     }
 
+    public static Retrofit.Builder createRetrofitTokoCashConfig(String baseUrl) {
+
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+                .setPrettyPrinting()
+                .serializeNulls()
+                .create();
+        return new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(new DigitalResponseConverter())
+                .addConverterFactory(new TkpdResponseConverter())
+                .addConverterFactory(new StringResponseConverter())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
+    }
+
     public static Retrofit.Builder createDaggerRetrofitDefaultConfig(
             String baseUrl,
             Gson gson,
@@ -63,5 +79,12 @@ public class RetrofitFactory {
                 .addConverterFactory(tkpdConverter)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .baseUrl(baseUrl);
+    }
+
+    public static Retrofit.Builder createBasicRetrofit(String baseUrl) {
+        return new Retrofit.Builder()
+                .addConverterFactory(new StringResponseConverter())
+                .baseUrl(baseUrl)
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
     }
 }

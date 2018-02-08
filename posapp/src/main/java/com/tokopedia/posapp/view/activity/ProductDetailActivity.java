@@ -1,34 +1,58 @@
 package com.tokopedia.posapp.view.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
-import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.posapp.R;
-import com.tokopedia.posapp.view.fragment.OutletFragment;
+import com.tokopedia.posapp.data.factory.CartFactory;
+import com.tokopedia.posapp.deeplink.Constants;
+import com.tokopedia.posapp.di.component.CartComponent;
+import com.tokopedia.posapp.di.component.DaggerCartComponent;
+import com.tokopedia.posapp.domain.model.cart.CartDomain;
 import com.tokopedia.posapp.view.fragment.ProductDetailFragment;
 
-import io.card.payment.CardIOActivity;
-import io.card.payment.CreditCard;
+import java.util.List;
+
+import rx.Subscriber;
+import rx.functions.Func1;
 
 /**
  * Created by okasurya on 8/8/17.
  */
 
 public class ProductDetailActivity extends BasePresenterActivity
-        implements HasComponent {
+        implements HasComponent, ProductDetailFragment.ProductDetailFragmentListener {
+
+    protected View vCart;
+    private TextView tvNotif;
+    private CartFactory cartFactory;
+
+    @DeepLink(Constants.Applinks.PRODUCT_INFO)
+    public static Intent getIntentFromDeeplink(Context context, Bundle extras) {
+        Uri uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build();
+        extras.putParcelable(
+                ProductDetailFragment.PRODUCT_PASS,
+                ProductPass.Builder.aProductPass().setProductId(uri.getPathSegments().get(0)).build()
+        );
+
+        return new Intent(context, ProductDetailActivity.class)
+                .setData(uri)
+                .putExtras(extras);
+    }
+
     @Override
     public Object getComponent() {
         return getApplicationComponent();
@@ -97,17 +121,83 @@ public class ProductDetailActivity extends BasePresenterActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_product_detail, menu);
+        getMenuInflater().inflate(R.menu.menu_product_main, menu);
+        final Menu m = menu;
+        final MenuItem item = menu.findItem(R.id.action_cart);
+        vCart = item.getActionView();
+        vCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                m.performIdentifierAction(item.getItemId(), 0);
+            }
+        });
+        initInjector();
         return super.onCreateOptionsMenu(menu);
+    }
+
+    protected void initInjector() {
+        AppComponent appComponent = ((MainApplication) this.getApplicationContext()).getAppComponent();
+        CartComponent cartComponent = DaggerCartComponent.builder().appComponent(appComponent).build();
+        cartFactory = cartComponent.provideCartFactory();
+        getCartCount();
+    }
+
+    private void getCartCount() {
+        if(cartFactory != null) {
+            cartFactory.local().getAllCartProducts().map(new Func1<List<CartDomain>, String>() {
+                @Override
+                public String call(List<CartDomain> cartDomains) {
+                    if (cartDomains.size() > 0)
+                        return cartDomains.size() + "";
+                    else
+                        return "null";
+                }
+            }).subscribe(new Subscriber<String>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(String o) {
+                    updateNotification(o);
+                }
+            });
+        }
+    }
+
+    private void updateNotification(String s) {
+        if (vCart != null) {
+            tvNotif = vCart.findViewById(R.id.toggle_notif);
+            if (!s.equals("null")) {
+                tvNotif.setVisibility(View.VISIBLE);
+                tvNotif.setText(s);
+            } else {
+                tvNotif.setVisibility(View.GONE);
+            }
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.menu_payment) {
-            Intent intent = new Intent(this, PaymentActivity.class);
+        if (item.getItemId() == R.id.action_credit_card) {
+            Intent intent = new Intent(this, ReactInstallmentActivity.class);
             startActivity(intent);
+            return true;
+        } else if (item.getItemId() == R.id.action_cart) {
+            startActivity(new Intent(this, LocalCartActivity.class));
+            return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onAddToCart() {
+        getCartCount();
     }
 }

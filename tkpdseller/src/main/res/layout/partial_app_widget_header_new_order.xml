@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/tkpd_main_green"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:padding="@dimen/padding_ms"
+    tools:showIn="@layout/app_widget_new_order">
+
+    <ImageView
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_marginRight="@dimen/margin_small"
+        android:src="@drawable/ic_order_widget" />
+
+    <TextView
+        style="@style/TextView.Small.WhitePrimary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/app_widget_title_new_order"/>
+
+</LinearLayout>

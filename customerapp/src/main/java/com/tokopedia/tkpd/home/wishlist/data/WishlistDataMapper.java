@@ -83,6 +83,7 @@ public class WishlistDataMapper implements Func1<Response<WishlistData>, DataWis
         ShopWishlistDomain shopWishlistDomain = new ShopWishlistDomain();
         shopWishlistDomain.setName(shop.getName());
         shopWishlistDomain.setGoldMerchant(shop.getIsGoldMerchant());
+        shopWishlistDomain.setOfficial(shop.getOfficial());
         shopWishlistDomain.setId(shop.getId());
         shopWishlistDomain.setLocation(shop.getLocation());
         shopWishlistDomain.setLuckiMerchant(shop.getLuckyMerchant());
@@ -98,6 +99,7 @@ public class WishlistDataMapper implements Func1<Response<WishlistData>, DataWis
             wholesalePriceDomain.setMaximum(wholesalePrice.getMaximum());
             wholesalePriceDomain.setMinimum(wholesalePrice.getMinimum());
             wholesalePriceDomain.setPrice(wholesalePrice.getPrice());
+            wholesalePriceDomains.add(wholesalePriceDomain);
         }
         return wholesalePriceDomains;
     }
@@ -109,6 +111,7 @@ public class WishlistDataMapper implements Func1<Response<WishlistData>, DataWis
                 LabelWishlistDomain labelWishlistDomain = new LabelWishlistDomain();
                 labelWishlistDomain.setTitle(labelResponse.getTitle());
                 labelWishlistDomain.setColor(labelResponse.getColor());
+                labelWishlistDomains.add(labelWishlistDomain);
             }
         }
         return labelWishlistDomains;
@@ -122,6 +125,7 @@ public class WishlistDataMapper implements Func1<Response<WishlistData>, DataWis
                 badgeWishlistDomain.setImageUrl(badgeResponse.getImageUrl());
                 badgeWishlistDomain.setImgUrl(badgeResponse.getImgUrl());
                 badgeWishlistDomain.setTitle(badgeResponse.getTitle());
+                badgeWishlistDomains.add(badgeWishlistDomain);
             }
         }
         return badgeWishlistDomains;

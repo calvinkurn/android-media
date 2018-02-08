@@ -1,5 +1,7 @@
 package com.tokopedia.core.util;
 
+import com.tokopedia.core.base.utils.StringUtils;
+
 /**
  * Created by stevenfredian on 10/27/16.
  */
@@ -7,6 +9,7 @@ package com.tokopedia.core.util;
 public class CustomPhoneNumberUtil {
 
     public static String transform(String phoneRawString){
+        phoneRawString = checkStart(phoneRawString);
         phoneRawString = phoneRawString.replace("-","");
         StringBuilder phoneNumArr = new StringBuilder();
         for (int index = 0, limit = 4, size = phoneRawString.length();
@@ -20,5 +23,14 @@ public class CustomPhoneNumberUtil {
             }
         }
         return phoneNumArr.toString();
+    }
+
+    private static String checkStart(String phoneRawString) {
+        if(phoneRawString.startsWith("62")){
+            phoneRawString = phoneRawString.replaceFirst("62","0");
+        }else if(phoneRawString.startsWith("+62")) {
+            phoneRawString = phoneRawString.replaceFirst("\\+62","0");
+        }
+        return phoneRawString;
     }
 }

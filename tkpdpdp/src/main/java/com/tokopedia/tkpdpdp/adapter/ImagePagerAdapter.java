@@ -2,10 +2,13 @@ package com.tokopedia.tkpdpdp.adapter;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.product.model.productdetail.ProductImage;
 
@@ -22,10 +25,17 @@ public class ImagePagerAdapter extends PagerAdapter {
     private List<ProductImage> productImages = new ArrayList<>();
 
     private OnActionListener actionListener;
+    private String urlTemporary;
 
     public ImagePagerAdapter(Context context, ArrayList<ProductImage> productImages) {
         this.context = context;
         this.productImages = productImages;
+    }
+
+    public ImagePagerAdapter(Context context, ArrayList<ProductImage> productImages, String urlTemporary) {
+        this.context = context;
+        this.productImages = productImages;
+        this.urlTemporary = urlTemporary;
     }
 
     @Override
@@ -34,11 +44,30 @@ public class ImagePagerAdapter extends PagerAdapter {
     }
 
     @Override
-    public Object instantiateItem(ViewGroup container, final int position) {
-        ImageView imageView = new ImageView(context);
-        String urlImage = productImages.get(position).getImageSrc();
-        if (urlImage != null && !urlImage.isEmpty())
+    public Object instantiateItem(final ViewGroup container, final int position) {
+        final ImageView imageView = new ImageView(context);
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        final String urlImage = productImages.get(position).getImageSrc();
+        
+        if (!TextUtils.isEmpty(urlTemporary) && position==0) {
+            Glide.with(context.getApplicationContext())
+                    .load(urlImage)
+                    .dontAnimate()
+                    .dontTransform()
+                    .fitCenter()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .thumbnail(
+                            Glide.with(context.getApplicationContext())
+                                    .load(urlTemporary)
+                                    .dontAnimate()
+                                    .dontTransform()
+                                    .fitCenter()
+                                    .diskCacheStrategy(DiskCacheStrategy.ALL))
+                    .into(imageView);
+
+        } else {
             ImageHandler.loadImageFit2(context, imageView, urlImage);
+        }
         imageView.setOnClickListener(new OnClickImage(position));
         container.addView(imageView, 0);
         return imageView;
@@ -66,8 +95,10 @@ public class ImagePagerAdapter extends PagerAdapter {
         notifyDataSetChanged();
     }
 
-    public void add(ProductImage productImage) {
+    public void addFirst(ProductImage productImage) {
+        this.productImages.clear();
         this.productImages.add(productImage);
+        urlTemporary = productImage.getImageSrc();
         notifyDataSetChanged();
     }
 

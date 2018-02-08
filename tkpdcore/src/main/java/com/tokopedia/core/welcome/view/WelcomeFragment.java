@@ -28,13 +28,12 @@ import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customView.LoginTextView;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.RequestPermissionUtil;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.presenter.WelcomeFragmentPresenter;
 import com.tokopedia.core.welcome.presenter.WelcomeFragmentPresenterImpl;
@@ -168,7 +167,7 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = SessionRouter.getLoginActivityIntent(context);
+                Intent intent = OldSessionRouter.getLoginActivityIntent(context);
                 intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
                 intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
                 startActivity(intent);
@@ -248,7 +247,7 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                     0, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f);
 
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < listProvider.size(); i++) {
                 String color = listProvider.get(i).getColor();
                 int colorInt;
                 if(color==null) {

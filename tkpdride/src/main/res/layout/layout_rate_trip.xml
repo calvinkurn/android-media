@@ -32,6 +32,32 @@
             android:scaleX=".65"
             android:scaleY=".65"
             android:stepSize="1" />
+
+        <ImageView
+            android:id="@+id/tip_seperator"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/five_dp"
+            android:layout_marginLeft="@dimen/fifteen_dp"
+            android:layout_marginRight="@dimen/fifteen_dp"
+            android:layerType="software"
+            android:src="@drawable/shape_dash_line"
+            android:visibility="gone" />
+
+        <GridLayout
+            android:id="@+id/grid_layout_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:columnCount="@integer/tip_grid_col"
+            android:orientation="horizontal"
+            android:padding="@dimen/fifteen_dp"
+            android:rowCount="@integer/tip_grid_row"
+            android:textAlignment="center"
+            android:useDefaultMargins="true"
+            android:visibility="gone">
+
+        </GridLayout>
+
     </LinearLayout>
 
     <LinearLayout

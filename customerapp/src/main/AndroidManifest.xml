@@ -5,29 +5,57 @@
 
     <uses-sdk tools:overrideLibrary="com.tokopedia.core" />
 
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        tools:node="remove"
+        tools:selector="com.google.firebase"/>
+
     <application
         android:name=".ConsumerMainApplication"
         android:allowBackup="true"
         android:icon="@drawable/qc_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
         android:theme="@style/Theme.Tokopedia3"
         tools:replace="android:name">
         <meta-data
             android:name="com.crashlytics.ApiKey"
-            android:value="d02324f74e70ffcd2dc00ab722d32baecf1884b4" />
+            android:value="d02324f74e70ffcd2dc00ab722d32baecf1884b4"
+            tools:replace="android:value" />
         <meta-data
             android:name="APP_ID"
-            android:value="@string/key_moengage" />
+            android:value="@string/key_moengage"
+            tools:replace="android:value" />
         <meta-data
             android:name="SENDER_ID"
-            android:value="@string/key_sender_id" />
+            android:value="@string/key_sender_id"
+            tools:replace="android:value" />
         <meta-data
             android:name="SKIP_GCM_REGISTRATION"
-            android:value="true" />
+            android:value="true"
+            tools:replace="android:value" />
+        <meta-data
+            android:name="AF_PRE_INSTALL_PATH"
+            android:value="/data/local/tmp/pre_install.appsflyer" />
+        <meta-data
+            android:name="firebase_performance_logcat_enabled"
+            android:value="false" />
+        <meta-data
+            android:name="NOTIFICATION_ICON"
+            android:value="@drawable/ic_stat_notify_white"
+            tools:replace="android:value" />
+        <meta-data
+            android:name="NOTIFICATION_LARGE_ICON"
+            android:value="@drawable/qc_launcher"
+            tools:replace="android:value" />
 
         <activity
-            android:name="com.tokopedia.tkpd.ConsumerSplashScreen"
+            android:name=".ConsumerSplashScreen"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3.Launcher">
@@ -36,15 +64,15 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter>
 
-                <!-- LOCALYTICS TEST MESSAGE KEY -->
-                <data android:scheme="@string/key_localytics_testmessage" />
-
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="tokopedia.link"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
         <activity
@@ -106,9 +134,6 @@
         </activity>
 
         <meta-data
-            android:name="LOCALYTICS_APP_KEY"
-            android:value="@string/key_localytics" />
-        <meta-data
             android:name="GTM_RESOURCE"
             android:resource="@raw/gtm_consumer" />
         <meta-data
@@ -122,29 +147,27 @@
             android:value="@string/key_appsflyer" />
         <meta-data
             android:name="com.truecaller.android.sdk.PartnerKey"
-            android:value="750vPeaf1a90a7d184daab0bdc49b1a0cee70" />
+            android:value="@string/key_truecaller_main_app" />
 
         <activity
             android:name=".home.ParentIndexHome"
             android:exported="true"
             android:label="Tokopedia"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="APPS_HOME"
+                android:value="true" />
+        </activity>
         <activity
             android:name=".home.SimpleHomeActivity"
             android:label="@string/title_activity_simple_home"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3" />
         <activity
-            android:name=".home.recharge.activity.RechargePaymentWebView"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name=".goldmerchant.GoldMerchantRedirectActivity"
             android:label="@string/label_gold_merchant"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".tkpdfeed.feedplus.view.activity.FeedPlusDetailActivity"
             android:label="@string/title_detail_feed"
@@ -157,12 +180,19 @@
 
         <activity
             android:name=".deeplink.DeeplinkHandlerActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
 
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="tokopedia" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".truecaller.TruecallerActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity"
             android:screenOrientation="portrait" />
@@ -171,11 +201,48 @@
             android:name=".home.feed.data.source.cloud.AddFavoriteShopService"
             android:exported="false" />
 
-        <activity android:name=".redirect.RedirectCreateShopActivity"
+        <activity
+            android:name=".redirect.RedirectCreateShopActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3"
-            />
+            android:theme="@style/Theme.Tokopedia3" />
+        <activity
+            android:name=".applink.AppLinkWebsiteActivity"
+            android:hardwareAccelerated="true"
+            android:label="@string/title_activity_deep_link"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".home.ReactNativeOfficialStoreActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".home.ReactNativeDiscoveryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".home.ReactNativeOfficialStorePromoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".home.ReactNativePromoSaleActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".thankyou.view.ReactNativeThankYouPageActivity"
+            android:screenOrientation="portrait" />
 
+        <service
+            android:name="com.tokopedia.digital.product.service.USSDAccessibilityService"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/config_accessibility_service" />
+        </service>
+        <service
+            android:name=".thankyou.view.ThanksTrackerService"
+            android:exported="false" />
+        <activity android:name=".datepicker.DatePickerTokoCashActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3" />
     </application>
 
 </manifest>

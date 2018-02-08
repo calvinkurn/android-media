@@ -37,6 +37,7 @@ import com.tokopedia.core.network.entity.intermediary.Child;
 import com.tokopedia.core.network.entity.intermediary.Data;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.PagingHandler;
@@ -206,7 +207,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void onCallProductServiceResult(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
-        topAdsRecyclerAdapter.shouldLoadAds(model.size() > 0);
         productAdapter.addAll(new ArrayList<RecyclerViewItem>(model));
         productAdapter.notifyDataSetChanged();
         productAdapter.setgridView(((BrowseProductActivity) getActivity()).getGridType());
@@ -217,7 +217,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             productAdapter.incrementPage();
 
             UnifyTracking.eventAppsFlyerViewListingSearch(model, browseModel.q);
-            TrackingUtils.eventLocaSearched(browseModel.q);
+            TrackingUtils.sendMoEngageSearchAttempt(browseModel.q, !model.isEmpty());
 
         }
     }
@@ -320,7 +320,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     @Override
     public void setHotlistData(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
         topAdsRecyclerAdapter.setHasHeader(true);
-        topAdsRecyclerAdapter.shouldLoadAds(model.size() > 0);
         productAdapter.addAll(new ArrayList<RecyclerViewItem>(model));
         productAdapter.setgridView(((BrowseProductActivity) getActivity()).getGridType());
         productAdapter.setPagingHandlerModel(pagingHandlerModel);
@@ -420,14 +419,14 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
                         !TextUtils.isEmpty(productAdapter.getPagingHandlerModel().getUriNext())) {
                     presenter.loadMore(getActivity());
                     if (gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1
-                            && productAdapter.getPagingHandlerModel().getUriNext() !=null
+                            && productAdapter.getPagingHandlerModel().getUriNext() != null
                             && productAdapter.getPagingHandlerModel().getUriNext().isEmpty()) {
                         ((BrowseProductActivity) getActivity()).showBottomBar();
                     }
                 } else {
                     topAdsRecyclerAdapter.hideLoading();
                     topAdsRecyclerAdapter.unsetEndlessScrollListener();
-                    if (getActivity() instanceof  BrowseProductActivity) {
+                    if (getActivity() instanceof BrowseProductActivity) {
                         ((BrowseProductActivity) getActivity()).showBottomBar();
                     }
                 }
@@ -617,8 +616,13 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
                         new ProductAdapter.CategoryHeaderModel(categoryHeader, getActivity(), getCategoryWidth(),
                                 this, browseModel.getTotalDataCategory(), this));
             }
+
+            TrackingUtils.sendMoEngageOpenCatScreen(
+                    categoryHeader.getName(),
+                    categoryHeader.getId()
+
+            );
         }
-        Log.d(TAG, "addCategoryHeader");
     }
 
     private int calcColumnSize(int orientation) {
@@ -684,6 +688,22 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             topAdsRecyclerAdapter.showLoading();
         } else {
             topAdsRecyclerAdapter.hideLoading();
+        }
+    }
+
+    @Override
+    public void actionSuccessRemoveFromWishlist(Integer productId) {
+        if(getActivity().getApplication() instanceof IReactNativeRouter) {
+            IReactNativeRouter reactNativeRouter = (IReactNativeRouter) getActivity().getApplication();
+            reactNativeRouter.sendRemoveWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
+        }
+    }
+
+    @Override
+    public void actionSuccessAddToWishlist(Integer productId) {
+        if(getActivity().getApplication() instanceof IReactNativeRouter) {
+            IReactNativeRouter reactNativeRouter = (IReactNativeRouter) getActivity().getApplication();
+            reactNativeRouter.sendAddWishlistEmitter(String.valueOf(productId), SessionHandler.getLoginID(getActivity()));
         }
     }
 

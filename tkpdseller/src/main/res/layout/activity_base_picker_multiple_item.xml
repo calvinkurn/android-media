@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:elevation="4dp">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/tkpd_main_green"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="@style/AppBarTheme"
+            app:elevation="4dp"
+            app:subtitleTextAppearance="@style/ToolbarSubtitleText"
+            app:titleTextAppearance="@style/ToolbarText" />
+    </android.support.design.widget.AppBarLayout>
+
+    <FrameLayout
+        android:id="@+id/layout_container_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/base_picker_multiple_item_footer_height"
+        android:layout_marginTop="?attr/actionBarSize" />
+
+    <LinearLayout
+        android:id="@+id/layout_bottom_sheet_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:orientation="vertical"
+        app:elevation="16dp"
+        app:layout_behavior="@string/bottom_sheet_behavior">
+
+        <View
+            android:id="@+id/view_shadow_gray"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/base_picker_multiple_item_bottom_sheet_header_shadow_height"
+            android:background="@drawable/cover_shader_gray" />
+
+        <LinearLayout
+            android:id="@+id/layout_bottom_sheet_header"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/base_picker_multiple_item_bottom_sheet_header_height"
+            android:background="@android:color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_med"
+                android:layout_marginStart="@dimen/margin_med"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/text_view_bottom_sheet_title"
+                    style="@style/TextView.Small"
+                    tools:text="@string/app_id" />
+
+                <TextView
+                    android:id="@+id/text_view_bottom_sheet_content"
+                    style="@style/TextView.Micro.BlackDisabled"
+                    android:layout_marginTop="@dimen/margin_vs"
+                    android:textStyle="italic"
+                    android:visibility="gone"
+                    tools:text="@string/app_id" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/image_view_arrow"
+                android:layout_width="@dimen/image_width_xxs"
+                android:layout_height="@dimen/image_width_xxs"
+                android:layout_marginEnd="@dimen/margin_med"
+                android:layout_marginRight="@dimen/margin_med"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_arrow_up" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/layout_container_cache"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/layout_footer"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/base_picker_multiple_item_footer_height"
+        android:layout_gravity="bottom"
+        android:background="@android:color/white">
+
+        <Button
+            android:id="@+id/button_submit"
+            style="@style/Button.Submit.Green"
+            android:text="@string/next" />
+    </FrameLayout>
+</android.support.design.widget.CoordinatorLayout>

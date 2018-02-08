@@ -9,12 +9,15 @@ public class ShareModel {
     private String title;
     private String imageUrl;
     private String contentMessage;
+    private String pageRowNumber;
 
-    public ShareModel(String url, String title, String imageUrl, String contentMessage) {
+    public ShareModel(String url, String title, String imageUrl, String contentMessage, String
+            pageRowNumber) {
         this.url = url;
         this.title = title;
         this.imageUrl = imageUrl;
         this.contentMessage = contentMessage;
+        this.pageRowNumber = pageRowNumber;
     }
 
     public String getUrl() {
@@ -47,5 +50,9 @@ public class ShareModel {
 
     public void setContentMessage(String contentMessage) {
         this.contentMessage = contentMessage;
+    }
+
+    public String getPageRowNumber() {
+        return pageRowNumber;
     }
 }

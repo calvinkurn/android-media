@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="10dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/gender_title_prof_comp"
+        android:textSize="@dimen/text_size_16"
+        android:fontFamily="sans-serif-medium"
+        android:textStyle="normal"
+        android:textColor="@color/black_70"
+        android:lineSpacingExtra="4sp"
+        android:layout_gravity="center"/>
+
+    <android.support.v4.widget.Space
+        android:layout_width="0dp"
+        android:layout_height="@dimen/space_large" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <android.support.v4.widget.Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+        <RadioButton
+            android:id="@+id/ava_man"
+            android:layout_width="@dimen/image_size"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:drawableTop="@drawable/man_button"
+            android:text="@string/profile_completion_man"
+            android:drawablePadding="@dimen/padding_small_med_prof_comp"
+            android:gravity="center"
+            android:textSize="@dimen/text_size_14"
+            android:fontFamily="sans-serif-medium"
+            android:textStyle="normal"
+            android:textColor="@drawable/gender_color"
+            android:button="@android:color/transparent"/>
+
+        <android.support.v4.widget.Space
+            android:layout_width="60dp"
+            android:layout_height="0dp" />
+
+        <RadioButton
+            android:id="@+id/ava_woman"
+            android:layout_width="@dimen/image_size"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:drawableTop="@drawable/woman_button"
+            android:text="@string/profile_completion_woman"
+            android:drawablePadding="@dimen/padding_small_med_prof_comp"
+            android:gravity="center"
+            android:textSize="@dimen/text_size_14"
+            android:fontFamily="sans-serif-medium"
+            android:textStyle="normal"
+            android:textColor="@drawable/gender_color"
+            android:button="@android:color/transparent"/>
+        <android.support.v4.widget.Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+    </RadioGroup>
+
+
+
+</LinearLayout>

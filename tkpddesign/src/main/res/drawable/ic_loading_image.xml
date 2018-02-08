@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item>
+        <inset
+            android:drawable="@drawable/ic_loading_toped_new"
+
+            android:insetBottom="@dimen/margin_small"
+            android:insetLeft="@dimen/margin_small"
+            android:insetRight="@dimen/margin_small"
+            android:insetTop="@dimen/margin_small"
+            />
+    </item>
+
+
+
+</layer-list>

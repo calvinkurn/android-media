@@ -3,18 +3,19 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.data.factory;
 import android.content.Context;
 
 import com.apollographql.apollo.ApolloClient;
-import com.tokopedia.core.base.common.dbManager.RecentProductDbManager;
 import com.tokopedia.core.base.common.service.MojitoService;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.CheckNewFeedMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedDetailListMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedListMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedResultMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.RecentProductMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.CloudCheckNewFeedDataSource;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.CloudFirstFeedDataSource;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.cloud.CloudFeedDataSource;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.cloud.CloudFeedDetailDataSource;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.cloud.CloudRecentProductDataSource;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.local.LocalFeedDataSource;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedDetailListMapper;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedListMapper;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.cloud.CloudFeedDetailDataSource;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedResultMapper;
 
 /**
  * @author ricoharisin .
@@ -22,6 +23,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedResultMapper;
 
 public class FeedFactory {
 
+    private final CheckNewFeedMapper checkNewFeedMapper;
     private ApolloClient apolloClient;
     private Context context;
     private FeedListMapper feedListMapper;
@@ -29,7 +31,6 @@ public class FeedFactory {
     private FeedResultMapper feedResultMapperCloud;
     private GlobalCacheManager globalCacheManager;
     private FeedDetailListMapper feedDetailListMapper;
-    private RecentProductDbManager recentProductDbManager;
     private final MojitoService mojitoService;
     private RecentProductMapper recentProductMapper;
 
@@ -40,9 +41,9 @@ public class FeedFactory {
                        FeedResultMapper feedResultMapperLocal,
                        GlobalCacheManager globalCacheManager,
                        FeedDetailListMapper feedDetailListMapper,
-                       RecentProductDbManager recentProductDbManager,
                        MojitoService mojitoService,
-                       RecentProductMapper recentProductMapper) {
+                       RecentProductMapper recentProductMapper,
+                       CheckNewFeedMapper checkNewFeedMapper) {
 
         this.apolloClient = apolloClient;
         this.context = context;
@@ -51,13 +52,14 @@ public class FeedFactory {
         this.feedResultMapperCloud = feedResultMapperCloud;
         this.feedResultMapperLocal = feedResultMapperLocal;
         this.globalCacheManager = globalCacheManager;
-        this.recentProductDbManager = recentProductDbManager;
         this.mojitoService = mojitoService;
         this.recentProductMapper = recentProductMapper;
+        this.checkNewFeedMapper = checkNewFeedMapper;
     }
 
     public CloudFeedDataSource createCloudFeedDataSource() {
-        return new CloudFeedDataSource(context, apolloClient, feedListMapper, feedResultMapperCloud, globalCacheManager);
+        return new CloudFeedDataSource(apolloClient, feedListMapper, feedResultMapperCloud,
+                globalCacheManager);
     }
 
     public LocalFeedDataSource createLocalFeedDataSource() {
@@ -69,12 +71,17 @@ public class FeedFactory {
     }
 
     public CloudFirstFeedDataSource createCloudFirstFeedDataSource() {
-        return new CloudFirstFeedDataSource(context, apolloClient,
-                feedListMapper, feedResultMapperCloud, globalCacheManager,
-                recentProductDbManager, mojitoService, recentProductMapper);
+        return new CloudFirstFeedDataSource(apolloClient, feedListMapper, feedResultMapperCloud,
+                globalCacheManager);
     }
 
     public CloudRecentProductDataSource createCloudRecentViewedProductSource() {
-        return new CloudRecentProductDataSource(context, recentProductDbManager, mojitoService, recentProductMapper);
+        return new CloudRecentProductDataSource(globalCacheManager, mojitoService,
+                recentProductMapper);
+    }
+
+    public CloudCheckNewFeedDataSource createCloudCheckNewFeedDataSource() {
+        return new CloudCheckNewFeedDataSource(apolloClient,
+                checkNewFeedMapper);
     }
 }

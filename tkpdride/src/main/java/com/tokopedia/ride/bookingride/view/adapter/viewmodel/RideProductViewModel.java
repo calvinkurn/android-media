@@ -21,6 +21,7 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
     private int capacity;
     private boolean enabled;
     private String cancellationFee;
+    private boolean isDestinationSelected;
 
     public RideProductViewModel() {
     }
@@ -36,6 +37,7 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
         capacity = in.readInt();
         enabled = in.readByte() != 0;
         cancellationFee = in.readString();
+        isDestinationSelected = in.readByte() != 0;
     }
 
     public static final Creator<RideProductViewModel> CREATOR = new Creator<RideProductViewModel>() {
@@ -135,6 +137,14 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
         this.cancellationFee = cancellationFee;
     }
 
+    public boolean isDestinationSelected() {
+        return isDestinationSelected;
+    }
+
+    public void setDestinationSelected(boolean destinationSelected) {
+        isDestinationSelected = destinationSelected;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -156,7 +166,7 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
         p.setDataPosition(0);
         RideProductViewModel copy = null;
         try {
-            copy = (RideProductViewModel) orig.getClass().getDeclaredConstructor(new Class[]{Parcel.class}).newInstance(p);
+            copy = orig.getClass().getDeclaredConstructor(new Class[]{Parcel.class}).newInstance(p);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -180,5 +190,6 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
         parcel.writeInt(capacity);
         parcel.writeByte((byte) (enabled ? 1 : 0));
         parcel.writeString(cancellationFee);
+        parcel.writeByte((byte) (isDestinationSelected ? 1 : 0));
     }
 }

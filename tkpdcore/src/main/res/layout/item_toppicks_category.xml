@@ -64,7 +64,6 @@
                 android:layout_alignParentRight="true"
                 android:clickable="true"
                 android:text="@string/see_all"
-                android:drawableRight="@drawable/ic_chevron_right"
                 android:textColor="@color/green_400"
                 android:textSize="15sp" />
 

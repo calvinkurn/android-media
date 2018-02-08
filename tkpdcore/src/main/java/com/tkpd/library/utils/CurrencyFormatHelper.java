@@ -248,6 +248,14 @@ public final class CurrencyFormatHelper {
         return Integer.parseInt(rupiah);
     }
 
+	public static double convertRupiahToDouble(String rupiah) {
+		rupiah = rupiah.replace("Rp", "");
+		rupiah = rupiah.replace(".", "");
+		rupiah = rupiah.replace(" ", "");
+		rupiah = rupiah.replace(",", ".");
+		return Double.parseDouble(rupiah);
+	}
+
     public static String toRupiah(long money) {
 		try{
 			String inRupiah = getRupiahFormat().format(money).replace(",", ".");

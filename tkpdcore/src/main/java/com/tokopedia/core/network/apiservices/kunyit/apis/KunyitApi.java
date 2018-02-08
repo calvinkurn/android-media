@@ -71,7 +71,7 @@ public interface KunyitApi {
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.KunyitMessage.SEND_MESSAGE)
-    Observable<Response<TkpdResponse>> sendMessage(@FieldMap Map<String, String> stringStringMap);
+    Observable<Response<TkpdResponse>> sendMessage(@FieldMap Map<String, Object> stringStringMap);
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.KunyitMessage.SEND_REPLY_MESSAGE)
@@ -120,5 +120,11 @@ public interface KunyitApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.KunyitMessage.MARK_AS_UNREAD)
     Observable<Response<TkpdResponse>> markAsUnread(@FieldMap Map<String, String> stringStringMap);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.KunyitMessage.SEND_MESSAGE)
+    Observable<Response<TkpdResponse>> sendMessageOld(@FieldMap Map<String, String>
+                                                              stringStringMap);
+
 
 }

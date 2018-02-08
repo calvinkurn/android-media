@@ -3,6 +3,8 @@ package com.tokopedia.inbox.rescenter.detailv2.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDomain;
+
 /**
  * Created by hangnadi on 3/9/17.
  */
@@ -16,32 +18,46 @@ public class DetailViewModel implements Parcelable {
     private DetailData detailData;
     private ProductData productData;
     private SolutionData solutionData;
+    private ProveData proveData;
     private HistoryData historyData;
     private AwbData awbData;
     private AddressReturData addressReturData;
+    private NextActionDomain nextActionDomain;
+    private FreeReturnData freeReturnData;
 
-    public void setTimeOut(boolean timeOut) {
-        this.timeOut = timeOut;
+    public DetailViewModel() {
+    }
+
+    public FreeReturnData getFreeReturnData() {
+        return freeReturnData;
+    }
+
+    public void setFreeReturnData(FreeReturnData freeReturnData) {
+        this.freeReturnData = freeReturnData;
     }
 
     public boolean isTimeOut() {
         return timeOut;
     }
 
-    public void setSuccess(boolean success) {
-        this.success = success;
+    public void setTimeOut(boolean timeOut) {
+        this.timeOut = timeOut;
     }
 
     public boolean isSuccess() {
         return success;
     }
 
-    public void setMessageError(String messageError) {
-        this.messageError = messageError;
+    public void setSuccess(boolean success) {
+        this.success = success;
     }
 
     public String getMessageError() {
         return messageError;
+    }
+
+    public void setMessageError(String messageError) {
+        this.messageError = messageError;
     }
 
     public ButtonData getButtonData() {
@@ -108,6 +124,22 @@ public class DetailViewModel implements Parcelable {
         this.addressReturData = addressReturData;
     }
 
+    public NextActionDomain getNextActionDomain() {
+        return nextActionDomain;
+    }
+
+    public void setNextActionDomain(NextActionDomain nextActionDomain) {
+        this.nextActionDomain = nextActionDomain;
+    }
+
+    public ProveData getProveData() {
+        return proveData;
+    }
+
+    public void setProveData(ProveData proveData) {
+        this.proveData = proveData;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -123,12 +155,12 @@ public class DetailViewModel implements Parcelable {
         dest.writeParcelable(this.detailData, flags);
         dest.writeParcelable(this.productData, flags);
         dest.writeParcelable(this.solutionData, flags);
+        dest.writeParcelable(this.proveData, flags);
         dest.writeParcelable(this.historyData, flags);
         dest.writeParcelable(this.awbData, flags);
         dest.writeParcelable(this.addressReturData, flags);
-    }
-
-    public DetailViewModel() {
+        dest.writeParcelable(this.nextActionDomain, flags);
+        dest.writeParcelable(this.freeReturnData, flags);
     }
 
     protected DetailViewModel(Parcel in) {
@@ -140,12 +172,15 @@ public class DetailViewModel implements Parcelable {
         this.detailData = in.readParcelable(DetailData.class.getClassLoader());
         this.productData = in.readParcelable(ProductData.class.getClassLoader());
         this.solutionData = in.readParcelable(SolutionData.class.getClassLoader());
+        this.proveData = in.readParcelable(ProveData.class.getClassLoader());
         this.historyData = in.readParcelable(HistoryData.class.getClassLoader());
         this.awbData = in.readParcelable(AwbData.class.getClassLoader());
         this.addressReturData = in.readParcelable(AddressReturData.class.getClassLoader());
+        this.nextActionDomain = in.readParcelable(NextActionDomain.class.getClassLoader());
+        this.freeReturnData = in.readParcelable(FreeReturnData.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<DetailViewModel> CREATOR = new Parcelable.Creator<DetailViewModel>() {
+    public static final Creator<DetailViewModel> CREATOR = new Creator<DetailViewModel>() {
         @Override
         public DetailViewModel createFromParcel(Parcel source) {
             return new DetailViewModel(source);

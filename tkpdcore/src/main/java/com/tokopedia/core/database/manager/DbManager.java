@@ -19,19 +19,12 @@ public interface DbManager {
     String TAG = "STUART";
     String messageTAG = "DbManager";
 
-    void saveGudangIfNotInDb();
-    long saveEtalase(GetEtalaseModel.EtalaseModel etalaseModel);
     EtalaseDB getEtalase(String etalaseId);
-    List<EtalaseDB> getEtalases();
-    CategoryDB getKategoriByDepId(int depId);
     PictureDB getGambarById(long photoId);
     long addHargaGrosir(WholeSaleAdapterModel wholeSaleAdapterModel);
     void removeHargaGrosir(WholeSaleAdapterModel wholeSaleAdapterModel);
     long addHargaGrosir(double min, double max, double price);
-    List<CategoryDB> getDepartmentParent();
-    List<CategoryDB> getDepartmentChild(int level, int depId);
     void removeAllEtalase();
-    CategoryDB getCategoryDb(String identifier);
     List<Bank> getListBankFromDB(String query);
     List<WholesalePriceDB> removeWholeSaleDb(long dbId);
     Province getProvinceFromProvinceId(String provinceId);

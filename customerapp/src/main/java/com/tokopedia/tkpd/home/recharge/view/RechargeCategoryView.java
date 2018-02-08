@@ -1,6 +1,8 @@
 package com.tokopedia.tkpd.home.recharge.view;
 
-import com.tokopedia.core.database.model.category.CategoryData;
+import com.tokopedia.digital.widget.model.category.Category;
+
+import java.util.List;
 
 /**
  *
@@ -8,11 +10,11 @@ import com.tokopedia.core.database.model.category.CategoryData;
  */
 public interface RechargeCategoryView {
 
-    void renderDataRechargeCategory(CategoryData rechargeCategory);
+    void renderDataRechargeCategory(List<Category> rechargeCategory);
 
     void failedRenderDataRechargeCategory();
 
     void renderErrorNetwork();
 
-    void hideRechargeWidget();
+    void renderErrorMessage();
 }

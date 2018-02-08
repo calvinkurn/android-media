@@ -25,12 +25,11 @@ import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
-import com.tokopedia.core.geolocation.model.LocationPass;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.transaction.addtocart.activity.AddToCartActivity;
 import com.tokopedia.transaction.addtocart.interactor.AddToCartNetInteractor;
@@ -64,6 +63,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     private final AddToCartViewListener viewListener;
     private final KeroNetInteractorImpl keroNetInteractor;
     private static final String GOJEK_ID = "10";
+    private int minimumNoInsuranceCount = 0;
 
     public AddToCartPresenterImpl(AddToCartActivity addToCartActivity) {
         this.addToCartNetInteractor = new AddToCartNetInteractorImpl();
@@ -202,7 +202,8 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
 
     @Override
     public void calculateProduct(@NonNull final Context context,
-                                 @NonNull final OrderData orderData) {
+                                 @NonNull final OrderData orderData,
+                                 final boolean mustReCalculateAddressShipping) {
         viewListener.disableBuyButton();
         addToCartNetInteractor.calculateCartPrice(context, AuthUtil.generateParamsNetwork(context,
                 NetParamUtil.paramCalculateCart("calculate_product", orderData)),
@@ -211,6 +212,9 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                     public void onSuccess(String price) {
                         viewListener.renderProductPrice(price);
                         viewListener.enableBuyButton();
+                        if (mustReCalculateAddressShipping) {
+                            calculateKeroAddressShipping(context, orderData);
+                        }
                     }
 
                     @Override
@@ -440,9 +444,6 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
         values.put(context.getString(R.string.value_seller_id), orderData.getShopId() + "");
         values.put(context.getString(R.string.value_products_category), productCartPass.getProductCategory());
 
-        PaymentTracking.atcLoca(productCartPass, orderData.getProductId(),
-                orderData.getPriceItem(), values);
-
         com.tokopedia.core.analytics.nishikino.model.Product product
                 = new com.tokopedia.core.analytics.nishikino.model.Product();
         product.setProductID(orderData.getProductId());
@@ -554,17 +555,17 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     }
 
     private boolean isAllowedCourier(AtcFormData data) {
-        boolean allowedInstant = data.getForm().getDestination().getLatitude()!=null
+        boolean allowedInstant = data.getForm().getDestination().getLatitude() != null
                 && !data.getForm().getDestination().getLatitude().isEmpty();
-        for (int i = 0; i<data.getForm().getShipment().size(); i++) {
-            for(int j = 0; j<data.getForm().getShipment().get(i).getShipmentPackage().size(); j++) {
+        for (int i = 0; i < data.getForm().getShipment().size(); i++) {
+            for (int j = 0; j < data.getForm().getShipment().get(i).getShipmentPackage().size(); j++) {
                 ShipmentPackage shipmentPackage = data.getForm().getShipment().get(i)
                         .getShipmentPackage().get(j);
                 boolean packageAvailable = shipmentPackage.getPackageAvailable() == 1;
                 boolean isGojek = shipmentPackage.getShipmentId().equals(GOJEK_ID);
                 if (packageAvailable && !isGojek)
                     return true;
-                else if(allowedInstant)
+                else if (allowedInstant)
                     return true;
             }
         }

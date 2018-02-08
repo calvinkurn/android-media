@@ -77,12 +77,6 @@ public interface Favorite  {
     void initInstances(Context context);
 
     /**
-     * send some localytics data to internet
-     * @param context
-     */
-    void setLocalyticFlow(Context context);
-
-    /**
      * send AppsFlyer data
      * @param context
      */

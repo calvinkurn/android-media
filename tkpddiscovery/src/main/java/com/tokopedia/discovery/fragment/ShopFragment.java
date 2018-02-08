@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -55,8 +56,11 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
     public static final int IDFRAGMENT = 1903_909;
     public static final String INDEX = "FRAGMENT_INDEX";
     public static final int GOTO_SHOP_DETAIL = 125;
+
     @BindView(R2.id.list_shop)
     RecyclerView list_shop;
+    @BindView(R2.id.swipe_refresh_layout)
+    SwipeRefreshLayout refreshLayout;
 
     List<RecyclerViewItem> browseShopModelList = new ArrayList<>();
     private BrowseShopAdapter browseShopAdapter;

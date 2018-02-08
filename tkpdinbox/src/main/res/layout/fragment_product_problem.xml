@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/flBottom"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/white">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/black_12" />
+
+            <Button
+                android:id="@+id/btn_continue"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/margin_small"
+                android:text="@string/string_continue"
+                android:textAllCaps="false"
+                android:background="@drawable/bg_button_disable"/>
+        </FrameLayout>
+
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_above="@id/flBottom"
+            android:id="@+id/rv_product_problem"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </android.support.v7.widget.RecyclerView>
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>

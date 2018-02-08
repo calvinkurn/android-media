@@ -18,7 +18,7 @@
         android:layout_gravity="bottom|end"
         app:touchGuardDrawable="@drawable/background_blur"
         app:fabGravity="bottom_end"
-        app:fabMenu="@menu/menu_add_product_instoped"
+        app:fabMenu="@menu/menu_product_add_instoped"
         app:fabBackgroundTint="@color/green_500"
         app:miniFabBackgroundTint="@color/mini_fab_title_background_tint"
         app:miniFabDrawableTint="@android:color/white"

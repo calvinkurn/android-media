@@ -1,6 +1,21 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
+apply plugin: 'io.fabric'
+apply from: "../buildconfig/reactnative/react.gradle"
 
+def getDpiId(String density) {
+
+    def DPI_ID = ['null': 0, 'mdpi': 1, 'hdpi': 2, 'xhdpi': 3, 'xxhdpi': 4]
+    if (density != null)
+        return DPI_ID.get(density);
+    return 0;
+}
+
+def allowSplit() {
+//    return gradle.startParameter.taskNames.contains("assembleRelease") &&
+//            !project.hasProperty('tkpdBuildType');
+    return false;
+}
 
 def allowDistribution() {
     if ( project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
@@ -9,9 +24,56 @@ def allowDistribution() {
     return "false";
 }
 
+def getTkpdVersionCode() {
+    return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : project.defaultVersionCode;
+}
+
+def getTkpdVersionName() {
+    return project.hasProperty('versionName') ? versionName : project.defaultVersionName;
+}
+
+def archiveAPK(variant, output) {
+
+    String density = output.getFilter(com.android.build.OutputFile.DENSITY);
+    def originZipAlignedApkFile = output.outputFile;
+    def renameAPKFile = renameAPKFile(variant, density, output.versionCodeOverride);
+    copy {
+        from "$originZipAlignedApkFile"
+        into getAPKArchiveFolder(variant)
+        rename("$originZipAlignedApkFile.name", "$renameAPKFile")
+    }
+}
+
+def renameAPKFile(variant, density, versionCode) {
+    def fileName = variant.name.toUpperCase()
+    fileName += "-" + variant.mergedFlavor.versionName;
+    fileName += "-V" + versionCode;
+    fileName += "-" + density;
+    fileName += ".apk";
+    return fileName;
+}
+
+def getAPKArchiveFolder(variant) {
+    return "/Android/launching-android/" + "V" + variant.mergedFlavor.versionCode;
+}
+
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
+}
+
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.0"
+    buildToolsVersion "26.0.2"
+
+    project.ext {
+        defaultVersionCode = 1;
+        defaultVersionName = "1.0";
+    }
 
     defaultConfig {
         applicationId "com.tokopedia.posapp"
@@ -21,17 +83,62 @@ android {
         versionName "1.0"
         multiDexEnabled = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        ndk {
+            abiFilters "armeabi-v7a", "x86"
+        }
+        packagingOptions {
+            exclude "lib/arm64-v8a/libgnustl_shared.so"
+        }
 
     }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("debug.keystore")
+        }
+    }
+
     buildTypes {
         debug {
             minifyEnabled false
+            zipAlignEnabled false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
         release {
-            minifyEnabled false
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
+            ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
+            if (allowSplit()) {
+                applicationVariants.all { variant ->
+                    variant.outputs.each { output ->
+                        String density = output.getFilter(com.android.build.OutputFile.DENSITY);
+                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + getDpiId(density);
+                    }
+                    variant.assemble.doLast {
+                        variant.outputs.each { output ->
+                            if (output.zipAlign) {
+                                archiveAPK(variant, output);
+                            }
+                        }
+                    }
+                }
+            } else {
+                applicationVariants.all { variant ->
+                    variant.outputs.each { output ->
+                        output.versionCodeOverride = (getTkpdVersionCode() * 100);
+                    }
+                }
+            }
         }
     }
     dexOptions {
@@ -39,24 +146,31 @@ android {
     }
     productFlavors {
         staging {}
-        alpha {}
         live {}
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':tkpdcore')
     compile project(':tkpdsession')
     compile project(':tkpddiscovery')
     compile project(':tkpdpdp')
     compile project(':tkpdseller')
     compile project(':tkpddesign')
+    compile project(':tkpdreactnative')
+
+    apt rootProject.ext.dbDependencies.dbFlowProcessor
+    compile rootProject.ext.dbDependencies.dbFlowCore
+    compile rootProject.ext.dbDependencies.dbFlow
 
     provided rootProject.ext.miscDependencies.javaxAnnotation
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
     compile rootProject.ext.miscDependencies.cardio
 
-    compile rootProject.ext.testDependencies.junit
+    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    compile rootProject.ext.miscDependencies.frescoGif
 }

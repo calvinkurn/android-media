@@ -3,7 +3,7 @@
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <android.support.v4.view.ViewPager
+    <com.tkpd.library.ui.widget.TouchViewPager
         android:id="@+id/view_pager_intermediary"
         android:layout_width="match_parent"
         android:layout_height="@dimen/item_revamp_category"/>

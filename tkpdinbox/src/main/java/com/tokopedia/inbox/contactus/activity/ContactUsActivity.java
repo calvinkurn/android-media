@@ -30,18 +30,12 @@ public class ContactUsActivity extends BasePresenterActivity implements
 
     public static final String PARAM_SOLUTION_ID = "PARAM_SOLUTION_ID";
     public static final String PARAM_ORDER_ID = "PARAM_ORDER_ID";
+    public static final String PARAM_INVOICE_ID = "PARAM_INVOICE_ID";
     public static final String PARAM_TAG = "PARAM_TAG";
     private static final String CURRENT_FRAGMENT_BACKSTACK = "CURRENT_FRAGMENT_BACKSTACK";
     private static final String PARAM_BUNDLE = "PARAM_BUNDLE";
     String url;
     Bundle bundleCreateTicket;
-
-    public interface BackButtonListener {
-        void onBackPressed();
-
-        boolean canGoBack();
-    }
-
     private BackButtonListener listener;
 
     @Override
@@ -123,9 +117,9 @@ public class ContactUsActivity extends BasePresenterActivity implements
                 getIntent().getExtras() != null
                         && getIntent().getExtras()
                         .getString(InboxRouter.PARAM_URL, "").equals(""))) {
-            setTitle(com.tokopedia.inbox.R.string.title_help);
+            toolbar.setTitle(com.tokopedia.inbox.R.string.title_help);
         } else {
-            setTitle(R.string.title_activity_contact_us);
+            toolbar.setTitle(R.string.title_activity_contact_us);
         }
     }
 
@@ -195,5 +189,16 @@ public class ContactUsActivity extends BasePresenterActivity implements
         outState.putString(PARAM_URL, url);
         outState.putBundle(PARAM_BUNDLE, bundleCreateTicket);
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
+
+    public interface BackButtonListener {
+        void onBackPressed();
+
+        boolean canGoBack();
     }
 }

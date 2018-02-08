@@ -1,0 +1,45 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.SearchView
+        android:id="@+id/search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_vs"
+        android:background="@drawable/cards_ui"
+        android:hint="@string/hint_search_review"
+        android:textSize="@dimen/text_size_small"
+        android:iconifiedByDefault="false"
+        app:iconifiedByDefault="false"/>
+
+    <com.tokopedia.core.customwidget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/filter_layout"
+        android:layout_below="@id/search">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/review_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:scrollbars="vertical"/>
+
+    </com.tokopedia.core.customwidget.SwipeToRefresh>
+
+    <include
+        android:id="@+id/filter_button"
+        layout="@layout/filter_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/margin_large"
+        android:layout_centerHorizontal="true"/>
+</RelativeLayout>

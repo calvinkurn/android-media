@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.home.interactor;
 
-import com.tokopedia.core.network.apiservices.transaction.TokoCashCashBackService;
-import com.tokopedia.digital.tokocash.domain.TokoCashRepository;
+import com.tokopedia.core.network.apiservices.tokocash.TokoCashCashBackService;
+import com.tokopedia.digital.tokocash.domain.TokoCashPendingRepository;
 import com.tokopedia.digital.tokocash.mapper.ITokoCashMapper;
 import com.tokopedia.digital.tokocash.model.CashBackData;
 
@@ -18,11 +18,11 @@ public class TokoCashHomeInteractorImpl implements TokoCashHomeInteractor {
 
     private final CompositeSubscription compositeSubscription;
     private final TokoCashCashBackService tokoCashCashBackService;
-    private final TokoCashRepository tokoCashRepository;
+    private final TokoCashPendingRepository tokoCashRepository;
 
     public TokoCashHomeInteractorImpl(ITokoCashMapper iTokoCashMapper) {
         tokoCashCashBackService = new TokoCashCashBackService();
-        tokoCashRepository = new TokoCashRepository(tokoCashCashBackService, iTokoCashMapper);
+        tokoCashRepository = new TokoCashPendingRepository(tokoCashCashBackService, iTokoCashMapper);
         compositeSubscription = new CompositeSubscription();
     }
 

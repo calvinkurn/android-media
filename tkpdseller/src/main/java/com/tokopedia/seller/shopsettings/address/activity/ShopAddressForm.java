@@ -56,7 +56,9 @@ import rx.subscriptions.CompositeSubscription;
 public class ShopAddressForm extends TActivity {
     private final int HIDE_MENU = 1;
     private final int SHOW_MENU = 0;
-
+    CompositeSubscription compositeSubscription = new CompositeSubscription();
+    String city;
+    String district;
     private View rootView;
     private View mainView;
     private EditText AddressName;
@@ -87,11 +89,8 @@ public class ShopAddressForm extends TActivity {
     private int mState = 0;
     private TkpdProgressDialog mProgressDialog;
     private Subscriber subscriber;
-
     // this boolean is to check if fetching province, city and district done
     private boolean isFetchProvinceDone = false;
-
-    CompositeSubscription compositeSubscription = new CompositeSubscription();
     private TkpdProgressDialog progress;
 
     private DataReceiver getDataReceiver(final String provinsi, final String city,
@@ -105,7 +104,6 @@ public class ShopAddressForm extends TActivity {
 
             @Override
             public void setDistricts(List<District> districts) {
-                Log.d("MNORMANSYAH", ShopAddressForm.class.getSimpleName() + " -> " + districts);
                 isFetchProvinceDone = true;
                 if (IsNewForm) {
                     chooseDistrict(districts);
@@ -116,7 +114,6 @@ public class ShopAddressForm extends TActivity {
 
             @Override
             public void setCities(List<City> cities) {
-                Log.d("MNORMANSYAH", ShopAddressForm.class.getSimpleName() + " -> " + cities);
                 if (IsNewForm) {
                     chooseCity(cities);
                 } else {
@@ -126,7 +123,6 @@ public class ShopAddressForm extends TActivity {
 
             @Override
             public void setProvinces(List<Province> provinces) {
-                Log.d("MNORMANSYAH", ShopAddressForm.class.getSimpleName() + " -> " + provinces);
                 if (IsNewForm) {
                     initProvince(provinces);
                 } else {
@@ -137,10 +133,6 @@ public class ShopAddressForm extends TActivity {
             @Override
             public void setBank(List<Bank> banks) {
 
-            }
-
-            @Override
-            public void setDepartments(List<CategoryDB> departments) {
             }
 
             @Override
@@ -389,9 +381,9 @@ public class ShopAddressForm extends TActivity {
                 SpinnerRegency.setSelection(j + 1);
                 RegeLastIndex = j + 1;
 
-				City city1 = DbManagerImpl
-						.getInstance()
-						.getCity(city);
+                City city1 = DbManagerImpl
+                        .getInstance()
+                        .getCity(city);
 
                 DataManagerImpl.getDataManager()
                         .getListDistrict(this,
@@ -424,8 +416,6 @@ public class ShopAddressForm extends TActivity {
     }
 
     private void initProvince(List<Province> provinces, String province) {
-        Log.d("MNORMANSYAH", ShopAddressForm.class.getSimpleName()
-                + " provinsi -> " + province);
         initProvince(provinces);
 
         for (int i = 0; i < ProvinceID.size(); i++) {
@@ -433,9 +423,9 @@ public class ShopAddressForm extends TActivity {
                 SpinnerProvince.setSelection(i + 1);
                 ProvLastIndex = i + 1;
 
-				//[START] get city based on province
-				Province provinsi = DbManagerImpl.getInstance()
-						.getProvinceFromProvinceId(province);
+                //[START] get city based on province
+                Province provinsi = DbManagerImpl.getInstance()
+                        .getProvinceFromProvinceId(province);
 
                 DataManagerImpl.getDataManager()
                         .getListCity(
@@ -519,7 +509,6 @@ public class ShopAddressForm extends TActivity {
         mProgressDialog.showDialog();
     }
 
-
     public boolean Validate() {
         boolean valid = true;
         AddressName.setError(null);
@@ -580,10 +569,6 @@ public class ShopAddressForm extends TActivity {
         return valid;
     }
 
-    String city;
-    String district;
-
-
     private HashMap<String, String> PrepareParamSaveAddress(
             String addressName, String address, String provinceID, String regencyID,
             String subDistricID, String postCode, String email, String phone, String fax) {
@@ -609,7 +594,7 @@ public class ShopAddressForm extends TActivity {
 
             @Override
             public void onError(Throwable e) {
-                if (mProgressDialog!= null) {
+                if (mProgressDialog != null) {
                     mProgressDialog.dismiss();
                 }
                 NetworkErrorHelper.showEmptyState(ShopAddressForm.this, rootView, new NetworkErrorHelper.RetryClickedListener() {
@@ -622,7 +607,7 @@ public class ShopAddressForm extends TActivity {
 
             @Override
             public void onNext(Response<TkpdResponse> responseData) {
-                if (mProgressDialog!= null) {
+                if (mProgressDialog != null) {
                     mProgressDialog.dismiss();
                 }
 
@@ -631,7 +616,7 @@ public class ShopAddressForm extends TActivity {
                 JSONObject jsonObject = null;
                 try {
                     List<String> errorMessages = response.getErrorMessages();
-                    if (errorMessages!= null && errorMessages.size() > 0 && !TextUtils.isEmpty( errorMessages.get(0))) {
+                    if (errorMessages != null && errorMessages.size() > 0 && !TextUtils.isEmpty(errorMessages.get(0))) {
                         String responses = "";
                         for (int i = 0; i < response.getErrorMessages().size(); i++) {
                             responses += response.getErrorMessages().get(i) + " ";

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:padding="18dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/title_choose_promo"
+                style="@style/TextView.SubHeadline.BlackSecondary"
+                android:layout_marginBottom="@dimen/margin_large"
+                android:text="@string/top_ads_label_choose_promo" />
+
+            <com.tokopedia.topads.dashboard.view.widget.TopAdsCustomRadioGroup
+                android:id="@+id/radio_group"
+                style="@style/TopAdsCustomRadioGroup">
+
+                <include layout="@layout/partial_top_ads_radio_new_group_option"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom = "@dimen/margin_small"/>
+
+                <include layout="@layout/partial_top_ads_radio_exist_group_option"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom = "@dimen/margin_small"/>
+
+                <include layout="@layout/partial_top_ads_radio_empty_group_option"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom = "@dimen/margin_small"/>
+            </com.tokopedia.topads.dashboard.view.widget.TopAdsCustomRadioGroup>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/button_next"
+        android:text="@string/title_save"
+        style="@style/Button.Submit.Green" />
+
+</LinearLayout>

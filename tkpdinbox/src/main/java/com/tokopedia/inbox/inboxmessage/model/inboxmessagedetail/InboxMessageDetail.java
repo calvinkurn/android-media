@@ -37,6 +37,9 @@ public class InboxMessageDetail implements Parcelable {
     @Expose
     private java.util.List<InboxMessageDetailItem> list = new ArrayList<InboxMessageDetailItem>();
 
+    public InboxMessageDetail() {
+    }
+
     protected InboxMessageDetail(Parcel in) {
         messageId = in.readString();
         textareaReply = in.readInt();

@@ -1,0 +1,29 @@
+<com.tokopedia.core.customwidget.SwipeToRefresh xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipe_refresh_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/container_detail_topads"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.tokopedia.seller.common.widget.LabelView
+                android:id="@+id/manage_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:content_color="@color/tkpd_main_green"
+                app:title="@string/label_manage_group" />
+
+            <include layout="@layout/partial_separator_horizontal"/>
+
+            <include layout="@layout/partial_top_ads_edit_main_page" />
+        </LinearLayout>
+    </ScrollView>
+</com.tokopedia.core.customwidget.SwipeToRefresh>

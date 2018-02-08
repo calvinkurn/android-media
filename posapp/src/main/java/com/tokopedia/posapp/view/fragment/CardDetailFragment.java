@@ -2,6 +2,7 @@ package com.tokopedia.posapp.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,10 +10,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.view.CardDetail;
-import com.tokopedia.posapp.view.viewmodel.card.CreditCardViewModel;
+import com.tokopedia.posapp.view.activity.PaymentProcessingActivity;
+import com.tokopedia.posapp.view.presenter.CardDetailPresenter;
+import com.tokopedia.posapp.view.viewmodel.card.PaymentViewModel;
 import com.tokopedia.posapp.view.widget.CreditCardTextWatcher;
 
 /**
@@ -20,21 +23,22 @@ import com.tokopedia.posapp.view.widget.CreditCardTextWatcher;
  */
 
 public class CardDetailFragment extends BaseDaggerFragment implements CardDetail.View {
-    public static final String CREDIT_CARD_PASS = "CREDIT_CARD_PASS";
+    public static final String PAYMENT_VIEW_MODEL = "PAYMENT_VIEW_MODEL";
 
     private ImageView cardLogo;
     private EditText textCardNo;
     private EditText inputValidMonth;
     private EditText inputValidYear;
-    private EditText inputVcc;
+    private EditText inputCvv;
     private Button buttonPay;
 
-    CardDetail.Presenter presenter;
+    CardDetailPresenter presenter;
+    private PaymentViewModel paymentViewModel;
 
-    public static CardDetailFragment createInstance(CreditCardViewModel data) {
+    public static CardDetailFragment createInstance(PaymentViewModel paymentViewModel) {
         CardDetailFragment fragment = new CardDetailFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(CREDIT_CARD_PASS, data);
+        bundle.putParcelable(PAYMENT_VIEW_MODEL, paymentViewModel);
         fragment.setArguments(bundle);
 
         return fragment;
@@ -47,7 +51,6 @@ public class CardDetailFragment extends BaseDaggerFragment implements CardDetail
 
     @Override
     protected void initInjector() {
-
     }
 
     @Nullable
@@ -62,8 +65,11 @@ public class CardDetailFragment extends BaseDaggerFragment implements CardDetail
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        presenter = new CardDetailPresenter();
+        presenter.attachView(this);
         if(getArguments() != null) {
-            setupCardData((CreditCardViewModel) getArguments().getParcelable(CREDIT_CARD_PASS));
+            paymentViewModel = getArguments().getParcelable(PAYMENT_VIEW_MODEL);
+            setupCardData(paymentViewModel);
         }
     }
 
@@ -72,7 +78,7 @@ public class CardDetailFragment extends BaseDaggerFragment implements CardDetail
         textCardNo = view.findViewById(R.id.text_card_no);
         inputValidMonth = view.findViewById(R.id.input_valid_thru_month);
         inputValidYear = view.findViewById(R.id.input_valid_thru_year);
-        inputVcc = view.findViewById(R.id.input_vcc);
+        inputCvv = view.findViewById(R.id.input_cvv);
         buttonPay = view.findViewById(R.id.button_pay);
     }
 
@@ -82,19 +88,59 @@ public class CardDetailFragment extends BaseDaggerFragment implements CardDetail
         buttonPay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.pay();
+                presenter.pay(getLatestData());
             }
         });
     }
 
-    private void setupCardData(CreditCardViewModel creditCard) {
-        if(creditCard != null) {
-            textCardNo.setText(creditCard.getCardNumber());
-            cardLogo.setImageBitmap(creditCard.getImageBitmap());
-            if (creditCard.isExpiryValid()) {
-                inputValidMonth.setText(creditCard.getFormattedExpiryMonth());
-                inputValidYear.setText(creditCard.getFormattedExpiryYear());
+    private PaymentViewModel getLatestData() {
+        paymentViewModel.getCreditCard().setCardNumber(textCardNo.getText().toString());
+        paymentViewModel.getCreditCard().setExpiryMonth(Integer.parseInt(inputValidMonth.getText().toString()));
+        paymentViewModel.getCreditCard().setExpiryYear(Integer.parseInt(inputValidYear.getText().toString()));
+        paymentViewModel.getCreditCard().setCvv(inputCvv.getText().toString());
+        return paymentViewModel;
+    }
+
+    private void setupCardData(PaymentViewModel paymentViewModel) {
+        if(paymentViewModel != null && paymentViewModel.getCreditCard() != null) {
+            textCardNo.setText(paymentViewModel.getCreditCard().getCardNumber());
+            cardLogo.setImageBitmap(paymentViewModel.getCreditCard().getImageBitmap());
+            if (paymentViewModel.getCreditCard().isExpiryValid()) {
+                inputValidMonth.setText(paymentViewModel.getCreditCard().getFormattedExpiryMonth());
+                inputValidYear.setText(paymentViewModel.getCreditCard().getExpiryYear());
             }
+        }
+    }
+
+    @Override
+    public void onGetPayData(String paymentData) {
+        startActivity(PaymentProcessingActivity.newInstance(getContext(), paymentData));
+    }
+
+    @Override
+    public void onError(Throwable e) {
+        e.printStackTrace();
+        Log.d("o2o", e.getMessage());
+    }
+
+    @Override
+    public void onValidationError(int errorCode) {
+        Log.d("o2o", "validation error, code: " + errorCode);
+        switch (errorCode) {
+            case CardDetail.ERROR_CARD_NOT_VALID:
+                break;
+            case CardDetail.ERROR_CARD_NOT_MATCH_WITH_BANK:
+                break;
+            case CardDetail.ERROR_CARD_NOT_VALID_FOR_INSTALLMENT:
+                break;
+            case CardDetail.ERROR_DATE_NOT_VALID:
+                break;
+            case CardDetail.ERROR_EMPTY_DATE:
+                break;
+            case CardDetail.ERROR_INVALID_CVV:
+                break;
+            default:
+                Log.d("o2o", "validation error, unidentified");
         }
     }
 }

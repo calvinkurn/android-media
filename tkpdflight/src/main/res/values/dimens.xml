@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="progress_bar_height">3dp</dimen>
+    <dimen name="dep_arr_height">100dp</dimen>
+
+    <dimen name="padding_16">16dp</dimen>
+    <dimen name="bottom_search_filter_margin">60dp</dimen>
+</resources>

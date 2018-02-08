@@ -13,6 +13,9 @@ public class HistoryAwbEntity {
     @SerializedName("listHistoryAwb")
     private List<ListHistoryAwb> listHistoryAwb;
 
+    @SerializedName("resoStatus")
+    private int resolutionStatus;
+
     public List<ListHistoryAwb> getListHistoryAwb() {
         return listHistoryAwb;
     }
@@ -21,4 +24,11 @@ public class HistoryAwbEntity {
         this.listHistoryAwb = listHistoryAwb;
     }
 
+    public int getResolutionStatus() {
+        return resolutionStatus;
+    }
+
+    public void setResolutionStatus(int resolutionStatus) {
+        this.resolutionStatus = resolutionStatus;
+    }
 }

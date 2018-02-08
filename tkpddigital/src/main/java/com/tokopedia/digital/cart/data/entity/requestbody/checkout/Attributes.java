@@ -2,6 +2,7 @@ package com.tokopedia.digital.cart.data.entity.requestbody.checkout;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.digital.utils.data.RequestBodyAppsFlyer;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 
 /**
@@ -25,6 +26,9 @@ public class Attributes {
     @SerializedName("identifier")
     @Expose
     private RequestBodyIdentifier identifier;
+    @SerializedName("appsflyer")
+    @Expose
+    private RequestBodyAppsFlyer appsFlyer;
     @SerializedName("client_id")
     @Expose
     private String clientId;
@@ -51,5 +55,9 @@ public class Attributes {
 
     public void setClientId(String clientId) {
         this.clientId = clientId;
+    }
+
+    public void setAppsFlyer(RequestBodyAppsFlyer appsFlyer) {
+        this.appsFlyer = appsFlyer;
     }
 }

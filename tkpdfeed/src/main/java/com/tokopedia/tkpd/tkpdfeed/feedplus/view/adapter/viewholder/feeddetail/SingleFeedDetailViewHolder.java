@@ -2,11 +2,10 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.feeddetail;
 
 import android.support.annotation.LayoutRes;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlusDetail;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 
 /**

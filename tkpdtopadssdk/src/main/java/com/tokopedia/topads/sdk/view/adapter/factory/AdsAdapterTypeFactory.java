@@ -30,7 +30,6 @@ public class AdsAdapterTypeFactory implements AdsTypeFactory {
     private LocalAdsClickListener itemClickListener;
     private ImageLoader imageLoader;
 
-    int position;
     public AdsAdapterTypeFactory(Context context) {
         this(context, 0);
     }

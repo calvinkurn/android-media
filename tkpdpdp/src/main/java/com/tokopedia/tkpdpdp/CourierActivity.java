@@ -76,4 +76,9 @@ public class CourierActivity extends TActivity {
                 = getIntent().getParcelableArrayListExtra(KEY_COURIER_DATA);
         courierAdapter.setData(shopShipments);
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

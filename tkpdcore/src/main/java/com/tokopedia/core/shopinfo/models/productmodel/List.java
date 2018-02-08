@@ -3,6 +3,7 @@ package com.tokopedia.core.shopinfo.models.productmodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.StringRes;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -75,7 +76,7 @@ public class List implements Parcelable {
     public int productReturnable;
     @SerializedName("shop_location")
     @Expose
-    public int shopLocation;
+    public String shopLocation;
     @SerializedName("product_normal_price")
     @Expose
     public int productNormalPrice;
@@ -84,7 +85,7 @@ public class List implements Parcelable {
     public String productImage300;
     @SerializedName("shop_name")
     @Expose
-    public int shopName;
+    public String shopName;
     @SerializedName("product_review_count")
     @Expose
     public String productReviewCount;
@@ -109,6 +110,10 @@ public class List implements Parcelable {
     @SerializedName("labels")
     @Expose
     public java.util.List<Label> labels;
+
+    @SerializedName("product_price_unformatted")
+    @Expose
+    public double productPriceUnformatted;
 
     public ShopProductCampaign shopProductCampaign;
 
@@ -142,10 +147,10 @@ public class List implements Parcelable {
         dest.writeString(this.productPrice);
         dest.writeString(this.productSoldCount);
         dest.writeInt(this.productReturnable);
-        dest.writeInt(this.shopLocation);
+        dest.writeString(this.shopLocation);
         dest.writeInt(this.productNormalPrice);
         dest.writeString(this.productImage300);
-        dest.writeInt(this.shopName);
+        dest.writeString(this.shopName);
         dest.writeString(this.productReviewCount);
         dest.writeInt(this.shopIsOwner);
         dest.writeString(this.productUrl);
@@ -178,10 +183,10 @@ public class List implements Parcelable {
         this.productPrice = in.readString();
         this.productSoldCount = in.readString();
         this.productReturnable = in.readInt();
-        this.shopLocation = in.readInt();
+        this.shopLocation = in.readString();
         this.productNormalPrice = in.readInt();
         this.productImage300 = in.readString();
-        this.shopName = in.readInt();
+        this.shopName = in.readString();
         this.productReviewCount = in.readString();
         this.shopIsOwner = in.readInt();
         this.productUrl = in.readString();

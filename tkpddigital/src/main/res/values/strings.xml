@@ -1,14 +1,5 @@
 <resources>
     <string name="app_name">tkpddigital</string>
-    <string name="notes_voucher">* Hanya berlaku untuk satu kali pembayaran.\n** Sisa nilai promo
-        tidak dapat dikembalikan (hangus) apabila
-        melewati masa kadaluarsa."</string>
-    <string name="kode_voucher">Kode Promo</string>
-    <string name="error_voucher">Kode promo tidak ditemukan</string>
-    <string name="empty_voucher">Masukkan kode promo terlebih dahulu</string>
-    <string name="cancel_voucher">Batalkan</string>
-    <string name="use_voucher">Gunakan</string>
-    <string name="title_detail_voucher">Anda mendapatkan promo:</string>
     <string name="link_lihat_detail">Lihat Detail</string>
     <string name="link_tutup">Tutup</string>
     <string name="user_price_info">Masukkan jumlah nominal yang akan dibayar, %1$s sampai
@@ -31,8 +22,8 @@
     <string name="label_btn_next_cart_digital">LANJUT</string>
     <string name="message_otp_verification_cancelled">Verifikasi kode keamanan dibatalkan</string>
 
-    <string name="label_btn_buy_digital">BELI</string>
-    <string name="label_btn_pay_digital">BAYAR</string>
+    <string name="label_btn_buy_digital">Beli</string>
+    <string name="label_btn_pay_digital">Bayar</string>
     <string name="message_error_digital_product_not_selected">Anda belum memilih produk</string>
     <string name="message_error_digital_client_number_format_invalid">yang anda masukkan tidak sesuai</string>
     <string name="message_error_digital_operator_not_selected">Anda belum memilih operator</string>
@@ -45,10 +36,130 @@
 
     <string name="label_instant_payment_digital">Bayar Instan</string>
     <string name="title_voucher_code">Kode Voucher: </string>
-    <string name="title_empty_stock">Stok Kosong </string>
+    <string name="title_empty_stock">Stok Habis</string>
     <string name="button_copy">salin </string>
     <string name="label_title_desc_promo_digital">Keterangan</string>
     <string name="label_title_price_info_digital">Harga</string>
     <string name="error_message_product_inactive_digital_module">Product tidak aktif</string>
     <string name="error_message_product_out_of_stock_digital_module">Stok product kosong</string>
+    <string name="config_usd_service_description">This service records pop ups sent by your mobile operator, and saves them in Tokopedia. It is absolutely safe to use.</string>
+    <string name="not_applicable">NA</string>
+    <string name="error_message_ussd_msg_not_parsed">Mohon maaf, pengecekan sisa pulsa anda tidak dapat dilakukan</string>
+    <string name="error_message_ussd_operator_not_matched">Maaf, nomor yang dimasukan tidak sesuai dengan operator SIM anda</string>
+    <string name="message_ussd_title">Cek Sisa Pulsa</string>
+    <string name="accessibility_service_description">Layanan ini digunakan untuk membaca saldo pulsa dari ussd popup</string>
+    <string name="dialog_accessibility_service_on">Harap berikan akses untuk membaca nomor Anda.\n Aksesibilitas > Tokopedia > Aktif </string>
+    <string name="msg_ussd_sim_balance">Mohon pastikan nomor Anda sudah terisi dengan benar.</string>
+    <string name="msg_ussd_sim_number">Nomor Anda tidak terdeteksi, mohon masukkan nomor <b>%1$s</b> dalam perangkat ini:</string>
+    <string name="msg_ussd_sim_number_change">Silakan masukkan nomor <b>%1$s</b> Anda dalam perangkat ini:</string>
+    <string name="promo_category">Promo %1$s</string>
+    <string name="other_promo">lainnya</string>
+
+    <string name="benefit_tokocash_title">Kemudahan Bertransaksi \ndengan TokoCash</string>
+    <string name="benefit_tokocash_title_item_1">Mudah melakukan Pembayaran Online</string>
+    <string name="benefit_tokocash_detail_item_1">Nikmati mudahnya belanja, isi pulsa, bayar berbagai tagihan, beli voucher game hingga tiket kereta di Tokopedia dengan TokoCash.</string>
+    <string name="benefit_tokocash_title_item_2">Dana Tersimpan Aman</string>
+    <string name="benefit_tokocash_detail_item_2">Dengan  sistem keamanan yang setara dengan Tokopedia, akun TokoCash-mu jadi lebih terlindungi. Tim Fraud Prevention kami juga akan memantau selama 24 jam untuk mencegah penyalahgunaan akun</string>
+    <string name="benefit_tokocash_title_item_3">Cashback ke TokoCash</string>
+    <string name="benefit_tokocash_detail_item_3">Dapatkan cashback berupa TokoCash dari berbagai promo Tokopedia. Cashback ini bisa juga kamu gunakan untuk kembali bertransaksi di Tokopedia.</string>
+    <string name="benefit_tokocash_title_item_4">Refund dana ke TokoCash</string>
+    <string name="benefit_tokocash_detail_item_4">Jika terjadi pembatalan transaksi, kamu tidak perlu khawatir karena dana akan dikembalikan ke akun TokoCash-mu.</string>
+    <string name="syarat_ketentuan_tokocash">Dengan klik tombol \'Aktivasi\' Anda menyetujui \n syarat dan ketentuan TokoCash.</string>
+    <string name="url_help_center_tokocash">https://www.tokopedia.com/bantuan/pembeli/fitur-belanja/tokocash/</string>
+    <string name="desc_success_tokocash">Selamat, Anda berhasil melakukan aktivasi TokoCash dengan nomor %s. \nKini Anda bisa bertransaksi dengan lebih mudah di Tokopedia.</string>
+    <string name="repeat_sms_verification">Kirim SMS Ulang (%s)</string>
+    <string name="tokocash_title_success">Aktivasi TokoCash Berhasil!</string>
+    <string name="tokocash_direct_home_button">Ke Halaman Utama</string>
+    <string name="tokocash_desc_activation">Anda bisa melakukan aktivasi TokoCash dengan nomor handphone yang terdaftar di akun Tokopedia Anda</string>
+    <string name="tokocash_phone_number">Nomor Handphone</string>
+    <string name="tokocash_activation">Aktivasi</string>
+    <string name="tokocash_desc_request_otp">Nomor Handphone Anda belum terverifikasi. Setelah terverifikasi, Tokocash akan aktif dan dapat digunakan sebagai pilihan pembayaran.</string>
+    <string name="tokocash_send_sms_verification">Kirim SMS Verifikasi</string>
+    <string name="tokocash_button_verification">Verifikasi</string>
+    <string name="tokocash_toolbar_activate">Aktivasi TokoCash</string>
+    <string name="tokocash_toolbar_verification">Verifikasi Nomor Handphone</string>
+    <string name="tokocash_toolbar_success_activation">Aktivasi TokoCash Berhasil</string>
+
+    <string name="title_menu_history_tokocash">Riwayat Transaksi</string>
+    <string name="title_menu_account_setting_tokocash">Pengaturan Akun</string>
+    <string name="title_menu_help_tokocash">Bantuan</string>
+    <string name="range_date_today">Hari ini</string>
+    <string name="range_date_seven_days_ago">7 Hari Terakhir</string>
+    <string name="range_date_thirty_days_ago">30 Hari Terakhir</string>
+    <string name="range_date_this_month">Bulan ini</string>
+    <string name="range_date_last_month">Bulan Lalu</string>
+    <string name="title_tokocash_topup">TokoCash</string>
+
+    <string name="title_header_menu_digital_categories_transaction_list_digital_module">Transaksi Saya</string>
+    <string name="title_header_menu_digital_categories_favorite_number_digital_module">Nomor Favorit</string>
+    <string name="title_header_menu_digital_categories_subscription_digital_module">Langganan</string>
+
+    <string name="title_empty_page_tokocash">Belum ada Riwayat Transaksi</string>
+    <string name="desc_empty_page_tokocash">Pilih filter lain untuk melihat jenis transaksi lainnya, atau tutup filter untuk melihat semua riwayat transaksi.</string>
+    <string name="desc_empty_page_no_transaction_tokocash">Anda belum bertransaksi dengan TokoCash di rentang waktu yang anda pilih. Ayo gunakan TokoCash untuk semua kebutuhan harianmu.</string>
+    <string name="title_detail_transaction">Detail Transaksi</string>
+    <string name="message_no_transaction">Belum ada Riwayat Transaksi </string>
+    <string name="title_tooltip_tokocash">Dana Tertahan</string>
+    <string name="body_tooltip_tokocash">Dana Anda tertahan, untuk Transaksi yang Belum Lunas. Dana akan dikembalikan bila transaksi batal</string>
+    <string name="limit_balance_tokocash">Limit: %s/bulan</string>
+
+    <string name="ussd_batal">Batal</string>
+    <string name="ok">Ok</string>
+    <string name="label_ussd_pulsa_anda">Pulsa Anda</string>
+    <string name="label_ussd_no_handphone">No. Handphone</string>
+    <string name="label_ussd_unknown">UNKNOWN</string>
+    <string name="label_ussd_ubah_nomor_anda">Ubah nomor Anda</string>
+    <string name="label_ussd_operator">Operator</string>
+    <string name="msg_ussd_please_wait">Mohon menunggu, pengecekan saldo pulsa sedang berlangsung</string>
+    <string name="label_ussd_cancel">Cancel</string>
+    <string name="title_showcase_ussd">Cek Sisa Pulsa</string>
+    <string name="message_showcase_ussd">Kini Anda bisa mengetahui sisa pulsa Anda sebelum membeli pulsa.</string>
+    <string name="error_message_contact_not_found">Aplikasi kontak tidak ditemukan</string>
+
+    <string name="title_tooltip_instan_payment">Bayar Instan</string>
+    <string name="body_tooltip_instan_payment">Selesaikan transaksi dengan 1 klik saja menggunakan TokoCash.</string>
+    <string name="error_message_product">Product List kosong</string>
+    <string name="error_message_operator">Operator tidak tersedia</string>
+    <string name="error_message_not_found_product">Produk yang anda pilih saat ini tidak tersedia</string>
+    <string name="ussd_batal_label">Batal</string>
+
+    <string name="input_number">Masukkan nomor</string>
+
+    <string name="title_help_history">Bantuan</string>
+    <string name="tokocash">Tokocash</string>
+    <string name="title_spinner_help_category">Pilih Kategori Kendala</string>
+    <string name="title_detail_help_category">Tulis Penjelasan Kendala Anda (Min. 30 Karakter)</string>
+    <string name="hint_detail_help_category">Isi Penjelasan kendala</string>
+    <string name="button_label_cancel">Batal</string>
+    <string name="button_label_send_help">Kirim Bantuan</string>
+    <string name="error_message_load_spinner_help">Gagal load data kategori kendala bantuan</string>
+    <string name="error_message_send_help">Gagal mengirimkan tiket bantuan</string>
+    <string name="success_message_send_help">Sukses mengirimkan tiket bantuan</string>
+    <string name="tokocash_title_confirmation_move_saldo">Anda akan memindahkan dana dari TokoCash ke Saldo Tokopedia sebesar</string>
+    <string name="tokocash_button_move_saldo">Pindahkan ke Saldo</string>
+    <string name="tokocash_success_title_move_saldo">Dana Telah Dipindahkan</string>
+    <string name="tokocash_success_subtitle_move_saldo">Pemindahan Dana ke Saldo Tokopedia berhasil</string>
+    <string name="tokocash_success_amount">Anda berhasil memindahkan Rp %s ke Saldo Tokopedia</string>
+    <string name="tokocash_move_page">Ke Halaman TokoCash</string>
+    <string name="tokocash_failed_title_move_saldo">Dana Gagal Dipindahkan</string>
+    <string name="tokocash_failed_subtitle_move_saldo">Pemindahan Dana ke Saldo Tokopedia Gagal</string>
+    <string name="tokocash_try_again">Coba Lagi</string>
+    <string name="tokocash_linked_account_date">Terhubung sejak: %s</string>
+    <string name="tokocash_unlink_account_button">Hapus Akses</string>
+    <string name="tokocash_title_account_setting">Pengaturan Akun</string>
+    <string name="tokocash_dialog_delete_access">Apakah Anda yakin ingin menghapus akses %1$s? \n\n
+        Untuk menghubungkan %2$s dengan TokoCash kembali, Anda harus melakukan pengaturan akun pada halaman aplikasi.</string>
+    <string name="tokocash_label_received">Penerimaan TokoCash</string>
+    <string name="tokocash_label_amount_received">Dana Masuk</string>
+    <string name="tokocash_label_top_up">Top Up TokoCash</string>
+    <string name="tokocash_label_balance">TokoCash Balance</string>
+    <string name="tokocash_label_hold_balance">Dana Tertahan</string>
+
+    <string name="title_waiting_transaction_tokocash">Transaksi Menunggu</string>
+    <string name="back_to_top">Kembali ke Atas</string>
+    <string name="label_operator_not_support">Operator tidak tersedia</string>
+    <string name="label_sim">SIM</string>
+    <string name="label_no_signal">No signal</string>
+    <string name="label_no_service">No service</string>
+
 </resources>

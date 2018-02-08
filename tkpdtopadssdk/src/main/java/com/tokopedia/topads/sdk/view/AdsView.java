@@ -21,7 +21,7 @@ public interface AdsView {
 
     void loadTopAds();
 
-    void displayAds(List<Item> list);
+    void displayAds(List<Item> list, int position);
 
     void notifyAdsErrorLoaded(int errorCode, String message);
 

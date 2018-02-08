@@ -17,12 +17,20 @@ public class WishlistCheckResult {
         return checkResultIds;
     }
 
-    public class CheckResultIds {
+    public void setCheckResultIds(CheckResultIds checkResultIds) {
+        this.checkResultIds = checkResultIds;
+    }
+
+    public static class CheckResultIds {
         @SerializedName("ids")
         List<String> ids = new ArrayList<>();
 
         public List<String> getIds() {
             return ids;
+        }
+
+        public void setIds(List<String> ids) {
+            this.ids = ids;
         }
     }
 }

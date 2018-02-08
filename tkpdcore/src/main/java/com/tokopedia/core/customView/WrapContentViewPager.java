@@ -3,6 +3,7 @@ package com.tokopedia.core.customView;
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 /**
@@ -39,5 +40,23 @@ public class WrapContentViewPager extends ViewPager {
     public void measureCurrentView(View currentView) {
         this.currentView = currentView;
         requestLayout();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        if (getCurrentItem() == 0 && getChildCount() == 0) {
+            return false;
+        } else {
+            return super.onTouchEvent(ev);
+        }
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (getCurrentItem() == 0 && getChildCount() == 0) {
+            return false;
+        } else {
+            return super.onInterceptTouchEvent(ev);
+        }
     }
 }

@@ -58,6 +58,7 @@ public interface Login {
     //------ACCOUNTS------
     String USER_NAME = "username";
     String PASSWORD = "password";
+    String SCOPE = "scope";
     String USER_ID = "user_id";
     String GRANT_TYPE = "grant_type";
     String SOCIAL_ID = "social_id";
@@ -70,10 +71,12 @@ public interface Login {
     String CODE = "code";
     String REDIRECT_URI = "redirect_uri";
     String MSISDN = "msisdn";
+    String ACCESS_TOKEN = "access_token";
 
     String GRANT_PASSWORD = "password";
     String GRANT_SDK = "extension";
     String GRANT_WEBVIEW = "authorization_code";
+    String GRANT_020 = "o2o_delegate";
 
     //------________------
 

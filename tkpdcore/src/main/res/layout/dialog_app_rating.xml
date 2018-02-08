@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="@dimen/margin_med"
+    android:paddingBottom="@dimen/margin_med"
+    android:background="@color/white">
+    <TextView
+        android:id="@+id/text_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_rating_title_2"
+        android:gravity="center"
+        android:textSize="@dimen/fontm"
+        android:layout_marginRight="@dimen/margin_med"
+        android:layout_marginLeft="@dimen/margin_med"
+        android:textColor="@color/black_87"
+        android:layout_centerHorizontal="true"/>
+
+    <com.tokopedia.core.apprating.AppRatingView
+        android:id="@+id/view_app_rating"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/text_title" />
+
+    <Button
+        android:id="@+id/button_send"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/view_app_rating"
+        android:maxHeight="52dp"
+        style="@style/ButtonGreen"
+        android:layout_marginBottom="@dimen/margin_ms"
+        android:layout_marginRight="@dimen/margin_med"
+        android:layout_marginLeft="@dimen/margin_med"
+        android:text="@string/app_rating_button_send"/>
+    <Button
+        android:id="@+id/button_close"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/button_send"
+        android:maxHeight="52dp"
+        style="@style/ButtonWhite"
+        android:textColor="@color/black_38"
+        android:layout_marginRight="@dimen/margin_med"
+        android:layout_marginLeft="@dimen/margin_med"
+        android:text="@string/app_rating_button_close"/>
+</RelativeLayout>

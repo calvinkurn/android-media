@@ -4,6 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    tools:context="com.tokopedia.inbox.inboxmessage.activity.SendMessageActivity"
+    tools:context="com.tokopedia.inbox.inboxchat.activity.SendMessageActivity"
     tools:ignore="MergeRootFrame" />
 

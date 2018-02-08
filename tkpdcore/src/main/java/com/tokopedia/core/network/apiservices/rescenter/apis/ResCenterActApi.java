@@ -153,5 +153,9 @@ public interface ResCenterActApi {
     @POST(TkpdBaseURL.ResCenter.PATH_GENERATE_TOKEN_HOST)
     Observable<Response<TkpdResponse>> generateTokenHost(@FieldMap TKPDMapParam<String, Object> params);
 
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_GENERATE_TOKEN_HOST_WITHOUT_HEADER)
+    Observable<Response<TkpdResponse>> generateTokenHostWithoutHeader(@FieldMap TKPDMapParam<String, Object> params);
+
 }
 

@@ -13,6 +13,7 @@ public class Rule implements Parcelable {
     private int productViewStyle;
     private boolean showPrice;
     private boolean enableVoucher;
+    private String buttonText;
 
     public String getProductText() {
         return productText;
@@ -46,6 +47,13 @@ public class Rule implements Parcelable {
         this.enableVoucher = enableVoucher;
     }
 
+    public void setButtonText(String buttonText) {
+        this.buttonText = buttonText;
+    }
+
+    public String getButtonText() {
+        return buttonText;
+    }
 
     @Override
     public int describeContents() {
@@ -58,6 +66,7 @@ public class Rule implements Parcelable {
         dest.writeInt(this.productViewStyle);
         dest.writeByte(this.showPrice ? (byte) 1 : (byte) 0);
         dest.writeByte(this.enableVoucher ? (byte) 1 : (byte) 0);
+        dest.writeString(this.buttonText);
     }
 
     public Rule() {
@@ -68,6 +77,7 @@ public class Rule implements Parcelable {
         this.productViewStyle = in.readInt();
         this.showPrice = in.readByte() != 0;
         this.enableVoucher = in.readByte() != 0;
+        this.buttonText = in.readString();
     }
 
     public static final Parcelable.Creator<Rule> CREATOR = new Parcelable.Creator<Rule>() {
@@ -81,4 +91,5 @@ public class Rule implements Parcelable {
             return new Rule[size];
         }
     };
+
 }

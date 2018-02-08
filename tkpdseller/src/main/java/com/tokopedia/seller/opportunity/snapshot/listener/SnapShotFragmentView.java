@@ -35,14 +35,4 @@ public interface SnapShotFragmentView {
     void onProductShopRatingClicked(Bundle bundle);
 
     void onProductShopAvatarClicked(Bundle bundle);
-
-    void onActionConfirmClicked();
-
-    void showLoadingProgress();
-
-    String getOpportunityId();
-
-    void onSuccessTakeOpportunity(ActionViewData actionViewData);
-
-    void onErrorTakeOpportunity(String errorMessage);
 }

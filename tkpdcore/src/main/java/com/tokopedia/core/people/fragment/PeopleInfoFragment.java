@@ -11,6 +11,8 @@ import com.tokopedia.core.ManagePeople;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.NetworkErrorHelper.RetryClickedListener;
 import com.tokopedia.core.people.customview.PeopleInfoDetailView;
@@ -24,13 +26,10 @@ import com.tokopedia.core.people.model.PeopleInfoData;
 import com.tokopedia.core.people.presenter.PeopleInfoFragmentImpl;
 import com.tokopedia.core.people.presenter.PeopleInfoFragmentPresenter;
 import com.tokopedia.core.peoplefave.activity.PeopleFavoritedShop;
-import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 
 import butterknife.BindView;
-
-import static com.tokopedia.core.router.InboxRouter.PARAM_OWNER_FULLNAME;
-import static com.tokopedia.core.router.InboxRouter.PARAM_USER_ID;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -180,12 +179,15 @@ public class PeopleInfoFragment extends BasePresenterFragment<PeopleInfoFragment
 
     @Override
     public void openCreateMessage(PeopleInfoData.UserInfo userInfo) {
-        Intent intent = InboxRouter.getSendMessageActivityIntent(getActivity());
-        Bundle bundle = new Bundle();
-        bundle.putString(InboxRouter.PARAM_USER_ID, userInfo.getUserId());
-        bundle.putString(InboxRouter.PARAM_OWNER_FULLNAME, userInfo.getUserName());
-        intent.putExtras(bundle);
-        startActivity(intent);
+        if (MainApplication.getAppContext() instanceof TkpdInboxRouter) {
+            Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+                    .getAskUserIntent(getActivity(),
+                            userInfo.getUserId(),
+                            userInfo.getUserName(),
+                            TkpdInboxRouter.PROFILE,
+                            userInfo.getUserImage());
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -200,6 +202,12 @@ public class PeopleInfoFragment extends BasePresenterFragment<PeopleInfoFragment
     }
 
     @Override
+    public void openFollowingPage(int userId) {
+        startActivity(((TkpdCoreRouter) getActivity().getApplicationContext())
+                .getKolFollowingPageIntent(getActivity(), userId));
+    }
+
+    @Override
     public void openShopDetail(String shopId) {
         Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
         Bundle bundle = new Bundle();
@@ -211,7 +219,7 @@ public class PeopleInfoFragment extends BasePresenterFragment<PeopleInfoFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK){
+        if (resultCode == Activity.RESULT_OK) {
             presenter.refreshPeopleInfo(getActivity(), getUserID());
         }
     }

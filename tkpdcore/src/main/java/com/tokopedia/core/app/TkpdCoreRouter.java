@@ -3,12 +3,18 @@ package com.tokopedia.core.app;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
+import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
+import com.tokopedia.core.gcm.ApplinkUnsupported;
+import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.util.SessionHandler;
 
 /**
@@ -17,16 +23,17 @@ import com.tokopedia.core.util.SessionHandler;
  * all the router will moved to the each module's router
  */
 public interface TkpdCoreRouter {
-
-    void startInstopedActivity(Context context);
+    String EXTRAS = "extras";
 
     void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult);
+
+    void startInstopedActivityForResult(Context context, Fragment fragment, int resultCode, int maxResult);
 
     void removeInstopedToken();
 
     void goToManageProduct(Context context);
 
-    void goToManageEtalase(Context context);
+    void goToDraftProductList(Context context);
 
     void clearEtalaseCache();
 
@@ -38,9 +45,31 @@ public interface TkpdCoreRouter {
 
     void goToMerchantRedirect(Context context);
 
-    void actionAppLink(Activity activity, String linkUrl);
+    void actionAppLink(Context context, String linkUrl);
+
+    /**
+     * deprecated
+     *
+     * @param activity activity context
+     * @param linkUrl  applinkScheme
+     * @see #actionApplinkFromActivity(Activity, String)
+     */
+    @Deprecated
+    void actionApplink(Activity activity, String linkUrl);
+
+    void actionApplinkFromActivity(Activity activity, String linkUrl);
+
+    void actionApplink(Activity activity, String linkUrl, String extra);
+
+    void actionOpenGeneralWebView(Activity activity, String mobileUrl);
 
     Intent getHomeIntent(Context context);
+
+    Intent getOnBoardingActivityIntent(Context context);
+
+    Intent getTrueCallerActivityIntent(Context context);
+
+    Intent getPhoneVerificationActivityIntent(Context context);
 
     Class<?> getHomeClass(Context context) throws ClassNotFoundException;
 
@@ -59,4 +88,66 @@ public interface TkpdCoreRouter {
     Intent getLoginIntent(Context context);
 
     Intent getRegisterIntent(Context context);
+
+    void getUserInfo(RequestParams empty, ProfileCompletionSubscriber profileSubscriber);
+
+    String getFlavor();
+
+    boolean isSupportedDelegateDeepLink(String appLinks);
+
+    Intent getIntentDeepLinkHandlerActivity();
+
+    void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle);
+
+    void goToAddProduct(Activity activity);
+
+    boolean isInMyShop(Context context, String shopId);
+
+    Intent getForgotPasswordIntent(Context context, String email);
+
+    void invalidateCategoryMenuData();
+
+    ApplinkUnsupported getApplinkUnsupported(Activity activity);
+
+    Intent getIntentCreateShop(Context context);
+
+    Intent getSplashScreenIntent(Context context);
+
+    Class getDeepLinkClass();
+
+    Intent getIntentManageShop(Context context);
+
+    android.app.Fragment getFragmentShopSettings();
+
+    android.app.Fragment getFragmentSellingNewOrder();
+
+    Class getSellingActivityClass();
+
+    Intent getActivitySellingTransactionNewOrder(Context context);
+
+    Intent getActivitySellingTransactionConfirmShipping(Context context);
+
+    Intent getActivitySellingTransactionShippingStatus(Context context);
+
+    Intent getActivitySellingTransactionList(Context context);
+
+    Intent getActivitySellingTransactionOpportunity(Context context);
+
+    Intent getHomeHotlistIntent(Context context);
+
+    NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass,
+                                         Bundle data, String notifTitle);
+
+    android.app.Fragment getShopReputationFragment();
+
+    Intent getInboxReputationIntent(Context context);
+
+    Intent getResolutionCenterIntent(Context context);
+
+    String applink(Activity activity, String deeplink);
+
+    Intent getKolFollowingPageIntent(Context context, int userId);
+
+    Intent getChangePhoneNumberIntent(Context context, String email, String phoneNumber);
+
 }

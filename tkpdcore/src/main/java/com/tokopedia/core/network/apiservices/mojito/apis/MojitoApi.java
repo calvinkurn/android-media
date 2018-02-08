@@ -7,6 +7,7 @@ import com.tokopedia.core.network.entity.home.Brands;
 import com.tokopedia.core.network.entity.intermediary.brands.MojitoBrandsModel;
 import com.tokopedia.core.network.entity.wishlist.WishlistCheckResult;
 import com.tokopedia.core.network.entity.wishlist.WishlistData;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.productdetail.ProductCampaignResponse;
 import com.tokopedia.core.shopinfo.models.productmodel.ShopProductCampaignResponse;
 
@@ -33,10 +34,23 @@ public interface MojitoApi {
     @Headers({
             "X-Device: android"})
     @GET(TkpdBaseURL.Mojito.API_HOME_CATEGORY_MENU)
-    Observable<Response<String>> getHomeCategoryMenu(@Header("X-User-ID") String user_id);
+    Observable<Response<String>> getHomeCategoryMenu(@Header("X-User-ID") String user_id,
+                                                     @Header(AuthUtil.HEADER_X_TKPD_APP_NAME) String appName);
+
+    //api requirement add static header
+    @Headers({
+            "X-Device: android"})
+    @GET(TkpdBaseURL.Mojito.API_HOME_CATEGORY_MENU_V2)
+    Observable<Response<String>> getHomeCategoryMenuV2(@Header("X-User-ID") String user_id,
+                                                     @Header(AuthUtil.HEADER_X_TKPD_APP_NAME) String appName);
+
 
     @GET(TkpdBaseURL.Mojito.API_V2_BRANDS)
     Observable<Response<Brands>> getBrands();
+
+
+    @GET(TkpdBaseURL.Mojito.API_V2_BRANDS)
+    Observable<Response<String>> getBrandsOfficialStore();
 
     @GET(TkpdBaseURL.Mojito.API_V1_BRANDS_CATEGORY)
     Observable<Response<MojitoBrandsModel>> getBrandsCategory(
@@ -55,6 +69,9 @@ public interface MojitoApi {
     Observable<Response<BannerOfficialStoreModel>> getOSBanner(
             @Query("keywords") String keyword
     );
+
+    @GET(TkpdBaseURL.Mojito.PATH_OS_BANNER)
+    Observable<Response<String>> getOfficialStoreBanner(@Query("keywords") String keyword);
 
     @GET(TkpdBaseURL.Mojito.PATH_CHECK_WISHLIST)
     Observable<Response<WishlistCheckResult>> checkWishlist(

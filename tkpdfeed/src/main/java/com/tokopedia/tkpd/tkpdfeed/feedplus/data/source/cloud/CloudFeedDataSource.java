@@ -1,15 +1,15 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.cloud;
 
-import android.content.Context;
-
 import com.apollographql.android.rx.RxApollo;
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.ApolloWatcher;
-import com.tkpdfeed.feeds.Feeds;
+import com.tkpdfeed.feeds.FeedQuery;
+import com.tkpdfeed.feeds.HomeFeedQuery;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedResultMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.HomeFeedMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsUseCase;
@@ -22,20 +22,18 @@ import rx.Observable;
 
 public class CloudFeedDataSource {
 
+    private static final int FEED_LIMIT = 3;
     private ApolloClient apolloClient;
-    private Context context;
     private FeedListMapper feedListMapper;
     protected GlobalCacheManager globalCacheManager;
     protected FeedResultMapper feedResultMapper;
 
-    public CloudFeedDataSource(Context context,
-                               ApolloClient apolloClient,
+    public CloudFeedDataSource(ApolloClient apolloClient,
                                FeedListMapper feedListMapper,
                                FeedResultMapper feedResultMapper,
                                GlobalCacheManager globalCacheManager) {
 
         this.apolloClient = apolloClient;
-        this.context = context;
         this.feedListMapper = feedListMapper;
         this.globalCacheManager = globalCacheManager;
         this.feedResultMapper = feedResultMapper;
@@ -47,10 +45,9 @@ public class CloudFeedDataSource {
 
     protected Observable<FeedDomain> getFeedsList(RequestParams requestParams) {
         String cursor = requestParams.getString(GetFeedsUseCase.PARAM_CURSOR, "");
-        ApolloWatcher<Feeds.Data> apolloWatcher = apolloClient.newCall(Feeds.builder()
+        ApolloWatcher<FeedQuery.Data> apolloWatcher = apolloClient.newCall(FeedQuery.builder()
                 .userID(requestParams.getInt(GetFeedsUseCase.PARAM_USER_ID, 0))
-                .page(requestParams.getInt(GetFeedsUseCase.PARAM_PAGE,0))
-                .limit(3)
+                .limit(FEED_LIMIT)
                 .cursor(cursor)
                 .build()).watcher();
 

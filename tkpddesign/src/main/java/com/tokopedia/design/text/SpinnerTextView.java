@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
@@ -29,12 +30,15 @@ public class SpinnerTextView extends BaseCustomView {
 
     }
 
-    private static final int DEFAULT_INDEX_NOT_SELECTED = -1;
+    public static final int DEFAULT_INDEX_NOT_SELECTED = -1;
     private TextInputLayout textInputLayout;
     private AutoCompleteTextView textAutoComplete;
+    private ImageView imageViewChevron;
 
     private String hintText;
-    private @StyleRes int hintTextAppearance;
+    private
+    @StyleRes
+    int hintTextAppearance;
     private CharSequence[] entries;
     private CharSequence[] values;
     private int selectionIndex;
@@ -78,7 +82,7 @@ public class SpinnerTextView extends BaseCustomView {
             values = styledAttributes.getTextArray(R.styleable.SpinnerTextView_spinner_values);
             enabled = styledAttributes.getBoolean(R.styleable.SpinnerTextView_spinner_enabled, true);
             textSize = styledAttributes.getDimension(R.styleable.SpinnerTextView_spinner_text_size,
-                    getResources().getDimension(R.dimen.font_subheading));
+                    getResources().getDimension(R.dimen.font_title));
         } finally {
             styledAttributes.recycle();
         }
@@ -91,9 +95,9 @@ public class SpinnerTextView extends BaseCustomView {
             textInputLayout.setHint(hintText);
         }
         if (entries != null) {
-            updateEntries(ConverterUtils.convertCharSequenceToString(entries));
+            updateEntries(ConverterUtils.convertCharSequenceToString(entries), selectionIndex);
         }
-        if (hintTextAppearance!= 0) {
+        if (hintTextAppearance != 0) {
             textInputLayout.setHintTextAppearance(hintTextAppearance);
         }
         textAutoComplete.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
@@ -105,6 +109,7 @@ public class SpinnerTextView extends BaseCustomView {
         View view = inflate(getContext(), R.layout.widget_spinner_text_view, this);
         textInputLayout = (TextInputLayout) view.findViewById(R.id.text_input_layout);
         textAutoComplete = (AutoCompleteTextView) view.findViewById(R.id.edit_text_spinner);
+        imageViewChevron = (ImageView) view.findViewById(R.id.image_view_chevron_icon);
         textAutoComplete.setOnKeyListener(null);
         textAutoComplete.setOnClickListener(new OnClickListener() {
             @Override
@@ -142,7 +147,11 @@ public class SpinnerTextView extends BaseCustomView {
     }
 
     public void setEntries(String[] entries) {
-        updateEntries(entries);
+        setEntries(entries, selectionIndex);
+    }
+
+    public void setEntries(String[] entries, int position) {
+        updateEntries(entries, position);
         invalidate();
         requestLayout();
     }
@@ -155,35 +164,46 @@ public class SpinnerTextView extends BaseCustomView {
 
     public String getSpinnerValue() {
         if (values == null || selectionIndex < 0) {
-            return null;
+            return String.valueOf(DEFAULT_INDEX_NOT_SELECTED);
         }
         return values[selectionIndex].toString();
+    }
+
+    public String getSpinnerEntry() {
+        if (values == null || selectionIndex < 0) {
+            return String.valueOf(DEFAULT_INDEX_NOT_SELECTED);
+        }
+        return entries[selectionIndex].toString();
     }
 
     public String getSpinnerValue(int position) {
         return values[position].toString();
     }
 
+    public String getSpinnerEntry(int position) {
+        return entries[position].toString();
+    }
+
     public void setSpinnerPosition(int position) {
-        if (position >= 0 && position < values.length) {
+        if (position >= 0 && position < values.length && position != selectionIndex) {
             selectionIndex = position;
             textAutoComplete.setText(entries[position]);
             updateOnItemChanged(position);
         }
     }
 
-    public int getSpinnerPosition(){
+    public int getSpinnerPosition() {
         return selectionIndex;
     }
 
     private void updateOnItemChanged(final int position) {
-        if (onItemChangeListener != null) {
+        if (onItemChangeListener != null && entries != null && values != null) {
             onItemChangeListener.onItemChanged(position, entries[position].toString(), values[position].toString());
         }
     }
 
     public void setSpinnerValue(String value) {
-        if (TextUtils.isEmpty(value)) {
+        if (TextUtils.isEmpty(value) || values == null) {
             resetPosition();
             return;
         }
@@ -197,7 +217,7 @@ public class SpinnerTextView extends BaseCustomView {
         resetPosition();
     }
 
-    public void setSpinnerValueByEntries(String entri){
+    public void setSpinnerValueByEntries(String entri) {
         if (TextUtils.isEmpty(entri)) {
             resetPosition();
             return;
@@ -216,11 +236,13 @@ public class SpinnerTextView extends BaseCustomView {
         textInputLayout.setError(error);
     }
 
-    private void updateEntries(String[] entries) {
+
+    private void updateEntries(String[] entries, int position) {
         if (entries != null) {
             this.entries = entries;
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.item_top_ads_autocomplete_text, entries);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.item_autocomplete_text, entries);
             textAutoComplete.setAdapter(adapter);
+            selectionIndex = position;
             if (selectionIndex >= 0) {
                 textAutoComplete.setText(entries[selectionIndex]);
                 updateOnItemChanged(selectionIndex);
@@ -230,5 +252,9 @@ public class SpinnerTextView extends BaseCustomView {
 
     public EditText getEditText() {
         return textAutoComplete;
+    }
+
+    public void setChevronVisibility(boolean isVisible) {
+        imageViewChevron.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 }

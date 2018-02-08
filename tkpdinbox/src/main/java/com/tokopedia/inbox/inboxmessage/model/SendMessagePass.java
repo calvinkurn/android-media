@@ -3,6 +3,8 @@ package com.tokopedia.inbox.inboxmessage.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.tokopedia.inbox.inboxmessage.fragment.SendMessageFragment.PARAM_SOURCE;
+
 /**
  * Created by Nisie on 5/26/16.
  */
@@ -17,6 +19,7 @@ public class SendMessagePass {
     String message_subject;
     String to_shop_id;
     String to_user_id;
+    String source;
 
     public String getMessage() {
         return message;
@@ -56,6 +59,15 @@ public class SendMessagePass {
         param.put(PARAM_MESSAGE_SUBJECT, getMessage_subject());
         param.put(PARAM_TO_SHOP_ID, getTo_shop_id());
         param.put(PARAM_TO_USER_ID, getTo_user_id());
+        param.put(PARAM_SOURCE, getSource());
         return param;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public String getSource() {
+        return source;
     }
 }

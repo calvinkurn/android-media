@@ -1,27 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- GMStat -->
-    <color name="arrow_down">#ff5722</color>
-    <color name="arrow_up">#42b549</color>
-    <color name="empty_background">#f9f9f9</color>
-    <color name="breakline_background">#CD000000</color>
-
-    <color name="black_seventy_percent">#B3000000</color>
-    <color name="black_fifty_four_percent">#8A000000</color>
-    <color name="color_gray">#1f000000</color>
-    <color name="tkpd_button">#ff5722</color>
-    <color name="gmsubscribe_product_price_color">#ff5722</color>
-    <color name="gmsubscribe_product_line_color">#e0e0e0</color>
-    <color name="gmsubscribe_content_textview_color">#8A000000</color>
-    <color name="gmsubscribe_autosubscribe_title_content">#61000000</color>
-
-    <color name="selection_color_top_ads">#f3fef3</color>
-
-    <color name="tkpd_grey">#E0E0E0</color>
-    <color name="tkpd_grey_text">#60000000</color>
-    <color name="white_fifty_percent">#F8F8F8</color>
-
     <!-- product score -->
     <color name="progress_score">#f6b323</color>
     <color name="black_five_percent">#0D000000</color>
@@ -29,10 +8,21 @@
     <color name="low_score_value">#ffc200</color>
     <color name="medium_score_value">#cddc39</color>
     <color name="high_score_value">#8bc34a</color>
-    <color name="wholesale_color">#89000000</color>
     
     <color name="black_twenty_five_percent">#40000000</color>
-
+    <color name="tkpd_grey_text">#60000000</color>
+    <color name="tkpd_grey">#E0E0E0</color>
+    <color name="white_fifty_percent">#F8F8F8</color>
+    <color name="color_gray">#1f000000</color>
+    <color name="lighter_grey">#1e000000</color>
     <!-- tooltip statistic-->
     <color name="grey_title_topads_statistic">#a3a3a3</color>
+
+    <color name="colorSheetText">#DE000000</color>
+    <color name="colorSheetTitle">#8A000000</color>
+    <color name="colorSheetDivider">#3f717171</color>
+    <color name="colorStockEmpty">#fff7bc</color>
+
+    <color name="redTransparant">#AAd50000</color>
+    <color name="watermark_text_color">#26DDDDDD</color>
 </resources>

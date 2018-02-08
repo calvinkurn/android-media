@@ -23,6 +23,7 @@ public class TopAdsModel {
     private Status status;
     private Header header;
     private List<Data> data = new ArrayList<>();
+    private int adsPosition = 0;
 
     public TopAdsModel() {
     }
@@ -78,4 +79,11 @@ public class TopAdsModel {
         this.data = data;
     }
 
+    public int getAdsPosition() {
+        return adsPosition;
+    }
+
+    public void setAdsPosition(int adsPosition) {
+        this.adsPosition = adsPosition;
+    }
 }

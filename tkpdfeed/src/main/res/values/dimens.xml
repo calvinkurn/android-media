@@ -15,6 +15,7 @@
     <dimen name="text_size_12">12sp</dimen>
     <dimen name="text_size_13">13sp</dimen>
     <dimen name="text_size_14">14sp</dimen>
+    <dimen name="text_size_16">16sp</dimen>
 
     <dimen name="feed_margin_s">4.2dp</dimen>
     <dimen name="feed_detail_product">110dp</dimen>
@@ -30,4 +31,15 @@
     <dimen name="feed_detail_buy_height">32dp</dimen>
     <dimen name="arrow_size">14dp</dimen>
     <dimen name="share_header_height">52dp</dimen>
+    <dimen name="margin_top_os_feed">40dp</dimen>
+    <dimen name="feed_official_store_height">69dp</dimen>
+    <dimen name="official_store_header_image_height">85dp</dimen>
+    <dimen name="unify_font_small">11sp</dimen>
+    <dimen name="unify_font_normal">13sp</dimen>
+    <dimen name="header_official_store_height">44dp</dimen>
+    <dimen name="official_store_item_height">300dp</dimen>
+    <dimen name="unified_margin_vvs">3dp</dimen>
+    <dimen name="footer_height">48dp</dimen>
+    <dimen name="kol_avatar">60dp</dimen>
+    <dimen name="small_wishlist_kol">20dp</dimen>
 </resources>

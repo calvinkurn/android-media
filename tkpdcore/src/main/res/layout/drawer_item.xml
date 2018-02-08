@@ -45,4 +45,21 @@
         android:textStyle="bold"
         android:layout_marginRight="@dimen/margin_med"
         android:layout_marginEnd="@dimen/margin_med" />
+    <TextView
+        android:id="@+id/new_drawer_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/margin_med"
+        android:layout_marginRight="@dimen/margin_med"
+        android:text="BARU"
+        android:textColor="@color/white"
+        android:paddingLeft="@dimen/padding_ms"
+        android:textSize="@dimen/fontvvvs"
+        android:paddingRight="@dimen/padding_ms"
+        android:paddingTop="@dimen/padding_vvs"
+        android:paddingBottom="@dimen/padding_vvs"
+        android:background="@drawable/notif_red"
+        android:visibility="gone" />
 </RelativeLayout>

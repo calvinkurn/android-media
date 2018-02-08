@@ -13,6 +13,17 @@ public class HistoryAddressEntity {
     @SerializedName("listHistoryAddress")
     private List<ListHistoryAddress> listHistoryAddress;
 
+    @SerializedName("resoStatus")
+    private int resolutionStatus;
+
+    public int getResolutionStatus() {
+        return resolutionStatus;
+    }
+
+    public void setResolutionStatus(int resolutionStatus) {
+        this.resolutionStatus = resolutionStatus;
+    }
+
     public List<ListHistoryAddress> getListHistoryAddress() {
         return listHistoryAddress;
     }

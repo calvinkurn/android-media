@@ -4,6 +4,7 @@ package com.tokopedia.core.network.core;
  * Created by ricoharisin on 2/28/17.
  */
 
+@Deprecated
 public class OkHttpRetryPolicy {
 
     public int readTimeout;
@@ -28,4 +29,11 @@ public class OkHttpRetryPolicy {
         return new OkHttpRetryPolicy(45, 45, 45, 0);
     }
 
+    public static OkHttpRetryPolicy createdOkHttpRetryPolicyQuickTimeOut() {
+        return new OkHttpRetryPolicy(1, 1, 1, 0);
+    }
+
+    public static OkHttpRetryPolicy createdOkHttpRetryPolicyQuickNoRetry() {
+        return new OkHttpRetryPolicy(45, 45, 45, 0);
+    }
 }

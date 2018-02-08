@@ -4,7 +4,10 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/background_apps"
+    android:paddingTop="@dimen/posapp_margin_xl"
+    android:paddingRight="@dimen/posapp_margin_l"
+    android:paddingLeft="@dimen/posapp_margin_l">
 
     <LinearLayout
         android:id="@+id/container_shop_name"
@@ -12,7 +15,9 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_margin="@dimen/margin_vs"
+        android:layout_marginRight="@dimen/posapp_margin_s"
+        android:layout_marginLeft="@dimen/posapp_margin_s"
+        android:layout_marginBottom="@dimen/posapp_margin_m"
         android:weightSum="5">
         <LinearLayout
             android:layout_width="0dp"
@@ -21,14 +26,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/text_size_l_medium"
-                android:text="Toko : "/>
+                style="@style/TextView.Title"
+                android:text="@string/outlet_store_name_label"/>
             <TextView
                 android:id="@+id/text_shop_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/text_size_l_medium"
-                android:textStyle="bold"
+                style="@style/TextView.Title.BlackSecondary"
                 android:padding="@dimen/padding_vvs"
                 tools:text="Shop Name" />
         </LinearLayout>
@@ -37,13 +41,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="@string/outlet_search_hint"
-            android:background="@drawable/outlet_searchbox_all"
+            android:background="@drawable/bg_white_grey_stroke"
             android:drawableLeft="@drawable/icon_magnifier"
             android:drawableStart="@drawable/icon_magnifier"
             android:drawablePadding="8dp"
             android:textSize="@dimen/text_size_l_medium"
-            android:padding="@dimen/padding_vvs"
-            android:layout_margin="@dimen/margin_vs"
+            android:padding="@dimen/new_margin_med"
             android:imeOptions="actionSearch"
             android:layout_weight="2"
             android:inputType="textNoSuggestions"/>
@@ -54,15 +57,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/container_shop_name"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <Button
-        android:id="@+id/button_pdp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Go To pdp"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 

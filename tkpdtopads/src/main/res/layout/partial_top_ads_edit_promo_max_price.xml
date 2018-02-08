@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_max_price"
+        style="@style/TextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout.Small">
+
+        <com.tokopedia.seller.common.widget.PrefixEditText
+            android:id="@+id/edit_text_max_price"
+            style="@style/EditText.Currency"
+            android:layout_width="match_parent"
+            android:hint="@string/label_top_ads_max_price_hint"
+            app:prefix="@string/title_currency_rp_space"
+            tools:text="@string/top_ads_detail_edit_default_max_price_currency_value" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/text_suggestion_bid"
+            style="@style/TextView.Small.BlackSecondary"
+            android:maxLines="3"
+            android:text="@string/top_ads_label_price_desc" />
+
+        <TextView
+            android:id="@+id/text_suggestion_bid_use"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/apply_text_description"
+            android:textColor="@color/tkpd_main_green"
+            android:visibility="gone" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -43,5 +43,23 @@
     <string name="share_sms">SMS</string>
     <string name="share_copy">Copy Link</string>
     <string name="share_others">Lainnya</string>
+    <string name="discount_off">% Off</string>
+    <string name="title_toppicks">Top Picks</string>
+    <string name="action_follow_english">Follow</string>
+    <string name="read_more_english">Read More</string>
+    <string name="action_like">Like</string>
+    <string name="following">Following</string>
+    <string name="title_comment_kol">Comments</string>
+    <string name="explore_more">Explore Lebih Lanjut</string>
+    <string name="title_following_kol">Following</string>
+    <string name="see_more_comments">Lihat Comments Sebelumnya</string>
+    <string name="write_comment">Tulis komentar...</string>
+    <string name="comment">Comment</string>
+    <string name="failed_to_follow">Gagal follow </string>
+    <string name="failed_to_unfollow">Gagal unfollow </string>
+    <string name="prompt_delete_comment_kol">Apakah anda ingin menghapus komen ini?</string>
+    <string name="success_delete_kol_comment">Sukses menghapus komentar</string>
+    <string name="string_follow_empty">Kamu belum \nmengikuti influencer</string>
+    <string name="string_follow_empty_button">Explore Influencer</string>
 
 </resources>

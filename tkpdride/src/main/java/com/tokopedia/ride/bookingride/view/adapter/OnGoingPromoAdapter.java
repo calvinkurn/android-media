@@ -9,7 +9,9 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.bookingride.domain.model.Promo;
 
 import java.util.Collections;
@@ -60,6 +62,7 @@ public class OnGoingPromoAdapter extends RecyclerView.Adapter<OnGoingPromoAdapte
         holder.linkTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                RideGATracking.eventClickReadOfferDetails(((BaseActivity)(holder.linkTextView.getContext())).getScreenName(),promos.get(holder.getAdapterPosition()).getCode().toUpperCase()); //21
                 if (interactionListener != null) {
                     interactionListener.onLinkBtnClicked(promos.get(holder.getAdapterPosition()).getUrl());
                 }

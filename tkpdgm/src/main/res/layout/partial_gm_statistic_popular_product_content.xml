@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/margin_sm"
+    android:paddingStart="@dimen/margin_sm"
+    android:paddingTop="@dimen/gmstat_padding_item_top_transaction">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/image_popular_product"
+            android:layout_width="@dimen/image_width_xxl"
+            android:layout_height="@dimen/image_width_xxl"
+
+            android:layout_marginTop="@dimen/margin_vs"
+            tools:src="@mipmap/ic_launcher" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginStart="@dimen/margin_small"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_popular_product"
+                style="@style/TextView.Micro.BlackSecondary"
+                android:layout_marginTop="@dimen/margin_small"
+                android:text="@string/gm_statistic_most_popular_product" />
+
+            <TextView
+                android:id="@+id/tv_popular_product"
+                style="@style/TextView.Small"
+                android:layout_marginTop="@dimen/margin_vs"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:scrollHorizontally="true"
+                tools:text="@string/app_id" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="bottom">
+
+                <TextView
+                    android:id="@+id/tv_no_of_selling"
+                    style="@style/TextView.SubHeadline"
+                    tools:text="@string/app_id" />
+
+                <TextView
+                    style="@style/TextView.Micro.BlackDisabled"
+                    android:layout_marginLeft="@dimen/padding_ms"
+                    android:layout_marginStart="@dimen/padding_ms"
+                    android:text="@string/gm_statistic_x_sold" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        style="@style/TextView.Micro.BlackDisabled"
+        android:layout_marginTop="@dimen/margin_sm"
+        android:text="@string/gm_statistic_last_thirty_days_ago"
+        android:textStyle="italic" />
+
+</LinearLayout>

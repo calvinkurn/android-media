@@ -34,19 +34,19 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.BrowseProductAtribut;
 import com.tokopedia.discovery.activity.FilterMapAtribut;
-import com.tokopedia.discovery.dynamicfilter.DynamicFilterActivity;
-import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterView;
 import com.tokopedia.discovery.fragment.BrowseParentFragment;
 import com.tokopedia.discovery.helper.OfficialStoreQueryHelper;
 import com.tokopedia.discovery.interactor.DiscoveryInteractor;
 import com.tokopedia.discovery.interactor.DiscoveryInteractorImpl;
 import com.tokopedia.discovery.interfaces.DiscoveryListener;
+import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,12 +63,12 @@ import rx.subscriptions.CompositeSubscription;
 import static com.tokopedia.core.router.CustomerRouter.IS_DEEP_LINK_SEARCH;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.AD_SRC;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEARCH_TERM;
+import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRA_TITLE;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.FRAGMENT_ID;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.GridType.GRID_1;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.GridType.GRID_2;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.GridType.GRID_3;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.VALUES_INVALID_FRAGMENT_ID;
-import static com.tokopedia.discovery.activity.BrowseProductActivity.EXTRA_TITLE;
 import static com.tokopedia.discovery.activity.BrowseProductActivity.REQUEST_SORT;
 import static com.tokopedia.discovery.presenter.BrowsePresenterImpl.FDest.FILTER;
 import static com.tokopedia.discovery.presenter.BrowsePresenterImpl.FDest.SORT;
@@ -76,10 +76,9 @@ import static com.tokopedia.discovery.presenter.BrowsePresenterImpl.FDest.SORT;
 /**
  * Created by HenryPri on 29/03/17.
  */
-
 public class BrowsePresenterImpl implements BrowsePresenter {
 
-    private static final String EXTRA_BROWSE_MODEL = "EXTRA_BROWSE_MODEL";
+    public static final String EXTRA_BROWSE_MODEL = "EXTRA_BROWSE_MODEL";
     private static final String EXTRA_FIRST_TIME = "EXTRA_FIRST_TIME";
     private static final String EXTRA_FILTER_MAP = "EXTRA_FILTER_MAP";
     private static final String EXTRA_BROWSE_ATRIBUT = "EXTRA_BROWSE_ATRIBUT";
@@ -128,6 +127,14 @@ public class BrowsePresenterImpl implements BrowsePresenter {
             mFilterMapAtribut = new FilterMapAtribut();
             fetchIntent(intent);
             deleteFilterAndSortCache();
+            setFilterOptionsFromIntent(intent);
+            if (intent.hasExtra(EXTRA_BROWSE_MODEL) && intent.getParcelableExtra(EXTRA_BROWSE_MODEL) != null) {
+                BrowseProductActivityModel temporary = intent.getParcelableExtra(EXTRA_BROWSE_MODEL);
+                if (temporary.getFilterOptions() != null && temporary.getFilterOptions().size() > 0) {
+                    browseModel.setFilterOptions(temporary.getFilterOptions());
+                    browseModel.setSource(temporary.getSource());
+                }
+            }
         } else {
             isBottomBarFirstTimeChange = savedInstanceState.getBoolean(EXTRA_FIRST_TIME);
             browseModel = savedInstanceState.getParcelable(EXTRA_BROWSE_MODEL);
@@ -205,6 +212,13 @@ public class BrowsePresenterImpl implements BrowsePresenter {
         }
     }
 
+    private void setFilterOptionsFromIntent(Intent intent) {
+        Serializable filterOptions = intent.getSerializableExtra(BrowseProductRouter.EXTRA_FILTER);
+        if (filterOptions != null) {
+            browseModel.setFilterOptions((HashMap<String, String>) filterOptions);
+        }
+    }
+
     @Override
     public void disposePresenterData() {
         RxUtils.unsubscribeIfNotNull(compositeSubscription);
@@ -243,12 +257,13 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                 }
                 sendSortGTM(browseModel.getOb());
                 break;
-            case DynamicFilterView.REQUEST_CODE:
+            case RevampedDynamicFilterActivity.REQUEST_CODE:
                 FilterMapAtribut.FilterMapValue filterMapValue =
-                        data.getParcelableExtra(DynamicFilterView.EXTRA_FILTERS);
+                        data.getParcelableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FILTERS);
                 mFilterMapAtribut.getFiltersMap()
                         .put(browseModel.getActiveTab(), filterMapValue);
                 browseModel.setFilterOptions(filterMapValue.getValue());
+                clearFilterAttributMap();
                 sendFilterGTM(filterMapValue.getValue());
                 break;
         }
@@ -272,6 +287,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
             }
             isBottomBarFirstTimeChange = false;
         }
+
     }
 
     @Override
@@ -297,20 +313,29 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                 switchGridType();
                 break;
             case 3:
-                String shareUrl = browseView.getShareUrl();
-                if (StringUtils.isNotBlank(shareUrl)) {
-                    ShareData shareData = ShareData.Builder.aShareData()
-                            .setType(ShareData.DISCOVERY_TYPE)
-                            .setName(context.getString(R.string.message_share_catalog))
-                            .setTextContent(context.getString(R.string.message_share_category))
-                            .setUri(shareUrl)
-                            .build();
-                    if (browseModel.getSource().equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
-                        shareData.setType(ShareData.CATEGORY_TYPE);
-                        shareData.setDescription(browseModel.getParentDepartement()+","
-                                +browseModel.getDepartmentId());
+                if (isFromCategory()) {
+                    browseView.openCategoryNavigation(browseModel.getDepartmentId());
+                    UnifyTracking.eventBottomCategoryNavigation(browseModel.getParentDepartement(),browseModel.getDepartmentId());
+                } else {
+                    String shareUrl = browseView.getShareUrl();
+                    if (StringUtils.isNotBlank(shareUrl)) {
+                        ShareData shareData = ShareData.Builder.aShareData()
+                                .setType(ShareData.DISCOVERY_TYPE)
+                                .setName(context.getString(R.string.message_share_catalog))
+                                .setTextContent(context.getString(R.string.message_share_category))
+                                .setUri(shareUrl)
+                                .build();
+                        if (browseModel.getSource().equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
+                            shareData.setType(ShareData.CATEGORY_TYPE);
+                            shareData.setDescription(browseModel.getParentDepartement() + ","
+                                    + browseModel.getDepartmentId());
+                        } else if (browseModel.getSource().equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT)) {
+                            shareData.setType(ShareData.HOTLIST_TYPE);
+                            shareData.setId(browseModel.getHotListBannerModel().info.aliasKey);
+
+                        }
+                        browseView.startShareActivity(shareData);
                     }
-                    browseView.startShareActivity(shareData);
                 }
                 break;
         }
@@ -366,6 +391,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
             @Override
             public void onFailed(int type, Pair<String, ? extends ObjContainer> data) {
                 browseView.showFailedFetchAttribute();
+                isFetchingDynamicAttribute = false;
             }
 
             @Override
@@ -409,7 +435,8 @@ public class BrowsePresenterImpl implements BrowsePresenter {
             sourceKey = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
         }
 
-        discoveryInteractor.getDynamicAttribute(context, sourceKey, browseModel.getDepartmentId());
+        discoveryInteractor.getDynamicAttribute(context, sourceKey,
+                browseModel.getDepartmentId(), browseModel.getQ());
     }
 
     @Override
@@ -468,9 +495,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                                 selectedPositions.put(s, true);
                             }
                             SharedPreferences.Editor editor = preferences.edit();
-                            editor.putString(DynamicFilterActivity.FILTER_SELECTED_POS_PREF, new Gson().toJson(selectedPositions));
-                            editor.apply();
-                            editor.putString(DynamicFilterActivity.FILTER_SELECTED_PREF, new Gson().toJson(filters));
+                            editor.putString(RevampedDynamicFilterActivity.FILTER_CHECKED_STATE_PREF, new Gson().toJson(selectedPositions));
                             editor.apply();
                         }
 
@@ -492,7 +517,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
         ((DiscoveryInteractorImpl) discoveryInteractor).setCompositeSubscription(compositeSubscription);
         discoveryInteractor.getHotListBanner(query);
     }
-    private boolean isFromCategory() {
+    public boolean isFromCategory() {
         return !TextUtils.isEmpty(browseModel.getParentDepartement())
                 && !("0").equals(browseModel.getParentDepartement());
     }
@@ -777,9 +802,11 @@ public class BrowsePresenterImpl implements BrowsePresenter {
 
     private void deleteFilterCache() {
         SharedPreferences.Editor editor = preferences.edit();
-        editor.remove(DynamicFilterActivity.FILTER_SELECTED_PREF);
-        editor.remove(DynamicFilterActivity.FILTER_TEXT_PREF);
-        editor.remove(DynamicFilterActivity.FILTER_SELECTED_POS_PREF);
+        editor.remove(RevampedDynamicFilterActivity.FILTER_CHECKED_STATE_PREF);
+        editor.remove(RevampedDynamicFilterActivity.FILTER_TEXT_PREF);
+        editor.remove(RevampedDynamicFilterActivity.FILTER_SELECTED_CATEGORY_ROOT_ID_PREF);
+        editor.remove(RevampedDynamicFilterActivity.FILTER_SELECTED_CATEGORY_ID_PREF);
+        editor.remove(RevampedDynamicFilterActivity.FILTER_SELECTED_CATEGORY_NAME_PREF);
         editor.apply();
         if (browseModel != null) {
             browseModel.setFilterOptions(new HashMap<String, String>());
@@ -790,6 +817,10 @@ public class BrowsePresenterImpl implements BrowsePresenter {
     private void deleteFilterAndSortCache() {
         deleteFilterCache();
         browseModel.setOb("23");
+        clearFilterAttributMap();
+    }
+
+    private void clearFilterAttributMap() {
         if (mBrowseProductAtribut != null && mBrowseProductAtribut.getFilterAttributMap() != null) {
             mBrowseProductAtribut.getFilterAttributMap().clear();
         }

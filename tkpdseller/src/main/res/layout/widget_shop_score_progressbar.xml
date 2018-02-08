@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.seller.shopscore.view.widget.ShopScoreMainProgressBar
+            android:id="@+id/shop_score_progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="13dp"
+            app:default_limit="80"
+            app:rcBackgroundColor="@color/grey_300"
+            app:rcMax="100"
+            app:rcRadius="20dp" />
+
+        <View
+            android:id="@+id/shop_score_view_limit"
+            android:layout_width="1dp"
+            android:layout_height="13dp"
+            android:background="@android:color/white" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/ic_shop_score_limit"
+            android:layout_width="@dimen/image_width_xs"
+            android:layout_height="@dimen/image_width_xs"
+            android:src="@drawable/ic_pointer_gold_badge" />
+
+        <TextView
+            style="@style/TextView.Micro.BlackDisabled"
+            android:layout_gravity="bottom|start"
+            android:text="@string/shop_score_min_value" />
+
+        <TextView
+            style="@style/TextView.Micro.BlackDisabled"
+            android:layout_gravity="bottom|end"
+            android:text="@string/shop_score_max_value" />
+    </FrameLayout>
+</LinearLayout>
+
+

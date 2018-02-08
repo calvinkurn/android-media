@@ -70,4 +70,87 @@ public class Stats {
     @Expose
     public String shopAccuracyDescription;
 
+    public int getShopServiceRate() {
+        return shopServiceRate;
+    }
+
+    public int getShopSpeedRate() {
+        return shopSpeedRate;
+    }
+
+    public String getShopTotalTransaction() {
+        return shopTotalTransaction;
+    }
+
+    public String getShopSpeedDescription() {
+        return shopSpeedDescription;
+    }
+
+    public int getHideRate() {
+        return hideRate;
+    }
+
+    public String getTxCount() {
+        return txCount;
+    }
+
+    public float getRateFailure() {
+        return rateFailure;
+    }
+
+    public ShopBadgeLevel getShopBadgeLevel() {
+        return shopBadgeLevel;
+    }
+
+    public ShopLastOneMonth getShopLastOneMonth() {
+        return shopLastOneMonth;
+    }
+
+    public String getShopTotalProduct() {
+        return shopTotalProduct;
+    }
+
+    public String getShopReputationScore() {
+        return shopReputationScore;
+    }
+
+    public String getShopTotalTransactionCanceled() {
+        return shopTotalTransactionCanceled;
+    }
+
+    public ShopLastSixMonths getShopLastSixMonths() {
+        return shopLastSixMonths;
+    }
+
+    public String getShopTotalEtalase() {
+        return shopTotalEtalase;
+    }
+
+    public String getTxCountSuccess() {
+        return txCountSuccess;
+    }
+
+    public String getShopServiceDescription() {
+        return shopServiceDescription;
+    }
+
+    public String getShopItemSold() {
+        return shopItemSold;
+    }
+
+    public ShopLastTwelveMonths getShopLastTwelveMonths() {
+        return shopLastTwelveMonths;
+    }
+
+    public int getShopAccuracyRate() {
+        return shopAccuracyRate;
+    }
+
+    public int getRateSuccess() {
+        return rateSuccess;
+    }
+
+    public String getShopAccuracyDescription() {
+        return shopAccuracyDescription;
+    }
 }

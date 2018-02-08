@@ -1,7 +1,10 @@
 package com.tokopedia.posapp;
 
+import com.raizlabs.android.dbflow.config.FlowConfig;
+import com.raizlabs.android.dbflow.config.FlowManager;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.facebook.soloader.SoLoader;
 
 /**
  * Created by okasurya on 7/30/17.
@@ -12,7 +15,18 @@ public class PosApplication extends PosRouterApplication {
     public void onCreate() {
         setGlobalConfiguration();
         generatePosAppBaseUrl();
+        generatePosAppConstant();
+        initializeDatabase();
+        initReact();
         super.onCreate();
+    }
+
+    private void generatePosAppConstant() {
+        PosConstants.KEY_PAYMENT = PosAppConstants.KEY_PAYMENT;
+    }
+
+    private void initializeDatabase() {
+        FlowManager.init(new FlowConfig.Builder(this).build());
     }
 
     private void setGlobalConfiguration() {
@@ -30,7 +44,6 @@ public class PosApplication extends PosRouterApplication {
         TkpdBaseURL.TOPADS_DOMAIN = PosAppBaseUrl.BASE_TOPADS_DOMAIN;
         TkpdBaseURL.MOJITO_DOMAIN = PosAppBaseUrl.BASE_MOJITO_DOMAIN;
         TkpdBaseURL.HADES_DOMAIN = PosAppBaseUrl.BASE_HADES_DOMAIN;
-        TkpdBaseURL.RECHARGE_API_DOMAIN = PosAppBaseUrl.BASE_RECHARGE_API_DOMAIN;
         TkpdBaseURL.ACCOUNTS_DOMAIN = PosAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         TkpdBaseURL.INBOX_DOMAIN = PosAppBaseUrl.BASE_INBOX_DOMAIN;
         TkpdBaseURL.JS_DOMAIN = PosAppBaseUrl.BASE_JS_DOMAIN;
@@ -47,5 +60,13 @@ public class PosApplication extends PosRouterApplication {
         TkpdBaseURL.DIGITAL_API_DOMAIN = PosAppBaseUrl.BASE_DIGITAL_API_DOMAIN;
         TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN = PosAppBaseUrl.BASE_DIGITAL_WEBSITE_DOMAIN;
         TkpdBaseURL.GRAPHQL_DOMAIN = PosAppBaseUrl.GRAPHQL_DOMAIN;
+        TkpdBaseURL.SCROOGE_DOMAIN = PosAppBaseUrl.SCROOGE_DOMAIN;
+        TkpdBaseURL.SCROOGE_CREDIT_CARD_DOMAIN = PosAppBaseUrl.SCROOGE_CREDIT_CARD_DOMAIN;
+        TkpdBaseURL.PAYMENT_DOMAIN = PosAppBaseUrl.PAYMENT_DOMAIN;
+        TkpdBaseURL.POS_DOMAIN = PosAppBaseUrl.POS_DOMAIN;
+    }
+
+    private void initReact() {
+        SoLoader.init(this, false);
     }
 }

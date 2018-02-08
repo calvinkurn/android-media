@@ -1,11 +1,16 @@
 package com.tokopedia.ride.bookingride.view;
 
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.ride.bookingride.domain.GetCurrentRideRequestUseCase;
+import com.tokopedia.ride.bookingride.domain.GetPendingAmountUseCase;
 import com.tokopedia.ride.common.configuration.RideStatus;
+import com.tokopedia.ride.common.ride.domain.model.GetPending;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.common.ride.domain.model.RideRequestAddress;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
+
+import javax.inject.Inject;
 
 import rx.Subscriber;
 
@@ -15,9 +20,12 @@ import rx.Subscriber;
 
 public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View> implements RideHomeContract.Presenter {
     private GetCurrentRideRequestUseCase getCurrentRideRequestUseCase;
+    private GetPendingAmountUseCase getPendingAmountUseCase;
 
-    public RideHomePresenter(GetCurrentRideRequestUseCase getCurrentRideRequestUseCase) {
+    @Inject
+    public RideHomePresenter(GetCurrentRideRequestUseCase getCurrentRideRequestUseCase, GetPendingAmountUseCase getPendingAmountUseCase) {
         this.getCurrentRideRequestUseCase = getCurrentRideRequestUseCase;
+        this.getPendingAmountUseCase = getPendingAmountUseCase;
     }
 
     @Override
@@ -36,8 +44,6 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
         } else {
             getView().navigateToLoginPage();
         }
-
-
     }
 
     @Override
@@ -106,18 +112,50 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
                                     getView().showMainLayout();
                                     getView().hideCheckPendingRequestLoading();
                                     getView().inflateMapAndProductFragment();
+                                    checkPendingAmount();
                                 }
                                 break;
                             default:
                                 getView().clearActiveRequestId();
                                 getView().showMainLayout();
                                 getView().inflateMapAndProductFragment();
+                                checkPendingAmount();
                         }
 
                     } else {
                         getView().showMainLayout();
                         getView().hideCheckPendingRequestLoading();
                         getView().inflateMapAndProductFragment();
+                        checkPendingAmount();
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * This function checks if any pending payment exits, if yes then launch the pay pending fare screen
+     */
+    public void checkPendingAmount() {
+        getPendingAmountUseCase.execute(RequestParams.EMPTY, new Subscriber<GetPending>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(GetPending getPending) {
+                if (getPending != null) {
+                    if (getPending.getPendingAmount() > 0) {
+                        //show pending fare screen
+                        if (getView() != null) {
+                            getView().showPendingFareInterrupt(getPending);
+                        }
                     }
                 }
             }
@@ -127,7 +165,7 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
     @Override
     public void onDestroy() {
         detachView();
-        getCurrentRideRequestUseCase.unsubscribe();
+        //getCurrentRideRequestUseCase.unsubscribe();
     }
 
 

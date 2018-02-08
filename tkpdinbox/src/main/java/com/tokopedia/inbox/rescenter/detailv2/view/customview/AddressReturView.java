@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.product.customview.BaseView;
+import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.AddressReturData;
@@ -50,8 +51,8 @@ public class AddressReturView extends BaseView<AddressReturData, DetailResCenter
         View view = inflater.inflate(getLayoutView(), this, true);
         actionEdit = view.findViewById(R.id.action_edit);
         actionMoreAddress = view.findViewById(R.id.action_address_more);
-        addressReturDate = (TextView) view.findViewById(R.id.tv_address_retur_date);
-        addressText = (TextView) view.findViewById(R.id.tv_address);
+        addressReturDate = view.findViewById(R.id.tv_address_retur_date);
+        addressText = view.findViewById(R.id.tv_address);
     }
 
     @Override
@@ -79,7 +80,8 @@ public class AddressReturView extends BaseView<AddressReturData, DetailResCenter
     }
 
     private String generateInformationText(AddressReturData data) {
-        return getContext().getString(R.string.template_awb_additional_text, data.getAddressReturDate());
+        return getContext().getString(R.string.template_awb_additional_text,
+                data.getAddressReturDateTimestamp());
     }
 
     private class AddressReturViewOnClickListener implements OnClickListener {

@@ -8,6 +8,7 @@ import com.tokopedia.core.database.model.SimpleDatabaseModel;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.core.network.entity.homeMenu.HomeCategoryMenuItem;
 import com.tokopedia.core.network.exception.RuntimeHttpErrorException;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.widget.data.mapper.ICategoryDigitalListDataMapper;
@@ -85,7 +86,9 @@ public class DigitalCategoryListRepository implements IDigitalCategoryListReposi
 
     @NonNull
     private Observable<List<DigitalCategoryItemData>> getDigitalCategoryItemDataListFromNetwork() {
-        return mojitoService.getApi().getHomeCategoryMenu(sessionHandler.getLoginID()).map(
+        return mojitoService.getApi().getHomeCategoryMenu(sessionHandler.getLoginID(),
+                GlobalConfig.getPackageApplicationName()
+        ).map(
                 getFuncTransformResponseHomeCategoryToDigitalCategoryItemDataList()
         );
     }

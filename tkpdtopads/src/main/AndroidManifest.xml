@@ -1,0 +1,183 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+
+    package="com.tokopedia.topads">
+
+    <application android:allowBackup="true" android:label="@string/app_name">
+
+        <activity
+            android:name=".dashboard.view.activity.TopAdsDashboardActivity"
+            android:label="@string/top_ads_title_dashboard"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3" />
+
+        <activity
+            android:name=".dashboard.view.activity.TopAdsProductAdListActivity"
+            android:label="@string/top_ads_title_product"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".dashboard.view.activity.TopAdsGroupAdListActivity"
+            android:label="@string/topads_title_promo_grup_activity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".dashboard.view.activity.TopAdsFilterGroupActivity"
+            android:label="@string/title_top_ads_filter"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".dashboard.view.activity.TopAdsFilterProductActivity"
+            android:label="@string/title_top_ads_filter"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".dashboard.view.activity.TopAdsFilterProductPromoActivity"
+            android:label="@string/title_top_ads_filter"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".dashboard.view.activity.TopAdsAddCreditActivity"
+            android:label="@string/title_top_ads_add_credit"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".dashboard.view.activity.TopAdsPaymentCreditActivity"
+            android:label="@string/title_top_ads_add_credit"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".dashboard.view.activity.TopAdsGroupNewPromoActivity"
+            android:label="@string/title_top_ads_new_promo_product"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".dashboard.view.activity.TopAdsGroupEditPromoActivity"
+            android:label="@string/title_top_ads_edit_promo_product"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".dashboard.view.activity.TopAdsGroupManagePromoActivity"
+            android:label="@string/title_top_ads_manage_promo_product"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".dashboard.view.activity.TopAdsDetailShopActivity"
+            android:label="@string/title_shop_ad_detail"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".dashboard.view.activity.TopAdsDetailProductActivity"
+            android:label="@string/title_product_ad_detail"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".dashboard.view.activity.TopAdsDetailGroupActivity"
+            android:label="@string/title_group_ad_detail"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".dashboard.view.activity.TopAdsStatisticProductActivity"
+            android:label="@string/title_activity_statistic"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".dashboard.view.activity.TopAdsStatisticShopActivity"
+            android:label="@string/title_activity_statistic"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".dashboard.view.activity.TopAdsAddProductListActivity"
+            android:label="@string/title_activity_top_ads_list"
+            android:theme="@style/Theme.Tokopedia3" />
+
+        <activity
+            android:name=".keyword.view.activity.TopAdsKeywordListActivity"
+            android:label="@string/title_top_ads_keyword"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".keyword.view.activity.TopAdsKeywordFilterActivity"
+            android:label="@string/title_top_ads_filter_keyword"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".keyword.view.activity.TopAdsKeywordAddActivity"
+            android:label="@string/title_top_ads_keyword_add_detail"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+
+        <activity
+            android:name=".keyword.view.activity.TopAdsKeywordEditDetailPositiveActivity"
+            android:label="@string/top_ads_keyword_title_keyword_edit_keyword"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".keyword.view.activity.TopAdsKeywordEditDetailNegativeActivity"
+            android:label="@string/top_ads_keyword_title_keyword_edit_keyword"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".keyword.view.activity.TopAdsKeywordNewChooseGroupActivity"
+            android:label="@string/top_ads_title_keyword_add_keyword"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"
+            android:exported="true"/>
+        <activity
+            android:name=".keyword.view.activity.TopAdsKeywordDetailActivity"
+            android:exported="true"
+            android:label="@string/top_ads_keyword_title_detail"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".keyword.view.activity.TopAdsKeywordDetailNegativeActivity"
+            android:exported="true"
+            android:label="@string/top_ads_keyword_title_detail"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".dashboard.view.activity.TopAdsCreatePromoNewGroupActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".dashboard.view.activity.TopAdsCreatePromoExistingGroupActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".dashboard.view.activity.TopAdsCreatePromoExistingGroupEditActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".dashboard.view.activity.TopAdsCreatePromoWithoutGroupActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".dashboard.view.activity.TopAdsCreatePromoShopActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".dashboard.view.activity.TopAdsEditGroupMainPageActivity"
+            android:label="@string/title_group_ad_edit"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".dashboard.view.activity.TopAdsEditProductMainPageActivity"
+            android:label="@string/title_product_ad_edit"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".dashboard.view.activity.TopAdsEditShopMainPageActivity"
+            android:label="@string/title_edit_shop_ad"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".dashboard.view.activity.TopAdsEditGroupNameActivity"
+            android:label="@string/label_top_ads_groups"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".dashboard.view.activity.TopAdsEditCostExistingGroupActivity"
+            android:label="@string/top_ads_label_cost"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".dashboard.view.activity.TopAdsEditScheduleExistingGroupActivity"
+            android:label="@string/top_ads_label_schedule"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".dashboard.view.activity.TopAdsEditCostProductActivity"
+            android:label="@string/top_ads_label_cost"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".dashboard.view.activity.TopAdsEditScheduleProductActivity"
+            android:label="@string/top_ads_label_schedule"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".dashboard.view.activity.TopAdsEditCostShopActivity"
+            android:label="@string/top_ads_label_cost"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".dashboard.view.activity.TopAdsEditScheduleShopActivity"
+            android:label="@string/top_ads_label_schedule"
+            android:screenOrientation="portrait" />
+    </application>
+
+</manifest>

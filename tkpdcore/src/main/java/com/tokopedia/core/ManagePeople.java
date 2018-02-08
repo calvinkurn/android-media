@@ -17,6 +17,8 @@ import com.tokopedia.core.manage.people.notification.activity.ManageNotification
 import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 
 import java.util.ArrayList;
@@ -44,54 +46,42 @@ public class ManagePeople extends TkpdActivity {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_manage_people);
 
-
-        Name.add(getString(R.string.title_personal_profile));
-        Name.add(getString(R.string.title_address));
-        Name.add(getString(R.string.title_bank));
-        Name.add(getString(R.string.title_notification));
-//		Name.add(getString(R.string.title_privacy));
-        Name.add(getString(R.string.title_password));
-        ResID.add(R.drawable.ic_set_profile);
-        ResID.add(R.drawable.ic_set_address);
-        ResID.add(R.drawable.ic_set_bank);
-        ResID.add(R.drawable.ic_set_notifications);
-        ResID.add(R.drawable.ic_set_privacy);
-        ResID.add(R.drawable.ic_menu_general_setting);
         lvManage = (ListView) findViewById(R.id.list_manage);
         lvAdapter = new SimpleListTabViewAdapter(ManagePeople.this, Name, ResID);
         lvManage.setAdapter(lvAdapter);
-        lvManage.setOnItemClickListener(new OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int pos,
-                                    long arg3) {
-                Intent intent = null;
-                switch (pos) {
-                    case 0:
-                        intent = new Intent(ManagePeople.this, ManagePeopleProfileActivity.class);
-                        startActivityForResult(intent, 0);
-                        break;
-                    case 1:
-                        intent = new Intent(ManagePeople.this, ManagePeopleAddressActivity.class);
-                        startActivity(intent);
-                        break;
-                    case 2:
-                        intent = new Intent(ManagePeople.this, ManagePeopleBankActivity.class);
-                        startActivity(intent);
-                        break;
-                    case 3:
-                        intent = new Intent(ManagePeople.this, ManageNotificationActivity.class);
-                        startActivity(intent);
-                        break;
-                    case 4:
-                        intent = new Intent(ManagePeople.this, ManagePasswordActivity.class);
-                        startActivity(intent);
-                        break;
-                }
-
-            }
-
-        });
+        if(GlobalConfig.isSellerApp()) {
+            Name.add(getString(R.string.title_personal_profile));
+            Name.add(getString(R.string.title_address));
+            Name.add(getString(R.string.title_bank));
+            Name.add(getString(R.string.title_payment_menu));
+            Name.add(getString(R.string.title_notification));
+//		Name.add(getString(R.string.title_privacy));
+            Name.add(getString(R.string.title_password));
+            ResID.add(R.drawable.ic_set_profile);
+            ResID.add(R.drawable.ic_set_address);
+            ResID.add(R.drawable.ic_set_bank);
+            ResID.add(R.drawable.ic_set_payment);
+            ResID.add(R.drawable.ic_set_notifications);
+            ResID.add(R.drawable.ic_set_privacy);
+            ResID.add(R.drawable.ic_menu_general_setting);
+            lvManage.setOnItemClickListener(onSellerSettingMenuClickedListener());
+        } else {
+            Name.add(getString(R.string.title_personal_profile));
+            Name.add(getString(R.string.title_address));
+            Name.add(getString(R.string.title_bank));
+            Name.add(getString(R.string.title_payment_menu));
+            Name.add(getString(R.string.title_notification));
+//		Name.add(getString(R.string.title_privacy));
+            Name.add(getString(R.string.title_password));
+            ResID.add(R.drawable.ic_set_profile);
+            ResID.add(R.drawable.ic_set_address);
+            ResID.add(R.drawable.ic_set_bank);
+            ResID.add(R.drawable.ic_set_payment);
+            ResID.add(R.drawable.ic_set_notifications);
+            ResID.add(R.drawable.ic_set_privacy);
+            ResID.add(R.drawable.ic_menu_general_setting);
+            lvManage.setOnItemClickListener(onSettingMenuClickedListener());
+        }
     }
 
     @Override
@@ -126,6 +116,82 @@ public class ManagePeople extends TkpdActivity {
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    private OnItemClickListener onSellerSettingMenuClickedListener() {
+        return new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = null;
+                switch (position) {
+                    case 0:
+                        intent = new Intent(ManagePeople.this, ManagePeopleProfileActivity.class);
+                        startActivityForResult(intent, 0);
+                        break;
+                    case 1:
+                        intent = new Intent(ManagePeople.this, ManagePeopleAddressActivity.class);
+                        startActivity(intent);
+                        break;
+                    case 2:
+                        intent = new Intent(ManagePeople.this, ManagePeopleBankActivity.class);
+                        startActivity(intent);
+                        break;
+                    case 3:
+                        if ((getActivity().getApplication() instanceof TransactionRouter)) {
+                            ((TransactionRouter) getActivity().getApplication())
+                                    .goToUserPaymentList(getActivity());
+                        }
+                        break;
+                    case 4:
+                        intent = new Intent(ManagePeople.this, ManageNotificationActivity.class);
+                        startActivity(intent);
+                        break;
+                    case 5:
+                        intent = new Intent(ManagePeople.this, ManagePasswordActivity.class);
+                        startActivity(intent);
+                        break;
+                }
+
+            }
+        };
+    }
+
+    private OnItemClickListener onSettingMenuClickedListener() {
+        return new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = null;
+                switch (position) {
+                    case 0:
+                        intent = new Intent(ManagePeople.this, ManagePeopleProfileActivity.class);
+                        startActivityForResult(intent, 0);
+                        break;
+                    case 1:
+                        intent = new Intent(ManagePeople.this, ManagePeopleAddressActivity.class);
+                        startActivity(intent);
+                        break;
+                    case 2:
+                        intent = new Intent(ManagePeople.this, ManagePeopleBankActivity.class);
+                        startActivity(intent);
+                        break;
+                    case 3:
+                        if ((getActivity().getApplication() instanceof TransactionRouter)) {
+                            ((TransactionRouter) getActivity().getApplication())
+                                    .goToUserPaymentList(getActivity());
+                        }
+                        break;
+                    case 4:
+                        intent = new Intent(ManagePeople.this, ManageNotificationActivity.class);
+                        startActivity(intent);
+                        break;
+                    case 5:
+                        intent = new Intent(ManagePeople.this, ManagePasswordActivity.class);
+                        startActivity(intent);
+                        break;
+                }
+
+            }
+        };
     }
 
 }

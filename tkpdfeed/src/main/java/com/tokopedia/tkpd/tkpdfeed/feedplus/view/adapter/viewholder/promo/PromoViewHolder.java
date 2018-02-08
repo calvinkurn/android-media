@@ -13,8 +13,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.PromoAdapter;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromoCardViewModel;
 
 /**
@@ -69,7 +68,10 @@ public class PromoViewHolder extends AbstractViewHolder<PromoCardViewModel> {
         promoHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToPromoPageFromHeader();
+                viewListener.onGoToPromoPageFromHeader(
+                        promoViewModel.getPage(),
+                        getAdapterPosition()
+                );
             }
         });
     }
@@ -77,7 +79,8 @@ public class PromoViewHolder extends AbstractViewHolder<PromoCardViewModel> {
     @Override
     public void bind(PromoCardViewModel promoViewModel) {
         this.promoViewModel = promoViewModel;
-        adapter.setList(promoViewModel.getListPromo());
+        this.promoViewModel.setRowNumber(getAdapterPosition());
+        adapter.setData(this.promoViewModel);
         if (promoViewModel.getAvatarUrl() != null) {
             ImageHandler.loadImage2(promoterAva, promoViewModel.getAvatarUrl(), R.drawable.label_user);
             promoterName.setText(promoViewModel.getPromoterName());

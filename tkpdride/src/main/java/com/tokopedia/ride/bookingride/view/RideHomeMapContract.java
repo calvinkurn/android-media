@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.ride.bookingride.domain.model.NearbyRides;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
 
@@ -38,7 +39,7 @@ public interface RideHomeMapContract {
 
         void moveMapToLocation(double latitude, double longitude);
 
-        void renderDefaultPickupLocation(double latitude, double longitude, String sourceAddress);
+        void renderDefaultPickupLocation(double latitude, double longitude, String title, String sourceAddress);
 
         void onMapDragStarted();
 
@@ -57,6 +58,12 @@ public interface RideHomeMapContract {
         boolean isAlreadySelectDestination();
 
         boolean isLaunchedWithLocation();
+
+        void setDestinationAndProcessList(PlacePassViewModel address);
+
+        PlacePassViewModel getSource();
+
+        void renderNearbyRides(NearbyRides nearbyRides);
     }
 
     interface Presenter extends CustomerPresenter<View> {

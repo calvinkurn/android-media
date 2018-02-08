@@ -112,6 +112,9 @@ dependencies {
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
+
     compile rootProject.ext.miscDependencies.slidinguppanel
     compile rootProject.ext.playServicesDependencies.mapsUtils
     testCompile 'junit:junit:4.12'

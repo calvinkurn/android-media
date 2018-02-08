@@ -15,9 +15,11 @@ public class Product implements Parcelable {
 
     private String desc;
     private String detail;
+    private String detailUrl;
+    private String detailUrlText;
     private String info;
     private String price;
-    private int pricePlain;
+    private long pricePlain;
     private Promo promo;
     private int status;
 
@@ -26,6 +28,8 @@ public class Product implements Parcelable {
         setProductType(builder.productType);
         setDesc(builder.desc);
         setDetail(builder.detail);
+        setDetailUrl(builder.detailUrl);
+        setDetailUrlText(builder.detailUrlText);
         setInfo(builder.info);
         setPrice(builder.price);
         setPricePlain(builder.pricePlain);
@@ -49,6 +53,22 @@ public class Product implements Parcelable {
         this.detail = detail;
     }
 
+    public String getDetailUrl() {
+        return detailUrl;
+    }
+
+    public void setDetailUrl(String detailUrl) {
+        this.detailUrl = detailUrl;
+    }
+
+    public String getDetailUrlText() {
+        return detailUrlText;
+    }
+
+    public void setDetailUrlText(String detailUrlText) {
+        this.detailUrlText = detailUrlText;
+    }
+
     public String getInfo() {
         return info;
     }
@@ -65,11 +85,11 @@ public class Product implements Parcelable {
         this.price = price;
     }
 
-    public int getPricePlain() {
+    public long getPricePlain() {
         return pricePlain;
     }
 
-    public void setPricePlain(int pricePlain) {
+    public void setPricePlain(long pricePlain) {
         this.pricePlain = pricePlain;
     }
 
@@ -117,9 +137,11 @@ public class Product implements Parcelable {
         dest.writeString(this.productType);
         dest.writeString(this.desc);
         dest.writeString(this.detail);
+        dest.writeString(this.detailUrl);
+        dest.writeString(this.detailUrlText);
         dest.writeString(this.info);
         dest.writeString(this.price);
-        dest.writeInt(this.pricePlain);
+        dest.writeLong(this.pricePlain);
         dest.writeParcelable(this.promo, flags);
         dest.writeInt(this.status);
     }
@@ -132,9 +154,11 @@ public class Product implements Parcelable {
         this.productType = in.readString();
         this.desc = in.readString();
         this.detail = in.readString();
+        this.detailUrl = in.readString();
+        this.detailUrlText = in.readString();
         this.info = in.readString();
         this.price = in.readString();
-        this.pricePlain = in.readInt();
+        this.pricePlain = in.readLong();
         this.promo = in.readParcelable(Promo.class.getClassLoader());
         this.status = in.readInt();
     }
@@ -151,15 +175,16 @@ public class Product implements Parcelable {
         }
     };
 
-
     public static final class Builder {
         private String productId;
         private String productType;
         private String desc;
         private String detail;
+        private String detailUrl;
+        private String detailUrlText;
         private String info;
         private String price;
-        private int pricePlain;
+        private long pricePlain;
         private Promo promo;
         private int status;
 
@@ -186,6 +211,16 @@ public class Product implements Parcelable {
             return this;
         }
 
+        public Builder detailUrl(String val) {
+            detailUrl = val;
+            return this;
+        }
+
+        public Builder detailUrlText(String val) {
+            detailUrlText = val;
+            return this;
+        }
+
         public Builder info(String val) {
             info = val;
             return this;
@@ -196,7 +231,7 @@ public class Product implements Parcelable {
             return this;
         }
 
-        public Builder pricePlain(int val) {
+        public Builder pricePlain(long val) {
             pricePlain = val;
             return this;
         }

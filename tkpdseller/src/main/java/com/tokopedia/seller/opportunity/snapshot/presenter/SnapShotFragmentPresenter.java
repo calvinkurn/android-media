@@ -12,6 +12,4 @@ public interface SnapShotFragmentPresenter {
 
     void requestProductDetail(Context context, ProductPass productPass, int type, boolean forceNetwork);
 
-    void acceptOpportunity();
-
 }

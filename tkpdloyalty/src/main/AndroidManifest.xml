@@ -1,0 +1,26 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.tokopedia.loyalty">
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:supportsRtl="true">
+        <activity
+            android:name=".view.activity.LoyaltyActivity"
+            android:label="Checkout"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
+
+        <activity
+            android:name=".view.activity.PromoListActivity"
+            android:label="@string/title_activity_promo"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
+
+        <receiver
+            android:name=".broadcastreceiver.TokoPointDrawerBroadcastReceiver"
+            android:enabled="true"
+            tools:ignore="ExportedReceiver"/>
+    </application>
+</manifest>

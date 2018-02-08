@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.home.fragment;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -30,6 +32,8 @@ import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
+import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.adapter.HotListAdapter;
 
@@ -63,7 +67,7 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
 
     @Override
     protected String getScreenName() {
-        return AppScreen.SCREEN_HOME_HOTLIST;
+        return AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_HOTLIST;
     }
 
     private Unbinder unbinder;
@@ -213,7 +217,6 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
 
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded() && getActivity() !=null) {
-            hotList.setLocalyticFlow(getActivity());
             hotList.sendAppsFlyerData(getActivity());
             ScreenTracking.screen(getScreenName());
             TrackingUtils.sendMoEngageOpenHotListEvent();
@@ -278,6 +281,45 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
     }
 
     @Override
+    public void openHotlistActivity(String url) {
+        getActivity().startActivity(
+                BrowseProductRouter.getHotlistIntent(getActivity(), url)
+        );
+    }
+
+    @Override
+    public void openSearch(String url) {
+        Uri uriData = Uri.parse(url);
+        Bundle bundle = new Bundle();
+
+        String departmentId = uriData.getQueryParameter("sc");
+        String searchQuery = uriData.getQueryParameter("q");
+
+        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, departmentId);
+        bundle.putString(BrowseProductRouter.EXTRAS_SEARCH_TERM, searchQuery);
+
+        Intent intent = BrowseProductRouter.getSearchProductIntent(getActivity());
+        intent.putExtras(bundle);
+
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void openCategory(String categoryUrl) {
+        URLParser urlParser = new URLParser(categoryUrl);
+        if (urlParser.getParamKeyValueMap().size()>0) {
+            CategoryActivity.moveTo(
+                    getActivity(),
+                   categoryUrl
+            );
+        } else {
+            getActivity().startActivity(
+                    BrowseProductRouter.getIntermediaryIntent(getActivity(), urlParser.getDepIDfromURI(getActivity()))
+            );
+        }
+    }
+
+    @Override
     public BaseRecyclerViewAdapter getAdapter() {
         return adapter;
     }
@@ -315,7 +357,7 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
     }
 
     @Override
-    public void moveToOtherActivity(Intent intent) {
+    public void startIntentActivity(Intent intent) {
         getActivity().startActivity(intent);
     }
 

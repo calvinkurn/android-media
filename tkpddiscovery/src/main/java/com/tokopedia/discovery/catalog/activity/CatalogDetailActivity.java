@@ -8,14 +8,18 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.discovery.catalog.listener.ICatalogActionFragment;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.share.ShareActivity;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.discovery.catalog.fragment.CatalogDetailFragment;
 import com.tokopedia.discovery.catalog.fragment.CatalogDetailListFragment;
 
@@ -30,6 +34,14 @@ public class CatalogDetailActivity extends BasePresenterActivity implements ICat
 
     String catalogId;
     private ShareData shareData;
+
+
+    @DeepLink(Constants.Applinks.DISCOVERY_CATALOG)
+    public static Intent getCallingApplinkCatalogIntent(Context context, Bundle bundle) {
+        Intent intent = createIntent(context, bundle.getString(EXTRA_CATALOG_ID));
+        return intent
+                .putExtras(bundle);
+    }
 
     public static Intent createIntent(Context context, String catalogId) {
         Intent intent = new Intent(context, CatalogDetailActivity.class);
@@ -68,7 +80,7 @@ public class CatalogDetailActivity extends BasePresenterActivity implements ICat
 
     @Override
     protected void setViewListener() {
-        if(getFragmentManager().findFragmentByTag(TAG_FRAGMENT_CATALOG_DETAIL) == null) {
+        if (getFragmentManager().findFragmentByTag(TAG_FRAGMENT_CATALOG_DETAIL) == null) {
             getFragmentManager().beginTransaction().add(R.id.activity_container,
                     CatalogDetailFragment.newInstance(catalogId), TAG_FRAGMENT_CATALOG_DETAIL)
                     .commit();
@@ -100,6 +112,12 @@ public class CatalogDetailActivity extends BasePresenterActivity implements ICat
     public void onBackPressed() {
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();
+        } if (isTaskRoot() && GlobalConfig.isSellerApp()) {
+            startActivity(SellerAppRouter.getSellerHomeActivity(this));
+            this.finish();
+        } else if (isTaskRoot()) {
+            startActivity(HomeRouter.getHomeActivity(this));
+            this.finish();
         } else {
             this.finish();
         }
@@ -120,17 +138,23 @@ public class CatalogDetailActivity extends BasePresenterActivity implements ICat
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.shop_info, menu);
+        inflater.inflate(com.tokopedia.discovery.R.menu.menu_catalog_detail, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_share_prod) {
+        if (item.getItemId() == com.tokopedia.discovery.R.id.action_share_prod) {
             if (shareData != null) startActivity(ShareActivity.createIntent(this, shareData));
             else NetworkErrorHelper.showSnackbar(this, "Data katalog belum tersedia");
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
+
 }

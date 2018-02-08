@@ -7,14 +7,15 @@ import android.os.Parcelable;
  * @author anggaprasetiyo on 5/10/17.
  */
 public class OrderClientNumber implements Parcelable {
-
     private String clientNumber;
+    private String name;
     private String productId;
     private String categoryId;
     private String operatorId;
 
     private OrderClientNumber(Builder builder) {
         setClientNumber(builder.clientNumber);
+        setName(builder.name);
         setProductId(builder.productId);
         setCategoryId(builder.categoryId);
         setOperatorId(builder.operatorId);
@@ -34,6 +35,14 @@ public class OrderClientNumber implements Parcelable {
 
     public void setClientNumber(String clientNumber) {
         this.clientNumber = clientNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getProductId() {
@@ -63,6 +72,7 @@ public class OrderClientNumber implements Parcelable {
 
     public static final class Builder {
         private String clientNumber;
+        private String name;
         private String productId;
         private String categoryId;
         private String operatorId;
@@ -72,6 +82,11 @@ public class OrderClientNumber implements Parcelable {
 
         public Builder clientNumber(String val) {
             clientNumber = val;
+            return this;
+        }
+
+        public Builder name(String val) {
+            name = val;
             return this;
         }
 
@@ -103,6 +118,7 @@ public class OrderClientNumber implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.clientNumber);
+        dest.writeString(this.name);
         dest.writeString(this.productId);
         dest.writeString(this.categoryId);
         dest.writeString(this.operatorId);
@@ -110,6 +126,7 @@ public class OrderClientNumber implements Parcelable {
 
     protected OrderClientNumber(Parcel in) {
         this.clientNumber = in.readString();
+        this.name = in.readString();
         this.productId = in.readString();
         this.categoryId = in.readString();
         this.operatorId = in.readString();

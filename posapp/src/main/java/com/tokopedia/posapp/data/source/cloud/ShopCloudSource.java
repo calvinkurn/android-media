@@ -1,7 +1,9 @@
 package com.tokopedia.posapp.data.source.cloud;
 
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.posapp.data.mapper.GetProductListMapper;
 import com.tokopedia.posapp.data.mapper.GetShopMapper;
+import com.tokopedia.posapp.data.source.cloud.api.AceApi;
 import com.tokopedia.posapp.data.source.cloud.api.ShopApi;
 import com.tokopedia.posapp.domain.model.shop.ShopDomain;
 
@@ -12,10 +14,11 @@ import rx.Observable;
  */
 
 public class ShopCloudSource {
-    ShopApi shopApi;
-    GetShopMapper getShopMapper;
+    private ShopApi shopApi;
+    private GetShopMapper getShopMapper;
 
-    public ShopCloudSource(ShopApi shopApi, GetShopMapper getShopMapper) {
+    public ShopCloudSource(ShopApi shopApi,
+                           GetShopMapper getShopMapper) {
         this.shopApi = shopApi;
         this.getShopMapper = getShopMapper;
     }

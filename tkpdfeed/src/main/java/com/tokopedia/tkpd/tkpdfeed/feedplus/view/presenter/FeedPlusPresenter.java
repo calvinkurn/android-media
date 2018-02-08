@@ -7,14 +7,19 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.RefreshFeedUseCase;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.CheckNewFeedUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FavoriteShopUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FollowKolPostUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.CheckNewFeedSubscriber;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.LikeKolPostUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.FollowUnfollowKolRecommendationSubscriber;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.FollowUnfollowKolSubscriber;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetFeedsSubscriber;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetFirstPageFeedsSubscriber;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.LikeKolPostSubscriber;
 import com.tokopedia.topads.sdk.domain.model.Data;
 
 import javax.inject.Inject;
@@ -30,10 +35,13 @@ public class FeedPlusPresenter
         implements FeedPlus.Presenter {
 
     private final SessionHandler sessionHandler;
+    private final CheckNewFeedUseCase checkNewFeedUseCase;
+    private final LikeKolPostUseCase likeKolPostUseCase;
+    private final FollowKolPostUseCase followKolPostUseCase;
     private GetFeedsUseCase getFeedsUseCase;
     private GetFirstPageFeedsUseCase getFirstPageFeedsUseCase;
     private FavoriteShopUseCase doFavoriteShopUseCase;
-    private RefreshFeedUseCase refreshFeedUseCase;
+    private GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase;
     private String currentCursor = "";
     private FeedPlus.View viewListener;
     private PagingHandler pagingHandler;
@@ -43,13 +51,19 @@ public class FeedPlusPresenter
                       GetFeedsUseCase getFeedsUseCase,
                       GetFirstPageFeedsUseCase getFirstPageFeedsUseCase,
                       FavoriteShopUseCase favoriteShopUseCase,
-                      RefreshFeedUseCase refreshFeedUseCase) {
+                      GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase,
+                      CheckNewFeedUseCase checkNewFeedUseCase,
+                      LikeKolPostUseCase likeKolPostUseCase,
+                      FollowKolPostUseCase followKolPostUseCase) {
         this.sessionHandler = sessionHandler;
-        this.getFeedsUseCase = getFeedsUseCase;
-        this.getFirstPageFeedsUseCase = getFirstPageFeedsUseCase;
-        this.doFavoriteShopUseCase = favoriteShopUseCase;
-        this.refreshFeedUseCase = refreshFeedUseCase;
         this.pagingHandler = new PagingHandler();
+        this.getFeedsUseCase = getFeedsUseCase;
+        this.getFirstPageFeedsCloudUseCase = getFirstPageFeedsCloudUseCase;
+        this.doFavoriteShopUseCase = favoriteShopUseCase;
+        this.getFirstPageFeedsUseCase = getFirstPageFeedsUseCase;
+        this.checkNewFeedUseCase = checkNewFeedUseCase;
+        this.likeKolPostUseCase = likeKolPostUseCase;
+        this.followKolPostUseCase = followKolPostUseCase;
     }
 
     @Override
@@ -64,7 +78,9 @@ public class FeedPlusPresenter
         getFeedsUseCase.unsubscribe();
         getFirstPageFeedsUseCase.unsubscribe();
         doFavoriteShopUseCase.unsubscribe();
-        refreshFeedUseCase.unsubscribe();
+        getFirstPageFeedsCloudUseCase.unsubscribe();
+        likeKolPostUseCase.unsubscribe();
+        followKolPostUseCase.unsubscribe();
     }
 
 
@@ -74,11 +90,8 @@ public class FeedPlusPresenter
         viewListener.showRefresh();
         currentCursor = "";
         getFirstPageFeedsUseCase.execute(
-                getFirstPageFeedsUseCase.getFeedPlusParam(
-                        pagingHandler.getPage(),
-                        sessionHandler,
-                        currentCursor),
-                new GetFirstPageFeedsSubscriber(viewListener));
+                getFirstPageFeedsUseCase.getRefreshParam(sessionHandler),
+                new GetFirstPageFeedsSubscriber(viewListener, pagingHandler.getPage()));
     }
 
     @Override
@@ -92,7 +105,7 @@ public class FeedPlusPresenter
                         pagingHandler.getPage(),
                         sessionHandler,
                         currentCursor),
-                new GetFeedsSubscriber(viewListener));
+                new GetFeedsSubscriber(viewListener, pagingHandler.getPage()));
     }
 
     public void favoriteShop(final Data promotedShopViewModel, final int adapterPosition) {
@@ -134,7 +147,7 @@ public class FeedPlusPresenter
                 if (viewListener.hasFeed())
                     viewListener.updateFavorite(adapterPosition);
                 else
-                    viewListener.updateFavoriteFromEmpty();
+                    viewListener.updateFavoriteFromEmpty(promotedShopViewModel.getShop().getId());
             }
         });
     }
@@ -148,22 +161,71 @@ public class FeedPlusPresenter
         pagingHandler.resetPage();
         viewListener.showRefresh();
         currentCursor = "";
-        refreshFeedUseCase.execute(
-                refreshFeedUseCase.getFeedPlusParam(
-                        pagingHandler.getPage(),
-                        sessionHandler,
-                        currentCursor),
-                new GetFirstPageFeedsSubscriber(viewListener));
+        getFirstPageFeedsCloudUseCase.execute(
+                getFirstPageFeedsCloudUseCase.getRefreshParam(sessionHandler),
+                new GetFirstPageFeedsSubscriber(viewListener, pagingHandler.getPage()));
     }
 
     @Override
     public void checkNewFeed(String firstCursor) {
-        refreshFeedUseCase.execute(
-                refreshFeedUseCase.getFeedPlusParam(
-                        1,
-                        sessionHandler,
-                        ""),
-                new CheckNewFeedSubscriber(firstCursor, viewListener));
+//        checkNewFeedUseCase.execute(
+//                CheckNewFeedUseCase.getParam(sessionHandler, firstCursor),
+//                new CheckNewFeedSubscriber(viewListener));
+    }
+
+    @Override
+    public void followKol(int id, int rowNumber, FeedPlus.View.Kol kolListener) {
+        followKolPostUseCase.execute(
+                FollowKolPostUseCase.getParam(id,
+                        FollowKolPostUseCase.PARAM_FOLLOW),
+                new FollowUnfollowKolSubscriber(id, FollowKolPostUseCase.PARAM_FOLLOW, rowNumber, getView(), kolListener));
+    }
+
+    @Override
+    public void unfollowKol(int id, int rowNumber, FeedPlus.View.Kol kolListener) {
+        followKolPostUseCase.execute(
+                FollowKolPostUseCase.getParam(id,
+                        FollowKolPostUseCase.PARAM_UNFOLLOW),
+                new FollowUnfollowKolSubscriber(id, FollowKolPostUseCase.PARAM_UNFOLLOW,
+                        rowNumber, getView(), kolListener));
+    }
+
+    @Override
+    public void likeKol(int id, int rowNumber, FeedPlus.View.Kol kolListener) {
+        likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_LIKE),
+                new LikeKolPostSubscriber
+                (rowNumber, getView(), kolListener));
+
+    }
+
+    @Override
+    public void unlikeKol(int id, int rowNumber, FeedPlus.View.Kol kolListener) {
+        likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(id, LikeKolPostUseCase
+                .ACTION_UNLIKE), new LikeKolPostSubscriber
+                (rowNumber, getView(), kolListener));
+    }
+
+    @Override
+    public void followKolFromRecommendation(int id, int rowNumber, int position, FeedPlus.View.Kol kolListener) {
+        followKolPostUseCase.execute(
+                FollowKolPostUseCase.getParam(id,
+                        FollowKolPostUseCase.PARAM_FOLLOW),
+                new FollowUnfollowKolRecommendationSubscriber(id, FollowKolPostUseCase
+                        .PARAM_FOLLOW, rowNumber, position, getView(),
+                        kolListener));
+
+
+    }
+
+    @Override
+    public void unfollowKolFromRecommendation(int id, int rowNumber, int position, FeedPlus.View.Kol kolListener) {
+        followKolPostUseCase.execute(
+                FollowKolPostUseCase.getParam(id,
+                        FollowKolPostUseCase.PARAM_UNFOLLOW),
+                new FollowUnfollowKolRecommendationSubscriber(id,FollowKolPostUseCase
+                        .PARAM_UNFOLLOW, rowNumber, position, getView(),
+                        kolListener));
+
     }
 
 

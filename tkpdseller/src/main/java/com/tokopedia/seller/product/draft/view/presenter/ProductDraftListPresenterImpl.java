@@ -1,10 +1,14 @@
 package com.tokopedia.seller.product.draft.view.presenter;
 
-import android.app.ActivityManager;
+import android.content.Context;
+import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
 
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.DeleteSingleDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductUseCase;
-import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.draft.view.mapper.ProductDraftListMapper;
 import com.tokopedia.seller.product.draft.view.model.ProductDraftViewModel;
@@ -22,13 +26,16 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
     private FetchAllDraftProductUseCase fetchAllDraftProductUseCase;
     private DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase;
     private UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase;
+    private ClearAllDraftProductUseCase clearAllDraftProductUseCase;
 
     public ProductDraftListPresenterImpl (FetchAllDraftProductUseCase fetchAllDraftProductUseCase,
                                           DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase,
-                                          UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase){
+                                          UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase,
+                                          ClearAllDraftProductUseCase clearAllDraftProductUseCase){
         this.fetchAllDraftProductUseCase = fetchAllDraftProductUseCase;
         this.deleteSingleDraftProductUseCase = deleteSingleDraftProductUseCase;
         this.updateUploadingDraftProductUseCase = updateUploadingDraftProductUseCase;
+        this.clearAllDraftProductUseCase = clearAllDraftProductUseCase;
     }
 
     @Override
@@ -47,6 +54,30 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
     public void deleteProductDraft(long draftId) {
         deleteSingleDraftProductUseCase.execute(DeleteSingleDraftProductUseCase.createRequestParams(draftId),
                 getDeleteSubscriber());
+    }
+
+    @Override
+    public void clearAllDraftData() {
+        clearAllDraftProductUseCase.execute(RequestParams.EMPTY,getClearAllDraftSubscriber());
+    }
+
+    private Subscriber<Boolean> getClearAllDraftSubscriber() {
+        return new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().onErrorDeleteAllDraft();
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                getView().onSuccessDeleteAllDraft();
+            }
+        };
     }
 
     private Subscriber<List<UploadProductInputDomainModel>> getSubscriber(){

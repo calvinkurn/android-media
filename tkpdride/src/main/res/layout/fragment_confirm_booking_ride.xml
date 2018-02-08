@@ -17,16 +17,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp" />
+            android:layout_marginLeft="@dimen/ten_dp"
+            android:layout_marginRight="@dimen/ten_dp" />
 
         <LinearLayout
             android:id="@+id/promo_result_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginLeft="@dimen/ten_dp"
+            android:layout_marginRight="@dimen/ten_dp"
             android:background="@drawable/material_card"
             android:gravity="center"
             android:orientation="horizontal"
@@ -35,7 +35,7 @@
             <ImageView
                 android:layout_width="18dp"
                 android:layout_height="18dp"
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="@dimen/margin_med"
                 android:tint="@color/colorGreen"
                 app:srcCompat="@drawable/ic_thumb_up_black_24dp" />
 
@@ -43,23 +43,34 @@
                 android:id="@+id/tv_promo_desc"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:layout_marginLeft="12dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginBottom="@dimen/margin_small_sm"
+                android:layout_marginLeft="@dimen/margin_small_sm"
+                android:layout_marginTop="@dimen/margin_small_sm"
                 android:layout_weight="1.0"
                 android:text="Loading..."
                 android:textColor="@color/black"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tv_promo_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/new_margin_med"
+                android:layout_marginRight="@dimen/margin_med"
+                android:text="@string/edit"
+                android:textStyle="bold"
+                android:textColor="@color/blue_link"
                 android:textSize="14sp" />
 
             <ImageView
                 android:id="@+id/iv_promo_desc_close"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginLeft="@dimen/new_margin_med"
+                android:layout_marginRight="@dimen/margin_med"
                 android:src="@drawable/cabs_cross_white"
                 android:tint="@color/grey_900"
-                android:visibility="visible" />
+                android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>
 
@@ -68,9 +79,9 @@
         android:id="@+id/indeterminate_progress_bar"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_height="@dimen/ten_dp"
+        android:layout_marginLeft="@dimen/ten_dp"
+        android:layout_marginRight="@dimen/ten_dp"
         android:indeterminate="true"
         android:indeterminateBehavior="cycle" />
 

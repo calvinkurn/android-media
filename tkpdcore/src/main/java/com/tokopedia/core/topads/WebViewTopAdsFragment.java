@@ -1,6 +1,7 @@
 package com.tokopedia.core.topads;
 
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
@@ -150,7 +151,15 @@ public class WebViewTopAdsFragment extends V2BaseFragment {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            return false;
+            // https://stackoverflow.com/questions/4229494/webview-link-click-open-default-browser
+            // this is to enable deeplink from "Mulai Promo TopAds" to the app
+            if (url != null && ( url.startsWith("http://") || url.startsWith("https://") )) {
+                view.getContext().startActivity(
+                        new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 

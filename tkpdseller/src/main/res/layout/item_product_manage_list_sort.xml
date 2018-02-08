@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:padding="@dimen/margin_sm">
+
+    <TextView
+        android:id="@+id/text_view_title"
+        style="@style/TextView.Title.BlackSecondary"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        tools:text="@string/app_id" />
+
+    <ImageView
+        android:id="@+id/image_view_check"
+        android:layout_width="@dimen/image_width_xs"
+        android:layout_height="@dimen/image_width_xs"
+        android:src="@drawable/ic_check_green_24dp" />
+</LinearLayout>

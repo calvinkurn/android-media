@@ -1,5 +1,6 @@
 package com.tokopedia.seller.selling.view.fragment;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -7,7 +8,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -35,26 +35,35 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
-import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
+import com.tokopedia.core.session.baseFragment.BaseFragment;
+import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.selling.SellingService;
 import com.tokopedia.seller.selling.presenter.Shipping;
 import com.tokopedia.seller.selling.presenter.ShippingImpl;
 import com.tokopedia.seller.selling.presenter.ShippingView;
+import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
+import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
 import com.tokopedia.seller.selling.view.viewHolder.ShippingViewHolder;
-import com.tokopedia.core.session.baseFragment.BaseFragment;
-import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.core.util.RefreshHandler;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
 /**
  * Created by Toped10 on 7/28/2016.
  */
+@RuntimePermissions
 public class FragmentSellingShipping extends BaseFragment<Shipping> implements ShippingView {
 
     RecyclerView recyclerView;
@@ -116,7 +125,16 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
 
     public void requestBarcodeScanner(int pos) {
         getBarcodePosition = pos;
-        startActivityForResult(CommonUtils.requestBarcodeScanner(), REQUEST_CODE_BARCODE);
+        scanBarCode();
+    }
+
+    public void scanBarCode() {
+        FragmentSellingShippingPermissionsDispatcher.onScanBarcodeWithCheck(FragmentSellingShipping.this);
+    }
+
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    public void onScanBarcode() {
+        CommonUtils.requestBarcodeScanner(this, CustomScannerBarcodeActivity.class);
     }
 
     public void requestRefNumDialog(final int pos) {
@@ -313,8 +331,6 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
         initPresenter();
         presenter.getShippingList(isVisibleToUser);
         super.setUserVisibleHint(isVisibleToUser);
-        ScreenTracking.screenLoca(AppScreen.SCREEN_LOCA_SHIPPING);
-        ScreenTracking.eventLoca(AppScreen.SCREEN_LOCA_SHIPPING);
         ScreenTracking.screen(AppScreen.SCREEN_TX_SHOP_CONFIRM_SHIPPING);
     }
 
@@ -574,12 +590,11 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        presenter.updateRefNumBarcode(getBarcodePosition,
+                CommonUtils.getBarcode(requestCode, resultCode, data));
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
-                case REQUEST_CODE_BARCODE:
-                    presenter.updateRefNumBarcode(getBarcodePosition, CommonUtils.getBarcode(data));
-                    break;
                 case REQUEST_CODE_PROCESS_RESULT:
                     shouldRefreshList = true;
                     break;
@@ -660,4 +675,62 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
     public void hideFab() {
         fab.hide();
     }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        FragmentSellingShippingPermissionsDispatcher.onRequestPermissionsResult(
+                FragmentSellingShipping.this, requestCode, grantResults);
+    }
+
+
+    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    void showRationaleForStorageAndCamera(final PermissionRequest request) {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+
+        RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
+    }
+
+    @OnPermissionDenied(Manifest.permission.CAMERA)
+    void showDeniedForCamera() {
+        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.CAMERA);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.CAMERA)
+    void showNeverAskForCamera() {
+        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.CAMERA);
+    }
+
+    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showDeniedForStorage() {
+        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showNeverAskForStorage() {
+        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnPermissionDenied({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
+    void showDeniedForStorageAndCamera() {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+
+        RequestPermissionUtil.onPermissionDenied(getActivity(),listPermission);
+    }
+
+    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    void showNeverAskForStorageAndCamera() {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+
+        RequestPermissionUtil.onNeverAskAgain(getActivity(),listPermission);
+    }
+
 }

@@ -25,10 +25,13 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.domain.model.Paging;
 import com.tokopedia.ride.bookingride.view.adapter.EndlessRecyclerViewScrollListener;
-import com.tokopedia.ride.history.di.RideHistoryDependencyInjection;
+import com.tokopedia.ride.common.ride.di.RideComponent;
+import com.tokopedia.ride.history.di.DaggerRideHistoryComponent;
+import com.tokopedia.ride.history.di.RideHistoryComponent;
 import com.tokopedia.ride.history.domain.GetRideHistoriesUseCase;
 import com.tokopedia.ride.history.view.adapter.ItemClickListener;
 import com.tokopedia.ride.history.view.adapter.RideHistoryAdapter;
@@ -41,6 +44,8 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 
@@ -59,7 +64,8 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
 
     RideHistoryAdapter adapter;
 
-    RideHistoryContract.Presenter presenter;
+    @Inject
+    RideHistoryPresenter presenter;
 
     OnFragmentInteractionListener mOnFragmentInteractionListener;
 
@@ -84,7 +90,6 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setViewListener();
-        presenter = RideHistoryDependencyInjection.createPresenter(getActivity());
         presenter.attachView(this);
         presenter.initialize();
     }
@@ -127,7 +132,17 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
 
     @Override
     public void onHistoryClicked(RideHistoryViewModel viewModel) {
+        RideGATracking.eventClickReceipt(getScreenName(), viewModel.getRequestTime(), viewModel.getTotalFare(), viewModel.getStatus());//16
         mOnFragmentInteractionListener.actionNavigateToDetail(viewModel);
+    }
+
+    @Override
+    protected void initInjector() {
+        RideComponent component = getComponent(RideComponent.class);
+        RideHistoryComponent rideHistoryComponent = DaggerRideHistoryComponent.builder()
+                .rideComponent(component)
+                .build();
+        rideHistoryComponent.inject(this);
     }
 
     @Override
@@ -261,6 +276,10 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
                 presenter.actionRefreshHistoriesData();
             }
         };
+    }
+
+    public void actionRefreshHistoriesData() {
+        presenter.actionRefreshHistoriesData();
     }
 
     public interface OnFragmentInteractionListener {

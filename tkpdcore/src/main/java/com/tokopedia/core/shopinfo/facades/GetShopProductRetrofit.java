@@ -5,6 +5,8 @@ import android.support.v4.util.ArrayMap;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.R;
+import com.tokopedia.core.network.apiservices.tome.TomeService;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.shopinfo.facades.authservices.ShopService;
@@ -36,7 +38,9 @@ public class GetShopProductRetrofit {
         void onFailure(int connectionTypeError, String message);
     }
 
+    //    private ShopService shopService;
     private ShopService shopService;
+    private TomeService tomeService;
     private Context context;
     private String shopId;
     private String shopDomain;
@@ -49,7 +53,8 @@ public class GetShopProductRetrofit {
         this.context = context;
         this.shopId = shopId;
         this.shopDomain = shopDomain;
-        shopService = new ShopService();
+        shopService = new ShopService(TkpdBaseURL.ACE_DOMAIN);
+        tomeService = new TomeService();
     }
 
     public void setOnGetShopProductListener(OnGetShopProductListener listener) {
@@ -57,8 +62,16 @@ public class GetShopProductRetrofit {
     }
 
     public void getShopProduct(GetShopProductParam param) {
-        Observable<Response<TkpdResponse>> observable = shopService.getApi().getShopProduct(AuthUtil.generateParams(context, paramGetShopProduct(param)));
-        onGetShopProductSubs = observable.subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(onGetShopProduct());
+        Observable<Response<TkpdResponse>> observable;
+        if (param.isUseAce()) {
+            observable = shopService.getApi()
+                    .getShopProduct(AuthUtil.generateParams(context, paramGetShopProduct(param)));
+        } else {
+            observable = tomeService.getApi()
+                    .getShopProduct(AuthUtil.generateParams(context, paramGetShopProduct(param)));
+        }
+        onGetShopProductSubs = observable.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(onGetShopProduct());
     }
 
     public void unsubscribeGetShopProduct() {

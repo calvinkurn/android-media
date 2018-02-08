@@ -28,6 +28,7 @@ public class CartItemEditable {
     private String keroToken;
     private int errorType;
     private boolean isUseInsurance;
+    private String insuranceUsedInfo;
 
     public CartItemEditable(CartItem data) {
         this.cartItem = data;
@@ -153,5 +154,13 @@ public class CartItemEditable {
 
     public void setUseInsurance(boolean useInsurance) {
         isUseInsurance = useInsurance;
+    }
+
+    public String getInsuranceUsedInfo() {
+        return insuranceUsedInfo;
+    }
+
+    public void setInsuranceUsedInfo(String insuranceUsedInfo) {
+        this.insuranceUsedInfo = insuranceUsedInfo;
     }
 }

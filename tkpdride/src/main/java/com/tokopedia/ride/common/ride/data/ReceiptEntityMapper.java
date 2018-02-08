@@ -1,9 +1,13 @@
 package com.tokopedia.ride.common.ride.data;
 
+import com.tokopedia.ride.common.configuration.PaymentMode;
 import com.tokopedia.ride.common.ride.data.entity.ReceiptEntity;
-import com.tokopedia.ride.completetrip.domain.model.Receipt;
+import com.tokopedia.ride.common.ride.data.entity.TipListEntity;
+import com.tokopedia.ride.common.ride.domain.model.Receipt;
+import com.tokopedia.ride.common.ride.domain.model.TipList;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Currency;
 import java.util.Locale;
 
@@ -36,6 +40,7 @@ public class ReceiptEntityMapper {
             String totalCharged = entity.getCurrencyCode() + " 0";
             if (entity.getPayment() != null) {
                 totalCharged = formatNumber(entity.getPayment().getTotalAmount(), entity.getPayment().getCurrencyCode());
+                receipt.setPaymentMethod(transformPaymentMethod(entity.getPayment().getPaymentMethod()));
             }
             receipt.setTotalCharged(totalCharged);
 
@@ -43,6 +48,7 @@ public class ReceiptEntityMapper {
             receipt.setDiscount(entity.getDiscountAmount());
             receipt.setCashbackDisplayFormat(formatNumber(entity.getCashbackAmount(), entity.getCurrencyCode()));
             receipt.setDiscountDisplayFormat(formatNumber(entity.getDiscountAmount(), entity.getCurrencyCode()));
+            receipt.setTipList(transformTipList(entity.getTipList()));
 
 
             if (entity.getRideOffer() != null) {
@@ -52,6 +58,25 @@ public class ReceiptEntityMapper {
             }
         }
         return receipt;
+    }
+
+    private TipList transformTipList(TipListEntity entity) {
+        TipList tipList = null;
+        if (entity != null) {
+            tipList = new TipList();
+            tipList.setEnabled(entity.getEnabled());
+            tipList.setList(entity.getList());
+
+            if (entity.getList() != null) {
+                ArrayList<String> formattedTipList = new ArrayList<>();
+                for (Integer tipAmount : entity.getList()) {
+                    formattedTipList.add(formatNumber(tipAmount, "IDR"));
+                }
+
+                tipList.setFormattedCurrecyList(formattedTipList);
+            }
+        }
+        return tipList;
     }
 
     private int transformDurationToMinute(String input) {
@@ -104,6 +129,7 @@ public class ReceiptEntityMapper {
             if (currency.equalsIgnoreCase("IDR") || currency.equalsIgnoreCase("RP")) {
                 format.setMaximumFractionDigits(0);
                 result = format.format(number).replace(",", ".").replace("IDR", "Rp");
+                result = formatDisplayPrice(result);
             } else {
                 result = format.format(number);
             }
@@ -119,5 +145,15 @@ public class ReceiptEntityMapper {
         }
 
         return currencyCode;
+    }
+
+    private String transformPaymentMethod(String paymentMethod) {
+        if (paymentMethod != null && paymentMethod.equalsIgnoreCase(PaymentMode.CC)) {
+            return PaymentMode.CC_DISPLAY_NAME;
+        } else if (paymentMethod != null && paymentMethod.equalsIgnoreCase(PaymentMode.WALLET)) {
+            return PaymentMode.WALLET_DISPLAY_NAME;
+        }
+
+        return PaymentMode.DEFAULT_DISPLAY_NAME;
     }
 }

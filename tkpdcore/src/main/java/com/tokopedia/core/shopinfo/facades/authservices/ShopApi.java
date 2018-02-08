@@ -23,11 +23,10 @@ public interface ShopApi {
     @POST("get_shop_info.pl")
     Observable<Response<TkpdResponse>> getShopInfo(@FieldMap Map<String, String> params);
 
-    @FormUrlEncoded
-    @POST("get_shop_etalase.pl")
-    Observable<Response<TkpdResponse>> getShopEtalase(@FieldMap Map<String, String> params);
+    @GET("get_shop_etalase.pl")
+    Observable<Response<TkpdResponse>> getShopEtalase(@QueryMap Map<String, String> params);
 
-    @GET("get_shop_product.pl")
+    @GET("v1/web-service/shop/get_shop_product")
     Observable<Response<TkpdResponse>> getShopProduct(@QueryMap Map<String, String> params);
 
     @FormUrlEncoded

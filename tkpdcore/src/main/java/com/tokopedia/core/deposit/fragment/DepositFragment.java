@@ -325,6 +325,9 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
 
     @Override
     public void setActionsEnabled(Boolean isEnabled) {
+        if (!isAdded() || startDate == null || endDate == null || drawButton == null || searchButton == null) {
+            return;
+        }
         startDate.setEnabled(isEnabled);
         endDate.setEnabled(isEnabled);
         drawButton.setEnabled(isEnabled);

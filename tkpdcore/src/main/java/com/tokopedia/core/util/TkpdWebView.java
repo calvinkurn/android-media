@@ -2,6 +2,8 @@ package com.tokopedia.core.util;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.webkit.WebView;
 
@@ -10,7 +12,6 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Map;
 
 /**
  * Created by nisie on 11/30/16.
@@ -55,19 +56,22 @@ public class TkpdWebView extends WebView {
 
     private String generateUri(String uri) {
         String url = String.valueOf(uri);
-        String flag_app = "flag_app=1";
-        String device = "device=android";
-        String utm_source = "utm_source=android";
-        String app_version = "app_version=" + GlobalConfig.VERSION_CODE;
-        String flags = flag_app
+        String flagApp = AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP + "=1";
+        String device = AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE + "=android";
+        String utmSource = AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE + "=android";
+        String appVersion = AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION + "=" + GlobalConfig.VERSION_CODE;
+        String osVersion = AuthUtil.WEBVIEW_FLAG_PARAM_OS_VERSION + "=" + Build.VERSION.RELEASE;
+        String flags = flagApp
                 + "&" + device
-                + "&" + utm_source
-                + "&" + app_version;
+                + "&" + utmSource
+                + "&" + appVersion
+                + "&" + osVersion;
 
         try {
-            if (Uri.parse(uri).getQuery() == null) {
+            if (!TextUtils.isEmpty(uri) && Uri.parse(uri).getQuery() == null) {
                 url += "?" + URLEncoder.encode(flags, FORMAT_UTF_8);
-            } else if (isSeamlessUrl(uri)
+            } else if (!TextUtils.isEmpty(uri) &&
+                    isSeamlessUrl(uri)
                     && (Uri.parse(uri).getQueryParameter(PARAM_URL)) != null
                     && Uri.parse(Uri.parse(uri).getQueryParameter(PARAM_URL)).getQuery() == null) {
                 url += "?" + URLEncoder.encode(flags, FORMAT_UTF_8);

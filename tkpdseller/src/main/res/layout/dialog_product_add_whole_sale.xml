@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/string_picker_dialog_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp" />
+
+    <com.tokopedia.design.text.CounterInputView
+        android:id="@+id/counter_input_view_minimum_whole_sale"
+        style="@style/LabelLayout.NoPadding"
+        android:layout_marginTop="@dimen/margin_med"
+        app:counter_enabled="false"
+        app:counter_hint="@string/product_label_minimum_whole_sale" />
+
+    <com.tokopedia.design.text.CounterInputView
+        android:id="@+id/counter_input_view_maximum_whole_sale"
+        style="@style/LabelLayout.NoPadding"
+        android:layout_marginTop="@dimen/margin_med"
+        app:counter_hint="@string/product_label_maximum_whole_sale" />
+
+    <com.tokopedia.design.text.DecimalInputView
+        android:id="@+id/counter_input_view_wholesale_price"
+        style="@style/LabelLayout.NoPadding"
+        android:layout_marginTop="@dimen/margin_med"
+        app:decimal_input_hint="@string/product_label_price_whole_sale" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp">
+
+        <TextView
+            android:id="@+id/string_picker_dialog_confirm"
+            style="@style/TextView.Title.Green"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
+            android:text="@string/product_etalase_picker_add_etalase_add_button_dialog" />
+
+        <TextView
+            android:id="@+id/string_picker_dialog_cancel"
+            style="@style/TextView.Title.Green"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_toLeftOf="@id/string_picker_dialog_confirm"
+            android:layout_toStartOf="@id/string_picker_dialog_confirm"
+            android:text="@string/product_etalase_picker_add_etalase_cancel_button_dialog" />
+
+    </RelativeLayout>
+
+</LinearLayout>

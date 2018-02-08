@@ -1,6 +1,7 @@
 package com.tokopedia.core.router.digitalmodule;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -20,11 +21,14 @@ public interface IDigitalModuleRouter {
     int REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220;
     int REQUEST_CODE_CONTACT_PICKER = 219;
     int REQUEST_CODE_DIGITAL_CATEGORY_LIST = 222;
+    int REQUEST_CODE_DIGITAL_SEARCH_NUMBER = 223;
 
     String EXTRA_MESSAGE = "EXTRA_MESSAGE";
     int PAYMENT_SUCCESS = 5;
     int PAYMENT_CANCELLED = 6;
     int PAYMENT_FAILED = 7;
+
+    BroadcastReceiver getBroadcastReceiverTokocashPending();
 
     Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData);
 
@@ -34,10 +38,11 @@ public interface IDigitalModuleRouter {
 
     Intent instanceIntentDigitalCategoryList();
 
+    Intent instanceIntentDigitalWeb(String url);
+
     boolean isSupportedDelegateDeepLink(String appLinks);
 
     Intent getIntentDeepLinkHandlerActivity();
 
     void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle);
-
 }

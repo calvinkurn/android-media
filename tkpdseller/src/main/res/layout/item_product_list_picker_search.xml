@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:padding="@dimen/padding_detail">
+
+    <RelativeLayout
+        android:id="@+id/container_image_product"
+        android:layout_width="@dimen/image_width_xl"
+        android:layout_height="@dimen/image_width_xl"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/margin_small">
+
+        <ImageView
+            android:id="@+id/image_product_picker_search"
+            android:layout_width="@dimen/image_width_xl"
+            android:layout_height="@dimen/image_width_xl" />
+
+        <TextView
+            android:id="@+id/stock_empty_tag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:background="@drawable/bg_ribbon"
+            android:gravity="center|top"
+            android:paddingTop="2dp"
+            android:text="@string/stock_unavailable"
+            android:textSize="@dimen/fontvvs"
+            android:textStyle="bold"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/container_product_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/check_box_picker_product"
+        android:layout_toRightOf="@+id/container_image_product"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_product_name"
+            style="@style/TextView.Small"
+            tools:text="Tas selempang wanita bulat merah Good Things by Olympicto bahan Kanvas" />
+
+        <TextView
+            android:id="@+id/text_product_price"
+            style="@style/TextView.Small"
+            android:layout_marginTop="@dimen/margin_small"
+            tools:text="Rp. 500" />
+
+    </LinearLayout>
+
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/check_box_picker_product"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:theme="@style/checkBoxStyleSeller" />
+
+</RelativeLayout>

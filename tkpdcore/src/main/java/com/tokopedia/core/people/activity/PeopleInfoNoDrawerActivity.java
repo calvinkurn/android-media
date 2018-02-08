@@ -90,4 +90,9 @@ public class PeopleInfoNoDrawerActivity extends BasePresenterActivity<PeopleInfo
     protected void setActionVar() {
 
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

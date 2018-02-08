@@ -1,13 +1,12 @@
 package com.tokopedia.discovery.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,14 +19,13 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.discovery.model.Sort;
-import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.widgets.DividerItemDecoration;
-import com.tokopedia.discovery.fragment.BrowseParentFragment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,17 +33,31 @@ import butterknife.ButterKnife;
 /**
  * Created by Erry on 7/12/2016.
  */
+@SuppressWarnings("unchecked")
 public class SortProductActivity extends TActivity {
 
-    @BindView(R2.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R2.id.list)
+    public static final String EXTRA_DATA = "EXTRA_DATA";
+    public static final String EXTRA_SELECTED_SORT = "EXTRA_SELECTED_SORT";
+    public static final String EXTRA_SELECTED_NAME = "EXTRA_SELECTED_NAME";
+
     RecyclerView recyclerView;
+    View buttonClose;
+    private TextView topBarTitle;
     private ListAdapter adapter;
     public static final String SORT_ACTION_INTENT = BuildConfig.APPLICATION_ID + ".SORT";
     private static final String TAG = SortProductActivity.class.getSimpleName();
-    private DataValue data;
-    private String source;
+    private ArrayList<Sort> data;
+    private String selectedKey;
+    private String selectedValue;
+
+    public static Intent createInstance(Context context, ArrayList<Sort> sort, HashMap<String, String> selectedSort) {
+        Intent intent = new Intent(context, SortProductActivity.class);
+        intent.putParcelableArrayListExtra(EXTRA_DATA, sort);
+        if (selectedSort != null) {
+            intent.putExtra(EXTRA_SELECTED_SORT, selectedSort);
+        }
+        return intent;
+    }
 
     @Override
     public String getScreenName() {
@@ -55,20 +67,27 @@ public class SortProductActivity extends TActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_product_sort);
-        ButterKnife.bind(this);
-        setSupportActionBar(toolbar);
-//        data = Parcels.unwrap(getIntent().getParcelableExtra(BrowseProductActivity.EXTRA_DATA));
-        data = getIntent().getExtras().getParcelable(BrowseProductActivity.EXTRA_DATA);
-        source = getIntent().getStringExtra(BrowseProductRouter.EXTRA_SOURCE);
-        adapter = new ListAdapter(data.getSort(), new OnItemClickListener() {
+        setContentView(com.tokopedia.discovery.R.layout.activity_product_sort);
+        topBarTitle = (TextView) findViewById(com.tokopedia.discovery.R.id.top_bar_title);
+        topBarTitle.setText(getString(R.string.title_sort_but));
+        recyclerView = (RecyclerView) findViewById(com.tokopedia.discovery.R.id.list);
+        buttonClose = findViewById(com.tokopedia.discovery.R.id.top_bar_close_button);
+        buttonClose.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClicked(String sort, String ob) {
-                data.setSelected(sort);
-                data.setSelectedOb(ob);
-                Intent intent = new Intent(SORT_ACTION_INTENT);
-                intent.putExtra(BrowseParentFragment.SORT_EXTRA, (Parcelable) data);
-                intent.putExtra(BrowseParentFragment.SOURCE_EXTRA, source);
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+        data = getIntent().getExtras().getParcelableArrayList(EXTRA_DATA);
+        generateSelectedKeyValue((HashMap<String, String>) getIntent().getSerializableExtra(EXTRA_SELECTED_SORT));
+        adapter = new ListAdapter(data, selectedKey, selectedValue, new OnItemClickListener() {
+            @Override
+            public void onItemClicked(String sort, String ob, String label) {
+                Intent intent = new Intent();
+                HashMap<String, String> params = new HashMap<>();
+                params.put(sort, ob);
+                intent.putExtra(EXTRA_SELECTED_SORT, params);
+                intent.putExtra(EXTRA_SELECTED_NAME, label);
                 setResult(RESULT_OK, intent);
                 finish();
             }
@@ -76,6 +95,17 @@ public class SortProductActivity extends TActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addItemDecoration(new DividerItemDecoration(this));
         recyclerView.setAdapter(adapter);
+    }
+
+    private void generateSelectedKeyValue(HashMap<String, String> selectedSort) {
+        if (selectedSort == null) {
+            return;
+        }
+
+        for (Map.Entry<String, String> entry : selectedSort.entrySet()) {
+            selectedKey = entry.getKey();
+            selectedValue = entry.getValue();
+        }
     }
 
     @Override
@@ -100,15 +130,19 @@ public class SortProductActivity extends TActivity {
 
     private class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
+        private String selectedKey;
+        private String selectedValue;
         List<Sort> sortList;
         OnItemClickListener clickListener;
 
-        public ListAdapter(List<Sort> sortList, OnItemClickListener clickListener) {
+        public ListAdapter(List<Sort> sortList, String selectedKey, String selectedValue, OnItemClickListener clickListener) {
             if(sortList==null){
                 this.sortList = new ArrayList<>();
             } else {
                 this.sortList = sortList;
             }
+            this.selectedKey = selectedKey;
+            this.selectedValue = selectedValue;
             this.clickListener = clickListener;
         }
 
@@ -119,17 +153,33 @@ public class SortProductActivity extends TActivity {
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
-            Log.d(TAG, "selected item "+data.getSelected());
+        public void onBindViewHolder(final ViewHolder holder, final int position) {
             holder.title.setText(sortList.get(position).getName());
             holder.title.setTag(sortList.get(position).getValue());
-            if (data.getSelected() != null) {
-                if (holder.title.getText().equals(data.getSelected())) {
+            if (selectedKey == null && selectedValue == null) {
+                if (position == 0) {
+                    holder.title.setSelected(true);
+                }
+            } else {
+                if (sortList.get(position).getKey().equals(selectedKey)
+                        && sortList.get(position).getValue().equals(selectedValue)) {
                     holder.title.setSelected(true);
                 } else {
                     holder.title.setSelected(false);
                 }
             }
+            holder.title.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    selectedKey = sortList.get(holder.getAdapterPosition()).getKey();
+                    selectedValue = sortList.get(holder.getAdapterPosition()).getValue();
+                    String selectedName = sortList.get(holder.getAdapterPosition()).getName();
+
+                    clickListener.onItemClicked(selectedKey, selectedValue, selectedName);
+
+                    notifyDataSetChanged();
+                }
+            });
         }
 
         @Override
@@ -151,7 +201,9 @@ public class SortProductActivity extends TActivity {
             public void onClick(View v) {
                 TextView textView = (TextView) v;
                 textView.setSelected(true);
-                clickListener.onItemClicked(sortList.get(getAdapterPosition()).getName(), sortList.get(getAdapterPosition()).getValue());
+                clickListener.onItemClicked(sortList.get(getAdapterPosition()).getKey(),
+                        sortList.get(getAdapterPosition()).getValue(),
+                        sortList.get(getAdapterPosition()).getName());
                 notifyDataSetChanged();
             }
 
@@ -160,6 +212,6 @@ public class SortProductActivity extends TActivity {
     }
 
     private interface OnItemClickListener {
-        void onItemClicked(String sort, String ob);
+        void onItemClicked(String sort, String ob, String label);
     }
 }

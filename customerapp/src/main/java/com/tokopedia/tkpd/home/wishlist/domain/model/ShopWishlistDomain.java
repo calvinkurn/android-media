@@ -9,6 +9,7 @@ public class ShopWishlistDomain {
     private String name;
     private String url;
     private boolean isGoldMerchant;
+    private boolean isOfficial;
     private String location;
     private String status;
     private String luckiMerchant;
@@ -68,5 +69,13 @@ public class ShopWishlistDomain {
 
     public void setLuckiMerchant(String luckiMerchant) {
         this.luckiMerchant = luckiMerchant;
+    }
+
+    public boolean isOfficial() {
+        return isOfficial;
+    }
+
+    public void setOfficial(boolean official) {
+        isOfficial = official;
     }
 }

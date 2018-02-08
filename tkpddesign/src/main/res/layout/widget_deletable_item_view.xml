@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/deletable_item_background"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="6dp">
+
+        <ImageView
+            android:id="@+id/item_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxHeight="@dimen/deletable_item_max_height"
+            android:maxWidth="@dimen/deletable_item_max_width"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/item_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextView.Micro.BlackSecondary"
+            />
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/delete_button"
+        android:layout_width="@dimen/image_width_s"
+        android:layout_height="@dimen/image_width_s"
+        android:background="@drawable/deletable_item_button" />
+
+</LinearLayout>

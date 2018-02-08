@@ -1,9 +1,13 @@
 package com.tokopedia.ride.completetrip.view;
 
+import android.app.Activity;
+
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.ride.completetrip.domain.model.Receipt;
+import com.tokopedia.ride.common.ride.domain.model.Receipt;
+
+import java.util.ArrayList;
 
 /**
  * Created by alvarisi on 3/31/17.
@@ -31,7 +35,9 @@ public interface CompleteTripContract {
 
         void showRatingSuccessDialog();
 
-        void showRatingErrorLayout();
+        void showErrorInRating(String message);
+
+        void showErrorInDriverTipping(String message);
 
         void hideRatingLayout();
 
@@ -48,11 +54,45 @@ public interface CompleteTripContract {
         String getRateStars();
 
         void closePage();
+
+        void showTipLayout();
+
+        void hideTipLayout();
+
+        void enableRatingSubmitButton();
+
+        void disableRatingSubmitButton();
+
+        Activity getActivity();
+
+        ArrayList<String> getFormmattedTipList();
+
+        RequestParams getTipParam();
+
+        int getTipAmount();
+
+        void openScroogePage(String url, String postData);
+
+        void showProgressbar();
+
+        void showAddShortcutDialog();
+
+        void hideProgressbar();
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void actionGetReceipt();
 
-        void actionSendRating();
+        void actionSubmitRatingAndDriverTip();
+
+        void handleRatingStarClick(float v);
+
+        void sendTip(RequestParams tipParams);
+
+        void payPendingFare();
+
+        void showPopupToAddShortcutForFirstTime();
+
+        void setShortcutDialogIsShowninCache();
     }
 }

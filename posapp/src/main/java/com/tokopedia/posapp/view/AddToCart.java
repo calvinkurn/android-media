@@ -9,12 +9,14 @@ import com.tokopedia.core.base.presentation.CustomerView;
 
 public interface AddToCart {
     interface Presenter extends CustomerPresenter<View> {
-        void add(String productId, int quantity);
+        void add(int productId, int quantity);
     }
 
     interface View extends CustomerView {
         void onErrorAddToCart(String message);
 
         void onSuccessAddToCart(String message);
+
+        void onSuccessATCPayment(String message);
     }
 }

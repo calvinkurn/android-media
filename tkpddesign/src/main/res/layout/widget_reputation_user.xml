@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/buyer_reputation"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical"
+              android:background="@drawable/bg_rounded_corners_green"
+              android:gravity="center_vertical"
+              android:orientation="horizontal"
+              android:padding="3dp"
+              android:visibility="visible">
+
+    <ImageView
+        android:id="@+id/image_view_icon"
+        android:layout_width="@dimen/reputation_view_smiley"
+        android:layout_height="@dimen/reputation_view_smiley"
+        android:gravity="center_vertical"
+        android:src="@drawable/ic_smiley_empty"
+        />
+
+    <TextView
+        android:id="@+id/text_view_percentage"
+        style="@style/TextView.Micro"
+        android:textColor="@color/tkpd_main_green"
+        android:layout_marginLeft="@dimen/margin_vs"
+        android:layout_marginStart="@dimen/margin_vs"
+        android:gravity="center_vertical"
+        android:visibility="visible"
+        tools:text="100%"/>
+
+</LinearLayout>

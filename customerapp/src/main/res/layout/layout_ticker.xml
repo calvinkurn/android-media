@@ -1,52 +1,52 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/announcement_ticker_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/shape_ticker_container"
-    android:padding="2dp"
-    android:orientation="vertical"
-    android:layout_marginTop="@dimen/margin_vs"
-    android:layout_marginLeft="@dimen/margin_vs"
-    android:layout_marginRight="@dimen/margin_vs">
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:layout_marginLeft="3dp"
-        android:padding="5dp"
-        android:orientation="vertical"
-        android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/ticker_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_vs"
-            android:text=""
-            android:textStyle="bold"
-            android:visibility="gone"/>
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:animateLayoutChanges="true"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/ticker_message"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="marquee"
+            android:lineSpacingExtra="6sp"
+            android:maxLines="3"
             android:lines="3"
-            android:maxLength="105"
-            android:layout_marginBottom="@dimen/margin_vs"
-            android:text="" />
+            android:padding="8dp"
+            android:linksClickable="true"
+            android:textColor="@color/black_54"
+            android:textSize="10sp"
+            tools:text="Tokopedia akan Maintenance pada hari ini pada pukul 22:00 WIB. Mohon maaf atas ketidaknyamanannya." />
+
+        <RelativeLayout
+            android:id="@+id/btn_close"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/bg_btn_ticker"
+            android:clickable="true">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_close_24dp" />
+        </RelativeLayout>
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/btn_close"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_vs"
-        android:layout_marginRight="@dimen/margin_vs"
-        android:src="@drawable/ic_close_ticker_24dp"/>
-
-
-</RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_hint" />
+</LinearLayout>

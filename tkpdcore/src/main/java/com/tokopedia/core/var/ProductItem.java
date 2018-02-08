@@ -84,6 +84,9 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
     @SerializedName("review_count")
     public String reviewCount;
 
+    @SerializedName("official_store")
+    public boolean isOfficial = false;
+
     public boolean productAlreadyWishlist;
 
     @Transient
@@ -295,6 +298,14 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
         this.productAlreadyWishlist = productAlreadyWishlist;
     }
 
+    public Boolean getOfficial() {
+        return isOfficial;
+    }
+
+    public void setOfficial(Boolean official) {
+        isOfficial = official;
+    }
+
     public ProductItem() {
         setType(PRODUCT_ITEM_TYPE);
     }
@@ -387,6 +398,7 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
         dest.writeString(this.free_return);
         dest.writeString(this.rating);
         dest.writeString(this.reviewCount);
+        dest.writeValue(this.isOfficial);
         dest.writeValue(this.productAlreadyWishlist);
         dest.writeParcelable((Parcelable) this.spannedName, flags);
         dest.writeParcelable((Parcelable) this.spannedShop, flags);
@@ -416,6 +428,7 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
         this.free_return = in.readString();
         this.rating = in.readString();
         this.reviewCount = in.readString();
+        this.isOfficial = (Boolean) in.readValue(Boolean.class.getClassLoader());
         this.productAlreadyWishlist = (Boolean) in.readValue(Boolean.class.getClassLoader());
         this.spannedName = in.readParcelable(Spanned.class.getClassLoader());
         this.spannedShop = in.readParcelable(Spanned.class.getClassLoader());

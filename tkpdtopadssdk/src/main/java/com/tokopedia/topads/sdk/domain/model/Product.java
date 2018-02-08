@@ -27,6 +27,7 @@ public class Product {
     private static final String KEY_FREERETURN = "free_feturn";
     private static final String KEY_PRODUCT_CASHBACK = "product_cashback";
     private static final String KEY_PRODUCT_CASHBACK_RATE = "product_cashback_rate";
+    private static final String KEY_PRODUCT_RATE = "product_rating";
     private static final String KEY_WHOLESALE_PRICE = "wholesale_price";
     private static final String KEY_LABELS = "labels";
 
@@ -44,6 +45,7 @@ public class Product {
     private String freeReturn;
     private boolean productCashback;
     private String productCashbackRate;
+    private int productRating;
     private List<WholesalePrice> wholesalePrice = new ArrayList<>();
     private List<Label> labels = new ArrayList<>();
 
@@ -89,6 +91,9 @@ public class Product {
         }
         if(!object.isNull(KEY_PRODUCT_CASHBACK_RATE)){
             setProductCashbackRate(object.getString(KEY_PRODUCT_CASHBACK_RATE));
+        }
+        if(!object.isNull(KEY_PRODUCT_RATE)){
+            setProductRating(object.getInt(KEY_PRODUCT_RATE));
         }
         if(!object.isNull(KEY_WHOLESALE_PRICE)){
             JSONArray wholesalePriceArray = object.getJSONArray(KEY_WHOLESALE_PRICE);
@@ -232,4 +237,11 @@ public class Product {
         this.labels = labels;
     }
 
+    public int getProductRating() {
+        return productRating;
+    }
+
+    public void setProductRating(int productRating) {
+        this.productRating = productRating;
+    }
 }

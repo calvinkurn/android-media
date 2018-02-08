@@ -1,7 +1,9 @@
 <resources>
-    <string name="app_name">O2O POS</string>
+    <string name="app_name">Tokopedia PayPoint</string>
 
-    <string name="outlet_search_hint">Cari outlet</string>
+    <string name="outlet_page_title">Pilih Outlet</string>
+    <string name="outlet_store_name_label">Toko :</string>
+    <string name="outlet_search_hint">Cari nama outlet</string>
     <string name="outlet_chooser_dialog_title">Konfirmasi Pilih Outlet</string>
     <string name="outlet_chooser_dialog_message">Apakah anda yakin untuk mengganti Outlet</string>
 
@@ -32,4 +34,23 @@
     <string name="cardscan_valid_label">Masa Berlaku</string>
     <string name="cardscan_cvv_message">Silahkan masukkan nomor CVV anda</string>
     <string name="cardscan_pay_label">Bayar</string>
+
+    <string name="cart_title">Keranjang Belanja</string>
+    <string name="password_dialog_message">Masukkan Password</string>
+    <string name="password_action_cancel">Batal</string>
+    <string name="password_action_continue">Lanjut</string>
+
+    <string name="pdp_add_to_cart_title">Tambah Ke Keranjang</string>
+    <string name="pdp_buy_label">Beli</string>
+    <string name="pdp_atc_success_message">Produk berhasil dimasukkan ke Keranjang Belanja</string>
+    <string name="pdp_continue_shopping_label">Lanjut Berbelanja</string>
+    <string name="pdp_pay_label">Bayar</string>
+
+    <string name="tx_history_page_title">Riwayat Transaksi</string>
+
+    <string name="transaction_error_title">Transaksi Anda Gagal</string>
+    <string name="transaction_error_void_message">Dana terpakai telah berhasil dikembalikan ke Limit Kartu Kredit Anda</string>
+    <string name="transaction_error_message">Dana Anda tidak terpotong</string>
+    <string name="error_password_wrong">Password yang anda masukan salah.</string>
+    <string name="error_password_unknown">Terjadi kesalahan. Ulangi beberapa saat lagi.</string>
 </resources>

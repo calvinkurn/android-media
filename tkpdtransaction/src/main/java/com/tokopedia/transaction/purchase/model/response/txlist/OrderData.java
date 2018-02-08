@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.purchase.model.response.txlist;
 
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -13,7 +14,7 @@ import java.util.List;
 /**
  * Created by Angga.Prasetiyo on 21/04/2016.
  */
-public class OrderData implements Parcelable {
+public class OrderData implements Parcelable{
     private static final String TAG = OrderData.class.getSimpleName();
 
     @SerializedName("order_JOB_status")
@@ -34,6 +35,9 @@ public class OrderData implements Parcelable {
     @SerializedName("order_button")
     @Expose
     private OrderButton orderButton;
+    @SerializedName("driver_info")
+    @Expose
+    private OrderDriver driverInfo;
     @SerializedName("order_products")
     @Expose
     private List<OrderProduct> orderProducts = new ArrayList<OrderProduct>();
@@ -55,6 +59,33 @@ public class OrderData implements Parcelable {
     @SerializedName("order_destination")
     @Expose
     private OrderDestination orderDestination;
+
+    protected OrderData(Parcel in) {
+        orderDetail = in.readParcelable(OrderDetail.class.getClassLoader());
+        orderAutoResi = in.readString();
+        orderDeadline = in.readParcelable(OrderDeadline.class.getClassLoader());
+        orderAutoAwb = in.readString();
+        orderButton = in.readParcelable(OrderButton.class.getClassLoader());
+        driverInfo = in.readParcelable(OrderDriver.class.getClassLoader());
+        orderProducts = in.createTypedArrayList(OrderProduct.CREATOR);
+        orderShop = in.readParcelable(OrderShop.class.getClassLoader());
+        orderShipment = in.readParcelable(OrderShipment.class.getClassLoader());
+        orderLast = in.readParcelable(OrderLast.class.getClassLoader());
+        orderHistory = in.createTypedArrayList(OrderHistory.CREATOR);
+        orderDestination = in.readParcelable(OrderDestination.class.getClassLoader());
+    }
+
+    public static final Creator<OrderData> CREATOR = new Creator<OrderData>() {
+        @Override
+        public OrderData createFromParcel(Parcel in) {
+            return new OrderData(in);
+        }
+
+        @Override
+        public OrderData[] newArray(int size) {
+            return new OrderData[size];
+        }
+    };
 
     public Object getOrderJOBStatus() {
         return orderJOBStatus;
@@ -102,6 +133,14 @@ public class OrderData implements Parcelable {
 
     public void setOrderButton(OrderButton orderButton) {
         this.orderButton = orderButton;
+    }
+
+    public OrderDriver getDriverInfo() {
+        return driverInfo;
+    }
+
+    public void setDriverInfo(OrderDriver driverInfo) {
+        this.driverInfo = driverInfo;
     }
 
     public List<OrderProduct> getOrderProducts() {
@@ -160,32 +199,6 @@ public class OrderData implements Parcelable {
         this.orderDestination = orderDestination;
     }
 
-    protected OrderData(Parcel in) {
-        orderJOBStatus = (Object) in.readValue(Object.class.getClassLoader());
-        orderDetail = (OrderDetail) in.readValue(OrderDetail.class.getClassLoader());
-        orderAutoResi = in.readString();
-        orderDeadline = (OrderDeadline) in.readValue(OrderDeadline.class.getClassLoader());
-        orderAutoAwb = in.readString();
-        orderButton = (OrderButton) in.readValue(OrderButton.class.getClassLoader());
-        if (in.readByte() == 0x01) {
-            orderProducts = new ArrayList<OrderProduct>();
-            in.readList(orderProducts, OrderProduct.class.getClassLoader());
-        } else {
-            orderProducts = null;
-        }
-        orderShop = (OrderShop) in.readValue(OrderShop.class.getClassLoader());
-        orderShipment = (OrderShipment) in.readValue(OrderShipment.class.getClassLoader());
-        orderLast = (OrderLast) in.readValue(OrderLast.class.getClassLoader());
-        if (in.readByte() == 0x01) {
-            orderHistory = new ArrayList<OrderHistory>();
-            in.readList(orderHistory, OrderHistory.class.getClassLoader());
-        } else {
-            orderHistory = null;
-        }
-        orderJOBDetail = (Object) in.readValue(Object.class.getClassLoader());
-        orderDestination = (OrderDestination) in.readValue(OrderDestination.class.getClassLoader());
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -193,41 +206,17 @@ public class OrderData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(orderJOBStatus);
-        dest.writeValue(orderDetail);
+        dest.writeParcelable(orderDetail, flags);
         dest.writeString(orderAutoResi);
-        dest.writeValue(orderDeadline);
+        dest.writeParcelable(orderDeadline, flags);
         dest.writeString(orderAutoAwb);
-        dest.writeValue(orderButton);
-        if (orderProducts == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(orderProducts);
-        }
-        dest.writeValue(orderShop);
-        dest.writeValue(orderShipment);
-        dest.writeValue(orderLast);
-        if (orderHistory == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(orderHistory);
-        }
-        dest.writeValue(orderJOBDetail);
-        dest.writeValue(orderDestination);
+        dest.writeParcelable(orderButton, flags);
+        dest.writeParcelable(driverInfo, flags);
+        dest.writeTypedList(orderProducts);
+        dest.writeParcelable(orderShop, flags);
+        dest.writeParcelable(orderShipment, flags);
+        dest.writeParcelable(orderLast, flags);
+        dest.writeTypedList(orderHistory);
+        dest.writeParcelable(orderDestination, flags);
     }
-
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<OrderData> CREATOR = new Parcelable.Creator<OrderData>() {
-        @Override
-        public OrderData createFromParcel(Parcel in) {
-            return new OrderData(in);
-        }
-
-        @Override
-        public OrderData[] newArray(int size) {
-            return new OrderData[size];
-        }
-    };
 }

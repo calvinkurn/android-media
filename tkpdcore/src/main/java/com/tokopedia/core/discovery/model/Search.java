@@ -6,12 +6,10 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
-
 /**
  * @author kulomady on 12/22/16.
  */
-public class Search implements Serializable, Parcelable {
+public class Search implements Parcelable {
 
     @SerializedName("searchable")
     @Expose
@@ -52,11 +50,6 @@ public class Search implements Serializable, Parcelable {
     }
 
 
-    protected Search(Parcel in) {
-        searchable = in.readInt();
-        placeholder = in.readString();
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -64,15 +57,19 @@ public class Search implements Serializable, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(searchable);
-        dest.writeString(placeholder);
+        dest.writeInt(this.searchable);
+        dest.writeString(this.placeholder);
     }
 
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Search> CREATOR = new Parcelable.Creator<Search>() {
+    protected Search(Parcel in) {
+        this.searchable = in.readInt();
+        this.placeholder = in.readString();
+    }
+
+    public static final Creator<Search> CREATOR = new Creator<Search>() {
         @Override
-        public Search createFromParcel(Parcel in) {
-            return new Search(in);
+        public Search createFromParcel(Parcel source) {
+            return new Search(source);
         }
 
         @Override

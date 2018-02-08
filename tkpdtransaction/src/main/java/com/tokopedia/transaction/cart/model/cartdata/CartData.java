@@ -84,6 +84,10 @@ public class CartData implements Parcelable {
     @SerializedName("donation")
     @Expose
     private CartDonation donation;
+    @SerializedName("promo_suggestion")
+    private CartPromo cartPromo;
+    @SerializedName("is_coupon_active")
+    private int isCouponActive = 0;
 
     public String getGrandTotalWithoutLP() {
         return grandTotalWithoutLP;
@@ -277,6 +281,22 @@ public class CartData implements Parcelable {
         this.donation = donation;
     }
 
+    public CartPromo getCartPromo() {
+        return cartPromo;
+    }
+
+    public void setCartPromo(CartPromo cartPromo) {
+        this.cartPromo = cartPromo;
+    }
+
+    public int getIsCouponActive() {
+        return isCouponActive;
+    }
+
+    public void setIsCouponActive(int isCouponActive) {
+        this.isCouponActive = isCouponActive;
+    }
+
     public CartData() {
     }
 
@@ -312,6 +332,8 @@ public class CartData implements Parcelable {
         dest.writeString(this.grandTotalWithoutLPIDR);
         dest.writeLong(this.cartShippingRate);
         dest.writeParcelable(this.donation, flags);
+        dest.writeParcelable(this.cartPromo, flags);
+        dest.writeInt(this.isCouponActive);
     }
 
     protected CartData(Parcel in) {
@@ -339,6 +361,8 @@ public class CartData implements Parcelable {
         this.grandTotalWithoutLPIDR = in.readString();
         this.cartShippingRate = in.readLong();
         this.donation = in.readParcelable(CartDonation.class.getClassLoader());
+        this.cartPromo = in.readParcelable(CartPromo.class.getClassLoader());
+        this.isCouponActive = in.readInt();
     }
 
     public static final Creator<CartData> CREATOR = new Creator<CartData>() {

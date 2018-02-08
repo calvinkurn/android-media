@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="empty_background">#f9f9f9</color>
+    <color name="breakline_background">#CD000000</color>
+
+    <color name="gmsubscribe_product_price_color">#ff5722</color>
+    <color name="gmsubscribe_product_line_color">#e0e0e0</color>
+    <color name="gmsubscribe_content_textview_color">#8A000000</color>
+    <color name="gmsubscribe_autosubscribe_title_content">#61000000</color>
+
+    <color name="bg_card_not_gm">#CD000000</color>
+    <color name="gmfeatured_selection_color">#f3fef3</color>
+
+</resources>

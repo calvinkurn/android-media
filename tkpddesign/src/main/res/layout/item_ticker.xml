@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ticker_background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/padding_small"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/ticker_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="false"
+        android:maxLines="3"
+        android:ellipsize="end"
+        android:maxLength="105"
+        style="@style/TextView.Small"
+        />
+
+</LinearLayout>

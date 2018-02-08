@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:divider="@drawable/bg_line_separator"
+    android:showDividers="middle"
+    android:orientation="vertical">
+
+    <com.tokopedia.design.text.TitleGroupView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/margin_ms"
+        app:tgv_icon="@drawable/icon_penjualan"
+        app:tgv_title="@string/drawer_title_seller" />
+
+    <com.tokopedia.seller.common.widget.LabelView
+        android:id="@+id/label_view_new_order"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:content_color="@color/tkpd_main_green"
+        app:title="@string/drawer_title_new_order" />
+
+    <com.tokopedia.seller.common.widget.LabelView
+        android:id="@+id/label_view_delivery_confirmation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:content_color="@color/tkpd_main_green"
+        app:title="@string/drawer_title_confirm_shipping" />
+
+    <com.tokopedia.seller.common.widget.LabelView
+        android:id="@+id/label_view_delivery_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:content_color="@color/tkpd_main_green"
+        app:title="@string/drawer_title_shipping_status" />
+
+    <com.tokopedia.seller.common.widget.LabelView
+        android:id="@+id/label_view_opportunity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:content_color="@color/tkpd_main_green"
+        app:title="@string/drawer_title_opportunity" />
+
+    <com.tokopedia.design.text.TitleGroupView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/margin_ms"
+        app:tgv_icon="@drawable/icon_inbox"
+        app:tgv_title="@string/drawer_title_inbox" />
+
+    <com.tokopedia.seller.common.widget.LabelView
+        android:id="@+id/label_view_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:content_color="@color/tkpd_main_green"
+        app:title="@string/drawer_title_inbox_message" />
+
+    <com.tokopedia.seller.common.widget.LabelView
+        android:id="@+id/label_view_discussion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:content_color="@color/tkpd_main_green"
+        app:title="@string/drawer_title_inbox_discussion" />
+
+    <com.tokopedia.seller.common.widget.LabelView
+        android:id="@+id/label_view_review"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:content_color="@color/tkpd_main_green"
+        app:title="@string/drawer_title_inbox_review" />
+
+
+</LinearLayout>

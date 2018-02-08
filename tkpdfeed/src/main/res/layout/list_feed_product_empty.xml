@@ -1,26 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="@dimen/padding_small">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/animation_view"
         android:layout_width="wrap_content"
         android:layout_height="325dp"
         android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_marginRight="@dimen/margin_small"
         android:layout_marginTop="-75dp"
         app:lottie_autoPlay="true"
         app:lottie_fileName="empty_cactus.json"
-        app:lottie_loop="true" />
+        app:lottie_loop="true"/>
 
     <LinearLayout
-        android:layout_marginTop="150dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_marginRight="@dimen/margin_small"
         android:orientation="vertical">
 
         <TextView
@@ -34,7 +37,7 @@
             android:textColor="@color/black_70"
             android:textSize="14sp"
             android:textStyle="normal"
-            tools:text="Oops, feed masih kosong" />
+            tools:text="Oops, feed masih kosong"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -48,7 +51,7 @@
             android:textSize="12sp"
             android:textStyle="normal"
             tools:text="Segera favoritkan toko yang Anda sukai untuk
-mendapatkan update produk terbaru di isini." />
+mendapatkan update produk terbaru di isini."/>
 
         <Button
             android:id="@+id/search_shop_button"
@@ -59,7 +62,16 @@ mendapatkan update produk terbaru di isini." />
             android:background="@drawable/green_button_rounded"
             android:text="@string/search_shop"
             android:textAllCaps="false"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"/>
+
+        <include
+            android:id="@+id/official_store_layout"
+            layout="@layout/empty_feed_official_store"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_top_os_feed"
+            android:visibility="gone"/>
+
     </LinearLayout>
 
 </RelativeLayout>

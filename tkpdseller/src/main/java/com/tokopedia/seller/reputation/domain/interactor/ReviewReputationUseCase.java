@@ -36,15 +36,6 @@ public class ReviewReputationUseCase extends UseCase<SellerReputationDomain> {
         return reputationReviewRepository.getReputationHistory(requestParams);
     }
 
-    @Override
-    public void execute(RequestParams requestParams, Subscriber<SellerReputationDomain> subscriber) {
-        this.subscription = createObservable(requestParams)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(subscriber);
-    }
-
     public Observable<SellerReputationDomain> createObservable(String shopId, Map<String, String> param) {
         return reputationReviewRepository.getReputationHistory(shopId, param);
     }

@@ -11,14 +11,12 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.data.DataManager;
 import com.tkpd.library.utils.data.DataManagerImpl;
 import com.tkpd.library.utils.data.DataReceiver;
 import com.tokopedia.core.R;
-import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.Bank;
 import com.tokopedia.core.database.model.CategoryDB;
@@ -32,7 +30,6 @@ import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractorImpl;
 import com.tokopedia.transaction.purchase.listener.ConfirmPaymentViewListener;
 import com.tokopedia.transaction.purchase.model.ConfirmPaymentData;
-import com.tokopedia.transaction.purchase.model.ConfirmationData;
 import com.tokopedia.transaction.purchase.model.response.formconfirmpayment.Form;
 import com.tokopedia.transaction.purchase.model.response.formconfirmpayment.FormConfPaymentData;
 import com.tokopedia.transaction.purchase.model.response.formconfirmpayment.FormEdit;
@@ -141,24 +138,6 @@ public class ConfirmPaymentPresenterImpl implements ConfirmPaymentPresenter {
             } else {
                 actionVerificationPayment(context, data);
             }
-        }
-    }
-
-    @Override
-    public void setLocalyticsFlow(Context context, ConfirmationData data) {
-        try {
-            int amtPayment = Integer.parseInt(data.getPaymentDetail()
-                    .getPaymentAmt().replaceAll("\\D+", ""));
-            Map<String, String> values = new HashMap<>();
-            values.put(context.getString(R.string.event_payment_method),
-                    data.getPaymentDetail().getPaymentMethodName());
-            values.put(context.getString(R.string.event_value_total_transaction),
-                    getTotalTransactionCategory(context, amtPayment));
-
-            PaymentTracking.confirmPaymentLoca(values);
-        } catch (Exception e) {
-            e.printStackTrace();
-            CommonUtils.dumper("LocalTag : Error : " + e.toString());
         }
     }
 
@@ -419,11 +398,6 @@ public class ConfirmPaymentPresenterImpl implements ConfirmPaymentPresenter {
                 cache.setExpire(86400);
                 cache.applyEditor();
                 action.actionOnSuccess();
-            }
-
-            @Override
-            public void setDepartments(List<CategoryDB> departments) {
-
             }
 
             @Override

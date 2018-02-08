@@ -176,25 +176,13 @@
                             android:src="@drawable/ic_icon_market_toped"
                             tools:ignore="ContentDescription"/>
 
-                        <ImageView
-                            android:id="@+id/btn_change_value_location"
-                            android:layout_width="@dimen/img_thumb_s"
-                            android:layout_height="@dimen/img_thumb_s"
-                            android:layout_alignParentEnd="true"
-                            android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"
-                            android:src="@drawable/chevron_thin_right"
-                            tools:ignore="ContentDescription"/>
-
                         <android.support.v7.widget.AppCompatTextView
                             android:id="@+id/tv_value_location"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_alignParentTop="true"
                             android:layout_toEndOf="@+id/iv_icon_geo_location"
-                            android:layout_toLeftOf="@+id/btn_change_value_location"
                             android:layout_toRightOf="@+id/iv_icon_geo_location"
-                            android:layout_toStartOf="@+id/btn_change_value_location"
                             android:clickable="true"
                             android:ellipsize="end"
                             android:focusable="false"

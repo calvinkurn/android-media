@@ -96,4 +96,9 @@ public class ManagePeopleProfileActivity extends BasePresenterActivity<ManagePeo
             fragment.setReceiveResult(resultCode, resultData);
         }
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

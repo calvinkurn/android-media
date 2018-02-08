@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_apps">
+
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.tokopedia.flight.common.view.HorizontalProgressBar
+                android:id="@+id/horizontal_progress_bar"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/progress_bar_height" />
+
+            <com.tokopedia.flight.search.view.adapter.FlightSearchRecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:fitsSystemWindows="true"
+                 />
+        </LinearLayout>
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
+
+    <include layout="@layout/include_filter_bottom_action_view" />
+
+</android.support.design.widget.CoordinatorLayout>

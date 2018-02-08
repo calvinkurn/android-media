@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/holder_top"
         android:layout_width="match_parent"
         android:layout_height="?android:actionBarSize"
-        android:background="@color/tkpd_main_green_payment_module">
+        android:background="@drawable/bg_toolbar_drop_shadow">
 
         <ImageView
             android:id="@+id/btn_back"
             android:layout_width="?android:actionBarSize"
             android:layout_height="?android:actionBarSize"
             android:padding="12dp"
-            android:src="@drawable/ic_arrow_back_white"
-            tools:ignore="ContentDescription"/>
+            android:src="@drawable/ic_arrow_back_black"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/tv_title"
@@ -30,8 +30,8 @@
             android:gravity="center"
             android:maxLines="1"
             android:text="@string/app_name"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"/>
+            android:textColor="@color/tkpd_main_text_color_payment_module"
+            android:textSize="18sp" />
 
         <ImageView
             android:id="@+id/btn_close"
@@ -42,18 +42,18 @@
             android:padding="12dp"
             android:src="@drawable/ic_close_white"
             android:visibility="invisible"
-            tools:ignore="ContentDescription"/>
+            tools:ignore="ContentDescription" />
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/holder_top">
+        android:layout_below="@+id/holder_top">
 
         <WebView
             android:id="@+id/scrooge_webview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
         <ProgressBar
             android:id="@+id/progressbar"
@@ -61,7 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="-6dp"
-            android:max="100"/>
+            android:max="100" />
 
     </RelativeLayout>
 

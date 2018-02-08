@@ -8,6 +8,7 @@ import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,17 +25,19 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.router.SessionRouter;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.router.OldSessionRouter;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.core.var.TkpdState;
-
-import java.net.URL;
 
 /**
  * Created by Nisie on 8/25/2015.
@@ -49,7 +52,7 @@ public class FragmentBannerWebView extends Fragment {
     private static final String LOGIN_TYPE = "login_type";
     private static final String QUERY_PARAM_PLUS = "plus";
     private static final int LOGIN_GPLUS = 123453;
-
+    private boolean isAlreadyFirstRedirect;
 
     private class MyWebViewClient extends WebChromeClient {
         @Override
@@ -91,7 +94,6 @@ public class FragmentBannerWebView extends Fragment {
             progressBar.setVisibility(View.GONE);
         }
 
-
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             CommonUtils.dumper("DEEPLINK " + errorCode + "  " + description + " " + failingUrl);
             super.onReceivedError(view, errorCode, description, failingUrl);
@@ -100,78 +102,97 @@ public class FragmentBannerWebView extends Fragment {
 
     }
 
-
     public FragmentBannerWebView() {
     }
 
     public static FragmentBannerWebView createInstance(String url) {
         FragmentBannerWebView fragment = new FragmentBannerWebView();
         Bundle args = new Bundle();
-        args.putString(EXTRA_URL, url);
-        Uri uri = Uri.parse(url);
-        if (uri.getQueryParameter(EXTRA_OVERRIDE_URL) != null) {
-            args.putBoolean(EXTRA_OVERRIDE_URL, uri.getQueryParameter(EXTRA_OVERRIDE_URL).equalsIgnoreCase("1"));
+        if (!TextUtils.isEmpty(url)) {
+            args.putString(EXTRA_URL, url);
+            Uri uri = Uri.parse(url);
+            if (uri.getQueryParameter(EXTRA_OVERRIDE_URL) != null) {
+                args.putBoolean(EXTRA_OVERRIDE_URL, uri.getQueryParameter(EXTRA_OVERRIDE_URL).equalsIgnoreCase("1"));
+            }
         }
         fragment.setArguments(args);
         return fragment;
     }
 
     private boolean overrideUrl(String url) {
-        if (TrackingUtils.getBoolean(AppEventTracking.GTM.OVERRIDE_BANNER) ||
-                FragmentBannerWebView.this.getArguments().getBoolean(EXTRA_OVERRIDE_URL, false)) {
+        if (getActivity() != null && getActivity().getApplication() != null) {
+            if (getActivity().getApplication() instanceof IDigitalModuleRouter && (((IDigitalModuleRouter) getActivity().getApplication())
+                        .isSupportedDelegateDeepLink(url))) {
+                    ((IDigitalModuleRouter) getActivity().getApplication())
+                            .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
+                    return true;
+            } else if (Uri.parse(url).getScheme().equalsIgnoreCase(Constants.APPLINK_CUSTOMER_SCHEME)) {
+                if (getActivity().getApplication() instanceof TkpdCoreRouter &&
+                        (((TkpdCoreRouter) getActivity().getApplication()).getApplinkUnsupported(getActivity()) != null)) {
 
-            if (((Uri.parse(url).getHost().contains("www.tokopedia.com"))
-                    || Uri.parse(url).getHost().contains("m.tokopedia.com"))
-                    && !url.endsWith(".pl")) {
-                switch ((DeepLinkChecker.getDeepLinkType(url))) {
-                    case DeepLinkChecker.CATEGORY:
-                        DeepLinkChecker.openCategory(url, getActivity());
-                        return true;
-                    case DeepLinkChecker.BROWSE:
-                        DeepLinkChecker.openBrowse(url, getActivity());
-                        return true;
-                    case DeepLinkChecker.HOT:
-                        DeepLinkChecker.openHot(url, getActivity());
-                        return true;
-                    case DeepLinkChecker.CATALOG:
-                        DeepLinkChecker.openCatalog(url, getActivity());
-                        return true;
-                    case DeepLinkChecker.PRODUCT:
-                        DeepLinkChecker.openProduct(url, getActivity());
-                        return true;
-                    case DeepLinkChecker.SHOP:
-                        ((BannerWebView) getActivity()).openShop(url);
-                        return true;
-                    case DeepLinkChecker.HOME:
-                        DeepLinkChecker.openHomepage(getActivity(), HomeRouter.INIT_STATE_FRAGMENT_HOME);
-                        return true;
-                    default:
-                        return false;
+                    ((TkpdCoreRouter) getActivity().getApplication())
+                            .getApplinkUnsupported(getActivity())
+                            .showAndCheckApplinkUnsupported();
+                    return true;
                 }
-            } else {
-                return false;
+            }
+        }
+
+
+        if (((Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.WEB_DOMAIN).getHost()))
+                || Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.MOBILE_DOMAIN).getHost()))
+                && !(Uri.parse(url).getLastPathSegment() != null && Uri.parse(url).getLastPathSegment().endsWith(".pl"))
+                && !url.contains("login")) {
+
+            if (FragmentBannerWebView.this.getArguments().getBoolean(EXTRA_OVERRIDE_URL, false)) {
+                String query = Uri.parse(url).getQueryParameter(LOGIN_TYPE);
+                if (query != null && query.equals(QUERY_PARAM_PLUS)) {
+                    Intent intent = OldSessionRouter.getLoginActivityIntent(getActivity());
+                    intent.putExtra("login", DownloadService.GOOGLE);
+                    intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+                    startActivityForResult(intent, LOGIN_GPLUS);
+                    return true;
+                }
+            }
+            switch ((DeepLinkChecker.getDeepLinkType(url))) {
+                case DeepLinkChecker.CATEGORY:
+                    DeepLinkChecker.openCategory(url, getActivity());
+                    return true;
+                case DeepLinkChecker.BROWSE:
+                    DeepLinkChecker.openBrowse(url, getActivity());
+                    return true;
+                case DeepLinkChecker.HOT:
+                    DeepLinkChecker.openHot(url, getActivity());
+                    return true;
+                case DeepLinkChecker.CATALOG:
+                    DeepLinkChecker.openCatalog(url, getActivity());
+                    return true;
+                case DeepLinkChecker.PRODUCT:
+                    DeepLinkChecker.openProduct(url, getActivity());
+                    return true;
+                case DeepLinkChecker.SHOP:
+                    ((BannerWebView) getActivity()).openShop(url);
+                    return true;
+                case DeepLinkChecker.HOME:
+                    DeepLinkChecker.openHomepage(getActivity(), HomeRouter.INIT_STATE_FRAGMENT_HOME);
+                    return true;
+                default:
+                    return false;
             }
         } else {
-            String query = Uri.parse(url).getQueryParameter(LOGIN_TYPE);
-            if( query != null && query.equals(QUERY_PARAM_PLUS)){
-                Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
-                intent.putExtra("login", DownloadService.GOOGLE);
-                intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-                startActivityForResult(intent, LOGIN_GPLUS);
-                return true;
-            }
             return false;
         }
+
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == LOGIN_GPLUS){
-            String historyUrl="";
+        if (requestCode == LOGIN_GPLUS) {
+            String historyUrl = "";
             WebBackForwardList mWebBackForwardList = webview.copyBackForwardList();
             if (mWebBackForwardList.getCurrentIndex() > 0)
-                historyUrl = mWebBackForwardList.getItemAtIndex(mWebBackForwardList.getCurrentIndex()-1).getUrl();
+                historyUrl = mWebBackForwardList.getItemAtIndex(mWebBackForwardList.getCurrentIndex() - 1).getUrl();
             if (!historyUrl.contains(SEAMLESS))
                 webview.loadAuthUrl(URLGenerator.generateURLSessionLogin(historyUrl, getActivity()));
             else {
@@ -223,7 +244,6 @@ public class FragmentBannerWebView extends Fragment {
         }
     }
 
-
     public WebView getWebview() {
         return webview;
     }
@@ -239,4 +259,5 @@ public class FragmentBannerWebView extends Fragment {
             webview.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
     }
+
 }

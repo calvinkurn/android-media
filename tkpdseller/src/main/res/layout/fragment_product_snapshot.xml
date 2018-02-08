@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/root_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/background_light">
+                android:id="@+id/root_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/background_light">
 
     <ScrollView
         android:id="@+id/main_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/view_buy"
-        android:layout_below="@+id/tv_ticker_gtm"
         android:background="@android:color/background_light">
 
         <LinearLayout
@@ -24,7 +22,7 @@
                 android:id="@id/view_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                android:orientation="vertical"/>
 
             <com.tokopedia.seller.opportunity.snapshot.customview.PictureView
                 android:id="@id/view_picture"
@@ -32,45 +30,36 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/margin_vs"
-                android:paddingTop="@dimen/margin_vs" />
+                android:paddingTop="@dimen/margin_vs"/>
 
             <ProgressBar
                 android:id="@id/view_progress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:visibility="gone" />
+                android:visibility="gone"/>
 
             <com.tokopedia.seller.opportunity.snapshot.customview.FreeReturnView
                 android:id="@+id/view_free_return"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"/>
 
             <com.tokopedia.seller.opportunity.snapshot.customview.DetailInfoView
                 android:id="@id/view_detail"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"/>
 
             <com.tokopedia.seller.opportunity.snapshot.customview.DescriptionView
                 android:id="@id/view_desc"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"/>
 
             <com.tokopedia.seller.opportunity.snapshot.customview.ShopInfoView
                 android:id="@id/view_shop_info"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"/>
 
         </LinearLayout>
     </ScrollView>
-
-    <com.tokopedia.seller.opportunity.snapshot.customview.ButtonView
-        android:id="@id/view_buy"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom"
-        android:orientation="horizontal"
-        android:visibility="visible" />
 
 </RelativeLayout>

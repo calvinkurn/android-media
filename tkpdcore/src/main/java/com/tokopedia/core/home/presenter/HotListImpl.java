@@ -2,21 +2,21 @@ package com.tokopedia.core.home.presenter;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.home.model.HotListModel;
 import com.tokopedia.core.home.model.HotListViewModel;
 import com.tokopedia.core.network.apiservices.search.HotListService;
-import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -83,14 +83,6 @@ public class HotListImpl implements HotList {
         }
         hotListView.initAdapter(data);
         hotListView.initLinLayManager();
-    }
-
-    @Override
-    public void setLocalyticFlow(Context context) {
-        if (context != null)
-            CommonUtils.dumper("LocalTag : hot list");
-        String screenName = context.getString(R.string.home_hot_list);
-        ScreenTracking.screenLoca(screenName);
     }
 
     @Override
@@ -340,32 +332,30 @@ public class HotListImpl implements HotList {
         if (temp == null) {
             throw new RuntimeException("invalid passing data !!! at " + HotListImpl.class.getSimpleName());
         }
-        urlParser = new URLParser(temp.getHotListProductUrl());
+        String url = temp.getHotListProductUrl();
+        urlParser = new URLParser(url);
         Log.d(TAG, "urlParser type " + urlParser.getType());
         switch (urlParser.getType()) {
             case HOT_KEY:
-                Bundle bundle = new Bundle();
-                bundle.putString(BrowseProductRouter.EXTRAS_DISCOVERY_ALIAS, urlParser.getHotAlias());
-                bundle.putString(BrowseProductRouter.EXTRA_SOURCE, BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT);
-                hotListView.moveToOtherActivity(bundle);
+                hotListView.openHotlistActivity(temp.getHotListProductUrl());
                 break;
             case CATALOG_KEY:
-                hotListView.moveToOtherActivity(
+                hotListView.startIntentActivity(
                         DetailProductRouter.getCatalogDetailActivity(mContext, urlParser.getHotAlias()));
                 break;
-            default:
-                bundle = new Bundle();
-                bundle.putString(BrowseProductRouter.DEPARTMENT_ID,
-                        urlParser.getDepIDfromURI(mContext));
-
-                bundle.putInt(BrowseProductRouter.FRAGMENT_ID,
-                        BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
-
-                bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_HOTLIST);
-                bundle.putString(BrowseProductRouter.EXTRA_SOURCE, BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY);
-                hotListView.moveToOtherActivity(bundle);
-
+            case TOPPICKS_KEY:
+                if (!TextUtils.isEmpty(url)) {
+                    hotListView.startIntentActivity(TopPicksWebView.newInstance(mContext, url));
+                }
                 break;
+            case CATEGORY:
+                hotListView.openCategory(url);
+                break;
+            case SEARCH:
+                hotListView.openSearch(url);
+                break;
+            default:
+                throw new RuntimeException("dont know yet: " + url);
         }
     }
 

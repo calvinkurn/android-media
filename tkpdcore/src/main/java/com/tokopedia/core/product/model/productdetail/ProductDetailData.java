@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
+import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +44,13 @@ public class ProductDetailData implements Parcelable{
     @SerializedName("product_images")
     @Expose
     private List<ProductImage> productImages = new ArrayList<ProductImage>();
+    /**
+     * this is not supposed to be here
+     * because it is ViewModel
+     * but because this pojo used in the view
+     */
+    private LatestTalkViewModel latestTalkViewModel;
+    private List<Review> reviewList;
 
     public ProductDetailData() {
     }
@@ -119,79 +128,21 @@ public class ProductDetailData implements Parcelable{
         this.productImages = productImages;
     }
 
-    protected ProductDetailData(Parcel in) {
-        info = (ProductInfo) in.readValue(ProductInfo.class.getClassLoader());
-        statistic = (ProductStatistic) in.readValue(ProductStatistic.class.getClassLoader());
-        shopInfo = (ProductShopInfo) in.readValue(ProductShopInfo.class.getClassLoader());
-        if (in.readByte() == 0x01) {
-            wholesalePrice = new ArrayList<ProductWholesalePrice>();
-            in.readList(wholesalePrice, ProductWholesalePrice.class.getClassLoader());
-        } else {
-            wholesalePrice = null;
-        }
-        if (in.readByte() == 0x01) {
-            breadcrumb = new ArrayList<ProductBreadcrumb>();
-            in.readList(breadcrumb, ProductBreadcrumb.class.getClassLoader());
-        } else {
-            breadcrumb = null;
-        }
-        rating = (ProductRating) in.readValue(ProductRating.class.getClassLoader());
-        preOrder = (ProductPreOrder) in.readValue(ProductPreOrder.class.getClassLoader());
-        cashBack = (ProductCashback) in.readValue(ProductCashback.class.getClassLoader());
-        if (in.readByte() == 0x01) {
-            productImages = new ArrayList<ProductImage>();
-            in.readList(productImages, ProductImage.class.getClassLoader());
-        } else {
-            productImages = null;
-        }
+    public void setLatestTalkViewModel(LatestTalkViewModel latestTalkViewModel) {
+        this.latestTalkViewModel = latestTalkViewModel;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public LatestTalkViewModel getLatestTalkViewModel() {
+        return latestTalkViewModel;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(info);
-        dest.writeValue(statistic);
-        dest.writeValue(shopInfo);
-        if (wholesalePrice == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(wholesalePrice);
-        }
-        if (breadcrumb == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(breadcrumb);
-        }
-        dest.writeValue(rating);
-        dest.writeValue(preOrder);
-        dest.writeValue(cashBack);
-        if (productImages == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(productImages);
-        }
+    public List<Review> getReviewList() {
+        return reviewList;
     }
 
-    @SuppressWarnings("unused")
-    public static final Creator<ProductDetailData> CREATOR = new Creator<ProductDetailData>() {
-        @Override
-        public ProductDetailData createFromParcel(Parcel in) {
-            return new ProductDetailData(in);
-        }
-
-        @Override
-        public ProductDetailData[] newArray(int size) {
-            return new ProductDetailData[size];
-        }
-    };
-
+    public void setReviewList(List<Review> reviewList) {
+        this.reviewList = reviewList;
+    }
 
     public static class Builder {
         private ProductInfo info;
@@ -267,4 +218,50 @@ public class ProductDetailData implements Parcelable{
             return productDetailData;
         }
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(this.info, flags);
+        dest.writeParcelable(this.statistic, flags);
+        dest.writeParcelable(this.shopInfo, flags);
+        dest.writeTypedList(this.wholesalePrice);
+        dest.writeTypedList(this.breadcrumb);
+        dest.writeParcelable(this.rating, flags);
+        dest.writeParcelable(this.preOrder, flags);
+        dest.writeParcelable(this.cashBack, flags);
+        dest.writeTypedList(this.productImages);
+        dest.writeParcelable(this.latestTalkViewModel, flags);
+        dest.writeTypedList(this.reviewList);
+    }
+
+    protected ProductDetailData(Parcel in) {
+        this.info = in.readParcelable(ProductInfo.class.getClassLoader());
+        this.statistic = in.readParcelable(ProductStatistic.class.getClassLoader());
+        this.shopInfo = in.readParcelable(ProductShopInfo.class.getClassLoader());
+        this.wholesalePrice = in.createTypedArrayList(ProductWholesalePrice.CREATOR);
+        this.breadcrumb = in.createTypedArrayList(ProductBreadcrumb.CREATOR);
+        this.rating = in.readParcelable(ProductRating.class.getClassLoader());
+        this.preOrder = in.readParcelable(ProductPreOrder.class.getClassLoader());
+        this.cashBack = in.readParcelable(ProductCashback.class.getClassLoader());
+        this.productImages = in.createTypedArrayList(ProductImage.CREATOR);
+        this.latestTalkViewModel = in.readParcelable(LatestTalkViewModel.class.getClassLoader());
+        this.reviewList = in.createTypedArrayList(Review.CREATOR);
+    }
+
+    public static final Creator<ProductDetailData> CREATOR = new Creator<ProductDetailData>() {
+        @Override
+        public ProductDetailData createFromParcel(Parcel source) {
+            return new ProductDetailData(source);
+        }
+
+        @Override
+        public ProductDetailData[] newArray(int size) {
+            return new ProductDetailData[size];
+        }
+    };
 }

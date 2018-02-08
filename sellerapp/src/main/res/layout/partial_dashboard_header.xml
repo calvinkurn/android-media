@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:divider="@drawable/bg_line_separator"
+    android:orientation="vertical"
+    android:showDividers="middle">
+
+    <LinearLayout
+        android:id="@+id/label_layout_header"
+        style="@style/LabelLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:layout_width="@dimen/dashboard_icon_shop_height"
+                android:layout_height="@dimen/dashboard_icon_shop_height"
+                android:background="@drawable/bg_rect_gray_round">
+
+                <ImageView
+                    android:id="@+id/image_view_shop_icon"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="1dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_placeholder_shop_with_padding"/>
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_rect_stroke_light_gray" />
+
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginRight="@dimen/margin_small"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/text_view_shop_name"
+                    style="@style/TextView.Title.Bold"
+                    tools:text="Toko Kelontong Indonesia" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_ms">
+
+                    <ImageView
+                        android:id="@+id/image_view_gm_icon"
+                        android:layout_width="@dimen/image_width_xxs"
+                        android:layout_height="@dimen/image_width_xxs"
+                        android:layout_gravity="center_vertical"
+                        android:visibility="gone"
+                        android:src="@drawable/ic_shop_gold"
+                        android:layout_marginRight="@dimen/margin_vs"
+                        android:layout_marginEnd="@dimen/margin_vs"
+                        tools:visibility="visible" />
+
+                    <TextView
+                        android:id="@+id/text_view_gm_status"
+                        style="@style/TextView.Small"
+                        android:layout_gravity="center_vertical"
+                        tools:text="Regular Merchant" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/iv_setting"
+                android:layout_width="@dimen/image_width_xs"
+                android:layout_height="@dimen/image_width_xs"
+                android:layout_gravity="top"
+                android:layout_marginTop="@dimen/margin_ms"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:src="@drawable/icon_setting" />
+        </LinearLayout>
+
+        <com.tokopedia.sellerapp.dashboard.view.widget.ShopWarningTickerView
+            android:id="@+id/shop_warning_ticker_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
+    </LinearLayout>
+
+
+    <com.tokopedia.seller.shopscore.view.widget.ShopScoreWidget
+        android:id="@+id/shop_score_widget"
+        style="@style/LabelLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dashboard_widget_height"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            style="@style/LabelLayout"
+            android:id="@+id/reputation_label_layout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground">
+
+            <TextView
+                style="@style/TextView.Small.Bold.BlackSecondary"
+                android:text="@string/shop_reputation" />
+
+            <com.tokopedia.design.reputation.ShopReputationView
+                android:id="@+id/shop_reputation_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"/>
+
+            <TextView
+                android:id="@+id/text_view_reputation_point"
+                style="@style/TextView.Micro.BlackDisabled"
+                android:layout_marginTop="@dimen/margin_vs"
+                android:text="@string/label_empty_value"
+                tools:text="50.000 poin"/>
+        </LinearLayout>
+
+        <include layout="@layout/partial_separator_vertical" />
+
+        <LinearLayout
+            style="@style/LabelLayout"
+            android:id="@+id/transaction_label_layout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground">
+
+            <TextView
+                style="@style/TextView.Small.Bold.BlackSecondary"
+                android:text="@string/transaction_success" />
+
+            <TextView
+                android:id="@+id/text_view_transaction_success"
+                style="@style/TextView.Headline"
+                android:text="@string/label_empty_value"
+                tools:text="80%"/>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

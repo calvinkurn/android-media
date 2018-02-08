@@ -4,35 +4,34 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
+import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.view.Outlet;
 import com.tokopedia.posapp.view.Shop;
-import com.tokopedia.posapp.view.activity.ProductDetailActivity;
+import com.tokopedia.posapp.view.activity.ProductListActivity;
 import com.tokopedia.posapp.view.adapter.OutletAdapter;
 import com.tokopedia.posapp.di.component.DaggerOutletComponent;
 import com.tokopedia.posapp.view.presenter.OutletPresenter;
 import com.tokopedia.posapp.view.presenter.ShopPresenter;
+import com.tokopedia.posapp.view.viewmodel.outlet.OutletItemViewModel;
 import com.tokopedia.posapp.view.viewmodel.outlet.OutletViewModel;
 import com.tokopedia.posapp.view.viewmodel.shop.ShopViewModel;
+import com.tokopedia.posapp.view.widget.PosAlertDialog;
 
 import javax.inject.Inject;
-
-import static com.tokopedia.posapp.view.fragment.ProductDetailFragment.PRODUCT_PASS;
 
 /**
  * Created by okasurya on 7/31/17.
@@ -43,15 +42,15 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View, S
     private TextView textShopName;
     private EditText editSearchOutlet;
     private OutletAdapter adapter;
-
-    // TODO: 8/8/17 temporary
-    Button buttonPdp;
+    private GridLayoutManager gridLayoutManager;
 
     @Inject
     OutletPresenter outletPresenter;
 
     @Inject
     ShopPresenter shopPresenter;
+
+    private EndlessRecyclerviewListener scrollListener;
 
     public static OutletFragment createInstance(Bundle bundle) {
         OutletFragment fragment = new OutletFragment();
@@ -96,24 +95,32 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View, S
     }
 
     @Override
-    public void onOutletClicked(String outletId) {
-        new AlertDialog.Builder(getContext())
-                .setTitle(R.string.outlet_chooser_dialog_title)
-                .setMessage(R.string.outlet_chooser_dialog_message)
-                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+    public void onOutletClicked(final OutletItemViewModel outlet) {
+        new PosAlertDialog(getContext())
+                .setTitle(getString(R.string.outlet_chooser_dialog_title))
+                .setMessage(getString(R.string.outlet_chooser_dialog_message))
+                .setPositiveButton(getString(R.string.yes), new PosAlertDialog.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        // TODO: 8/18/17 navigate to product list screen
+                    public void onClick(DialogInterface dialogInterface) {
+                        setChosenOutlet(outlet);
+                        getActivity().startActivity(new Intent(getContext(), ProductListActivity.class));
+                        getActivity().finish();
                     }
                 })
-                .setNegativeButton(R.string.No, new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.No), new PosAlertDialog.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+                    public void onClick(DialogInterface dialogInterface) {
                         dialogInterface.dismiss();
                     }
                 })
                 .setCancelable(true)
+                .create()
                 .show();
+    }
+
+    private void setChosenOutlet(OutletItemViewModel outlet) {
+        PosSessionHandler.setOutletId(getContext(), outlet.getOutletId());
+        PosSessionHandler.setOutletName(getContext(), outlet.getOutletName());
     }
 
     @Override
@@ -131,6 +138,7 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View, S
     public void onSuccessGetShop(ShopViewModel shop) {
         if(shop != null && shop.getShopInfo() != null && shop.getShopInfo().getShopName() != null) {
             textShopName.setText(shop.getShopInfo().getShopName());
+
         }
     }
 
@@ -165,34 +173,32 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View, S
         editSearchOutlet = parentView.findViewById(R.id.edit_search_outlet);
 
         adapter = new OutletAdapter(getContext(), this);
-        recyclerOutlet.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        gridLayoutManager = new GridLayoutManager(getContext(), 2);
+        recyclerOutlet.setLayoutManager(gridLayoutManager);
         recyclerOutlet.setAdapter(adapter);
+
+        scrollListener = new EndlessRecyclerviewListener(gridLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                outletPresenter.getNextOutlet(editSearchOutlet.getText().toString());
+            }
+        };
+
+        recyclerOutlet.addOnScrollListener(scrollListener);
 
         editSearchOutlet.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                submitQuery(editSearchOutlet.getText());
+                if (keyEvent != null && keyEvent.getAction() != KeyEvent.ACTION_DOWN) {
+                    return false;
+                } else if (i == EditorInfo.IME_ACTION_SEARCH
+                        || keyEvent == null
+                        || keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    outletPresenter.getOutlet(editSearchOutlet.getText().toString().trim());
+                    scrollListener.resetState();
+                }
                 return true;
             }
         });
-
-        buttonPdp = parentView.findViewById(R.id.button_pdp);
-        buttonPdp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getContext(), ProductDetailActivity.class);
-                ProductPass productPass = ProductPass.Builder.aProductPass()
-                        .setProductId(163209073)
-                        .build();
-                intent.putExtra(PRODUCT_PASS, productPass);
-                startActivity(intent);
-            }
-        });
-    }
-
-    private void submitQuery(CharSequence query) {
-        if (query != null && TextUtils.getTrimmedLength(query) > 0) {
-            outletPresenter.getOutlet(query.toString());
-        }
     }
 }

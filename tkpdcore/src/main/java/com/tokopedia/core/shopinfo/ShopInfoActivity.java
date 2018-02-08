@@ -12,7 +12,6 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -34,11 +33,13 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.R;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
@@ -47,12 +48,14 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
-import com.tokopedia.core.review.var.Const;
 import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.shopinfo.adapter.ShopTabPagerAdapter;
@@ -62,16 +65,19 @@ import com.tokopedia.core.shopinfo.fragment.OfficialShopHomeFragment;
 import com.tokopedia.core.shopinfo.fragment.ProductList;
 import com.tokopedia.core.shopinfo.models.GetShopProductParam;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.core.widgets.NonSwipeableViewPager;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
 
 import static com.tokopedia.core.router.InboxRouter.PARAM_OWNER_FULLNAME;
+import static com.tokopedia.core.shopinfo.models.shopmodel.Info.SHOP_OFFICIAL_VALUE;
 
 /**
  * Created by UNKNOWN on UNKNOWN DATE TIME
@@ -81,6 +87,7 @@ import static com.tokopedia.core.router.InboxRouter.PARAM_OWNER_FULLNAME;
 public class ShopInfoActivity extends BaseActivity
         implements OfficialShopHomeFragment.OfficialShopInteractionListener,
         ProductList.ProductListCallback {
+    private static final int FAVORITE_LOGIN_REQUEST_CODE = 1020;
 
     public static final String SHOP_STATUS_IS_FAVORITED = "shopIsFavorited";
     public static final String FAVORITE_STATUS_UPDATED = "favoriteStatusUpdated";
@@ -99,7 +106,7 @@ public class ShopInfoActivity extends BaseActivity
     public final static int NAVIGATION_TO_INFO = 6;
 
     private class ViewHolder {
-        ViewPager pager;
+        NonSwipeableViewPager pager;
         TabLayout indicator;
         AppBarLayout appBarLayout;
         ImageView banner;
@@ -186,6 +193,13 @@ public class ShopInfoActivity extends BaseActivity
         return bundle;
     }
 
+    public static Intent getCallingIntent(Context context, String shopId) {
+        Bundle bundle = ShopInfoActivity.createBundle(shopId, "");
+        Intent intent = new Intent(context, ShopInfoActivity.class);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
     @DeepLink(Constants.Applinks.SHOP)
     public static Intent getCallingIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
@@ -198,6 +212,7 @@ public class ShopInfoActivity extends BaseActivity
     @DeepLink(Constants.Applinks.SHOP_ETALASE)
     public static Intent getCallingIntentEtalaseSelected(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+
         return new Intent(context, ShopInfoActivity.class)
                 .setData(uri.build())
                 .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_ETALASE)
@@ -258,15 +273,12 @@ public class ShopInfoActivity extends BaseActivity
 //                updateView();
             }
         }
-
-        sendEventLoca();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         registerReceiver(loginReceiver, new IntentFilter(LOGIN_ACTION));
-        sendNotifLocalyticsCallback();
     }
 
 
@@ -311,7 +323,7 @@ public class ShopInfoActivity extends BaseActivity
 
     @Override
     public boolean isOfficialStore() {
-        if(shopModel != null && shopModel.info != null) {
+        if (shopModel != null && shopModel.info != null) {
             return shopModel.info.shopIsOfficial == 1;
         }
 
@@ -333,6 +345,18 @@ public class ShopInfoActivity extends BaseActivity
         return new ActionShopInfoRetrofit.OnActionToggleFavListener() {
             @Override
             public void onSuccess() {
+                TrackingUtils.sendMoEngageFavoriteEvent(shopModel);
+                if (shopModel.info.shopAlreadyFavorited == 1) {
+                    if (getApplication() instanceof IReactNativeRouter) {
+                        IReactNativeRouter reactNativeRouter = (IReactNativeRouter) getApplication();
+                        reactNativeRouter.sendRemoveFavoriteEmitter(String.valueOf(shopModel.info.shopId), SessionHandler.getLoginID(ShopInfoActivity.this));
+                    }
+                } else {
+                    if (getApplication() instanceof IReactNativeRouter) {
+                        IReactNativeRouter reactNativeRouter = (IReactNativeRouter) getApplication();
+                        reactNativeRouter.sendAddFavoriteEmitter(String.valueOf(shopModel.info.shopId), SessionHandler.getLoginID(ShopInfoActivity.this));
+                    }
+                }
                 shopModel.info.shopAlreadyFavorited = (shopModel.info.shopAlreadyFavorited + 1) % 2;
                 updateIsFavoritedIntent(shopModel.info.shopAlreadyFavorited != 0);
                 setShopAlreadyFavorite();
@@ -348,6 +372,7 @@ public class ShopInfoActivity extends BaseActivity
         };
     }
 
+    @SuppressWarnings("Range")
     public void showToggleFavoriteSuccess(String shopName, boolean favorited) {
         String message;
         if (favorited) {
@@ -387,6 +412,7 @@ public class ShopInfoActivity extends BaseActivity
                 ShopInfoActivity.this.finish();
             }
 
+            @SuppressWarnings("Range")
             @Override
             public void onFailure() {
                 if (!checkIsShowingInitialData()) {
@@ -406,10 +432,7 @@ public class ShopInfoActivity extends BaseActivity
     }
 
     private boolean checkIsShowingInitialData() {
-        if (holder.shopName.getText().length() > 0)
-            return true;
-        else
-            return false;
+        return holder.shopName.getText().length() > 0;
     }
 
     private View.OnClickListener onRetryClick() {
@@ -474,7 +497,7 @@ public class ShopInfoActivity extends BaseActivity
 
     private void initView() {
         holder = new ViewHolder();
-        holder.pager = (ViewPager) findViewById(R.id.view_pager);
+        holder.pager = (NonSwipeableViewPager) findViewById(R.id.view_pager);
         holder.indicator = (TabLayout) findViewById(R.id.indicator);
         holder.banner = (ImageView) findViewById(R.id.banner);
         holder.shopName = (TextView) findViewById(R.id.shop_name);
@@ -514,13 +537,10 @@ public class ShopInfoActivity extends BaseActivity
     }
 
     private boolean isShopValid() {
-        if (shopModel != null &&
+        return shopModel != null &&
                 shopModel.info != null &&
                 shopModel.info.shopName != null &&
-                !TextUtils.isEmpty(shopModel.info.shopName)) {
-            return true;
-        }
-        return false;
+                !TextUtils.isEmpty(shopModel.info.shopName);
     }
 
     private void initInitialData() {
@@ -557,9 +577,13 @@ public class ShopInfoActivity extends BaseActivity
     private void updateView() throws Exception {
         facadeAction.setShopModel(shopModel);
         if (shopModel.info.shopIsOfficial == 1) {
-            adapter.initOfficialShop(shopModel);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                adapter.initOfficialShop(shopModel);
+            } else {
+                adapter.initRegularShop(shopModel);
+            }
         } else {
-            adapter.initRegularShop();
+            adapter.initRegularShop(shopModel);
         }
         for (String title : ShopTabPagerAdapter.TITLES)
             holder.indicator.addTab(holder.indicator.newTab().setText(title));
@@ -577,7 +601,11 @@ public class ShopInfoActivity extends BaseActivity
         ImageHandler.loadImageLucky2(this, holder.luckyShop, shopModel.info.shopLucky);
         setFreeReturn(holder, shopModel.info);
         holder.shopName.setText(MethodChecker.fromHtml(shopModel.info.shopName));
-        holder.location.setText(shopModel.info.shopLocation);
+        if (shopModel.info.shopIsOfficial == SHOP_OFFICIAL_VALUE) {
+            holder.location.setText(getResources().getString(R.string.authorized));
+        } else {
+            holder.location.setText(shopModel.info.shopLocation);
+        }
         holder.location.setVisibility(View.VISIBLE);
         holder.collapsingToolbarLayout.setTitle(" ");
         if (shopModel.info.shopIsOfficial == 1) {
@@ -598,33 +626,35 @@ public class ShopInfoActivity extends BaseActivity
             actionFirstLaunched(intent.getExtras());
         }
 
-        if(shopModel.info.shopIsOfficial==1){
-            ScreenTracking.eventOfficialStoreScreenAuth(shopModel.info.shopId,AppScreen.SCREEN_OFFICIAL_STORE);
+        if (shopModel.info.shopIsOfficial == 1) {
+            ScreenTracking.eventOfficialStoreScreenAuth(shopModel.info.shopId, AppScreen.SCREEN_OFFICIAL_STORE);
         }
 
         // switch to product tab if ETALASE_NAME not empty
-        if(intent.getStringExtra(ETALASE_NAME) != null) {
+        if (intent.getStringExtra(ETALASE_NAME) != null) {
             holder.pager.setCurrentItem(shopModel.info.shopIsOfficial == 1 ? 1 : 0, true);
         }
 
-        if(intent.getStringExtra(KEYWORD) != null) {
+        if (intent.getStringExtra(KEYWORD) != null) {
             ProductList productListFragment = (ProductList) adapter.getItem(shopModel.info.shopIsOfficial == 1 ? 1 : 0);
             productListFragment.refreshProductListByKeyword(getIntent().getStringExtra(KEYWORD));
 
             holder.pager.setCurrentItem(shopModel.info.shopIsOfficial == 1 ? 1 : 0, true);
         }
 
-        if(shopModel.info.shopIsOfficial==1){
-            ScreenTracking.eventOfficialStoreScreenAuth(shopModel.info.shopId,AppScreen.SCREEN_OFFICIAL_STORE);
+        if (shopModel.info.shopIsOfficial == 1) {
+            ScreenTracking.eventOfficialStoreScreenAuth(shopModel.info.shopId, AppScreen.SCREEN_OFFICIAL_STORE);
         }
     }
 
     private void setFreeReturn(ViewHolder holder, Info data) {
-        List<Badge> badges = data.badges;
-        for (int i = 0; i < badges.size(); i++) {
-            Badge badge = badges.get(i);
-            if (badge.getTitle().equals("Free Returns")) {
-                LuckyShopImage.loadImage(holder.freeReturns, badge.getImageUrl());
+        if (data.badges != null) {
+            List<Badge> badges = data.badges;
+            for (int i = 0; i < badges.size(); i++) {
+                Badge badge = badges.get(i);
+                if (badge.getTitle().equals("Free Returns")) {
+                    LuckyShopImage.loadImage(holder.freeReturns, badge.getImageUrl());
+                }
             }
         }
     }
@@ -733,15 +763,14 @@ public class ShopInfoActivity extends BaseActivity
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent shareIntent = new Intent(ShopInfoActivity.this, ShareActivity.class);
                 ShareData shareData = ShareData.Builder.aShareData()
                         .setType(ShareData.SHOP_TYPE)
                         .setName(getString(R.string.message_share_shop))
                         .setTextContent(compileShare())
                         .setUri(shopModel.info.shopUrl)
+                        .setId(shopModel.info.shopId)
                         .build();
-                shareIntent.putExtra(ShareData.TAG, shareData);
-                startActivity(shareIntent);
+                startActivity(ShareActivity.createIntent(ShopInfoActivity.this, shareData));
             }
         };
     }
@@ -802,8 +831,15 @@ public class ShopInfoActivity extends BaseActivity
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.favorite.startAnimation(animateFav);
-                facadeAction.actionToggleFav();
+                if (SessionHandler.isV4Login(ShopInfoActivity.this)) {
+                    holder.favorite.startAnimation(animateFav);
+                    facadeAction.actionToggleFav();
+                } else {
+                    Intent intent = OldSessionRouter.getLoginActivityIntent(ShopInfoActivity.this);
+                    intent.putExtra(Session.WHICH_FRAGMENT_KEY,
+                            TkpdState.DrawerPosition.LOGIN);
+                    startActivityForResult(intent, ShopInfoActivity.FAVORITE_LOGIN_REQUEST_CODE);
+                }
             }
         };
     }
@@ -827,14 +863,19 @@ public class ShopInfoActivity extends BaseActivity
         Intent intent;
         Bundle bundle = new Bundle();
         if (SessionHandler.isV4Login(this)) {
-            intent = InboxRouter.getSendMessageActivityIntent(ShopInfoActivity.this);
-            bundle.putString(InboxRouter.PARAM_SHOP_ID, shopModel.info.shopId);
-            bundle.putString(InboxRouter.PARAM_OWNER_FULLNAME, shopModel.info.shopName);
-            intent.putExtras(bundle);
-            startActivity(intent);
+            if (MainApplication.getAppContext() instanceof TkpdInboxRouter) {
+                UnifyTracking.eventShopSendChat();
+                intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+                        .getAskSellerIntent(this,
+                                shopModel.info.shopId,
+                                shopModel.info.shopName,
+                                TkpdInboxRouter.SHOP,
+                                shopModel.getInfo().getShopAvatar());
+                startActivity(intent);
+            }
         } else {
             bundle.putBoolean("login", true);
-            intent = SessionRouter.getLoginActivityIntent(this);
+            intent = OldSessionRouter.getLoginActivityIntent(this);
             intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
             bundle.putString(InboxRouter.PARAM_SHOP_ID, shopModel.info.shopId);
             bundle.putString(PARAM_OWNER_FULLNAME, shopModel.info.shopName);
@@ -867,24 +908,10 @@ public class ShopInfoActivity extends BaseActivity
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        sendNotifLocalyticsCallback();
-    }
-
-    private void sendNotifLocalyticsCallback() {
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            if (bundle.containsKey(AppEventTracking.LOCA.NOTIFICATION_BUNDLE)) {
-                TrackingUtils.eventLocaNotificationCallback(getIntent());
-            }
-        }
     }
 
     public void setToolbarCollapse() {
         holder.appBarLayout.setExpanded(false, true);
-    }
-
-    private void sendEventLoca() {
-        ScreenTracking.eventLoca(AppScreen.SCREEN_VIEWED_SHOP_PAGE);
     }
 
     @Override
@@ -916,7 +943,7 @@ public class ShopInfoActivity extends BaseActivity
                 }
             } else {
                 redirectionUrl = url;
-                Intent intent = SessionRouter.getLoginActivityIntent(this);
+                Intent intent = OldSessionRouter.getLoginActivityIntent(this);
                 intent.putExtra(Session.WHICH_FRAGMENT_KEY,
                         TkpdState.DrawerPosition.LOGIN);
                 startActivityForResult(intent, REQUEST_CODE_LOGIN);
@@ -969,8 +996,6 @@ public class ShopInfoActivity extends BaseActivity
                     holder.pager.setCurrentItem(0, true);
                     break;
                 case TAB_POSITION_ETALASE:
-                    ProductList productListFragment = (ProductList) adapter.getItem(1);
-                    productListFragment.setSelectedEtalase(extras.getString("etalase_id"));
                     holder.pager.setCurrentItem(1, true);
                     break;
                 case TAB_POSITION_TALK:
@@ -992,8 +1017,6 @@ public class ShopInfoActivity extends BaseActivity
             switch (extras.getInt(EXTRA_STATE_TAB_POSITION, 0)) {
                 case TAB_POSITION_HOME:
                 case TAB_POSITION_ETALASE:
-                    ProductList productListFragment = (ProductList) adapter.getItem(1);
-                    productListFragment.setSelectedEtalase(extras.getString("etalase_id"));
                     holder.pager.setCurrentItem(0, true);
                     break;
                 case TAB_POSITION_TALK:
@@ -1015,11 +1038,21 @@ public class ShopInfoActivity extends BaseActivity
 
     @Override
     public void onBackPressed() {
-        if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false)) {
-            startActivity(HomeRouter.getHomeActivity(this));
+        if (isTaskRoot() ||
+                (getIntent().getExtras() != null &&
+                        getIntent().getExtras().getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false))) {
+            Intent homeIntent = ((TkpdCoreRouter) getApplication()).getHomeIntent(this);
+            startActivity(homeIntent);
             finish();
         } else {
             super.onBackPressed();
         }
     }
+
+    public void swipeAble(boolean able) {
+        if (holder != null && holder.pager != null) {
+            holder.pager.setSwipeAble(able);
+        }
+    }
+
 }

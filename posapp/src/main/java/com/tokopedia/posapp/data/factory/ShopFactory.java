@@ -3,21 +3,30 @@ package com.tokopedia.posapp.data.factory;
 import com.tokopedia.posapp.data.mapper.GetShopMapper;
 import com.tokopedia.posapp.data.source.cloud.ShopCloudSource;
 import com.tokopedia.posapp.data.source.cloud.api.ShopApi;
+import com.tokopedia.posapp.data.source.local.ShopLocalSource;
+
+import javax.inject.Inject;
 
 /**
  * Created by okasurya on 8/3/17.
  */
 
 public class ShopFactory {
-    ShopApi shopApi;
-    GetShopMapper shopMapper;
+    private ShopApi shopApi;
+    private GetShopMapper shopMapper;
 
-    public ShopFactory(ShopApi shopApi, GetShopMapper shopMapper) {
+    @Inject
+    public ShopFactory(ShopApi shopApi,
+                       GetShopMapper shopMapper) {
         this.shopApi = shopApi;
         this.shopMapper = shopMapper;
     }
 
-    public ShopCloudSource getShopFromCloud() {
+    public ShopCloudSource cloud() {
         return new ShopCloudSource(shopApi, shopMapper);
+    }
+
+    public ShopLocalSource local() {
+        return new ShopLocalSource();
     }
 }

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/status_bar_separation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+        <View
+            android:id="@+id/view_shadow_gray"
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:background="@drawable/cover_shader_gray"/>
+
+        <RelativeLayout
+            android:id="@+id/bottom_sheet_selection"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:background="@android:color/white">
+
+            <TextView
+                android:id="@+id/bt_selection_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="13dp"
+                android:textColor="@color/font_black_primary_70"
+                android:textSize="14sp"/>
+
+            <TextView
+                style="@style/TextView.Micro.BlackDisabled"
+                android:id="@+id/bt_selection_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/bt_selection_number"
+                android:layout_below="@id/bt_selection_number"
+                android:layout_marginTop="3dp"
+                android:text="50 batas maksimum produk terpilih"
+                android:textStyle="italic"/>
+
+            <ImageView
+                android:id="@+id/image_bt_selection"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/margin_med"
+                android:layout_marginRight="@dimen/margin_med"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_arrow_up" />
+        </RelativeLayout>
+    </LinearLayout>
+
+
+    <FrameLayout
+        android:id="@+id/chips_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:tag="chips_container" />
+</LinearLayout>

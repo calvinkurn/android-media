@@ -3,8 +3,10 @@ package com.tokopedia.discovery.intermediary.view.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +16,14 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.intermediary.domain.model.HotListModel;
+import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
+import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +33,8 @@ import butterknife.ButterKnife;
 
 import static com.tokopedia.core.home.presenter.HotList.CATALOG_KEY;
 import static com.tokopedia.core.home.presenter.HotList.HOT_KEY;
+import static com.tokopedia.core.home.presenter.HotList.SEARCH;
+import static com.tokopedia.core.home.presenter.HotList.TOPPICKS_KEY;
 
 /**
  * Created by alifa on 3/30/17.
@@ -107,39 +114,60 @@ public class HotListItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             @Override
             public void onClick(View view) {
                 UnifyTracking.eventHotlistIntermediary(categoryId,hotListModel.getTitle());
-                URLParser urlParser = new URLParser(hotListModel.getUrl());
+                String url = hotListModel.getUrl();
+                URLParser urlParser = new URLParser(url);
                 switch (urlParser.getType()) {
                     case HOT_KEY:
-                        Bundle bundle = new Bundle();
-                        bundle.putString(BrowseProductRouter.EXTRAS_DISCOVERY_ALIAS, urlParser.getHotAlias());
-                        bundle.putString(BrowseProductRouter.EXTRA_SOURCE, BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT);
-                        moveToHotlistActivity(bundle,context);
+                        moveToHotlistActivity(hotListModel.getUrl() ,context);
                         break;
                     case CATALOG_KEY:
                         context.startActivity(
                                 DetailProductRouter.getCatalogDetailActivity(context, urlParser.getHotAlias()));
                         break;
+                    case TOPPICKS_KEY:
+                        if (!TextUtils.isEmpty(url)) {
+                            context.startActivity(TopPicksWebView.newInstance(context, url));
+                        }
+                        break;
+                    case SEARCH:
+                        moveToSearchActivity(hotListModel.getUrl(), context);
+                        break;
                     default:
-                        bundle = new Bundle();
-                        bundle.putString(BrowseProductRouter.DEPARTMENT_ID,
-                                urlParser.getDepIDfromURI(context));
-
-                        bundle.putInt(BrowseProductRouter.FRAGMENT_ID,
-                                BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
-
-                        bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_HOTLIST);
-                        bundle.putString(BrowseProductRouter.EXTRA_SOURCE, BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY);
-                        moveToHotlistActivity(bundle,context);
+                        CategoryActivity.moveTo(
+                                context,
+                                url
+                        );
                         break;
                 }
             }
         });
     }
 
-    private void moveToHotlistActivity(Bundle bundle, Context context) {
-        Intent intent = BrowseProductRouter.getDefaultBrowseIntent(context);
+    private void moveToSearchActivity(String url, Context context) {
+        Uri uriData = Uri.parse(url);
+        Bundle bundle = new Bundle();
+
+        String departmentId = uriData.getQueryParameter("sc");
+        String searchQuery = uriData.getQueryParameter("q");
+
+        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, departmentId);
+        bundle.putString(BrowseProductRouter.EXTRAS_SEARCH_TERM, searchQuery);
+
+        Intent intent = BrowseProductRouter.getSearchProductIntent(context);
         intent.putExtras(bundle);
+
         context.startActivity(intent);
+    }
+
+    private void moveToCategoryActivity(String departmentId, Context context) {
+        Intent intent = BrowseProductRouter.getIntermediaryIntent(context,departmentId);
+        context.startActivity(intent);
+    }
+
+    private void moveToHotlistActivity(String url, Context context) {
+        context.startActivity(
+                BrowseProductRouter.getHotlistIntent(context, url)
+        );
     }
 
     @Override

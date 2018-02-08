@@ -73,14 +73,17 @@ public interface PlaceAutoCompleteContract {
         void showClearButton();
 
         void hideClearButton();
+
+        void showErrorNoInternetConnectionMessage(String message);
+
+        void sendAutoDetectGAEvent(PlacePassViewModel placePassViewModel);
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void initialize();
 
         void actionGetUserAddressesFromCache();
-
-        void actionGetPeopleAddresses(boolean isLoadMore);
 
         void actionGetUserAddresses(boolean isLoadMore);
 

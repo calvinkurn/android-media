@@ -1,0 +1,9 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:drawable="@drawable/chevron_thin_down"
+        android:width="11.2dp"
+        android:height="5.6dp"
+        />
+
+</layer-list >

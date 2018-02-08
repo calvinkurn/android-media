@@ -4,7 +4,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.posapp.data.factory.ProductFactory;
-import com.tokopedia.posapp.domain.model.product.ProductDomain;
+import com.tokopedia.posapp.domain.model.DataStatus;
+import com.tokopedia.posapp.domain.model.product.ProductListDomain;
 
 import rx.Observable;
 
@@ -21,11 +22,21 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public Observable<ProductDetailData> getProduct(RequestParams requestParams) {
-        return productFactory.productFromCloud().getProduct(requestParams);
+        return productFactory.cloud().getProduct(requestParams);
+    }
+
+    @Override
+    public Observable<ProductListDomain> getProductList(RequestParams requestParams) {
+        return productFactory.cloudGateway().getProductList(requestParams);
     }
 
     @Override
     public Observable<ProductCampaign> getProductCampaign(RequestParams requestParams) {
-        return productFactory.productFromCloud().getProductCampaign(requestParams);
+        return productFactory.cloud().getProductCampaign(requestParams);
+    }
+
+    @Override
+    public Observable<DataStatus> storeProductToCache(ProductListDomain productListDomain) {
+        return productFactory.local().storeProduct(productListDomain);
     }
 }

@@ -15,11 +15,10 @@
 
     <ImageView
         android:id="@+id/btn_overflow"
-        android:layout_width="@dimen/user_ava"
-        android:layout_height="@dimen/user_ava"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:background="@drawable/overflow_selected"
-        android:padding="@dimen/padding_vs"
         android:src="@drawable/ic_new_action_overflow_black" />
 
     <TextView

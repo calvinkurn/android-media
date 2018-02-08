@@ -9,15 +9,20 @@ import com.tokopedia.core.R;
 /**
  * Created by ricoharisin on 6/2/16.
  */
+@Deprecated
 public class SnackbarRetry {
 
     private Boolean isRetryClicked;
     private Snackbar snackBar;
 
     public SnackbarRetry(Snackbar snackbar, final NetworkErrorHelper.RetryClickedListener listener) {
+        this(snackbar, snackbar.getContext().getString(R.string.title_try_again), listener);
+    }
+
+    public SnackbarRetry(Snackbar snackbar, String actionText, final NetworkErrorHelper.RetryClickedListener listener) {
         isRetryClicked = true;
         this.snackBar = snackbar;
-        snackBar.setAction(R.string.title_try_again, new View.OnClickListener() {
+        snackBar.setAction(actionText, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 isRetryClicked = true;

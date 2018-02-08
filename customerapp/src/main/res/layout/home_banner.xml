@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.tkpd.home.banner.ConvenientBanner xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/bannerViewPager"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content" />
+<com.tokopedia.design.banner.BannerView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/banner"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="-1dp" />

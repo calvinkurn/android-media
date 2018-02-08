@@ -5,7 +5,7 @@ package com.tokopedia.topads.sdk.network;
  */
 
 public enum HttpMethod {
-	GET("GET"), POST("POST");
+	GET("GET"), POST("POST"), POST_RAW("POST_RAW");
 
 	private String description;
 

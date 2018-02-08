@@ -31,11 +31,12 @@ import java.util.List;
  * @author by errysuprayogi on 4/13/17.
  */
 
-public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implements View.OnClickListener {
+public class
+TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implements View.OnClickListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_ads;
-    private View container;
+    private LinearLayout container;
     private static final String TAG = TopAdsViewHolder.class.getSimpleName();
     private RecyclerView recyclerView;
     private AdsItemAdapter adapter;
@@ -58,7 +59,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
                 GridLayoutManager.VERTICAL, false);
         linearLayoutManager = new LinearLayoutManager(context);
         itemView.findViewById(R.id.info_topads).setOnClickListener(this);
-        container = itemView.findViewById(R.id.root);
+        container = (LinearLayout) itemView.findViewById(R.id.root);
         adapter = new AdsItemAdapter(context);
         adapter.setItemClickListener(itemClickListener);
         recyclerView.setLayoutManager(gridLayoutManager);
@@ -112,14 +113,26 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
                 RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) container.getLayoutParams();
                 params.setMargins(0, params.topMargin, 0, 0);
                 container.setLayoutParams(params);
+                recyclerView.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent));
                 break;
             case GRID:
+                removeHeader();
                 recyclerView.setLayoutManager(gridLayoutManager);
+                recyclerView.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
                 break;
             case LIST:
+                removeHeader();
                 recyclerView.setLayoutManager(linearLayoutManager);
+                recyclerView.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
                 break;
         }
+    }
+
+    private void removeHeader() {
+        adsHeader.setVisibility(View.GONE);
+        RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) container.getLayoutParams();
+        params.setMargins(0, 0, 0, 0);
+        container.setLayoutParams(params);
     }
 
     public void setClickListener(TopAdsInfoClickListener adsInfoClickListener) {

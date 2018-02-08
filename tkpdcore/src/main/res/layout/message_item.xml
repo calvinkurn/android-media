@@ -1,0 +1,162 @@
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:id="@+id/section"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/new_margin_med"
+        android:paddingTop="@dimen/margin_small_sm"
+        android:paddingBottom="@dimen/margin_small_sm"
+        android:background="@color/white"
+        tools:text="1 pengguna ditemukan"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/text_size_xsmall"/>
+
+    <RelativeLayout
+        android:id="@id/main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingTop="@dimen/new_margin_med"
+        android:paddingLeft="@dimen/new_margin_med"
+        >
+
+        <ImageView
+            android:id="@id/user_ava"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/ic_image_avatar_boy"
+            />
+
+        <ImageView
+            android:id="@+id/checked"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_selected_chat_check"
+            android:layout_alignBottom="@+id/user_ava"
+            android:layout_alignRight="@+id/user_ava"
+            android:layout_alignEnd="@+id/user_ava" />
+
+        <TextView
+            android:id="@id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:textSize="@dimen/text_size_xsmall"
+            tools:text="12:30"
+            android:textColor="@color/black_38"
+            android:layout_marginRight="@dimen/new_margin_med"/>
+
+        <LinearLayout
+            android:id="@+id/head"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/user_ava"
+            android:layout_toRightOf="@+id/user_ava"
+            android:layout_toLeftOf="@id/time"
+            android:layout_toStartOf="@id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginStart="12dp">
+
+            <TextView
+                android:id="@+id/user_name"
+                android:maxWidth="200dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="3dp"
+                android:fontFamily="sans-serif-medium"
+                android:lineSpacingExtra="8sp"
+                android:maxLines="1"
+                android:scrollbars="horizontal"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/text_size_l_medium"
+                android:textStyle="normal"
+                tools:text="Steven Frediannnnjnjnjnjnjnnjn"
+                android:singleLine="true"
+                android:fadingEdge="horizontal"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                />
+
+            <TextView
+                android:id="@+id/label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:ellipsize="end"
+                android:background="@drawable/label_user_chat"
+                android:textColor="@color/medium_green"
+                android:textSize="9sp"
+                tools:text="Penjual"
+                android:layout_marginLeft="7dp"
+                android:layout_marginStart="7dp"
+                android:maxLines="1"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/head"
+            android:layout_alignLeft="@+id/head"
+            android:layout_alignRight="@+id/head"
+            android:layout_alignStart="@+id/head"
+            android:layout_below="@+id/head"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="7sp"
+            android:singleLine="true"
+            android:textColor="@color/black_54"
+            android:textSize="13sp"
+            android:textStyle="normal"
+            tools:text="Barang sudah saya kirim balBarang sudah saya kirim balik y..." />
+
+        <TextView
+            android:id="@+id/counter_unread"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:minWidth="5dp"
+            android:minHeight="5dp"
+            android:background="@drawable/circle_green"
+            android:gravity="center"
+            android:text="22"
+            android:textSize="12sp"
+            android:textColor="@color/tkpd_main_green"
+            android:layout_alignBaseline="@+id/message"
+            android:layout_alignBottom="@+id/message"
+            android:layout_alignRight="@+id/time"
+            android:layout_alignEnd="@+id/time" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/user_ava"
+            android:background="#0c000000"
+            android:layout_marginTop="@dimen/new_margin_med"
+            android:minHeight="1dp"
+            android:layout_alignLeft="@+id/message"
+            android:layout_alignStart="@+id/message" />
+
+    </RelativeLayout>
+
+</LinearLayout>

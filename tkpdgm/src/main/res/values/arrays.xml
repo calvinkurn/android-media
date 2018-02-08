@@ -1,0 +1,28 @@
+<resources>
+
+    <string-array name="gm_stat_gender">
+        <item>Pria</item>
+        <item>Wanita</item>
+    </string-array>
+
+    <string-array name="lib_gm_stat_transaction_entries">
+        <item>Jumlah Transaksi</item>
+        <item>Pendapatan Kotor</item>
+        <item>Pendapatan Bersih</item>
+        <item>Nominal Ditolak</item>
+        <item>Ongkos Kirim</item>
+        <item>Transaksi Sukses</item>
+        <item>Transaksi Ditolak</item>
+    </string-array>
+
+    <string-array name="gm_stat_sort_by">
+        <item>Transaksi Sukses</item>
+        <item>Pendapatan Bersih</item>
+    </string-array>
+
+    <string-array name="gm_stat_sort_type">
+        <item>Nilai Tertinggi</item>
+        <item>Nilai Terendah</item>
+    </string-array>
+
+</resources>

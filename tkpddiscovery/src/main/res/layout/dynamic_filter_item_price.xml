@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:padding="@dimen/dynamic_filter_item_padding">
+
+    <com.tokopedia.design.price.PriceRangeInputView
+        android:id="@+id/price_range_input_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:id="@+id/wholesale_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="27dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/wholesale_title"
+            style="@style/TextView.Title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/wholesale_toggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:thumbTint="@color/switch_thumb_color_state"
+            app:trackTint="@color/switch_track_color_state"/>
+
+    </LinearLayout>
+
+</LinearLayout>

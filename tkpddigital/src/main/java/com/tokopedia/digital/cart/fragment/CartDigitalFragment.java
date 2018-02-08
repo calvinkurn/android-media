@@ -11,30 +11,33 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.apprating.AdvancedAppRatingDialog;
+import com.tokopedia.core.apprating.AppRatingDialog;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.cart.activity.InstantCheckoutActivity;
 import com.tokopedia.digital.cart.activity.OtpVerificationActivity;
 import com.tokopedia.digital.cart.compoundview.CheckoutHolderView;
 import com.tokopedia.digital.cart.compoundview.InputPriceHolderView;
 import com.tokopedia.digital.cart.compoundview.ItemCartHolderView;
-import com.tokopedia.digital.cart.compoundview.VoucherCartHolderView;
 import com.tokopedia.digital.cart.data.mapper.CartMapperData;
 import com.tokopedia.digital.cart.data.mapper.ICartMapperData;
 import com.tokopedia.digital.cart.domain.CartDigitalRepository;
@@ -47,11 +50,13 @@ import com.tokopedia.digital.cart.model.CheckoutDataParameter;
 import com.tokopedia.digital.cart.model.CheckoutDigitalData;
 import com.tokopedia.digital.cart.model.InstantCheckoutData;
 import com.tokopedia.digital.cart.model.UserInputPriceDigital;
+import com.tokopedia.digital.cart.model.VoucherAttributeDigital;
 import com.tokopedia.digital.cart.model.VoucherDigital;
 import com.tokopedia.digital.cart.presenter.CartDigitalPresenter;
 import com.tokopedia.digital.cart.presenter.ICartDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
+import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 
@@ -65,7 +70,7 @@ import rx.subscriptions.CompositeSubscription;
 
 public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPresenter> implements
         IDigitalCartView, CheckoutHolderView.IAction,
-        InputPriceHolderView.ActionListener, VoucherCartHolderView.ActionListener {
+        InputPriceHolderView.ActionListener, VoucherCartHachikoView.ActionListener {
 
     private static final String TAG = CartDigitalFragment.class.getSimpleName();
     private static final String ARG_CART_DIGITAL_DATA_PASS = "ARG_CART_DIGITAL_DATA_PASS";
@@ -79,12 +84,14 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     private static final String EXTRA_STATE_CHECKOUT_PASS_DATA =
             "EXTRA_STATE_CHECKOUT_PASS_DATA";
 
+    private final int COUPON_ACTIVE = 1;
+
     @BindView(R2.id.checkout_cart_holder_view)
     CheckoutHolderView checkoutHolderView;
     @BindView(R2.id.item_cart_holder_view)
     ItemCartHolderView itemCartHolderView;
     @BindView(R2.id.voucher_cart_holder_view)
-    VoucherCartHolderView voucherCartHolderView;
+    VoucherCartHachikoView voucherCartHachikoView;
     @BindView(R2.id.pb_main_loading)
     ProgressBar pbMainLoading;
     @BindView(R2.id.nsv_container)
@@ -194,7 +201,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     protected void initialVar() {
         checkoutDataBuilder = new CheckoutDataParameter.Builder();
         inputPriceHolderView.setActionListener(this);
-        voucherCartHolderView.setActionListener(this);
+        voucherCartHachikoView.setActionListener(this);
         sessionHandler = new SessionHandler(getActivity());
         progressDialogNormal = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
         progressDialogNormal.setCancelable(false);
@@ -204,7 +211,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     protected void setActionVar() {
 
     }
-
 
     @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
@@ -283,7 +289,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @OnClick(R2.id.btn_next)
     void actionNext() {
-        presenter.processGetCartData();
+        presenter.processGetCartData(passData.getCategoryId());
     }
 
     @Override
@@ -295,12 +301,29 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     private void renderCartInfo(CartDigitalInfoData cartDigitalInfoData) {
         buildCheckoutData(cartDigitalInfoData);
         actionListener.setTitleCart(cartDigitalInfoData.getTitle());
-        voucherCartHolderView.setVisibility(
-                cartDigitalInfoData.getAttributes().isEnableVoucher() ? View.VISIBLE : View.GONE
-        );
-        voucherCartHolderView.renderVoucherAutoCode(
-                cartDigitalInfoData.getAttributes().getVoucherAutoCode()
-        );
+        if (GlobalConfig.isSellerApp()) {
+            voucherCartHachikoView.setVisibility(View.GONE);
+        } else {
+            if (cartDigitalInfoData.getAttributes().isEnableVoucher()) {
+                voucherCartHachikoView.setVisibility(View.VISIBLE);
+                if (cartDigitalInfoData.getAttributes().isCouponActive() == COUPON_ACTIVE) {
+                    voucherCartHachikoView.setPromoAndCouponLabel();
+                } else {
+                    voucherCartHachikoView.setPromoLabelOnly();
+                }
+            } else {
+                voucherCartHachikoView.setVisibility(View.GONE);
+            }
+
+            UnifyTracking.eventClickVoucher(cartDigitalInfoDataState.getAttributes().getCategoryName(),
+                    cartDigitalInfoData.getAttributes().getVoucherAutoCode(),
+                    cartDigitalInfoDataState.getAttributes().getOperatorName());
+
+            if (cartDigitalInfoData.getAttributes().isEnableVoucher() &&
+                    !TextUtils.isEmpty(cartDigitalInfoData.getAttributes().getVoucherAutoCode())) {
+                presenter.processCheckVoucher(cartDigitalInfoData.getAttributes().getVoucherAutoCode(), passData.getCategoryId());
+            }
+        }
         itemCartHolderView.renderAdditionalInfo(cartDigitalInfoData.getAdditionalInfos());
         itemCartHolderView.renderDataMainInfo(cartDigitalInfoData.getMainInfo());
         itemCartHolderView.setCategoryName(cartDigitalInfoData.getAttributes().getCategoryName());
@@ -315,15 +338,17 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                 cartDigitalInfoData.getAttributes().getPricePlain()
         );
         if (voucherDigitalState != null) {
-            voucherCartHolderView.setUsedVoucher(
+            voucherCartHachikoView.setVoucher(
                     voucherDigitalState.getAttributeVoucher().getVoucherCode(),
                     voucherDigitalState.getAttributeVoucher().getMessage()
             );
-            checkoutHolderView.enableVoucherDiscount(
-                    voucherDigitalState.getAttributeVoucher().getDiscountAmountPlain()
-            );
+            if (voucherDigitalState.getAttributeVoucher().getDiscountAmountPlain() > 0) {
+                checkoutHolderView.enableVoucherDiscount(
+                        voucherDigitalState.getAttributeVoucher().getDiscountAmountPlain()
+                );
+            }
         }
-        if (passData.getInstantCheckout().equals("1")) {
+        if (passData.getInstantCheckout().equals("1") && !cartDigitalInfoData.isForceRenderCart()) {
             pbMainLoading.setVisibility(View.VISIBLE);
             mainContainer.setVisibility(View.GONE);
             presenter.processToInstantCheckout();
@@ -332,7 +357,12 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
             mainContainer.setVisibility(View.VISIBLE);
         }
 
-        sendGTMAnalytics(cartDigitalInfoData.getAttributes().getCategoryName(), cartDigitalInfoData.getAttributes().getOperatorName() + " - " + cartDigitalInfoData.getAttributes().getPricePlain(), cartDigitalInfoData.isInstantCheckout());
+        sendGTMAnalytics(
+                cartDigitalInfoData.getAttributes().getCategoryName(),
+                cartDigitalInfoData.getAttributes().getOperatorName()
+                        + " - " + cartDigitalInfoData.getAttributes().getPricePlain(),
+                cartDigitalInfoData.isInstantCheckout()
+        );
 
     }
 
@@ -434,12 +464,14 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public void renderVoucherInfoData(VoucherDigital voucherDigital) {
         this.voucherDigitalState = voucherDigital;
-        voucherCartHolderView.setUsedVoucher(
+        voucherCartHachikoView.setVoucher(
                 voucherDigital.getAttributeVoucher().getVoucherCode(),
                 voucherDigital.getAttributeVoucher().getMessage());
-        checkoutHolderView.enableVoucherDiscount(
-                voucherDigital.getAttributeVoucher().getDiscountAmountPlain()
-        );
+        if (voucherDigital.getAttributeVoucher().getDiscountAmountPlain() > 0) {
+            checkoutHolderView.enableVoucherDiscount(
+                    voucherDigital.getAttributeVoucher().getDiscountAmountPlain()
+            );
+        }
     }
 
     @Override
@@ -467,35 +499,10 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         return sessionHandler.getWalletRefreshToken(getActivity());
     }
 
-    @Override
-    public void renderErrorCheckVoucher(String message) {
-        voucherDigitalState = null;
-        voucherCartHolderView.setErrorVoucher(message);
-    }
-
-    @Override
-    public void renderErrorHttpCheckVoucher(String message) {
-        voucherDigitalState = null;
-        showToastMessage(message);
-    }
-
-    @Override
-    public void renderErrorNoConnectionCheckVoucher(String message) {
-        voucherDigitalState = null;
-        showSnackBarAlert(message);
-    }
-
     private void showSnackBarAlert(String message) {
         View view = getView();
         if (view != null) Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
         else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-
-    }
-
-    @Override
-    public void renderErrorTimeoutConnectionCheckVoucher(String message) {
-        voucherDigitalState = null;
-        showToastMessage(message);
     }
 
     @Override
@@ -537,7 +544,8 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void renderErrorInstantCheckout(String message) {
-        closeViewWithMessageAlert(message);
+        showToastMessage(message);
+        presenter.processGetCartDataAfterCheckout(passData.getCategoryId());
     }
 
     @Override
@@ -556,18 +564,8 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
-    public String getDigitalCategoryId() {
-        return passData.getCategoryId();
-    }
-
-    @Override
-    public String getVoucherCode() {
-        return voucherCartHolderView.getVoucherCode();
-    }
-
-    @Override
     public CheckoutDataParameter getCheckoutData() {
-        checkoutDataBuilder.voucherCode(voucherCartHolderView.getVoucherCode());
+        checkoutDataBuilder.voucherCode(voucherCartHachikoView.getVoucherCode());
         return checkoutDataBuilder.build();
     }
 
@@ -619,7 +617,11 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void onClickButtonNext() {
-        UnifyTracking.eventClickLanjutCheckoutPage(cartDigitalInfoDataState.getAttributes().getCategoryName(), cartDigitalInfoDataState.getAttributes().getOperatorName() + " - " + cartDigitalInfoDataState.getAttributes().getPricePlain());
+        UnifyTracking.eventClickLanjutCheckoutPage(
+                cartDigitalInfoDataState.getAttributes().getCategoryName(),
+                cartDigitalInfoDataState.getAttributes().getOperatorName()
+                        + " - " + cartDigitalInfoDataState.getAttributes().getPricePlain()
+        );
         presenter.processToCheckout();
     }
 
@@ -640,25 +642,34 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
-    public void onVoucherCheckButtonClicked() {
-        presenter.processCheckVoucher();
-        KeyboardHandler.hideSoftKeyboard(getActivity());
+    public void onClickUseVoucher() {
+        if(cartDigitalInfoDataState.getAttributes().isEnableVoucher()) {
+            Intent intent;
+            if( cartDigitalInfoDataState.getAttributes().isCouponActive() == COUPON_ACTIVE){
+        intent = LoyaltyActivity.newInstanceCouponActive(context, "digital", passData.getCategoryId());
+        } else {
+                intent = LoyaltyActivity.newInstanceCouponNotActive(context, "digital", passData.getCategoryId());
+            }
+            navigateToActivityRequest(intent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
+        } else {
+            voucherCartHachikoView.setVisibility(View.GONE);
+        }
     }
 
     @Override
-    public void forceHideSoftKeyboardVoucherInput() {
-        KeyboardHandler.hideSoftKeyboard(getActivity());
-    }
-
-    @Override
-    public void forceShowSoftKeyboardVoucherInput() {
-        KeyboardHandler.showSoftKeyboard(getActivity());
-    }
-
-    @Override
-    public void disableVoucherDiscount() {
+    public void disableVoucherDisount() {
         this.voucherDigitalState = null;
         checkoutHolderView.disableVoucherDiscount();
+    }
+
+    @Override
+    public void trackingSuccessVoucher(String voucherCode) {
+        UnifyTracking.eventVoucherSuccess(voucherCode, "");
+    }
+
+    @Override
+    public void trackingCancelledVoucher() {
+        UnifyTracking.eventClickCancelVoucher("", "");
     }
 
     @Override
@@ -668,7 +679,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
             String message = data.getStringExtra(OtpVerificationActivity.EXTRA_MESSAGE);
             switch (resultCode) {
                 case OtpVerificationActivity.RESULT_OTP_VERIFIED:
-                    presenter.processPatchOtpCart();
+                    presenter.processPatchOtpCart(passData.getCategoryId());
                     if (message != null) showToastMessage(message);
                     break;
                 default:
@@ -679,25 +690,77 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         } else if (requestCode == TopPayActivity.REQUEST_CODE) {
             switch (resultCode) {
                 case TopPayActivity.PAYMENT_SUCCESS:
-                    getActivity().setResult(IDigitalModuleRouter.PAYMENT_SUCCESS);
-                    closeView();
+                    AdvancedAppRatingDialog.show(getActivity(), new AppRatingDialog.AppRatingListener() {
+                        @Override
+                        public void onDismiss() {
+                            getActivity().setResult(IDigitalModuleRouter.PAYMENT_SUCCESS);
+                            closeView();
+                        }
+                    });
                     break;
                 case TopPayActivity.PAYMENT_FAILED:
                     showToastMessage(
                             getString(R.string.alert_payment_canceled_or_failed_digital_module)
                     );
-                    presenter.processGetCartDataAfterCheckout();
+                    presenter.processGetCartDataAfterCheckout(passData.getCategoryId());
                     break;
                 case TopPayActivity.PAYMENT_CANCELLED:
                     showToastMessage(getString(R.string.alert_payment_canceled_digital_module));
-                    presenter.processGetCartDataAfterCheckout();
+                    presenter.processGetCartDataAfterCheckout(passData.getCategoryId());
                     break;
                 default:
-                    presenter.processGetCartData();
+                    presenter.processGetCartData(passData.getCategoryId());
                     break;
             }
         } else if (requestCode == InstantCheckoutActivity.REQUEST_CODE) {
             closeView();
+        } else if (requestCode == LoyaltyActivity.LOYALTY_REQUEST_CODE) {
+            if (resultCode == LoyaltyActivity.VOUCHER_RESULT_CODE) {
+                Bundle bundle = data.getExtras();
+                if (bundle != null) {
+                    String voucherCode = bundle.getString(LoyaltyActivity.VOUCHER_CODE, "");
+                    String voucherMessage = bundle.getString(LoyaltyActivity.VOUCHER_MESSAGE, "");
+                    long voucherDiscountAmount = bundle.getLong(LoyaltyActivity.VOUCHER_DISCOUNT_AMOUNT);
+
+                    VoucherDigital voucherDigital = new VoucherDigital();
+                    VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
+                    voucherAttributeDigital.setVoucherCode(voucherCode);
+                    voucherAttributeDigital.setDiscountAmountPlain(voucherDiscountAmount);
+                    voucherAttributeDigital.setMessage(voucherMessage);
+                    voucherDigital.setAttributeVoucher(voucherAttributeDigital);
+
+                    voucherDigitalState = voucherDigital;
+
+                    voucherCartHachikoView.setVoucher(voucherCode, voucherMessage);
+
+                    if (voucherDiscountAmount > 0) {
+                        checkoutHolderView.enableVoucherDiscount(voucherDiscountAmount);
+                    }
+                }
+            } else if (resultCode == LoyaltyActivity.COUPON_RESULT_CODE) {
+                Bundle bundle = data.getExtras();
+                if (bundle != null) {
+                    String couponTitle = bundle.getString(LoyaltyActivity.COUPON_TITLE, "");
+                    String couponMessage = bundle.getString(LoyaltyActivity.COUPON_MESSAGE, "");
+                    String couponCode = bundle.getString(LoyaltyActivity.COUPON_CODE, "");
+                    long couponDiscountAmount = bundle.getLong(LoyaltyActivity.COUPON_DISCOUNT_AMOUNT);
+
+                    VoucherDigital voucherDigital = new VoucherDigital();
+                    VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
+                    voucherAttributeDigital.setVoucherCode(couponCode);
+                    voucherAttributeDigital.setDiscountAmountPlain(couponDiscountAmount);
+                    voucherAttributeDigital.setMessage(couponMessage);
+                    voucherDigital.setAttributeVoucher(voucherAttributeDigital);
+
+                    voucherDigitalState = voucherDigital;
+
+                    voucherCartHachikoView.setCoupon(couponTitle, couponMessage, couponCode);
+
+                    if (couponDiscountAmount > 0) {
+                        checkoutHolderView.enableVoucherDiscount(couponDiscountAmount);
+                    }
+                }
+            }
         }
     }
 

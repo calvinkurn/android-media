@@ -13,4 +13,11 @@ public class ShopBadgeLevel {
     @Expose
     public int set;
 
+    public int getLevel() {
+        return level;
+    }
+
+    public int getSet() {
+        return set;
+    }
 }

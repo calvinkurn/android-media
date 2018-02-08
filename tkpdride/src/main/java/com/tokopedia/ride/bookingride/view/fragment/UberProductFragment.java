@@ -18,9 +18,13 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.base.presentation.BaseFragment;
-import com.tokopedia.ride.bookingride.di.RideProductDependencyInjection;
+import com.tokopedia.ride.bookingride.di.BookingRideComponent;
+import com.tokopedia.ride.bookingride.di.DaggerBookingRideComponent;
+import com.tokopedia.ride.bookingride.domain.model.NearbyRides;
 import com.tokopedia.ride.bookingride.view.UberProductContract;
+import com.tokopedia.ride.bookingride.view.UberProductPresenter;
 import com.tokopedia.ride.bookingride.view.adapter.RideProductAdapter;
 import com.tokopedia.ride.bookingride.view.adapter.RideProductItemClickListener;
 import com.tokopedia.ride.bookingride.view.adapter.factory.RideProductAdapterTypeFactory;
@@ -28,9 +32,12 @@ import com.tokopedia.ride.bookingride.view.adapter.factory.RideProductTypeFactor
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.RideProductViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingPassData;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+import com.tokopedia.ride.common.ride.di.RideComponent;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -39,12 +46,9 @@ import butterknife.OnClick;
  * A simple {@link Fragment} subclass.
  */
 public class UberProductFragment extends BaseFragment implements UberProductContract.View, RideProductItemClickListener {
-    OnFragmentInteractionListener interactionListener;
-    UberProductContract.Presenter presenter;
+
     private static final String EXTRA_SOURCE = "EXTRA_SOURCE";
     private static final String EXTRA_DESTINATION = "EXTRA_DESTINATION";
-    private static final int REQUEST_CODE_INTERRUPT_DIALOG = 1005;
-    private static final int REQUEST_CODE_TOKOPEDIA_INTERRUPT_DIALOG = 1006;
 
     @BindView(R2.id.ride_product_list)
     RecyclerView rideProductsRecyclerView;
@@ -66,13 +70,16 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     View errorView;
     @BindView(R2.id.layout_progress_view)
     View progressView;
+    @BindView(R2.id.tv_sort_fare)
+    TextView fareHeaderView;
+
+    @Inject
+    UberProductPresenter presenter;
 
     boolean isCompleteLocations;
-
-    List<RideProductViewModel> rideProductViewModels;
     private PlacePassViewModel source, destination;
-
-    RideProductAdapter adapter;
+    private RideProductAdapter adapter;
+    private OnFragmentInteractionListener interactionListener;
 
     public interface OnFragmentInteractionListener {
         void onProductClicked(ConfirmBookingPassData confirmBookingPassData);
@@ -88,6 +95,8 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
         void actionAdsShowed();
 
         void actionAdsHidden();
+
+        void renderNearbyRides(NearbyRides nearbyRides);
     }
 
     public static UberProductFragment newInstance() {
@@ -110,7 +119,6 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter = RideProductDependencyInjection.createPresenter(getActivity().getApplicationContext());
         presenter.attachView(this);
         presenter.initialize();
         setViewListener();
@@ -336,6 +344,36 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     @Override
     public void actionMinimumTimeEstResult(String timeEst) {
         interactionListener.onMinimumTimeEstCalculated(timeEst);
+    }
+
+    @Override
+    public void showFareListHeader() {
+        fareHeaderView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideFareListHeader() {
+        fareHeaderView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public PlacePassViewModel getSource() {
+        return this.source;
+    }
+
+    @Override
+    public void renderNearbyRides(NearbyRides nearbyRides) {
+        interactionListener.renderNearbyRides(nearbyRides);
+    }
+
+    @Override
+    protected void initInjector() {
+        RideComponent component = getComponent(RideComponent.class);
+        BookingRideComponent bookingRideComponent = DaggerBookingRideComponent
+                .builder()
+                .rideComponent(component)
+                .build();
+        bookingRideComponent.inject(this);
     }
 
     @Override

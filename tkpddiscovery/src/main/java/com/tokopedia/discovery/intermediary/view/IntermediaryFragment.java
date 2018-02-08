@@ -3,6 +3,7 @@ package com.tokopedia.discovery.intermediary.view;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -13,6 +14,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -32,11 +34,12 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
+import com.tokopedia.core.network.entity.intermediary.CategoryHadesModel;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
@@ -45,7 +48,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.intermediary.di.IntermediaryDependencyInjector;
 import com.tokopedia.discovery.intermediary.domain.model.BannerModel;
 import com.tokopedia.discovery.intermediary.domain.model.BrandModel;
@@ -53,6 +55,7 @@ import com.tokopedia.discovery.intermediary.domain.model.ChildCategoryModel;
 import com.tokopedia.discovery.intermediary.domain.model.CuratedSectionModel;
 import com.tokopedia.discovery.intermediary.domain.model.HeaderModel;
 import com.tokopedia.discovery.intermediary.domain.model.HotListModel;
+import com.tokopedia.discovery.intermediary.domain.model.IntermediaryCategoryDomainModel;
 import com.tokopedia.discovery.intermediary.domain.model.ProductModel;
 import com.tokopedia.discovery.intermediary.domain.model.VideoModel;
 import com.tokopedia.discovery.intermediary.view.adapter.BannerPagerAdapter;
@@ -61,15 +64,20 @@ import com.tokopedia.discovery.intermediary.view.adapter.CurationAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.HotListItemAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.IntermediaryBrandsAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.IntermediaryCategoryAdapter;
+import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
+import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.view.CategoryHeaderTransformation;
 import com.tokopedia.tkpdpdp.customview.YoutubeWebViewThumbnail;
 import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
+import com.tokopedia.topads.sdk.view.TopAdsBannerView;
 import com.tokopedia.topads.sdk.view.TopAdsView;
 
 import java.util.ArrayList;
@@ -92,6 +100,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     public static final String TAG = "INTERMEDIARY_FRAGMENT";
     private static final long SLIDE_DELAY = 8000;
+    public static final String DEFAULT_ITEM_VALUE = "1";
 
     @BindView(R2.id.nested_intermediary)
     NestedScrollView nestedScrollView;
@@ -150,6 +159,9 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @BindView(R2.id.top_ads_view)
     TopAdsView topAdsView;
 
+    @BindView(R2.id.top_ads_banner)
+    TopAdsBannerView topAdsBannerView;
+
     private CirclePageIndicator bannerIndicator;
     private View banner;
     private ViewPager bannerViewPager;
@@ -197,6 +209,15 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         return parentView;
     }
 
+    YoutubeViewHolder.YouTubeThumbnailLoadInProcess youTubeThumbnailLoadInProcessListener;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof YoutubeViewHolder.YouTubeThumbnailLoadInProcess)
+            youTubeThumbnailLoadInProcessListener = (YoutubeViewHolder.YouTubeThumbnailLoadInProcess) context;
+    }
+
     @Override
     public void renderHeader(HeaderModel headerModel) {
         ImageHandler.loadImageFitTransformation(imageHeader.getContext(), imageHeader,
@@ -207,6 +228,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         headerContainer.setVisibility(View.VISIBLE);
         bannerContainer.setVisibility(View.GONE);
         viewAllCategory.setText("Lihat Produk " + headerModel.getCategoryName() + " Lainnya");
+        ((IntermediaryActivity) getActivity()).updateTitle(headerModel.getCategoryName());
     }
 
     @Override
@@ -226,6 +248,28 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         topAdsView.setAdsListener(this);
         topAdsView.setConfig(config);
         topAdsView.loadTopAds();
+
+        TopAdsParams adsBannerParams = new TopAdsParams();
+        adsBannerParams.getParam().put(TopAdsParams.KEY_SRC, SRC_INTERMEDIARY_VALUE);
+        adsBannerParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, departmentId);
+        adsBannerParams.getParam().put(TopAdsParams.KEY_ITEM, DEFAULT_ITEM_VALUE);
+
+        Config configAdsBanner = new Config.Builder()
+                .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
+                .setUserId(SessionHandler.getLoginID(getActivity()))
+                .setEndpoint(Endpoint.CPM)
+                .topAdsParams(adsBannerParams)
+                .build();
+        topAdsBannerView.setConfig(configAdsBanner);
+        topAdsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
+            @Override
+            public void onBannerAdsClicked(String applink) {
+                if (!TextUtils.isEmpty(applink)) {
+                    ((TkpdCoreRouter) getActivity().getApplication()).actionApplink(getActivity(), applink);
+                }
+            }
+        });
+        topAdsBannerView.loadTopAds();
     }
 
     @Override
@@ -251,7 +295,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
             expandLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    UnifyTracking.eventShowMoreCategory(departmentId);
+                    UnifyTracking.eventExpandCategoryIntermediary(departmentId);
                     categoryAdapter.addDataChild(childCategoryModelList
                             .subList(9, childCategoryModelList.size()));
                     expandLayout.setVisibility(View.GONE);
@@ -312,7 +356,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     public void renderBanner(List<BannerModel> bannerModelList) {
         bannerHandler = new Handler();
         incrementPage = runnableIncrement();
-        bannerPagerAdapter = new BannerPagerAdapter(getActivity(), bannerModelList);
+        bannerPagerAdapter = new BannerPagerAdapter(getActivity(), bannerModelList, departmentId);
         banner = getActivity().getLayoutInflater().inflate(R.layout.banner_intermediary, bannerContainer);
         bannerViewPager = (ViewPager) banner.findViewById(R.id.view_pager_intermediary);
         bannerIndicator = (CirclePageIndicator) banner.findViewById(R.id.indicator_intermediary);
@@ -391,7 +435,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(getContext().getApplicationContext())
                 .equals(YouTubeInitializationResult.SUCCESS)) {
 
-            placeHolderVideo.addView(new YoutubeViewHolder(getContext(), videoModel.getVideoUrl()));
+            placeHolderVideo.addView(new YoutubeViewHolder(getContext(), videoModel.getVideoUrl(), departmentId, youTubeThumbnailLoadInProcessListener));
 
         } else {
             placeHolderVideo.addView(new YoutubeWebViewThumbnail(getContext(), videoModel.getVideoUrl()));
@@ -433,12 +477,24 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @Override
     public void skipIntermediaryPage() {
         if (isAdded()) {
-            BrowseProductActivity.moveToWithoutAnimation(
+            CategoryActivity.moveTo(
                     getActivity(),
                     departmentId,
-                    TopAdsApi.SRC_DIRECTORY,
-                    BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY,
-                    ((IntermediaryActivity) getActivity()).getCategoryName()
+                    ((IntermediaryActivity) getActivity()).getCategoryName(),
+                    true
+            );
+            getActivity().overridePendingTransition(0, 0);
+            getActivity().finish();
+        }
+    }
+
+    @Override
+    public void skipIntermediaryPage(CategoryHadesModel categoryHadesModel) {
+        if (isAdded()) {
+            CategoryActivity.moveTo(
+                    getActivity(),
+                    CategoryHeaderModel.convertIntermediaryToCategoryHeader(categoryHadesModel),
+                    true
             );
             getActivity().overridePendingTransition(0, 0);
             getActivity().finish();
@@ -447,7 +503,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void backToTop() {
-        nestedScrollView.fullScroll(View.FOCUS_UP);
+        nestedScrollView.fullScroll(NestedScrollView.FOCUS_UP);
     }
 
     @Override
@@ -484,18 +540,25 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         Point size = new Point();
         display.getSize(size);
         int width = size.x;
-        return (int) (width / 2);
+        return width / 2;
     }
 
     @OnClick(R2.id.category_view_all)
     public void viewAllCategory() {
-        BrowseProductActivity.moveTo(
+/*        BrowseProductActivity.moveTo(
                 getActivity(),
                 departmentId,
                 TopAdsApi.SRC_DIRECTORY,
                 BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY,
                 ((IntermediaryActivity) getActivity()).getCategoryName()
+        );*/
+        CategoryActivity.moveTo(
+                getActivity(),
+                departmentId,
+                ((IntermediaryActivity) getActivity()).getCategoryName(),
+                true
         );
+        getActivity().finish();
     }
 
     @Override
@@ -548,12 +611,11 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void onCategoryRevampClick(ChildCategoryModel child) {
-        BrowseProductActivity.moveTo(
+        CategoryActivity.moveToDestroyIntermediary(
                 getActivity(),
                 child.getCategoryId(),
-                TopAdsApi.SRC_DIRECTORY,
-                BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY,
-                child.getCategoryName()
+                child.getCategoryName(),
+                true
         );
         UnifyTracking.eventLevelCategoryIntermediary(departmentId, child.getCategoryId());
     }
@@ -585,6 +647,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void onBrandClick(BrandModel brandModel) {
+        UnifyTracking.eventOfficialStoreIntermediary(departmentId, brandModel.getBrandName());
         Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
         intent.putExtras(ShopInfoActivity.createBundle(brandModel.getId(), ""));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

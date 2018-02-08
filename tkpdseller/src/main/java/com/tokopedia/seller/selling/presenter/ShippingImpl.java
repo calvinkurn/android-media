@@ -131,7 +131,9 @@ public class ShippingImpl extends Shipping {
 
     @Override
     public void updateListDataChecked(int position, boolean selected) {
-        (modelList.get(position)).Checked = selected;
+        if (position >= 0 && position < modelList.size()) {
+            (modelList.get(position)).Checked = selected;
+        }
         view.notifyDataSetChanged(modelList);
     }
 
@@ -455,8 +457,10 @@ public class ShippingImpl extends Shipping {
 
     @Override
     public void updateRefNumBarcode(int getBarcodePosition, String barcode) {
-        modelList.get(getBarcodePosition).RefNum = barcode;
-        view.notifyDataSetChanged(modelList);
+        if (getBarcodePosition >= 0 && getBarcodePosition < modelList.size()) {
+            modelList.get(getBarcodePosition).RefNum = barcode;
+            view.notifyDataSetChanged(modelList);
+        }
     }
 
     @Override

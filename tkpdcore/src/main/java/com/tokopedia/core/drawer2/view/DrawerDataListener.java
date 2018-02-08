@@ -1,5 +1,7 @@
 package com.tokopedia.core.drawer2.view;
 
+import android.app.Activity;
+
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
@@ -32,4 +34,14 @@ public interface DrawerDataListener {
     void onErrorGetProfile(String errorMessage);
 
     String getString(int resId);
+
+    Activity getActivity();
+
+    void onErrorGetProfileCompletion(String errorMessage);
+
+    void onSuccessGetProfileCompletion(int completion);
+
+    void onErrorGetNotificationTopchat(String errorMessage);
+
+    void onSuccessGetTopChatNotification(int notifUnreads);
 }

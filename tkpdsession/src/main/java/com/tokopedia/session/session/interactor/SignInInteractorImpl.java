@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.gson.GsonBuilder;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -196,12 +197,13 @@ public class SignInInteractorImpl implements SignInInteractor{
 
         AccountsService accountService = new AccountsService(bundle);
         Observable<Response<String>> observable = accountService.getApi()
-                .getToken(AuthUtil
+                .getTokenOld(AuthUtil
                         .generateParams(context, params));
         return Observable.zip(Observable.just(accountsParameter), observable, new Func2<AccountsParameter, Response<String>, AccountsParameter>() {
             @Override
             public AccountsParameter call(AccountsParameter accountsParameter, Response<String> stringResponse) {
                 String response = String.valueOf(stringResponse.body());
+                CommonUtils.dumper("o2o Response signing "+response);
                 ErrorModel errorModel = new GsonBuilder().create().fromJson(response, ErrorModel.class);
                 if (errorModel.getError() == null) {
                     TokenModel model = new GsonBuilder().create().fromJson(response, TokenModel.class);

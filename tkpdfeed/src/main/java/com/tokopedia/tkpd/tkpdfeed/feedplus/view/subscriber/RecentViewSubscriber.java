@@ -2,14 +2,12 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feeddetail.DataFeedDetailDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewBadgeDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewLabelDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewProductDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.RecentView;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.BadgeViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.RecentView;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.LabelsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewDetailProductViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewProductViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,9 +58,7 @@ public class RecentViewSubscriber extends Subscriber<List<RecentViewProductDomai
                     domain.getName(),
                     domain.getPrice(),
                     domain.getImgUri(),
-                    convertToCashback(domain.getLabels()),
-                    domain.getWholesale() != null && domain.getWholesale().equals("1"),
-                    domain.getPreorder() != null && domain.getPreorder().equals("1"),
+                    convertLabels(domain.getLabels()),
                     domain.getFreeReturn() != null && domain.getFreeReturn().equals("1"),
                     domain.getWishlist(),
                     Integer.parseInt(domain.getRating() != null ? domain.getRating() : "0"),
@@ -73,6 +69,15 @@ public class RecentViewSubscriber extends Subscriber<List<RecentViewProductDomai
             ));
         }
         return listProduct;
+    }
+
+    private List<LabelsViewModel> convertLabels(List<RecentViewLabelDomain> labels) {
+        List<LabelsViewModel> labelsViewModels = new ArrayList<>();
+        for (RecentViewLabelDomain labelDomain : labels) {
+            labelsViewModels.add(new LabelsViewModel(labelDomain.getTitle(),
+                    labelDomain.getColor()));
+        }
+        return labelsViewModels;
     }
 
     private boolean convertToIsOfficial(List<RecentViewBadgeDomain> badges) {

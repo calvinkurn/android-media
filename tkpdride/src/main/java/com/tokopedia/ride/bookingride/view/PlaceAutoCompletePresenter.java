@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -19,7 +18,6 @@ import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.common.data.DataBufferUtils;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -27,13 +25,6 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.places.AutocompleteFilter;
-import com.google.android.gms.location.places.AutocompletePrediction;
-import com.google.android.gms.location.places.AutocompletePredictionBuffer;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceBuffer;
-import com.google.android.gms.location.places.PlaceFilter;
-import com.google.android.gms.location.places.PlaceLikelihood;
-import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.tkpd.library.utils.CommonUtils;
@@ -43,32 +34,38 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.bookingride.domain.AutoCompletePredictionUseCase;
 import com.tokopedia.ride.bookingride.domain.GetDistanceMatrixUseCase;
-import com.tokopedia.ride.bookingride.domain.GetPeopleAddressesUseCase;
+import com.tokopedia.ride.bookingride.domain.GetLocationAddressUseCase;
+import com.tokopedia.ride.bookingride.domain.GetPlaceDetailUseCase;
 import com.tokopedia.ride.bookingride.domain.GetUserAddressCacheUseCase;
 import com.tokopedia.ride.bookingride.domain.GetUserAddressUseCase;
-import com.tokopedia.ride.bookingride.domain.model.PeopleAddress;
-import com.tokopedia.ride.bookingride.domain.model.PeopleAddressWrapper;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.LabelViewModel;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.PlaceAutoCompeleteViewModel;
 import com.tokopedia.ride.bookingride.view.fragment.PlaceAutocompleteFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.place.data.entity.DistanceMatrixEntity;
 import com.tokopedia.ride.common.place.data.entity.Element;
+import com.tokopedia.ride.common.place.data.entity.ReverseGeoCodeAddress;
 import com.tokopedia.ride.common.ride.domain.model.RideAddress;
 import com.tokopedia.ride.common.ride.utils.GoogleAPIClientObservable;
 import com.tokopedia.ride.common.ride.utils.PendingResultObservable;
+import com.tokopedia.ride.common.ride.utils.RideUtils;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -80,34 +77,40 @@ import static android.app.Activity.RESULT_OK;
 
 public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCompleteContract.View> implements PlaceAutoCompleteContract.Presenter {
     private static final String TAG = "addressautocomplete";
+
     private GoogleApiClient mGoogleApiClient;
     private CompositeSubscription mCompositeSubscription;
     private AutocompleteFilter mAutocompleteFilter;
     private Location mCurrentLocation;
-    private boolean isLoadingPlaces;
-
     private LocationRequest mLocationRequest;
     private OnQueryListener mOnQueryListener;
-    private GetPeopleAddressesUseCase mGetPeopleAddressesUseCase;
     private CompositeSubscription compositeSubscription;
     private GetUserAddressUseCase getUserAddressUseCase;
     private GetUserAddressCacheUseCase getUserAddressCacheUseCase;
     private GetDistanceMatrixUseCase getDistanceMatrixUseCase;
+    private AutoCompletePredictionUseCase autoCompletePredictionUseCase;
+    private GetPlaceDetailUseCase placeDetailUseCase;
+    private final GetLocationAddressUseCase getLocationAddressUseCase;
     private boolean mAutoDetectLocation;
 
     private interface OnQueryListener {
         void onQuerySubmit(String query);
     }
 
-    public PlaceAutoCompletePresenter(GetPeopleAddressesUseCase getPeopleAddressesUseCase,
-                                      GetUserAddressUseCase getUserAddressUseCase,
+    @Inject
+    public PlaceAutoCompletePresenter(GetUserAddressUseCase getUserAddressUseCase,
                                       GetUserAddressCacheUseCase getUserAddressCacheUseCase,
-                                      GetDistanceMatrixUseCase getDistanceMatrixUseCase) {
-        mGetPeopleAddressesUseCase = getPeopleAddressesUseCase;
+                                      GetDistanceMatrixUseCase getDistanceMatrixUseCase,
+                                      AutoCompletePredictionUseCase autoCompletePredictionUseCase,
+                                      GetPlaceDetailUseCase placeDetailUseCase,
+                                      GetLocationAddressUseCase getLocationAddressUseCase) {
         compositeSubscription = new CompositeSubscription();
         this.getUserAddressUseCase = getUserAddressUseCase;
         this.getUserAddressCacheUseCase = getUserAddressCacheUseCase;
         this.getDistanceMatrixUseCase = getDistanceMatrixUseCase;
+        this.autoCompletePredictionUseCase = autoCompletePredictionUseCase;
+        this.placeDetailUseCase = placeDetailUseCase;
+        this.getLocationAddressUseCase = getLocationAddressUseCase;
     }
 
     @Override
@@ -115,12 +118,12 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
         if (checkPlayServices()) {
             createLocationRequest();
             initializeLocationService();
+
             prepareInitialView();
             mCompositeSubscription = new CompositeSubscription();
             AutocompleteFilter.Builder mbuilder = new AutocompleteFilter.Builder()
                     .setTypeFilter(AutocompleteFilter.TYPE_FILTER_NONE);
             mAutocompleteFilter = mbuilder.build();
-            isLoadingPlaces = false;
             mCompositeSubscription.add(
                     Observable.create(new Observable.OnSubscribe<String>() {
                         @Override
@@ -247,51 +250,6 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                 && !rideAddress.getLongitude().equalsIgnoreCase("0");
     }
 
-    @Override
-    public void actionGetPeopleAddresses(final boolean isLoadMore) {
-        getView().showAutoDetectLocationButton();
-        mGetPeopleAddressesUseCase.execute(getView().getPeopleAddressParam(), new Subscriber<PeopleAddressWrapper>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onNext(PeopleAddressWrapper wrapper) {
-                if (isViewAttached() && !isUnsubscribed()) {
-                    if (!getView().isActiveMarketPlaceSource()) return;
-                    compositeSubscription.clear();
-                    ArrayList<Visitable> addresses = new ArrayList<>();
-                    for (PeopleAddress peopleAddress : wrapper.getAddresses()) {
-                        if (!TextUtils.isEmpty(peopleAddress.getLongitude()) && !TextUtils.isEmpty(peopleAddress.getLatitude())) {
-                            PlaceAutoCompeleteViewModel address = new PlaceAutoCompeleteViewModel();
-                            address.setAddress(String.valueOf(peopleAddress.getAddressStreet()));
-                            address.setTitle(String.valueOf(peopleAddress.getAddressName()));
-                            address.setAddressId(peopleAddress.getAddressId());
-                            address.setLatitude(Double.parseDouble(peopleAddress.getLatitude()));
-                            address.setLongitude(Double.parseDouble(peopleAddress.getLongitude()));
-                            address.setType(PlaceAutoCompeleteViewModel.TYPE.MARKETPLACE_PLACE);
-                            addresses.add(address);
-                        }
-                    }
-                    getView().showListPlaces();
-                    getView().setPagingConfiguration(wrapper.getPaging());
-                    if (!isLoadMore) {
-                        getView().renderPlacesList(addresses);
-                    } else {
-                        getView().renderMorePlacesList(addresses);
-                    }
-                    getView().hideAutoCompleteLoadingCross();
-                }
-            }
-        });
-    }
-
     private void prepareInitialView() {
         getView().hideAutoCompleteLoadingCross();
         getView().showAutoDetectLocationButton();
@@ -415,14 +373,11 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
 
     @Override
     public boolean isLocationPermissionGranted() {
-        if ((ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+        return !((ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED)
                 && (ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED)) {
-            return false;
-        }
+                != PackageManager.PERMISSION_GRANTED));
 
-        return true;
     }
 
     @Override
@@ -442,7 +397,6 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
 
         //get current place if auto detect location was clicked
         if (mCurrentLocation != null && mAutoDetectLocation) {
-            mAutoDetectLocation = false;
             getCurrentPlace();
         }
     }
@@ -496,69 +450,55 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
     }
 
     private void getPlacesAndRenderViewByKeyword(String keyword) {
-        isLoadingPlaces = true;
         LatLngBounds bounds = null;
         if (mCurrentLocation != null) {
             bounds = GeoLocationUtils.generateBoundary(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
         }
-        compositeSubscription.add(
-                getPlaceAutocompletePredictions(keyword, bounds, mAutocompleteFilter)
-                        .map(new Func1<AutocompletePredictionBuffer, ArrayList<AutocompletePrediction>>() {
-                                 @Override
-                                 public ArrayList<AutocompletePrediction> call(AutocompletePredictionBuffer autocompletePredictions) {
-                                     if (autocompletePredictions.getStatus().isSuccess()) {
-                                         isLoadingPlaces = false;
-                                         return DataBufferUtils.freezeAndClose(autocompletePredictions);
-                                     }
-                                     autocompletePredictions.release();
-                                     isLoadingPlaces = false;
-                                     return new ArrayList<>();
-                                 }
-                             }
-                        )
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<ArrayList<AutocompletePrediction>>() {
-                                       @Override
-                                       public void onCompleted() {
 
-                                       }
+        TKPDMapParam<String, String> temp = new TKPDMapParam<>();
+        temp = AuthUtil.generateParamsNetwork(getView().getActivity(), temp);
+        TKPDMapParam<String, Object> params = new TKPDMapParam<>();
+        params.putAll(temp);
 
-                                       @Override
-                                       public void onError(Throwable e) {
-                                           e.printStackTrace();
-                                       }
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(AutoCompletePredictionUseCase.PARAM_KEYWORD, keyword);
+        requestParams.putAll(params);
+        autoCompletePredictionUseCase.execute(requestParams, new Subscriber<List<PlaceAutoCompeleteViewModel>>() {
+            @Override
+            public void onCompleted() {
 
-                                       @Override
-                                       public void onNext(ArrayList<AutocompletePrediction> results) {
-                                           if (isViewAttached() && !isUnsubscribed()) {
-                                               if (!getView().isActiveGooglePlaceSource()) return;
-                                               ArrayList<Visitable> addresses = new ArrayList<>();
-                                               for (AutocompletePrediction autocompletePrediction : results) {
-                                                   PlaceAutoCompeleteViewModel address = new PlaceAutoCompeleteViewModel();
-                                                   address.setAddress(String.valueOf(autocompletePrediction.getSecondaryText(null)));
-                                                   address.setTitle(String.valueOf(autocompletePrediction.getPrimaryText(null)));
-                                                   address.setAddressId(autocompletePrediction.getPlaceId());
-                                                   address.setType(PlaceAutoCompeleteViewModel.TYPE.GOOGLE_PLACE);
-                                                   addresses.add(address);
-                                               }
+            }
 
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached() && !isUnsubscribed()) {
+                    if (e instanceof UnknownHostException) {
+                        getView().showErrorNoInternetConnectionMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
+                    }
+                    renderPlaceList(new ArrayList<PlaceAutoCompeleteViewModel>());
+                }
+            }
 
-                                               if (mCurrentLocation == null || results == null || results.size() == 0) {
-                                                   renderPlaceList(addresses);
-                                               } else {
-                                                   getDistanceMatrixFromOrigin(results, addresses);
-                                               }
-                                           }
-                                       }
-                                   }
-                        )
-        );
+            @Override
+            public void onNext(List<PlaceAutoCompeleteViewModel> placeAutoCompeleteViewModels) {
+                if (isViewAttached() && !isUnsubscribed()) {
+                    if (!getView().isActiveGooglePlaceSource()) return;
+
+                    if (mCurrentLocation == null || placeAutoCompeleteViewModels == null || placeAutoCompeleteViewModels.size() == 0) {
+                        renderPlaceList(placeAutoCompeleteViewModels);
+                    } else {
+                        getDistanceMatrixFromOrigin(placeAutoCompeleteViewModels);
+                    }
+                }
+            }
+        });
     }
 
-    public void renderPlaceList(ArrayList<Visitable> addresses) {
+    public void renderPlaceList(List<PlaceAutoCompeleteViewModel> addresses) {
         getView().showGoogleLabel();
-        getView().renderPlacesList(addresses);
+        ArrayList<Visitable> addr = new ArrayList<>();
+        addr.addAll(addresses);
+        getView().renderPlacesList(addr);
         getView().hideAutoCompleteLoadingCross();
         getView().showClearButton();
     }
@@ -568,15 +508,6 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
         return GoogleAPIClientObservable.create(getView().getActivity(), apis);
     }
 
-    public Observable<AutocompletePredictionBuffer> getPlaceAutocompletePredictions(final String query, final LatLngBounds bounds, final AutocompleteFilter filter) {
-        return getGoogleApiClientObservable(Places.PLACE_DETECTION_API, Places.GEO_DATA_API)
-                .flatMap(new Func1<GoogleApiClient, Observable<AutocompletePredictionBuffer>>() {
-                    @Override
-                    public Observable<AutocompletePredictionBuffer> call(GoogleApiClient api) {
-                        return fromPendingResult(Places.GeoDataApi.getAutocompletePredictions(api, query, bounds, filter));
-                    }
-                });
-    }
 
     public <T extends Result> Observable<T> fromPendingResult(PendingResult<T> result) {
         return Observable.create(new PendingResultObservable<>(result));
@@ -603,26 +534,24 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
     @Override
     public void onPlaceSelected(PlaceAutoCompeleteViewModel adress) {
         if (adress.getType() == PlaceAutoCompeleteViewModel.TYPE.GOOGLE_PLACE) {
-            Places.GeoDataApi.getPlaceById(mGoogleApiClient, adress.getAddressId())
-                    .setResultCallback(new ResultCallback<PlaceBuffer>() {
-                        @Override
-                        public void onResult(PlaceBuffer places) {
-                            if (places.getStatus().isSuccess() && places.getCount() > 0) {
-                                final Place myPlace = places.get(0);
-                                PlacePassViewModel placePassViewModel = new PlacePassViewModel();
-                                placePassViewModel.setAndFormatLatitude(myPlace.getLatLng().latitude);
-                                placePassViewModel.setAndFormatLongitude(myPlace.getLatLng().longitude);
-                                placePassViewModel.setTitle((String) myPlace.getName());
-                                placePassViewModel.setPlaceId(myPlace.getId());
-                                placePassViewModel.setAddress(String.valueOf(myPlace.getAddress()));
-                                getView().onPlaceSelectedFound(placePassViewModel);
-                            } else {
-                                getView().showMessage("Place not Found");
-                                Log.e(TAG, "Place not found");
-                            }
-                            places.release();
-                        }
-                    });
+            RequestParams requestParams = RequestParams.create();
+            requestParams.putString("placeid", adress.getAddressId());
+            placeDetailUseCase.execute(requestParams, new Subscriber<PlacePassViewModel>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(PlacePassViewModel placePassViewModel) {
+                    getView().onPlaceSelectedFound(placePassViewModel);
+                }
+            });
         } else {
             PlacePassViewModel placePassViewModel = new PlacePassViewModel();
             placePassViewModel.setAndFormatLatitude(adress.getLatitude());
@@ -636,16 +565,18 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
 
     @Override
     public void actionAutoDetectLocation() {
+        mAutoDetectLocation = true;
         if (mCurrentLocation != null || ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             getCurrentPlace();
-        } else if (mGoogleApiClient != null) {
+        }
+
+        if (mGoogleApiClient != null && !RideUtils.isLocationEnabled(getView().getActivity())) {
             checkLocationSettings();
-            mAutoDetectLocation = true;
         }
     }
 
-    public void getDistanceMatrixFromOrigin(ArrayList<AutocompletePrediction> results, final ArrayList<Visitable> addresses) {
-        if (mCurrentLocation == null || results == null || results.size() == 0) return;
+    public void getDistanceMatrixFromOrigin(final List<PlaceAutoCompeleteViewModel> addresses) {
+        if (mCurrentLocation == null || addresses == null || addresses.size() == 0) return;
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(GetDistanceMatrixUseCase.PARAM_ORIGINS, String.format("%s,%s",
@@ -654,8 +585,8 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
         ));
 
         String destinations = "";
-        for (AutocompletePrediction prediction : results) {
-            destinations += prediction.getFullText(null) + "|";
+        for (PlaceAutoCompeleteViewModel prediction : addresses) {
+            destinations += prediction.getAddress() + "|";
         }
 
         requestParams.putString(GetDistanceMatrixUseCase.PARAM_DESTINATIONS, destinations);
@@ -686,7 +617,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                                 String distance = element.getDistance().getText();
 
                                 if (addresses.size() > index) {
-                                    ((PlaceAutoCompeleteViewModel) addresses.get(index)).setDistance(distance);
+                                    addresses.get(index).setDistance(distance);
                                 }
                             }
                             index++;
@@ -717,73 +648,57 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
 
     @Override
     public void detachView() {
-        mGetPeopleAddressesUseCase.unsubscribe();
         super.detachView();
     }
 
     private void getCurrentPlace() {
-        getCurrentPlace(new PlaceFilter())
-                .map(new Func1<PlaceLikelihoodBuffer, Place>() {
-                    @Override
-                    public Place call(PlaceLikelihoodBuffer buffer) {
-                        if (buffer != null) {
-                            PlaceLikelihood likelihood = buffer.get(0);
-                            if (likelihood != null) {
-                                return likelihood.getPlace();
-                            }
-                            buffer.release();
-                            return null;
-                        } else {
-                            return null;
-                        }
-                    }
-                }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Place>() {
-                    @Override
-                    public void onCompleted() {
 
-                    }
+        if (mCurrentLocation == null) {
+            return;
+        }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        if (mCurrentLocation != null && isViewAttached() && !isUnsubscribed()) {
-                            PlacePassViewModel placeVm = new PlacePassViewModel();
-                            String address = String.format("%s,%s", mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-                            placeVm.setAddress(address);
-                            placeVm.setAndFormatLatitude(mCurrentLocation.getLatitude());
-                            placeVm.setAndFormatLongitude(mCurrentLocation.getLongitude());
-                            placeVm.setTitle(address);
-                            getView().onPlaceSelectedFound(placeVm);
-                        }
-                    }
+        final double latitude = mCurrentLocation.getLatitude();
+        final double longitude = mCurrentLocation.getLongitude();
 
-                    @Override
-                    public void onNext(Place place) {
-                        if (isViewAttached() && !isUnsubscribed() && place != null) {
-                            PlacePassViewModel placeVm = new PlacePassViewModel();
-                            placeVm.setAddress(String.valueOf(place.getName()));
-                            placeVm.setAndFormatLatitude(place.getLatLng().latitude);
-                            placeVm.setAndFormatLongitude(place.getLatLng().longitude);
-                            placeVm.setPlaceId(place.getId());
-                            placeVm.setTitle(String.valueOf(place.getName()));
-                            getView().onPlaceSelectedFound(placeVm);
-                        }
-                    }
-                });
-    }
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GetLocationAddressUseCase.PARAM_LATITUDE, String.valueOf(latitude));
+        requestParams.putString(GetLocationAddressUseCase.PARAM_LONGITUDE, String.valueOf(longitude));
+        requestParams.putString(GetLocationAddressUseCase.PARAM_KEY, getView().getActivity().getString(R.string.GOOGLE_API_KEY));
 
-    private Observable<PlaceLikelihoodBuffer> getCurrentPlace(@javax.annotation.Nullable final PlaceFilter placeFilter) {
-        return getGoogleApiClientObservable(Places.PLACE_DETECTION_API, Places.GEO_DATA_API)
-                .flatMap(new Func1<GoogleApiClient, Observable<PlaceLikelihoodBuffer>>() {
-                    @Override
-                    public Observable<PlaceLikelihoodBuffer> call(GoogleApiClient api) {
-                        if (ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                            return Observable.empty();
-                        }
-                        return fromPendingResult(Places.PlaceDetectionApi.getCurrentPlace(api, placeFilter));
+        //find address using latitude and longitude
+        getLocationAddressUseCase.execute(requestParams, new Subscriber<ReverseGeoCodeAddress>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                String sourceAddress = String.valueOf(latitude) + "," + String.valueOf(longitude);
+                handleAddressResult(sourceAddress, sourceAddress);
+            }
+
+            @Override
+            public void onNext(ReverseGeoCodeAddress reverseGeoCodeAddres) {
+                String title = RideUtils.getShortAddress(reverseGeoCodeAddres);
+                String address = reverseGeoCodeAddres.getFormattedAddress();
+                handleAddressResult(title, address);
+            }
+
+            private void handleAddressResult(String title, String address) {
+                if (isViewAttached() && !isUnsubscribed()) {
+                    PlacePassViewModel placeVm = new PlacePassViewModel();
+                    placeVm.setAddress(String.valueOf(address));
+                    placeVm.setAndFormatLatitude(latitude);
+                    placeVm.setAndFormatLongitude(longitude);
+                    placeVm.setTitle(title);
+                    if (mAutoDetectLocation) {
+                        mAutoDetectLocation = false;
+                        getView().sendAutoDetectGAEvent(placeVm);
                     }
-                });
+                    getView().onPlaceSelectedFound(placeVm);
+                }
+            }
+        });
     }
 }

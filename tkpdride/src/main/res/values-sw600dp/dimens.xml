@@ -1,0 +1,5 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <integer name="tip_grid_col">5</integer>
+    <integer name="tip_grid_row">1</integer>
+</resources>

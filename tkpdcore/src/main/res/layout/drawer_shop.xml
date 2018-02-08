@@ -52,16 +52,5 @@
 
         </LinearLayout>
 
-        <ImageView
-            android:layout_width="@dimen/drawer_icon"
-            android:layout_height="@dimen/drawer_icon"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
-            android:padding="@dimen/padding_vs"
-            android:src="@drawable/expand_less" />
-
     </RelativeLayout>
 </FrameLayout>

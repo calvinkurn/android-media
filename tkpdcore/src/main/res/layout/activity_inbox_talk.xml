@@ -7,7 +7,7 @@
 
     <include layout="@layout/layout_tab_indicator_main_fixed" />
 
-    <android.support.v4.view.ViewPager
+    <com.tkpd.library.ui.widget.TouchViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

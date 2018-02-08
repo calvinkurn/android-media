@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START xml_defaults -->
+<defaultsMap>
+    <entry>
+        <key>mainapp_is_need_update</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>mainapp_latest_version_code</key>
+        <value>0</value>
+    </entry>
+    <entry>
+        <key>mainapp_is_force_update</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>mainapp_update_message</key>
+        <value>Update aplikasi sekarang dan nikmati performa yang lebih stabil.</value>
+    </entry>
+    <entry>
+        <key>mainapp_update_title</key>
+        <value>Update Aplikasi</value>
+    </entry>
+    <entry>
+        <key>mainapp_update_link</key>
+        <value>https://play.google.com/store/apps/details?id=com.tokopedia.tkpd</value>
+    </entry>
+    <entry>
+        <key>toko_cash_top_up</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>toko_cash_label</key>
+        <value>TokoCash</value>
+    </entry>
+    <entry>
+        <key>mainapp_react_show_os</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>mainapp_show_app_share_button</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>app_share_description</key>
+        <value>Hai. Aku udah nyobain beli &amp; bayar ini itu di aplikasi Tokopedia, gampang banget! Mau beli barang idaman, isi pulsa, token listrik, bayar semua tagihan, sampai beli tiket liburan, semua bisa lewat 1 aplikasi. Yuk, ikut nikmati kemudahannya, download aja di </value>
+    </entry>
+    <entry>
+        <key>mainapp_activate_branch_links</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>mainapp_applink_is_need_update</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>mainapp_applink_latest_version_code</key>
+        <value>0</value>
+    </entry>
+    <entry>
+        <key>mainapp_applink_is_force_update</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>mainapp_applink_update_message</key>
+        <value>Update aplikasi sekarang dan nikmati performa yang lebih stabil.</value>
+    </entry>
+    <entry>
+        <key>mainapp_applink_update_title</key>
+        <value>Update Aplikasi</value>
+    </entry>
+    <entry>
+        <key>mainapp_applink_update_link</key>
+        <value>https://play.google.com/store/apps/details?id=com.tokopedia.tkpd</value>
+    </entry>
+    <entry>
+        <key>enable_topchat</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>mainapp_rating_title</key>
+        <value>Beri Rating Aplikasi Kami</value>
+    </entry>
+    <entry>
+        <key>mainapp_rating_message</key>
+        <value>Jika Kamu suka dengan aplikasi Tokopedia, silakan berikan dukungan Kamu dengan memberi rating 5 bintang dan ulasan di Google Play.</value>
+    </entry>
+    <entry>
+        <key>mainapp_show_simple_app_rating</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>mainapp_show_advanced_app_rating</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>flight_airport</key>
+        <value>1</value>
+    </entry>
+    <entry>
+        <key>notification_logger</key>
+        <value>false</value>
+    </entry>
+</defaultsMap>

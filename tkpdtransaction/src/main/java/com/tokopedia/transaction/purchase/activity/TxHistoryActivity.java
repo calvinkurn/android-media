@@ -53,4 +53,9 @@ public class TxHistoryActivity extends TActivity {
         adapter.addAllDataList(orderHistories);
         adapter.notifyDataSetChanged();
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

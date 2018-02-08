@@ -115,15 +115,6 @@
  @id.co.veritrans.android.api.** *;
  }
 
--keep public class com.tokopedia.tkpd.util.CreditCardWebView$MyJavaScriptInterface
--keep public class * implements com.tokopedia.tkpd.util.CreditCardWebView$MyJavaScriptInterface
--keepclassmembers class com.tokopedia.tkpd.util.CreditCardWebView$MyJavaScriptInterface{ *;}
-
--keep public class com.tokopedia.tkpd.fragment.FragmentSprintAsiaWebView$LocalJavaScriptInterface
--keep public class * implements com.tokopedia.tkpd.fragment.FragmentSprintAsiaWebView$LocalJavaScriptInterface
--keepclassmembers class com.tokopedia.tkpd.fragment.FragmentSprintAsiaWebView$LocalJavaScriptInterface{ *;}
--keepclassmembers class com.tokopedia.tkpd.util.CreditCardWebView$MyJavaScriptInterface{ *;}
-
 #Localytics setting
 -keep class com.localytics.android.** { *; }
 
@@ -200,15 +191,6 @@
 
 
 -keepattributes *Annotation*,EnclosingMethod,Signature
--keepnames class com.fasterxml.jackson.** { *; }
- -dontwarn com.fasterxml.jackson.databind.**
- -keep class org.codehaus.** { *; }
- -keepclassmembers public final enum org.codehaus.jackson.annotate.JsonAutoDetect$Visibility {
- public static final org.codehaus.jackson.annotate.JsonAutoDetect$Visibility *; }
--keep public class your.class.** {
-  public void set*(***);
-  public *** get*();
-}
 
 -dontwarn com.squareup.okhttp.**
 # this is butterknife
@@ -292,6 +274,7 @@
 -keepclasseswithmembers class * {
      @com.airbnb.deeplinkdispatch.DeepLink <methods>;
 }
+
 -keep class com.tokopedia.ride.common.animator.RouteMapAnimator
 -keepclasseswithmembers class com.tokopedia.ride.common.animator.RouteMapAnimator {
    public <methods>;
@@ -321,5 +304,18 @@
 -keep class com.tkpdfeed.feeds.** { *; }
 # -- End of Feeds --
 
+# Fingerprint
+-keep class com.tokopedia.core.analytics.fingerprint.domain.model.** { *; }
 
+-dontwarn android.content.pm.PackageManager
+-dontwarn com.crashlytics.android.answers.shim.**
+-dontwarn com.nimbusds.jwt.SignedJWT
+-dontwarn com.nimbusds.jwt.JWTClaimsSet
 
+-dontwarn com.appsflyer.**
+-keep public class com.google.firebase.iid.FirebaseInstanceId {
+    public *;
+}
+-keep public class com.google.android.gms.iid.InstanceID {
+    public *;
+}

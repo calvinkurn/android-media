@@ -3,4 +3,35 @@
     <dimen name="dimen_id_image">300dp</dimen>
     <dimen name="width_icon_register">216dp</dimen>
     <dimen name="btn_login_height">52dp</dimen>
+    <dimen name="space_vs">5dp</dimen>
+    <dimen name="space_small">10dp</dimen>
+    <dimen name="space_med">16dp</dimen>
+    <dimen name="space_slightly_med">19dp</dimen>
+    <dimen name="space_large_32">32dp</dimen>
+    <dimen name="space_large">30dp</dimen>
+    <dimen name="space_slightly_very_large">41dp</dimen>
+    <dimen name="space_very_large">43dp</dimen>
+    <dimen name="image_size">90dp</dimen>
+
+    <dimen name="padding_textview_prof_comp">2dp</dimen>
+    <dimen name="padding_vsmall_prof_comp">6dp</dimen>
+    <dimen name="padding_small_prof_comp">8dp</dimen>
+    <dimen name="padding_small_med_prof_comp">8dp</dimen>
+    <dimen name="padding_medium_prof_comp">16dp</dimen>
+    <dimen name="padding_large_prof_comp">18dp</dimen>
+
+
+    <dimen name="text_size_6">6sp</dimen>
+    <dimen name="text_size_8">8sp</dimen>
+    <dimen name="text_size_11">11sp</dimen>
+    <dimen name="text_size_12">12sp</dimen>
+    <dimen name="text_size_13">13sp</dimen>
+    <dimen name="text_size_14">14sp</dimen>
+    <dimen name="text_size_16">16sp</dimen>
+
+    <dimen name="padding_activity">24dp</dimen>
+    <dimen name="verification_icon">38dp</dimen>
+    <dimen name="extra_space_start">3dp</dimen>
+    <dimen name="button_height">40dp</dimen>
+    <dimen name="default_big_icon">200dp</dimen>
 </resources>

@@ -34,7 +34,6 @@ public class CloudPushNotificationDataSource implements PushNotificationDataStor
                     @Override
                     public Observable<Response<TkpdResponse>> call(FCMTokenUpdate requestData) {
                         TKPDMapParam<String, String> param = new TKPDMapParam<>();
-                        param.put("device_id_old", requestData.getOldToken());
                         param.put("device_id_new", requestData.getNewToken());
                         param.put("os_type", requestData.getOsType());
                         param.put("user_id", requestData.getUserId());
@@ -142,6 +141,12 @@ public class CloudPushNotificationDataSource implements PushNotificationDataStor
     @Override
     public Observable<Boolean> savePushNotification(String category, String response) {
         return null;
+    }
+
+    @Override
+    public Observable<String> getRegistrationDevice() {
+        String cloudRegitrationID = FirebaseInstanceId.getInstance().getToken();
+        return Observable.just(cloudRegitrationID);
     }
 
     @Override

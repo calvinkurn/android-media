@@ -1,0 +1,22 @@
+{
+    "name": "tokopediaandroid",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "node node_modules/react-native/local-cli/cli.js start"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/tokopedia/android-tokopedia-core.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/tokopedia/android-tokopedia-core/issues"
+    },
+    "homepage": "https://github.com/tokopedia/android-tokopedia-core#readme",
+    "dependencies": {
+        "danger": "^2.1.3"
+    }
+}

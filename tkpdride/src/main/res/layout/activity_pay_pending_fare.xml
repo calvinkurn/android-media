@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context="com.tokopedia.ride.bookingride.view.activity.PayPendingFareActivity">
+
+    <include layout="@layout/material_toolbar_layout" />
+
+    <RelativeLayout
+        android:id="@+id/on_trip_complete_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:background="@color/white">
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <RelativeLayout
+                    android:id="@+id/rl_pending_fare_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingBottom="5dp"
+                    android:paddingEnd="16dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingStart="16dp"
+                    android:paddingTop="16dp">
+
+                    <ImageView
+                        android:id="@+id/img_pending"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        app:srcCompat="@drawable/ic_pending_fare_screen" />
+
+                    <TextView
+                        android:id="@+id/tv_id"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/img_pending"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="20dp"
+                        android:gravity="center"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        tools:text="Trip ID: 32131313" />
+
+                    <TextView
+                        android:id="@+id/tv_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_id"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center"
+                        android:textColor="@color/grey_700"
+                        android:textSize="12sp"
+                        tools:text="December 15, 2016 at 02:30" />
+
+
+                    <RelativeLayout
+                        android:id="@+id/source_destination_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_date"
+                        android:layout_marginTop="@dimen/margin_small_sm"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:id="@+id/crux_cabs_src_dest_line"
+                            android:layout_width="wrap_content"
+                            android:layout_height="35dp"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="20.5dp"
+                            android:src="@drawable/cabs_src_dest_line" />
+
+                        <RelativeLayout
+                            android:id="@+id/crux_cabs_source_container"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:id="@+id/crux_cabs_source_icon"
+                                android:layout_width="13dp"
+                                android:layout_height="13dp"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="15dp"
+                                android:src="@drawable/cabs_source_ic" />
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:id="@+id/tv_source"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_toRightOf="@id/crux_cabs_source_icon"
+                                android:ellipsize="marquee"
+                                android:paddingBottom="12dp"
+                                android:paddingLeft="18dp"
+                                android:paddingRight="12dp"
+                                android:paddingTop="12dp"
+                                android:singleLine="true"
+                                android:text="Loading..."
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/pdp_rating_color_new"
+                                android:textSize="14sp" />
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:id="@+id/layout_destination"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/crux_cabs_source_container">
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:layout_marginLeft="47dp"
+                                android:background="@color/grey" />
+
+                            <ImageView
+                                android:id="@+id/crux_cabs_destination_icon"
+                                android:layout_width="13dp"
+                                android:layout_height="13dp"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="15dp"
+                                android:src="@drawable/cabs_dest_ic" />
+
+                            <TextView
+                                android:id="@+id/tv_destination"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_toRightOf="@id/crux_cabs_destination_icon"
+                                android:ellipsize="marquee"
+                                android:paddingBottom="12dp"
+                                android:paddingLeft="18dp"
+                                android:paddingTop="12dp"
+                                android:singleLine="true"
+                                android:text="Loading..."
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/pdp_rating_color_new"
+                                android:textSize="14sp" />
+                        </RelativeLayout>
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/tv_label_total_fare"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/source_destination_container"
+                        android:layout_marginTop="20dp"
+                        android:drawablePadding="10dp"
+                        android:gravity="center"
+                        android:text="@string/total_fare"
+                        android:textColor="@color/grey_700"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_total_fare_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@id/source_destination_container"
+                        android:paddingTop="20dp"
+                        android:textColor="@color/black_full"
+                        android:textSize="12sp"
+                        tools:text="Rp 5000" />
+
+
+                    <TextView
+                        android:id="@+id/label_total_charged"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_label_total_fare"
+                        android:layout_marginTop="12dp"
+                        android:drawablePadding="10dp"
+                        android:gravity="center"
+                        android:text="@string/complete_trip_amount_charged"
+                        android:textColor="@color/grey_700"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_total_charged"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@id/tv_label_total_fare"
+                        android:layout_marginTop="12dp"
+                        android:textColor="@color/black_full"
+                        android:textSize="12sp"
+                        tools:text="Rp 5000" />
+
+                </RelativeLayout>
+
+
+                <include
+                    layout="@layout/layout_trip_pending_amount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

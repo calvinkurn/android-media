@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/coordinator_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:focusableInTouchMode="true"
+    android:descendantFocusability="beforeDescendants">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:elevation="0dp"
-        android:background="@android:color/white">
+        android:background="@android:color/white"
+        app:elevation="0dp">
+
         <include layout="@layout/partial_product_score" />
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.NestedScrollView
+    <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
@@ -36,8 +41,9 @@
             <Button
                 android:id="@+id/button_save_and_add"
                 style="@style/Button.Submit.White"
+                android:foreground="?attr/selectableItemBackground"
                 android:layout_width="match_parent"
-                android:layout_marginTop="@dimen/product_margin_cards"
+                android:layout_marginTop="@dimen/margin_med"
                 android:text="@string/product_label_save_and_add"
                 android:textColor="@color/font_black_secondary_54" />
 
@@ -45,9 +51,12 @@
                 android:id="@+id/button_save"
                 style="@style/Button.Submit.Green"
                 android:layout_width="match_parent"
+                android:foreground="?attr/selectableItemBackground"
                 android:layout_marginBottom="@dimen/activity_vertical_margin"
                 android:text="@string/product_label_save" />
-        </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
 
-</android.support.design.widget.CoordinatorLayout>
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

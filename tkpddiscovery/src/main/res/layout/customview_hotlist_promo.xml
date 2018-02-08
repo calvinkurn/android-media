@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/title_promo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/height_button_voucher"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/font_black_secondary_54"
+        android:textSize="@dimen/text_size_l_medium"
+        android:textStyle="bold"
+        android:gravity="center_vertical"
+        tools:text="Promo Hotlist, Cashback hingga Rp. 100.000"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/font_black_secondary_54"
+        android:textSize="@dimen/text_size_s_medium"
+        android:drawableStart="@drawable/ic_promo_voucher"
+        android:drawableLeft="@drawable/ic_promo_voucher"
+        android:drawablePadding="@dimen/padding_vs"
+        android:layout_marginBottom="@dimen/margin_vs"
+        android:text="@string/title_promo_code"
+        />
+
+    <com.tokopedia.design.text.CopyPromoVoucher
+        android:id="@+id/widget_copy_promo_voucher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_small"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/button_term_and_condition"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:textSize="@dimen/font_small"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:textColor="@color/medium_green"
+            android:lineSpacingExtra="2sp"
+            android:text="@string/button_term_and_condition"
+            />
+
+        <TextView
+            android:id="@+id/text_min_transaction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@id/button_term_and_condition"
+            android:layout_toStartOf="@id/button_term_and_condition"
+            android:layout_marginBottom="@dimen/margin_vs"
+            android:textSize="@dimen/font_small"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:textColor="@color/font_black_disabled_38"
+            android:lineSpacingExtra="4sp"
+            tools:text="Min. Transaksi: Tidak Ada"
+            />
+
+        <TextView
+            android:id="@+id/text_period_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@id/button_term_and_condition"
+            android:layout_toStartOf="@id/button_term_and_condition"
+            android:layout_below="@id/text_min_transaction"
+            android:textSize="@dimen/font_small"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:textColor="@color/font_black_disabled_38"
+            android:lineSpacingExtra="4sp"
+            tools:text="Berlaku s/d: 1-3 Nov 2017"
+            />
+
+    </RelativeLayout>
+
+</LinearLayout>

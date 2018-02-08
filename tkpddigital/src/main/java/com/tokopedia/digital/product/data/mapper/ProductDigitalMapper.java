@@ -5,6 +5,7 @@ import com.tokopedia.digital.product.data.entity.response.ResponseBanner;
 import com.tokopedia.digital.product.data.entity.response.ResponseCategoryDetailData;
 import com.tokopedia.digital.product.data.entity.response.ResponseCategoryDetailIncluded;
 import com.tokopedia.digital.product.data.entity.response.ResponseLastOrderData;
+import com.tokopedia.digital.product.data.entity.response.ResponsePulsaBalance;
 import com.tokopedia.digital.product.data.entity.response.ResponseRecentNumberData;
 import com.tokopedia.digital.product.model.BannerData;
 import com.tokopedia.digital.product.model.CategoryData;
@@ -13,6 +14,7 @@ import com.tokopedia.digital.product.model.Operator;
 import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.Product;
 import com.tokopedia.digital.product.model.Promo;
+import com.tokopedia.digital.product.model.PulsaBalance;
 import com.tokopedia.digital.product.model.Rule;
 import com.tokopedia.digital.product.model.Teaser;
 
@@ -24,49 +26,6 @@ import java.util.List;
  */
 
 public class ProductDigitalMapper implements IProductDigitalMapper {
-    @Override
-    public BannerData transformBannerData(ResponseBanner responseBanner)
-            throws MapperDataException {
-        return new BannerData.Builder()
-                .type(responseBanner.getType())
-                .id(responseBanner.getId())
-                .rechargeCmsbannerId(responseBanner.getAttributes().getRechargeCmsbannerId())
-                .fileName(responseBanner.getAttributes().getFileName())
-                .fileNameWebp(responseBanner.getAttributes().getFileNameWebp())
-                .startDate(responseBanner.getAttributes().getStartDate())
-                .endDate(responseBanner.getAttributes().getEndDate())
-                .imgUrl(responseBanner.getAttributes().getImgUrl())
-                .priority(responseBanner.getAttributes().getPriority())
-                .status(responseBanner.getAttributes().getStatus())
-                .title(responseBanner.getAttributes().getTitle())
-                .subtitle(responseBanner.getAttributes().getSubtitle())
-                .promocode(responseBanner.getAttributes().getPromocode())
-                .dataTitle(responseBanner.getAttributes().getDataTitle())
-                .build();
-    }
-
-    @Override
-    public List<BannerData> transformBannerDataList(
-            List<ResponseCategoryDetailIncluded> responseCategoryDetailIncludedList
-    ) throws MapperDataException {
-        List<BannerData> bannerDataList = new ArrayList<>();
-        for (ResponseCategoryDetailIncluded data : responseCategoryDetailIncludedList) {
-            if (data.getType().equalsIgnoreCase("banner")) {
-                bannerDataList.add(
-                        new BannerData.Builder()
-                                .title(data.getAttributes().getTitle())
-                                .subtitle(data.getAttributes().getSubtitle())
-                                .promocode(data.getAttributes().getPromocode())
-                                .image(data.getAttributes().getImage())
-                                .dataTitle(data.getAttributes().getDataTitle())
-                                .link(data.getAttributes().getLink())
-                                .build()
-                );
-            }
-        }
-        return bannerDataList;
-    }
-
 
     @Override
     public CategoryData transformCategoryData(
@@ -91,7 +50,9 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
         categoryData.setOperatorStyle(
                 responseCategoryDetailData.getAttributes().getOperatorStyle()
         );
-
+        categoryData.setOperatorLabel(
+                responseCategoryDetailData.getAttributes().getOperatorLabel()
+        );
 
         List<ClientNumber> clientNumberCategoryList = new ArrayList<>();
         for (com.tokopedia.digital.product.data.entity.response.Field field
@@ -122,6 +83,7 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
 
         List<Operator> operatorCategoryList = new ArrayList<>();
         List<BannerData> bannerDataList = new ArrayList<>();
+        List<BannerData> otherBannerDataList = new ArrayList<>();
         for (ResponseCategoryDetailIncluded categoryDetailIncluded
                 : responseCategoryDetailIncludedList) {
             if (categoryDetailIncluded.getType().equalsIgnoreCase(Operator.DEFAULT_TYPE_CONTRACT)) {
@@ -131,6 +93,7 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                         categoryDetailIncluded.getAttributes().getDefaultProductId()
                 );
                 operatorCategory.setImage(categoryDetailIncluded.getAttributes().getImage());
+                operatorCategory.setUssdCode(categoryDetailIncluded.getAttributes().getUssdCode());
                 operatorCategory.setLastorderUrl(
                         categoryDetailIncluded.getAttributes().getLastorderUrl()
                 );
@@ -140,29 +103,33 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                 List<Product> productOperatorList = new ArrayList<>();
                 for (com.tokopedia.digital.product.data.entity.response.Product product
                         : categoryDetailIncluded.getAttributes().getProduct()) {
-                    Product productOperator = new Product();
-                    productOperator.setDesc(product.getAttributes().getDesc());
-                    productOperator.setDetail(product.getAttributes().getDetail());
-                    productOperator.setInfo(product.getAttributes().getInfo());
-                    productOperator.setPrice(product.getAttributes().getPrice());
-                    productOperator.setPricePlain(product.getAttributes().getPricePlain());
-                    productOperator.setProductType(product.getType());
-                    productOperator.setProductId(product.getId());
-                    productOperator.setStatus(product.getAttributes().getStatus());
-                    if (product.getAttributes().getPromo() != null) {
-                        Promo productPromo = new Promo();
-                        productPromo.setBonusText(product.getAttributes().getPromo().getBonusText());
-                        productPromo.setId(product.getAttributes().getPromo().getId());
-                        productPromo.setNewPrice(product.getAttributes().getPromo().getNewPrice());
-                        productPromo.setNewPricePlain(
-                                product.getAttributes().getPromo().getNewPricePlain()
-                        );
-                        productPromo.setTag(product.getAttributes().getPromo().getTag());
-                        productPromo.setTerms(product.getAttributes().getPromo().getTerms());
-                        productPromo.setValueText(product.getAttributes().getPromo().getValueText());
-                        productOperator.setPromo(productPromo);
+                    if (product.getAttributes().getStatus() != Product.STATUS_INACTIVE) {
+                        Product productOperator = new Product();
+                        productOperator.setDesc(product.getAttributes().getDesc());
+                        productOperator.setDetail(product.getAttributes().getDetail());
+                        productOperator.setDetailUrl(product.getAttributes().getDetailUrl());
+                        productOperator.setDetailUrlText(product.getAttributes().getDetailUrlText());
+                        productOperator.setInfo(product.getAttributes().getInfo());
+                        productOperator.setPrice(product.getAttributes().getPrice());
+                        productOperator.setPricePlain(product.getAttributes().getPricePlain());
+                        productOperator.setProductType(product.getType());
+                        productOperator.setProductId(product.getId());
+                        productOperator.setStatus(product.getAttributes().getStatus());
+                        if (product.getAttributes().getPromo() != null) {
+                            Promo productPromo = new Promo();
+                            productPromo.setBonusText(product.getAttributes().getPromo().getBonusText());
+                            productPromo.setId(product.getAttributes().getPromo().getId());
+                            productPromo.setNewPrice(product.getAttributes().getPromo().getNewPrice());
+                            productPromo.setNewPricePlain(
+                                    product.getAttributes().getPromo().getNewPricePlain()
+                            );
+                            productPromo.setTag(product.getAttributes().getPromo().getTag());
+                            productPromo.setTerms(product.getAttributes().getPromo().getTerms());
+                            productPromo.setValueText(product.getAttributes().getPromo().getValueText());
+                            productOperator.setPromo(productPromo);
+                        }
+                        productOperatorList.add(productOperator);
                     }
-                    productOperatorList.add(productOperator);
                 }
                 List<ClientNumber> clientNumberOperatorList = new ArrayList<>();
                 for (com.tokopedia.digital.product.data.entity.response.Field field
@@ -203,6 +170,9 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                 operatorRule.setProductViewStyle(
                         categoryDetailIncluded.getAttributes().getRule().getProductViewStyle()
                 );
+                operatorRule.setButtonText(
+                        categoryDetailIncluded.getAttributes().getRule().getButtonText()
+                );
                 operatorCategory.setRule(operatorRule);
 
                 operatorCategoryList.add(operatorCategory);
@@ -220,10 +190,27 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                                 .link(categoryDetailIncluded.getAttributes().getLink())
                                 .build()
                 );
+            } else if (categoryDetailIncluded.getType()
+                    .equalsIgnoreCase(BannerData.OTHER_TYPE_CONTRACT)) {
+                if (categoryDetailIncluded.getAttributes() != null) {
+                    otherBannerDataList.add(
+                            new BannerData.Builder()
+                                    .id(categoryDetailIncluded.getId())
+                                    .type(categoryDetailIncluded.getType())
+                                    .title(categoryDetailIncluded.getAttributes().getTitle())
+                                    .subtitle(categoryDetailIncluded.getAttributes().getSubtitle())
+                                    .promocode(categoryDetailIncluded.getAttributes().getPromocode())
+                                    .image(categoryDetailIncluded.getAttributes().getImage())
+                                    .dataTitle(categoryDetailIncluded.getAttributes().getDataTitle())
+                                    .link(categoryDetailIncluded.getAttributes().getLink())
+                                    .build()
+                    );
+                }
             }
         }
         categoryData.setOperatorList(operatorCategoryList);
         categoryData.setBannerDataListIncluded(bannerDataList);
+        categoryData.setOtherBannerDataListIncluded(otherBannerDataList);
 
         if (responseCategoryDetailData.getAttributes().getTeaser() != null) {
             Teaser categoryTeaser = new Teaser();
@@ -239,28 +226,13 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
     }
 
     @Override
-    public OrderClientNumber transformOrderClientNumber(
-            ResponseLastOrderData lastOrderData
-    ) throws MapperDataException {
-        return new OrderClientNumber.Builder()
-                .clientNumber(lastOrderData.getAttributes().getClientNumber())
-                .categoryId(lastOrderData.getAttributes().getCategoryId())
-                .operatorId(lastOrderData.getAttributes().getOperatorId())
-                .productId(lastOrderData.getAttributes().getProductId())
-                .build();
+    public PulsaBalance transformPulsaBalance(
+            ResponsePulsaBalance responsePulsaBalance) throws MapperDataException {
+        return new PulsaBalance.Builder()
+                .mobileBalance(responsePulsaBalance.getAttributes().getBalance())
+                .plainBalance(responsePulsaBalance.getAttributes().getBalancePlain())
+                .success(responsePulsaBalance.getAttributes().isSuccess())
+                .expireDate(responsePulsaBalance.getAttributes().getExpireDate()).build();
     }
 
-    @Override
-    public OrderClientNumber transformOrderClientNumber(
-            ResponseRecentNumberData responseRecentNumberData
-    ) throws MapperDataException {
-        return new OrderClientNumber.Builder()
-                .clientNumber(responseRecentNumberData.getAttributes().getClientNumber())
-                .productId("")
-                .categoryId(
-                        responseRecentNumberData.getRelationships().getCategory().getData().getId()
-                )
-                .operatorId("")
-                .build();
-    }
 }
