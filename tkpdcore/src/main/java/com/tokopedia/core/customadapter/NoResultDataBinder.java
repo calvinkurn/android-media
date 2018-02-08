@@ -20,6 +20,10 @@ import butterknife.ButterKnife;
 /**
  * Created by Nisie on 2/26/16.
  */
+
+/**
+ * Use base adapter with visitor pattern from tkpd abstraction
+ */
 @Deprecated
 public class NoResultDataBinder extends DataBinder<NoResultDataBinder.ViewHolder> {
 

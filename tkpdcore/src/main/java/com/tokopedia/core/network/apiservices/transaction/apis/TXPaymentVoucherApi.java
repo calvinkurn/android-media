@@ -18,5 +18,5 @@ public interface TXPaymentVoucherApi {
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Transaction.PATH_CHECK_VOUCHER_CODE)
-    Observable<Response<TkpdResponse>> checkVoucherCode(@FieldMap Map<String, String> params);
+    Observable<Response<TkpdResponse>> checkVoucherCode( @FieldMap Map<String, String> params);
 }
