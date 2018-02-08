@@ -1,9 +1,24 @@
 package com.tokopedia.home.beranda.di.module;
 
+import android.content.Context;
+
 import com.apollographql.apollo.ApolloClient;
+import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.di.qualifier.AuthKeyQualifier;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.core.OkHttpFactory;
+import com.tokopedia.core.network.core.OkHttpRetryPolicy;
+import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
+import com.tokopedia.core.network.retrofit.response.TkpdV4ResponseError;
+import com.tokopedia.home.beranda.di.DefaultAuthWithErrorHandler;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.factory.HomeFeedFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedResultMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.HomeFeedMapper;
@@ -24,7 +39,7 @@ import okhttp3.OkHttpClient;
 public class HomeFeedModule {
 
     @Provides
-    ApolloClient providesApolloClient(OkHttpClient okHttpClient) {
+    ApolloClient providesApolloClient(@DefaultAuthWithErrorHandler OkHttpClient okHttpClient) {
         return ApolloClient.builder()
                 .okHttpClient(okHttpClient)
                 .serverUrl(TkpdBaseURL.GRAPHQL_DOMAIN)
@@ -62,4 +77,22 @@ public class HomeFeedModule {
             HomeFeedRepository feedRepository) {
         return new GetHomeFeedsUseCase(new JobExecutor(), new UIThread(), feedRepository);
     }
+
+    @DefaultAuthWithErrorHandler
+    @Provides
+    OkHttpClient provideOkHttpClient(@AuthKeyQualifier String authKey,
+                                     @ApplicationContext Context context) {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, DeveloperOptions.CHUCK_ENABLED);
+        return OkHttpFactory.create().buildDaggerClientDefaultAuthWithErrorHandler(
+                new FingerprintInterceptor(),
+                new TkpdAuthInterceptor(authKey),
+                OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy(),
+                new ChuckInterceptor(context).showNotification(
+                        localCacheHandler.getBoolean(DeveloperOptions.IS_CHUCK_ENABLED, false)
+                ),
+                new DebugInterceptor(),
+                new TkpdErrorResponseInterceptor(TkpdV4ResponseError.class)
+        );
+    }
+
 }
