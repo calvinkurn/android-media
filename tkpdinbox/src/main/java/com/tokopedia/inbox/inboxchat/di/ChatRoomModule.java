@@ -1,16 +1,11 @@
 package com.tokopedia.inbox.inboxchat.di;
 
-import android.content.Context;
-
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.accounts.UploadImageService;
 import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.core.network.apiservices.kunyit.KunyitService;
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
-import com.tokopedia.core.network.apiservices.upload.apis.GeneratedHostActApi;
-import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.inbox.inboxchat.data.factory.MessageFactory;
 import com.tokopedia.inbox.inboxchat.data.factory.ReplyFactory;
 import com.tokopedia.inbox.inboxchat.data.factory.template.TemplateChatFactory;
@@ -20,7 +15,6 @@ import com.tokopedia.inbox.inboxchat.data.mapper.GetReplyMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.ReplyMessageMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.SendMessageMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.template.TemplateChatMapper;
-import com.tokopedia.inbox.inboxchat.data.repository.AttachImageRepository;
 import com.tokopedia.inbox.inboxchat.data.repository.MessageRepository;
 import com.tokopedia.inbox.inboxchat.data.repository.MessageRepositoryImpl;
 import com.tokopedia.inbox.inboxchat.data.repository.ReplyRepository;
@@ -44,7 +38,6 @@ import com.tokopedia.inbox.inboxchat.uploadimage.domain.interactor.UploadImageUs
 
 import dagger.Module;
 import dagger.Provides;
-import retrofit2.Retrofit;
 
 /**
  * Created by stevenfredian on 9/14/17.
@@ -268,20 +261,6 @@ public class ChatRoomModule {
     UploadImageService
     provideUploadImageService() {
         return new UploadImageService();
-    }
-
-    @InboxChatScope
-    @Provides
-    GenerateHostMapper
-    provideGenerateHostMapper() {
-        return new GenerateHostMapper();
-    }
-
-    @InboxChatScope
-    @Provides
-    UploadImageMapper
-    provideUploadImageMapper() {
-        return new UploadImageMapper();
     }
 
 }

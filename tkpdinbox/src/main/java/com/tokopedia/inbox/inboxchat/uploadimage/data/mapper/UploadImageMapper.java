@@ -7,6 +7,8 @@ import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.uploadimage.data.pojo.UploadImagePojo;
 import com.tokopedia.inbox.inboxchat.uploadimage.domain.model.UploadImageDomain;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -15,6 +17,11 @@ import rx.functions.Func1;
  */
 
 public class UploadImageMapper implements Func1<Response<TkpdResponse>, UploadImageDomain> {
+
+    @Inject
+    public UploadImageMapper() {
+    }
+
     @Override
     public UploadImageDomain call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {

@@ -269,7 +269,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             }
             getView().getAdapter().addReply(item);
             getView().finishLoading();
-            getView().scrollToBottomIf();
+            getView().scrollToBottomWithCheck();
             try {
                 readMessage(String.valueOf(response.getData().getMsgId()));
             } catch (JSONException e) {
@@ -318,11 +318,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     }
 
     @Override
-    public void openImageGallery() {
-
-    }
-
-    @Override
     public void startUpload(final List<MyChatViewModel> list, final int network) {
         getView().setUploadingMode(true);
         String userId = SessionHandler.getTempLoginSession(getView().getActivity());
@@ -359,15 +354,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     @Override
     public String getFileLocFromCamera() {
         return cameraFileLoc;
-    }
-
-    private boolean isValidMessage(String message) {
-        Boolean isValid = true;
-
-        if (message.trim().length() == 0) {
-            isValid = false;
-        }
-        return isValid;
     }
 
     public void onLoadMore() {
@@ -478,7 +464,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         json.put("code", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
         JSONObject data = new JSONObject();
         data.put("message_id", Integer.valueOf(messageId));
-        data.put("message", "Uploaded Image");
+        data.put("message", InboxChatConstant.UPLOADING);
         SimpleDateFormat date = new SimpleDateFormat(
                 "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
         date.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -546,7 +532,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     @Override
     public void onOpenWebSocket() {
-//        attempt = 0;
         if (isFirstTime) {
             isFirstTime = false;
             String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));

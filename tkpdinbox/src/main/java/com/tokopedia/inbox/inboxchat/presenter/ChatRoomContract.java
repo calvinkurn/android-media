@@ -77,8 +77,6 @@ public class ChatRoomContract {
 
         Context getActivity();
 
-        Activity getActivityReal();
-
         void onSuccessSendReply(ReplyActionData data, String reply);
 
         void onErrorSendReply();
@@ -123,7 +121,7 @@ public class ChatRoomContract {
 
         void setUploadingMode(boolean b);
 
-        void scrollToBottomIf();
+        void scrollToBottomWithCheck();
     }
 
     interface Presenter extends CustomerPresenter<View>{
@@ -144,8 +142,6 @@ public class ChatRoomContract {
         void initMessage(String s, String string, String string1, String string2);
 
         void openCamera();
-
-        void openImageGallery();
 
         void startUpload(List<MyChatViewModel> list, int network);
 

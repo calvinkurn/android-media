@@ -54,6 +54,7 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
+import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
 import com.tokopedia.seller.product.manage.di.ProductManageComponent;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
@@ -723,8 +724,8 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getGalleryIntent(Context context) {
-        return GalleryCropWatermarkActivity.createIntent(context,1, false, 1, true);
+    public Intent getGalleryIntent(Context context, boolean forceOpenCamera, int maxImageSelection, boolean compressToTkpd) {
+        return GalleryCropActivity.createIntent(context,1, forceOpenCamera, maxImageSelection, compressToTkpd);
     }
 
     @Override

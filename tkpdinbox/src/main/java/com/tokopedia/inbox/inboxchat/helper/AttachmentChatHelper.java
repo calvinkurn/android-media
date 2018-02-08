@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.domain.model.ListReplyViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.FallbackAttachment;
@@ -52,7 +51,8 @@ public class AttachmentChatHelper {
     public void parse(ImageView view, TextView message
             , ListReplyViewModel element
             , ChatRoomContract.View viewListener, String fullTime) {
-        parse(null, view, message, null, element, viewListener, false, false, null, null, null, fullTime);
+        parse(null, view, message, null, element, viewListener
+                ,false, false, null, null, null, fullTime);
     }
 
     private void parseAttachedImage(final MyChatViewModel myChatViewModel
@@ -61,15 +61,15 @@ public class AttachmentChatHelper {
             , ImageView action, TextView hour, View progressBarSendImage, ImageView chatStatus, final String fullTime) {
         setVisibility(progressBarSendImage, View.VISIBLE);
         if(retry){
-            action.setVisibility(View.VISIBLE);
-            action.setOnClickListener(new View.OnClickListener() {
+            setVisibility(action, View.VISIBLE);
+            setClickListener(action, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     viewListener.onRetrySend(myChatViewModel);
                 }
             });
-            hour.setVisibility(View.GONE);
-            chatStatus.setVisibility(View.GONE);
+            setVisibility(hour, View.GONE);
+            setVisibility(chatStatus, View.GONE);
             setVisibility(progressBarSendImage, View.GONE);
         }
 
@@ -83,9 +83,9 @@ public class AttachmentChatHelper {
             });
 
             if(dummy) {
-                ImageHandler.loadImageChatBlurred(view, attachment.getAttributes().getImageUrl(), R.drawable.product_no_photo_default);
+                ImageHandler.loadImageChatBlurred(view, attachment.getAttributes().getImageUrl());
             }else {
-                ImageHandler.loadImageChat(view, attachment.getAttributes().getImageUrl(), R.drawable.product_no_photo_default);
+                ImageHandler.loadImageChat(view, attachment.getAttributes().getImageUrl());
                 setVisibility(progressBarSendImage, View.GONE);
             }
             message.setVisibility(View.GONE);
@@ -104,7 +104,7 @@ public class AttachmentChatHelper {
             view.setVisibility(View.VISIBLE);
             view.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
             view.getLayoutParams().height = view.getLayoutParams().width;
-            ImageHandler.loadImageChat(view, attachment.getAttributes().getImageUrl(), R.drawable.product_no_photo_default);
+            ImageHandler.loadImageChat(view, attachment.getAttributes().getImageUrl());
         } else {
             view.setVisibility(View.GONE);
         }
@@ -171,4 +171,12 @@ public class AttachmentChatHelper {
             view.setVisibility(visibility);
         }
     }
+
+    public void setClickListener(View view, View.OnClickListener onClickListener){
+        if(view != null){
+            view.setOnClickListener(onClickListener);
+        }
+    }
+
+
 }

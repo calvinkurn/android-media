@@ -239,7 +239,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         }
     }
 
-    public static void loadImageChat(ImageView imageview, String url, int resId) {
+    public static void loadImageChat(ImageView imageview, String url) {
         if (url != null) {
             Glide.with(imageview.getContext())
                     .load(url)
@@ -250,7 +250,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         }
     }
 
-    public static void loadImageChatBlurred(ImageView imageview, String url, int resId) {
+    public static void loadImageChatBlurred(ImageView imageview, String url) {
         if (url != null) {
             Glide.with(imageview.getContext())
                     .load(url)

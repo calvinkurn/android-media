@@ -122,7 +122,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Inject
     SessionHandler sessionHandler;
 
-    private int network;
+    private int networkType;
     private RecyclerView recyclerView;
     private RecyclerView templateRecyclerView;
     private ProgressBar progressBar;
@@ -241,7 +241,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
         BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
                 .setItemClickListener(new BottomSheetItemClickListener() {
-                    @SuppressWarnings("WrongConstant")
                     @Override
                     public void onBottomSheetItemClick(MenuItem item) {
                         switch (item.getItemId()){
@@ -251,7 +250,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                                 model.setImageId(String.valueOf(System.currentTimeMillis()/1000));
                                 model.setFileLoc(attachment.getAttachment().getAttributes().getImageUrl());
                                 MyChatViewModel temp = addDummyAttachImage(model);
-                                presenter.startUpload(Collections.singletonList(temp), network);
+                                presenter.startUpload(Collections.singletonList(temp), networkType);
                                 break;
                             case DELETE:
                                 adapter.remove(attachment);
@@ -461,7 +460,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     private void initVar() {
-        network = MODE_API;
+        networkType = MODE_API;
         typeFactory = new ChatRoomTypeFactoryImpl(this);
         templateChatFactory = new TemplateChatTypeFactoryImpl(this);
     }
@@ -661,11 +660,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public Activity getActivityReal() {
-        return getActivity();
-    }
-
-    @Override
     public void scrollToBottom() {
         recyclerView.scrollToPosition(adapter.getItemCount());
     }
@@ -718,7 +712,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     public void onSuccessSendAttach(ReplyActionData data, MyChatViewModel model) {
         adapter.remove(model);
-        addView(data, "Uploaded Image");
+        addView(data, UPLOADING);
     }
 
     @Override
@@ -727,7 +721,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void scrollToBottomIf() {
+    public void scrollToBottomWithCheck() {
         int index = layoutManager.findLastCompletelyVisibleItemPosition();
         if(Math.abs(index - adapter.getList().size()) < 3) {
             recyclerView.scrollToPosition(adapter.getItemCount()-1);
@@ -937,7 +931,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     public void onErrorWebSocket() {
         if (getActivity() != null && presenter != null) {
-            network = MODE_API;
+            networkType = MODE_API;
             sendButton.setOnClickListener(getSendWithApiListener());
             notifyConnectionWebSocket();
             presenter.recreateWebSocket();
@@ -955,7 +949,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     title.setText(R.string.connected_websocket);
                     View action = notifier.findViewById(R.id.action);
                     action.setVisibility(View.GONE);
-                    network = MODE_WEBSOCKET;
+                    networkType = MODE_WEBSOCKET;
                     sendButton.setOnClickListener(getSendWithWebSocketListener());
 
                 }
@@ -1026,7 +1020,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     model.setImageId(String.valueOf(System.currentTimeMillis()/1000));
                     model.setFileLoc(fileLoc);
                     MyChatViewModel temp = addDummyAttachImage(model);
-                    presenter.startUpload(Collections.singletonList(temp), network);
+                    presenter.startUpload(Collections.singletonList(temp), networkType);
                 }
                 break;
 
@@ -1056,7 +1050,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     }
                 }
 
-                presenter.startUpload(list, network);
+                presenter.startUpload(list, networkType);
                 break;
             default:
                 break;
@@ -1099,9 +1093,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void actionImagePicker() {
-//        presenter.openImageGallery();
         Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
-                .getGalleryIntent(getActivity());
+                .getGalleryIntent(getActivity(), false, 1, false);
         startActivityForResult(intent, com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY);
     }
 

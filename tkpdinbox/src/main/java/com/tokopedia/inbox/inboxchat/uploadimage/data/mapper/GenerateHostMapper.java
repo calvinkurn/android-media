@@ -7,6 +7,8 @@ import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.uploadimage.data.pojo.GenerateHostPojo;
 import com.tokopedia.inbox.inboxchat.uploadimage.domain.model.GenerateHostDomain;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -15,6 +17,11 @@ import rx.functions.Func1;
  */
 
 public class GenerateHostMapper implements Func1<Response<TkpdResponse>, GenerateHostDomain> {
+
+    @Inject
+    public GenerateHostMapper() {
+    }
+
     @Override
     public GenerateHostDomain call(Response<TkpdResponse> response) {
 

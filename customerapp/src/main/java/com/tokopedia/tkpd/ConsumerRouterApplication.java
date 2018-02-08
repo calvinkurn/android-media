@@ -1040,8 +1040,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getGalleryIntent(Context context) {
-        return GalleryCropActivity.createIntent(context,1, false, 1, false);
+    public Intent getGalleryIntent(Context context, boolean forceOpenCamera, int maxImageSelection, boolean compressToTkpd) {
+        return GalleryCropActivity.createIntent(context,1, forceOpenCamera, maxImageSelection, compressToTkpd);
     }
 
     @Override

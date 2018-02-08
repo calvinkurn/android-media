@@ -7,6 +7,8 @@ import com.tokopedia.inbox.inboxchat.uploadimage.data.mapper.UploadImageMapper;
 import com.tokopedia.inbox.inboxchat.uploadimage.data.source.CloudGenerateHostDataSource;
 import com.tokopedia.inbox.inboxchat.uploadimage.data.source.CloudUploadImageDataSource;
 
+import javax.inject.Inject;
+
 
 /**
  * @author by nisie on 9/5/17.
@@ -19,6 +21,7 @@ public class ImageUploadFactory {
     private final GenerateHostMapper generateHostMapper;
     private final UploadImageMapper uploadImageMapper;
 
+    @Inject
     public ImageUploadFactory(GenerateHostActService generateHostActService,
                               UploadImageService uploadImageService,
                               GenerateHostMapper generateHostMapper,

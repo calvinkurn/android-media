@@ -77,15 +77,6 @@ public class AttachImageUseCase extends UseCase<UploadImageDomain>{
                             return Observable.just(new UploadImageDomain(null, null));
                     }
                 });
-//                .flatMap(new Func1<UploadImageDomain, Observable<ReplyActionData>>() {
-//                    @Override
-//                    public Observable<ReplyActionData> call(UploadImageDomain uploadImageDomain) {
-//                        if(uploadImageDomain.getPicSrc()!=null){
-//                            return reply(requestParams, uploadImageDomain);
-//                        }else
-//                            return Observable.just(new ReplyActionData());
-//                    }
-//                });
     }
 
     private RequestParams getUploadFileParam(RequestParams requestParams) {
