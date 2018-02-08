@@ -172,7 +172,7 @@ public class DrawerBuyerHelper extends DrawerHelper
             data.add(new DrawerItem(context.getString(R.string.drawer_title_new_reso),
                     R.drawable.ic_reso,
                     TkpdState.DrawerPosition.RESOLUTION_CENTER,
-                    true, getTotalResoNotif()));
+                    true, getTotalResoBuyerNotif()));
         }
         data.add(new DrawerItem(context.getString(R.string.drawer_title_setting),
                 R.drawable.icon_setting,
@@ -364,8 +364,13 @@ public class DrawerBuyerHelper extends DrawerHelper
                 drawerCache.getInt(DrawerNotification.CACHE_SELLING_NEW_ORDER, 0);
     }
 
-    private int getTotalResoNotif() {
+    private int getTotalResoBuyerNotif() {
         return drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER_BUYER, 0);
+    }
+
+    private int getTotalResoNotif() {
+        return drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER_BUYER, 0)  +
+                drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER_SELLER, 0);
     }
 
     @Override
