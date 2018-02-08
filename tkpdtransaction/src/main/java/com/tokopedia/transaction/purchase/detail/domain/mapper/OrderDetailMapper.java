@@ -157,7 +157,7 @@ public class OrderDetailMapper {
 
         if (responseData.getDetail().getShipment().getInfo() != null &&
                 responseData.getDetail().getShipment().getInfo().getDriver() != null) {
-            viewData.setDrivername(
+            viewData.setDriverName(
                     responseData.getDetail().getShipment().getInfo().getDriver().getName()
             );
             viewData.setDriverImage(
