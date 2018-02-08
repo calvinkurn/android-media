@@ -298,6 +298,7 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
         requestOtpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                otpEditText.setText("");
                 presenter.requestOtp();
             }
         });
