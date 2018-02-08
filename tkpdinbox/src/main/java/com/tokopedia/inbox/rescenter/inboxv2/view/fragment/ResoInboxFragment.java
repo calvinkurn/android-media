@@ -208,7 +208,9 @@ public class ResoInboxFragment
     public void onRefresh() {
         adapter.clearData();
         resetParams();
-        if (inboxFilterModel.getSelectedFilterList().size() != 0) {
+        if (inboxFilterModel.getSelectedFilterList().size() != 0
+                || !TextUtils.isEmpty(inboxFilterModel.getDateFromString())
+                || !TextUtils.isEmpty(inboxFilterModel.getDateToString())) {
             presenter.getInboxWithParams(inboxSortModel, inboxFilterModel);
         } else {
             presenter.getInbox();
