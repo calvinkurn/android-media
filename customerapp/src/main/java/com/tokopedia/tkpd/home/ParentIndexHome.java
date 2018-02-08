@@ -7,7 +7,9 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -223,29 +225,29 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 //        indicator.removeAllTabs();
 //        content.clear();
 //        adapter.notifyDataSetChanged();
-        if (SessionHandler.isV4Login(getBaseContext())) {
-            String[] CONTENT = new String[]{
-                    getString(R.string.title_categories),
-                    getString(R.string.title_index_prod_shop),
-                    getString(R.string.title_index_favorite),
-                    getString(R.string.title_index_hot_list)
-            };
-//            content = new ArrayList<>();
-            for (String content_ : CONTENT) {
-//                indicator.addTab(indicator.newTab().setText(content_));
-//                content.add(content_);
-            }
-        } else {
-            String[] CONTENT = new String[]{getString(R.string.title_categories), getString(R.string.title_index_hot_list)};
-//            content = new ArrayList<>();
-            for (String content_ : CONTENT) {
-//                indicator.addTab(indicator.newTab().setText(content_));
-//                content.add(content_);
-            }
-        }
+//        if (SessionHandler.isV4Login(getBaseContext())) {
+//            String[] CONTENT = new String[]{
+//                    getString(R.string.title_categories),
+//                    getString(R.string.title_index_prod_shop),
+//                    getString(R.string.title_index_favorite),
+//                    getString(R.string.title_index_hot_list)
+//            };
+////            content = new ArrayList<>();
+//            for (String content_ : CONTENT) {
+////                indicator.addTab(indicator.newTab().setText(content_));
+////                content.add(content_);
+//            }
+//        } else {
+//            String[] CONTENT = new String[]{getString(R.string.title_categories), getString(R.string.title_index_hot_list)};
+////            content = new ArrayList<>();
+//            for (String content_ : CONTENT) {
+////                indicator.addTab(indicator.newTab().setText(content_));
+////                content.add(content_);
+//            }
+//        }
 
         initCreate();
-        adapter.notifyDataSetChanged();
+//        adapter.notifyDataSetChanged();
 
         NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
 
@@ -295,7 +297,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             }
         });
         View notif = view.findViewById(R.id.burger_menu);
-        ImageView drawerToggle = (ImageView) notif.findViewById(R.id.toggle_but_ab);
+        ImageView drawerToggle = notif.findViewById(R.id.toggle_but_ab);
         drawerToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -347,8 +349,35 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
         bottomNavigation.setupWithViewPager(mViewPager, false);
 
-        mViewPager.setCurrentItem(initStateFragment, false);
+        bottomNavigation.setViewPagerPageChangeListener(new BottomNavigation.ViewPagerPageChangeListener() {
+            @Override
+            public void onPageScrollStateChanged(int state) {}
 
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+
+            @Override
+            public void onPageSelected(int position) {
+                sendGTMButtonEvent(position);
+            }
+        });
+
+        bottomNavigation.setOnNavigationItemReselectedListener(new BottomNavigationView.OnNavigationItemReselectedListener() {
+            @Override
+            public void onNavigationItemReselected(@NonNull MenuItem menuItem) {
+                if (menuItem.getItemId() == R.id.menu_feed || menuItem.getItemId() == R.id.menu_beranda) {
+                    Fragment fragment = adapter.getFragments().get(initStateFragment); // scroll to top
+                    if (fragment != null) {
+                        if (fragment instanceof FeedPlusFragment)
+                            ((FeedPlusFragment) fragment).scrollToTop();
+                        else if (fragment instanceof HomeFragment)
+                            ((HomeFragment) fragment).scrollToTop();
+                    }
+                }
+            }
+        });
+
+        mViewPager.setCurrentItem(initStateFragment, false);
 
 //        if (SessionHandler.isV4Login(getBaseContext())) {
 //            adapter = new PagerAdapter(getSupportFragmentManager(), getFragments());

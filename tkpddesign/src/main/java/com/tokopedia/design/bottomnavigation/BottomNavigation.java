@@ -43,11 +43,11 @@ public class BottomNavigation extends BottomNavigationView {
     private boolean visibilityTextSizeRecord;
     private boolean visibilityHeightRecord;
     private int mItemHeight;
-    private boolean textVisibility = true;
 
     private ViewPager mViewPager;
     private MyOnNavigationItemSelectedListener mMyOnNavigationItemSelectedListener;
     private BottomNavigationViewExOnPageChangeListener mPageChangeListener;
+    private ViewPagerPageChangeListener viewPagerPageChangeListener;
     private BottomNavigationMenuView mMenuView;
     private BottomNavigationItemView[] mButtons;
 
@@ -75,6 +75,17 @@ public class BottomNavigation extends BottomNavigationView {
         this.enableAnimation(false);
         this.enableShiftingMode(false);
         this.enableItemShiftingMode(false);
+    }
+
+    public void setViewPagerPageChangeListener(ViewPagerPageChangeListener viewPagerPageChangeListener) {
+        this.viewPagerPageChangeListener = viewPagerPageChangeListener;
+    }
+
+    public interface ViewPagerPageChangeListener {
+        void onPageScrollStateChanged(final int state);
+        void onPageScrolled(final int position, final float positionOffset,
+                            final int positionOffsetPixels);
+        void onPageSelected(final int position);
     }
 
     /**
@@ -126,7 +137,6 @@ public class BottomNavigation extends BottomNavigationView {
      */
     @SuppressLint("RestrictedApi")
     public void setTextVisibility(boolean visibility) {
-        this.textVisibility = visibility;
         BottomNavigationMenuView mMenuView = getBottomNavigationMenuView();
         BottomNavigationItemView[] mButtons = getBottomNavigationItemViews();
 
@@ -696,7 +706,8 @@ public class BottomNavigation extends BottomNavigationView {
      * addOnPageChangeListener(OnPageChangeListener)} without removing the listener and
      * not cause a leak.
      */
-    private static class BottomNavigationViewExOnPageChangeListener implements ViewPager.OnPageChangeListener {
+    public class BottomNavigationViewExOnPageChangeListener implements ViewPager.OnPageChangeListener {
+
         private final WeakReference<BottomNavigation> mBnveRef;
 
         public BottomNavigationViewExOnPageChangeListener(BottomNavigation bnve) {
@@ -705,11 +716,15 @@ public class BottomNavigation extends BottomNavigationView {
 
         @Override
         public void onPageScrollStateChanged(final int state) {
+            if (viewPagerPageChangeListener != null)
+                viewPagerPageChangeListener.onPageScrollStateChanged(state);
         }
 
         @Override
         public void onPageScrolled(final int position, final float positionOffset,
                                    final int positionOffsetPixels) {
+            if (viewPagerPageChangeListener != null)
+                viewPagerPageChangeListener.onPageScrolled(position, positionOffset, positionOffsetPixels);
         }
 
         @Override
@@ -717,10 +732,10 @@ public class BottomNavigation extends BottomNavigationView {
             final BottomNavigation bnve = mBnveRef.get();
             if (null != bnve && !isNavigationItemClicking)
                 bnve.setCurrentItem(position);
-//            Log.d("onPageSelected", "--------- position " + position + " ------------");
+            if (viewPagerPageChangeListener != null)
+                viewPagerPageChangeListener.onPageSelected(position);
         }
     }
-
 
     /**
      * Decorate OnNavigationItemSelectedListener for setupWithViewPager
