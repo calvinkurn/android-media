@@ -320,6 +320,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
             @Override
             public void onPageSelected(int position) {
+                initStateFragment = position;
                 sendGTMButtonEvent(position);
             }
         });
@@ -502,8 +503,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         HockeyAppHelper.checkForUpdate(this);
         RxUtils.getNewCompositeSubIfUnsubscribed(subscription);
         FCMCacheManager.checkAndSyncFcmId(getApplicationContext());
-        if (SessionHandler.isV4Login(this)
-                && isUserFirstTimeLogin) {
+        if (SessionHandler.isV4Login(this) && isUserFirstTimeLogin) {
 
             initStateFragment = INIT_STATE_FRAGMENT_HOME;
             adapter = new PagerAdapter(getSupportFragmentManager(), getFragments());
@@ -511,10 +511,9 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             adapter.notifyDataSetChanged();
 
             bottomNavigation.initBackStack();
-
-            mViewPager.setCurrentItem(initStateFragment, false);
-
+            bottomNavigation.setCurrentItem(INIT_STATE_FRAGMENT_HOME);
         }
+
         isUserFirstTimeLogin = !SessionHandler.isV4Login(this);
 
         invalidateOptionsMenu();
