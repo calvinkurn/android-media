@@ -32,6 +32,7 @@ public class FirebaseRemoteAppUpdate implements ApplicationUpdate {
             boolean isNeedUpdate = remoteConfig.getBoolean(SELLERAPP_IS_NEED_UPDATE);
             if (!isNeedUpdate) {
                 listener.onNotNeedUpdate();
+                return;
             }
             long latestVersionCode = remoteConfig.getLong(SELLERAPP_LATEST_VERSION_CODE);
             if (BuildConfig.VERSION_CODE < latestVersionCode) {
