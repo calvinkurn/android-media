@@ -84,8 +84,14 @@ public class EventsHomeActivity extends TActivity
     View progressBarLayout;
     @BindView(R2.id.prog_bar)
     ProgressBar progBar;
+    @BindView(R2.id.indicator_promo_layout)
+    View indicatorLayout;
+
 
     int mBannnerPos;
+    int defaultViewPagerPos;
+
+    public final static String EXTRA_SECTION = "extra_section";
 
     private SlidingImageAdapter adapter;
 
@@ -93,13 +99,19 @@ public class EventsHomeActivity extends TActivity
         return new Intent(activity, EventsHomeActivity.class);
     }
 
-    @DeepLink({Constants.Applinks.EVENTS})
+    @DeepLink({Constants.Applinks.EVENTS, Constants.Applinks.EVENTS_ACTIVITIES})
     public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        String deepLink = extras.getString(DeepLink.URI);
+        Uri.Builder uri = Uri.parse(deepLink).buildUpon();
         Intent destination = new Intent(context, EventsHomeActivity.class)
                 .setData(uri.build())
                 .putExtras(extras);
         destination.putExtra(Constants.EXTRA_FROM_PUSH, true);
+        if (Constants.Applinks.EVENTS.equals(deepLink)) {
+            destination.putExtra(EXTRA_SECTION, 0);
+        } else if (Constants.Applinks.EVENTS_ACTIVITIES.equals(deepLink)) {
+            destination.putExtra(EXTRA_SECTION, 1);
+        }
         return destination;
     }
 
@@ -107,6 +119,7 @@ public class EventsHomeActivity extends TActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events_home_new);
+        defaultViewPagerPos = getIntent().getIntExtra(EXTRA_SECTION, 0);
         unbinder = ButterKnife.bind(this);
         initInjector();
         executeInjector();
@@ -325,8 +338,9 @@ public class EventsHomeActivity extends TActivity
                 new CategoryFragmentPagerAdapter(getSupportFragmentManager(), categoryList);
         categoryViewPager.setAdapter(categoryTabsPagerAdapter);
         tabs.setupWithViewPager(categoryViewPager);
-        categoryViewPager.setCurrentItem(0);
+        categoryViewPager.setCurrentItem(defaultViewPagerPos);
         categoryViewPager.setSaveFromParentEnabled(false);
+        indicatorLayout.setVisibility(View.VISIBLE);
 //        SlidingCategoryAdapter eventCategoryAdapter=new SlidingCategoryAdapter(EventsHomeActivity.this,eventCategoryViews);
 //        categoryViewPager.setAdapter(eventCategoryAdapter);
 //        categoryTabLayout.setupWithViewPager(categoryViewPager, true);

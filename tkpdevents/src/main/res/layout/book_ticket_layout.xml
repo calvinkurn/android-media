@@ -20,7 +20,7 @@
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="?attr/actionBarSize"
         android:fillViewport="true">
 
@@ -46,8 +46,8 @@
                 android:layout_height="76dp"
                 android:background="@color/white"
                 android:overScrollMode="ifContentScrolls"
-                android:paddingBottom="4dp"
-                android:paddingTop="4dp"
+                android:paddingBottom="@dimen/margin_padding_small"
+                android:paddingTop="@dimen/margin_padding_small"
                 app:tabGravity="center"
                 app:tabMaxWidth="0dp"
                 app:tabMode="scrollable"
@@ -56,13 +56,13 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
+                android:layout_height="@dimen/divider_height_thin"
                 android:background="@color/grey_100" />
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/viewpager_book_ticket"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="680dp"
                 android:background="@color/white"
                 android:paddingBottom="@dimen/margin_default" />
         </LinearLayout>

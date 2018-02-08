@@ -9,4 +9,6 @@
     <dimen name="icon_size_large">32dp</dimen>
     <dimen name="margin_default">16dp</dimen>
     <dimen name="card_corner_default">2dp</dimen>
+    <dimen name="margin_padding_small">4dp</dimen>
+    <dimen name="divider_height_thin">2dp</dimen>
 </resources>

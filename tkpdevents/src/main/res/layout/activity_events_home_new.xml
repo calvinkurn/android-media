@@ -58,12 +58,14 @@
                             android:layout_height="180dp" />
 
                         <FrameLayout
+                            android:id="@+id/indicator_promo_layout"
                             android:layout_width="match_parent"
                             android:layout_height="45dp"
                             android:layout_alignParentBottom="true"
                             android:layout_alignParentLeft="true"
                             android:layout_below="@id/event_bannerpager"
-                            android:background="@color/grey_100">
+                            android:background="@color/grey_100"
+                            android:visibility="gone">
 
                             <com.tokopedia.events.view.utils.CirclePageIndicator
                                 android:id="@+id/pager_indicator"
@@ -88,13 +90,15 @@
                                 android:gravity="top"
                                 android:text="Lihat Semua Promo"
                                 android:textColor="@color/green_nob"
-                                android:textStyle="normal" />
+                                android:textStyle="normal"
+                                android:visibility="gone" />
 
                             <ImageView
                                 android:layout_width="16dp"
                                 android:layout_height="16dp"
                                 android:layout_gravity="center_vertical|right"
                                 android:layout_marginRight="@dimen/margin_default"
+                                android:visibility="gone"
                                 app:srcCompat="@drawable/ic_arrow_right" />
                         </FrameLayout>
                     </RelativeLayout>

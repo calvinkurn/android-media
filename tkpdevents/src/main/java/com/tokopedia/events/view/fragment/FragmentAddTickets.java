@@ -61,7 +61,6 @@ public class FragmentAddTickets extends Fragment {
         scrollView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         scrollView.setAdapter(new AddTicketAdapter(getActivity(), mPackages, mPresenter));
         scrollView.setHasFixedSize(true);
-        scrollView.setNestedScrollingEnabled(false);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
         dividerItemDecoration.setDrawable(getContext().getResources().getDrawable(R.drawable.recycler_view_divider));
         scrollView.addItemDecoration(dividerItemDecoration);

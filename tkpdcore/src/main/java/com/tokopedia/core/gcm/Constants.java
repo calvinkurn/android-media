@@ -127,6 +127,7 @@ public interface Constants {
         String FAVORITE = "tokopedia://home/favorite";
 
         String EVENTS = "tokopedia://events";
+        String EVENTS_ACTIVITIES = "tokopedia://events/activities";
         String REFERRAL_WELCOME = "tokopedia://referral/{code}/{owner}";
         String KOLCOMMENT = "tokopedia://kolcomment/{id}";
         String PROMO_LIST = "tokopedia://promoNative";
