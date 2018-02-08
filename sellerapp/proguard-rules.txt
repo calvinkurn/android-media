@@ -115,15 +115,6 @@
  @id.co.veritrans.android.api.** *;
  }
 
--keep public class com.tokopedia.tkpd.util.CreditCardWebView$MyJavaScriptInterface
--keep public class * implements com.tokopedia.tkpd.util.CreditCardWebView$MyJavaScriptInterface
--keepclassmembers class com.tokopedia.tkpd.util.CreditCardWebView$MyJavaScriptInterface{ *;}
-
--keep public class com.tokopedia.tkpd.fragment.FragmentSprintAsiaWebView$LocalJavaScriptInterface
--keep public class * implements com.tokopedia.tkpd.fragment.FragmentSprintAsiaWebView$LocalJavaScriptInterface
--keepclassmembers class com.tokopedia.tkpd.fragment.FragmentSprintAsiaWebView$LocalJavaScriptInterface{ *;}
--keepclassmembers class com.tokopedia.tkpd.util.CreditCardWebView$MyJavaScriptInterface{ *;}
-
 #Localytics setting
 -keep class com.localytics.android.** { *; }
 
@@ -182,7 +173,7 @@
     @twitter4j.** *;
 }
 
-# this is butterknife 
+# this is butterknife
 -keep class butterknife.** { *; }
 -dontwarn butterknife.internal.**
 -keep class **$$ViewBinder { *; }
@@ -200,25 +191,16 @@
 
 
 -keepattributes *Annotation*,EnclosingMethod,Signature
--keepnames class com.fasterxml.jackson.** { *; }
- -dontwarn com.fasterxml.jackson.databind.**
- -keep class org.codehaus.** { *; }
- -keepclassmembers public final enum org.codehaus.jackson.annotate.JsonAutoDetect$Visibility {
- public static final org.codehaus.jackson.annotate.JsonAutoDetect$Visibility *; }
--keep public class your.class.** {
-  public void set*(***);
-  public *** get*();
-}
 
 -dontwarn com.squareup.okhttp.**
 # this is butterknife
 
-# this is retrofit 
+# this is retrofit
 -dontwarn retrofit2.**
 -keep class retrofit2.** { *; }
 -keepattributes Signature
 -keepattributes Exceptions
-# this is retrofit 
+# this is retrofit
 
 -dontwarn sun.misc.Unsafe
 
@@ -279,10 +261,25 @@
 # add exception for dbflow
 -keep class * extends com.raizlabs.android.dbflow.config.DatabaseHolder { *; }
 -keep class com.tokopedia.core.database.model.** { *; }
+-keep class com.tokopedia.core.database.recharge.** { *; }
+
 
 
 #selling
 -keep class com.tokopedia.seller.selling.model.** { *; }
+
+-keep class com.tokopedia.tkpd.fcm.** { *; }
+
+-keep class com.airbnb.deeplinkdispatch.** { *; }
+-keepclasseswithmembers class * {
+     @com.airbnb.deeplinkdispatch.DeepLink <methods>;
+}
+
+-keep class com.tokopedia.ride.common.animator.RouteMapAnimator
+-keepclasseswithmembers class com.tokopedia.ride.common.animator.RouteMapAnimator {
+   public <methods>;
+   public <fields>;
+}
 
 # Parceler configuration
 -keep interface org.parceler.Parcel
@@ -293,38 +290,8 @@
 -keep class com.tokopedia.core.home.model.** { *; }
 
 -keep class com.tokopedia.core.util.GlobalConfig
-
+-keep class com.tokopedia.tkpdpdp.fragment.ProductDetailFragment
 -keep class com.tokopedia.core.network.entity.** { *; }
-
-#Dagger
--dontobfuscate
--dontpreverify
--dontwarn dagger.internal.codegen.**, java.awt.**, com.sun.**, sun.**
--dontwarn com.squareup.javawriter.JavaWriter
-#Keep the annotated things annotated
--keepattributes *Annotation*
-#Keep the dagger annotation classes themselves
--keep @interface dagger.*,javax.inject.*
-#Keep the Modules intact
--keep @dagger.Module class *
-# Keep the generated classes by dagger-compile
--keep class * extends dagger.internal.Binding
--keep class * extends dagger.internal.ModuleAdapter
--keep class **$$ModuleAdapter
--keep class **$$InjectAdapter
--keep class **$$StaticInjection
--keep class javax.inject.** { *; }
-#-Keep the fields annotated with @Inject of any class that is not deleted.
--keepclassmembers class * {
-  @javax.inject.* <fields>;
-}
-
-#-Keep the names of classes that have fields annotated with @Inject and the fields themselves.
--keepclasseswithmembernames class * {
-  @javax.inject.* <fields>;
-}
--keepnames !abstract class coffee.*
--keepnames class dagger.Lazy
 -dontwarn com.akexorcist.roundcornerprogressbar.TextRoundCornerProgressBar
 
 -keep class com.beloo.widget.* { *; }
@@ -332,17 +299,19 @@
  -keep enum com.beloo.widget.**
 -dontwarn com.beloo.widget.**
 
--keep class com.airbnb.deeplinkdispatch.** { *; }
--keepclasseswithmembers class * {
-     @com.airbnb.deeplinkdispatch.DeepLink <methods>;
-}
+
+# -- Feeds --
+-keep class com.tkpdfeed.feeds.** { *; }
+# -- End of Feeds --
 
 # Fingerprint
 -keep class com.tokopedia.core.analytics.fingerprint.domain.model.** { *; }
 
-
 -dontwarn android.content.pm.PackageManager
 -dontwarn com.crashlytics.android.answers.shim.**
+-dontwarn com.nimbusds.jwt.SignedJWT
+-dontwarn com.nimbusds.jwt.JWTClaimsSet
+
 -dontwarn com.appsflyer.**
 -keep public class com.google.firebase.iid.FirebaseInstanceId {
     public *;

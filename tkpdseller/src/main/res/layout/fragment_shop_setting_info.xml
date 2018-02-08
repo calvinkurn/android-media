@@ -3,6 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:fillViewport="true"
     android:background="@color/white">
 
     <LinearLayout
@@ -70,12 +72,16 @@
             style="@style/TextView.Micro.BlackSecondary"
             android:layout_gravity="start"
             android:layout_marginBottom="@dimen/margin_small"
-            android:text="@string/shop_open_label_logo" />
+            android:text="@string/shop_open_label_logo"
+            android:visibility="gone"
+            tools:visibility="visible"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_large">
+            android:layout_marginBottom="@dimen/margin_large"
+            android:visibility="gone"
+            tools:visibility="visible">
 
             <FrameLayout
                 android:id="@+id/image_picker_container"
@@ -115,6 +121,11 @@
             </LinearLayout>
 
         </RelativeLayout>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
         <Button
             android:id="@+id/button_next"

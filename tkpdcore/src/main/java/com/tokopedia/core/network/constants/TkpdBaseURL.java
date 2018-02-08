@@ -629,7 +629,7 @@ public class TkpdBaseURL {
         public static final String PATH_WISHLIST = "wishlist/";
         public static final String PATH_WISH_LIST_V_1_1 = "v1.1";
         public static final String API_HOME_CATEGORY_MENU = "/api/v1.3/layout/category";
-        public static final String API_HOME_CATEGORY_MENU_V2 = "/api/v2/layout/category";
+        public static final String API_HOME_CATEGORY_MENU_V2 = "/api/v2.1/layout/category";
         public static final String PATH_USER_RECENT_VIEW = "users/";
         public static final String PATH_RECENT_VIEW = "/recentview/products/v1";
         public static final String API_V1_BRANDS = "/os/api/v1/brands/list";
@@ -917,6 +917,9 @@ public class TkpdBaseURL {
         public static final String PATH_CANCEL_TRANSACTION = "cancel";
         public static final String PATH_ZEUS_CHECK_WHITELIST = "zeus/whitelist/status";
         public static final String PATH_ZEUS_UPDATE_WHITELIST = "zeus/whitelist";
+
+        public static final String CDN_IMG_ANDROID_DOMAIN = "https://ecs7.tokopedia.net/img/android/";
+
     }
 
     public static class FinTech {
@@ -1006,8 +1009,14 @@ public class TkpdBaseURL {
         public static final String PATH_ORDER_HISTORY = "/v4/order/history";
     }
 
+
+    public class Referral {
+        public static final String PATH_GET_REFERRAL_VOUCHER_CODE = "galadriel/promos/referral/code";
+    }
+
     public class Promo {
         public static final String PATH_MENU_INDEX = "wp-json/wp/v2/hmenu";
         public static final String PATH_PROMO_LIST = "wp-json/wp/v2/posts";
+
     }
 }

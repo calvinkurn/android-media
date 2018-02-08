@@ -32,6 +32,7 @@ public class TopPayIntentService extends IntentService {
     public static final String EXTRA_CHECKOUT_DATA = "EXTRA_CHECKOUT_DATA";
     public static final String EXTRA_PAYMENT_ID = "EXTRA_PAYMENT_ID";
     private static final String IS_THANKYOU_NATIVE = "is_thankyou_native";
+    private static final String IS_THANKYOU_NATIVE_NEW = "is_thankyou_native_new";
 
     public static final int SERVICE_ACTION_NO_DEFINED = 0;
     public static final int SERVICE_ACTION_GET_PARAMETER_DATA = 1;
@@ -174,6 +175,7 @@ public class TopPayIntentService extends IntentService {
             params.put(data.getKey(), data.getValue());
         }
         params.put(IS_THANKYOU_NATIVE, "1");
+        params.put(IS_THANKYOU_NATIVE_NEW, "1");
 
         if (cartDataInteractor == null) cartDataInteractor = new CartDataInteractor();
         Intent intent = new Intent(TopPayBroadcastReceiver.ACTION_TOP_PAY);

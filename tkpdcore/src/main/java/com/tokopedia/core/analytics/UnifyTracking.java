@@ -1,5 +1,7 @@
 package com.tokopedia.core.analytics;
 
+import android.text.TextUtils;
+
 import com.appsflyer.AFInAppEventType;
 import com.moe.pushlibrary.PayloadBuilder;
 import com.tkpd.library.utils.CommonUtils;
@@ -11,9 +13,14 @@ import com.tokopedia.core.var.ProductItem;
 
 import org.json.JSONArray;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static com.tokopedia.core.util.DateFormatUtils.DEFAULT_LOCALE;
 
 /**
  * @author by Herdi_WORK on 25.10.16.
@@ -2569,6 +2576,15 @@ public class UnifyTracking extends TrackingUtils {
                         .getEvent());
     }
 
+    public static void eventReferralAndShare(String action, String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_APP_SHARE_REFERRAL,
+                AppEventTracking.Category.REFERRAL,
+                action,
+                label
+        ).getEvent());
+    }
+
     public static void eventAppShare() {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CLICK_APP_SHARE_REFERRAL,
@@ -3156,5 +3172,54 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Action.PROMO_CLICK_CLOSE_TOOLTIP,
                 ""
         ).getEvent());
+    }
+
+    public static void eventSearchResultShopItemClick(String keyword, String shopName) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.SEARCH_RESULT.toLowerCase(),
+                AppEventTracking.Action.CLICK_SHOP,
+                keyword + " - " + shopName
+        ).setUserId().getEvent());
+    }
+
+    public static void eventSearchResultProductWishlistClick(boolean isWishlisted, String keyword) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.PRODUCT_VIEW,
+                AppEventTracking.Category.SEARCH_RESULT.toLowerCase(),
+                AppEventTracking.Action.CLICK_WISHLIST,
+                generateWishlistClickEventLabel(isWishlisted, keyword)
+        ).setUserId().getEvent());
+    }
+
+    private static String generateWishlistClickEventLabel(boolean isWishlisted, String keyword) {
+        String action = isWishlisted ? "add" : "remove";
+        return action + " - " + keyword + " - " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", DEFAULT_LOCALE).format(new Date());
+    }
+
+    public static void eventSearchResultSort(String screenName, String sortByValue) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.SORT_BY,
+                AppEventTracking.Action.SORT_BY + " - " + screenName,
+                sortByValue
+        ).setUserId().getEvent());
+    }
+
+    public static void eventSearchResultFilter(String screenName, Map<String, String> selectedFilter) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.FILTER_PRODUCT,
+                AppEventTracking.Action.FILTER.toLowerCase() + " - " + screenName,
+                generateFilterEventLabel(selectedFilter)
+        ).setUserId().getEvent());
+    }
+
+    private static String generateFilterEventLabel(Map<String, String> selectedFilter) {
+        List<String> filterList = new ArrayList<>();
+        for (Map.Entry<String, String> entry : selectedFilter.entrySet()) {
+            filterList.add(entry.getKey() + "=" + entry.getValue());
+        }
+        return TextUtils.join("&", filterList);
     }
 }

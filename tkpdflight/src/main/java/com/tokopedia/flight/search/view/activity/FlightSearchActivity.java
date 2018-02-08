@@ -11,6 +11,7 @@ import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.booking.view.activity.FlightBookingActivity;
 import com.tokopedia.flight.common.constant.FlightFlowConstant;
 import com.tokopedia.flight.common.constant.FlightFlowExtraConstant;
+import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightFlowUtil;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
@@ -38,6 +39,11 @@ public class FlightSearchActivity extends BaseFlightActivity
         Intent intent = new Intent(context, FlightSearchActivity.class);
         intent.putExtra(EXTRA_PASS_DATA, passDataViewModel);
         return intent;
+    }
+
+    @Override
+    public String getScreenName() {
+        return FlightAnalytics.Screen.SEARCH;
     }
 
     @Override

@@ -39,9 +39,9 @@ import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.BrandsWebViewActivity;
+import com.tokopedia.core.home.SimpleWebViewActivity;
 import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -61,6 +61,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
+import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.beranda.di.DaggerHomeComponent;
 import com.tokopedia.tkpd.beranda.di.HomeComponent;
@@ -150,7 +151,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         getActivity().registerReceiver(
                 homeFragmentBroadcastReceiver,
                 new IntentFilter(
-                        HomeFragmentBroadcastReceiverConstant.INTENT_ACTION
+                        HomeFragmentBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP
                 )
         );
     }
@@ -419,9 +420,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 && getActivity().getApplicationContext() instanceof IDigitalModuleRouter
                 && ((IDigitalModuleRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(data.getApplinks())) {
             ((IDigitalModuleRouter) getActivity().getApplicationContext())
-                    .actionNavigateByApplinksUrl(getActivity(),data.getApplinks(), new Bundle());
+                    .actionNavigateByApplinksUrl(getActivity(), data.getApplinks(), new Bundle());
         } else {
-            openWebViewURL(data.getUrl(),getContext());
+            openWebViewURL(data.getUrl(), getContext());
         }
     }
 
@@ -489,7 +490,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onRequestPendingCashBack() {
-        getActivity().sendBroadcast(new Intent(TokocashPendingDataBroadcastReceiverConstant.INTENT_ACTION));
+        getActivity().sendBroadcast(new Intent(TokocashPendingDataBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP));
     }
 
     @Override
@@ -542,11 +543,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void actionTokoPointClicked(String tokoPointUrl, String pageTitle) {
         if (TextUtils.isEmpty(pageTitle))
-            startActivity(BannerWebView.getCallingIntent(getActivity(), tokoPointUrl));
+            startActivity(TokoPointWebviewActivity.getIntent(getActivity(), tokoPointUrl));
         else
-            startActivity(BannerWebView.getCallingIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
+            startActivity(TokoPointWebviewActivity.getIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
     }
-
 
 
     @Override
@@ -569,9 +569,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 && getActivity().getApplicationContext() instanceof TkpdCoreRouter
                 && ((TkpdCoreRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(slidesModel.getApplink())) {
             ((TkpdCoreRouter) getActivity().getApplicationContext())
-                    .actionAppLink(getActivity(),slidesModel.getApplink());
+                    .actionAppLink(getActivity(), slidesModel.getApplink());
         } else {
-            openWebViewURL(slidesModel.getRedirectUrl(),getContext());
+            openWebViewURL(slidesModel.getRedirectUrl(), getContext());
         }
     }
 
@@ -644,26 +644,28 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void showNetworkError(String message) {
-        if (adapter.getItemCount() > 0) {
-            if (messageSnackbar == null) {
-                messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        presenter.getHomeData();
-                        presenter.getHeaderData(false);
-                    }
-                });
-            }
-            messageSnackbar.showRetrySnackbar();
-        } else {
-            NetworkErrorHelper.showEmptyState(getActivity(), root, message,
-                    new NetworkErrorHelper.RetryClickedListener() {
+        if (isAdded() && getActivity() != null) {
+            if (adapter.getItemCount() > 0) {
+                if (messageSnackbar == null) {
+                    messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
                         @Override
                         public void onRetryClicked() {
                             presenter.getHomeData();
                             presenter.getHeaderData(false);
                         }
                     });
+                }
+                messageSnackbar.showRetrySnackbar();
+            } else {
+                NetworkErrorHelper.showEmptyState(getActivity(), root, message,
+                        new NetworkErrorHelper.RetryClickedListener() {
+                            @Override
+                            public void onRetryClicked() {
+                                presenter.getHomeData();
+                                presenter.getHeaderData(false);
+                            }
+                        });
+            }
         }
     }
 
@@ -755,13 +757,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void openWebViewGimicURL(String url, String label, String title) {
         if (!url.equals("")) {
-            Intent intent = new Intent(getActivity(), BannerWebView.class);
-            intent.putExtra("url", url);
-            intent.putExtra(BannerWebView.EXTRA_TITLE, title);
+            Intent intent = SimpleWebViewActivity.getIntentWithTitle(getActivity(), url, title);
             startActivity(intent);
             UnifyTracking.eventHomeGimmick(label);
         }
     }
+
 
     public void openWebViewURL(String url, Context context) {
         if (url != "" && context != null) {
@@ -785,7 +786,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (!HomeFragmentBroadcastReceiverConstant.INTENT_ACTION.equalsIgnoreCase(intent.getAction()))
+            if (!HomeFragmentBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP.equalsIgnoreCase(intent.getAction()))
                 return;
             switch (intent.getIntExtra(EXTRA_ACTION_RECEIVER, 0)) {
                 case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOPOINT_DATA:

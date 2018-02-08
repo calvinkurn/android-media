@@ -5,6 +5,7 @@ import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.cotp.view.fragment.ChooseVerificationMethodFragment;
 import com.tokopedia.otp.cotp.view.fragment.VerificationFragment;
 import com.tokopedia.otp.securityquestion.view.fragment.SecurityQuestionFragment;
+import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberEmailVerificationFragment;
 import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberInputFragment;
 import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberWarningFragment;
@@ -47,5 +48,6 @@ public interface SessionComponent {
 
     void inject(SecurityQuestionFragment securityQuestionFragment);
 
+    GetUserInfoUseCase getUserInfoUseCase();
 
 }

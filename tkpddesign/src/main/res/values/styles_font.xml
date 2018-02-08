@@ -112,11 +112,18 @@
     <style name="TextView.Micro">
         <item name="android:textSize">@dimen/font_micro</item>
     </style>
+    <style name="TextView.Micro.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
     <style name="TextView.Micro.Green">
         <item name="android:textColor">@color/tkpd_main_green</item>
     </style>
     <style name="TextView.Micro.BlackSecondary">
         <item name="android:textColor">@color/font_black_secondary_54</item>
+    </style>
+
+    <style name="TextView.Micro.BlackSecondary.Bold">
+        <item name="android:textStyle">bold</item>
     </style>
     <style name="TextView.Micro.BlackDisabled">
         <item name="android:textColor">@color/font_black_disabled_38</item>
