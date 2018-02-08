@@ -12,8 +12,6 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -34,8 +32,8 @@ import com.tokopedia.home.explore.view.activity.ExploreActivity;
 import com.tokopedia.home.explore.view.adapter.ExploreAdapter;
 import com.tokopedia.home.explore.view.adapter.TypeFactory;
 import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel;
+
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -82,9 +80,10 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        renderList(data.getVisitableList());
+        if (data != null) {
+            renderList(data.getVisitableList());
+        }
     }
-
 
     @Override
     public void loadData(int page) {
@@ -160,9 +159,9 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     @Override
     public void onApplinkClicked(LayoutRows data) {
         TkpdCoreRouter router = ((TkpdCoreRouter) getActivity().getApplicationContext());
-        if(router.isSupportedDelegateDeepLink(data.getApplinks())){
+        if (router.isSupportedDelegateDeepLink(data.getApplinks())) {
             router.actionApplink(getActivity(), data.getApplinks());
-        } else{
+        } else {
             openWebViewURL(data.getUrl(), getActivity());
         }
     }

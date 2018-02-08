@@ -40,7 +40,7 @@ public class ApiModule {
     public OkHttpClient provideOkHttpClient() {
         return OkHttpFactory.create()
                 .addOkHttpRetryPolicy(OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy())
-                .buildClientNoAuth();
+                .buildClientDefaultAuth();
     }
 
     @HomeGraphQLQualifier
