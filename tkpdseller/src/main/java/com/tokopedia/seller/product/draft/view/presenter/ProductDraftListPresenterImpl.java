@@ -81,8 +81,8 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
         };
     }
 
-    private Subscriber<List<ProductViewModel>> getSubscriber(){
-        return new Subscriber<List<ProductViewModel>>() {
+    private Subscriber<List<ProductDraftViewModel>> getSubscriber(){
+        return new Subscriber<List<ProductDraftViewModel>>() {
             @Override
             public void onCompleted() {
 
@@ -96,17 +96,11 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
             }
 
             @Override
-            public void onNext(List<ProductViewModel> productViewModels) {
+            public void onNext(List<ProductDraftViewModel> productViewModels) {
                 if (productViewModels == null || productViewModels.size() == 0 ) {
                     getView().onSearchLoaded(new ArrayList<ProductDraftViewModel>(), 0);
                 } else {
-//                     map to View Model
-                    List<ProductDraftViewModel> viewModelList = new ArrayList<>();
-                    for (int i=0, sizei = productViewModels.size(); i<sizei; i++) {
-                        ProductViewModel domainModel = productViewModels.get(i);
-                        viewModelList.add(ProductDraftListMapper.mapDomainToView(domainModel));
-                    }
-                    getView().onSearchLoaded(viewModelList, viewModelList.size());
+                    getView().onSearchLoaded(productViewModels, productViewModels.size());
                 }
 
             }

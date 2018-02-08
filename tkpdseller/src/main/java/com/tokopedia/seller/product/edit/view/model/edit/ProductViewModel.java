@@ -60,7 +60,7 @@ public class ProductViewModel implements ItemType {
     private String productLastUpdatePrice;
     @SerializedName("product_position")
     @Expose
-    private long productPosition;
+    private ProductPositionViewModel productPosition;
     @SerializedName("product_description")
     @Expose
     private String productDescription;
@@ -108,25 +108,6 @@ public class ProductViewModel implements ItemType {
     @SerializedName("product_name_editable")
     @Expose
     private boolean productNameEditable;
-
-    private int productStatusUpload;
-    private int productDraftId;
-
-    public int getProductDraftId() {
-        return productDraftId;
-    }
-
-    public void setProductDraftId(int productDraftId) {
-        this.productDraftId = productDraftId;
-    }
-
-    public int getProductStatusUpload() {
-        return productStatusUpload;
-    }
-
-    public void setProductStatusUpload(int productStatusUpload) {
-        this.productStatusUpload = productStatusUpload;
-    }
 
     public long getProductId() {
         return productId;
@@ -256,11 +237,11 @@ public class ProductViewModel implements ItemType {
         this.productPrimaryPicture = productPrimaryPicture;
     }
 
-    public long getProductPosition() {
+    public ProductPositionViewModel getProductPosition() {
         return productPosition;
     }
 
-    public void setProductPosition(long productPosition) {
+    public void setProductPosition(ProductPositionViewModel productPosition) {
         this.productPosition = productPosition;
     }
 

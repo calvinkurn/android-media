@@ -78,7 +78,7 @@ public class ShopOpenSaveInfoUseCase extends UseCase<ShopOpenSaveInfoResponseMod
     public Observable<ShopOpenSaveInfoResponseModel> createObservable(final RequestParams requestParams) {
         if (!TextUtils.isEmpty(requestParams.getString(PATH_FILE_IMAGE, ""))) {
             return uploadImageUseCase.getExecuteObservable(uploadImageUseCase.createRequestParams(ShopSettingNetworkConstant.UPLOAD_SHOP_IMAGE_PATH,
-                    requestParams.getString(PATH_FILE_IMAGE, "")))
+                    requestParams.getString(PATH_FILE_IMAGE, ""), ShopSettingNetworkConstant.LOGO_FILENAME_IMAGE_JPG, ""))
                     .flatMap(new Func1<ImageUploadDomainModel<UploadShopImageModel>, Observable<ShopOpenSaveInfoRequestDomainModel>>() {
                         @Override
                         public Observable<ShopOpenSaveInfoRequestDomainModel> call(final ImageUploadDomainModel<UploadShopImageModel> dataImageUploadDomainModel) {

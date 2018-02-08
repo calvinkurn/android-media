@@ -6,6 +6,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.product.draft.data.mapper.ProductDraftMapper;
 import com.tokopedia.seller.product.draft.data.source.ProductDraftDataSource;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
+import com.tokopedia.seller.product.draft.view.mapper.ProductDraftListMapper;
+import com.tokopedia.seller.product.draft.view.model.ProductDraftViewModel;
 import com.tokopedia.seller.product.edit.data.source.db.model.ProductDraftDataBase;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 
@@ -39,11 +41,11 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
     @Override
     public Observable<ProductViewModel> getDraft(long productId) {
         return productDraftDataSource.getDraft(productId)
-                .map(new ProductDraftMapper(productId));
+                .map(new ProductDraftMapper());
     }
 
     @Override
-    public Observable<List<ProductViewModel>> getAllDraft() {
+    public Observable<List<ProductDraftViewModel>> getAllDraft() {
         String shopId = SessionHandler.getShopID(context);
         return productDraftDataSource.getAllDraft(shopId)
                 .flatMap(new Func1<List<ProductDraftDataBase>, Observable<ProductDraftDataBase>>() {
@@ -52,15 +54,24 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
                         return Observable.from(productDraftDataBases);
                     }
                 })
-                .map(new Func1<ProductDraftDataBase, ProductViewModel>() {
+                .map(new Func1<ProductDraftDataBase, ProductDraftViewModel>() {
                     @Override
-                    public ProductViewModel call(ProductDraftDataBase productDraftDataBase) {
-                        long id = productDraftDataBase.getId();
-                        return Observable.just(productDraftDataBase).map(new ProductDraftMapper(id)).toBlocking().first();
+                    public ProductDraftViewModel call(ProductDraftDataBase productDraftDataBase) {
+                        final long id = productDraftDataBase.getId();
+                        return Observable.just(productDraftDataBase)
+                                .map(new ProductDraftMapper())
+                                .map(new Func1<ProductViewModel, ProductDraftViewModel>() {
+                                    @Override
+                                    public ProductDraftViewModel call(ProductViewModel productViewModel) {
+                                        return ProductDraftListMapper.mapDomainToView(productViewModel, id);
+                                    }
+                                })
+                                .toBlocking().first();
                     }
-                }).toSortedList(new Func2<ProductViewModel, ProductViewModel, Integer>() {
+                })
+                .toSortedList(new Func2<ProductDraftViewModel, ProductDraftViewModel, Integer>() {
                     @Override
-                    public Integer call(ProductViewModel productViewModel, ProductViewModel productViewModel2) {
+                    public Integer call(ProductDraftViewModel productViewModel, ProductDraftViewModel productViewModel2) {
                         return (int) (productViewModel2.getProductId() - productViewModel.getProductId());
                     }
                 });

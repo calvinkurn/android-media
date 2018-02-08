@@ -32,20 +32,24 @@ public class AddProductImage implements Func1<ProductViewModel, Observable<List<
     @Override
     public Observable<List<ProductPictureViewModel>> call(ProductViewModel productViewModel) {
         return Observable.from(productViewModel.getProductPicture())
-                .flatMap(new UploadSingleImage())
+                .flatMap(new UploadSingleImage(productViewModel.getProductId()))
                 .toList();
     }
 
     private class UploadSingleImage implements Func1<ProductPictureViewModel, Observable<ProductPictureViewModel>> {
 
-        public UploadSingleImage() {
+        private long productId;
+
+        public UploadSingleImage(long productId) {
+            this.productId = productId;
         }
 
         @Override
         public Observable<ProductPictureViewModel> call(ProductPictureViewModel productPictureViewModel) {
             if (productPictureViewModel.getId() <= 0) {
                 return uploadImageUseCase.createObservable(uploadImageUseCase.createRequestParams(
-                        ProductNetworkConstant.UPLOAD_PRODUCT_IMAGE_PATH, productPictureViewModel.getFilePath()))
+                        ProductNetworkConstant.UPLOAD_PRODUCT_IMAGE_PATH, productPictureViewModel.getFilePath(),
+                        ProductNetworkConstant.LOGO_FILENAME_IMAGE_JPG, String.valueOf(productId)))
                         .map(new MapImageModelToProductInput(productPictureViewModel));
             } else {
                 return Observable.just(productPictureViewModel);

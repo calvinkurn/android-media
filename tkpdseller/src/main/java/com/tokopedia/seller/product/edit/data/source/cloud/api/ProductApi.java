@@ -9,6 +9,8 @@ import com.tokopedia.seller.shop.open.data.model.response.DataResponse;
 
 import retrofit2.Response;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -20,9 +22,14 @@ import rx.Observable;
 
 public interface ProductApi {
 
+    @Headers({"Content-Type: application/json"})
     @POST(ProductUrl.URL_ADD_PRODUCT)
     Observable<Response<DataResponse<ProductUploadResultModel>>> addProductSubmit(@Body ProductViewModel productViewModel);
 
+    @Headers({"Content-Type: application/json"})
     @PATCH(ProductUrl.URL_EDIT_PRODUCT)
     Observable<Response<DataResponse<ProductUploadResultModel>>> editProductSubmit(@Body ProductViewModel productViewModel, @Path(ProductUrl.PRODUCT_ID) String productId);
+
+    @GET(ProductUrl.URL_EDIT_PRODUCT)
+    Observable<Response<DataResponse<ProductViewModel>>> getProductEdit(@Path(ProductUrl.PRODUCT_ID) String productId);
 }

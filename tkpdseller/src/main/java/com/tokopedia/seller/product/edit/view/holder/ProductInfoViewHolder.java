@@ -192,6 +192,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         ProductCategoryViewModel productCategory = new ProductCategoryViewModel();
         if(categoryId != DEFAULT_CATEGORY_ID) {
             productCategory.setCategoryId(categoryId);
+            productCategory.setCategoryFullName(categoryLabelView.getContent());
         }
         return productCategory;
     }
