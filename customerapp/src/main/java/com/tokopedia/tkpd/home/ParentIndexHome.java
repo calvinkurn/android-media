@@ -310,7 +310,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         });
         toolbar.addView(view);
         setSupportActionBar(toolbar);
-
     }
 
     private void setMoengageUserAttributes() {
@@ -359,6 +358,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             @Override
             public void onPageSelected(int position) {
                 sendGTMButtonEvent(position);
+                configureBackStackEvent(position);
             }
         });
 
@@ -417,11 +417,54 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         adapter.notifyDataSetChanged();// DON'T DELETE THIS BECAUSE IT WILL NOTIFY ADAPTER TO CHANGE FROM GUEST TO LOGIN
     }
 
+    private ArrayList<String> customBackStack = new ArrayList<>();
+
+    private int indexOf(String menuItemId) {
+        for (int i = customBackStack.size()-1; i >= 0; i--) {
+            if ((customBackStack.get(i).equals(menuItemId)))
+                return i;
+        }
+        return 0;
+    }
+
+    private void configureBackStackEvent(int initStateFragment) {
+        String state = String.valueOf(initStateFragment);
+        if (indexOf(state) > 0)
+            customBackStack.remove(indexOf(state));
+        customBackStack.add(state);
+    }
+
+    private void customizeBackPressed() {
+        customBackStack.remove(customBackStack.size()-1);
+
+        int item = Integer.parseInt(customBackStack.get(customBackStack.size()-1));
+        mViewPager.setCurrentItem(item);
+
+        if (customBackStack.size() > 1)
+            if (customBackStack.get(1).equals(String.valueOf(INIT_STATE_FRAGMENT_HOME)))
+                customBackStack.remove(1);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerHelper.isOpened()) {
+            drawerHelper.closeDrawer();
+        } else {
+            if (customBackStack.size() > 1) {
+                customizeBackPressed();
+            } else {
+                this.finish();
+            }
+        }
+    }
+
     private void setView() {
         inflateView(R.layout.activity_index_home_4);
         mViewPager = findViewById(R.id.index_page);
         bottomNavigation = findViewById(R.id.bottomnav);
 //        indicator = (TabLayout) findViewById(R.id.indicator);
+
+        customBackStack.add(String.valueOf(INIT_STATE_FRAGMENT_HOME)); // custom back stack
     }
 
     public ChangeTabListener GetHotListListener() {
@@ -625,7 +668,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     boolean isUserFirstTimeLogin = false;
 
     @Override
-    protected void onResume() {
+    protected void onResume() {git
         HockeyAppHelper.checkForUpdate(this);
         RxUtils.getNewCompositeSubIfUnsubscribed(subscription);
         FCMCacheManager.checkAndSyncFcmId(getApplicationContext());
@@ -646,9 +689,14 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 //                indicator.addTab(indicator.newTab().setText(content_));
 //                content.add(content_);
 //            }
+
+            initStateFragment = INIT_STATE_FRAGMENT_HOME;
             adapter = new PagerAdapter(getSupportFragmentManager(), getFragments());
             mViewPager.setAdapter(adapter);
             adapter.notifyDataSetChanged();
+
+            mViewPager.setCurrentItem(initStateFragment, false);
+
         }
 
         isUserFirstTimeLogin = !SessionHandler.isV4Login(this);

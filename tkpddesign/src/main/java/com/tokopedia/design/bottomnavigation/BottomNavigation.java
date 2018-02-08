@@ -737,10 +737,14 @@ public class BottomNavigation extends BottomNavigationView {
         }
     }
 
+    public interface TkpdOnNavigationItemSelectedListener {
+        void onNavigationItemSelected(@NonNull MenuItem item);
+    }
+
     /**
      * Decorate OnNavigationItemSelectedListener for setupWithViewPager
      */
-    private static class MyOnNavigationItemSelectedListener implements OnNavigationItemSelectedListener {
+    private class MyOnNavigationItemSelectedListener implements OnNavigationItemSelectedListener {
         private OnNavigationItemSelectedListener listener;
         private final WeakReference<ViewPager> viewPagerRef;
         private boolean smoothScroll;
