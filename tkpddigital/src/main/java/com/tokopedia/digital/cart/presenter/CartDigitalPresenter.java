@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
@@ -13,7 +12,6 @@ import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.Attributes;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.Field;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital;
@@ -480,17 +478,10 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
 
     @Override
     public void autoApplyCouponIfAvailable(String digitalCategoryId) {
-        if(TextUtils.isEmpty(BranchSdkUtils.REFERRAL_ADVOCATE_PROMO_CODE)){
-            LocalCacheHandler localCacheHandler = new LocalCacheHandler(view.getContext(), TkpdCache.CACHE_PROMO_CODE);
-            String savedCoupon = localCacheHandler.getString(TkpdCache.Key.KEY_CACHE_PROMO_CODE);
-            if (!TextUtils.isEmpty(savedCoupon)) {
-                processCheckVoucher(savedCoupon, digitalCategoryId);
-
-            }
-        }else{
-            processCheckVoucher(BranchSdkUtils.REFERRAL_ADVOCATE_PROMO_CODE, digitalCategoryId);
+        String savedCoupon = BranchSdkUtils.getAutoApplyCouponIfAvailable(view.getContext());
+        if (!TextUtils.isEmpty(savedCoupon)) {
+            processCheckVoucher(savedCoupon, digitalCategoryId);
         }
-
     }
 
 }

@@ -2,7 +2,9 @@ package com.tokopedia.core.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.TextUtils;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.model.Product;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -168,9 +170,18 @@ public class BranchSdkUtils {
         return result;
     }
 
-    public static Boolean isappShowReferralButtonActivated(Context context){
+    public static Boolean isappShowReferralButtonActivated(Context context) {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON);
+    }
+
+    public static String getAutoApplyCouponIfAvailable(Context context) {
+        if (TextUtils.isEmpty(REFERRAL_ADVOCATE_PROMO_CODE)) {
+            LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.CACHE_PROMO_CODE);
+            return localCacheHandler.getString(TkpdCache.Key.KEY_CACHE_PROMO_CODE);
+        } else {
+            return BranchSdkUtils.REFERRAL_ADVOCATE_PROMO_CODE;
+        }
     }
 
     public interface GenerateShareContents {

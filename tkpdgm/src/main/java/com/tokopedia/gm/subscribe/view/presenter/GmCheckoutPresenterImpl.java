@@ -2,12 +2,10 @@ package com.tokopedia.gm.subscribe.view.presenter;
 
 import android.text.TextUtils;
 
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException;
 import com.tokopedia.core.util.BranchSdkUtils;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.gm.subscribe.domain.cart.exception.GmVoucherCheckException;
 import com.tokopedia.gm.subscribe.domain.cart.interactor.CheckGmSubscribeVoucherUseCase;
 import com.tokopedia.gm.subscribe.domain.cart.interactor.CheckoutGmSubscribeUseCase;
@@ -256,15 +254,9 @@ public class GmCheckoutPresenterImpl extends BaseDaggerPresenter<GmCheckoutView>
 
     @Override
     public void autoApplyCouponIfAvailable(Integer selectedProduct) {
-        if (TextUtils.isEmpty(BranchSdkUtils.REFERRAL_ADVOCATE_PROMO_CODE)) {
-            LocalCacheHandler localCacheHandler = new LocalCacheHandler(getView().getContext(), TkpdCache.CACHE_PROMO_CODE);
-            String savedCoupon = localCacheHandler.getString(TkpdCache.Key.KEY_CACHE_PROMO_CODE);
-            if (!TextUtils.isEmpty(savedCoupon)) {
-                checkVoucherCode(savedCoupon, selectedProduct);
-            }
-
-        } else {
-            checkVoucherCode(BranchSdkUtils.REFERRAL_ADVOCATE_PROMO_CODE, selectedProduct);
+        String savedCoupon = BranchSdkUtils.getAutoApplyCouponIfAvailable(getView().getContext());
+        if (!TextUtils.isEmpty(savedCoupon)) {
+            checkVoucherCode(savedCoupon, selectedProduct);
         }
     }
 }
