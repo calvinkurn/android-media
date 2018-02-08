@@ -327,6 +327,14 @@ public class CartItemData implements Parcelable {
                         return new UpdatedData[size];
                     }
                 };
+
+        public void decreaseQuantity() {
+            this.quantity--;
+        }
+
+        public void increaseQuantity() {
+            this.quantity++;
+        }
     }
 
     @Override
