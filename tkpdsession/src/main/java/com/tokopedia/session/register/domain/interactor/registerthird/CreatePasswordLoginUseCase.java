@@ -4,6 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
 import com.tokopedia.session.register.domain.model.CreatePasswordDomain;
@@ -20,6 +21,7 @@ import rx.functions.Func1;
 
 public class CreatePasswordLoginUseCase extends UseCase<CreatePasswordLoginDomain> {
 
+    private final SessionHandler sessionHandler;
     CreatePasswordUseCase createPasswordUseCase;
     MakeLoginUseCase makeLoginUseCase;
 
@@ -27,10 +29,12 @@ public class CreatePasswordLoginUseCase extends UseCase<CreatePasswordLoginDomai
     public CreatePasswordLoginUseCase(ThreadExecutor threadExecutor,
                                       PostExecutionThread postExecutionThread,
                                       CreatePasswordUseCase createPasswordUseCase,
-                                      MakeLoginUseCase makeLoginUseCase) {
+                                      MakeLoginUseCase makeLoginUseCase,
+                                      SessionHandler sessionHandler) {
         super(threadExecutor, postExecutionThread);
         this.createPasswordUseCase = createPasswordUseCase;
         this.makeLoginUseCase = makeLoginUseCase;
+        this.sessionHandler = sessionHandler;
     }
 
     @Override
@@ -58,12 +62,14 @@ public class CreatePasswordLoginUseCase extends UseCase<CreatePasswordLoginDomai
         };
     }
 
-    private Observable<CreatePasswordLoginDomain> createPassword(RequestParams requestParams, final CreatePasswordLoginDomain domain) {
+    private Observable<CreatePasswordLoginDomain> createPassword(final RequestParams requestParams, final CreatePasswordLoginDomain domain) {
         return createPasswordUseCase.createObservable(requestParams)
                 .flatMap(new Func1<CreatePasswordDomain, Observable<CreatePasswordLoginDomain>>() {
                     @Override
                     public Observable<CreatePasswordLoginDomain> call(CreatePasswordDomain createPasswordDomain) {
                         domain.setCreatePasswordDomain(createPasswordDomain);
+                        sessionHandler.setTempPhoneNumber(requestParams.getString
+                                (CreatePasswordUseCase.MSISDN, ""));
                         return Observable.just(domain);
                     }
                 });
