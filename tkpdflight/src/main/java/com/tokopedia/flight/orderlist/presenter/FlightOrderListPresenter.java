@@ -76,7 +76,6 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
 
     @Override
     public void onDownloadEticket(String invoiceId) {
-//        getView().navigateToOpenBrowser(FlightUrl.getUrlPdf(invoiceId, userSession.getUserId()));
         getView().navigateToInputEmailForm(invoiceId, userSession.getUserId());
     }
 
