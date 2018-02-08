@@ -315,4 +315,9 @@
     <string name="flight_order_branch_prefix">Cabang</string>
     <string name="flight_error_pick_journey">Terjadi kesalahan, Silakan ulangi kembali.</string>
     <string name="flight_booking_passenger_last_name_should_same_error">Jika nama belakang tidak tersedia, mohon isi dengan nama depan</string>
+    <string name="flight_resend_eticket_dialog_title">Kirim E-Ticket</string>
+    <string name="flight_resend_eticket_dialog_description">Masukkan alamat E-mail tujuan Anda.</string>
+    <string name="flight_resend_eticket_dialog_abort">BATAL</string>
+    <string name="flight_resend_eticket_dialog_send">KIRIM</string>
+    <string name="flight_resend_eticket_dialog_email_hint">Alamat E-mail</string>
 </resources>
