@@ -142,7 +142,21 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
             @Override
             public void onError(Throwable e) {
                 Log.e("toko_barcode", "onError ");
-                getView().showErrorNetwork(e.getMessage());
+                if (e instanceof UnknownHostException || e instanceof ConnectException) {
+                    getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
+                } else if (e instanceof SocketTimeoutException) {
+                    getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                } else if (e instanceof ResponseErrorException) {
+                    getView().showErrorGetInfo(context.getString(com.tokopedia.tokocash.R.string.msg_dialog_wrong_scan));
+                } else if (e instanceof ResponseDataNullException) {
+                    getView().showErrorNetwork(e.getMessage());
+                } else if (e instanceof HttpErrorException) {
+                    getView().showErrorNetwork(e.getMessage());
+                } else if (e instanceof ServerErrorException) {
+                    ServerErrorHandlerUtil.handleError(e);
+                } else {
+                    getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
             }
 
             @Override
