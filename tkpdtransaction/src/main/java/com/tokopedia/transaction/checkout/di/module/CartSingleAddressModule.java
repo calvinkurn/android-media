@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.checkout.di.module;
 
 import com.tokopedia.transaction.checkout.di.scope.CartSingleAddressScope;
+import com.tokopedia.transaction.checkout.view.CartSingleAddressFragment;
 import com.tokopedia.transaction.checkout.view.adapter.CartSingleAddressAdapter;
 import com.tokopedia.transaction.checkout.view.presenter.CartSingleAddressPresenter;
 
