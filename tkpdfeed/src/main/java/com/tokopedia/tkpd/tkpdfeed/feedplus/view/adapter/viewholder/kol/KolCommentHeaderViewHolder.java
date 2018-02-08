@@ -8,7 +8,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
@@ -49,7 +48,7 @@ public class KolCommentHeaderViewHolder extends AbstractViewHolder<KolCommentHea
 
     @Override
     public void bind(final KolCommentHeaderViewModel element) {
-        ImageHandler.loadImageCircle2(MainApplication.getAppContext(), avatar, element.getAvatarUrl());
+        ImageHandler.loadImageCircle2(avatar.getContext(), avatar, element.getAvatarUrl());
         time.setText(element.getTime());
 
         avatar.setOnClickListener(new View.OnClickListener() {

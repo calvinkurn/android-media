@@ -1,14 +1,11 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.kol;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
@@ -50,7 +47,7 @@ public class KolCommentViewHolder extends AbstractViewHolder<KolCommentViewModel
 
     @Override
     public void bind(final KolCommentViewModel element) {
-        ImageHandler.loadImageCircle2(MainApplication.getAppContext(), avatar, element.getAvatarUrl());
+        ImageHandler.loadImageCircle2(avatar.getContext(), avatar, element.getAvatarUrl());
         time.setText(element.getTime());
 
         avatar.setOnClickListener(new View.OnClickListener() {
