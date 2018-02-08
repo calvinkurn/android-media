@@ -11,13 +11,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/Theme.TextInputLayout"
-        android:layout_marginBottom="@dimen/margin_small">
+        android:layout_marginBottom="@dimen/margin_small"
+        android:hint="@string/title_phone_number">
 
         <EditText
             android:id="@+id/phone_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/title_phone_number"
             android:background="@drawable/edit_bg"
             tools:text="isi"
             android:paddingTop="25dp"

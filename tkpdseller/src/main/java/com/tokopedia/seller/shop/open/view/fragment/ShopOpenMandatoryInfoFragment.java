@@ -331,11 +331,12 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
     }
 
     @TargetApi(16)
-    @OnShowRationale({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
+    @OnShowRationale({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showRationale(final PermissionRequest request) {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
     }
@@ -347,7 +348,7 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
     }
 
     @TargetApi(16)
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void goToCamera() {
         startActivityForResult(com.tokopedia.seller.common.imageeditor.GalleryCropActivity.createIntent(getActivity(), 1, true, 1,true),
                 com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY);

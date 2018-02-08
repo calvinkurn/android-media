@@ -3,18 +3,20 @@ package com.tokopedia.flight.booking.domain;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.common.domain.FlightRepository;
+import com.tokopedia.flight.search.data.cloud.model.response.Route;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.functions.Func3;
 
 /**
@@ -45,27 +47,100 @@ public class FlightBookingGetSingleResultUseCase extends UseCase<FlightSearchVie
                 .flatMap(new Func1<FlightSearchViewModel, Observable<FlightSearchViewModel>>() {
                     @Override
                     public Observable<FlightSearchViewModel> call(FlightSearchViewModel flightSearchViewModel) {
-                        return Observable.zip(flightRepository.getAirlineList(),
-                                flightRepository.getAirportList(""),
-                                Observable.just(flightSearchViewModel),
-                                new Func3<List<FlightAirlineDB>, List<FlightAirportDB>,
-                                        FlightSearchViewModel, FlightSearchViewModel>() {
+                        return Observable.zip(
+                                Observable.from(flightSearchViewModel.getRouteList())
+                                        .flatMap(new Func1<Route, Observable<Route>>() {
+                                            @Override
+                                            public Observable<Route> call(Route route) {
+                                                return Observable.zip(
+                                                        flightRepository.getAirportById(route.getDepartureAirport()),
+                                                        flightRepository.getAirportById(route.getArrivalAirport()),
+                                                        Observable.just(route),
+                                                        new Func3<FlightAirportDB, FlightAirportDB, Route, Route>() {
+                                                            @Override
+                                                            public Route call(FlightAirportDB departureAirport,
+                                                                              FlightAirportDB arrivalAirport,
+                                                                              Route route) {
+                                                                if (departureAirport != null) {
+                                                                    route.setDepartureAirportCity(departureAirport.getCityName());
+                                                                    route.setDepartureAirportName(departureAirport.getAirportName());
+                                                                }
+                                                                if (arrivalAirport != null) {
+                                                                    route.setArrivalAirportCity(arrivalAirport.getCityName());
+                                                                    route.setArrivalAirportName(arrivalAirport.getAirportName());
+                                                                }
+                                                                return route;
+                                                            }
+                                                        }
+                                                );
+                                            }
+                                        }).toList(),
+                                Observable.just(flightSearchViewModel).zipWith(flightRepository.getAirportById(flightSearchViewModel.getDepartureAirport()), new Func2<FlightSearchViewModel, FlightAirportDB, FlightSearchViewModel>() {
                                     @Override
-                                    public FlightSearchViewModel call(List<FlightAirlineDB> airlineDBList,
-                                                                      List<FlightAirportDB> flightAirportDBs,
-                                                                      FlightSearchViewModel flightSearchViewModel) {
-                                        HashMap<String, FlightAirlineDB> dbAirlineMaps = new HashMap<>();
-                                        HashMap<String, FlightAirportDB> dbAirportMaps = new HashMap<>();
-                                        for (int i = 0, sizei = airlineDBList.size(); i < sizei; i++) {
-                                            dbAirlineMaps.put(airlineDBList.get(i).getId(), airlineDBList.get(i));
+                                    public FlightSearchViewModel call(FlightSearchViewModel flightSearchViewModel, FlightAirportDB airportDB) {
+                                        if (airportDB != null) {
+                                            flightSearchViewModel.setDepartureAirportCity(airportDB.getCityName());
+                                            flightSearchViewModel.setDepartureAirportName(airportDB.getAirportName());
                                         }
-                                        for (int i = 0, sizei = flightAirportDBs.size(); i < sizei; i++) {
-                                            dbAirportMaps.put(flightAirportDBs.get(i).getAirportId(), flightAirportDBs.get(i));
-                                        }
-                                        flightSearchViewModel.mergeWithAirportAndAirlines(dbAirlineMaps, dbAirportMaps);
                                         return flightSearchViewModel;
                                     }
-                                });
+                                }).zipWith(flightRepository.getAirportById(flightSearchViewModel.getArrivalAirport()), new Func2<FlightSearchViewModel, FlightAirportDB, FlightSearchViewModel>() {
+                                    @Override
+                                    public FlightSearchViewModel call(FlightSearchViewModel flightSearchViewModel, FlightAirportDB airportDB) {
+                                        if (airportDB != null) {
+                                            flightSearchViewModel.setArrivalAirportCity(airportDB.getCityName());
+                                            flightSearchViewModel.setArrivalAirportName(airportDB.getAirportName());
+                                        }
+                                        return flightSearchViewModel;
+                                    }
+                                }),
+                                new Func2<List<Route>, FlightSearchViewModel, FlightSearchViewModel>() {
+                                    @Override
+                                    public FlightSearchViewModel call(List<Route> routes, FlightSearchViewModel flightSearchViewModel) {
+                                        flightSearchViewModel.setRouteList(routes);
+                                        return flightSearchViewModel;
+                                    }
+                                }
+
+                        );
+                    }
+                })
+                .flatMap(new Func1<FlightSearchViewModel, Observable<FlightSearchViewModel>>() {
+                    @Override
+                    public Observable<FlightSearchViewModel> call(FlightSearchViewModel flightSearchViewModel) {
+                        List<String> airlineList = new ArrayList<>();
+                        for (Route route : flightSearchViewModel.getRouteList()) {
+                            airlineList.add(route.getAirline());
+                        }
+
+                        return Observable.zip(Observable.from(airlineList)
+                                        .flatMap(new Func1<String, Observable<FlightAirlineDB>>() {
+                                            @Override
+                                            public Observable<FlightAirlineDB> call(String airlineId) {
+                                                return Observable.zip(flightRepository.getAirlineById(airlineId), Observable.just(airlineId), new Func2<FlightAirlineDB, String, FlightAirlineDB>() {
+                                                    @Override
+                                                    public FlightAirlineDB call(FlightAirlineDB flightAirlineDB, String s) {
+                                                        return flightAirlineDB;
+                                                    }
+                                                });
+                                            }
+                                        }).toList(), Observable.just(flightSearchViewModel),
+                                new Func2<List<FlightAirlineDB>, FlightSearchViewModel, FlightSearchViewModel>() {
+                                    @Override
+                                    public FlightSearchViewModel call(List<FlightAirlineDB> flightAirlineDBS, FlightSearchViewModel flightSearchViewModel) {
+                                        flightSearchViewModel.setAirlineDataList(flightAirlineDBS);
+                                        for (Route route : flightSearchViewModel.getRouteList()) {
+                                            for (FlightAirlineDB flightAirlineDB : flightAirlineDBS) {
+                                                if (route.getAirline().equalsIgnoreCase(flightAirlineDB.getId())) {
+                                                    route.setAirlineLogo(flightAirlineDB.getLogo());
+                                                    route.setAirlineName(flightAirlineDB.getName());
+                                                }
+                                            }
+                                        }
+                                        return flightSearchViewModel;
+                                    }
+                                }
+                        );
                     }
                 });
     }

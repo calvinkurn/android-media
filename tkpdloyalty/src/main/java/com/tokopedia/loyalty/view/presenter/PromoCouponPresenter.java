@@ -1,5 +1,6 @@
 package com.tokopedia.loyalty.view.presenter;
 
+import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -192,4 +193,10 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
             }
         };
     }
+
+    @Override
+    public void detachView() {
+        promoCouponInteractor.unsubscribe();
+    }
+
 }

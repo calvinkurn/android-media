@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:padding="@dimen/margin_med">
+
+        <ImageView
+            android:id="@+id/img_app_share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/margin_large"
+            android:src="@drawable/ic_referral_tokocash" />
+
+        <TextView
+            android:id="@+id/tv_app_share_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/img_app_share"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/margin_sm"
+            android:fontFamily="sans-serif"
+            android:gravity="center_horizontal"
+            android:text="@string/app_share_referral_label_desc"
+            android:textColor="@color/black_54"
+            android:textSize="@dimen/font_small"
+            android:textStyle="normal" />
+
+        <TextView
+            android:id="@+id/tv_referral_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_app_share_desc"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/margin_sm"
+            android:background="@drawable/shape_dash_rectangle"
+            android:fontFamily="sans-serif"
+            android:gravity="left"
+            android:padding="@dimen/margin_sm"
+            android:textColor="@color/colorGreen"
+            android:textSize="@dimen/font_medium"
+            android:textStyle="normal" />
+
+        <TextView
+            android:id="@+id/btn_copy_referral_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/tv_referral_code"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/tv_referral_code"
+            android:layout_below="@+id/tv_app_share_desc"
+            android:gravity="center_horizontal|center_vertical"
+            android:paddingLeft="@dimen/font_medium"
+            android:paddingRight="@dimen/font_medium"
+            android:text="@string/menu_copy"
+            android:textColor="@color/black"
+            android:textSize="@dimen/font_medium"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_referral_help_link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_referral_code"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/margin_small"
+            android:lineSpacingExtra="@dimen/font_medium"
+            android:padding="@dimen/font_small"
+            android:text="@string/title_app_referral_howitworks"
+            android:textColor="@color/green_btn"
+            android:textSize="@dimen/font_medium"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/btn_referral_explore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_referral_help_link"
+            android:layout_marginTop="@dimen/margin_large"
+            android:background="@color/green_btn"
+            android:gravity="center_horizontal|center_vertical"
+            android:padding="@dimen/margin_sm"
+            android:text="@string/app_share_explore_btn_label"
+            android:textColor="@color/white"
+            android:textSize="@dimen/fonts" />
+    </RelativeLayout>
+</ScrollView>

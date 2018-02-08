@@ -21,12 +21,14 @@ import java.util.List;
  */
 
 public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapter.ViewHolder> {
+    private static final int PARAM_EMPTY_MARGIN = 0;
     private List<SimpleViewModel> viewModels;
     private boolean isArrowVisible;
     private boolean isClickable;
     private boolean isTitleBold;
     private boolean isTitleOnly;
-    private boolean isContentAllignmentRight;
+    private boolean isTitleHalfView;
+    private boolean isContentAllignmentLeft;
     private OnAdapterInteractionListener interactionListener;
 
     @ColorInt
@@ -38,7 +40,8 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
         isClickable = false;
         isTitleBold = false;
         isTitleOnly = false;
-        isContentAllignmentRight = false;
+        isContentAllignmentLeft = false;
+        isTitleHalfView = true;
     }
 
     @Override
@@ -81,14 +84,20 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
         this.isTitleBold = isTitleBold;
     }
 
-    public void setTitleOnly(boolean isTitleOnly) { this.isTitleOnly = isTitleOnly; }
+    public void setTitleOnly(boolean isTitleOnly) {
+        this.isTitleOnly = isTitleOnly;
+    }
+
+    public void setTitleHalfView(boolean titleHalfView) {
+        isTitleHalfView = titleHalfView;
+    }
 
     public void setInteractionListener(OnAdapterInteractionListener interactionListener) {
         this.interactionListener = interactionListener;
     }
 
-    public void setContentAllignmentRight(boolean contentAllignmentRight) {
-        isContentAllignmentRight = contentAllignmentRight;
+    public void setContentAllignmentLeft(boolean contentAllignmentLeft) {
+        isContentAllignmentLeft = contentAllignmentLeft;
     }
 
     public interface OnAdapterInteractionListener {
@@ -110,6 +119,8 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
         }
 
         public void bind(final SimpleViewModel viewModel) {
+            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) titleTextView.getLayoutParams();
+
             titleTextView.setText(viewModel.getLabel());
             contentTextView.setText(viewModel.getDescription());
             contentTextView.setVisibility(isTitleOnly ? View.GONE : View.VISIBLE);
@@ -124,7 +135,24 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
                 titleTextView.setTypeface(Typeface.DEFAULT);
             }
 
-            if (isContentAllignmentRight) {
+            if (isTitleHalfView) {
+                layoutParams.width = 0;
+                layoutParams.weight = 1;
+                titleTextView.setLayoutParams(layoutParams);
+            } else {
+                layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                layoutParams.weight = 0;
+                layoutParams.setMargins(
+                        PARAM_EMPTY_MARGIN,
+                        PARAM_EMPTY_MARGIN,
+                        10,
+                        PARAM_EMPTY_MARGIN
+                );
+                titleTextView.setLayoutParams(layoutParams);
+                titleTextView.setMinWidth(150);
+            }
+
+            if (isContentAllignmentLeft) {
                 contentTextView.setGravity(View.TEXT_ALIGNMENT_TEXT_START);
             }
 

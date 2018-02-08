@@ -61,7 +61,8 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
                 tilShopAddress.disableSuccessError();
             }
         });
-        root.findViewById(R.id.map_info_title).setOnClickListener(new View.OnClickListener() {
+        // Currently hide it since new Logistic API does not support user to choose express courier
+        /*root.findViewById(R.id.map_info_title).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 BottomSheetView bottomSheetView = new BottomSheetView(LocationMapViewHolder.this.root.getContext());
@@ -73,7 +74,7 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
 
                 bottomSheetView.show();
             }
-        });
+        });*/
 
         generatedLocationOpenShop = root.findViewById(R.id.generated_location_open_shop);
         mapViewContainer = root.findViewById(R.id.mapview_container);

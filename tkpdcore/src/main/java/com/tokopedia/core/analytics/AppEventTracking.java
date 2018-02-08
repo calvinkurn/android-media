@@ -15,6 +15,12 @@ public interface AppEventTracking {
     String DEFAULT_EVENT = "Event";
     String ACCOUNTS_KEY = "accounts";
 
+    String EVENT = "event";
+    String EVENT_CATEGORY = "eventCategory";
+    String EVENT_ACTION = "eventAction";
+    String EVENT_LABEL = "eventLabel";
+    String ECOMMERCE = "ecommerce";
+
     interface GTMKey {
         String ACCOUNTS_TYPE = "ACCOUNTS_TYPE";
     }
@@ -161,6 +167,7 @@ public interface AppEventTracking {
         String SELLER_INFO = "clickSellerInfo";
         String EVENT_ONBOARDING = "onBoardingEvent";
         String EVENT_RESOLUTION = "clickResolution";
+        String PRODUCT_VIEW = "productView";
     }
 
     interface Category {
@@ -276,6 +283,8 @@ public interface AppEventTracking {
 
         String PROMO_MICROSITE_PROMO_LIST ="promo microsite - promo list";
         String PROMO_MICROSITE_PROMO_TOOLTIP ="promo microsite - promo tooltip";
+        String SORT_BY = "sort by";
+        String FILTER_PRODUCT = "filter product";
     }
 
     interface Action {
@@ -425,6 +434,15 @@ public interface AppEventTracking {
         String CLICK_IMAGE_SETTINGS = "click image settings";
         String CLICK_SAVE_EDIT = "click save edit";
 
+
+        String CLICK_VERIFY_NUMBER = "click verify number";
+        String CLICK_HOW_IT_WORKS = "click how it works";
+        String CLICK_COPY_REFERRAL_CODE = "click copy referral code";
+        String CLICK_SHARE_CODE = "click share code";
+        String SELECT_CHANNEL = "select channel";
+        String CLICK_KNOW_MORE = "click know more";
+        String CLICK_EXPLORE_TOKOPEDIA = "click explore tokopedia";
+
         String CLICK_PRODUCT_PROBLEM = "click barang & masalah";
         String CLICK_SOLUTION = "click solution";
         String CLICK_PROVE = "click bukti & keterangan";
@@ -441,6 +459,9 @@ public interface AppEventTracking {
         String PROMO_CLICK_OPEN_TOOLTIP ="user click on tooltip";
         String PROMO_CLICK_CLOSE_TOOLTIP ="user click tutup";
 
+        String CLICK_SHOP = "click - shop";
+        String CLICK_WISHLIST = "click - wishlist";
+        String SORT_BY = "sort by";
     }
 
     interface ImageEditor{
@@ -914,6 +935,8 @@ public interface AppEventTracking {
         String TOTAL_ACTIVE_PRODUCT     = "total_active_product";
         String SHOP_SCORE     = "shop_score";
         String QUALITY_SCORE     = "quality_score";
+        String SCREEN_NAME     = "screen_name";
+        String CHANNEL     = "channel";
 
     }
 
@@ -948,6 +971,8 @@ public interface AppEventTracking {
         String EVENT_USER_ATTR = "User_Attribute_Name";
         String SELLER_SCREEN_OPEN = "Penjualan_Screen_Launched";
         String SHIPPING_CONFIRMED = "Shipping_Received_Confirmation";
+        String REFERRAL_SCREEN_LAUNCHED = "Referral_Screen_Launched";
+        String REFERRAL_SHARE_EVENT = "Share_Event";
     }
 
 

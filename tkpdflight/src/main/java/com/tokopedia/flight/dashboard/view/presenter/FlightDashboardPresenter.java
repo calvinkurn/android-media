@@ -11,8 +11,11 @@ import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.banner.domain.interactor.BannerGetDataUseCase;
 import com.tokopedia.flight.common.data.domain.DeleteFlightCacheUseCase;
+import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
+import com.tokopedia.flight.dashboard.domain.GetFlightAirportByIdUseCase;
+import com.tokopedia.flight.dashboard.domain.GetFlightClassByIdUseCase;
 import com.tokopedia.flight.dashboard.domain.GetFlightClassesUseCase;
 import com.tokopedia.flight.dashboard.view.fragment.cache.FlightDashboardCache;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
@@ -28,7 +31,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func3;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by alvarisi on 10/30/17.
@@ -38,40 +46,63 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     private static final String DEVICE_ID = "4";
     private static final String CATEGORY_ID = "27";
+    private static final int MAX_PASSENGER_VALUE = 7;
+    private static final int MAX_TWO_YEARS = 2;
+    private static final int INDEX_DEPARTURE_TRIP = 0;
+    private static final int INDEX_RETURN_TRIP = 1;
+    private static final int INDEX_ID_AIRPORT_DEPARTURE_TRIP = 0;
+    private static final int INDEX_ID_AIRPORT_ARRIVAL_TRIP = 1;
+    private static final int INDEX_DATE_TRIP = 2;
+    private static final int INDEX_DATE_YEAR = 0;
+    private static final int INDEX_DATE_MONTH = 1;
+    private static final int INDEX_DATE_DATE = 2;
 
     private BannerGetDataUseCase bannerGetDataUseCase;
     private FlightDashboardValidator validator;
     private DeleteFlightCacheUseCase deleteFlightCacheUseCase;
     private GetFlightClassesUseCase getFlightClassesUseCase;
+    private GetFlightAirportByIdUseCase getFlightAirportByIdUseCase;
+    private GetFlightClassByIdUseCase getFlightClassByIdUseCase;
     private FlightClassViewModelMapper flightClassViewModelMapper;
     private FlightDashboardCache flightDashboardCache;
     private UserSession userSession;
+    private FlightAnalytics flightAnalytics;
+    private CompositeSubscription compositeSubscription;
 
     @Inject
     public FlightDashboardPresenter(BannerGetDataUseCase bannerGetDataUseCase,
                                     FlightDashboardValidator validator,
                                     DeleteFlightCacheUseCase deleteFlightCacheUseCase,
                                     GetFlightClassesUseCase getFlightClassesUseCase,
+                                    GetFlightAirportByIdUseCase getFlightAirportByIdUseCase,
+                                    GetFlightClassByIdUseCase getFlightClassByIdUseCase,
                                     FlightClassViewModelMapper flightClassViewModelMapper,
                                     FlightDashboardCache flightDashboardCache,
-                                    UserSession userSession) {
+                                    UserSession userSession,
+                                    FlightAnalytics flightAnalytics) {
         this.bannerGetDataUseCase = bannerGetDataUseCase;
         this.validator = validator;
         this.deleteFlightCacheUseCase = deleteFlightCacheUseCase;
         this.getFlightClassesUseCase = getFlightClassesUseCase;
+        this.getFlightAirportByIdUseCase = getFlightAirportByIdUseCase;
+        this.getFlightClassByIdUseCase = getFlightClassByIdUseCase;
         this.flightClassViewModelMapper = flightClassViewModelMapper;
         this.flightDashboardCache = flightDashboardCache;
         this.userSession = userSession;
+        this.flightAnalytics = flightAnalytics;
+        this.compositeSubscription = new CompositeSubscription();
     }
 
     @Override
     public void onSingleTripChecked() {
+        flightAnalytics.eventTripTypeClick(getView().getString(R.string.flight_dashboard_analytic_one_way).toString());
         getView().getCurrentDashboardViewModel().setOneWay(true);
         getView().renderSingleTripView();
     }
 
     @Override
     public void onRoundTripChecked() {
+        flightAnalytics.eventTripTypeClick(getView().getString(R.string.flight_dashboard_analytic_round_trip).toString());
         getView().getCurrentDashboardViewModel().setOneWay(false);
         getView().renderRoundTripView();
     }
@@ -87,9 +118,14 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     private void onInitialize() {
         setupViewModel();
-        actionLoadFromCache();
-        actionGetClassesAndSetDefaultClass();
         getBannerData();
+
+        if (!getView().isFromApplink()) {
+            actionLoadFromCache();
+            actionGetClassesAndSetDefaultClass();
+        } else {
+            transformExtras();
+        }
     }
 
     private void actionLoadFromCache() {
@@ -262,6 +298,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void onFlightClassesChange(FlightClassViewModel viewModel) {
+        flightAnalytics.eventClassClick(viewModel.getTitle());
         FlightDashboardViewModel flightDashboardViewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
         flightDashboardViewModel.setFlightClass(viewModel);
         getView().setDashBoardViewModel(flightDashboardViewModel);
@@ -270,6 +307,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void onFlightPassengerChange(FlightPassengerViewModel passengerViewModel) {
+        flightAnalytics.eventPassengerClick(passengerViewModel.getAdult(), passengerViewModel.getChildren(), passengerViewModel.getInfant());
         FlightDashboardViewModel flightDashboardViewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
         flightDashboardViewModel.setFlightPassengerViewModel(passengerViewModel);
         flightDashboardViewModel.setFlightPassengerFmt(buildPassengerTextFormatted(passengerViewModel));
@@ -279,6 +317,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void onDepartureAirportChange(FlightAirportDB departureAirport) {
+        flightAnalytics.eventOriginClick(departureAirport.getCityName(), departureAirport.getAirportId());
         FlightDashboardViewModel flightDashboardViewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
         flightDashboardViewModel.setDepartureAirport(departureAirport);
         String code = buildAirportFmt(departureAirport);
@@ -300,6 +339,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void onArrivalAirportChange(FlightAirportDB arrivalAirport) {
+        flightAnalytics.eventDestinationClick(arrivalAirport.getCityName(), arrivalAirport.getAirportId());
         FlightDashboardViewModel flightDashboardViewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
         flightDashboardViewModel.setArrivalAirport(arrivalAirport);
         String code = arrivalAirport.getAirportId();
@@ -315,6 +355,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     @Override
     public void onSearchTicketButtonClicked() {
         if (validateSearchParam(getView().getCurrentDashboardViewModel())) {
+            flightAnalytics.eventSearchClick(getView().getScreenName());
             deleteFlightCacheUseCase.execute(DeleteFlightCacheUseCase.createRequestParam(), new Subscriber<Boolean>() {
                 @Override
                 public void onCompleted() {
@@ -338,6 +379,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void onDestroyView() {
+        if (compositeSubscription.hasSubscriptions()) compositeSubscription.unsubscribe();
         detachView();
     }
 
@@ -350,6 +392,124 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         }
     }
 
+    private void transformExtras() {
+        try {
+            boolean isDepartureDateValid = true;
+            boolean isReturnDateValid = true;
+            boolean isPassengerValid = true;
+
+            // transform trip extras
+            String[] tempExtras = getView().getTripArguments().split(",");
+            String[] extrasTripDeparture = tempExtras[INDEX_DEPARTURE_TRIP].split("_");
+            String[] departureTripDate = extrasTripDeparture[INDEX_DATE_TRIP].split("-");
+
+            /**
+             * tokopedia://flight/search?dest=CGK_DPS_2018-04-01,CGK_DPS_2018-05-01&a=1&c=1&i=1&s=1
+             */
+            onDepartureDateChange(Integer.parseInt(departureTripDate[INDEX_DATE_YEAR]), Integer.parseInt(departureTripDate[INDEX_DATE_MONTH]) - 1, Integer.parseInt(departureTripDate[INDEX_DATE_DATE]));
+            onSingleTripChecked();
+
+            Calendar today = FlightDateUtil.getCurrentCalendar();
+            if (!validator.validateDepartureDateAtLeastToday(getView().getCurrentDashboardViewModel())) {
+                isDepartureDateValid = false;
+                getView().showDepartureDateShouldAtLeastToday(R.string.flight_dashboard_departure_should_atleast_today_error);
+                onDepartureDateChange(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
+            } else if ((Integer.parseInt(departureTripDate[INDEX_DATE_YEAR]) - today.get(Calendar.YEAR)) > MAX_TWO_YEARS) {
+                isDepartureDateValid = false;
+                getView().showApplinkErrorMessage(R.string.flight_dashboard_departure_max_two_years_from_today_error);
+                onDepartureDateChange(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
+            }
+
+            if (tempExtras.length > 1) {
+                String[] extrasTripReturn = tempExtras[INDEX_RETURN_TRIP].split("_");
+                String[] returnTripDate = extrasTripReturn[INDEX_DATE_TRIP].split("-");
+                onReturnDateChange(Integer.parseInt(returnTripDate[INDEX_DATE_YEAR]), Integer.parseInt(returnTripDate[INDEX_DATE_MONTH]) - 1, Integer.parseInt(returnTripDate[INDEX_DATE_DATE]));
+                onRoundTripChecked();
+
+                if (!validator.validateArrivalDateShouldGreaterOrEqualDeparture(getView().getCurrentDashboardViewModel())) {
+                    isReturnDateValid = false;
+                    if (isDepartureDateValid) {
+                        getView().showArrivalDateShouldGreaterOrEqual(R.string.flight_dashboard_arrival_should_greater_equal_error);
+                        onReturnDateChange(Integer.parseInt(departureTripDate[INDEX_DATE_YEAR]), Integer.parseInt(departureTripDate[INDEX_DATE_MONTH]), Integer.parseInt(departureTripDate[INDEX_DATE_DATE]) + 1);
+                    } else {
+                        onReturnDateChange(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE) + 1);
+                    }
+                } else if ((Integer.parseInt(returnTripDate[INDEX_DATE_YEAR]) - today.get(Calendar.YEAR)) > MAX_TWO_YEARS) {
+                    isReturnDateValid = false;
+                    if (isDepartureDateValid) {
+                        getView().showApplinkErrorMessage(R.string.flight_dashboard_arrival_max_two_years_from_today_error);
+                        onReturnDateChange(Integer.parseInt(departureTripDate[INDEX_DATE_YEAR]), Integer.parseInt(departureTripDate[INDEX_DATE_MONTH]), Integer.parseInt(departureTripDate[INDEX_DATE_DATE]) + 1);
+                    } else {
+                        onReturnDateChange(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE) + 1);
+                    }
+                }
+            }
+
+            // transform passenger count
+            if (Integer.parseInt(getView().getChildPassengerArguments()) > Integer.parseInt(getView().getAdultPassengerArguments()) || Integer.parseInt(getView().getInfantPassengerArguments()) > Integer.parseInt(getView().getAdultPassengerArguments())) {
+                isPassengerValid = false;
+                getView().showApplinkErrorMessage(R.string.select_passenger_infant_greater_than_adult_error_message);
+            } else if (Integer.parseInt(getView().getChildPassengerArguments()) + Integer.parseInt(getView().getAdultPassengerArguments()) > MAX_PASSENGER_VALUE) {
+                isPassengerValid = false;
+                getView().showApplinkErrorMessage(R.string.select_passenger_total_passenger_error_message);
+            } else {
+                FlightPassengerViewModel flightPassengerViewModel = new FlightPassengerViewModel(Integer.parseInt(getView().getAdultPassengerArguments()), Integer.parseInt(getView().getChildPassengerArguments()), Integer.parseInt(getView().getInfantPassengerArguments()));
+                onFlightPassengerChange(flightPassengerViewModel);
+            }
+
+            // transform class
+            int classId = Integer.parseInt(getView().getClassArguments());
+
+            final boolean finalIsDepartureDateValid = isDepartureDateValid;
+            final boolean finalIsReturnDateValid = isReturnDateValid;
+            final boolean finalIsPassengerValid = isPassengerValid;
+            compositeSubscription.add(
+                    Observable.zip(getFlightAirportByIdUseCase
+                                    .createObservable(getFlightAirportByIdUseCase.createRequestParams(extrasTripDeparture[INDEX_ID_AIRPORT_DEPARTURE_TRIP])),
+                            getFlightAirportByIdUseCase
+                                    .createObservable(getFlightAirportByIdUseCase.createRequestParams(extrasTripDeparture[INDEX_ID_AIRPORT_ARRIVAL_TRIP])),
+                            getFlightClassByIdUseCase.createObservable(getFlightClassByIdUseCase.createRequestParams(classId)),
+                            new Func3<FlightAirportDB, FlightAirportDB, FlightClassEntity, Boolean>() {
+                                @Override
+                                public Boolean call(FlightAirportDB flightAirportDB, FlightAirportDB flightAirportDB2, FlightClassEntity flightClassEntity) {
+                                    onDepartureAirportChange(flightAirportDB);
+                                    onArrivalAirportChange(flightAirportDB2);
+                                    onFlightClassesChange(flightClassViewModelMapper.transform(flightClassEntity));
+                                    return true;
+                                }
+                            }
+                    )
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Boolean>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onNext(Boolean aBoolean) {
+                            if (finalIsDepartureDateValid && finalIsReturnDateValid && finalIsPassengerValid)
+                                onSearchTicketButtonClicked();
+                        }
+                    })
+            );
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onBannerItemClick(int position, BannerDetail bannerDetail) {
+        flightAnalytics.eventPromotionClick(position + 1, bannerDetail.getAttributes().getTitle(), bannerDetail.getAttributes().getImgUrl());
+    }
+
     private void getBannerData() {
         bannerGetDataUseCase.execute(bannerGetDataUseCase.createRequestParams(DEVICE_ID, CATEGORY_ID), new Subscriber<List<BannerDetail>>() {
             @Override
@@ -359,14 +519,14 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
             @Override
             public void onError(Throwable throwable) {
-                if(isViewAttached()) {
+                if (isViewAttached()) {
                     getView().hideBannerView();
                 }
             }
 
             @Override
             public void onNext(List<BannerDetail> bannerDetailList) {
-                if(isViewAttached()) {
+                if (isViewAttached()) {
                     getView().renderBannerView(bannerDetailList);
                 }
             }
@@ -415,4 +575,5 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         }
         return viewModel;
     }
+
 }
