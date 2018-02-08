@@ -59,7 +59,7 @@
     <string name="product_weight_value_kg">2</string>
 
     <string name="product_stock_available_value">1</string>
-    <string name="product_stock_not_available_value">2</string>
+    <string name="product_stock_not_available_value">3</string>
     <string name="product_stock_value_default">@string/product_stock_available_value</string>
 
     <string name="product_pre_order_value_day">1</string>

@@ -38,10 +38,8 @@ import rx.functions.Func1;
 
 public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductViewModel> {
     public static final String UTF_8 = "UTF-8";
-    private final long draftId;
 
-    public ProductDraftMapper(long draftId) {
-        this.draftId = draftId;
+    public ProductDraftMapper() {
     }
 
     @Override
@@ -52,17 +50,12 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
                     ProductDraftModel.class
             );
 
-            ProductViewModel domainModel = mapDraftToDomain(draftModel);
-            domainModel.setProductId(draftId);
-            domainModel.setProductDraftId((int) productDraftDataBase.getId());
-            return domainModel;
+            return mapDraftToDomain(draftModel);
         } else {
-            ProductViewModel productViewModel = CacheUtil.convertStringToModel(
+            return CacheUtil.convertStringToModel(
                     productDraftDataBase.getData(),
                     ProductViewModel.class
             );
-            productViewModel.setProductDraftId((int) productDraftDataBase.getId());
-            return productViewModel;
         }
     }
 
@@ -91,7 +84,6 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
         domainModel.setProductWeightUnit(draftModel.getProductWeightUnit());
         domainModel.setProductPreorder(generateProductPreorder(draftModel));
 //        domainModel.setServerId(draftModel.getServerId());
-        domainModel.setProductStatusUpload(draftModel.getProductStatus());
         domainModel.setProductId(Long.parseLong(draftModel.getProductId()));
         domainModel.setProductNameEditable(draftModel.getProductNameEditable() != 0);
 //        domainModel.setProductVariantDataSubmit(draftModel.getProductVariantDataSubmit());

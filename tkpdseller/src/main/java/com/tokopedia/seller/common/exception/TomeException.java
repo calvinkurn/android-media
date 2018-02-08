@@ -1,4 +1,4 @@
-package com.tokopedia.seller.shop.common.exception;
+package com.tokopedia.seller.common.exception;
 
 import android.annotation.TargetApi;
 import android.os.Build;
@@ -12,7 +12,7 @@ import java.util.List;
  * Created by zulfikarrahman on 12/27/17.
  */
 
-public class ShopException extends IOException {
+public class TomeException extends IOException {
     List<String> messageErrorList;
     String errorCode;
 
@@ -23,21 +23,21 @@ public class ShopException extends IOException {
     public String getErrorCode() {
         return errorCode;
     }
-    public ShopException(String errorCode, List<String> messages) {
+    public TomeException(String errorCode, List<String> messages) {
         super(StringUtil.join(messages, ","));
         this.errorCode = errorCode;
         this.messageErrorList = messages;
     }
 
-    public ShopException(String errorListMessage) {
+    public TomeException(String errorListMessage) {
         super(errorListMessage);
     }
 
-    public ShopException(String message, Throwable cause) {
+    public TomeException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public ShopException(Throwable cause) {
+    public TomeException(Throwable cause) {
         super(cause);
     }
 

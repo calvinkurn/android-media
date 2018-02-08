@@ -45,7 +45,8 @@ public class AddProductImage implements Func1<ProductViewModel, Observable<List<
         public Observable<ProductPictureViewModel> call(ProductPictureViewModel productPictureViewModel) {
             if (productPictureViewModel.getId() <= 0) {
                 return uploadImageUseCase.createObservable(uploadImageUseCase.createRequestParams(
-                        ProductNetworkConstant.UPLOAD_PRODUCT_IMAGE_PATH, productPictureViewModel.getFilePath()))
+                        ProductNetworkConstant.UPLOAD_PRODUCT_IMAGE_PATH, productPictureViewModel.getFilePath(),
+                        ProductNetworkConstant.LOGO_FILENAME_IMAGE_JPG))
                         .map(new MapImageModelToProductInput(productPictureViewModel));
             } else {
                 return Observable.just(productPictureViewModel);

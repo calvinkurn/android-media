@@ -8,7 +8,7 @@ import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.shop.common.exception.model.ShopErrorResponse;
+import com.tokopedia.seller.common.exception.model.TomeErrorResponse;
 import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.seller.shop.common.di.ShopScope;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
@@ -101,7 +101,7 @@ public class ShopModule {
     @ShopScope
     @Provides
     public TkpdErrorResponseInterceptor provideTkpdErrorResponseInterceptor() {
-        return new HeaderErrorResponseInterceptor(ShopErrorResponse.class);
+        return new HeaderErrorResponseInterceptor(TomeErrorResponse.class);
     }
 
     @ShopScope

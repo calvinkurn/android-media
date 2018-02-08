@@ -109,25 +109,6 @@ public class ProductViewModel implements ItemType {
     @Expose
     private boolean productNameEditable;
 
-    private int productStatusUpload;
-    private int productDraftId;
-
-    public int getProductDraftId() {
-        return productDraftId;
-    }
-
-    public void setProductDraftId(int productDraftId) {
-        this.productDraftId = productDraftId;
-    }
-
-    public int getProductStatusUpload() {
-        return productStatusUpload;
-    }
-
-    public void setProductStatusUpload(int productStatusUpload) {
-        this.productStatusUpload = productStatusUpload;
-    }
-
     public long getProductId() {
         return productId;
     }

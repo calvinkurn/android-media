@@ -251,7 +251,7 @@ public class UploadProductService extends BaseService implements AddProductServi
                 .setStyle(new NotificationCompat
                         .BigTextStyle()
                         .bigText(getString(R.string.product_notification_progress_upload_product)))
-                .setProgress(4, stepNotification, false)
+                .setProgress(3, stepNotification, false)
                 .build();
     }
 

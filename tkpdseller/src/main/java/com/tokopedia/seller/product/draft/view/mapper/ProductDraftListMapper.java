@@ -21,8 +21,7 @@ public class ProductDraftListMapper {
     public static final int MIN_COMPLETION_PERCENT = 5;
     public static final int MAX_COMPLETION_PERCENT = 95;
 
-    public static ProductDraftViewModel mapDomainToView(ProductViewModel domainModel) {
-        long draftId = domainModel.getProductDraftId();
+    public static ProductDraftViewModel mapDomainToView(ProductViewModel domainModel, long draftId) {
         String primaryPhotoUrl = null;
         List<ProductPictureViewModel> imageProductInputDomainModelList = domainModel.getProductPicture();
         if (imageProductInputDomainModelList != null && imageProductInputDomainModelList.size() > 0) {
@@ -68,6 +67,6 @@ public class ProductDraftListMapper {
                 primaryPhotoUrl,
                 productName,
                 completionPercent,
-                domainModel.getProductStatusUpload() == ProductStatus.EDIT);
+                domainModel.getProductId() > 0);
     }
 }
