@@ -39,7 +39,7 @@ public class ShipmentAddressListFragment extends BasePresenterFragment
         implements ISearchAddressListView<List<ShipmentRecipientModel>>,
         SearchInputView.Listener,
         SearchInputView.ResetListener,
-        FragmentManager.OnBackStackChangedListener {
+        FragmentManager.OnBackStackChangedListener, ShipmentAddressListAdapter.ActionListener {
 
     private static final String TAG = ShipmentAddressListFragment.class.getSimpleName();
 
@@ -64,7 +64,7 @@ public class ShipmentAddressListFragment extends BasePresenterFragment
     protected void initInjector() {
         super.initInjector();
         CartAddressListComponent component = DaggerCartAddressListComponent.builder()
-                .cartAddressListModule(new CartAddressListModule())
+                .cartAddressListModule(new CartAddressListModule(this))
                 .build();
         component.inject(this);
     }
@@ -274,4 +274,8 @@ public class ShipmentAddressListFragment extends BasePresenterFragment
         }
     }
 
+    @Override
+    public void onAddressContainerClicked(int position) {
+
+    }
 }
