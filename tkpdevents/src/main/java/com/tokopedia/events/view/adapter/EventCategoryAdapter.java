@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.events.R;
+import com.tokopedia.events.R2;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
@@ -20,6 +21,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+
+import butterknife.BindView;
 
 /**
  * Created by ashwanityagi on 16/11/17.
@@ -43,6 +46,7 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
         public TextView eventLocation;
         public TextView eventTime;
         public LinearLayout eventTimeLayout;
+        public TextView tvDisplayTag;
         int index;
 
         public ViewHolder(View itemLayoutView) {
@@ -54,6 +58,7 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
             eventLocation = (TextView) itemView.findViewById(R.id.tv_location);
             eventTime = (TextView) itemView.findViewById(R.id.tv_time);
             eventTimeLayout = (LinearLayout) itemView.findViewById(R.id.linearLayout2);
+            tvDisplayTag = (TextView) itemView.findViewById(R.id.text_view_display_tag);
 
         }
 
@@ -99,6 +104,13 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
                         + " - " + convertEpochToString(model.getMaxEndDate()));
         }
         holder.setIndex(position);
+
+        if (model.getDisplayTags() != null && model.getDisplayTags().length() > 3) {
+            holder.tvDisplayTag.setText(model.getDisplayTags());
+            holder.tvDisplayTag.setVisibility(View.VISIBLE);
+        } else {
+            holder.tvDisplayTag.setVisibility(View.GONE);
+        }
 
         ImageHandler.loadImageCover2(holder.eventImage, categoryItems.get(position).getImageApp());
 

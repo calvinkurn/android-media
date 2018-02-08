@@ -57,7 +57,9 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     ExpandableTextView tvExpandableDescription;
     @BindView(R2.id.seemorebutton)
     TextView seemorebutton;
-    @BindView(R2.id.iv_arrow_seating)
+    @BindView(R2.id.seemorebutton_tnc)
+    TextView seemorebuttonTnC;
+    @BindView(R2.id.down_arrow)
     ImageView ivArrowSeating;
     @BindView(R2.id.btn_show_seating)
     LinearLayout btnShowSeating;
@@ -65,8 +67,6 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     ImageView imgvSeatingLayout;
     @BindView(R2.id.tv_expandable_tnc)
     ExpandableTextView tvExpandableTermsNCondition;
-    @BindView(R2.id.seemorebutton_tnc)
-    TextView seemorebuttonTnC;
     @BindView(R2.id.app_bar)
     Toolbar appBar;
     @BindView(R2.id.event_time)
@@ -77,8 +77,6 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     LinearLayout addressView;
     @BindView(R2.id.text_view_title)
     TextView textViewTitle;
-    @BindView(R2.id.text_view_display_tag)
-    TextView tvDisplayTag;
     @BindView(R2.id.seating_layout_card)
     View seatingLayoutCard;
     @BindView(R2.id.btn_book)
@@ -91,6 +89,14 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     FrameLayout mainContent;
     @BindView(R2.id.button_textview)
     TextView buttonTextView;
+    @BindView(R2.id.expand_view)
+    LinearLayout expandLayout;
+    @BindView(R2.id.expand_view_tnc)
+    LinearLayout expandTnc;
+    @BindView(R2.id.down_arrow_tnc)
+    ImageView ivArrowSeatingTnC;
+    @BindView(R2.id.tv_event_price)
+            TextView eventPrice;
 
     ImageTextViewHolder timeHolder;
     ImageTextViewHolder locationHolder;
@@ -210,19 +216,14 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
 //        } else {
 //            tvExpandableTermsNCondition.setText(Html.fromHtml(homedata.getTnc()));
 //        }
-        if (homedata.getDisplayTags() == null || homedata.getDisplayTags().length() < 3)
-            tvDisplayTag.setVisibility(View.GONE);
-        else {
-            tvDisplayTag.setText(homedata.getDisplayTags());
-            tvDisplayTag.setVisibility(View.VISIBLE);
-        }
 //        if (homedata.getHasSeatLayout() != 1)
 //            seatingLayoutCard.setVisibility(View.GONE);
 
-        String buttonText = getString(R.string.lanjutkan) + " " +
-                String.format(getString(R.string.starting_from),
-                        "Rp " + CurrencyUtil.convertToCurrencyString(homedata.getSalesPrice()));
-        buttonTextView.setText(buttonText);
+//        String buttonText = getString(R.string.lanjutkan) + " " +
+//                String.format(getString(R.string.starting_from),
+//                        "Rp " + CurrencyUtil.convertToCurrencyString(homedata.getSalesPrice()));
+//        buttonTextView.setText(buttonText);
+        eventPrice.setText("Rp " + CurrencyUtil.convertToCurrencyString(homedata.getSalesPrice()));
     }
 
     @Override
@@ -257,19 +258,14 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         }
         tvExpandableTermsNCondition.setText(Html.fromHtml(tncBuffer.toString()));
 
-        if (data.getDisplayTags() == null || data.getDisplayTags().length() < 3)
-            tvDisplayTag.setVisibility(View.GONE);
-        else {
-            tvDisplayTag.setText(data.getDisplayTags());
-            tvDisplayTag.setVisibility(View.VISIBLE);
-        }
         if (data.getHasSeatLayout() != 1)
             seatingLayoutCard.setVisibility(View.GONE);
 
-        String buttonText = getString(R.string.lanjutkan) + " " +
-                String.format(getString(R.string.starting_from),
-                        "Rp " + CurrencyUtil.convertToCurrencyString(data.getSalesPrice()));
-        buttonTextView.setText(buttonText);
+//        String buttonText = getString(R.string.lanjutkan) + " " +
+//                String.format(getString(R.string.starting_from),
+//                        "Rp " + CurrencyUtil.convertToCurrencyString(data.getSalesPrice()));
+//        buttonTextView.setText(buttonText);
+        eventPrice.setText("Rp " + CurrencyUtil.convertToCurrencyString(data.getSalesPrice()));
     }
 
     @Override
@@ -350,15 +346,29 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
 //    }
 
 
-    @OnClick(R2.id.seemorebutton)
+    @OnClick(R2.id.expand_view)
     void setSeemorebutton() {
-        seemorebutton.setText(tvExpandableDescription.isExpanded() ? R.string.expand : R.string.collapse);
+        if (tvExpandableDescription.isExpanded()) {
+            seemorebutton.setText(R.string.expand);
+            ivArrowSeating.animate().rotation(0f);
+
+        } else {
+            seemorebutton.setText(R.string.collapse);
+            ivArrowSeating.animate().rotation(180f);
+        }
         tvExpandableDescription.toggle();
     }
 
-    @OnClick(R2.id.seemorebutton_tnc)
+    @OnClick(R2.id.expand_view_tnc)
     void setSeemorebuttontnc() {
-        seemorebuttonTnC.setText(tvExpandableTermsNCondition.isExpanded() ? R.string.expand : R.string.collapse);
+        if (tvExpandableTermsNCondition.isExpanded()) {
+            seemorebuttonTnC.setText(R.string.expand);
+            ivArrowSeatingTnC.animate().rotation(0f);
+
+        } else {
+            seemorebuttonTnC.setText(R.string.collapse);
+            ivArrowSeatingTnC.animate().rotation(180f);
+        }
         tvExpandableTermsNCondition.toggle();
     }
 

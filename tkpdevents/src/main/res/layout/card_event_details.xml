@@ -17,24 +17,6 @@
         android:textSize="16sp"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/text_view_display_tag"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/rounded_rectange_transparent"
-        android:gravity="center_horizontal"
-        android:paddingBottom="4dp"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp"
-        android:paddingTop="4dp"
-        android:text="@string/_350_u0020_ticket_u0020_sold"
-        android:textColor="@color/black_38"
-        android:textSize="14sp"
-        android:textStyle="normal"
-        android:visibility="visible" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -86,7 +68,7 @@
     <at.blogc.android.views.ExpandableTextView
         android:id="@+id/tv_expandable_description"
         android:layout_width="wrap_content"
-        android:layout_height="80dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
@@ -99,16 +81,33 @@
         android:textStyle="normal"
         app:animation_duration="300" />
 
+    <LinearLayout
+        android:id="@+id/expand_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
     <TextView
         android:id="@+id/seemorebutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="8dp"
         android:text="@string/expand"
         android:textColor="@color/green_nob"
         android:textSize="12sp"
         android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/down_arrow"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:tint="@color/green_nob"
+            android:src="@drawable/ic_arrow_down"/>
+
+    </LinearLayout>
 
 </LinearLayout>
