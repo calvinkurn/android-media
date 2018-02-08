@@ -57,6 +57,8 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
         implements ReviewProductContract.View, ReviewProductContentViewHolder.ListenerReviewHolder {
 
     public static final String EXTRA_PRODUCT_ID = "product_id";
+    public static final int TOTAL_FILTER_ITEM = 5;
+    public static final int INITIAL_PAGE = 1;
 
     @Inject
     ReviewProductPresenter productReviewPresenter;
@@ -127,7 +129,7 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
 
     private void setupFilterView() {
         List<QuickFilterItem> quickFilterItemList = new ArrayList<>();
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 1; i <= TOTAL_FILTER_ITEM; i++) {
             CustomViewQuickFilterItem quickFilterItem = new CustomViewQuickFilterItem();
             quickFilterItem.setType(String.valueOf(i));
             ReviewProductItemFilterView productReviewItemFilterView = new ReviewProductItemFilterView(getActivity());
@@ -153,7 +155,7 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
 
     @Override
     public void loadData(int page) {
-        if (page <= 1 && !customViewQuickFilterView.isAnyItemSelected()) {
+        if (page <= INITIAL_PAGE && !customViewQuickFilterView.isAnyItemSelected()) {
             productReviewPresenter.getRatingReview(productId);
             productReviewPresenter.getHelpfulReview(productId);
         }

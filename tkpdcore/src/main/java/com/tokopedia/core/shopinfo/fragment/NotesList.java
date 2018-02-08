@@ -45,8 +45,9 @@ public class NotesList extends Fragment {
 
     @Nullable
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(getRootViewId() == 0)
+        if(getRootViewId() == 0) {
             throw new RuntimeException("Needs layout ID");
+        }
 
         if(rootView == null){
             rootView = inflater.inflate(getRootViewId(), container, false);
