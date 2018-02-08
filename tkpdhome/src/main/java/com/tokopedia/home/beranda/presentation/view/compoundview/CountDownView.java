@@ -63,23 +63,22 @@ public class CountDownView extends FrameLayout {
             handleExpiredTime(listener);
             return;
         }
-        if (refreshCounterHandler == null && runnableRefreshCounter == null) {
-            refreshCounterHandler = new Handler();
-            runnableRefreshCounter = new Runnable() {
-                @Override
-                public void run() {
-                    if (!isExpired(expiredTime)) {
-                        Date now = new Date();
-                        TimeDiffModel timeDiff = getTimeDiff(now, expiredTime);
-                        setTime(timeDiff.getHour(), timeDiff.getMinute(), timeDiff.getSecond());
-                        refreshCounterHandler.postDelayed(this, REFRESH_DELAY_MS);
-                    } else {
-                        handleExpiredTime(listener);
-                    }
+        stopAutoRefreshCounter();
+        refreshCounterHandler = new Handler();
+        runnableRefreshCounter = new Runnable() {
+            @Override
+            public void run() {
+                if (!isExpired(expiredTime)) {
+                    Date now = new Date();
+                    TimeDiffModel timeDiff = getTimeDiff(now, expiredTime);
+                    setTime(timeDiff.getHour(), timeDiff.getMinute(), timeDiff.getSecond());
+                    refreshCounterHandler.postDelayed(this, REFRESH_DELAY_MS);
+                } else {
+                    handleExpiredTime(listener);
                 }
-            };
-            startAutoRefreshCounter();
-        }
+            }
+        };
+        startAutoRefreshCounter();
     }
 
     private void handleExpiredTime(CountDownListener listener) {
