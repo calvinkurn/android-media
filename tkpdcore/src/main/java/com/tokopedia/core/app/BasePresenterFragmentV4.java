@@ -15,6 +15,9 @@ import butterknife.Unbinder;
  * @author rizkyfadillah on 10/16/2017.
  */
 
+/**
+ * Extends one of BaseActivity from tkpd abstraction eg:BaseSimpleActivity, BaseStepperActivity, BaseTabActivity, etc
+ */
 @Deprecated
 public abstract class BasePresenterFragmentV4<P> extends Fragment {
 

@@ -12,7 +12,10 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.common.constant.FlightErrorConstant;
 import com.tokopedia.flight.common.constant.FlightUrl;
+import com.tokopedia.flight.common.data.model.FlightError;
+import com.tokopedia.flight.common.data.model.FlightException;
 import com.tokopedia.flight.common.util.FlightAmenityType;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightPassengerTitleType;
@@ -84,6 +87,15 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 if (isViewAttached()) {
                     getView().hideProgressDialog();
                     getView().onErrorGetOrderDetail(e);
+                }
+
+
+                if (e instanceof FlightException) {
+                    for (FlightError flightError : ((FlightException) e).getErrorList()) {
+                        if (flightError.getId().equals(FlightErrorConstant.GET_RESULT) && flightError.getStatus().equals("500")) {
+                            getView().navigateToFlightHomePage();
+                        }
+                    }
                 }
             }
 
