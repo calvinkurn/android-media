@@ -1,6 +1,5 @@
 package com.tokopedia.tokocash.pendingcashback.domain;
 
-import com.tokopedia.tokocash.activation.presentation.model.PendingCashback;
 import com.tokopedia.tokocash.pendingcashback.data.PendingCashbackRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;

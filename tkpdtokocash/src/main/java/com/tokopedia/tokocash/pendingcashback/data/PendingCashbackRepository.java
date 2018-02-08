@@ -1,6 +1,6 @@
 package com.tokopedia.tokocash.pendingcashback.data;
 
-import com.tokopedia.tokocash.activation.presentation.model.PendingCashback;
+import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokocash.network.api.WalletApi;
 import com.tokopedia.tokocash.pendingcashback.domain.IPendingCashbackRepository;
 

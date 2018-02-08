@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.tokocash;
 
 import com.tokopedia.digital.tokocash.model.CashBackData;
-import com.tokopedia.tokocash.activation.presentation.model.PendingCashback;
+import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 
 import rx.functions.Func1;
 

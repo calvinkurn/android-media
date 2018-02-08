@@ -1,7 +1,5 @@
 package com.tokopedia.tokocash.pendingcashback.domain;
 
-import com.tokopedia.tokocash.activation.presentation.model.PendingCashback;
-
 import java.util.HashMap;
 
 import rx.Observable;
