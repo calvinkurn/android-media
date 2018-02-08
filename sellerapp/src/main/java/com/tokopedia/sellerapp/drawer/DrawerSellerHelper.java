@@ -45,7 +45,6 @@ import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
@@ -57,7 +56,7 @@ import com.tokopedia.mitratoppers.MitraToppersRouter;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
-import com.tokopedia.seller.fintech.mitratoppers.view.activity.MitraToppersActivity;
+//import com.tokopedia.mitratoppers.view.activity.MitraToppersActivity;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
@@ -69,6 +68,7 @@ import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepositoryImpl
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
+import com.tokopedia.shop.info.view.activity.ShopInfoActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.seller.shop.common.data.source.cloud.api.ShopApi;
 
@@ -481,9 +481,9 @@ public class DrawerSellerHelper extends DrawerHelper
                     UnifyTracking.eventClickGMStat();
                     break;
                 case TkpdState.DrawerPosition.SELLER_MITRA_TOPPERS:
-                    Intent mitraToppersIntent = ((MitraToppersRouter) context.getApplication())
-                            .getMitraToppersActivityIntent(context);
-                    context.startActivity(mitraToppersIntent);
+//                    Intent mitraToppersIntent = ((MitraToppersRouter) context.getApplication())
+//                            .getMitraToppersActivityIntent(context);
+//                    context.startActivity(mitraToppersIntent);
                     break;
                 case TkpdState.DrawerPosition.SELLER_TOP_ADS:
                     UnifyTracking.eventDrawerTopads();
@@ -556,8 +556,7 @@ public class DrawerSellerHelper extends DrawerHelper
     }
 
     private void onGoToShop() {
-        Intent intent = new Intent(context, ShopInfoActivity.class);
-        intent.putExtras(ShopInfoActivity.createBundle(sessionHandler.getShopID(), ""));
+        Intent intent = ShopInfoActivity.createIntent(context, sessionHandler.getShopID());
         context.startActivity(intent);
         sendGTMNavigationEvent(AppEventTracking.EventLabel.SHOP_EN);
     }

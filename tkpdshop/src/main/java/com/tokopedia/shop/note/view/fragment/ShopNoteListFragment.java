@@ -8,9 +8,11 @@ import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.note.di.component.DaggerShopNoteComponent;
 import com.tokopedia.shop.note.di.module.ShopNoteModule;
+import com.tokopedia.shop.note.view.activity.ShopNoteDetailActivity;
 import com.tokopedia.shop.note.view.adapter.ShopNoteAdapterTypeFactory;
 import com.tokopedia.shop.note.view.adapter.ShopNoteTypeFactory;
 import com.tokopedia.shop.note.view.listener.ShopNoteListView;
+import com.tokopedia.shop.note.view.model.ShopNoteViewModel;
 import com.tokopedia.shop.note.view.presenter.ShopNoteListPresenter;
 
 import javax.inject.Inject;
@@ -52,7 +54,13 @@ public class ShopNoteListFragment extends BaseListFragment<Visitable, ShopNoteTy
 
     @Override
     public void onItemClicked(Visitable visitable) {
+        if(visitable != null){
+            if(visitable instanceof ShopNoteViewModel){
+                ShopNoteViewModel shopNoteViewModel = (ShopNoteViewModel) visitable;
+                startActivity(ShopNoteDetailActivity.createIntent(getActivity(), Long.toString(shopNoteViewModel.getShopNoteId())));
 
+            }
+        }
     }
 
     @Override
