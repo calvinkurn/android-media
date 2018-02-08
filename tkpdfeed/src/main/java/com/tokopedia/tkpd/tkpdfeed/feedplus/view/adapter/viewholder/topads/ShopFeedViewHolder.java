@@ -95,7 +95,8 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedTopAdsViewMod
                 1f // how big is default item
         );
 
-        int spacingInPixels = context.getResources().getDimensionPixelSize(R.dimen.padding_item_decoration);
+        int spacingInPixels = context.getResources().getDimensionPixelSize(
+                R.dimen.padding_item_decoration);
         recyclerView.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
         recyclerView.setLayoutManager(manager);
         adapter = new PromotedShopAdapter();
