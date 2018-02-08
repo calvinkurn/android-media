@@ -34,6 +34,7 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
     public static final int UNLIKE_STATUS = 3;
     public static final int LIKE_STATUS_ACTIVE = 1;
     public static final String WIB = "WIB";
+    public static final String TARGET = "WIB";
 
     boolean isReplyOpened = false;
     private ListenerReviewHolder viewListener;
@@ -272,7 +273,7 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
     }
 
     private String getFormattedTime(String reviewTime) {
-        return TimeConverter.generateTimeYearly(reviewTime.replace("WIB", ""));
+        return TimeConverter.generateTimeYearly(reviewTime.replace(TARGET, ""));
     }
 
     private Spanned getReview(String review) {
@@ -317,9 +318,8 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
                                     element.getReviewId()
                             );
                             return true;
-                        } else {
-                            return false;
                         }
+                        return false;
                     }
 
                 });
