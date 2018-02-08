@@ -151,7 +151,7 @@ public class SimpleWebViewFragment extends Fragment {
         webview.setLayerType(
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ?
                     View.LAYER_TYPE_HARDWARE : View.LAYER_TYPE_SOFTWARE,
-            null
+                null
         );
     }
 }
