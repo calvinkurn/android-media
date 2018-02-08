@@ -154,7 +154,6 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
         decoratedBarcodeView.pause();
         hideAnimation();
         barCodeData = barcodeResult.getText();
-        Toast.makeText(getApplicationContext(), barcodeResult.getText(), Toast.LENGTH_LONG).show();
         presenter.onBarCodeScanComplete(barCodeData);
     }
 

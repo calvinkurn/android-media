@@ -135,13 +135,11 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
         postBarCodeDataUseCase.execute(requestParams, new Subscriber<CampaignResponseEntity>() {
             @Override
             public void onCompleted() {
-                Log.e("toko_barcode", "onCompleted ");
                 getView().finish();
             }
 
             @Override
             public void onError(Throwable e) {
-                Log.e("toko_barcode", "onError ");
                 if (e instanceof UnknownHostException || e instanceof ConnectException) {
                     getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
                 } else if (e instanceof SocketTimeoutException) {
@@ -161,7 +159,6 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
 
             @Override
             public void onNext(CampaignResponseEntity s) {
-                Log.e("toko_barcode", "onNext " + s);
                 Uri uri = Uri.parse("" + s.getUrl());
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(uri);

@@ -166,7 +166,6 @@ dependencies {
     }
 
     compile rootProject.ext.miscDependencies.captureActivity
-
     compile rootProject.ext.miscDependencies.scannerZxing
     compile rootProject.ext.miscDependencies.multiDex
     compile rootProject.ext.miscDependencies.parcelerApi
