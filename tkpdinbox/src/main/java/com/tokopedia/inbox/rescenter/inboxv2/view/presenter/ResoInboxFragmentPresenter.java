@@ -77,6 +77,7 @@ public class ResoInboxFragmentPresenter
     @Override
     public void getInbox() {
         mainView.showProgressBar();
+        filterModel.setStartID("");
         getInbox(new GetInboxSubscriber(context, mainView));
     }
 
