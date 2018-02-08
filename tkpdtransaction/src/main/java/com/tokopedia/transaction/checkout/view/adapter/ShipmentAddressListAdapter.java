@@ -97,7 +97,7 @@ public class ShipmentAddressListAdapter
             Log.d(TAG, msg);
 
             FragmentManager fragmentManager = ((Activity)mContext).getFragmentManager();
-            Fragment fragment = CartSingleAddressFragment.newInstance();
+            Fragment fragment = CartSingleAddressFragment.newInstance(cartItemDataList);
             String backStateName = fragment.getClass().getName();
 
             boolean isFragmentPopped = fragmentManager.popBackStackImmediate(backStateName, 0);

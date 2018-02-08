@@ -23,7 +23,7 @@ import rx.subscriptions.CompositeSubscription;
  * @author anggaprasetiyo on 18/01/18.
  */
 
-@Module(includes = {DataModule.class})
+@Module(includes = {DataModule.class, ConverterDataModule.class})
 public class CartListModule {
 
     private final ICartListView cartListView;

@@ -71,7 +71,7 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
                 || (fragment instanceof CartSingleAddressFragment))) {
             if (typeAddressShipment == TYPE_ADDRESS_SHIPMENT_SINGLE) {
                 getFragmentManager().beginTransaction().replace(R.id.container,
-                        CartSingleAddressFragment.newInstance()).commit();
+                        CartSingleAddressFragment.newInstance(cartItemDataList)).commit();
             } else {
                 getFragmentManager().beginTransaction().replace(R.id.container,
                         MultipleAddressFragment.newInstance()).commit();
