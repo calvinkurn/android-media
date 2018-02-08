@@ -58,8 +58,6 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
                 .onErrorResumeNext(getDataFromNetwork())
                 .subscribe(getSubscriber());
         compositeSubscription.add(subscription);
-
-        dataUseCase.execute(RequestParams.EMPTY, getSubscriber());
     }
 
     @NonNull

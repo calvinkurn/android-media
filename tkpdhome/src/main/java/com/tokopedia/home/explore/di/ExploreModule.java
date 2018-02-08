@@ -43,8 +43,8 @@ public class ExploreModule {
 
     @ExploreScope
     @Provides
-    ExploreRepositoryImpl exploreRepository(ExploreDataSource dataSource){
-        return new ExploreRepositoryImpl(dataSource);
+    ExploreRepositoryImpl exploreRepository(@ApplicationContext Context context, ExploreDataSource dataSource){
+        return new ExploreRepositoryImpl(context, dataSource);
     }
 
     @ExploreScope

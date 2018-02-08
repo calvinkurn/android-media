@@ -3,14 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:padding="@dimen/page_margin">
 
     <android.support.v7.widget.CardView
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         app:cardUseCompatPadding="true">
 
         <com.tokopedia.core.customwidget.SquareImageView
@@ -23,30 +24,60 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:layout_marginLeft="@dimen/margin_ms"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
             android:fontFamily="sans-serif"
-            android:padding="3dp"
+            android:textColor="@color/black_70"
             android:textSize="16sp"
             android:textStyle="bold"
             tools:text="BAPE" />
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_badge_official"
             android:gravity="center_vertical"
-            tools:text="Official Store" />
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/badge"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_badge_official" />
+
+            <TextView
+                android:id="@+id/official_store_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:textSize="12sp"
+                tools:text="Official Store" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/reputation_medal"
+            android:layout_width="wrap_content"
+            android:layout_height="18dp"
+            android:adjustViewBounds="true"
+            android:padding="2dp" />
     </LinearLayout>
 
-    <Button
+    <TextView
         android:id="@+id/btn_ubah"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="32dp"
+        android:background="@drawable/bg_setting_myshop_btn"
         android:drawableLeft="@drawable/ic_menu_general_setting"
-        android:text="@string/ubah" />
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:text="@string/ubah"
+        android:drawableTint="@color/grey"
+        android:textAllCaps="false"
+        android:textStyle="bold" />
 </LinearLayout>

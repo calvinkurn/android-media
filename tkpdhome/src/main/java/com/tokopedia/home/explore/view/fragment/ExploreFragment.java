@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +12,8 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -28,16 +29,11 @@ import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.VerticalSpaceItemDecoration;
 import com.tokopedia.home.explore.domain.model.LayoutRows;
-import com.tokopedia.home.explore.domain.model.LayoutSections;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
+import com.tokopedia.home.explore.view.activity.ExploreActivity;
 import com.tokopedia.home.explore.view.adapter.ExploreAdapter;
 import com.tokopedia.home.explore.view.adapter.TypeFactory;
-import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryGridListViewModel;
 import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel;
-import com.tokopedia.home.explore.view.adapter.viewmodel.SellViewModel;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -146,19 +142,26 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
 
     @Override
     public void showNetworkError(String string) {
-
+        if (isAdded() && getActivity() != null) {
+            ((ExploreActivity) getActivity()).showNetworkError(string);
+        }
     }
 
     @Override
     public void openShopSetting() {
-
+        String shopId = SessionHandler.getShopID(getContext());
+        if (!shopId.equals("0")) {
+            onGoToShop(shopId);
+        } else {
+            onGoToCreateShop();
+        }
     }
 
     @Override
     public void onApplinkClicked(LayoutRows data) {
         TkpdCoreRouter router = ((TkpdCoreRouter) getActivity().getApplicationContext());
         if(router.isSupportedDelegateDeepLink(data.getApplinks())){
-            router.actionAppLink(getActivity(), data.getApplinks());
+            router.actionApplink(getActivity(), data.getApplinks());
         } else{
             openWebViewURL(data.getUrl(), getActivity());
         }
@@ -205,8 +208,6 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
 
     private void onGoToCreateShop() {
         Intent intent = SellerRouter.getActivityShopCreateEdit(getContext());
-//        intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-//                SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         getActivity().startActivity(intent);
     }
