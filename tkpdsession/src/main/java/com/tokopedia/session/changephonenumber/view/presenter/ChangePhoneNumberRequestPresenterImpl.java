@@ -4,7 +4,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
-import android.util.Log;
 
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -223,9 +222,6 @@ public class ChangePhoneNumberRequestPresenterImpl implements ChangePhoneNumberR
                 pass.getIdHeight());
         params.putString(UploadChangePhoneNumberRequestUseCase.PARAM_ID_WIDTH,
                 pass.getIdWidth());
-        Log.e("sandeep","path="+pass.getUploadBankBookPath());
-        Log.e("sandeep","height="+pass.getBankBookHeight());
-        Log.e("sandeep","width="+pass.getBankBookWidth());
         if(pass.getUploadBankBookPath() != null) {
             params.putString(UploadChangePhoneNumberRequestUseCase.PARAM_BANKBOOK_HEIGHT,
                     pass.getBankBookHeight());
