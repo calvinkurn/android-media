@@ -12,8 +12,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
+import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -34,9 +33,6 @@ import com.tokopedia.home.explore.view.activity.ExploreActivity;
 import com.tokopedia.home.explore.view.adapter.ExploreAdapter;
 import com.tokopedia.home.explore.view.adapter.TypeFactory;
 import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by errysuprayogi on 1/26/18.
@@ -44,14 +40,24 @@ import java.util.Map;
 
 public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> implements CategoryAdapterListener {
 
+    public static final String PARAM_TYPE_FRAGMENT = "PARAM_TYPE_FRAGMENT";
+    public static final int TYPE_BELI = 0;
+    public static final int TYPE_BAYAR = 1;
+    public static final int TYPE_PESAN = 2;
+    public static final int TYPE_AJUKAN = 3;
+    public static final int TYPE_JUAL = 4;
+
+    private int TYPE_FRAGMENT;
+
     private VerticalSpaceItemDecoration spaceItemDecoration;
     private ExploreSectionViewModel data;
 
-    public static ExploreFragment newInstance() {
+    public static ExploreFragment newInstance(int position) {
 
         Bundle args = new Bundle();
 
         ExploreFragment fragment = new ExploreFragment();
+        args.putInt(PARAM_TYPE_FRAGMENT, position);
         fragment.setArguments(args);
         return fragment;
     }
@@ -80,6 +86,12 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        TYPE_FRAGMENT = getArguments().getInt(PARAM_TYPE_FRAGMENT);
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         renderList(data.getVisitableList());
@@ -105,11 +117,11 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     @Override
     public void onMarketPlaceItemClicked(LayoutRows data) {
         TrackingUtils.sendMoEngageClickMainCategoryIcon(data.getName());
-        ((IHomeRouter) getActivity().getApplication()).openIntermediaryActivity(getActivity(),
-                String.valueOf(data.getCategoryId()), data.getName());
-        Map<String, String> values = new HashMap<>();
-        values.put(getString(R.string.value_category_name), data.getName());
-        UnifyTracking.eventHomeCategory(data.getName());
+        ((IHomeRouter) getActivity().getApplication()).openIntermediaryActivity(
+                getActivity(),
+                String.valueOf(data.getCategoryId()),
+                data.getName()
+        );
     }
 
     @Override
@@ -137,6 +149,36 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
             String resultGenerateUrl = URLGenerator.generateURLSessionLogin(
                     Uri.encode(redirectUrl), MainApplication.getAppContext());
             openWebViewGimicURL(resultGenerateUrl, data.getUrl(), data.getName());
+        }
+    }
+
+    @Override
+    public void trackingItemGridClick(LayoutRows data) {
+        switch (TYPE_FRAGMENT) {
+            case TYPE_BELI:
+                HomePageTracking.eventClickExplorerItem(
+                        HomePageTracking.BELI_INI_ITU_CLICK,
+                        String.format("%s - %s", data.getCategoryId(), data.getName())
+                );
+                break;
+            case TYPE_BAYAR:
+                HomePageTracking.eventClickExplorerItem(
+                        HomePageTracking.BAYAR_INI_ITU_CLICK,
+                        data.getName()
+                );
+                break;
+            case TYPE_PESAN:
+                HomePageTracking.eventClickExplorerItem(
+                        HomePageTracking.PESAN_INI_ITU_CLICK,
+                        data.getName()
+                );;
+                break;
+            case TYPE_AJUKAN:
+                HomePageTracking.eventClickExplorerItem(
+                        HomePageTracking.AJUKAN_INI_ITU_CLICK,
+                        data.getName()
+                );
+                break;
         }
     }
 

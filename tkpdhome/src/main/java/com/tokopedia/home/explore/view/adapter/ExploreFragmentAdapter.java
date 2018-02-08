@@ -31,7 +31,7 @@ public class ExploreFragmentAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        ExploreFragment fragment = ExploreFragment.newInstance();
+        ExploreFragment fragment = ExploreFragment.newInstance(position);
         fragment.setData(modelList.get(position));
         return fragment;
     }
