@@ -38,7 +38,7 @@ public class EventInerceptors extends TkpdAuthInterceptor {
     private String authorizationString;
     private Context mContext;
 
-    public EventInerceptors(String oAuth,Context context) {
+    public EventInerceptors(String oAuth, Context context) {
         this.authorizationString = oAuth;
         mContext = context;
 
@@ -133,8 +133,8 @@ public class EventInerceptors extends TkpdAuthInterceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         String chainURL = chain.request().url().url().toString();
-        if (chainURL.equals(TkpdBaseURL.EVENTS_DOMAIN+"v1/api/expresscart/verify?book=true")
-                ||chainURL.equals(TkpdBaseURL.EVENTS_DOMAIN+"v1/api/expresscart/checkout")) {
+        if (chainURL.contains(TkpdBaseURL.EVENTS_DOMAIN + "v1/api/expresscart/verify?")
+                || chainURL.contains(TkpdBaseURL.EVENTS_DOMAIN + "v1/api/expresscart/checkout")) {
             final Request originRequest = chain.request();
             Request.Builder newRequest = chain.request().newBuilder();
 

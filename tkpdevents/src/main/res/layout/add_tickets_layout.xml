@@ -51,7 +51,6 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/tv_ticket_description"
-        android:layout_marginBottom="@dimen/margin_default"
         android:layout_marginEnd="@dimen/margin_default"
         android:layout_marginRight="@dimen/margin_default"
         android:layout_marginTop="25dp">
@@ -106,4 +105,19 @@
                 android:src="@drawable/add_button_layerlist_green" />
         </LinearLayout>
     </FrameLayout>
+
+    <TextView
+        android:id="@+id/maks_ticket"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/frameLayout"
+        android:layout_marginBottom="@dimen/margin_default"
+        android:layout_marginEnd="@dimen/margin_default"
+        android:layout_marginRight="@dimen/margin_default"
+        android:layout_marginTop="@dimen/margin_ms"
+        android:text="Maks. 4 tiket"
+        android:textColor="@color/green_nob"
+        android:visibility="invisible" />
 </RelativeLayout>

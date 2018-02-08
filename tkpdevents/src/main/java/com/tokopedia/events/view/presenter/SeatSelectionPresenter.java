@@ -146,7 +146,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
         selectedpkgViewModel = getView().getActivity().getIntent().getParcelableExtra(EventBookTicketPresenter.EXTRA_PACKAGEVIEWMODEL);
         seatLayoutViewModel = getView().getActivity().getIntent().getParcelableExtra(EventBookTicketPresenter.EXTRA_SEATLAYOUTVIEWMODEL);
         eventTitle = getView().getActivity().getIntent().getStringExtra("EventTitle");
-        maxTickets = selectedpkgViewModel.getMaxQty();
+        maxTickets = selectedpkgViewModel.getSelectedQuantity();
         url = selectedpkgViewModel.getFetchSectionUrl();
 //           url =      "https://booking-staging.tokopedia.com/v1/api/seat-layout/category/1/product/904/schedule/1487/group/10909/package/84622";
         getView().setEventTitle(eventTitle);

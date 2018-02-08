@@ -3,12 +3,9 @@ package com.tokopedia.events.view.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
@@ -29,7 +26,6 @@ import com.tokopedia.events.di.EventModule;
 import com.tokopedia.events.view.contractor.SeatSelectionContract;
 import com.tokopedia.events.view.customview.CustomSeatAreaLayout;
 import com.tokopedia.events.view.customview.CustomSeatLayout;
-import com.tokopedia.events.view.customview.SeatLayoutInfo;
 import com.tokopedia.events.view.presenter.SeatSelectionPresenter;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.SeatLayoutViewModel;
@@ -109,8 +105,8 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
         mPresenter.initialize();
         mPresenter.getProfile();
         mPresenter.getSeatSelectionDetails();
-        setupToolbar();
-        toolbar.setTitle("Pilih Kursi");
+        //setupToolbar();
+        toolbar.setTitle(R.string.seat_selection_title);
 
     }
 
@@ -265,7 +261,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     public void setSelectedSeatText(List<String> selectedSeatTextList, List<String> rowIds) {
         selectedSeats = selectedSeatTextList;
         this.rowIds = rowIds;
-        String text = TextUtils.join(", ", selectedSeatTextList);
+        String text = TextUtils.join(", ", selectedSeats);
         selectedSeatText.setText(text);
     }
 

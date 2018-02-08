@@ -44,7 +44,6 @@ public class EventBookTicketContract {
         void hideSeatmap();
 
         android.view.View getRootView();
-
     }
 
     public interface Presenter extends CustomerPresenter<EventBookTicketContract.EventBookTicketView> {

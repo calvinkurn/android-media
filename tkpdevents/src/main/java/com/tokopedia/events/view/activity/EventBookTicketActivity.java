@@ -110,7 +110,7 @@ public class EventBookTicketActivity extends TActivity implements EventBookTicke
 
         mPresenter.getTicketDetails();
 //        setupToolbar();
-
+        appBar.setTitle(R.string.book_ticket_title);
         setSupportActionBar(appBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -167,7 +167,8 @@ public class EventBookTicketActivity extends TActivity implements EventBookTicke
 
     @Override
     public void showPayButton(int ticketQuantity, int price, String type) {
-        totalPrice.setText(CurrencyUtil.convertToCurrencyString(ticketQuantity * price));
+        totalPrice.setText(String.format(getString(R.string.price_holder),
+                CurrencyUtil.convertToCurrencyString(ticketQuantity * price)));
         ticketCount.setText(String.format(getString(R.string.x_type), ticketQuantity, type));
         buttonPayTickets.setVisibility(View.VISIBLE);
         buttonPayTickets.setBackgroundColor(getResources().getColor(R.color.white));

@@ -2,6 +2,7 @@ package com.tokopedia.events.view.presenter;
 
 import android.content.Intent;
 import android.util.Log;
+import android.view.View;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -77,10 +78,6 @@ public class EventBookTicketPresenter
                 getActivity().
                 getIntent().
                 getParcelableExtra(EventsDetailsPresenter.EXTRA_EVENT_VIEWMODEL);
-        seatingURL = getView().
-                getActivity().
-                getIntent().
-                getStringExtra(EventsDetailsPresenter.EXTRA_SEATING_URL);
         hasSeatLayout = getView().getActivity().getIntent().getIntExtra(EventsDetailsPresenter.EXTRA_SEATING_PARAMETER, 0);
         this.dateRange = dataModel.getTimeRange();
         getView().renderFromDetails(dataModel);
@@ -178,6 +175,8 @@ public class EventBookTicketPresenter
             selectedPackageViewModel.setSelectedQuantity(++selectedCount);
             selectedViewHolder.setTvTicketCnt(selectedCount);
             selectedViewHolder.setTicketViewColor(getView().getActivity().getResources().getColor(R.color.light_green));
+        } else {
+            selectedViewHolder.toggleMaxTicketWarning(View.VISIBLE);
         }
         getView().showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(), selectedPackageViewModel.getDisplayName());
     }
@@ -187,6 +186,7 @@ public class EventBookTicketPresenter
         if (selectedCount != 0) {
             selectedPackageViewModel.setSelectedQuantity(--selectedCount);
             selectedViewHolder.setTvTicketCnt(selectedCount);
+            selectedViewHolder.toggleMaxTicketWarning(View.INVISIBLE);
             getView().showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(), selectedPackageViewModel.getDisplayName());
         }
         if (selectedCount == 0) {
@@ -213,7 +213,7 @@ public class EventBookTicketPresenter
 
 
     private void getSeatSelectionDetails() {
-        getSeatLayoutUseCase.setUrl(url);
+        getSeatLayoutUseCase.setUrl(selectedPackageViewModel.getFetchSectionUrl());
         getSeatLayoutUseCase.execute(RequestParams.EMPTY, new Subscriber<List<SeatLayoutItem>>() {
             @Override
             public void onCompleted() {
