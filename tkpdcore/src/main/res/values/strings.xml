@@ -1356,7 +1356,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="make_returnable_success">Suskes Membuat Kebijakan</string>
     <string name="returnable_policy_existed">Hanya boleh 1 kebijakan pengembalian</string>
     <string name="title_wishlist">Wishlist</string>
-    <string name="title_activity_deep_link">Tokopedia</string>
+    <string name="title_activity_deep_link">Top Seller</string>
     <string name="title_activity_add_to_cart_v2">Beli Produk</string>
     <string name="title_visit_shop">Kunjungi Toko</string>
     <string name="change_phone_number_restriction">Silakan melakukan ubah nomor telepon melalui desktop atau mobile browser dengan mengakses www.tokopedia.com atau m.tokopedia.com. Lalu masuk melalui halaman Profil Saya</string>
@@ -2129,8 +2129,8 @@ di Tokopedia Sekarang!</string>
     <string name="app_share_title">Tokopedia, Satu Aplikasi untuk Semua Kebutuhan</string>
     <string name="app_share_contents"><![CDATA[Mudahnya beli produk idaman, pulsa, token listrik, tiket liburan, hingga bayar berbagai tagihan, semua dimulai dari aplikasi Tokopedia. Kamu juga bisa mulai & kembangkan bisnis di sini. Yuk, download sekarang!]]></string>
     <string name="app_share_label">Share ke Temanmu, Yuk!</string>
-    <string name="app_share_label_desc"><![CDATA[Sudah merasakan berbagai kemudahan dengan aplikasi Tokopedia? Ayo ajak orang-orang terdekatmu untuk ikut menikmati mudahnya beli & bayar ini itu lewat aplikasi Tokopedia]]></string>
-    <string name="app_share_btn_label">Undang Teman</string>
+    <string name="app_share_referral_label_desc"><![CDATA[Ayo share kode ini dan dapatkan voucher cashback TokoCash 25% hingga Rp20.000 saat mereka melakukan transaksi pertama di Tokopedia.]]></string>
+    <string name="app_share_btn_label">Ajak Teman</string>
     <string name="tambah_produk">+ Tambah Produk</string>
     <string name="product_share_subtitle">Dimana saja dan kapan saja</string>
     <string name="product_share_app_subtitle">Pilih cara berbagimu</string>
@@ -2141,6 +2141,8 @@ di Tokopedia Sekarang!</string>
     <string name="app_rating_button_later">Nanti</string>
     <string name="app_rating_title">Beri Rating Aplikasi Kami</string>
     <string name="app_rating_message">Jika Kamu suka dengan aplikasi Tokopedia, silakan berikan dukungan Kamu dengan memberi rating 5 bintang dan ulasan di Google Play.</string>
+
+    <string name="title_app_referral_howitworks">Info lebih lanjut</string>
     <string name="app_rating_title_2">Bagaimana penilaian Kamu terhadap aplikasi Tokopedia?</string>
     <string name="app_rating_message_2">Geser kanan atau kiri untuk memberikan rating</string>
     <string name="app_rating_button_send">Kirim</string>
@@ -2155,4 +2157,17 @@ di Tokopedia Sekarang!</string>
     <string name="notif_channel_general">Notifikasi</string>
     <string name="title_hockeyapp_download">Nakama harus menggunakan aplikasi Tokopedia versi beta</string>
     <string name="title_download">Download</string>
+    <string name="app_share_explore_btn_label">Mulai Belanja</string>
+    <string name="app_share_label_desc"><![CDATA[Sudah merasakan berbagai kemudahan dengan aplikasi Tokopedia? Ayo ajak orang-orang terdekatmu untuk ikut menikmati mudahnya beli, bayar ini itu lewat aplikasi Tokopedia]]></string>
+    <string name="drawer_title_referral_appshare">Dapatkan TokoCash</string>
+    <string name="app_share_default_msg"><![CDATA[Ada bonus cashback hingga Rp30.000 khusus buat kamu! Yuk mulai beli & bayar ini itu di Aplikasi Tokopedia, gunakan kode %s.]]></string>
+    <string name="no_coupon_to_copy_text">Gagal menyalin kode voucher</string>
+    <string name="referral_friend_welcome_screen_name">Friend View After Install</string>
+    <string name="referral_screen_name">Referral Home</string>
+    <string name="referral_share_screen_name">Share Channel</string>
+    <string name="referral_phone_number_verify_screen_name">Phone Number Verification</string>
+    <string name="phone_not_verified_error_message">Silakan verifikasi nomor handphone Anda untuk masuk ke halaman berikutnya.</string>
+    <string name="copy_coupon_code_text">Kode voucher telah tersalin</string>
+
 </resources>
+

@@ -126,8 +126,11 @@ public interface Constants {
         String BROWSER = "tokopedia://browser";
         String REGISTER = "tokopedia://registration";
         String FAVORITE = "tokopedia://home/favorite";
-        String PROMO_LIST = "tokopedia://promoNative";
+
+        String REFERRAL_WELCOME = "tokopedia://referral/{code}/{owner}";
         String KOLCOMMENT = "tokopedia://kolcomment/{id}";
+        String PROMO_LIST = "tokopedia://promoNative";
+
         String SELLER_INFO_DETAIL = "tokopedia://sellerinfo/detail";
 
         interface SellerApp {

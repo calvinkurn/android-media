@@ -1,9 +1,11 @@
 package com.tokopedia.seller.seller.info.view.fragment;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.seller.base.view.fragment.BaseWebViewFragment;
 
 /**
@@ -34,6 +36,6 @@ public class SellerInfoWebViewFragment extends BaseWebViewFragment {
 
     @Override
     protected String getUrl() {
-        return extraUrl;
+        return URLGenerator.generateURLSessionLogin(Uri.encode(extraUrl), getActivity());
     }
 }
