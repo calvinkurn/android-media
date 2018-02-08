@@ -4,6 +4,8 @@ import com.tokopedia.transaction.apiservice.CartService;
 import com.tokopedia.transaction.checkout.domain.CartRepository;
 import com.tokopedia.transaction.checkout.domain.CartRepositoryDataDummy;
 import com.tokopedia.transaction.checkout.domain.ICartRepository;
+import com.tokopedia.transaction.checkout.domain.IMultipleAddressRepository;
+import com.tokopedia.transaction.checkout.domain.MultipleAddressRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -22,5 +24,10 @@ public class DataModule {
     @Provides
     ICartRepository provideICartRepository(CartService cartService) {
         return new CartRepositoryDataDummy();
+    }
+
+    @Provides
+    IMultipleAddressRepository provideMultipleAddressRepository() {
+        return new MultipleAddressRepository();
     }
 }
