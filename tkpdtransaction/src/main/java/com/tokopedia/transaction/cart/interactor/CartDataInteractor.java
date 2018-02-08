@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
-import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.kero.KeroAuthService;
 import com.tokopedia.core.network.apiservices.transaction.TXActService;
