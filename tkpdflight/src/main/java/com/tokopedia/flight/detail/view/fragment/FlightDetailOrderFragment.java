@@ -212,12 +212,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         containerDownloadEticket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(eticketLink));
-                    startActivity(browserIntent);
-                } catch (Exception e) {
-
-                }
+            flightDetailOrderPresenter.onDownloadETicketButtonClicked();
             }
         });
 
@@ -477,5 +472,11 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     public void setPaymentDueDate(String dueDate) {
         tvPaymentDueDate.setVisibility(View.VISIBLE);
         tvPaymentDueDate.setText(dueDate);
+    }
+
+    @Override
+    public void navigateToInputEmailForm(String userId) {
+        // flightOrderDetailPassData.getOrderId();
+        // userId
     }
 }
