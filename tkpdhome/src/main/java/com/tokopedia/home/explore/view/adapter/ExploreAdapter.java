@@ -8,9 +8,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
 import com.tokopedia.home.explore.view.adapter.viewholder.CategoryFavoriteViewHolder;
 import com.tokopedia.home.explore.view.adapter.viewholder.CategoryGridListViewHolder;
+import com.tokopedia.home.explore.view.adapter.viewholder.MyShopViewHolder;
 import com.tokopedia.home.explore.view.adapter.viewholder.SellViewHolder;
 import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryFavoriteViewModel;
 import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryGridListViewModel;
+import com.tokopedia.home.explore.view.adapter.viewmodel.MyShopViewModel;
 import com.tokopedia.home.explore.view.adapter.viewmodel.SellViewModel;
 
 /**
@@ -43,6 +45,11 @@ public class ExploreAdapter extends BaseAdapterTypeFactory implements TypeFactor
     }
 
     @Override
+    public int type(MyShopViewModel viewModel) {
+        return MyShopViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if (type == CategoryGridListViewHolder.LAYOUT) {
             return new CategoryGridListViewHolder(parent, listener);
@@ -50,6 +57,8 @@ public class ExploreAdapter extends BaseAdapterTypeFactory implements TypeFactor
             return new SellViewHolder(parent, listener);
         } if (type == CategoryFavoriteViewHolder.LAYOUT) {
             return new CategoryFavoriteViewHolder(parent, listener);
+        } if (type == MyShopViewHolder.LAYOUT) {
+            return new MyShopViewHolder(parent, listener);
         } else {
             return super.createViewHolder(parent, type);
         }
