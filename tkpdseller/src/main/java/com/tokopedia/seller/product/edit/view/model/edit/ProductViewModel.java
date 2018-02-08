@@ -60,7 +60,7 @@ public class ProductViewModel implements ItemType {
     private String productLastUpdatePrice;
     @SerializedName("product_position")
     @Expose
-    private long productPosition;
+    private ProductPositionViewModel productPosition;
     @SerializedName("product_description")
     @Expose
     private String productDescription;
@@ -237,11 +237,11 @@ public class ProductViewModel implements ItemType {
         this.productPrimaryPicture = productPrimaryPicture;
     }
 
-    public long getProductPosition() {
+    public ProductPositionViewModel getProductPosition() {
         return productPosition;
     }
 
-    public void setProductPosition(long productPosition) {
+    public void setProductPosition(ProductPositionViewModel productPosition) {
         this.productPosition = productPosition;
     }
 
