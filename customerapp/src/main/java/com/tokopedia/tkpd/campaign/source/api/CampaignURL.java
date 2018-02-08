@@ -1,11 +1,13 @@
 package com.tokopedia.tkpd.campaign.source.api;
 
+import com.tokopedia.tkpd.ConsumerAppBaseUrl;
+
 /**
  * Created by sandeepgoyal on 15/12/17.
  */
 
 public interface CampaignURL {
-    String BASE_URL = "https://booking-staging.tokopedia.com/trigger/v1/api/";
+    String BASE_URL = ConsumerAppBaseUrl.TOKO_CAMPAIGN_URL;
 
     String BARCODE_CAMPAIGN = "campaign/qr/verify";
 
