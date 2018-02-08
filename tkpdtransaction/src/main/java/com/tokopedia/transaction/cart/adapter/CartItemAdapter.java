@@ -155,7 +155,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             CartItem data = dataList.get(i);
             CartItemEditable cartItemEditable = new CartItemEditable(data);
             cartItemEditable.setKeroToken(keroToken);
-            cartItemEditable.setUseInsurance(isInsuranced(data));
+            cartItemEditable.setUseInsurance(isProductUseInsurance(data.getCartProducts()));
             this.dataList.add(cartItemEditable);
             this.expandState.append(i, false);
         }
@@ -666,10 +666,6 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 return;
             }
         }
-    }
-
-    private boolean isInsuranced(CartItem cartItem) {
-        return (isProductUseInsurance(cartItem.getCartProducts()));
     }
 
     @NonNull
