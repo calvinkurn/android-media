@@ -128,6 +128,7 @@ public class InboxFilterFragment
             @Override
             public void onClick(View view) {
                 inboxFilterModel.setDateFrom(null);
+                inboxFilterModel.setDateFromString("");
                 updateView();
             }
         });
@@ -136,6 +137,7 @@ public class InboxFilterFragment
             @Override
             public void onClick(View view) {
                 inboxFilterModel.setDateTo(null);
+                inboxFilterModel.setDateToString("");
                 updateView();
             }
         });

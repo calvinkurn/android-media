@@ -207,6 +207,7 @@ public class ResoInboxFragment
     @Override
     public void onRefresh() {
         adapter.clearData();
+        resetParams();
         if (inboxFilterModel.getSelectedFilterList().size() != 0) {
             presenter.getInboxWithParams(inboxSortModel, inboxFilterModel);
         } else {
@@ -301,9 +302,9 @@ public class ResoInboxFragment
         bottomActionView.setVisibility(View.VISIBLE);
         adapter.setCanLoadMore(false);
         adapter.clearData();
-        adapter.addItem(result.getFilterListViewModel());
         adapter.addItem(new EmptyModel());
         adapter.notifyDataSetChanged();
+        bottomActionView.setVisibility(View.GONE);
         updateFilterValue(result);
     }
 
