@@ -120,7 +120,7 @@ public static final String PRODUCT_SUBMIT = "https://ws.tokopedia.com/v4/action/
 
     public static final String CREATE_SHOP_VALIDATION = "https://ws.tokopedia.com/v4/action/myshop/open_shop_validation.pl";
 
-
+    public static final String REFERRAL_URL = "https://www.tokopedia.com/referral";
 
 }
 

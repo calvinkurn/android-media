@@ -15,6 +15,9 @@ import rx.subscriptions.Subscriptions;
  * refer UseCase at {@link com.tokopedia.usecase}
  */
 
+/**
+ * Use Usecase from tkpd usecase
+ */
 @Deprecated
 public abstract class UseCase<T> implements Interactor<T> {
 
