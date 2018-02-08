@@ -156,7 +156,7 @@ public class TopAdsCreatePromoModule {
     @TopAdsDashboardScope
     @Provides
     TopAdsManagementService provideTopAdsManagementService(@ApplicationContext Context context) {
-        return new TopAdsManagementService(new SessionHandler(context).getAccessToken(context));
+        return new TopAdsManagementService(new SessionHandler(context));
     }
 
 }

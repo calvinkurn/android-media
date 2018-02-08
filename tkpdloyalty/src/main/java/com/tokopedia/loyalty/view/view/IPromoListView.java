@@ -31,4 +31,6 @@ public interface IPromoListView extends IBaseView {
     void enableSwipeRefresh();
 
     Context getActivityContext();
+
+    void renderErrorLoadNextPage(String message, int actualPage);
 }

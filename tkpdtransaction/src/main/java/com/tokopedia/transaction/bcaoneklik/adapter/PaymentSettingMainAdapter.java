@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.bcaoneklik.activity.CreditCardDetailActivity;
 import com.tokopedia.transaction.bcaoneklik.listener.ListPaymentTypeView;
@@ -231,20 +234,26 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
 
     private class CreditCardListViewHolder extends RecyclerView.ViewHolder {
 
+        private static final String VISA_SMALL = "bg_visa_small";
+        private static final String MASTERCARD_SMALL = "bg_mastercard_small";
+        private static final String JCB_SMALL = "bg_jcb_small";
+        private static final String EXPIRED_SMALL = "bg_expired_small";
+
         private TextView cardNumber;
         private ImageView cardImage;
+        private ImageView cardBackgroundImage;
         private LinearLayout cardBackground;
 
         CreditCardListViewHolder(View itemView) {
             super(itemView);
-
+            cardBackgroundImage = itemView.findViewById(R.id.iv_cc_background);
             cardBackground = itemView.findViewById(R.id.ll_cc_container);
             cardNumber = itemView.findViewById(R.id.card_number);
             cardImage = itemView.findViewById(R.id.card_image);
         }
 
         void bindCreditCardItem(final CreditCardModelItem item) {
-            cardBackground.setBackgroundResource(getBackgroundResource(item));
+            ImageHandler.LoadImage(cardBackgroundImage, getBackgroundAssets(item));
             cardBackground.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -259,16 +268,24 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
             ImageHandler.LoadImage(cardImage, item.getCardTypeImage());
         }
 
-        private int getBackgroundResource(CreditCardModelItem item) {
+        private String getBackgroundAssets(CreditCardModelItem item) {
+            final String resourceUrl = TkpdBaseURL.Payment.CDN_IMG_ANDROID_DOMAIN + "%s/%s/%s.png";
+            String assetName = getBackgroundResource(item);
+            String density = DisplayMetricUtils.getScreenDensity(context);
+
+            return String.format(resourceUrl, assetName, density, assetName);
+        }
+
+        private String getBackgroundResource(CreditCardModelItem item) {
             switch (item.getCardType().toLowerCase()) {
                 case VISA:
-                    return R.drawable.bg_visa_small;
+                    return VISA_SMALL;
                 case MASTERCARD:
-                    return R.drawable.bg_mastercard_small;
+                    return MASTERCARD_SMALL;
                 case JCB:
-                    return R.drawable.bg_jcb_small;
+                    return JCB_SMALL;
                 default:
-                    return R.drawable.bg_expired_small;
+                    return EXPIRED_SMALL;
             }
         }
 

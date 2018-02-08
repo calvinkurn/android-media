@@ -181,7 +181,9 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone"
                 android:layout_marginBottom="@dimen/margin_med"/>
+
         </LinearLayout>
+
     </android.support.v4.widget.NestedScrollView>
 
     <com.tokopedia.tkpdpdp.customview.ButtonBuyView

@@ -9,6 +9,7 @@ import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.cache.interceptor.ApiCacheInterceptor;
+import com.tokopedia.core.network.di.qualifier.KeyDefaultQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
@@ -83,7 +84,7 @@ public class InterceptorModule {
         return new StandardizedInterceptor(oAuthString);
     }
 
-    @Named(AuthUtil.KEY.KEY_WSV4)
+    @KeyDefaultQualifier
     @ApplicationScope
     @Provides
     public GlobalTkpdAuthInterceptor provideWsV4TkpdAuthInterceptor() {
@@ -139,10 +140,8 @@ public class InterceptorModule {
     @ApplicationScope
     @Provides
     public TopAdsAuthInterceptor provideTopAdsAuthInterceptor(
-            SessionHandler sessionHandler,
-            @ApplicationContext Context context) {
-        String oAuthString = "Bearer " + sessionHandler.getAccessToken(context);
-        return new TopAdsAuthInterceptor(oAuthString);
+            SessionHandler sessionHandler) {
+        return new TopAdsAuthInterceptor(sessionHandler);
     }
 
     @TopAdsQualifier

@@ -59,8 +59,6 @@ import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
-import static com.tokopedia.core.newgallery.GalleryActivity.DEF_QLTY_COMPRESS;
-import static com.tokopedia.core.newgallery.GalleryActivity.DEF_WIDTH_CMPR;
 
 /**
  * Created by nathan on 4/3/17.
@@ -127,11 +125,7 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
             if(FileUtils.isInTkpdCache(new File(imageUrl))) {
                 imageUrls.add(imageUrl);
             } else {
-                String fileNameToMove = FileUtils.generateUniqueFileName();
-                File photo = FileUtils.writeImageToTkpdPath(
-                        FileUtils.compressImage(imageUrl, DEF_WIDTH_CMPR,
-                                DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
-                        fileNameToMove);
+                File photo = FileUtils.writeImageToTkpdPath(imageUrl);
                 if (photo != null) {
                     imageUrls.add(photo.getAbsolutePath());
                 }

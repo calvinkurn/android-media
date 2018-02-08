@@ -3,22 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_card_with_action_main"
-    android:orientation="horizontal"
-    android:paddingBottom="@dimen/padding_med"
-    android:paddingEnd="@dimen/padding_vs"
-    android:paddingLeft="@dimen/padding_med"
-    android:paddingRight="@dimen/padding_vs"
-    android:paddingStart="@dimen/padding_med"
-    android:paddingTop="@dimen/padding_med">
+    android:paddingTop="@dimen/padding_vvs"
+    android:paddingBottom="@dimen/padding_vvs"
+    android:orientation="horizontal">
 
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:paddingEnd="@dimen/padding_small"
-        android:paddingRight="@dimen/padding_small">
+        android:paddingBottom="@dimen/padding_ms"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/padding_ms">
 
         <LinearLayout
             android:id="@+id/content_layout"
@@ -29,7 +26,7 @@
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/tv_content_message"
-                style="@style/TextView.Title.Bold"
+                style="@style/TextView.Small.Bold"
                 tools:text="Jakarta - Surabaya" />
 
             <android.support.v7.widget.AppCompatTextView
@@ -49,9 +46,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/content_layout"
-            android:layout_toEndOf="@+id/tv_subcontent_message"
-            android:layout_toRightOf="@+id/tv_subcontent_message"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tv_subcontent_message"
+                style="@style/TextView.Micro.Bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/content_layout"
+                tools:text="Air Asia" />
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/tv_subcontent_info"
@@ -62,21 +68,13 @@
                 android:maxLines="1"
                 tools:text="| Langsung | 06:00 CGK - 07:30 SUB" />
         </LinearLayout>
-
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/tv_subcontent_message"
-            style="@style/TextView.Small.Bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/content_layout"
-            tools:text="Air Asia" />
     </RelativeLayout>
 
     <View
         android:layout_width="1dp"
         android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/padding_small"
+        android:layout_marginTop="@dimen/padding_small"
         android:background="@color/widget_card_with_action_separator" />
 
     <RelativeLayout

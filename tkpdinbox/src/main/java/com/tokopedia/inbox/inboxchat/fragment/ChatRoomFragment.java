@@ -209,7 +209,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                             try {
                                 presenter.stopTyping(getArguments().getString(ChatRoomActivity
                                         .PARAM_MESSAGE_ID));
-                            } catch (JSONException e) {
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
@@ -260,7 +260,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
         if (!getArguments().getBoolean(PARAM_WEBSOCKET)) {
             if (getArguments().getString(PARAM_SENDER_TAG).equals(ChatRoomActivity.ROLE_SELLER)) {
                 labelCategory = TopChatTrackingEventLabel.Category.SHOP_PAGE;
-            } else {
+            }
+            if (getArguments().getString(SendMessageActivity.PARAM_CUSTOM_MESSAGE,"").length()>0){
                 labelCategory = TopChatTrackingEventLabel.Category.PRODUCT_PAGE;
             }
         }
