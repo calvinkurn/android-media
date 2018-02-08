@@ -11,14 +11,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.text.TkpdTextInputLayout;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.orderlist.contract.FlightResendETicketContract;
+import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
+import com.tokopedia.flight.orderlist.presenter.FlightResendETicketPresenter;
+
+import javax.inject.Inject;
 
 /**
  * @author by furqan on 08/02/18.
  */
 
-public class FlightResendETicketDialogFragment extends DialogFragment {
+public class FlightResendETicketDialogFragment extends DialogFragment implements FlightResendETicketContract.View {
 
     private static final String EXTRA_INVOICE_ID = "EXTRA_INVOICE_ID";
     private static final String EXTRA_USER_ID = "EXTRA_USER_ID";
@@ -29,7 +36,10 @@ public class FlightResendETicketDialogFragment extends DialogFragment {
     private AppCompatEditText edtEmail;
     private TkpdTextInputLayout containerEmail;
 
-    private String email, userId, invoiceId;
+    @Inject
+    FlightResendETicketPresenter flightResendETicketPresenter;
+
+    private String userId, invoiceId;
 
     public FlightResendETicketDialogFragment() {
     }
@@ -50,6 +60,13 @@ public class FlightResendETicketDialogFragment extends DialogFragment {
             invoiceId = getArguments().getString(EXTRA_INVOICE_ID);
             userId = getArguments().getString(EXTRA_USER_ID);
         }
+
+        getComponent(FlightOrderComponent.class)
+                .inject(this);
+    }
+
+    protected <C> C getComponent(Class<C> componentType) {
+        return componentType.cast(((HasComponent<C>) getActivity()).getComponent());
     }
 
     @Nullable
@@ -64,15 +81,7 @@ public class FlightResendETicketDialogFragment extends DialogFragment {
         txtSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (validateInput(edtEmail.getText().toString())) {
-                    isProgramaticallyDismissed = true;
-                    getTargetFragment().onActivityResult(
-                            getTargetRequestCode(),
-                            Activity.RESULT_OK,
-                            null
-                    );
-                    dismiss();
-                }
+                flightResendETicketPresenter.onSendButtonClicked();
             }
         });
 
@@ -93,6 +102,12 @@ public class FlightResendETicketDialogFragment extends DialogFragment {
     }
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        flightResendETicketPresenter.attachView(this);
+    }
+
+    @Override
     public void dismiss() {
         if (isProgramaticallyDismissed) {
             super.dismiss();
@@ -107,28 +122,53 @@ public class FlightResendETicketDialogFragment extends DialogFragment {
         }
     }
 
-    private boolean validateInput(String email) {
-        boolean isValid = true;
-
-        if (email == null || email.isEmpty()) {
-            isValid = false;
-            containerEmail.setError(getString(R.string.flight_resend_eticket_dialog_email_empty_error));
-        } else if (!isValidEmail(email)) {
-            isValid = false;
-            containerEmail.setError(getString(R.string.flight_resend_eticket_dialog_email_invalid_error));
-        } else if (!isEmailWithoutProhibitSymbol(email)) {
-            isValid = false;
-            containerEmail.setError(getString(R.string.flight_resend_eticket_dialog_email_invalid_symbol_error));
-        }
-
-        return isValid;
+    @Override
+    public String getInvoiceId() {
+        return invoiceId;
     }
 
-    private boolean isValidEmail(String contactEmail) {
-        return Patterns.EMAIL_ADDRESS.matcher(contactEmail).matches() && !contactEmail.contains(".@") && !contactEmail.contains("@.");
+    @Override
+    public String getUserId() {
+        return userId;
     }
 
-    private boolean isEmailWithoutProhibitSymbol(String contactEmail) {
-        return !contactEmail.contains("+");
+    @Override
+    public String getEmail() {
+        return edtEmail.getText().toString();
+    }
+
+    @Override
+    public void showEmailEmptyError(int resId) {
+        showError(resId);
+    }
+
+    @Override
+    public void showEmailInvalidError(int resId) {
+        showError(resId);
+    }
+
+    @Override
+    public void showEmailInvalidSymbolError(int resId) {
+        showError(resId);
+    }
+
+    @Override
+    public void onResendETicketSuccess() {
+        isProgramaticallyDismissed = true;
+        getTargetFragment().onActivityResult(
+                getTargetRequestCode(),
+                Activity.RESULT_OK,
+                null
+        );
+        dismiss();
+    }
+
+    @Override
+    public void onResendETicketError(String errorMsg) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), errorMsg);
+    }
+
+    private void showError(int resId) {
+        containerEmail.setError(getString(resId));
     }
 }

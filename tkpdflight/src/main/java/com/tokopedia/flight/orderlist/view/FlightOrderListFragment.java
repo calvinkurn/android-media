@@ -19,6 +19,8 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.flight.FlightModuleRouter;
@@ -207,7 +209,7 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         switch (requestCode) {
             case REQUEST_CODE_RESEND_ETICKET_DIALOG:
                 if (resultCode == Activity.RESULT_OK) {
-                    Toast.makeText(getContext(), "Berhasil, Berhasil, Hore", Toast.LENGTH_SHORT).show();
+                    NetworkErrorHelper.showCloseSnackbar(getActivity(), getString(R.string.resend_eticket_success));
                 }
                 break;
         }
