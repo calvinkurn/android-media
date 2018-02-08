@@ -69,13 +69,13 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
         Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
         if (fragment == null || !((fragment instanceof MultipleAddressFragment)
                 || (fragment instanceof CartSingleAddressFragment))) {
-//            if (typeAddressShipment == TYPE_ADDRESS_SHIPMENT_SINGLE) {
+            if (typeAddressShipment == TYPE_ADDRESS_SHIPMENT_SINGLE) {
                 getFragmentManager().beginTransaction().replace(R.id.container,
-                        CartSingleAddressFragment.newInstance()).commit();
-//            } else {
-//                getFragmentManager().beginTransaction().replace(R.id.container,
-//                        MultipleAddressFragment.newInstance()).commit();
-//            }
+                        CartSingleAddressFragment.newInstance(cartItemDataList)).commit();
+            } else {
+                getFragmentManager().beginTransaction().replace(R.id.container,
+                        MultipleAddressFragment.newInstance()).commit();
+            }
         }
     }
 

@@ -10,6 +10,9 @@ apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
 apply plugin: 'maven'
 
+group = 'com.tokopedia.core'
+version = rootProject.ext.tkpdTokocashVersion
+
 def getArtifactVersionCode() {
     return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
 }
@@ -32,9 +35,9 @@ def getTkpdDesign() {
 publishing {
     publications {
         aar(MavenPublication) {
-            groupId 'com.tokopedia.tokocash'
-            artifactId 'tokocash'
-            version getArtifactVersionCode()
+            groupId 'com.tokopedia.core'
+            artifactId 'tkpdtokocash'
+            version rootProject.ext.tkpdTokocashVersion
             artifact("$buildDir/outputs/aar/tkpdtokocash-release.aar")
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
@@ -74,7 +77,7 @@ artifactory {
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion "25.0.0"
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion

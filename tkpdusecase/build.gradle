@@ -3,6 +3,9 @@ apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
 apply plugin: 'maven'
 
+group = 'com.tokopedia.core'
+version = rootProject.ext.tkpdUseCaseVersion
+
 def getArtifactVersionCode() {
     return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
 }
@@ -10,9 +13,9 @@ def getArtifactVersionCode() {
 publishing {
     publications {
         aar(MavenPublication) {
-            groupId 'com.tokopedia.usecase'
-            artifactId 'usecase'
-            version getArtifactVersionCode()
+            groupId 'com.tokopedia.core'
+            artifactId 'tkpdusecase'
+            version rootProject.ext.tkpdUseCaseVersion
             artifact("$buildDir/outputs/aar/tkpdusecase-release.aar")
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')

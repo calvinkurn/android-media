@@ -3,6 +3,10 @@ apply plugin: 'android-apt'
 apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
 apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'maven'
+
+group = 'com.tokopedia.core'
+version = rootProject.ext.tkpdSessionVersion
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.14.1'
@@ -21,9 +25,9 @@ def getTkpdCore() {
 publishing {
     publications {
         aar(MavenPublication) {
-            groupId 'com.tokopedia.session'
-            artifactId 'session'
-            version getArtifactVersionCode()
+            groupId 'com.tokopedia.core'
+            artifactId 'tkpdsession'
+            version rootProject.ext.tkpdSessionVersion
             artifact("$buildDir/outputs/aar/tkpdsession-release.aar")
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
@@ -74,7 +78,7 @@ buildscript {
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion "25.0.0"
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
