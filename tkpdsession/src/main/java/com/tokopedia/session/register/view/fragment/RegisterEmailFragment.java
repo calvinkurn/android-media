@@ -591,9 +591,9 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         dismissLoadingProgress();
         setActionsEnabled(true);
         if (errorMessage.equals(""))
-            NetworkErrorHelper.showSnackbar(getActivity());
+            NetworkErrorHelper.showCloseSnackbar(getActivity(), getString(R.string.default_request_error_unknown));
         else
-            NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+            NetworkErrorHelper.showCloseSnackbar(getActivity(), errorMessage);
     }
 
     @Override
