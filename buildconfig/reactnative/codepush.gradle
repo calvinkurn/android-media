@@ -42,6 +42,7 @@ gradle.projectsEvaluated {
             if (!resourcesDir.exists() && file("$buildDir/intermediates/res/${targetPath}").exists()) {
                 resourcesDir = file("$buildDir/intermediates/res/${targetPath}")
             }
+
             def jsBundleFile = file("$jsBundleDir/$bundleAssetName")
 
             def resourcesMapTempFileName = "CodePushResourcesMap-" + java.util.UUID.randomUUID().toString().substring(0, 8) + ".json"
