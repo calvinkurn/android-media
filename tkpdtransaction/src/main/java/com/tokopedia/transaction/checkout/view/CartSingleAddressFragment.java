@@ -81,7 +81,9 @@ public class CartSingleAddressFragment extends BasePresenterFragment
                     public void call(Object o) {
                         if (o instanceof ShipmentAddressListAdapter.Event) {
                             String msg = ((ShipmentAddressListAdapter.Event) o).getMessage();
-                            ShipmentRecipientModel recipientModel = (ShipmentRecipientModel)((ShipmentAddressListAdapter.Event) o).getObject();
+                            ShipmentRecipientModel recipientModel =
+                                    (ShipmentRecipientModel)((ShipmentAddressListAdapter.Event) o)
+                                            .getObject();
                             Log.d(TAG, msg + " " + recipientModel.getRecipientName());
                         }
                     }
@@ -210,7 +212,8 @@ public class CartSingleAddressFragment extends BasePresenterFragment
 
     @Override
     public void onAddOrChangeAddress(ShipmentRecipientModel shipmentRecipientModel) {
-        startActivityForResult(CartAddressChoiceActivity.createInstance(getActivity(), shipmentRecipientModel), REQUEST_CODE_CHOOSE_ADDRESS);
+        startActivityForResult(CartAddressChoiceActivity.createInstance(getActivity(),
+                shipmentRecipientModel), REQUEST_CODE_CHOOSE_ADDRESS);
     }
 
     @Override
@@ -249,6 +252,8 @@ public class CartSingleAddressFragment extends BasePresenterFragment
                     Store pickupBooth = data.getParcelableExtra(INTENT_DATA_STORE);
                     mCartSingleAddressAdapter.setPickupPoint(pickupBooth);
                     mCartSingleAddressAdapter.notifyDataSetChanged();
+                    break;
+                default:
                     break;
             }
         }
