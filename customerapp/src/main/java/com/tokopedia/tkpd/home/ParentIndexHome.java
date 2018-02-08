@@ -88,6 +88,7 @@ import rx.subscriptions.CompositeSubscription;
  * modified by m.normansyah on 4/02/2016, fetch list of bank.
  * modified by alvarisi on 6/15/2016, tab selection tracking.
  * modified by Hafizh Herdi on 6/15/2016, dynamic personalization message.
+ * modified by meta on 24/01/2018, implement bottom navigation menu
  */
 public class ParentIndexHome extends TkpdActivity implements NotificationReceivedListener,
         GetUserInfoListener, HasComponent {
