@@ -145,6 +145,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private static final String TAG = FeedPlusFragment.class.getSimpleName();
     private String firstCursor = "";
 
+    boolean hasLoadedOnce = false;
+
     @Override
     protected String getScreenName() {
         return AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_FEED;
@@ -336,9 +338,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter.fetchFirstPage();
-        if (trace != null)
-            trace.stop();
     }
 
     @Override
@@ -859,6 +858,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
             firstCursor = "";
         if (isVisibleToUser && isAdded()
                 && getActivity()!= null && presenter != null) {
+
+            if (!hasLoadedOnce) {
+                presenter.fetchFirstPage();
+                if (trace != null)
+                    trace.stop();
+                hasLoadedOnce = true;
+            }
+
             presenter.checkNewFeed(firstCursor);
             ScreenTracking.screen(getScreenName());
         }
