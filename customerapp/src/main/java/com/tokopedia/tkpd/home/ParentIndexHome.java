@@ -668,7 +668,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     boolean isUserFirstTimeLogin = false;
 
     @Override
-    protected void onResume() {git
+    protected void onResume() {
         HockeyAppHelper.checkForUpdate(this);
         RxUtils.getNewCompositeSubIfUnsubscribed(subscription);
         FCMCacheManager.checkAndSyncFcmId(getApplicationContext());
