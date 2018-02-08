@@ -318,6 +318,7 @@ public class DetailResChatFragment
 
         fabChat.hide();
         linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setStackFromEnd(true);
         rvChat.setLayoutManager(linearLayoutManager);
         chatAdapter = new ChatAdapter(new DetailChatTypeFactoryImpl(this));
         rvChat.setAdapter(chatAdapter);
