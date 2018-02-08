@@ -1197,11 +1197,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void onDigitalItemClick(Activity activity, DigitalCategoryDetailPassData passData, String appLink) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
-        Intent intent = new Intent(activity, DeeplinkHandlerActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtras(bundle);
+        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
+        Intent intent = activity.getIntent();
         intent.setData(Uri.parse(appLink));
-        startActivity(intent);
+        intent.putExtras(bundle);
+        deepLinkDelegate.dispatchFrom(activity, intent);
     }
 
     @Override
