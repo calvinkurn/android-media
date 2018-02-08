@@ -35,4 +35,6 @@ public interface TkpdInboxRouter {
     Intent getTimeMachineIntent(Context context);
 
     Intent getInboxMessageIntent(Context context);
+
+    Intent getContactUsIntent(Context context);
 }

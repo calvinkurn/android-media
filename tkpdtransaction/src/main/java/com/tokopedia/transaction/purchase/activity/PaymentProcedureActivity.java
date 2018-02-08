@@ -31,8 +31,12 @@ public class PaymentProcedureActivity extends BaseWebViewActivity {
     }
 
     @Override
-    protected Intent getHelpIntent() {
-        return InboxRouter.getContactUsActivityIntent(this);
+    protected Intent getContactUsIntent() {
+        if(this.getApplicationContext() instanceof TkpdInboxRouter) {
+            return ((TkpdInboxRouter) this.getApplicationContext()).getContactUsIntent(this);
+        }
+
+        return null;
     }
 
     @Override

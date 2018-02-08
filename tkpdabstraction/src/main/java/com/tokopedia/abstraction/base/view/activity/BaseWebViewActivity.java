@@ -2,6 +2,7 @@ package com.tokopedia.abstraction.base.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,17 +17,23 @@ import com.tokopedia.abstraction.R;
 public abstract class BaseWebViewActivity extends BaseSimpleActivity {
 
     public static final String EXTRA_TITLE = "web_view_extra_title";
+    private Intent contactUsIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupToolbar();
+        contactUsIntent = getContactUsIntent();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_web_view, menu);
+        if(contactUsIntent == null) {
+            MenuItem helpMenu = menu.findItem(R.id.menu_help);
+            helpMenu.setVisible(false);
+        }
         return true;
     }
 
@@ -35,8 +42,8 @@ public abstract class BaseWebViewActivity extends BaseSimpleActivity {
         if (item.getItemId() == R.id.menu_home) {
             finish();
             return true;
-        } else if (item.getItemId() == R.id.menu_help) {
-            startActivity(getHelpIntent());
+        } else if (item.getItemId() == R.id.menu_help && contactUsIntent != null) {
+            startActivity(contactUsIntent);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -48,5 +55,6 @@ public abstract class BaseWebViewActivity extends BaseSimpleActivity {
         }
     }
 
-    protected abstract Intent getHelpIntent();
+    @Nullable
+    protected abstract Intent getContactUsIntent();
 }

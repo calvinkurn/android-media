@@ -138,6 +138,8 @@
         android:layout_below="@id/normal_payment_info"
         android:text="@string/title_payment_procedure"
         style="@style/Button.Submit.Green.Full"
+        android:layout_marginTop="@dimen/margin_ms"
+        android:focusable="false"
         android:visibility="gone"/>
 
 </RelativeLayout>

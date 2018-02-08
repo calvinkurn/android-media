@@ -1276,4 +1276,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public GetShopInfoUseCase getShopInfo(){    
             return getShopComponent().getShopInfoUseCase();
     }
+
+    @Override
+    public Intent getContactUsIntent(Context context) {
+        return new Intent(context, ContactUsActivity.class);
+    }
 }
