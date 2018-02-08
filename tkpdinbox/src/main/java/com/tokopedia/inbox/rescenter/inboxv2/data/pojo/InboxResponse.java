@@ -14,15 +14,15 @@ public class InboxResponse {
     @SerializedName("inboxes")
     private List<InboxDataResponse> inboxes;
     @SerializedName("quickFilter")
-    private QuickFilterResponse quickFilter;
+    private List<FilterResponse> quickFilter;
     @SerializedName("canLoadMore")
     private boolean isCanLoadMore;
 
-    public QuickFilterResponse getQuickFilter() {
+    public List<FilterResponse> getQuickFilter() {
         return quickFilter;
     }
 
-    public void setQuickFilter(QuickFilterResponse quickFilter) {
+    public void setQuickFilter(List<FilterResponse> quickFilter) {
         this.quickFilter = quickFilter;
     }
 

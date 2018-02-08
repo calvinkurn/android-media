@@ -242,8 +242,8 @@ public class ResoInboxFragment
         adapter.addList(result.getInboxVisitableList());
         adapter.notifyDataSetChanged();
 
-        updateParams(true, result);
-//        updateParams(result.isCanLoadMore(), result);
+//        updateParams(true, result);
+        updateParams(result.isCanLoadMore(), result);
     }
 
     private void updateFilterValue(InboxItemResultViewModel result) {
@@ -339,8 +339,8 @@ public class ResoInboxFragment
     public void onSuccessLoadMoreInbox(InboxItemResultViewModel result) {
         adapter.removeLoading();
         adapter.addList(result.getInboxVisitableList());
-        updateParams(true, result);
-//        updateParams(result.isCanLoadMore(), result);
+//        updateParams(true, result);
+        updateParams(result.isCanLoadMore(), result);
         updateStringFilterValue(result);
         adapter.notifyDataSetChanged();
     }

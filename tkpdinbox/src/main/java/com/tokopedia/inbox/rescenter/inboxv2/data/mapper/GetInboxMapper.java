@@ -10,7 +10,6 @@ import com.tokopedia.inbox.rescenter.inboxv2.data.pojo.FilterResponse;
 import com.tokopedia.inbox.rescenter.inboxv2.data.pojo.InboxDataResponse;
 import com.tokopedia.inbox.rescenter.inboxv2.data.pojo.InboxResponse;
 import com.tokopedia.inbox.rescenter.inboxv2.data.pojo.ProductResponse;
-import com.tokopedia.inbox.rescenter.inboxv2.data.pojo.QuickFilterResponse;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.FilterViewModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.InboxItemResultViewModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.InboxItemViewModel;
@@ -79,60 +78,77 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
         return model;
     }
 
-    public static List<FilterViewModel> mappingFilterItem(QuickFilterResponse response) {
+
+    public static List<FilterViewModel> mappingFilterItem(List<FilterResponse> responseList) {
         List<FilterViewModel> modelList = new ArrayList<>();
-
-        FilterResponse unreadResponse = response.getUnread();
-        FilterViewModel unreadModel = new FilterViewModel(
-                unreadResponse.getTitle(),
-                unreadResponse.getFilterWithDateString(),
-                convertStringToHaveBreak(unreadResponse.getTitleCountFullString()),
-                unreadResponse.getCount(),
-                unreadResponse.getOrderValue(),
+        for (FilterResponse response : responseList) {
+            FilterViewModel model = new FilterViewModel(
+                    response.getTitle(),
+                    response.getFilterWithDateString(),
+                    convertStringToHaveBreak(response.getTitleCountFullString()),
+                    response.getCount(),
+                    response.getOrderValue(),
                 false);
-        modelList.add(unreadModel);
-
-        FilterResponse unansweredResponse = response.getUnanswered();
-        FilterViewModel unansweredModel = new FilterViewModel(
-                unansweredResponse.getTitle(),
-                unansweredResponse.getFilterWithDateString(),
-                convertStringToHaveBreak(unansweredResponse.getTitleCountFullString()),
-                unansweredResponse.getCount(),
-                unansweredResponse.getOrderValue(),
-                false);
-        modelList.add(unansweredModel);
-
-        FilterResponse finishedResponse = response.getFinished();
-        FilterViewModel finishedModel = new FilterViewModel(
-                finishedResponse.getTitle(),
-                finishedResponse.getFilterWithDateString(),
-                convertStringToHaveBreak(finishedResponse.getTitleCountFullString()),
-                finishedResponse.getCount(),
-                finishedResponse.getOrderValue(),
-                false);
-        modelList.add(finishedModel);
-
-        FilterResponse autoExcecuteResponse = response.getAutoExecution();
-        FilterViewModel autoExecuteModel = new FilterViewModel(
-                autoExcecuteResponse.getTitle(),
-                autoExcecuteResponse.getFilterWithDateString(),
-                convertStringToHaveBreak(autoExcecuteResponse.getTitleCountFullString()),
-                autoExcecuteResponse.getCount(),
-                autoExcecuteResponse.getOrderValue(),
-                false);
-        modelList.add(autoExecuteModel);
-
-        FilterResponse unfinishedResponse = response.getUnfinished();
-        FilterViewModel unfinishedModel = new FilterViewModel(
-                unfinishedResponse.getTitle(),
-                unfinishedResponse.getFilterWithDateString(),
-                convertStringToHaveBreak(unfinishedResponse.getTitleCountFullString()),
-                unfinishedResponse.getCount(),
-                unfinishedResponse.getOrderValue(),
-                false);
-        modelList.add(unfinishedModel);
+            modelList.add(model);
+        }
         return modelList;
+
     }
+//
+//        public static List<FilterViewModel> mappingFilterItem(QuickFilterResponse response) {
+//        List<FilterViewModel> modelList = new ArrayList<>();
+//
+//        FilterResponse unreadResponse = response.getUnread();
+//        FilterViewModel unreadModel = new FilterViewModel(
+//                unreadResponse.getTitle(),
+//                unreadResponse.getFilterWithDateString(),
+//                convertStringToHaveBreak(unreadResponse.getTitleCountFullString()),
+//                unreadResponse.getCount(),
+//                unreadResponse.getOrderValue(),
+//                false);
+//        modelList.add(unreadModel);
+//
+//        FilterResponse unansweredResponse = response.getUnanswered();
+//        FilterViewModel unansweredModel = new FilterViewModel(
+//                unansweredResponse.getTitle(),
+//                unansweredResponse.getFilterWithDateString(),
+//                convertStringToHaveBreak(unansweredResponse.getTitleCountFullString()),
+//                unansweredResponse.getCount(),
+//                unansweredResponse.getOrderValue(),
+//                false);
+//        modelList.add(unansweredModel);
+//
+//        FilterResponse finishedResponse = response.getFinished();
+//        FilterViewModel finishedModel = new FilterViewModel(
+//                finishedResponse.getTitle(),
+//                finishedResponse.getFilterWithDateString(),
+//                convertStringToHaveBreak(finishedResponse.getTitleCountFullString()),
+//                finishedResponse.getCount(),
+//                finishedResponse.getOrderValue(),
+//                false);
+//        modelList.add(finishedModel);
+//
+//        FilterResponse autoExcecuteResponse = response.getAutoExecution();
+//        FilterViewModel autoExecuteModel = new FilterViewModel(
+//                autoExcecuteResponse.getTitle(),
+//                autoExcecuteResponse.getFilterWithDateString(),
+//                convertStringToHaveBreak(autoExcecuteResponse.getTitleCountFullString()),
+//                autoExcecuteResponse.getCount(),
+//                autoExcecuteResponse.getOrderValue(),
+//                false);
+//        modelList.add(autoExecuteModel);
+//
+//        FilterResponse unfinishedResponse = response.getUnfinished();
+//        FilterViewModel unfinishedModel = new FilterViewModel(
+//                unfinishedResponse.getTitle(),
+//                unfinishedResponse.getFilterWithDateString(),
+//                convertStringToHaveBreak(unfinishedResponse.getTitleCountFullString()),
+//                unfinishedResponse.getCount(),
+//                unfinishedResponse.getOrderValue(),
+//                false);
+//        modelList.add(unfinishedModel);
+//        return modelList;
+//    }
 
     private List<InboxItemViewModel> mappingInboxItem(List<InboxDataResponse> responseList, int actionBy) {
         List<InboxItemViewModel> itemList = new ArrayList<>();
