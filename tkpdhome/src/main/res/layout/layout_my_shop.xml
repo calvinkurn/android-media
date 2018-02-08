@@ -9,8 +9,8 @@
     android:padding="@dimen/page_margin">
 
     <android.support.v7.widget.CardView
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         app:cardUseCompatPadding="true">
 
         <com.tokopedia.core.customwidget.SquareImageView
@@ -40,13 +40,16 @@
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_badge_official"
             android:gravity="center_vertical"
+            android:textSize="12sp"
             tools:text="Official Store" />
     </LinearLayout>
 
     <Button
         android:id="@+id/btn_ubah"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="32dp"
+        android:background="@drawable/bg_setting_myshop_btn"
         android:drawableLeft="@drawable/ic_menu_general_setting"
-        android:text="@string/ubah" />
+        android:text="@string/ubah"
+        android:textAllCaps="false" />
 </LinearLayout>

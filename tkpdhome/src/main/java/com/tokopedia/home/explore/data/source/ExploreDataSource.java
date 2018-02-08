@@ -22,6 +22,7 @@ import com.tokopedia.home.explore.domain.model.LayoutSections;
 import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryFavoriteViewModel;
 import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryGridListViewModel;
 import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel;
+import com.tokopedia.home.explore.view.adapter.viewmodel.MyShopViewModel;
 import com.tokopedia.home.explore.view.adapter.viewmodel.SellViewModel;
 
 import java.io.BufferedReader;
@@ -121,10 +122,7 @@ public class ExploreDataSource {
             }
 
             private Visitable mappingManageShop() {
-                SellViewModel model = new SellViewModel();
-                model.setTitle(context.getString(R.string.open_shop_wording_title));
-                model.setSubtitle(context.getString(R.string.manage_shop_wording_subtitle));
-                model.setBtn_title(context.getString(R.string.manage_toko));
+                MyShopViewModel model = new MyShopViewModel();
                 return model;
             }
 

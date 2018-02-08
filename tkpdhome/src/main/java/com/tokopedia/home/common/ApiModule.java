@@ -37,8 +37,7 @@ public class ApiModule {
     }
 
     @Provides
-    public OkHttpClient provideOkHttpClient(OkHttpClient.Builder okHttpClientBuilder,
-                                            HttpLoggingInterceptor httpLoggingInterceptor) {
+    public OkHttpClient provideOkHttpClient() {
         return OkHttpFactory.create()
                 .addOkHttpRetryPolicy(OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy())
                 .buildClientNoAuth();
