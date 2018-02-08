@@ -300,6 +300,7 @@ public class ResoInboxFragment
         rvInbox.setVisibility(View.VISIBLE);
         bottomActionView.setVisibility(View.VISIBLE);
         adapter.setCanLoadMore(false);
+        adapter.clearData();
         adapter.addItem(result.getFilterListViewModel());
         adapter.addItem(new EmptyModel());
         adapter.notifyDataSetChanged();
@@ -385,7 +386,7 @@ public class ResoInboxFragment
         inboxFilterModel.setDateFromString("");
         inboxFilterModel.setDateTo(null);
         inboxFilterModel.setDateFrom(null);
-        inboxSortModel = new ResoInboxSortModel();
+        inboxSortModel = new ResoInboxSortModel(SortModel.getSortList(getActivity()), SORT_DEFAULT_ID, new SortModel());
         presenter.getInboxResetFilter();
     }
 
