@@ -65,7 +65,6 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
     private Context mContext;
     private CartSingleAddressData mCartSingleAddressData;
     private SingleAddressShipmentAdapterListener viewListener;
-    private boolean firstItemHasRemoved;
 
     public CartSingleAddressAdapter() {
         Log.d(TAG, "Create instance");
