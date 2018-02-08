@@ -14,25 +14,42 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <android.support.v7.widget.CardView
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:cardCornerRadius="4dp"
-            app:cardElevation="0dp">
+            android:layout_margin="8dp">
 
             <ImageView
                 android:id="@+id/img_event"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
                 android:scaleType="centerCrop" />
-        </android.support.v7.widget.CardView>
+            <TextView
+                android:id="@+id/text_view_display_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/display_tag_bg"
+                android:gravity="center_horizontal"
+                android:paddingBottom="4dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="4dp"
+                android:layout_alignParentTop="true"
+                android:text="@string/_350_u0020_ticket_u0020_sold"
+                android:textColor="@color/black_38"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                android:visibility="visible" />
+
+
+        </RelativeLayout>
 
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:padding="8dp">
 
             <TextView
                 android:id="@+id/event_title"
@@ -43,7 +60,7 @@
                 android:layout_alignParentTop="true"
                 android:text="The 90's Festival"
                 android:textColor="@color/grey_150"
-                android:textSize="13sp"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
             <!--<TextView-->
@@ -69,7 +86,7 @@
                 android:layout_below="@+id/textView3"
                 android:text="Rp 552.00"
                 android:textColor="@color/orange"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -148,4 +165,8 @@
 
         </RelativeLayout>
     </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2px"
+        android:background="?android:attr/listDivider" />
 </LinearLayout>

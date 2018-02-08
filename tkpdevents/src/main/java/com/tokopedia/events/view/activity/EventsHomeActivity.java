@@ -233,7 +233,7 @@ public class EventsHomeActivity extends TActivity
             MenuItem item = menu.getItem(i);
             SpannableString s = new SpannableString(item.getTitle());
             s.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, s.length(), 0);
-            s.setSpan(new StyleSpan(Typeface.BOLD), 0, s.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            s.setSpan(new StyleSpan(Typeface.NORMAL), 0, s.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             item.setTitle(s);
         }
         return super.onCreateOptionsMenu(menu);

@@ -55,11 +55,11 @@ public class EventDetailsViewModelMapper {
         List<SchedulesViewModel> schedules = new ArrayList<>(size);
         for (ScheduleDomain item : source.getSchedules()) {
             SchedulesViewModel s = new SchedulesViewModel();
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(item.getAddressDetail().getName()).
-                    append(", ").append(item.getAddressDetail().getAddress())
-                    .append(", ").append(item.getAddressDetail().getCity());
-            s.setaDdress(stringBuilder.substring(0));
+//            StringBuilder stringBuilder = new StringBuilder();
+//            stringBuilder.append(item.getAddressDetail().getName()).
+//                    append(", ").append(item.getAddressDetail().getAddress())
+//                    .append(", ").append(item.getAddressDetail().getCity());
+            s.setaDdress(item.getAddressDetail().getAddress());
             s.setStartDate(item.getSchedule().getStartDate());
             s.setEndDate(item.getSchedule().getEndDate());
 

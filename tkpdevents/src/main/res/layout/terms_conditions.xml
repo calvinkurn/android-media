@@ -37,6 +37,12 @@
             android:textSize="12sp"
             app:animation_duration="300" />
 
+    <LinearLayout
+        android:id="@+id/expand_view_tnc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
         <TextView
             android:id="@+id/seemorebutton_tnc"
             android:layout_width="wrap_content"
@@ -49,6 +55,16 @@
             android:textStyle="bold"
             android:textSize="12sp" />
 
+        <ImageView
+            android:id="@+id/down_arrow_tnc"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:tint="@color/green_nob"
+            android:src="@drawable/ic_arrow_down"/>
+    </LinearLayout>
 
     </LinearLayout>
 </android.support.v7.widget.CardView>
