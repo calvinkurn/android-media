@@ -155,8 +155,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     private RemoteConfig remoteConfig;
 
-    public BottomSheetBuilder bottomSheetBuilder;
-    public BottomSheetAdapterBuilder bottomSheetAdapterBuilder;
     private boolean uploading;
 
     public static ChatRoomFragment createInstance(Bundle extras) {
