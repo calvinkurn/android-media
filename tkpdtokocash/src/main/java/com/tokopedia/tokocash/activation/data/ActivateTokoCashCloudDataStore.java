@@ -1,11 +1,10 @@
 package com.tokopedia.tokocash.activation.data;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.tokocash.activation.data.entity.ActivateTokoCashEntity;
 import com.tokopedia.tokocash.network.api.TokoCashApi;
 
 import java.util.HashMap;
-
-import javax.inject.Inject;
 
 import retrofit2.Response;
 import rx.Observable;

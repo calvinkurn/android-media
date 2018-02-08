@@ -32,8 +32,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.cache.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.pojo.topcash.Action;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
-import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashModel;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
@@ -87,11 +87,13 @@ import com.tokopedia.design.utils.DateLabelUtils;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.di.SessionComponent;
 import com.tokopedia.di.SessionModule;
+import com.tokopedia.digital.DigitalRouter;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver;
+import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
@@ -145,8 +147,6 @@ import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpd.applink.AppLinkWebsiteActivity;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
-import com.tokopedia.tkpd.tokocash.TokoCashBalanceMapper;
-import com.tokopedia.tkpd.tokocash.datepicker.DatePickerUtil;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
@@ -167,17 +167,20 @@ import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.activity.ReputationProduct;
 import com.tokopedia.tkpd.tkpdreputation.shopreputation.ShopReputationList;
+import com.tokopedia.tkpd.tokocash.TokoCashBalanceMapper;
+import com.tokopedia.tkpd.tokocash.TokoCashPendingCashbackMapper;
+import com.tokopedia.tkpd.tokocash.datepicker.DatePickerUtil;
 import com.tokopedia.tkpd.truecaller.TruecallerActivity;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
+import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
 import com.tokopedia.tokocash.di.TokoCashComponent;
 import com.tokopedia.tokocash.historytokocash.presentation.activity.HistoryTokoCashActivity;
 import com.tokopedia.tokocash.network.WalletUserSession;
+import com.tokopedia.tokocash.network.exception.UserInactivateTokoCashException;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.CustomScannerTokoCashActivity;
-import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
-import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
@@ -191,6 +194,7 @@ import javax.inject.Inject;
 
 import okhttp3.Response;
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
@@ -206,7 +210,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TkpdCoreRouter, SellerModuleRouter, IDigitalModuleRouter, PdpRouter,
         OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter,
         TokoCashRouter, IWalletRouter, ILoyaltyRouter, ReputationRouter, SessionRouter,
-        AbstractionRouter, FlightModuleRouter, LogisticRouter, com.tokopedia.tokocash.TokoCashRouter {
+        AbstractionRouter, FlightModuleRouter, LogisticRouter, com.tokopedia.tokocash.TokoCashRouter,
+        DigitalRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -1277,7 +1282,29 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Observable<TokoCashData> getTokoCashBalance() {
         return tokoCashComponent.getBalanceTokoCashUseCase()
                 .createObservable(com.tokopedia.usecase.RequestParams.EMPTY)
-                .map(new TokoCashBalanceMapper());
+                .map(new TokoCashBalanceMapper())
+                .onErrorReturn(new Func1<Throwable, TokoCashData>() {
+                    @Override
+                    public TokoCashData call(Throwable throwable) {
+                        if (throwable instanceof UserInactivateTokoCashException) {
+                            Action action = new Action();
+                            action.setmText("Aktivasi");
+                            action.setmAppLinks("tokopedia://wallet/activation");
+                            TokoCashData tokoCashData = new TokoCashData();
+                            tokoCashData.setBalance("");
+                            tokoCashData.setText("TokoCash");
+                            tokoCashData.setAction(action);
+                            return tokoCashData;
+                        }
+                        return null;
+                    }
+                })
+                .doOnError(new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throw new RuntimeException(throwable);
+                    }
+                });
     }
 
     @Override
@@ -1321,5 +1348,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     public GetShopInfoUseCase getShopInfo() {
         return getShopComponent().getShopInfoUseCase();
+    }
+
+    @Override
+    public Observable<CashBackData> getPendingCashbackUseCase(Context context) {
+        SessionHandler sessionHandler = new SessionHandler(context);
+        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
+        requestParams.putString("msisdn", sessionHandler.getPhoneNumber());
+        return tokoCashComponent.getPendingCasbackUseCase()
+                .createObservable(requestParams)
+                .map(new TokoCashPendingCashbackMapper());
     }
 }

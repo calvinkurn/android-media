@@ -1,5 +1,6 @@
 package com.tokopedia.tokocash.activation.data;
 
+import com.tokopedia.tokocash.activation.data.mapper.ActivateTokoCashMapper;
 import com.tokopedia.tokocash.activation.domain.IActivateRepository;
 import com.tokopedia.tokocash.activation.presentation.model.ActivateTokoCashData;
 import com.tokopedia.tokocash.network.api.TokoCashApi;
@@ -17,21 +18,23 @@ import rx.Observable;
 public class ActivateRepository implements IActivateRepository {
 
     private ActivateTokoCashCloudDataStore activateTokoCashCloudDataStore;
+    private ActivateTokoCashMapper mapper;
 
     @Inject
-    public ActivateRepository(TokoCashApi tokoCashApi) {
+    public ActivateRepository(TokoCashApi tokoCashApi, ActivateTokoCashMapper mapper) {
         this.activateTokoCashCloudDataStore = new ActivateTokoCashCloudDataStore(tokoCashApi);
+        this.mapper = mapper;
     }
 
     @Override
     public Observable<ActivateTokoCashData> requestOTPWallet() {
         return activateTokoCashCloudDataStore.requestOTPWallet()
-                .map(new ActivateTokoCashMapper());
+                .map(mapper);
     }
 
     @Override
     public Observable<ActivateTokoCashData> linkedWalletToTokoCash(HashMap<String, String> mapParam) {
         return activateTokoCashCloudDataStore.linkedWalletToTokoCash(mapParam)
-                .map(new ActivateTokoCashMapper());
+                .map(mapper);
     }
 }

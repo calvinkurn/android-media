@@ -1,6 +1,9 @@
 package com.tokopedia.tokocash.network.api;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.tokocash.activation.data.entity.PendingCashbackEntity;
+import com.tokopedia.tokocash.historytokocash.data.entity.TokoCashHistoryEntity;
 import com.tokopedia.tokocash.qrpayment.data.entity.BalanceTokoCashEntity;
 import com.tokopedia.tokocash.qrpayment.data.entity.InfoQrEntity;
 import com.tokopedia.tokocash.qrpayment.data.entity.QrPaymentEntity;
@@ -12,6 +15,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.QueryMap;
 import rx.Observable;
 
 /**
@@ -22,11 +26,11 @@ public interface WalletApi {
 
     String IDENTIFIER = "identifier";
 
-//    @GET(WalletUrl.Wallet.GET_HISTORY)
-//    Observable<Response<TkpdTokoCashResponse>> getHistoryTokocash(@QueryMap HashMap<String, Object> params);
-//
-//    @POST(WalletUrl.Wallet.POST_COMPLAINT)
-//    Observable<Response<TkpdTokoCashResponse>> postHelpHistory(@Body Map<String, String> params);
+    @GET(TkpdBaseURL.TokoCash.PATH_CASH_BACK_DOMAIN)
+    Observable<Response<DataResponse<PendingCashbackEntity>>> getTokoCashPending(@QueryMap HashMap<String, String> params);
+
+    @GET(WalletUrl.Wallet.GET_HISTORY)
+    Observable<Response<DataResponse<TokoCashHistoryEntity>>> getHistoryTokocash(@QueryMap HashMap<String, Object> params);
 
     @GET(WalletUrl.Wallet.GET_QR_INFO)
     Observable<Response<DataResponse<InfoQrEntity>>> getInfoQrTokoCash(@Path(IDENTIFIER) String identifier);

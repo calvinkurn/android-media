@@ -1,7 +1,7 @@
 package com.tokopedia.tokocash.network.api;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.tokocash.activation.data.ActivateTokoCashEntity;
+import com.tokopedia.tokocash.activation.data.entity.ActivateTokoCashEntity;
 import com.tokopedia.tokocash.network.model.RefreshTokenEntity;
 
 import java.util.HashMap;

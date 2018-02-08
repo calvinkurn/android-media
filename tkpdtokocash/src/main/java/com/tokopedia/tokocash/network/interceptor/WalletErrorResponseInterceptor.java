@@ -7,8 +7,8 @@ import com.google.gson.JsonSyntaxException;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
 import com.tokopedia.abstraction.common.utils.CommonUtils;
-import com.tokopedia.tokocash.network.WalletUserSession;
 import com.tokopedia.tokocash.network.WalletTokenRefresh;
+import com.tokopedia.tokocash.network.WalletUserSession;
 
 import java.io.IOException;
 
@@ -100,6 +100,10 @@ public class WalletErrorResponseInterceptor implements Interceptor {
             e.printStackTrace();
             return false;
         }
+    }
+
+    private boolean isTokoCashInactivate(Response response) {
+        return response.code() == 402;
     }
 
     private Request reCreateRequestWithNewAccessToken(Chain chain) {

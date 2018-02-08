@@ -1,6 +1,7 @@
 package com.tokopedia.tokocash.activation.presentation.fragment;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -94,8 +95,9 @@ public class ActivateTokoCashFragment extends BaseDaggerFragment implements Link
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View view) {
-                if (getActivity() instanceof TokoCashRouter) {
-                    Intent intent = ((TokoCashRouter) getActivity()).getWebviewActivityWithIntent(getActivity(),
+                Application application = getActivity().getApplication();
+                if (application != null && application instanceof TokoCashRouter) {
+                    Intent intent = ((TokoCashRouter) application).getWebviewActivityWithIntent(getActivity(),
                             getString(R.string.url_help_center_tokocash), getString(R.string.help_general_tokocash));
                     startActivity(intent);
                 }

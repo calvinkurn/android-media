@@ -6,20 +6,22 @@ import com.google.gson.Gson;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.storage.GlobalCacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.activation.data.ActivateRepository;
+import com.tokopedia.tokocash.pendingcashback.data.PendingCashbackRepository;
+import com.tokopedia.tokocash.pendingcashback.domain.GetPendingCasbackUseCase;
 import com.tokopedia.tokocash.activation.domain.LinkedTokoCashUseCase;
 import com.tokopedia.tokocash.activation.domain.RequestOtpTokoCashUseCase;
 import com.tokopedia.tokocash.historytokocash.data.repository.WalletRepository;
 import com.tokopedia.tokocash.historytokocash.domain.GetHistoryDataUseCase;
 import com.tokopedia.tokocash.historytokocash.domain.GetReasonHelpDataUseCase;
-import com.tokopedia.tokocash.network.WalletUserSession;
 import com.tokopedia.tokocash.network.WalletTokenRefresh;
+import com.tokopedia.tokocash.network.WalletUserSession;
 import com.tokopedia.tokocash.network.api.TokoCashApi;
 import com.tokopedia.tokocash.network.api.WalletApi;
 import com.tokopedia.tokocash.network.api.WalletUrl;
 import com.tokopedia.tokocash.network.interceptor.TokoCashAuthInterceptor;
+import com.tokopedia.tokocash.network.interceptor.TokoCashErrorResponseInterceptor;
 import com.tokopedia.tokocash.network.interceptor.WalletAuthInterceptor;
 import com.tokopedia.tokocash.network.interceptor.WalletErrorResponseInterceptor;
 import com.tokopedia.tokocash.network.model.TokoCashErrorResponse;
@@ -68,10 +70,10 @@ public class TokoCashModule {
     @Provides
     @TokoCashScope
     @OkHttpTokoCashQualifier
-    OkHttpClient provideOkHttpClient(TokoCashAuthInterceptor tokoCashAuthInterceptor) {
+    OkHttpClient provideOkHttpClient(TokoCashAuthInterceptor tokoCashAuthInterceptor, Gson gson) {
         return new OkHttpClient.Builder()
                 .addInterceptor(tokoCashAuthInterceptor)
-                .addInterceptor(new ErrorResponseInterceptor(TokoCashErrorResponse.class))
+                .addInterceptor(new TokoCashErrorResponseInterceptor(TokoCashErrorResponse.class, gson))
                 .build();
     }
 
@@ -79,7 +81,7 @@ public class TokoCashModule {
     @TokoCashScope
     @RetrofitTokoCashQualifier
     Retrofit provideRetrofit(Retrofit.Builder retrofitBuilder, @OkHttpTokoCashQualifier OkHttpClient okHttpClient) {
-        return retrofitBuilder.baseUrl(WalletUrl.ACCOUNTS_DOMAIN)
+        return retrofitBuilder.baseUrl(WalletUrl.BaseUrl.ACCOUNTS_DOMAIN)
                 .client(okHttpClient)
                 .build();
     }
@@ -112,7 +114,7 @@ public class TokoCashModule {
     @RetrofitWalletQualifier
     Retrofit provideRetrofitWallet(Retrofit.Builder retrofitBuilder,
                                    @OkHttpWalletQualifier OkHttpClient okHttpClient, Gson gson) {
-        return retrofitBuilder.baseUrl(WalletUrl.WALLET_DOMAIN)
+        return retrofitBuilder.baseUrl(WalletUrl.BaseUrl.WALLET_DOMAIN)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(okHttpClient)
@@ -165,5 +167,11 @@ public class TokoCashModule {
     @TokoCashScope
     RequestOtpTokoCashUseCase provideRequestOtpTokoCashUseCase(ActivateRepository activateRepository) {
         return new RequestOtpTokoCashUseCase(activateRepository);
+    }
+
+    @Provides
+    @TokoCashScope
+    GetPendingCasbackUseCase provideGetPendingCasbackUseCase(PendingCashbackRepository pendingCashbackRepository) {
+        return new GetPendingCasbackUseCase(pendingCashbackRepository);
     }
 }

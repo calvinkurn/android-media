@@ -10,6 +10,8 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 
 /**
  * @author anggaprasetiyo on 2/23/17.
+ * please use DigitalRouter in digital module for the future development features
+ *
  */
 
 public interface IDigitalModuleRouter {

@@ -1,5 +1,7 @@
 package com.tokopedia.tokocash.activation.data;
 
+import com.tokopedia.tokocash.activation.data.entity.ActivateTokoCashEntity;
+
 import java.util.HashMap;
 
 import rx.Observable;
