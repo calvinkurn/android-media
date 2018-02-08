@@ -101,7 +101,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         sizeChartLevel2 = findViewById(R.id.sizechart_level2);
         ImageHandler.LoadImage(productImage, productDetailData.getProductImages().get(0).getImageSrc300());
         if (!TextUtils.isEmpty(productVariant.getSizechart()) &&
-                productVariant.getVariant().get(0).getIdentifier().equals("size")) {
+                productVariant.getVariant().get(0).getIdentifier().equals(IDENTIFIER_SIZE)) {
             sizeChartLevel1.setVisibility(VISIBLE);
             sizeChartLevel1.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -111,7 +111,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             });
         } else if (!TextUtils.isEmpty(productVariant.getSizechart()) &&
                 productVariant.getVariant().size()>0
-                && productVariant.getVariant().get(1).getIdentifier().equals("size")) {
+                && productVariant.getVariant().get(1).getIdentifier().equals(IDENTIFIER_SIZE)) {
             sizeChartLevel2.setVisibility(VISIBLE);
             sizeChartLevel2.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -136,6 +136,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
                     VariantActivity.this.getString(R.string.label_discount_percentage),
                     productDetailData.getCampaign().getDiscountedPercentage()
             ));
+            productPrice.setText(productDetailData.getCampaign().getDiscountedPriceFmt());
 
             textDiscount.setVisibility(VISIBLE);
             textOriginalPrice.setVisibility(VISIBLE);

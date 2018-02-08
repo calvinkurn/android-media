@@ -109,7 +109,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.TimeZone;
 
 import permissions.dispatcher.NeedsPermission;
@@ -444,7 +446,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 bundle.putParcelable(VariantActivity.KEY_PRODUCT_DETAIL_DATA, productData);
                 onVariantClicked(bundle);
             }
-
         } else {
             Bundle bundle = new Bundle();
             bundle.putBoolean("login", true);
@@ -465,14 +466,17 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         for (ProductImage productImage : productData.getProductImages()) {
             arrayList.add(productImage.getImageSrc());
         }
-        if (productVariant!=null && productVariant.getChildren()!=null) {
+        if (productData.getInfo().getHasVariant() && productVariant!=null && productVariant.getChildren()!=null) {
             for (Child child: productVariant.getChildren()) {
                 if (!TextUtils.isEmpty(child.getPicture().getOriginal()) && child.getProductId()!=productData.getInfo().getProductId()) {
                    arrayList.add(child.getPicture().getOriginal());
                 }
             }
+            Set<String> imagesSet = new LinkedHashSet<>(arrayList);
+            ArrayList<String> finalImage = new ArrayList<>();
+            finalImage.addAll(imagesSet);
+            return finalImage;
         }
-
         return arrayList;
     }
 
@@ -1016,7 +1020,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 break;
             case REQUEST_CODE_LOGIN:
                 videoDescriptionLayout.refreshVideo();
-                presenter.requestProductDetail(context, productPass, RE_REQUEST, true);
+                if (SessionHandler.isV4Login(getActivity())) presenter.requestProductDetail(context, productPass, RE_REQUEST, true);
                 break;
             case REQUEST_VARIANT:
                 if (data.getParcelableExtra(KEY_LEVEL1_SELECTED)!=null && data.getParcelableExtra(KEY_LEVEL1_SELECTED) instanceof Option) {
@@ -1032,6 +1036,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         shopInfoView.renderData(productData);
                         presenter.updateRecentView(context,productData.getInfo().getProductId());
                         updateWishListStatus(productData.getInfo().getProductAlreadyWishlist());
+                        productPass.setProductId(Integer.toString(productData.getInfo().getProductId()));
                     }
                     if (resultCode==VariantActivity.SELECTED_VARIANT_RESULT_TO_BUY) {
                         onBuyClick(SOURCE_BUTTON_BUY_VARIANT);

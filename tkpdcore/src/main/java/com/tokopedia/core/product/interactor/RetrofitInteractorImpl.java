@@ -809,6 +809,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
             @Override
             public void onError(Throwable e) {
                 Log.d(TAG, "onError: "+e.getMessage());
+                listener.onError(e.getMessage());
             }
 
             @Override
