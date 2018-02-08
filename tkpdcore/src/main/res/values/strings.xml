@@ -588,7 +588,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_currency_rp">Rp</string>
     <string name="title_currency_rp_space">Rp&#160;</string>
     <string name="title_all_categories">Semua Kategori</string>
-    <string name="title_categories">BERANDA</string>
+    <string name="title_categories">Home</string>
     <string name="title_all_location">Semua Lokasi</string>
     <string name="title_category_view_all">Lihat Produk Kategori Lainnya</string>
 
@@ -1124,8 +1124,8 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_activity_settings_notification">Atur nada dan getar</string>
     <string name="title_change_ring">Atur nada dan getar</string>
     <string name="title_select_agency_error">Kurir harus dipilih</string>
-    <string name="title_index_prod_shop">FEED</string>
-    <string name="title_index_hot_list">HOT LIST</string>
+    <string name="title_index_prod_shop">Feed</string>
+    <string name="title_index_hot_list">Hot List</string>
     <string name="title_index_favorite">FAVORIT</string>
 
     <string name="title_done">Selesai</string>

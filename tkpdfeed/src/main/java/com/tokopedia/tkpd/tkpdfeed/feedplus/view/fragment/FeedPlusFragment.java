@@ -1133,4 +1133,25 @@ public class FeedPlusFragment extends BaseDaggerFragment
             }
         }
     }
+
+    @Override
+    public void onUserNotLogin() {
+        finishLoading();
+        adapter.clearData();
+        topAdsRecyclerAdapter.shouldLoadAds(true);
+        topAdsRecyclerAdapter.unsetEndlessScrollListener();
+
+        adapter.showUserNotLogin();
+        adapter.addItem(new EmptyTopAdsProductModel(""));
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onGoToLogin() {
+        Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getLoginIntent(getContext());
+        startActivity(intent);
+
+        String label = String.format("%s %s", AppEventTracking.EventLabel.PRODUCT_FEED, AppEventTracking.EventLabel.TAB);
+        UnifyTracking.eventHomeTab(AppEventTracking.Action.LOGIN_NOW, label);
+    }
 }

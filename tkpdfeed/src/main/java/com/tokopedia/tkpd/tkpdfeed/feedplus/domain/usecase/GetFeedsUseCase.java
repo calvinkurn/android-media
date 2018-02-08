@@ -43,12 +43,20 @@ public class GetFeedsUseCase extends UseCase<FeedResult> {
 
     public RequestParams getRefreshParam(SessionHandler sessionHandler) {
         RequestParams params = RequestParams.create();
-        params.putInt(GetFeedsUseCase.PARAM_USER_ID,
-                Integer.parseInt(sessionHandler.getLoginID()));
-        params.putInt(GetRecentViewUseCase.PARAM_USER_ID,
-                Integer.parseInt(sessionHandler.getLoginID()));
-        params.putString(GetFeedsUseCase.PARAM_CURSOR, "");
-        params.putInt(GetFeedsUseCase.PARAM_PAGE, 1);
+        if (sessionHandler != null
+                && sessionHandler.getLoginID() != null
+                && !sessionHandler.getLoginID().isEmpty()) { // if user not login
+            try {
+                params.putInt(GetFeedsUseCase.PARAM_USER_ID,
+                        Integer.parseInt(sessionHandler.getLoginID()));
+                params.putInt(GetRecentViewUseCase.PARAM_USER_ID,
+                        Integer.parseInt(sessionHandler.getLoginID()));
+                params.putString(GetFeedsUseCase.PARAM_CURSOR, "");
+                params.putInt(GetFeedsUseCase.PARAM_PAGE, 1);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
         return params;
     }
 

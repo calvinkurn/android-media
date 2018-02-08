@@ -285,6 +285,8 @@ public interface AppEventTracking {
         String PROMO_MICROSITE_PROMO_TOOLTIP ="promo microsite - promo tooltip";
         String SORT_BY = "sort by";
         String FILTER_PRODUCT = "filter product";
+
+        String HOME_BOTTOM_NAV = "bottom nav";
     }
 
     interface Action {
@@ -462,6 +464,8 @@ public interface AppEventTracking {
         String CLICK_SHOP = "click - shop";
         String CLICK_WISHLIST = "click - wishlist";
         String SORT_BY = "sort by";
+
+        String LOGIN_NOW = "masuk sekarang";
     }
 
     interface ImageEditor{
@@ -472,10 +476,16 @@ public interface AppEventTracking {
     }
 
     interface EventLabel {
-        String HOME = "homepage";
-        String FAVORITE = "favorite";
+        String HOME = "home";
+        String FAVORITE = "wishlist";
         String PRODUCT_FEED = "feed";
         String HOTLIST = "hotlist";
+
+        String TAB = "tab";
+
+        String BEFORE_LOGIN = "before login";
+        String AFTER_LOGIN = "after login";
+
         String VIEW_ALL_WISHLIST = "View All Wishlist";
         String VIEW_ALL_RECENT = "View All Wishlist";
         String ADD_TO_WISHLIST_LABEL = "Add To Wishlist - ";
