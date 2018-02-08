@@ -93,7 +93,7 @@
 
     <entry>
         <key>app_notp_enabled</key>
-        <value>true</value>
+        <value>false</value>
     </entry>
     <entry>
         <key>mainapp_show_simple_app_rating</key>
