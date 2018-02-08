@@ -1,5 +1,7 @@
 package com.tokopedia.home.explore.data.repository;
 
+import android.content.Context;
+
 import com.tokopedia.home.explore.data.source.ExploreDataSource;
 import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel;
 
@@ -14,14 +16,16 @@ import rx.Observable;
 public class ExploreRepositoryImpl implements ExploreRepository {
 
     private ExploreDataSource dataSource;
+    private Context context;
 
-    public ExploreRepositoryImpl(ExploreDataSource dataSource) {
+    public ExploreRepositoryImpl(Context context, ExploreDataSource dataSource) {
+        this.context = context;
         this.dataSource = dataSource;
     }
 
     @Override
     public Observable<List<ExploreSectionViewModel>> getExploreData() {
-        return dataSource.getExploreData();
+        return dataSource.getExploreData(context);
     }
 
     public Observable<List<ExploreSectionViewModel>> getExploreDataCache() {

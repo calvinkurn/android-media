@@ -19,6 +19,7 @@ import com.tokopedia.home.explore.domain.model.DataResponseModel;
 import com.tokopedia.home.explore.domain.model.DynamicHomeIcon;
 import com.tokopedia.home.explore.domain.model.LayoutRows;
 import com.tokopedia.home.explore.domain.model.LayoutSections;
+import com.tokopedia.home.explore.domain.model.ShopData;
 import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryFavoriteViewModel;
 import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryGridListViewModel;
 import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel;
@@ -56,8 +57,8 @@ public class ExploreDataSource {
         this.gson = gson;
     }
 
-    public Observable<List<ExploreSectionViewModel>> getExploreData() {
-        return homeDataApi.getExploreData(getRequestPayload())
+    public Observable<List<ExploreSectionViewModel>> getExploreData(Context context) {
+        return homeDataApi.getExploreData(String.format(getRequestPayload(), SessionHandler.getShopDomain(context)))
                 .doOnNext(saveToCache())
                 .map(getMapper());
     }
@@ -94,7 +95,8 @@ public class ExploreDataSource {
                         }
                         if (i == 4) {
                             if (SessionHandler.isUserHasShop(context)) {
-                                sectionViewModel.addVisitable(mappingManageShop());
+                                sectionViewModel.addVisitable(mappingManageShop(response.body().getData()
+                                        .getShopInfo().getData()));
                             } else {
                                 sectionViewModel.addVisitable(mappingOpenShop());
                             }
@@ -121,8 +123,8 @@ public class ExploreDataSource {
                 return model;
             }
 
-            private Visitable mappingManageShop() {
-                MyShopViewModel model = new MyShopViewModel();
+            private Visitable mappingManageShop(ShopData data) {
+                MyShopViewModel model = new MyShopViewModel(data);
                 return model;
             }
 
@@ -183,6 +185,6 @@ public class ExploreDataSource {
                 }
                 throw new RuntimeException("Cache is empty!!");
             }
-        }).map(getMapper()).onErrorResumeNext(getExploreData());
+        }).map(getMapper()).onErrorResumeNext(getExploreData(context));
     }
 }
