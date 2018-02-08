@@ -150,6 +150,11 @@ public class BottomNavigation extends BottomNavigationView {
             TextView mLargeLabel = getField(button.getClass(), button, "mLargeLabel");
             TextView mSmallLabel = getField(button.getClass(), button, "mSmallLabel");
 
+            if (mLargeLabel == null)
+                return;
+            if (mSmallLabel == null)
+                return;
+
             if (!visibility) {
                 // if not record the font size, record it
                 if (!visibilityTextSizeRecord && !animationRecord) {
@@ -738,6 +743,7 @@ public class BottomNavigation extends BottomNavigationView {
             final BottomNavigation bnve = mBnveRef.get();
             if (null != bnve && !isNavigationItemClicking)
                 bnve.setCurrentItem(position);
+
             if (viewPagerPageChangeListener != null)
                 viewPagerPageChangeListener.onPageSelected(position);
 

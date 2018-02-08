@@ -308,6 +308,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
         mViewPager.setSmoothScroll(false);
         mViewPager.SetAllowPageSwitching(false);
+        mViewPager.setOffscreenPageLimit(4);
 
         bottomNavigation.setupWithViewPager(mViewPager, false);
 
