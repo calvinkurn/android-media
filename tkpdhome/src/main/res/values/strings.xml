@@ -25,4 +25,6 @@
     <string name="toko_cash_pending_body">Anda mendapatkan cashback TokoCash sebesar %s dari transaksi terakhir</string>
     <string name="digital_widget_title">Produk Digital</string>
     <string name="image_product_desc">Produk</string>
+    <string name="ubah">Ubah</string>
+    <string name="sprint_sale_expired_text">Promo Berakhir</string>
 </resources>

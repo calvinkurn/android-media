@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 import android.content.Context;
 import android.graphics.Paint;
 import android.support.annotation.LayoutRes;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -49,12 +50,18 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
     private View itemContainer2;
     private View itemContainer3;
     private CountDownView countDownView;
+    private String sprintSaleExpiredText;
 
     public DynamicChannelSprintViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
         context = itemView.getContext();
         this.listener = listener;
+        initResources(itemView.getContext());
         findViews(itemView);
+    }
+
+    private void initResources(Context context) {
+        sprintSaleExpiredText = context.getString(R.string.sprint_sale_expired_text);
     }
 
     private void findViews(View itemView) {
@@ -82,8 +89,14 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
     public void bind(final DynamicChannelViewModel element) {
         final DynamicHomeChannel.Channels channel = element.getChannel();
         if (isSprintSale(channel)) {
-            countDownView.setVisibility(View.VISIBLE);
-            countDownView.setup(getExpiredTime(element));
+            Date expiredTime = getExpiredTime(element);
+            if (!isExpired(expiredTime)) {
+                countDownView.setVisibility(View.VISIBLE);
+                countDownView.setup(expiredTime);
+            } else {
+                homeChannelTitle.setText(sprintSaleExpiredText);
+                countDownView.setVisibility(View.GONE);
+            }
         } else {
             countDownView.setVisibility(View.GONE);
         }
@@ -109,6 +122,13 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 listener.onDynamicChannelClicked(channel.getHeader().getApplink());
             }
         });
+
+        if (!TextUtils.isEmpty(channel.getHeader().getApplink())) {
+            seeAllButton.setVisibility(View.VISIBLE);
+        } else {
+            seeAllButton.setVisibility(View.GONE);
+        }
+
         seeAllButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -157,6 +177,10 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
 
     private boolean isSprintSale(DynamicHomeChannel.Channels channel) {
         return DynamicHomeChannel.Channels.LAYOUT_SPRINT.equals(channel.getLayout());
+    }
+
+    private boolean isExpired(Date expiredTime) {
+        return new Date().after(expiredTime);
     }
 
     private Date getExpiredTime(DynamicChannelViewModel model) {

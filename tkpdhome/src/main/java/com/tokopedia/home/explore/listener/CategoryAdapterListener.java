@@ -21,4 +21,6 @@ public interface CategoryAdapterListener {
     void onDigitalMoreClicked();
 
     void showNetworkError(String string);
+
+    void openShopSetting();
 }

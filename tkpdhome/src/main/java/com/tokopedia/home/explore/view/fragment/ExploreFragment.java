@@ -150,6 +150,11 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     }
 
     @Override
+    public void openShopSetting() {
+
+    }
+
+    @Override
     public void onApplinkClicked(LayoutRows data) {
         TkpdCoreRouter router = ((TkpdCoreRouter) getActivity().getApplicationContext());
         if(router.isSupportedDelegateDeepLink(data.getApplinks())){
