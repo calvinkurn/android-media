@@ -1,8 +1,5 @@
 package com.tokopedia.transaction.checkout.view.adapter;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,7 +12,6 @@ import android.widget.TextView;
 
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
-import com.tokopedia.transaction.checkout.view.CartSingleAddressFragment;
 import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 import com.tokopedia.transaction.utils.RxBus;
 
@@ -37,9 +33,11 @@ public class ShipmentAddressListAdapter
 
     private List<ShipmentRecipientModel> mAddressModelList;
     private Context mContext;
+    private ActionListener actionListener;
 
-    public ShipmentAddressListAdapter() {
+    public ShipmentAddressListAdapter(ActionListener actionListener) {
         sRxBus = RxBus.instanceOf();
+        this.actionListener = actionListener;
     }
 
     public void setAddressList(List<ShipmentRecipientModel> addressModelList) {
@@ -71,10 +69,14 @@ public class ShipmentAddressListAdapter
 
     class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.tv_recipient_name) TextView mTvRecipientName;
-        @BindView(R2.id.tv_recipient_address) TextView mTvRecipientAddress;
-        @BindView(R2.id.ll_address_radio_button_container) LinearLayout mLlRadioButtonAddressSelect;
-        @BindView(R2.id.rl_shipment_recipient_address_header) RelativeLayout mAddressContainer;
+        @BindView(R2.id.tv_recipient_name)
+        TextView mTvRecipientName;
+        @BindView(R2.id.tv_recipient_address)
+        TextView mTvRecipientAddress;
+        @BindView(R2.id.ll_address_radio_button_container)
+        LinearLayout mLlRadioButtonAddressSelect;
+        @BindView(R2.id.rl_shipment_recipient_address_header)
+        RelativeLayout mAddressContainer;
 
         RecipientAddressViewHolder(View view) {
             super(view);
@@ -96,21 +98,29 @@ public class ShipmentAddressListAdapter
             String msg = String.format("Address list was clicked at %s position", mPosition);
             Log.d(TAG, msg);
 
-            FragmentManager fragmentManager = ((Activity)mContext).getFragmentManager();
-            Fragment fragment = CartSingleAddressFragment.newInstance(cartItemDataList);
-            String backStateName = fragment.getClass().getName();
+//            FragmentManager fragmentManager = ((Activity) mContext).getFragmentManager();
+//            Fragment fragment = CartSingleAddressFragment.newInstance(cartItemDataList);
+//            String backStateName = fragment.getClass().getName();
+//
+//            boolean isFragmentPopped = fragmentManager.popBackStackImmediate(backStateName, 0);
+//            if (!isFragmentPopped) {
+//                fragmentManager.beginTransaction()
+//                        .replace(R.id.container, fragment)
+//                        .addToBackStack(backStateName)
+//                        .commit();
+//            }
 
-            boolean isFragmentPopped = fragmentManager.popBackStackImmediate(backStateName, 0);
-            if (!isFragmentPopped) {
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, fragment)
-                        .addToBackStack(backStateName)
-                        .commit();
-            }
+            //TODO move above code to implementation on own host fragment actionListener examp: actionListener.onFoo();
+            actionListener.onAddressContainerClicked(mPosition);
+
 
             sRxBus.sendEvent(new Event(mAddressModelList.get(mPosition), "pos = " + mPosition));
         }
 
+    }
+
+    public interface ActionListener {
+        void onAddressContainerClicked(int position);
     }
 
     public class Event {
