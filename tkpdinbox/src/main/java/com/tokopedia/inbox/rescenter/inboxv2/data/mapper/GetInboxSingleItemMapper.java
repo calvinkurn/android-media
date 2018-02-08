@@ -23,8 +23,7 @@ public class GetInboxSingleItemMapper implements Func1<Response<TkpdResponse>, S
     }
 
     private SingleItemInboxResultViewModel mappingResponse(Response<TkpdResponse> response) {
-        InboxSingleDataResponse dataResponse = response.body().convertDataObj(
-                InboxSingleDataResponse.class);
+
         if (response.isSuccessful()) {
             if (response.raw().code() == ResponseStatus.SC_OK) {
                 if (response.body().isNullData()) {
@@ -38,6 +37,8 @@ public class GetInboxSingleItemMapper implements Func1<Response<TkpdResponse>, S
         } else {
             throw new RuntimeException(String.valueOf(response.code()));
         }
+        InboxSingleDataResponse dataResponse = response.body().convertDataObj(
+                InboxSingleDataResponse.class);
         SingleItemInboxResultViewModel model = new SingleItemInboxResultViewModel(
                 GetInboxMapper.mappingItem(dataResponse.getInbox(), dataResponse.getActionBy()),
                 GetInboxMapper.mappingFilterItem(dataResponse.getQuickFilterResponse()));

@@ -51,8 +51,6 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
     }
 
     private InboxItemResultViewModel mappingResponse(Response<TkpdResponse> response) {
-        InboxResponse dataResponse = response.body().convertDataObj(
-                InboxResponse.class);
         if (response.isSuccessful()) {
             if (response.raw().code() == ResponseStatus.SC_OK) {
                 if (response.body().isNullData()) {
@@ -66,6 +64,8 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
         } else {
             throw new RuntimeException(String.valueOf(response.code()));
         }
+        InboxResponse dataResponse = response.body().convertDataObj(
+                InboxResponse.class);
         InboxItemResultViewModel model = new InboxItemResultViewModel(
                 dataResponse.getInboxes() != null ?
                         mappingInboxItem(dataResponse.getInboxes(), dataResponse.getActionBy()) :

@@ -32,8 +32,7 @@ public class GetNextActionMapper implements Func1<Response<TkpdResponse>, NextAc
     }
 
     private NextActionDomain mappingResponse(Response<TkpdResponse> response) {
-        NextActionResponse detailResChatResponse = response.body().convertDataObj(
-                NextActionResponse.class);
+
         if (response.isSuccessful()) {
             if (response.raw().code() == ResponseStatus.SC_OK) {
                 if (response.body().isNullData()) {
@@ -48,6 +47,8 @@ public class GetNextActionMapper implements Func1<Response<TkpdResponse>, NextAc
         } else {
             throw new RuntimeException(String.valueOf(response.code()));
         }
+        NextActionResponse detailResChatResponse = response.body().convertDataObj(
+                NextActionResponse.class);
         return mappingNextActionDomain(detailResChatResponse);
     }
 

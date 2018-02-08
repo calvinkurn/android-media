@@ -54,8 +54,7 @@ public class GetDetailResChatMoreMapper implements Func1<Response<TkpdResponse>,
     }
 
     private ConversationListDomain mappingResponse(Response<TkpdResponse> response) {
-        ConversationListResponse conversationListResponse = response.body().convertDataObj(
-                ConversationListResponse.class);
+
         if (response.isSuccessful()) {
             if (response.raw().code() == ResponseStatus.SC_OK) {
                 if (response.body().isNullData()) {
@@ -69,6 +68,8 @@ public class GetDetailResChatMoreMapper implements Func1<Response<TkpdResponse>,
         } else {
             throw new RuntimeException(String.valueOf(response.code()));
         }
+        ConversationListResponse conversationListResponse = response.body().convertDataObj(
+                ConversationListResponse.class);
         ConversationListDomain model = conversationListResponse != null ?
                 mappingConversationListDomain(conversationListResponse) :
                 null;

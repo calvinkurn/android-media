@@ -70,8 +70,7 @@ public class GetDetailResChatMapper implements Func1<Response<TkpdResponse>, Det
     }
 
     private DetailResChatDomain mappingResponse(Response<TkpdResponse> response) {
-        DetailResChatResponse detailResChatResponse = response.body().convertDataObj(
-                DetailResChatResponse.class);
+
         if (response.isSuccessful()) {
             if (response.raw().code() == ResponseStatus.SC_OK) {
                 if (response.body().isNullData()) {
@@ -85,6 +84,8 @@ public class GetDetailResChatMapper implements Func1<Response<TkpdResponse>, Det
         } else {
             throw new RuntimeException(String.valueOf(response.code()));
         }
+        DetailResChatResponse detailResChatResponse = response.body().convertDataObj(
+                DetailResChatResponse.class);
         DetailResChatDomain model = new DetailResChatDomain(
                 detailResChatResponse.getNextAction() != null ?
                         mappingNextActionDomain(detailResChatResponse.getNextAction()) :

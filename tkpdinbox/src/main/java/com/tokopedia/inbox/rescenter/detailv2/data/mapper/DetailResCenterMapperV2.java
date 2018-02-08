@@ -81,12 +81,7 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
 
     @Override
     public DetailResponseData call(Response<TkpdResponse> response) {
-        DetailResponse detailResponse = response.body().convertDataObj(
-                DetailResponse.class);
-        if (detailResponse == null) {
-            throw new ErrorMessageException(ErrorMessageException.DEFAULT_ERROR);
-        }
-        DetailResponseData model = null;
+
         if (response.isSuccessful()) {
             if (response.raw().code() == ResponseStatus.SC_OK) {
                 if (response.body().isNullData()) {
@@ -95,14 +90,14 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
                     } else {
                         throw new ErrorMessageException(ErrorMessageException.DEFAULT_ERROR);
                     }
-                } else {
-                    model = mappingResponse(detailResponse);
                 }
             }
         } else {
             throw new RuntimeException(String.valueOf(response.code()));
         }
-        return model;
+        DetailResponse detailResponse = response.body().convertDataObj(
+                DetailResponse.class);
+        return  mappingResponse(detailResponse);
     }
 
     public DetailResponseData mappingResponse(DetailResponse response) {
