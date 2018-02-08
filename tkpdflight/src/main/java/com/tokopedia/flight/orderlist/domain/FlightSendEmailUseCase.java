@@ -24,9 +24,10 @@ import rx.functions.Func4;
  */
 
 public class FlightSendEmailUseCase extends UseCase<SendEmailEntity> {
-    private static final String PARAM_ID = "order_id";
-    private static final String DEFAULT_EMPTY_VALUE = "";
+    private static final String PARAM_ID = "invoice_id";
+    private static final String USER_ID = "user_id";
     private static final String PARAM_EMAIL = "email";
+    private static final String DEFAULT_EMPTY_VALUE = "";
     private FlightRepository flightRepository;
 
     public FlightSendEmailUseCase(FlightRepository flightRepository) {
@@ -39,9 +40,10 @@ public class FlightSendEmailUseCase extends UseCase<SendEmailEntity> {
 
     }
 
-    public RequestParams createRequestParams(String orderId, String email) {
+    public RequestParams createRequestParams(String orderId, String userId, String email) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(PARAM_ID, orderId);
+        requestParams.putString(USER_ID, userId);
         requestParams.putString(PARAM_EMAIL, email);
         return requestParams;
     }

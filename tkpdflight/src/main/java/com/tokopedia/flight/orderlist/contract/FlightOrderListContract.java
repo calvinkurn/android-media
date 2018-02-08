@@ -25,7 +25,7 @@ public interface FlightOrderListContract {
 
         Context getActivity();
 
-        void navigateToOpenBrowser(String urlPdf);
+        void showInputEmailForm(String invoiceId, String userId);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -34,6 +34,6 @@ public interface FlightOrderListContract {
 
         void onDestroyView();
 
-        void onDownloadEticket(String invoiceId, String filename);
+        void onDownloadEticket(String invoiceId);
     }
 }

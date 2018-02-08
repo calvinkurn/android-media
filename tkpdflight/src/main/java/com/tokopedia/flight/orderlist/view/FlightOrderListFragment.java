@@ -118,10 +118,15 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         return String.valueOf(selectedFilter);
     }
 
-    @Override
+/*    @Override
     public void navigateToOpenBrowser(String urlPdf) {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlPdf));
         startActivity(browserIntent);
+    }*/
+
+    @Override
+    public void showInputEmailForm(String invoiceId, String userId) {
+
     }
 
     @Override
@@ -183,8 +188,8 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     }
 
     @Override
-    public void onDownloadETicket(String invoiceId, String filename) {
-        presenter.onDownloadEticket(invoiceId, filename);
+    public void onDownloadETicket(String invoiceId) {
+        presenter.onDownloadEticket(invoiceId);
     }
 
     @Override
