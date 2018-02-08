@@ -142,7 +142,10 @@ public class PhoneVerificationActivationActivity extends TActivity implements Ha
     }
 
     public static Intent getCallingIntent(Context context) {
-        return new Intent(context, PhoneVerificationActivationActivity.class);
+        Intent intent = new Intent(context, PhoneVerificationActivationActivity.class);
+        intent.putExtra(EXTRA_IS_MANDATORY, false);
+        intent.putExtra(EXTRA_IS_LOGOUT_ON_BACK, false);
+        return intent;
     }
 
     @Override
