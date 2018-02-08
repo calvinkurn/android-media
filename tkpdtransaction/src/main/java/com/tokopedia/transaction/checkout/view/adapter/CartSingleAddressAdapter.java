@@ -1,10 +1,9 @@
 package com.tokopedia.transaction.checkout.view.adapter;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,18 +17,17 @@ import android.widget.Toast;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
-import com.tokopedia.transaction.checkout.view.ShipmentAddressListFragment;
 import com.tokopedia.transaction.checkout.view.data.CartItemModel;
 import com.tokopedia.transaction.checkout.view.data.CartPayableDetailModel;
 import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.view.data.DropshipperShippingOptionModel;
-import com.tokopedia.transaction.checkout.view.data.MultipleAddressShipmentAdapterData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentFeeBannerModel;
 import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 import com.tokopedia.transaction.pickuppoint.view.customview.PickupPointLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -38,8 +36,9 @@ import butterknife.ButterKnife;
 /**
  * @author Aghny A. Putra on 25/01/18
  */
-public class CartSingleAddressAdapter
-        extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private static final String TAG = CartSingleAddressAdapter.class.getSimpleName();
 
     private static final int ITEM_VIEW_FREE_SHIPPING_FEE =
             R.layout.view_item_free_shipping_fee;
@@ -53,13 +52,20 @@ public class CartSingleAddressAdapter
             R.layout.item_shipped_product_details;
 
     private static final int TOP_POSITION = 0;
+    private static final int ADDRESS_POSITION = 1;
+    private static final int DROPSHIP_OPT_POSITION = 2;
+    private static final int ALL_HEADER_SIZE = 3;
+    private static final int ALL_FOOTER_SIZE = 1;
+
+    private static final int FIRST_ELEMENT = 0;
 
     private Context mContext;
     private CartSingleAddressData mCartSingleAddressData;
     private SingleAddressShipmentAdapterListener viewListener;
+    private boolean firstItemHasRemoved;
 
     public CartSingleAddressAdapter() {
-
+        Log.d(TAG, "Create instance");
     }
 
     public void setViewListener(SingleAddressShipmentAdapterListener viewListener) {
@@ -106,24 +112,25 @@ public class CartSingleAddressAdapter
                     .bindViewHolder(mCartSingleAddressData.getCartPayableDetailModel());
         } else {
             ((ShippedProductDetailsViewHolder)viewHolder)
-                    .bindViewHolder(mCartSingleAddressData.getCartSellerItemModelList().get(position - 3));
+                    .bindViewHolder(mCartSingleAddressData.getCartSellerItemModelList()
+                            .get(position - ALL_HEADER_SIZE));
         }
     }
 
     @Override
     public int getItemCount() {
-        return getCartItemSize() + 4;
+        return getCartItemSize() + ALL_HEADER_SIZE + ALL_FOOTER_SIZE;
     }
 
     @Override
     public int getItemViewType(int position) {
         if (position == TOP_POSITION) {
             return ITEM_VIEW_FREE_SHIPPING_FEE;
-        } else if (position == 1) {
+        } else if (position == ADDRESS_POSITION) {
             return ITEM_VIEW_SHIPMENT_RECIPIENT_ADDRESS;
-        } else if (position == 2) {
+        } else if (position == DROPSHIP_OPT_POSITION) {
             return ITEM_VIEW_DROPSHIPPER_OPTION;
-        } else if (position == 4) {
+        } else if (position == ALL_HEADER_SIZE + getCartItemSize()) {
             return ITEM_VIEW_SHIPMENT_COST_DETAIL;
         } else {
             return ITEM_SHIPPED_PRODUCT_DETAILS;
@@ -169,6 +176,17 @@ public class CartSingleAddressAdapter
         void bindViewHolder(ShipmentFeeBannerModel model) {
             mRlFreeShipmentFeeHeader.setVisibility(getVisibility(model.isVisible()));
             mTvShippingFee.setText(model.getShipmentFeeDiscount());
+
+            mRlFreeShipmentFeeHeader.setOnClickListener(feeShipmentOnClickListener());
+        }
+
+        private View.OnClickListener feeShipmentOnClickListener() {
+            return new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mRlFreeShipmentFeeHeader.setVisibility(View.VISIBLE);
+                }
+            };
         }
 
         private int getVisibility(boolean isVisible) {
@@ -182,6 +200,7 @@ public class CartSingleAddressAdapter
         @BindView(R2.id.tv_text_address_description) TextView mTvAddressDescription;
         @BindView(R2.id.tv_recipient_name) TextView mTvRecipientName;
         @BindView(R2.id.tv_recipient_address) TextView mTvRecipientAddress;
+        @BindView(R2.id.tv_recipient_phone) TextView mTvRecipientPhone;
         @BindView(R2.id.tv_add_or_change_address) TextView mTvAddOrChangeAddress;
         @BindView(R2.id.pickup_point_layout) PickupPointLayout pickupPointLayout;
 
@@ -194,9 +213,11 @@ public class CartSingleAddressAdapter
             mTvAddressDescription.setText(model.getAddressIdentifier());
             mTvRecipientName.setText(model.getRecipientName());
             mTvRecipientAddress.setText(model.getRecipientAddress());
+            mTvRecipientPhone.setText(model.getRecipientPhone());
 
-//            mTvAddOrChangeAddress.setOnClickListener(addOrChangeAddressListener(mShipmentRecipientModel));
-//            renderPickupPoint(pickupPointLayout, mShipmentRecipientModel);
+            renderPickupPoint(pickupPointLayout, mCartSingleAddressData.getShipmentRecipientModel());
+            mTvAddOrChangeAddress.setOnClickListener(
+                    addOrChangeAddressListener(mCartSingleAddressData.getShipmentRecipientModel()));
         }
 
         private void renderPickupPoint(PickupPointLayout pickupPointLayout,
@@ -232,19 +253,6 @@ public class CartSingleAddressAdapter
                 @Override
                 public void onClick(View view) {
                     viewListener.onAddOrChangeAddress(model);
-
-//                    FragmentManager fragmentManager = ((Activity)mContext).getFragmentManager();
-//                    Fragment fragment = ShipmentAddressListFragment.newInstance();
-//
-//                    String backStateName = fragment.getClass().getName();
-//
-//                    boolean isFragmentPopped = fragmentManager.popBackStackImmediate(backStateName, 0);
-//                    if (!isFragmentPopped) {
-//                        fragmentManager.beginTransaction()
-//                                .replace(R.id.container, fragment)
-//                                .addToBackStack(backStateName)
-//                                .commit();
-//                    }
                 }
             };
         }
@@ -254,8 +262,8 @@ public class CartSingleAddressAdapter
     class DropShipperOptionViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R2.id.rl_dropshipper_option_header) RelativeLayout mRlDropshipperOptionLayout;
+        @BindView(R2.id.ll_detail_dropshipper) LinearLayout mLlDetailDropshipperLayout;
         @BindView(R2.id.sw_dropshipper) Switch mSwDropshipper;
-        @BindView(R2.id.ll_detail_dropshipper) LinearLayout mLlDropshipperDetail;
 
         DropShipperOptionViewHolder(View itemView) {
             super(itemView);
@@ -263,7 +271,7 @@ public class CartSingleAddressAdapter
         }
 
         void bindViewHolder(DropshipperShippingOptionModel model) {
-            mRlDropshipperOptionLayout.setVisibility(getVisibility(model.isDropshipping()));
+            mLlDetailDropshipperLayout.setVisibility(getVisibility(model.isDropshipping()));
             mSwDropshipper.setChecked(model.isDropshipping());
             mSwDropshipper.setOnClickListener(dropshipperSwitchListener(model));
         }
@@ -275,7 +283,7 @@ public class CartSingleAddressAdapter
                     model.setDropshipping(!model.isDropshipping());
 
                     mSwDropshipper.setChecked(model.isDropshipping());
-                    mLlDropshipperDetail.setVisibility(getVisibility(model.isDropshipping()));
+                    mLlDetailDropshipperLayout.setVisibility(getVisibility(model.isDropshipping()));
                 }
             };
         }
@@ -361,67 +369,47 @@ public class CartSingleAddressAdapter
 
     }
 
-    class ShippedProductFromSellerViewHolder extends RecyclerView.ViewHolder {
+    class ShippedProductDetailsViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R2.id.tv_sender_name) TextView mTvSenderName;
 
         @BindView(R2.id.iv_product_image_container) ImageView mIvProductImage;
         @BindView(R2.id.tv_shipping_product_name) TextView mTvProductName;
         @BindView(R2.id.tv_shipped_product_price) TextView mTvProductPrice;
-        @BindView(R2.id.rl_product_policies_layout) RelativeLayout mRlProductPoliciesLayout;
-        @BindView(R2.id.iv_free_return_icon) ImageView mIvFreeReturnIcon;
-        @BindView(R2.id.tv_po_sign) TextView mTvPoSign;
-        @BindView(R2.id.tv_cashback_text) TextView mTvCashback;
         @BindView(R2.id.tv_product_weight) TextView mTvProductWeight;
         @BindView(R2.id.tv_total_product_item) TextView mTvTotalProductItem;
-        @BindView(R2.id.tv_optional_note_to_seller) TextView mTvNoteToSeller;
+        @BindView(R2.id.tv_optional_note_to_seller) TextView mTvOptionalNote;
 
-        ShippedProductFromSellerViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
+        @BindView(R2.id.rl_product_policies_layout) RelativeLayout mRlProductPoliciesContainer;
+        @BindView(R2.id.iv_free_return_icon) ImageView mIvFreeReturnIcon;
+        @BindView(R2.id.tv_free_return_text) TextView mTvFreeReturnText;
+        @BindView(R2.id.tv_po_sign) TextView mTvPoSign;
+        @BindView(R2.id.tv_cashback_text) TextView mTvCashback;
 
-        void bindViewHolder(CartItemModel model) {
-            mTvProductName.setText(model.getProductName());
-            mTvProductPrice.setText(model.getProductPrice());
-            mTvCashback.setText(getCashback(model.getCashback()));
-            mTvProductWeight.setText(model.getProductWeight());
-            mTvTotalProductItem.setText(model.getTotalProductItem());
-            mTvNoteToSeller.setText(model.getNoteToSeller());
-            ImageHandler.LoadImage(mIvProductImage, model.getProductImageUrl());
-            mRlProductPoliciesLayout.setVisibility(getPoliciesVisibility());
-            mIvFreeReturnIcon.setVisibility(getFreeReturnIconVisibility(model.isFreeReturn()));
-            mTvPoSign.setVisibility(getPoStatus(model.isPoAvailable()));
-        }
+        @BindView(R2.id.rv_product_list) RecyclerView mRvProductList;
+        @BindView(R2.id.rv_product_thumb_image) RecyclerView mRvProductThumbImage;
 
-        private String getCashback(String cashback) {
-            return "Cashback " + cashback;
-        }
+        @BindView(R2.id.ll_other_product) LinearLayout mLlOtherProductContainer;
+        @BindView(R2.id.tv_expand_other_product) TextView mTvExpandOtherProduct;
 
-        private int getPoliciesVisibility() {
-            return View.VISIBLE;
-        }
-
-        private int getFreeReturnIconVisibility(boolean isFreeReturn) {
-            return isFreeReturn ? View.VISIBLE : View.GONE;
-        }
-
-        private int getPoStatus(boolean isPoAvailable) {
-            return isPoAvailable ? View.VISIBLE : View.GONE;
-        }
-
-    }
-
-    class ShippedProductDetailsViewHolder extends RecyclerView.ViewHolder {
-
-        @BindView(R2.id.rl_detail_shipment_fee_view_layout) RelativeLayout mRlDetailFee;
-        @BindView(R2.id.tv_sender_name) TextView mTvSenderName;
-        @BindView(R2.id.rl_product_image_galleries) RelativeLayout mRlProductGalleriesLayout;
         @BindView(R2.id.tv_shipment_option) TextView mTvShipmentOption;
         @BindView(R2.id.iv_chevron_shipment_option) ImageView mIvChevronShipmentOption;
-        @BindView(R2.id.tv_cart_detail_option) TextView mTvCartDetailOption;
-        @BindView(R2.id.iv_drawer_chevron) ImageView mIvDetailDrawerChevron;
-        @BindView(R2.id.tv_sub_total_item_price) TextView mTvSubTotalItemPrice;
 
-        private boolean mIsExpanded;
+        @BindView(R2.id.rl_detail_shipment_fee) RelativeLayout mRlDetailShipmentFeeContainer;
+        @BindView(R2.id.tv_total_item) TextView mTvTotalItem;
+        @BindView(R2.id.tv_total_item_price) TextView mTvTotalItemPrice;
+        @BindView(R2.id.tv_shipping_fee) TextView mTvShippingFee;
+        @BindView(R2.id.tv_shipping_fee_price) TextView mTvShippingFeePrice;
+        @BindView(R2.id.tv_insurance_fee_price) TextView mTvInsuranceFeePrice;
+        @BindView(R2.id.tv_promo_price) TextView mTvPromoPrice;
+
+        @BindView(R2.id.rl_cart_sub_total) RelativeLayout mRlCartSubTotal;
+        @BindView(R2.id.tv_detail_option_text) TextView mTvDetailOptionText;
+        @BindView(R2.id.iv_detail_option_chevron) ImageView mIvDetailOptionChevron;
+        @BindView(R2.id.tv_sub_total_price) TextView mTvSubTotalPrice;
+
+        private boolean mIsExpandAllProduct;
+        private boolean mIsExpandCostDetail;
 
         ShippedProductDetailsViewHolder(View itemView) {
             super(itemView);
@@ -429,69 +417,165 @@ public class CartSingleAddressAdapter
         }
 
         void bindViewHolder(CartSellerItemModel model) {
-            mIsExpanded = true;
+            // Initialize variables
+            List<CartItemModel> cartItemModels = new ArrayList<>();
+            cartItemModels.addAll(model.getCartItemModels());
+            CartItemModel mainProductItem = cartItemModels.remove(FIRST_ELEMENT);
 
+            mIsExpandAllProduct = false;
+            mIsExpandCostDetail = true;
+
+            // Assign variables
             mTvSenderName.setText(model.getSenderName());
-
             mTvShipmentOption.setText(model.getShipmentOption());
-            mTvSubTotalItemPrice.setText(model.getTotalPrice());
+            mTvSubTotalPrice.setText(model.getTotalPrice());
 
-            mRlProductGalleriesLayout.setVisibility(getProductGalleryVisibility());
+            ImageHandler.LoadImage(mIvProductImage, mainProductItem.getProductImageUrl());
+            mTvProductName.setText(mainProductItem.getProductName());
+            mTvProductPrice.setText(mainProductItem.getProductPrice());
+            mTvProductWeight.setText(mainProductItem.getProductWeight());
+            mTvTotalProductItem.setText(mainProductItem.getTotalProductItem());
+            mTvOptionalNote.setText(mainProductItem.getNoteToSeller());
 
-            mTvShipmentOption.setOnClickListener(courierOptionSelectionListener());
-            mIvChevronShipmentOption.setOnClickListener(courierOptionSelectionListener());
+            mLlOtherProductContainer.setVisibility(getExpandOtherProductVisibility(cartItemModels));
+            mTvExpandOtherProduct.setText(getExpandOtherProductLabel(cartItemModels));
 
-            mTvCartDetailOption.setText(getTextDrawerChevron());
-            mIvDetailDrawerChevron.setImageResource(getResourceDrawerChevron());
+            mRlProductPoliciesContainer.setVisibility(getPoliciesVisibility());
+            mIvFreeReturnIcon.setVisibility(getFreeReturnVisibility(mainProductItem.isFreeReturn()));
+            mTvFreeReturnText.setVisibility(getFreeReturnVisibility(mainProductItem.isFreeReturn()));
+            mTvPoSign.setVisibility(getPoVisibility(mainProductItem.isPoAvailable()));
+            mTvCashback.setVisibility(getCashbackVisibility(mainProductItem.getCashback()));
+            mTvCashback.setText(getCashback(mainProductItem.getCashback()));
 
-            mTvCartDetailOption.setOnClickListener(itemPriceDetailListener());
-            mIvDetailDrawerChevron.setOnClickListener(itemPriceDetailListener());
+            mTvDetailOptionText.setText(getTextDrawerChevron(mIsExpandCostDetail));
+            mIvDetailOptionChevron.setImageResource(getResourceDrawerChevron(mIsExpandCostDetail));
 
-            mRlDetailFee.setVisibility(getDetailFeeVisibility() );
+            // Init nested recycler view
+            initInnerRecyclerView(cartItemModels);
+            initInnerHorizontalRecyclerView(cartItemModels);
+
+            // Set listeners
+            mLlOtherProductContainer.setOnClickListener(showAllProductListener());
+            mTvExpandOtherProduct.setOnClickListener(showAllProductListener());
+
+            mTvShipmentOption.setOnClickListener(selectShippingOptionListener());
+            mIvChevronShipmentOption.setOnClickListener(selectShippingOptionListener());
+
+            mTvDetailOptionText.setOnClickListener(costDetailOptionListener());
+            mIvDetailOptionChevron.setOnClickListener(costDetailOptionListener());
         }
 
-        private void toggleDetail() {
-            mIsExpanded = !mIsExpanded;
+        private void initInnerRecyclerView(List<CartItemModel> cartItemModels) {
+            mRvProductList.setVisibility(View.GONE);
 
-            mTvCartDetailOption.setText(getTextDrawerChevron());
-            mIvDetailDrawerChevron.setImageResource(getResourceDrawerChevron());
+            mRvProductList.setHasFixedSize(true);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
+            layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            mRvProductList.setLayoutManager(layoutManager);
 
-            mRlDetailFee.setVisibility(getDetailFeeVisibility());
+            InnerProductListAdapter innerProductListAdapter =
+                    new InnerProductListAdapter(cartItemModels);
+            mRvProductList.setAdapter(innerProductListAdapter);
         }
 
-        private String getTextDrawerChevron() {
-            return mIsExpanded ? "Tutup" : "Detil";
+        private void initInnerHorizontalRecyclerView(List<CartItemModel> cartItemModels) {
+            mRvProductThumbImage.setVisibility(View.VISIBLE);
+
+            mRvProductThumbImage.setHasFixedSize(true);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
+            layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+            mRvProductThumbImage.setLayoutManager(layoutManager);
+
+            InnerProductImageListAdapter innerProductImageListAdapter =
+                    new InnerProductImageListAdapter(cartItemModels);
+            mRvProductThumbImage.setAdapter(innerProductImageListAdapter);
         }
 
-        private int getResourceDrawerChevron() {
-            return mIsExpanded ? R.drawable.chevron_thin_up : R.drawable.chevron_thin_down;
+        private int getExpandOtherProductVisibility(List<CartItemModel> cartItemModels) {
+            return cartItemModels.isEmpty() ? View.GONE : View.VISIBLE;
         }
 
-        private View.OnClickListener itemPriceDetailListener() {
+        private String getExpandOtherProductLabel(List<CartItemModel> cartItemModels) {
+            return String.format("+%s Produk Lainnya", cartItemModels.size());
+        }
+
+        private int getPoliciesVisibility() {
+            return View.VISIBLE;
+        }
+
+        private int getFreeReturnVisibility(boolean isFreeReturn) {
+            return isFreeReturn ? View.VISIBLE : View.GONE;
+        }
+
+        private int getPoVisibility(boolean isPoAvailable) {
+            return isPoAvailable ? View.VISIBLE : View.GONE;
+        }
+
+        private int getCashbackVisibility(String cashback) {
+            return cashback.equals("0%") ? View.GONE : View.VISIBLE;
+        }
+
+        private String getCashback(String cashback) {
+            return "Cashback " + cashback;
+        }
+
+        private View.OnClickListener showAllProductListener() {
             return new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    toggleDetail();
+                    toggleShowAllProduct();
                 }
             };
         }
 
-        private View.OnClickListener courierOptionSelectionListener() {
+        private void toggleShowAllProduct() {
+            mIsExpandAllProduct = !mIsExpandAllProduct;
+            mRvProductList.setVisibility(getOtherProductsVisibility(mIsExpandAllProduct));
+        }
+
+        private int getOtherProductsVisibility(boolean isExpandAllProduct) {
+            return isExpandAllProduct ? View.VISIBLE : View.GONE;
+        }
+
+        private View.OnClickListener selectShippingOptionListener() {
             return new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 //                    Toast.makeText(mContext, "Select Courier", Toast.LENGTH_SHORT).show();
                     viewListener.onChooseShipment();
+                    Toast.makeText(mContext, "Select Courier", Toast.LENGTH_SHORT)
+                            .show();
                 }
             };
         }
 
-        private int getDetailFeeVisibility() {
-            return mIsExpanded ? View.VISIBLE : View.GONE;
+        private View.OnClickListener costDetailOptionListener() {
+            return new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    toggleShowCostDetail();
+                }
+            };
         }
 
-        private int getProductGalleryVisibility() {
-            return View.VISIBLE;
+        private void toggleShowCostDetail() {
+            mIsExpandCostDetail = !mIsExpandCostDetail;
+            mTvDetailOptionText.setText(getTextDrawerChevron(mIsExpandCostDetail));
+            mIvDetailOptionChevron.setImageResource(getResourceDrawerChevron(mIsExpandCostDetail));
+
+            mRlDetailShipmentFeeContainer.setVisibility(getDetailFeeVisibility());
+        }
+
+        private String getTextDrawerChevron(boolean isExpanded) {
+            return isExpanded ? "Tutup" : "Detil";
+        }
+
+        private int getResourceDrawerChevron(boolean isExpanded) {
+            return isExpanded ? R.drawable.chevron_thin_up : R.drawable.chevron_thin_down;
+        }
+
+        private int getDetailFeeVisibility() {
+            return mIsExpandCostDetail ? View.VISIBLE : View.GONE;
         }
 
     }

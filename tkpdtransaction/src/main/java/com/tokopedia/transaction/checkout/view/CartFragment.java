@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.common.utils.AuthUtil;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.R;
@@ -19,14 +18,12 @@ import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.di.component.CartListComponent;
 import com.tokopedia.transaction.checkout.di.component.DaggerCartListComponent;
 import com.tokopedia.transaction.checkout.di.module.CartListModule;
-import com.tokopedia.transaction.checkout.view.activity.CartShipmentActivity;
 import com.tokopedia.transaction.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.transaction.checkout.view.presenter.ICartListPresenter;
 import com.tokopedia.transaction.checkout.view.view.ICartListView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;

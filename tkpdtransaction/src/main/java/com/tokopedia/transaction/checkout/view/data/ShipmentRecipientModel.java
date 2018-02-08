@@ -21,6 +21,26 @@ public class ShipmentRecipientModel implements Parcelable {
     private String tokenPickup;
     private String unixTime;
     private Store store;
+    private String recipientPhone;
+
+    public ShipmentRecipientModel() {
+    }
+
+    public boolean isPrimerAddress() {
+        return isPrimerAddress;
+    }
+
+    public void setPrimerAddress(boolean isPrimerAddress) {
+        this.isPrimerAddress = isPrimerAddress;
+    }
+
+    public String getAddressIdentifier() {
+        return addressIdentifier;
+    }
+
+    public void setAddressIdentifier(String addressIdentifier) {
+        this.addressIdentifier = addressIdentifier;
+    }
 
     public String getRecipientName() {
         return recipientName;
@@ -36,38 +56,6 @@ public class ShipmentRecipientModel implements Parcelable {
 
     public void setRecipientAddress(String recipientAddress) {
         this.recipientAddress = recipientAddress;
-    }
-
-    public boolean isPrimerAddress() {
-        return isPrimerAddress;
-    }
-
-    public void setPrimerAddress(boolean primerAddress) {
-        isPrimerAddress = primerAddress;
-    }
-
-    public String getAddressIdentifier() {
-        return addressIdentifier;
-    }
-
-    public void setAddressIdentifier(String addressIdentifier) {
-        this.addressIdentifier = addressIdentifier;
-    }
-
-    public String getRecipientAddressDescription() {
-        return recipientAddressDescription;
-    }
-
-    public void setRecipientAddressDescription(String recipientAddressDescription) {
-        this.recipientAddressDescription = recipientAddressDescription;
-    }
-
-    public String getRecipientPhoneNumber() {
-        return recipientPhoneNumber;
-    }
-
-    public void setRecipientPhoneNumber(String recipientPhoneNumber) {
-        this.recipientPhoneNumber = recipientPhoneNumber;
     }
 
     public String getDestinationDistrictId() {
@@ -110,7 +98,28 @@ public class ShipmentRecipientModel implements Parcelable {
         this.store = store;
     }
 
-    public ShipmentRecipientModel() {
+    public String getRecipientAddressDescription() {
+        return recipientAddressDescription;
+    }
+
+    public void setRecipientAddressDescription(String recipientAddressDescription) {
+        this.recipientAddressDescription = recipientAddressDescription;
+    }
+
+    public String getRecipientPhoneNumber() {
+        return recipientPhoneNumber;
+    }
+
+    public void setRecipientPhoneNumber(String recipientPhoneNumber) {
+        this.recipientPhoneNumber = recipientPhoneNumber;
+    }
+
+    public String getRecipientPhone() {
+        return recipientPhone;
+    }
+
+    public void setRecipientPhone(String recipientPhone) {
+        this.recipientPhone = recipientPhone;
     }
 
     @Override
@@ -120,37 +129,43 @@ public class ShipmentRecipientModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(recipientName);
+        dest.writeString(recipientAddress);
+        dest.writeString(recipientAddressDescription);
+        dest.writeString(recipientPhoneNumber);
+        dest.writeString(destinationDistrictId);
+        dest.writeString(destinationDistrictName);
+        dest.writeString(tokenPickup);
+        dest.writeString(unixTime);
+        dest.writeParcelable(store, flags);
         dest.writeByte(this.isPrimerAddress ? (byte) 1 : (byte) 0);
         dest.writeString(this.addressIdentifier);
         dest.writeString(this.recipientName);
-        dest.writeString(this.recipientAddressDescription);
         dest.writeString(this.recipientAddress);
-        dest.writeString(this.recipientPhoneNumber);
-        dest.writeString(this.destinationDistrictId);
-        dest.writeString(this.destinationDistrictName);
-        dest.writeString(this.tokenPickup);
-        dest.writeString(this.unixTime);
-        dest.writeParcelable(this.store, flags);
+        dest.writeString(this.recipientPhone);
     }
 
     protected ShipmentRecipientModel(Parcel in) {
+        recipientName = in.readString();
+        recipientAddress = in.readString();
+        recipientAddressDescription = in.readString();
+        recipientPhoneNumber = in.readString();
+        destinationDistrictId = in.readString();
+        destinationDistrictName = in.readString();
+        tokenPickup = in.readString();
+        unixTime = in.readString();
+        store = in.readParcelable(Store.class.getClassLoader());
         this.isPrimerAddress = in.readByte() != 0;
         this.addressIdentifier = in.readString();
         this.recipientName = in.readString();
-        this.recipientAddressDescription = in.readString();
         this.recipientAddress = in.readString();
-        this.recipientPhoneNumber = in.readString();
-        this.destinationDistrictId = in.readString();
-        this.destinationDistrictName = in.readString();
-        this.tokenPickup = in.readString();
-        this.unixTime = in.readString();
-        this.store = in.readParcelable(Store.class.getClassLoader());
+        this.recipientPhone = in.readString();
     }
 
     public static final Creator<ShipmentRecipientModel> CREATOR = new Creator<ShipmentRecipientModel>() {
         @Override
-        public ShipmentRecipientModel createFromParcel(Parcel source) {
-            return new ShipmentRecipientModel(source);
+        public ShipmentRecipientModel createFromParcel(Parcel in) {
+            return new ShipmentRecipientModel(in);
         }
 
         @Override
@@ -158,4 +173,5 @@ public class ShipmentRecipientModel implements Parcelable {
             return new ShipmentRecipientModel[size];
         }
     };
+
 }

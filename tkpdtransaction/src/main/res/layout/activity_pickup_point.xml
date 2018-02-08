@@ -34,10 +34,12 @@
                 android:layout_margin="@dimen/new_margin_med"
                 android:fitsSystemWindows="true"
                 android:fontFamily="sans-serif-medium"
+                android:lineSpacingExtra="8sp"
                 android:maxLines="2"
                 android:text="@string/title_send_to_pick_up_booth"
                 android:textColor="@color/black_70"
                 android:textSize="24sp"
+                android:textStyle="normal"
                 app:layout_anchor="@+id/app_bar"
                 app:layout_anchorGravity="bottom"
                 app:layout_collapseMode="parallax" />
@@ -187,9 +189,14 @@
         android:layout_margin="16dp"
         android:background="@color/xco_button_color_disable"
         android:enabled="false"
+        android:fontFamily="sans-serif-medium"
         android:foreground="?selectableItemBackground"
+        android:letterSpacing="0.07"
+        android:lineSpacingExtra="6sp"
         android:text="@string/label_button_pick_pickup_booth"
         android:textAllCaps="false"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:textStyle="normal" />
 
 </android.support.design.widget.CoordinatorLayout>
