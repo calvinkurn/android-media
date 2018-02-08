@@ -4,10 +4,13 @@ import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.home.R;
+import com.tokopedia.home.explore.domain.model.ShopData;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
 import com.tokopedia.home.explore.view.adapter.viewmodel.MyShopViewModel;
 import com.tokopedia.home.explore.view.adapter.viewmodel.SellViewModel;
@@ -24,6 +27,9 @@ public class MyShopViewHolder extends AbstractViewHolder<MyShopViewModel> {
     TextView titleTxt;
     ImageView imageView;
     Button button;
+    ImageView reputationMedal;
+    ImageView badgeImage;
+    TextView officialTxt;
 
     private CategoryAdapterListener listener;
 
@@ -32,7 +38,10 @@ public class MyShopViewHolder extends AbstractViewHolder<MyShopViewModel> {
         this.listener = listener;
         titleTxt = itemView.findViewById(R.id.title);
         imageView = itemView.findViewById(R.id.image_shop);
+        badgeImage = itemView.findViewById(R.id.badge);
         button = itemView.findViewById(R.id.btn_ubah);
+        reputationMedal = itemView.findViewById(R.id.reputation_medal);
+        officialTxt = itemView.findViewById(R.id.official_store_txt);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -43,7 +52,17 @@ public class MyShopViewHolder extends AbstractViewHolder<MyShopViewModel> {
 
     @Override
     public void bind(MyShopViewModel element) {
-
+        ShopData data = element.getShopData();
+        titleTxt.setText(data.getShopName());
+        ImageHandler.LoadImage(imageView, data.getLogo());
+        if (data.getIsOfficial() == 1) {
+            officialTxt.setVisibility(View.VISIBLE);
+            badgeImage.setImageResource(R.drawable.ic_badge_official);
+        } else if (data.isIsGoldBadge()) {
+            officialTxt.setVisibility(View.GONE);
+            badgeImage.setImageResource(R.drawable.ic_shop_gold);
+        }
+        ImageHandler.LoadImage(reputationMedal, data.getReputationBadge());
     }
 
 }

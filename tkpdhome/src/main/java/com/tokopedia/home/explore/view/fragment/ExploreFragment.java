@@ -151,7 +151,12 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
 
     @Override
     public void openShopSetting() {
-
+        String shopId = SessionHandler.getShopID(getContext());
+        if (!shopId.equals("0")) {
+            onGoToShop(shopId);
+        } else {
+            onGoToCreateShop();
+        }
     }
 
     @Override
