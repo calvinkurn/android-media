@@ -56,7 +56,7 @@
     <string name="book_ticket_title">Pilih Tiket</string>
     <string name="seat_selection_title">Pilih Kursi</string>
     <string name="review_title">Rincian</string>
-    <string name="price_holder">Rp $1%s</string>
+    <string name="price_holder">Rp %1$s</string>
 
     <!-- need to changed -->
 

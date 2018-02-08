@@ -72,6 +72,8 @@
                         layout="@layout/image_textview_holder"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_default"
+                        android:layout_marginStart="@dimen/margin_default"
                         android:layout_marginTop="@dimen/margin_default" />
 
                     <include
@@ -79,6 +81,8 @@
                         layout="@layout/image_textview_holder"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_default"
+                        android:layout_marginStart="@dimen/margin_default"
                         android:layout_marginTop="@dimen/keyline_1_minus_8dp" />
 
                     <View

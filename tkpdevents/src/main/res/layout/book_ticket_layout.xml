@@ -134,7 +134,7 @@
 
         <include
             android:id="@+id/pay_tickets"
-            layout="@layout/btn_lanjutkan_event"
+            layout="@layout/btn_lanjuktan_simple"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/ticketcount"
