@@ -8,6 +8,7 @@ import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
+import com.tokopedia.core.network.di.qualifier.KeyDefaultQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;

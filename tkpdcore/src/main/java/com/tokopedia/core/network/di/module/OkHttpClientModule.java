@@ -109,14 +109,14 @@ public class OkHttpClientModule {
                                                                        ChuckInterceptor chuckInterceptor,
                                                                        DebugInterceptor debugInterceptor,
                                                                        TkpdErrorResponseInterceptor errorHandlerInterceptor,
-                                                                       ApiCacheInterceptor apiCacheInterceptor){
+                                                                       CacheApiInterceptor cacheApiInterceptor){
         return OkHttpFactory.create().buildDaggerClientDefaultAuthWithErrorHandler(fingerprintInterceptor,
                 tkpdAuthInterceptor,
                 okHttpRetryPolicy,
                 chuckInterceptor,
                 debugInterceptor,
                 errorHandlerInterceptor,
-                apiCacheInterceptor);
+                cacheApiInterceptor);
     }
 
     @BearerAuth

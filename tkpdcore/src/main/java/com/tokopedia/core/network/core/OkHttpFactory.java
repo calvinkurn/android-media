@@ -381,11 +381,11 @@ public class OkHttpFactory {
                                                                      ChuckInterceptor chuckInterceptor,
                                                                      DebugInterceptor debugInterceptor,
                                                                      Interceptor tkpdErrorHandlerInterceptor,
-                                                                     ApiCacheInterceptor apiCacheInterceptor) {
+                                                                     CacheApiInterceptor cacheApiInterceptor) {
         TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(tkpdAuthInterceptor)
-                .addInterceptor(apiCacheInterceptor)
+                .addInterceptor(cacheApiInterceptor)
                 .addInterceptor(tkpdErrorHandlerInterceptor)
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
 
