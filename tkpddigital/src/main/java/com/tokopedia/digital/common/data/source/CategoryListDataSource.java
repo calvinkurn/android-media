@@ -10,7 +10,6 @@ import com.tokopedia.digital.widget.data.entity.category.CategoryEntity;
 import com.tokopedia.digital.widget.view.model.category.Category;
 import com.tokopedia.digital.widget.view.model.mapper.CategoryMapper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Response;
@@ -69,22 +68,18 @@ public class CategoryListDataSource {
     }
 
     private Observable<List<CategoryEntity>> getDataFromDb() {
-        return Observable.just(new GlobalCacheManager())
-                .map(new Func1<GlobalCacheManager, List<CategoryEntity>>() {
-                    @Override
-                    public List<CategoryEntity> call(GlobalCacheManager globalCacheManager) {
-                        return CacheUtil.convertStringToListModel(
-                                globalCacheManager.getValueString(KEY_CATEGORY_LIST),
-                                new TypeToken<List<CategoryEntity>>() {
-                                }.getType());
-                    }
-                })
-                .onErrorReturn(new Func1<Throwable, List<CategoryEntity>>() {
-                    @Override
-                    public List<CategoryEntity> call(Throwable throwable) {
-                        return new ArrayList<>();
-                    }
-                });
+        List<CategoryEntity> categoryEntities;
+
+        try {
+            categoryEntities = CacheUtil.convertStringToListModel(
+                    globalCacheManager.getValueString(KEY_CATEGORY_LIST),
+                    new TypeToken<List<CategoryEntity>>() {
+                    }.getType());
+        } catch (RuntimeException e) {
+            categoryEntities = null;
+        }
+
+        return Observable.just(categoryEntities);
     }
 
     private void deleteCache(List<CategoryEntity> categoryEntityList) {

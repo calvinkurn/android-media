@@ -23,7 +23,7 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
     @Override
     public void porcessPulsaUssdResponse(RequestBodyPulsaBalance requestBodyPulsaBalance, Subscriber<PulsaBalance> subscriber) {
         ussdCheckBalanceRepository.processPulsaBalanceUssdResponse(requestBodyPulsaBalance)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .subscribe(subscriber);
