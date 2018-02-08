@@ -125,7 +125,7 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     }*/
 
     @Override
-    public void showInputEmailForm(String invoiceId, String userId) {
+    public void navigateToInputEmailForm(String invoiceId, String userId) {
 
     }
 

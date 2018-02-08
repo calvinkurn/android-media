@@ -25,7 +25,7 @@ public interface FlightOrderListContract {
 
         Context getActivity();
 
-        void showInputEmailForm(String invoiceId, String userId);
+        void navigateToInputEmailForm(String invoiceId, String userId);
     }
 
     interface Presenter extends CustomerPresenter<View> {

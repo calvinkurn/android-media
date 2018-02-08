@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
-import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.orderlist.contract.FlightOrderListContract;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrdersUseCase;
 import com.tokopedia.flight.orderlist.domain.FlightSendEmailUseCase;
@@ -78,7 +77,7 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
     @Override
     public void onDownloadEticket(String invoiceId) {
 //        getView().navigateToOpenBrowser(FlightUrl.getUrlPdf(invoiceId, userSession.getUserId()));
-        getView().showInputEmailForm(invoiceId, userSession.getUserId());
+        getView().navigateToInputEmailForm(invoiceId, userSession.getUserId());
     }
 
     private void buildAndRenderFilterList() {
