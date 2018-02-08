@@ -64,10 +64,14 @@ public class CartPresenter implements ICartPresenter {
     public static final String IS_SUGGESTED = "suggested";
     private final ICartView view;
     private final ICartDataInteractor cartDataInteractor;
+    private Gson gson;
+    private LocalCacheHandler cartCache;
 
-    public CartPresenter(ICartView iCartView) {
+    public CartPresenter(ICartView iCartView, LocalCacheHandler cartCache) {
         this.view = iCartView;
         this.cartDataInteractor = new CartDataInteractor();
+        this.gson = new Gson();
+        this.cartCache = cartCache;
     }
 
     @Override
@@ -91,7 +95,7 @@ public class CartPresenter implements ICartPresenter {
                 CartData cartData = responseTransform.getData();
                 try {
                     processCartAnalytics(cartData);
-                    view.trackCheckoutStep1();
+                    trackStep1CheckoutEE(getCheckoutTrackingData());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -127,7 +131,7 @@ public class CartPresenter implements ICartPresenter {
                 Product product = new Product();
                 product.setProductID(cartProduct.getProductId());
                 product.setPrice(cartProduct.getProductPriceIdr());
-                product.setQty(cartProduct.getProductQuantity());
+                product.setQty(String.valueOf(cartProduct.getProductQuantity()));
                 product.setProductName(MethodChecker.fromHtml(cartProduct.getProductName()).toString());
 
                 com.tokopedia.core.analytics.model.Product locaProduct
@@ -704,7 +708,7 @@ public class CartPresenter implements ICartPresenter {
             bundle.putInt(TopPayIntentService.EXTRA_ACTION,
                     TopPayIntentService.SERVICE_ACTION_GET_PARAMETER_DATA);
             view.executeIntentService(bundle, TopPayIntentService.class);
-            view.trackCheckoutStep2();
+            trackStep2CheckoutEE(getCheckoutTrackingData());
         }
     }
 
@@ -882,5 +886,11 @@ public class CartPresenter implements ICartPresenter {
                 && !cartItem.getCartErrorMessage2().equals("0"))
                 || (cartItem.getCartErrorMessage1() != null
                 && !cartItem.getCartErrorMessage1().equals("0"));
+    }
+
+    private Checkout getCheckoutTrackingData() {
+        return gson.fromJson(
+                cartCache.getString(Jordan.CACHE_KEY_DATA_CHECKOUT),
+                new TypeToken<Checkout>() {}.getType());
     }
 }

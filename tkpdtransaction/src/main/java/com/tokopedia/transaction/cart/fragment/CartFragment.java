@@ -242,7 +242,10 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     protected void initialPresenter() {
-        presenter = new CartPresenter(this);
+        presenter = new CartPresenter(
+                this,
+                new LocalCacheHandler(getActivity(), TkpdCache.NOTIFICATION_DATA)
+        );
     }
 
     @Override
@@ -806,16 +809,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void trackCheckoutStep1() {
-        presenter.trackStep1CheckoutEE(getTrackingCheckoutData());
-    }
-
-    @Override
-    public void trackCheckoutStep2() {
-        presenter.trackStep2CheckoutEE(getTrackingCheckoutData());
-    }
-
-    @Override
     public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
         Intent intent = new Intent(Intent.ACTION_SYNC, null, getActivity(), clazz).putExtras(bundle);
         getActivity().startService(intent);
@@ -1256,14 +1249,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         kursIndonesia.setDecimalFormatSymbols(formatRp);
 
         return kursIndonesia.format(value);
-    }
-
-    private Checkout getTrackingCheckoutData() {
-        Gson gson = new Gson();
-        LocalCacheHandler localCacheHandler = new LocalCacheHandler(getActivity(), TkpdCache.NOTIFICATION_DATA);
-        return gson.fromJson(
-                localCacheHandler.getString(Jordan.CACHE_KEY_DATA_CHECKOUT),
-                new TypeToken<Checkout>() {}.getType());
     }
 
 }
