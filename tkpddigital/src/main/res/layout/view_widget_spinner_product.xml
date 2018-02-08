@@ -2,15 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/nominal_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/padding_vvs"
+        android:textColor="@color/digital_voucher_notes"
         android:text="@string/title_nominal"
-        android:textSize="@dimen/fontvs"/>
+        android:textSize="@dimen/font_small"/>
 
     <Spinner
         android:id="@+id/spinner_nominal"

@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.digital.product.listener.IUssdUpdateListener;
+import com.tokopedia.digital.product.view.listener.IUssdUpdateListener;
 
 
 /**
