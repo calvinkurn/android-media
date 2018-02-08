@@ -97,7 +97,7 @@ public class ChatRoomContract {
 
         void onGoToGallery(Attachment attachment, String fullTime);
 
-        void onGoToWebView(String attachment);
+        void onGoToWebView(String attachment, String id);
 
         boolean needCreateWebSocket();
 
@@ -122,6 +122,8 @@ public class ChatRoomContract {
         void onSuccessSendAttach(ReplyActionData data, MyChatViewModel model);
 
         void setUploadingMode(boolean b);
+
+        void scrollToBottomIf();
     }
 
     interface Presenter extends CustomerPresenter<View>{

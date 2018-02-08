@@ -175,6 +175,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                 Intent intent = new Intent(getView().getActivity(), ShopInfoActivity.class);
                 Bundle bundle = ShopInfoActivity.createBundle(String.valueOf(id), "");
                 intent.putExtras(bundle);
+                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 getView().startActivity(intent);
             } else {
                 getView().startActivity(
@@ -268,12 +269,12 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             }
             getView().getAdapter().addReply(item);
             getView().finishLoading();
+            getView().scrollToBottomIf();
             try {
                 readMessage(String.valueOf(response.getData().getMsgId()));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            getView().scrollToBottom();
         }
     }
 
@@ -511,7 +512,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         }
     }
 
-    public void stopTyping(String messageId) throws JSONException {
+    public void stopTyping(String messageId) throws Exception {
         if (messageId != null) {
             JSONObject json = new JSONObject();
             json.put("code", ChatWebSocketConstant.EVENT_TOPCHAT_END_TYPING);

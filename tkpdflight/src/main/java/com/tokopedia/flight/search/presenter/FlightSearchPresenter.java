@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.booking.domain.FlightBookingGetSingleResultUseCase;
 import com.tokopedia.flight.common.data.domain.DeleteFlightCacheUseCase;
 import com.tokopedia.flight.common.subscriber.OnNextSubscriber;
+import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.domain.FlightSearchMetaUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchStatisticUseCase;
@@ -43,6 +44,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
     private FlightSearchMetaUseCase flightSearchMetaUseCase;
     private CompositeSubscription compositeSubscription;
     private DeleteFlightCacheUseCase deleteFlightCacheUseCase;
+    private FlightAnalytics flightAnalytics;
 
     @Inject
     public FlightSearchPresenter(FlightSearchWithSortUseCase flightSearchWithSortUseCase,
@@ -50,31 +52,41 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                                  FlightSearchStatisticUseCase flightSearchStatisticUseCase,
                                  FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase,
                                  FlightSearchMetaUseCase flightSearchMetaUseCase,
-                                 DeleteFlightCacheUseCase deleteFlightCacheUseCase) {
+                                 DeleteFlightCacheUseCase deleteFlightCacheUseCase,
+                                 FlightAnalytics flightAnalytics) {
         this.flightSearchWithSortUseCase = flightSearchWithSortUseCase;
         this.flightSortUseCase = flightSortUseCase;
         this.flightSearchStatisticUseCase = flightSearchStatisticUseCase;
         this.flightBookingGetSingleResultUseCase = flightBookingGetSingleResultUseCase;
         this.flightSearchMetaUseCase = flightSearchMetaUseCase;
         this.deleteFlightCacheUseCase = deleteFlightCacheUseCase;
+        this.flightAnalytics = flightAnalytics;
     }
 
     public void searchAndSortFlight(FlightSearchApiRequestModel flightSearchApiRequestModel,
                                     boolean isReturning, boolean isFromCache, FlightFilterModel flightFilterModel,
                                     @FlightSortOption int sortOptionId) {
-        if (isViewAttached())
+        if (isViewAttached()) {
             getView().removeToolbarElevation();
+        }
+
         if (isFromCache) {
-            flightSearchWithSortUseCase.execute(FlightSearchUseCase.generateRequestParams(
-                    flightSearchApiRequestModel,
-                    isReturning, true, flightFilterModel,
-                    sortOptionId),
+            flightSearchWithSortUseCase.execute(
+                    FlightSearchUseCase.generateRequestParams(
+                            flightSearchApiRequestModel,
+                            isReturning,
+                            true,
+                            flightFilterModel,
+                            sortOptionId),
                     getSubscriberSearchFlightCache(sortOptionId));
         } else {
-            flightSearchMetaUseCase.execute(FlightSearchUseCase.generateRequestParams(
-                    flightSearchApiRequestModel,
-                    isReturning, false, null,
-                    FlightSortOption.NO_PREFERENCE),
+            flightSearchMetaUseCase.execute(
+                    FlightSearchUseCase.generateRequestParams(
+                            flightSearchApiRequestModel,
+                            isReturning,
+                            false,
+                            null,
+                            FlightSortOption.NO_PREFERENCE),
                     getSubscriberSearchFlightCloud());
         }
     }
@@ -83,8 +95,8 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                                              final boolean isReturning, int delayInSecond) {
         getView().removeToolbarElevation();
         Subscription subscription = Observable.timer(delayInSecond, TimeUnit.SECONDS)
-                .subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new OnNextSubscriber<Long>() {
                     @Override
@@ -101,8 +113,8 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
 
     public void setDelayHorizontalProgress() {
         Subscription subscription = Observable.timer(DELAY_HORIZONTAL_PROGRESS, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new OnNextSubscriber<Long>() {
                     @Override
@@ -140,13 +152,6 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
         }
         compositeSubscription.add(subscription);
     }
-
-    /*public void getFlightStatistic(boolean isReturning) {
-        flightSearchStatisticUseCase.execute(FlightSearchUseCase.generateRequestParams(
-                null,
-                isReturning, true, null, FlightSortOption.NO_PREFERENCE),
-                getSubscriberSearchStatisticFlight());
-    }*/
 
     public void sortFlight(List<FlightSearchViewModel> flightSearchViewModelList,
                            @FlightSortOption int sortOptionId) {
@@ -272,5 +277,13 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                 getView().setSelectedSortItem(sortOptionId);
             }
         };
+    }
+
+    public void onSearchItemClicked(FlightSearchViewModel flightSearchViewModel) {
+        flightAnalytics.eventSearchProductClick(flightSearchViewModel);
+    }
+
+    public void onSeeDetailItemClicked(FlightSearchViewModel flightSearchViewModel) {
+        flightAnalytics.eventSearchDetailClick(flightSearchViewModel);
     }
 }

@@ -115,7 +115,11 @@ public class CategoryProductStyle1View extends
 
     @Override
     protected void onInstantCheckoutUnChecked() {
-        setBtnBuyDigitalText(operatorSelected.getRule().getButtonText());
+        if (operatorSelected != null) {
+            setBtnBuyDigitalText(operatorSelected.getRule().getButtonText());
+        } else {
+            btnBuyDigital.setText(context.getString(R.string.label_btn_buy_digital));
+        }
     }
 
     @Override

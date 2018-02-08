@@ -60,6 +60,7 @@ public class ChatRoomActivity extends BasePresenterActivity
     public static final String PARAM_ROLE = "role";
     public static final String ROLE_USER = "Pengguna";
     public static final String ROLE_SELLER = "Penjual";
+    final static String SELLER = "shop";
     public static final String IS_HAS_ATTACH_BUTTON = "has_attachment";
     public static final String PARAM_AVATAR = "avatar";
 
@@ -254,7 +255,8 @@ public class ChatRoomActivity extends BasePresenterActivity
         bundle.putString(PARAM_SENDER_ID, toShopId);
         bundle.putString(PARAM_SENDER_NAME, shopName);
         bundle.putString(PARAM_SOURCE, source);
-        bundle.putString(PARAM_SENDER_ROLE, ROLE_SELLER);
+        bundle.putString(PARAM_SENDER_TAG, ROLE_SELLER);
+        bundle.putString(PARAM_SENDER_ROLE, SELLER);
         bundle.putBoolean(IS_HAS_ATTACH_BUTTON, true);
         bundle.putString(PARAM_SENDER_IMAGE, avatar);
         bundle.putBoolean(PARAM_WEBSOCKET, false);
@@ -283,7 +285,7 @@ public class ChatRoomActivity extends BasePresenterActivity
         bundle.putString(PARAM_USER_ID, userId);
         bundle.putString(PARAM_SENDER_NAME, userName);
         bundle.putString(PARAM_SOURCE, source);
-        bundle.putString(PARAM_SENDER_ROLE, ROLE_USER);
+        bundle.putString(PARAM_SENDER_TAG, ROLE_USER);
         bundle.putBoolean(IS_HAS_ATTACH_BUTTON, true);
         bundle.putString(PARAM_SENDER_IMAGE, avatar);
         bundle.putBoolean(PARAM_WEBSOCKET, false);

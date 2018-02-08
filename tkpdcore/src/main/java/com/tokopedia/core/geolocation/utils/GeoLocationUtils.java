@@ -8,11 +8,8 @@ import android.util.Log;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
-
-import static com.tokopedia.core.database.model.LatLngModelDB_Table.latitude;
 
 /**
  * Created on 2/3/16.
@@ -34,7 +31,7 @@ public class GeoLocationUtils {
                 reseponseAddress = listAddress.get(0).getAddressLine(0);
             }
 
-            for(int j = 0 ; j < listAddress.get(0).getMaxAddressLineIndex(); j++) {
+            for (int j = 0; j < listAddress.get(0).getMaxAddressLineIndex(); j++) {
                 if (j == 0) {
                     Address address = listAddress.get(0);
                     reseponseAddress = address.getThoroughfare();
@@ -58,29 +55,8 @@ public class GeoLocationUtils {
             e.printStackTrace();
         }
         if (reseponseAddress == null || reseponseAddress.isEmpty()) {
-            reseponseAddress = String.valueOf(latitude) + ", "+ String.valueOf(longitude);
+            reseponseAddress = String.valueOf(latitude) + ", " + String.valueOf(longitude);
         }
-        return reseponseAddress;
-    }
-
-    public static String reverseGeoCodeToShortAdd(Context context, double latitude, double longitude) throws IOException {
-        String reseponseAddress = "";
-        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
-        List<Address> listAddress = geocoder.getFromLocation(latitude, longitude, 1);
-
-        Address address = listAddress.get(0);
-        reseponseAddress = address.getAddressLine(0);
-
-        Log.d(TAG, "reverseGeoCode: 1." + address.getAddressLine(0));
-        Log.d(TAG, "reverseGeoCode: 2." + address.getLocality());
-        Log.d(TAG, "reverseGeoCode: 3." + address.getSubLocality());
-        Log.d(TAG, "reverseGeoCode: 4." + address.getAdminArea());
-        Log.d(TAG, "reverseGeoCode: 5." + address.getSubAdminArea());
-        Log.d(TAG, "reverseGeoCode: 6." + address.getPremises());
-        Log.d(TAG, "reverseGeoCode: 7." + address.getThoroughfare());
-        Log.d(TAG, "reverseGeoCode: 8." + address.getSubThoroughfare());
-        Log.d(TAG, "reverseGeoCode: 9." + address.getFeatureName());
-
         return reseponseAddress;
     }
 

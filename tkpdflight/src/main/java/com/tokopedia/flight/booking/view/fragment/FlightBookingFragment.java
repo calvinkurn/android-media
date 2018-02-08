@@ -30,8 +30,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
+import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
+import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.activity.FlightBookingPassengerActivity;
 import com.tokopedia.flight.booking.view.activity.FlightBookingPhoneCodeActivity;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerActionListener;
@@ -65,6 +67,8 @@ import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Observable;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -213,6 +217,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
         presenter.processGetCartData();
+        presenter.onGetProfileData();
     }
 
     @Override
@@ -227,7 +232,14 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
     @Override
     public void onChangePassengerData(FlightBookingPassengerViewModel viewModel) {
-        presenter.onChangePassengerButtonClicked(viewModel, flightBookingCartData, paramViewModel.getSearchParam().getDepartureDate());
+        String departureDate;
+        if (!paramViewModel.getSearchParam().getReturnDate().equals("") && paramViewModel.getSearchParam().getReturnDate() != null) {
+            departureDate = paramViewModel.getSearchParam().getReturnDate();
+        } else {
+            departureDate = paramViewModel.getSearchParam().getDepartureDate();
+        }
+
+        presenter.onChangePassengerButtonClicked(viewModel, flightBookingCartData, departureDate);
     }
 
     @Override
@@ -341,6 +353,17 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                 ),
                 REQUEST_CODE_PASSENGER
         );
+    }
+
+    @Override
+    public Observable<ProfileInfo> getProfileObservable() {
+        if (getActivity().getApplication() instanceof FlightModuleRouter
+                && ((FlightModuleRouter) getActivity().getApplication())
+                .getProfile() != null) {
+            return ((FlightModuleRouter) getActivity().getApplication())
+                    .getProfile();
+        }
+        return Observable.empty();
     }
 
     @Override
@@ -589,5 +612,25 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                     }
                 }
         );
+    }
+
+    @Override
+    public void setContactName(String fullname) {
+        etContactName.setText(fullname);
+    }
+
+    @Override
+    public void setContactEmail(String email) {
+        etContactEmail.setText(email);
+    }
+
+    @Override
+    public void setContactPhoneNumber(String phone) {
+        etPhoneNumber.setText(phone);
+    }
+
+    @Override
+    public void showContactEmailInvalidSymbolError(int resId) {
+        showMessageErrorInSnackBar(resId);
     }
 }

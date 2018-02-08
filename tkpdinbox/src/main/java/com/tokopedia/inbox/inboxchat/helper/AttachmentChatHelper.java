@@ -28,14 +28,10 @@ public class AttachmentChatHelper {
     private static final String DEFAULT = "1";
     public static final String IMAGE_ATTACHED = "2";
 
-    public void parse(MyChatViewModel myChatViewModel, ImageView view, TextView message
-            , ImageView action, ListReplyViewModel element, ChatRoomContract.View viewListener
-            , boolean dummy, boolean retry, TextView hour, View progressBarSendImage, ImageView chatStatus, String fullTime){
-        Attachment attachment = element.getAttachment();
-        String role = element.getRole();
-        String msg = element.getMsg();
-        if (element.getAttachment() != null) {
-            switch (attachment.getType()) {
+    public void parse(MyChatViewModel myChatViewModel,ImageView view, TextView message, ImageView action, ListReplyViewModel element, ChatRoomContract.View viewListener
+            , boolean dummy, boolean retry, TextView hour, View progressBarSendImage, ImageView chatStatus, String fullTime){ Attachment attachment= element.getAttachment(); String role= element.getRole(); String msg= element.getMsg() ;
+        if(element.getAttachment()!=null){
+            switch (attachment.getType()){
                 case DEFAULT:
                     parseType(view, message, attachment, role, msg, viewListener, fullTime);
                     break;
@@ -119,7 +115,7 @@ public class AttachmentChatHelper {
                 @Override
                 public void onClick(View view) {
                     if (attachment != null && attachment.getFallbackAttachment() != null) {
-                        viewListener.onGoToWebView(attachment.getAttributes().getUrl());
+                        viewListener.onGoToWebView(attachment.getAttributes().getUrl(), attachment.getId());
                     }
                 }
             });
@@ -147,7 +143,7 @@ public class AttachmentChatHelper {
                 spannable.setSpan(new ClickableSpan() {
                                       @Override
                                       public void onClick(View view) {
-                                          viewListener.onGoToWebView(fallback.getUrl());
+                                          viewListener.onGoToWebView(fallback.getUrl(), attachment.getId());
                                       }
 
                                       @Override

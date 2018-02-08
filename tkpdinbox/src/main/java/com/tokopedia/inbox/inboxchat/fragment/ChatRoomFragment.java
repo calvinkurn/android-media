@@ -297,7 +297,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                         try {
                             presenter.stopTyping(getArguments().getString(ChatRoomActivity
                                     .PARAM_MESSAGE_ID));
-                        } catch (JSONException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -390,7 +390,17 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void addTemplateString(String message) {
-        UnifyTracking.eventClickTemplate(TopChatTrackingEventLabel.Category.INBOX_CHAT,
+        String labelCategory = TopChatTrackingEventLabel.Category.INBOX_CHAT;
+        if (!getArguments().getBoolean(PARAM_WEBSOCKET)) {
+            if (getArguments().getString(PARAM_SENDER_TAG).equals(ChatRoomActivity.ROLE_SELLER)) {
+                labelCategory = TopChatTrackingEventLabel.Category.SHOP_PAGE;
+            }
+            if (getArguments().getString(SendMessageActivity.PARAM_CUSTOM_MESSAGE,"").length()>0){
+                labelCategory = TopChatTrackingEventLabel.Category.PRODUCT_PAGE;
+            }
+        }
+
+        UnifyTracking.eventClickTemplate(labelCategory,
                 TopChatTrackingEventLabel.Action.TEMPLATE_CHAT_CLICK,
                 TopChatTrackingEventLabel.Name.INBOX_CHAT);
         String text =  replyColumn.getText().toString();
@@ -416,10 +426,12 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToWebView(String url) {
+    public void onGoToWebView(String url, String id) {
         UnifyTracking.eventClickThumbnailMarketing(TopChatTrackingEventLabel.Category.INBOX_CHAT,
                 TopChatTrackingEventLabel.Action.CLICK_THUMBNAIL,
-                TopChatTrackingEventLabel.Name.INBOX_CHAT);
+                TopChatTrackingEventLabel.Name.INBOX_CHAT,
+                id
+                );
         KeyboardHandler.DropKeyboard(getActivity(), getView());
         startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(), url));
     }
@@ -712,6 +724,14 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     public void setUploadingMode(boolean mode) {
         uploading = mode;
+    }
+
+    @Override
+    public void scrollToBottomIf() {
+        int index = layoutManager.findLastCompletelyVisibleItemPosition();
+        if(Math.abs(index - adapter.getList().size()) < 3) {
+            recyclerView.scrollToPosition(adapter.getItemCount()-1);
+        }
     }
 
     private void addView(ReplyActionData replyData, String reply){

@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -194,7 +193,7 @@ public class ShopEditorActivity extends TActivity implements
             ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
                 @Override
                 public void onSuccess(ArrayList<String> imageUrls) {
-                    File file = writeImageToTkpdPath(compressImage(imageUrls.get(0)));
+                    File file = FileUtils.writeImageToTkpdPath(imageUrls.get(0));
                     Fragment fragment = supportFragmentManager.findFragmentByTag(CREATE_SHOP_FRAGMENT_TAG);
                     if (fragment != null) {
                         ((ShopCreateView) fragment).setShopAvatar(file.getPath());
@@ -207,7 +206,7 @@ public class ShopEditorActivity extends TActivity implements
 
                 @Override
                 public void onSuccess(String path) {
-                    File file = writeImageToTkpdPath(compressImage(path));
+                    File file = FileUtils.writeImageToTkpdPath(path);
                     Fragment fragment = supportFragmentManager.findFragmentByTag(CREATE_SHOP_FRAGMENT_TAG);
                     if (fragment != null && file != null) {
                         ((ShopCreateView) fragment).setShopAvatar(file.getPath());
@@ -249,59 +248,6 @@ public class ShopEditorActivity extends TActivity implements
         }
 
 
-    }
-
-    public File writeImageToTkpdPath(byte[] buffer) {
-        if (buffer != null) {
-            File directory = new File(FileUtils.getFolderPathForUpload(Environment.getExternalStorageDirectory().getAbsolutePath()));
-            if (!directory.exists()) {
-                directory.mkdirs();
-            }
-            File photo = new File(directory.getAbsolutePath() + "/image.jpg");
-
-            if (photo.exists()) {
-                photo.delete();
-            }
-
-            try {
-                FileOutputStream fos = new FileOutputStream(photo.getPath());
-
-                fos.write(buffer);
-                fos.close();
-            } catch (java.io.IOException e) {
-                return null;
-            }
-            return photo;
-        }
-        return null;
-    }
-
-    public byte[] compressImage(String path) {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        BitmapFactory.Options checksize = new BitmapFactory.Options();
-        checksize.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        checksize.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(path, checksize);
-        options.inSampleSize = ImageHandler.calculateInSampleSize(checksize);
-        Bitmap tempPic = BitmapFactory.decodeFile(path, options);
-        ByteArrayOutputStream bao = new ByteArrayOutputStream();
-        Bitmap tempPicToUpload = null;
-        if (tempPic != null) {
-            try {
-                tempPic = new ImageHandler().RotatedBitmap(tempPic, path);
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-            if (tempPic.getWidth() > 2048 || tempPic.getHeight() > 2048) {
-                tempPicToUpload = new ImageHandler().ResizeBitmap(tempPic, 2048);
-            } else {
-                tempPicToUpload = tempPic;
-            }
-            tempPicToUpload.compress(Bitmap.CompressFormat.JPEG, 70, bao);
-            return bao.toByteArray();
-        }
-        return null;
     }
 
     private void createCustomToolbar(String shopTitle) {

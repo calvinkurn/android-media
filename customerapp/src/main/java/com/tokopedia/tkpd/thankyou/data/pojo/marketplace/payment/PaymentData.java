@@ -22,6 +22,9 @@ public class PaymentData {
     @SerializedName("payment_method")
     @Expose
     private PaymentMethod paymentMethod;
+    @SerializedName("payment_amount")
+    @Expose
+    private float paymentAmount;
 
     private String coupon;
 
@@ -63,5 +66,13 @@ public class PaymentData {
 
     public void setCoupon(String coupon) {
         this.coupon = coupon;
+    }
+
+    public float getPaymentAmount() {
+        return paymentAmount;
+    }
+
+    public void setPaymentAmount(float paymentAmount) {
+        this.paymentAmount = paymentAmount;
     }
 }
