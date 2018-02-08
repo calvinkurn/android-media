@@ -118,7 +118,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 //    protected TabLayout indicator;
 
     protected LocalCacheHandler cache;
-    private GetUserAttributesUseCase getUserAttributesUseCase;
+//    private GetUserAttributesUseCase getUserAttributesUseCase;
     private AnalyticsCacheHandler cacheHandler;
     private CompositeSubscription subscription = new CompositeSubscription();
 
@@ -624,7 +624,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
         isUserFirstTimeLogin = !SessionHandler.isV4Login(this);
 
-        setScrollFeedListener();
+//        setScrollFeedListener();
         invalidateOptionsMenu();
         MainApplication.setCurrentActivity(this);
         super.onResume();
@@ -635,10 +635,10 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     }
 
     private void setScrollFeedListener() {
-        if (sessionHandler != null
-                && sessionHandler.isV4Login()
+//        if (sessionHandler != null
+//                && sessionHandler.isV4Login()
 //                && indicator != null
-                ) {
+//                ) {
 //            indicator.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
 //                @Override
 //                public void onTabSelected(TabLayout.Tab tab) {
@@ -659,7 +659,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 //                    }
 //                }
 //            });
-        }
+//        }
     }
 
     @Override
