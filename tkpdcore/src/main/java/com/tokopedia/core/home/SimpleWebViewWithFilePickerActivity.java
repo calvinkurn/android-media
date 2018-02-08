@@ -21,7 +21,7 @@ public class SimpleWebViewWithFilePickerActivity extends TkpdCoreWebViewActivity
     }
 
     public static Intent getIntentWithTitle(Context context, String url, String title) {
-        Intent intent = new Intent(context, SimpleWebViewWithFilePickerFragment.class);
+        Intent intent = new Intent(context, SimpleWebViewWithFilePickerActivity.class);
         intent.putExtra(EXTRA_URL, url);
         intent.putExtra(EXTRA_TITLE, title);
         return intent;
