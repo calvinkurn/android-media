@@ -12,6 +12,10 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import retrofit2.http.Url;
 
 /**
  * Created by ricoharisin on 8/23/16.
@@ -21,34 +25,59 @@ public class AnalyticsLog {
     private static final String TOKEN_LOG_NOTIFIER = "2719adf1-18c8-4cc6-8c92-88a07594f7db";
 
     public static void logForceLogout(String url) {
+        String baseUrl = getBaseUrl(url);
+
         AnalyticsLog.log("ErrorType=Force Logout!"
                 + " UserID=" + (SessionHandler.getLoginID(MainApplication.getAppContext())
                 .equals("") ? "0" : SessionHandler.getLoginID(MainApplication.getAppContext()))
                 + " Url=" + "'" + url + "'"
+                + " BaseUrl=" + "'" + baseUrl + "'"
                 + " AppPackage=" + GlobalConfig.getPackageApplicationName()
                 + " AppVersion=" + GlobalConfig.VERSION_NAME
                 + " AppCode=" + GlobalConfig.VERSION_CODE
                 + " OSVersion=" + Build.VERSION.RELEASE
                 + " DeviceModel=" + android.os.Build.MODEL
                 + " DeviceId=" + "'" + GCMHandler.getRegistrationId(MainApplication.getAppContext()) + "'"
+                + " Environment=" + isStaging(baseUrl)
 
         );
     }
 
     public static void logNetworkError(String url, int errorCode) {
+        String baseUrl = getBaseUrl(url);
+
         AnalyticsLog.log("ErrorType=Error Network! "
                 + " ErrorCode=" + errorCode
                 + " UserID=" + (SessionHandler.getLoginID(MainApplication.getAppContext())
                 .equals("") ? "0" : SessionHandler.getLoginID(MainApplication.getAppContext()))
                 + " Url=" + "'" + url + "'"
+                + " BaseUrl=" + "'" + baseUrl + "'"
                 + " AppPackage=" + GlobalConfig.getPackageApplicationName()
                 + " AppVersion=" + GlobalConfig.VERSION_NAME
                 + " AppCode=" + GlobalConfig.VERSION_CODE
                 + " OSVersion=" + Build.VERSION.RELEASE
                 + " DeviceModel=" + android.os.Build.MODEL
                 + " DeviceId=" + "'" + GCMHandler.getRegistrationId(MainApplication.getAppContext()) + "'"
+                + " Environment=" + isStaging(baseUrl)
+
 
         );
+    }
+
+
+    private static String getBaseUrl(String url) {
+        try {
+            URL stringUrl = new URL(url);
+            return stringUrl.getProtocol() + "://" + stringUrl.getHost() + stringUrl
+                    .getPath();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return url;
+        }
+    }
+
+    private static String isStaging(String baseUrl) {
+        return baseUrl.contains("staging") ? "Staging" : "Production";
     }
 
     public static void logNotification(String notificationId, String notificationCode) {
