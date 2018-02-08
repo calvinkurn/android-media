@@ -6,8 +6,14 @@ package com.tokopedia.tokocash.network.api;
 
 public interface WalletUrl {
 
-    String ACCOUNTS_DOMAIN = "https://accounts.tokopedia.com/";
-    String WALLET_DOMAIN = "https://www.tokocash.com/";
+    class BaseUrl {
+        public static String ACCOUNTS_DOMAIN = "https://accounts.tokopedia.com/";
+        public static String WALLET_DOMAIN = "https://www.tokocash.com/";
+    }
+
+    class KeyHmac {
+        public static String HMAC_PENDING_CASHBACK = "CPAnAGpC3NIg7ZSj";
+    }
 
 
     class Account {
