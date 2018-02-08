@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:padding="@dimen/page_margin">
 
     <android.support.v7.widget.CardView
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         app:cardUseCompatPadding="true">
 
         <com.tokopedia.core.customwidget.SquareImageView
@@ -23,6 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:layout_marginLeft="@dimen/margin_ms"
         android:orientation="vertical">
 
         <TextView
@@ -39,8 +41,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:visibility="gone"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/badge"
@@ -56,21 +58,24 @@
                 android:textSize="12sp"
                 tools:text="Official Store" />
         </LinearLayout>
-        
+
         <ImageView
             android:id="@+id/reputation_medal"
             android:layout_width="wrap_content"
             android:layout_height="18dp"
-            android:padding="2dp"
-            android:adjustViewBounds="true"/>
+            android:adjustViewBounds="true"
+            android:padding="2dp" />
     </LinearLayout>
 
-    <Button
+    <TextView
         android:id="@+id/btn_ubah"
         android:layout_width="wrap_content"
         android:layout_height="32dp"
         android:background="@drawable/bg_setting_myshop_btn"
         android:drawableLeft="@drawable/ic_menu_general_setting"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
         android:text="@string/ubah"
-        android:textAllCaps="false" />
+        android:textAllCaps="false"
+        android:textStyle="bold" />
 </LinearLayout>

@@ -26,7 +26,7 @@ public class MyShopViewHolder extends AbstractViewHolder<MyShopViewModel> {
 
     TextView titleTxt;
     ImageView imageView;
-    Button button;
+    TextView button;
     ImageView reputationMedal;
     ImageView badgeImage;
     TextView officialTxt;
