@@ -3,7 +3,7 @@ package com.tokopedia.tkpd.campaign.di;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.core.OkHttpFactory;
-import com.tokopedia.tkpd.campaign.domain.barcode.CampaignDataRepository;
+import com.tokopedia.tkpd.campaign.domain.CampaignDataRepository;
 import com.tokopedia.tkpd.campaign.domain.barcode.PostBarCodeDataUseCase;
 import com.tokopedia.tkpd.campaign.source.CampaignData;
 import com.tokopedia.tkpd.campaign.source.CampaignDataFactory;

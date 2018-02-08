@@ -73,15 +73,10 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.beranda.presentation.view.fragment.HomeFragment;
-<<<<<<< HEAD
 import com.tokopedia.tkpd.campaign.configuration.ShakeDetector;
-import com.tokopedia.tkpd.campaign.view.BarcodeCampaignActivity;
 import com.tokopedia.tkpd.campaign.view.CapturedAudioCampaignActivity;
 import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
-=======
 import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
-
->>>>>>> origin/F_Barcode_campaign
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
@@ -200,13 +195,10 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         initStateFragment = getDefaultTabPosition();
         Log.d(TAG, messageTAG + "onCreate");
         super.onCreate(arg0);
-<<<<<<< HEAD
 
         SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         ShakeDetector sd = new ShakeDetector(this);
         sd.start(sensorManager);
-=======
->>>>>>> origin/F_Barcode_campaign
         progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
         if (arg0 != null) {
             //be16268	commit id untuk memperjelas yang bawah

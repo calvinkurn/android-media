@@ -29,7 +29,7 @@ public class CampaignData implements CampaignDataRepository {
         return campaignDataFactory.createCloudCampaignDataStore().getCampaign(params);
     }
     @Override
-    public Observable<CampaignResponseEntity> getCampaignFromAudio(TKPDMapParam<String, Object> params) {
+    public Observable<CampaignResponseEntity> getCampaignFromAudio(HashMap<String, Object> params) {
         return campaignDataFactory.createCloudCampaignDataStore().getCampaignFromAudio(params);
     }
 }

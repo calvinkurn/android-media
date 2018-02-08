@@ -47,7 +47,7 @@ public class CapturedAudioCampaignActivity extends BasePresenterActivity impleme
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_compaign_qr_scan;
+        return 0;
     }
 
     @Override
@@ -65,6 +65,7 @@ public class CapturedAudioCampaignActivity extends BasePresenterActivity impleme
     protected void initVar() {
         try {
             startRecording();
+            Toast.makeText(this,"Recording Start",Toast.LENGTH_LONG).show();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -86,7 +87,14 @@ public class CapturedAudioCampaignActivity extends BasePresenterActivity impleme
 
     @Override
     public void onRecordComplete() {
+        Toast.makeText(this,"Recording Complete",Toast.LENGTH_LONG).show();
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Toast.makeText(this,"Recording in Progress",Toast.LENGTH_LONG).show();
     }
 }
 

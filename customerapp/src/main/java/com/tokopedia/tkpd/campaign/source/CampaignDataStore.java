@@ -25,7 +25,7 @@ public class CampaignDataStore {
         return this.mCampaignAPI.getCampaign(param);
     }
 
-    public Observable<CampaignResponseEntity> getCampaignFromAudio(TKPDMapParam<String, Object> param) {
+    public Observable<CampaignResponseEntity> getCampaignFromAudio(HashMap<String, Object> param) {
         return this.mCampaignAPI.getCampaignAudio(param);
     }
 }
