@@ -15,5 +15,12 @@
             android:label="@string/shop_info_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".note.view.activity.ShopNoteDetailActivity"
+            android:exported="true"
+            android:label="@string/shop_info_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
     </application>
 </manifest>

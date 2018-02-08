@@ -2,6 +2,7 @@ package com.tokopedia.shop.note.data.source;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.shop.note.data.source.cloud.ShopNoteCloudDataSource;
+import com.tokopedia.shop.note.data.source.cloud.model.ShopNoteDetail;
 import com.tokopedia.shop.note.data.source.cloud.model.ShopNoteList;
 import com.tokopedia.shop.note.data.source.cloud.model.ShopNote;
 
@@ -29,6 +30,15 @@ public class ShopNoteDataSource {
             @Override
             public Observable<List<ShopNote>> call(Response<DataResponse<ShopNoteList>> dataResponse) {
                 return Observable.just(dataResponse.body().getData().getNotes());
+            }
+        });
+    }
+
+    public Observable<ShopNoteDetail> getShopNoteDetail(String shopNoteDetail){
+        return shopNoteCloudDataSource.getShopNoteDetail(shopNoteDetail).flatMap(new Func1<Response<DataResponse<ShopNoteDetail>>, Observable<ShopNoteDetail>>() {
+            @Override
+            public Observable<ShopNoteDetail> call(Response<DataResponse<ShopNoteDetail>> dataResponseResponse) {
+                return Observable.just(dataResponseResponse.body().getData());
             }
         });
     }

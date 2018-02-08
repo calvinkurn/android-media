@@ -89,7 +89,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         globalCacheManager = new GlobalCacheManager();
 
         HockeyAppHelper.handleLogin(this);
-        HockeyAppHelper.checkForUpdate(this);
     }
 
     @Override
@@ -110,7 +109,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         unregisterForceLogoutReceiver();
         MainApplication.setActivityState(0);
         MainApplication.setActivityname(null);
-        HockeyAppHelper.unregisterManager();
     }
 
     @Override
@@ -141,8 +139,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        HockeyAppHelper.unregisterManager();
 
         sessionHandler = null;
         gcmHandler = null;
