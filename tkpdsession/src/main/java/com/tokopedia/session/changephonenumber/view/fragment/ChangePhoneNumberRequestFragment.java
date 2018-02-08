@@ -427,6 +427,7 @@ public class ChangePhoneNumberRequestFragment
             NetworkErrorHelper.showSnackbar(getActivity());
         else
             NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+        listener.shouldHandleBackPress(true);
     }
 
     @Override

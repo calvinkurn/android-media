@@ -219,8 +219,10 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<ChangePhoneNu
         try {
             reviewPhotos.put(PARAM_KTP_IMAGE_ID,
                     changePhoneNumberRequestModel.getUploadIdImageModel().getUploadImageData().getPicObj());
-            reviewPhotos.put(PARAM_BANKBOOK_IMAGE_ID,
-                    changePhoneNumberRequestModel.getUploadBankBookImageModel().getUploadImageData().getPicObj());
+            if(requestParams.getString(PARAM_BANK_BOOK_IMAGE_PATH, "") != "") {
+                reviewPhotos.put(PARAM_BANKBOOK_IMAGE_ID,
+                        changePhoneNumberRequestModel.getUploadBankBookImageModel().getUploadImageData().getPicObj());
+            }
         } catch (JSONException e) {
             throw new ErrorMessageException(MainApplication.getAppContext().getString(R.string.default_error_upload_image));
         }
