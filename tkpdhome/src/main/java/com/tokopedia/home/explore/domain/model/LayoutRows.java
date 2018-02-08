@@ -3,7 +3,10 @@ package com.tokopedia.home.explore.domain.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.Map;
 
 /**
  * Created by errysuprayogi on 2/2/18.
@@ -141,5 +144,26 @@ public class LayoutRows implements Parcelable {
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    public Map<String, Object> getHomePageEnhanceDataLayer(int position, String customName) {
+        return DataLayer.mapOf(
+                "event", "promoClick",
+                "eventCategory", "homepage",
+                "eventAction", "beli ini itu favorite category click",
+                "eventLabel", String.format("%s - %s", getCategoryId(), getName()),
+                "ecommerce", DataLayer.mapOf(
+                        "promoClick", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                "id", getId(),
+                                                "name", customName,
+                                                "creative", getName(),
+                                                "position", String.valueOf(position)
+                                        )
+                                )
+                        )
+                )
+        );
     }
 }

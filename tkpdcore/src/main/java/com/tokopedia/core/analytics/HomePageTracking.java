@@ -110,4 +110,12 @@ public class HomePageTracking extends TrackingUtils {
                 label
         ).getEvent());
     }
+
+    public static void eventEnhancedImpressionFavoriteCategory(Map<String, Object> data) {
+        eventTrackingEnhancedEcommerce(data);
+    }
+
+    public static void eventEnhancedClickFavoriteCategory(Map<String, Object> data) {
+        eventTrackingEnhancedEcommerce(data);
+    }
 }

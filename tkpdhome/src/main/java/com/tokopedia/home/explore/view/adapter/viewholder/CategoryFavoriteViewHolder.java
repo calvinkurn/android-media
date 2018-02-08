@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.home.R;
 import com.tokopedia.home.explore.domain.model.LayoutRows;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
@@ -41,6 +42,7 @@ public class CategoryFavoriteViewHolder extends AbstractViewHolder<CategoryFavor
     private ItemAdapter adapter;
     private int spanCount = 2;
     private List<LayoutRows> rowModelList = new ArrayList<>();
+    private boolean impressed;
 
 
     public CategoryFavoriteViewHolder(View itemView, CategoryAdapterListener listener) {
@@ -53,6 +55,7 @@ public class CategoryFavoriteViewHolder extends AbstractViewHolder<CategoryFavor
         recyclerView.setLayoutManager(new GridLayoutManager(context, spanCount,
                 GridLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(adapter);
+        impressed = false;
     }
 
     @Override
@@ -60,6 +63,20 @@ public class CategoryFavoriteViewHolder extends AbstractViewHolder<CategoryFavor
         titleTxt.setText(element.getTitle());
         rowModelList.addAll(element.getItemList());
         adapter.setData(rowModelList);
+        if (!isImpressed()) {
+            HomePageTracking.eventEnhancedImpressionFavoriteCategory(
+                element.getHomePageEnhanceDataLayer()
+            );
+            setImpressed(true);
+        }
+    }
+
+    public void setImpressed(boolean impressed) {
+        this.impressed = impressed;
+    }
+
+    public boolean isImpressed() {
+        return impressed;
     }
 
     private class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
@@ -90,6 +107,12 @@ public class CategoryFavoriteViewHolder extends AbstractViewHolder<CategoryFavor
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    HomePageTracking.eventEnhancedClickFavoriteCategory(
+                            rowModel.getHomePageEnhanceDataLayer(
+                                    position + 1,
+                                    "/explore beli - p1 - Kategori Favorit Anda"
+                            )
+                    );
                     if (rowModel.getType() != null && rowModel.getType().equalsIgnoreCase(MARKETPLACE)) {
                         listener.onMarketPlaceItemClicked(rowModel);
                     } else if (rowModel.getType() != null && rowModel.getType().equalsIgnoreCase(DIGITAL)) {
