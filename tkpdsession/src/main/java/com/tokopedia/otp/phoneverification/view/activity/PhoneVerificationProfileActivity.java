@@ -32,7 +32,8 @@ public class PhoneVerificationProfileActivity extends TActivity implements HasCo
 
 
         PhoneVerificationProfileFragment fragmentHeader = PhoneVerificationProfileFragment.createInstance();
-        PhoneVerificationFragment fragment = PhoneVerificationFragment.createInstance(getPhoneVerificationListener());
+        PhoneVerificationFragment fragment = PhoneVerificationFragment.createInstance
+                (getPhoneVerificationListener(), false);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if (getFragmentManager().findFragmentById(R.id.container_header) == null) {
             fragmentTransaction.add(R.id.container_header, fragmentHeader, fragmentHeader.getClass().getSimpleName());

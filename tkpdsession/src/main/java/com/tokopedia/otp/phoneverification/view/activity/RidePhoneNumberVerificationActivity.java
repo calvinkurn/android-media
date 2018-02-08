@@ -55,7 +55,8 @@ public class RidePhoneNumberVerificationActivity extends BasePresenterActivity {
 
     @Override
     protected void setActionVar() {
-        addFragment(R.id.container, PhoneVerificationFragment.createInstance(getPhoneVerificationListener()));
+        addFragment(R.id.container, PhoneVerificationFragment.createInstance
+                (getPhoneVerificationListener(), false));
     }
 
     private void addFragment(int containerViewId, Fragment fragment) {
