@@ -26,6 +26,7 @@ import com.tokopedia.design.R;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 /**
  * Created by by yu on 2016/11/10
@@ -33,6 +34,8 @@ import java.lang.reflect.Field;
  */
 
 public class BottomNavigation extends BottomNavigationView {
+
+    private static String INIT_BACKSTACK = "0";
 
     private int mShiftAmount;
     private float mScaleUpFactor;
@@ -52,6 +55,9 @@ public class BottomNavigation extends BottomNavigationView {
     private BottomNavigationItemView[] mButtons;
 
     private static boolean isNavigationItemClicking = false;
+
+    private ArrayList<String> backStack = new ArrayList<>(); // handle backstack
+    boolean isHandleBackStackEvent = true;
 
     public BottomNavigation(Context context) {
         super(context);
@@ -734,11 +740,10 @@ public class BottomNavigation extends BottomNavigationView {
                 bnve.setCurrentItem(position);
             if (viewPagerPageChangeListener != null)
                 viewPagerPageChangeListener.onPageSelected(position);
-        }
-    }
 
-    public interface TkpdOnNavigationItemSelectedListener {
-        void onNavigationItemSelected(@NonNull MenuItem item);
+            if (isHandleBackStackEvent)
+                configureBackStackEvent(position);
+        }
     }
 
     /**
@@ -851,4 +856,51 @@ public class BottomNavigation extends BottomNavigationView {
         mMenuView.updateMenuView();
     }
 
+    /**
+     * Handle back stack event
+     */
+    public void setHandleBackStackEvent(boolean handleBackStackEvent) {
+        isHandleBackStackEvent = handleBackStackEvent;
+    }
+
+    private void configureBackStackEvent(int position) {
+        String state = String.valueOf(position);
+        if (indexOf(state) > 0)
+            backStack.remove(indexOf(state));
+        backStack.add(state);
+    }
+
+    private int indexOf(String position) {
+        for (int i = backStack.size()-1; i >= 0; i--) {
+            if ((backStack.get(i).equals(position)))
+                return i;
+        }
+        return 0;
+    }
+
+    public void initBackStack() {
+        backStack.clear();
+        backStack.add(INIT_BACKSTACK);
+    }
+
+    public ArrayList<String> getBackStacks() {
+        return backStack;
+    }
+
+    public int getBackStackEntryCount() {
+        return backStack.size();
+    }
+
+    public void handleBackPressed() {
+        if (backStack.size() > 0) {
+            backStack.remove(backStack.size()-1);
+
+            int item = Integer.parseInt(backStack.get(backStack.size()-1));
+            mViewPager.setCurrentItem(item);
+
+            if (backStack.size() > 1)
+                if (backStack.get(1).equals(INIT_BACKSTACK))
+                    backStack.remove(1);
+        }
+    }
 }
