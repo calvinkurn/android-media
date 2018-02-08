@@ -39,8 +39,6 @@ public class EncryptionUtils {
 			cipher.init(Cipher.DECRYPT_MODE, skeySpec, ivs);
 			byte[] decryptedData = cipher.doFinal(data);
 			decode_result = new String(decryptedData);
-			//decode_result = Base64.encodeToString(encryptedData, 0);
-			//decode_result.replace("\n", "");
 		}
 		catch (Exception e) {
 			e.printStackTrace();
