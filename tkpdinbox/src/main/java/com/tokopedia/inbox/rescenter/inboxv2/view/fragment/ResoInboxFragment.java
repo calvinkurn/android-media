@@ -294,7 +294,6 @@ public class ResoInboxFragment
     public void onErrorGetInbox(String err) {
         dismissProgressBar();
         showFullError(err);
-        showErrorWithRetry(err);
     }
 
     @Override
