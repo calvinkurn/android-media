@@ -31,10 +31,8 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
         if (appNotificationReceiver != null) {
             appNotificationReceiver.init(getApplication());
 
-            if (MoEngageNotificationUtils.isFromMoEngagePlatform(remoteMessage.getData())) {
-                if(showPromoNotification()) {
-                    appNotificationReceiver.onMoengageNotificationReceived(remoteMessage);
-                }
+            if (MoEngageNotificationUtils.isFromMoEngagePlatform(remoteMessage.getData()) && showPromoNotification()) {
+                appNotificationReceiver.onMoengageNotificationReceived(remoteMessage);
             } else {
                 AnalyticsLog.logNotification(remoteMessage.getFrom(), data.getString(Constants.ARG_NOTIFICATION_CODE, ""));
                 appNotificationReceiver.onNotificationReceived(remoteMessage.getFrom(), data);
