@@ -96,7 +96,7 @@ public class CartListPresenter implements ICartListPresenter {
     @Override
     public void processToShipmentStep() {
         List<CartItemData> cartItemDataList = extractCartItemList(view.getFinalCartList());
-        Intent intent = CartShipmentActivity.createInstanceMultipleAddress(
+        Intent intent = CartShipmentActivity.createInstanceSingleAddress(
                 view.getActivityContext(), cartItemDataList
         );
         view.navigateToActivity(intent);
