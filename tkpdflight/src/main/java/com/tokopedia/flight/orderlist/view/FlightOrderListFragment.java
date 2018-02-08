@@ -1,17 +1,20 @@
 package com.tokopedia.flight.orderlist.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
@@ -30,6 +33,7 @@ import com.tokopedia.flight.orderlist.presenter.FlightOrderListPresenter;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapter;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapterTypeFactory;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderTypeFactory;
+import com.tokopedia.flight.orderlist.view.fragment.FlightResendETicketDialogFragment;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderBaseViewModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 
@@ -46,6 +50,9 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         implements FlightOrderListContract.View,
         QuickSingleFilterView.ActionListener,
         FlightOrderAdapter.OnAdapterInteractionListener {
+
+    private static final int REQUEST_CODE_RESEND_ETICKET_DIALOG = 1;
+    private static final String RESEND_ETICKET_DIALOG_TAG = "resend_eticket_dialog_tag";
     public static final int PER_PAGE = 10;
     @Inject
     FlightOrderListPresenter presenter;
@@ -120,7 +127,9 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
 
     @Override
     public void navigateToInputEmailForm(String invoiceId, String userId) {
-
+        DialogFragment dialogFragment = FlightResendETicketDialogFragment.newInstace(invoiceId, userId);
+        dialogFragment.setTargetFragment(this, REQUEST_CODE_RESEND_ETICKET_DIALOG);
+        dialogFragment.show(getFragmentManager().beginTransaction(), RESEND_ETICKET_DIALOG_TAG);
     }
 
     @Override
@@ -189,5 +198,18 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     @Override
     protected String getMessageFromThrowable(Context context, Throwable t) {
         return FlightErrorUtil.getMessageFromException(context, t);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case REQUEST_CODE_RESEND_ETICKET_DIALOG:
+                if (resultCode == Activity.RESULT_OK) {
+                    Toast.makeText(getContext(), "Berhasil, Berhasil, Hore", Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
     }
 }
