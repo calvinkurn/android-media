@@ -115,6 +115,7 @@ import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
+import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
@@ -158,10 +159,10 @@ import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolFollowingListActivity;
+import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
+import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
-import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.activity.ReputationProduct;
-import com.tokopedia.tkpd.tkpdreputation.shopreputation.ShopReputationList;
 import com.tokopedia.tkpd.truecaller.TruecallerActivity;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
@@ -606,10 +607,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass,
                                                 Bundle data, String notifTitle) {
-        mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(
-                ((ReputationRouter) MainApplication.getAppContext())
-                        .getInboxReputationIntent(MainApplication.getAppContext())
-        );
+        mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(getInboxReputationIntent(this));
         mNotificationPass.classParentStack = InboxReputationActivity.class;
         mNotificationPass.title = notifTitle;
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
@@ -623,13 +621,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public android.app.Fragment getShopReputationFragment() {
-        return ShopReputationList.create();
+    public Fragment getShopReputationFragment(String shopId, String shopDomain) {
+        return TkpdReputationInternalRouter.getReviewShopFragment(shopId, shopDomain);
     }
 
     @Override
-    public Intent getProductReputationIntent(Context context) {
-        return new Intent(context, ReputationProduct.class);
+    public Intent getProductReputationIntent(Context context, String productId, String productName) {
+        return TkpdReputationInternalRouter.getProductReviewIntent(context, productId, productName);
     }
 
     @Override
@@ -1269,8 +1267,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public BroadcastReceiver getBroadcastReceiverTokocashPending() {
         return new TokocashPendingDataBroadcastReceiver();
     }
-                
-    public GetShopInfoUseCase getShopInfo(){    
-            return getShopComponent().getShopInfoUseCase();
+
+    public GetShopInfoUseCase getShopInfo(){
+        return getShopComponent().getShopInfoUseCase();
     }
 }

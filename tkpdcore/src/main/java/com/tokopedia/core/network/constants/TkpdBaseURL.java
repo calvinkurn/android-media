@@ -928,6 +928,7 @@ public class TkpdBaseURL {
     public static class Reputation {
         public static final String URL_REPUTATION = BASE_DOMAIN + "reputationapp/";
         public static final String PATH_SEND_REPUTATION_SMILEY = "reputation/api/v1/insert";
+        public static final String REPUTATIONAPP_REVIEW_API = "reputationapp/review/api/";
         private static final String REPUTATION_VERSION = "v1";
         public static final String PATH_GET_INBOX_REPUTATION = "reputation/api/"
                 + REPUTATION_VERSION + "/inbox";
@@ -952,6 +953,16 @@ public class TkpdBaseURL {
                 + REPUTATION_VERSION + "/likedislike";
         public static final String PATH_LIKE_DISLIKE_REVIEW = "review/api/"
                 + REPUTATION_VERSION + "/likedislike";
+        public static final String PATH_GET_REVIEW_PRODUCT_LIST = REPUTATIONAPP_REVIEW_API
+                + REPUTATION_VERSION + "/product";
+        public static final String PATH_GET_REVIEW_SHOP_LIST = REPUTATIONAPP_REVIEW_API
+                + REPUTATION_VERSION + "/shop";
+        public static final String PATH_GET_REVIEW_HELPFUL_LIST = REPUTATIONAPP_REVIEW_API
+                + REPUTATION_VERSION + "/mosthelpful";
+        public static final String PATH_GET_REVIEW_PRODUCT_RATING = REPUTATIONAPP_REVIEW_API
+                + REPUTATION_VERSION + "/rating";
+        public static final String PATH_GET_REVIEW_PRODUCT_COUNT = REPUTATIONAPP_REVIEW_API
+                + REPUTATION_VERSION + "/total/p/";
     }
 
     public class TkpdCart {
