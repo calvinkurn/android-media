@@ -29,4 +29,7 @@ public interface IPromoCouponPresenter {
     void submitVoucher(CouponData couponData);
 
     void submitDigitalVoucher(CouponData couponData, String categoryId);
+
+    void detachView();
+
 }

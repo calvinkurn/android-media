@@ -111,4 +111,24 @@
         <key>notification_logger</key>
         <value>false</value>
     </entry>
+    <entry>
+        <key>app_refferal_content</key>
+        <value>Ayo share kode ini dan dapatkan voucher cashback TokoCash 25% hingga Rp 20.000 saat mereka melakukan transaksi pertama di Tokopedia.</value>
+    </entry>
+    <entry>
+        <key>app_share_welcome_message</key>
+        <value>Hai %s, kamu mendapatkan kode referral dari %s. Ayo gunakan kode ini saat melakukan transaksi pertama di Tokopedia &amp; nikmati cashback TokoCash 50% hingga Rp50.000.</value>
+    </entry>
+    <entry>
+        <key>app_referral_title</key>
+        <value>Dapatkan Tokocash</value>
+    </entry>
+    <entry>
+        <key>app_referral_howitworks</key>
+        <value> Info lebih lanjut</value>
+    </entry>
+    <entry>
+        <key>app_show_referral_button</key>
+        <value>false</value>
+    </entry>
 </defaultsMap>

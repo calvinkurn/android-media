@@ -38,7 +38,10 @@ import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.core.var.TkpdState;
 
-
+/**
+ * Use webview fragment from tkpd abstraction
+ */
+@Deprecated
 public class FragmentGeneralWebView extends Fragment implements BaseWebViewClient.WebViewCallback,
         View.OnKeyListener {
     public static final String EXTRA_URL = "url";
