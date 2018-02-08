@@ -252,15 +252,17 @@ public class ShopTalkAdapter extends BaseLinearRecyclerViewAdapter {
     private int getMenuID(int position) {
         int menuID;
         ShopTalk talk = list.get(position);
-        if (talk.getTalkShopId().equals(SessionHandler.getShopID(context))) {
-            if (SessionHandler.getLoginID(context).equals(talk.getTalkUserId())) {
+        SessionHandler sessionHandler = new SessionHandler(context);
+        String loginUserID = sessionHandler.getLoginID();
+        if (talk.getTalkShopId().equals(sessionHandler.getShopID(context))) {
+            if (loginUserID.equals(talk.getTalkUserId())) {
                 menuID = R.menu.delete_menu;
             }
             else {
                 menuID = R.menu.report_menu;
             }
         } else {
-            if (SessionHandler.getLoginID(context).equals(talk.getTalkUserId())) {
+            if (loginUserID.equals(talk.getTalkUserId())) {
                 if (talk.getTalkFollowStatus() == 1) {
                     menuID = R.menu.unfollow_delete_menu;
                 } else {
