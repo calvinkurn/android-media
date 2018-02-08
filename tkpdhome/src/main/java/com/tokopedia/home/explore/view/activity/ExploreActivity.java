@@ -3,6 +3,7 @@ package com.tokopedia.home.explore.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
@@ -16,6 +17,8 @@ import android.widget.TextView;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.home.R;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
@@ -39,6 +42,8 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
     ExplorePresenter presenter;
 
     private ExploreFragmentAdapter fragmentAdapter;
+    private SnackbarRetry messageSnackbar;
+    private CoordinatorLayout root;
 
     @DeepLink(Constants.Applinks.EXPLORE)
     public static Intent getCallingIntent(Context context, Bundle extras) {
@@ -82,7 +87,27 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
 
     @Override
     public void showNetworkError(String message) {
+        if (fragmentAdapter.getCount() > 0) {
+            if (messageSnackbar == null) {
+                messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(this,
+                        new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.getData();
+                    }
+                });
+            }
+            messageSnackbar.showRetrySnackbar();
+        } else {
+            NetworkErrorHelper.showEmptyState(this, root, message,
+                    new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
 
+                            presenter.getData();
+                        }
+                    });
+        }
     }
 
     @Override
@@ -102,6 +127,7 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
         super.setupLayout(savedInstanceState);
+        root = findViewById(R.id.root);
         tabLayout.setupWithViewPager(viewPager);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -138,7 +164,7 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
     }
 
     private void initSection(String section) {
-        switch (section){
+        switch (section) {
             case "beli":
                 viewPager.setCurrentItem(0);
                 break;
