@@ -49,12 +49,18 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
     private View itemContainer2;
     private View itemContainer3;
     private CountDownView countDownView;
+    private String sprintSaleExpiredText;
 
     public DynamicChannelSprintViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
         context = itemView.getContext();
         this.listener = listener;
+        initResources(itemView.getContext());
         findViews(itemView);
+    }
+
+    private void initResources(Context context) {
+        sprintSaleExpiredText = context.getString(R.string.sprint_sale_expired_text);
     }
 
     private void findViews(View itemView) {
@@ -82,8 +88,14 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
     public void bind(final DynamicChannelViewModel element) {
         final DynamicHomeChannel.Channels channel = element.getChannel();
         if (DynamicHomeChannel.Channels.LAYOUT_SPRINT.equals(channel.getLayout())) {
-            countDownView.setVisibility(View.VISIBLE);
-            countDownView.setup(getExpiredTime(element));
+            Date expiredTime = getExpiredTime(element);
+            if (!isExpired(expiredTime)) {
+                countDownView.setVisibility(View.VISIBLE);
+                countDownView.setup(expiredTime);
+            } else {
+                homeChannelTitle.setText(sprintSaleExpiredText);
+                countDownView.setVisibility(View.GONE);
+            }
         } else {
             countDownView.setVisibility(View.GONE);
         }
@@ -140,6 +152,10 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 listener.onDynamicChannelClicked(channel.getGrids()[2].getApplink());
             }
         });
+    }
+
+    private boolean isExpired(Date expiredTime) {
+        return new Date().after(expiredTime);
     }
 
     private Date getExpiredTime(DynamicChannelViewModel model) {
