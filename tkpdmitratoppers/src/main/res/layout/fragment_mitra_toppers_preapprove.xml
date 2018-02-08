@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/vg_mitra_toppers_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:divider="@drawable/bg_line_separator"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/margin_small"
+    android:paddingTop="@dimen/margin_small"
+    android:showDividers="beginning|middle|end">
+
+    <com.tokopedia.design.label.LabelView
+        android:id="@+id/label_view_mitra_toppers"
+        style="@style/LabelLayout"
+        app:lv_content_color="@color/tkpd_main_green"
+        app:lv_title="@string/mitra_toppers_preapprove_limit"
+        app:lv_title_text_size="@dimen/font_small"
+        app:lv_title_text_style="bold" />
+
+</LinearLayout>

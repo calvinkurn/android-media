@@ -6,6 +6,10 @@ import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * Get shop info object from tkpd shop
+ */
+@Deprecated
 public class ShopModel {
 
     public static final int IS_OPEN = 1; //FROM API

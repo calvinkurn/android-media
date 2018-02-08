@@ -16,6 +16,7 @@ import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.constant.AbstractionBaseURL;
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -103,6 +104,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         FlightUrl.ALL_PROMO_LINK = ConsumerAppBaseUrl.BASE_WEB_DOMAIN + FlightUrl.PROMO_PATH;
         FlightUrl.CONTACT_US = ConsumerAppBaseUrl.BASE_WEB_DOMAIN + FlightUrl.CONTACT_US_PATH;
         FlightUrl.CONTACT_US_FLIGHT_PREFIX_GLOBAL = FlightUrl.CONTACT_US + FlightUrl.CONTACT_US_FLIGHT_PREFIX;
+        AbstractionBaseURL.JS_DOMAIN = ConsumerAppBaseUrl.BASE_JS_DOMAIN;
     }
 
     private void generateConsumerAppNetworkKeys() {

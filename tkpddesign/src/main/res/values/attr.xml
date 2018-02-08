@@ -19,8 +19,6 @@
             <flag name="bold" value="1" />
             <flag name="italic" value="2" />
         </attr>
-        <attr name="lv_font_size" format="dimension" />
-        <attr name="lv_show_arrow" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="SelectionLabelView">

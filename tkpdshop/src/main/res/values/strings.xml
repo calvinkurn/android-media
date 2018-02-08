@@ -1,0 +1,9 @@
+<resources>
+    <string name="shop_info_title">Shop Info</string>
+    <string name="shop_info_title_tab_product">Produk</string>
+    <string name="shop_info_title_tab_review">Ulasan</string>
+    <string name="shop_info_title_tab_discussion">Diskusi</string>
+
+    <string name="shop_info_title_tab_shop_info">Informasi Toko</string>
+    <string name="shop_info_title_tab_note">Catatan</string>
+</resources>

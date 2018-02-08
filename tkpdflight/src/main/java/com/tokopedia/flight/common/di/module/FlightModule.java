@@ -4,10 +4,10 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.di.qualifier.OkHttpClientBuilderNonBaseQualifier;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.flight.airline.data.FlightAirlineDataListSource;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListBackgroundSource;
@@ -49,14 +49,6 @@ public class FlightModule {
 
     @FlightScope
     @Provides
-    public HttpLoggingInterceptor provideHttpLoggingInterceptor() {
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        return logging;
-    }
-
-    @FlightScope
-    @Provides
     public AnalyticTracker provideAnalyticTracker(@ApplicationContext Context context) {
         if (context instanceof AbstractionRouter) {
             return ((AbstractionRouter) context).getAnalyticTracker();
@@ -66,8 +58,8 @@ public class FlightModule {
 
     @FlightScope
     @Provides
-    public OkHttpClient provideOkHttpClient(@OkHttpClientBuilderNonBaseQualifier OkHttpClient.Builder okHttpClientBuilder,
-                                            HttpLoggingInterceptor httpLoggingInterceptor,
+    public OkHttpClient provideOkHttpClient(OkHttpClient.Builder okHttpClientBuilder,
+                                            @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
                                             FlightAuthInterceptor flightAuthInterceptor) {
         return okHttpClientBuilder
                 .addInterceptor(flightAuthInterceptor)
