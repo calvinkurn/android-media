@@ -19,7 +19,7 @@ import com.tokopedia.seller.seller.info.view.fragment.SellerInfoWebViewFragment;
  * Created by normansyahputa on 12/5/17.
  */
 
-public class SellerInfoWebViewActivity extends BaseSimpleActivity {
+public class SellerInfoWebViewActivity extends BaseSimpleActivity{
 
     public static final String KEY_APPLINK_URL = "url";
 
@@ -70,4 +70,6 @@ public class SellerInfoWebViewActivity extends BaseSimpleActivity {
     protected Fragment getNewFragment() {
         return SellerInfoWebViewFragment.newInstance(extraUrl);
     }
+
+
 }

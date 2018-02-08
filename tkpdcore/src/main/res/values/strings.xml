@@ -1356,7 +1356,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="make_returnable_success">Suskes Membuat Kebijakan</string>
     <string name="returnable_policy_existed">Hanya boleh 1 kebijakan pengembalian</string>
     <string name="title_wishlist">Wishlist</string>
-    <string name="title_activity_deep_link">Tokopedia</string>
+    <string name="title_activity_deep_link">Top Seller</string>
     <string name="title_activity_add_to_cart_v2">Beli Produk</string>
     <string name="title_visit_shop">Kunjungi Toko</string>
     <string name="change_phone_number_restriction">Silakan melakukan ubah nomor telepon melalui desktop atau mobile browser dengan mengakses www.tokopedia.com atau m.tokopedia.com. Lalu masuk melalui halaman Profil Saya</string>
