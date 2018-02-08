@@ -57,6 +57,27 @@
         </LinearLayout>
     </FrameLayout>
 
+    <LinearLayout
+        android:id="@+id/main_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/rl_attach_action"
+        android:orientation="vertical">
+
+        <include layout="@layout/layout_next_step"
+            android:id="@+id/cv_next_step"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_chat"
+            app:stackFromEnd="true"
+            android:stackFromBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            context:listitem="@layout/item_detail_common_left"/>
+
+    </LinearLayout>
+
     <RelativeLayout
         android:id="@+id/rl_attach_action"
         android:layout_width="match_parent"
@@ -81,27 +102,6 @@
             android:visibility="gone"
             context:visibility="visible" />
     </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/main_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/rl_attach_action"
-        android:orientation="vertical">
-
-        <include layout="@layout/layout_next_step"
-            android:id="@+id/cv_next_step"/>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_chat"
-            app:stackFromEnd="true"
-            android:stackFromBottom="true"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            context:listitem="@layout/item_detail_common_left"/>
-
-    </LinearLayout>
 
     <ProgressBar
         android:id="@+id/progress_bar"
