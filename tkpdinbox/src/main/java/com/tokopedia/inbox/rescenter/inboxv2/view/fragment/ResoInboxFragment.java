@@ -272,12 +272,14 @@ public class ResoInboxFragment
 
     private void showFullError(String err) {
         hideLayout();
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), err, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                presenter.getInbox();
-            }
-        });
+        if (getActivity() != null) {
+            NetworkErrorHelper.showEmptyState(getActivity(), getView(), err, new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    presenter.getInbox();
+                }
+            });
+        }
     }
 
     private void showSnackbarError(String err) {
