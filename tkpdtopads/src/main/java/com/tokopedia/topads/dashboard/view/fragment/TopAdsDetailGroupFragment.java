@@ -150,7 +150,6 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
     @Override
     public void onAdLoaded(GroupAd ad) {
         super.onAdLoaded(ad);
-        Log.d(TAG, "isEnoughDeposit -> "+isEnoughDeposit);
         if(!isEnoughDeposit){
             final BottomSheetView bottomSheetView = new BottomSheetView(getActivity());
 
