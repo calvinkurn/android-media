@@ -6,10 +6,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.design.text.TkpdTextInputLayout;
 import com.tokopedia.flight.R;
 
 /**
@@ -25,6 +27,7 @@ public class FlightResendETicketDialogFragment extends DialogFragment {
     private AppCompatTextView txtSend;
     private AppCompatTextView txtCancel;
     private AppCompatEditText edtEmail;
+    private TkpdTextInputLayout containerEmail;
 
     private String email, userId, invoiceId;
 
@@ -56,11 +59,20 @@ public class FlightResendETicketDialogFragment extends DialogFragment {
         edtEmail = view.findViewById(R.id.et_resend_eticket_email);
         txtSend = view.findViewById(R.id.tv_resend_eticket_send);
         txtCancel = view.findViewById(R.id.tv_resend_eticket_cancel);
+        containerEmail = view.findViewById(R.id.container_email);
 
         txtSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (validateInput(edtEmail.getText().toString())) {
+                    isProgramaticallyDismissed = true;
+                    getTargetFragment().onActivityResult(
+                            getTargetRequestCode(),
+                            Activity.RESULT_OK,
+                            null
+                    );
+                    dismiss();
+                }
             }
         });
 
@@ -93,5 +105,30 @@ public class FlightResendETicketDialogFragment extends DialogFragment {
 
             super.dismiss();
         }
+    }
+
+    private boolean validateInput(String email) {
+        boolean isValid = true;
+
+        if (email == null || email.isEmpty()) {
+            isValid = false;
+            containerEmail.setError(getString(R.string.flight_resend_eticket_dialog_email_empty_error));
+        } else if (!isValidEmail(email)) {
+            isValid = false;
+            containerEmail.setError(getString(R.string.flight_resend_eticket_dialog_email_invalid_error));
+        } else if (!isEmailWithoutProhibitSymbol(email)) {
+            isValid = false;
+            containerEmail.setError(getString(R.string.flight_resend_eticket_dialog_email_invalid_symbol_error));
+        }
+
+        return isValid;
+    }
+
+    private boolean isValidEmail(String contactEmail) {
+        return Patterns.EMAIL_ADDRESS.matcher(contactEmail).matches() && !contactEmail.contains(".@") && !contactEmail.contains("@.");
+    }
+
+    private boolean isEmailWithoutProhibitSymbol(String contactEmail) {
+        return !contactEmail.contains("+");
     }
 }
