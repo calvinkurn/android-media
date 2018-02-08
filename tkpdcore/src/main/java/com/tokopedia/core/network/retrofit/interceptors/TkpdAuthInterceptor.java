@@ -7,7 +7,6 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 
-import org.apache.http.auth.AUTH;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,8 +21,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okio.Buffer;
-
-import static com.tokopedia.core.network.retrofit.utils.NetworkCalculator.AUTHORIZATION;
 
 /**
  * @author Angga.Prasetiyo on 27/11/2015.
@@ -291,7 +288,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             String responseString = response.peekBody(512).string();
             return responseString.toUpperCase().contains("REQUEST_DENIED") &&
                     !response.request().url().encodedPath().contains("make_login");
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -305,7 +302,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
                     && request.header(AUTHORIZATION).contains(BEARER)
                     && !response.request().url().encodedPath().contains(TOKEN)
                     && !response.request().url().encodedPath().contains("token");
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -319,7 +316,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         SessionRefresh sessionRefresh = new SessionRefresh(newAccessToken);
         try {
             sessionRefresh.refreshLogin();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -328,7 +325,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
         try {
             accessTokenRefresh.refreshToken();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -338,7 +335,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         try {
             String newAccessToken = accessTokenRefresh.refreshToken();
             doRelogin(newAccessToken);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }private Request recreateRequestWithNewAccessToken(Chain chain) throws IOException{
