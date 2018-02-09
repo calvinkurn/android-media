@@ -474,7 +474,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Map<String, String> getGeneratedOverrideRedirectHeaderUrlPayment(String originUrl) {
         String urlQuery = Uri.parse(originUrl).getQuery();
-        return AuthUtil.generateHeaders(
+        return AuthUtil.generateWebviewHeaders(
                 Uri.parse(originUrl).getPath(),
                 urlQuery != null ? urlQuery : "",
                 "GET",
