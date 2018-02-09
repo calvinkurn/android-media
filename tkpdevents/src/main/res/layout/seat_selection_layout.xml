@@ -29,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:textColor="@color/green_400"
             android:textSize="16sp" />
 
@@ -39,6 +39,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginTop="8dp"
             android:background="@color/white"
+            android:visibility="gone"
             android:orientation="horizontal">
 
             <ImageView
@@ -63,16 +64,17 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
             android:layout_marginTop="2dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="8dp"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/grey_600"
                 android:text="Pilihan Kursi:"
-                android:textColor="@color/grey_400"
-                android:textSize="12sp" />
+                android:textSize="12sp"/>
 
             <TextView
                 android:id="@+id/selected_seats"
@@ -89,14 +91,13 @@
             android:background="?android:attr/listDivider" />
 
 
-        <include
-            android:id="@+id/seat_plan"
-            layout="@layout/include_seating_layout"
-            android:layout_width="match_parent"
+        <include android:id="@+id/seat_plan"
             android:layout_height="350dp"
+            android:layout_width="match_parent"
             android:layout_marginBottom="16dp"
             android:layout_marginRight="16dp"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp"
+            layout="@layout/include_seating_layout" />
 
 
     </LinearLayout>
@@ -106,21 +107,21 @@
         android:id="@+id/preview_window"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center|left"
         android:background="#d3f0d4"
+        android:layout_gravity="center|left"
         android:visibility="gone">
 
         <ImageView
             android:id="@+id/small_preview"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:padding="8dp" />
+            android:padding="8dp"/>
 
         <!--<include android:id="@+id/small_preview"-->
-        <!--layout="@layout/small_preview_window"-->
-        <!--android:layout_width="200dp"-->
-        <!--android:layout_height="150dp"-->
-        <!--android:visibility="visible" />-->
+            <!--layout="@layout/small_preview_window"-->
+            <!--android:layout_width="200dp"-->
+            <!--android:layout_height="150dp"-->
+            <!--android:visibility="visible" />-->
     </FrameLayout>
 
 
@@ -131,19 +132,17 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:visibility="visible" />
-
     <FrameLayout
         android:id="@+id/progress_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black_12"
         android:visibility="gone">
-
         <ProgressBar
             android:id="@+id/prog_bar"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"/>
     </FrameLayout>
 
 </FrameLayout>

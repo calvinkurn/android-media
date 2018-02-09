@@ -171,7 +171,12 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
     public void setSelectedSeatText(List<String> selectedSeatList, List<String> rowIds) {
         selectedSeats = selectedSeatList;
         this.rowIds = rowIds;
-        getView().setSelectedSeatText(selectedSeatList, rowIds);
+        getView().initializeSeatLayoutModel(selectedSeatList,rowIds);
+    }
+
+    public void setSeatData() {
+        getView().setSelectedSeatText();
+//        getView().setSelectedSeatModel();
     }
 
     public void verifySeatSelection(SelectedSeatViewModel selectedSeatViewModel) {

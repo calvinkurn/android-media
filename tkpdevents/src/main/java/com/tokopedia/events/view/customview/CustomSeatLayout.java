@@ -2,6 +2,7 @@ package com.tokopedia.events.view.customview;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -66,6 +67,7 @@ public class CustomSeatLayout extends LinearLayout {
     private void initView() {
         inflate(getContext(), R.layout.individual_seat, this);
         ButterKnife.bind(this);
+        mPresenter.setSelectedSeatText(selectedSeatList, rowids);
     }
 
     public void setText(String text, int status) {
@@ -91,6 +93,7 @@ public class CustomSeatLayout extends LinearLayout {
             if (!individualSeat.isSelected() && numoFSeats < maxCount) {
                 individualSeat.setSelected(true);
                 individualSeat.setBackgroundResource(R.drawable.selected_seat_bg);
+                individualSeat.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
                 numoFSeats++;
                 if (rowName != '\0') {
                     selectedSeatList.add("" + rowName + columnName);
@@ -101,6 +104,7 @@ public class CustomSeatLayout extends LinearLayout {
             } else if (individualSeat.isSelected()) {
                 individualSeat.setSelected(false);
                 individualSeat.setBackgroundResource(R.drawable.seat_bg);
+                individualSeat.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
                 numoFSeats--;
                 if (rowName != '\0') {
                     selectedSeatList.remove("" + rowName + columnName);
@@ -109,13 +113,14 @@ public class CustomSeatLayout extends LinearLayout {
                 }
                 rowids.remove("" + rowId);
             } else {
-                Toast.makeText(getContext(), "Cannot select more than" + maxCount + " number of tickets", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Cannot select more than " + maxCount + " number of tickets", Toast.LENGTH_SHORT).show();
             }
-
-            mPresenter.setTicketPrice(numoFSeats);
-            mPresenter.setSelectedSeatText(selectedSeatList, rowids);
-            mPresenter.setSelectedSeatViewModel();
-
+        mPresenter.setTicketPrice(numoFSeats);
+        mPresenter.setSeatData();
     }
 
+    public static void destroy() {
+        numoFSeats = 0;
+        CustomSeatLayout.selectedSeatList.clear();
+    }
 }

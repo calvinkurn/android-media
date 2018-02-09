@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBar;
@@ -16,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -36,8 +38,12 @@ import com.tokopedia.events.view.contractor.EventsDetailsContract;
 import com.tokopedia.events.view.presenter.EventsDetailsPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.utils.ImageTextViewHolder;
+import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -97,6 +103,8 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     ImageView ivArrowSeatingTnC;
     @BindView(R2.id.tv_event_price)
             TextView eventPrice;
+    @BindView(R2.id.event_display_layout)
+    LinearLayout eventDisplayTagLayout;
 
     ImageTextViewHolder timeHolder;
     ImageTextViewHolder locationHolder;
@@ -194,6 +202,21 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         setHolder(R.drawable.ic_skyline, homedata.getCityName(), addressHolder);
         textViewTitle.setText(homedata.getTitle());
         tvExpandableDescription.setText(Html.fromHtml(homedata.getLongRichDesc()));
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
+                , ViewGroup.LayoutParams.WRAP_CONTENT);
+//        if (homedata.getDisplayTags() != null && homedata.getDisplayTags().length() > 3) {
+//            List<TextView> list = addTextViews(Utils.getDisplayTags(homedata.getDisplayTags()));
+//
+//            eventDisplayTagLayout.removeAllViews();
+//            for (int i = 0; i < list.size(); i++) {
+//                eventDisplayTagLayout.addView(list.get(i), params);
+//            }
+//
+//            eventDisplayTagLayout.setVisibility(View.VISIBLE);
+//        } else {
+//            eventDisplayTagLayout.setVisibility(View.GONE);
+//        }
 
 
         String tnc = homedata.getTnc();
@@ -399,5 +422,27 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+
+    private List<TextView> addTextViews(List<String> displayTagLIst) {
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
+                , ViewGroup.LayoutParams.WRAP_CONTENT);
+        List<TextView> textViewList = new ArrayList<>();
+        for (int i = 0; i<displayTagLIst.size(); i++){
+            String s = displayTagLIst.get(i);
+            TextView tv = new TextView(this);
+            tv.setId(i);
+            tv.setText(s);
+            tv.setTextColor(ContextCompat.getColor(this, R.color.black_38));
+            tv.setBackgroundResource(R.drawable.rounded_rectange_transparent);
+            tv.setPadding(12, 4, 12, 4);
+            tv.setTextSize(14);
+            tv.setLayoutParams(params);
+            textViewList.add(tv);
+        }
+
+        return textViewList;
     }
 }

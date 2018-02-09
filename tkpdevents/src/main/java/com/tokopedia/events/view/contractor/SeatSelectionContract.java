@@ -37,7 +37,9 @@ public class SeatSelectionContract {
 
         void setTicketPrice(int numOfTickets);
 
-        void setSelectedSeatText(List<String> selectedSeatText, List<String> rowIds);
+        void setSelectedSeatText();
+
+        void initializeSeatLayoutModel(List<String> selectedSeatText, List<String> rowIds);
 
         void setEventTitle(String text);
 

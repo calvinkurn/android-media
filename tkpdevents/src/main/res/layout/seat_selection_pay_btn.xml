@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:orientation="vertical">
 
@@ -135,6 +136,7 @@
 
 
     <android.support.v7.widget.CardView
+        android:id="@+id/verifySeat"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_margin="@dimen/margin_default"
@@ -142,16 +144,17 @@
         app:cardElevation="2dp"
         app:cardCornerRadius="@dimen/card_corner_default"
         app:cardBackgroundColor="@color/green_400">
+
         <TextView
             android:id="@+id/button_textview"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="Lanjutkan"
+            android:layout_gravity="center"
+            android:text="@string/lanjutkan"
             android:textColor="@android:color/white"
+            android:padding="8dp"
             android:textSize="18sp"
-            android:typeface="monospace"/>
-
+            android:textStyle="bold" />
     </android.support.v7.widget.CardView>
 
 </LinearLayout>

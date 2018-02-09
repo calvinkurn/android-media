@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
@@ -100,6 +101,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
         setContentView(R.layout.seat_selection_layout);
         ButterKnife.bind(this);
         executeInjector();
+        selectedSeatViewModel = new SelectedSeatViewModel();
 
         mPresenter.attachView(this);
         mPresenter.initialize();
@@ -107,6 +109,8 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
         mPresenter.getSeatSelectionDetails();
         setupToolbar();
         toolbar.setTitle(R.string.seat_selection_title);
+
+
 
     }
 
@@ -233,9 +237,10 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
 
     }
 
-    @OnClick(R2.id.button_textview)
+    @OnClick(R2.id.verifySeat)
     void verifySeat() {
-        mPresenter.verifySeatSelection(selectedSeatViewModel);
+        setSelectedSeatModel();
+//        mPresenter.verifySeatSelection(selectedSeatViewModel);
     }
 
     @Override
@@ -258,11 +263,21 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     }
 
     @Override
-    public void setSelectedSeatText(List<String> selectedSeatTextList, List<String> rowIds) {
-        selectedSeats = selectedSeatTextList;
-        this.rowIds = rowIds;
+    public void setSelectedSeatText() {
         String text = TextUtils.join(", ", selectedSeats);
         selectedSeatText.setText(text);
+    }
+
+    @Override
+    public void initializeSeatLayoutModel(List<String> selectedSeatTextList, List<String> rowIds) {
+        selectedSeats = selectedSeatTextList;
+        this.rowIds = rowIds;
+        selectedSeatViewModel.setAreaCodes(areacodes);
+        selectedSeatViewModel.setPrice(price);
+        selectedSeatViewModel.setSeatRowIds(rowIds);
+        selectedSeatViewModel.setQuantity(quantity);
+        selectedSeatViewModel.setSeatIds(seatIds);
+        selectedSeatViewModel.setAreaId(areaId);
     }
 
     @Override
@@ -272,10 +287,9 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
 
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        CustomSeatLayout.numoFSeats = 0;
-        CustomSeatLayout.selectedSeatList.clear();
+    protected void onDestroy() {
+        super.onDestroy();
+        CustomSeatLayout.destroy();
     }
 
     @Override
@@ -286,24 +300,23 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
 
     @Override
     public void setSelectedSeatModel() {
-        selectedSeatViewModel = new SelectedSeatViewModel();
-        selectedSeatViewModel.setAreaCodes(areacodes);
-        selectedSeatViewModel.setPrice(price);
-        selectedSeatViewModel.setSeatRowIds(rowIds);
-        selectedSeatViewModel.setQuantity(quantity);
-        for (int i = 0; i < selectedSeats.size(); i++) {
-            Character firstChar = selectedSeats.get(i).charAt(0);
+        if (selectedSeats.size() > 0 && selectedSeats.size() == maxTickets) {
+            for (int i = 0; i < selectedSeats.size(); i++) {
+                Character firstChar = selectedSeats.get(i).charAt(0);
 
-            if (Character.isLetter(firstChar)) {
-                physicalRowIds.add("" + selectedSeats.get(i).charAt(0));
-                seatIds.add(selectedSeats.get(i).substring(1, selectedSeats.get(i).length()));
-                selectedSeatViewModel.setPhysicalRowIds(physicalRowIds);
-            } else {
-                seatIds.add(selectedSeats.get(i).substring(0, selectedSeats.get(i).length()));
+                if (Character.isLetter(firstChar)) {
+                    physicalRowIds.add("" + selectedSeats.get(i).charAt(0));
+                    seatIds.add(selectedSeats.get(i).substring(1, selectedSeats.get(i).length()));
+                    selectedSeatViewModel.setPhysicalRowIds(physicalRowIds);
+                } else {
+                    seatIds.add(selectedSeats.get(i).substring(0, selectedSeats.get(i).length()));
+                }
             }
+            mPresenter.verifySeatSelection(selectedSeatViewModel);
+        } else {
+            Toast.makeText(this, "Please Select "+maxTickets+" Seats", Toast.LENGTH_SHORT).show();
         }
-        selectedSeatViewModel.setSeatIds(seatIds);
-        selectedSeatViewModel.setAreaId(areaId);
+
     }
 
     @Override
