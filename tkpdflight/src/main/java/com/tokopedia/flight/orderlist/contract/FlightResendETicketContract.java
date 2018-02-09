@@ -1,5 +1,6 @@
 package com.tokopedia.flight.orderlist.contract;
 
+import android.content.Context;
 import android.support.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
@@ -25,6 +26,8 @@ public interface FlightResendETicketContract {
         void onResendETicketSuccess();
 
         void onResendETicketError(String errorMsg);
+
+        Context getActivity();
     }
 
     interface Presenter {

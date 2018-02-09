@@ -4,6 +4,8 @@ import android.util.Patterns;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.common.data.model.FlightException;
+import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.orderlist.contract.FlightResendETicketContract;
 import com.tokopedia.flight.orderlist.data.cloud.entity.SendEmailEntity;
 import com.tokopedia.flight.orderlist.domain.FlightSendEmailUseCase;
@@ -81,7 +83,12 @@ public class FlightResendETicketPresenter extends BaseDaggerPresenter<FlightRese
 
                     @Override
                     public void onError(Throwable throwable) {
-                        getView().onResendETicketError(throwable.getLocalizedMessage());
+                        throwable.printStackTrace();
+                        if (throwable instanceof FlightException) {
+                            getView().onResendETicketError(FlightErrorUtil.getMessageFromException(getView().getActivity(), throwable));
+                        } else {
+                            getView().onResendETicketError(throwable.getMessage());
+                        }
                     }
 
                     @Override

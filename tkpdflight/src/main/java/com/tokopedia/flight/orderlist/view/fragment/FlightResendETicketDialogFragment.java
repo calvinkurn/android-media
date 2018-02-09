@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
-import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -166,6 +165,7 @@ public class FlightResendETicketDialogFragment extends DialogFragment implements
     @Override
     public void onResendETicketError(String errorMsg) {
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(), errorMsg);
+        dismiss();
     }
 
     private void showError(int resId) {
