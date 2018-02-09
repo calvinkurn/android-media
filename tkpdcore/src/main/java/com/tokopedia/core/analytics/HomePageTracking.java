@@ -13,6 +13,11 @@ public class HomePageTracking extends TrackingUtils {
 
     public static String DEFAULT_VALUE_EVENT_NAME = "clickHomepage";
     public static String DEFAULT_VALUE_EVENT_CATEGORY = "homepage";
+    public static final String BELI_INI_ITU_CLICK = "beli ini itu click";
+    public static final String BAYAR_INI_ITU_CLICK = "bayar ini itu click";
+    public static final String PESAN_INI_ITU_CLICK = "pesan ini itu click";
+    public static final String AJUKAN_INI_ITU_CLICK = "ajukan ini itu click";
+    public static final String JUAL_INI_ITU_CLICK = "jual ini itu click";
 
     public static void eventPromoImpression(Promotion promotion) {
         getGTMEngine().clearEnhanceEcommerce();
@@ -94,5 +99,23 @@ public class HomePageTracking extends TrackingUtils {
                 "curated list click view all",
                 applink
         ).getEvent());
+    }
+
+    public static void eventClickExplorerItem(String action, String label) {
+        flushEventTracker();
+        sendGTMEvent(new EventTracking(
+                DEFAULT_VALUE_EVENT_NAME,
+                DEFAULT_VALUE_EVENT_CATEGORY,
+                action,
+                label
+        ).getEvent());
+    }
+
+    public static void eventEnhancedImpressionFavoriteCategory(Map<String, Object> data) {
+        eventTrackingEnhancedEcommerce(data);
+    }
+
+    public static void eventEnhancedClickFavoriteCategory(Map<String, Object> data) {
+        eventTrackingEnhancedEcommerce(data);
     }
 }
