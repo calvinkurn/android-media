@@ -51,7 +51,7 @@ public class PickupPointAdapter extends RecyclerView.Adapter<PickupPointAdapter.
         if (storeViewModel.isChecked()) {
             holder.btnCheck.setImageResource(R.drawable.ic_check_circle_green);
         } else {
-            holder.btnCheck.setImageResource(R.drawable.bg_circle_grey);
+            holder.btnCheck.setImageResource(R.drawable.bg_circle_grey_2);
         }
 
         holder.tvShowMap.setOnClickListener(new View.OnClickListener() {

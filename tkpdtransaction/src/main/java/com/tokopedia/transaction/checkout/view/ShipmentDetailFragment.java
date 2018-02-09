@@ -60,6 +60,8 @@ import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
@@ -167,7 +169,12 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     TextView tvInsuranceTerms;
 
     private ShipmentChoiceBottomSheet shipmentChoiceBottomSheet;
-    private CourierChoiceAdapter courierChoiceAdapter;
+
+    @Inject
+    CourierChoiceAdapter courierChoiceAdapter;
+
+    @Inject
+    IShipmentDetailPresenter presenter;
 
     public static ShipmentDetailFragment newInstance() {
         ShipmentDetailFragment fragment = new ShipmentDetailFragment();
@@ -357,7 +364,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     }
 
     private void setupRecyclerView(List<CourierItemData> couriers) {
-        courierChoiceAdapter = new CourierChoiceAdapter(couriers, this);
+//        courierChoiceAdapter = new CourierChoiceAdapter(couriers, this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL, false);
         rvCourierChoice.setLayoutManager(linearLayoutManager);
