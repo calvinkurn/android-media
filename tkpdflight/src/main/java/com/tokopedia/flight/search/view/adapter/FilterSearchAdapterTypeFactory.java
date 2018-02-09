@@ -12,7 +12,6 @@ import com.tokopedia.flight.search.view.adapter.viewholder.EmptyResultViewHolder
 import com.tokopedia.flight.search.view.adapter.viewholder.FlightSearchShimmeringViewHolder;
 import com.tokopedia.flight.search.view.adapter.viewholder.FlightSearchViewHolder;
 import com.tokopedia.flight.search.view.model.EmptyResultViewModel;
-import com.tokopedia.flight.search.view.model.FlightSearchShimmeringViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
 /**
