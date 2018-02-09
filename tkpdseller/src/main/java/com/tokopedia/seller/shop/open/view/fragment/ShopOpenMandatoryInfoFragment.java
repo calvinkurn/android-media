@@ -166,15 +166,16 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
     }
 
     protected void onNextButtonClicked() {
-        if (TextUtils.isEmpty(uriPathImage) && onShopStepperListener.getStepperModel().getResponseIsReserveDomain() != null
-                && onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData() != null) {
-            UserData userData = onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData();
-            presenter.submitShopInfo(uriPathImage, shopSloganEditText.getText().toString(),
-                    shopDescEditText.getText().toString(), userData.getLogo(),
-                    userData.getServerId(), userData.getPhotoObj());
-        } else {
-            presenter.submitShopInfo(uriPathImage, shopSloganEditText.getText().toString(),
-                    shopDescEditText.getText().toString(), "", "", "");
+        if (onShopStepperListener.getStepperModel().getResponseIsReserveDomain()!=null) {
+            if (TextUtils.isEmpty(uriPathImage) && onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData() != null) {
+                UserData userData = onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData();
+                presenter.submitShopInfo(uriPathImage, shopSloganEditText.getText().toString(),
+                        shopDescEditText.getText().toString(), userData.getLogo(),
+                        userData.getServerId(), userData.getPhotoObj());
+            } else {
+                presenter.submitShopInfo(uriPathImage, shopSloganEditText.getText().toString(),
+                        shopDescEditText.getText().toString(), "", "", "");
+            }
         }
     }
 
