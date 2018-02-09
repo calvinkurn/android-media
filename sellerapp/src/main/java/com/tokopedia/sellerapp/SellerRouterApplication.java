@@ -15,6 +15,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
@@ -25,7 +26,7 @@ import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
-import com.tokopedia.core.cache.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
@@ -55,7 +56,6 @@ import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.mitratoppers.MitraToppersRouter;
 import com.tokopedia.mitratoppers.MitraToppersRouterInternal;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
@@ -64,7 +64,6 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
-import com.tokopedia.seller.product.manage.di.ProductManageComponent;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
 import com.tokopedia.sellerapp.truecaller.TruecallerActivity;
@@ -76,9 +75,9 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
-import com.tokopedia.digital.product.activity.DigitalProductActivity;
-import com.tokopedia.digital.product.activity.DigitalWebActivity;
-import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
+import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
+import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
+import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
 import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.cashback.domain.GetCashbackUseCase;
 import com.tokopedia.gm.cashback.domain.SetCashbackUseCase;
@@ -125,14 +124,12 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.session.activity.Login;
+import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
-import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.activity.ReputationProduct;
-import com.tokopedia.tkpd.tkpdreputation.shopreputation.ShopReputationList;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsComponent;
-import com.tokopedia.seller.product.manage.di.DaggerProductManageComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
@@ -317,83 +314,6 @@ public abstract class SellerRouterApplication extends MainApplication
         goToDefaultRoute(context);
     }
 
-
-    @Override
-    public void onForceLogout(Activity activity) {
-        SessionHandler sessionHandler = new SessionHandler(activity);
-        sessionHandler.forceLogout();
-        Intent intent = SellerRouter.getActivitySplashScreenActivity(getBaseContext());
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-    }
-
-    @Override
-    public void showTimezoneErrorSnackbar() {
-        ServerErrorHandler.showTimezoneErrorSnackbar();
-    }
-
-    @Override
-    public void showMaintenancePage() {
-        ServerErrorHandler.showMaintenancePage();
-    }
-
-    @Override
-    public void showForceLogoutDialog() {
-        ServerErrorHandler.showMaintenancePage();
-    }
-
-    @Override
-    public void showServerError(Response response) {
-        ServerErrorHandler.showServerErrorSnackbar();
-        ServerErrorHandler.sendErrorNetworkAnalytics(response.request().url().toString(), response.code());
-    }
-
-    @Override
-    public void refreshLogin() {
-        AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
-        try {
-            SessionRefresh sessionRefresh = new SessionRefresh(accessTokenRefresh.refreshToken());
-            sessionRefresh.refreshLogin();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void refreshToken() {
-        AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
-        try {
-            accessTokenRefresh.refreshToken();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public AnalyticTracker getAnalyticTracker() {
-        return new AnalyticTracker() {
-            @Override
-            public void sendEventTracking(Map<String, Object> events) {
-
-            }
-
-            @Override
-            public void sendEventTracking(String event, String category, String action, String label) {
-
-            }
-
-            @Override
-            public void sendScreen(Activity activity, String screenName) {
-
-            }
-        };
-    }
-
-    @Override
-    public UserSession getSession() {
-        return new UserSessionImpl(this);
-    }
-
     @Override
     public CacheManager getGlobalCacheManager() {
         return new GlobalCacheManager();
@@ -434,15 +354,12 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getInboxReputationIntent(Context context) {
-        return InboxReputationActivity.getCallingIntent(context);
+        return TkpdReputationInternalRouter.getInboxReputationActivityIntent(context);
     }
 
     @Override
     public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass, Bundle data, String notifTitle) {
-        mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(
-                ((ReputationRouter) MainApplication.getAppContext())
-                        .getInboxReputationIntent(MainApplication.getAppContext())
-        );
+        mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(getInboxReputationIntent(this));
         mNotificationPass.classParentStack = InboxReputationActivity.class;
         mNotificationPass.title = notifTitle;
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
@@ -456,13 +373,13 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public android.app.Fragment getShopReputationFragment() {
-        return ShopReputationList.create();
+    public Fragment getShopReputationFragment(String shopId, String shopDomain) {
+        return TkpdReputationInternalRouter.getReviewShopFragment(shopId, shopDomain);
     }
 
     @Override
-    public Intent getProductReputationIntent(Context context) {
-        return new Intent(context, ReputationProduct.class);
+    public Intent getProductReputationIntent(Context context, String productId, String productName) {
+        return TkpdReputationInternalRouter.getProductReviewIntent(context, productId, productName);
     }
 
     @Override
@@ -513,8 +430,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void onLogout(AppComponent appComponent) {
-        CacheApiClearAllUseCase cacheApiClearAllUseCase = appComponent.cacheApiClearAllUseCase();
-        cacheApiClearAllUseCase.getExecuteObservable(RequestParams.EMPTY).toBlocking().first();
+        new CacheApiClearAllUseCase().executeSync();
 
         TkpdSellerLogout.onLogOut(appComponent);
         GMLogout.onLogOut(appComponent);
@@ -984,5 +900,91 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public BroadcastReceiver getBroadcastReceiverTokocashPending() {
         return new TokocashPendingDataBroadcastReceiver();
+    }
+
+    @Override
+    public void onForceLogout(Activity activity) {
+        SessionHandler sessionHandler = new SessionHandler(activity);
+        sessionHandler.forceLogout();
+        Intent intent = SellerRouter.getActivitySplashScreenActivity(getBaseContext());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    @Override
+    public void showTimezoneErrorSnackbar() {
+        ServerErrorHandler.showTimezoneErrorSnackbar();
+    }
+
+    @Override
+    public void showMaintenancePage() {
+        ServerErrorHandler.showMaintenancePage();
+    }
+
+    @Override
+    public void showForceLogoutDialog() {
+        ServerErrorHandler.showMaintenancePage();
+    }
+
+    @Override
+    public void showServerError(Response response) {
+        ServerErrorHandler.showServerErrorSnackbar();
+        ServerErrorHandler.sendErrorNetworkAnalytics(response.request().url().toString(), response.code());
+    }
+
+    @Override
+    public void refreshLogin() {
+        AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
+        try {
+            SessionRefresh sessionRefresh = new SessionRefresh(accessTokenRefresh.refreshToken());
+            sessionRefresh.refreshLogin();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void refreshToken() {
+        AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
+        try {
+            accessTokenRefresh.refreshToken();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public UserSession getSession() {
+        return new UserSessionImpl(this);
+    }
+
+    @Override
+    public AnalyticTracker getAnalyticTracker() {
+        return new AnalyticTracker() {
+            @Override
+            public void sendEventTracking(Map<String, Object> events) {
+
+            }
+
+            @Override
+            public void sendEventTracking(String event, String category, String action, String label) {
+                UnifyTracking.sendGTMEvent(new EventTracking(
+                        event,
+                        category,
+                        action,
+                        label
+                ).getEvent());
+            }
+
+            @Override
+            public void sendScreen(Activity activity, final String screenName) {
+                ScreenTracking.sendScreen(activity, new ScreenTracking.IOpenScreenAnalytics() {
+                    @Override
+                    public String getScreenName() {
+                        return screenName;
+                    }
+                });
+            }
+        };
     }
 }

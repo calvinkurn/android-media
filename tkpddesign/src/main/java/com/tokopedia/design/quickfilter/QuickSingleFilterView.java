@@ -21,9 +21,8 @@ import java.util.List;
 public class QuickSingleFilterView extends BaseCustomView {
 
     private QuickFilterItem defaultItem = null;
-    private View rootView;
     private RecyclerView recyclerView;
-    private BaseQuickSingleFilterAdapter adapterFilter;
+    protected BaseQuickSingleFilterAdapter<ItemFilterViewHolder> adapterFilter;
     private ActionListener listener;
 
     public QuickSingleFilterView(@NonNull Context context) {
@@ -46,29 +45,25 @@ public class QuickSingleFilterView extends BaseCustomView {
     }
 
     private void init() {
-        rootView = inflate(getContext(), R.layout.widget_quick_filter, this);
+        View rootView = inflate(getContext(), R.layout.widget_quick_filter, this);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.rv_filter);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.HORIZONTAL, false));
-
-        adapterFilter = new QuickSingleFilterAdapter(getFilterTokoCashListener());
+        initialAdapter();
         recyclerView.setAdapter(adapterFilter);
     }
 
-    public void setAdapterFilter(BaseQuickSingleFilterAdapter adapterFilter) {
-        this.adapterFilter = adapterFilter;
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
-                LinearLayoutManager.HORIZONTAL, false));
-        recyclerView.setAdapter(adapterFilter);
+    protected void initialAdapter() {
+        this.adapterFilter = new QuickSingleFilterAdapter(getQuickSingleFilterListener());
     }
 
     public void renderFilter(List<QuickFilterItem> quickFilterItems) {
-        adapterFilter.addFilterTokoCashList(quickFilterItems);
+        adapterFilter.addQuickFilterList(quickFilterItems);
     }
 
-    private QuickSingleFilterListener getFilterTokoCashListener() {
+    protected QuickSingleFilterListener getQuickSingleFilterListener() {
         return new QuickSingleFilterListener() {
 
             @Override
@@ -93,14 +88,20 @@ public class QuickSingleFilterView extends BaseCustomView {
                     int indexOf = items.indexOf(defaultItem);
                     if (indexOf != -1) {
                         items.get(indexOf).setSelected(true);
-                        listener.selectFilter(items.get(indexOf).getType());
+                        setSelectedFilter(items.get(indexOf).getType());
                     }
                 } else {
-                    listener.selectFilter(quickFilterItem.getType());
+                    setSelectedFilter(quickFilterItem.getType());
                 }
                 adapterFilter.notifyDataSetChanged();
             }
         };
+    }
+
+    private void setSelectedFilter(String type) {
+        if (listener != null) {
+            listener.selectFilter(type);
+        }
     }
 
     public void setDefaultItem(QuickFilterItem defaultItem) {
@@ -121,6 +122,38 @@ public class QuickSingleFilterView extends BaseCustomView {
             }
         }, 100);
 
+    }
+
+    public String getSelectedFilter(){
+        if(defaultItem != null && defaultItem.isSelected()){
+            return defaultItem.getType();
+        }else {
+            String itemSelected = "";
+            for (int i= 0; i<adapterFilter.getDataList().size(); i++) {
+                QuickFilterItem quickFilterItem = adapterFilter.getDataList().get(i);
+                if (quickFilterItem.isSelected()) {
+                    itemSelected = quickFilterItem.getType();
+                    break;
+                }
+            }
+            return itemSelected;
+        }
+    }
+
+    public boolean isAnyItemSelected(){
+        if(defaultItem != null){
+            return true;
+        }else {
+            boolean isItemSelected = false;
+            for (int i= 0; i<adapterFilter.getDataList().size(); i++) {
+                QuickFilterItem quickFilterItem = adapterFilter.getDataList().get(i);
+                if (quickFilterItem.isSelected()) {
+                    isItemSelected = true;
+                    break;
+                }
+            }
+            return isItemSelected;
+        }
     }
 
     public interface ActionListener {
