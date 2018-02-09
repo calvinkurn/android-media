@@ -58,7 +58,7 @@ public class ChangePhoneNumberRequestFragment
     public interface ChangePhoneNumberRequestListener {
         void goToThanksPage();
 
-        void shouldHandleBackPress(boolean isBackPressHandled);
+        void shouldHandleBackPress(boolean isBackPressHandle);
     }
 
     private static final String UPLOAD_ID = "UPLOAD_ID";

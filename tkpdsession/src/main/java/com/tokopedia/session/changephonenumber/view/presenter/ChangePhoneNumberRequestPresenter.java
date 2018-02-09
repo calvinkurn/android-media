@@ -9,7 +9,7 @@ import android.text.Editable;
 public interface ChangePhoneNumberRequestPresenter {
     void continueToNext();
 
-    void submitRequest(String s);
+    void submitRequest(String phoneNumber);
 
     void checkStatus();
 

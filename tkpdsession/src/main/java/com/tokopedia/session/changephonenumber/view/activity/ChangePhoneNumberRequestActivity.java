@@ -85,8 +85,8 @@ public class ChangePhoneNumberRequestActivity extends BasePresenterActivity impl
     }
 
     @Override
-    public void shouldHandleBackPress(boolean b) {
-        isBackPressHandled = b;
+    public void shouldHandleBackPress(boolean isBackPressHandle) {
+        isBackPressHandled = isBackPressHandle;
     }
 
 
