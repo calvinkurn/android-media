@@ -256,17 +256,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onSectionItemClicked(String actionLink) {
-        if (TextUtils.isEmpty(actionLink)) {
-            return;
-        }
-
-        if (getActivity() != null
-                && getActivity().getApplicationContext() instanceof TkpdCoreRouter
-                && ((TkpdCoreRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(actionLink)) {
-            openApplink(actionLink);
-        } else {
-            openWebViewURL(actionLink, getContext());
-        }
+        onActionLinkClicked(actionLink);
     }
 
     private void onGoToSell() {
@@ -502,8 +492,22 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onDynamicChannelClicked(String applink) {
-        openApplink(applink);
+    public void onDynamicChannelClicked(String actionLink) {
+        onActionLinkClicked(actionLink);
+    }
+
+    private void onActionLinkClicked(String actionLink) {
+        if (TextUtils.isEmpty(actionLink)) {
+            return;
+        }
+
+        if (getActivity() != null
+                && getActivity().getApplicationContext() instanceof TkpdCoreRouter
+                && ((TkpdCoreRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(actionLink)) {
+            openApplink(actionLink);
+        } else {
+            openWebViewURL(actionLink, getContext());
+        }
     }
 
     private void openApplink(String applink) {
@@ -599,7 +603,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
 
     public void openWebViewURL(String url, Context context) {
-        if (url != "" && context != null) {
+        if (!TextUtils.isEmpty(url) && context != null) {
             Intent intent = new Intent(context, BannerWebView.class);
             intent.putExtra("url", url);
             context.startActivity(intent);

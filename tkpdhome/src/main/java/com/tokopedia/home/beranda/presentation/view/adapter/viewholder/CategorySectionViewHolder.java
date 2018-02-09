@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.R;
+import com.tokopedia.home.beranda.helper.DynamicLinkHelper;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
@@ -81,7 +82,7 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
                 @Override
                 public void onClick(View view) {
                     eventClickUseCase(sectionViewModel.getSectionList().get(position));
-                    listener.onSectionItemClicked(getActionLink(sectionViewModel.getSectionList().get(position)));
+                    listener.onSectionItemClicked(DynamicLinkHelper.getActionLink(sectionViewModel.getSectionList().get(position)));
                 }
             });
         }
@@ -91,14 +92,6 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
                 HomePageTracking.eventClickHomeUseCase(layoutSections.getTitle());
             } else {
                 HomePageTracking.eventClickDynamicIcons(layoutSections.getTitle());
-            }
-        }
-
-        private String getActionLink(LayoutSections layoutSections) {
-            if (!TextUtils.isEmpty(layoutSections.getApplink())) {
-                return layoutSections.getApplink();
-            } else {
-                return layoutSections.getUrl();
             }
         }
 
