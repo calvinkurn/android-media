@@ -20,6 +20,7 @@ import com.exotel.verification.exceptions.PermissionNotGrantedException;
 import com.exotel.verification.exceptions.VerificationAlreadyInProgressException;
 import com.logentries.logger.AndroidLogger;
 import com.tkpd.library.utils.AnalyticsLog;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.digital.analytics.NOTPTracking;
 import com.tokopedia.digital.utils.DeviceUtil;
 
@@ -34,13 +35,14 @@ public class NOTPExotelVerification {
     private static NOTPExotelVerification mInstance = new NOTPExotelVerification();
     public static final String APPLICATION_ID = "2d3a8f96d9e7436a9a5f93cae8d5ddd3";
     public static final String ACCOUNT_SID ="tokopedianotp";
-    public static final String SECRET_KEY = "nulayukawoju";
-    public static final String TAG = "NOTPVerification";//.class.getName();
+    public static final String SECRET_KEY = AuthUtil.KEY.KEY_NOTP;
+    public static final String TAG = "NOTPVerification";
 
 
     public static final String FIREBASE_NOTP_REMOTE_CONFIG_KEY = "app_notp_enabled"; // For Dev Testing
     public static final String FIREBASE_NOTP_TEST_REMOTE_CONFIG_KEY = "app_notp_test";
 
+    private static String COUNTRY_CODE = "+62";
 
     private static NOTPVerificationListener verificationlistener;
     public static NOTPExotelVerification getmInstance() {
@@ -68,10 +70,6 @@ public class NOTPExotelVerification {
             return;
         }
 
-        /* Check if Truecaller installed
-       *  and If We have number information in phone then verify verification number and phone number are same
-       *
-       * */
 
 
 
@@ -80,24 +78,17 @@ public class NOTPExotelVerification {
         try {
 
             config= new ConfigBuilder(APPLICATION_ID, SECRET_KEY, ACCOUNT_SID, context.getApplicationContext()).Build();
-            /*config = eVerification.configBuilder().
-                    applicationId(APPLICATION_ID).
-                    accountSid(ACCOUNT_SID).
-                    sharedSecretKey(SECRET_KEY).
-                    context(context).
-                    Build();*/
+
         } catch (Exception e) {
             e.printStackTrace();
         }
         ExotelVerification eVerification = null;
         try {
-            Log.e(TAG,"intializationStart "+phoneNo);
             AnalyticsLog.printNOTPLog("NOTP Verification IntializationStart ");
 
             eVerification = new ExotelVerification(config);
 
             AnalyticsLog.printNOTPLog("NOTP Verification IntializationComplete ");
-            Log.e(TAG,"intializationComplete "+phoneNo);
 
         } catch (PermissionNotGrantedException e) {
             e.printStackTrace();
@@ -109,19 +100,16 @@ public class NOTPExotelVerification {
         final String finalPhoneNo = phoneNo;
         class VerifyListener implements VerificationListener {
             public void onVerificationStarted(VerificationStart verificationStart) {
-                Log.e(TAG,"start");
             }
 
             public void onVerificationSuccess(VerificationSuccess
                                                       verificationSuccess) {
-                Log.e(TAG,"success");
                 AnalyticsLog.printNOTPLog("NOTP verification Success ");
                 verificationListener.onVerificationSuccess();
             }
 
             public void onVerificationFailed(VerificationFailed
                                                      verificationFailed) {
-                Log.e(TAG,"failed");
                 AnalyticsLog.printNOTPLog("NOTP verification Fail ");
                 verificationlistener.onVerificationFail();
             }
@@ -143,9 +131,9 @@ public class NOTPExotelVerification {
     private String convertE164Fromat(String phonNumber) {
         phonNumber = DeviceUtil.validatePrefixClientNumber(phonNumber);
         if(phonNumber.charAt(0) == '0') {
-            phonNumber = "+62" + phonNumber.substring(1);
+            phonNumber = COUNTRY_CODE + phonNumber.substring(1);
         }else {
-            phonNumber = "+62" + phonNumber;
+            phonNumber = COUNTRY_CODE + phonNumber;
         }
         return phonNumber;
     }
@@ -162,7 +150,6 @@ public class NOTPExotelVerification {
                     if (phoneNumber != null) {
                         result = false;
                         if (phoneNumber.isEmpty() || convertE164Fromat(phoneNumber).equals(number)) {
-                            Log.e(TAG,"number exist or empty");
                             result = true;
                             break;
                         }
@@ -186,7 +173,6 @@ public class NOTPExotelVerification {
         PackageManager pm = context.getPackageManager();
         try {
             pm.getPackageInfo("com.truecaller", PackageManager.GET_ACTIVITIES);
-            Log.e(TAG,"true caller installed");
             NOTPTracking.eventNOTPConfiguration(false,true,false);
 
             return true;
