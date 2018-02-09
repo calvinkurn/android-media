@@ -5,14 +5,28 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/channel_title"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/margin_ms"
-        android:padding="@dimen/page_margin"
-        style="@style/TextView.Title.Bold"
+        android:layout_height="wrap_content"
         android:background="@color/white"
-        tools:text="Hypebeast Banget Pokoknya"/>
+        android:layout_marginTop="@dimen/margin_ms"
+        android:padding="@dimen/page_margin">
+
+        <TextView
+            android:id="@+id/channel_title"
+            android:maxEms="12"
+            android:layout_centerVertical="true"
+            style="@style/TextView.Title.Bold"
+            tools:text="Hypebeast Banget Pokoknya"/>
+
+        <TextView
+            android:id="@+id/see_all_button"
+            style="@style/TextView.Small.Green"
+            android:text="@string/see_all"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"/>
+
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,6 +33,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
     private TextView channelCaption3;
     private ImageView channelImage4;
     private TextView channelCaption4;
+    private TextView seeAllButton;
     private Context context;
     private HomeCategoryListener listener;
 
@@ -53,11 +55,12 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
         channelCaption3 = (TextView)itemView.findViewById( R.id.channel_caption_3 );
         channelImage4 = (ImageView)itemView.findViewById( R.id.channel_image_4 );
         channelCaption4 = (TextView)itemView.findViewById( R.id.channel_caption_4 );
+        seeAllButton = (TextView)itemView.findViewById(R.id.see_all_button);
     }
 
     @Override
     public void bind(final DynamicChannelViewModel element) {
-        DynamicHomeChannel.Channels channel = element.getChannel();
+        final DynamicHomeChannel.Channels channel = element.getChannel();
         channelTitle.setText(element.getChannel().getHeader().getName());
         channelCaption1.setText(element.getChannel().getGrids()[0].getName());
         channelCaption2.setText(element.getChannel().getGrids()[1].getName());
@@ -68,12 +71,20 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
         ImageHandler.loadImageThumbs(context, channelImage2, channel.getGrids()[1].getImageUrl());
         ImageHandler.loadImageThumbs(context, channelImage3, channel.getGrids()[2].getImageUrl());
         ImageHandler.loadImageThumbs(context, channelImage4, channel.getGrids()[3].getImageUrl());
-        channelTitle.setOnClickListener(new View.OnClickListener() {
+
+        if (!TextUtils.isEmpty(channel.getHeader().getApplink())) {
+            seeAllButton.setVisibility(View.VISIBLE);
+        } else {
+            seeAllButton.setVisibility(View.GONE);
+        }
+
+        seeAllButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onDynamicChannelClicked(element.getChannel().getHeader().getApplink());
+                listener.onDynamicChannelClicked(channel.getHeader().getApplink());
             }
         });
+
         channelHeroImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
