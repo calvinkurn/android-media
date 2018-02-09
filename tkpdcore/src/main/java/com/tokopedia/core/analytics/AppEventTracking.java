@@ -168,6 +168,7 @@ public interface AppEventTracking {
         String EVENT_ONBOARDING = "onBoardingEvent";
         String EVENT_RESOLUTION = "clickResolution";
         String PRODUCT_VIEW = "productView";
+        String CLICK_PDP = "clickPDP";
     }
 
     interface Category {
