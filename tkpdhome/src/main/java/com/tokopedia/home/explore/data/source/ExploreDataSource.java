@@ -94,7 +94,7 @@ public class ExploreDataSource {
                             sectionViewModel.addVisitable(mappingFavoriteCategory(model.getFavCategory()));
                         }
                         if (i == 4) {
-                            if (!SessionHandler.getShopDomain(context).isEmpty()) {
+                            if (SessionHandler.isUserHasShop(context)) {
                                 sectionViewModel.addVisitable(mappingManageShop(response.body().getData()
                                         .getShopInfo().getData()));
                             } else {

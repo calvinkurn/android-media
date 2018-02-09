@@ -44,6 +44,7 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
     private ExploreFragmentAdapter fragmentAdapter;
     private SnackbarRetry messageSnackbar;
     private CoordinatorLayout root;
+    private String section;
 
     @DeepLink(Constants.Applinks.EXPLORE)
     public static Intent getCallingIntent(Context context, Bundle extras) {
@@ -61,6 +62,17 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
         component.inject(presenter);
         presenter.attachView(this);
         presenter.getData();
+        if(savedInstanceState!=null){
+            section = savedInstanceState.getString(SECTION);
+        } else {
+            section = getIntent().getStringExtra(SECTION);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(SECTION, section);
     }
 
     @Override
@@ -121,7 +133,7 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
         for (int i = 0; i < list.size(); i++) {
             setupTabIcon(i);
         }
-        initSection(getIntent().getStringExtra(SECTION));
+        initSection(section);
     }
 
     @Override

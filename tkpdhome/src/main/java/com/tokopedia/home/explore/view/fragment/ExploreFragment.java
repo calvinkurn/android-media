@@ -243,9 +243,9 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
 
     private void onGoToLogin() {
         Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getLoginIntent(getContext());
-        Intent intentHome = ((TkpdCoreRouter) getActivity().getApplication()).getHomeIntent(getContext());
-        intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        getActivity().startActivities(new Intent[]{intentHome, intent});
+        Intent targetIntent = new Intent(getActivity(), ExploreActivity.class);
+        targetIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        getActivity().startActivities(new Intent[]{targetIntent, intent});
         getActivity().finish();
     }
 

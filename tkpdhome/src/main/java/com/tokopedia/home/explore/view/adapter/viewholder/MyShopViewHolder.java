@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.home.R;
 import com.tokopedia.home.explore.domain.model.ShopData;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
@@ -55,7 +56,7 @@ public class MyShopViewHolder extends AbstractViewHolder<MyShopViewModel> {
     @Override
     public void bind(MyShopViewModel element) {
         ShopData data = element.getShopData();
-        titleTxt.setText(data.getShopName());
+        titleTxt.setText(MethodChecker.fromHtml(data.getShopName()));
         ImageHandler.LoadImage(imageView, data.getLogo());
         if (data.getIsOfficial() == 1) {
             officialTxt.setVisibility(View.VISIBLE);
