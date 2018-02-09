@@ -58,7 +58,7 @@ public class ChangePhoneNumberRequestFragment
     public interface ChangePhoneNumberRequestListener {
         void goToThanksPage();
 
-        void shouldHandleBackPress(boolean b);
+        void shouldHandleBackPress(boolean isBackPressHandled);
     }
 
     private static final String UPLOAD_ID = "UPLOAD_ID";
@@ -553,12 +553,10 @@ public class ChangePhoneNumberRequestFragment
     }
 
     public void handleBackOnView() {
-        //if(newPhoneNumberView.getVisibility() == View.VISIBLE){
             photoIdMainView.setVisibility(View.VISIBLE);
             accountIdMainView.setVisibility(View.VISIBLE);
             buttonSubmit.setVisibility(View.VISIBLE);
             newPhoneNumberView.setVisibility(View.GONE);
             listener.shouldHandleBackPress(false);
-       // }
     }
 }

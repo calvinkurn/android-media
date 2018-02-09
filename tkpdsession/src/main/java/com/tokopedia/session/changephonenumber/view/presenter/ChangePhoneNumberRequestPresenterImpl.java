@@ -128,7 +128,6 @@ public class ChangePhoneNumberRequestPresenterImpl implements ChangePhoneNumberR
         this.phoneNumber = phoneNumber;
         if (isValidParam()) {
             viewListener.showLoading();
-            //viewListener.onSuccessValidRequest();
             uploadChangePhoneNumberRequestUseCase.execute(getUploadChangePhoneNumberRequestParam(),
                     new Subscriber<ChangePhoneNumberRequestModel>() {
                         @Override
@@ -247,7 +246,7 @@ public class ChangePhoneNumberRequestPresenterImpl implements ChangePhoneNumberR
 
     @Override
     public boolean isValidParam() {
-        return /*pass.getUploadBankBookPath() != null && */pass.getUploadIdPath() != null;
+        return pass.getUploadIdPath() != null;
     }
 
     @Override
