@@ -158,6 +158,9 @@ public class InboxFilterFragment
                                 updateView();
                             }
                 });
+                if (inboxFilterModel.getDateTo() != null) {
+                    dialog.getDatePicker().setMaxDate(inboxFilterModel.getDateTo().getTime());
+                }
                 dialog.show();
             }
         });

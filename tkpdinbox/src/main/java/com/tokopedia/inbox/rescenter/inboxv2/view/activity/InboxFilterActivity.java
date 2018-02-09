@@ -113,7 +113,7 @@ public class InboxFilterActivity extends BasePresenterActivity implements HasCom
     private Drawable getDetailMenuItem() {
         TextDrawable drawable = new TextDrawable(this);
         drawable.setText(getResources().getString(R.string.string_reset));
-        drawable.setTextColor(R.color.black_70b);
+        drawable.setTextColor(R.color.tkpd_main_green);
         return drawable;
     }
 
