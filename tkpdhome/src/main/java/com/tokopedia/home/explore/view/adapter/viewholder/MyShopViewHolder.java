@@ -7,6 +7,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.home.R;
@@ -61,8 +63,14 @@ public class MyShopViewHolder extends AbstractViewHolder<MyShopViewModel> {
         } else if (data.isIsGoldBadge()) {
             officialTxt.setVisibility(View.GONE);
             badgeImage.setImageResource(R.drawable.ic_shop_gold);
+        } else {
+            officialTxt.setVisibility(View.GONE);
+            badgeImage.setVisibility(View.GONE);
         }
-        ImageHandler.LoadImage(reputationMedal, data.getReputationBadge());
+        Glide.with(reputationMedal.getContext()).load(data.getReputationBadge())
+                .asGif()
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .into(reputationMedal);
     }
 
 }

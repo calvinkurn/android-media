@@ -36,8 +36,8 @@
     <dimen name="text_size_small">12sp</dimen>
     <dimen name="text_size_s_medium">13sp</dimen>
     <dimen name="padding_info">16dp</dimen>
-    <dimen name="rating_width">68dp</dimen>
-    <dimen name="rating_height">12dp</dimen>
+    <dimen name="topads_rating_width">68dp</dimen>
+    <dimen name="topads_rating_height">12dp</dimen>
     <dimen name="review_count_margin_left">4dp</dimen>
     <dimen name="line_spacing_normal">4sp</dimen>
 
