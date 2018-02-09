@@ -20,7 +20,7 @@
             android:layout_height="?attr/actionBarSize"
             app:theme="@style/AppBarTheme"
             android:background="@color/white"
-            app:titleTextAppearance="@style/Toolbar.TitleText"
+            app:titleTextAppearance="@style/EventToolbarTextStyle"
             app:titleTextColor="@color/grey_900"/>
 
 

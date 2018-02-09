@@ -35,7 +35,7 @@
     <string name="rp_5980000"><strike>Rp 5980000</strike></string>
     <string name="total_tickets">%d Tiket</string>
     <string name="fare_breakup">Fare Breakup for %s</string>
-    <string name="pay_button">Bayar</string>
+    <string name="pay_button">Lanjut Pembayaran</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="monday_16_nov">Monday\n16 Nov</string>
@@ -53,6 +53,10 @@
     <string name="data_pelanggan_tambahan">Data Pelanggan Tambahan</string>
     <string name="additionallinfo_text">Data pelanggan tambahan akan digunakan pada saat penukaran tiket</string>
     <string name="promo_success_msg">Anda mendapatkan promo:</string>
+    <string name="book_ticket_title">Pilih Tiket</string>
+    <string name="seat_selection_title">Pilih Kursi</string>
+    <string name="review_title">Rincian</string>
+    <string name="price_holder">Rp %1$s</string>
 
     <!-- need to changed -->
 

@@ -72,6 +72,8 @@
                         layout="@layout/image_textview_holder"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_default"
+                        android:layout_marginStart="@dimen/margin_default"
                         android:layout_marginTop="@dimen/margin_default" />
 
                     <include
@@ -79,6 +81,8 @@
                         layout="@layout/image_textview_holder"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_default"
+                        android:layout_marginStart="@dimen/margin_default"
                         android:layout_marginTop="@dimen/keyline_1_minus_8dp" />
 
                     <View
@@ -201,15 +205,18 @@
                         android:layout_alignBottom="@+id/tv_telephone"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
-                        android:background="?attr/selectableItemBackground"
+                        android:layout_marginEnd="@dimen/margin_default"
+                        android:layout_marginRight="@dimen/margin_default"
+                        android:background="@drawable/rounded_rectangle_grey_solid"
                         android:clickable="true"
                         android:focusable="true"
-                        android:gravity="end"
-                        android:paddingEnd="@dimen/margin_default"
-                        android:paddingRight="@dimen/margin_default"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:gravity="center"
+                        android:padding="2dp"
                         android:text="Ubah"
+                        android:textColor="@color/black_38"
                         android:textSize="12sp"
-                        android:textStyle="normal" />
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tv2"
@@ -245,15 +252,18 @@
                         android:layout_alignBottom="@+id/tv_visitor_names"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
-                        android:background="?attr/selectableItemBackground"
+                        android:layout_marginEnd="@dimen/margin_default"
+                        android:layout_marginRight="@dimen/margin_default"
+                        android:background="@drawable/rounded_rectangle_grey_solid"
                         android:clickable="true"
                         android:focusable="true"
-                        android:gravity="end"
-                        android:paddingEnd="@dimen/margin_default"
-                        android:paddingRight="@dimen/margin_default"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:gravity="center"
+                        android:padding="2dp"
                         android:text="Ubah"
+                        android:textColor="@color/black_38"
                         android:textSize="12sp"
-                        android:textStyle="normal" />
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tv3"
@@ -529,7 +539,7 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="160dp"
+                android:layout_marginBottom="@dimen/margin_default"
                 app:cardCornerRadius="0dp"
                 app:cardElevation="0dp">
 
@@ -612,7 +622,7 @@
                             android:layout_height="wrap_content"
                             android:paddingEnd="@dimen/margin_default"
                             android:paddingStart="@dimen/margin_default"
-                            android:text="Biaya Layannan"
+                            android:text="Biaya Layanan"
                             android:textColor="@color/grey_700"
                             android:textSize="12sp"
                             android:textStyle="normal" />
@@ -643,6 +653,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_default"
                         android:orientation="horizontal">
 
                         <TextView
@@ -673,34 +684,36 @@
                 </LinearLayout>
 
             </android.support.v7.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="144dp"
+                android:layout_gravity="bottom"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_someinfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_default"
+                    android:layout_marginRight="@dimen/margin_default"
+                    android:layout_marginTop="@dimen/margin_default"
+                    android:text="@string/some_info"
+                    android:textColor="@color/black_54"
+                    android:textSize="12sp" />
+
+                <include
+                    android:id="@+id/btn_go_to_payment"
+                    layout="@layout/btn_book_event"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible" />
+            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="144dp"
-        android:layout_gravity="bottom"
-        android:background="@color/white"
-        android:orientation="vertical">
-
-         <TextView
-            android:id="@+id/tv_someinfo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_default"
-            android:layout_marginRight="@dimen/margin_default"
-            android:layout_marginTop="@dimen/margin_default"
-            android:text="@string/some_info"
-            android:textColor="@color/black_54"
-            android:textSize="12sp" />
-
-        <include
-            android:id="@+id/btn_go_to_payment"
-            layout="@layout/btn_book_event"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="visible" />
-    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/progress_bar_layout"

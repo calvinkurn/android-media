@@ -63,7 +63,7 @@
                 android:id="@+id/viewpager_book_ticket"
                 android:layout_width="match_parent"
                 android:layout_height="680dp"
-                android:background="@color/white"
+                android:background="@color/grey_background"
                 android:paddingBottom="@dimen/margin_default" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
@@ -83,6 +83,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_default"
             android:layout_marginStart="@dimen/margin_default"
+            android:layout_marginTop="@dimen/margin_ms"
             android:text="TIKET:"
             android:textColor="@color/black_70"
             android:textSize="10sp"
@@ -109,6 +110,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginEnd="@dimen/margin_default"
             android:layout_marginRight="@dimen/margin_default"
+            android:layout_marginTop="@dimen/margin_ms"
             android:text="TOTAL:"
             android:textColor="@color/black_70"
             android:textSize="10sp"
@@ -132,7 +134,7 @@
 
         <include
             android:id="@+id/pay_tickets"
-            layout="@layout/btn_lanjutkan_event"
+            layout="@layout/btn_lanjuktan_simple"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/ticketcount"

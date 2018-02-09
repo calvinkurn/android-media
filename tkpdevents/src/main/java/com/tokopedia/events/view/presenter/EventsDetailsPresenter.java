@@ -34,7 +34,6 @@ public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsCon
     GetEventDetailsRequestUseCase getEventDetailsRequestUseCase;
     GetSeatLayoutUseCase getSeatLayoutUseCase;
     EventsDetailsViewModel eventsDetailsViewModel;
-    String seatingURL = "empty";
     Subscriber<SeatLayoutResponse> seatLayoutResponseSubscriber;
     Subscriber<EventDetailsDomain> eventDetailsDomainSubscriber;
     public static String EXTRA_EVENT_VIEWMODEL = "extraeventviewmodel";
@@ -52,37 +51,37 @@ public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsCon
 
     @Override
     public void initialize() {
-        seatLayoutResponseSubscriber = new Subscriber<SeatLayoutResponse>() {
-            @Override
-            public void onCompleted() {
-                CommonUtils.dumper("enter onCompleted seatlayout usecase");
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                CommonUtils.dumper("enter error in seatlayout usecase");
-                e.printStackTrace();
-                getView().hideProgressBar();
-                NetworkErrorHelper.showEmptyState(getView().getActivity(),
-                        getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
-                            @Override
-                            public void onRetryClicked() {
-                                getSeatLayout();
-                            }
-                        });
-            }
-
-            @Override
-            public void onNext(SeatLayoutResponse seatLayoutResponse) {
-                getView().hideProgressBar();
-                try {
-                    seatingURL = seatLayoutResponse.getUrl();
-                    getView().renderSeatLayout(seatingURL);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
+//        seatLayoutResponseSubscriber = new Subscriber<SeatLayoutResponse>() {
+//            @Override
+//            public void onCompleted() {
+//                CommonUtils.dumper("enter onCompleted seatlayout usecase");
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//                CommonUtils.dumper("enter error in seatlayout usecase");
+//                e.printStackTrace();
+//                getView().hideProgressBar();
+//                NetworkErrorHelper.showEmptyState(getView().getActivity(),
+//                        getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+//                            @Override
+//                            public void onRetryClicked() {
+//                                getSeatLayout();
+//                            }
+//                        });
+//            }
+//
+//            @Override
+//            public void onNext(SeatLayoutResponse seatLayoutResponse) {
+//                getView().hideProgressBar();
+//                try {
+//                    seatingURL = seatLayoutResponse.getUrl();
+//                    //getView().renderSeatLayout(seatingURL);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        };
 
     }
 
@@ -139,55 +138,55 @@ public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsCon
 
     }
 
-    private void getSeatLayout() {
-        getView().showProgressBar();
-        getSeatLayoutUseCase.execute(RequestParams.EMPTY, new Subscriber<SeatLayoutResponse>() {
-            @Override
-            public void onCompleted() {
-                CommonUtils.dumper("enter onCompleted seatlayout usecase");
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                CommonUtils.dumper("enter error in seatlayout usecase");
-                e.printStackTrace();
-                getView().hideProgressBar();
-                NetworkErrorHelper.showEmptyState(getView().getActivity(),
-                        getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
-                            @Override
-                            public void onRetryClicked() {
-                                getSeatLayout();
-                            }
-                        });
-            }
-
-            @Override
-            public void onNext(SeatLayoutResponse seatLayoutResponse) {
-                getView().hideProgressBar();
-                try {
-                    seatingURL = seatLayoutResponse.getUrl();
-                    getView().renderSeatLayout(seatingURL);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
+//    private void getSeatLayout() {
+//        getView().showProgressBar();
+//        getSeatLayoutUseCase.execute(RequestParams.EMPTY, new Subscriber<SeatLayoutResponse>() {
+//            @Override
+//            public void onCompleted() {
+//                CommonUtils.dumper("enter onCompleted seatlayout usecase");
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//                CommonUtils.dumper("enter error in seatlayout usecase");
+//                e.printStackTrace();
+//                getView().hideProgressBar();
+//                NetworkErrorHelper.showEmptyState(getView().getActivity(),
+//                        getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+//                            @Override
+//                            public void onRetryClicked() {
+//                                getSeatLayout();
+//                            }
+//                        });
+//            }
+//
+//            @Override
+//            public void onNext(SeatLayoutResponse seatLayoutResponse) {
+//                getView().hideProgressBar();
+//                try {
+//                    seatingURL = seatLayoutResponse.getUrl();
+//                    getView().renderSeatLayout(seatingURL);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//    }
 
     private EventsDetailsViewModel convertIntoEventDetailsViewModel(EventDetailsDomain eventDetailsDomain) {
         eventsDetailsViewModel = new EventsDetailsViewModel();
         if (eventDetailsDomain != null) {
             EventDetailsViewModelMapper.mapDomainToViewModel(eventDetailsDomain, eventsDetailsViewModel);
         }
-        try {
-            if (eventsDetailsViewModel.getHasSeatLayout() == 1) {
-                getSeatLayoutUseCase.setUrl(eventsDetailsViewModel.getSchedulesViewModels().get(0).getPackages().get(0));
-                getSeatLayout();
-            }
-        } catch (Exception e) {
-            Log.d("EventDetailsPresenter", "Catch in seatlayout usecase");
-            e.printStackTrace();
-        }
+//        try {
+//            if (eventsDetailsViewModel.getHasSeatLayout() == 1) {
+//                getSeatLayoutUseCase.setUrl(eventsDetailsViewModel.getSchedulesViewModels().get(0).getPackages().get(0));
+//                getSeatLayout();
+//            }
+//        } catch (Exception e) {
+//            Log.d("EventDetailsPresenter", "Catch in seatlayout usecase");
+//            e.printStackTrace();
+//        }
 
         return eventsDetailsViewModel;
     }
@@ -205,7 +204,6 @@ public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsCon
         getView().showProgressBar();
         Intent bookTicketIntent = new Intent(getView().getActivity(), EventBookTicketActivity.class);
         bookTicketIntent.putExtra(EXTRA_EVENT_VIEWMODEL, eventsDetailsViewModel);
-        bookTicketIntent.putExtra(EXTRA_SEATING_URL, seatingURL);
         bookTicketIntent.putExtra(EXTRA_SEATING_PARAMETER, hasSeatLayout);
         getView().navigateToActivityRequest(bookTicketIntent, 100);
     }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.ArrowKeyMovementMethod;
@@ -64,7 +65,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     @BindView(R2.id.tv_ticket_summary)
     TextView tvTicketSummary;
     @BindView(R2.id.tv_visitor_names)
-    EditText tvVisitorNames;
+    EditText tvEmailID;
     @BindView(R2.id.tv_telephone)
     EditText tvTelephone;
     @BindView(R2.id.tv_base_fare)
@@ -187,7 +188,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
                 }
             }
         });
-
+        appBar.setTitle(R.string.review_title);
         setSupportActionBar(appBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -195,13 +196,29 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
 
 
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            tvVisitorNames.setShowSoftInputOnFocus(false);
+//            tvEmailID.setShowSoftInputOnFocus(false);
 //            tvTelephone.setShowSoftInputOnFocus(false);
 //        }
 //        else {
-//            tvVisitorNames.setTextIsSelectable(true);
+//            tvEmailID.setTextIsSelectable(true);
 //            tvTelephone.setTextIsSelectable(true);
 //        }
+
+        tvEmailID.setEnabled(false);
+        tvEmailID.setTextIsSelectable(false);
+        tvEmailID.setFocusable(false);
+        tvEmailID.setInputType(InputType.TYPE_NULL);
+//        tvEmailID.setOnKeyListener(new View.OnKeyListener() {
+//            @Override
+//            public boolean onKey(View v, int keyCode, KeyEvent event) {
+//                return true;  // Blocks input from hardware keyboards.
+//            }
+//        });
+
+        tvTelephone.setEnabled(false);
+        tvTelephone.setTextIsSelectable(false);
+        tvTelephone.setFocusable(false);
+        tvTelephone.setInputType(InputType.TYPE_NULL);
 
 
     }
@@ -268,7 +285,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
 
     @Override
     public void setEmailID(String emailID) {
-        tvVisitorNames.setText(emailID);
+        tvEmailID.setText(emailID);
     }
 
     @Override
@@ -388,12 +405,54 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
 
     @OnClick(R2.id.update_email)
     void updateEmail() {
-        mPresenter.updateEmail(tvVisitorNames.getText().toString());
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (!tvEmailID.isEnabled()) {
+            tvEmailID.setEnabled(true);
+            tvEmailID.setTextIsSelectable(true);
+            tvEmailID.setFocusable(true);
+            tvEmailID.setFocusableInTouchMode(true);
+            tvEmailID.setInputType(InputType.TYPE_CLASS_TEXT);
+            tvEmailID.requestFocus();
+            if (imm != null) {
+                imm.showSoftInputFromInputMethod(tvEmailID.getWindowToken(), 0);
+            }
+        } else {
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(tvEmailID.getWindowToken(), 0);
+            }
+            tvEmailID.setEnabled(false);
+            tvEmailID.setTextIsSelectable(false);
+            tvEmailID.setFocusable(false);
+            tvEmailID.setInputType(InputType.TYPE_NULL);
+            mainContent.requestFocus();
+            mPresenter.updateEmail(tvEmailID.getText().toString());
+        }
     }
 
     @OnClick(R2.id.update_number)
     void updateNumber() {
-        mPresenter.updateNumber(tvTelephone.getText().toString());
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (!tvTelephone.isEnabled()) {
+            tvTelephone.setEnabled(true);
+            tvTelephone.setTextIsSelectable(true);
+            tvTelephone.setFocusable(true);
+            tvTelephone.setFocusableInTouchMode(true);
+            tvTelephone.setInputType(InputType.TYPE_CLASS_TEXT);
+            tvTelephone.requestFocus();
+            if (imm != null) {
+                imm.showSoftInputFromInputMethod(tvTelephone.getWindowToken(), 0);
+            }
+        } else {
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(tvTelephone.getWindowToken(), 0);
+            }
+            tvTelephone.setEnabled(false);
+            tvTelephone.setTextIsSelectable(false);
+            tvTelephone.setFocusable(false);
+            tvTelephone.setInputType(InputType.TYPE_NULL);
+            mainContent.requestFocus();
+            mPresenter.updateEmail(tvTelephone.getText().toString());
+        }
     }
 
     @OnClick(R2.id.batal)

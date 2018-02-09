@@ -74,6 +74,8 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         View buttonLayout;
         @BindView(R2.id.tv_ticket_description)
         TextView tickeyDescriptionText;
+        @BindView(R2.id.maks_ticket)
+        TextView maksTicket;
 
         PackageViewModel holderViewModel;
         int index;
@@ -92,7 +94,10 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             this.index = position;
             tvTicketName.setText(viewModel.getDisplayName());
 //            tvTicketMaxprice.setText("Rp" + " " + CurrencyUtil.convertToCurrencyString(viewModel.getMrp()));
-            tickeyDescriptionText.setText(viewModel.getDescription());
+            if (viewModel.getDescription() != null && viewModel.getDescription().length() > 0)
+                tickeyDescriptionText.setText(viewModel.getDescription());
+            else
+                tickeyDescriptionText.setVisibility(View.GONE);
             ticketSalePrice.setText("Rp" + " " + CurrencyUtil.convertToCurrencyString(viewModel.getSalesPrice()));
             tvTicketCnt.setText(String.valueOf(viewModel.getSelectedQuantity()));
             if (holderViewModel.getSelectedQuantity() > 0) {
@@ -109,7 +114,7 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 buttonLayout.setVisibility(View.VISIBLE);
                 setTvTicketNameColor(mContext.getResources().getColor(R.color.black_70));
                 setTickeyDescriptionColor(mContext.getResources().getColor(R.color.black_54));
-                setTicketSalePriceColor(mContext.getResources().getColor(R.color.orange_nob));
+                setTicketSalePriceColor(mContext.getResources().getColor(R.color.price_pdp));
             } else {
                 tvSoldOut.setVisibility(View.VISIBLE);
                 buttonLayout.setVisibility(View.INVISIBLE);
@@ -169,9 +174,23 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
 
         public void setTicketViewColor(int color) {
-            btnDecrement.setImageDrawable(mContext.getResources().getDrawable(R.drawable.minus_button_layerlist_grey));
-            btnDecrement.setClickable(false);
+//            btnDecrement.setImageDrawable(mContext.getResources().getDrawable(R.drawable.minus_button_layerlist_grey));
+//            btnDecrement.setClickable(false);
             thisView.setBackgroundColor(color);
+        }
+
+        public void toggleMaxTicketWarning(int visibility) {
+            if (visibility != maksTicket.getVisibility()) {
+                if (visibility == View.VISIBLE) {
+                    maksTicket.setVisibility(visibility);
+                    btnIncrement.setImageDrawable(mContext.getResources().getDrawable(R.drawable.add_button_layerlist_grey));
+                    btnIncrement.setClickable(false);
+                } else {
+                    maksTicket.setVisibility(visibility);
+                    btnIncrement.setImageDrawable(mContext.getResources().getDrawable(R.drawable.add_button_layerlist_green));
+                    btnIncrement.setClickable(true);
+                }
+            }
         }
     }
 }

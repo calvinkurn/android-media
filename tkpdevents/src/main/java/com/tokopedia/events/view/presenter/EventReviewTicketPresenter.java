@@ -302,7 +302,7 @@ public class EventReviewTicketPresenter
 
     public void verifyCart() {
         getView().showProgressBar();
-        postVerifyCartUseCase.setCartItems(convertPackageToCartItem(checkoutData), false);
+        postVerifyCartUseCase.setCartItems(convertPackageToCartItem(checkoutData), !isPromoCodeCase);
         postVerifyCartUseCase.execute(RequestParams.EMPTY, new Subscriber<VerifyCartResponse>() {
             @Override
             public void onCompleted() {
@@ -327,20 +327,6 @@ public class EventReviewTicketPresenter
             public void onNext(VerifyCartResponse verifyCartResponse) {
                 Log.d("ReviewTicketPresenter", verifyCartResponse.toString());
 
-                if ("Kode Promo tidak ditemukan".equals(verifyCartResponse.getCart().getPromocodeFailureMessage())) {
-                    getView().hideProgressBar();
-                    getView().showPromoSuccessMessage("Kode Promo tidak ditemukan",
-                            getView().getActivity().getResources().getColor(R.color.red_a700));
-                } else {
-                    getView().hideProgressBar();
-                    getView().showPromoSuccessMessage(getView().getActivity().getResources().getString(R.string.promo_success_msg),
-                            getView().getActivity().getResources().getColor(R.color.black_54));
-                    String cashBackDiscount = "Total Discount : "
-                            + verifyCartResponse.getCart().getPromocodeDiscount()
-                            + " and Total Cashback : " + verifyCartResponse.getCart().getPromocodeCashback();
-                    getView().showCashbackMessage(cashBackDiscount);
-                }
-
                 if (!isPromoCodeCase) {
                     if ("failure".equals(verifyCartResponse.getStatus().getResult())) {
                         getView().hideProgressBar();
@@ -349,12 +335,26 @@ public class EventReviewTicketPresenter
                         postPaymentUseCase.setVerfiedCart(verifyCartResponse.getCart());
                         getPaymentLink();
                     }
+                } else {
+                    if ("Kode Promo tidak ditemukan".equals(verifyCartResponse.getCart().getPromocodeFailureMessage())) {
+                        getView().hideProgressBar();
+                        getView().showPromoSuccessMessage("Kode Promo tidak ditemukan",
+                                getView().getActivity().getResources().getColor(R.color.red_a700));
+                    } else {
+                        getView().hideProgressBar();
+                        getView().showPromoSuccessMessage(getView().getActivity().getResources().getString(R.string.promo_success_msg),
+                                getView().getActivity().getResources().getColor(R.color.black_54));
+                        String cashBackDiscount = "Total Discount : "
+                                + verifyCartResponse.getCart().getPromocodeDiscount()
+                                + " and Total Cashback : " + verifyCartResponse.getCart().getPromocodeCashback();
+                        getView().showCashbackMessage(cashBackDiscount);
+                    }
                 }
             }
         });
     }
 
-    public void getPaymentLink() {
+    private void getPaymentLink() {
         postPaymentUseCase.execute(RequestParams.EMPTY, new Subscriber<CheckoutResponse>() {
             @Override
             public void onCompleted() {
