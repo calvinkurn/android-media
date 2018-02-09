@@ -29,7 +29,7 @@ public interface ChangePhoneNumberRequestView {
 
     void disableNextButton();
 
-    void correctPhoneNumber(String newNumber, int i);
+    void correctPhoneNumber(String newNumber, int selection);
 
     void onSuccessSubmitRequest();
 }
