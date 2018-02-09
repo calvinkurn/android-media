@@ -2,6 +2,7 @@ package com.tokopedia.events.view.customview;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -92,6 +93,7 @@ public class CustomSeatLayout extends LinearLayout {
             if (!individualSeat.isSelected() && numoFSeats < maxCount) {
                 individualSeat.setSelected(true);
                 individualSeat.setBackgroundResource(R.drawable.selected_seat_bg);
+                individualSeat.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
                 numoFSeats++;
                 if (rowName != '\0') {
                     selectedSeatList.add("" + rowName + columnName);
@@ -102,6 +104,7 @@ public class CustomSeatLayout extends LinearLayout {
             } else if (individualSeat.isSelected()) {
                 individualSeat.setSelected(false);
                 individualSeat.setBackgroundResource(R.drawable.seat_bg);
+                individualSeat.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
                 numoFSeats--;
                 if (rowName != '\0') {
                     selectedSeatList.remove("" + rowName + columnName);
