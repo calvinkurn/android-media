@@ -25,6 +25,7 @@ import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpdpdp.R;
+import com.tokopedia.tkpdpdp.VariantActivity;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_WAREHOUSE;
@@ -135,16 +136,49 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
         variantProgressBar.setVisibility(VISIBLE);
         tvBuy.setClickable(false);
         containerButtonBuy.setClickable(false);
-        tvBuy.setEnabled(false);
-        containerButtonBuy.setEnabled(false);
     }
 
     public void removeLoading() {
         variantProgressBar.setVisibility(GONE);
         tvBuy.setClickable(true);
         containerButtonBuy.setClickable(true);
-        tvBuy.setEnabled(true);
-        containerButtonBuy.setEnabled(true);
+    }
+
+    public void updateButtonForVariantProduct(boolean isBuyable, int shopStatus) {
+        if (isBuyable && shopStatus == 1) {
+            tvBuy.setText(getContext().getString(R.string.title_buy));
+            tvBuy.setBackgroundResource(R.drawable.btn_buy);
+            containerButtonBuy.setBackground(ContextCompat.getDrawable(getContext(),R.drawable.btn_buy));
+            tvBuy.setTextColor(ContextCompat.getColor(getContext(),R.color.href_link_rev));
+            tvBuy.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onBuyClick(ProductDetailView.SOURCE_BUTTON_BUY_PDP);
+
+                }
+            });
+            containerButtonBuy.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onBuyClick(ProductDetailView.SOURCE_BUTTON_BUY_PDP);
+                }
+            });
+            setVisibility(VISIBLE);
+        } else if (isBuyable == false) {
+            tvBuy.setBackgroundResource(R.drawable.btn_buy_grey);
+            containerButtonBuy.setBackground(ContextCompat.getDrawable(getContext(),R.drawable.btn_buy_grey));
+            tvBuy.setTextColor(ContextCompat.getColor(getContext(),R.color.black_38));
+            tvBuy.setText(getContext().getString(R.string.title_warehouse));
+            tvBuy.setClickable(false);
+            setVisibility(VISIBLE);
+        } else {
+            tvBuy.setBackgroundResource(R.drawable.btn_buy_grey);
+            containerButtonBuy.setBackground(ContextCompat.getDrawable(getContext(),R.drawable.btn_buy_grey));
+            tvBuy.setTextColor(ContextCompat.getColor(getContext(),R.color.black_38));
+            tvBuy.setText(getContext().getString(R.string.title_buy));
+            tvBuy.setClickable(false);
+            setVisibility(VISIBLE);
+        }
     }
 
     private class PromoteClick implements OnClickListener {

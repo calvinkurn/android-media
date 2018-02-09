@@ -1035,6 +1035,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         headerInfoView.renderData(productData);
                         shopInfoView.renderData(productData);
                         presenter.updateRecentView(context,productData.getInfo().getProductId());
+                        buttonBuyView.updateButtonForVariantProduct(productVariant.getChildFromProductId(
+                                productData.getInfo().getProductId()).isIsBuyable(),productData.getShopInfo().getShopStatus());
                         updateWishListStatus(productData.getInfo().getProductAlreadyWishlist());
                         productPass.setProductId(Integer.toString(productData.getInfo().getProductId()));
                     }
@@ -1221,6 +1223,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             }
             priceSimulationView.updateVariant(variantText);
         }
+        buttonBuyView.updateButtonForVariantProduct(productVariant.getChildFromProductId(
+                productVariant.getDefaultChild()).isIsBuyable(),productData.getShopInfo().getShopStatus());
     }
 
     @Override
