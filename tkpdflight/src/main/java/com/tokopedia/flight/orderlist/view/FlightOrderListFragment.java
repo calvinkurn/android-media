@@ -1,9 +1,9 @@
 package com.tokopedia.flight.orderlist.view;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,13 +14,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.flight.FlightModuleRouter;
@@ -209,9 +207,13 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         switch (requestCode) {
             case REQUEST_CODE_RESEND_ETICKET_DIALOG:
                 if (resultCode == Activity.RESULT_OK) {
-                    NetworkErrorHelper.showCloseSnackbar(getActivity(), getString(R.string.resend_eticket_success));
+                    showGreenSnackbar(R.string.resend_eticket_success);
                 }
                 break;
         }
+    }
+
+    private void showGreenSnackbar(int resId) {
+        NetworkErrorHelper.showGreenCloseSnackbar(getActivity(), getString(resId));
     }
 }
