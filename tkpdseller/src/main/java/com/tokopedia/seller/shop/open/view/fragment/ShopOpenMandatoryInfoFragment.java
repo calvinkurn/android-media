@@ -131,6 +131,7 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
                 }
             }
         }
+
     }
 
     private void updateView(UserData userData) {
@@ -159,7 +160,9 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
         buttonNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onNextButtonClicked();
+                if (onShopStepperListener.getStepperModel().getResponseIsReserveDomain()!= null) {
+                    onNextButtonClicked();
+                }
             }
         });
     }
@@ -196,9 +199,10 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
     @Override
     public void onSuccessSaveInfoShop(ShopOpenSaveInfoResponseModel responseModel) {
         if(onShopStepperListener != null && onShopStepperListener.getStepperModel().getResponseIsReserveDomain() != null){
-            onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData().setShortDesc(responseModel.getShopDesc());
-            onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData().setLogo(responseModel.getPicSrc());
-            onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData().setTagLine(responseModel.getShopTagLine());
+            UserData userData = onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData();
+            userData.setShortDesc(responseModel.getShopDesc());
+            userData.setLogo(responseModel.getPicSrc());
+            userData.setTagLine(responseModel.getShopTagLine());
         }
         trackingOpenShop.eventOpenShopFormSuccess();
         if (onShopStepperListener != null) {
