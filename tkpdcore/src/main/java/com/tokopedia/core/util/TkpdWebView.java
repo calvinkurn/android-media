@@ -15,7 +15,9 @@ import java.net.URLEncoder;
 
 /**
  * Created by nisie on 11/30/16.
+ * refer {@link com.tokopedia.abstraction.base.view.webview.TkpdWebView}
  */
+@Deprecated
 public class TkpdWebView extends WebView {
 
     private static final String PARAM_URL = "url";

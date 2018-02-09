@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.SessionRouter;
@@ -46,7 +47,6 @@ import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -54,7 +54,8 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPas
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.SessionRefresh;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.mitratoppers.MitraToppersRouter;
+import com.tokopedia.mitratoppers.MitraToppersRouterInternal;
 import com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
@@ -63,7 +64,6 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
-import com.tokopedia.seller.product.manage.di.ProductManageComponent;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
 import com.tokopedia.sellerapp.truecaller.TruecallerActivity;
@@ -127,12 +127,9 @@ import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
-import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.activity.ReputationProduct;
-import com.tokopedia.tkpd.tkpdreputation.shopreputation.ShopReputationList;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsComponent;
-import com.tokopedia.seller.product.manage.di.DaggerProductManageComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
@@ -159,7 +156,8 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PA
 public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
-        ReputationRouter, LogisticRouter, SessionRouter, AbstractionRouter {
+        ReputationRouter, LogisticRouter, SessionRouter,
+        MitraToppersRouter, AbstractionRouter{
 
     private DaggerProductComponent.Builder daggerProductBuilder;
     private ProductComponent productComponent;
@@ -281,6 +279,10 @@ public abstract class SellerRouterApplication extends MainApplication
         context.startActivity(intent);
     }
 
+    public Intent getMitraToppersActivityIntent(Context context){
+        return MitraToppersRouterInternal.getMitraToppersActivityIntent(context);
+    }
+
     @Override
     public void actionAppLink(Context context, String linkUrl) {
 
@@ -310,6 +312,11 @@ public abstract class SellerRouterApplication extends MainApplication
     public void goToCreateMerchantRedirect(Context context) {
         //no route to merchant redirect on seller, go to default
         goToDefaultRoute(context);
+    }
+
+    @Override
+    public CacheManager getGlobalCacheManager() {
+        return new GlobalCacheManager();
     }
 
     @Override
@@ -899,16 +906,9 @@ public abstract class SellerRouterApplication extends MainApplication
     public void onForceLogout(Activity activity) {
         SessionHandler sessionHandler = new SessionHandler(activity);
         sessionHandler.forceLogout();
-        if (GlobalConfig.isSellerApp()) {
-            Intent intent = SellerRouter.getActivitySplashScreenActivity(getBaseContext());
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        } else {
-            invalidateCategoryMenuData();
-            Intent intent = CustomerRouter.getSplashScreenIntent(getBaseContext());
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        }
+        Intent intent = SellerRouter.getActivitySplashScreenActivity(getBaseContext());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     @Override
