@@ -9,6 +9,7 @@
         android:id="@+id/channel_title"
         android:layout_width="match_parent"
         android:layout_marginTop="@dimen/margin_ms"
+        android:maxEms="12"
         android:padding="@dimen/page_margin"
         style="@style/TextView.Title.Bold"
         android:background="@color/white"

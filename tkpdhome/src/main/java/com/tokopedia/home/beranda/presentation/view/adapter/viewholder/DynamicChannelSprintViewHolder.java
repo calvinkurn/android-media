@@ -104,12 +104,6 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
         channelBeforeDiscPrice1.setPaintFlags(channelBeforeDiscPrice1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         channelBeforeDiscPrice2.setPaintFlags(channelBeforeDiscPrice2.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         channelBeforeDiscPrice3.setPaintFlags(channelBeforeDiscPrice3.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        homeChannelTitle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listener.onDynamicChannelClicked(channel.getHeader().getApplink());
-            }
-        });
 
         if (!TextUtils.isEmpty(channel.getHeader().getApplink())) {
             seeAllButton.setVisibility(View.VISIBLE);
@@ -134,9 +128,6 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
     }
 
     private void removeOnClickListeners() {
-        if (seeAllButton != null) {
-            seeAllButton.setOnClickListener(null);
-        }
         if (itemContainer1 != null) {
             itemContainer1.setOnClickListener(null);
         }

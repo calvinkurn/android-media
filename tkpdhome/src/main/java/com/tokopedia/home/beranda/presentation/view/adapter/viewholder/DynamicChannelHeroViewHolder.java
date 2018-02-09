@@ -68,12 +68,6 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
         ImageHandler.loadImageThumbs(context, channelImage2, channel.getGrids()[1].getImageUrl());
         ImageHandler.loadImageThumbs(context, channelImage3, channel.getGrids()[2].getImageUrl());
         ImageHandler.loadImageThumbs(context, channelImage4, channel.getGrids()[3].getImageUrl());
-        channelTitle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listener.onDynamicChannelClicked(element.getChannel().getHeader().getApplink());
-            }
-        });
         channelHeroImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
