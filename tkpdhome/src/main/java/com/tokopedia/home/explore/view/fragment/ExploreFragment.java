@@ -220,7 +220,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
 
     private void openWebViewGimicURL(String url, String label, String title) {
         if (!url.equals("")) {
-            Intent intent = SimpleWebViewActivity.getCallingIntent(getActivity(), url);
+            Intent intent = SimpleWebViewActivity.getIntent(getActivity(), url);
             intent.putExtra(BannerWebView.EXTRA_TITLE, title);
             startActivity(intent);
             UnifyTracking.eventHomeGimmick(label);

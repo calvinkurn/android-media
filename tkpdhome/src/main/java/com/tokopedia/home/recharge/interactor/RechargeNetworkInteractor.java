@@ -1,7 +1,7 @@
 package com.tokopedia.home.recharge.interactor;
 
-import com.tokopedia.digital.widget.model.category.Category;
-import com.tokopedia.digital.widget.model.status.Status;
+import com.tokopedia.digital.widget.view.model.category.Category;
+import com.tokopedia.digital.widget.view.model.status.Status;
 
 import java.util.List;
 

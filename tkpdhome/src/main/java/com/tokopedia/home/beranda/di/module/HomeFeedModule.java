@@ -7,6 +7,8 @@ import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.qualifier.AuthKeyQualifier;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.common.utils.network.AuthUtil;
+import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
@@ -80,18 +82,16 @@ public class HomeFeedModule {
 
     @DefaultAuthWithErrorHandler
     @Provides
-    OkHttpClient provideOkHttpClient(@AuthKeyQualifier String authKey,
-                                     @ApplicationContext Context context) {
+    OkHttpClient provideOkHttpClient(@ApplicationContext Context context) {
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, DeveloperOptions.CHUCK_ENABLED);
         return OkHttpFactory.create().buildDaggerClientDefaultAuthWithErrorHandler(
                 new FingerprintInterceptor(),
-                new TkpdAuthInterceptor(authKey),
+                new TkpdAuthInterceptor(AuthUtil.KEY.KEY_WSV4),
                 OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy(),
-                new ChuckInterceptor(context).showNotification(
-                        localCacheHandler.getBoolean(DeveloperOptions.IS_CHUCK_ENABLED, false)
-                ),
+                new ChuckInterceptor(context).showNotification(localCacheHandler.getBoolean(DeveloperOptions.IS_CHUCK_ENABLED, false)),
                 new DebugInterceptor(),
-                new TkpdErrorResponseInterceptor(TkpdV4ResponseError.class)
+                new TkpdErrorResponseInterceptor(TkpdV4ResponseError.class),
+                new CacheApiInterceptor()
         );
     }
 
