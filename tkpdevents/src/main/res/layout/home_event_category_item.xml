@@ -40,7 +40,7 @@
                 android:textColor="@color/black_38"
                 android:textSize="14sp"
                 android:textStyle="normal"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
 
         </RelativeLayout>

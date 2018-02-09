@@ -105,12 +105,12 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
         }
         holder.setIndex(position);
 
-        if (model.getDisplayTags() != null && model.getDisplayTags().length() > 3) {
-            holder.tvDisplayTag.setText(model.getDisplayTags());
-            holder.tvDisplayTag.setVisibility(View.VISIBLE);
-        } else {
-            holder.tvDisplayTag.setVisibility(View.GONE);
-        }
+//        if (model.getDisplayTags() != null && model.getDisplayTags().length() > 3) {
+//            holder.tvDisplayTag.setText(model.getDisplayTags());
+//            holder.tvDisplayTag.setVisibility(View.VISIBLE);
+//        } else {
+//            holder.tvDisplayTag.setVisibility(View.GONE);
+//        }
 
         ImageHandler.loadImageCover2(holder.eventImage, categoryItems.get(position).getImageApp());
 

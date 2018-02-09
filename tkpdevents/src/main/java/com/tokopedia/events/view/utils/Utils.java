@@ -175,6 +175,17 @@ public class Utils {
         return genreList;
     }
 
+    public static List<String> getDisplayTags(String displayTag) {
+        List<String> displayTagsList = new ArrayList<>();
+
+        String[] temp = displayTag.split("\\|");
+        for (int i = 0; i < temp.length; i++) {
+            displayTagsList.add(temp[i]);
+        }
+
+        return displayTagsList;
+    }
+
     public static String convertTime(String time) {
 
         int totalMinutesInt = Integer.valueOf(time.toString());
