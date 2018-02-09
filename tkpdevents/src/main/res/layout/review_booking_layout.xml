@@ -739,8 +739,7 @@
         android:background="@color/white"
         app:subtitleTextAppearance="@style/EventToolbarTextStyle"
         app:theme="@style/AppBarTheme"
-        app:titleTextAppearance="@style/EventToolbarTextStyle"
-        app:titleTextColor="@color/grey_900" />
+        app:titleTextAppearance="@style/EventToolbarTextStyle" />
 
     <include
         android:id="@+id/tooltip_layout"

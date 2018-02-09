@@ -105,7 +105,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
         mPresenter.initialize();
         mPresenter.getProfile();
         mPresenter.getSeatSelectionDetails();
-        //setupToolbar();
+        setupToolbar();
         toolbar.setTitle(R.string.seat_selection_title);
 
     }

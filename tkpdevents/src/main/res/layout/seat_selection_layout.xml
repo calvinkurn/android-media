@@ -18,26 +18,26 @@
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:theme="@style/AppBarTheme"
             android:background="@color/white"
-            app:titleTextAppearance="@style/EventToolbarTextStyle"
-            app:titleTextColor="@color/grey_900"/>
+            app:subtitleTextAppearance="@style/EventToolbarTextStyle"
+            app:theme="@style/AppBarTheme"
+            app:titleTextAppearance="@style/EventToolbarTextStyle" />
 
 
         <TextView
             android:id="@+id/tv_movie_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/green_400"
-            android:layout_marginTop="16dp"
             android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/green_400"
             android:textSize="16sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
             android:background="@color/white"
             android:orientation="horizontal">
 
@@ -45,8 +45,8 @@
                 android:id="@+id/image_holder_small"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:scaleType="centerCrop"
                 android:layout_gravity="center"
+                android:scaleType="centerCrop"
                 android:tint="@color/grey_500"
                 app:srcCompat="@drawable/ic_time" />
 
@@ -57,22 +57,22 @@
                 android:layout_marginLeft="8dp"
                 android:gravity="center"
                 android:text="Day 3 • 30 Des 2018"
-                android:textColor="@color/black"/>
+                android:textColor="@color/black" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
             android:layout_marginLeft="16dp"
+            android:layout_marginTop="2dp"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/grey_400"
                 android:text="Pilihan Kursi:"
-                android:textSize="12sp"/>
+                android:textColor="@color/grey_400"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/selected_seats"
@@ -80,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
                 android:textColor="@color/green_400"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
         </LinearLayout>
 
         <View
@@ -89,13 +89,14 @@
             android:background="?android:attr/listDivider" />
 
 
-        <include android:id="@+id/seat_plan"
-            android:layout_height="350dp"
+        <include
+            android:id="@+id/seat_plan"
+            layout="@layout/include_seating_layout"
             android:layout_width="match_parent"
+            android:layout_height="350dp"
             android:layout_marginBottom="16dp"
             android:layout_marginRight="16dp"
-            android:layout_marginTop="16dp"
-            layout="@layout/include_seating_layout" />
+            android:layout_marginTop="16dp" />
 
 
     </LinearLayout>
@@ -105,21 +106,21 @@
         android:id="@+id/preview_window"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#d3f0d4"
         android:layout_gravity="center|left"
+        android:background="#d3f0d4"
         android:visibility="gone">
 
         <ImageView
             android:id="@+id/small_preview"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:padding="8dp"/>
+            android:padding="8dp" />
 
         <!--<include android:id="@+id/small_preview"-->
-            <!--layout="@layout/small_preview_window"-->
-            <!--android:layout_width="200dp"-->
-            <!--android:layout_height="150dp"-->
-            <!--android:visibility="visible" />-->
+        <!--layout="@layout/small_preview_window"-->
+        <!--android:layout_width="200dp"-->
+        <!--android:layout_height="150dp"-->
+        <!--android:visibility="visible" />-->
     </FrameLayout>
 
 
@@ -130,17 +131,19 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:visibility="visible" />
+
     <FrameLayout
         android:id="@+id/progress_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black_12"
         android:visibility="gone">
+
         <ProgressBar
             android:id="@+id/prog_bar"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center" />
     </FrameLayout>
 
 </FrameLayout>
