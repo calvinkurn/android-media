@@ -220,7 +220,6 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void onDepartureDateChange(int year, int month, int dayOfMonth) {
-        flightDashboardCache.putDepartureDate(year + "-" + month + "-" + dayOfMonth);
         FlightDashboardViewModel viewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
         Calendar now = FlightDateUtil.getCurrentCalendar();
         now.set(Calendar.YEAR, year);
@@ -235,6 +234,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         } else {
             String newDepartureDateStr = FlightDateUtil.dateToString(newDepartureDate, FlightDateUtil.DEFAULT_FORMAT);
             viewModel.setDepartureDate(newDepartureDateStr);
+            flightDashboardCache.putDepartureDate(newDepartureDateStr);
             String newDepartureDateFmtStr = FlightDateUtil.dateToString(newDepartureDate, FlightDateUtil.DEFAULT_VIEW_FORMAT);
             viewModel.setDepartureDateFmt(newDepartureDateFmtStr);
             if (!viewModel.isOneWay()) {
@@ -266,7 +266,6 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void onReturnDateChange(int year, int month, int dayOfMonth) {
-        flightDashboardCache.putReturnDate(year + "-" + month + "-" + dayOfMonth);
         FlightDashboardViewModel viewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
         Calendar now = FlightDateUtil.getCurrentCalendar();
         now.set(Calendar.YEAR, year);
@@ -281,6 +280,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
             getView().showReturnDateShouldGreaterOrEqual(R.string.flight_dashboard_return_should_greater_equal_error);
         } else {
             String newReturnDateStr = FlightDateUtil.dateToString(newReturnDate, FlightDateUtil.DEFAULT_FORMAT);
+            flightDashboardCache.putReturnDate(newReturnDateStr);
             viewModel.setReturnDate(newReturnDateStr);
             String newReturnDateFmtStr = FlightDateUtil.dateToString(newReturnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT);
             viewModel.setReturnDateFmt(newReturnDateFmtStr);
@@ -466,16 +466,18 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     private void actionRenderFromPassData(final boolean isSearchImmediately) {
         final FlightDashboardPassDataViewModel flightDashboardPassDataViewModel = getView().getDashboardPassData();
-        String[] departureDate = flightDashboardPassDataViewModel.getDepartureDate().split("-");
 
         if (flightDashboardPassDataViewModel.getDepartureDate() != null && !flightDashboardPassDataViewModel.getDepartureDate().isEmpty()) {
-            onDepartureDateChange(Integer.parseInt(departureDate[INDEX_DATE_YEAR]), Integer.parseInt(departureDate[INDEX_DATE_MONTH]), Integer.parseInt(departureDate[INDEX_DATE_DATE]));
+            Calendar departureCalendar = FlightDateUtil.getCurrentCalendar();
+            departureCalendar.setTime(FlightDateUtil.stringToDate(flightDashboardPassDataViewModel.getDepartureDate()));
+            onDepartureDateChange(departureCalendar.get(Calendar.YEAR), departureCalendar.get(Calendar.MONTH), departureCalendar.get(Calendar.DATE));
             onSingleTripChecked();
         }
 
         if (!flightDashboardPassDataViewModel.getReturnDate().isEmpty() && flightDashboardPassDataViewModel.isRoundTrip()) {
-            String[] returnDate = flightDashboardPassDataViewModel.getReturnDate().split("-");
-            onReturnDateChange(Integer.parseInt(returnDate[INDEX_DATE_YEAR]), Integer.parseInt(returnDate[INDEX_DATE_MONTH]), Integer.parseInt(returnDate[INDEX_DATE_DATE]));
+            Calendar returnDate = FlightDateUtil.getCurrentCalendar();
+            returnDate.setTime(FlightDateUtil.stringToDate(flightDashboardPassDataViewModel.getReturnDate()));
+            onReturnDateChange(returnDate.get(Calendar.YEAR), returnDate.get(Calendar.MONTH), returnDate.get(Calendar.DATE));
             onRoundTripChecked();
         }
 

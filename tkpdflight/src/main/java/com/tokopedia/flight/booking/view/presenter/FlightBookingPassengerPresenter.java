@@ -134,9 +134,9 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
 
         if (newReturnDate.before(minDate) || newReturnDate.after(maxDate)) {
             if (isChildPassenger()) {
-                getView().showPassengerNameEmptyError(R.string.flight_booking_passenger_birthdate_child_shoud_between_twelve_to_two_years);
+                getView().showPassengerChildBirthdateShouldMoreThan2Years(R.string.flight_booking_passenger_birthdate_child_shoud_between_twelve_to_two_years);
             } else if (isInfantPassenger()) {
-                getView().showPassengerNameEmptyError(R.string.flight_booking_passenger_birthdate_infant_should_no_more_than_two_years);
+                getView().showPassengerInfantBirthdateShouldNoMoreThan2Years(R.string.flight_booking_passenger_birthdate_infant_should_no_more_than_two_years);
             }
         } else {
             String birthdateStr = FlightDateUtil.dateToString(newReturnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT);
@@ -158,7 +158,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         maxDate = FlightDateUtil.addTimeToSpesificDate(maxDate, Calendar.DATE, +1);
 
         if (newReturnDate.after(maxDate)) {
-            getView().showPassengerNameEmptyError(R.string.flight_booking_passenger_birthdate_adult_shoud_more_than_twelve_years);
+            getView().showPassengerAdultBirthdateShouldMoreThan12Years(R.string.flight_booking_passenger_birthdate_adult_shoud_more_than_twelve_years);
         } else {
             String birthdateStr = FlightDateUtil.dateToString(newReturnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT);
             getView().renderBirthdate(birthdateStr);
