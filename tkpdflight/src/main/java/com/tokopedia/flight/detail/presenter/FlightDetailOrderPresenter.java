@@ -103,7 +103,11 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
             public void onNext(FlightOrder flightOrder) {
                 getView().hideProgressDialog();
                 getView().renderFlightOrder(flightOrder);
-                List<FlightOrderJourney> flightOrderJourneyList = filterFlightJourneys(flightOrder.getStatus(), flightOrder.getJourneys(), flightOrderDetailPassData);
+                List<FlightOrderJourney> flightOrderJourneyList = filterFlightJourneys(
+                        flightOrder.getStatus(),
+                        flightOrder.getJourneys(),
+                        flightOrderDetailPassData
+                );
                 getView().updateFlightList(flightOrderJourneyList);
                 getView().updatePassengerList(transformToListPassenger(flightOrder.getPassengerViewModels()));
                 getView().updatePrice(transformToSimpleModelPrice(flightOrder), CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalPrice));
@@ -118,7 +122,12 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     }
 
     private void renderPaymentInfo(FlightOrder flightOrder) {
-        if (flightOrder.getPayment() != null && flightOrder.getPayment().getGatewayName().length() > 0) {
+        if (flightOrder.getPayment() != null
+                && flightOrder.getPayment().getGatewayName().length() > 0
+                && (flightOrder.getStatus() == FlightStatusOrderType.WAITING_FOR_THIRD_PARTY
+                || flightOrder.getStatus() == FlightStatusOrderType.WAITING_FOR_TRANSFER)
+                ) {
+
             getView().showPaymentInfoLayout();
             if (flightOrder.getPayment().getManualTransfer() != null && flightOrder.getPayment().getManualTransfer().getAccountBankName().length() > 0) {
                 getView().setPaymentLabel(R.string.flight_order_payment_manual_label);
