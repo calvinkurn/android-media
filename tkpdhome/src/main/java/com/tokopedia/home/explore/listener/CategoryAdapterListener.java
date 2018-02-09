@@ -23,4 +23,6 @@ public interface CategoryAdapterListener {
     void showNetworkError(String string);
 
     void openShopSetting();
+
+    void trackingItemGridClick(LayoutRows data);
 }

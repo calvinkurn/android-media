@@ -88,6 +88,7 @@ public class CategoryGridListViewHolder extends AbstractViewHolder<CategoryGridL
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    listener.trackingItemGridClick(rowModel);
                     if (rowModel.getType() != null && rowModel.getType().equalsIgnoreCase(MARKETPLACE)) {
                         listener.onMarketPlaceItemClicked(rowModel);
                     } else if (rowModel.getType() != null && rowModel.getType().equalsIgnoreCase(DIGITAL)) {

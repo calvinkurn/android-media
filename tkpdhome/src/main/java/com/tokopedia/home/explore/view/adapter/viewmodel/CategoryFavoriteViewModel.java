@@ -3,11 +3,14 @@ package com.tokopedia.home.explore.view.adapter.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.home.explore.domain.model.LayoutRows;
 import com.tokopedia.home.explore.view.adapter.TypeFactory;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by errysuprayogi on 1/31/18.
@@ -79,5 +82,37 @@ public class CategoryFavoriteViewModel implements Visitable<TypeFactory>, Parcel
     @Override
     public int type(TypeFactory typeFactory) {
         return typeFactory.type(this);
+    }
+
+    public Map<String, Object> getHomePageEnhanceDataLayer() {
+        List<Object> list = new ArrayList<>();
+        for (int i = 0; i < getItemList().size(); i++) {
+            list.add(
+                    convertFavCategoryItemIntoDataLayer(getItemList().get(i), i + 1)
+            );
+        }
+        return DataLayer.mapOf(
+                "event", "promoView",
+                "eventCategory", "homepage",
+                "eventAction", "beli ini itu favorite category impression",
+                "eventLabel", "",
+                "ecommerce", DataLayer.mapOf(
+                        "promoView", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(
+                                        list.toArray(new Object[list.size()])
+
+                                )
+                        )
+                )
+        );
+    }
+
+    private Map<String, Object> convertFavCategoryItemIntoDataLayer(LayoutRows item, int position) {
+        return DataLayer.mapOf(
+                "id", item.getId(),
+                "name", "/explore beli - p1 - Kategori Favorit Anda",
+                "creative", item.getName(),
+                "position", String.valueOf(position)
+        );
     }
 }
