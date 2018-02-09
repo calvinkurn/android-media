@@ -171,7 +171,7 @@ public class EventBookTicketPresenter
             selectedViewHolder = ticketViewHolder;
         }
         int selectedCount = selectedPackageViewModel.getSelectedQuantity();
-        if (selectedCount < selectedPackageViewModel.getMaxQty()) {
+        if (selectedCount < selectedPackageViewModel.getAvailable() && selectedCount < selectedPackageViewModel.getMaxQty() ) {
             selectedPackageViewModel.setSelectedQuantity(++selectedCount);
             selectedViewHolder.setTvTicketCnt(selectedCount);
             selectedViewHolder.setTicketViewColor(getView().getActivity().getResources().getColor(R.color.light_green));

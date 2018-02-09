@@ -18,26 +18,26 @@
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:theme="@style/AppBarTheme"
             android:background="@color/white"
-            app:titleTextAppearance="@style/EventToolbarTextStyle"
-            app:titleTextColor="@color/grey_900"/>
+            app:subtitleTextAppearance="@style/EventToolbarTextStyle"
+            app:theme="@style/AppBarTheme"
+            app:titleTextAppearance="@style/EventToolbarTextStyle" />
 
 
         <TextView
             android:id="@+id/tv_movie_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/green_400"
-            android:layout_marginTop="8dp"
             android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/green_400"
             android:textSize="16sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
             android:background="@color/white"
             android:visibility="gone"
             android:orientation="horizontal">
@@ -46,8 +46,8 @@
                 android:id="@+id/image_holder_small"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:scaleType="centerCrop"
                 android:layout_gravity="center"
+                android:scaleType="centerCrop"
                 android:tint="@color/grey_500"
                 app:srcCompat="@drawable/ic_time" />
 
@@ -58,7 +58,7 @@
                 android:layout_marginLeft="8dp"
                 android:gravity="center"
                 android:text="Day 3 • 30 Des 2018"
-                android:textColor="@color/black"/>
+                android:textColor="@color/black" />
         </LinearLayout>
 
         <LinearLayout
@@ -82,7 +82,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
                 android:textColor="@color/green_400"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
         </LinearLayout>
 
         <View

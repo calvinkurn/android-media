@@ -16,7 +16,7 @@
         android:background="@color/white"
         app:theme="@style/AppBarTheme"
         app:titleTextAppearance="@style/EventToolbarTextStyle"
-        app:titleTextColor="@color/grey_900" />
+        app:subtitleTextAppearance="@style/EventToolbarTextStyle" />
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
