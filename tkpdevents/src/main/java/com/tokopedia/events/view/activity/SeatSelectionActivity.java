@@ -91,7 +91,6 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     List<String> rowIds = new ArrayList<>();
     List<String> physicalRowIds = new ArrayList<>();
     List<String> seatIds = new ArrayList<>();
-    List<String> seatTextList = new ArrayList<>();
     String areaId;
     private int quantity;
 
@@ -265,7 +264,6 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
 
     @Override
     public void setSelectedSeatText() {
-//        seatTextList.add(selectedSeats.get(0));
         String text = TextUtils.join(", ", selectedSeats);
         selectedSeatText.setText(text);
     }
