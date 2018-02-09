@@ -98,6 +98,7 @@
     <color name="medium_green_70">#b242b549</color>
     <color name="bright_red">#eb3c0d</color>
     <color name="price_pdp">#ff5722</color>
+    <color name="grey_hint_full">#ffe0e0e0</color>
 
     <!--COLOR NEW ONBOARDING-->
     <color name="green_nob">#42b549</color>

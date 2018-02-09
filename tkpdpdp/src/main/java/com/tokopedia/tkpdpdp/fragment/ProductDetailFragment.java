@@ -33,6 +33,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.appsflyer.AFInAppEventType;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
@@ -42,6 +43,7 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.Option;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
@@ -55,6 +57,8 @@ import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewM
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -136,29 +140,32 @@ import static com.tokopedia.tkpdpdp.VariantActivity.KEY_PRODUCT_DETAIL_DATA;
 @RuntimePermissions
 public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPresenter>
         implements ProductDetailView {
+
+    private static final int FROM_COLLAPSED = 0;
+    private static final int FROM_EXPANDED = 1;
+    private static final int SCROLL_ELEVATION = 324;
+
     public static final int REQUEST_CODE_SHOP_INFO = 998;
     public static final int REQUEST_CODE_TALK_PRODUCT = 1;
     public static final int REQUEST_CODE_EDIT_PRODUCT = 2;
     public static final int REQUEST_CODE_LOGIN = 561;
     public static final int STATUS_IN_WISHLIST = 1;
     public static final int STATUS_NOT_WISHLIST = 0;
-    private static final int FROM_COLLAPSED = 0;
-    private static final int FROM_EXPANDED = 1;
-    private static final int SCROLL_ELEVATION = 324;
     public static final int REQUEST_VARIANT = 99;
+    public static final int INIT_REQUEST = 1;
+    public static final int RE_REQUEST = 2;
+
+    private static final String TAG = ProductDetailFragment.class.getSimpleName();
+    private static final String ARG_PARAM_PRODUCT_PASS_DATA = "ARG_PARAM_PRODUCT_PASS_DATA";
+    private static final String ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK";
+    private static final String ENABLE_VARIANT = "mainapp_discovery_enable_pdp_variant";
 
     public static final String STATE_DETAIL_PRODUCT = "STATE_DETAIL_PRODUCT";
     public static final String STATE_PRODUCT_VARIANT = "STATE_PRODUCT_VARIANT";
     public static final String STATE_OTHER_PRODUCTS = "STATE_OTHER_PRODUCTS";
     public static final String STATE_VIDEO = "STATE_VIDEO";
-    public static final int INIT_REQUEST = 1;
-    public static final int RE_REQUEST = 2;
-
-    private static final String ARG_PARAM_PRODUCT_PASS_DATA = "ARG_PARAM_PRODUCT_PASS_DATA";
-    private static final String ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK";
     public static final String STATE_PROMO_WIDGET = "STATE_PROMO_WIDGET";
     public static final String STATE_APP_BAR_COLLAPSED = "STATE_APP_BAR_COLLAPSED";
-    private static final String TAG = ProductDetailFragment.class.getSimpleName();
 
     private CoordinatorLayout coordinatorLayout;
     private HeaderInfoView headerInfoView;
@@ -184,7 +191,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private FloatingActionButton fabWishlist;
     private LinearLayout rootView;
-    private boolean isAppBarCollapsed=false;
+    private boolean isAppBarCollapsed = false;
     private TextView tvTickerGTM;
     private AppIndexHandler appIndexHandler;
     private ProgressDialog loading;
@@ -197,6 +204,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     private ProductPass productPass;
     private ProductDetailData productData;
+    private boolean useVariant = true;
     private ProductVariant productVariant;
     private List<ProductOther> productOthers;
     private VideoData videoData;
@@ -205,6 +213,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private Option variantLevel2;
     private boolean onClickBuyWhileRequestingVariant = false;
 
+    private RemoteConfig remoteConfig;
 
     public static ProductDetailFragment newInstance(@NonNull ProductPass productPass) {
         ProductDetailFragment fragment = new ProductDetailFragment();
@@ -224,6 +233,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     public ProductDetailFragment() {
+        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
+        if (!remoteConfig.getBoolean(ENABLE_VARIANT)) {
+            // TODO change to this useVariant = false;
+            useVariant = true;
+        }
     }
 
     @Override
@@ -270,7 +284,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         latestTalkView = (LatestTalkView) view.findViewById(R.id.view_latest_discussion);
         progressBar = (ProgressBar) view.findViewById(R.id.view_progress);
         nestedScrollView = view.findViewById(R.id.nested_scroll_pdp);
-
         toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         appBarLayout = (AppBarLayout) view.findViewById(R.id.appbar);
         collapsingToolbarLayout
@@ -314,7 +327,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
             params.setBehavior(new FlingBehavior(R.id.nested_scroll_pdp));
         }
-
     }
 
     private void collapsedAppBar(){
@@ -654,12 +666,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onProductHasEdited() {
-        presenter.requestProductDetail(context, productPass, RE_REQUEST, true);
+        presenter.requestProductDetail(context, productPass, RE_REQUEST, true, useVariant);
     }
 
     @Override
     public void onProductTalkUpdated() {
-        presenter.requestProductDetail(context, productPass, RE_REQUEST, true);
+        presenter.requestProductDetail(context, productPass, RE_REQUEST, true, useVariant);
     }
 
     @Override
@@ -754,7 +766,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         snack.setAction(getString(R.string.title_retry), new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.requestProductDetail(context, productPass, INIT_REQUEST, false);
+                presenter.requestProductDetail(context, productPass, INIT_REQUEST, false, useVariant);
             }
         });
         snack.show();
@@ -934,7 +946,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         } else {
             Log.d(TAG, "productData == null");
             presenter.processDataPass(productPass);
-            presenter.requestProductDetail(context, productPass, INIT_REQUEST, false);
+            presenter.requestProductDetail(context, productPass, INIT_REQUEST, false, useVariant);
         }
     }
 
@@ -1008,7 +1020,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d(ProductDetailFragment.class.getSimpleName(), "onActivityResult requestCode " + requestCode + " resultCode " + resultCode);
         switch (requestCode) {
             case REQUEST_CODE_EDIT_PRODUCT:
                 presenter.processResultEdit(resultCode, data);
@@ -1021,7 +1032,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 break;
             case REQUEST_CODE_LOGIN:
                 videoDescriptionLayout.refreshVideo();
-                if (SessionHandler.isV4Login(getActivity())) presenter.requestProductDetail(context, productPass, RE_REQUEST, true);
+                if (SessionHandler.isV4Login(getActivity())) presenter.requestProductDetail(context, productPass, RE_REQUEST, true, useVariant);
                 break;
             case REQUEST_VARIANT:
                 if (data.getParcelableExtra(KEY_LEVEL1_SELECTED)!=null && data.getParcelableExtra(KEY_LEVEL1_SELECTED) instanceof Option) {
@@ -1128,7 +1139,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         return new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                presenter.requestProductDetail(context, productPass, INIT_REQUEST, false);
+                presenter.requestProductDetail(context, productPass, INIT_REQUEST, false, useVariant);
             }
         };
     }
@@ -1217,8 +1228,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void addProductVariant(ProductVariant productVariant) {
-       this.productVariant=productVariant;
-       this.priceSimulationView.addProductVariant(productVariant,productData);
+        this.productVariant=productVariant;
+        this.priceSimulationView.addProductVariant(productVariant,productData);
         if (variantLevel1!=null && variantLevel1 instanceof Option) {
             priceSimulationView.updateVariant(generateVariantString());
         }

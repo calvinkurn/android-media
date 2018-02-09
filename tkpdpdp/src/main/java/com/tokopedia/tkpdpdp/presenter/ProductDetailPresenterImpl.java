@@ -292,10 +292,11 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     public void requestProductDetail(@NonNull final Context context,
                                      @NonNull final ProductPass productPass,
                                      final int type,
-                                     final boolean forceNetwork) {
+                                     final boolean forceNetwork,
+                                     final boolean useVariant) {
         if (type == ProductDetailFragment.INIT_REQUEST) viewListener.showProgressLoading();
         if (forceNetwork) {
-            getProductDetailFromNetwork(context, productPass);
+            getProductDetailFromNetwork(context, productPass, useVariant);
         } else {
             getProductDetailFromCache(productPass,
                     new CacheInteractor.GetProductDetailCacheListener() {
@@ -315,13 +316,17 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                 getPromoWidget(context, generatePromoTargetType(productDetailData, context),
                                         SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID, shopType);
                             }
-                            if (productDetailData.getInfo().getHasVariant()) getProductVariant(context
-                                    ,Integer.toString(productDetailData.getInfo().getProductId()));
+                            if (productDetailData.getInfo().getHasVariant() && useVariant) {
+                                getProductVariant(context
+                                        ,Integer.toString(productDetailData.getInfo().getProductId()));
+                            } else {
+                                productDetailData.getInfo().setHasVariant(false);
+                            }
                         }
 
                         @Override
                         public void onError(Throwable e) {
-                            getProductDetailFromNetwork(context, productPass);
+                            getProductDetailFromNetwork(context, productPass, useVariant);
                             e.printStackTrace();
                         }
                     });
@@ -408,9 +413,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         if (success) {
                             viewListener.showToastMessage(context
                                     .getString(R.string.title_sold_out_action));
-                            requestProductDetail(context, ProductPass.Builder.aProductPass()
-                                            .setProductId(productId).build(),
-                                    ProductDetailFragment.RE_REQUEST, true);
+                           viewListener.onProductHasEdited();
                         }
                     }
 
@@ -737,11 +740,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                         if (success) {
                                             viewListener.showToastMessage
                                                     (context.getString(R.string.title_move_etalase));
-                                            requestProductDetail(context,
-                                                    ProductPass.Builder.aProductPass()
-                                                            .setProductId(productId)
-                                                            .build(),
-                                                    ProductDetailFragment.RE_REQUEST, true);
+                                            viewListener.onProductHasEdited();
                                         }
                                     }
 
@@ -811,7 +810,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     public void getProductDetailFromNetwork(@NonNull final Context context,
-                                            @NonNull final ProductPass productPass) {
+                                            @NonNull final ProductPass productPass,
+                                            final boolean useVariant) {
 
         retrofitInteractor.getProductDetail(context, NetworkParam.paramProductDetailTest2(productPass),
                 new RetrofitInteractor.ProductDetailListener() {
@@ -832,8 +832,12 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                     SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID,shopType
                                     );
                         }
-                        if (data.getInfo().getHasVariant()) getProductVariant(context
-                                ,Integer.toString(data.getInfo().getProductId()));
+                        if (data.getInfo().getHasVariant() && useVariant) {
+                            getProductVariant(context
+                                    ,Integer.toString(data.getInfo().getProductId()));
+                        } else {
+                            data.getInfo().setHasVariant(false);
+                        }
                     }
 
                     @Override
