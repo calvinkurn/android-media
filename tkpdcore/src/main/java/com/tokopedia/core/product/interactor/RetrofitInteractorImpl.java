@@ -798,8 +798,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
 
     @Override
     public void getProductVariant(@NonNull Context context, @NonNull String productId, final @NonNull ProductVariantListener listener) {
-        Observable<Response<ProductVariantResponse>> observable = tomeService.getApi().getProductVariant(productId,"https://staging.tokopedia.com", "https://staging.tokopedia.com/seller01/usain-bolt-putih-s");
-
+        Observable<Response<ProductVariantResponse>> observable = tomeService.getApi().getProductVariant(productId);
         Subscriber<ProductVariant> subscriber = new Subscriber<ProductVariant>() {
             @Override
             public void onCompleted() {
@@ -808,7 +807,6 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
 
             @Override
             public void onError(Throwable e) {
-                Log.d(TAG, "onError: "+e.getMessage());
                 listener.onError(e.getMessage());
             }
 

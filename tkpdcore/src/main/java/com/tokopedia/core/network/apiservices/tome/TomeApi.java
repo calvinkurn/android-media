@@ -38,6 +38,5 @@ public interface TomeApi {
     Observable<Response<TkpdResponse>> getShopProduct(@QueryMap Map<String, String> params);
 
     @GET(PATH_PRODUCT_VARIANT)
-    Observable<Response<ProductVariantResponse>> getProductVariant(@Path(PRODUCT_ID) String productId,
-                                                                   @Header("origin") String sOrigin, @Header("referer") String sReferer);
+    Observable<Response<ProductVariantResponse>> getProductVariant(@Path(PRODUCT_ID) String productId);
 }

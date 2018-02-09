@@ -134,14 +134,14 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
     public void changeToLoading() {
         variantProgressBar.getIndeterminateDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
         variantProgressBar.setVisibility(VISIBLE);
-        tvBuy.setClickable(false);
-        containerButtonBuy.setClickable(false);
+        tvBuy.setEnabled(false);
+        containerButtonBuy.setEnabled(false);
     }
 
     public void removeLoading() {
         variantProgressBar.setVisibility(GONE);
-        tvBuy.setClickable(true);
-        containerButtonBuy.setClickable(true);
+        tvBuy.setEnabled(true);
+        containerButtonBuy.setEnabled(true);
     }
 
     public void updateButtonForVariantProduct(boolean isBuyable, int shopStatus) {
@@ -166,17 +166,19 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
             setVisibility(VISIBLE);
         } else if (isBuyable == false) {
             tvBuy.setBackgroundResource(R.drawable.btn_buy_grey);
-            containerButtonBuy.setBackground(ContextCompat.getDrawable(getContext(),R.drawable.btn_buy_grey));
+            containerButtonBuy.setBackgroundResource(R.drawable.btn_buy_grey);
             tvBuy.setTextColor(ContextCompat.getColor(getContext(),R.color.black_38));
             tvBuy.setText(getContext().getString(R.string.title_warehouse));
-            tvBuy.setClickable(false);
+            tvBuy.setEnabled(false);
+            containerButtonBuy.setEnabled(false);
             setVisibility(VISIBLE);
         } else {
             tvBuy.setBackgroundResource(R.drawable.btn_buy_grey);
-            containerButtonBuy.setBackground(ContextCompat.getDrawable(getContext(),R.drawable.btn_buy_grey));
+            containerButtonBuy.setBackgroundResource(R.drawable.btn_buy_grey);
             tvBuy.setTextColor(ContextCompat.getColor(getContext(),R.color.black_38));
             tvBuy.setText(getContext().getString(R.string.title_buy));
-            tvBuy.setClickable(false);
+            tvBuy.setEnabled(false);
+            containerButtonBuy.setEnabled(false);
             setVisibility(VISIBLE);
         }
     }

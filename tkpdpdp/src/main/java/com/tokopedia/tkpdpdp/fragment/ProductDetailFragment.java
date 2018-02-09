@@ -410,7 +410,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             if (onClickBuyWhileRequestingVariant == false && productData.getInfo().getHasVariant() && productVariant == null) {
                 onClickBuyWhileRequestingVariant = true;
                 buttonBuyView.changeToLoading();
-            } else if ( productVariant==null || productVariant!=null && variantLevel1!=null) {
+            } else if ( !productData.getInfo().getHasVariant() && productVariant==null ||
+                    productData.getInfo().getHasVariant() && productVariant!=null && variantLevel1!=null) {
                 if (!TextUtils.isEmpty(source) && source.equals(SOURCE_BUTTON_BUY_PDP) &&productData.getInfo().getHasVariant() ) {
                     UnifyTracking.eventBuyPDPVariant(generateVariantString());
                 } else if (!TextUtils.isEmpty(source) && source.equals(SOURCE_BUTTON_BUY_VARIANT) && productData.getInfo().getHasVariant()) {
@@ -1035,6 +1036,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         headerInfoView.renderData(productData);
                         shopInfoView.renderData(productData);
                         presenter.updateRecentView(context,productData.getInfo().getProductId());
+                        ratingTalkCourierView.renderData(productData);
+                        latestTalkView.renderData(productData);
                         buttonBuyView.updateButtonForVariantProduct(productVariant.getChildFromProductId(
                                 productData.getInfo().getProductId()).isIsBuyable(),productData.getShopInfo().getShopStatus());
                         updateWishListStatus(productData.getInfo().getProductAlreadyWishlist());
@@ -1217,11 +1220,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
        this.productVariant=productVariant;
        this.priceSimulationView.addProductVariant(productVariant,productData);
         if (variantLevel1!=null && variantLevel1 instanceof Option) {
-            String variantText = variantLevel1.getValue();
-            if (variantLevel2!=null && variantLevel2 instanceof Option) {
-                variantText+= (", "+(variantLevel2).getValue());
-            }
-            priceSimulationView.updateVariant(variantText);
+            priceSimulationView.updateVariant(generateVariantString());
         }
         buttonBuyView.updateButtonForVariantProduct(productVariant.getChildFromProductId(
                 productVariant.getDefaultChild()).isIsBuyable(),productData.getShopInfo().getShopStatus());

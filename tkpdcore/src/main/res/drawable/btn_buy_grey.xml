@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/sparator_btn_promote" />
+        </shape>
+    </item>
+    <item
+        android:bottom="0dp"
+        android:left="0dp"
+        android:right="0dp"
+        android:top="0dp">
+
         <shape
             android:dither="true"
-            android:shape="rectangle" >
-            <solid android:color="@color/grey_hint" />
-
-            <!--<corners android:radius="2dp" />-->
+            android:shape="rectangle">
+            <solid android:color="#ffe0e0e0" />
 
             <padding
                 android:bottom="8dp"
