@@ -169,6 +169,7 @@ public class InboxFilterFragment
                 calendar.setTime(inboxFilterModel.getDateTo() != null ?
                         inboxFilterModel.getDateTo() :
                         new Date());
+
                 DatePickerDialog dialog = new DatePickerDialog(getActivity(), calendar,
                         new DatePickerDialog.OnDateSetListener(inboxFilterModel.getDateTo(), FORMAT_DATE) {
                             @Override
@@ -178,12 +179,15 @@ public class InboxFilterFragment
                                 updateView();
                             }
                         });
+                if (inboxFilterModel.getDateFrom() != null) {
+                    dialog.getDatePicker().setMinDate(inboxFilterModel.getDateFrom().getTime());
+                }
                 dialog.show();
             }
         });
     }
 
-    public void updateView() {
+    private void updateView() {
         if (inboxFilterModel.getDateFrom() != null) {
             icCloseFrom.setVisibility(View.VISIBLE);
             etDateFrom.setText(convertDateToString(inboxFilterModel.getDateFrom()));
