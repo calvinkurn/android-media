@@ -156,5 +156,8 @@ dependencies {
         exclude group: "com.android.support"
     }
     compile 'dnsjava:dnsjava:2.1.8'
-    compile project(':exotelVerificationLibrary')
+    compile('com.exotel:verification:0.2.0@aar') {
+        transitive = true;
+        changing = true;
+    }
 }
