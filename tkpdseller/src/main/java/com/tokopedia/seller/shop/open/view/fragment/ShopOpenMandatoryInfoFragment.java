@@ -123,6 +123,7 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
 
         if (onShopStepperListener != null) {
             if (onShopStepperListener.getStepperModel().getResponseIsReserveDomain() == null) {
+                buttonNext.setVisibility(View.GONE);
                 presenter.getisReserveDomain();
             } else {
                 if (onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData() != null) {
@@ -224,6 +225,7 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
 
     @Override
     public void onSuccessGetReserveDomain(ResponseIsReserveDomain responseIsReserveDomain) {
+        buttonNext.setVisibility(View.VISIBLE);
         if (onShopStepperListener != null) {
             onShopStepperListener.getStepperModel().setResponseIsReserveDomain(responseIsReserveDomain);
         }
