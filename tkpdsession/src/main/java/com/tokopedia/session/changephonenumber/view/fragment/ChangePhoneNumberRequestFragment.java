@@ -94,7 +94,7 @@ public class ChangePhoneNumberRequestFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null)
-        uploadType = savedInstanceState.getString(PARAM_UPLOAD_TYPE);
+            uploadType = savedInstanceState.getString(PARAM_UPLOAD_TYPE);
     }
 
     @Override
@@ -553,10 +553,10 @@ public class ChangePhoneNumberRequestFragment
     }
 
     public void handleBackOnView() {
-            photoIdMainView.setVisibility(View.VISIBLE);
-            accountIdMainView.setVisibility(View.VISIBLE);
-            buttonSubmit.setVisibility(View.VISIBLE);
-            newPhoneNumberView.setVisibility(View.GONE);
-            listener.shouldHandleBackPress(false);
+        photoIdMainView.setVisibility(View.VISIBLE);
+        accountIdMainView.setVisibility(View.VISIBLE);
+        buttonSubmit.setVisibility(View.VISIBLE);
+        newPhoneNumberView.setVisibility(View.GONE);
+        listener.shouldHandleBackPress(false);
     }
 }
