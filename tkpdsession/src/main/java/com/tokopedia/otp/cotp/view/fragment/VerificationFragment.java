@@ -412,7 +412,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     @Override
     public void onErrorVerifyLogin(String errorMessage) {
-        NetworkErrorHelper.showCloseSnackbar(getActivity(), errorMessage);
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
     @Override

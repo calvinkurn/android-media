@@ -443,7 +443,7 @@ public class LoginFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorLogin(String errorMessage) {
-        NetworkErrorHelper.showCloseSnackbar(getActivity(), errorMessage);
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
     @Override
