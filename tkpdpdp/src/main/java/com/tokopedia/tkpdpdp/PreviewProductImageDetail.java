@@ -78,10 +78,9 @@ public class PreviewProductImageDetail extends TActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         hideActionBar();
-        Bundle extras;
+        Bundle extras = getIntent().getExtras();
 
-        if (getIntent().getExtras() != null) {
-            extras = getIntent().getExtras();
+        if (extras != null) {
             if(extras.getBoolean(FROM_CHAT,false)){
                 inflateView(R.layout.activity_preview_image_new);
                 initTitleView();
@@ -94,8 +93,7 @@ public class PreviewProductImageDetail extends TActivity {
 
         initView();
 
-        if (getIntent().getExtras() != null) {
-            extras = getIntent().getExtras();
+        if (extras != null) {
             fileLocations = extras.getStringArrayList(FILELOC);
             position = 0;
         } else {

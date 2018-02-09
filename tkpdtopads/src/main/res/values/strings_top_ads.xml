@@ -5,7 +5,7 @@
     <string name="top_ads_title_product">Produk</string>
     <string name="title_top_ads_store">Toko</string>
     <string name="title_top_ads_promo_group">Grup</string>
-    <string name="title_top_ads_add_credit">Tambah Kredit TopAds</string>
+    <string name="title_top_ads_add_credit">Tambah Kredit Promo</string>
     <string name="title_top_ads_new_promo_shop">Pilih Atau Buat Promo</string>
     <string name="title_top_ads_new_promo_product">Tambah Promo Produk</string>
     <string name="title_top_ads_filter">Filter</string>
@@ -75,7 +75,7 @@
     <string name="label_top_ads_limit_price_description">Batas anggaran dihitung dari akumulasi biaya promo jika dalam satu grup promo.</string>
     <string name="label_top_ads_icon">Icon TopAds</string>
     <string name="top_ads_label_cost">Biaya</string>
-    <string name="top_ads_label_schedule">Jadwal Tampil</string>
+    <string name="top_ads_label_schedule">Jadwal</string>
     <string name="top_ads_label_schedule_detail">Jadwal</string>
 
     <!-- Top Ads Edit Promo Budget-->

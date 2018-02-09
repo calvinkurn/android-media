@@ -39,5 +39,5 @@ public interface PdpRouter {
     void openImagePreviewFromChat(Context context, ArrayList<String> images,
                                   ArrayList<String> imageDesc, String title, String date);
 
-    Intent getProductReputationIntent(Context context);
+    Intent getProductReputationIntent(Context context, String productId, String productName);
 }

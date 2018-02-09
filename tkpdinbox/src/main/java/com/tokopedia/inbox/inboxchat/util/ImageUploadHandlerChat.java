@@ -71,11 +71,9 @@ public class ImageUploadHandlerChat {
         File mediaStorageDir = new File(
                 Environment.getExternalStorageDirectory() + File.separator
                         + "Tokopedia" + File.separator);
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
+        if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()) {
                 Log.d("MyCameraApp", "failed to create directory");
                 return null;
-            }
         }
         File mediaFile = new File(mediaStorageDir.getPath() + File.separator
                 + "IMG_" + imageCode + ".jpg");

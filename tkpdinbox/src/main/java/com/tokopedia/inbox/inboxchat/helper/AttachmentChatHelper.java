@@ -73,7 +73,7 @@ public class AttachmentChatHelper {
             setVisibility(progressBarSendImage, View.GONE);
         }
 
-        if (attachment.getAttributes().getImageUrl() != null) {
+        if (attachment.getAttributes() != null && attachment.getAttributes().getImageUrl() != null) {
             view.setVisibility(View.VISIBLE);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
