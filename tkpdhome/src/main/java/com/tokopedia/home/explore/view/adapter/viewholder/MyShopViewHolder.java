@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.home.R;
@@ -65,7 +66,9 @@ public class MyShopViewHolder extends AbstractViewHolder<MyShopViewModel> {
             officialTxt.setVisibility(View.GONE);
             badgeImage.setVisibility(View.GONE);
         }
-        ImageHandler.LoadImage(reputationMedal, data.getReputationBadge());
+        Glide.with(imageView.getContext()).load(data.getReputationBadge())
+                .asGif()
+                .into(imageView);
     }
 
 }
