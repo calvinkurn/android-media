@@ -2,8 +2,6 @@ package com.tokopedia.seller.opportunity.fragment;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,16 +11,17 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.base.view.fragment.BaseWebViewFragment;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.fragment.BaseWebViewFragment;
 import com.tokopedia.seller.opportunity.analytics.OpportunityTrackingEventLabel;
 import com.tokopedia.seller.opportunity.data.OpportunityNewPriceData;
 import com.tokopedia.seller.opportunity.di.component.OpportunityComponent;
@@ -44,6 +43,7 @@ public class OpportunityTncFragment extends BaseWebViewFragment implements Oppor
 
     TkpdProgressDialog progressDialog;
     private View btnTakeOpportunity;
+    private UserSession userSession;
 
     private OpportunityComponent opportunityComponent;
 
@@ -62,6 +62,7 @@ public class OpportunityTncFragment extends BaseWebViewFragment implements Oppor
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.opportunityItemViewModel = listener.getItemViewModel();
+        userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
 
         opportunityComponent.inject(this);
         presenter.attachView(this);
@@ -112,6 +113,12 @@ public class OpportunityTncFragment extends BaseWebViewFragment implements Oppor
         if(opportunityItemViewModel == null)
             return null;
         return opportunityItemViewModel.getReplacementTnc();
+    }
+
+    @Nullable
+    @Override
+    protected String getUserIdForHeader() {
+        return userSession.getUserId();
     }
 
     @Override

@@ -665,7 +665,7 @@ public class GTMContainer implements IGTMContainer {
     }
 
     @Override
-    public void enhanceClickSearchResultProduct(Map<String, Object> objects,
+    public void enhanceClickSearchResultProduct(Object object,
                                                 String keyword,
                                                 String actionField) {
 
@@ -680,7 +680,7 @@ public class GTMContainer implements IGTMContainer {
                         "ecommerce", DataLayer.mapOf("click",
                                 DataLayer.mapOf("actionField",
                                         DataLayer.mapOf("list", actionField),
-                                        "products", DataLayer.listOf(objects)
+                                        "products", DataLayer.listOf(object)
                                 )
                         )
                 )

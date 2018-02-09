@@ -46,6 +46,7 @@ import rx.schedulers.Schedulers;
 
 /**
  * Created by nisie on 2/7/17.
+ * refer {@link com.tokopedia.abstraction.base.view.activity.BaseActivity}
  */
 
 /**

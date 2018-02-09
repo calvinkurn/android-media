@@ -20,6 +20,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.tokocash.TokoCashService;
@@ -32,20 +33,18 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.apiservice.DigitalEndpointService;
-import com.tokopedia.digital.product.activity.DigitalChooserActivity;
-import com.tokopedia.digital.product.activity.DigitalWebActivity;
-import com.tokopedia.digital.product.compoundview.BaseDigitalProductView;
-import com.tokopedia.digital.product.data.mapper.IProductDigitalMapper;
-import com.tokopedia.digital.product.data.mapper.ProductDigitalMapper;
-import com.tokopedia.digital.product.domain.DigitalCategoryRepository;
-import com.tokopedia.digital.product.domain.IDigitalCategoryRepository;
-import com.tokopedia.digital.product.domain.UssdCheckBalanceRepository;
-import com.tokopedia.digital.product.interactor.IProductDigitalInteractor;
-import com.tokopedia.digital.product.interactor.ProductDigitalInteractor;
-import com.tokopedia.digital.product.model.CategoryData;
-import com.tokopedia.digital.product.model.Operator;
-import com.tokopedia.digital.product.model.Product;
+import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
+import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
+import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
+import com.tokopedia.digital.common.domain.IDigitalCategoryRepository;
+import com.tokopedia.digital.common.domain.interactor.GetCategoryByIdUseCase;
+import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
+import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
+import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
+import com.tokopedia.digital.product.view.model.CategoryData;
+import com.tokopedia.digital.product.view.model.Operator;
+import com.tokopedia.digital.product.view.model.Product;
 import com.tokopedia.digital.tokocash.compoundview.BalanceTokoCashView;
 import com.tokopedia.digital.tokocash.compoundview.ReceivedTokoCashView;
 import com.tokopedia.digital.tokocash.compoundview.TopUpTokoCashView;
@@ -56,9 +55,6 @@ import com.tokopedia.digital.tokocash.interactor.TokoCashBalanceInteractor;
 import com.tokopedia.digital.tokocash.listener.TopUpTokoCashListener;
 import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashBalanceData;
 import com.tokopedia.digital.tokocash.presenter.TopUpTokocashPresenter;
-import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
-import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
-import com.tokopedia.digital.widget.domain.IDigitalWidgetRepository;
 
 import java.util.List;
 
@@ -130,27 +126,35 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
     @Override
     protected void initialPresenter() {
         SessionHandler sessionHandler = new SessionHandler(this);
+
         LocalCacheHandler cacheHandler = new LocalCacheHandler(
                 this, TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER);
+
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
-        DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
-        IProductDigitalMapper productDigitalMapper = new ProductDigitalMapper();
-        IDigitalCategoryRepository digitalCategoryRepository =
-                new DigitalCategoryRepository(digitalEndpointService, productDigitalMapper);
-        IDigitalWidgetRepository digitalWidgetRepository =
-                new DigitalWidgetRepository(digitalEndpointService, new FavoriteNumberListDataMapper());
-        IProductDigitalInteractor productDigitalInteractor =
-                new ProductDigitalInteractor(
-                        compositeSubscription, digitalWidgetRepository, digitalCategoryRepository, cacheHandler,
-                        new UssdCheckBalanceRepository(digitalEndpointService, productDigitalMapper)
-                );
+
         ITokoCashRepository balanceRepository = new TokoCashRepository(new TokoCashService(
-                sessionHandler.getAccessToken(this)));
+                SessionHandler.getAccessToken(this)));
+
         ITokoCashBalanceInteractor balanceInteractor = new TokoCashBalanceInteractor(balanceRepository,
                 new CompositeSubscription(),
                 new JobExecutor(),
                 new UIThread());
-        presenter = new TopUpTokocashPresenter(getApplicationContext(), productDigitalInteractor, balanceInteractor, this);
+
+        DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
+
+        CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
+                digitalEndpointService, new GlobalCacheManager(), new ProductDigitalMapper()
+        );
+
+        IDigitalCategoryRepository digitalCategoryRepository = new DigitalCategoryRepository(
+                categoryDetailDataSource, null
+        );
+
+        GetCategoryByIdUseCase getCategoryByIdUseCase = new GetCategoryByIdUseCase(this,
+                digitalCategoryRepository);
+
+        presenter = new TopUpTokocashPresenter(getApplicationContext(), getCategoryByIdUseCase,
+                balanceInteractor, this);
     }
 
     @Override

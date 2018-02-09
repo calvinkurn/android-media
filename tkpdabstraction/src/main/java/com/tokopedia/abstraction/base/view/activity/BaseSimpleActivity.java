@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.abstraction.R;
 
 /**
+ * To Set toolbar color, set the theme to android:theme="@style/Theme.White" or android:theme="@style/Theme.Green"
  * Created by zulfikarrahman on 5/30/17.
  */
 
