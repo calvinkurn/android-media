@@ -44,4 +44,9 @@ public class UserSessionImpl implements UserSession {
     public boolean isLoggedIn() {
         return sessionHandler.isV4Login();
     }
+
+    @Override
+    public String getShopID() {
+        return sessionHandler.getShopID();
+    }
 }

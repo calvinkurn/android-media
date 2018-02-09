@@ -29,7 +29,7 @@ import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
-import com.tokopedia.core.cache.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
@@ -85,10 +85,10 @@ import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.di.SessionComponent;
 import com.tokopedia.di.SessionModule;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
-import com.tokopedia.digital.product.activity.DigitalProductActivity;
-import com.tokopedia.digital.product.activity.DigitalWebActivity;
+import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
+import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
+import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver;
-import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
@@ -101,10 +101,9 @@ import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
 import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.SendMessageActivityOld;
-import com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver;
-import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
+import com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver;
 import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity;
@@ -116,6 +115,7 @@ import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
+import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
@@ -159,10 +159,10 @@ import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolFollowingListActivity;
+import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
+import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
-import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.activity.ReputationProduct;
-import com.tokopedia.tkpd.tkpdreputation.shopreputation.ShopReputationList;
 import com.tokopedia.tkpd.truecaller.TruecallerActivity;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
@@ -562,7 +562,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void getUserInfo(RequestParams empty, ProfileCompletionSubscriber profileSubscriber) {
         Bundle bundle = new Bundle();
         SessionHandler sessionHandler = new SessionHandler(this);
-        String authKey = sessionHandler.getAccessToken(this);
+        String authKey = SessionHandler.getAccessToken(this);
         authKey = sessionHandler.getTokenType(this) + " " + authKey;
         bundle.putString(AccountsService.AUTH_KEY, authKey);
 
@@ -607,10 +607,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass,
                                                 Bundle data, String notifTitle) {
-        mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(
-                ((ReputationRouter) MainApplication.getAppContext())
-                        .getInboxReputationIntent(MainApplication.getAppContext())
-        );
+        mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(getInboxReputationIntent(this));
         mNotificationPass.classParentStack = InboxReputationActivity.class;
         mNotificationPass.title = notifTitle;
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
@@ -624,13 +621,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public android.app.Fragment getShopReputationFragment() {
-        return ShopReputationList.create();
+    public Fragment getShopReputationFragment(String shopId, String shopDomain) {
+        return TkpdReputationInternalRouter.getReviewShopFragment(shopId, shopDomain);
     }
 
     @Override
-    public Intent getProductReputationIntent(Context context) {
-        return new Intent(context, ReputationProduct.class);
+    public Intent getProductReputationIntent(Context context, String productId, String productName) {
+        return TkpdReputationInternalRouter.getProductReviewIntent(context, productId, productName);
     }
 
     @Override
@@ -672,9 +669,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void onLogout(AppComponent appComponent) {
-        CacheApiClearAllUseCase cacheApiClearAllUseCase = appComponent.cacheApiClearAllUseCase();
-        cacheApiClearAllUseCase.execute(RequestParams.EMPTY, new TkpdSellerLogout.EmptySubscriber());
-
+        new CacheApiClearAllUseCase().executeSync();
         TkpdSellerLogout.onLogOut(appComponent);
     }
 
@@ -1274,6 +1269,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     public GetShopInfoUseCase getShopInfo(){
-            return getShopComponent().getShopInfoUseCase();
+        return getShopComponent().getShopInfoUseCase();
     }
 }
