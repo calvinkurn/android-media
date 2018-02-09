@@ -645,20 +645,6 @@ public class TkpdBaseURL {
         public static final String PATH_OS_BANNER = "/os/api/search/banner/android";
     }
 
-
-    public static class Recharge {
-        public static final String VERSION = "v1.4";
-        public static final String RECHARGE = "recharge";
-
-        public static final String PATH_STATUS = VERSION + "/status";
-        public static final String PATH_CATEGORY = VERSION + "/category/list";
-        public static final String PATH_OPERATOR = VERSION + "/operator/list";
-        public static final String PATH_PRODUCT = VERSION + "/product/list";
-        public static final String PATH_RECENT_NUMBER = VERSION + "/recent-number";
-        public static final String PATH_LAST_ORDER = VERSION + "/last-order";
-        public static final String PATH_SALDO = "/saldo/";
-    }
-
     public static class KunyitTalk {
         public static final String BASE_HOST_INBOX_TALK = "/talk/v2";
 
@@ -812,13 +798,10 @@ public class TkpdBaseURL {
         public static final String PATH_CATEGORY = "category";
         public static final String PATH_OPERATOR = "operator/list";
         public static final String PATH_PRODUCT = "product/list";
-        public static final String PATH_RECENT_NUMBER = "recent-number";
-        public static final String PATH_NUMBER_LIST = "favorite/list";
-        public static final String PATH_LAST_ORDER = "last-order";
+        public static final String PATH_FAVORITE_LIST = "favorite/list";
         public static final String PATH_SALDO = "saldo";
         public static final String PATH_GET_CART = "cart";
         public static final String PATH_PATCH_OTP_SUCCESS = "cart/otp-success";
-        public static final String PATH_BANNER = "banner";
         public static final String PATH_ORDER = "order";
         public static final String PATH_ADD_TO_CART = "cart";
         public static final String PATH_CHECKOUT = "checkout";
@@ -945,6 +928,7 @@ public class TkpdBaseURL {
     public static class Reputation {
         public static final String URL_REPUTATION = BASE_DOMAIN + "reputationapp/";
         public static final String PATH_SEND_REPUTATION_SMILEY = "reputation/api/v1/insert";
+        public static final String REPUTATIONAPP_REVIEW_API = "reputationapp/review/api/";
         private static final String REPUTATION_VERSION = "v1";
         public static final String PATH_GET_INBOX_REPUTATION = "reputation/api/"
                 + REPUTATION_VERSION + "/inbox";
@@ -969,6 +953,16 @@ public class TkpdBaseURL {
                 + REPUTATION_VERSION + "/likedislike";
         public static final String PATH_LIKE_DISLIKE_REVIEW = "review/api/"
                 + REPUTATION_VERSION + "/likedislike";
+        public static final String PATH_GET_REVIEW_PRODUCT_LIST = REPUTATIONAPP_REVIEW_API
+                + REPUTATION_VERSION + "/product";
+        public static final String PATH_GET_REVIEW_SHOP_LIST = REPUTATIONAPP_REVIEW_API
+                + REPUTATION_VERSION + "/shop";
+        public static final String PATH_GET_REVIEW_HELPFUL_LIST = REPUTATIONAPP_REVIEW_API
+                + REPUTATION_VERSION + "/mosthelpful";
+        public static final String PATH_GET_REVIEW_PRODUCT_RATING = REPUTATIONAPP_REVIEW_API
+                + REPUTATION_VERSION + "/rating";
+        public static final String PATH_GET_REVIEW_PRODUCT_COUNT = REPUTATIONAPP_REVIEW_API
+                + REPUTATION_VERSION + "/total/p/";
     }
 
     public class TkpdCart {

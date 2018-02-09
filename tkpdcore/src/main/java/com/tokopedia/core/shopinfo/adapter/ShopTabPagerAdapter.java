@@ -1,9 +1,9 @@
 package com.tokopedia.core.shopinfo.adapter;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
-import android.support.v13.app.FragmentPagerAdapter;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -44,7 +44,9 @@ public class ShopTabPagerAdapter extends FragmentPagerAdapter {
         fragments.add(ProductList.newInstance(shopModel.useAce));
         fragments.add(ShopTalkFragment.createInstance());
         if(context.getApplicationContext() instanceof TkpdCoreRouter) {
-            fragments.add(((TkpdCoreRouter)context.getApplicationContext()).getShopReputationFragment());
+            fragments.add(((TkpdCoreRouter)context.getApplicationContext()).getShopReputationFragment(
+                    shopModel.getInfo().getShopId(),
+                    shopModel.getInfo().getShopDomain()));
         }
         fragments.add(new NotesList());
         notifyDataSetChanged();
@@ -56,7 +58,9 @@ public class ShopTabPagerAdapter extends FragmentPagerAdapter {
         fragments.add(ProductList.newInstance(shopModel.useAce));
         fragments.add(ShopTalkFragment.createInstance());
         if(context.getApplicationContext() instanceof TkpdCoreRouter) {
-            fragments.add(((TkpdCoreRouter)context.getApplicationContext()).getShopReputationFragment());
+            fragments.add(((TkpdCoreRouter)context.getApplicationContext()).getShopReputationFragment(
+                    shopModel.getInfo().getShopId(),
+                    shopModel.getInfo().getShopDomain()));
         }
         fragments.add(new NotesList());
         notifyDataSetChanged();
