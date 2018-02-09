@@ -1,5 +1,4 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
-
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
@@ -29,7 +28,6 @@ import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.home.recharge.adapter.RechargeViewPagerAdapter;
-import com.tokopedia.home.recharge.interactor.RechargeNetworkInteractorImpl;
 import com.tokopedia.home.recharge.presenter.RechargeCategoryPresenter;
 import com.tokopedia.home.recharge.presenter.RechargeCategoryPresenterImpl;
 import com.tokopedia.home.recharge.view.RechargeCategoryView;
@@ -42,7 +40,7 @@ import java.util.List;
  * @author by errysuprayogi on 11/28/17.
  */
 
-public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> implements RechargeCategoryView , View.OnClickListener {
+public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> implements RechargeCategoryView, View.OnClickListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_digitals;
