@@ -594,6 +594,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     @Override
     public void showGetListError(Throwable t) {
         this.addToolbarElevation();
+        progressBar.setVisibility(View.GONE);
         super.showGetListError(t);
     }
 
@@ -766,6 +767,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     protected boolean isLoadMoreEnabledByDefault() {
         return false;
     }
+
 
     public interface OnFlightSearchFragmentListener {
         void selectFlight(String selectedFlightID);
