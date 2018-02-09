@@ -395,6 +395,8 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
 
     @OnClick(R2.id.btn_go_to_payment)
     void clickPay() {
+        btnGoToPayment.requestFocusFromTouch();
+        btnGoToPayment.requestFocus();
         mPresenter.proceedToPayment();
     }
 
