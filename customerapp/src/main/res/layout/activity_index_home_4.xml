@@ -19,8 +19,6 @@
         android:layout_height="match_parent"
         tools:context=".ParentIndexHome">
 
-        <!--<include layout="@layout/layout_tab_indicator_main_fixed" />-->
-
         <com.tkpd.library.ui.widget.TouchViewPager
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/index_page"
