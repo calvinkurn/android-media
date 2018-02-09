@@ -115,13 +115,16 @@ public class FlightAnalytics {
                 airlines.add(airlineDB.getId());
             }
             result.append(TextUtils.join(",", airlines));
+            result.append("-");
         }
 
         if (viewModel.getRouteList() != null && viewModel.getRouteList().size() > 0) {
             String timeResult = viewModel.getRouteList().get(0).getDepartureTimestamp();
             timeResult += "-" + viewModel.getRouteList().get(viewModel.getRouteList().size() - 1).getArrivalTimestamp();
             result.append(timeResult);
+            result.append("-");
         }
+        result.append(viewModel.isRefundable() ? "-refundable" : "0")
         result.append(Label.NORMAL_PRICE);
         analyticTracker.sendEventTracking(GENERIC_EVENT,
                 GENERIC_CATEGORY,
@@ -290,7 +293,7 @@ public class FlightAnalytics {
         analyticTracker.sendEventTracking(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.SELECT_PASSENGER,
-                adult + "-" + children + "-" + infant
+                adult + Label.ADULT + " -" + children + Label.CHILD + "-" + infant + Label.INFANT
         );
     }
 
@@ -347,6 +350,9 @@ public class FlightAnalytics {
     private static class Label {
         public static String FAILED_PURCHASE = "FAILED";
         static String NORMAL_PRICE = "Normal Price";
+        static String ADULT = " adult";
+        static String CHILD = " child";
+        static String INFANT = " baby";
     }
 
 }
