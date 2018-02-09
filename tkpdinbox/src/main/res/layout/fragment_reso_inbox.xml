@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="@dimen/margin_sm"
         app:bav_1_display="true"
         app:bav_label_1="@string/string_title_sort"
         app:bav_icon_1="@drawable/ic_sort_reso"

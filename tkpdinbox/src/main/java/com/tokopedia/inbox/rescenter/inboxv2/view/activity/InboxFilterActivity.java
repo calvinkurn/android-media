@@ -138,4 +138,10 @@ public class InboxFilterActivity extends BasePresenterActivity implements HasCom
         super.onDestroy();
         getBottomBackSheetActivityTransition();
     }
+
+    @Override
+    protected void setupToolbar() {
+        super.setupToolbar();
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black);
+    }
 }
