@@ -24,6 +24,7 @@ import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData
 import com.tokopedia.transaction.checkout.view.presenter.ICartListPresenter;
 import com.tokopedia.transaction.checkout.view.view.ICartListView;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -144,11 +145,13 @@ public class CartFragment extends BasePresenterFragment implements
     @Override
     public void onCartItemQuantityPlusButtonClicked(CartItemHolderData cartItemHolderData, int position) {
         cartListAdapter.increaseQuantity(position);
+        dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
     }
 
     @Override
     public void onCartItemQuantityMinusButtonClicked(CartItemHolderData cartItemHolderData, int position) {
         cartListAdapter.decreaseQuantity(position);
+        dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
     }
 
     @Override
@@ -275,6 +278,12 @@ public class CartFragment extends BasePresenterFragment implements
     @Override
     public Context getActivityContext() {
         return getActivity();
+    }
+
+    @Override
+    public void renderDetailInfoSubTotal(String qty, String subtotalPrice) {
+        tvItemCount.setText(MessageFormat.format("Harga Barang ({0} Item)", qty));
+        tvTotalPrice.setText(subtotalPrice);
     }
 
     public static CartFragment newInstance() {
