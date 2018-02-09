@@ -17,7 +17,6 @@ public class CartSingleAddressDataFactory {
 
         cartSingleAddressData.setCartSellerItemModelList(CartSellerItemModelFactory.getDummyCartSellerItemModelList());
         cartSingleAddressData.setCartPayableDetailModel(CartPayableDetailModelFactory.getCartPayableDetailModel());
-        cartSingleAddressData.setDropshipperShippingOptionModel(DropshipperShippingOptionModelFactory.getDummyDropshippingOptionModel());
         cartSingleAddressData.setShipmentFeeBannerModel(ShipmentFeeBannerModelFactory.getDummyShippingFeeBannerModel());
         cartSingleAddressData.setShipmentRecipientModel(ShipmentRecipientModelFactory.getDummyShipmentRecipientModel());
 
