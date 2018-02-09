@@ -94,9 +94,10 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        renderList(data.getVisitableList());
+        if (data != null) {
+            renderList(data.getVisitableList());
+        }
     }
-
 
     @Override
     public void loadData(int page) {
@@ -202,9 +203,9 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     @Override
     public void onApplinkClicked(LayoutRows data) {
         TkpdCoreRouter router = ((TkpdCoreRouter) getActivity().getApplicationContext());
-        if(router.isSupportedDelegateDeepLink(data.getApplinks())){
+        if (router.isSupportedDelegateDeepLink(data.getApplinks())) {
             router.actionApplink(getActivity(), data.getApplinks());
-        } else{
+        } else {
             openWebViewURL(data.getUrl(), getActivity());
         }
     }

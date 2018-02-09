@@ -68,7 +68,9 @@
 
                 <ImageView
                     android:id="@+id/rating"
-                    android:layout_width="@dimen/rating_width"
+                    android:layout_width="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/icon_star_five"
                     android:layout_height="@dimen/rating_height"
                     />
 

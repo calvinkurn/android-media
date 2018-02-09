@@ -77,7 +77,6 @@
         android:fontFamily="sans-serif"
         android:gravity="center"
         android:text="@string/ubah"
-        android:drawableTint="@color/grey"
         android:textAllCaps="false"
         android:textStyle="bold" />
 </LinearLayout>
