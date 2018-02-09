@@ -88,18 +88,6 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
     @Override
     public void bind(final DynamicChannelViewModel element) {
         final DynamicHomeChannel.Channels channel = element.getChannel();
-        if (isSprintSale(channel)) {
-            Date expiredTime = getExpiredTime(element);
-            if (!isExpired(expiredTime)) {
-                countDownView.setVisibility(View.VISIBLE);
-                countDownView.setup(expiredTime);
-            } else {
-                homeChannelTitle.setText(sprintSaleExpiredText);
-                countDownView.setVisibility(View.GONE);
-            }
-        } else {
-            countDownView.setVisibility(View.GONE);
-        }
         homeChannelTitle.setText(channel.getHeader().getName());
         ImageHandler.loadImageThumbs(context, channelImage1, channel.getGrids()[0].getImageUrl());
         ImageHandler.loadImageThumbs(context, channelImage2, channel.getGrids()[1].getImageUrl());
@@ -129,6 +117,38 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
             seeAllButton.setVisibility(View.GONE);
         }
 
+        setupClickListeners(channel);
+
+        if (isSprintSale(channel)) {
+            Date expiredTime = getExpiredTime(element);
+            countDownView.setup(expiredTime, new CountDownView.CountDownListener() {
+                @Override
+                public void onCountDownFinished() {
+                    removeOnClickListeners();
+                }
+            });
+            countDownView.setVisibility(View.VISIBLE);
+        } else {
+            countDownView.setVisibility(View.GONE);
+        }
+    }
+
+    private void removeOnClickListeners() {
+        if (seeAllButton != null) {
+            seeAllButton.setOnClickListener(null);
+        }
+        if (itemContainer1 != null) {
+            itemContainer1.setOnClickListener(null);
+        }
+        if (itemContainer2 != null) {
+            itemContainer2.setOnClickListener(null);
+        }
+        if (itemContainer3 != null) {
+            itemContainer3.setOnClickListener(null);
+        }
+    }
+
+    private void setupClickListeners(final DynamicHomeChannel.Channels channel) {
         seeAllButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -177,10 +197,6 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
 
     private boolean isSprintSale(DynamicHomeChannel.Channels channel) {
         return DynamicHomeChannel.Channels.LAYOUT_SPRINT.equals(channel.getLayout());
-    }
-
-    private boolean isExpired(Date expiredTime) {
-        return new Date().after(expiredTime);
     }
 
     private Date getExpiredTime(DynamicChannelViewModel model) {

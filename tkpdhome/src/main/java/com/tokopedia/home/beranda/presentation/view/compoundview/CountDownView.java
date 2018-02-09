@@ -58,20 +58,37 @@ public class CountDownView extends FrameLayout {
         displayTime();
     }
 
-    public void setup(final Date expiredTime) {
-        if (refreshCounterHandler == null && runnableRefreshCounter == null) {
-            refreshCounterHandler = new Handler();
-            runnableRefreshCounter = new Runnable() {
-                @Override
-                public void run() {
+    public void setup(final Date expiredTime, final CountDownListener listener) {
+        if (isExpired(expiredTime)) {
+            handleExpiredTime(listener);
+            return;
+        }
+        stopAutoRefreshCounter();
+        refreshCounterHandler = new Handler();
+        runnableRefreshCounter = new Runnable() {
+            @Override
+            public void run() {
+                if (!isExpired(expiredTime)) {
                     Date now = new Date();
                     TimeDiffModel timeDiff = getTimeDiff(now, expiredTime);
                     setTime(timeDiff.getHour(), timeDiff.getMinute(), timeDiff.getSecond());
                     refreshCounterHandler.postDelayed(this, REFRESH_DELAY_MS);
+                } else {
+                    handleExpiredTime(listener);
                 }
-            };
-            startAutoRefreshCounter();
-        }
+            }
+        };
+        startAutoRefreshCounter();
+    }
+
+    private void handleExpiredTime(CountDownListener listener) {
+        stopAutoRefreshCounter();
+        setTime(0, 0, 0);
+        listener.onCountDownFinished();
+    }
+
+    private boolean isExpired(Date expiredTime) {
+        return new Date().after(expiredTime);
     }
 
     private TimeDiffModel getTimeDiff(Date startTime, Date endTime) {
@@ -152,5 +169,9 @@ public class CountDownView extends FrameLayout {
         public void setHour(int hour) {
             this.hour = hour;
         }
+    }
+
+    public interface CountDownListener {
+        void onCountDownFinished();
     }
 }
