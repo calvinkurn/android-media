@@ -163,6 +163,8 @@ public class SessionHandler {
         AppWidgetUtil.sendBroadcastToAppWidget(context);
 
         deleteCacheBalanceTokoCash();
+
+        LocalCacheHandler.clearCache(context,TkpdCache.REFERRAL);
         deleteCacheTokoPoint();
     }
 

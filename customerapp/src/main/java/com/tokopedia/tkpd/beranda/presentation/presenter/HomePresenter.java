@@ -30,7 +30,7 @@ import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.digital.product.activity.DigitalProductActivity;
+import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.beranda.data.mapper.HomeDataMapper;
