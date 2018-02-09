@@ -28,9 +28,6 @@ import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by ricoharisin on 11/11/16.
  */

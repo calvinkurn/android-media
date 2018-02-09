@@ -16,8 +16,6 @@ public interface UserSession {
 
     boolean isLoggedIn();
 
-    String getFcmId();
-
     String getShopId();
 
     boolean hasShop();
