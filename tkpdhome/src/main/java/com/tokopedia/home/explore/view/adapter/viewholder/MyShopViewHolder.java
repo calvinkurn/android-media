@@ -61,6 +61,9 @@ public class MyShopViewHolder extends AbstractViewHolder<MyShopViewModel> {
         } else if (data.isIsGoldBadge()) {
             officialTxt.setVisibility(View.GONE);
             badgeImage.setImageResource(R.drawable.ic_shop_gold);
+        } else {
+            officialTxt.setVisibility(View.GONE);
+            badgeImage.setVisibility(View.GONE);
         }
         ImageHandler.LoadImage(reputationMedal, data.getReputationBadge());
     }
