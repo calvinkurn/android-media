@@ -302,6 +302,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     }
 
     private void actionFetchFlightSearchData() {
+        setUpProgress();
         if (getAdapter().getItemCount() == 0) {
             showLoading();
         }
