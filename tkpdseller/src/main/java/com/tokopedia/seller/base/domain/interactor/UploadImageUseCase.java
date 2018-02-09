@@ -36,6 +36,7 @@ public class UploadImageUseCase<T> extends UseCase<ImageUploadDomainModel<T>> {
     public static final String PATH_UPLOAD = "PATH_UPLOAD";
     public static final String HTTPS = "https://";
     public static final String KEY_LABEL_UPLOAD_IMAGE = "KEY_LABEL_UPLOAD_IMAGE";
+    public static final String PRODUCT_ID = "PRODUCT_ID";
     private UploadImageRepository uploadImageRepository;
     private GenerateHostRepository generateHostRepository;
     private Gson gson;
@@ -63,7 +64,7 @@ public class UploadImageUseCase<T> extends UseCase<ImageUploadDomainModel<T>> {
                     @Override
                     public Observable<ImageUploadDomainModel<T>> call(final GenerateHostDomainModel generateHostDomainModel) {
                         return uploadImageRepository.uploadImage(getParamsUploadImage(generateHostDomainModel.getUrl(),
-                                requestParams.getString(PATH_FILE, ""), String.valueOf(generateHostDomainModel.getServerId()), "",
+                                requestParams.getString(PATH_FILE, ""), String.valueOf(generateHostDomainModel.getServerId()), requestParams.getString(PRODUCT_ID, null),
                                 requestParams.getString(KEY_LABEL_UPLOAD_IMAGE, "")),
                                 generateUploadUrl(requestParams.getString(PATH_UPLOAD, ""), generateHostDomainModel.getUrl()))
                                 .map(new Func1<String, ImageUploadDomainModel<T>>() {
@@ -85,11 +86,12 @@ public class UploadImageUseCase<T> extends UseCase<ImageUploadDomainModel<T>> {
         return HTTPS + urlUpload + pathUpload;
     }
 
-    public RequestParams createRequestParams(String pathUpload, String pathFile, String keyLabelUploadImage){
+    public RequestParams createRequestParams(String pathUpload, String pathFile, String keyLabelUploadImage, String productId){
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(PATH_UPLOAD, pathUpload);
         requestParams.putString(PATH_FILE, pathFile);
         requestParams.putString(KEY_LABEL_UPLOAD_IMAGE, keyLabelUploadImage);
+        requestParams.putString(PRODUCT_ID, productId);
         return requestParams;
     }
 
