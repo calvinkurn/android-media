@@ -30,15 +30,7 @@ public class AppealSolutionMapper implements Func1<Response<TkpdResponse>, Appea
 
 
     private AppealSolutionResponseDomain mappingResponse(Response<TkpdResponse> response) {
-        AppealSolutionResponseResponse appealSolutionResponseResponse =
-                response.body().convertDataObj(AppealSolutionResponseResponse.class);
-        AppealSolutionResponseDomain model = new AppealSolutionResponseDomain(
-                appealSolutionResponseResponse.getSolution().size() != 0 ?
-                        mappingSolutionDomain(appealSolutionResponseResponse.getSolution()) :
-                        new ArrayList<AppealSolutionDomain>(),
-                appealSolutionResponseResponse.getFreeReturn() != null ?
-                        mappingFreeReturnDomain(appealSolutionResponseResponse.getFreeReturn()) :
-                        null);
+
         if (response.isSuccessful()) {
             if (response.body().isNullData()) {
                 if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
@@ -46,13 +38,19 @@ public class AppealSolutionMapper implements Func1<Response<TkpdResponse>, Appea
                 } else {
                     throw new ErrorMessageException("");
                 }
-            } else {
-                model.setSuccess(true);
             }
         } else {
             throw new RuntimeException(String.valueOf(response.code()));
         }
-        return model;
+        AppealSolutionResponseResponse appealSolutionResponseResponse =
+                response.body().convertDataObj(AppealSolutionResponseResponse.class);
+        return new AppealSolutionResponseDomain(
+                appealSolutionResponseResponse.getSolution().size() != 0 ?
+                        mappingSolutionDomain(appealSolutionResponseResponse.getSolution()) :
+                        new ArrayList<AppealSolutionDomain>(),
+                appealSolutionResponseResponse.getFreeReturn() != null ?
+                        mappingFreeReturnDomain(appealSolutionResponseResponse.getFreeReturn()) :
+                        null);
     }
 
     private List<AppealSolutionDomain> mappingSolutionDomain(List<AppealSolutionResponse> response) {

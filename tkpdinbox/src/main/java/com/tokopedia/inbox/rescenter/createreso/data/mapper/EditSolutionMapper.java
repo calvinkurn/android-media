@@ -30,15 +30,7 @@ public class EditSolutionMapper implements Func1<Response<TkpdResponse>, EditSol
 
 
     private EditSolutionResponseDomain mappingResponse(Response<TkpdResponse> response) {
-        EditSolutionResponseResponse editSolutionResponseResponse =
-                response.body().convertDataObj(EditSolutionResponseResponse.class);
-        EditSolutionResponseDomain model = new EditSolutionResponseDomain(
-                editSolutionResponseResponse.getSolution().size() != 0 ?
-                        mappingSolutionDomain(editSolutionResponseResponse.getSolution()) :
-                        new ArrayList<EditSolutionDomain>(),
-                editSolutionResponseResponse.getFreeReturn() != null ?
-                        mappingFreeReturnDomain(editSolutionResponseResponse.getFreeReturn()) :
-                        null);
+
         if (response.isSuccessful()) {
             if (response.body().isNullData()) {
                 if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
@@ -46,13 +38,19 @@ public class EditSolutionMapper implements Func1<Response<TkpdResponse>, EditSol
                 } else {
                     throw new ErrorMessageException("");
                 }
-            } else {
-                model.setSuccess(true);
             }
         } else {
             throw new RuntimeException(String.valueOf(response.code()));
         }
-        return model;
+        EditSolutionResponseResponse editSolutionResponseResponse =
+                response.body().convertDataObj(EditSolutionResponseResponse.class);
+        return new EditSolutionResponseDomain(
+                editSolutionResponseResponse.getSolution().size() != 0 ?
+                        mappingSolutionDomain(editSolutionResponseResponse.getSolution()) :
+                        new ArrayList<EditSolutionDomain>(),
+                editSolutionResponseResponse.getFreeReturn() != null ?
+                        mappingFreeReturnDomain(editSolutionResponseResponse.getFreeReturn()) :
+                        null);
     }
 
     private List<EditSolutionDomain> mappingSolutionDomain(List<EditSolutionResponse> response) {

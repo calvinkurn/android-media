@@ -32,15 +32,6 @@ public class SolutionMapper implements Func1<Response<TkpdResponse>, SolutionRes
 
 
     private SolutionResponseDomain mappingResponse(Response<TkpdResponse> response) {
-        SolutionResponseResponse solutionResponseResponse =
-                response.body().convertDataObj(SolutionResponseResponse.class);
-        SolutionResponseDomain model = new SolutionResponseDomain(
-                solutionResponseResponse.getSolution().size() != 0 ?
-                        mappingSolutionDomain(solutionResponseResponse.getSolution()) :
-                        new ArrayList<SolutionDomain>(),
-                mappingRequireDomain(solutionResponseResponse.getRequire()),
-                solutionResponseResponse.getFreeReturn() != null ?
-                        mappingFreeReturnDomain(solutionResponseResponse.getFreeReturn()) : null);
         if (response.isSuccessful()) {
             if (response.body().isNullData()) {
                 if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
@@ -48,13 +39,20 @@ public class SolutionMapper implements Func1<Response<TkpdResponse>, SolutionRes
                 } else {
                     throw new ErrorMessageException("");
                 }
-            } else {
-                model.setSuccess(true);
             }
         } else {
             throw new RuntimeException(String.valueOf(response.code()));
         }
-        return model;
+
+        SolutionResponseResponse solutionResponseResponse =
+                response.body().convertDataObj(SolutionResponseResponse.class);
+        return new SolutionResponseDomain(
+                solutionResponseResponse.getSolution().size() != 0 ?
+                        mappingSolutionDomain(solutionResponseResponse.getSolution()) :
+                        new ArrayList<SolutionDomain>(),
+                mappingRequireDomain(solutionResponseResponse.getRequire()),
+                solutionResponseResponse.getFreeReturn() != null ?
+                        mappingFreeReturnDomain(solutionResponseResponse.getFreeReturn()) : null);
     }
 
     private List<SolutionDomain> mappingSolutionDomain(List<SolutionResponse> response) {

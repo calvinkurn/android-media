@@ -24,14 +24,7 @@ public class CreateSubmitMapper implements Func1<Response<TkpdResponse>, CreateS
     }
 
     private CreateSubmitDomain mappingResponse(Response<TkpdResponse> response) {
-        CreateSubmitResponse createSubmitResponse = response.body()
-                .convertDataObj(CreateSubmitResponse.class);
-        CreateSubmitDomain model = new CreateSubmitDomain(
-                createSubmitResponse.getResolution() != null ?
-                        mappingResolutionDomain(createSubmitResponse.getResolution()) : null,
-                createSubmitResponse.getShop() != null ?
-                        mappingShopDomain(createSubmitResponse.getShop()) : null,
-                createSubmitResponse.getSuccessMessage());
+
         if (response.isSuccessful()) {
             if (response.body().isNullData()) {
                 if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
@@ -39,13 +32,18 @@ public class CreateSubmitMapper implements Func1<Response<TkpdResponse>, CreateS
                 } else {
                     throw new ErrorMessageException("");
                 }
-            } else {
-                model.setSuccess(true);
             }
         } else {
             throw new RuntimeException(String.valueOf(response.code()));
         }
-        return model;
+        CreateSubmitResponse createSubmitResponse = response.body()
+                .convertDataObj(CreateSubmitResponse.class);
+        return new CreateSubmitDomain(
+                createSubmitResponse.getResolution() != null ?
+                        mappingResolutionDomain(createSubmitResponse.getResolution()) : null,
+                createSubmitResponse.getShop() != null ?
+                        mappingShopDomain(createSubmitResponse.getShop()) : null,
+                createSubmitResponse.getSuccessMessage());
     }
 
     private ResolutionDomain mappingResolutionDomain(ResolutionResponse response) {
