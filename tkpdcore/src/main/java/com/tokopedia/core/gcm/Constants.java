@@ -124,8 +124,11 @@ public interface Constants {
         String WALLET_TRANSACTION_HISTORY = "tokopedia://wallet/transaction/history";
         String BROWSER = "tokopedia://browser";
         String FAVORITE = "tokopedia://home/favorite";
-        String PROMO_LIST = "tokopedia://promoNative";
+
+        String REFERRAL_WELCOME = "tokopedia://referral/{code}/{owner}";
         String KOLCOMMENT = "tokopedia://kolcomment/{id}";
+        String PROMO_LIST = "tokopedia://promoNative";
+
 
         interface SellerApp {
             String PRODUCT_ADD = "sellerapp://product/add";

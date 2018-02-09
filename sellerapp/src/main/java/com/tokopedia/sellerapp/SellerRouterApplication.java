@@ -1,7 +1,6 @@
 package com.tokopedia.sellerapp;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -24,7 +23,6 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.cache.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.drawer.receiver.TokoCashBroadcastReceiver;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
@@ -46,6 +44,7 @@ import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.seller.LogisticRouter;
@@ -55,6 +54,8 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
+import com.tokopedia.seller.product.manage.di.ProductManageComponent;
+import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
@@ -123,6 +124,7 @@ import com.tokopedia.tkpd.tkpdreputation.shopreputation.ShopReputationList;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsComponent;
+import com.tokopedia.seller.product.manage.di.DaggerProductManageComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
@@ -761,6 +763,10 @@ public abstract class SellerRouterApplication extends MainApplication
     public Observable<List<DataCashbackModel>> getCashbackList(List<String> productIds) {
         GetCashbackUseCase getCashbackUseCase = getGMComponent().getCashbackUseCase();
         return getCashbackUseCase.getExecuteObservable(GetCashbackUseCase.createRequestParams(productIds));
+    }
+
+    public GetShopInfoUseCase getShopInfo(){
+        return getShopComponent().getShopInfoUseCase();
     }
 
     public void goToAddProduct(Activity activity) {

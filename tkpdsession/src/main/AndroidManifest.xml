@@ -105,6 +105,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/DialogTheme"/>
 
+        <activity android:name="com.tokopedia.otp.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity">
+        </activity>
+
         <activity
             android:name=".register.view.activity.RegisterInitialActivity"
             android:label="@string/title_register"

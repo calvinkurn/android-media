@@ -156,30 +156,59 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             case "DELETE":
             case "POST":
             case "PUT":
-                authHeaders = getHeaderMap(
-                        originRequest.url().uri().getPath(),
-                        generateParamBodyString(originRequest),
-                        originRequest.method(),
-                        authKey,
-                        contentTypeHeader
-                );
+                //add dirty validation here, because for now, only wsv4 support new hmac key
+                //it's really pain in the ass to find which endpoint is using web_service_v4 beside ws.tokopedia.com
+                if (originRequest.url().host().equals("ws.tokopedia.com")) {
+                    authHeaders = getHeaderMapNew(
+                            originRequest.url().uri().getPath(),
+                            generateParamBodyString(originRequest),
+                            originRequest.method(),
+                            AuthUtil.KEY.KEY_WSV4_NEW,
+                            contentTypeHeader
+                    );
+                } else {
+                    authHeaders = getHeaderMap(
+                            originRequest.url().uri().getPath(),
+                            generateParamBodyString(originRequest),
+                            originRequest.method(),
+                            authKey,
+                            contentTypeHeader
+                    );
+                }
                 break;
             case "GET":
-                authHeaders = getHeaderMap(
-                        originRequest.url().uri().getPath(),
-                        generateQueryString(originRequest),
-                        originRequest.method(),
-                        authKey,
-                        contentTypeHeader
-                );
+                if (originRequest.url().host().equals("ws.tokopedia.com")) {
+                    authHeaders = getHeaderMapNew(
+                            originRequest.url().uri().getPath(),
+                            generateQueryString(originRequest),
+                            originRequest.method(),
+                            AuthUtil.KEY.KEY_WSV4_NEW,
+                            contentTypeHeader
+                    );
+                } else {
+                    authHeaders = getHeaderMap(
+                            originRequest.url().uri().getPath(),
+                            generateQueryString(originRequest),
+                            originRequest.method(),
+                            authKey,
+                            contentTypeHeader
+                    );
+                }
                 break;
         }
         return authHeaders;
     }
 
+    //please use getHeaderMapNew() for new hmac key
+    @Deprecated
     protected Map<String, String> getHeaderMap(
             String path, String strParam, String method, String authKey, String contentTypeHeader) {
         return AuthUtil.generateHeaders(path, strParam, method, authKey, contentTypeHeader);
+    }
+
+    protected Map<String, String> getHeaderMapNew(
+            String path, String strParam, String method, String authKey, String contentTypeHeader) {
+        return AuthUtil.generateHeadersNew(path, strParam, method, authKey, contentTypeHeader);
     }
 
     void generateHeader(

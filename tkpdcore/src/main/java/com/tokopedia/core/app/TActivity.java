@@ -20,6 +20,10 @@ import com.tokopedia.core.util.SessionHandler;
 /**
  * Created by Nisie on 31/08/15.
  */
+
+/**
+ * Extends one of BaseActivity from tkpd abstraction eg:BaseSimpleActivity, BaseStepperActivity, BaseTabActivity, etc
+ */
 @Deprecated
 public abstract class TActivity extends BaseActivity {
 

@@ -97,6 +97,7 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
     private static final String HAS_PHONE_VERIF_TIMER = "HAS_PHONE_VERIF_TIMER";
     private static final int DEFAULT_COUNTDOWN_TIMER_SECOND = 90;
     protected static final long COUNTDOWN_INTERVAL_SECOND = 1000;
+    private static final String EXTRA_PARAM_PHONE_NUMBER = "EXTRA_PARAM_PHONE_NUMBER";
 
     protected TextView verifyButton;
     protected TextView skipButton;
@@ -114,6 +115,7 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
     protected TkpdProgressDialog progressDialog;
     protected LocalCacheHandler cacheHandler;
     PhoneVerificationFragmentListener listener;
+    private String phoneNumber;
 
     @Inject
     PhoneVerificationPresenter presenter;
@@ -126,6 +128,7 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
         return fragment;
     }
 
+
     public static PhoneVerificationFragment createInstance(PhoneVerificationFragmentListener listener, boolean canSkip) {
         PhoneVerificationFragment fragment = new PhoneVerificationFragment();
         Bundle args = new Bundle();
@@ -135,15 +138,26 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
         return fragment;
     }
 
+    public static PhoneVerificationFragment createInstance(PhoneVerificationFragmentListener listener, String phoneNumber) {
+        PhoneVerificationFragment fragment = new PhoneVerificationFragment();
+        fragment.setPhoneVerificationListener(listener);
+        Bundle args = new Bundle();
+        args.putString(EXTRA_PARAM_PHONE_NUMBER, phoneNumber);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.smsReceiver = new IncomingSmsReceiver();
         this.smsReceiver.setListener(this);
         cacheHandler = new LocalCacheHandler(getActivity(), CACHE_PHONE_VERIF_TIMER);
-        if (getArguments().containsKey(PhoneVerificationActivationActivity.EXTRA_IS_MANDATORY)) {
-            isMandatory = getArguments().getBoolean(PhoneVerificationActivationActivity
-                    .EXTRA_IS_MANDATORY);
+        if (getArguments()!= null) {
+            if (getArguments().containsKey(PhoneVerificationActivationActivity.EXTRA_IS_MANDATORY)) {
+                isMandatory = getArguments().getBoolean(PhoneVerificationActivationActivity.EXTRA_IS_MANDATORY);
+            }
+            this.phoneNumber = getArguments().getString(EXTRA_PARAM_PHONE_NUMBER);
         }
     }
 
@@ -239,6 +253,10 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
             changePhoneNumberButton.setVisibility(View.GONE);
             startTimer();
         }
+
+        if (phoneNumber != null && "".equalsIgnoreCase(phoneNumber.trim())) {
+            phoneNumberEditText.setText(phoneNumber);
+        }
     }
 
     protected void prepareView(View view) {
@@ -287,6 +305,18 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
         tokocashText.setText(tokoCashSpannable, TextView.BufferType.SPANNABLE);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(EXTRA_PARAM_PHONE_NUMBER, phoneNumber);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        this.phoneNumber = savedInstanceState.getString(EXTRA_PARAM_PHONE_NUMBER);
+
+    }
 
     protected void setViewListener() {
         verifyButton.setOnClickListener(new View.OnClickListener() {

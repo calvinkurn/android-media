@@ -448,7 +448,6 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     public class DrawerActivityBroadcastReceiver extends BroadcastReceiver {
 
-
         @Override
         public void onReceive(Context context, Intent intent) {
             if (!DrawerActivityBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP.equalsIgnoreCase(intent.getAction()))

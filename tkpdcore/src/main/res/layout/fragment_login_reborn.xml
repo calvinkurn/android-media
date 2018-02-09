@@ -30,12 +30,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="16dp"
+                android:hint="@string/title_email">
                 <AutoCompleteTextView
                     android:id="@+id/email_auto"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/title_email"
                     android:maxLines="1"
                     android:inputType="textEmailAddress"
                     android:imeOptions="actionNext"
@@ -48,6 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_small"
+                android:hint="@string/prompt_password"
                 app:passwordToggleEnabled="true"
                 app:passwordToggleDrawable="@drawable/asl_password_visibility">
 

@@ -95,14 +95,14 @@ import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
 import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.SendMessageActivityOld;
-import com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver;
-import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
+import com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver;
 import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity;
+import com.tokopedia.otp.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.RidePhoneNumberVerificationActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
@@ -132,6 +132,7 @@ import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
+import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
@@ -770,6 +771,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getReferralPhoneNumberActivityIntent(Activity activity) {
+        return ReferralPhoneNumberVerificationActivity.getCallingIntent(activity);
+    }
+
+    @Override
     public void goToUserPaymentList(Activity activity) {
         Intent intent = new Intent(activity, ListPaymentTypeActivity.class);
         activity.startActivity(intent);
@@ -1254,5 +1260,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public BroadcastReceiver getBroadcastReceiverTokocashPending() {
         return new TokocashPendingDataBroadcastReceiver();
+    }
+
+    public GetShopInfoUseCase getShopInfo(){
+            return getShopComponent().getShopInfoUseCase();
     }
 }
