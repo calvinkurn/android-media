@@ -66,6 +66,7 @@ public class CustomSeatLayout extends LinearLayout {
     private void initView() {
         inflate(getContext(), R.layout.individual_seat, this);
         ButterKnife.bind(this);
+        mPresenter.setSelectedSeatText(selectedSeatList, rowids);
     }
 
     public void setText(String text, int status) {
@@ -109,13 +110,14 @@ public class CustomSeatLayout extends LinearLayout {
                 }
                 rowids.remove("" + rowId);
             } else {
-                Toast.makeText(getContext(), "Cannot select more than" + maxCount + " number of tickets", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Cannot select more than " + maxCount + " number of tickets", Toast.LENGTH_SHORT).show();
             }
-
-            mPresenter.setTicketPrice(numoFSeats);
-            mPresenter.setSelectedSeatText(selectedSeatList, rowids);
-            mPresenter.setSelectedSeatViewModel();
-
+        mPresenter.setTicketPrice(numoFSeats);
+        mPresenter.setSeatData();
     }
 
+    public static void destroy() {
+        numoFSeats = 0;
+        CustomSeatLayout.selectedSeatList.clear();
+    }
 }

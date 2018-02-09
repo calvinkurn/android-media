@@ -205,18 +205,18 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
                 , ViewGroup.LayoutParams.WRAP_CONTENT);
-        if (homedata.getDisplayTags() != null && homedata.getDisplayTags().length() > 3) {
-            List<TextView> list = addTextViews(Utils.getDisplayTags(homedata.getDisplayTags()));
-
-            eventDisplayTagLayout.removeAllViews();
-            for (int i = 0; i < list.size(); i++) {
-                eventDisplayTagLayout.addView(list.get(i), params);
-            }
-
-            eventDisplayTagLayout.setVisibility(View.VISIBLE);
-        } else {
-            eventDisplayTagLayout.setVisibility(View.GONE);
-        }
+//        if (homedata.getDisplayTags() != null && homedata.getDisplayTags().length() > 3) {
+//            List<TextView> list = addTextViews(Utils.getDisplayTags(homedata.getDisplayTags()));
+//
+//            eventDisplayTagLayout.removeAllViews();
+//            for (int i = 0; i < list.size(); i++) {
+//                eventDisplayTagLayout.addView(list.get(i), params);
+//            }
+//
+//            eventDisplayTagLayout.setVisibility(View.VISIBLE);
+//        } else {
+//            eventDisplayTagLayout.setVisibility(View.GONE);
+//        }
 
 
         String tnc = homedata.getTnc();

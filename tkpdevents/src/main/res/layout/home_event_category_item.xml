@@ -29,18 +29,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/display_tag_bg"
+                android:background="@drawable/rounded_rectange_transparent"
                 android:gravity="center_horizontal"
+                android:layout_alignParentRight="true"
                 android:paddingBottom="4dp"
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
                 android:paddingTop="4dp"
                 android:layout_alignParentTop="true"
+                android:layout_marginRight="16dp"
                 android:text="@string/_350_u0020_ticket_u0020_sold"
                 android:textColor="@color/black_38"
                 android:textSize="14sp"
                 android:textStyle="normal"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
 
         </RelativeLayout>
