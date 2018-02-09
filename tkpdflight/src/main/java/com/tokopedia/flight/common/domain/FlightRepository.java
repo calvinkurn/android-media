@@ -29,9 +29,13 @@ import rx.Observable;
 public interface FlightRepository {
     Observable<List<FlightAirportDB>> getAirportList(String query);
 
+    Observable<FlightAirportDB> getAirportById(String aiport);
+
     Observable<List<FlightAirportDB>> getAirportList(String query, String idCountry);
 
     Observable<List<FlightClassEntity>> getFlightClasses();
+
+    Observable<FlightClassEntity> getFlightClassById(int classId);
 
     Observable<List<FlightAirlineDB>> getAirlineList();
 
@@ -70,4 +74,6 @@ public interface FlightRepository {
     Observable<List<BannerDetail>> getBanners(Map<String, String> params);
 
     Observable<List<FlightAirportDB>> getPhoneCodeList(String string);
+
+    Observable<FlightAirlineDB> getAirlineById(String airlineId);
 }

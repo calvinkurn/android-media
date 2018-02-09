@@ -37,5 +37,5 @@ public interface PdpRouter {
     void openImagePreview(Context context, ArrayList<String> images, ArrayList<String>
             imageDesc, int position);
 
-    Intent getProductReputationIntent(Context context);
+    Intent getProductReputationIntent(Context context, String productId, String productName);
 }

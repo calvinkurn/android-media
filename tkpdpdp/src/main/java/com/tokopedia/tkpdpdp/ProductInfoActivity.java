@@ -298,7 +298,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
 
     @Override
     public void catchToWebView(String url) {
-        Intent intent = SimpleWebViewActivity.getCallingIntent(this, url);
+        Intent intent = SimpleWebViewActivity.getIntent(this, url);
         startActivity(intent);
         finish();
     }

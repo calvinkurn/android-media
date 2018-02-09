@@ -10,6 +10,11 @@ import java.util.Map;
 
 /**
  * @author kulomady on 12/24/16.
+ * refer RequestParams {@link com.tokopedia.usecase}
+ */
+
+/**
+ * Use Usecase from tkpd usecase
  */
 @Deprecated
 public class RequestParams {

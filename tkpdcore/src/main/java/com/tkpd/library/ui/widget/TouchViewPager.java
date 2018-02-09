@@ -5,6 +5,10 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
+/**
+ * refer {@link com.tokopedia.abstraction.base.view.widget.TouchViewPager}
+ */
+@Deprecated
 public class TouchViewPager extends ViewPager {
     private boolean AllowPageSwitching = true;
 

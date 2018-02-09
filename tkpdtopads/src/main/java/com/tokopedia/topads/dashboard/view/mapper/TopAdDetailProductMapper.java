@@ -43,6 +43,7 @@ public class TopAdDetailProductMapper {
         viewModel.setEndTime(domainModel.getAdEndTime());
         viewModel.setImage(domainModel.getAdImage());
         viewModel.setTitle(domainModel.getAdTitle());
+        viewModel.setEnoughDeposit(domainModel.isEnoughDeposit());
         return viewModel;
     }
 

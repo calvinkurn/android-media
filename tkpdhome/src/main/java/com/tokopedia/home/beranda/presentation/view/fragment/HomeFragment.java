@@ -74,6 +74,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerW
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.explore.di.DaggerExploreComponent;
+import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -132,7 +133,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         getActivity().registerReceiver(
                 homeFragmentBroadcastReceiver,
                 new IntentFilter(
-                        HomeFragmentBroadcastReceiverConstant.INTENT_ACTION
+                        HomeFragmentBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP
                 )
         );
     }
@@ -335,7 +336,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onRequestPendingCashBack() {
-        getActivity().sendBroadcast(new Intent(TokocashPendingDataBroadcastReceiverConstant.INTENT_ACTION));
+        getActivity().sendBroadcast(new Intent(TokocashPendingDataBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP));
     }
 
     @Override
@@ -388,9 +389,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void actionTokoPointClicked(String tokoPointUrl, String pageTitle) {
         if (TextUtils.isEmpty(pageTitle))
-            startActivity(BannerWebView.getCallingIntent(getActivity(), tokoPointUrl));
+            startActivity(TokoPointWebviewActivity.getIntent(getActivity(), tokoPointUrl));
         else
-            startActivity(BannerWebView.getCallingIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
+            startActivity(TokoPointWebviewActivity.getIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
     }
 
 
@@ -590,8 +591,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void openWebViewGimicURL(String url, String label, String title) {
         if (!url.equals("")) {
-            Intent intent = SimpleWebViewActivity.getCallingIntent(getActivity(), url);
-            intent.putExtra(BannerWebView.EXTRA_TITLE, title);
+            Intent intent = SimpleWebViewActivity.getIntentWithTitle(getActivity(), url, title);
             startActivity(intent);
             UnifyTracking.eventHomeGimmick(label);
         }
@@ -620,7 +620,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (!HomeFragmentBroadcastReceiverConstant.INTENT_ACTION.equalsIgnoreCase(intent.getAction()))
+            if (!HomeFragmentBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP.equalsIgnoreCase(intent.getAction()))
                 return;
             switch (intent.getIntExtra(EXTRA_ACTION_RECEIVER, 0)) {
                 case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOPOINT_DATA:

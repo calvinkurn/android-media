@@ -184,7 +184,7 @@
                 android:visibility="gone"
                 tools:visibility="visible"
                 android:textSize="10sp"
-                tools:text="Rp.25000"/>
+                tools:text="Rp25000"/>
 
             <RelativeLayout
                 android:layout_width="wrap_content"
@@ -196,7 +196,7 @@
                 <TextView
                     android:id="@+id/total_price"
                     style="@style/TextView.Title.Bold"
-                    tools:text="Rp 25.000" />
+                    tools:text="Rp25.000" />
 
                 <TextView
                     style="@style/TextView.Micro.BlackSecondary"
