@@ -62,5 +62,4 @@ public class UserSessionImpl implements UserSession {
     public boolean hasShop() {
         return sessionHandler.isUserHasShop();
     }
-
 }
