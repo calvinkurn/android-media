@@ -17,55 +17,73 @@
         <com.tokopedia.design.label.LabelView
             android:id="@+id/label_view_transaction_success"
             style="@style/LabelLayout"
+            app:lv_content="@string/shop_info_label_default_content"
             app:lv_image="@drawable/ic_smiley_netral"
+            app:lv_image_width="@dimen/image_width_xs"
             app:lv_title="@string/shop_info_label_transaction_success" />
 
         <com.tokopedia.design.label.LabelView
             android:id="@+id/label_view_total_transaction"
             style="@style/LabelLayout"
+            app:lv_content="@string/shop_info_label_default_content"
             app:lv_image="@drawable/ic_smiley_netral"
+            app:lv_image_width="@dimen/image_width_xs"
             app:lv_title="@string/shop_info_label_total_transaction" />
 
         <com.tokopedia.design.label.LabelView
             android:id="@+id/label_view_product_sold"
             style="@style/LabelLayout"
+            app:lv_content="@string/shop_info_label_default_content"
             app:lv_image="@drawable/ic_smiley_netral"
+            app:lv_image_width="@dimen/image_width_xs"
             app:lv_title="@string/shop_info_label_product_sold" />
 
         <com.tokopedia.design.label.LabelView
             android:id="@+id/label_view_total_review"
             style="@style/LabelLayout"
+            app:lv_content="@string/shop_info_label_default_content"
             app:lv_image="@drawable/ic_smiley_netral"
+            app:lv_image_width="@dimen/image_width_xs"
             app:lv_title="@string/shop_info_label_total_review" />
 
         <com.tokopedia.design.label.LabelView
             android:id="@+id/label_view_favorite"
             style="@style/LabelLayout"
+            app:lv_content="@string/shop_info_label_default_content"
             app:lv_image="@drawable/ic_smiley_netral"
+            app:lv_image_width="@dimen/image_width_xs"
             app:lv_title="@string/shop_info_label_favourite" />
 
         <com.tokopedia.design.label.LabelView
             android:id="@+id/label_view_last_online"
             style="@style/LabelLayout"
+            app:lv_content="@string/shop_info_label_default_content"
             app:lv_image="@drawable/ic_smiley_netral"
+            app:lv_image_width="@dimen/image_width_xs"
             app:lv_title="@string/shop_info_label_last_online" />
 
         <com.tokopedia.design.label.LabelView
             android:id="@+id/label_view_open_since"
             style="@style/LabelLayout"
+            app:lv_content="@string/shop_info_label_default_content"
             app:lv_image="@drawable/ic_smiley_netral"
+            app:lv_image_width="@dimen/image_width_xs"
             app:lv_title="@string/shop_info_label_open_since" />
 
         <com.tokopedia.design.label.LabelView
             android:id="@+id/label_view_total_product"
             style="@style/LabelLayout"
+            app:lv_content="@string/shop_info_label_default_content"
             app:lv_image="@drawable/ic_smiley_netral"
+            app:lv_image_width="@dimen/image_width_xs"
             app:lv_title="@string/shop_info_label_total_product" />
 
         <com.tokopedia.design.label.LabelView
             android:id="@+id/label_view_total_etalase"
             style="@style/LabelLayout"
+            app:lv_content="@string/shop_info_label_default_content"
             app:lv_image="@drawable/ic_smiley_netral"
+            app:lv_image_width="@dimen/image_width_xs"
             app:lv_title="@string/shop_info_label_total_etalase" />
     </LinearLayout>
 </LinearLayout>

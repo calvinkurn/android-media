@@ -17,4 +17,6 @@
     <string name="shop_info_label_total_product">Total Produk</string>
     <string name="shop_info_label_total_etalase">Total Etalase</string>
 
+    <string name="shop_info_label_default_content">-</string>
+
 </resources>
