@@ -82,8 +82,7 @@ public class HomeFeedModule {
 
     @DefaultAuthWithErrorHandler
     @Provides
-    OkHttpClient provideOkHttpClient(@ApplicationContext Context context,
-                                     CacheApiInterceptor cacheApiInterceptor) {
+    OkHttpClient provideOkHttpClient(@ApplicationContext Context context) {
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, DeveloperOptions.CHUCK_ENABLED);
         return OkHttpFactory.create().buildDaggerClientDefaultAuthWithErrorHandler(
                 new FingerprintInterceptor(),
@@ -94,7 +93,7 @@ public class HomeFeedModule {
                 ),
                 new DebugInterceptor(),
                 new TkpdErrorResponseInterceptor(TkpdV4ResponseError.class),
-                cacheApiInterceptor
+                new CacheApiInterceptor()
         );
     }
 
