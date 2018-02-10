@@ -95,7 +95,7 @@ public class LabelView extends BaseCustomView {
             imageView.setVisibility(View.VISIBLE);
         }
         titleTextView.setText(titleText);
-        contentTextView.setText(titleText);
+        contentTextView.setText(contentText);
         contentTextView.setTextColor(contentColorValue);
         contentTextView.setTypeface(null, contentTextStyleValue);
         contentTextView.setMaxLines(maxLines);
