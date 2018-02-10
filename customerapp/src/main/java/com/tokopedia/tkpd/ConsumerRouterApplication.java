@@ -1283,4 +1283,27 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public GetShopInfoUseCase getShopInfo(){
         return getShopComponent().getShopInfoUseCase();
     }
+
+    @Override
+    public void openIntermediaryActivity(Activity activity, String depID, String title) {
+        IntermediaryActivity.moveTo(activity, depID, title);
+    }
+
+    @Override
+    public void onDigitalItemClick(Activity activity, DigitalCategoryDetailPassData passData, String appLink) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
+        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
+        Intent intent = activity.getIntent();
+        intent.setData(Uri.parse(appLink));
+        intent.putExtras(bundle);
+        deepLinkDelegate.dispatchFrom(activity, intent);
+    }
+
+    @Override
+    public void openReactNativeOfficialStore(FragmentActivity activity) {
+        startActivity(ReactNativeOfficialStoreActivity.createCallingIntent(
+                activity, ReactConst.Screen.OFFICIAL_STORE,
+                getString(R.string.react_native_banner_official_title)));
+    }
 }

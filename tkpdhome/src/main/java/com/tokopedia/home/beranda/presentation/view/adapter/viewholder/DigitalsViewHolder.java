@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder;
+package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 import android.app.Activity;
 import android.content.Context;
@@ -25,13 +25,13 @@ import com.tokopedia.digital.widget.domain.interactor.DigitalWidgetUseCase;
 import com.tokopedia.digital.widget.view.model.category.Category;
 import com.tokopedia.digital.widget.view.model.mapper.CategoryMapper;
 import com.tokopedia.digital.widget.view.model.mapper.StatusMapper;
-import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.beranda.listener.HomeCategoryListener;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
-import com.tokopedia.tkpd.home.recharge.adapter.RechargeViewPagerAdapter;
-import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenter;
-import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenterImpl;
-import com.tokopedia.tkpd.home.recharge.view.RechargeCategoryView;
+import com.tokopedia.home.R;
+import com.tokopedia.home.beranda.listener.HomeCategoryListener;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
+import com.tokopedia.home.recharge.adapter.RechargeViewPagerAdapter;
+import com.tokopedia.home.recharge.presenter.RechargeCategoryPresenter;
+import com.tokopedia.home.recharge.presenter.RechargeCategoryPresenterImpl;
+import com.tokopedia.home.recharge.view.RechargeCategoryView;
 
 import java.util.ArrayList;
 import java.util.List;

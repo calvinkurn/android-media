@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.home.recharge.view;
+package com.tokopedia.home.recharge.view;
 
 import com.tokopedia.digital.widget.view.model.category.Category;
 

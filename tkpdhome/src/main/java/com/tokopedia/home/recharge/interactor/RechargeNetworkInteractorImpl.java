@@ -1,10 +1,10 @@
 package com.tokopedia.home.recharge.interactor;
 
 import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
-import com.tokopedia.digital.widget.model.category.Category;
-import com.tokopedia.digital.widget.model.mapper.CategoryMapper;
-import com.tokopedia.digital.widget.model.mapper.StatusMapper;
-import com.tokopedia.digital.widget.model.status.Status;
+import com.tokopedia.digital.widget.view.model.category.Category;
+import com.tokopedia.digital.widget.view.model.mapper.CategoryMapper;
+import com.tokopedia.digital.widget.view.model.mapper.StatusMapper;
+import com.tokopedia.digital.widget.view.model.status.Status;
 
 import java.util.List;
 
@@ -19,6 +19,11 @@ import rx.subscriptions.CompositeSubscription;
  *         Modified by Nabilla Sabbaha on 08/07/2017
  *         Modified by rizkyfadillah at 10/6/17.
  */
+
+// TODO: this interactor should be replaced with usecase
+// don't use DigitalWidgetRepository anymore
+
+@Deprecated
 public class RechargeNetworkInteractorImpl implements RechargeNetworkInteractor {
 
     private CompositeSubscription compositeSubscription;
