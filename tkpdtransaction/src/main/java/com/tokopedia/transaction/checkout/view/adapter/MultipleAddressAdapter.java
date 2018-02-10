@@ -81,7 +81,7 @@ public class MultipleAddressAdapter
             );
         } else if (holder instanceof MultipleAddressFooterViewHolder)
             ((MultipleAddressFooterViewHolder) holder).goToCourierPageButton
-                    .setOnClickListener(onGoToCourierPageButtonClicked());
+                    .setOnClickListener(onGoToCourierPageButtonClicked(addressData));
 
     }
 
@@ -152,11 +152,13 @@ public class MultipleAddressAdapter
         }
     }
 
-    private View.OnClickListener onGoToCourierPageButtonClicked() {
+    private View.OnClickListener onGoToCourierPageButtonClicked(
+            final List<MultipleAddressAdapterData> listData
+    ) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onGoToChooseCourier();
+                listener.onGoToChooseCourier(listData);
             }
         };
     }
@@ -174,7 +176,7 @@ public class MultipleAddressAdapter
 
     public interface MultipleAddressAdapterListener {
 
-        void onGoToChooseCourier();
+        void onGoToChooseCourier(List<MultipleAddressAdapterData> data);
 
         void onItemChoosen(MultipleAddressAdapterData productData,
                            MultipleAddressItemData addressData);

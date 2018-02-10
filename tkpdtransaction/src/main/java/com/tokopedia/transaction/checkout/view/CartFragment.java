@@ -143,12 +143,12 @@ public class CartFragment extends BasePresenterFragment implements
 
     @Override
     public void onCartItemQuantityPlusButtonClicked(CartItemHolderData cartItemHolderData, int position) {
-
+        cartListAdapter.increaseQuantity(position);
     }
 
     @Override
     public void onCartItemQuantityMinusButtonClicked(CartItemHolderData cartItemHolderData, int position) {
-
+        cartListAdapter.decreaseQuantity(position);
     }
 
     @Override

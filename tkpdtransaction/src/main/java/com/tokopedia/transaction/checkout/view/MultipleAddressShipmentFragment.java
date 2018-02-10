@@ -21,12 +21,15 @@ import com.tokopedia.transaction.checkout.view.adapter.MultipleAddressShipmentAd
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressPriceSummaryData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressShipmentAdapterData;
+import com.tokopedia.transaction.checkout.view.presenter.IMultipleAddressShipmentPresenter;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
 import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DATA_POSITION;
 import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DATA_STORE;
@@ -40,6 +43,9 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
 
     private static final int REQUEST_CODE_SHIPMENT_DETAIL = 11;
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
+
+    @Inject
+    IMultipleAddressShipmentPresenter presenter;
 
     private TextView totalPayment;
 
@@ -123,8 +129,9 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
     }
 
     @Override
-    public void onConfirmedButtonClicked(List<MultipleAddressShipmentAdapterData> addressDataList) {
-
+    public void onConfirmedButtonClicked(List<MultipleAddressShipmentAdapterData> addressDataList,
+                                         MultipleAddressPriceSummaryData data) {
+        presenter.sendData(addressDataList, data);
     }
 
     @Override
