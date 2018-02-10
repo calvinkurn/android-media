@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
@@ -21,9 +22,11 @@ import com.tokopedia.design.base.BaseCustomView;
 
 public class LabelView extends BaseCustomView {
 
+    private ImageView imageView;
     private TextView titleTextView;
     private TextView contentTextView;
 
+    private Drawable imageDrawable;
     private String titleText;
     @ColorInt
     private int titleColorValue;
@@ -59,6 +62,7 @@ public class LabelView extends BaseCustomView {
     private void init(AttributeSet attrs) {
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.LabelView);
         try {
+            imageDrawable = styledAttributes.getDrawable(R.styleable.LabelView_lv_image);
             titleText = styledAttributes.getString(R.styleable.LabelView_lv_title);
             titleColorValue = styledAttributes.getColor(R.styleable.LabelView_lv_title_color, ContextCompat.getColor(getContext(), R.color.font_black_primary_70));
             contentText = styledAttributes.getString(R.styleable.LabelView_lv_content);
@@ -78,6 +82,7 @@ public class LabelView extends BaseCustomView {
 
     private void init() {
         View view = inflate(getContext(), R.layout.widget_label_view, this);
+        imageView = view.findViewById(R.id.image_view);
         titleTextView = view.findViewById(R.id.title_text_view);
         contentTextView = view.findViewById(R.id.content_text_view);
     }
@@ -85,8 +90,12 @@ public class LabelView extends BaseCustomView {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        if (imageDrawable != null) {
+            imageView.setImageDrawable(imageDrawable);
+            imageView.setVisibility(View.VISIBLE);
+        }
         titleTextView.setText(titleText);
-        setContent(contentText);
+        contentTextView.setText(titleText);
         contentTextView.setTextColor(contentColorValue);
         contentTextView.setTypeface(null, contentTextStyleValue);
         contentTextView.setMaxLines(maxLines);
@@ -104,7 +113,7 @@ public class LabelView extends BaseCustomView {
         requestLayout();
     }
 
-    public boolean isContentDefault(){
+    public boolean isContentDefault() {
         return contentTextView.getText().equals(contentText);
     }
 
