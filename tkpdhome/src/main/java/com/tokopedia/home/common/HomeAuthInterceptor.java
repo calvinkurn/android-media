@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.qualifier.FreshAccessTokenQualifier;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.abstraction.common.utils.AuthUtil;
+import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -28,7 +28,7 @@ public class HomeAuthInterceptor extends TkpdAuthInterceptor {
                                @FreshAccessTokenQualifier String freshAccessToken,
                                AbstractionRouter abstractionRouter,
                                UserSession userSession) {
-        super(AuthUtil.KEY.KEY_WSV4, context, freshAccessToken, abstractionRouter, userSession);
+        super(context, abstractionRouter, userSession, AuthUtil.KEY.KEY_WSV4);
     }
 
     protected Response getResponse(Chain chain, Request request) throws IOException {

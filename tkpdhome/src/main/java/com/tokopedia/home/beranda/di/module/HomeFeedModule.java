@@ -13,6 +13,7 @@ import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
+import com.tokopedia.core.network.di.module.InterceptorModule;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
@@ -26,6 +27,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.HomeFeedRepository;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.HomeFeedRepositoryImpl;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetHomeFeedsUseCase;
+import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 
 import dagger.Module;
 import dagger.Provides;
@@ -35,7 +37,7 @@ import okhttp3.OkHttpClient;
  * Created by henrypriyono on 12/27/17.
  */
 
-@Module
+@Module(includes={InterceptorModule.class})
 public class HomeFeedModule {
 
     @Provides
@@ -81,7 +83,8 @@ public class HomeFeedModule {
     @DefaultAuthWithErrorHandler
     @Provides
     OkHttpClient provideOkHttpClient(@AuthKeyQualifier String authKey,
-                                     @ApplicationContext Context context) {
+                                     @ApplicationContext Context context,
+                                     CacheApiInterceptor cacheApiInterceptor) {
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, DeveloperOptions.CHUCK_ENABLED);
         return OkHttpFactory.create().buildDaggerClientDefaultAuthWithErrorHandler(
                 new FingerprintInterceptor(),
@@ -91,7 +94,8 @@ public class HomeFeedModule {
                         localCacheHandler.getBoolean(DeveloperOptions.IS_CHUCK_ENABLED, false)
                 ),
                 new DebugInterceptor(),
-                new TkpdErrorResponseInterceptor(TkpdV4ResponseError.class)
+                new TkpdErrorResponseInterceptor(TkpdV4ResponseError.class),
+                cacheApiInterceptor
         );
     }
 
