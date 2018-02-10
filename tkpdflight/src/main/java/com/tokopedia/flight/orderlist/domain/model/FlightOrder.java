@@ -1,5 +1,7 @@
 package com.tokopedia.flight.orderlist.domain.model;
 
+import com.tokopedia.flight.orderlist.data.cloud.entity.PaymentInfoEntity;
+
 import java.util.List;
 
 /**
@@ -7,20 +9,23 @@ import java.util.List;
  */
 
 public class FlightOrder {
-    protected String id;
-    protected int status;
-    protected String createTime;
-    protected String email;
-    protected String telp;
-    protected String totalAdult;
-    protected int totalAdultNumeric;
-    protected String totalChild;
-    protected int totalChildNumeric;
-    protected String totalInfant;
-    protected int totalInfantNumeric;
-    protected String currency;
-    protected List<FlightOrderJourney> journeys;
-    protected List<FlightOrderPassengerViewModel> passengerViewModels;
+    private String id;
+    private int status;
+    private String statusString;
+    private String createTime;
+    private String email;
+    private String telp;
+    private String totalAdult;
+    private int totalAdultNumeric;
+    private String totalChild;
+    private int totalChildNumeric;
+    private String totalInfant;
+    private int totalInfantNumeric;
+    private String currency;
+    private String pdf;
+    private List<FlightOrderJourney> journeys;
+    private List<FlightOrderPassengerViewModel> passengerViewModels;
+    private PaymentInfoEntity payment;
 
     public FlightOrder() {
     }
@@ -135,5 +140,29 @@ public class FlightOrder {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getStatusString() {
+        return statusString;
+    }
+
+    public void setStatusString(String statusString) {
+        this.statusString = statusString;
+    }
+
+    public PaymentInfoEntity getPayment() {
+        return payment;
+    }
+
+    public void setPayment(PaymentInfoEntity payment) {
+        this.payment = payment;
+    }
+
+    public String getPdf() {
+        return pdf;
+    }
+
+    public void setPdf(String pdf) {
+        this.pdf = pdf;
     }
 }

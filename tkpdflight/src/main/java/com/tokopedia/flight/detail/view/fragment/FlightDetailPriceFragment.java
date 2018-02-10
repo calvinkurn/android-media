@@ -85,7 +85,7 @@ public class FlightDetailPriceFragment extends Fragment {
         } else {
             containerSavingPrice.setVisibility(View.GONE);
         }
-        totalPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(calculateTotal(flightDetailViewModel)));
+        totalPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(calculateTotal(flightDetailViewModel)));
     }
 
     private int calculateTotal(FlightDetailViewModel flightDetailViewModel) {

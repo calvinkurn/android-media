@@ -66,7 +66,7 @@ public class FlightBookingCheckoutUseCase extends UseCase<FlightCheckoutEntity> 
         item.setMetaData(metaData);
         items.add(item);
         attributes.setItems(items);
-        if (requestParams.getString(PARAM_PROMOCODE, null) == null) {
+        if (requestParams.getString(PARAM_PROMOCODE, null) != null) {
             attributes.setPromocode(requestParams.getString(PARAM_PROMOCODE, ""));
         }
         data.setAttributes(attributes);

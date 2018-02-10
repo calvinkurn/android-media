@@ -52,8 +52,9 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
     public static String LAST_BRI = "LAST_BRI";
     public static String LIST_REPORT_TYPE = "LIST_REPORT_TYPE";
     public static final String DIGITAL_WIDGET_LAST_ORDER = "DIGITAL_WIDGET_LAST_ORDER";
-    public static final String FIREBASE_REMOTE_CONFIG = "FIREBASE_REMOTE_CONFIG";
     public static final String APP_RATING = "APP_RATING";
+    public static final String REFERRAL = "REFERRAL";
+    public static final String ADVERTISINGID = "ADVERTISINGID";
 
     public static void clearAllCache(Context context) {
         LocalCacheHandler.clearCache(context, TkpdCache.USER_INFO);
@@ -199,6 +200,8 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String DIGITAL_CATEGORY_ITEM_LIST = "DIGITAL_CATEGORY_ITEM_LIST";
         public static final String DIGITAL_LAST_ORDER = "DIGITAL_LAST_ORDER";
 
+        public static final String DIGITAL_CATEGORY_DETAIL = "DIGITAL_CATEGORY_DETAIL";
+
         public static final String KEY_TOKOCASH_DATA = "TOKOCASH_DATA";
 
         public static final String KEY_LOCATION = "KEY_FP_LOCATION";
@@ -208,15 +211,7 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String KEY_USSD_SIM1 = "KEY_USSD_SIM1";
         public static final String KEY_USSD_SIM2 = "KEY_USSD_SIM2";
 
-        public static final String SHOW_HIDE_APP_SHARE_BUTTON_KEY = "SHOW_HIDE_APP_SHARE_BUTTON_KEY";
-        public static final String APP_SHARE_DESCRIPTION_KEY = "APP_SHARE_DESCRIPTION_KEY";
-        public static final String MAINAPP_ACTIVATE_BRANCH_LINKS_KEY = "MAINAPP_ACTIVATE_BRANCH_LINKS_KEY";
-
         public static final String KEY_TOKOCASH_BALANCE_CACHE = "TOKOCASH_BALANCE_CACHE";
-
-        public static final String CONFIG_SHOW_HIDE_APP_SHARE_BUTTON = "mainapp_show_app_share_button";
-        public static final String CONFIG_APP_SHARE_DESCRIPTION = "app_share_description";
-        public static final String CONFIG_MAINAPP_ACTIVATE_BRANCH_LINKS = "mainapp_activate_branch_links";
         public static final String HOME_CATEGORY_CACHE = "HOME_CATEGORY_CACHE";
         public static final String HOME_BRAND_OS_CACHE = "HOME_BRAND_OS_CACHE";
         public static final String HOME_BANNER_CACHE = "HOME_BANNER_CACHE";
@@ -226,7 +221,11 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String EXPLORE_DATA_CACHE = "EXPLORE_DATA_CACHE";
         public static final String KEY_TOKOPOINT_DRAWER_DATA = "KEY_TOKOPOINT_DRAWER_DATA";
         public static final String KEY_APP_RATING_VERSION = "APP_RATING_VERSION";
+        public static final String REFERRAL_CODE = "REFERRAL_CODE";
         public static final String KEY_ADVANCED_APP_RATING_VERSION = "ADVANCED_APP_RATING_VERSION";
+        public static final String KEY_ADVERTISINGID = "KEY_ADVERTISINGID";
+
+
     }
 
     public class RemoteConfigKey {
@@ -239,6 +238,15 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
 
         public static final String MAINAPP_RATING_TITLE = "mainapp_rating_title";
         public static final String MAINAPP_RATING_MESSAGE = "mainapp_rating_message";
+
+        public static final String APP_REFFERAL_CONTENT = "app_refferal_content";
+        public static final String APP_SHARE_WELCOME_MESSAGE = "app_share_welcome_message";
+        public static final String APP_REFERRAL_TITLE = "app_referral_title";
+        public static final String APP_REFERRAL_HOWITWORKS = "app_referral_howitworks";
+        public static final String APP_SHOW_REFERRAL_BUTTON = "app_show_referral_button";
+        public static final String APP_SHARE_DEFAULT_MESSAGE = "app_share_default_message";
+
+
         public static final String MAINAPP_SHOW_SIMPLE_APP_RATING = "mainapp_show_simple_app_rating";
         public static final String MAINAPP_SHOW_ADVANCED_APP_RATING = "mainapp_show_advanced_app_rating";
 

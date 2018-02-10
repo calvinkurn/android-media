@@ -3,9 +3,11 @@ package com.tokopedia.flight.orderlist.view.adapter.viewholder;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.util.FlightDateUtil;
+import com.tokopedia.flight.orderlist.data.cloud.entity.ManualTransferEntity;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapter;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
@@ -25,7 +27,19 @@ public class FlightOrderWaitingForPaymentViewHolder extends FlightOrderBaseViewH
     private AppCompatTextView tvOrderId;
     private AppCompatTextView tvDepartureCity;
     private AppCompatTextView tvArrivalCity;
-    private AppCompatTextView tvRebooking;
+    private AppCompatTextView tvDetailOrder;
+    private AppCompatTextView tvPaymentLabel;
+    private AppCompatTextView tvPayment;
+    private AppCompatTextView tvPaymentDescription;
+    private AppCompatTextView tvPaymentDueDateLabel;
+    private AppCompatTextView tvPaymentDueDate;
+    private AppCompatTextView tvPaymentUniqueCodeLabel;
+    private AppCompatTextView tvPaymentUniqueCode;
+    private AppCompatTextView tvPaymentCostLabel;
+    private AppCompatTextView tvPaymentCost;
+    private LinearLayout paymentLayout;
+
+
     private FlightOrderWaitingForPaymentViewModel item;
 
     public FlightOrderWaitingForPaymentViewHolder(View itemView, FlightOrderAdapter.OnAdapterInteractionListener adapterInteractionListener) {
@@ -40,11 +54,11 @@ public class FlightOrderWaitingForPaymentViewHolder extends FlightOrderBaseViewH
         tvOrderId = (AppCompatTextView) view.findViewById(R.id.tv_order_id);
         tvDepartureCity = (AppCompatTextView) view.findViewById(R.id.tv_departure_city);
         tvArrivalCity = (AppCompatTextView) view.findViewById(R.id.tv_arrival_city);
-        tvRebooking = (AppCompatTextView) view.findViewById(R.id.tv_rebooking);
-        tvRebooking.setOnClickListener(new View.OnClickListener() {
+        tvDetailOrder = (AppCompatTextView) view.findViewById(R.id.tv_order_detail);
+        tvDetailOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                adapterInteractionListener.onReBookingClicked(item);
+                onDetailOptionClicked();
             }
         });
         view.setOnClickListener(new View.OnClickListener() {
@@ -53,6 +67,18 @@ public class FlightOrderWaitingForPaymentViewHolder extends FlightOrderBaseViewH
                 onDetailOptionClicked();
             }
         });
+
+
+        paymentLayout = (LinearLayout) view.findViewById(R.id.payment_info_layout);
+        tvPaymentLabel = (AppCompatTextView) view.findViewById(R.id.tv_payment_label);
+        tvPayment = (AppCompatTextView) view.findViewById(R.id.tv_payment);
+        tvPaymentDescription = (AppCompatTextView) view.findViewById(R.id.tv_payment_description);
+        tvPaymentDueDateLabel = (AppCompatTextView) view.findViewById(R.id.tv_payment_due_date_label);
+        tvPaymentDueDate = (AppCompatTextView) view.findViewById(R.id.tv_payment_due_date);
+        tvPaymentUniqueCodeLabel = (AppCompatTextView) view.findViewById(R.id.tv_payment_unique_code_label);
+        tvPaymentUniqueCode = (AppCompatTextView) view.findViewById(R.id.tv_payment_unique_code);
+        tvPaymentCostLabel = (AppCompatTextView) view.findViewById(R.id.tv_payment_cost_label);
+        tvPaymentCost = (AppCompatTextView) view.findViewById(R.id.tv_payment_cost);
     }
 
 
@@ -75,6 +101,48 @@ public class FlightOrderWaitingForPaymentViewHolder extends FlightOrderBaseViewH
                     orderJourney.getArrivalCity()));
             renderDepartureSchedule(element.getOrderJourney());
         }
+
+        renderPaymentInfo(element);
+    }
+
+    private void renderPaymentInfo(FlightOrderWaitingForPaymentViewModel element) {
+        if (element.getPayment() != null && element.getPayment().getGatewayName().length() > 0) {
+            paymentLayout.setVisibility(View.VISIBLE);
+            if (element.getPayment().getManualTransfer() != null && element.getPayment().getManualTransfer().getAccountBankName().length() > 0) {
+                tvPaymentLabel.setText(R.string.flight_order_payment_manual_label);
+                tvPaymentUniqueCodeLabel.setVisibility(View.GONE);
+                tvPaymentUniqueCode.setVisibility(View.GONE);
+                tvPaymentDescription.setVisibility(View.VISIBLE);
+                tvPaymentDescription.setText(renderDescriptionText(element.getPayment().getManualTransfer()));
+                tvPayment.setText(element.getPayment().getManualTransfer().getAccountBankName());
+                tvPaymentCostLabel.setVisibility(View.VISIBLE);
+                tvPaymentCost.setVisibility(View.VISIBLE);
+                tvPaymentCost.setText(element.getPayment().getManualTransfer().getTotal());
+            } else {
+                tvPayment.setText(element.getPayment().getGatewayName());
+                tvPaymentLabel.setText(R.string.flight_order_payment_label);
+                tvPaymentUniqueCodeLabel.setVisibility(View.VISIBLE);
+                tvPaymentUniqueCode.setVisibility(View.VISIBLE);
+                tvPaymentDescription.setVisibility(View.GONE);
+                tvPaymentCostLabel.setVisibility(View.GONE);
+                tvPaymentCost.setVisibility(View.GONE);
+                tvPaymentUniqueCode.setText(element.getPayment().getTransactionCode());
+            }
+
+            tvPaymentDueDate.setText(FlightDateUtil.formatDateByUsersTimezone(FlightDateUtil.FORMAT_DATE_API, FlightDateUtil.DEFAULT_VIEW_TIME_FORMAT, element.getPayment().getExpireOn()));
+
+        } else {
+            paymentLayout.setVisibility(View.GONE);
+        }
+    }
+
+    private String renderDescriptionText(ManualTransferEntity manualTransfer) {
+        String newLine = "\n";
+        StringBuilder result = new StringBuilder();
+        result.append(itemView.getContext().getString(R.string.flight_order_a_n_prefix) + " " + manualTransfer.getAccountName() + newLine);
+        result.append(itemView.getContext().getString(R.string.flight_order_branch_prefix) + " " + manualTransfer.getAccountBranch() + newLine);
+        result.append(manualTransfer.getAccountNo());
+        return result.toString();
     }
 
     @Override

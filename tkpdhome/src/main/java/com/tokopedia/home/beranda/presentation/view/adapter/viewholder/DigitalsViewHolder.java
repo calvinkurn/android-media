@@ -1,5 +1,6 @@
-package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
+package com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.design.widget.TabLayout;
@@ -9,43 +10,54 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.customView.WrapContentViewPager;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.digital.apiservice.DigitalEndpointService;
-import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
-import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
-import com.tokopedia.digital.widget.model.category.Category;
-import com.tokopedia.digital.widget.model.mapper.CategoryMapper;
-import com.tokopedia.digital.widget.model.mapper.StatusMapper;
-import com.tokopedia.home.R;
-import com.tokopedia.home.beranda.listener.HomeCategoryListener;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
-import com.tokopedia.home.recharge.adapter.RechargeViewPagerAdapter;
-import com.tokopedia.home.recharge.interactor.RechargeNetworkInteractorImpl;
-import com.tokopedia.home.recharge.presenter.RechargeCategoryPresenter;
-import com.tokopedia.home.recharge.presenter.RechargeCategoryPresenterImpl;
-import com.tokopedia.home.recharge.view.RechargeCategoryView;
+import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.data.source.CategoryListDataSource;
+import com.tokopedia.digital.common.data.source.StatusDataSource;
+import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository;
+import com.tokopedia.digital.widget.domain.interactor.DigitalWidgetUseCase;
+import com.tokopedia.digital.widget.view.model.category.Category;
+import com.tokopedia.digital.widget.view.model.mapper.CategoryMapper;
+import com.tokopedia.digital.widget.view.model.mapper.StatusMapper;
+import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.beranda.listener.HomeCategoryListener;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
+import com.tokopedia.tkpd.home.recharge.adapter.RechargeViewPagerAdapter;
+import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenter;
+import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenterImpl;
+import com.tokopedia.tkpd.home.recharge.view.RechargeCategoryView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * @author by errysuprayogi on 11/28/17.
  */
 
-public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> implements RechargeCategoryView , View.OnClickListener {
+public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> implements RechargeCategoryView {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_digitals;
-    private TextView titleTxt;
-    private TabLayout tabLayout;
-    private WrapContentViewPager viewPager;
-    private View pulsaPlaceHolder;
-    private LinearLayout container;
+    @BindView(R.id.title)
+    TextView titleTxt;
+    @BindView(R.id.tab_layout_widget)
+    TabLayout tabLayout;
+    @BindView(R.id.view_pager_widget)
+    WrapContentViewPager viewPager;
+    @BindView(R.id.pulsa_place_holders)
+    View pulsaPlaceHolder;
+    @BindView(R.id.container)
+    LinearLayout container;
 
     private LocalCacheHandler cacheHandler;
     private RechargeViewPagerAdapter rechargeViewPagerAdapter;
@@ -57,25 +69,32 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
 
     public DigitalsViewHolder(FragmentManager fragmentManager, View itemView, HomeCategoryListener listener) {
         super(itemView);
+        ButterKnife.bind(this, itemView);
         this.listener = listener;
         this.context = itemView.getContext();
         this.fragmentManager = fragmentManager;
         this.mRechargeCategory = new ArrayList<>();
-        titleTxt = itemView.findViewById(R.id.title);
-        tabLayout = itemView.findViewById(R.id.tab_layout_widget);
-        viewPager = itemView.findViewById(R.id.view_pager_widget);
-        pulsaPlaceHolder = itemView.findViewById(R.id.pulsa_place_holders);
-        container = itemView.findViewById(R.id.container);
-        itemView.findViewById(R.id.see_more).setOnClickListener(this);
         cacheHandler = new LocalCacheHandler(context, TkpdCache.CACHE_RECHARGE_WIDGET_TAB_SELECTION);
 
+        DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
+
+        StatusDataSource statusDataSource = new StatusDataSource(digitalEndpointService,
+                new GlobalCacheManager(),
+                new StatusMapper());
+
+        CategoryListDataSource categoryListDataSource = new CategoryListDataSource(digitalEndpointService,
+                new GlobalCacheManager(),
+                new CategoryMapper());
+
+        DigitalWidgetRepository digitalWidgetRepository = new DigitalWidgetRepository(
+                statusDataSource, categoryListDataSource
+        );
+
+        DigitalWidgetUseCase digitalWidgetUseCase = new DigitalWidgetUseCase(context,
+                digitalWidgetRepository);
+
         rechargeCategoryPresenter = new RechargeCategoryPresenterImpl(context, this,
-                new RechargeNetworkInteractorImpl(
-                        new DigitalWidgetRepository(
-                                new DigitalEndpointService(), new FavoriteNumberListDataMapper()),
-                        new CategoryMapper(),
-                        new StatusMapper()));
-        rechargeCategoryPresenter.fetchDataRechargeCategory();
+                digitalWidgetUseCase);
     }
 
     @Override
@@ -158,18 +177,24 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
                 viewPager.setCurrentItem(tab.getPosition(), false);
                 rechargeViewPagerAdapter.notifyDataSetChanged();
                 if (tab.getText() != null) {
-                    UnifyTracking.eventHomeRechargeTab(tab.getText().toString());
+                    UnifyTracking.eventClickWidgetBar(tab.getText().toString());
                 }
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
+                View focus = ((Activity) context).getCurrentFocus();
+                if (focus != null) {
+                    hideKeyboard(focus);
+                }
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-
+                View focus = ((Activity) context).getCurrentFocus();
+                if (focus != null) {
+                    hideKeyboard(focus);
+                }
             }
         });
     }
@@ -212,13 +237,14 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
         }
     }
 
-    @Override
-    public void onClick(View view) {
-        int i = view.getId();
-        if (i == R.id.see_more) {
-            listener.onDigitalMoreClicked(getAdapterPosition());
+    @OnClick(R.id.see_more)
+    void onSeeMore() {
+        UnifyTracking.eventClickLihatSemua();
+        listener.onDigitalMoreClicked(getAdapterPosition());
+    }
 
-        }
+    private void hideKeyboard(View v) {
+        CommonUtils.hideKeyboard((Activity) context, v);
     }
 
 }

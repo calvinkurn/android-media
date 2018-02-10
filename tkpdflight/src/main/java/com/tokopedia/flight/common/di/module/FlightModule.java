@@ -1,7 +1,13 @@
 package com.tokopedia.flight.common.di.module;
 
+import android.content.Context;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.flight.airline.data.FlightAirlineDataListSource;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListBackgroundSource;
@@ -9,12 +15,12 @@ import com.tokopedia.flight.airport.data.source.FlightAirportDataListSource;
 import com.tokopedia.flight.airport.data.source.db.FlightAirportVersionDBSource;
 import com.tokopedia.flight.banner.data.source.BannerDataSource;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
-import com.tokopedia.flight.common.di.qualifier.BookingQualifier;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.model.FlightErrorResponse;
 import com.tokopedia.flight.common.data.repository.FlightRepositoryImpl;
 import com.tokopedia.flight.common.data.source.FlightAuthInterceptor;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
+import com.tokopedia.flight.common.di.qualifier.BookingQualifier;
 import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 import com.tokopedia.flight.common.di.scope.FlightScope;
 import com.tokopedia.flight.common.domain.FlightRepository;
@@ -43,18 +49,18 @@ public class FlightModule {
 
     @FlightScope
     @Provides
-    public HttpLoggingInterceptor provideHttpLoggingInterceptor() {
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        return logging;
+    public AnalyticTracker provideAnalyticTracker(@ApplicationContext Context context) {
+        if (context instanceof AbstractionRouter) {
+            return ((AbstractionRouter) context).getAnalyticTracker();
+        }
+        throw new RuntimeException("App should implement " + AbstractionRouter.class.getSimpleName());
     }
 
     @FlightScope
     @Provides
-    public OkHttpClient provideOkHttpClient(OkHttpClient.Builder okHttpClientBuilder,
-                                            HttpLoggingInterceptor httpLoggingInterceptor,
+    public OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
                                             FlightAuthInterceptor flightAuthInterceptor) {
-        return okHttpClientBuilder
+        return new OkHttpClient.Builder()
                 .addInterceptor(flightAuthInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
                 .addInterceptor(new ErrorResponseInterceptor(FlightErrorResponse.class))

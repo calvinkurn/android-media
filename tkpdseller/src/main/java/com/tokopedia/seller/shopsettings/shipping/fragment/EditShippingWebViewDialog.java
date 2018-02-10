@@ -20,6 +20,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
 
+import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.seller.R;
 
 /**
@@ -66,8 +67,7 @@ public class EditShippingWebViewDialog extends DialogFragment{
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            view.loadUrl(url);
-            return true;
+            return false;
         }
 
 
@@ -91,7 +91,7 @@ public class EditShippingWebViewDialog extends DialogFragment{
 
     }
 
-    private WebView webView;
+    private TkpdWebView webView;
     private boolean editButtonClicked = false;
     private int courierIndex;
     private static final String WEB_RESOURCE_KEY = "web_resource_key";
@@ -110,7 +110,7 @@ public class EditShippingWebViewDialog extends DialogFragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.edit_shipping_web_view, container, false);
-        webView = (WebView) view.findViewById(R.id.additional_option_dialog);
+        webView = (TkpdWebView) view.findViewById(R.id.additional_option_dialog);
         TextView editButton = (TextView) view.findViewById(R.id.edit_option_button);
         TextView closeButton = (TextView) view.findViewById(R.id.close_option_button);
         courierIndex = getArguments().getInt(COURIER_INDEX_KEY);

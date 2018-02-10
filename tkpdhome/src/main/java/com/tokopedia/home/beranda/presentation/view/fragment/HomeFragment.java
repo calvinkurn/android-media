@@ -61,6 +61,36 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.tokocash.model.CashBackData;
+import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
+import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
+import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.beranda.di.DaggerHomeComponent;
+import com.tokopedia.tkpd.beranda.di.HomeComponent;
+import com.tokopedia.tkpd.beranda.domain.model.banner.BannerSlidesModel;
+import com.tokopedia.tkpd.beranda.domain.model.brands.BrandDataModel;
+import com.tokopedia.tkpd.beranda.domain.model.category.CategoryLayoutRowModel;
+import com.tokopedia.tkpd.beranda.domain.model.toppicks.TopPicksItemModel;
+import com.tokopedia.tkpd.beranda.listener.HomeCategoryListener;
+import com.tokopedia.tkpd.beranda.listener.HomeFeedListener;
+import com.tokopedia.tkpd.beranda.listener.HomeRecycleScrollListener;
+import com.tokopedia.tkpd.beranda.listener.OnSectionChangeListener;
+import com.tokopedia.tkpd.beranda.presentation.presenter.HomePresenter;
+import com.tokopedia.tkpd.beranda.presentation.view.HomeContract;
+import com.tokopedia.tkpd.beranda.presentation.view.SectionContainer;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.HomeRecycleAdapter;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.itemdecoration.VerticalSpaceItemDecoration;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategoryItemViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.LayoutSections;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SellViewModel;
+import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
+import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
+import com.tokopedia.tkpd.home.ReactNativeOfficialStoreActivity;
+import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
@@ -132,7 +162,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         getActivity().registerReceiver(
                 homeFragmentBroadcastReceiver,
                 new IntentFilter(
-                        HomeFragmentBroadcastReceiverConstant.INTENT_ACTION
+                        HomeFragmentBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP
                 )
         );
     }
@@ -325,7 +355,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onRequestPendingCashBack() {
-        getActivity().sendBroadcast(new Intent(TokocashPendingDataBroadcastReceiverConstant.INTENT_ACTION));
+        getActivity().sendBroadcast(new Intent(TokocashPendingDataBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP));
     }
 
     @Override
@@ -378,9 +408,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void actionTokoPointClicked(String tokoPointUrl, String pageTitle) {
         if (TextUtils.isEmpty(pageTitle))
-            startActivity(BannerWebView.getCallingIntent(getActivity(), tokoPointUrl));
+            startActivity(TokoPointWebviewActivity.getIntent(getActivity(), tokoPointUrl));
         else
-            startActivity(BannerWebView.getCallingIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
+            startActivity(TokoPointWebviewActivity.getIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
     }
 
 
@@ -594,8 +624,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void openWebViewGimicURL(String url, String label, String title) {
         if (!url.equals("")) {
-            Intent intent = SimpleWebViewActivity.getCallingIntent(getActivity(), url);
-            intent.putExtra(BannerWebView.EXTRA_TITLE, title);
+            Intent intent = SimpleWebViewActivity.getIntentWithTitle(getActivity(), url, title);
             startActivity(intent);
             UnifyTracking.eventHomeGimmick(label);
         }
@@ -624,7 +653,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (!HomeFragmentBroadcastReceiverConstant.INTENT_ACTION.equalsIgnoreCase(intent.getAction()))
+            if (!HomeFragmentBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP.equalsIgnoreCase(intent.getAction()))
                 return;
             switch (intent.getIntExtra(EXTRA_ACTION_RECEIVER, 0)) {
                 case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOPOINT_DATA:
