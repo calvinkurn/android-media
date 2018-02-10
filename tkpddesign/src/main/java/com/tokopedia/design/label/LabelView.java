@@ -193,4 +193,8 @@ public class LabelView extends BaseCustomView {
         invalidate();
         requestLayout();
     }
+
+    public ImageView getImageView() {
+        return imageView;
+    }
 }

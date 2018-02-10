@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.interfaces.merchant.shop.info.ShopInfo;
 import com.tokopedia.shop.R;
@@ -43,6 +44,9 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
     private LabelView totalProductLabelView;
     private LabelView totalEtalaseLabelView;
 
+    private LabelView physicalShopLabelView;
+    private LabelView shopOwnerLabelView;
+
     @Inject
     ShopInfoPresenter shopInfoDetailPresenter;
     private String shopId;
@@ -69,6 +73,8 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
         totalProductLabelView = view.findViewById(R.id.label_view_total_product);
         totalEtalaseLabelView = view.findViewById(R.id.label_view_total_etalase);
 
+        physicalShopLabelView = view.findViewById(R.id.label_view_physical_shop);
+        shopOwnerLabelView = view.findViewById(R.id.label_view_shop_owner);
 
         return view;
     }
@@ -84,6 +90,25 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
         openSinceLabelView.setContent(shopInfo.getInfo().getShopOpenSince());
         totalProductLabelView.setContent(shopInfo.getStats().getShopTotalProduct());
         totalEtalaseLabelView.setContent(shopInfo.getStats().getShopTotalEtalase());
+        String physicalAddressContent = getString(R.string.shop_info_physical_shop_location_only_online);
+        if (shopInfo.getAddress().size() > 0) {
+            physicalAddressContent = getString(R.string.shop_info_physical_shop_location_count, shopInfo.getAddress().size());
+        }
+        physicalShopLabelView.setContent(physicalAddressContent);
+        shopOwnerLabelView.setTitle(shopInfo.getOwner().getOwnerName());
+        ImageHandler.loadImageRounded2(shopOwnerLabelView.getImageView().getContext(), shopOwnerLabelView.getImageView(), shopInfo.getOwner().getOwnerImage());
+        physicalShopLabelView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        shopOwnerLabelView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     @Override

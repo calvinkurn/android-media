@@ -55,11 +55,11 @@ public class TextInputView extends BaseCustomView {
 
         // get resource full name, to use later for checking is it png or vector
         TypedValue value = new TypedValue();
-        getContext().getResources().getValue(styledAttributes.getResourceId(R.styleable.TextInputView_tiv_icon, R.drawable.ic_smiley_positive), value, true);
+        getContext().getResources().getValue(styledAttributes.getResourceId(R.styleable.TextInputView_tiv_icon, R.drawable.ic_smiley_good), value, true);
 
         try {
             if (value.string.toString().contains(SVG_EXTENSION)) {
-                iconDrawable = VectorDrawableCompat.create(getContext().getResources(), styledAttributes.getResourceId(R.styleable.TextInputView_tiv_icon, R.drawable.ic_smiley_positive), getContext().getTheme());
+                iconDrawable = VectorDrawableCompat.create(getContext().getResources(), styledAttributes.getResourceId(R.styleable.TextInputView_tiv_icon, R.drawable.ic_smiley_good), getContext().getTheme());
             } else if (value.string.toString().contains(PNG_EXTENSION)) {
                 iconDrawable = styledAttributes.getDrawable(R.styleable.TextInputView_tiv_icon);
             }
