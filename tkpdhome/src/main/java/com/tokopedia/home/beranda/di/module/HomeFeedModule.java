@@ -37,7 +37,7 @@ import okhttp3.OkHttpClient;
  * Created by henrypriyono on 12/27/17.
  */
 
-@Module(includes={InterceptorModule.class})
+@Module
 public class HomeFeedModule {
 
     @Provides
