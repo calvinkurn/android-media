@@ -1,13 +1,9 @@
 package com.tokopedia.home.recharge.presenter;
 import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.util.Log;
 
 import com.tokopedia.digital.widget.domain.interactor.DigitalWidgetUseCase;
 import com.tokopedia.digital.widget.errorhandle.WidgetRuntimeException;
 import com.tokopedia.digital.widget.view.model.category.Category;
-import com.tokopedia.digital.widget.view.model.status.Status;
 import com.tokopedia.home.recharge.view.RechargeCategoryView;
 import com.tokopedia.usecase.RequestParams;
 

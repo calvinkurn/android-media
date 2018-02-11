@@ -131,6 +131,7 @@ public class SessionHandler {
         Editor editor = sharedPrefs.edit();
         editor.putString(LOGIN_ID, null);
         editor.putString(FULL_NAME, null);
+        editor.putString(SHOP_DOMAIN, null);
         editor.putString(SHOP_ID, null);
         editor.putBoolean(IS_LOGIN, false);
         editor.putBoolean(IS_MSISDN_VERIFIED, false);
@@ -166,6 +167,7 @@ public class SessionHandler {
 
         LocalCacheHandler.clearCache(context,TkpdCache.REFERRAL);
         deleteCacheTokoPoint();
+        deleteCacheExploreData();
     }
 
     private static void deleteCacheTokoPoint() {
@@ -173,6 +175,10 @@ public class SessionHandler {
         cacheBalanceTokoCash.delete(TkpdCache.Key.KEY_TOKOPOINT_DRAWER_DATA);
     }
 
+    private static void deleteCacheExploreData() {
+        GlobalCacheManager cacheExploreData = new GlobalCacheManager();
+        cacheExploreData.delete(TkpdCache.Key.EXPLORE_DATA_CACHE);
+    }
 
     public void clearToken() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);

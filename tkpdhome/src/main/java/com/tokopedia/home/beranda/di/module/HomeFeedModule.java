@@ -15,6 +15,7 @@ import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
+import com.tokopedia.core.network.di.module.InterceptorModule;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
@@ -28,6 +29,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.HomeFeedRepository;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.HomeFeedRepositoryImpl;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetHomeFeedsUseCase;
+import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 
 import dagger.Module;
 import dagger.Provides;
@@ -86,9 +88,10 @@ public class HomeFeedModule {
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, DeveloperOptions.CHUCK_ENABLED);
         return OkHttpFactory.create().buildDaggerClientDefaultAuthWithErrorHandler(
                 new FingerprintInterceptor(),
-                new TkpdAuthInterceptor(AuthUtil.KEY.KEY_WSV4),
+                new TkpdAuthInterceptor(),
                 OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy(),
-                new ChuckInterceptor(context).showNotification(localCacheHandler.getBoolean(DeveloperOptions.IS_CHUCK_ENABLED, false)),
+                new ChuckInterceptor(context).showNotification(
+                        localCacheHandler.getBoolean(DeveloperOptions.IS_CHUCK_ENABLED, false)),
                 new DebugInterceptor(),
                 new TkpdErrorResponseInterceptor(TkpdV4ResponseError.class),
                 new CacheApiInterceptor()

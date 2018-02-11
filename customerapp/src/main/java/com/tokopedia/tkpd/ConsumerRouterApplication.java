@@ -90,6 +90,7 @@ import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
+import com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver;
@@ -1271,6 +1272,20 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public BroadcastReceiver getTokoPointBroadcastReceiver() {
+        return new TokoPointDrawerBroadcastReceiver();
+    }
+
+    @Override
+    public BroadcastReceiver getBroadcastReceiverTokocashPending() {
+        return new TokocashPendingDataBroadcastReceiver();
+    }
+
+    public GetShopInfoUseCase getShopInfo(){
+        return getShopComponent().getShopInfoUseCase();
+    }
+
+    @Override
     public void openIntermediaryActivity(Activity activity, String depID, String title) {
         IntermediaryActivity.moveTo(activity, depID, title);
     }
@@ -1291,19 +1306,5 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         startActivity(ReactNativeOfficialStoreActivity.createCallingIntent(
                 activity, ReactConst.Screen.OFFICIAL_STORE,
                 getString(R.string.react_native_banner_official_title)));
-    }
-
-    @Override
-    public BroadcastReceiver getTokoPointBroadcastReceiver() {
-        return new TokoPointDrawerBroadcastReceiver();
-    }
-
-    @Override
-    public BroadcastReceiver getBroadcastReceiverTokocashPending() {
-        return new TokocashPendingDataBroadcastReceiver();
-    }
-
-    public GetShopInfoUseCase getShopInfo(){
-        return getShopComponent().getShopInfoUseCase();
     }
 }

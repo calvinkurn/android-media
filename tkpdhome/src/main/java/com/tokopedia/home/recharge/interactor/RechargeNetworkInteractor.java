@@ -11,6 +11,7 @@ import rx.Subscriber;
  * @author ricoharisin on 7/4/16.
  * Modified by Nabilla Sabbaha on 08/07/2017
  */
+@Deprecated
 public interface RechargeNetworkInteractor {
 
     void getCategoryData(Subscriber<List<Category>> subscriber);

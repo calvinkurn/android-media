@@ -54,6 +54,8 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
     @Override
     public void getData() {
         subscription = localDataUseCase.getExecuteObservable(RequestParams.EMPTY)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(refreshAction())
                 .onErrorResumeNext(getDataFromNetwork())
                 .subscribe(getSubscriber());

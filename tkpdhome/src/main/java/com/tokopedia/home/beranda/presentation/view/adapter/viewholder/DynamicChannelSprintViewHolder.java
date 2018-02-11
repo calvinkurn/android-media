@@ -13,9 +13,11 @@ import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
+import com.tokopedia.home.beranda.helper.DynamicLinkHelper;
 import com.tokopedia.home.beranda.helper.TextViewHelper;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.LayoutSections;
 import com.tokopedia.home.beranda.presentation.view.compoundview.CountDownView;
 
 import java.text.ParseException;
@@ -105,7 +107,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
         channelBeforeDiscPrice2.setPaintFlags(channelBeforeDiscPrice2.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         channelBeforeDiscPrice3.setPaintFlags(channelBeforeDiscPrice3.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
-        if (!TextUtils.isEmpty(channel.getHeader().getApplink())) {
+        if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channel.getHeader()))) {
             seeAllButton.setVisibility(View.VISIBLE);
         } else {
             seeAllButton.setVisibility(View.GONE);
@@ -146,9 +148,9 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 if (isSprintSale(channel)) {
                     HomePageTracking.eventClickSeeAllProductSprint();
                 } else {
-                    HomePageTracking.eventClickSeeAllDynamicChannel(channel.getHeader().getApplink());
+                    HomePageTracking.eventClickSeeAllDynamicChannel(DynamicLinkHelper.getActionLink(channel.getHeader()));
                 }
-                listener.onDynamicChannelClicked(channel.getHeader().getApplink());
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()));
             }
         });
         itemContainer1.setOnClickListener(new View.OnClickListener() {
@@ -159,7 +161,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 } else {
                     HomePageTracking.eventEnhancedClickDynamicChannelHomePage(channel.getEnhanceClickDynamicChannelHomePage(channel.getGrids()[0], 1));
                 }
-                listener.onDynamicChannelClicked(channel.getGrids()[0].getApplink());
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getGrids()[0]));
             }
         });
         itemContainer2.setOnClickListener(new View.OnClickListener() {
@@ -170,7 +172,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 } else {
                     HomePageTracking.eventEnhancedClickDynamicChannelHomePage(channel.getEnhanceClickDynamicChannelHomePage(channel.getGrids()[1], 2));
                 }
-                listener.onDynamicChannelClicked(channel.getGrids()[1].getApplink());
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getGrids()[1]));
             }
         });
         itemContainer3.setOnClickListener(new View.OnClickListener() {
@@ -181,7 +183,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 } else {
                     HomePageTracking.eventEnhancedClickDynamicChannelHomePage(channel.getEnhanceClickDynamicChannelHomePage(channel.getGrids()[2], 3));
                 }
-                listener.onDynamicChannelClicked(channel.getGrids()[2].getApplink());
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getGrids()[2]));
             }
         });
     }

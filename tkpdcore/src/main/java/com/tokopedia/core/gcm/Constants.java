@@ -132,8 +132,8 @@ public interface Constants {
 
         String REFERRAL_WELCOME = "tokopedia://referral/{code}/{owner}";
         String KOLCOMMENT = "tokopedia://kolcomment/{id}";
-        String EXPLORE = "tokopedia://jump/{section}";
         String PROMO_LIST = "tokopedia://promoNative";
+        String EXPLORE = "tokopedia://jump/{section}";
 
 
         interface SellerApp {

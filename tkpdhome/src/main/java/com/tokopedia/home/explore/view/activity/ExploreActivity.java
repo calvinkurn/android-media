@@ -57,16 +57,16 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ExploreComponent component = getComponent();
-        component.inject(this);
-        component.inject(presenter);
-        presenter.attachView(this);
-        presenter.getData();
         if(savedInstanceState!=null){
             section = savedInstanceState.getString(SECTION);
         } else {
             section = getIntent().getStringExtra(SECTION);
         }
+        ExploreComponent component = getComponent();
+        component.inject(this);
+        component.inject(presenter);
+        presenter.attachView(this);
+        presenter.getData();
     }
 
     @Override

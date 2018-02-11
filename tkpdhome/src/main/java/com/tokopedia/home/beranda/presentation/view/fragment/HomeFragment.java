@@ -61,6 +61,7 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.tokocash.model.CashBackData;
+import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
@@ -73,8 +74,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
-import com.tokopedia.home.explore.di.DaggerExploreComponent;
-import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -257,17 +256,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onSectionItemClicked(String actionLink) {
-        if (TextUtils.isEmpty(actionLink)) {
-            return;
-        }
-
-        if (getActivity() != null
-                && getActivity().getApplicationContext() instanceof TkpdCoreRouter
-                && ((TkpdCoreRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(actionLink)) {
-            openApplink(actionLink);
-        } else {
-            openWebViewURL(actionLink, getContext());
-        }
+        onActionLinkClicked(actionLink);
     }
 
     private void onGoToSell() {
@@ -503,8 +492,22 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onDynamicChannelClicked(String applink) {
-        openApplink(applink);
+    public void onDynamicChannelClicked(String actionLink) {
+        onActionLinkClicked(actionLink);
+    }
+
+    private void onActionLinkClicked(String actionLink) {
+        if (TextUtils.isEmpty(actionLink)) {
+            return;
+        }
+
+        if (getActivity() != null
+                && getActivity().getApplicationContext() instanceof TkpdCoreRouter
+                && ((TkpdCoreRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(actionLink)) {
+            openApplink(actionLink);
+        } else {
+            openWebViewURL(actionLink, getContext());
+        }
     }
 
     private void openApplink(String applink) {
@@ -599,7 +602,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
 
     public void openWebViewURL(String url, Context context) {
-        if (url != "" && context != null) {
+        if (!TextUtils.isEmpty(url) && context != null) {
             Intent intent = new Intent(context, BannerWebView.class);
             intent.putExtra("url", url);
             context.startActivity(intent);

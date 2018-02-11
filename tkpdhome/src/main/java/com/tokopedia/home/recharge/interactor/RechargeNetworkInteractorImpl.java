@@ -19,6 +19,11 @@ import rx.subscriptions.CompositeSubscription;
  *         Modified by Nabilla Sabbaha on 08/07/2017
  *         Modified by rizkyfadillah at 10/6/17.
  */
+
+// TODO: this interactor should be replaced with usecase
+// don't use DigitalWidgetRepository anymore
+
+@Deprecated
 public class RechargeNetworkInteractorImpl implements RechargeNetworkInteractor {
 
     private CompositeSubscription compositeSubscription;

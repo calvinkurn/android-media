@@ -12,6 +12,7 @@ import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
+import com.tokopedia.home.beranda.helper.DynamicLinkHelper;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 
@@ -72,7 +73,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
         ImageHandler.loadImageThumbs(context, channelImage3, channel.getGrids()[2].getImageUrl());
         ImageHandler.loadImageThumbs(context, channelImage4, channel.getGrids()[3].getImageUrl());
 
-        if (!TextUtils.isEmpty(channel.getHeader().getApplink())) {
+        if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channel.getHeader()))) {
             seeAllButton.setVisibility(View.VISIBLE);
         } else {
             seeAllButton.setVisibility(View.GONE);
@@ -81,7 +82,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
         seeAllButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onDynamicChannelClicked(channel.getHeader().getApplink());
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()));
             }
         });
 
@@ -91,7 +92,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                 HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
                         element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getHero()[0], 1)
                 );
-                listener.onDynamicChannelClicked(element.getChannel().getHero()[0].getApplink());
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getHero()[0]));
             }
         });
         channelImage1.setOnClickListener(new View.OnClickListener() {
@@ -100,7 +101,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                 HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
                         element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getGrids()[0], 2)
                 );
-                listener.onDynamicChannelClicked(element.getChannel().getGrids()[0].getApplink());
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[0]));
             }
         });
         channelImage2.setOnClickListener(new View.OnClickListener() {
@@ -109,7 +110,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                 HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
                         element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getGrids()[1], 3)
                 );
-                listener.onDynamicChannelClicked(element.getChannel().getGrids()[1].getApplink());
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[1]));
             }
         });
         channelImage3.setOnClickListener(new View.OnClickListener() {
@@ -118,7 +119,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                 HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
                         element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getGrids()[2], 4)
                 );
-                listener.onDynamicChannelClicked(element.getChannel().getGrids()[2].getApplink());
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[2]));
             }
         });
         channelImage4.setOnClickListener(new View.OnClickListener() {
@@ -127,7 +128,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                 HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
                         element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getGrids()[3], 5)
                 );
-                listener.onDynamicChannelClicked(element.getChannel().getGrids()[3].getApplink());
+                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[3]));
             }
         });
     }

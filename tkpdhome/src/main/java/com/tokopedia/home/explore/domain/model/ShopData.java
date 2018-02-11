@@ -12,6 +12,8 @@ public class ShopData {
     private int shopId;
     @SerializedName("shop_name")
     private String shopName;
+    @SerializedName("domain")
+    private String domain;
     @SerializedName("is_gold")
     private int isGold;
     @SerializedName("is_gold_badge")
@@ -39,6 +41,14 @@ public class ShopData {
 
     public void setShopName(String shopName) {
         this.shopName = shopName;
+    }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
     }
 
     public int getIsGold() {

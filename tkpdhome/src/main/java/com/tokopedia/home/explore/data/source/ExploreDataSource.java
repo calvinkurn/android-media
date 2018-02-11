@@ -179,12 +179,16 @@ public class ExploreDataSource {
                 String cache = cacheManager.getValueString(TkpdCache.Key.EXPLORE_DATA_CACHE);
                 if (cache != null) {
                     DataResponseModel data = gson.fromJson(cache, DataResponseModel.class);
+                    String cachedShopDomain = data.getShopInfo().getData().getDomain();
+                    if (!SessionHandler.getShopDomain(context).equals(cachedShopDomain)) {
+                        throw new RuntimeException("Cached data shopInfo mismatch!!");
+                    }
                     GraphqlResponse<DataResponseModel> graphqlResponse = new GraphqlResponse<>();
                     graphqlResponse.setData(data);
                     return Response.success(graphqlResponse);
                 }
                 throw new RuntimeException("Cache is empty!!");
             }
-        }).map(getMapper()).onErrorResumeNext(getExploreData(context));
+        }).map(getMapper());
     }
 }

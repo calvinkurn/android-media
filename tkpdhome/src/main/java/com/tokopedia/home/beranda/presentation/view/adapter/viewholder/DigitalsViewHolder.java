@@ -35,7 +35,6 @@ import com.tokopedia.home.recharge.view.RechargeCategoryView;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * @author by errysuprayogi on 11/28/17.
  */
@@ -44,11 +43,11 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_digitals;
-    private TextView titleTxt;
-    private TabLayout tabLayout;
-    private WrapContentViewPager viewPager;
-    private View pulsaPlaceHolder;
-    private LinearLayout container;
+    TextView titleTxt;
+    TabLayout tabLayout;
+    WrapContentViewPager viewPager;
+    View pulsaPlaceHolder;
+    LinearLayout container;
 
     private LocalCacheHandler cacheHandler;
     private RechargeViewPagerAdapter rechargeViewPagerAdapter;
