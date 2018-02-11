@@ -219,7 +219,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 presenter.getHomeData();
                 presenter.getHeaderData(true);
             }
-        }, 3000);
+        }, 1000);
         refreshLayout.setOnRefreshListener(this);
     }
 
