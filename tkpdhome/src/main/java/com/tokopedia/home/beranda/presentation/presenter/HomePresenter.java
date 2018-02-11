@@ -99,6 +99,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     public void getHomeData() {
         initHeaderViewModelData();
         subscription = localHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(refreshData())
                 .onErrorResumeNext(getDataFromNetwork())
                 .subscribe(new HomeDataSubscriber());

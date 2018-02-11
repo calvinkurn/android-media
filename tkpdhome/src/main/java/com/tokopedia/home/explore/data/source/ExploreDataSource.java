@@ -189,6 +189,6 @@ public class ExploreDataSource {
                 }
                 throw new RuntimeException("Cache is empty!!");
             }
-        }).map(getMapper()).onErrorResumeNext(getExploreData(context));
+        }).map(getMapper());
     }
 }

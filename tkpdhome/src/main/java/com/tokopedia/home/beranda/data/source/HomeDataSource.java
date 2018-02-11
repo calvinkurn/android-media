@@ -59,7 +59,7 @@ public class HomeDataSource {
                 }
                 throw new RuntimeException("Cache is empty!!");
             }
-        }).map(homeMapper).onErrorResumeNext(getHomeData());
+        }).map(homeMapper);
     }
 
     public Observable<List<Visitable>> getHomeData() {
