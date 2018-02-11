@@ -213,13 +213,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void initRefreshLayout() {
-        refreshLayout.post(new Runnable() {
+        refreshLayout.postDelayed(new Runnable() {
             @Override
             public void run() {
                 presenter.getHomeData();
                 presenter.getHeaderData(true);
             }
-        });
+        }, 1000);
         refreshLayout.setOnRefreshListener(this);
     }
 
