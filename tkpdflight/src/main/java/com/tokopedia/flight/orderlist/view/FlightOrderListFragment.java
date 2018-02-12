@@ -22,6 +22,7 @@ import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
@@ -39,6 +40,8 @@ import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Observable;
 
 
 /**
@@ -106,6 +109,7 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     public void loadData(int page) {
         presenter.attachView(this);
         presenter.loadData(selectedFilter, page, PER_PAGE);
+        presenter.onGetProfileData();
     }
 
     @Override
@@ -125,10 +129,22 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     }
 
     @Override
-    public void navigateToInputEmailForm(String invoiceId, String userId) {
-        DialogFragment dialogFragment = FlightResendETicketDialogFragment.newInstace(invoiceId, userId);
+    public void navigateToInputEmailForm(String invoiceId, String userId, String userEmail) {
+        DialogFragment dialogFragment = FlightResendETicketDialogFragment.newInstace(invoiceId, userId, userEmail);
         dialogFragment.setTargetFragment(this, REQUEST_CODE_RESEND_ETICKET_DIALOG);
         dialogFragment.show(getFragmentManager().beginTransaction(), RESEND_ETICKET_DIALOG_TAG);
+    }
+
+
+    @Override
+    public Observable<ProfileInfo> getProfileObservable() {
+        if (getActivity().getApplication() instanceof FlightModuleRouter
+                && ((FlightModuleRouter) getActivity().getApplication())
+                .getProfile() != null) {
+            return ((FlightModuleRouter) getActivity().getApplication())
+                    .getProfile();
+        }
+        return Observable.empty();
     }
 
     @Override
