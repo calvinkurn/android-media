@@ -561,7 +561,7 @@ public class ShopInfoActivity extends BaseActivity
 
     private void initPager() {
 //        ShopTabPagerAdapter adapter = ShopTabPagerAdapter.createAdapter(getFragmentManager(), this, shopModel);
-        adapter = new ShopTabPagerAdapter(getFragmentManager(), this, shopModel);
+        adapter = new ShopTabPagerAdapter(getSupportFragmentManager(), this, shopModel);
         holder.pager.setAdapter(adapter);
     }
 

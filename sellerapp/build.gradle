@@ -235,6 +235,7 @@ dependencies {
     compile project(':tkpddigital')
     compile project(':tkpdtransaction')
     compile project(':tkpdreputation')
+    compile project(':tkpdmitratoppers')
 
     compile(rootProject.ext.miscDependencies.trueCaller) {
         exclude group: 'com.android.support'

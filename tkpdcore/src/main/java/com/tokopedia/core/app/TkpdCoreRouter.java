@@ -62,6 +62,8 @@ public interface TkpdCoreRouter {
 
     void actionOpenGeneralWebView(Activity activity, String mobileUrl);
 
+    Fragment getShopReputationFragment(String shopId, String shopDomain);
+
     Intent getHomeIntent(Context context);
 
     Intent getOnBoardingActivityIntent(Context context);
@@ -132,8 +134,6 @@ public interface TkpdCoreRouter {
 
     NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass,
                                          Bundle data, String notifTitle);
-
-    android.app.Fragment getShopReputationFragment();
 
     Intent getInboxReputationIntent(Context context);
 
