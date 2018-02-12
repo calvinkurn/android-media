@@ -40,11 +40,15 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
 
             HomeData homeData = response.body().getData();
 
-            if (homeData.getTicker() != null && !homeData.getTicker().getTickers().isEmpty()) {
+            if (homeData.getTicker() != null
+                    && homeData.getTicker().getTickers() != null
+                    && !homeData.getTicker().getTickers().isEmpty()) {
                 list.add(mappingTicker(homeData.getTicker().getTickers()));
             }
 
-            if (homeData.getSlides() != null && !homeData.getSlides().getSlides().isEmpty()) {
+            if (homeData.getSlides() != null
+                    && homeData.getSlides().getSlides() != null
+                    && !homeData.getSlides().getSlides().isEmpty()) {
                 list.add(mappingBanner(homeData.getSlides().getSlides()));
             }
 
