@@ -2,6 +2,7 @@ package com.tokopedia.inbox.rescenter.inboxv2.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -113,7 +114,7 @@ public class InboxFilterActivity extends BasePresenterActivity implements HasCom
     private Drawable getDetailMenuItem() {
         TextDrawable drawable = new TextDrawable(this);
         drawable.setText(getResources().getString(R.string.string_reset));
-        drawable.setTextColor(R.color.tkpd_main_green);
+        drawable.setTextColor(Color.parseColor("#42b549"));
         return drawable;
     }
 
