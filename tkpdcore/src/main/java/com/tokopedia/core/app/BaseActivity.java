@@ -46,8 +46,12 @@ import rx.schedulers.Schedulers;
 
 /**
  * Created by nisie on 2/7/17.
+ * refer {@link com.tokopedia.abstraction.base.view.activity.BaseActivity}
  */
 
+/**
+ * Extends one of BaseActivity from tkpd abstraction eg:BaseSimpleActivity, BaseStepperActivity, BaseTabActivity, etc
+ */
 @Deprecated
 public class BaseActivity extends AppCompatActivity implements SessionHandler.onLogoutListener,
         ErrorNetworkReceiver.ReceiveListener, ScreenTracking.IOpenScreenAnalytics {
@@ -85,7 +89,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         globalCacheManager = new GlobalCacheManager();
 
         HockeyAppHelper.handleLogin(this);
-        HockeyAppHelper.checkForUpdate(this);
     }
 
     @Override
@@ -106,7 +109,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         unregisterForceLogoutReceiver();
         MainApplication.setActivityState(0);
         MainApplication.setActivityname(null);
-        HockeyAppHelper.unregisterManager();
     }
 
     @Override
@@ -137,8 +139,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        HockeyAppHelper.unregisterManager();
 
         sessionHandler = null;
         gcmHandler = null;
@@ -295,22 +295,4 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     protected void setGoldMerchant(ShopModel shopModel) {
         sessionHandler.setGoldMerchant(shopModel.info.shopIsGold);
     }
-
-    @Override
-    public void onForceHockeyApp() {
-        if (!DialogHockeyApp.isDialogShown(this)) showHoeckeyAppDialog();
-    }
-
-    private void showHoeckeyAppDialog() {
-        DialogHockeyApp.createShow(this,
-                new DialogHockeyApp.ActionListener() {
-                    @Override
-                    public void onDialogClicked() {
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setData(Uri.parse(HockeyAppHelper.getHockeyappDownloadUrl()));
-                        startActivity(intent);
-                    }
-                });
-    }
-
 }

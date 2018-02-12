@@ -9,7 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.bcaoneklik.di.DaggerPaymentOptionComponent;
@@ -37,10 +39,15 @@ public class CreditCardDetailActivity extends TActivity
     private static final String MASTERCARD = "mastercard";
     private static final String JCB = "jcb";
 
-    @BindView(R2.id.image_cc_big_size) ImageView mViewImageCc;
-    @BindView(R2.id.input_credit_card_number) TextView mCreditCardNumber;
-    @BindView(R2.id.card_expiry) TextView mCardExpiry;
-    @BindView(R2.id.credit_card_logo) ImageView mCreditCardLogo;
+    private static final String VISA_LARGE = "bg_visa_large";
+    private static final String MASTERCARD_LARGE = "bg_mastercard_large";
+    private static final String JCB_LARGE = "bg_jcb_large";
+    private static final String EXPIRED_LARGE = "bg_expired_large";
+
+    @BindView(R2.id.iv_credit_card_large) ImageView mViewImageCc;
+    @BindView(R2.id.tv_credit_card_number) TextView mCreditCardNumber;
+    @BindView(R2.id.tv_credit_card_expiry) TextView mCardExpiry;
+    @BindView(R2.id.iv_credit_card_logo) ImageView mCreditCardLogo;
 
     @Inject ListPaymentTypePresenterImpl mListPaymentTypePresenter;
 
@@ -56,7 +63,7 @@ public class CreditCardDetailActivity extends TActivity
 
         initInjector();
 
-        mViewImageCc.setBackgroundResource(getCcImageResource(mCreditCardModelItem));
+        ImageHandler.LoadImage(mViewImageCc, getBackgroundAssets(mCreditCardModelItem));
         mCreditCardNumber.setText(getSpacedText(mCreditCardModelItem.getMaskedNumber()));
         mCardExpiry.setText(getExpiredDate(mCreditCardModelItem));
         ImageHandler.LoadImage(mCreditCardLogo, mCreditCardModelItem.getCardTypeImage());
@@ -70,26 +77,42 @@ public class CreditCardDetailActivity extends TActivity
         component.inject(this);
     }
 
-    private int getCcImageResource(CreditCardModelItem item) {
+    private String getBackgroundAssets(CreditCardModelItem item) {
+        final String resourceUrl = TkpdBaseURL.Payment.CDN_IMG_ANDROID_DOMAIN + "%s/%s/%s.png";
+        String assetName = getBackgroundResource(item);
+        String density = DisplayMetricUtils.getScreenDensity(this);
+
+        return String.format(resourceUrl, assetName, density, assetName);
+    }
+
+    private String getBackgroundResource(CreditCardModelItem item) {
         switch (item.getCardType().toLowerCase()) {
             case VISA:
-                return R.drawable.bg_visa_large;
+                return VISA_LARGE;
             case MASTERCARD:
-                return R.drawable.bg_mastercard_large;
+                return MASTERCARD_LARGE;
             case JCB:
-                return R.drawable.bg_jcb_large;
+                return JCB_LARGE;
             default:
-                return R.drawable.bg_expired_large;
+                return EXPIRED_LARGE;
         }
     }
 
     private String getSpacedText(String inputText) {
+        final int DIGITS = 4;
+        final int THREE_SPACE = 3;
+
         StringBuilder builder = new StringBuilder();
 
         builder.append(inputText.charAt(0));
         for (int i = 1; i < inputText.length(); i++) {
-            if (i % 4 == 0) builder.append("\u00A0\u00A0\u00A0");
-            else builder.append("\u00A0");
+            if (i % DIGITS == 0) {
+                for (int j = 0; j < THREE_SPACE; j++) {
+                    builder.append(getString(R.string.single_spacing));
+                }
+            } else {
+                builder.append(getString(R.string.single_spacing));
+            }
             builder.append(inputText.charAt(i));
         }
 
@@ -104,7 +127,7 @@ public class CreditCardDetailActivity extends TActivity
         return getTitle() + " " + mCreditCardModelItem.getCardType();
     }
 
-    @OnClick(R2.id.button_delete_cc)
+    @OnClick(R2.id.btn_delete_cc)
     public void showDeleteCcDialog() {
         DeleteCreditCardDialog creditCardDialog = DeleteCreditCardDialog.newInstance(
                 mCreditCardModelItem.getTokenId(),
@@ -149,8 +172,9 @@ public class CreditCardDetailActivity extends TActivity
         drawable.setBounds(5, 5, 5, 5);
         toolbar.setOverflowIcon(drawable);
 
-        if (getSupportActionBar() != null)
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);
+        }
 
         toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
         toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style

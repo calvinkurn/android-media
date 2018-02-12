@@ -199,9 +199,6 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UnifyTracking.eventClickTemplate(TopChatTrackingEventLabel.Category.UPDATE_TEMPLATE,
-                        TopChatTrackingEventLabel.Action.UPDATE_TEMPLATE,
-                        TopChatTrackingEventLabel.Name.INBOX_CHAT);
                 presenter.submitText(editText.getText().toString(), message, list);
             }
         });
@@ -251,7 +248,7 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
 
     @Override
     public void onResult(EditTemplateViewModel editTemplateViewModel, int index, String s) {
-        Intent intent = getActivity().getIntent();
+        Intent intent = new Intent();
         intent.putExtra(INDEX_RESULT, index);
         intent.putExtra(LIST_RESULT, s);
         intent.putExtra("enabled", editTemplateViewModel.isEnabled());
@@ -261,7 +258,7 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
 
     @Override
     public void onResult(EditTemplateViewModel editTemplateViewModel, int index) {
-        Intent intent = getActivity().getIntent();
+        Intent intent = new Intent();
         intent.putExtra(INDEX_RESULT, index);
         intent.putExtra(MODE_RESULT, DELETE);
         getActivity().setResult(Activity.RESULT_OK, intent);

@@ -41,6 +41,16 @@ def getTkpdLoyalty() {
             rootProject.ext.tkpdDependencies.loyalty : project(':tkpdloyalty');
 }
 
+def getTkpdUseCase() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.usecase : project(':tkpdusecase')
+}
+
+def getTkpdSession() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.session : project(':tkpdsession')
+}
+
 publishing {
     publications {
         aar(MavenPublication) {
@@ -125,6 +135,8 @@ dependencies {
     compile getTkpdPayment()
     compile getTkpdDesign()
     compile getTkpdLoyalty()
+    compile getTkpdUseCase()
+    compile getTkpdSession()
 
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -140,8 +152,15 @@ dependencies {
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    compile rootProject.ext.playServicesDependencies.firebase
 
+    compile rootProject.ext.playServicesDependencies.remoteConfig
     compile(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
+    }
+    compile 'dnsjava:dnsjava:2.1.8'
+    compile('com.exotel:verification:0.2.0@aar') {
+        transitive = true;
+        changing = true;
     }
 }

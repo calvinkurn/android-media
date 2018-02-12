@@ -41,7 +41,7 @@ public class TopAdsEditProductMainPageFragment extends TopAdsDetailEditMainPageF
     protected void initialPresenter() {
         super.initialPresenter();
         presenter = new TopAdsDetailProductPresenterImpl<ProductAd>(getActivity(), this, new TopAdsProductAdInteractorImpl(
-                new TopAdsManagementService(new SessionHandler(getActivity()).getAccessToken(getActivity())),
+                new TopAdsManagementService(new SessionHandler(getActivity())),
                 new TopAdsCacheDataSourceImpl(getActivity())));
     }
 

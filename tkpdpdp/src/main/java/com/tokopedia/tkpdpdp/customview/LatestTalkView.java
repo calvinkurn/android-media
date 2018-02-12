@@ -88,8 +88,8 @@ public class LatestTalkView extends BaseView<ProductDetailData, ProductDetailVie
     public void renderData(@NonNull ProductDetailData productDetailData) {
 
         LatestTalkViewModel data = productDetailData.getLatestTalkViewModel();
+        layoutComment.setVisibility(GONE);
         if (data != null) {
-            setVisibility(VISIBLE);
 
             ImageHandler.loadImageRounded2(getContext(), avatarTalk, data.getTalkUserAvatar());
             textTalkName.setText(data.getTalkUsername());
@@ -106,11 +106,12 @@ public class LatestTalkView extends BaseView<ProductDetailData, ProductDetailVie
                 label.giveSquareLabel(data.getCommentUserLabel());
             }
 
-            String button = textAllDiscussion.getText().toString();
+            String button = getResources().getString(R.string.title_all_discussion);
             String buttonFormat = button + String.format(Locale.getDefault(), " (%s)", productDetailData.getStatistic().getProductTalkCount());
             textAllDiscussion.setText(buttonFormat);
 
             textAllDiscussion.setOnClickListener(new DiscussionClick(productDetailData));
+            setVisibility(VISIBLE);
         } else {
             setVisibility(GONE);
         }

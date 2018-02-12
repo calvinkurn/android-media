@@ -178,6 +178,7 @@
     <string name="tag_delete_credit_card_dialog">delete_credit_card_dialog</string>
     <string name="title_saved_credit_card">Kartu Kredit Tersimpan (%d/4)</string>
     <string name="apply">Terapkan</string>
+    <string name="single_spacing">\u0020</string>
     <string name="title_send_to_pick_up_booth">Gerai Pengambilan di %s</string>
     <string name="label_send_to_pick_up_booth">Kirim ke Gerai Pengambilan</string>
     <string name="label_edit_pickup">Ubah Gerai</string>

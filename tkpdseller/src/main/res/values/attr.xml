@@ -158,4 +158,8 @@
     <attr name="bottomSheetBuilderBackgroundColor" format="color" />
     <attr name="bottomSheetBuilderItemTextColor" format="color" />
     <attr name="bottomSheetBuilderTitleTextColor" format="color" />
+
+    <declare-styleable name="PriceDifferentInfoView">
+        <attr name="pdiv_title" format="string" />
+    </declare-styleable>
 </resources>

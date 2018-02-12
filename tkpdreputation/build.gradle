@@ -21,6 +21,11 @@ def getTkpdDesign() {
             rootProject.ext.tkpdDependencies.design : project(':tkpddesign');
 }
 
+def getTkpdUseCase() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.usecase : project(':tkpdusecase');
+}
+
 publishing {
     publications {
         aar(MavenPublication) {
@@ -98,6 +103,7 @@ dependencies {
 
     compile getTkpdCore()
     compile getTkpdDesign()
+    compile getTkpdUseCase()
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
