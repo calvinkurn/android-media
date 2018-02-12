@@ -1,5 +1,4 @@
 package com.tokopedia.home.recharge.presenter;
-
 import android.content.Context;
 
 import com.tokopedia.digital.widget.domain.interactor.DigitalWidgetUseCase;
