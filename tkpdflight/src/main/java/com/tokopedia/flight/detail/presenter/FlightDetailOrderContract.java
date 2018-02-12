@@ -69,6 +69,8 @@ public interface FlightDetailOrderContract {
 
         void setPaymentDueDate(String dueDate);
 
+        void hidePaymentDueDate();
+
         void navigateToInputEmailForm(String userId, String userEmail);
 
         Observable<ProfileInfo> getProfileObservable();

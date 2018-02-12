@@ -88,12 +88,11 @@ public class ShopModule {
     @ShopQualifier
     @ShopScope
     @Provides
-    public OkHttpClient provideOkHttpClientTomeBearerAuth(OkHttpClient.Builder okHttpClientBuilder,
-                                                          HttpLoggingInterceptor httpLoggingInterceptor,
+    public OkHttpClient provideOkHttpClientTomeBearerAuth(HttpLoggingInterceptor httpLoggingInterceptor,
                                                           BearerInterceptor bearerInterceptor,
                                                           @ShopQualifier TkpdErrorResponseInterceptor tkpdErrorResponseInterceptor
                                                           ) {
-        return okHttpClientBuilder
+        return new OkHttpClient.Builder()
                 .addInterceptor(bearerInterceptor)
                 .addInterceptor(tkpdErrorResponseInterceptor)
                 .addInterceptor(httpLoggingInterceptor)

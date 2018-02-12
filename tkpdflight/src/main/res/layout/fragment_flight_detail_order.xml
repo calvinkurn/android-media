@@ -120,6 +120,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/payment_cost_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -146,6 +147,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/payment_due_date_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -159,7 +161,7 @@
                         style="@style/TextView.Small.BlackSecondary"
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:text="Batas Akhir Pembayaran" />
+                        android:text="@string/flight_order_detail_due_date_label"/>
 
                     <TextView
                         android:id="@+id/tv_payment_due_date"

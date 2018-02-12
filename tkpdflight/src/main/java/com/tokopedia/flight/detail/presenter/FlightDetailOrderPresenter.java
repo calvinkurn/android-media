@@ -115,7 +115,11 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
             public void onNext(FlightOrder flightOrder) {
                 getView().hideProgressDialog();
                 getView().renderFlightOrder(flightOrder);
-                List<FlightOrderJourney> flightOrderJourneyList = filterFlightJourneys(flightOrder.getStatus(), flightOrder.getJourneys(), flightOrderDetailPassData);
+                List<FlightOrderJourney> flightOrderJourneyList = filterFlightJourneys(
+                        flightOrder.getStatus(),
+                        flightOrder.getJourneys(),
+                        flightOrderDetailPassData
+                );
                 getView().updateFlightList(flightOrderJourneyList);
                 getView().updatePassengerList(transformToListPassenger(flightOrder.getPassengerViewModels()));
                 getView().updatePrice(transformToSimpleModelPrice(flightOrder), CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalPrice));
@@ -162,7 +166,9 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     }
 
     private void renderPaymentInfo(FlightOrder flightOrder) {
-        if (flightOrder.getPayment() != null && flightOrder.getPayment().getGatewayName().length() > 0) {
+        if (flightOrder.getPayment() != null
+                && flightOrder.getPayment().getGatewayName().length() > 0) {
+
             getView().showPaymentInfoLayout();
             if (flightOrder.getPayment().getManualTransfer() != null && flightOrder.getPayment().getManualTransfer().getAccountBankName().length() > 0) {
                 getView().setPaymentLabel(R.string.flight_order_payment_manual_label);
@@ -174,8 +180,12 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 getView().hideTotalTransfer();
             }
 
-            getView().setPaymentDueDate(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API, FlightDateUtil.DEFAULT_VIEW_TIME_FORMAT, flightOrder.getPayment().getExpireOn()));
-
+            if (flightOrder.getStatus() == FlightStatusOrderType.WAITING_FOR_THIRD_PARTY
+                    || flightOrder.getStatus() == FlightStatusOrderType.WAITING_FOR_TRANSFER) {
+                getView().setPaymentDueDate(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API, FlightDateUtil.DEFAULT_VIEW_TIME_FORMAT, flightOrder.getPayment().getExpireOn()));
+            } else {
+                getView().hidePaymentDueDate();
+            }
         } else {
             getView().hidePaymentInfoLayout();
         }
@@ -183,13 +193,15 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
 
     private CharSequence renderPaymentDescriptionText(PaymentInfoEntity payment) {
         SpannableStringBuilder text = new SpannableStringBuilder();
-        text.append(payment.getGatewayName());
+        text.append(payment.getGatewayName().trim());
         makeBold(text);
-        SpannableStringBuilder desc = new SpannableStringBuilder();
-        desc.append(payment.getTransactionCode());
-        makeSmall(desc);
-        text.append("\n");
-        text.append(desc);
+        if (payment.getTransactionCode() != null && payment.getTransactionCode().length() > 0) {
+            SpannableStringBuilder desc = new SpannableStringBuilder();
+            desc.append(payment.getTransactionCode());
+            makeSmall(desc);
+            text.append("\n");
+            text.append(desc);
+        }
         return text;
     }
 
