@@ -656,7 +656,6 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     private void getOtherProductsAceApi(Context context, Map<String, String> params,
                                         final OtherProductListener listener) {
 
-        Log.d(TAG, "getOtherProductsAceApi " + params.toString());
         Observable<Response<ProductOtherDataAce>> observable = aceSearchService.getApi()
                 .getOtherProducts(MapNulRemover.removeNull(params));
 
@@ -802,7 +801,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         Subscriber<ProductVariant> subscriber = new Subscriber<ProductVariant>() {
             @Override
             public void onCompleted() {
-                Log.d(TAG, "onCompleted: ");
+               
             }
 
             @Override
@@ -848,17 +847,17 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
             @Override
             public void onCompleted() {
-                Log.d(TAG, "onCompleted: ");
+               
             }
 
             @Override
             public void onError(Throwable e) {
-                Log.d(TAG, "onError: "+e.getMessage());
+                
             }
 
             @Override
             public void onNext(Response<TkpdResponse> variant) {
-                Log.d(TAG, "onNext: ");
+              
             }
         };
 
@@ -880,7 +879,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         Subscriber<DataPromoWidget> subscriber = new Subscriber<DataPromoWidget>() {
             @Override
             public void onCompleted() {
-                Log.d(TAG, "onCompleted: ");
+               
             }
 
             @Override
@@ -929,7 +928,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
             Subscriber<List<Review>> subscriber = new Subscriber<List<Review>>() {
                 @Override
                 public void onCompleted() {
-                    Log.d(TAG, "onCompleted: ");
+                   
                 }
 
                 @Override
@@ -986,7 +985,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         Subscriber<LatestTalkViewModel> subscriber = new Subscriber<LatestTalkViewModel>() {
             @Override
             public void onCompleted() {
-                Log.d(TAG, "getProductDiscussion() onCompleted: ");
+                
             }
 
             @Override
@@ -1024,7 +1023,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         Subscriber<LatestTalkViewModel> subscriber = new Subscriber<LatestTalkViewModel>() {
             @Override
             public void onCompleted() {
-                Log.d(TAG, "getProductTalkComment() onCompleted: ");
+                
             }
 
             @Override
