@@ -54,7 +54,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone" />
 
-    <RelativeLayout android:id="@+id/rl_other_product"
+    <RelativeLayout android:id="@+id/rl_expand_other_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
