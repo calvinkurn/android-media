@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.Request;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.core.util.MethodChecker;
@@ -35,6 +36,7 @@ public class MyShopViewHolder extends AbstractViewHolder<MyShopViewModel> {
     TextView officialTxt;
 
     private CategoryAdapterListener listener;
+    private Request loadReputationMedalRequest;
 
     public MyShopViewHolder(View itemView, final CategoryAdapterListener listener) {
         super(itemView);
@@ -68,10 +70,12 @@ public class MyShopViewHolder extends AbstractViewHolder<MyShopViewModel> {
             officialTxt.setVisibility(View.GONE);
             badgeImage.setVisibility(View.GONE);
         }
-        Glide.with(reputationMedal.getContext()).load(data.getReputationBadge())
-                .asGif()
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .into(reputationMedal);
+        if (loadReputationMedalRequest == null || !loadReputationMedalRequest.isRunning()) {
+            loadReputationMedalRequest = Glide.with(reputationMedal.getContext()).load(data.getReputationBadge())
+                    .asGif()
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .into(reputationMedal).getRequest();
+        }
     }
 
 }
