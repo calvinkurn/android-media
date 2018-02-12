@@ -56,6 +56,7 @@ import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.FeedModuleRouter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FollowKolPostUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.BlogWebViewActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.ContentProductWebViewActivity;
@@ -1155,10 +1156,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToLogin() {
-        Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getLoginIntent(getContext());
+        Intent intent = ((FeedModuleRouter) getActivity().getApplication()).getLoginIntent(getContext());
         startActivity(intent);
 
-        String label = String.format("%s %s", AppEventTracking.EventLabel.PRODUCT_FEED, AppEventTracking.EventLabel.TAB);
-        UnifyTracking.eventHomeTab(AppEventTracking.Action.LOGIN_NOW, label);
+        // track
+        ((FeedModuleRouter) getActivity().getApplication()).getAnalyticTracker().sendEventTracking(
+                FeedTrackingEventLabel.USER_INTERACTION_HOMEPAGE,
+                FeedTrackingEventLabel.HOME_BOTTOM_NAV,
+                String.format("click %s", FeedTrackingEventLabel.Click.FEED_BEFORE_LOGIN),
+                FeedTrackingEventLabel.View.FEED_TAB
+        );
     }
 }

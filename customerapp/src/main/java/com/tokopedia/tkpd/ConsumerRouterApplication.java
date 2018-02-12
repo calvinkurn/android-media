@@ -158,6 +158,7 @@ import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.FeedModuleRouter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolFollowingListActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
@@ -197,7 +198,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TkpdCoreRouter, SellerModuleRouter, IDigitalModuleRouter, PdpRouter,
         OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter,
         TokoCashRouter, IWalletRouter, ILoyaltyRouter, ReputationRouter, SessionRouter,
-        AbstractionRouter, FlightModuleRouter, LogisticRouter {
+        AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;

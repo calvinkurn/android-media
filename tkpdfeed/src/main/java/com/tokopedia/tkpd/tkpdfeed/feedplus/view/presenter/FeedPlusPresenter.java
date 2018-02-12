@@ -90,7 +90,7 @@ public class FeedPlusPresenter
         viewListener.showRefresh();
         currentCursor = "";
 
-        if (sessionHandler != null && sessionHandler.isV4Login()) {
+        if (sessionHandler != null && sessionHandler.getLoginID() != null && !sessionHandler.getLoginID().isEmpty()) {
             getFirstPageFeedsUseCase.execute(
                     getFirstPageFeedsUseCase.getRefreshParam(sessionHandler),
                     new GetFirstPageFeedsSubscriber(viewListener, pagingHandler.getPage()));
