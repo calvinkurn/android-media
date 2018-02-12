@@ -679,6 +679,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        presenter.unsubscribeObservable();
     }
 
     @Override

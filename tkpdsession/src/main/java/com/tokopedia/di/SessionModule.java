@@ -247,9 +247,8 @@ SessionModule {
     @SessionScope
     @Provides
     ChangeMsisdnSource provideCloudChangeMsisdnSource(@Named(BEARER_SERVICE) AccountsService accountsService,
-                                                      ChangePhoneNumberMapper changePhoneNumberMapper,
-                                                      SessionHandler sessionHandler) {
-        return new ChangeMsisdnSource(accountsService, changePhoneNumberMapper, sessionHandler);
+                                                      ChangePhoneNumberMapper changePhoneNumberMapper) {
+        return new ChangeMsisdnSource(accountsService, changePhoneNumberMapper);
     }
 
     @SessionScope

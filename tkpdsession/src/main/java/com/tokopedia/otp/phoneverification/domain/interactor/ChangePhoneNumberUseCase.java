@@ -4,12 +4,14 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.phoneverification.data.model.ChangePhoneNumberViewModel;
 import com.tokopedia.otp.phoneverification.data.source.ChangeMsisdnSource;
 
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -20,13 +22,16 @@ public class ChangePhoneNumberUseCase extends UseCase<ChangePhoneNumberViewModel
 
     private static final String PARAM_MSISDN = "msisdn";
     private final ChangeMsisdnSource changeMsisdnSource;
+    private final SessionHandler sessionHandler;
 
     @Inject
     public ChangePhoneNumberUseCase(ThreadExecutor threadExecutor,
                                     PostExecutionThread postExecutionThread,
-                                    ChangeMsisdnSource changeMsisdnSource) {
+                                    ChangeMsisdnSource changeMsisdnSource,
+                                    SessionHandler sessionHandler) {
         super(threadExecutor, postExecutionThread);
         this.changeMsisdnSource = changeMsisdnSource;
+        this.sessionHandler = sessionHandler;
     }
 
     @Override
@@ -39,7 +44,19 @@ public class ChangePhoneNumberUseCase extends UseCase<ChangePhoneNumberViewModel
                                 requestParams.getString(PARAM_MSISDN, ""));
                         return Observable.just(changePhoneNumberViewModel);
                     }
-                });
+                })
+                .doOnNext(savePhoneNumber());
+    }
+
+
+    private Action1<ChangePhoneNumberViewModel> savePhoneNumber() {
+        return new Action1<ChangePhoneNumberViewModel>() {
+            @Override
+            public void call(ChangePhoneNumberViewModel changePhoneNumberViewModel) {
+                if (changePhoneNumberViewModel.isSuccess())
+                    sessionHandler.setPhoneNumber(changePhoneNumberViewModel.getPhoneNumber());
+            }
+        };
     }
 
     public static RequestParams getParam(String phoneNumber) {

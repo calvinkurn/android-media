@@ -161,6 +161,14 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
         }
     }
 
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if(savedInstanceState != null){
+            this.phoneNumber = savedInstanceState.getString(EXTRA_PARAM_PHONE_NUMBER);
+        }
+    }
+
     public void setPhoneVerificationListener(PhoneVerificationFragmentListener listener) {
         this.listener = listener;
     }
@@ -309,13 +317,6 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(EXTRA_PARAM_PHONE_NUMBER, phoneNumber);
-    }
-
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-        this.phoneNumber = savedInstanceState.getString(EXTRA_PARAM_PHONE_NUMBER);
-
     }
 
     protected void setViewListener() {
