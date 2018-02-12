@@ -74,7 +74,8 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
 
     @Override
     public void setCourierList(List<CourierItemData> couriers) {
-        this.couriers = couriers;
+        this.couriers.clear();
+        this.couriers.addAll(couriers);
         loadAllCourier();
     }
 
@@ -98,6 +99,11 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
     public void loadAllCourier() {
         chooseSelectedCourier(selectedCourier);
         getView().showAllCouriers(couriers);
+    }
+
+    @Override
+    public List<CourierItemData> getCouriers() {
+        return couriers;
     }
 
     private void chooseSelectedCourier(CourierItemData currentCourier) {

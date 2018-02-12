@@ -7,7 +7,6 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,7 +24,6 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -49,12 +47,13 @@ import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.checkout.di.component.DaggerShipmentDetailComponent;
+import com.tokopedia.transaction.checkout.di.component.ShipmentDetailComponent;
 import com.tokopedia.transaction.checkout.view.adapter.CourierChoiceAdapter;
 import com.tokopedia.transaction.checkout.view.data.CourierItemData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
 import com.tokopedia.transaction.checkout.view.presenter.IShipmentDetailPresenter;
-import com.tokopedia.transaction.checkout.view.presenter.ShipmentDetailPresenter;
 import com.tokopedia.transaction.checkout.view.view.IShipmentDetailView;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
 
@@ -211,8 +210,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
 
     @Override
     protected void initialPresenter() {
-        presenter = new ShipmentDetailPresenter();
-        presenter.setContext(getActivity());
+
     }
 
     @Override
@@ -233,8 +231,18 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     @Override
     protected void initView(View view) {
         ButterKnife.bind(view);
+        initializeInjector();
         presenter.attachView(this);
+        presenter.setContext(getActivity());
+        courierChoiceAdapter.setViewListener(this);
+        courierChoiceAdapter.setCouriers(presenter.getCouriers());
         presenter.loadShipmentData();
+    }
+
+    private void initializeInjector() {
+        ShipmentDetailComponent shipmentDetailComponent = DaggerShipmentDetailComponent.builder()
+                .build();
+        shipmentDetailComponent.inject(this);
     }
 
     @Override
@@ -364,7 +372,6 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     }
 
     private void setupRecyclerView(List<CourierItemData> couriers) {
-//        courierChoiceAdapter = new CourierChoiceAdapter(couriers, this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL, false);
         rvCourierChoice.setLayoutManager(linearLayoutManager);
@@ -551,13 +558,13 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     @OnClick(R2.id.img_bt_partly_accept_info)
     void onPartlyAcceptInfoClick() {
         showBottomSheet(getString(R.string.label_accept_partial_order_new),
-                presenter.getShipmentDetailData().getPartialOrderInfo(), R.drawable.ic_insurance);
+                presenter.getShipmentDetailData().getPartialOrderInfo(), R.drawable.ic_partial_order);
     }
 
     @OnClick(R2.id.img_bt_dropshipper_info)
     void onDropshipperInfoClick() {
         showBottomSheet(getString(R.string.label_dropshipper_new),
-                presenter.getShipmentDetailData().getDropshipperInfo(), R.drawable.ic_insurance);
+                presenter.getShipmentDetailData().getDropshipperInfo(), R.drawable.ic_dropshipper);
     }
 
     @OnClick(R2.id.img_bt_close_ticker)
