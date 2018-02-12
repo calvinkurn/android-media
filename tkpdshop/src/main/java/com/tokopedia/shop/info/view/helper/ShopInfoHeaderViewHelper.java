@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -111,6 +112,25 @@ public class ShopInfoHeaderViewHelper {
             public void onClick(View view) {
                 Intent intent = ShopInfoActivity.createIntent(view.getContext(), shopId);
                 view.getContext().startActivity(intent);
+            }
+        });
+
+        view.findViewById(R.id.reputation_click_container).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(view.getContext(), "Reputation Click", Toast.LENGTH_LONG).show();
+            }
+        });
+        view.findViewById(R.id.product_quality_container).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(view.getContext(), "Product Quality Click", Toast.LENGTH_LONG).show();
+            }
+        });
+        view.findViewById(R.id.speed_container).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(view.getContext(), "Speed Click", Toast.LENGTH_LONG).show();
             }
         });
     }

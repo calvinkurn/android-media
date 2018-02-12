@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/green_200"
+    android:background="@color/white"
     android:fitsSystemWindows="true"
     android:gravity="bottom"
     android:orientation="horizontal"
@@ -232,5 +232,50 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shop_background_imageview"></LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/reputation_click_container"
+        android:layout_width="67dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="46dp"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/transparent"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toStartOf="@+id/separator_vertical_1"
+        app:layout_constraintHorizontal_bias="0.66"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/separator_1"
+        android:layout_marginRight="24dp"
+        android:layout_marginLeft="46dp"></LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/product_quality_container"
+        android:layout_width="113dp"
+        android:layout_height="61dp"
+        android:layout_marginEnd="53dp"
+        android:layout_marginStart="58dp"
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toStartOf="@+id/separator_vertical_"
+        app:layout_constraintHorizontal_bias="0.52"
+        app:layout_constraintStart_toEndOf="@+id/separator_vertical_1"
+        app:layout_constraintTop_toBottomOf="@+id/separator_1"
+        android:layout_marginRight="53dp"
+        android:layout_marginLeft="58dp"></LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/speed_container"
+        android:layout_width="108dp"
+        android:layout_height="56dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="4dp"
+        android:background="@android:color/transparent"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toStartOf="@+id/speed_value_desc"
+        app:layout_constraintHorizontal_bias="0.32"
+        app:layout_constraintStart_toEndOf="@+id/speed_imageview"
+        app:layout_constraintTop_toBottomOf="@+id/separator_1"></LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
