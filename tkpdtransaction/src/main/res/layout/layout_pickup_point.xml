@@ -10,8 +10,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_small"
-        android:drawableEnd="@drawable/ic_chevron_right"
-        android:drawableRight="@drawable/ic_chevron_right"
         android:fontFamily="sans-serif-medium"
         android:gravity="center_vertical"
         android:text="@string/label_send_to_pick_up_booth"
