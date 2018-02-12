@@ -28,8 +28,6 @@ import com.tokopedia.core.drawer2.view.databinder.DrawerHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
-import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.home.SimpleWebViewActivity;
 import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
@@ -162,15 +160,14 @@ public class DrawerBuyerHelper extends DrawerHelper
         if (SessionHandler.isUserHasShop(context)) {
             data.add(getSellerMenu());
             data.add(getProductMenu());
+            data.add(getResoMenu());
             data.add(getGoldMerchantMenu());
             data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
                     R.drawable.ic_top_ads,
                     TkpdState.DrawerPosition.SELLER_TOP_ADS,
                     true));
         }
-        if (SessionHandler.isUserHasShop(context)) {
-            data.add(getResoMenu());
-        } else {
+        if (!SessionHandler.isUserHasShop(context)) {
             data.add(new DrawerItem(context.getString(R.string.drawer_title_new_reso),
                     R.drawable.ic_reso,
                     TkpdState.DrawerPosition.RESOLUTION_CENTER,
