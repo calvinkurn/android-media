@@ -272,9 +272,17 @@ public class SessionHandler {
     }
 
     public static String getShopID(Context context) {
-        String shopId = null;
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        shopId = sharedPrefs.getString(SHOP_ID, DEFAULT_EMPTY_SHOP_ID);
+        String shopId = sharedPrefs.getString(SHOP_ID, DEFAULT_EMPTY_SHOP_ID);
+        if (DEFAULT_EMPTY_SHOP_ID_ON_PREF.equals(shopId)) {
+            shopId = DEFAULT_EMPTY_SHOP_ID;
+        }
+        return shopId;
+    }
+
+    public String getShopID() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        String shopId = sharedPrefs.getString(SHOP_ID, DEFAULT_EMPTY_SHOP_ID);
         if (DEFAULT_EMPTY_SHOP_ID_ON_PREF.equals(shopId)) {
             shopId = DEFAULT_EMPTY_SHOP_ID;
         }
@@ -519,7 +527,16 @@ public class SessionHandler {
 
     public static boolean isUserHasShop(Context context) {
         String shopID = SessionHandler.getShopID(context);
-        return !TextUtils.isEmpty(shopID) && !DEFAULT_EMPTY_SHOP_ID.equals(shopID);
+        return isShopIdValid(shopID);
+    }
+
+    public boolean isUserHasShop() {
+        String shopID = getShopID();
+        return isShopIdValid(shopID);
+    }
+
+    private static boolean isShopIdValid(String shopId) {
+        return !TextUtils.isEmpty(shopId) && !DEFAULT_EMPTY_SHOP_ID.equals(shopId);
     }
 
     public static String getUUID(Context context) {
@@ -604,13 +621,6 @@ public class SessionHandler {
 
     public String getLoginID() {
         return getLoginID(context);
-    }
-
-    public String getShopID() {
-        String shopId = null;
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        shopId = sharedPrefs.getString(SHOP_ID, DEFAULT_EMPTY_SHOP_ID);
-        return shopId;
     }
 
     public String getLoginName() {

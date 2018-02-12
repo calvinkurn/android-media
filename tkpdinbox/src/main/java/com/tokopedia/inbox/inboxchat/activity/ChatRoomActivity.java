@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatDelegate;
@@ -36,6 +37,8 @@ import com.tokopedia.inbox.inboxchat.fragment.ChatRoomFragment;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageDetailActivity;
+
+import java.util.List;
 
 /**
  * Created by Nisie on 5/19/16.
@@ -166,7 +169,7 @@ public class ChatRoomActivity extends BasePresenterActivity
     protected void initView() {
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.container, ChatRoomFragment.createInstance(getIntent().getExtras()),
-                        TAG)
+                        ChatRoomFragment.TAG)
                 .commit();
     }
 
@@ -204,6 +207,17 @@ public class ChatRoomActivity extends BasePresenterActivity
     public void onGetNotif(Bundle data) {
         ChatRoomFragment something = (ChatRoomFragment) getSupportFragmentManager().findFragmentByTag(TAG);
         something.restackList(data);
+    }
+
+    @Override
+    public void onBackPressed() {
+        final ChatRoomFragment fragment = (ChatRoomFragment) getSupportFragmentManager().findFragmentByTag(ChatRoomFragment.TAG);
+
+        if (fragment!=null) {
+            fragment.onBackPressed();
+        }else {
+            super.onBackPressed();
+        }
     }
 
     public static Intent getCallingIntent(Context context, String nav, String messageId,
@@ -291,4 +305,7 @@ public class ChatRoomActivity extends BasePresenterActivity
         return intent;
     }
 
+    public void destroy() {
+        super.onBackPressed();
+    }
 }

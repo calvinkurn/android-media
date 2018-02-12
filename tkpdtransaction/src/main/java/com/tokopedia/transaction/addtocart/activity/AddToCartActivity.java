@@ -630,10 +630,12 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 renderFormAddress(orderData.getAddress());
                 viewFieldLocation.setVisibility(View.GONE);
                 clearRetryInstantCourierSnackbar();
-                if (product.getInsuranceMode() != null) {
-                    setInsuranceInfoButtonVisibility(product);
-                }
             }
+
+            if (product.getInsuranceMode() != null) {
+                setInsuranceInfoButtonVisibility(product);
+            }
+
             if (product.getMaxHoursId() != null && product.getDescHoursId() != null) {
                 arrowMaxHour.setText(product.getMaxHoursId());
                 descMaxHour.setText(product.getDescHoursId());
