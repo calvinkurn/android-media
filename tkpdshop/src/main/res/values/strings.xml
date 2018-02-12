@@ -28,5 +28,8 @@
     <string name="shop_info_physical_shop_location_only_online">Hanya Online</string>
 
     <string name="shop_info_label_default_content">-</string>
+    <string name="reputation_label">Reputasi</string>
+    <string name="product_quality_label_value">Kualitas Produk</string>
+    <string name="speed_label_value">Kecepatan</string>
 
 </resources>

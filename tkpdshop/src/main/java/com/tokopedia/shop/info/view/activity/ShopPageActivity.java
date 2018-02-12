@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopComponentInstance;
 import com.tokopedia.shop.common.di.component.ShopComponent;
@@ -19,7 +20,7 @@ import com.tokopedia.shop.info.view.fragment.ShopInfoFragment;
  * Created by nathan on 2/3/18.
  */
 
-public class ShopPageActivity extends BaseTabActivity {
+public class ShopPageActivity extends BaseTabActivity  implements HasComponent<ShopComponent> {
 
     private static final int PAGE_LIMIT = 3;
 
@@ -38,6 +39,11 @@ public class ShopPageActivity extends BaseTabActivity {
 
     private void initInjector() {
 //        getShopComponent().inject(this);
+    }
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_shop_tab;
     }
 
     @Override
@@ -118,7 +124,8 @@ public class ShopPageActivity extends BaseTabActivity {
         return PAGE_LIMIT;
     }
 
-    protected ShopComponent getShopComponent() {
+    @Override
+    public ShopComponent getComponent() {
         if (component == null) {
             component = ShopComponentInstance.getComponent(getApplication());
         }
