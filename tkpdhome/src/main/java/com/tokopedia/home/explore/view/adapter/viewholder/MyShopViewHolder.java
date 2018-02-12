@@ -74,8 +74,6 @@ public class MyShopViewHolder extends AbstractViewHolder<MyShopViewModel> {
                 .asGif()
                 .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .override(Target.SIZE_ORIGINAL, (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                        28, context.getResources().getDisplayMetrics()))
                 .into(reputationMedal);
     }
 
