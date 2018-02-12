@@ -1,13 +1,14 @@
 package com.tokopedia.flight.detail.view.fragment;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
@@ -42,6 +43,7 @@ import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderTypeFactory;
 import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
+import com.tokopedia.flight.orderlist.view.fragment.FlightResendETicketDialogFragment;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapter;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapterTypeFactory;
@@ -57,6 +59,8 @@ import javax.inject.Inject;
 
 public class FlightDetailOrderFragment extends BaseDaggerFragment implements FlightDetailOrderContract.View, ExpandableOnClickListener {
 
+    private static final int REQUEST_CODE_RESEND_ETICKET_DIALOG = 1;
+    private static final String RESEND_ETICKET_DIALOG_TAG = "resend_eticket_dialog_tag";
     public static final String EXTRA_ORDER_DETAIL_PASS = "EXTRA_ORDER_DETAIL_PASS";
     private static final String CANCEL_SOLUTION_ID = "1378";
     private static final int CONTACT_US_REQUEST_CODE = 100;
@@ -216,12 +220,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         containerDownloadEticket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(eticketLink));
-                    startActivity(browserIntent);
-                } catch (Exception e) {
-
-                }
+                flightDetailOrderPresenter.onDownloadETicketButtonClicked();
             }
         });
 
@@ -487,5 +486,29 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     @Override
     public void hidePaymentDueDate() {
         paymentDueDateLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void navigateToInputEmailForm(String userId) {
+        DialogFragment dialogFragment = FlightResendETicketDialogFragment.newInstace(flightOrderDetailPassData.getOrderId(), userId);
+        dialogFragment.setTargetFragment(this, REQUEST_CODE_RESEND_ETICKET_DIALOG);
+        dialogFragment.show(getFragmentManager().beginTransaction(), RESEND_ETICKET_DIALOG_TAG);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case REQUEST_CODE_RESEND_ETICKET_DIALOG:
+                if (resultCode == Activity.RESULT_OK) {
+                    showGreenSnackbar(R.string.resend_eticket_success);
+                }
+                break;
+        }
+    }
+
+    private void showGreenSnackbar(int resId) {
+        NetworkErrorHelper.showGreenCloseSnackbar(getActivity(), getString(resId));
     }
 }

@@ -71,7 +71,7 @@
                 android:paddingRight="@dimen/padding_small"
                 android:paddingBottom="@dimen/padding_med"
                 android:paddingLeft="@dimen/padding_small"
-                android:text="Unduh E-Ticket" />
+                android:text="Kirim E-Ticket" />
         </LinearLayout>
 
     </android.support.v7.widget.CardView>

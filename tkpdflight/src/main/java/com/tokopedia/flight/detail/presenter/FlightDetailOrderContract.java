@@ -67,6 +67,8 @@ public interface FlightDetailOrderContract {
         void setPaymentDueDate(String dueDate);
 
         void hidePaymentDueDate();
+
+        void navigateToInputEmailForm(String userId);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -77,5 +79,7 @@ public interface FlightDetailOrderContract {
         void onHelpButtonClicked();
 
         void actionReorderButtonClicked();
+
+        void onDownloadETicketButtonClicked();
     }
 }

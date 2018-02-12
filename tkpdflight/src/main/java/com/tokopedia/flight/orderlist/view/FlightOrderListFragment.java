@@ -1,11 +1,12 @@
 package com.tokopedia.flight.orderlist.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.flight.FlightModuleRouter;
@@ -30,6 +32,7 @@ import com.tokopedia.flight.orderlist.presenter.FlightOrderListPresenter;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapter;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapterTypeFactory;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderTypeFactory;
+import com.tokopedia.flight.orderlist.view.fragment.FlightResendETicketDialogFragment;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderBaseViewModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 
@@ -46,6 +49,9 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         implements FlightOrderListContract.View,
         QuickSingleFilterView.ActionListener,
         FlightOrderAdapter.OnAdapterInteractionListener {
+
+    private static final int REQUEST_CODE_RESEND_ETICKET_DIALOG = 1;
+    private static final String RESEND_ETICKET_DIALOG_TAG = "resend_eticket_dialog_tag";
     public static final int PER_PAGE = 10;
     @Inject
     FlightOrderListPresenter presenter;
@@ -119,9 +125,10 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     }
 
     @Override
-    public void navigateToOpenBrowser(String urlPdf) {
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlPdf));
-        startActivity(browserIntent);
+    public void navigateToInputEmailForm(String invoiceId, String userId) {
+        DialogFragment dialogFragment = FlightResendETicketDialogFragment.newInstace(invoiceId, userId);
+        dialogFragment.setTargetFragment(this, REQUEST_CODE_RESEND_ETICKET_DIALOG);
+        dialogFragment.show(getFragmentManager().beginTransaction(), RESEND_ETICKET_DIALOG_TAG);
     }
 
     @Override
@@ -183,12 +190,29 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     }
 
     @Override
-    public void onDownloadETicket(String invoiceId, String filename) {
-        presenter.onDownloadEticket(invoiceId, filename);
+    public void onDownloadETicket(String invoiceId) {
+        presenter.onDownloadEticket(invoiceId);
     }
 
     @Override
     protected String getMessageFromThrowable(Context context, Throwable t) {
         return FlightErrorUtil.getMessageFromException(context, t);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case REQUEST_CODE_RESEND_ETICKET_DIALOG:
+                if (resultCode == Activity.RESULT_OK) {
+                    showGreenSnackbar(R.string.resend_eticket_success);
+                }
+                break;
+        }
+    }
+
+    private void showGreenSnackbar(int resId) {
+        NetworkErrorHelper.showGreenCloseSnackbar(getActivity(), getString(resId));
     }
 }
