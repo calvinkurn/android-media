@@ -1,6 +1,7 @@
 package com.tokopedia.loyalty.domain.repository;
 
 import android.annotation.SuppressLint;
+import android.net.Uri;
 
 import com.tokopedia.loyalty.domain.entity.response.promo.Children;
 import com.tokopedia.loyalty.domain.entity.response.promo.GroupCode;
@@ -41,7 +42,7 @@ public class PromoResponseMapper implements IPromoResponseMapper {
             PromoData promoData = new PromoData();
             promoData.setId(String.valueOf(promoResponse.getId()));
             promoData.setTitle(promoResponse.getTitle().getRendered());
-            promoData.setAppLink(promoResponse.getMeta().getAppLink());
+            promoData.setAppLink("");
             promoData.setMultiplePromoCodeCount(promoResponse.getAcf().getPromoCodeList().size());
             try {
                 promoData.setPeriodFormatted(
@@ -53,7 +54,9 @@ public class PromoResponseMapper implements IPromoResponseMapper {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            promoData.setPromoLink(promoResponse.getMeta().getPromoLink());
+            String urlPromo = Uri.parse(promoResponse.getLink())
+                    .buildUpon().appendQueryParameter("flag_app", "1").build().toString();
+            promoData.setPromoLink(urlPromo);
             promoData.setThumbnailImage(promoResponse.getMeta().getThumbnailImage());
             promoData.setMinTransaction(promoResponse.getMeta().getMinTransaction());
             promoData.setStartDate(promoResponse.getMeta().getStartDate());
