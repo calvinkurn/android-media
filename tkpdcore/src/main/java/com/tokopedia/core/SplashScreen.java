@@ -235,12 +235,11 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
                     if (error == null) {
                         CommonUtils.dumper(referringParams.toString());
                         try {
-                            if(referringParams.has("branch_promo")) {
-                                String branch_promo = referringParams.getString("branch_promo");
-                                if (!TextUtils.isEmpty(branch_promo)) {
-                                    storeWebToAppPromoCode(branch_promo);
-                                }
+                            String branch_promo = referringParams.optString("branch_promo");
+                            if (!TextUtils.isEmpty(branch_promo)) {
+                                storeWebToAppPromoCode(branch_promo);
                             }
+
                             String deeplink = referringParams.getString("$android_deeplink_path");
                             Uri uri = Uri.parse(Constants.Schemes.APPLINKS + "://" + deeplink);
                             Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -260,7 +259,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         }
     }
 
-    private void storeWebToAppPromoCode( String promoCode) {
+    private void storeWebToAppPromoCode(String promoCode) {
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(SplashScreen.this, TkpdCache.CACHE_PROMO_CODE);
         localCacheHandler.putString(TkpdCache.Key.KEY_CACHE_PROMO_CODE, promoCode);
         localCacheHandler.applyEditor();
