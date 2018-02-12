@@ -197,6 +197,8 @@ dependencies {
     compile rootProject.ext.playServicesDependencies.firebase
     compile rootProject.ext.playServicesDependencies.remoteConfig
     compile rootProject.ext.debugToolsDependencies.stetho
+
+    compile rootProject.ext.analyticsDependencies.logentries
 }
 
 apply plugin: 'com.google.gms.google-services'

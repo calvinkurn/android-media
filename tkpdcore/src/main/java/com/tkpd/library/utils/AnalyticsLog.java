@@ -15,8 +15,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import retrofit2.http.Url;
-
 /**
  * Created by ricoharisin on 8/23/16.
  */
@@ -91,9 +89,13 @@ public class AnalyticsLog {
     }
 
     private static void log(String message) {
-        AndroidLogger logger = getAndroidLogger();
-        if (logger != null) {
-            logger.log(message);
+        try {
+            AndroidLogger logger = getAndroidLogger();
+            if (logger != null) {
+                logger.log(message);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
