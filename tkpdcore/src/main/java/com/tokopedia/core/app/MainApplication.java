@@ -32,7 +32,6 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.cache.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
-import com.tokopedia.core.network.di.module.NetModule;
 import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.GlobalConfig;
@@ -386,7 +385,7 @@ public abstract class MainApplication extends BaseMainApplication{
     private void initBranch() {
         Branch.getAutoInstance(this);
         if (SessionHandler.isV4Login(this)) {
-            BranchSdkUtils.sendLoginEvent(SessionHandler.getLoginID(this));
+            BranchSdkUtils.sendIdentityEvent(SessionHandler.getLoginID(this));
         }
     }
 }

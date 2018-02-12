@@ -3,6 +3,7 @@ package com.tokopedia.core.util;
 import android.app.Activity;
 import android.content.Context;
 
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.model.Product;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -10,6 +11,9 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.var.TkpdCache;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -146,7 +150,7 @@ public class BranchSdkUtils {
     }
 
     //Set userId to Branch.io sdk, userId, 127 chars or less
-    public static void sendLoginEvent(String userId) {
+    public static void sendIdentityEvent(String userId) {
         if (Branch.getInstance() != null) {
             Branch.getInstance().setIdentity(userId);
         }
@@ -155,6 +159,30 @@ public class BranchSdkUtils {
     public static void sendLogoutEvent() {
         if (Branch.getInstance() != null) {
             Branch.getInstance().logout();
+        }
+    }
+
+    public static void sendLoginEvent(String email, String phone) {
+        if (Branch.getInstance() != null) {
+            JSONObject metadata = new JSONObject();
+            try {
+                metadata.put(AppEventTracking.Branch.EMAIL, email);
+                metadata.put(AppEventTracking.Branch.PHONE, phone);
+            } catch ( JSONException e ) {
+            }
+            Branch.getInstance().userCompletedAction(AppEventTracking.EventBranch.EVENT_LOGIN, metadata);
+        }
+    }
+
+    public static void sendRegisterEvent(String email, String phone) {
+        if (Branch.getInstance() != null) {
+            JSONObject metadata = new JSONObject();
+            try {
+                metadata.put(AppEventTracking.Branch.EMAIL, email);
+                metadata.put(AppEventTracking.Branch.PHONE, phone);
+            } catch ( JSONException e ) {
+            }
+            Branch.getInstance().userCompletedAction(AppEventTracking.EventBranch.EVENT_REGISTER, metadata);
         }
     }
 
