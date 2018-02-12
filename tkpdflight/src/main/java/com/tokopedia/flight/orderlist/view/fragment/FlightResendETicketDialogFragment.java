@@ -28,6 +28,7 @@ public class FlightResendETicketDialogFragment extends DialogFragment implements
 
     private static final String EXTRA_INVOICE_ID = "EXTRA_INVOICE_ID";
     private static final String EXTRA_USER_ID = "EXTRA_USER_ID";
+    private static final String EXTRA_USER_EMAIL = "EXTRA_USER_EMAIL";
     private boolean isProgramaticallyDismissed = false;
 
     private AppCompatTextView txtSend;
@@ -38,16 +39,17 @@ public class FlightResendETicketDialogFragment extends DialogFragment implements
     @Inject
     FlightResendETicketPresenter flightResendETicketPresenter;
 
-    private String userId, invoiceId;
+    private String userId, invoiceId, userEmail;
 
     public FlightResendETicketDialogFragment() {
     }
 
-    public static FlightResendETicketDialogFragment newInstace(String invoiceId, String userId) {
+    public static FlightResendETicketDialogFragment newInstace(String invoiceId, String userId, String userEmail) {
         FlightResendETicketDialogFragment fragment = new FlightResendETicketDialogFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_INVOICE_ID, invoiceId);
         bundle.putString(EXTRA_USER_ID, userId);
+        bundle.putString(EXTRA_USER_EMAIL, userEmail);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -58,6 +60,7 @@ public class FlightResendETicketDialogFragment extends DialogFragment implements
         if (getArguments() != null) {
             invoiceId = getArguments().getString(EXTRA_INVOICE_ID);
             userId = getArguments().getString(EXTRA_USER_ID);
+            userEmail = getArguments().getString(EXTRA_USER_EMAIL);
         }
 
         getComponent(FlightOrderComponent.class)
@@ -77,6 +80,7 @@ public class FlightResendETicketDialogFragment extends DialogFragment implements
         txtCancel = view.findViewById(R.id.tv_resend_eticket_cancel);
         containerEmail = view.findViewById(R.id.container_email);
 
+        edtEmail.setText(userEmail);
         txtSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
