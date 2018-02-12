@@ -234,9 +234,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     public ProductDetailFragment() {
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
-        if (!remoteConfig.getBoolean(ENABLE_VARIANT)) {
-            // TODO change to this useVariant = false;
-            useVariant = true;
+        if (remoteConfig.getBoolean(ENABLE_VARIANT)==false) {
+            useVariant = false;
         }
     }
 
