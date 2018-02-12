@@ -33,4 +33,6 @@ public interface ICartListView extends IBaseView {
     List<CartItemHolderData> getFinalCartList();
 
     Context getActivityContext();
+
+    void renderDetailInfoSubTotal(String qty, String subtotalPrice);
 }

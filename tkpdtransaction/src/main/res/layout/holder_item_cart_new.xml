@@ -45,7 +45,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_action_delete"
+            android:src="@drawable/ic_delete_cart"
             tools:ignore="ContentDescription"/>
     </RelativeLayout>
 
@@ -77,6 +77,8 @@
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/iv_image_product"
                 android:layout_toRightOf="@id/iv_image_product"
+                android:paddingLeft="@dimen/padding_ms"
+                android:paddingStart="@dimen/padding_ms"
                 android:textColor="@color/black_70"
                 android:textSize="14sp"
                 tools:text="Tas organizer sepeda double container"/>
@@ -88,6 +90,8 @@
                 android:layout_below="@id/tv_product_name"
                 android:layout_toEndOf="@id/iv_image_product"
                 android:layout_toRightOf="@id/iv_image_product"
+                android:paddingLeft="@dimen/padding_ms"
+                android:paddingStart="@dimen/padding_ms"
                 android:textColor="@color/orange_red"
                 android:textSize="14sp"
                 tools:text="Rp 200.000"/>
@@ -112,10 +116,10 @@
                 android:paddingLeft="0dp"
                 android:paddingRight="8dp"
                 android:paddingStart="0dp"
+                android:text="Free Returns"
                 android:textSize="12sp"
                 android:textStyle="normal"
                 android:visibility="gone"
-                tools:text="Free Returns"
                 tools:visibility="visible"/>
 
             <TextView
@@ -186,7 +190,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
             android:paddingBottom="8dp"
             android:paddingTop="16dp">
 
@@ -195,6 +199,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
                 android:gravity="center_vertical"
                 android:textColor="#61000000"
                 android:textSize="12sp"
@@ -206,12 +211,14 @@
                 android:layout_height="28dp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
                 android:src="@drawable/bg_button_counter_plus"/>
 
             <EditText
                 android:id="@+id/et_qty"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_toLeftOf="@id/btn_qty_plus"
                 android:layout_toStartOf="@id/btn_qty_plus"
                 android:gravity="center_horizontal"
@@ -227,6 +234,7 @@
                 android:id="@+id/btn_qty_min"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
+                android:layout_centerVertical="true"
                 android:layout_toLeftOf="@id/et_qty"
                 android:layout_toStartOf="@id/et_qty"
                 android:src="@drawable/bg_button_counter_minus"/>

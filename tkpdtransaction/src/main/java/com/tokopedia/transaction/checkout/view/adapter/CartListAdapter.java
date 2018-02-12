@@ -122,6 +122,20 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holderView.tvInfoRFreeReturn.setText(data.getCartItemData().getOriginData().getCashBackInfo());
 
 
+        holderView.btnQtyPlus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                actionListener.onCartItemQuantityPlusButtonClicked(cartItemHolderDataList.get(position), position);
+            }
+        });
+
+        holderView.btnQtyMinus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                actionListener.onCartItemQuantityMinusButtonClicked(cartItemHolderDataList.get(position), position);
+            }
+        });
+
         onBind = false;
     }
 
@@ -155,6 +169,21 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public List<CartItemHolderData> getDataList() {
         return cartItemHolderDataList;
+    }
+
+    public void increaseQuantity(int position) {
+        CartItemHolderData data = cartItemHolderDataList.get(position);
+        if (data.getCartItemData().getUpdatedData().getQuantity() + 1 <= data.getCartItemData().getOriginData().getMaximalQtyOrder())
+            cartItemHolderDataList.get(position).getCartItemData().getUpdatedData().increaseQuantity();
+        notifyItemChanged(position);
+    }
+
+    public void decreaseQuantity(int position) {
+        CartItemHolderData data = cartItemHolderDataList.get(position);
+        cartItemHolderDataList.get(position).getCartItemData().getUpdatedData().decreaseQuantity();
+        if (data.getCartItemData().getUpdatedData().getQuantity() - 1 >= data.getCartItemData().getOriginData().getMinimalQtyOrder())
+            cartItemHolderDataList.get(position).getCartItemData().getUpdatedData().decreaseQuantity();
+        notifyItemChanged(position);
     }
 
 

@@ -108,4 +108,9 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
     public void goToMultipleAddressCart(Object data) {
 
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

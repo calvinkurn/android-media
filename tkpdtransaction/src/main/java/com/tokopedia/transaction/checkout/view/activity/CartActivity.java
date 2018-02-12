@@ -89,4 +89,9 @@ public class CartActivity extends BasePresenterActivity {
     protected void setActionVar() {
 
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

@@ -53,7 +53,7 @@ public class PromoResponseMapper implements IPromoResponseMapper {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            promoData.setPromoLink(promoResponse.getMeta().getPromoLink());
+            promoData.setPromoLink(promoResponse.getLink());
             promoData.setThumbnailImage(promoResponse.getMeta().getThumbnailImage());
             promoData.setMinTransaction(promoResponse.getMeta().getMinTransaction());
             promoData.setStartDate(promoResponse.getMeta().getStartDate());
