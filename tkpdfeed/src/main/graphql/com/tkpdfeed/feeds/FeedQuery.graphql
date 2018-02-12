@@ -21,6 +21,7 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String, $source: String) {
             }
             content {
               type
+              display
               total_product
               products {
                 id
