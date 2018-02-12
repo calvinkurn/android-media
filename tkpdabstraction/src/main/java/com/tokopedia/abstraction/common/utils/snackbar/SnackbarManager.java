@@ -96,7 +96,7 @@ public class SnackbarManager {
             View view,
             String text,
             @Snackbar.Duration int duration) {
-        return make(view, text, duration, R.color.red_500, R.color.font_black_primary_70, R.color.red_50, R.drawable.bg_red_snackbar);
+        return make(view, text, duration, R.color.red_500, R.color.black, R.color.red_50, R.drawable.bg_red_snackbar);
     }
 
     public static Snackbar makeRed(
