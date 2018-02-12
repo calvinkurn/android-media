@@ -246,7 +246,9 @@ public class CartFragment extends BasePresenterFragment implements
     @Override
     public void renderCartListData(List<CartItemData> cartItemDataList) {
         cartListAdapter.addDataList(cartItemDataList);
-        setOnCartDataPass(cartItemDataList);
+
+        // Pass data to its container activity trough PassingCartDataListener interface
+        mDataPasserListener.onPassingCartData(cartItemDataList);
     }
 
     @Override
@@ -298,10 +300,6 @@ public class CartFragment extends BasePresenterFragment implements
     public void renderDetailInfoSubTotal(String qty, String subtotalPrice) {
         tvItemCount.setText(MessageFormat.format("Harga Barang ({0} Item)", qty));
         tvTotalPrice.setText(subtotalPrice);
-    }
-
-    public void setOnCartDataPass(List<CartItemData> cartItemData) {
-        mDataPasserListener.onPassingCartData(cartItemData);
     }
 
     public static CartFragment newInstance() {

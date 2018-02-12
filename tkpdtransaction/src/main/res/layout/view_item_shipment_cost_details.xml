@@ -154,7 +154,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_payable_text"
-        android:layout_marginBottom="16dp"
         android:textSize="12sp"
         android:fontFamily="sans-serif"
         android:textStyle="normal"
