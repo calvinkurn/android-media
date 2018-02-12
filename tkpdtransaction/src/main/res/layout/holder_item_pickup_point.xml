@@ -36,7 +36,7 @@
                 android:id="@+id/btn_check"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:background="@drawable/bg_circle_grey" />
+                android:background="@drawable/bg_circle_grey_2" />
 
         </LinearLayout>
 

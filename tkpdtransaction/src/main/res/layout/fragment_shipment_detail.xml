@@ -140,33 +140,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
-                    <LinearLayout
-                        android:id="@+id/ll_expanded_courier_list"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:foreground="?selectableItemBackground"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/padding_ms">
-
-                        <TextView
-                            android:id="@+id/tv_show_other_couriers"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/label_show_other_courier"
-                            android:textColor="@color/tkpd_main_green" />
-
-                        <ImageView
-                            android:id="@+id/iv_chevron"
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:layout_marginLeft="@dimen/margin_ms"
-                            android:layout_marginRight="@dimen/margin_ms"
-                            android:src="@drawable/chevron_thin_down"
-                            android:tint="@color/tkpd_main_green" />
-
-                    </LinearLayout>
-
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"

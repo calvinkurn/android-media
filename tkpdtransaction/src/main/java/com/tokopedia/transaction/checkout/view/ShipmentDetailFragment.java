@@ -60,6 +60,8 @@ import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
@@ -95,8 +97,6 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     TextView tvShipmentType;
     @BindView(R2.id.rv_courier_choice)
     RecyclerView rvCourierChoice;
-    @BindView(R2.id.ll_expanded_courier_list)
-    LinearLayout llExpandedCourierList;
     @BindView(R2.id.ll_pinpoint)
     LinearLayout llPinpoint;
     @BindView(R2.id.map_view_pinpoint)
@@ -151,10 +151,6 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     TextView tvDeliveryFee;
     @BindView(R2.id.bt_save)
     Button btSave;
-    @BindView(R2.id.tv_show_other_couriers)
-    TextView tvShowOtherCouriers;
-    @BindView(R2.id.iv_chevron)
-    ImageView ivChevron;
     @BindView(R2.id.ll_fees_group)
     LinearLayout llFeesGroup;
     @BindView(R2.id.ll_insurance_fee)
@@ -173,7 +169,12 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     TextView tvInsuranceTerms;
 
     private ShipmentChoiceBottomSheet shipmentChoiceBottomSheet;
-    private CourierChoiceAdapter courierChoiceAdapter;
+
+    @Inject
+    CourierChoiceAdapter courierChoiceAdapter;
+
+    @Inject
+    IShipmentDetailPresenter presenter;
 
     public static ShipmentDetailFragment newInstance() {
         ShipmentDetailFragment fragment = new ShipmentDetailFragment();
@@ -337,16 +338,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     }
 
     @Override
-    public void showFirstThreeCouriers(List<CourierItemData> couriers) {
-        tvShowOtherCouriers.setText(getString(R.string.label_show_other_courier));
-        ivChevron.setImageResource(R.drawable.chevron_thin_down);
-        setupRecyclerView(couriers);
-    }
-
-    @Override
     public void showAllCouriers(List<CourierItemData> couriers) {
-        tvShowOtherCouriers.setText(R.string.label_hide_other_couriers);
-        ivChevron.setImageResource(R.drawable.chevron_thin_up);
         setupRecyclerView(couriers);
     }
 
@@ -372,16 +364,11 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     }
 
     private void setupRecyclerView(List<CourierItemData> couriers) {
-        courierChoiceAdapter = new CourierChoiceAdapter(couriers, this);
+//        courierChoiceAdapter = new CourierChoiceAdapter(couriers, this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL, false);
         rvCourierChoice.setLayoutManager(linearLayoutManager);
         rvCourierChoice.setAdapter(courierChoiceAdapter);
-        if (presenter.getSelectedShipment().getCourierItemData().size() > 3) {
-            llExpandedCourierList.setVisibility(View.VISIBLE);
-        } else {
-            llExpandedCourierList.setVisibility(View.GONE);
-        }
     }
 
     private void renderNoPinpoint() {
@@ -553,15 +540,6 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     @OnClick(R2.id.bt_change_pinpoint)
     void onChangePinPointClick() {
         setupPinPointMap();
-    }
-
-    @OnClick(R2.id.ll_expanded_courier_list)
-    void onExpandedCourierListClick() {
-        if (courierChoiceAdapter.getItemCount() > 3) {
-            presenter.loadFirstThreeCourier();
-        } else {
-            presenter.loadAllCourier();
-        }
     }
 
     @OnClick(R2.id.img_bt_insurance_info)
