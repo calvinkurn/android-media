@@ -87,8 +87,8 @@ public class DetailResChatActivity
             bundle.putString(PARAM_SHOP_NAME, shopNameSpanned);
         }
         destinationIntent.putExtras(bundle);
-        if (context instanceof TkpdCoreRouter){
-            Intent intent = ((TkpdCoreRouter) context).getHomeIntent(context);
+        if (context.getApplicationContext() instanceof TkpdCoreRouter){
+            Intent intent = ((TkpdCoreRouter) context.getApplicationContext()).getHomeIntent(context);
             taskStackBuilder.addNextIntent(intent);
         }
         taskStackBuilder.addNextIntent(parentIntent);
