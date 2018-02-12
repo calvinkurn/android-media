@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.domain.model;
 
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
@@ -11,9 +12,11 @@ import java.util.List;
 public class DynamicHomeIcon {
 
     @Expose
+    @SerializedName("useCaseIcon")
     private List<UseCaseIcon> useCaseIcon;
 
     @Expose
+    @SerializedName("dynamicIcon")
     private List<DynamicIcon> dynamicIcon;
 
     public List<UseCaseIcon> getUseCaseIcon() {
@@ -34,18 +37,23 @@ public class DynamicHomeIcon {
 
     public class DynamicIcon {
         @Expose
+        @SerializedName("id")
         private String id;
 
         @Expose
+        @SerializedName("applinks")
         private String applinks;
 
         @Expose
+        @SerializedName("imageUrl")
         private String imageUrl;
 
         @Expose
+        @SerializedName("name")
         private String name;
 
         @Expose
+        @SerializedName("url")
         private String url;
 
         public String getId() {
@@ -91,18 +99,23 @@ public class DynamicHomeIcon {
 
     public class UseCaseIcon {
         @Expose
+        @SerializedName("id")
         private String id;
 
         @Expose
+        @SerializedName("applinks")
         private String applinks;
 
         @Expose
+        @SerializedName("imageUrl")
         private String imageUrl;
 
         @Expose
+        @SerializedName("name")
         private String name;
 
         @Expose
+        @SerializedName("url")
         private String url;
 
         public String getId() {

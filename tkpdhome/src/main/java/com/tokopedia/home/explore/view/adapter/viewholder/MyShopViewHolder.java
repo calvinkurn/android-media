@@ -1,12 +1,15 @@
 package com.tokopedia.home.explore.view.adapter.viewholder;
 
+import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.Request;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -32,12 +35,13 @@ public class MyShopViewHolder extends AbstractViewHolder<MyShopViewModel> {
     ImageView badgeImage;
     TextView badgeTxt;
 
+    private Context context;
     private CategoryAdapterListener listener;
-    private Request loadReputationMedalRequest;
 
     public MyShopViewHolder(View itemView, final CategoryAdapterListener listener) {
         super(itemView);
         this.listener = listener;
+        this.context = itemView.getContext();
         titleTxt = itemView.findViewById(R.id.title);
         imageView = itemView.findViewById(R.id.image_shop);
         badgeImage = itemView.findViewById(R.id.badge);
@@ -59,7 +63,7 @@ public class MyShopViewHolder extends AbstractViewHolder<MyShopViewModel> {
         ImageHandler.LoadImage(imageView, data.getLogo());
         if (data.getIsOfficial() == 1) {
             badgeTxt.setText(getString(R.string.official_store));
-            badgeImage.setImageResource(R.drawable.ic_badge_official);
+            badgeImage.setImageResource(R.drawable.ic_official);
         } else if (data.isIsGoldBadge()) {
             badgeImage.setImageResource(R.drawable.ic_gold);
             badgeTxt.setText(getString(R.string.gold_merchant));
@@ -67,10 +71,11 @@ public class MyShopViewHolder extends AbstractViewHolder<MyShopViewModel> {
             badgeTxt.setVisibility(View.GONE);
             badgeImage.setVisibility(View.GONE);
         }
-        if (loadReputationMedalRequest == null || !loadReputationMedalRequest.isRunning()) {
-            loadReputationMedalRequest = Glide.with(reputationMedal.getContext()).load(data.getReputationBadge())
-                    .into(reputationMedal).getRequest();
-        }
+        Glide.with(reputationMedal.getContext()).load(data.getReputationBadge())
+                .asGif()
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .into(reputationMedal);
     }
 
 }

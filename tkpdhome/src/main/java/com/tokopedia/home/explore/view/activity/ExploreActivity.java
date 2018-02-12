@@ -170,7 +170,6 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
                         tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(ExploreActivity.this, R.color.tab_indicator_jual));
                         break;
                 }
-//                fragmentAdapter.getRegisteredFragment(position).refreshData(list.get(position));
             }
 
             @Override
