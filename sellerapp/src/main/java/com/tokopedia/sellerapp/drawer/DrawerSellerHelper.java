@@ -114,15 +114,15 @@ public class DrawerSellerHelper extends DrawerHelper
 
         data.add(getGoldMerchantMenu(false));
         data.add(getPaymentAndTopupMenu());
-        data.add(new DrawerItem(context.getString(R.string.drawer_title_mitra_toppers),
-                R.drawable.ic_mitra_toppers,
-                TkpdState.DrawerPosition.SELLER_MITRA_TOPPERS,
-                true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_new_reso_seller),
                 R.drawable.ic_reso,
                 TkpdState.DrawerPosition.RESOLUTION_CENTER,
                 true,
                 getTotalResoNotif()));
+        data.add(new DrawerItem(context.getString(R.string.drawer_title_mitra_toppers),
+                R.drawable.ic_mitra_toppers,
+                TkpdState.DrawerPosition.SELLER_MITRA_TOPPERS,
+                true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_statistic),
                 R.drawable.statistik_icon,
                 TkpdState.DrawerPosition.SELLER_GM_STAT,
@@ -131,7 +131,6 @@ public class DrawerSellerHelper extends DrawerHelper
                 R.drawable.ic_top_ads,
                 TkpdState.DrawerPosition.SELLER_TOP_ADS,
                 true));
-
         data.add(new DrawerItem(context.getString(R.string.drawer_title_setting),
                 R.drawable.icon_setting,
                 TkpdState.DrawerPosition.SETTINGS,
