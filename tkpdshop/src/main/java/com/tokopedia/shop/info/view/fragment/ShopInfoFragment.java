@@ -1,5 +1,6 @@
 package com.tokopedia.shop.info.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +15,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.interfaces.merchant.shop.info.ShopInfo;
 import com.tokopedia.shop.R;
+import com.tokopedia.shop.address.view.activity.ShopAddressListActivity;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent;
@@ -121,16 +123,17 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
         String physicalAddressContent = getString(R.string.shop_info_physical_shop_location_only_online);
         if (shopInfo.getAddress().size() > 0) {
             physicalAddressContent = getString(R.string.shop_info_physical_shop_location_count, shopInfo.getAddress().size());
+            physicalShopLabelView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = ShopAddressListActivity.createIntent(getActivity(), shopId);
+                    startActivity(intent);
+                }
+            });
         }
         physicalShopLabelView.setContent(physicalAddressContent);
         shopOwnerLabelView.setTitle(shopInfo.getOwner().getOwnerName());
         ImageHandler.loadImageRounded2(shopOwnerLabelView.getImageView().getContext(), shopOwnerLabelView.getImageView(), shopInfo.getOwner().getOwnerImage());
-        physicalShopLabelView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
         shopOwnerLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

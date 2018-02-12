@@ -1,5 +1,6 @@
 package com.tokopedia.shop.info.di.component;
 
+import com.tokopedia.shop.address.view.fragment.ShopAddressListFragment;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.info.di.module.ShopInfoModule;
 import com.tokopedia.shop.info.di.scope.ShopInfoScope;
@@ -20,6 +21,8 @@ public interface ShopInfoComponent {
     void inject(ShopPageActivity shopInfoActivity);
 
     void inject(ShopInfoFragment shopInfoDetailFragment);
+
+    void inject(ShopAddressListFragment shopAddressListFragment);
 
     GetShopInfoUseCase getShopInfoUseCase();
 }

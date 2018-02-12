@@ -35,10 +35,10 @@ public class ShopInfoAddress {
     private String locationEmail;
     @SerializedName("location_fax")
     @Expose
-    private long locationFax;
+    private String locationFax;
     @SerializedName("location_phone")
     @Expose
-    private long locationPhone;
+    private String locationPhone;
     @SerializedName("location_postal_code")
     @Expose
     private String locationPostalCode;
@@ -121,19 +121,19 @@ public class ShopInfoAddress {
         this.locationEmail = locationEmail;
     }
 
-    public long getLocationFax() {
+    public String getLocationFax() {
         return locationFax;
     }
 
-    public void setLocationFax(long locationFax) {
+    public void setLocationFax(String locationFax) {
         this.locationFax = locationFax;
     }
 
-    public long getLocationPhone() {
+    public String getLocationPhone() {
         return locationPhone;
     }
 
-    public void setLocationPhone(long locationPhone) {
+    public void setLocationPhone(String locationPhone) {
         this.locationPhone = locationPhone;
     }
 
