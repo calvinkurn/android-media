@@ -19,8 +19,6 @@ public interface IShipmentDetailPresenter extends CustomerPresenter<IShipmentDet
 
     void loadShipmentData();
 
-    void loadFirstThreeCourier();
-
     void loadAllCourier();
 
     void getPinPointMapData();

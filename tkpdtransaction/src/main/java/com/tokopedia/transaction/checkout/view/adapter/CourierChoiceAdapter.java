@@ -26,9 +26,12 @@ public class CourierChoiceAdapter extends RecyclerView.Adapter<CourierChoiceAdap
     private ViewListener viewListener;
     private List<CourierItemData> couriers;
 
-    public CourierChoiceAdapter(List<CourierItemData> couriers, ViewListener viewListener) {
-        this.couriers = couriers;
+    public void setViewListener(ViewListener viewListener) {
         this.viewListener = viewListener;
+    }
+
+    public void setCouriers(List<CourierItemData> couriers) {
+        this.couriers = couriers;
     }
 
     @Override
