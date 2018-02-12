@@ -170,7 +170,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
                 HomePageTracking.eventClickExplorerItem(
                         HomePageTracking.PESAN_INI_ITU_CLICK,
                         data.getName()
-                );;
+                );
                 break;
             case TYPE_AJUKAN:
                 HomePageTracking.eventClickExplorerItem(
