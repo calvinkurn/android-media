@@ -7,7 +7,6 @@ package com.tokopedia.core.base.adapter;
 /**
  * Use BaseAdapter (visitable pattern) from tkpd abstraction
  */
-@Deprecated
 public interface Visitable<T> {
 
     int type(T typeFactory);

@@ -68,6 +68,7 @@
             app:srcCompat="@drawable/ic_badge_none"
             android:scaleType="fitStart"
             android:layout_marginLeft="2dp" />
+
     </LinearLayout>
 
     <TextView
