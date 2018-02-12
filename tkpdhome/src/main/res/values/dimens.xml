@@ -26,4 +26,5 @@
     <dimen name="margin_small_sm">12dp</dimen>
     <dimen name="keyline_1_minus_8dp">8dp</dimen>
     <dimen name="card_view_margin">5dp</dimen>
+    <dimen name="discount_background_radius">16dp</dimen>
 </resources>

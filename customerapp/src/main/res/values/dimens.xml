@@ -15,4 +15,5 @@
     <dimen name="home_channel_sprint_sale_countdown_height">24dp</dimen>
     <dimen name="home_channel_3_image_size">104dp</dimen>
     <dimen name="count_down_item_size">24dp</dimen>
+    <dimen name="discount_background_radius">16dp</dimen>
 </resources>

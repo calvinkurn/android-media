@@ -11,9 +11,6 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.compoundview.HeaderHomeView;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * @author anggaprasetiyo on 11/12/17.
  */
