@@ -93,10 +93,11 @@ public class RejectOrderWeightPriceFragment extends RejectOrderBaseFragment {
                     getFragmentManager()
                             .beginTransaction()
                             .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
-                            .add(R.id.main_view,
+                            .replace(R.id.main_view,
                                     editFragment,
-                                    FRAGMENT_REJECT_ORDER_SUB_MENU_TAG
-                            ).commit();
+                                    FRAGMENT_REJECT_ORDER_SUB_MENU_TAG)
+                            .addToBackStack(FRAGMENT_REJECT_ORDER_SUB_MENU_TAG)
+                            .commit();
                 }
             }
         };

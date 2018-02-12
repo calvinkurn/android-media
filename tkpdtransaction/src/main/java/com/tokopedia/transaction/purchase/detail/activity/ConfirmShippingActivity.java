@@ -30,6 +30,7 @@ import com.tokopedia.transaction.purchase.detail.presenter.OrderCourierPresenter
 import com.tokopedia.transaction.purchase.listener.ToolbarChangeListener;
 
 import javax.inject.Inject;
+
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
@@ -42,11 +43,14 @@ public class ConfirmShippingActivity extends TActivity
         implements ConfirmShippingView,
         ServiceSelectionFragment.ServiceSelectionListener,
         CourierSelectionFragment.OrderCourierFragmentListener,
-        ToolbarChangeListener{
+        ToolbarChangeListener {
 
     private static final String EXTRA_ORDER_DETAIL_DATA = "EXTRA_ORDER_DETAIL_DATA";
+    private static final String EXTRA_ORDER_MODE_KEY = "EXTRA_ORDER_MODE_KEY";
     private static final String SELECT_COURIER_FRAGMENT_TAG = "select_courier";
     public static final String SELECT_SERVICE_FRAGMENT_TAG = "select_service";
+    public static final int CONFIRM_SHIPMENT_MODE = 1;
+    public static final int CHANGE_COURIER_MODE = 2;
 
     private OrderDetailShipmentModel editableModel;
 
@@ -61,7 +65,19 @@ public class ConfirmShippingActivity extends TActivity
 
     public static Intent createInstance(Context context, OrderDetailData data) {
         Intent intent = new Intent(context, ConfirmShippingActivity.class);
-        intent.putExtra(EXTRA_ORDER_DETAIL_DATA, data);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(EXTRA_ORDER_DETAIL_DATA, data);
+        bundle.putInt(EXTRA_ORDER_MODE_KEY, CONFIRM_SHIPMENT_MODE);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent createChangeCourierInstance(Context context, OrderDetailData data) {
+        Intent intent = new Intent(context, ConfirmShippingActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(EXTRA_ORDER_DETAIL_DATA, data);
+        bundle.putInt(EXTRA_ORDER_MODE_KEY, CHANGE_COURIER_MODE);
+        intent.putExtras(bundle);
         return intent;
     }
 
@@ -71,7 +87,8 @@ public class ConfirmShippingActivity extends TActivity
         inflateView(R.layout.activity_confirm_payment);
         initInjector();
         presenter.setView(this);
-        OrderDetailData orderDetailData = getIntent().getParcelableExtra(EXTRA_ORDER_DETAIL_DATA);
+        OrderDetailData orderDetailData = getIntent().getExtras()
+                .getParcelable(EXTRA_ORDER_DETAIL_DATA);
         initateData(orderDetailData);
         initiateView(orderDetailData);
     }
@@ -83,7 +100,7 @@ public class ConfirmShippingActivity extends TActivity
         ImageView barcodeScanner = findViewById(R.id.icon_scan);
         LinearLayout courierLayout = findViewById(R.id.courier_layout);
         TextView confirmButton = findViewById(R.id.confirm_button);
-        if(isChangeCourierMode(orderDetailData))
+        if (isChangeCourierMode(Integer.parseInt(orderDetailData.getOrderCode())))
             toolbar.setTitle(getString(R.string.button_order_detail_change_courier));
         courierLayout.setOnClickListener(onGetCourierButtonClickedListener(orderDetailData));
         confirmButton.setOnClickListener(onConfirmButtonClickedListener(barcodeEditText));
@@ -92,11 +109,10 @@ public class ConfirmShippingActivity extends TActivity
         courierName.setText(editableModel.getShipmentName() + " " + editableModel.getPackageName());
     }
 
-    private boolean isChangeCourierMode(OrderDetailData orderDetailData) {
-        return Integer
-                .parseInt(orderDetailData.getOrderCode()) >= OrderShipmentTypeDef.ORDER_WAITING
-                && Integer
-                .parseInt(orderDetailData.getOrderCode())< OrderShipmentTypeDef.ORDER_DELIVERED;
+    private boolean isChangeCourierMode(int orderCode) {
+        return (orderCode >= OrderShipmentTypeDef.ORDER_WAITING
+                && orderCode< OrderShipmentTypeDef.ORDER_DELIVERED)
+                || getIntent().getExtras().getInt(EXTRA_ORDER_MODE_KEY) == CHANGE_COURIER_MODE;
     }
 
     private void initateData(OrderDetailData orderDetailData) {
@@ -185,7 +201,8 @@ public class ConfirmShippingActivity extends TActivity
             @Override
             public void onClick(View view) {
                 editableModel.setShippingRef(barcodeEditText.getText().toString());
-                presenter.onProcessCourier(ConfirmShippingActivity.this, editableModel);
+                presenter.onProcessCourier(ConfirmShippingActivity.this, editableModel,
+                        isChangeCourierMode(editableModel.getOrderStatusCode()));
             }
         };
     }
@@ -210,10 +227,10 @@ public class ConfirmShippingActivity extends TActivity
 
     @Override
     public void onBackPressed() {
-        if(getFragmentManager().findFragmentByTag(SELECT_SERVICE_FRAGMENT_TAG) != null) {
+        if (getFragmentManager().findFragmentByTag(SELECT_SERVICE_FRAGMENT_TAG) != null) {
             removeServiceSelectionFragment();
             toolbar.setTitle(R.string.label_select_courier);
-        } else if(getFragmentManager().findFragmentByTag(SELECT_COURIER_FRAGMENT_TAG) != null) {
+        } else if (getFragmentManager().findFragmentByTag(SELECT_COURIER_FRAGMENT_TAG) != null) {
             removeCourierSelectionFragment();
             toolbar.setTitle(R.string.title_confirm_shipment);
         } else super.onBackPressed();

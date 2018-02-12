@@ -17,9 +17,9 @@
             android:padding="@dimen/padding_small"
             android:text="@string/title_confirm_courier_page"
             android:textSize="@dimen/text_size_large"
-            android:textStyle="bold" />-->
+            android:textStyle="bold" />
 
-        <!--<TextView
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/subtitle_confirm_courier_page"

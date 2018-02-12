@@ -523,7 +523,7 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onChangeCourier(OrderDetailData data) {
         //TODO Check Again Later
-        Intent intent = ConfirmShippingActivity.createInstance(this, data);
+        Intent intent = ConfirmShippingActivity.createChangeCourierInstance(this, data);
         startActivityForResult(intent, CONFIRM_SHIPMENT_REQUEST_CODE);
     }
 
@@ -661,7 +661,11 @@ public class OrderDetailActivity extends TActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CONFIRM_SHIPMENT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            presenter.fetchData(this, getExtraOrderId(), getExtraUserMode());
+            //TODO Alternative kalo mau langsung ganti status di halaman detail
+            //presenter.fetchData(this, getExtraOrderId(), getExtraUserMode());
+            //TODO Alternative kalo langsung balik ke halaman order list
+            setResult(Activity.RESULT_OK);
+            finish();
         }
     }
 
