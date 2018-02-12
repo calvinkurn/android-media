@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.campaign.view;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.SensorManager;
@@ -8,6 +9,7 @@ import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.Toast;
 
@@ -20,10 +22,16 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.RuntimePermissions;
+
 /**
  * Created by sandeepgoyal on 23/01/18.
  */
 
+@RuntimePermissions
 public class CapturedAudioCampaignActivity extends BasePresenterActivity implements AudioRecorder.RecordCompleteListener{
     @Override
     protected void setupURIPass(Uri data) {
@@ -63,12 +71,37 @@ public class CapturedAudioCampaignActivity extends BasePresenterActivity impleme
 
     @Override
     protected void initVar() {
+        CapturedAudioCampaignActivityPermissionsDispatcher.isRequiredPermissionAvailableWithCheck(this);
+    }
+
+    @NeedsPermission({Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    void isRequiredPermissionAvailable() {
         try {
-            startRecording();
+
+                    startRecording();
+
             Toast.makeText(this,"Recording Start",Toast.LENGTH_LONG).show();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @OnPermissionDenied({Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    void requestRequirePermissionDenied() {
+        Toast.makeText(this, "Please provide required permissions", Toast.LENGTH_LONG).show();
+        finish();
+    }
+
+    @OnNeverAskAgain({Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    void requestCameraPermissionNeverAsk() {
+        Toast.makeText(this, "Please provide required permissions", Toast.LENGTH_LONG).show();
+        finish();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        CapturedAudioCampaignActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
 
