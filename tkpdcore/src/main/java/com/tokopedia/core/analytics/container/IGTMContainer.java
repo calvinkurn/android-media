@@ -140,7 +140,7 @@ public interface IGTMContainer {
 
     void eventClickCategoryLifestyle(String categoryUrl, List<Object> list);
 
-    void enhanceClickSearchResultProduct(Map<String, Object> objects,
+    void enhanceClickSearchResultProduct(Object object,
                                          String keyword,
                                          String actionField);
 

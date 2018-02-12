@@ -40,7 +40,9 @@
         layout="@layout/kol_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/separator2"/>
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/title" />
 
     <RelativeLayout
         android:id="@+id/tooltip_image"
@@ -54,6 +56,7 @@
             android:id="@+id/image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
             android:adjustViewBounds="true"/>
 
         <RelativeLayout
@@ -75,7 +78,7 @@
                 android:lineSpacingExtra="6sp"
                 android:padding="@dimen/padding_vs"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_xxsmall"
+                android:textSize="@dimen/text_size_small"
                 android:textStyle="normal"
                 tools:text="Rp 249000 - Lihat Produk"/>
         </RelativeLayout>
@@ -88,11 +91,9 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/tooltip_image"
-        android:fontFamily="sans-serif"
-        android:lineSpacingExtra="6sp"
         android:padding="@dimen/padding_small"
         android:textColor="@color/black_54"
-        android:textSize="@dimen/text_size_small"
+        android:textSize="@dimen/text_size_medium"
         android:textStyle="normal"
         tools:text="The snapback’s predecessor, the baseball cap, must be proud of its stylish spawn. Compared to fitted baseball caps worn by pro players, snapback are less expensive and much more attuned to contemporary urban culture. But earliest versions of the snapbac… Read More"/>
 
