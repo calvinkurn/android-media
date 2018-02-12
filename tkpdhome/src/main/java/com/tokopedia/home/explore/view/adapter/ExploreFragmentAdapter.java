@@ -42,4 +42,8 @@ public class ExploreFragmentAdapter extends FragmentStatePagerAdapter {
         return modelList.size();
     }
 
+    @Override
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
+    }
 }
