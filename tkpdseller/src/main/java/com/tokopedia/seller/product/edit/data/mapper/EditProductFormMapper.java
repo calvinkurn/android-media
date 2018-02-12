@@ -65,7 +65,7 @@ public class EditProductFormMapper implements Func1<EditProductFormServiceModel,
             domainModel.setProductInvenageSwitch(Integer.parseInt(product.getProductInvenageSwitch()));
         }
         if (product.getProductInvenageValue() != null) {
-            domainModel.setProductInvenageValue(Integer.parseInt(product.getProductInvenageValue()));
+            domainModel.setProductStock(Integer.parseInt(product.getProductInvenageValue()));
         }
         domainModel.setProductWholesaleList(mapWholesale(data.getWholesalePriceList()));
         domainModel.setProductPhotos(mapPhotos(data.getProductImageList()));

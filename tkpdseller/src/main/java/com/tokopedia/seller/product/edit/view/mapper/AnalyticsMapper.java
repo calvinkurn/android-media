@@ -2,14 +2,8 @@ package com.tokopedia.seller.product.edit.view.mapper;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.base.utils.StringUtils;
-import com.tokopedia.seller.product.edit.constant.InvenageSwitchTypeDef;
+import com.tokopedia.seller.product.edit.constant.ProductStockTypeDef;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
-import com.tokopedia.seller.product.edit.view.model.upload.UploadProductInputViewModel;
-import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantDataSubmit;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantUnitSubmit;
-import com.tokopedia.seller.product.variant.data.source.ProductVariantDataSource;
-import com.tokopedia.seller.product.variant.util.ProductVariantUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +22,7 @@ public class AnalyticsMapper {
         if(viewModel.getProductWholesale()!= null && viewModel.getProductWholesale().size() >0 ){
             listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_WHOLESALE);
         }
-        if(viewModel.getProductStock() == InvenageSwitchTypeDef.TYPE_ACTIVE){
+        if(viewModel.getProductStock() == ProductStockTypeDef.TYPE_ACTIVE){
             listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_STOCK_MANAGEMENT);
         }
 //        if(viewModel.getProductReturnable() == freeReturnActive){

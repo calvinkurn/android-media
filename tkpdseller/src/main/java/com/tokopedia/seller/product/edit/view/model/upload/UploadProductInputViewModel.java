@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.edit.view.model.upload;
 
 import android.text.TextUtils;
 
-import com.tokopedia.seller.product.edit.constant.InvenageSwitchTypeDef;
+import com.tokopedia.seller.product.edit.constant.ProductStockTypeDef;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
@@ -37,7 +37,7 @@ public class UploadProductInputViewModel {
     private int productPriceCurrency;
     private int productReturnable;
     private int productUploadTo;
-    @InvenageSwitchTypeDef
+    @ProductStockTypeDef
     private int productInvenageSwitch;
     private int productInvenageValue;
     private int productWeight;
@@ -242,7 +242,7 @@ public class UploadProductInputViewModel {
         this.productUploadTo = productUploadTo;
     }
 
-    @InvenageSwitchTypeDef
+    @ProductStockTypeDef
     public int getProductInvenageSwitch() {
         return productInvenageSwitch;
     }

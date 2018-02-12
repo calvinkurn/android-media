@@ -13,16 +13,13 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
-import com.tokopedia.seller.product.edit.constant.InvenageSwitchTypeDef;
 import com.tokopedia.seller.product.edit.constant.UploadToTypeDef;
 import com.tokopedia.seller.product.edit.di.component.DaggerProductDraftComponent;
 import com.tokopedia.seller.product.edit.di.module.ProductDraftModule;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductVideoViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
-import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 import com.tokopedia.seller.product.edit.view.presenter.ProductDraftPresenter;
 import com.tokopedia.seller.product.edit.view.presenter.ProductDraftView;
-import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -38,7 +38,6 @@ import com.tokopedia.seller.instoped.InstopedSellerCropWatermarkActivity;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
-import com.tokopedia.seller.product.edit.constant.InvenageSwitchTypeDef;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.seller.product.edit.di.component.DaggerProductAddComponent;
 import com.tokopedia.seller.product.edit.di.module.ProductAddModule;
@@ -60,11 +59,9 @@ import com.tokopedia.seller.product.edit.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.product.edit.view.mapper.AnalyticsMapper;
 import com.tokopedia.seller.product.edit.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
-import com.tokopedia.seller.product.edit.view.model.edit.ProductVideoViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
-import com.tokopedia.seller.product.edit.view.model.upload.UploadProductInputViewModel;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.edit.view.presenter.ProductAddPresenter;
@@ -152,11 +149,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     private void onAttachToContext(Context context) {
-        if (context instanceof Listener) {
-            this.listener = (Listener) context;
-        } else {
-            throw new RuntimeException("Activity must implement Listener");
-        }
+        this.listener = (Listener) context;
     }
 
     @Override
@@ -214,7 +207,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
             @Override
             public void onClick(View view) {
                 if (isDataValid()) {
-                    saveAndAddDraft(true);
+                    saveAndAddDraft();
                 }
             }
         });
@@ -223,12 +216,10 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         return view;
     }
 
-    private void saveAndAddDraft(boolean isUploading) {
+    private void saveAndAddDraft() {
         ProductViewModel viewModel = collectDataFromView();
-        if (isUploading) {
-            sendAnalyticsAddMore(viewModel);
-        }
-        presenter.saveDraftAndAdd(viewModel, isUploading);
+        sendAnalyticsAddMore(viewModel);
+        presenter.saveDraftAndAdd(viewModel, true);
     }
 
     protected void saveDefaultModel(){
@@ -467,7 +458,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
             @Override
             public void onRetryClicked() {
                 if (isDataValid()) {
-                    saveAndAddDraft(true);
+                    saveAndAddDraft();
                 }
             }
         }).showRetrySnackbar();
@@ -761,9 +752,10 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     @Override
     public void onCategoryChanged(long categoryId) {
-        // when category change, check if catalog exists
+        // as default, the variant inputted will be deleted (wihtout notice)
         productAdditionalInfoViewHolder.setProductVariantDataSubmit(null, "");
         productAdditionalInfoViewHolder.onSuccessGetProductVariantCat(null);
+        // check catalog by categoryID
         onCategoryLoaded(categoryId);
     }
 
@@ -772,8 +764,11 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
      * @param categoryId
      */
     public void onCategoryLoaded(long categoryId) {
+        // fetch product variant by category
         presenter.fetchProductVariantByCat(categoryId);
+        // check catalog by categoryId
         checkIfCatalogExist(productInfoViewHolder.getName(), categoryId);
+        // fetch category strings
         fetchCategory(categoryId);
     }
 
@@ -840,7 +835,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         viewModel.setProductFreeReturn(productDetailViewHolder.isFreeReturns());
         viewModel.setProductVideo(productAdditionalInfoViewHolder.getVideoList());
         viewModel.setProductPreorder(productAdditionalInfoViewHolder.getPreOrder());
-        //todo map old draft model to new draft model variant
+        //todo hendry map old draft model to new draft model variant
 //        viewModel.setProductVariant(productAdditionalInfoViewHolder.getProductVariant());
         viewModel.setProductNameEditable(productInfoViewHolder.isNameEditable());
 

@@ -8,15 +8,10 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
-import com.tokopedia.seller.product.edit.constant.FreeReturnTypeDef;
-import com.tokopedia.seller.product.edit.constant.InvenageSwitchTypeDef;
 import com.tokopedia.seller.product.edit.constant.ProductConditionTypeDef;
-import com.tokopedia.seller.product.edit.constant.ProductInsuranceValueTypeDef;
-import com.tokopedia.seller.product.edit.constant.UploadToTypeDef;
 import com.tokopedia.seller.product.edit.constant.WeightUnitTypeDef;
 import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.ProductPhotoListDomainModel;
-import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 
 import java.util.ArrayList;
@@ -78,7 +73,7 @@ public class SaveBulkDraftProductUseCase extends UseCase<List<Long>> {
 //            productViewModel.setProductReturnable(FreeReturnTypeDef.TYPE_ACTIVE);
 
 //            productViewModel.setProductInvenageSwitch(
-//                    InvenageSwitchTypeDef.TYPE_NOT_ACTIVE);
+//                    ProductStockTypeDef.TYPE_NOT_ACTIVE);
             productViewModel.setProductCondition(ProductConditionTypeDef.TYPE_NEW);
 
 //            productViewModel.setProductMustInsurance(ProductInsuranceValueTypeDef.TYPE_OPTIONAL);

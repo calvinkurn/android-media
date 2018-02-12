@@ -86,7 +86,7 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
 //        domainModel.setServerId(draftModel.getServerId());
         domainModel.setProductId(Long.parseLong(draftModel.getProductId()));
         domainModel.setProductNameEditable(draftModel.getProductNameEditable() != 0);
-        //todo map old draft model to new draft model variant
+        //todo hendry map old draft model to new draft model variant
 //        domainModel.setProductVariantDataSubmit(draftModel.getProductVariantDataSubmit());
 //        domainModel.setVariantStringSelection(draftModel.getVariantStringSelection());
         return domainModel;
