@@ -48,6 +48,7 @@ import rx.subscriptions.CompositeSubscription;
 
 public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetailOrderContract.View> implements FlightDetailOrderContract.Presenter {
 
+    private static final String NEW_LINE = "\n";
     private final FlightGetOrderUseCase flightGetOrderUseCase;
     private UserSession userSession;
     private CompositeSubscription compositeSubscription;
@@ -154,10 +155,6 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        if (isViewAttached()) {
-
-                        }
-
                     }
 
                     @Override
@@ -204,7 +201,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
             SpannableStringBuilder desc = new SpannableStringBuilder();
             desc.append(payment.getTransactionCode());
             makeSmall(desc);
-            text.append("\n");
+            text.append(NEW_LINE);
             text.append(desc);
         }
         return text;

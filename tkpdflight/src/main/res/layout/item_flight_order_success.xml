@@ -71,7 +71,7 @@
                 android:paddingRight="@dimen/padding_small"
                 android:paddingBottom="@dimen/padding_med"
                 android:paddingLeft="@dimen/padding_small"
-                android:text="Kirim E-Ticket" />
+                android:text="@string/flight_order_list_button_send_eticket" />
         </LinearLayout>
 
     </android.support.v7.widget.CardView>

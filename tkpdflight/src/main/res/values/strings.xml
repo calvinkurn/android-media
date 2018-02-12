@@ -325,4 +325,5 @@
     <string name="flight_resend_eticket_dialog_email_invalid_error">Alamat Email tidak valid</string>
     <string name="flight_resend_eticket_dialog_email_invalid_symbol_error">Alamat Email tidak boleh terdiri dari symbol +</string>
     <string name="resend_eticket_success">E-Ticket anda berhasil dikirim.</string>
+    <string name="flight_order_list_button_send_eticket">Kirim E-Ticket</string>
 </resources>

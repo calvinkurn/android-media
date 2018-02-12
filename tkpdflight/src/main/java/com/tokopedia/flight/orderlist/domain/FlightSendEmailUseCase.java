@@ -25,7 +25,6 @@ public class FlightSendEmailUseCase extends UseCase<SendEmailEntity> {
     @Override
     public Observable<SendEmailEntity> createObservable(RequestParams requestParams) {
         return flightRepository.sendEmail(requestParams.getParameters());
-
     }
 
     public RequestParams createRequestParams(String orderId, String userId, String email) {
