@@ -39,6 +39,7 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
 
     private static final String SECTION = "section";
     private static final String POSTION = "position";
+    private static final String DEFAULT_SECTION = "beli";
 
     @Inject
     ExplorePresenter presenter;
@@ -63,8 +64,9 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
             position = savedInstanceState.getInt(POSTION);
-        } else {
-            position = sectionToPosition(getIntent().getStringExtra(SECTION));
+        } else if (getIntent().getExtras() != null) {
+            String section = getIntent().getStringExtra(SECTION);
+            position = sectionToPosition(section != null ? section : DEFAULT_SECTION);
         }
         ExploreComponent component = getComponent();
         component.inject(this);
@@ -140,7 +142,7 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
             setupTabIcon(i);
         }
         viewPager.setCurrentItem(position);
-//        fragmentAdapter.getRegisteredFragment(position).renderList(list.get(position).getVisitableList());
+        fragmentAdapter.getRegisteredFragment(position).refreshData(list.get(position));
     }
 
     private void notifyDataChange(ExploreSectionViewModel model) {
@@ -179,6 +181,7 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
                         tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(ExploreActivity.this, R.color.tab_indicator_jual));
                         break;
                 }
+                fragmentAdapter.getRegisteredFragment(position).refreshData(list.get(position));
             }
 
             @Override
