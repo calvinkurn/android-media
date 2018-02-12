@@ -67,7 +67,7 @@
             android:layout_height="18dp"
             android:adjustViewBounds="true"
             app:srcCompat="@drawable/ic_badge_none"
-            android:layout_marginLeft="2dp" />
+            android:padding="2dp" />
     </LinearLayout>
 
     <TextView

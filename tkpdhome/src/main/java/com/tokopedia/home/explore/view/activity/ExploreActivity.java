@@ -48,8 +48,6 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
     private SnackbarRetry messageSnackbar;
     private CoordinatorLayout root;
     private int position = 0;
-    private List<ExploreContract.FragmentView> fragmentViews = new ArrayList<>();
-    private List<ExploreSectionViewModel> list;
 
     @DeepLink(Constants.Applinks.EXPLORE)
     public static Intent getCallingIntent(Context context, Bundle extras) {
@@ -135,20 +133,11 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
 
     @Override
     public void renderData(List<ExploreSectionViewModel> list) {
-        this.list = list;
-        viewPager.setAdapter(getViewPagerAdapter());
         fragmentAdapter.setData(list);
         for (int i = 0; i < list.size(); i++) {
             setupTabIcon(i);
         }
         viewPager.setCurrentItem(position);
-        fragmentAdapter.getRegisteredFragment(position).refreshData(list.get(position));
-    }
-
-    private void notifyDataChange(ExploreSectionViewModel model) {
-        for (int i = 0; i < fragmentViews.size(); i++) {
-            fragmentViews.get(i).refreshData(model);
-        }
     }
 
     @Override
@@ -181,7 +170,7 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
                         tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(ExploreActivity.this, R.color.tab_indicator_jual));
                         break;
                 }
-                fragmentAdapter.getRegisteredFragment(position).refreshData(list.get(position));
+//                fragmentAdapter.getRegisteredFragment(position).refreshData(list.get(position));
             }
 
             @Override
@@ -265,10 +254,5 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
     @Override
     protected int getPageLimit() {
         return 3;
-    }
-
-
-    public void setFragmentView(ExploreContract.FragmentView view) {
-        this.fragmentViews.add(view);
     }
 }
