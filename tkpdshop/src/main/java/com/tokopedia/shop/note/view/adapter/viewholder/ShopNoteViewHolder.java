@@ -5,6 +5,7 @@ import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.design.label.LabelView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.note.view.model.ShopNoteViewModel;
 
@@ -17,8 +18,7 @@ public class ShopNoteViewHolder extends AbstractViewHolder<ShopNoteViewModel> {
     @LayoutRes
     public static final int LAYOUT = R.layout.item_shop_info_note;
 
-    private AppCompatTextView tvTitle;
-    private AppCompatTextView tvOrderDate;
+    private LabelView shopNoteLabelView;
 
     public ShopNoteViewHolder(View itemView) {
         super(itemView);
@@ -26,13 +26,12 @@ public class ShopNoteViewHolder extends AbstractViewHolder<ShopNoteViewModel> {
     }
 
     private void findViews(View view) {
-        tvTitle = view.findViewById(R.id.title_text_view);
-        tvOrderDate = view.findViewById(R.id.date_text_view);
+        shopNoteLabelView = view.findViewById(R.id.label_view);
     }
 
     @Override
     public void bind(ShopNoteViewModel element) {
-        tvTitle.setText(element.getTitle());
-        tvOrderDate.setText(element.getLastUpdate());
+        shopNoteLabelView.setTitle(element.getTitle());
+        shopNoteLabelView.setSubTitle(element.getLastUpdate());
     }
 }

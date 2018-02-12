@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="LabelView">
+        <attr name="lv_image" format="reference" />
+        <attr name="lv_image_width" format="dimension" />
         <attr name="lv_title" format="string" />
         <attr name="lv_title_text_size" format="dimension" />
         <attr name="lv_title_color" format="color" />
@@ -10,6 +12,7 @@
             <flag name="bold" value="1" />
             <flag name="italic" value="2" />
         </attr>
+        <attr name="lv_sub_title" format="string" />
         <attr name="lv_content" format="string" />
         <attr name="lv_content_color" format="color" />
         <attr name="lv_content_text_size" format="dimension" />

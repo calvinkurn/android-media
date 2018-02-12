@@ -1,26 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white">
-
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/title_text_view"
-        style="@style/TextView.Title"
-        android:layout_marginStart="@dimen/margin_sm"
-        android:layout_marginLeft="@dimen/margin_sm"
-        tools:text="@string/app_name" />
-
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/date_text_view"
-        style="@style/TextView.Micro"
-        android:layout_marginStart="@dimen/margin_sm"
-        android:layout_marginLeft="@dimen/margin_sm"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title_text_view"
-        app:layout_constraintVertical_bias="0.0"
-        tools:text="@string/app_name" />
-</android.support.constraint.ConstraintLayout>
+<com.tokopedia.design.label.LabelView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/label_view"
+    style="@style/LabelLayout" />

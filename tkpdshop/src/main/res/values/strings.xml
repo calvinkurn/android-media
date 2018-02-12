@@ -6,4 +6,27 @@
 
     <string name="shop_info_title_tab_shop_info">Informasi Toko</string>
     <string name="shop_info_title_tab_note">Catatan</string>
+
+    <string name="shop_info_label_statistic">Statistik Toko</string>
+    <string name="shop_info_label_satisfied">Kepuasan Toko</string>
+    <string name="shop_info_label_about">Tentang Toko</string>
+    <string name="shop_info_label_logistic">Dukungan Pengiriman</string>
+
+    <string name="shop_info_label_transaction_success">Transaksi Sukses</string>
+    <string name="shop_info_label_total_transaction">Total Transaksi</string>
+    <string name="shop_info_label_product_sold">Produk Terjual</string>
+    <string name="shop_info_label_total_review">Total Ulasan</string>
+    <string name="shop_info_label_favourite">Favorit</string>
+    <string name="shop_info_label_last_online">Terakhir Online</string>
+    <string name="shop_info_label_open_since">Buka Sejak</string>
+    <string name="shop_info_label_total_product">Total Produk</string>
+    <string name="shop_info_label_total_etalase">Total Etalase</string>
+
+    <string name="shop_info_label_physical_shop">Toko Fisik</string>
+    <string name="shop_info_label_shop_owner">Pemilik Toko</string>
+    <string name="shop_info_physical_shop_location_count">%1d Lokasi</string>
+    <string name="shop_info_physical_shop_location_only_online">Hanya Online</string>
+
+    <string name="shop_info_label_default_content">-</string>
+
 </resources>

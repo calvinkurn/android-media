@@ -4,7 +4,7 @@ package com.tokopedia.interfaces.merchant.shop.info;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ShopInfoLastOneMonth {
+public class ShopInfoLastScore {
 
     @SerializedName("count_score_bad")
     @Expose

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background_apps"
+        android:orientation="vertical">
+
+        <include layout="@layout/partial_shop_info_statistic" />
+
+        <include
+            layout="@layout/partial_shop_info_satisfied"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_med" />
+
+        <include
+            layout="@layout/partial_shop_info_about"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_med" />
+
+        <LinearLayout
+            style="@style/LabelLayout"
+            android:layout_marginTop="@dimen/margin_med">
+
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/TextView.Title.Bold"
+                android:text="@string/shop_info_label_logistic" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

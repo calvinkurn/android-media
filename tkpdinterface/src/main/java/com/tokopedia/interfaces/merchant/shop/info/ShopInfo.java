@@ -1,6 +1,7 @@
 
 package com.tokopedia.interfaces.merchant.shop.info;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -9,34 +10,34 @@ public class ShopInfo {
 
     @SerializedName("address")
     @Expose
-    private List<ShopInfoAddress> address = null;
+    private List<ShopInfoAddress> address = new ArrayList<>();
     @SerializedName("closed_info")
     @Expose
-    private ShopInfoClosedInfo closedInfo;
+    private ShopInfoClosedInfo closedInfo = new ShopInfoClosedInfo();
     @SerializedName("info")
     @Expose
-    private ShopInfoDetail info;
+    private ShopInfoDetail info = new ShopInfoDetail();
     @SerializedName("is_open")
     @Expose
     private long isOpen;
     @SerializedName("owner")
     @Expose
-    private ShopInfoOwner owner;
+    private ShopInfoOwner owner = new ShopInfoOwner();
     @SerializedName("payment")
     @Expose
-    private List<ShopInfoPayment> payment = null;
+    private List<ShopInfoPayment> payment = new ArrayList<>();
     @SerializedName("ratings")
     @Expose
-    private ShopInfoRatings ratings;
+    private ShopInfoRatings ratings = new ShopInfoRatings();
     @SerializedName("shipment")
     @Expose
-    private List<ShopInfoShipment> shipment = null;
+    private List<ShopInfoShipment> shipment = new ArrayList<>();
     @SerializedName("shop_tx_stats")
     @Expose
-    private ShopInfoTxStats shopTxStats;
+    private ShopInfoTxStats shopTxStats = new ShopInfoTxStats();
     @SerializedName("stats")
     @Expose
-    private ShopInfoStats stats;
+    private ShopInfoStats stats = new ShopInfoStats();
     @SerializedName("use_ace")
     @Expose
     private long useAce;
