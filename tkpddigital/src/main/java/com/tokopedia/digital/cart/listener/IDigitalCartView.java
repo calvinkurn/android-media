@@ -1,7 +1,9 @@
 package com.tokopedia.digital.cart.listener;
 
+import android.app.Activity;
 import android.content.Context;
 
+import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
 import com.tokopedia.digital.cart.model.CheckoutDataParameter;
 import com.tokopedia.digital.cart.model.CheckoutDigitalData;
@@ -74,6 +76,8 @@ public interface IDigitalCartView extends IBaseView {
 
     void closeViewWithMessageAlert(String message);
 
+    void setCartDigitalInfo(CartDigitalInfoData cartDigitalInfo);
+
     void interruptRequestTokenVerification(CartDigitalInfoData cartDigitalInfoData);
 
     void interruptRequestTokenVerification();
@@ -98,6 +102,14 @@ public interface IDigitalCartView extends IBaseView {
 
     String getIdemPotencyKey();
 
-    Context getContext();
+    void checkCallPermissionForNOTP();
+
+    Context getApplicationContext();
+
+    Activity getActivity();
+
+    DigitalCheckoutPassData getPassData();
+
+    void showProgressLoading(String title,String message);
 
 }

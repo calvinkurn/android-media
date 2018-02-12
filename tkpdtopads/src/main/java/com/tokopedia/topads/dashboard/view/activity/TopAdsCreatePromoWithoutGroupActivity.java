@@ -13,7 +13,6 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewCostWithoutGroupFragment;
-import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewProductListExistingGroupFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewProductListWithoutGroupFragment;
 import com.tokopedia.topads.dashboard.view.model.TopAdsCreatePromoExistingGroupModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsCreatePromoWithoutGroupModel;
@@ -62,19 +61,6 @@ public class TopAdsCreatePromoWithoutGroupActivity extends BaseStepperActivity<T
         intent.putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, itemIdToAdd);
         return intent;
     }
-
-    @Override
-    public void finishPage() {
-        setResultAdSaved();
-        super.finishPage();
-    }
-
-    private void setResultAdSaved() {
-        Intent intent = new Intent();
-        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
-        setResult(Activity.RESULT_OK, intent);
-    }
-
 
     @Override
     public AppComponent getComponent() {

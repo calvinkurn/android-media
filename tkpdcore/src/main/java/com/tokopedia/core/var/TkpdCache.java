@@ -201,6 +201,8 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String DIGITAL_CATEGORY_ITEM_LIST = "DIGITAL_CATEGORY_ITEM_LIST";
         public static final String DIGITAL_LAST_ORDER = "DIGITAL_LAST_ORDER";
 
+        public static final String DIGITAL_CATEGORY_DETAIL = "DIGITAL_CATEGORY_DETAIL";
+
         public static final String KEY_TOKOCASH_DATA = "TOKOCASH_DATA";
 
         public static final String KEY_LOCATION = "KEY_FP_LOCATION";

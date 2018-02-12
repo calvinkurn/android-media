@@ -22,5 +22,8 @@ public interface ICartDigitalPresenter {
 
     void autoApplyCouponIfAvailable(String digitalCategoryId);
 
+    void callPermissionCheckSuccess();
+
+    void callPermissionCheckFail();
 
 }

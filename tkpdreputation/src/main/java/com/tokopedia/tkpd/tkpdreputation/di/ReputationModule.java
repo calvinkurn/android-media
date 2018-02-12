@@ -1,5 +1,10 @@
 package com.tokopedia.tkpd.tkpdreputation.di;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -8,6 +13,8 @@ import com.tokopedia.core.network.apiservices.tome.TomeService;
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
 import com.tokopedia.core.network.apiservices.user.FaveShopActService;
 import com.tokopedia.core.network.apiservices.user.ReputationService;
+import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdreputation.data.mapper.DeleteReviewResponseMapper;
 import com.tokopedia.tkpd.tkpdreputation.data.mapper.GetLikeDislikeMapper;
 import com.tokopedia.tkpd.tkpdreputation.data.mapper.LikeDislikeMapper;
@@ -46,6 +53,12 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.Send
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewValidateUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SetReviewFormCacheUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SkipReviewUseCase;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.source.ReviewProductApi;
+import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetHelpfulUseCase;
+import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetListUseCase;
+import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetRatingUseCase;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.ReviewProductListMapper;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.presenter.ReviewProductPresenter;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.factory.ImageUploadFactory;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.mapper.GenerateHostMapper;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.mapper.UploadImageMapper;
@@ -56,6 +69,7 @@ import com.tokopedia.tkpd.tkpdreputation.uploadimage.domain.interactor.UploadIma
 
 import dagger.Module;
 import dagger.Provides;
+import retrofit2.Retrofit;
 
 /**
  * @author by nisie on 8/11/17.
@@ -124,7 +138,8 @@ public class ReputationModule {
             DeleteReviewResponseMapper deleteReviewResponseMapper,
             ReplyReviewMapper replyReviewMapper,
             GetLikeDislikeMapper getLikeDislikeMapper,
-            LikeDislikeMapper likeDislikeMapper) {
+            LikeDislikeMapper likeDislikeMapper,
+            ReviewProductApi reputationReviewApi) {
         return new ReputationFactory(tomeService, reputationService, inboxReputationMapper,
                 inboxReputationDetailMapper, sendSmileyReputationMapper,
                 sendReviewValidateMapper, sendReviewSubmitMapper,
@@ -136,7 +151,14 @@ public class ReputationModule {
                 deleteReviewResponseMapper,
                 replyReviewMapper,
                 getLikeDislikeMapper,
-                likeDislikeMapper);
+                likeDislikeMapper,
+                reputationReviewApi);
+    }
+
+    @ReputationScope
+    @Provides
+    ReviewProductApi provideReputationReviewApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
+        return retrofit.create(ReviewProductApi.class);
     }
 
 
@@ -535,4 +557,26 @@ public class ReputationModule {
         return new LikeDislikeMapper();
     }
 
+    @ReputationScope
+    @Provides
+    ReviewProductPresenter provideProductReviewPresenter(ReviewProductGetListUseCase productReviewGetListUseCase,
+                                                         ReviewProductGetHelpfulUseCase productReviewGetHelpfulUseCase,
+                                                         ReviewProductGetRatingUseCase productReviewGetRatingUseCase,
+                                                         LikeDislikeReviewUseCase likeDislikeReviewUseCase,
+                                                         DeleteReviewResponseUseCase deleteReviewResponseUseCase,
+                                                         ReviewProductListMapper productReviewListMapper,
+                                                         UserSession userSession){
+        return new ReviewProductPresenter(productReviewGetListUseCase, productReviewGetHelpfulUseCase, productReviewGetRatingUseCase,
+                likeDislikeReviewUseCase, deleteReviewResponseUseCase, productReviewListMapper, userSession);
+    }
+
+    @ReputationScope
+    @Provides
+    UserSession userSession(@ApplicationContext Context context){
+        if(context instanceof AbstractionRouter){
+            return ((AbstractionRouter)context).getSession();
+        }else{
+            return null;
+        }
+    }
 }

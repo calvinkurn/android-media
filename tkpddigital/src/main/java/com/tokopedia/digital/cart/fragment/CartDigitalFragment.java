@@ -1,5 +1,6 @@
 package com.tokopedia.digital.cart.fragment;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
@@ -8,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
@@ -33,7 +35,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.cart.activity.InstantCheckoutActivity;
 import com.tokopedia.digital.cart.activity.OtpVerificationActivity;
 import com.tokopedia.digital.cart.compoundview.CheckoutHolderView;
@@ -55,6 +56,7 @@ import com.tokopedia.digital.cart.model.VoucherAttributeDigital;
 import com.tokopedia.digital.cart.model.VoucherDigital;
 import com.tokopedia.digital.cart.presenter.CartDigitalPresenter;
 import com.tokopedia.digital.cart.presenter.ICartDigitalPresenter;
+import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
@@ -63,12 +65,16 @@ import com.tokopedia.payment.model.PaymentPassData;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.RuntimePermissions;
 import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author anggaprasetiyo on 2/21/17.
  */
-
+@RuntimePermissions
 public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPresenter> implements
         IDigitalCartView, CheckoutHolderView.IAction,
         InputPriceHolderView.ActionListener, VoucherCartHachikoView.ActionListener {
@@ -158,6 +164,22 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         return false;
     }
 
+    @NeedsPermission({Manifest.permission.WRITE_CALL_LOG,Manifest.permission.CALL_PHONE,Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CALL_LOG})
+    void requestNOtpWithPermission() {
+        presenter.callPermissionCheckSuccess();
+    }
+
+    @OnPermissionDenied({Manifest.permission.WRITE_CALL_LOG,Manifest.permission.CALL_PHONE,Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CALL_LOG})
+    void requestNOtpPermissionDenied() {
+        presenter.callPermissionCheckFail();
+    }
+
+    @OnNeverAskAgain({Manifest.permission.WRITE_CALL_LOG,Manifest.permission.CALL_PHONE,Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CALL_LOG})
+    void requestNOtpPermissionNeverAsk() {
+        presenter.callPermissionCheckFail();
+    }
+
+
     @Override
     protected void initialPresenter() {
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
@@ -235,6 +257,11 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         mainContainer.setVisibility(View.VISIBLE);
     }
 
+
+    @Override
+    public void showProgressLoading(String title,String message) {
+        progressDialogNormal.showDialog(title,message);
+    }
     @Override
     public void showProgressLoading() {
         progressDialogNormal.showDialog();
@@ -369,7 +396,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     private void sendGTMAnalytics(String ec, String el, boolean analyticsKind) {
-
         UnifyTracking.eventViewCheckoutPage(ec, el);
 
         if (analyticsKind) {
@@ -493,7 +519,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public String getAccountToken() {
-        return sessionHandler.getAccessToken(getActivity());
+        return SessionHandler.getAccessToken(getActivity());
     }
 
     @Override
@@ -609,6 +635,28 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         );
     }
 
+    public void setCartDigitalInfo(CartDigitalInfoData cartDigitalInfoData) {
+        if (cartDigitalInfoData != null) {
+            this.cartDigitalInfoDataState = cartDigitalInfoData;
+            buildCheckoutData(cartDigitalInfoData);
+        }
+    }
+
+    public void checkCallPermissionForNOTP() {
+        CartDigitalFragmentPermissionsDispatcher.requestNOtpWithPermissionWithCheck(this);
+    }
+
+    @Override
+    public Context getApplicationContext() {
+        return getActivity().getApplicationContext();
+    }
+
+    @Override
+    public DigitalCheckoutPassData getPassData() {
+        return passData;
+    }
+
+
     @Override
     public void interruptRequestTokenVerification() {
         navigateToActivityRequest(
@@ -673,7 +721,11 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     public void trackingCancelledVoucher() {
         UnifyTracking.eventClickCancelVoucher("", "");
     }
-
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        CartDigitalFragmentPermissionsDispatcher.onRequestPermissionsResult(this,requestCode,grantResults);
+    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -767,8 +819,15 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        progressDialogNormal.dismiss();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
+
         if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
             compositeSubscription.unsubscribe();
     }
