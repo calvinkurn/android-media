@@ -31,7 +31,6 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
         implements FlightOrderListContract.Presenter {
     private UserSession userSession;
     private FlightGetOrdersUseCase flightGetOrdersUseCase;
-    private FlightSendEmailUseCase sendEmailUseCase;
     private FlightOrderViewModelMapper flightOrderViewModelMapper;
     private CompositeSubscription compositeSubscription;
 
@@ -40,11 +39,9 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
     @Inject
     public FlightOrderListPresenter(UserSession userSession,
                                     FlightGetOrdersUseCase flightGetOrdersUseCase,
-                                    FlightSendEmailUseCase sendEmailUseCase,
                                     FlightOrderViewModelMapper flightOrderViewModelMapper) {
         this.userSession = userSession;
         this.flightGetOrdersUseCase = flightGetOrdersUseCase;
-        this.sendEmailUseCase = sendEmailUseCase;
         this.flightOrderViewModelMapper = flightOrderViewModelMapper;
         compositeSubscription = new CompositeSubscription();
     }
