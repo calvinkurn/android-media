@@ -110,7 +110,11 @@ public class SnackbarManager {
             View view,
             String text,
             @Snackbar.Duration int duration) {
-        return make(view, text, duration, R.color.font_black_disabled_38, R.color.green_500, R.color.light_green, R.drawable.bg_green_snackbar);
+        return make(view,
+                text,
+                duration,
+                R.color.font_black_disabled_38, R.color.green_500, R.color.light_green,
+                R.drawable.bg_green_snackbar);
     }
 
 }

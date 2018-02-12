@@ -85,7 +85,12 @@ public class FlightResendETicketPresenter extends BaseDaggerPresenter<FlightRese
                     public void onError(Throwable throwable) {
                         throwable.printStackTrace();
                         if (throwable instanceof FlightException) {
-                            getView().onResendETicketError(FlightErrorUtil.getMessageFromException(getView().getActivity(), throwable));
+                            getView().onResendETicketError(
+                                    FlightErrorUtil.getMessageFromException(
+                                            getView().getActivity(),
+                                            throwable
+                                    )
+                            );
                         } else {
                             getView().onResendETicketError(throwable.getMessage());
                         }

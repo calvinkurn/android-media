@@ -498,7 +498,9 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void navigateToInputEmailForm(String userId, String userEmail) {
-        DialogFragment dialogFragment = FlightResendETicketDialogFragment.newInstace(flightOrderDetailPassData.getOrderId(), userId, userEmail);
+        DialogFragment dialogFragment = FlightResendETicketDialogFragment.newInstace(
+                flightOrderDetailPassData.getOrderId(),
+                userId, userEmail);
         dialogFragment.setTargetFragment(this, REQUEST_CODE_RESEND_ETICKET_DIALOG);
         dialogFragment.show(getFragmentManager().beginTransaction(), RESEND_ETICKET_DIALOG_TAG);
     }
@@ -513,7 +515,6 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
                 break;
         }
     }
-
 
     @Override
     public Observable<ProfileInfo> getProfileObservable() {

@@ -184,7 +184,12 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
 
             if (flightOrder.getStatus() == FlightStatusOrderType.WAITING_FOR_THIRD_PARTY
                     || flightOrder.getStatus() == FlightStatusOrderType.WAITING_FOR_TRANSFER) {
-                getView().setPaymentDueDate(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API, FlightDateUtil.DEFAULT_VIEW_TIME_FORMAT, flightOrder.getPayment().getExpireOn()));
+                getView().setPaymentDueDate(
+                        FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API,
+                                FlightDateUtil.DEFAULT_VIEW_TIME_FORMAT,
+                                flightOrder.getPayment().getExpireOn()
+                        )
+                );
             } else {
                 getView().hidePaymentDueDate();
             }
