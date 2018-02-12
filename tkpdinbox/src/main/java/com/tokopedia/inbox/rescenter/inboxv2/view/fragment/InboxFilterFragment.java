@@ -14,13 +14,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.InboxFilterActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.adapter.InboxFilterAdapter;
-import com.tokopedia.inbox.rescenter.inboxv2.view.listener.InboxFilterFragmentListener;
-import com.tokopedia.inbox.rescenter.inboxv2.view.presenter.InboxFilterFragmentPresenter;
 import com.tokopedia.inbox.rescenter.inboxv2.view.utils.DatePickerDialog;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxFilterModel;
 
@@ -28,15 +26,12 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import javax.inject.Inject;
-
 /**
  * Created by yfsx on 29/01/18.
  */
 
 public class InboxFilterFragment
-        extends BaseDaggerFragment
-        implements InboxFilterFragmentListener.View {
+        extends BaseDaggerFragment {
 
     public static final String FORMAT_DATE = "dd/MM/yyyy";
     public static final String FORMAT_DATE_API = "dd/MM/yyyy hh:mm:ss";
@@ -49,8 +44,6 @@ public class InboxFilterFragment
     private ResoInboxFilterModel inboxFilterModel;
     private InboxFilterAdapter adapter;
 
-    @Inject
-    InboxFilterFragmentPresenter presenter;
 
     public static Fragment getFragmentInstance(Bundle bundle) {
         Fragment fragment = new InboxFilterFragment();
@@ -103,7 +96,7 @@ public class InboxFilterFragment
     }
 
     private void bindView() {
-        adapter = new InboxFilterAdapter(this, inboxFilterModel);
+        adapter = new InboxFilterAdapter(inboxFilterModel);
         rvFilter.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvFilter.setAdapter(adapter);
         adapter.notifyDataSetChanged();

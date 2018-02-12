@@ -1,6 +1,5 @@
 package com.tokopedia.inbox.rescenter.inboxv2.view.adapter;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,23 +20,21 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.Holder> 
 
     private static final int COUNT_MAX = 3;
 
-    private Context context;
     private List<String> attachmentList = new ArrayList<>();
 
-    public ProductAdapter(Context context, List<String> attachmentList) {
-        this.context = context;
+    public ProductAdapter(List<String> attachmentList) {
         this.attachmentList = attachmentList;
     }
 
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new Holder(LayoutInflater.from(context).inflate(R.layout.item_reso_inbox_product, parent, false));
+        return new Holder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_reso_inbox_product, parent, false));
     }
 
     @Override
     public void onBindViewHolder(Holder holder, final int position) {
         String attachment = attachmentList.get(position);
-        ImageHandler.LoadImageCenterCrop(holder.ivImage, attachment);
+        ImageHandler.loadImageCenterCrop(holder.ivImage, attachment);
     }
 
     @Override

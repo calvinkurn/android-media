@@ -1,7 +1,6 @@
 package com.tokopedia.inbox.rescenter.detailv2.data.mapper;
 
 import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ConversationActionResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ConversationAddressResponse;
@@ -40,8 +39,6 @@ import java.util.List;
 import retrofit2.Response;
 import rx.functions.Func1;
 
-import static com.tokopedia.core.network.ErrorMessageException.DEFAULT_ERROR;
-
 /**
  * Created by milhamj on 22/11/17.
  */
@@ -56,15 +53,13 @@ public class GetDetailResChatMoreMapper implements Func1<Response<TkpdResponse>,
     private ConversationListDomain mappingResponse(Response<TkpdResponse> response) {
 
         if (response.isSuccessful()) {
-            if (response.raw().code() == ResponseStatus.SC_OK) {
-                if (response.body().isNullData()) {
-                    if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
-                        throw new ErrorMessageException(response.body().getErrorMessageJoined());
-                    } else {
-                        throw new ErrorMessageException(DEFAULT_ERROR);
-                    }
+            if (response.body().isNullData()) {
+                if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
+                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
+                } else {
+                    throw new ErrorMessageException("");
                 }
-            }
+        }
         } else {
             throw new RuntimeException(String.valueOf(response.code()));
         }

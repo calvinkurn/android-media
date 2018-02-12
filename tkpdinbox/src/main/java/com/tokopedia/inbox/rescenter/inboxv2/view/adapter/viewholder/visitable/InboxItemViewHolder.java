@@ -96,7 +96,7 @@ public class InboxItemViewHolder extends AbstractViewHolder<InboxItemViewModel> 
             ffProduct.setVisibility(View.VISIBLE);
             tvMoreImage.setText(item.getExtraImageCountText());
             rvProduct.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-            ProductAdapter adapter = new ProductAdapter(context, item.getImageList());
+            ProductAdapter adapter = new ProductAdapter(item.getImageList());
             rvProduct.setAdapter(adapter);
         } else {
             ffProduct.setVisibility(View.GONE);

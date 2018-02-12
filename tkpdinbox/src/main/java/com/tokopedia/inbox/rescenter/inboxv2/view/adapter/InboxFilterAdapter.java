@@ -10,7 +10,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.inboxv2.view.listener.InboxFilterFragmentListener;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.FilterViewModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxFilterModel;
 
@@ -24,11 +23,9 @@ import java.util.List;
 public class InboxFilterAdapter extends RecyclerView.Adapter<InboxFilterAdapter.Holder> {
 
     private Context context;
-    private InboxFilterFragmentListener.View mainView;
     private ResoInboxFilterModel inboxFilterModel;
 
-    public InboxFilterAdapter(InboxFilterFragmentListener.View mainView, ResoInboxFilterModel inboxFilterModel) {
-        this.mainView = mainView;
+    public InboxFilterAdapter(ResoInboxFilterModel inboxFilterModel) {
         this.inboxFilterModel = inboxFilterModel;
     }
 

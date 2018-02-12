@@ -1,7 +1,6 @@
 package com.tokopedia.inbox.rescenter.inboxv2.data.mapper;
 
 import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.inbox.rescenter.inboxv2.data.pojo.InboxSingleDataResponse;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.SingleItemInboxResultViewModel;
@@ -25,13 +24,11 @@ public class GetInboxSingleItemMapper implements Func1<Response<TkpdResponse>, S
     private SingleItemInboxResultViewModel mappingResponse(Response<TkpdResponse> response) {
 
         if (response.isSuccessful()) {
-            if (response.raw().code() == ResponseStatus.SC_OK) {
-                if (response.body().isNullData()) {
-                    if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
-                        throw new ErrorMessageException(response.body().getErrorMessageJoined());
-                    } else {
-                        throw new ErrorMessageException(DEFAULT_ERROR);
-                    }
+            if (response.body().isNullData()) {
+                if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
+                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
+                } else {
+                    throw new ErrorMessageException(DEFAULT_ERROR);
                 }
             }
         } else {

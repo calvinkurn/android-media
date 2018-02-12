@@ -50,7 +50,6 @@ public class CloudNotificationSource {
                     NotificationData notificationData = notificationModel.getNotificationData();
                     drawerCache.putInt(DrawerNotification.CACHE_INBOX_TALK, notificationData.getInbox().getInboxTalk());
                     drawerCache.putInt(DrawerNotification.CACHE_INBOX_REVIEW, notificationData.getInbox().getInboxReputation());
-                    drawerCache.putInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER, notificationData.getResolution());
                     drawerCache.putInt(DrawerNotification.CACHE_INBOX_TICKET, notificationData.getInbox().getInboxTicket());
 
                     drawerCache.putInt(DrawerNotification.CACHE_PURCHASE_DELIVERY_CONFIRM, notificationData.getPurchase().getPurchaseDeliveryConfirm());

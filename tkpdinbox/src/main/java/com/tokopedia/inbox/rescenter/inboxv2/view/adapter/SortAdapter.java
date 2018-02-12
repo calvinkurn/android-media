@@ -22,14 +22,14 @@ public class SortAdapter extends RecyclerView.Adapter<SortAdapter.Holder> {
     private ResoInboxFragmentListener.View mainView;
     private ResoInboxSortModel inboxSortModel;
 
-    public SortAdapter(Context context, ResoInboxFragmentListener.View mainView, ResoInboxSortModel inboxSortModel) {
-        this.context = context;
+    public SortAdapter(ResoInboxFragmentListener.View mainView, ResoInboxSortModel inboxSortModel) {
         this.mainView = mainView;
         this.inboxSortModel = inboxSortModel;
     }
 
     @Override
     public Holder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        context = viewGroup.getContext();
         return new Holder(LayoutInflater.from(context).inflate(R.layout.item_sort, viewGroup, false));
     }
 

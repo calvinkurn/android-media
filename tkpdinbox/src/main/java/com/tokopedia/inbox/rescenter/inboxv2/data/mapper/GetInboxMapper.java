@@ -3,7 +3,6 @@ package com.tokopedia.inbox.rescenter.inboxv2.data.mapper;
 import android.text.TextUtils;
 
 import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.inbox.rescenter.inboxv2.data.pojo.AutoExecuteTimeResponse;
 import com.tokopedia.inbox.rescenter.inboxv2.data.pojo.FilterResponse;
@@ -55,13 +54,11 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
 
     private InboxItemResultViewModel mappingResponse(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {
-            if (response.raw().code() == ResponseStatus.SC_OK) {
-                if (response.body().isNullData()) {
-                    if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
-                        throw new ErrorMessageException(response.body().getErrorMessageJoined());
-                    } else {
-                        throw new ErrorMessageException(DEFAULT_ERROR);
-                    }
+            if (response.body().isNullData()) {
+                if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
+                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
+                } else {
+                    throw new ErrorMessageException(DEFAULT_ERROR);
                 }
             }
         } else {
@@ -97,61 +94,6 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
         return modelList;
 
     }
-//
-//        public static List<FilterViewModel> mappingFilterItem(QuickFilterResponse response) {
-//        List<FilterViewModel> modelList = new ArrayList<>();
-//
-//        FilterResponse unreadResponse = response.getUnread();
-//        FilterViewModel unreadModel = new FilterViewModel(
-//                unreadResponse.getTitle(),
-//                unreadResponse.getFilterWithDateString(),
-//                convertStringToHaveBreak(unreadResponse.getTitleCountFullString()),
-//                unreadResponse.getCount(),
-//                unreadResponse.getOrderValue(),
-//                false);
-//        modelList.add(unreadModel);
-//
-//        FilterResponse unansweredResponse = response.getUnanswered();
-//        FilterViewModel unansweredModel = new FilterViewModel(
-//                unansweredResponse.getTitle(),
-//                unansweredResponse.getFilterWithDateString(),
-//                convertStringToHaveBreak(unansweredResponse.getTitleCountFullString()),
-//                unansweredResponse.getCount(),
-//                unansweredResponse.getOrderValue(),
-//                false);
-//        modelList.add(unansweredModel);
-//
-//        FilterResponse finishedResponse = response.getFinished();
-//        FilterViewModel finishedModel = new FilterViewModel(
-//                finishedResponse.getTitle(),
-//                finishedResponse.getFilterWithDateString(),
-//                convertStringToHaveBreak(finishedResponse.getTitleCountFullString()),
-//                finishedResponse.getCount(),
-//                finishedResponse.getOrderValue(),
-//                false);
-//        modelList.add(finishedModel);
-//
-//        FilterResponse autoExcecuteResponse = response.getAutoExecution();
-//        FilterViewModel autoExecuteModel = new FilterViewModel(
-//                autoExcecuteResponse.getTitle(),
-//                autoExcecuteResponse.getFilterWithDateString(),
-//                convertStringToHaveBreak(autoExcecuteResponse.getTitleCountFullString()),
-//                autoExcecuteResponse.getCount(),
-//                autoExcecuteResponse.getOrderValue(),
-//                false);
-//        modelList.add(autoExecuteModel);
-//
-//        FilterResponse unfinishedResponse = response.getUnfinished();
-//        FilterViewModel unfinishedModel = new FilterViewModel(
-//                unfinishedResponse.getTitle(),
-//                unfinishedResponse.getFilterWithDateString(),
-//                convertStringToHaveBreak(unfinishedResponse.getTitleCountFullString()),
-//                unfinishedResponse.getCount(),
-//                unfinishedResponse.getOrderValue(),
-//                false);
-//        modelList.add(unfinishedModel);
-//        return modelList;
-//    }
 
     private List<InboxItemViewModel> mappingInboxItem(List<InboxDataResponse> responseList, int actionBy) {
         List<InboxItemViewModel> itemList = new ArrayList<>();

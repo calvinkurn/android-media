@@ -4,8 +4,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.design.quickfilter.QuickFilterItem;
+import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.inboxv2.view.adapter.typefactory.ResoInboxTypeFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -57,4 +60,18 @@ public class FilterListViewModel implements Visitable<ResoInboxTypeFactory>, Par
             return new FilterListViewModel[size];
         }
     };
+
+    public static List<QuickFilterItem> convertQuickFilterModel(List<FilterViewModel> filterList, List<Integer> selectedIdList) {
+        List<QuickFilterItem> itemList = new ArrayList<>();
+        for (FilterViewModel filter : filterList) {
+            QuickFilterItem item = new QuickFilterItem();
+            item.setId(filter.getOrderValue());
+            item.setName(filter.getTypeNameQuickFilter());
+            item.setColorBorder(R.color.tkpd_main_green);
+            item.setType(filter.getType());
+            item.setSelected(selectedIdList.contains(filter.getOrderValue()));
+            itemList.add(item);
+        }
+        return itemList;
+    }
 }

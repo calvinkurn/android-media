@@ -22,7 +22,6 @@ public class EmptyResoInboxViewHolder extends AbstractViewHolder<EmptyModel> {
 
     @Override
     public void bind(EmptyModel element) {
-        element.getMessage();
     }
 
     @LayoutRes

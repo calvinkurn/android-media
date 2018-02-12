@@ -211,7 +211,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         }
     }
 
-    public static void LoadImageCenterCrop(ImageView imageview, String url) {
+    public static void loadImageCenterCrop(ImageView imageview, String url) {
         if (imageview.getContext() != null) {
             try {
                 Glide.with(imageview.getContext())
