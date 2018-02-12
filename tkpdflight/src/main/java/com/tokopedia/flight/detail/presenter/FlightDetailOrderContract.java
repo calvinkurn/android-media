@@ -34,7 +34,7 @@ public interface FlightDetailOrderContract {
 
         void updatePrice(List<SimpleViewModel> priceList, String totalPrice);
 
-        void updateOrderData(String transactionDate, String eTicketLink, String invoiceLink, String cancelUrl);
+        void updateOrderData(String eTicketLink, String invoiceLink, String cancelUrl);
 
         String getString(int id, Object... args);
 
@@ -74,6 +74,8 @@ public interface FlightDetailOrderContract {
         void navigateToInputEmailForm(String userId, String userEmail);
 
         Observable<ProfileInfo> getProfileObservable();
+      
+        void setTransactionDate(String transactionDate);
     }
 
     interface Presenter extends CustomerPresenter<View> {
