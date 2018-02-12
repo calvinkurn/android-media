@@ -25,6 +25,10 @@ public class PurchaseNotifier {
     private static final String MARKETPLACE = "marketplace";
     private static final String TRANSFER = "transfer";
     private static final String DATE_FORMAT = "dd MMMM yyyy HH:mm";
+    private static final String TOTAL_AMOUNT = "total_amount";
+    private static final String BANK_NAME = "bank_name";
+    private static final String BANK_NUM = "bank_num";
+    private static final String DEADLINE_DELTA = "deadline_delta";
 
     public static void notify(Context context, Bundle extras) {
         try {
@@ -49,16 +53,15 @@ public class PurchaseNotifier {
 
     private static String getTransferNotificationMessage(Context context, Bundle bundle) throws Exception {
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.SECOND, Integer.parseInt(bundle.getString("deadline_delta")));
-        Log.d("oka", bundle.getString("deadline_delta"));
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.forLanguageTag("id"));
+        calendar.add(Calendar.SECOND, Integer.parseInt(bundle.getString(DEADLINE_DELTA)));
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT, new Locale("id"));
 
         return String.format(
                 context.getString(R.string.payment_description_transfer_procedure),
-                bundle.getString("amount"),
-                bundle.getString("bank_name"),
-                bundle.getString("bank_num"),
-                sdf.format(new Date(calendar.getTimeInMillis()))
+                bundle.getString(TOTAL_AMOUNT),
+                bundle.getString(BANK_NAME),
+                bundle.getString(BANK_NUM),
+                dateFormat.format(new Date(calendar.getTimeInMillis()))
         );
     }
 }

@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.OneOnClick;
@@ -209,11 +210,11 @@ public class TxVerAdapter extends ArrayAdapter<TxVerData> {
         LinearLayout holderNormalPayment;
         @BindView(R2.id.unchangeable_payment_info)
         LinearLayout holderUnchangeablePayment;
-        @BindView(R2.id.button_payment_procedure)
         Button btnPaymentProcedure;
 
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);
+            btnPaymentProcedure = view.findViewById(R.id.button_payment_procedure);
         }
     }
 }
