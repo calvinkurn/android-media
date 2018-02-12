@@ -94,6 +94,9 @@ public class DrawerWalletAction implements Parcelable {
     }
 
 
+    public DrawerWalletAction() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -112,9 +115,6 @@ public class DrawerWalletAction implements Parcelable {
         dest.writeString(this.redirectUrlActionButton);
     }
 
-    public DrawerWalletAction() {
-    }
-
     protected DrawerWalletAction(Parcel in) {
         this.labelTitle = in.readString();
         this.balance = in.readString();
@@ -127,16 +127,15 @@ public class DrawerWalletAction implements Parcelable {
         this.redirectUrlActionButton = in.readString();
     }
 
-    public static final Parcelable.Creator<DrawerWalletAction> CREATOR =
-            new Parcelable.Creator<DrawerWalletAction>() {
-                @Override
-                public DrawerWalletAction createFromParcel(Parcel source) {
-                    return new DrawerWalletAction(source);
-                }
+    public static final Creator<DrawerWalletAction> CREATOR = new Creator<DrawerWalletAction>() {
+        @Override
+        public DrawerWalletAction createFromParcel(Parcel source) {
+            return new DrawerWalletAction(source);
+        }
 
-                @Override
-                public DrawerWalletAction[] newArray(int size) {
-                    return new DrawerWalletAction[size];
-                }
-            };
+        @Override
+        public DrawerWalletAction[] newArray(int size) {
+            return new DrawerWalletAction[size];
+        }
+    };
 }

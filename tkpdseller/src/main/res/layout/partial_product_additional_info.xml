@@ -16,13 +16,13 @@
             android:layout_width="0dp"
             android:layout_weight="0.928"
             app:counterEnabled="true"
-            app:counterMaxLength="@integer/product_max_character_description">
+            app:counterMaxLength="@integer/product_max_character_description"
+            android:hint="@string/product_label_product_description">
 
             <EditText
                 android:id="@+id/edit_text_description"
                 style="@style/EditText"
                 android:layout_width="match_parent"
-                android:hint="@string/product_label_product_description"
                 android:inputType="textMultiLine"
                 android:maxLength="@integer/product_max_character_description" />
 

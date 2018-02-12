@@ -11,6 +11,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.support.multidex.MultiDex;
+import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
@@ -290,6 +291,7 @@ public abstract class MainApplication extends BaseMainApplication{
         // initialize the Branch object
         initBranch();
         NotificationUtils.setNotificationChannel(this);
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
 

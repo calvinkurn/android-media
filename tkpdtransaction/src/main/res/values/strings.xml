@@ -211,4 +211,5 @@
     <string name="title_buyer_cancelled_order">Pembeli mengajukan pembatalan pesanan</string>
     <string name="sub_title_buyer_cancelled_order">dengan alasan: #</string>
     <string name="apply">Terapkan</string>
+    <string name="single_spacing">\u0020</string>
 </resources>

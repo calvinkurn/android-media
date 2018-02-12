@@ -225,6 +225,9 @@ public class TokoPointDrawerData implements Parcelable {
             this.catalog = catalog;
         }
 
+        public PopUpNotif() {
+        }
+
         @Override
         public int describeContents() {
             return 0;
@@ -242,9 +245,6 @@ public class TokoPointDrawerData implements Parcelable {
             dest.writeParcelable(this.catalog, flags);
         }
 
-        public PopUpNotif() {
-        }
-
         protected PopUpNotif(Parcel in) {
             this.title = in.readString();
             this.text = in.readString();
@@ -256,7 +256,7 @@ public class TokoPointDrawerData implements Parcelable {
             this.catalog = in.readParcelable(Catalog.class.getClassLoader());
         }
 
-        public static final Parcelable.Creator<PopUpNotif> CREATOR = new Parcelable.Creator<PopUpNotif>() {
+        public static final Creator<PopUpNotif> CREATOR = new Creator<PopUpNotif>() {
             @Override
             public PopUpNotif createFromParcel(Parcel source) {
                 return new PopUpNotif(source);

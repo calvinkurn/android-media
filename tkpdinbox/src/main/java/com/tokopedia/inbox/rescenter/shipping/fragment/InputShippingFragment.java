@@ -17,9 +17,11 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -59,6 +61,7 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
 
     public static final String EXTRA_PARAM_ATTACHMENT = "params_attachment";
     public static final String EXTRA_PARAM_MODEL = "params_model";
+    public static final String URL_IMG = "https://ecs7.tokopedia.net/img/android/others/img_awb_example.png";
 
     @BindView(R2.id.ref_number)
     EditText shippingRefNum;
@@ -74,6 +77,7 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
     View mainView;
     @BindView(R2.id.confirm_button)
     TextView confirmButton;
+    ImageView imgAwb;
 
     private AttachmentAdapter attachmentAdapter;
     private InputShippingParamsGetModel paramsModel;
@@ -197,6 +201,8 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
 
     @Override
     protected void initView(View view) {
+        imgAwb = (ImageView) view.findViewById(R.id.img_awb);
+        ImageHandler.LoadImage(imgAwb, URL_IMG);
         renderAttachmentAdapter();
     }
 

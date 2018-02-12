@@ -19,11 +19,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.base.presentation.BaseFragment;
+import com.tokopedia.ride.common.configuration.PaymentMode;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.domain.model.Driver;
 import com.tokopedia.ride.common.ride.domain.model.LocationLatLng;
@@ -44,6 +44,7 @@ public class DriverDetailFragment extends BaseFragment {
     private static final String EXTRA_TIME_EST = "EXTRA_TIME_EST";
     private static final String EXTRA_STATUS = "EXTRA_STATUS";
     private static final String EXTRA_SHARED = "EXTRA_SHARED";
+    private static final String EXTRA_PAYMENT_METHOD = "EXTRA_PAYMENT_METHOD";
 
     @BindView(R2.id.cab_on_trip_container)
     LinearLayout driverDetailLayoutLinearLayout;
@@ -65,12 +66,17 @@ public class DriverDetailFragment extends BaseFragment {
     TextView poolStatusTextView;
     @BindView(R2.id.help_layout)
     LinearLayout shareRideLayout;
+    @BindView(R2.id.tv_payment_method)
+    TextView paymentMethodTextView;
+    @BindView(R2.id.image_payment_method_icon)
+    ImageView paymentIconImageView;
 
     private Driver driver;
     private Vehicle vehicle;
     private LocationLatLng destination;
     private int eta;
     private String status;
+    private String paymentMethod;
 
 
     private OnFragmentInteractionListener onFragmentInteractionListener;
@@ -89,6 +95,7 @@ public class DriverDetailFragment extends BaseFragment {
         bundle.putString(EXTRA_STATUS, rideRequest.getStatus());
         bundle.putString(EXTRA_PARENT_TAG, tag);
         bundle.putBoolean(EXTRA_SHARED, rideRequest.isShared());
+        bundle.putString(EXTRA_PAYMENT_METHOD, rideRequest.getPayment().getPaymentMethod());
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -139,6 +146,7 @@ public class DriverDetailFragment extends BaseFragment {
         destination = getArguments().getParcelable(EXTRA_DESTINATION);
         eta = (int) getArguments().getFloat(EXTRA_TIME_EST);
         status = getArguments().getString(EXTRA_STATUS);
+        paymentMethod = getArguments().getString(EXTRA_PAYMENT_METHOD);
         renderUi();
     }
 
@@ -146,6 +154,8 @@ public class DriverDetailFragment extends BaseFragment {
         driverDetailLayoutLinearLayout.setVisibility(View.VISIBLE);
         driverNameTextView.setText(driver.getName());
         driverRatingTextView.setText(driver.getRating());
+        paymentMethodTextView.setText(getString(R.string.str_payment_with) + " " + paymentMethod);
+        paymentIconImageView.setImageResource(paymentMethod.equalsIgnoreCase(PaymentMode.WALLET_DISPLAY_NAME) ? R.drawable.tokocash : R.drawable.cc_image);
 
         if (status != null && (status.equalsIgnoreCase(RideStatus.ACCEPTED) || status.equalsIgnoreCase(RideStatus.ARRIVING))) {
             cancelRideLayout.setVisibility(View.VISIBLE);

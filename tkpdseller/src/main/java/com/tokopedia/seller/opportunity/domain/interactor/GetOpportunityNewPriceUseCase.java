@@ -30,7 +30,7 @@ public class GetOpportunityNewPriceUseCase extends UseCase<OpportunityNewPriceDa
     }
 
     public static RequestParams createRequestParams(String replacementId){
-        RequestParams params = RequestParams.EMPTY;
+        RequestParams params = RequestParams.create();
         params.putString(OpportunityConstant.R_CODE, replacementId);
         return params;
     }
