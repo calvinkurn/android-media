@@ -323,11 +323,11 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                     visitables.add(0, headerViewModel);
                 }
                 getView().setItems(visitables);
-                if (isDataValid(visitables)) {
-                    getView().removeNetworkError();
-                } else {
-                    getView().showNetworkError(context.getString(R.string.msg_network_error));
-                }
+//                if (isDataValid(visitables)) {
+//                    getView().removeNetworkError();
+//                } else {
+//                    getView().showNetworkError(context.getString(R.string.msg_network_error));
+//                }
             }
         }
 

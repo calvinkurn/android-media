@@ -65,9 +65,9 @@
             android:id="@+id/reputation_medal"
             android:layout_width="wrap_content"
             android:layout_height="18dp"
-            android:adjustViewBounds="true"
             app:srcCompat="@drawable/ic_badge_none"
-            android:padding="2dp" />
+            android:scaleType="fitStart"
+            android:layout_marginLeft="2dp" />
     </LinearLayout>
 
     <TextView
