@@ -26,12 +26,24 @@
             android:layout_marginTop="@dimen/margin_med" />
 
         <LinearLayout
-            style="@style/LabelLayout"
-            android:layout_marginTop="@dimen/margin_med">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:orientation="vertical">
 
-            <android.support.v7.widget.AppCompatTextView
-                style="@style/TextView.Title.Bold"
-                android:text="@string/shop_info_label_logistic" />
+            <LinearLayout
+                style="@style/LabelLayout"
+                android:layout_marginTop="@dimen/margin_med">
+
+                <android.support.v7.widget.AppCompatTextView
+                    style="@style/TextView.Title.Bold"
+                    android:text="@string/shop_info_label_logistic" />
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
