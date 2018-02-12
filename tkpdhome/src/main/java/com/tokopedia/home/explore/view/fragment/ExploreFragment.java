@@ -94,9 +94,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (data != null) {
-            renderList(data.getVisitableList());
-        }
+        renderData();
     }
 
     @Override
@@ -172,7 +170,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
                 HomePageTracking.eventClickExplorerItem(
                         HomePageTracking.PESAN_INI_ITU_CLICK,
                         data.getName()
-                );;
+                );
                 break;
             case TYPE_AJUKAN:
                 HomePageTracking.eventClickExplorerItem(
@@ -269,5 +267,12 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
 
     public void setData(ExploreSectionViewModel data) {
         this.data = data;
+        renderData();
+    }
+
+    private void renderData() {
+        if (data != null && isAdded()) {
+            renderList(data.getVisitableList());
+        }
     }
 }

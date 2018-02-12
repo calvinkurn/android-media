@@ -30,6 +30,7 @@ import com.tokopedia.home.explore.view.presentation.ExploreContract;
 import com.tokopedia.home.explore.view.presentation.ExplorePresenter;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -37,6 +38,8 @@ import javax.inject.Inject;
 public class ExploreActivity extends BaseTabActivity implements HasComponent<ExploreComponent>, ExploreContract.View {
 
     private static final String SECTION = "section";
+    private static final String POSTION = "position";
+    private static final String DEFAULT_SECTION = "beli";
 
     @Inject
     ExplorePresenter presenter;
@@ -44,7 +47,7 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
     private ExploreFragmentAdapter fragmentAdapter;
     private SnackbarRetry messageSnackbar;
     private CoordinatorLayout root;
-    private String section;
+    private int position = 0;
 
     @DeepLink(Constants.Applinks.EXPLORE)
     public static Intent getCallingIntent(Context context, Bundle extras) {
@@ -57,10 +60,11 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(savedInstanceState!=null){
-            section = savedInstanceState.getString(SECTION);
-        } else {
-            section = getIntent().getStringExtra(SECTION);
+        if (savedInstanceState != null) {
+            position = savedInstanceState.getInt(POSTION);
+        } else if (getIntent().getExtras() != null) {
+            String section = getIntent().getStringExtra(SECTION);
+            position = sectionToPosition(section != null ? section : DEFAULT_SECTION);
         }
         ExploreComponent component = getComponent();
         component.inject(this);
@@ -72,7 +76,7 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(SECTION, section);
+        outState.putInt(POSTION, viewPager.getCurrentItem());
     }
 
     @Override
@@ -103,11 +107,11 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
             if (messageSnackbar == null) {
                 messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(this,
                         new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        presenter.getData();
-                    }
-                });
+                            @Override
+                            public void onRetryClicked() {
+                                presenter.getData();
+                            }
+                        });
             }
             messageSnackbar.showRetrySnackbar();
         } else {
@@ -133,7 +137,7 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
         for (int i = 0; i < list.size(); i++) {
             setupTabIcon(i);
         }
-        initSection(section);
+        viewPager.setCurrentItem(position);
     }
 
     @Override
@@ -166,6 +170,7 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
                         tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(ExploreActivity.this, R.color.tab_indicator_jual));
                         break;
                 }
+//                fragmentAdapter.getRegisteredFragment(position).refreshData(list.get(position));
             }
 
             @Override
@@ -175,24 +180,28 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
         });
     }
 
-    private void initSection(String section) {
+    private int sectionToPosition(String section) {
+        int position;
         switch (section) {
             case "beli":
-                viewPager.setCurrentItem(0);
+                position = 0;
                 break;
             case "bayar":
-                viewPager.setCurrentItem(1);
+                position = 1;
                 break;
             case "pesan":
-                viewPager.setCurrentItem(2);
+                position = 2;
                 break;
             case "ajukan":
-                viewPager.setCurrentItem(3);
+                position = 3;
                 break;
             case "jual":
-                viewPager.setCurrentItem(4);
+                position = 4;
                 break;
+            default:
+                position = 0;
         }
+        return position;
     }
 
 
@@ -244,8 +253,6 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
 
     @Override
     protected int getPageLimit() {
-        return 0;
+        return 3;
     }
-
-
 }

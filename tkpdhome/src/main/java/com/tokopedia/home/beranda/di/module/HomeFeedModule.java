@@ -7,6 +7,8 @@ import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.qualifier.AuthKeyQualifier;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.common.utils.network.AuthUtil;
+import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
@@ -89,8 +91,7 @@ public class HomeFeedModule {
                 new TkpdAuthInterceptor(),
                 OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy(),
                 new ChuckInterceptor(context).showNotification(
-                        localCacheHandler.getBoolean(DeveloperOptions.IS_CHUCK_ENABLED, false)
-                ),
+                        localCacheHandler.getBoolean(DeveloperOptions.IS_CHUCK_ENABLED, false)),
                 new DebugInterceptor(),
                 new TkpdErrorResponseInterceptor(TkpdV4ResponseError.class),
                 new CacheApiInterceptor()
