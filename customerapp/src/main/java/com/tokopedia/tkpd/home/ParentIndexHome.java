@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.home;
 
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -776,10 +777,14 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         if (!TextUtils.isEmpty(intent.getStringExtra(HomeRouter.EXTRA_APPLINK))) {
             String applink = intent.getStringExtra(HomeRouter.EXTRA_APPLINK);
             if (!isPausing()) {
-                DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
-                Intent applinkIntent = new Intent(this, ParentIndexHome.class);
-                applinkIntent.setData(Uri.parse(applink));
-                deepLinkDelegate.dispatchFrom(this, applinkIntent);
+                try {
+                    DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
+                    Intent applinkIntent = new Intent(this, ParentIndexHome.class);
+                    applinkIntent.setData(Uri.parse(applink));
+                    deepLinkDelegate.dispatchFrom(this, applinkIntent);
+                } catch (ActivityNotFoundException ex) {
+                    ex.printStackTrace();
+                }
             }
         }
     }

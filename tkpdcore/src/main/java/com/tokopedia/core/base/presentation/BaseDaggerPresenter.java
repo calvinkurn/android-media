@@ -8,6 +8,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 
 /**
  * @author kulomady on 11/20/16.
+ * refer to {@link com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter}
  */
 
 /**
