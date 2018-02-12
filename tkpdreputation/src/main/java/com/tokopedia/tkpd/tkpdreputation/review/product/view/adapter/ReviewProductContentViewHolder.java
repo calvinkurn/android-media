@@ -12,7 +12,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.abstraction.common.utils.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.util.TimeConverter;
 import com.tokopedia.tkpd.tkpdreputation.R;
@@ -306,8 +306,7 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
             @Override
             public void onClick(View v) {
                 PopupMenu popup = new PopupMenu(itemView.getContext(), v);
-                popup.getMenu().add(1, R.id.menu_report, 2, MainApplication.getAppContext()
-                        .getString(R.string.menu_report));
+                popup.getMenu().add(1, R.id.menu_report, 2, v.getContext().getString(R.string.menu_report));
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
                     @Override

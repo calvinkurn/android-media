@@ -26,7 +26,9 @@ import static com.tokopedia.core.network.retrofit.utils.NetworkCalculator.AUTHOR
 
 /**
  * @author Angga.Prasetiyo on 27/11/2015.
+ * refer {@link com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor}
  */
+@Deprecated
 public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private static final String TAG = TkpdAuthInterceptor.class.getSimpleName();
     private static final int ERROR_FORBIDDEN_REQUEST = 403;

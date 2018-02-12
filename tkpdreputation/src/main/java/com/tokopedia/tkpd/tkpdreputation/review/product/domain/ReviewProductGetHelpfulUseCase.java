@@ -43,7 +43,7 @@ public class ReviewProductGetHelpfulUseCase extends UseCase<DataResponseReviewHe
 
     @Override
     public Observable<DataResponseReviewHelpful> createObservable(final RequestParams requestParams) {
-        return reputationRepository.getReviewHelpful(userSession.getShopID(), requestParams.getString(PRODUCT_ID, ""))
+        return reputationRepository.getReviewHelpful(userSession.getShopId(), requestParams.getString(PRODUCT_ID, ""))
                 .flatMap(new Func1<DataResponseReviewHelpful, Observable<DataResponseReviewHelpful>>() {
                     @Override
                     public Observable<DataResponseReviewHelpful> call(DataResponseReviewHelpful dataResponseReviewHelpful) {

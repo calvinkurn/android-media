@@ -50,7 +50,7 @@ public class ReviewProductPresenter extends BaseDaggerPresenter<ReviewProductCon
 
     public void deleteReview(String reviewId, String reputationId, String productId){
         getView().showProgressLoading();
-        deleteReviewResponseUseCase.execute(DeleteReviewResponseUseCase.getParam(reviewId, productId, userSession.getShopID(), reputationId),
+        deleteReviewResponseUseCase.execute(DeleteReviewResponseUseCase.getParam(reviewId, productId, userSession.getShopId(), reputationId),
                 getSubscriberDeleteReview(reviewId));
     }
 
@@ -83,7 +83,7 @@ public class ReviewProductPresenter extends BaseDaggerPresenter<ReviewProductCon
 
     public void postLikeDislikeReview(String reviewId, int likeStatus, String productId){
         getView().showProgressLoading();
-        likeDislikeReviewUseCase.execute(LikeDislikeReviewUseCase.getParam(reviewId, likeStatus, productId, userSession.getShopID()),
+        likeDislikeReviewUseCase.execute(LikeDislikeReviewUseCase.getParam(reviewId, likeStatus, productId, userSession.getShopId()),
                 getSubscriberPostLikeDislike(reviewId));
     }
 
