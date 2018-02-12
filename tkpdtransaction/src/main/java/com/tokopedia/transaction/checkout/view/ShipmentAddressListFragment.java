@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.manage.people.address.ManageAddressConstant;
+import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
@@ -275,7 +277,14 @@ public class ShipmentAddressListFragment extends BasePresenterFragment
     }
 
     @Override
-    public void onAddressContainerClicked(int position) {
+    public void onAddressContainerClicked(ShipmentRecipientModel model) {
+
+    }
+
+    @Override
+    public void onEditClick(ShipmentRecipientModel model) {
+        startActivityForResult(AddAddressActivity.createInstance(getActivity(),
+                model.convertToAddressModel()), ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
 
     }
 }

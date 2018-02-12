@@ -2,11 +2,13 @@ package com.tokopedia.transaction.checkout.view.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -53,13 +55,57 @@ public class ShipmentAddressListAdapter
 
     @Override
     public void onBindViewHolder(final RecipientAddressViewHolder holder, int position) {
-        ShipmentRecipientModel address = mAddressModelList.get(position);
+        final ShipmentRecipientModel address = mAddressModelList.get(position);
+
+        if (address.isSelected()) {
+            holder.rbCheckAddress.setChecked(true);
+        } else {
+            holder.rbCheckAddress.setChecked(false);
+        }
 
         holder.mTvRecipientName.setText(address.getRecipientName());
         holder.mTvRecipientAddress.setText(address.getRecipientAddress());
+        holder.tvPhoneNumber.setText(address.getRecipientPhoneNumber());
+        holder.tvTextAddressDescription.setText(address.getRecipientAddressDescription());
+        if (!TextUtils.isEmpty(address.getAddressIdentifier())) {
+            holder.tvAddressIdentifier.setText(address.getAddressIdentifier());
+            holder.tvAddressIdentifier.setVisibility(View.VISIBLE);
+        } else {
+            holder.tvAddressIdentifier.setVisibility(View.GONE);
+        }
 
         holder.mAddressContainer.setOnClickListener(new OnItemClickListener(position));
         holder.mLlRadioButtonAddressSelect.setOnClickListener(new OnItemClickListener(position));
+        holder.tvChangeAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                actionListener.onEditClick(address);
+            }
+        });
+
+        holder.itemView.setOnClickListener(getItemClickListener(address, position));
+    }
+
+    private View.OnClickListener getItemClickListener(final ShipmentRecipientModel courierItemData,
+                                                      final int position) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (ShipmentRecipientModel viewModel : mAddressModelList) {
+                    if (viewModel.getId().equals(courierItemData.getId())) {
+                        if (mAddressModelList.size() > position && position >= 0) {
+                            if (!viewModel.isSelected()) {
+                                viewModel.setSelected(true);
+                            }
+                            actionListener.onAddressContainerClicked(mAddressModelList.get(position));
+                        }
+                    } else {
+                        viewModel.setSelected(false);
+                    }
+                }
+                notifyDataSetChanged();
+            }
+        };
     }
 
     @Override
@@ -77,6 +123,16 @@ public class ShipmentAddressListAdapter
         LinearLayout mLlRadioButtonAddressSelect;
         @BindView(R2.id.rl_shipment_recipient_address_header)
         RelativeLayout mAddressContainer;
+        @BindView(R2.id.tv_phone_number)
+        TextView tvPhoneNumber;
+        @BindView(R2.id.tv_text_address_description)
+        TextView tvTextAddressDescription;
+        @BindView(R2.id.tv_address_identifier)
+        TextView tvAddressIdentifier;
+        @BindView(R2.id.tv_change_address)
+        TextView tvChangeAddress;
+        @BindView(R2.id.rb_check_address)
+        RadioButton rbCheckAddress;
 
         RecipientAddressViewHolder(View view) {
             super(view);
@@ -111,7 +167,7 @@ public class ShipmentAddressListAdapter
 //            }
 
             //TODO move above code to implementation on own host fragment actionListener examp: actionListener.onFoo();
-            actionListener.onAddressContainerClicked(mPosition);
+//            actionListener.onAddressContainerClicked(mPosition);
 
 
             sRxBus.sendEvent(new Event(mAddressModelList.get(mPosition), "pos = " + mPosition));
@@ -120,7 +176,9 @@ public class ShipmentAddressListAdapter
     }
 
     public interface ActionListener {
-        void onAddressContainerClicked(int position);
+        void onAddressContainerClicked(ShipmentRecipientModel model);
+
+        void onEditClick(ShipmentRecipientModel model);
     }
 
     public class Event {

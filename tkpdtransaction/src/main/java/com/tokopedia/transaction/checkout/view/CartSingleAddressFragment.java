@@ -237,9 +237,8 @@ public class CartSingleAddressFragment extends BasePresenterFragment
     }
 
     @Override
-    public void onAddOrChangeAddress(ShipmentRecipientModel shipmentRecipientModel) {
-        startActivityForResult(CartAddressChoiceActivity.createInstance(getActivity(),
-                shipmentRecipientModel), REQUEST_CODE_CHOOSE_ADDRESS);
+    public void onAddOrChangeAddress() {
+        startActivityForResult(CartAddressChoiceActivity.createInstance(getActivity()), REQUEST_CODE_CHOOSE_ADDRESS);
     }
 
     @Override
