@@ -69,9 +69,6 @@ public class MyShopViewHolder extends AbstractViewHolder<MyShopViewModel> {
         }
         if (loadReputationMedalRequest == null || !loadReputationMedalRequest.isRunning()) {
             loadReputationMedalRequest = Glide.with(reputationMedal.getContext()).load(data.getReputationBadge())
-                    .asGif()
-                    .skipMemoryCache(true)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .into(reputationMedal).getRequest();
         }
     }
