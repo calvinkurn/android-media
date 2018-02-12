@@ -58,12 +58,8 @@ public class MyShopViewHolder extends AbstractViewHolder<MyShopViewModel> {
         if (data.getIsOfficial() == 1) {
             badgeTxt.setText(getString(R.string.official_store));
             badgeImage.setImageResource(R.drawable.ic_badge_official);
-        } else if (data.getIsGold() == 1) {
-            if(data.isIsGoldBadge()){
-                badgeImage.setImageResource(R.drawable.ic_gold);
-            } else {
-                badgeImage.setVisibility(View.GONE);
-            }
+        } else if (data.isIsGoldBadge()) {
+            badgeImage.setImageResource(R.drawable.ic_gold);
             badgeTxt.setText(getString(R.string.gold_merchant));
         } else {
             badgeTxt.setVisibility(View.GONE);
