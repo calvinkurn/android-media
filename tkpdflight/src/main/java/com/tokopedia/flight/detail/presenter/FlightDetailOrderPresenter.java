@@ -456,6 +456,9 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     @Override
     public void detachView() {
         flightGetOrderUseCase.unsubscribe();
+        if (compositeSubscription.hasSubscriptions()) {
+            compositeSubscription.unsubscribe();
+        }
         super.detachView();
     }
 }

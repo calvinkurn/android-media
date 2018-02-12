@@ -80,6 +80,9 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
     public void onDestroyView() {
         detachView();
         flightGetOrdersUseCase.unsubscribe();
+        if (compositeSubscription.hasSubscriptions()) {
+            compositeSubscription.unsubscribe();
+        }
     }
 
     @Override
@@ -127,7 +130,6 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
         getView().renderOrderStatus(filterItems);
 
     }
-
 
     @Override
     public void onGetProfileData() {
