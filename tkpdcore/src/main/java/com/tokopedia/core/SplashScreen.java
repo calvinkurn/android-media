@@ -9,8 +9,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
-import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.CommonUtils;
@@ -33,9 +33,11 @@ import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.PasswordGenerator.PGListener;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcels;
+
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
 
@@ -235,8 +237,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
                         try {
                             if(referringParams.has("branch_promo")) {
                                 String branch_promo = referringParams.getString("branch_promo");
-                                if (branch_promo != null) {
-                                    Toast.makeText(SplashScreen.this, branch_promo, Toast.LENGTH_LONG).show();
+                                if (!TextUtils.isEmpty(branch_promo)) {
                                     storeWebToAppPromoCode(branch_promo);
                                 }
                             }
@@ -262,7 +263,6 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     private void storeWebToAppPromoCode( String promoCode) {
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(SplashScreen.this, TkpdCache.CACHE_PROMO_CODE);
         localCacheHandler.putString(TkpdCache.Key.KEY_CACHE_PROMO_CODE, promoCode);
-
         localCacheHandler.applyEditor();
     }
 
