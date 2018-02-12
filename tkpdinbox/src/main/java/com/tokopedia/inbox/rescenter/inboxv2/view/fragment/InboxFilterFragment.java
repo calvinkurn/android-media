@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.InboxFilterActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.adapter.InboxFilterAdapter;
@@ -190,10 +191,14 @@ public class InboxFilterFragment
         });
     }
 
+
     private void updateView() {
+        enableButton(btnFinish);
         if (inboxFilterModel.getDateFrom() != null) {
             icCloseFrom.setVisibility(View.VISIBLE);
             etDateFrom.setText(convertDateToString(inboxFilterModel.getDateFrom()));
+            if (inboxFilterModel.getDateTo() == null)
+                disableButton(btnFinish);
         } else {
             icCloseFrom.setVisibility(View.GONE);
             etDateFrom.setText("");
@@ -202,6 +207,8 @@ public class InboxFilterFragment
         if (inboxFilterModel.getDateTo() != null) {
             icCloseTo.setVisibility(View.VISIBLE);
             etDateTo.setText(convertDateToString(inboxFilterModel.getDateTo()));
+            if (inboxFilterModel.getDateFrom() == null)
+                disableButton(btnFinish);
         } else {
             icCloseTo.setVisibility(View.GONE);
             etDateTo.setText("");
@@ -233,5 +240,19 @@ public class InboxFilterFragment
 
     public void getBottomBackSheetActivityTransition() {
         getActivity().overridePendingTransition(R.anim.push_down, R.anim.pull_up);
+    }
+
+    private void disableButton(Button button) {
+        button.setEnabled(false);
+        button.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_38));
+        button.setBackground(MethodChecker.getDrawable(getActivity(),
+                R.drawable.bg_button_disable));
+    }
+
+    private void enableButton(Button button) {
+        button.setEnabled(true);
+        button.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
+        button.setBackground(MethodChecker.getDrawable(getActivity(),
+                R.drawable.bg_button_enable));
     }
 }
