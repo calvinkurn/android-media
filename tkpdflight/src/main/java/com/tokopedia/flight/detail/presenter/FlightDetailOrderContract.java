@@ -65,6 +65,8 @@ public interface FlightDetailOrderContract {
         void hideTotalTransfer();
 
         void setPaymentDueDate(String dueDate);
+
+        void hidePaymentDueDate();
     }
 
     interface Presenter extends CustomerPresenter<View> {

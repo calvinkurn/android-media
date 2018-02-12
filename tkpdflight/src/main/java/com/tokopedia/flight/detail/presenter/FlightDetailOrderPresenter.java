@@ -123,10 +123,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
 
     private void renderPaymentInfo(FlightOrder flightOrder) {
         if (flightOrder.getPayment() != null
-                && flightOrder.getPayment().getGatewayName().length() > 0
-                && (flightOrder.getStatus() == FlightStatusOrderType.WAITING_FOR_THIRD_PARTY
-                || flightOrder.getStatus() == FlightStatusOrderType.WAITING_FOR_TRANSFER)
-                ) {
+                && flightOrder.getPayment().getGatewayName().length() > 0) {
 
             getView().showPaymentInfoLayout();
             if (flightOrder.getPayment().getManualTransfer() != null && flightOrder.getPayment().getManualTransfer().getAccountBankName().length() > 0) {
@@ -139,8 +136,12 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 getView().hideTotalTransfer();
             }
 
-            getView().setPaymentDueDate(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API, FlightDateUtil.DEFAULT_VIEW_TIME_FORMAT, flightOrder.getPayment().getExpireOn()));
-
+            if (flightOrder.getStatus() == FlightStatusOrderType.WAITING_FOR_THIRD_PARTY
+                    || flightOrder.getStatus() == FlightStatusOrderType.WAITING_FOR_TRANSFER) {
+                getView().setPaymentDueDate(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API, FlightDateUtil.DEFAULT_VIEW_TIME_FORMAT, flightOrder.getPayment().getExpireOn()));
+            } else {
+                getView().hidePaymentDueDate();
+            }
         } else {
             getView().hidePaymentInfoLayout();
         }

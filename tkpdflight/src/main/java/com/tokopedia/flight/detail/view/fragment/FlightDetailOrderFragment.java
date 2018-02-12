@@ -90,6 +90,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private String cancelMessage = "";
     private boolean isPassengerInfoShowed = true;
     private LinearLayout paymentInfoLayout;
+    private LinearLayout paymentDueDateLayout;
     private TextView tvPaymentDescriptionLabel;
     private TextView tvPaymentDescription;
     private TextView tvPaymentCost;
@@ -144,6 +145,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         buttonReorder = view.findViewById(R.id.button_reorder);
 
         paymentInfoLayout = (LinearLayout) view.findViewById(R.id.payment_info_layout);
+        paymentDueDateLayout = (LinearLayout) view.findViewById(R.id.payment_due_date_layout);
         tvPaymentDescriptionLabel = (TextView) view.findViewById(R.id.tv_payment_description_label);
         tvPaymentDescription = (TextView) view.findViewById(R.id.tv_payment_description);
         tvPaymentCost = (TextView) view.findViewById(R.id.tv_payment_cost);
@@ -475,7 +477,12 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void setPaymentDueDate(String dueDate) {
-        tvPaymentDueDate.setVisibility(View.VISIBLE);
+        paymentDueDateLayout.setVisibility(View.VISIBLE);
         tvPaymentDueDate.setText(dueDate);
+    }
+
+    @Override
+    public void hidePaymentDueDate() {
+        paymentDueDateLayout.setVisibility(View.GONE);
     }
 }
