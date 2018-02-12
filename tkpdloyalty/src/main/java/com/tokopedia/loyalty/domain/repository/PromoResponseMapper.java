@@ -30,6 +30,8 @@ public class PromoResponseMapper implements IPromoResponseMapper {
 
     private static final String TYPE_FILTER_ALL = "all";
     private static final String TITLE_FILTER_ALL = "Lihat Semua";
+    private static final String QUERY_FLAG_APP = "flag_app";
+    private static final String DEFAULT_VALUE_QUERY_FLAG_APP = "1";
 
     @Inject
     public PromoResponseMapper() {
@@ -55,7 +57,9 @@ public class PromoResponseMapper implements IPromoResponseMapper {
                 e.printStackTrace();
             }
             String urlPromo = Uri.parse(promoResponse.getLink())
-                    .buildUpon().appendQueryParameter("flag_app", "1").build().toString();
+                    .buildUpon()
+                    .appendQueryParameter(QUERY_FLAG_APP, DEFAULT_VALUE_QUERY_FLAG_APP)
+                    .build().toString();
             promoData.setPromoLink(urlPromo);
             promoData.setThumbnailImage(promoResponse.getMeta().getThumbnailImage());
             promoData.setMinTransaction(promoResponse.getMeta().getMinTransaction());
