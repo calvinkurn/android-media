@@ -123,10 +123,15 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 getView().updateFlightList(flightOrderJourneyList);
                 getView().updatePassengerList(transformToListPassenger(flightOrder.getPassengerViewModels()));
                 getView().updatePrice(transformToSimpleModelPrice(flightOrder), CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalPrice));
-                getView().updateOrderData(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API_DETAIL,
-                        FlightDateUtil.FORMAT_DATE_LOCAL_DETAIL_ORDER, flightOrder.getCreateTime()),
-                        generateTicketLink(flightOrder.getId(), flightOrder.getPdf(), userSession.getUserId()), generateInvoiceLink(flightOrder.getId()),
-                        generateCancelMessage(flightOrderJourneyList, flightOrder.getPassengerViewModels()));
+                getView().setTransactionDate(
+                        FlightDateUtil.formatDateByUsersTimezone(FlightDateUtil.FORMAT_DATE_API_DETAIL,
+                                FlightDateUtil.FORMAT_DATE_LOCAL_DETAIL_ORDER, flightOrder.getCreateTime())
+                );
+                getView().updateOrderData(
+                        generateTicketLink(flightOrder.getId(), flightOrder.getPdf(), userSession.getUserId()),
+                        generateInvoiceLink(flightOrder.getId()),
+                        generateCancelMessage(flightOrderJourneyList, flightOrder.getPassengerViewModels())
+                );
                 generateStatus(flightOrder.getStatus(), flightOrder.getStatusString());
                 renderPaymentInfo(flightOrder);
             }

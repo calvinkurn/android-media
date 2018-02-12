@@ -306,8 +306,12 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     @Override
-    public void updateOrderData(String transactionDate, String eTicketLink, String invoiceLink, String cancelMessage) {
+    public void setTransactionDate(String transactionDate) {
         this.transactionDate.setText(transactionDate);
+    }
+
+    @Override
+    public void updateOrderData(String eTicketLink, String invoiceLink, String cancelMessage) {
         this.eticketLink = eTicketLink;
         this.invoiceLink = invoiceLink;
         this.cancelMessage = cancelMessage;

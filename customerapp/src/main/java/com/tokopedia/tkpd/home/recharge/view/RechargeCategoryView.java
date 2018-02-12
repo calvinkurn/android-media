@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.home.recharge.view;
 
-import com.tokopedia.digital.widget.model.category.Category;
+import com.tokopedia.digital.widget.view.model.category.Category;
 
 import java.util.List;
 

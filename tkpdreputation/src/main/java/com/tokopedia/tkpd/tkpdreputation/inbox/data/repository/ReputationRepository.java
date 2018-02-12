@@ -14,6 +14,12 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendRevie
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewValidateDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendSmileyReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SkipReviewDomain;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewHelpful;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewProduct;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewShop;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewstarcount.DataResponseReviewStarCount;
+
+import java.util.HashMap;
 
 import rx.Observable;
 
@@ -54,4 +60,12 @@ public interface ReputationRepository {
     Observable<GetLikeDislikeReviewDomain> getLikeDislikeReview(RequestParams requestParams);
 
     Observable<LikeDislikeDomain> likeDislikeReview(RequestParams requestParams);
+
+    Observable<DataResponseReviewShop> getReviewShopList(HashMap<String, String> params);
+
+    Observable<DataResponseReviewHelpful> getReviewHelpful(String shopId, String productId);
+
+    Observable<DataResponseReviewStarCount> getReviewStarCount(String productId);
+
+    Observable<DataResponseReviewProduct> getReviewProductList(String productId, String page, String perPage, String rating);
 }

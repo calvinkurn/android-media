@@ -1,11 +1,11 @@
 package com.tokopedia.core.shopinfo.fragment;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +19,7 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -39,7 +40,7 @@ import static com.tokopedia.core.talk.talkproduct.fragment.TalkProductFragment.R
  * Created by nisie on 11/18/16.
  */
 
-public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
+public class ShopTalkFragment extends BasePresenterFragmentV4<ShopTalkPresenter>
         implements ShopTalkFragmentView {
 
     public final static int GO_TO_DETAIL = 2;
@@ -193,7 +194,7 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
     }
 
     private void createDeleteDialog(final ShopTalk shopTalk) {
-        new AlertDialog.Builder(context)
+        new AlertDialog.Builder(getActivity())
                 .setTitle(getString(R.string.title_delete_discussion))
                 .setMessage(getString(R.string.prompt_delete_talk))
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
