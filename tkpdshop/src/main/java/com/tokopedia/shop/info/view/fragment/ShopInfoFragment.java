@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -46,6 +47,9 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
 
     private LabelView physicalShopLabelView;
     private LabelView shopOwnerLabelView;
+    private TextView scoreGoodTextView;
+    private TextView scoreNeutralTextView;
+    private TextView scoreBadTextView;
 
     @Inject
     ShopInfoPresenter shopInfoDetailPresenter;
@@ -76,6 +80,10 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
         physicalShopLabelView = view.findViewById(R.id.label_view_physical_shop);
         shopOwnerLabelView = view.findViewById(R.id.label_view_shop_owner);
 
+        scoreGoodTextView = view.findViewById(R.id.text_view_score_good);
+        scoreNeutralTextView = view.findViewById(R.id.text_view_score_neutral);
+        scoreBadTextView = view.findViewById(R.id.text_view_score_bad);
+
         return view;
     }
 
@@ -90,6 +98,11 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
         openSinceLabelView.setContent(shopInfo.getInfo().getShopOpenSince());
         totalProductLabelView.setContent(shopInfo.getStats().getShopTotalProduct());
         totalEtalaseLabelView.setContent(shopInfo.getStats().getShopTotalEtalase());
+
+        scoreGoodTextView.setText(shopInfo.getStats().getShopLastTwelveMonths().getCountScoreGood());
+        scoreNeutralTextView.setText(shopInfo.getStats().getShopLastTwelveMonths().getCountScoreNeutral());
+        scoreBadTextView.setText(shopInfo.getStats().getShopLastTwelveMonths().getCountScoreBad());
+
         String physicalAddressContent = getString(R.string.shop_info_physical_shop_location_only_online);
         if (shopInfo.getAddress().size() > 0) {
             physicalAddressContent = getString(R.string.shop_info_physical_shop_location_count, shopInfo.getAddress().size());

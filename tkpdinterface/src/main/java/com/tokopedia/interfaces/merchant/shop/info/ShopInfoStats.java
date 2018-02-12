@@ -32,13 +32,13 @@ public class ShopInfoStats {
     private String shopItemSold;
     @SerializedName("shop_last_one_month")
     @Expose
-    private ShopInfoLastOneMonth shopLastOneMonth;
+    private ShopInfoLastScore shopLastOneMonth;
     @SerializedName("shop_last_six_months")
     @Expose
-    private ShopInfoLastSixMonths shopLastSixMonths;
+    private ShopInfoLastScore shopLastSixMonths;
     @SerializedName("shop_last_twelve_months")
     @Expose
-    private ShopInfoLastTwelveMonths shopLastTwelveMonths;
+    private ShopInfoLastScore shopLastTwelveMonths;
     @SerializedName("shop_reputation_score")
     @Expose
     private String shopReputationScore;
@@ -137,27 +137,27 @@ public class ShopInfoStats {
         this.shopItemSold = shopItemSold;
     }
 
-    public ShopInfoLastOneMonth getShopLastOneMonth() {
+    public ShopInfoLastScore getShopLastOneMonth() {
         return shopLastOneMonth;
     }
 
-    public void setShopLastOneMonth(ShopInfoLastOneMonth shopLastOneMonth) {
+    public void setShopLastOneMonth(ShopInfoLastScore shopLastOneMonth) {
         this.shopLastOneMonth = shopLastOneMonth;
     }
 
-    public ShopInfoLastSixMonths getShopLastSixMonths() {
+    public ShopInfoLastScore getShopLastSixMonths() {
         return shopLastSixMonths;
     }
 
-    public void setShopLastSixMonths(ShopInfoLastSixMonths shopLastSixMonths) {
+    public void setShopLastSixMonths(ShopInfoLastScore shopLastSixMonths) {
         this.shopLastSixMonths = shopLastSixMonths;
     }
 
-    public ShopInfoLastTwelveMonths getShopLastTwelveMonths() {
+    public ShopInfoLastScore getShopLastTwelveMonths() {
         return shopLastTwelveMonths;
     }
 
-    public void setShopLastTwelveMonths(ShopInfoLastTwelveMonths shopLastTwelveMonths) {
+    public void setShopLastTwelveMonths(ShopInfoLastScore shopLastTwelveMonths) {
         this.shopLastTwelveMonths = shopLastTwelveMonths;
     }
 
