@@ -769,6 +769,7 @@ public class LoginFragment extends BaseDaggerFragment
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        callbackManager.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_SMART_LOCK
                 && resultCode == Activity.RESULT_OK
                 && data != null
@@ -819,7 +820,6 @@ public class LoginFragment extends BaseDaggerFragment
             getActivity().finish();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
-            callbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
 

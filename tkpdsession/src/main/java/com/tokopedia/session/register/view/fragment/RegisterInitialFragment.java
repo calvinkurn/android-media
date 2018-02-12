@@ -217,6 +217,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        callbackManager.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_REGISTER_WEBVIEW) {
             handleRegisterWebview(resultCode, data);
@@ -246,8 +247,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             sessionHandler.clearToken();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
-            callbackManager.onActivityResult(requestCode, resultCode, data);
-
         }
     }
 
