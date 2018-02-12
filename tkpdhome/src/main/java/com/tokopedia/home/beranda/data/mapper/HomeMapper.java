@@ -40,23 +40,33 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
 
             HomeData homeData = response.body().getData();
 
-            if (homeData.getTicker() != null && !homeData.getTicker().getTickers().isEmpty()) {
+            if (homeData.getTicker() != null
+                    && homeData.getTicker().getTickers() != null
+                    && !homeData.getTicker().getTickers().isEmpty()) {
                 list.add(mappingTicker(homeData.getTicker().getTickers()));
             }
 
-            if (homeData.getSlides() != null && !homeData.getSlides().getSlides().isEmpty()) {
+            if (homeData.getSlides() != null
+                    && homeData.getSlides().getSlides() != null
+                    && !homeData.getSlides().getSlides().isEmpty()) {
                 list.add(mappingBanner(homeData.getSlides().getSlides()));
             }
 
-            if (homeData.getDynamicHomeIcon() != null && !homeData.getDynamicHomeIcon().getUseCaseIcon().isEmpty()) {
+            if (homeData.getDynamicHomeIcon() != null
+                    && homeData.getDynamicHomeIcon().getUseCaseIcon() != null
+                    && !homeData.getDynamicHomeIcon().getUseCaseIcon().isEmpty()) {
                 list.add(mappingUseCaseIcon(homeData.getDynamicHomeIcon().getUseCaseIcon()));
             }
 
-            if (homeData.getDynamicHomeIcon() != null && !homeData.getDynamicHomeIcon().getDynamicIcon().isEmpty()) {
+            if (homeData.getDynamicHomeIcon() != null
+                    && homeData.getDynamicHomeIcon().getDynamicIcon() != null
+                    && !homeData.getDynamicHomeIcon().getDynamicIcon().isEmpty()) {
                 list.add(mappingDynamicIcon(homeData.getDynamicHomeIcon().getDynamicIcon()));
             }
 
-            if (homeData.getDynamicHomeChannel() != null && !homeData.getDynamicHomeChannel().getChannels().isEmpty()) {
+            if (homeData.getDynamicHomeChannel() != null
+                    && homeData.getDynamicHomeChannel().getChannels() != null
+                    && !homeData.getDynamicHomeChannel().getChannels().isEmpty()) {
                 int position = 0;
                 for(DynamicHomeChannel.Channels channel : homeData.getDynamicHomeChannel().getChannels()) {
                     if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT)) {
