@@ -136,4 +136,15 @@ public class HomePageTracking extends TrackingUtils {
                 ""
         ).getEvent());
     }
+
+    public static void eventClickEditShop() {
+        flushEventTracker();
+        sendGTMEvent(new EventTracking(
+                STATIC_VALUE_CLICK_HOMEPAGE,
+                STATIC_VALUE_HOMEPAGE,
+                "jual ini itu click ubah",
+                ""
+        ).getEvent());
+    }
+
 }

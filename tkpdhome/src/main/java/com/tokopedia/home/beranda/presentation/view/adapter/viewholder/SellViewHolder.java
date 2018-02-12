@@ -35,7 +35,6 @@ public class SellViewHolder extends AbstractViewHolder<SellViewModel> {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                HomePageTracking.eventClickOpenShop();
                 listener.openShop();
             }
         });
