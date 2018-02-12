@@ -9,12 +9,22 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 
+import com.tokopedia.interfaces.merchant.shop.info.ShopInfo;
+import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent;
+
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopComponentInstance;
 import com.tokopedia.shop.common.di.component.ShopComponent;
+import com.tokopedia.shop.info.di.module.ShopInfoModule;
+import com.tokopedia.shop.info.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment;
+import com.tokopedia.shop.info.view.helper.ShopInfoHeaderViewHelper;
+
+import javax.inject.Inject;
+
+import rx.Subscriber;
 
 /**
  * Created by nathan on 2/3/18.
@@ -23,23 +33,65 @@ import com.tokopedia.shop.info.view.fragment.ShopInfoFragment;
 public class ShopPageActivity extends BaseTabActivity  implements HasComponent<ShopComponent> {
 
     private static final int PAGE_LIMIT = 3;
+    public static final String SHOP_INFO = "SHOP_INFO";
 
-    public static Intent createIntent(Context context) {
+    public static Intent createIntent(Context context, String shopInfo) {
         Intent intent = new Intent(context, ShopPageActivity.class);
+        intent.putExtra(SHOP_INFO, shopInfo);
         return intent;
     }
 
     private ShopComponent component;
 
+    private ShopInfoHeaderViewHelper shopInfoHeaderViewHelper;
+
+    @Inject
+    GetShopInfoUseCase getShopInfoUseCase;
+
+    private String shopInfo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        if(savedInstanceState == null){
+            shopInfo = getIntent().getStringExtra(SHOP_INFO);
+        }else{
+            throw new RuntimeException("please pass shop id");
+        }
+
+
         initInjector();
         super.onCreate(savedInstanceState);
+
+        shopInfoHeaderViewHelper = new ShopInfoHeaderViewHelper(getWindow().getDecorView().getRootView());
+        getShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(shopInfo), new Subscriber<ShopInfo>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(ShopInfo shopInfo) {
+                shopInfoHeaderViewHelper.renderData(shopInfo);
+            }
+        });
     }
 
     private void initInjector() {
-//        getShopComponent().inject(this);
+        DaggerShopInfoComponent
+                .builder()
+                .shopInfoModule(new ShopInfoModule())
+                .shopComponent(getComponent())
+                .build()
+                .inject(this);
     }
+
+
 
     @Override
     protected int getLayoutRes() {
