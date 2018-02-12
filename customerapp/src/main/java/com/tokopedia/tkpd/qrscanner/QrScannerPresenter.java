@@ -3,7 +3,6 @@ package com.tokopedia.tkpd.qrscanner;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -115,7 +114,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                     getView().hideProgressDialog();
                     if (infoQrTokoCash != null) {
                         Intent intent = NominalQrPaymentActivity.newInstance(context, qrcode, infoQrTokoCash);
-                        getView().startActivityForResult(intent, getView().getResultCodeForQrPayment());
+                        getView().startActivityForResult(intent, getView().getRequestCodeForQrPayment());
                     } else {
                         getView().showErrorGetInfo(context.getString(com.tokopedia.tokocash.R.string.msg_dialog_wrong_scan));
                     }
@@ -135,19 +134,30 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
         postBarCodeDataUseCase.execute(requestParams, new Subscriber<CampaignResponseEntity>() {
             @Override
             public void onCompleted() {
-                Log.e("toko_barcode", "onCompleted ");
                 getView().finish();
             }
 
             @Override
             public void onError(Throwable e) {
-                Log.e("toko_barcode", "onError ");
-                getView().showErrorNetwork(e.getMessage());
+                if (e instanceof UnknownHostException || e instanceof ConnectException) {
+                    getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
+                } else if (e instanceof SocketTimeoutException) {
+                    getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                } else if (e instanceof ResponseErrorException) {
+                    getView().showErrorGetInfo(context.getString(com.tokopedia.tokocash.R.string.msg_dialog_wrong_scan));
+                } else if (e instanceof ResponseDataNullException) {
+                    getView().showErrorNetwork(e.getMessage());
+                } else if (e instanceof HttpErrorException) {
+                    getView().showErrorNetwork(e.getMessage());
+                } else if (e instanceof ServerErrorException) {
+                    ServerErrorHandlerUtil.handleError(e);
+                } else {
+                    getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
             }
 
             @Override
             public void onNext(CampaignResponseEntity s) {
-                Log.e("toko_barcode", "onNext " + s);
                 Uri uri = Uri.parse("" + s.getUrl());
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(uri);
