@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.domain.model;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 public class DynamicHomeChannel {
     @Expose
+    @SerializedName("channels")
     private List<Channels> channels;
 
     public List<Channels> getChannels() {
@@ -30,25 +32,33 @@ public class DynamicHomeChannel {
         public static final String LAYOUT_SPRINT = "sprint_3_image";
 
         @Expose
+        @SerializedName("id")
         private String id;
 
         @Expose
+        @SerializedName("layout")
         private String layout;
 
         @Expose
+        @SerializedName("name")
         private String name;
 
         @Expose
+        @SerializedName("grids")
         private Grid[] grids;
 
         @Expose
+        @SerializedName("hero")
         private Hero[] hero;
 
         @Expose
+        @SerializedName("type")
         private String type;
 
         @Expose
+        @SerializedName("header")
         private Header header;
+        @SerializedName("promoName")
         private String promoName;
 
         public String getId() {
@@ -328,27 +338,35 @@ public class DynamicHomeChannel {
 
     public class Grid {
         @Expose
+        @SerializedName("id")
         private String id;
 
         @Expose
+        @SerializedName("price")
         private String price;
 
         @Expose
+        @SerializedName("imageUrl")
         private String imageUrl;
 
         @Expose
+        @SerializedName("name")
         private String name;
 
         @Expose
+        @SerializedName("applink")
         private String applink;
 
         @Expose
+        @SerializedName("url")
         private String url;
 
         @Expose
+        @SerializedName("discount")
         private String discount;
 
         @Expose
+        @SerializedName("slashedPrice")
         private String slashedPrice;
 
         public String getId() {
@@ -418,18 +436,23 @@ public class DynamicHomeChannel {
 
     public class Header {
         @Expose
+        @SerializedName("id")
         private String id;
 
         @Expose
+        @SerializedName("name")
         private String name;
 
         @Expose
+        @SerializedName("expiredTime")
         private String expiredTime;
 
         @Expose
+        @SerializedName("applink")
         private String applink;
 
         @Expose
+        @SerializedName("url")
         private String url;
 
         public String getId() {
