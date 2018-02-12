@@ -135,7 +135,6 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         dialogFragment.show(getFragmentManager().beginTransaction(), RESEND_ETICKET_DIALOG_TAG);
     }
 
-
     @Override
     public Observable<ProfileInfo> getProfileObservable() {
         if (getActivity().getApplication() instanceof FlightModuleRouter
