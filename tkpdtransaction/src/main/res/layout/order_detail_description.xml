@@ -104,6 +104,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black_70"
+                android:textIsSelectable="true"
                 tools:text="I make you break you move I take love is the answer so they said, but if I went awaaaaay what would you say would be enough to make you stay" />
 
         </LinearLayout>
