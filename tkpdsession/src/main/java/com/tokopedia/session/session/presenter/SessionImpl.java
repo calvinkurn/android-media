@@ -11,8 +11,10 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.service.DownloadService;
+import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.util.BranchSdkUtils;
 
 /**
  * Created by m.normansyah on 04/11/2015.
@@ -170,24 +172,31 @@ public class SessionImpl implements Session {
         switch (bundle.getInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, 0)){
             case DownloadService.REGISTER_GOOGLE:
                 sendMoEngageRegisterEvent(bundle, AppEventTracking.GTMCacheValue.GMAIL);
+                sendBranchRegisterEvent(bundle);
                 break;
             case DownloadService.REGISTER_FACEBOOK:
                 sendMoEngageRegisterEvent(bundle, AppEventTracking.GTMCacheValue.FACEBOOK);
+                sendBranchRegisterEvent(bundle);
                 break;
             case DownloadService.REGISTER_WEBVIEW:
                 sendMoEngageRegisterEvent(bundle, AppEventTracking.GTMCacheValue.WEBVIEW);
+                sendBranchRegisterEvent(bundle);
                 break;
             case DownloadService.LOGIN_GOOGLE:
                 sendMoEngageLoginEvent(bundle, AppEventTracking.GTMCacheValue.GMAIL);
+                sendBranchLoginEvent(bundle);
                 break;
             case DownloadService.LOGIN_FACEBOOK:
                 sendMoEngageLoginEvent(bundle, AppEventTracking.GTMCacheValue.FACEBOOK);
+                sendBranchLoginEvent(bundle);
                 break;
             case DownloadService.LOGIN_WEBVIEW:
                 sendMoEngageLoginEvent(bundle, AppEventTracking.GTMCacheValue.WEBVIEW);
+                sendBranchLoginEvent(bundle);
                 break;
             case DownloadService.LOGIN_ACCOUNTS_TOKEN:
                 sendMoEngageLoginEvent(bundle, AppEventTracking.GTMCacheValue.EMAIL);
+                sendBranchLoginEvent(bundle);
                 break;
         }
     }
@@ -212,5 +221,20 @@ public class SessionImpl implements Session {
                                 com.tokopedia.core.analytics.AppEventTracking.DEFAULT_CHANNEL)
                 )
                 .build());
+    }
+
+    private void sendBranchRegisterEvent(Bundle bundle){
+        AccountsParameter accountsParameter = bundle.getParcelable(AppEventTracking.ACCOUNTS_KEY);
+
+        BranchSdkUtils.sendRegisterEvent( bundle.getString(com.tokopedia.core.analytics.AppEventTracking.EMAIL_KEY,
+                com.tokopedia.core.analytics.AppEventTracking.DEFAULT_CHANNEL),
+                accountsParameter.getInfoModel() != null ? accountsParameter.getInfoModel().getPhone() : "");
+    }
+
+    private void sendBranchLoginEvent(Bundle bundle){
+        AccountsParameter accountsParameter = bundle.getParcelable(AppEventTracking.ACCOUNTS_KEY);
+
+        BranchSdkUtils.sendLoginEvent( bundle.getString(com.tokopedia.core.analytics.AppEventTracking.EMAIL_KEY,
+                com.tokopedia.core.analytics.AppEventTracking.DEFAULT_CHANNEL), accountsParameter.getInfoModel() != null ? accountsParameter.getInfoModel().getPhone() : "");
     }
 }

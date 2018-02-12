@@ -34,6 +34,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -536,6 +537,7 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
 
     private void sendGTMRegisterEvent() {
         UnifyTracking.eventRegisterSuccess(getString(com.tokopedia.core.R.string.title_email));
+        BranchSdkUtils.sendRegisterEvent(email.getText().toString(),phone.getText().toString());
     }
 
     private boolean isEmailAddressFromDevice() {

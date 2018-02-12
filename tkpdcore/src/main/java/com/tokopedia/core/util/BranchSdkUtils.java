@@ -2,6 +2,7 @@ package com.tokopedia.core.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.model.Product;
@@ -167,7 +168,7 @@ public class BranchSdkUtils {
             JSONObject metadata = new JSONObject();
             try {
                 metadata.put(AppEventTracking.Branch.EMAIL, email);
-                metadata.put(AppEventTracking.Branch.PHONE, phone);
+                metadata.put(AppEventTracking.Branch.PHONE, normalizePhoneNumber(phone));
             } catch ( JSONException e ) {
             }
             Branch.getInstance().userCompletedAction(AppEventTracking.EventBranch.EVENT_LOGIN, metadata);
@@ -179,7 +180,7 @@ public class BranchSdkUtils {
             JSONObject metadata = new JSONObject();
             try {
                 metadata.put(AppEventTracking.Branch.EMAIL, email);
-                metadata.put(AppEventTracking.Branch.PHONE, phone);
+                metadata.put(AppEventTracking.Branch.PHONE, normalizePhoneNumber(phone));
             } catch ( JSONException e ) {
             }
             Branch.getInstance().userCompletedAction(AppEventTracking.EventBranch.EVENT_REGISTER, metadata);
@@ -199,6 +200,13 @@ public class BranchSdkUtils {
     public static Boolean isappShowReferralButtonActivated(Context context){
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON);
+    }
+
+    private static String normalizePhoneNumber(String phoneNum) {
+        if (!TextUtils.isEmpty(phoneNum))
+            return phoneNum.replaceFirst("^0(?!$)", "62");
+        else
+            return "";
     }
 
     public interface GenerateShareContents {
