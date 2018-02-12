@@ -21,7 +21,7 @@ public class ShopInfoHeaderViewHelper {
 
     private final View view;
     private RatingBar ratingBarShopInfo;
-    private View productQualityValue;
+    private TextView productQualityValue;
     private ImageView speedImageView;
     private TextView speedValueDesd;
     private ImageView shopbgImageView;
@@ -90,6 +90,11 @@ public class ShopInfoHeaderViewHelper {
         int level = (int) shopInfo.getStats().getShopBadgeLevel().getLevel();
         shopReputationView.setValue(set,level, shopInfo.getStats().getShopReputationScore());
 
-        // kecepatan
+        productQualityValue.setText(shopInfo.getRatings().getQuality().getAverage());
+        long ratingStar = shopInfo.getRatings().getQuality().getRatingStar();
+        ratingBarShopInfo.setMax(5);
+        ratingBarShopInfo.setRating(ratingStar);
+
+        // kecepatan where ???
     }
 }
