@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
+import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.common.constant.FlightErrorConstant;
@@ -37,6 +38,9 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by zulfikarrahman on 12/13/17.
@@ -46,12 +50,15 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
 
     private final FlightGetOrderUseCase flightGetOrderUseCase;
     private UserSession userSession;
+    private CompositeSubscription compositeSubscription;
     private int totalPrice = 0;
+    private String userResendEmail = "";
 
     @Inject
     public FlightDetailOrderPresenter(UserSession userSession, FlightGetOrderUseCase flightGetOrderUseCase) {
         this.userSession = userSession;
         this.flightGetOrderUseCase = flightGetOrderUseCase;
+        compositeSubscription = new CompositeSubscription();
     }
 
     public void getDetail(String orderId, FlightOrderDetailPassData flightOrderDetailPassData) {
@@ -76,7 +83,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
 
     @Override
     public void onDownloadETicketButtonClicked() {
-        getView().navigateToInputEmailForm(userSession.getUserId());
+        getView().navigateToInputEmailForm(userSession.getUserId(), userResendEmail);
     }
 
     private Subscriber<FlightOrder> getSubscriberGetDetailOrder(final FlightOrderDetailPassData flightOrderDetailPassData) {
@@ -124,6 +131,38 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 renderPaymentInfo(flightOrder);
             }
         };
+    }
+
+    @Override
+    public void onGetProfileData() {
+        compositeSubscription.add(getView().getProfileObservable()
+                .onBackpressureDrop()
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<ProfileInfo>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        if (isViewAttached()) {
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onNext(ProfileInfo profileInfo) {
+                        if (profileInfo != null && isViewAttached()) {
+                            userResendEmail = profileInfo.getEmail();
+                        }
+                    }
+                })
+        );
     }
 
     private void renderPaymentInfo(FlightOrder flightOrder) {
@@ -429,6 +468,9 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     @Override
     public void detachView() {
         flightGetOrderUseCase.unsubscribe();
+        if (compositeSubscription.hasSubscriptions()) {
+            compositeSubscription.unsubscribe();
+        }
         super.detachView();
     }
 }

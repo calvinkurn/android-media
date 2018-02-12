@@ -13,7 +13,7 @@ import rx.Observable;
 
 public class FlightSendEmailUseCase extends UseCase<SendEmailEntity> {
     private static final String PARAM_ID = "invoice_id";
-    private static final String USER_ID = "user_id";
+    private static final String USER_ID = "uid";
     private static final String PARAM_EMAIL = "email";
     private static final String DEFAULT_EMPTY_VALUE = "";
     private FlightRepository flightRepository;

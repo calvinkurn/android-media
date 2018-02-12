@@ -30,6 +30,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
@@ -52,6 +53,8 @@ import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Observable;
 
 /**
  * Created by zulfikarrahman on 12/12/17.
@@ -183,6 +186,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         super.onViewCreated(view, savedInstanceState);
         flightDetailOrderPresenter.attachView(this);
         flightDetailOrderPresenter.getDetail(flightOrderDetailPassData.getOrderId(), flightOrderDetailPassData);
+        flightDetailOrderPresenter.onGetProfileData();
     }
 
     void setViewClickListener() {
@@ -489,8 +493,8 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     @Override
-    public void navigateToInputEmailForm(String userId) {
-        DialogFragment dialogFragment = FlightResendETicketDialogFragment.newInstace(flightOrderDetailPassData.getOrderId(), userId);
+    public void navigateToInputEmailForm(String userId, String userEmail) {
+        DialogFragment dialogFragment = FlightResendETicketDialogFragment.newInstace(flightOrderDetailPassData.getOrderId(), userId, userEmail);
         dialogFragment.setTargetFragment(this, REQUEST_CODE_RESEND_ETICKET_DIALOG);
         dialogFragment.show(getFragmentManager().beginTransaction(), RESEND_ETICKET_DIALOG_TAG);
     }
@@ -506,6 +510,18 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
                 }
                 break;
         }
+    }
+
+
+    @Override
+    public Observable<ProfileInfo> getProfileObservable() {
+        if (getActivity().getApplication() instanceof FlightModuleRouter
+                && ((FlightModuleRouter) getActivity().getApplication())
+                .getProfile() != null) {
+            return ((FlightModuleRouter) getActivity().getApplication())
+                    .getProfile();
+        }
+        return Observable.empty();
     }
 
     private void showGreenSnackbar(int resId) {
