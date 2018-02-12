@@ -68,6 +68,7 @@ public class DrawerBuyerHelper extends DrawerHelper
         DrawerHeaderDataBinder.DrawerHeaderListener {
 
     private static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
+    private static final int VAL_DEFAULT = 0;
 
     private TextView shopName;
     private TextView shopLabel;
@@ -275,11 +276,11 @@ public class DrawerBuyerHelper extends DrawerHelper
         resoMenu.add(new DrawerItem(context.getString(R.string.drawer_title_new_reso_as_buyer),
                 TkpdState.DrawerPosition.RESOLUTION_CENTER_BUYER,
                 drawerCache.getBoolean(IS_RESO_OPENED, false),
-                drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER_BUYER, 0)));
+                drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER_BUYER, VAL_DEFAULT)));
         resoMenu.add(new DrawerItem(context.getString(R.string.drawer_title_new_reso_as_seller),
                 TkpdState.DrawerPosition.RESOLUTION_CENTER_SELLER,
                 drawerCache.getBoolean(IS_RESO_OPENED, false),
-                drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER_SELLER, 0)));
+                drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER_SELLER, VAL_DEFAULT)));
         return resoMenu;
     }
 

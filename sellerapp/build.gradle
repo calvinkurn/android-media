@@ -249,7 +249,7 @@ dependencies {
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
 
-    // Required -- JUnit 4 framework
+    /*// Required -- JUnit 4 framework
     testCompile rootProject.ext.testDependencies.junit
 
     // Optional -- Mockito framework
@@ -291,7 +291,7 @@ dependencies {
     androidTestCompile rootProject.ext.testDependencies.dexMaker
     androidTestCompile(rootProject.ext.testDependencies.dexMakerMockito) {
         exclude group: 'org.hamcrest', module: 'hamcrest-core'
-    }
+    }*/
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

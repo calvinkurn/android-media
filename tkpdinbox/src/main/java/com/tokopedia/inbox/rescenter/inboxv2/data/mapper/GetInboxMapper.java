@@ -45,6 +45,9 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
     private static final String COLOR_WHITE = "#ffffff";
     private static final String STRING_YES = "Ya";
 
+
+    public static final int PARAM_MAX_IMAGE_COUNT = 3;
+
     @Override
     public InboxItemResultViewModel call(Response<TkpdResponse> response) {
         return mappingResponse(response);
@@ -227,8 +230,8 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
     }
 
     private static String buildStringForExtraImage(List<ProductResponse> responseList) {
-        return responseList.size() > 3 ?
-                "+" + String.valueOf(responseList.size() - 3)+ " " + STATUS_OTHER_PRODUCT :
+        return responseList.size() > PARAM_MAX_IMAGE_COUNT ?
+                "+" + String.valueOf(responseList.size() - PARAM_MAX_IMAGE_COUNT)+ " " + STATUS_OTHER_PRODUCT :
                 "";
     }
 }
