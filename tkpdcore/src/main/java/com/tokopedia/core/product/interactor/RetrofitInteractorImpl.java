@@ -21,11 +21,16 @@ import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.core.network.apiservices.product.ProductActService;
 import com.tokopedia.core.network.apiservices.product.ProductService;
+import com.tokopedia.core.network.apiservices.product.ReputationReviewService;
 import com.tokopedia.core.network.apiservices.product.PromoTopAdsService;
 import com.tokopedia.core.network.apiservices.product.ReputationReviewService;
 import com.tokopedia.core.network.apiservices.product.apis.ReputationReviewApi;
 import com.tokopedia.core.network.apiservices.shop.MyShopEtalaseService;
+import com.tokopedia.core.network.apiservices.tome.TomeService;
 import com.tokopedia.core.network.apiservices.user.FaveShopActService;
+import com.tokopedia.core.network.entity.intermediary.Product;
+import com.tokopedia.core.network.entity.variant.ProductVariant;
+import com.tokopedia.core.network.entity.variant.ProductVariantResponse;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
@@ -38,12 +43,10 @@ import com.tokopedia.core.product.facade.NetworkParam;
 import com.tokopedia.core.product.listener.ReportProductDialogView;
 import com.tokopedia.core.product.model.etalase.EtalaseData;
 import com.tokopedia.core.product.model.goldmerchant.ProductVideoData;
-import com.tokopedia.core.product.model.productdetail.ProductCampaign;
-import com.tokopedia.core.product.model.productdetail.ProductCampaignResponse;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.MostHelpfulReviewResponse;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
+import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.promowidget.DataPromoWidget;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoWidgetResponse;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
@@ -94,10 +97,11 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     private final MojitoAuthService mojitoAuthService;
     private final GoldMerchantService goldMerchantService;
     private final MojitoService mojitoService;
-    private final ReputationReviewService reputationReviewService;
     private final Galadrielservice galadrielservice;
     private final KunyitService kunyitService;
     private final PromoTopAdsService promoTopAdsService;
+    private final ReputationReviewService reputationReviewService;
+    private final TomeService tomeService;
     private final int SERVER_ERROR_CODE = 500;
     private static final String ERROR_MESSAGE = "message_error";
     private final ThreadExecutor threadExecutor;
@@ -119,6 +123,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         this.postExecutionThread = new UIThread();
         this.promoTopAdsService = new PromoTopAdsService();
         this.galadrielservice = new Galadrielservice();
+        this.tomeService = new TomeService();
     }
 
     @Override
@@ -651,7 +656,6 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     private void getOtherProductsAceApi(Context context, Map<String, String> params,
                                         final OtherProductListener listener) {
 
-        Log.d(TAG, "getOtherProductsAceApi " + params.toString());
         Observable<Response<ProductOtherDataAce>> observable = aceSearchService.getApi()
                 .getOtherProducts(MapNulRemover.removeNull(params));
 
@@ -792,35 +796,37 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     }
 
     @Override
-    public void getProductCampaign(@NonNull Context context, @NonNull String productId,
-                                   @NonNull final ProductCampaignListener listener) {
-        Observable<Response<ProductCampaignResponse>> observable = mojitoService
-                .getApi().getProductCampaign(productId);
-
-        Subscriber<ProductCampaign> subscriber = new Subscriber<ProductCampaign>() {
+    public void getProductVariant(@NonNull Context context, @NonNull String productId, final @NonNull ProductVariantListener listener) {
+        Observable<Response<ProductVariantResponse>> observable = tomeService.getApi().getProductVariant(productId);
+        Subscriber<ProductVariant> subscriber = new Subscriber<ProductVariant>() {
             @Override
             public void onCompleted() {
-
+               
             }
 
             @Override
             public void onError(Throwable e) {
-                listener.onError(e.getMessage());
+
             }
 
             @Override
-            public void onNext(ProductCampaign productCampaign) {
-                if (productCampaign != null) {
-                    listener.onSucccess(productCampaign);
+            public void onNext(ProductVariant variant) {
+                if (variant!=null) {
+                    listener.onSucccess(variant);
+                } else {
+                    listener.onError("");
                 }
             }
         };
 
-        Func1<Response<ProductCampaignResponse>, ProductCampaign> mapper =
-                new Func1<Response<ProductCampaignResponse>, ProductCampaign>() {
+        Func1<Response<ProductVariantResponse>, ProductVariant> mapper =
+                new Func1<Response<ProductVariantResponse>, ProductVariant>() {
                     @Override
-                    public ProductCampaign call(Response<ProductCampaignResponse> productCampaignResponse) {
-                        return productCampaignResponse.body().getData();
+                    public ProductVariant call(Response<ProductVariantResponse> productVariantResponse) {
+                        if (productVariantResponse != null && productVariantResponse.body()!=null) {
+                            return productVariantResponse.body().getData();
+                        }
+                        return null;
                     }
                 };
 
@@ -829,6 +835,36 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                         .unsubscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .map(mapper)
+                        .subscribe(subscriber)
+        );
+    }
+
+    @Override
+    public void updateRecentView(@NonNull Context context, @NonNull String productId) {
+        Observable<Response<TkpdResponse>> observable =
+                mojitoAuthService.getApi().updateRecentView(productId,SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : "");
+
+        Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
+            @Override
+            public void onCompleted() {
+               
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                
+            }
+
+            @Override
+            public void onNext(Response<TkpdResponse> variant) {
+              
+            }
+        };
+
+        compositeSubscription.add(
+                observable.subscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(subscriber)
         );
     }
@@ -843,7 +879,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         Subscriber<DataPromoWidget> subscriber = new Subscriber<DataPromoWidget>() {
             @Override
             public void onCompleted() {
-                Log.d(TAG, "onCompleted: ");
+               
             }
 
             @Override
@@ -892,7 +928,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
             Subscriber<List<Review>> subscriber = new Subscriber<List<Review>>() {
                 @Override
                 public void onCompleted() {
-                    Log.d(TAG, "onCompleted: ");
+                   
                 }
 
                 @Override
@@ -949,7 +985,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         Subscriber<LatestTalkViewModel> subscriber = new Subscriber<LatestTalkViewModel>() {
             @Override
             public void onCompleted() {
-                Log.d(TAG, "getProductDiscussion() onCompleted: ");
+                
             }
 
             @Override
@@ -987,7 +1023,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         Subscriber<LatestTalkViewModel> subscriber = new Subscriber<LatestTalkViewModel>() {
             @Override
             public void onCompleted() {
-                Log.d(TAG, "getProductTalkComment() onCompleted: ");
+                
             }
 
             @Override
