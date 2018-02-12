@@ -49,6 +49,12 @@
     <dimen name="image_width_xxl">96dp</dimen>
     <dimen name="image_width_xxxl">128dp</dimen>
 
+    <dimen name="new_margin_tiny">4dp</dimen>
+    <dimen name="new_margin_small">8dp</dimen>
+    <dimen name="new_margin_med">16dp</dimen>
+    <dimen name="new_margin_sm">24dp</dimen>
+    <dimen name="new_margin_big">32dp</dimen>
+
     <dimen name="margin_vs">5dp</dimen>
     <dimen name="margin_ms">8dp</dimen>
     <dimen name="margin_vvs">3.3dp</dimen>

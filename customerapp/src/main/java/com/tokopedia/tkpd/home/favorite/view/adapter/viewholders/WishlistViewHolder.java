@@ -95,9 +95,7 @@ public class WishlistViewHolder extends AbstractViewHolder<WishlistViewModel> {
 
     @OnClick(R.id.find_now)
     public void onFindNowClicked() {
-        ParentIndexHome.ChangeTabListener listener
-                = ((ParentIndexHome) context).GetHotListListener();
-
+        ParentIndexHome.ChangeTabListener listener = ((ParentIndexHome) context).changeTabListener();
         listener.onChangeTab(HOTLIST_TAB);
     }
 }
