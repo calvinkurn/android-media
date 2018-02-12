@@ -130,7 +130,7 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
 
     public interface SingleAddressShipmentAdapterListener {
 
-        void onAddOrChangeAddress(ShipmentRecipientModel shipmentRecipientModel);
+        void onAddOrChangeAddress();
 
         void onChooseShipment();
 
@@ -204,7 +204,7 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
             mTvAddressDescription.setText(model.getAddressIdentifier());
             mTvRecipientName.setText(model.getRecipientName());
             mTvRecipientAddress.setText(model.getRecipientAddress());
-            mTvRecipientPhone.setText(model.getRecipientPhone());
+            mTvRecipientPhone.setText(model.getRecipientPhoneNumber());
 
             renderPickupPoint(pickupPointLayout, mCartSingleAddressData.getShipmentRecipientModel());
             mTvAddOrChangeAddress.setOnClickListener(
@@ -245,8 +245,8 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
             return new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    viewListener.onAddOrChangeAddress(model);
-                    fragmentTransaction();
+                    viewListener.onAddOrChangeAddress();
+//                    fragmentTransaction();
                 }
             };
         }

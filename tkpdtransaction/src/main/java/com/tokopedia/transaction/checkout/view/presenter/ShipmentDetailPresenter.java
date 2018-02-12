@@ -98,7 +98,7 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
     @Override
     public void loadAllCourier() {
         chooseSelectedCourier(selectedCourier);
-        getView().showAllCouriers(couriers);
+        getView().showAllCouriers();
     }
 
     @Override

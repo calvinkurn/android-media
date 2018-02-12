@@ -57,8 +57,6 @@ import com.tokopedia.transaction.checkout.view.presenter.IShipmentDetailPresente
 import com.tokopedia.transaction.checkout.view.view.IShipmentDetailView;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -346,8 +344,8 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     }
 
     @Override
-    public void showAllCouriers(List<CourierItemData> couriers) {
-        setupRecyclerView(couriers);
+    public void showAllCouriers() {
+        setupRecyclerView();
     }
 
     private void formatInsuranceTncView() {
@@ -371,7 +369,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         tvInsuranceTerms.setText(tosAgreementText);
     }
 
-    private void setupRecyclerView(List<CourierItemData> couriers) {
+    private void setupRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL, false);
         rvCourierChoice.setLayoutManager(linearLayoutManager);
