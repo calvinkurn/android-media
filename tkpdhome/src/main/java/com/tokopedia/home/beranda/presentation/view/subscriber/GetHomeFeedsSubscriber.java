@@ -1,5 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.subscriber;
 
+import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.home.beranda.listener.HomeFeedListener;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationProductViewModel;
@@ -25,9 +27,14 @@ public class GetHomeFeedsSubscriber extends Subscriber<FeedResult> {
     private final HomeFeedListener viewListener;
     private final int page;
 
+    public static final String HOMEPAGE_ENHANCE_ANALYTIC = "HOMEPAGE_ENHANCE_ANALYTIC";
+    private static final String LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT";
+    private final LocalCacheHandler cache;
+
     public GetHomeFeedsSubscriber(HomeFeedListener viewListener, int page) {
         this.viewListener = viewListener;
         this.page = page;
+        this.cache = new LocalCacheHandler(viewListener.getActivity(), HOMEPAGE_ENHANCE_ANALYTIC);
     }
 
     @Override
@@ -40,8 +47,17 @@ public class GetHomeFeedsSubscriber extends Subscriber<FeedResult> {
         viewListener.onShowRetryGetFeed();
     }
 
+    private void clearCacheFeedAnalytic() {
+        if (page == 1) {
+            LocalCacheHandler.clearCache(viewListener.getActivity(), HOMEPAGE_ENHANCE_ANALYTIC);
+        }
+    }
+
     @Override
     public void onNext(FeedResult feedResult) {
+
+        clearCacheFeedAnalytic();
+
         ArrayList<Visitable> list = convertToViewModel(feedResult.getFeedDomain());
 
         if (feedResult.isHasNext()) {
@@ -63,6 +79,7 @@ public class GetHomeFeedsSubscriber extends Subscriber<FeedResult> {
 
     private void addFeedData(ArrayList<Visitable> listFeedView,
                              List<DataFeedDomain> listFeedDomain) {
+        int positionFeedProductCard = cache.getInt(LAST_POSITION_ENHANCE_PRODUCT, 0);
         if (listFeedDomain != null) {
             for (DataFeedDomain domain : listFeedDomain) {
                 switch (domain.getContent().getType() != null ? domain.getContent().getType() : "") {
@@ -71,8 +88,22 @@ public class GetHomeFeedsSubscriber extends Subscriber<FeedResult> {
                         InspirationViewModel inspirationViewModel = convertToInspirationViewModel(domain);
                         if (inspirationViewModel != null
                                 && inspirationViewModel.getListProduct() != null
-                                && !inspirationViewModel.getListProduct().isEmpty())
+                                && !inspirationViewModel.getListProduct().isEmpty()) {
+
+                            positionFeedProductCard++;
+                            String eventLabel = String.format("%s - %s", "rekomendasi untuk anda", inspirationViewModel.getSource());
+                            inspirationViewModel.setEventLabel(eventLabel);
+                            inspirationViewModel.setPositionFeedCard(positionFeedProductCard);
+
                             listFeedView.add(inspirationViewModel);
+
+                            HomePageTracking.eventEnhancedImpressionProductHomePage(
+                                    inspirationViewModel.getHomePageImpressionDataLayer()
+                            );
+
+                            cache.putInt(LAST_POSITION_ENHANCE_PRODUCT, positionFeedProductCard);
+                            cache.applyEditor();
+                        }
                         break;
                     default:
                         break;

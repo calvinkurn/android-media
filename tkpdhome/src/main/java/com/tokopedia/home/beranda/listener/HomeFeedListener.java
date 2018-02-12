@@ -1,5 +1,7 @@
 package com.tokopedia.home.beranda.listener;
 
+import android.content.Context;
+
 import com.tokopedia.core.base.adapter.Visitable;
 
 import java.util.ArrayList;
@@ -19,4 +21,6 @@ public interface HomeFeedListener {
     void onSuccessGetFeed(ArrayList<Visitable> visitables);
     void updateCursor(String currentCursor);
     void unsetEndlessScroll();
+
+    Context getActivity();
 }
