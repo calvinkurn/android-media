@@ -1235,8 +1235,10 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         if (variantLevel1!=null && variantLevel1 instanceof Option) {
             priceSimulationView.updateVariant(generateVariantString());
         }
+        int defaultChild =  productVariant.getParentId() == productData.getInfo().getProductId()
+                ?  productVariant.getDefaultChild() : productData.getInfo().getProductId();
         buttonBuyView.updateButtonForVariantProduct(productVariant.getChildFromProductId(
-                productVariant.getDefaultChild()).isIsBuyable(),productData.getShopInfo().getShopStatus());
+                defaultChild).isIsBuyable(),productData.getShopInfo().getShopStatus());
     }
 
     @Override

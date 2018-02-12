@@ -55,7 +55,6 @@ public class ReactNativeHostFactory {
         };
     }
 
-
     private static ReactNativeHost createReactNativeHostDev(final Application application) {
         return new ReactNativeHost(application) {
             @Override

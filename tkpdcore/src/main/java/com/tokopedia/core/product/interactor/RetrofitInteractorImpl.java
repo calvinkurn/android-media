@@ -807,12 +807,16 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
 
             @Override
             public void onError(Throwable e) {
-                listener.onError(e.getMessage());
+
             }
 
             @Override
             public void onNext(ProductVariant variant) {
-                listener.onSucccess(variant);
+                if (variant!=null) {
+                    listener.onSucccess(variant);
+                } else {
+                    listener.onError("");
+                }
             }
         };
 
@@ -820,7 +824,10 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                 new Func1<Response<ProductVariantResponse>, ProductVariant>() {
                     @Override
                     public ProductVariant call(Response<ProductVariantResponse> productVariantResponse) {
-                        return productVariantResponse.body().getData();
+                        if (productVariantResponse != null && productVariantResponse.body()!=null) {
+                            return productVariantResponse.body().getData();
+                        }
+                        return null;
                     }
                 };
 
