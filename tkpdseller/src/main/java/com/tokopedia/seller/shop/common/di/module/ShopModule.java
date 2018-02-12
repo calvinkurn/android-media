@@ -2,6 +2,8 @@ package com.tokopedia.seller.shop.common.di.module;
 
 import android.content.Context;
 
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
@@ -9,6 +11,8 @@ import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterce
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.exception.model.TomeErrorResponse;
+import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.seller.shop.common.exception.model.ShopErrorResponse;
 import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.seller.shop.common.di.ShopScope;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
@@ -85,12 +89,11 @@ public class ShopModule {
     @ShopQualifier
     @ShopScope
     @Provides
-    public OkHttpClient provideOkHttpClientTomeBearerAuth(OkHttpClient.Builder okHttpClientBuilder,
-                                                          HttpLoggingInterceptor httpLoggingInterceptor,
+    public OkHttpClient provideOkHttpClientTomeBearerAuth(HttpLoggingInterceptor httpLoggingInterceptor,
                                                           BearerInterceptor bearerInterceptor,
                                                           @ShopQualifier TkpdErrorResponseInterceptor tkpdErrorResponseInterceptor
                                                           ) {
-        return okHttpClientBuilder
+        return new OkHttpClient.Builder()
                 .addInterceptor(bearerInterceptor)
                 .addInterceptor(tkpdErrorResponseInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
@@ -118,6 +121,14 @@ public class ShopModule {
     @Provides
     public GlobalCacheManager provideGlobalCacheManager(){
         return new GlobalCacheManager();
+    }
+
+    @ShopScope
+    @Provides
+    public GetShopInfoUseCase provideGetShopInfoUseCase(ShopInfoRepository shopInfoRepository,
+                                                        ThreadExecutor threadExecutor,
+                                                        PostExecutionThread postExecutionThread){
+        return new GetShopInfoUseCase(threadExecutor, postExecutionThread, shopInfoRepository);
     }
 }
 

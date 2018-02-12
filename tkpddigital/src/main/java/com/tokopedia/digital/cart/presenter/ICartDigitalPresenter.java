@@ -20,4 +20,8 @@ public interface ICartDigitalPresenter {
 
     void processPatchOtpCart(String digitalCategoryId);
 
+    void callPermissionCheckSuccess();
+
+    void callPermissionCheckFail();
+
 }
