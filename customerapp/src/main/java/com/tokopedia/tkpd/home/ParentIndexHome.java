@@ -8,13 +8,14 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
@@ -27,6 +28,7 @@ import android.widget.RelativeLayout;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.anals.UserAttribute;
@@ -34,7 +36,6 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.domain.usecase.GetUserAttributesUseCase;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
@@ -54,7 +55,6 @@ import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.home.GetUserInfoListener;
-import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.retrofit.utils.DialogHockeyApp;
 import com.tokopedia.core.onboarding.NewOnboardingActivity;
 import com.tokopedia.core.router.OldSessionRouter;
@@ -68,6 +68,7 @@ import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.design.bottomnavigation.BottomNavigation;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.beranda.presentation.view.fragment.HomeFragment;
@@ -79,7 +80,6 @@ import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import rx.subscriptions.CompositeSubscription;
 
@@ -89,6 +89,7 @@ import rx.subscriptions.CompositeSubscription;
  * modified by m.normansyah on 4/02/2016, fetch list of bank.
  * modified by alvarisi on 6/15/2016, tab selection tracking.
  * modified by Hafizh Herdi on 6/15/2016, dynamic personalization message.
+ * modified by meta on 24/01/2018, implement bottom navigation menu
  */
 public class ParentIndexHome extends TkpdActivity implements NotificationReceivedListener,
         GetUserInfoListener, HasComponent {
@@ -97,28 +98,26 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     public static final int INIT_STATE_FRAGMENT_FEED = 1;
     public static final int INIT_STATE_FRAGMENT_FAVORITE = 2;
     public static final int INIT_STATE_FRAGMENT_HOTLIST = 3;
-    public static final String EXTRA_INIT_FRAGMENT = "EXTRA_INIT_FRAGMENT";
+    public static final int ONBOARDING_REQUEST = 101;
+    public static final int WISHLIST_REQUEST = 202;
 
+    public static final String EXTRA_INIT_FRAGMENT = "EXTRA_INIT_FRAGMENT";
     public static final String TAG = ParentIndexHome.class.getSimpleName();
     public static final String messageTAG = TAG + " : ";
     public static final String VIEW_PAGE_POSITION = "VIEW_PAGE_POSITION";
-    public static final String FETCH_BANK = "FETCH_BANK";
-    private static final java.lang.String BUNDLE_EXTRA_REFRESH = "refresh";
-    private static final String IMAGE_GALLERY = "IMAGE_GALLERY";
-    public static final int ONBOARDING_REQUEST = 101;
-    public static final int WISHLIST_REQUEST = 202;
+
+    protected TkpdProgressDialog progressDialog;
     protected PagerAdapter adapter;
-    protected ViewPager mViewPager;
-    protected TabLayout indicator;
+    protected TouchViewPager mViewPager;
+    protected BottomNavigation bottomNavigation;
+
     protected LocalCacheHandler cache;
+    private AnalyticsCacheHandler cacheHandler;
+    private CompositeSubscription subscription = new CompositeSubscription();
+
     protected Boolean needToRefresh;
     protected int viewPagerIndex;
-    private GetUserAttributesUseCase getUserAttributesUseCase;
 
-    private AnalyticsCacheHandler cacheHandler;
-    List<String> content;
-    TkpdProgressDialog progressDialog;
-    CompositeSubscription subscription = new CompositeSubscription();
     private int initStateFragment = INIT_STATE_FRAGMENT_HOME;
 
     private BroadcastReceiver hockeyBroadcastReceiver;
@@ -206,38 +205,13 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                     (getIntent().getIntExtra("fragment", initStateFragment)));
             initStateFragment = viewPagerIndex;
         }
-        content = new ArrayList<>();
         setView();
 
         if (isFirstTime()) {
-            TrackFirstTime();
-        }
-        indicator.removeAllTabs();
-        content.clear();
-//        adapter.notifyDataSetChanged();
-        if (SessionHandler.isV4Login(getBaseContext())) {
-            String[] CONTENT = new String[]{
-                    getString(R.string.title_categories),
-                    getString(R.string.title_index_prod_shop),
-                    getString(R.string.title_index_favorite),
-                    getString(R.string.title_index_hot_list)
-            };
-            content = new ArrayList<>();
-            for (String content_ : CONTENT) {
-                indicator.addTab(indicator.newTab().setText(content_));
-                content.add(content_);
-            }
-        } else {
-            String[] CONTENT = new String[]{getString(R.string.title_categories), getString(R.string.title_index_hot_list)};
-            content = new ArrayList<>();
-            for (String content_ : CONTENT) {
-                indicator.addTab(indicator.newTab().setText(content_));
-                content.add(content_);
-            }
+            trackFirstTime();
         }
 
         initCreate();
-        adapter.notifyDataSetChanged();
 
         NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
 
@@ -273,7 +247,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     @Override
     protected void setupToolbar() {
-        toolbar = (Toolbar) findViewById(R.id.app_bar);
+        toolbar = findViewById(R.id.app_bar);
         toolbar.removeAllViews();
         View view = getLayoutInflater().inflate(R.layout.custom_action_bar_searchview, null);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
@@ -287,7 +261,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             }
         });
         View notif = view.findViewById(R.id.burger_menu);
-        ImageView drawerToggle = (ImageView) notif.findViewById(R.id.toggle_but_ab);
+        ImageView drawerToggle = notif.findViewById(R.id.toggle_but_ab);
         drawerToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -300,7 +274,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         });
         toolbar.addView(view);
         setSupportActionBar(toolbar);
-
     }
 
     private void setMoengageUserAttributes() {
@@ -331,64 +304,74 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     public void initCreate() {
 
-        if (SessionHandler.isV4Login(getBaseContext())) {
-            adapter = new PagerAdapter(getSupportFragmentManager());
-            mViewPager.setAdapter(adapter);
-            mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
+        adapter = new PagerAdapter(getSupportFragmentManager(), getFragments());
+        mViewPager.setAdapter(adapter);
 
-            // indicator.setupWithViewPager(mViewPager);
-            // int fragment = getIntent().getIntExtra("fragment", 1);
-            switch (initStateFragment) {
-                case INIT_STATE_FRAGMENT_HOME:
-                    mViewPager.setCurrentItem(0, true);
-                    break;
-                case INIT_STATE_FRAGMENT_FAVORITE:
-                    mViewPager.setCurrentItem(2, true);
-                    break;
-                case INIT_STATE_FRAGMENT_HOTLIST:
-                    mViewPager.setCurrentItem(3, true);
-                    break;
-                case INIT_STATE_FRAGMENT_FEED:
-                    mViewPager.setCurrentItem(1, true);
-                    break;
+        mViewPager.setSmoothScroll(false);
+        mViewPager.SetAllowPageSwitching(false);
+        mViewPager.setOffscreenPageLimit(4);
+
+        bottomNavigation.setupWithViewPager(mViewPager, false);
+
+        bottomNavigation.setViewPagerPageChangeListener(new BottomNavigation.ViewPagerPageChangeListener() {
+            @Override
+            public void onPageScrollStateChanged(int state) {}
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+
+            @Override
+            public void onPageSelected(int position) {
+                initStateFragment = position;
+                sendGTMButtonEvent(position);
             }
+        });
 
+        bottomNavigation.setOnNavigationItemReselectedListener(new BottomNavigationView.OnNavigationItemReselectedListener() {
+            @Override
+            public void onNavigationItemReselected(@NonNull MenuItem menuItem) {
+                if (menuItem.getItemId() == R.id.menu_feed || menuItem.getItemId() == R.id.menu_beranda) {
+                    Fragment fragment = adapter.getFragments().get(initStateFragment); // scroll to top
+                    if (fragment != null) {
+                        if (fragment instanceof FeedPlusFragment)
+                            ((FeedPlusFragment) fragment).scrollToTop();
+                        else if (fragment instanceof HomeFragment)
+                            ((HomeFragment) fragment).scrollToTop();
+                    }
+                }
+            }
+        });
+
+        mViewPager.setCurrentItem(initStateFragment, false);
+        adapter.notifyDataSetChanged();// DON'T DELETE THIS BECAUSE IT WILL NOTIFY ADAPTER TO CHANGE FROM GUEST TO LOGIN
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerHelper.isOpened()) {
+            drawerHelper.closeDrawer();
         } else {
-            adapter = new PagerAdapter(getSupportFragmentManager());
-            mViewPager.setAdapter(adapter);
-            mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
-            indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(mViewPager));
-            if (initStateFragment == INIT_STATE_FRAGMENT_HOTLIST) {
-                mViewPager.setCurrentItem(1);
+            if (bottomNavigation.getBackStackEntryCount() > 1) {
+                bottomNavigation.handleBackPressed();
             } else {
-                mViewPager.setCurrentItem(0);
+                this.finish();
             }
         }
-
-        mViewPager.setOffscreenPageLimit(3);
-        adapter.notifyDataSetChanged();// DON'T DELETE THIS BECAUSE IT WILL NOTIFY ADAPTER TO CHANGE FROM GUEST TO LOGIN
     }
 
     private void setView() {
         inflateView(R.layout.activity_index_home_4);
-        mViewPager = (ViewPager) findViewById(R.id.index_page);
-        indicator = (TabLayout) findViewById(R.id.indicator);
+        mViewPager = findViewById(R.id.index_page);
+        bottomNavigation = findViewById(R.id.bottomnav);
+
+        bottomNavigation.initBackStack();
     }
 
-    public ChangeTabListener GetHotListListener() {
+    public ChangeTabListener changeTabListener() {
         return new ChangeTabListener() {
             @Override
             public void onChangeTab(int i) {
-                mViewPager.setCurrentItem(3);
-            }
-        };
-    }
-
-    public ChangeTabListener GetFavoriteListener() {
-        return new ChangeTabListener() {
-            @Override
-            public void onChangeTab(int i) {
-                mViewPager.setCurrentItem(2);
+                mViewPager.setCurrentItem(i);
             }
         };
     }
@@ -404,53 +387,22 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         return intent;
     }
 
-    protected class PagerAdapter extends android.support.v4.app.FragmentStatePagerAdapter {
+    private SparseArray<Fragment> getFragments() {
+        SparseArray<Fragment> fragments = new SparseArray<>();
+        fragments.put(INIT_STATE_FRAGMENT_HOME, HomeFragment.newInstance());
+        fragments.put(INIT_STATE_FRAGMENT_FEED, new FeedPlusFragment());
+        fragments.put(INIT_STATE_FRAGMENT_FAVORITE, new FragmentFavorite());
+        fragments.put(INIT_STATE_FRAGMENT_HOTLIST, new FragmentHotListV2());
+        return fragments;
+    }
+
+    protected class PagerAdapter extends FragmentStatePagerAdapter {
+
         SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
 
-        public PagerAdapter(android.support.v4.app.FragmentManager fm) {
+        public PagerAdapter(FragmentManager fm, SparseArray<Fragment> fragmentSparseArray) {
             super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            if (SessionHandler.isV4Login(ParentIndexHome.this)) {
-
-                if (getPageTitle(position).equals(content.get(0))) {
-                    Fragment fragment = HomeFragment.newInstance();
-                    registeredFragments.put(position, fragment);
-                    return fragment;
-                }
-
-                if (getPageTitle(position).equals(content.get(1))) {
-                    Fragment fragment = new FeedPlusFragment();
-                    registeredFragments.put(position, fragment);
-                    return fragment;
-                }
-
-                if (getPageTitle(position).equals(content.get(2))) {
-                    Fragment fragment = new FragmentFavorite();
-                    registeredFragments.put(position, fragment);
-                    return fragment;
-                }
-
-                if (getPageTitle(position).equals(content.get(3))) {
-                    Fragment fragment = new FragmentHotListV2();
-                    registeredFragments.put(position, fragment);
-                    return fragment;
-                }
-            } else {
-                switch (position) {
-                    case 0:
-                        Fragment fragment = HomeFragment.newInstance();
-                        registeredFragments.put(position, fragment);
-                        return fragment;
-                    case 1:
-                        fragment = new FragmentHotListV2();
-                        registeredFragments.put(position, fragment);
-                        return fragment;
-                }
-            }
-            return null;
+            this.registeredFragments = fragmentSparseArray;
         }
 
         @Override
@@ -459,20 +411,19 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         }
 
         @Override
-        public CharSequence getPageTitle(int position) {
-            return ParentIndexHome.this.content.get(position);
+        public int getCount() {
+            return registeredFragments.size();
         }
 
         @Override
-        public int getCount() {
-            return ParentIndexHome.this.content.size();
-        }
-
-        public
-        @Nullable
-        Fragment getFragmentForPosition(int position) {
+        public Fragment getItem(int position) {
             return registeredFragments.get(position);
         }
+
+        public SparseArray<Fragment> getFragments() {
+            return registeredFragments;
+        }
+
     }
 
     @Override
@@ -547,66 +498,33 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         outState.putInt(VIEW_PAGE_POSITION, mViewPager.getCurrentItem());
     }
 
+    boolean isUserFirstTimeLogin = false;
+
     @Override
     protected void onResume() {
         HockeyAppHelper.checkForUpdate(this);
         RxUtils.getNewCompositeSubIfUnsubscribed(subscription);
         FCMCacheManager.checkAndSyncFcmId(getApplicationContext());
-        if (SessionHandler.isV4Login(this) && indicator.getTabCount() < 4) {
-            indicator.removeAllTabs();
-            content.clear();
-            String[] CONTENT = new String[]{
-                    getString(R.string.title_categories),
-                    getString(R.string.title_index_prod_shop),
-                    getString(R.string.title_index_favorite),
-                    getString(R.string.title_index_hot_list)
-            };
-            content = new ArrayList<>();
-            for (String content_ : CONTENT) {
-                indicator.addTab(indicator.newTab().setText(content_));
-                content.add(content_);
-            }
-            adapter = new PagerAdapter(getSupportFragmentManager());
+        if (SessionHandler.isV4Login(this) && isUserFirstTimeLogin) {
+
+            initStateFragment = INIT_STATE_FRAGMENT_HOME;
+            adapter = new PagerAdapter(getSupportFragmentManager(), getFragments());
             mViewPager.setAdapter(adapter);
             adapter.notifyDataSetChanged();
+
+            bottomNavigation.initBackStack();
+            bottomNavigation.setCurrentItem(INIT_STATE_FRAGMENT_HOME);
         }
 
-        setScrollFeedListener();
+        isUserFirstTimeLogin = !SessionHandler.isV4Login(this);
+
         invalidateOptionsMenu();
         MainApplication.setCurrentActivity(this);
         super.onResume();
 
         NotificationModHandler.showDialogNotificationIfNotShowing(this);
 
-        // Register to receive broadcast hockeyapp
         registerBroadcastHockeyApp();
-    }
-
-    private void setScrollFeedListener() {
-        if (sessionHandler != null
-                && sessionHandler.isV4Login()
-                && indicator != null) {
-            indicator.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-                @Override
-                public void onTabSelected(TabLayout.Tab tab) {
-                    mViewPager.setCurrentItem(tab.getPosition());
-                    sendGTMButtonEvent(tab.getPosition());
-                }
-
-                @Override
-                public void onTabUnselected(TabLayout.Tab tab) {
-
-                }
-
-                @Override
-                public void onTabReselected(TabLayout.Tab tab) {
-                    Fragment fragment = adapter.getFragmentForPosition(tab.getPosition());
-                    if (fragment != null && fragment instanceof FeedPlusFragment) {
-                        ((FeedPlusFragment) fragment).scrollToTop();
-                    }
-                }
-            });
-        }
     }
 
     @Override
@@ -674,7 +592,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             }
         }
         if (requestCode == WISHLIST_REQUEST && resultCode == RESULT_OK) {
-            mViewPager.setCurrentItem(3);
+            mViewPager.setCurrentItem(INIT_STATE_FRAGMENT_HOTLIST);
         }
     }
 
@@ -692,7 +610,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         return cache.getBoolean(TkpdCache.Key.IS_FIRST_TIME, false);
     }
 
-    private void TrackFirstTime() {
+    private void trackFirstTime() {
         TrackingUtils.activityBasedAFEvent(HomeRouter.IDENTIFIER_HOME_ACTIVITY);
 
         LocalCacheHandler cache = new LocalCacheHandler(this, TkpdCache.FIRST_TIME);
@@ -705,25 +623,31 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     }
 
     private void sendGTMButtonEvent(int position) {
-        if (SessionHandler.isV4Login(ParentIndexHome.this)) {
-            String label = "";
-            switch (position) {
-                case 0:
-                    label = AppEventTracking.EventLabel.HOME;
-                    break;
-                case 1:
-                    label = AppEventTracking.EventLabel.PRODUCT_FEED;
-                    break;
-                case 2:
-                    label = AppEventTracking.EventLabel.FAVORITE;
-                    break;
-                case 3:
-                    label = AppEventTracking.EventLabel.HOTLIST;
-                    break;
-            }
+        String action = "";
+        String label = "";
 
-            UnifyTracking.eventHomeTab(label);
+        switch (position) {
+            case INIT_STATE_FRAGMENT_HOME:
+                label = AppEventTracking.EventLabel.HOME;
+                break;
+            case INIT_STATE_FRAGMENT_FEED:
+                label = AppEventTracking.EventLabel.PRODUCT_FEED;
+                break;
+            case INIT_STATE_FRAGMENT_FAVORITE:
+                label = AppEventTracking.EventLabel.FAVORITE;
+                break;
+            case INIT_STATE_FRAGMENT_HOTLIST:
+                label = AppEventTracking.EventLabel.HOTLIST;
+                break;
         }
+
+        if (SessionHandler.isV4Login(ParentIndexHome.this)) {
+            action = String.format("%s %s %s", action, AppEventTracking.Category.HOME_BOTTOM_NAV, AppEventTracking.EventLabel.AFTER_LOGIN);
+        } else {
+            action = String.format("%s %s %s", action, AppEventTracking.Category.HOME_BOTTOM_NAV, AppEventTracking.EventLabel.BEFORE_LOGIN);
+        }
+
+        UnifyTracking.eventHomeTab(action, label);
     }
 
     @Override
