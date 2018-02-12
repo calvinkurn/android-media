@@ -130,7 +130,7 @@ public class CartPresenter implements ICartPresenter {
                 afQty = afQty + cartProduct.getProductQuantity();
                 Product product = new Product();
                 product.setProductID(cartProduct.getProductId());
-                product.setPrice(cartProduct.getProductPriceIdr());
+                product.setPrice(cartProduct.getProductPrice());
                 product.setQty(String.valueOf(cartProduct.getProductQuantity()));
                 product.setProductName(MethodChecker.fromHtml(cartProduct.getProductName()).toString());
 
