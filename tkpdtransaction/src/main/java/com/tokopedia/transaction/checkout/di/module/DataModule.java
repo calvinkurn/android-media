@@ -23,7 +23,7 @@ public class DataModule {
 
     @Provides
     ICartRepository provideICartRepository(CartService cartService) {
-        return new CartRepositoryDataDummy();
+        return new CartRepository(cartService);
     }
 
     @Provides
