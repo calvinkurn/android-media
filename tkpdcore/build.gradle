@@ -13,7 +13,8 @@ def getArtifactVersionCode() {
 }
 
 def getTkpdCacheApi() {
-    return project(':tkpdcacheapi')
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.cacheapi : project(':tkpdcacheapi');
 }
 
 def getTkpdAbstraction() {

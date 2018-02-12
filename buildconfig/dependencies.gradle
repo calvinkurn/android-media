@@ -26,6 +26,7 @@ ext {
     tkpdLoyaltyVersion = '1.+'
     tkpdReactNativeVersion = '1.+'
     tkpdFlightVersion = '1.+'
+    tkpdCacheApiVersion = '1.+'
     compileSdkVersion = 26
     minSdkVersion = 16
     targetSdkVersion = 26
@@ -195,6 +196,7 @@ ext {
             loyalty    : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}",
             flight     : "com.tokopedia.flight:flight:${tkpdFlightVersion}",
             flightNoOp : "com.tokopedia.flight:flight-no-op:${tkpdFlightVersion}",
+            cacheapi   : "com.tokopedia.cacheapi:cacheapi:${tkpdCacheApiVersion}",
     ]
 
     tkpdLibDependencies = [
