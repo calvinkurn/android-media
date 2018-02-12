@@ -43,8 +43,8 @@ public class InnerProductListAdapter
 
         ImageHandler.LoadImage(holder.mIvProductImage, cartItemModel.getProductImageUrl());
         holder.mTvProductName.setText(cartItemModel.getProductName());
-        holder.mTvProductPrice.setText(cartItemModel.getProductPrice());
-        holder.mTvProductWeight.setText(cartItemModel.getProductWeight());
+        holder.mTvProductPrice.setText(cartItemModel.getProductPriceFormatted());
+        holder.mTvProductWeight.setText(cartItemModel.getProductWeightFormatted());
         holder.mTvTotalProductItem.setText(cartItemModel.getTotalProductItem());
         holder.mTvOptionalNote.setText(cartItemModel.getNoteToSeller());
 

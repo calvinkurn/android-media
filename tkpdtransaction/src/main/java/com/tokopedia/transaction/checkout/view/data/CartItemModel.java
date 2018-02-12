@@ -8,16 +8,51 @@ import android.os.Parcelable;
  */
 public class CartItemModel implements Parcelable {
 
+    private String shopId;
+    private String shopName;
+    private String productId;
     private String productName;
-    private String productPrice;
-    private String productWeight;
-    private String cashback;
-    private String totalProductItem;
+    private String productPriceFormatted;
+    private double productPricePlan;
+    private int productPriceCurrency;
+
+    private int productWeightUnit;
+    private double productWeightPlan;
+    private String productWeightFormatted;
+
+    private int totalProductItem;
     private String noteToSeller;
 
     private String productImageUrl;
+
+    private String cashback;
+    private boolean isCashback;
     private boolean poAvailable;
     private boolean freeReturn;
+
+    public String getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
 
     public String getProductName() {
         return productName;
@@ -27,35 +62,59 @@ public class CartItemModel implements Parcelable {
         this.productName = productName;
     }
 
-    public String getProductPrice() {
-        return productPrice;
+    public String getProductPriceFormatted() {
+        return productPriceFormatted;
     }
 
-    public void setProductPrice(String productPrice) {
-        this.productPrice = productPrice;
+    public void setProductPriceFormatted(String productPriceFormatted) {
+        this.productPriceFormatted = productPriceFormatted;
     }
 
-    public String getProductWeight() {
-        return productWeight;
+    public double getProductPricePlan() {
+        return productPricePlan;
     }
 
-    public void setProductWeight(String productWeight) {
-        this.productWeight = productWeight;
+    public void setProductPricePlan(double productPricePlan) {
+        this.productPricePlan = productPricePlan;
     }
 
-    public String getCashback() {
-        return cashback;
+    public int getProductPriceCurrency() {
+        return productPriceCurrency;
     }
 
-    public void setCashback(String cashback) {
-        this.cashback = cashback;
+    public void setProductPriceCurrency(int productPriceCurrency) {
+        this.productPriceCurrency = productPriceCurrency;
     }
 
-    public String getTotalProductItem() {
+    public int getProductWeightUnit() {
+        return productWeightUnit;
+    }
+
+    public void setProductWeightUnit(int productWeightUnit) {
+        this.productWeightUnit = productWeightUnit;
+    }
+
+    public double getProductWeightPlan() {
+        return productWeightPlan;
+    }
+
+    public void setProductWeightPlan(double productWeightPlan) {
+        this.productWeightPlan = productWeightPlan;
+    }
+
+    public String getProductWeightFormatted() {
+        return productWeightFormatted;
+    }
+
+    public void setProductWeightFormatted(String productWeightFormatted) {
+        this.productWeightFormatted = productWeightFormatted;
+    }
+
+    public int getTotalProductItem() {
         return totalProductItem;
     }
 
-    public void setTotalProductItem(String totalProductItem) {
+    public void setTotalProductItem(int totalProductItem) {
         this.totalProductItem = totalProductItem;
     }
 
@@ -75,6 +134,22 @@ public class CartItemModel implements Parcelable {
         this.productImageUrl = productImageUrl;
     }
 
+    public String getCashback() {
+        return cashback;
+    }
+
+    public void setCashback(String cashback) {
+        this.cashback = cashback;
+    }
+
+    public boolean isCashback() {
+        return isCashback;
+    }
+
+    public void setCashback(boolean cashback) {
+        isCashback = cashback;
+    }
+
     public boolean isPoAvailable() {
         return poAvailable;
     }
@@ -91,6 +166,7 @@ public class CartItemModel implements Parcelable {
         this.freeReturn = freeReturn;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -98,13 +174,21 @@ public class CartItemModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.shopId);
+        dest.writeString(this.shopName);
+        dest.writeString(this.productId);
         dest.writeString(this.productName);
-        dest.writeString(this.productPrice);
-        dest.writeString(this.productWeight);
-        dest.writeString(this.cashback);
-        dest.writeString(this.totalProductItem);
+        dest.writeString(this.productPriceFormatted);
+        dest.writeDouble(this.productPricePlan);
+        dest.writeInt(this.productPriceCurrency);
+        dest.writeInt(this.productWeightUnit);
+        dest.writeDouble(this.productWeightPlan);
+        dest.writeString(this.productWeightFormatted);
+        dest.writeInt(this.totalProductItem);
         dest.writeString(this.noteToSeller);
         dest.writeString(this.productImageUrl);
+        dest.writeString(this.cashback);
+        dest.writeByte(this.isCashback ? (byte) 1 : (byte) 0);
         dest.writeByte(this.poAvailable ? (byte) 1 : (byte) 0);
         dest.writeByte(this.freeReturn ? (byte) 1 : (byte) 0);
     }
@@ -113,13 +197,21 @@ public class CartItemModel implements Parcelable {
     }
 
     protected CartItemModel(Parcel in) {
+        this.shopId = in.readString();
+        this.shopName = in.readString();
+        this.productId = in.readString();
         this.productName = in.readString();
-        this.productPrice = in.readString();
-        this.productWeight = in.readString();
-        this.cashback = in.readString();
-        this.totalProductItem = in.readString();
+        this.productPriceFormatted = in.readString();
+        this.productPricePlan = in.readDouble();
+        this.productPriceCurrency = in.readInt();
+        this.productWeightUnit = in.readInt();
+        this.productWeightPlan = in.readDouble();
+        this.productWeightFormatted = in.readString();
+        this.totalProductItem = in.readInt();
         this.noteToSeller = in.readString();
         this.productImageUrl = in.readString();
+        this.cashback = in.readString();
+        this.isCashback = in.readByte() != 0;
         this.poAvailable = in.readByte() != 0;
         this.freeReturn = in.readByte() != 0;
     }

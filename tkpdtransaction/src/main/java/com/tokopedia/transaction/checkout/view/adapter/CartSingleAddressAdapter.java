@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
@@ -24,7 +23,6 @@ import com.tokopedia.transaction.checkout.view.data.CartItemModel;
 import com.tokopedia.transaction.checkout.view.data.CartPayableDetailModel;
 import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
-import com.tokopedia.transaction.checkout.view.data.DropshipperShippingOptionModel;
 import com.tokopedia.transaction.checkout.view.data.ShipmentFeeBannerModel;
 import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
@@ -47,8 +45,6 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
             R.layout.view_item_free_shipping_fee;
     private static final int ITEM_VIEW_SHIPMENT_RECIPIENT_ADDRESS =
             R.layout.view_item_shipment_recipient_address;
-    private static final int ITEM_VIEW_DROPSHIPPER_OPTION =
-            R.layout.view_item_dropshipper_option;
     private static final int ITEM_VIEW_SHIPMENT_COST_DETAIL =
             R.layout.view_item_shipment_cost_details;
     private static final int ITEM_SHIPPED_PRODUCT_DETAILS =
@@ -56,8 +52,7 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
 
     private static final int TOP_POSITION = 0;
     private static final int ADDRESS_POSITION = 1;
-    private static final int DROPSHIP_OPT_POSITION = 2;
-    private static final int ALL_HEADER_SIZE = 3;
+    private static final int ALL_HEADER_SIZE = 2;
     private static final int ALL_FOOTER_SIZE = 1;
 
     private static final int FIRST_ELEMENT = 0;
@@ -87,8 +82,6 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
             return new FreeShippingFeeViewHolder(view);
         } else if (viewType == ITEM_VIEW_SHIPMENT_RECIPIENT_ADDRESS) {
             return new ShippingRecipientViewHolder(view);
-        } else if (viewType == ITEM_VIEW_DROPSHIPPER_OPTION) {
-            return new DropShipperOptionViewHolder(view);
         } else if (viewType == ITEM_VIEW_SHIPMENT_COST_DETAIL) {
             return new ShipmentCostDetailViewHolder(view);
         } else {
@@ -106,9 +99,6 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
         } else if (viewType == ITEM_VIEW_SHIPMENT_RECIPIENT_ADDRESS) {
             ((ShippingRecipientViewHolder)viewHolder)
                     .bindViewHolder(mCartSingleAddressData.getShipmentRecipientModel());
-        } else if (viewType == ITEM_VIEW_DROPSHIPPER_OPTION) {
-            ((DropShipperOptionViewHolder)viewHolder)
-                    .bindViewHolder(mCartSingleAddressData.getDropshipperShippingOptionModel());
         } else if (viewType == ITEM_VIEW_SHIPMENT_COST_DETAIL) {
             ((ShipmentCostDetailViewHolder)viewHolder)
                     .bindViewHolder(mCartSingleAddressData.getCartPayableDetailModel());
@@ -130,8 +120,6 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
             return ITEM_VIEW_FREE_SHIPPING_FEE;
         } else if (position == ADDRESS_POSITION) {
             return ITEM_VIEW_SHIPMENT_RECIPIENT_ADDRESS;
-        } else if (position == DROPSHIP_OPT_POSITION) {
-            return ITEM_VIEW_DROPSHIPPER_OPTION;
         } else if (position == ALL_HEADER_SIZE + getCartItemSize()) {
             return ITEM_VIEW_SHIPMENT_COST_DETAIL;
         } else {
@@ -279,41 +267,6 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
 
     }
 
-    class DropShipperOptionViewHolder extends RecyclerView.ViewHolder {
-
-        @BindView(R2.id.rl_dropshipper_option_header) RelativeLayout mRlDropshipperOptionLayout;
-        @BindView(R2.id.ll_detail_dropshipper) LinearLayout mLlDetailDropshipperLayout;
-        @BindView(R2.id.sw_dropshipper) Switch mSwDropshipper;
-
-        DropShipperOptionViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-
-        void bindViewHolder(DropshipperShippingOptionModel model) {
-            mLlDetailDropshipperLayout.setVisibility(getVisibility(model.isDropshipping()));
-            mSwDropshipper.setChecked(model.isDropshipping());
-            mSwDropshipper.setOnClickListener(dropshipperSwitchListener(model));
-        }
-
-        private View.OnClickListener dropshipperSwitchListener(final DropshipperShippingOptionModel model) {
-            return new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    model.setDropshipping(!model.isDropshipping());
-
-                    mSwDropshipper.setChecked(model.isDropshipping());
-                    mLlDetailDropshipperLayout.setVisibility(getVisibility(model.isDropshipping()));
-                }
-            };
-        }
-
-        private int getVisibility(boolean isDropshipping) {
-            return isDropshipping ? View.VISIBLE : View.GONE;
-        }
-
-    }
-
     class ShipmentCostDetailViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R2.id.rl_detail_shipment_fee_view_layout) RelativeLayout mRlDetailFee;
@@ -446,14 +399,14 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
             mIsExpandCostDetail = false;
 
             // Assign variables
-            mTvSenderName.setText(model.getSenderName());
-            mTvShipmentOption.setText(model.getShipmentOption());
-            mTvSubTotalPrice.setText(model.getTotalPrice());
+            mTvSenderName.setText(model.getShopName());
+            mTvShipmentOption.setText(model.getCourierItemData().getName());
+            mTvSubTotalPrice.setText(model.getTotalPriceFormatted());
 
             ImageHandler.LoadImage(mIvProductImage, mainProductItem.getProductImageUrl());
             mTvProductName.setText(mainProductItem.getProductName());
-            mTvProductPrice.setText(mainProductItem.getProductPrice());
-            mTvProductWeight.setText(mainProductItem.getProductWeight());
+            mTvProductPrice.setText(mainProductItem.getProductPriceFormatted());
+            mTvProductWeight.setText(mainProductItem.getProductWeightFormatted());
             mTvTotalProductItem.setText(mainProductItem.getTotalProductItem());
             mTvOptionalNote.setText(mainProductItem.getNoteToSeller());
 
