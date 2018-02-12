@@ -14,7 +14,6 @@ public class CartSingleAddressData implements Parcelable {
 
     private ShipmentFeeBannerModel shipmentFeeBannerModel;
     private ShipmentRecipientModel shipmentRecipientModel;
-    private DropshipperShippingOptionModel dropshipperShippingOptionModel;
     private List<CartSellerItemModel> cartSellerItemModelList;
     private CartPayableDetailModel cartPayableDetailModel;
 
@@ -32,14 +31,6 @@ public class CartSingleAddressData implements Parcelable {
 
     public void setShipmentRecipientModel(ShipmentRecipientModel shipmentRecipientModel) {
         this.shipmentRecipientModel = shipmentRecipientModel;
-    }
-
-    public DropshipperShippingOptionModel getDropshipperShippingOptionModel() {
-        return dropshipperShippingOptionModel;
-    }
-
-    public void setDropshipperShippingOptionModel(DropshipperShippingOptionModel dropshipperShippingOptionModel) {
-        this.dropshipperShippingOptionModel = dropshipperShippingOptionModel;
     }
 
     public List<CartSellerItemModel> getCartSellerItemModelList() {
@@ -67,7 +58,6 @@ public class CartSingleAddressData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(this.shipmentFeeBannerModel, flags);
         dest.writeParcelable(this.shipmentRecipientModel, flags);
-        dest.writeParcelable(this.dropshipperShippingOptionModel, flags);
         dest.writeTypedList(this.cartSellerItemModelList);
         dest.writeParcelable(this.cartPayableDetailModel, flags);
     }
@@ -78,7 +68,6 @@ public class CartSingleAddressData implements Parcelable {
     protected CartSingleAddressData(Parcel in) {
         this.shipmentFeeBannerModel = in.readParcelable(ShipmentFeeBannerModel.class.getClassLoader());
         this.shipmentRecipientModel = in.readParcelable(ShipmentRecipientModel.class.getClassLoader());
-        this.dropshipperShippingOptionModel = in.readParcelable(DropshipperShippingOptionModel.class.getClassLoader());
         this.cartSellerItemModelList = in.createTypedArrayList(CartSellerItemModel.CREATOR);
         this.cartPayableDetailModel = in.readParcelable(CartPayableDetailModel.class.getClassLoader());
     }

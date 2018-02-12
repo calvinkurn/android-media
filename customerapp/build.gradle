@@ -222,7 +222,7 @@ android {
 
     variantFilter { variant ->
 
-        if(variant.buildType.name.equals('release') && variant.getFlavors().get(0).name.equals('staging')) {
+        if (variant.buildType.name.equals('release') && variant.getFlavors().get(0).name.equals('staging')) {
             variant.setIgnore(true);
         }
     }
@@ -234,46 +234,46 @@ dependencies {
 //    compile project(':tkpdcore')
 //
     compile(rootProject.ext.tkpdDependencies.inbox) {
-        exclude group: 'com.tokopedia.core', module:'tkpdcore'
+        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
     }
     compile(rootProject.ext.tkpdDependencies.discovery) {
-        exclude group: 'com.tokopedia.core', module:'tkpdcore'
+        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
     }
 //    compile(rootProject.ext.tkpdDependencies.transaction) {
-//        exclude group: 'com.tokopedia.core', module:'tkpdcore'
+//        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
 //    }
     compile(rootProject.ext.tkpdDependencies.seller) {
-        exclude group: 'com.tokopedia.core', module:'tkpdcore'
+        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
     }
     compile(rootProject.ext.tkpdDependencies.session) {
-        exclude group: 'com.tokopedia.core', module:'tkpdcore'
+        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
     }
     compile(rootProject.ext.tkpdDependencies.tkpdpdp) {
-        exclude group: 'com.tokopedia.core', module:'tkpdcore'
+        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
     }
     compile(rootProject.ext.tkpdDependencies.feed) {
-        exclude group: 'com.tokopedia.core', module:'tkpdcore'
+        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
     }
     compile(rootProject.ext.tkpdDependencies.ride) {
-        exclude group: 'com.tokopedia.core', module:'tkpdcore'
+        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
     }
     compile(rootProject.ext.tkpdDependencies.digital) {
-        exclude group: 'com.tokopedia.core', module:'tkpdcore'
+        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
     }
     compile(rootProject.ext.tkpdDependencies.reactNative) {
-        exclude group: 'com.tokopedia.core', module:'tkpdcore'
+        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
     }
     compile(rootProject.ext.tkpdDependencies.loyalty) {
         exclude group: 'com.tokopedia.core', module:'tkpdcore'
     }
     compile(rootProject.ext.tkpdDependencies.reputation) {
-        exclude group: 'com.tokopedia.core', module:'tkpdcore'
+        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
     }
     compile(rootProject.ext.tkpdDependencies.tokocash) {
-        exclude group: 'com.tokopedia.core', module:'tkpdcore'
+        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
     }
     compile(rootProject.ext.tkpdDependencies.flight) {
-        exclude group: 'com.tokopedia.core', module:'tkpdcore'
+        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
     }
 
     // compile(rootProject.ext.tkpdDependencies.core)
@@ -288,7 +288,7 @@ dependencies {
 //    compile project(':tkpdpdp')
 //    compile project(':tkpdfeed')
 //    compile project(':tkpdreactnative')
-//    compile project(':tkpdloyalty')
+    // compile project(':tkpdloyalty')
 //    compile project(':tkpdreputation')
 //    compile project(':tkpdtokocash')
 //    compile project(':tkpdflight')

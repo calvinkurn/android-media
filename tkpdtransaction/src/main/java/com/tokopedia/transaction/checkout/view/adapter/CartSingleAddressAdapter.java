@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
@@ -24,7 +23,7 @@ import com.tokopedia.transaction.checkout.view.data.CartItemModel;
 import com.tokopedia.transaction.checkout.view.data.CartPayableDetailModel;
 import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
-import com.tokopedia.transaction.checkout.view.data.DropshipperShippingOptionModel;
+import com.tokopedia.transaction.checkout.view.data.CourierItemData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentFeeBannerModel;
 import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
@@ -47,8 +46,6 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
             R.layout.view_item_free_shipping_fee;
     private static final int ITEM_VIEW_SHIPMENT_RECIPIENT_ADDRESS =
             R.layout.view_item_shipment_recipient_address;
-    private static final int ITEM_VIEW_DROPSHIPPER_OPTION =
-            R.layout.view_item_dropshipper_option;
     private static final int ITEM_VIEW_SHIPMENT_COST_DETAIL =
             R.layout.view_item_shipment_cost_details;
     private static final int ITEM_SHIPPED_PRODUCT_DETAILS =
@@ -56,8 +53,7 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
 
     private static final int TOP_POSITION = 0;
     private static final int ADDRESS_POSITION = 1;
-    private static final int DROPSHIP_OPT_POSITION = 2;
-    private static final int ALL_HEADER_SIZE = 3;
+    private static final int ALL_HEADER_SIZE = 2;
     private static final int ALL_FOOTER_SIZE = 1;
 
     private static final int FIRST_ELEMENT = 0;
@@ -87,8 +83,6 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
             return new FreeShippingFeeViewHolder(view);
         } else if (viewType == ITEM_VIEW_SHIPMENT_RECIPIENT_ADDRESS) {
             return new ShippingRecipientViewHolder(view);
-        } else if (viewType == ITEM_VIEW_DROPSHIPPER_OPTION) {
-            return new DropShipperOptionViewHolder(view);
         } else if (viewType == ITEM_VIEW_SHIPMENT_COST_DETAIL) {
             return new ShipmentCostDetailViewHolder(view);
         } else {
@@ -106,9 +100,6 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
         } else if (viewType == ITEM_VIEW_SHIPMENT_RECIPIENT_ADDRESS) {
             ((ShippingRecipientViewHolder)viewHolder)
                     .bindViewHolder(mCartSingleAddressData.getShipmentRecipientModel());
-        } else if (viewType == ITEM_VIEW_DROPSHIPPER_OPTION) {
-            ((DropShipperOptionViewHolder)viewHolder)
-                    .bindViewHolder(mCartSingleAddressData.getDropshipperShippingOptionModel());
         } else if (viewType == ITEM_VIEW_SHIPMENT_COST_DETAIL) {
             ((ShipmentCostDetailViewHolder)viewHolder)
                     .bindViewHolder(mCartSingleAddressData.getCartPayableDetailModel());
@@ -130,8 +121,6 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
             return ITEM_VIEW_FREE_SHIPPING_FEE;
         } else if (position == ADDRESS_POSITION) {
             return ITEM_VIEW_SHIPMENT_RECIPIENT_ADDRESS;
-        } else if (position == DROPSHIP_OPT_POSITION) {
-            return ITEM_VIEW_DROPSHIPPER_OPTION;
         } else if (position == ALL_HEADER_SIZE + getCartItemSize()) {
             return ITEM_VIEW_SHIPMENT_COST_DETAIL;
         } else {
@@ -279,41 +268,6 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
 
     }
 
-    class DropShipperOptionViewHolder extends RecyclerView.ViewHolder {
-
-        @BindView(R2.id.rl_dropshipper_option_header) RelativeLayout mRlDropshipperOptionLayout;
-        @BindView(R2.id.ll_detail_dropshipper) LinearLayout mLlDetailDropshipperLayout;
-        @BindView(R2.id.sw_dropshipper) Switch mSwDropshipper;
-
-        DropShipperOptionViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-
-        void bindViewHolder(DropshipperShippingOptionModel model) {
-            mLlDetailDropshipperLayout.setVisibility(getVisibility(model.isDropshipping()));
-            mSwDropshipper.setChecked(model.isDropshipping());
-            mSwDropshipper.setOnClickListener(dropshipperSwitchListener(model));
-        }
-
-        private View.OnClickListener dropshipperSwitchListener(final DropshipperShippingOptionModel model) {
-            return new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    model.setDropshipping(!model.isDropshipping());
-
-                    mSwDropshipper.setChecked(model.isDropshipping());
-                    mLlDetailDropshipperLayout.setVisibility(getVisibility(model.isDropshipping()));
-                }
-            };
-        }
-
-        private int getVisibility(boolean isDropshipping) {
-            return isDropshipping ? View.VISIBLE : View.GONE;
-        }
-
-    }
-
     class ShipmentCostDetailViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R2.id.rl_detail_shipment_fee_view_layout) RelativeLayout mRlDetailFee;
@@ -391,6 +345,8 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
 
     class ShippedProductDetailsViewHolder extends RecyclerView.ViewHolder {
 
+        static final String NO_CASHBACK = "0%";
+
         @BindView(R2.id.tv_sender_name) TextView mTvSenderName;
 
         @BindView(R2.id.iv_product_image_container) ImageView mIvProductImage;
@@ -407,9 +363,8 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
         @BindView(R2.id.tv_cashback_text) TextView mTvCashback;
 
         @BindView(R2.id.rv_product_list) RecyclerView mRvProductList;
-        @BindView(R2.id.rv_product_thumb_image) RecyclerView mRvProductThumbImage;
 
-        @BindView(R2.id.ll_other_product) LinearLayout mLlOtherProductContainer;
+        @BindView(R2.id.rl_expand_other_product) RelativeLayout mRlExpandOtherProductContainer;
         @BindView(R2.id.tv_expand_other_product) TextView mTvExpandOtherProduct;
 
         @BindView(R2.id.tv_shipment_option) TextView mTvShipmentOption;
@@ -438,26 +393,26 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
 
         void bindViewHolder(CartSellerItemModel model) {
             // Initialize variables
-            List<CartItemModel> cartItemModels = new ArrayList<>();
-            cartItemModels.addAll(model.getCartItemModels());
+            List<CartItemModel> cartItemModels = new ArrayList<>(model.getCartItemModels());
+
             CartItemModel mainProductItem = cartItemModels.remove(FIRST_ELEMENT);
 
             mIsExpandAllProduct = false;
             mIsExpandCostDetail = false;
 
             // Assign variables
-            mTvSenderName.setText(model.getSenderName());
-            mTvShipmentOption.setText(model.getShipmentOption());
-            mTvSubTotalPrice.setText(model.getTotalPrice());
+            mTvSenderName.setText(model.getShopName());
+            mTvShipmentOption.setText(getCourierName(model.getCourierItemData()));
+            mTvSubTotalPrice.setText(model.getTotalPriceFormatted());
 
             ImageHandler.LoadImage(mIvProductImage, mainProductItem.getProductImageUrl());
             mTvProductName.setText(mainProductItem.getProductName());
-            mTvProductPrice.setText(mainProductItem.getProductPrice());
-            mTvProductWeight.setText(mainProductItem.getProductWeight());
-            mTvTotalProductItem.setText(mainProductItem.getTotalProductItem());
+            mTvProductPrice.setText(mainProductItem.getProductPriceFormatted());
+            mTvProductWeight.setText(mainProductItem.getProductWeightFormatted());
+            mTvTotalProductItem.setText(String.valueOf(mainProductItem.getTotalProductItem()));
             mTvOptionalNote.setText(mainProductItem.getNoteToSeller());
 
-            mLlOtherProductContainer.setVisibility(getExpandOtherProductVisibility(cartItemModels));
+            mRlExpandOtherProductContainer.setVisibility(getExpandOtherProductVisibility(cartItemModels));
             mTvExpandOtherProduct.setText(getExpandOtherProductLabel(cartItemModels,
                     mIsExpandAllProduct));
 
@@ -473,10 +428,9 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
 
             // Init nested recycler view
             initInnerRecyclerView(cartItemModels);
-            initInnerHorizontalRecyclerView(cartItemModels);
 
             // Set listeners
-            mLlOtherProductContainer.setOnClickListener(showAllProductListener(cartItemModels));
+            mRlExpandOtherProductContainer.setOnClickListener(showAllProductListener(cartItemModels));
             mTvExpandOtherProduct.setOnClickListener(showAllProductListener(cartItemModels));
 
             mTvShipmentOption.setOnClickListener(selectShippingOptionListener());
@@ -499,17 +453,11 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
             mRvProductList.setAdapter(innerProductListAdapter);
         }
 
-        private void initInnerHorizontalRecyclerView(List<CartItemModel> cartItemModels) {
-            mRvProductThumbImage.setVisibility(View.VISIBLE);
-
-            mRvProductThumbImage.setHasFixedSize(true);
-            LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
-            layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-            mRvProductThumbImage.setLayoutManager(layoutManager);
-
-            InnerProductImageListAdapter innerProductImageListAdapter =
-                    new InnerProductImageListAdapter(cartItemModels);
-            mRvProductThumbImage.setAdapter(innerProductImageListAdapter);
+        private String getCourierName(CourierItemData courierItemData) {
+            if (courierItemData == null) {
+                return "";
+            }
+            return courierItemData.getName();
         }
 
         private int getExpandOtherProductVisibility(List<CartItemModel> cartItemModels) {
@@ -536,8 +484,6 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
         }
 
         private int getCashbackVisibility(String cashback) {
-            final String NO_CASHBACK = "0%";
-
             return NO_CASHBACK.equals(cashback) ? View.GONE : View.VISIBLE;
         }
 
@@ -557,7 +503,6 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
         private void toggleShowAllProduct(List<CartItemModel> cartItemModels) {
             mIsExpandAllProduct = !mIsExpandAllProduct;
             mRvProductList.setVisibility(getOtherProductsVisibility(mIsExpandAllProduct));
-            mRvProductThumbImage.setVisibility(getProductImageThumbVisibility(mIsExpandAllProduct));
 
             mTvExpandOtherProduct.setText(getExpandOtherProductLabel(cartItemModels,
                     mIsExpandAllProduct));
@@ -565,10 +510,6 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
 
         private int getOtherProductsVisibility(boolean isExpandAllProduct) {
             return isExpandAllProduct ? View.VISIBLE : View.GONE;
-        }
-
-        private int getProductImageThumbVisibility(boolean isExpandAllProduct) {
-            return isExpandAllProduct ? View.GONE : View.VISIBLE;
         }
 
         private View.OnClickListener selectShippingOptionListener() {

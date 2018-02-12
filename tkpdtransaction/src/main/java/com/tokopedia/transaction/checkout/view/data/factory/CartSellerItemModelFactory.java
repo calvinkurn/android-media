@@ -34,10 +34,9 @@ public class CartSellerItemModelFactory {
                                                                String totalPrice) {
 
         CartSellerItemModel cartSellerItemModel = new CartSellerItemModel();
-        cartSellerItemModel.setSenderName(senderName);
+        cartSellerItemModel.setShopName(senderName);
         cartSellerItemModel.setCartItemModels(cartItems);
-        cartSellerItemModel.setShipmentOption(shipmentOption);
-        cartSellerItemModel.setTotalPrice(totalPrice);
+        cartSellerItemModel.setTotalPriceFormatted(totalPrice);
 
         return cartSellerItemModel;
     }

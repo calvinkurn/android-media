@@ -24,6 +24,7 @@ import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData
 import com.tokopedia.transaction.checkout.view.presenter.ICartListPresenter;
 import com.tokopedia.transaction.checkout.view.view.ICartListView;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -53,6 +54,19 @@ public class CartFragment extends BasePresenterFragment implements
     CartListAdapter cartListAdapter;
     @Inject
     RecyclerView.ItemDecoration cartItemDecoration;
+
+    OnPassingCartDataListener mDataPasserListener;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mDataPasserListener = (OnPassingCartDataListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() +
+                    " must implement OnPassingCartDataListener");
+        }
+    }
 
     @Override
     protected void initInjector() {
@@ -143,12 +157,14 @@ public class CartFragment extends BasePresenterFragment implements
 
     @Override
     public void onCartItemQuantityPlusButtonClicked(CartItemHolderData cartItemHolderData, int position) {
-
+        cartListAdapter.increaseQuantity(position);
+        dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
     }
 
     @Override
     public void onCartItemQuantityMinusButtonClicked(CartItemHolderData cartItemHolderData, int position) {
-
+        cartListAdapter.decreaseQuantity(position);
+        dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
     }
 
     @Override
@@ -230,6 +246,9 @@ public class CartFragment extends BasePresenterFragment implements
     @Override
     public void renderCartListData(List<CartItemData> cartItemDataList) {
         cartListAdapter.addDataList(cartItemDataList);
+
+        // Pass data to its container activity trough PassingCartDataListener interface
+        mDataPasserListener.onPassingCartData(cartItemDataList);
     }
 
     @Override
@@ -277,7 +296,23 @@ public class CartFragment extends BasePresenterFragment implements
         return getActivity();
     }
 
+    @Override
+    public void renderDetailInfoSubTotal(String qty, String subtotalPrice) {
+        tvItemCount.setText(MessageFormat.format("Harga Barang ({0} Item)", qty));
+        tvTotalPrice.setText(subtotalPrice);
+    }
+
     public static CartFragment newInstance() {
         return new CartFragment();
     }
+
+    public interface OnPassingCartDataListener {
+
+        /**
+         * Pass data from cart fragment into its container activity
+         * @param cartItemData List of cart items
+         */
+        void onPassingCartData(List<CartItemData> cartItemData);
+    }
+
 }

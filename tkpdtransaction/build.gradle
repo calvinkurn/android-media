@@ -151,7 +151,7 @@ dependencies {
 //    compile getTopAdsSdk()
 //    compile getTkpdPayment()
 //    compile getTkpdDesign()
-//    compile getTkpdLoyalty()
+   // compile getTkpdLoyalty()
 
     compile getTkpdCoreLocalMaven()
     compile getTopAdsSdkLocalMaven()

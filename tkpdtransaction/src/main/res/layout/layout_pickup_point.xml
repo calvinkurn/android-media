@@ -9,20 +9,18 @@
         android:id="@+id/tv_send_to_pick_up_booth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_small"
         android:fontFamily="sans-serif-medium"
         android:gravity="center_vertical"
         android:text="@string/label_send_to_pick_up_booth"
         android:textColor="@color/tkpd_main_green"
         android:textSize="12sp"
-        android:textStyle="normal"
-        android:visibility="gone" />
+        android:textStyle="normal" />
 
     <LinearLayout
         android:id="@+id/ll_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_marginTop="8dp"
         android:background="@drawable/bg_outline_pickup_point"
         android:orientation="vertical"
         android:padding="@dimen/padding_detail"

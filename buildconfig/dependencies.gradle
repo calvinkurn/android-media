@@ -39,6 +39,8 @@ ext {
     apolloVersion = '0.3.0'
     lottieVersion = '2.0.0-rc1'
     reactNativeVersion = '0.51.0'
+    
+    groupModule = 'com.tokopedia.core'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -179,28 +181,28 @@ ext {
     ]
 
     tkpdDependencies = [
-            usecase    : "com.tokopedia.core:tkpdusecase:${tkpdUseCaseVersion}",
-            abstraction: "com.tokopedia.core:tkpdabstraction:${tkpdAbstractionVersion}",
-            core       : "com.tokopedia.core:tkpdcore:${tkpdCoreVersion}",
-            inbox      : "com.tokopedia.core:tkpdinbox:${tkpdInboxVersion}",
-            session    : "com.tokopedia.core:tkpdsession:${tkpdSessionVersion}",
-            transaction: "com.tokopedia.core:tkpdtransaction:${tkpdTransactionVersion}",
-            discovery  : "com.tokopedia.core:tkpddiscovery:${tkpdDiscoveryVersion}",
-            seller     : "com.tokopedia.core:tkpdseller:${tkpdSellerVersion}",
-            digital    : "com.tokopedia.core:tkpddigital:${tkpdDigitalVersion}",
-            topads     : "com.tokopedia.core:tkpdtopadssdk:${tkpdTopAdsSDKVersion}",
-            payment    : "com.tokopedia.core:tkpdpayment:${tkpdPaymentVersion}",
-            tkpdpdp    : "com.tokopedia.core:tkpdpdp:${tkpdPdpVersion}",
-            design     : "com.tokopedia.core:tkpddesign:${tkpdDesignVersion}",
-            feed       : "com.tokopedia.core:tkpdfeed:${tkpdFeedVersion}",
-            ride       : "com.tokopedia.core:tkpdride:${tkpdRideVersion}",
-            reactNative: "com.tokopedia.core:tkpdreactnative:${tkpdReactNativeVersion}",
-            loyalty    : "com.tokopedia.core:tkpdloyalty:${tkpdLoyaltyVersion}",
-            flight     : "com.tokopedia.core:tkpdflight:${tkpdFlightVersion}",
-            flightNoOp : "com.tokopedia.core:tkpdflight-no-op:${tkpdFlightVersion}",
-            reputation : "com.tokopedia.core:tkpdreputation:${tkpdReputationVersion}",
-            tokocash   : "com.tokopedia.core:tkpdtokocash:${tkpdTokocashVersion}",
-            gm         : "com.tokopedia.core:tkpdgm:${tkpdGmVersion}"
+            usecase    : "${groupModule}:tkpdusecase:${tkpdUseCaseVersion}",
+            abstraction: "${groupModule}:tkpdabstraction:${tkpdAbstractionVersion}",
+            core       : "${groupModule}:tkpdcore:${tkpdCoreVersion}",
+            inbox      : "${groupModule}:tkpdinbox:${tkpdInboxVersion}",
+            session    : "${groupModule}:tkpdsession:${tkpdSessionVersion}",
+            transaction: "${groupModule}:tkpdtransaction:${tkpdTransactionVersion}",
+            discovery  : "${groupModule}:tkpddiscovery:${tkpdDiscoveryVersion}",
+            seller     : "${groupModule}:tkpdseller:${tkpdSellerVersion}",
+            digital    : "${groupModule}:tkpddigital:${tkpdDigitalVersion}",
+            topads     : "${groupModule}:tkpdtopadssdk:${tkpdTopAdsSDKVersion}",
+            payment    : "${groupModule}:tkpdpayment:${tkpdPaymentVersion}",
+            tkpdpdp    : "${groupModule}:tkpdpdp:${tkpdPdpVersion}",
+            design     : "${groupModule}:tkpddesign:${tkpdDesignVersion}",
+            feed       : "${groupModule}:tkpdfeed:${tkpdFeedVersion}",
+            ride       : "${groupModule}:tkpdride:${tkpdRideVersion}",
+            reactNative: "${groupModule}:tkpdreactnative:${tkpdReactNativeVersion}",
+            loyalty    : "${groupModule}:tkpdloyalty:${tkpdLoyaltyVersion}",
+            flight     : "${groupModule}:tkpdflight:${tkpdFlightVersion}",
+            flightNoOp : "${groupModule}:tkpdflight-no-op:${tkpdFlightVersion}",
+            reputation : "${groupModule}:tkpdreputation:${tkpdReputationVersion}",
+            tokocash   : "${groupModule}:tkpdtokocash:${tkpdTokocashVersion}",
+            gm         : "${groupModule}:tkpdgm:${tkpdGmVersion}"
     ]
 
     tkpdLibDependencies = [

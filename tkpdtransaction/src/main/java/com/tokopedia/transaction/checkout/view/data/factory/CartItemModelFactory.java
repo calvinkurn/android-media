@@ -18,7 +18,7 @@ public class CartItemModelFactory {
                 "Rp200.000",
                 "3kg",
                 "5%",
-                "1",
+                1,
                 "Saya pesan warna merah yah min.. jangan sampai salah kirim barangnya gan!",
                 "https://s1.bukalapak.com/img/1856437411/s-194-194/original_Kaos_Adidas_.jpg",
                 true,
@@ -28,7 +28,7 @@ public class CartItemModelFactory {
                 "Rp200.000",
                 "3kg",
                 "5%",
-                "1",
+                1,
                 "Minta nomor hape modelnya dong",
                 "https://s1.bukalapak.com/img/1856437411/s-194-194/original_Kaos_Adidas_.jpg",
                 true,
@@ -38,7 +38,7 @@ public class CartItemModelFactory {
                 "Rp200.000",
                 "3kg",
                 "5%",
-                "1",
+                1,
                 "Saya pesen kaosnya yang KW ya, tapi original!",
                 "https://s1.bukalapak.com/img/1856437411/s-194-194/original_Kaos_Adidas_.jpg",
                 true,
@@ -51,7 +51,7 @@ public class CartItemModelFactory {
                                                   String productPrice,
                                                   String productWeight,
                                                   String cashback,
-                                                  String totalProductItem,
+                                                  int totalProductItem,
                                                   String noteToSeller,
                                                   String productImageUrl,
                                                   boolean poAvailable,
@@ -59,8 +59,8 @@ public class CartItemModelFactory {
 
         CartItemModel cartItemModel = new CartItemModel();
         cartItemModel.setProductName(productName);
-        cartItemModel.setProductPrice(productPrice);
-        cartItemModel.setProductWeight(productWeight);
+        cartItemModel.setProductPriceFormatted(productPrice);
+        cartItemModel.setProductWeightFormatted(productWeight);
         cartItemModel.setCashback(cashback);
         cartItemModel.setTotalProductItem(totalProductItem);
         cartItemModel.setNoteToSeller(noteToSeller);

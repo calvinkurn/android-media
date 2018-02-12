@@ -26,10 +26,12 @@ public class CartSingleAddressPresenter
         super.checkViewAttached();
     }
 
-    public void getCartSingleAddressItemView() {
+    public void getCartSingleAddressItemView(CartSingleAddressData cartSingleAddressData) {
         // TODO remove this, and invoke use case
-        getMvpView().show(CartSingleAddressDataFactory.getDummyCartSingleAddressData());
+        getMvpView().show(cartSingleAddressData);
     }
+
+
 
     private final class CartSingleAddressObserver implements Observer<CartSingleAddressData> {
 
