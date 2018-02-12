@@ -56,7 +56,9 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                 list.add(mappingDynamicIcon(homeData.getDynamicHomeIcon().getDynamicIcon()));
             }
 
-            if (homeData.getDynamicHomeChannel() != null && !homeData.getDynamicHomeChannel().getChannels().isEmpty()) {
+            if (homeData.getDynamicHomeChannel() != null
+                    && homeData.getDynamicHomeChannel().getChannels() != null
+                    && !homeData.getDynamicHomeChannel().getChannels().isEmpty()) {
                 int position = 0;
                 for(DynamicHomeChannel.Channels channel : homeData.getDynamicHomeChannel().getChannels()) {
                     if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT)) {
