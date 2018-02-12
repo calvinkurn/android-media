@@ -37,7 +37,7 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
 
     @DeepLink("tokopedia://thankyou/{platform}/{template}")
     public static Intent getThankYouPageApplinkIntent(Context context, Bundle bundle) {
-        Log.d("oka", bundle.getString(DeepLink.URI));
+        
         return ReactNativeThankYouPageActivity.createReactNativeActivity(
                 context, ReactConst.Screen.THANK_YOU_PAGE,
                 "Thank You"
