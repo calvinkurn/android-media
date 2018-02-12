@@ -199,4 +199,13 @@
     <string name="msg_shortcut_created_failed">Unable to create shortcut on your home screen</string>
     <string name="btn_maybe_later">Maybe Later</string>
     <string name="info_your_balance_is">Your balance is</string>
+    <string name="status_pending_amount">PENDING AMOUNT</string>
+    <string name="status_arriving">ARRIVING</string>
+    <string name="status_accepted">ACCEPTED</string>
+    <string name="status_driver_not_available">DRIVER NOT AVAILABLE</string>
+    <string name="status_processing">PROCESSING</string>
+    <string name="status_ontrip">ON TRIP</string>
+    <string name="status_driver_cancelled">DRIVER CANCELED</string>
+    <string name="status_user_cancelled">YOU CANCELED</string>
+    <string name="status_completed">COMPLETED</string>
 </resources>
