@@ -5,6 +5,7 @@ import android.support.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
@@ -12,6 +13,8 @@ import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
 
 import java.util.List;
+
+import rx.Observable;
 
 /**
  * Created by zulfikarrahman on 12/13/17.
@@ -66,7 +69,9 @@ public interface FlightDetailOrderContract {
 
         void setPaymentDueDate(String dueDate);
 
-        void navigateToInputEmailForm(String userId);
+        void navigateToInputEmailForm(String userId, String userEmail);
+
+        Observable<ProfileInfo> getProfileObservable();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -79,5 +84,7 @@ public interface FlightDetailOrderContract {
         void actionReorderButtonClicked();
 
         void onDownloadETicketButtonClicked();
+
+        void onGetProfileData();
     }
 }
