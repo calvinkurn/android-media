@@ -373,7 +373,7 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
         finishProgressDialog();
         SnackbarManager.make(getActivity(), status, Snackbar.LENGTH_LONG).show();
         inputOtpView.setVisibility(View.VISIBLE);
-//        changePhoneNumberButton.setVisibility(View.GONE);
+        changePhoneNumberButton.setVisibility(View.GONE);
         setViewEnabled(true);
         startTimer();
     }
