@@ -8,6 +8,7 @@ import com.beloo.widget.chipslayoutmanager.util.log.Log;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
+import com.tokopedia.transaction.applink.TransactionAppLink;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -36,7 +37,7 @@ public class PurchaseNotifier {
                 Bundle bundle = new Bundle();
                 bundle.putString(Constants.ARG_NOTIFICATION_TITLE, TOKOPEDIA);
                 bundle.putString(Constants.ARG_NOTIFICATION_DESCRIPTION, getTransferNotificationMessage(context, extras));
-                bundle.putString(Constants.ARG_NOTIFICATION_APPLINK, Constants.Applinks.PURCHASE_VERIFICATION);
+                bundle.putString(Constants.ARG_NOTIFICATION_APPLINK, TransactionAppLink.PURCHASE_VERIFICATION);
 
                 ApplinkBuildAndShowNotification.showApplinkNotification(context, bundle);
             }
