@@ -35,4 +35,8 @@ public interface TkpdInboxRouter {
     Intent getTimeMachineIntent(Context context);
 
     Intent getInboxMessageIntent(Context context);
+
+    Intent getContactUsIntent(Context context);
+
+    Intent getGalleryIntent(Context context, boolean forceOpenCamera, int maxImageSelection, boolean compressToTkpd);
 }

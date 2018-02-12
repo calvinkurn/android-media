@@ -15,12 +15,17 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.apprating.AdvancedAppRatingDialog;
 import com.tokopedia.core.apprating.AppRatingDialog;
-import com.tokopedia.payment.activity.TopPayActivity;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
 import com.tokopedia.tkpd.home.fragment.ReactNativeThankYouPageFragment;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 import com.tokopedia.tkpd.thankyou.view.viewmodel.ThanksTrackerData;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 
 public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
@@ -32,6 +37,7 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
 
     @DeepLink("tokopedia://thankyou/{platform}/{template}")
     public static Intent getThankYouPageApplinkIntent(Context context, Bundle bundle) {
+        Log.d("oka", bundle.getString(DeepLink.URI));
         return ReactNativeThankYouPageActivity.createReactNativeActivity(
                 context, ReactConst.Screen.THANK_YOU_PAGE,
                 "Thank You"
@@ -54,6 +60,7 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
         super.onCreate(savedInstanceState);
         reactInstanceManager = ((ReactApplication) getApplication())
                 .getReactNativeHost().getReactInstanceManager();
+        PurchaseNotifier.notify(this, getIntent().getExtras());
     }
 
     @Override
@@ -137,7 +144,7 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
 
     @Override
     public void onBackPressed() {
-        if(isDigital()) {
+        if (isDigital()) {
             AdvancedAppRatingDialog.show(this, new AppRatingDialog.AppRatingListener() {
                 @Override
                 public void onDismiss() {
@@ -151,10 +158,10 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
 
     private boolean isDigital() {
         Bundle extra = getIntent().getExtras();
-        if(extra != null) {
+        if (extra != null) {
             String platform = extra.getString(PLATFORM);
             if (platform != null && platform.equals(DIGITAL)) {
-                return  true;
+                return true;
             }
         }
         return false;

@@ -73,7 +73,8 @@ public class FlightSearchReturnFragment extends FlightSearchFragment implements 
         return flightSearchPassDataViewModel.getDepartureAirport();
     }
 
-    protected boolean isReturning() {
+    @Override
+    public boolean isReturning() {
         return true;
     }
 

@@ -5,6 +5,8 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationDeta
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFormFragment;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFragment;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationReportFragment;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.ReviewProductFragment;
+import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment;
 
 import dagger.Component;
 
@@ -24,4 +26,7 @@ public interface ReputationComponent {
 
     void inject(InboxReputationReportFragment inboxReputationReportFragment);
 
+    void inject(ReviewProductFragment productReviewFragment);
+
+    void inject(ReviewShopFragment shopReviewFragment);
 }

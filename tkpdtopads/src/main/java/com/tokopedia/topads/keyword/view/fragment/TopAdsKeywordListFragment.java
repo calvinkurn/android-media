@@ -127,6 +127,8 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if(startDate == null || endDate == null)
+            return;
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == REQUEST_CODE_AD_FILTER && intent != null) {
             groupAd = intent.getParcelableExtra(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION);

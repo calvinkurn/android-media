@@ -1,9 +1,11 @@
 package com.tokopedia.flight.search.view;
 
 import android.app.Activity;
+import android.support.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB;
+import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
 import java.util.List;
@@ -45,4 +47,16 @@ public interface FlightSearchView extends BaseListViewListener<FlightSearchViewM
     void showFilterAndSortView();
 
     void hideFilterAndSortView();
+
+    boolean isReturning();
+
+    FlightSearchPassDataViewModel getFlightSearchPassData();
+
+    void setFlightSearchPassData(FlightSearchPassDataViewModel flightSearchPassData);
+
+    void showDepartureDateMaxTwoYears(@StringRes int resID);
+
+    void showDepartureDateShouldAtLeastToday(@StringRes int resID);
+
+    void showReturnDateShouldGreaterOrEqual(@StringRes int resID);
 }
