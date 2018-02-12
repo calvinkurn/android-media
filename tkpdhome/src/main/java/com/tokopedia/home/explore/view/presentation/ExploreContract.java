@@ -30,6 +30,12 @@ public interface ExploreContract {
         void renderData(List<ExploreSectionViewModel> list);
     }
 
+    interface FragmentView extends CustomerView {
+
+        void refreshData(ExploreSectionViewModel data);
+
+    }
+
     interface Presenter extends CustomerPresenter<View> {
 
         void getData();

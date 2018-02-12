@@ -33,12 +33,13 @@ import com.tokopedia.home.explore.view.activity.ExploreActivity;
 import com.tokopedia.home.explore.view.adapter.ExploreAdapter;
 import com.tokopedia.home.explore.view.adapter.TypeFactory;
 import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel;
+import com.tokopedia.home.explore.view.presentation.ExploreContract;
 
 /**
  * Created by errysuprayogi on 1/26/18.
  */
 
-public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> implements CategoryAdapterListener {
+public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> implements CategoryAdapterListener, ExploreContract.FragmentView {
 
     public static final String PARAM_TYPE_FRAGMENT = "PARAM_TYPE_FRAGMENT";
     public static final int TYPE_BELI = 0;
@@ -94,7 +95,8 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (data != null) {
+        ((ExploreActivity) getActivity()).setFragmentView(this);
+        if(data!=null){
             renderList(data.getVisitableList());
         }
     }
@@ -172,7 +174,8 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
                 HomePageTracking.eventClickExplorerItem(
                         HomePageTracking.PESAN_INI_ITU_CLICK,
                         data.getName()
-                );;
+                );
+                ;
                 break;
             case TYPE_AJUKAN:
                 HomePageTracking.eventClickExplorerItem(
@@ -270,4 +273,11 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     public void setData(ExploreSectionViewModel data) {
         this.data = data;
     }
+
+    @Override
+    public void refreshData(ExploreSectionViewModel data) {
+        loadInitialData();
+        renderList(data.getVisitableList());
+    }
+
 }
