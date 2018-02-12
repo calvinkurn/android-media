@@ -12,7 +12,6 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.exception.model.TomeErrorResponse;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.seller.shop.common.exception.model.ShopErrorResponse;
 import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.seller.shop.common.di.ShopScope;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
