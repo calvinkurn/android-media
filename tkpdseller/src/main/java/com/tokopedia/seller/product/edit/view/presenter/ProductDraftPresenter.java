@@ -7,10 +7,7 @@ import com.tokopedia.seller.product.edit.domain.interactor.ProductScoringUseCase
 import com.tokopedia.core.common.category.domain.interactor.FetchCategoryDisplayUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.SaveDraftProductUseCase;
-import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
-import com.tokopedia.seller.product.edit.view.mapper.UploadProductMapper;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
-import com.tokopedia.seller.product.edit.view.model.upload.UploadProductInputViewModel;
 import com.tokopedia.seller.product.variant.domain.interactor.FetchProductVariantByCatUseCase;
 
 import javax.inject.Inject;
@@ -52,13 +49,13 @@ public class ProductDraftPresenter extends ProductAddPresenterImpl<ProductDraftV
                 if (!isViewAttached()) {
                     return;
                 }
-                getView().onErrorLoadDraftProduct(e);
+                getView().onErrorLoadProduct(e);
             }
 
             @Override
             public void onNext(ProductViewModel productViewModel) {
                 checkViewAttached();
-                getView().onSuccessLoadDraftProduct(productViewModel);
+                getView().onSuccessLoadProduct(productViewModel);
             }
         };
     }

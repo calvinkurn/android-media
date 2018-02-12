@@ -1,16 +1,15 @@
 package com.tokopedia.seller.product.edit.view.presenter;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.seller.product.edit.view.listener.ProductAddView;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
-import com.tokopedia.seller.product.edit.view.model.upload.UploadProductInputViewModel;
 
 /**
  * @author sebastianuskh on 4/13/17.
  */
 
-public abstract class ProductAddPresenter<T extends ProductAddView> extends BaseDaggerPresenter<T>{
+public abstract class ProductAddPresenter<T extends ProductAddView> extends BaseDaggerPresenter<T> {
     public abstract void saveDraft(ProductViewModel viewModel, boolean isUploading);
 
     public abstract void getProductScoring(ValueIndicatorScoreModel valueIndicatorScoreModel);

@@ -8,18 +8,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.common.di.component.ProductComponent;
+import com.tokopedia.seller.product.edit.di.component.DaggerProductDraftComponent;
+import com.tokopedia.seller.product.edit.di.module.ProductDraftModule;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
-import com.tokopedia.seller.product.edit.view.model.upload.ProductPhotoListViewModel;
-import com.tokopedia.seller.product.edit.view.model.upload.ProductWholesaleViewModel;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
-
-import java.util.List;
+import com.tokopedia.seller.product.edit.view.presenter.ProductDraftPresenter;
 
 /**
  * Created by zulfikarrahman on 4/27/17.
  */
 
-public class ProductDraftEditFragment extends ProductDraftAddFragment {
+public class ProductDraftEditFragment extends BaseProductDraftAddEditFragment<ProductDraftPresenter> {
+
+    public static final String SAVED_PRODUCT_ID = "svd_prd_id";
 
     private String productId;
 
@@ -36,6 +38,24 @@ public class ProductDraftEditFragment extends ProductDraftAddFragment {
         return ProductStatus.EDIT;
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            productId = savedInstanceState.getString(SAVED_PRODUCT_ID);
+        }
+    }
+
+    @Override
+    public void initInjector() {
+        DaggerProductDraftComponent
+                .builder()
+                .productComponent(getComponent(ProductComponent.class))
+                .productDraftModule(new ProductDraftModule())
+                .build()
+                .inject(this);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -48,18 +68,13 @@ public class ProductDraftEditFragment extends ProductDraftAddFragment {
     }
 
     @Override
-    public void onSuccessLoadDraftProduct(ProductViewModel model) {
+    public void onSuccessLoadProduct(ProductViewModel model) {
         hideLoading();
         productId = String.valueOf(model.getProductId());
         if (!model.isProductNameEditable()) {
             productInfoViewHolder.setNameEnabled(false);
         }
-        super.onSuccessLoadDraftProduct(model);
-    }
-
-    @Override
-    protected void getCategoryRecommendation(String productName) {
-        // Do nothing
+        super.onSuccessLoadProduct(model);
     }
 
     @Override
@@ -67,5 +82,11 @@ public class ProductDraftEditFragment extends ProductDraftAddFragment {
         ProductViewModel viewModel = super.collectDataFromView();
         viewModel.setProductId(Long.parseLong(productId));
         return viewModel;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(SAVED_PRODUCT_ID, productId);
     }
 }

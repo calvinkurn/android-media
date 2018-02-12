@@ -9,8 +9,8 @@ import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 
 public interface ProductDraftView extends ProductAddView {
 
-    void onSuccessLoadDraftProduct(ProductViewModel model);
+    void onSuccessLoadProduct(ProductViewModel model);
 
-    void onErrorLoadDraftProduct(Throwable throwable);
+    void onErrorLoadProduct(Throwable throwable);
 
 }

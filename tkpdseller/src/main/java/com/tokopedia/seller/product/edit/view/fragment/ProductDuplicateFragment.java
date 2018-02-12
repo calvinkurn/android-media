@@ -3,29 +3,20 @@ package com.tokopedia.seller.product.edit.view.fragment;
 import android.os.Bundle;
 
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.di.component.DaggerProductEditComponent;
 import com.tokopedia.seller.product.edit.di.module.ProductEditModule;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
-import com.tokopedia.seller.product.edit.view.presenter.ProductEditPresenter;
+import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 import com.tokopedia.seller.product.edit.view.presenter.ProductEditView;
-
-import javax.inject.Inject;
 
 /**
  * Created by zulfikarrahman on 4/27/17.
  */
 
-public class ProductDuplicateFragment extends ProductDraftAddFragment implements ProductEditView {
+public class ProductDuplicateFragment extends ProductEditFragment implements ProductEditView {
 
-    public static final String EDIT_PRODUCT_ID = "EDIT_PRODUCT_ID";
-
-    @Inject
-    public ProductEditPresenter presenter;
     private String productNameBeforeCopy;
-
-    private String productId;
 
     public static ProductDuplicateFragment createInstance(String productId) {
         ProductDuplicateFragment fragment = new ProductDuplicateFragment();
@@ -36,13 +27,17 @@ public class ProductDuplicateFragment extends ProductDraftAddFragment implements
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        productId = getArguments().getString(EDIT_PRODUCT_ID);
+    public int getStatusUpload() {
+        return ProductStatus.ADD;
     }
 
     @Override
-    protected void initInjector() {
+    public boolean isNeedGetCategoryRecommendation() {
+        return false;
+    }
+
+    @Override
+    public void initInjector() {
         DaggerProductEditComponent
                 .builder()
                 .productComponent(getComponent(ProductComponent.class))
@@ -52,8 +47,8 @@ public class ProductDuplicateFragment extends ProductDraftAddFragment implements
     }
 
     @Override
-    public void onSuccessLoadDraftProduct(ProductViewModel model) {
-        super.onSuccessLoadDraftProduct(model);
+    public void onSuccessLoadProduct(ProductViewModel model) {
+        super.onSuccessLoadProduct(model);
         productNameBeforeCopy = model.getProductName();
     }
 
@@ -65,29 +60,6 @@ public class ProductDuplicateFragment extends ProductDraftAddFragment implements
             return false;
         }
         return dataValid;
-    }
-
-    @Override
-    protected void fetchInputData() {
-        showLoading();
-        presenter.attachView(this);
-        fetchProductInfoData(productId);
-    }
-
-    private void fetchProductInfoData(String productId){
-        presenter.fetchEditProductData(productId);
-    }
-
-    @Override
-    public void onErrorFetchEditProduct(Throwable throwable) {
-        hideLoading();
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                showLoading();
-                fetchInputData();
-            }
-        });
     }
 
 }

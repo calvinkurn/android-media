@@ -310,7 +310,7 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
     private boolean hasDataAdded() {
         ProductAddFragment fragment = getProductAddFragment();
         if (fragment != null) {
-            return fragment.hasDataAdded();
+            return fragment.showDialogSaveDraftOnBack();
         }
         return false;
     }

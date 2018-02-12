@@ -1,11 +1,9 @@
 package com.tokopedia.seller.product.edit.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.edit.domain.EditProductFormRepository;
 import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Inject;
 
@@ -21,8 +19,7 @@ public class FetchEditProductFormUseCase extends UseCase<UploadProductInputDomai
     private final EditProductFormRepository editProductFormRepository;
 
     @Inject
-    public FetchEditProductFormUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, EditProductFormRepository editProductFormRepository) {
-        super(threadExecutor, postExecutionThread);
+    public FetchEditProductFormUseCase(EditProductFormRepository editProductFormRepository) {
         this.editProductFormRepository = editProductFormRepository;
     }
 
