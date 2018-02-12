@@ -3,6 +3,7 @@ package com.tokopedia.inbox.inboxchat.domain.model.websocket;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 
 public class WebSocketResponseData {
 
@@ -30,6 +31,9 @@ public class WebSocketResponseData {
     @SerializedName("thumbnail")
     @Expose
     private String imageUri;
+    @SerializedName("attachment")
+    @Expose
+    private Attachment attachment;
 
     public int getMsgId() {
         return msgId;
@@ -93,5 +97,13 @@ public class WebSocketResponseData {
 
     public void setFromRole(String fromRole) {
         this.fromRole = fromRole;
+    }
+
+    public Attachment getAttachment() {
+        return attachment;
+    }
+
+    public void setAttachment(Attachment attachment) {
+        this.attachment = attachment;
     }
 }
