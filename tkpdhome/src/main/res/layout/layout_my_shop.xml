@@ -63,7 +63,7 @@
 
         <ImageView
             android:id="@+id/reputation_medal"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="12dp"
             app:srcCompat="@drawable/ic_badge_none"
             android:scaleType="fitStart"

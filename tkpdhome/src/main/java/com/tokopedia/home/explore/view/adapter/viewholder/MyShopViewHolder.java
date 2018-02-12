@@ -76,7 +76,6 @@ public class MyShopViewHolder extends AbstractViewHolder<MyShopViewModel> {
                 .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(reputationMedal);
-        reputationMedal.invalidate();
     }
 
 }
