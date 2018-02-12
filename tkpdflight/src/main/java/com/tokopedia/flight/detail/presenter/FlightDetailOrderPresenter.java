@@ -149,13 +149,15 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
 
     private CharSequence renderPaymentDescriptionText(PaymentInfoEntity payment) {
         SpannableStringBuilder text = new SpannableStringBuilder();
-        text.append(payment.getGatewayName());
+        text.append(payment.getGatewayName().trim());
         makeBold(text);
-        SpannableStringBuilder desc = new SpannableStringBuilder();
-        desc.append(payment.getTransactionCode());
-        makeSmall(desc);
-        text.append("\n");
-        text.append(desc);
+        if (payment.getTransactionCode() != null && payment.getTransactionCode().length() > 0) {
+            SpannableStringBuilder desc = new SpannableStringBuilder();
+            desc.append(payment.getTransactionCode());
+            makeSmall(desc);
+            text.append("\n");
+            text.append(desc);
+        }
         return text;
     }
 
