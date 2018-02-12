@@ -376,8 +376,13 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     @Override
-    public void onProductReviewClicked(@NonNull Bundle bundle) {
-        presenter.processToReputation(context, bundle);
+    public void onProductRatingClicked(String productId, String shopId, String productName) {
+        presenter.processToReputation(context, productId, productName);
+    }
+
+    @Override
+    public void onProductReviewClicked(String productId, String shopId, String productName) {
+        presenter.processToReputation(context, productId, productName);
     }
 
     @Override
@@ -423,11 +428,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void shareProduct(ShareData data) {
         interactionListener.shareProductInfo(data);
-    }
-
-    @Override
-    public void onProductRatingClicked(@NonNull Bundle bundle) {
-        presenter.processToReputation(context, bundle);
     }
 
     @Override
@@ -892,6 +892,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         presenter.stopIndexingApp(appIndexHandler);
     }
 
+    @SuppressWarnings("Range")
     public void onSuccessAction(Bundle resultData, int resultCode) {
         if (fragment != null) fragment.dismiss();
         recentBundle = null;
@@ -900,6 +901,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 Snackbar.LENGTH_LONG).show();
     }
 
+    @SuppressWarnings("Range")
     public void onErrorAction(Bundle resultData, int resultCode) {
         if (fragment != null) {
             recentBundle = resultData.getBundle(ProductInfoIntentService.EXTRA_BUNDLE);

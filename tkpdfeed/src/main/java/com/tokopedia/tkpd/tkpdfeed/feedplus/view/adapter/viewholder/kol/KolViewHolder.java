@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
@@ -82,7 +81,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             title.setText(MethodChecker.fromHtml(element.getTitle()));
         }
         name.setText(MethodChecker.fromHtml(element.getName()));
-        ImageHandler.LoadImage(avatar, element.getAvatar());
+        ImageHandler.loadImageCircle2(avatar.getContext(), avatar, element.getAvatar());
 
         if (element.isFollowed()) {
             label.setText(element.getTime());
@@ -96,14 +95,14 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
         } else if (element.isFollowed() && element.isTemporarilyFollowed()) {
             followButton.setVisibility(View.VISIBLE);
             followText.setText(R.string.following);
-            followText.setTextColor(MethodChecker.getColor(MainApplication.getAppContext(),
+            followText.setTextColor(MethodChecker.getColor(followText.getContext(),
                     R.color.black_54));
             ImageHandler.loadImageWithIdWithoutPlaceholder(followIcon, R.drawable.ic_tick);
             topSeparator.setVisibility(View.VISIBLE);
         } else {
             followButton.setVisibility(View.VISIBLE);
             ImageHandler.loadImageWithIdWithoutPlaceholder(followIcon, R.drawable.ic_plus_green);
-            followText.setTextColor(MethodChecker.getColor(MainApplication.getAppContext(),
+            followText.setTextColor(MethodChecker.getColor(followText.getContext(),
                     R.color.green_500));
             followText.setText(R.string.action_follow_english);
             topSeparator.setVisibility(View.VISIBLE);
@@ -123,18 +122,18 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
         if (element.isLiked()) {
             ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_thumb_green);
             likeText.setText(String.valueOf(element.getTotalLike()));
-            likeText.setTextColor(MethodChecker.getColor(MainApplication.getAppContext(), R.color
+            likeText.setTextColor(MethodChecker.getColor(likeText.getContext(), R.color
                     .tkpd_main_green));
 
         } else if (element.getTotalLike() > 0) {
             ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_thumb);
             likeText.setText(String.valueOf(element.getTotalLike()));
-            likeText.setTextColor(MethodChecker.getColor(MainApplication.getAppContext(), R.color
+            likeText.setTextColor(MethodChecker.getColor(likeText.getContext(), R.color
                     .black_54));
         } else {
             ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_thumb);
             likeText.setText(R.string.action_like);
-            likeText.setTextColor(MethodChecker.getColor(MainApplication.getAppContext(), R.color
+            likeText.setTextColor(MethodChecker.getColor(likeIcon.getContext(), R.color
                     .black_54));
         }
 
@@ -185,7 +184,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
         kolText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (kolText.getText().toString().endsWith(MainApplication.getAppContext().getString(R
+                if (kolText.getText().toString().endsWith(kolText.getContext().getString(R
                         .string.read_more_english))) {
                     UnifyTracking.eventKolContentReadMoreClick(element.isFollowed(), element.getTagsType());
                     kolText.setText(element.getReview());
@@ -219,26 +218,15 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
         tooltipClickArea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventKolContentCtaClick(element.isFollowed(), element.getTagsType());
-                List<KolTracking.Promotion> list = new ArrayList<>();
-                list.add(new KolTracking.Promotion(
-                        element.getId(),
-                        KolTracking.Promotion.createContentName(
-                                element.getTagsType(),
-                                element.getCardType())
-                        ,
-                        element.getName().equals("")? "-" : element.getName(),
-                        getAdapterPosition(),
-                        element.getLabel().equals("")? "-" : element.getLabel(),
-                        element.getContentId(),
-                        element.getContentLink().equals("")? "-" : element.getContentLink()
-                ));
+                tooltipAreaClicked(element);
+            }
+        });
 
-                TrackingUtils.eventTrackingEnhancedEcommerce(KolTracking.getKolClickTracking(list,
-                        Integer.parseInt(SessionHandler.getLoginID(MainApplication.getAppContext()))));
-
-                viewListener.onOpenKolTooltip(element.getPage(), getAdapterPosition(),
-                        element.getContentLink());
+        reviewImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (tooltipClickArea.getVisibility() == View.VISIBLE)
+                    tooltipAreaClicked(element);
             }
         });
 
@@ -252,11 +240,34 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             return MethodChecker.fromHtml(
                     subDescription.replaceAll("(\r\n|\n)", "<br />") + "... "
                             + "<font color='#42b549'>"
-                            + MainApplication.getAppContext().getString(R.string.read_more_english)
+                            + kolText.getContext().getString(R.string.read_more_english)
                             + "</font>");
         } else {
             return MethodChecker.fromHtml(element.getReview());
         }
+    }
+
+    private void tooltipAreaClicked(KolViewModel element) {
+        UnifyTracking.eventKolContentCtaClick(element.isFollowed(), element.getTagsType());
+        List<KolTracking.Promotion> list = new ArrayList<>();
+        list.add(new KolTracking.Promotion(
+                element.getId(),
+                KolTracking.Promotion.createContentName(
+                        element.getTagsType(),
+                        element.getCardType())
+                ,
+                element.getName().equals("")? "-" : element.getName(),
+                getAdapterPosition(),
+                element.getLabel().equals("")? "-" : element.getLabel(),
+                element.getContentId(),
+                element.getContentLink().equals("")? "-" : element.getContentLink()
+        ));
+
+        TrackingUtils.eventTrackingEnhancedEcommerce(KolTracking.getKolClickTracking(list,
+                Integer.parseInt(SessionHandler.getLoginID(avatar.getContext()))));
+
+        viewListener.onOpenKolTooltip(element.getPage(), getAdapterPosition(),
+                element.getContentLink());
     }
 
 }

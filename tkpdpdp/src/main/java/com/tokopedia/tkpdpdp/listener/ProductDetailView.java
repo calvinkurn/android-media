@@ -54,9 +54,8 @@ public interface ProductDetailView extends ViewListener {
     /**
      * Pada saat diskusi produk diklik
      *
-     * @param bundle bundle data yang dikirim
      */
-    void onProductReviewClicked(@NonNull Bundle bundle);
+    void onProductReviewClicked(String productId, String shopId, String productName);
 
     /**
      * Pada saat promosikan produk diklik
@@ -117,10 +116,8 @@ public interface ProductDetailView extends ViewListener {
 
     /**
      * Pada saat rating product diklik
-     *
-     * @param bundle bundle data yang dikirim
      */
-    void onProductRatingClicked(@NonNull Bundle bundle);
+    void onProductRatingClicked(String productId, String shopId, String productName);
 
     void onCourierClicked(@NonNull Bundle bundle);
 

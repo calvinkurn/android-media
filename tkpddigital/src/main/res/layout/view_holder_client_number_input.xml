@@ -4,7 +4,6 @@
               android:layout_height="wrap_content"
               android:animateLayoutChanges="true"
               android:orientation="vertical"
-              android:paddingTop="@dimen/digital_padding_16"
               tools:background="@color/grey_100">
 
     <LinearLayout
@@ -118,6 +117,7 @@
         android:paddingLeft="@dimen/padding_vvs"
         android:paddingRight="@null"
         android:paddingStart="@dimen/padding_vvs"
+        android:paddingBottom="@dimen/digital_padding_4"
         android:text="@string/title_empty_stock"
         android:textColor="@color/red_600"
         android:textSize="@dimen/fontvs"
