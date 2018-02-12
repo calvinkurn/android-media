@@ -16,7 +16,7 @@ import java.util.List;
  * Created by errysuprayogi on 2/2/18.
  */
 
-public class ExploreFragmentAdapter extends FragmentStatePagerAdapter {
+public class ExploreFragmentAdapter extends FragmentPagerAdapter {
 
     private List<ExploreSectionViewModel> modelList;
 
