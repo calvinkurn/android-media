@@ -10,8 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:paddingLeft="@dimen/padding_vs"
-        android:paddingRight="@dimen/padding_ms">
+        android:padding="@dimen/padding_ms">
 
         <android.support.v7.widget.LinearLayoutCompat
             android:id="@+id/linear_layout_button_1"
