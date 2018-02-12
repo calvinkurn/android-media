@@ -279,7 +279,8 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                 KolCtaDomain kolCtaDomain = datum.content().kol_cta() != null ?
                         convertToKolCtaDomain(datum.content().kol_cta()) :
                         null;
-                List<Data> topadsData = convertToTopadsDomain(datum.content().topads());
+                List<Data> topadsData = convertToTopadsDomain(datum.content().display(),
+                        datum.content().topads());
                 ContentFeedDomain contentFeedDomain = createContentFeedDomain(
                         datum.content(),
                         productFeedDomains,
@@ -470,11 +471,10 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                 kol_cta.subtitle());
     }
 
-    private List<Data> convertToTopadsDomain(List<FeedQuery.Data.Topad> topadList) {
+    private List<Data> convertToTopadsDomain(String display, List<FeedQuery.Data.Topad> topadList) {
         ArrayList<Data> topadDataDomainList = new ArrayList<>();
-        if (topadList != null) {
+        if (topadList != null && display != null && !display.isEmpty()) {
             for (FeedQuery.Data.Topad topad : topadList) {
-                //TODO milhamj change display according to API
                 topadDataDomainList.add(
                         new Data(topad.id(),
                                 topad.ad_ref_key(),
@@ -492,7 +492,7 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                                 topad.product() == null ? null :
                                         convertToTopadsProduct(topad.product()),
                                 false,
-                                DISPLAY_PRODUCT)
+                                display)
                 );
             }
         }
