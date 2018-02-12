@@ -69,6 +69,7 @@ import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity;
+import com.tokopedia.shop.info.view.activity.ShopPageActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.seller.shop.common.data.source.cloud.api.ShopApi;
 
@@ -556,7 +557,8 @@ public class DrawerSellerHelper extends DrawerHelper
     }
 
     private void onGoToShop() {
-        Intent intent = ShopInfoActivity.createIntent(context, sessionHandler.getShopID());
+//        Intent intent = ShopInfoActivity.createIntent(context, sessionHandler.getShopID());
+        Intent intent = ShopPageActivity.createIntent(context, sessionHandler.getShopID());
         context.startActivity(intent);
         sendGTMNavigationEvent(AppEventTracking.EventLabel.SHOP_EN);
     }
