@@ -263,6 +263,11 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     public void onResume() {
         super.onResume();
         ScreenTracking.screen(getScreenName());
+
+        if (sessionHandler != null &&
+                sessionHandler.isV4Login()) {
+            getActivity().finish();
+        }
     }
 
     @Override

@@ -54,6 +54,6 @@ public class ValidateOtpMapper implements Func1<Response<TkpdResponse>, Validate
     }
 
     private ValidateOtpDomain convertToDomain(ValidateOtpPojo validateOtpData) {
-        return new ValidateOtpDomain(validateOtpData.isSuccess(), validateOtpData.getUuid());
+        return new ValidateOtpDomain(validateOtpData.isSuccess(), "");
     }
 }
