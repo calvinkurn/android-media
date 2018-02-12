@@ -168,6 +168,7 @@ public interface AppEventTracking {
         String EVENT_ONBOARDING = "onBoardingEvent";
         String EVENT_RESOLUTION = "clickResolution";
         String PRODUCT_VIEW = "productView";
+        String CLICK_PDP = "clickPDP";
     }
 
     interface Category {
@@ -464,6 +465,13 @@ public interface AppEventTracking {
         String CLICK_SHOP = "click - shop";
         String CLICK_WISHLIST = "click - wishlist";
         String SORT_BY = "sort by";
+
+        String CLICK_VARIANTS = "click - variants";
+        String CLICK_BUY_VARIANT_PDP = "click - buy";
+        String CLICK_CART_BUTTON_VARIANT = "click - cart button on sticky header";
+        String SELECT_COLOR_VARIANT = "select color on variants page";
+        String SELECT_SIZE_VARIANT = "select size on variants page";
+        String CLICK_BUY_VARIANT_PAGE = "click - buy on variants page";
     }
 
     interface ImageEditor{

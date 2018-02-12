@@ -60,6 +60,63 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+     /* VARIANT */
+
+
+    public static void eventClickVariant(String eventLabel) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_PDP,
+                AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
+                AppEventTracking.Action.CLICK_VARIANTS,
+                eventLabel
+        ).getEvent());
+    }
+
+    public static void eventBuyPDPVariant(String eventLabel) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_PDP,
+                AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
+                AppEventTracking.Action.CLICK_BUY_VARIANT_PDP,
+                eventLabel
+        ).getEvent());
+    }
+
+    public static void eventClickCartVariant(String eventLabel) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_PDP,
+                AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
+                AppEventTracking.Action.CLICK_CART_BUTTON_VARIANT,
+                eventLabel
+        ).getEvent());
+    }
+
+    public static void eventSelectColorVariant(String eventLabel) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_PDP,
+                AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
+                AppEventTracking.Action.SELECT_COLOR_VARIANT,
+                eventLabel
+        ).getEvent());
+    }
+
+    public static void eventSelectSizeVariant(String eventLabel) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_PDP,
+                AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
+                AppEventTracking.Action.SELECT_SIZE_VARIANT,
+                eventLabel
+        ).getEvent());
+    }
+
+    public static void eventBuyPageVariant(String eventLabel) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_PDP,
+                AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
+                AppEventTracking.Action.CLICK_BUY_VARIANT_PAGE,
+                eventLabel
+        ).getEvent());
+    }
+
     /* CATEGORY IMPROVEMENT*/
 
     public static void eventExpandCategoryIntermediary(String parentCat) {
