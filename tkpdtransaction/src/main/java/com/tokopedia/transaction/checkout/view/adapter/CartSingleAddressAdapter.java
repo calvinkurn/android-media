@@ -23,6 +23,7 @@ import com.tokopedia.transaction.checkout.view.data.CartItemModel;
 import com.tokopedia.transaction.checkout.view.data.CartPayableDetailModel;
 import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
+import com.tokopedia.transaction.checkout.view.data.CourierItemData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentFeeBannerModel;
 import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
@@ -344,6 +345,8 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
 
     class ShippedProductDetailsViewHolder extends RecyclerView.ViewHolder {
 
+        static final String NO_CASHBACK = "0%";
+
         @BindView(R2.id.tv_sender_name) TextView mTvSenderName;
 
         @BindView(R2.id.iv_product_image_container) ImageView mIvProductImage;
@@ -400,14 +403,14 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
 
             // Assign variables
             mTvSenderName.setText(model.getShopName());
-            mTvShipmentOption.setText(model.getCourierItemData().getName());
+            mTvShipmentOption.setText(getCourierName(model.getCourierItemData()));
             mTvSubTotalPrice.setText(model.getTotalPriceFormatted());
 
             ImageHandler.LoadImage(mIvProductImage, mainProductItem.getProductImageUrl());
             mTvProductName.setText(mainProductItem.getProductName());
             mTvProductPrice.setText(mainProductItem.getProductPriceFormatted());
             mTvProductWeight.setText(mainProductItem.getProductWeightFormatted());
-            mTvTotalProductItem.setText(mainProductItem.getTotalProductItem());
+            mTvTotalProductItem.setText(String.valueOf(mainProductItem.getTotalProductItem()));
             mTvOptionalNote.setText(mainProductItem.getNoteToSeller());
 
             mLlOtherProductContainer.setVisibility(getExpandOtherProductVisibility(cartItemModels));
@@ -465,6 +468,13 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
             mRvProductThumbImage.setAdapter(innerProductImageListAdapter);
         }
 
+        private String getCourierName(CourierItemData courierItemData) {
+            if (courierItemData == null) {
+                return "";
+            }
+            return courierItemData.getName();
+        }
+
         private int getExpandOtherProductVisibility(List<CartItemModel> cartItemModels) {
             return cartItemModels.isEmpty() ? View.GONE : View.VISIBLE;
         }
@@ -489,8 +499,6 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
         }
 
         private int getCashbackVisibility(String cashback) {
-            final String NO_CASHBACK = "0%";
-
             return NO_CASHBACK.equals(cashback) ? View.GONE : View.VISIBLE;
         }
 

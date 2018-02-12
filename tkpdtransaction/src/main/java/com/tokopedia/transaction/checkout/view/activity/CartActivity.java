@@ -11,12 +11,25 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.view.CartFragment;
 import com.tokopedia.transaction.checkout.view.CartRemoveProductFragment;
+import com.tokopedia.transaction.checkout.view.data.CartItemData;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author anggaprasetiyo on 18/01/18.
  */
 
-public class CartActivity extends BasePresenterActivity {
+public class CartActivity extends BasePresenterActivity
+        implements CartFragment.OnPassingCartDataListener {
+
+    private List<CartItemData> mCartItemData;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mCartItemData = new ArrayList<>();
+    }
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -42,7 +55,7 @@ public class CartActivity extends BasePresenterActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_cart_remove) {
-            Fragment fragment = CartRemoveProductFragment.newInstance();
+            Fragment fragment = CartRemoveProductFragment.newInstance(mCartItemData);
 
             FragmentManager fragmentManager = getFragmentManager();
             String backStateName = fragment.getClass().getName();
@@ -93,5 +106,14 @@ public class CartActivity extends BasePresenterActivity {
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+    /**
+     * Pass data from cart fragment into its container activity
+     * @param cartItemData List of cart items
+     */
+    @Override
+    public void onPassingCartData(List<CartItemData> cartItemData) {
+        mCartItemData = new ArrayList<>(cartItemData);
     }
 }

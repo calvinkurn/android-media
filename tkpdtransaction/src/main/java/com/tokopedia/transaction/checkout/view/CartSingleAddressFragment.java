@@ -47,6 +47,7 @@ import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointCon
 public class CartSingleAddressFragment extends BasePresenterFragment
         implements ICartSingleAddressView<CartSingleAddressData>,
         CartSingleAddressAdapter.SingleAddressShipmentAdapterListener {
+
     public static final String ARG_EXTRA_CART_DATA_LIST = "ARG_EXTRA_CART_DATA_LIST";
 
     private static final String TAG = CartSingleAddressFragment.class.getSimpleName();
@@ -54,17 +55,13 @@ public class CartSingleAddressFragment extends BasePresenterFragment
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
     private static final int REQUEST_CODE_CHOOSE_ADDRESS = 13;
 
-    @BindView(R2.id.rv_cart_order_details)
-    RecyclerView mRvCartOrderDetails;
+    @BindView(R2.id.rv_cart_order_details) RecyclerView mRvCartOrderDetails;
 
-    @Inject
-    CartSingleAddressAdapter mCartSingleAddressAdapter;
-    @Inject
-    CartSingleAddressPresenter mCartSingleAddressPresenter;
-    @Inject
-    SingleShipmentDataConverter singleShipmentDataConverter;
+    @Inject CartSingleAddressAdapter mCartSingleAddressAdapter;
+    @Inject CartSingleAddressPresenter mCartSingleAddressPresenter;
+    @Inject SingleShipmentDataConverter mSingleShipmentDataConverter;
 
-    private List<CartItemData> cartItemPassDataList;
+    private CartSingleAddressData mCartSingleAddressData;
 
     public static CartSingleAddressFragment newInstance(List<CartItemData> cartItemDataList) {
         CartSingleAddressFragment fragment = new CartSingleAddressFragment();
@@ -138,7 +135,8 @@ public class CartSingleAddressFragment extends BasePresenterFragment
      */
     @Override
     protected void setupArguments(Bundle arguments) {
-        cartItemPassDataList = arguments.getParcelableArrayList(ARG_EXTRA_CART_DATA_LIST);
+        List<CartItemData> cartDataList = arguments.getParcelableArrayList(ARG_EXTRA_CART_DATA_LIST);
+        mCartSingleAddressData = mSingleShipmentDataConverter.convert(cartDataList);
     }
 
     @Override
@@ -162,8 +160,7 @@ public class CartSingleAddressFragment extends BasePresenterFragment
      */
     @Override
     protected void setViewListener() {
-        CartSingleAddressData data = singleShipmentDataConverter.convert(cartItemPassDataList);
-        mCartSingleAddressPresenter.getCartSingleAddressItemView(data);
+        mCartSingleAddressPresenter.getCartSingleAddressItemView(mCartSingleAddressData);
     }
 
     /**

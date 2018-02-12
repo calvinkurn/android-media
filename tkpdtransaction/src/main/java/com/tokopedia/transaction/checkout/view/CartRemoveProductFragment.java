@@ -2,6 +2,7 @@ package com.tokopedia.transaction.checkout.view;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -13,10 +14,11 @@ import com.tokopedia.transaction.checkout.di.component.CartRemoveProductComponen
 import com.tokopedia.transaction.checkout.di.component.DaggerCartRemoveProductComponent;
 import com.tokopedia.transaction.checkout.di.module.CartRemoveProductModule;
 import com.tokopedia.transaction.checkout.view.adapter.CartRemoveProductAdapter;
-import com.tokopedia.transaction.checkout.view.data.CartItemModel;
+import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.presenter.CartRemoveProductPresenter;
 import com.tokopedia.transaction.checkout.view.view.IRemoveProductListView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -25,24 +27,29 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.tokopedia.transaction.checkout.view.CartSingleAddressFragment.ARG_EXTRA_CART_DATA_LIST;
+
 /**
  * @author Aghny A. Putra on 05/02/18
  */
 public class CartRemoveProductFragment extends BasePresenterFragment
-    implements IRemoveProductListView<List<CartItemModel>>{
+    implements IRemoveProductListView<List<CartItemData>>{
 
     private static final String TAG = CartRemoveProductFragment.class.getSimpleName();
 
-    @BindView(R2.id.rv_cart_remove_product)
-    RecyclerView mRvCartRemoveProduct;
+    @BindView(R2.id.rv_cart_remove_product) RecyclerView mRvCartRemoveProduct;
 
-    @Inject
-    CartRemoveProductAdapter mCartRemoveProductAdapter;
-    @Inject
-    CartRemoveProductPresenter mCartRemoveProductPresenter;
+    @Inject CartRemoveProductAdapter mCartRemoveProductAdapter;
+    @Inject CartRemoveProductPresenter mCartRemoveProductPresenter;
 
-    public static CartRemoveProductFragment newInstance() {
-        return new CartRemoveProductFragment();
+    private List<CartItemData> mCartItemDataList;
+
+    public static CartRemoveProductFragment newInstance(List<CartItemData> cartItemDataList) {
+        CartRemoveProductFragment fragment = new CartRemoveProductFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(ARG_EXTRA_CART_DATA_LIST, (ArrayList<? extends Parcelable>) cartItemDataList);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
@@ -109,7 +116,7 @@ public class CartRemoveProductFragment extends BasePresenterFragment
      */
     @Override
     protected void setupArguments(Bundle arguments) {
-
+        mCartItemDataList = arguments.getParcelableArrayList(ARG_EXTRA_CART_DATA_LIST);
     }
 
     /**
@@ -142,7 +149,7 @@ public class CartRemoveProductFragment extends BasePresenterFragment
      */
     @Override
     protected void setViewListener() {
-        mCartRemoveProductPresenter.getCartItems();
+        mCartRemoveProductPresenter.getCartItems(mCartItemDataList);
     }
 
     /**
@@ -162,8 +169,8 @@ public class CartRemoveProductFragment extends BasePresenterFragment
     }
 
     @Override
-    public void showList(List<CartItemModel> cartItemModels) {
-        mCartRemoveProductAdapter.updateData(cartItemModels);
+    public void showList(List<CartItemData> cartItemDataList) {
+        mCartRemoveProductAdapter.updateData(cartItemDataList);
         mCartRemoveProductAdapter.notifyDataSetChanged();
     }
 

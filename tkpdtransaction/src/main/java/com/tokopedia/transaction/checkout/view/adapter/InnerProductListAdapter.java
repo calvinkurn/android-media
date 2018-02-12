@@ -45,7 +45,7 @@ public class InnerProductListAdapter
         holder.mTvProductName.setText(cartItemModel.getProductName());
         holder.mTvProductPrice.setText(cartItemModel.getProductPriceFormatted());
         holder.mTvProductWeight.setText(cartItemModel.getProductWeightFormatted());
-        holder.mTvTotalProductItem.setText(cartItemModel.getTotalProductItem());
+        holder.mTvTotalProductItem.setText(String.valueOf(cartItemModel.getTotalProductItem()));
         holder.mTvOptionalNote.setText(cartItemModel.getNoteToSeller());
 
         holder.mRlProductPoliciesContainer.setVisibility(getPoliciesVisibility());
