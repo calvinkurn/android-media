@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.customwidget.SquareImageView;
@@ -51,11 +52,11 @@ public class PromotedShopAdapter extends RecyclerView.Adapter<PromotedShopAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        public SquareImageView imageView;
+        public ImageView imageView;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            imageView = (SquareImageView) itemView.findViewById(R.id.product_image);
+            imageView = itemView.findViewById(R.id.product_image);
         }
     }
 }

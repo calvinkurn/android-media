@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_shop_item">
 
-                <com.tokopedia.topads.sdk.view.RoundedCornerImageView
+                <ImageView
                     android:id="@+id/shop_image"
                     android:layout_width="@dimen/feed_ava"
                     android:layout_height="@dimen/feed_ava"
