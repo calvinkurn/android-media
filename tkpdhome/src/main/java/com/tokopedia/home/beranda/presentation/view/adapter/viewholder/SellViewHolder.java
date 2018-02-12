@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
@@ -34,6 +35,7 @@ public class SellViewHolder extends AbstractViewHolder<SellViewModel> {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                HomePageTracking.eventClickOpenShop();
                 listener.openShop();
             }
         });
