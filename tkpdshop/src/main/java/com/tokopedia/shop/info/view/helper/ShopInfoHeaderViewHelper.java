@@ -1,7 +1,9 @@
 package com.tokopedia.shop.info.view.helper;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -10,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.interfaces.merchant.shop.info.ShopInfo;
 import com.tokopedia.shop.R;
+import com.tokopedia.shop.info.view.activity.ShopInfoActivity;
 
 /**
  * Created by normansyahputa on 2/12/18.
@@ -31,6 +34,7 @@ public class ShopInfoHeaderViewHelper {
     private TextView shopName;
     private TextView shopInfoLocation;
     private ShopInfo shopInfo;
+    private LinearLayout containerClickInfo;
 
     public ShopInfoHeaderViewHelper(View view){
         this.view = view;
@@ -58,9 +62,11 @@ public class ShopInfoHeaderViewHelper {
         shopName = view.findViewById(R.id.shop_name);
 
         shopInfoLocation = view.findViewById(R.id.shop_info_location);
+
+        containerClickInfo = view.findViewById(R.id.container_click_info);
     }
 
-    public void renderData(ShopInfo shopInfo){
+    public void renderData(final ShopInfo shopInfo){
         this.shopInfo = shopInfo;
 
         ImageHandler.LoadImage(shopbgImageView, shopInfo.getInfo().getShopCover());
@@ -95,6 +101,17 @@ public class ShopInfoHeaderViewHelper {
         ratingBarShopInfo.setMax(5);
         ratingBarShopInfo.setRating(ratingStar);
 
-        // kecepatan where ???
+        // kecepatan get from reputation.
+        // https://phab.tokopedia.com/w/api/jerry/shop-statistic/#shop-speed
+
+        final String shopId = shopInfo.getInfo().getShopId();
+
+        containerClickInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = ShopInfoActivity.createIntent(view.getContext(), shopId);
+                view.getContext().startActivity(intent);
+            }
+        });
     }
 }
