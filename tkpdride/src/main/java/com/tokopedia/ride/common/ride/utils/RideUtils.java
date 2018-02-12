@@ -102,7 +102,7 @@ public class RideUtils {
     public static boolean isUberMoto(String productDisplayName) {
         boolean isMoto = false;
         if (productDisplayName != null) {
-            isMoto = productDisplayName.toLowerCase().contains("ubermo");
+            isMoto = productDisplayName.toLowerCase().contains("ubermo") || productDisplayName.toLowerCase().contains("moto");
         }
 
         return isMoto;
