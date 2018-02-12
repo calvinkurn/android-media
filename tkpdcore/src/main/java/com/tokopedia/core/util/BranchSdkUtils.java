@@ -184,6 +184,12 @@ public class BranchSdkUtils {
         }
     }
 
+    public static void removeCouponCode(Context context) {
+        REFERRAL_ADVOCATE_PROMO_CODE = null;
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.CACHE_PROMO_CODE);
+        localCacheHandler.clearCache(TkpdCache.Key.KEY_CACHE_PROMO_CODE);
+    }
+
     public interface GenerateShareContents {
         void onCreateShareContents(String shareContents, String shareUri, String branchUrl);
     }

@@ -1,6 +1,5 @@
 package com.tokopedia.transaction.cart.presenter;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -413,6 +412,7 @@ public class CartPresenter implements ICartPresenter {
                             view.renderErrorCheckVoucher(e.getCause().getMessage());
                             view.renderErrorFromInstantVoucher(instantCheckVoucher);
                             view.hideProgressLoading();
+                            removeBranchPromo();
                         } else {
                             handleThrowableVoucherCode(e);
                         }
@@ -884,10 +884,14 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void autoApplyCouponIfAvailable(Integer selectedProduct, Context context) {
-        String savedCoupon = BranchSdkUtils.getAutoApplyCouponIfAvailable(context);
+    public void autoApplyCouponIfAvailable(Integer selectedProduct) {
+        String savedCoupon = BranchSdkUtils.getAutoApplyCouponIfAvailable(view.getActivity());
         if (!TextUtils.isEmpty(savedCoupon)) {
             processCheckVoucherCode(savedCoupon, selectedProduct);
         }
+    }
+
+    private void removeBranchPromo(){
+        BranchSdkUtils.removeCouponCode(view.getActivity());
     }
 }

@@ -262,6 +262,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                 } else if (e instanceof ResponseErrorException) {
                      /* Ini kalau error dari API kasih message error */
 //                    view.renderErrorCheckVoucher(e.getMessage());
+                    removeBranchPromoIfNeeded();
                 } else if (e instanceof ResponseDataNullException) {
                     /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
 //                    view.renderErrorCheckVoucher(e.getMessage());
@@ -484,4 +485,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         }
     }
 
+    private void removeBranchPromoIfNeeded(){
+        BranchSdkUtils.removeCouponCode(view.getContext());
+    }
 }

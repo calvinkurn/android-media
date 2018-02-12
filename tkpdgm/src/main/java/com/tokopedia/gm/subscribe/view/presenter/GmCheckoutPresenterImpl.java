@@ -187,6 +187,7 @@ public class GmCheckoutPresenterImpl extends BaseDaggerPresenter<GmCheckoutView>
             getView().dismissProgressDialog();
             if (e instanceof GmVoucherCheckException) {
                 getView().renderVoucherView(GmVoucherViewModel.generateClassWithError(e.getMessage()));
+                removeBranchPromo();
             } else {
                 getView().showGenericError();
             }
@@ -258,6 +259,10 @@ public class GmCheckoutPresenterImpl extends BaseDaggerPresenter<GmCheckoutView>
         if (!TextUtils.isEmpty(savedCoupon)) {
             checkVoucherCode(savedCoupon, selectedProduct);
         }
+    }
+
+    private void removeBranchPromo(){
+        BranchSdkUtils.removeCouponCode(getView().getContext());
     }
 }
 

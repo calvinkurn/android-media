@@ -1,6 +1,5 @@
 package com.tokopedia.transaction.cart.presenter;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -48,5 +47,5 @@ public interface ICartPresenter {
 
     void clearNotificationCart();
 
-    void autoApplyCouponIfAvailable(Integer selectedProduct, Context context);
+    void autoApplyCouponIfAvailable(Integer selectedProduct);
 }
