@@ -302,6 +302,11 @@ public class FCMCacheManager {
         return cache.getString(GCM_ID, "");
     }
 
+    public String getRegistrationId() {
+        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
+        return cache.getString(GCM_ID, "");
+    }
+
     public static void setDialogNotificationSetting(Context context) {
         LocalCacheHandler cache = new LocalCacheHandler(context, NOTIFICATION_STORAGE);
         cache.putBoolean("notification_dialog", true);
