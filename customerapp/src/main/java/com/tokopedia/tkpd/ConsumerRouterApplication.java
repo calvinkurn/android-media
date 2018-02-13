@@ -120,6 +120,7 @@ import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
+import com.tokopedia.ride.RideModuleRouter;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
@@ -207,7 +208,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TkpdCoreRouter, SellerModuleRouter, IDigitalModuleRouter, PdpRouter,
         OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter,
         TokoCashRouter, IWalletRouter, ILoyaltyRouter, ReputationRouter, SessionRouter,
-        AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter {
+        AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter, RideModuleRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
