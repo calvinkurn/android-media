@@ -10,6 +10,7 @@ import java.util.List;
 
 /**
  * @author sebastianuskh on 4/13/17.
+ * do not change/add/remove this class. It is still used in legacy draft product.
  */
 
 @Deprecated

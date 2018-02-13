@@ -15,6 +15,7 @@ public class ProductDraftDataBase extends BaseModel{
     public static final String COLUMN_IS_UPLOADING = "is_uploading";
     public static final String COLUMN_SHOP_ID = "shopId";
     public static final String COLUMN_VERSION = "version";
+
     public static final int CURRENT_VERSION = 1;
 
     @PrimaryKey(autoincrement = true)

@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.edit.domain.interactor.uploadproduct;
 
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
 import com.tokopedia.seller.product.edit.data.exception.UploadProductException;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.UploadImageModel;
@@ -22,13 +23,16 @@ public class UploadProduct implements Func1<ProductViewModel, Observable<AddProd
     private final AddProductNotificationListener listener;
     private final UploadProductRepository uploadProductRepository;
     private UploadImageUseCase<UploadImageModel> uploadImageUseCase;
+    private UserSession userSession;
 
     public UploadProduct(long productId, AddProductNotificationListener listener,
-                         UploadProductRepository uploadProductRepository, UploadImageUseCase<UploadImageModel> uploadImageUseCase) {
+                         UploadProductRepository uploadProductRepository, UploadImageUseCase<UploadImageModel> uploadImageUseCase,
+                         UserSession userSession) {
         this.productId = productId;
         this.listener = listener;
         this.uploadProductRepository = uploadProductRepository;
         this.uploadImageUseCase = uploadImageUseCase;
+        this.userSession = userSession;
     }
 
     @Override
@@ -36,18 +40,13 @@ public class UploadProduct implements Func1<ProductViewModel, Observable<AddProd
         NotificationManager notificationManager = new NotificationManager(listener, productId, productViewModel.getProductName());
         return Observable.just(productViewModel)
                 .doOnNext(notificationManager.getUpdateNotification())
-                .flatMap(new ProceedUploadProduct(notificationManager, uploadProductRepository, uploadImageUseCase))
-                .onErrorResumeNext(new AddProductStatusToError());
+                .flatMap(new ProceedUploadProduct(notificationManager, uploadProductRepository, uploadImageUseCase, userSession))
+                .onErrorResumeNext(new Func1<Throwable, Observable<? extends AddProductDomainModel>>() {
+                    @Override
+                    public Observable<? extends AddProductDomainModel> call(Throwable throwable) {
+                        throw new UploadProductException(String.valueOf(productId), throwable);
+                    }
+                });
     }
 
-    private class AddProductStatusToError implements Func1<Throwable, Observable<? extends AddProductDomainModel>> {
-
-        public AddProductStatusToError() {
-        }
-
-        @Override
-        public Observable<AddProductDomainModel> call(Throwable throwable) {
-            throw new UploadProductException(String.valueOf(productId), throwable);
-        }
-    }
 }

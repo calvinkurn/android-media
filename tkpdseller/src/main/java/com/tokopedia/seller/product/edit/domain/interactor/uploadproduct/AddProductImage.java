@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.edit.domain.interactor.uploadproduct;
 
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
 import com.tokopedia.seller.base.domain.model.ImageUploadDomainModel;
 import com.tokopedia.seller.product.common.constant.ProductNetworkConstant;
@@ -24,9 +25,11 @@ import rx.functions.Func1;
 public class AddProductImage implements Func1<ProductViewModel, Observable<List<ProductPictureViewModel>>> {
 
     private final UploadImageUseCase<UploadImageModel> uploadImageUseCase;
+    private UserSession userSession;
 
-    public AddProductImage(UploadImageUseCase<UploadImageModel> uploadImageUseCase) {
+    public AddProductImage(UploadImageUseCase<UploadImageModel> uploadImageUseCase, UserSession userSession) {
         this.uploadImageUseCase = uploadImageUseCase;
+        this.userSession = userSession;
     }
 
     @Override
@@ -52,6 +55,8 @@ public class AddProductImage implements Func1<ProductViewModel, Observable<List<
                         ProductNetworkConstant.LOGO_FILENAME_IMAGE_JPG, String.valueOf(productId)))
                         .map(new MapImageModelToProductInput(productPictureViewModel));
             } else {
+                // api limitation: API want the product id to set to shopId
+                productPictureViewModel.setId(Long.valueOf(userSession.getShopId()));
                 return Observable.just(productPictureViewModel);
             }
         }

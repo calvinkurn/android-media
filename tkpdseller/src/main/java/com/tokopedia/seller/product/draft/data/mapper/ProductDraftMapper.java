@@ -39,12 +39,20 @@ import rx.functions.Func1;
 public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductViewModel> {
     public static final String UTF_8 = "UTF-8";
 
+    private static final int VERSION_PRODUCT_VIEW_MODEL = 1;
+
     public ProductDraftMapper() {
     }
 
     @Override
     public ProductViewModel call(ProductDraftDataBase productDraftDataBase) {
-        if (productDraftDataBase.getVersion() < ProductDraftDataBase.CURRENT_VERSION) {
+        //  do not use ProductDraftDataBase.CURRENT_VERSION as it can change.
+        if (productDraftDataBase.getVersion() == VERSION_PRODUCT_VIEW_MODEL){
+            return CacheUtil.convertStringToModel(
+                    productDraftDataBase.getData(),
+                    ProductViewModel.class
+            );
+        } else {
             ProductDraftModel draftModel = CacheUtil.convertStringToModel(
                     productDraftDataBase.getData(),
                     ProductDraftModel.class
@@ -53,11 +61,6 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
             ProductViewModel productViewModel = mapDraftToDomain(draftModel);
             productViewModel.setDraftId(productDraftDataBase.getId());
             return productViewModel;
-        } else {
-            return CacheUtil.convertStringToModel(
-                    productDraftDataBase.getData(),
-                    ProductViewModel.class
-            );
         }
     }
 
