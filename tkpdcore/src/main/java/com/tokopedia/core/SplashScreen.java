@@ -143,7 +143,20 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     }
 
     public void finishSplashScreen() {
-        Intent intent = HomeRouter.getHomeActivity(this);
+
+        Intent intent;
+        if (getIntent() != null &&
+                getIntent().getBooleanExtra("shortcut", false)) {
+
+            intent = new Intent();
+            intent.setClassName(this, "com.tokopedia.ride.bookingride.view.activity.RideHomeActivity");
+            intent.setAction(Intent.ACTION_MAIN);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        } else {
+            intent = HomeRouter.getHomeActivity(this);
+        }
+
         startActivity(intent);
         finish();
     }
@@ -223,9 +236,9 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
 
     private void handleBranchDefferedDeeplink() {
         Branch branch = Branch.getInstance();
-        if (branch == null){
+        if (branch == null) {
             moveToHome();
-        }else {
+        } else {
             branch.setRequestMetadata("$google_analytics_client_id", TrackingUtils.getClientID());
             branch.initSession(new Branch.BranchReferralInitListener() {
                 @Override
