@@ -344,9 +344,11 @@ public class EventReviewTicketPresenter
                         getPaymentLink();
                     }
                 } else {
-                    if ("Kode Promo tidak ditemukan".equals(verifyCartResponse.getCart().getPromocodeFailureMessage())) {
+                    String errorMsg = verifyCartResponse.getCart().getPromocodeFailureMessage();
+                    if (errorMsg != null &&
+                            errorMsg.length() > 0) {
                         getView().hideProgressBar();
-                        getView().showPromoSuccessMessage("Kode Promo tidak ditemukan",
+                        getView().showPromoSuccessMessage(errorMsg,
                                 getView().getActivity().getResources().getColor(R.color.red_a700));
                         promocode = "";
                     } else {
