@@ -20,7 +20,7 @@ import com.tokopedia.seller.product.edit.view.presenter.ProductEditPresenter;
 
 public class ProductEditFragment extends BaseProductEditFragment<ProductEditPresenter> {
 
-    public static final String EDIT_PRODUCT_ID = "EDIT_PRODUCT_ID";
+    protected static final String EDIT_PRODUCT_ID = "EDIT_PRODUCT_ID";
 
     private String productId;
 
@@ -58,6 +58,7 @@ public class ProductEditFragment extends BaseProductEditFragment<ProductEditPres
                 .inject(this);
     }
 
+    @Override
     public void fetchInputData() {
         showLoading();
         presenter.attachView(this);
