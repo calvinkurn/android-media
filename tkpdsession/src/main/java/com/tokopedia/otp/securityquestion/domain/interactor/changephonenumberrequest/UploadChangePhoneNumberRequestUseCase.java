@@ -43,7 +43,7 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<ChangePhoneNu
     public static final String PARAM_ID_HEIGHT = "ktp_height";
     public static final String PARAM_BANKBOOK_WIDTH = "bankbook_width";
     public static final String PARAM_BANKBOOK_HEIGHT = "bankbook_height";
-
+    public static final String PARAM_PHONE_NUMBER = "phone_number";
 
     private final UploadImageRepository uploadImageRepository;
     private final GetUploadHostUseCase getUploadHostUseCase;
@@ -71,7 +71,7 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<ChangePhoneNu
     public Observable<ChangePhoneNumberRequestModel> createObservable(final RequestParams requestParams) {
         final ChangePhoneNumberRequestModel changePhoneNumberRequestModel = new ChangePhoneNumberRequestModel();
 
-        return Observable.just(requestParams)
+        Observable<ChangePhoneNumberRequestModel> initialObservable = Observable.just(requestParams)
                 .flatMap(new Func1<RequestParams, Observable<ChangePhoneNumberRequestModel>>() {
                     @Override
                     public Observable<ChangePhoneNumberRequestModel> call(RequestParams requestParams) {
@@ -146,33 +146,34 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<ChangePhoneNu
                             throw new RuntimeException(String.valueOf(changePhoneNumberRequestModel.getUploadIdImageModel().getResponseCode()));
                         return Observable.just(changePhoneNumberRequestModel);
                     }
-                })
+                });
 
-                .flatMap(new Func1<ChangePhoneNumberRequestModel, Observable<UploadImageModel>>() {
-                    @Override
-                    public Observable<UploadImageModel> call(ChangePhoneNumberRequestModel changePhoneNumberRequestModel) {
-                        return uploadImage(getUploadBookBankImageParam(requestParams,
-                                changePhoneNumberRequestModel));
-                    }
-                })
-                .flatMap(new Func1<UploadImageModel, Observable<ChangePhoneNumberRequestModel>>() {
-                    @Override
-                    public Observable<ChangePhoneNumberRequestModel> call(UploadImageModel uploadImageModel) {
-                        changePhoneNumberRequestModel.setUploadBankBookImageModel(uploadImageModel);
-                        changePhoneNumberRequestModel.setSuccess(uploadImageModel.isSuccess());
+                if(requestParams.getString(PARAM_BANK_BOOK_IMAGE_PATH, "") != "") {
+                    initialObservable = initialObservable.flatMap(new Func1<ChangePhoneNumberRequestModel, Observable<UploadImageModel>>() {
+                        @Override
+                        public Observable<UploadImageModel> call(ChangePhoneNumberRequestModel changePhoneNumberRequestModel) {
+                            return uploadImage(getUploadBookBankImageParam(requestParams,
+                                    changePhoneNumberRequestModel));
+                        }
+                    })
+                            .flatMap(new Func1<UploadImageModel, Observable<ChangePhoneNumberRequestModel>>() {
+                                @Override
+                                public Observable<ChangePhoneNumberRequestModel> call(UploadImageModel uploadImageModel) {
+                                    changePhoneNumberRequestModel.setUploadBankBookImageModel(uploadImageModel);
+                                    changePhoneNumberRequestModel.setSuccess(uploadImageModel.isSuccess());
 
-                        if (!changePhoneNumberRequestModel.getUploadBankBookImageModel().isSuccess()
-                                && changePhoneNumberRequestModel.getUploadBankBookImageModel().getErrorMessage() != null)
-                            throw new ErrorMessageException(changePhoneNumberRequestModel.getUploadBankBookImageModel().getErrorMessage());
-                        else if (!changePhoneNumberRequestModel.getUploadBankBookImageModel().isSuccess()
-                                && changePhoneNumberRequestModel.getUploadBankBookImageModel().getResponseCode() != 200)
-                            throw new RuntimeException(String.valueOf(changePhoneNumberRequestModel.getUploadBankBookImageModel().getResponseCode()));
+                                    if (!changePhoneNumberRequestModel.getUploadBankBookImageModel().isSuccess()
+                                            && changePhoneNumberRequestModel.getUploadBankBookImageModel().getErrorMessage() != null)
+                                        throw new ErrorMessageException(changePhoneNumberRequestModel.getUploadBankBookImageModel().getErrorMessage());
+                                    else if (!changePhoneNumberRequestModel.getUploadBankBookImageModel().isSuccess()
+                                            && changePhoneNumberRequestModel.getUploadBankBookImageModel().getResponseCode() != 200)
+                                        throw new RuntimeException(String.valueOf(changePhoneNumberRequestModel.getUploadBankBookImageModel().getResponseCode()));
 
-                        return Observable.just(changePhoneNumberRequestModel);
-                    }
-                })
-
-                .flatMap(new Func1<ChangePhoneNumberRequestModel, Observable<SubmitImageModel>>() {
+                                    return Observable.just(changePhoneNumberRequestModel);
+                                }
+                            });
+                }
+                return initialObservable.flatMap(new Func1<ChangePhoneNumberRequestModel, Observable<SubmitImageModel>>() {
                     @Override
                     public Observable<SubmitImageModel> call(ChangePhoneNumberRequestModel changePhoneNumberRequestModel) {
                         return submitImage(getSubmitImageParam(requestParams,
@@ -208,6 +209,7 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<ChangePhoneNu
         params.putString(SubmitImageUseCase.PARAM_FILE_UPLOADED,
                 generateFileUploaded(requestParams, changePhoneNumberRequestModel));
         params.putString(SubmitImageUseCase.PARAM_OS_TYPE, SubmitImageUseCase.DEFAULT_OS_TYPE);
+        params.putString(PARAM_PHONE_NUMBER,requestParams.getString(PARAM_PHONE_NUMBER,""));
         return params;
     }
 
@@ -217,8 +219,10 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<ChangePhoneNu
         try {
             reviewPhotos.put(PARAM_KTP_IMAGE_ID,
                     changePhoneNumberRequestModel.getUploadIdImageModel().getUploadImageData().getPicObj());
-            reviewPhotos.put(PARAM_BANKBOOK_IMAGE_ID,
-                    changePhoneNumberRequestModel.getUploadBankBookImageModel().getUploadImageData().getPicObj());
+            if(requestParams.getString(PARAM_BANK_BOOK_IMAGE_PATH, "") != "") {
+                reviewPhotos.put(PARAM_BANKBOOK_IMAGE_ID,
+                        changePhoneNumberRequestModel.getUploadBankBookImageModel().getUploadImageData().getPicObj());
+            }
         } catch (JSONException e) {
             throw new ErrorMessageException(MainApplication.getAppContext().getString(R.string.default_error_upload_image));
         }
@@ -238,12 +242,14 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<ChangePhoneNu
         params.putString(ValidateImageUseCase.PARAM_ID_WIDTH,
                 requestParams.getString(PARAM_ID_WIDTH,
                         ""));
-        params.putString(ValidateImageUseCase.PARAM_BANKBOOK_HEIGHT,
-                requestParams.getString(PARAM_BANKBOOK_HEIGHT,
-                        ""));
-        params.putString(ValidateImageUseCase.PARAM_BANKBOOK_WIDTH,
-                requestParams.getString(PARAM_BANKBOOK_WIDTH,
-                        ""));
+        if(requestParams.getString(PARAM_BANK_BOOK_IMAGE_PATH, "") != "") {
+            params.putString(ValidateImageUseCase.PARAM_BANKBOOK_HEIGHT,
+                    requestParams.getString(PARAM_BANKBOOK_HEIGHT,
+                            ""));
+            params.putString(ValidateImageUseCase.PARAM_BANKBOOK_WIDTH,
+                    requestParams.getString(PARAM_BANKBOOK_WIDTH,
+                            ""));
+        }
         return params;
     }
 
