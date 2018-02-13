@@ -18,23 +18,20 @@ public class ProceedUploadProduct implements Func1<ProductViewModel, Observable<
     private final NotificationManager notificationManager;
     private final UploadProductRepository uploadProductRepository;
     private UploadImageUseCase<UploadImageModel> uploadImageUseCase;
-    private UserSession userSession;
 
     public ProceedUploadProduct(NotificationManager notificationManager, UploadProductRepository uploadProductRepository,
-                                UploadImageUseCase<UploadImageModel> uploadImageUseCase,
-                                UserSession userSession) {
+                                UploadImageUseCase<UploadImageModel> uploadImageUseCase) {
         this.notificationManager = notificationManager;
         this.uploadProductRepository = uploadProductRepository;
         this.uploadImageUseCase = uploadImageUseCase;
-        this.userSession = userSession;
     }
 
     @Override
     public Observable<AddProductDomainModel> call(ProductViewModel productViewModel) {
         return Observable.just(productViewModel)
-                .flatMap(new AddProductImage(uploadImageUseCase, userSession))
+                .flatMap(new AddProductImage(uploadImageUseCase))
                 .doOnNext(notificationManager.getUpdateNotification())
-                .map(new PrepareAddProductValidation(productViewModel))
+                .map(new MergeProductModelWithImage(productViewModel))
                 .doOnNext(notificationManager.getUpdateNotification())
                 .flatMap(new AddProductSubmit(uploadProductRepository))
                 .doOnNext(notificationManager.getUpdateNotification());

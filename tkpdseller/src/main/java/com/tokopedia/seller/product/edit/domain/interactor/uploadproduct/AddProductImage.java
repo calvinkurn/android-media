@@ -25,11 +25,9 @@ import rx.functions.Func1;
 public class AddProductImage implements Func1<ProductViewModel, Observable<List<ProductPictureViewModel>>> {
 
     private final UploadImageUseCase<UploadImageModel> uploadImageUseCase;
-    private UserSession userSession;
 
-    public AddProductImage(UploadImageUseCase<UploadImageModel> uploadImageUseCase, UserSession userSession) {
+    public AddProductImage(UploadImageUseCase<UploadImageModel> uploadImageUseCase) {
         this.uploadImageUseCase = uploadImageUseCase;
-        this.userSession = userSession;
     }
 
     @Override
@@ -55,8 +53,6 @@ public class AddProductImage implements Func1<ProductViewModel, Observable<List<
                         ProductNetworkConstant.LOGO_FILENAME_IMAGE_JPG, String.valueOf(productId)))
                         .map(new MapImageModelToProductInput(productPictureViewModel));
             } else {
-                // api limitation: API want the product id to set to shopId
-                productPictureViewModel.setId(Long.valueOf(userSession.getShopId()));
                 return Observable.just(productPictureViewModel);
             }
         }

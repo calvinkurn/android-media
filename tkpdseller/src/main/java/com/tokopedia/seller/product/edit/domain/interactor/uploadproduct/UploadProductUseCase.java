@@ -2,7 +2,6 @@ package com.tokopedia.seller.product.edit.domain.interactor.uploadproduct;
 
 import android.text.TextUtils;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.UploadImageModel;
@@ -39,17 +38,14 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
 
     private AddProductNotificationListener listener;
     private UploadImageUseCase<UploadImageModel> uploadImageUseCase;
-    private UserSession userSession;
 
     @Inject
     public UploadProductUseCase(ProductDraftRepository productDraftRepository,
                                 UploadProductRepository uploadProductRepository,
-                                UploadImageUseCase<UploadImageModel> uploadImageUseCase,
-                                UserSession userSession) {
+                                UploadImageUseCase<UploadImageModel> uploadImageUseCase) {
         this.productDraftRepository = productDraftRepository;
         this.uploadProductRepository = uploadProductRepository;
         this.uploadImageUseCase = uploadImageUseCase;
-        this.userSession = userSession;
     }
 
     public void setListener(AddProductNotificationListener listener) {
@@ -65,10 +61,21 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
     @Override
     public Observable<AddProductDomainModel> createObservable(RequestParams requestParams) {
         long draftProductId = requestParams.getLong(UPLOAD_PRODUCT_ID, UNSELECTED_PRODUCT_ID);
-        if (draftProductId == UNSELECTED_PRODUCT_ID) {
-            throw new RuntimeException("Input model is missing");
-        }
-        return productDraftRepository.getDraft(draftProductId)
+        return Observable.just(draftProductId)
+                .doOnNext(new Action1<Long>() {
+                    @Override
+                    public void call(Long draftProductId) {
+                        if (draftProductId == UNSELECTED_PRODUCT_ID) {
+                            Observable.error(new RuntimeException("Input model is missing"));
+                        }
+                    }
+                })
+                .flatMap(new Func1<Long, Observable<ProductViewModel>>() {
+                    @Override
+                    public Observable<ProductViewModel> call(Long draftProductId) {
+                        return productDraftRepository.getDraft(draftProductId);
+                    }
+                })
                 .map(new Func1<ProductViewModel, ProductViewModel>() {
                     @Override
                     public ProductViewModel call(ProductViewModel productViewModel) {
@@ -80,7 +87,7 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
                     }
                 })
                 .flatMap(new UploadProduct(draftProductId, listener, uploadProductRepository,
-                        uploadImageUseCase, userSession))
+                        uploadImageUseCase))
                 .doOnNext(new DeleteProductDraft(draftProductId, productDraftRepository))
                 .doOnNext(new DeleteImageCacheDraftFile());
     }
@@ -93,7 +100,7 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
                 return;
             }
             ArrayList<String> pathToDelete = new ArrayList<>();
-            for (int i = 0, sizei = productPictureViewModels.size(); i<sizei; i++) {
+            for (int i = 0, sizei = productPictureViewModels.size(); i < sizei; i++) {
                 ProductPictureViewModel productPictureViewModel = productPictureViewModels.get(i);
                 if (productPictureViewModel == null) {
                     continue;

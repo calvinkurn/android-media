@@ -23,16 +23,13 @@ public class UploadProduct implements Func1<ProductViewModel, Observable<AddProd
     private final AddProductNotificationListener listener;
     private final UploadProductRepository uploadProductRepository;
     private UploadImageUseCase<UploadImageModel> uploadImageUseCase;
-    private UserSession userSession;
 
     public UploadProduct(long productId, AddProductNotificationListener listener,
-                         UploadProductRepository uploadProductRepository, UploadImageUseCase<UploadImageModel> uploadImageUseCase,
-                         UserSession userSession) {
+                         UploadProductRepository uploadProductRepository, UploadImageUseCase<UploadImageModel> uploadImageUseCase) {
         this.productId = productId;
         this.listener = listener;
         this.uploadProductRepository = uploadProductRepository;
         this.uploadImageUseCase = uploadImageUseCase;
-        this.userSession = userSession;
     }
 
     @Override
@@ -40,7 +37,7 @@ public class UploadProduct implements Func1<ProductViewModel, Observable<AddProd
         NotificationManager notificationManager = new NotificationManager(listener, productId, productViewModel.getProductName());
         return Observable.just(productViewModel)
                 .doOnNext(notificationManager.getUpdateNotification())
-                .flatMap(new ProceedUploadProduct(notificationManager, uploadProductRepository, uploadImageUseCase, userSession))
+                .flatMap(new ProceedUploadProduct(notificationManager, uploadProductRepository, uploadImageUseCase))
                 .onErrorResumeNext(new Func1<Throwable, Observable<? extends AddProductDomainModel>>() {
                     @Override
                     public Observable<? extends AddProductDomainModel> call(Throwable throwable) {
