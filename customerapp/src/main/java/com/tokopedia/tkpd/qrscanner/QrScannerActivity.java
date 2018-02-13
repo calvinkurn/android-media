@@ -240,8 +240,8 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     }
 
     @Override
-    public int getResultCodeForQrPayment() {
-        return RESULT_CODE_SCANNER;
+    public int getRequestCodeForQrPayment() {
+        return REQUEST_CODE_NOMINAL;
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.tokopedia.tkpd.qrscanner;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -115,7 +114,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                     getView().hideProgressDialog();
                     if (infoQrTokoCash != null) {
                         Intent intent = NominalQrPaymentActivity.newInstance(context, qrcode, infoQrTokoCash);
-                        getView().startActivityForResult(intent, getView().getResultCodeForQrPayment());
+                        getView().startActivityForResult(intent, getView().getRequestCodeForQrPayment());
                     } else {
                         getView().showErrorGetInfo(context.getString(com.tokopedia.tokocash.R.string.msg_dialog_wrong_scan));
                     }
