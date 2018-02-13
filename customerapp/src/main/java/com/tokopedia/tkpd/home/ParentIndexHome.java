@@ -80,7 +80,7 @@ import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.shop.open.view.activity.ShopOpenDomainActivity;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.beranda.presentation.view.fragment.HomeFragment;
+import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
@@ -611,9 +611,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             case R.id.action_cart:
                 if (!SessionHandler.isV4Login(getBaseContext())) {
                     UnifyTracking.eventClickCart();
-                    Intent intent = OldSessionRouter.getLoginActivityIntent(getApplicationContext());
-                    intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.MOVE_TO_CART_TYPE);
-                    intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+                    Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext())
+                            .getLoginIntent(this);
                     startActivity(intent);
                 } else {
                     startActivity(TransactionCartRouter.createInstanceCartActivity(this));
@@ -722,36 +721,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             }
         }, requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ONBOARDING_REQUEST && resultCode == RESULT_OK
-                && data != null && data.getExtras() != null) {
-            if (data.getExtras().getInt(com.tokopedia.core.session.presenter.Session
-                    .WHICH_FRAGMENT_KEY) == TkpdState.DrawerPosition.LOGIN) {
-                Intent intent = ((TkpdCoreRouter) getApplication()).getLoginIntent(this);
-                intent.putExtras(data.getExtras());
-                Intent intentHome = ((TkpdCoreRouter) getApplication()).getHomeIntent
-                        (this);
-                intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivities(new Intent[]
-                        {
-                                intentHome,
-                                intent
-                        });
-                finish();
-            } else if (data.getExtras().getInt(com.tokopedia.core.session.presenter.Session
-                    .WHICH_FRAGMENT_KEY) == TkpdState.DrawerPosition.REGISTER) {
-                Intent intent = ((TkpdCoreRouter) getApplication()).getRegisterIntent
-                        (this);
-                Intent intentHome = ((TkpdCoreRouter) getApplication()).getHomeIntent
-                        (this);
-                intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivities(new Intent[]
-                        {
-                                intentHome,
-                                intent
-                        });
-                finish();
-            }
-        }
         if (requestCode == WISHLIST_REQUEST && resultCode == RESULT_OK) {
             mViewPager.setCurrentItem(INIT_STATE_FRAGMENT_HOTLIST);
         }

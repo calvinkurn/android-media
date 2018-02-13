@@ -40,4 +40,5 @@ public class ConsumerAppBaseUrl {
     public static final String MAPS_DOMAIN = "https://api-staging.tokopedia.com/";
     public static final String BASE_WALLET = "https://wallet-staging.tokopedia.id/";
     public static final String TOKOPOINT_API_DOMAIN = "https://gw-staging.tokopedia.com/tokopoints/api/";
+    public static final String HOME_DATA_BASE_URL = "https://gql-staging.tokopedia.com/";
 }

@@ -17,9 +17,7 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
-import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdState;
 
 /**
  * Created by Nisie on 31/08/15.
@@ -86,8 +84,8 @@ public abstract class TActivity extends BaseActivity {
 
     public static boolean onCartOptionSelected(Context context) {
         if (!SessionHandler.isV4Login(context)) {
-            Intent intent = OldSessionRouter.getLoginActivityIntent(context);
-            intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+            Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent
+                    (context);
             context.startActivity(intent);
         } else {
             context.startActivity(TransactionCartRouter.createInstanceCartActivity(context));
@@ -98,8 +96,8 @@ public abstract class TActivity extends BaseActivity {
     private Boolean onCartOptionSelected() {
 
         if (!SessionHandler.isV4Login(getBaseContext())) {
-            Intent intent = OldSessionRouter.getLoginActivityIntent(getBaseContext());
-            intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+            Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent
+                    (this);
             startActivity(intent);
         } else {
             startActivity(TransactionCartRouter.createInstanceCartActivity(this));
@@ -108,16 +106,7 @@ public abstract class TActivity extends BaseActivity {
     }
 
     public boolean onHomeOptionSelected() {
-        if (parentView != null) {
-            KeyboardHandler.DropKeyboard(this, parentView);
-        }
-        if (isTaskRoot() ||
-                (getIntent().getExtras() != null &&
-                        getIntent().getExtras().getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false))) {
-            Intent homeIntent = ((TkpdCoreRouter) getApplication()).getHomeIntent(this);
-            startActivity(homeIntent);
-            finish();
-        }
+        if (parentView != null) KeyboardHandler.DropKeyboard(this, parentView);
         onBackPressed();
         return true;
     }

@@ -125,12 +125,12 @@ public interface Constants {
         String WALLET_ACTIVATION = "tokopedia://wallet/activation";
         String WALLET_TRANSACTION_HISTORY = "tokopedia://wallet/transaction/history";
         String BROWSER = "tokopedia://browser";
-        String REGISTER = "tokopedia://registration";
         String FAVORITE = "tokopedia://home/favorite";
 
         String REFERRAL_WELCOME = "tokopedia://referral/{code}/{owner}";
         String KOLCOMMENT = "tokopedia://kolcomment/{id}";
         String PROMO_LIST = "tokopedia://promoNative";
+        String EXPLORE = "tokopedia://jump/{section}";
 
         String SELLER_INFO_DETAIL = "tokopedia://sellerinfo/detail";
 
