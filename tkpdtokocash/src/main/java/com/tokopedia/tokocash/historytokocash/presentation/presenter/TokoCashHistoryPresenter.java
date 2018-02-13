@@ -1,18 +1,10 @@
 package com.tokopedia.tokocash.historytokocash.presentation.presenter;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.network.exception.HttpErrorException;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
-import com.tokopedia.core.network.exception.ServerErrorException;
-import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.tokocash.historytokocash.domain.GetHistoryDataUseCase;
-import com.tokopedia.tokocash.historytokocash.presentation.ServerErrorHandlerUtil;
 import com.tokopedia.tokocash.historytokocash.presentation.contract.TokoCashHistoryContract;
 import com.tokopedia.tokocash.historytokocash.presentation.model.TokoCashHistoryData;
-
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 
 import javax.inject.Inject;
 
@@ -122,35 +114,35 @@ public class TokoCashHistoryPresenter extends BaseDaggerPresenter<TokoCashHistor
     }
 
     private void errorNetworkHandler(Throwable e) {
-        if (e instanceof UnknownHostException || e instanceof ConnectException) {
-            getView().renderErrorMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
-        } else if (e instanceof SocketTimeoutException) {
-            getView().renderErrorMessage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
-        } else if (e instanceof ResponseDataNullException) {
-            getView().renderErrorMessage(e.getMessage());
-        } else if (e instanceof HttpErrorException) {
-            getView().renderErrorMessage(e.getMessage());
-        } else if (e instanceof ServerErrorException) {
-            ServerErrorHandlerUtil.handleError(e);
-        } else {
-            getView().renderErrorMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-        }
+//        if (e instanceof UnknownHostException || e instanceof ConnectException) {
+//            getView().renderErrorMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
+//        } else if (e instanceof SocketTimeoutException) {
+//            getView().renderErrorMessage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+//        } else if (e instanceof ResponseDataNullException) {
+//            getView().renderErrorMessage(e.getMessage());
+//        } else if (e instanceof HttpErrorException) {
+//            getView().renderErrorMessage(e.getMessage());
+//        } else if (e instanceof ServerErrorException) {
+//            ServerErrorHandlerUtil.handleError(e);
+//        } else {
+//            getView().renderErrorMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+//        }
     }
 
     private void errorFirstTimeNetworkHandler(Throwable e) {
-        if (e instanceof UnknownHostException || e instanceof ConnectException) {
-            getView().renderEmptyPage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
-        } else if (e instanceof SocketTimeoutException) {
-            getView().renderEmptyPage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
-        } else if (e instanceof ResponseDataNullException) {
-            getView().renderEmptyPage(e.getMessage());
-        } else if (e instanceof HttpErrorException) {
-            getView().renderEmptyPage(e.getMessage());
-        } else if (e instanceof ServerErrorException) {
-            ServerErrorHandlerUtil.handleError(e);
-        } else {
-            getView().renderEmptyPage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-        }
+//        if (e instanceof UnknownHostException || e instanceof ConnectException) {
+//            getView().renderEmptyPage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
+//        } else if (e instanceof SocketTimeoutException) {
+//            getView().renderEmptyPage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+//        } else if (e instanceof ResponseDataNullException) {
+//            getView().renderEmptyPage(e.getMessage());
+//        } else if (e instanceof HttpErrorException) {
+//            getView().renderEmptyPage(e.getMessage());
+//        } else if (e instanceof ServerErrorException) {
+//            ServerErrorHandlerUtil.handleError(e);
+//        } else {
+//            getView().renderEmptyPage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+//        }
     }
 
     @Override

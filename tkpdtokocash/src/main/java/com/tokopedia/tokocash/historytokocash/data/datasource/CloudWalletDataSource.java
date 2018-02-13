@@ -1,6 +1,7 @@
 package com.tokopedia.tokocash.historytokocash.data.datasource;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.tokocash.historytokocash.data.entity.HelpHistoryTokoCashEntity;
 import com.tokopedia.tokocash.historytokocash.data.entity.TokoCashHistoryEntity;
 import com.tokopedia.tokocash.historytokocash.presentation.Util;
@@ -10,7 +11,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import retrofit2.Response;
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Created by nabillasabbaha on 12/18/17.
@@ -28,15 +31,13 @@ public class CloudWalletDataSource implements WalletDataSource {
 
     @Override
     public Observable<TokoCashHistoryEntity> getTokoCashHistoryData(HashMap<String, Object> mapParams) {
-        return null;
-//        return walletApi.getHistoryTokocash(mapParams)
-//                .flatMap(new Func1<Response<TkpdTokoCashResponse>, Observable<TokoCashHistoryEntity>>() {
-//                    @Override
-//                    public Observable<TokoCashHistoryEntity> call(Response<TkpdTokoCashResponse> response) {
-//                        return Observable
-//                                .just(response.body().convertDataObj(TokoCashHistoryEntity.class));
-//                    }
-//                });
+        return walletApi.getHistoryTokocash(mapParams)
+                .map(new Func1<Response<DataResponse<TokoCashHistoryEntity>>, TokoCashHistoryEntity>() {
+                    @Override
+                    public TokoCashHistoryEntity call(Response<DataResponse<TokoCashHistoryEntity>> dataResponseResponse) {
+                        return dataResponseResponse.body().getData();
+                    }
+                });
     }
 
     @Override

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/med_dp"
+        android:paddingLeft="@dimen/padding_detail"
+        android:paddingRight="@dimen/padding_detail"
+        android:paddingTop="@dimen/padding_detail">
+
+        <ImageView
+            android:id="@+id/icon_item_history"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="@dimen/padding_detail"
+            android:src="@drawable/ic_tokocash_icon" />
+
+        <TextView
+            android:id="@+id/title_item_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/icon_item_history"
+            android:gravity="center_vertical"
+            android:text="Admin Feed"
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/fontm"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:layout_marginBottom="@dimen/margin_vs"/>
+
+        <TextView
+            android:id="@+id/desc_item_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/title_item_history"
+            android:layout_below="@+id/title_item_history"
+            android:layout_toLeftOf="@+id/price_item_history"
+            android:layout_toStartOf="@+id/price_item_history"
+            android:text=""
+            android:textColor="@color/black_38"
+            android:textSize="@dimen/fontvs" />
+
+        <TextView
+            android:id="@+id/notes_item_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/title_item_history"
+            android:layout_below="@+id/desc_item_history"
+            android:layout_marginTop="@dimen/margin_vs"
+            android:layout_toLeftOf="@+id/price_item_history"
+            android:layout_toStartOf="@+id/price_item_history"
+            android:text=""
+            android:textColor="@color/black_38"
+            android:textSize="@dimen/fontvs" />
+
+        <View
+            android:id="@+id/separator1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignLeft="@+id/title_item_history"
+            android:layout_below="@+id/notes_item_history"
+            android:layout_marginBottom="@dimen/margin_med"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@color/grey_300" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/title_item_history"
+            android:layout_below="@+id/separator1"
+            android:text="Nominal Transaksi"
+            android:textColor="@color/black_54"
+            android:textSize="@dimen/fonts" />
+
+        <TextView
+            android:id="@+id/price_item_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/separator1"
+            android:layout_marginLeft="@dimen/padding_detail"
+            android:gravity="center_vertical"
+            tools:text="- Rp 150.000"
+            android:textColor="@color/red_500"
+            android:textSize="@dimen/fonts"
+            android:textStyle="bold" />
+
+        <View
+            android:id="@+id/separator2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignLeft="@+id/title_item_history"
+            android:layout_below="@+id/price_item_history"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginTop="@dimen/margin_med"
+            android:background="@color/grey_300" />
+
+        <TextView
+            android:id="@+id/transaction_info_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/title_item_history"
+            android:layout_below="@+id/separator2"
+            android:layout_marginBottom="@dimen/margin_vs"
+            android:layout_marginRight="@dimen/margin_vs"
+            android:layout_marginTop="@dimen/margin_vs"
+            tools:text="TokoCash TxID #99305dsadadasdadadadad17"
+            android:textColor="@color/black_36"
+            android:textSize="@dimen/fontvs" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/bantuan_btn"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/btn_login_height"
+                android:background="@drawable/history_white_border_grey"
+                android:minHeight="0dp"
+                android:text="Bantuan"
+                android:textAllCaps="false"
+                android:textColor="@color/black_38"
+                android:textSize="@dimen/fonts" />
+
+            <LinearLayout
+                android:id="@+id/button_opsi"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>
