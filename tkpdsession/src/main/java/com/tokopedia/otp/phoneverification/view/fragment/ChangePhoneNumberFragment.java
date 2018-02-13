@@ -147,8 +147,9 @@ public class ChangePhoneNumberFragment extends BaseDaggerFragment
     }
 
     private void finishLoading() {
-        if (progressDialog != null)
+        if (progressDialog != null) {
             progressDialog.dismiss();
+        }
     }
 
     @Override

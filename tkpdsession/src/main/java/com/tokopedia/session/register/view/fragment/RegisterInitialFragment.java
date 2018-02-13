@@ -394,8 +394,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     @Override
     public void dismissLoadingDiscover() {
         int lastPos = linearLayout.getChildCount() - 1;
-        if (linearLayout.getChildAt(lastPos) instanceof ProgressBar)
+        if (linearLayout.getChildAt(lastPos) instanceof ProgressBar) {
             linearLayout.removeViewAt(linearLayout.getChildCount() - 1);
+        }
     }
 
     @Override
