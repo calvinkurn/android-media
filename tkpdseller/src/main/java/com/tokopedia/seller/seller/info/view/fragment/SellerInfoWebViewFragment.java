@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.seller.base.view.fragment.BaseWebViewFragment;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseWebViewFragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
