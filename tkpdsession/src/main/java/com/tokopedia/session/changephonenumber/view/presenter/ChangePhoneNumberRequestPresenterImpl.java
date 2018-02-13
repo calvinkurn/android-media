@@ -11,7 +11,6 @@ import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
-import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.network.ErrorMessageException;
 import com.tokopedia.network.service.AccountsService;
@@ -36,6 +35,7 @@ import com.tokopedia.session.changephonenumber.data.mapper.changephonenumberrequ
 import com.tokopedia.session.changephonenumber.data.mapper.changephonenumberrequest.ValidateImageMapper;
 import com.tokopedia.session.R;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberRequestView;
+import com.tokopedia.util.CustomPhoneNumberUtil;
 
 import java.io.File;
 import java.net.UnknownHostException;
