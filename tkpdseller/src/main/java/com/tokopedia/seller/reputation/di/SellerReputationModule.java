@@ -1,5 +1,8 @@
 package com.tokopedia.seller.reputation.di;
 
+import com.tokopedia.core.base.di.scope.ApplicationScope;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.network.di.qualifier.InboxQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.seller.reputation.data.repository.ReputationRepositoryImpl;
@@ -14,6 +17,7 @@ import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepositoryImpl
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 
 /**
@@ -23,6 +27,15 @@ import retrofit2.Retrofit;
 @Module
 @SellerReputationScope
 public class SellerReputationModule {
+
+    @InboxQualifier
+    @SellerReputationScope
+    @Provides
+    public Retrofit provideInboxRetrofit(@DefaultAuthWithErrorHandler OkHttpClient okHttpClient,
+                                         Retrofit.Builder retrofitBuilder){
+        return retrofitBuilder.baseUrl(TkpdBaseURL.INBOX_DOMAIN).client(okHttpClient).build();
+    }
+
     @Provides
     @SellerReputationScope
     public ReputationApi provideReputationApi(@WsV4QualifierWithErrorHander Retrofit retrofit){

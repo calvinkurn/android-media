@@ -116,9 +116,6 @@ public interface AppComponent {
     @WsV4Qualifier
     Retrofit baseDomainRetrofit();
 
-    @InboxQualifier
-    Retrofit inboxRetrofit();
-
     @UploadWsV4Qualifier
     Retrofit uploadWsV4Retrofit();
 
