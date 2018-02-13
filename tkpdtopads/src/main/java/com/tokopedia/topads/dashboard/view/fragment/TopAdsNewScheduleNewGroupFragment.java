@@ -1,16 +1,15 @@
 package com.tokopedia.topads.dashboard.view.fragment;
 
+import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
-import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailNewGroupView;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
@@ -24,6 +23,9 @@ import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailNewGroupPresent
 
 public class TopAdsNewScheduleNewGroupFragment extends TopAdsNewScheduleFragment<TopAdsCreatePromoNewGroupModel,
         TopAdsDetailGroupViewModel, TopAdsDetailNewGroupPresenter> implements TopAdsDetailNewGroupView{
+
+    public static final String EXTRA_NEW_GROUP_ID = "EXTRA_NEW_GROUP_ID";
+    public static final String EXTRA_IS_ENOUGH_DEPOSIT = "EXTRA_IS_ENOUGH_DEPOSIT";
 
     @Override
     protected void initView(View view) {
@@ -72,6 +74,15 @@ public class TopAdsNewScheduleNewGroupFragment extends TopAdsNewScheduleFragment
         if(stepperListener != null) {
             stepperListener.finishPage();
         }
+    }
+
+    @Override
+    protected Intent setMoreResulAdSaved(Intent intent, TopAdsDetailAdViewModel topAdsDetailAdViewModel) {
+        if(topAdsDetailAdViewModel != null && topAdsDetailAdViewModel instanceof TopAdsDetailGroupViewModel){
+            intent.putExtra(EXTRA_NEW_GROUP_ID, ((TopAdsDetailGroupViewModel)topAdsDetailAdViewModel).getGroupId());
+            intent.putExtra(EXTRA_IS_ENOUGH_DEPOSIT, ((TopAdsDetailGroupViewModel)topAdsDetailAdViewModel).isEnoughDeposit());
+        }
+        return intent;
     }
 
     @Override

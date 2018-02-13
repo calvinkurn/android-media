@@ -93,6 +93,25 @@ public class NetworkErrorHelper {
     }
 
     @SuppressWarnings("Range")
+    public static void showGreenCloseSnackbar(Activity activity, String message) {
+        showGreenCloseSnackbar(SnackbarManager.getContentView(activity), message);
+    }
+
+    @SuppressWarnings("Range")
+    public static void showGreenCloseSnackbar(View view, String message) {
+        SnackbarManager.makeGreen(view,
+                message,
+                Snackbar.LENGTH_LONG)
+                .setAction(view.getContext().getString(R.string.close), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                }
+        ).show();
+    }
+
+    @SuppressWarnings("Range")
     public static void showRedCloseSnackbar(Activity activity, String message) {
         showRedCloseSnackbar(SnackbarManager.getContentView(activity), message);
     }

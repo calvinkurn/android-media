@@ -20,10 +20,8 @@ import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.base.view.model.StepperModel;
 import com.tokopedia.seller.common.datepicker.view.widget.DatePickerLabelView;
-import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.view.dialog.DatePickerDialog;
 import com.tokopedia.topads.dashboard.view.dialog.TimePickerdialog;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailEditView;
@@ -312,7 +310,7 @@ public abstract class TopAdsNewScheduleFragment<T extends StepperModel, V extend
     @Override
     public void onSaveAdSuccess(TopAdsDetailAdViewModel topAdsDetailAdViewModel) {
         hideLoading();
-        setResultAdSaved();
+        setResultAdSaved(topAdsDetailAdViewModel);
     }
 
     @Override
@@ -340,10 +338,15 @@ public abstract class TopAdsNewScheduleFragment<T extends StepperModel, V extend
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), retryClickedListener);
     }
 
-    private void setResultAdSaved() {
+    private void setResultAdSaved(TopAdsDetailAdViewModel topAdsDetailAdViewModel) {
         Intent intent = new Intent();
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
+        intent = setMoreResulAdSaved(intent, topAdsDetailAdViewModel);
         getActivity().setResult(Activity.RESULT_OK, intent);
+    }
+
+    protected Intent setMoreResulAdSaved(Intent intent, TopAdsDetailAdViewModel topAdsDetailAdViewModel){
+        return intent;
     }
 
     protected void showSnackBarError(String errorMessage) {

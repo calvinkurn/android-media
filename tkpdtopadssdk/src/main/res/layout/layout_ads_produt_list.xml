@@ -68,17 +68,16 @@
 
                 <ImageView
                     android:id="@+id/rating"
-                    android:layout_width="@dimen/rating_width"
-                    android:layout_height="@dimen/rating_height"
-                    />
+                    android:layout_width="@dimen/topads_rating_width"
+                    android:layout_height="@dimen/topads_rating_height"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/review_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/review_count_margin_left"
-                    android:textSize="@dimen/text_size_xsmall"
-                    />
+                    android:textSize="@dimen/text_size_xsmall" />
 
             </LinearLayout>
 
@@ -94,8 +93,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
                 android:layout_marginRight="@dimen/product_grid_padding"
+                android:layout_marginTop="@dimen/margin_4"
                 android:orientation="horizontal">
 
                 <TextView

@@ -52,6 +52,7 @@ public class TopAdsCreateNewGroupUseCase extends UseCase<TopAdsDetailGroupViewMo
                     @Override
                     public TopAdsDetailGroupViewModel call(DataResponseCreateGroup dataResponseCreateGroup) {
                         TopAdsDetailGroupViewModel topAdsDetailGroupViewModel = new TopAdsDetailGroupViewModel();
+                        topAdsDetailGroupViewModel.setGroupId(Long.valueOf(dataResponseCreateGroup.getGroupId()));
                         topAdsDetailGroupViewModel.setStartDate(dataResponseCreateGroup.getGroupStartDate());
                         topAdsDetailGroupViewModel.setEndDate(dataResponseCreateGroup.getGroupEndDate());
                         topAdsDetailGroupViewModel.setPriceBid(dataResponseCreateGroup.getPriceBid());
@@ -60,6 +61,7 @@ public class TopAdsCreateNewGroupUseCase extends UseCase<TopAdsDetailGroupViewMo
                         topAdsDetailGroupViewModel.setEndTime(dataResponseCreateGroup.getGroupEndTime());
                         topAdsDetailGroupViewModel.setScheduled("1".equals(dataResponseCreateGroup.getGroupSchedule()));
                         topAdsDetailGroupViewModel.setStatus(Integer.parseInt(dataResponseCreateGroup.getStatus()));
+                        topAdsDetailGroupViewModel.setEnoughDeposit(dataResponseCreateGroup.isEnoughDeposit());
                         return topAdsDetailGroupViewModel;
                     }
                 });
