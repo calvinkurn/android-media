@@ -40,4 +40,6 @@ public interface PdpRouter {
                                   ArrayList<String> imageDesc, String title, String date);
 
     Intent getProductReputationIntent(Context context, String productId, String productName);
+
+    Intent getLoginIntent(Context context);
 }

@@ -11,10 +11,6 @@ public class ValidateOtpPojo {
     @Expose
     int isSuccess;
 
-    @SerializedName("uuid")
-    @Expose
-    String uuid;
-
     public int getIsSuccess() {
         return isSuccess;
     }
@@ -25,13 +21,5 @@ public class ValidateOtpPojo {
 
     public boolean isSuccess() {
         return isSuccess == 1;
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
     }
 }

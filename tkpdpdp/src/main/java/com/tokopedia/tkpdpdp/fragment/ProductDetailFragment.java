@@ -33,17 +33,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.appsflyer.AFInAppEventType;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.Option;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
@@ -52,27 +50,25 @@ import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ProductImage;
-import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
+import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
+import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
-import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.AppIndexHandler;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 import com.tokopedia.tkpdpdp.CourierActivity;
 import com.tokopedia.tkpdpdp.DescriptionActivity;
@@ -88,7 +84,6 @@ import com.tokopedia.tkpdpdp.customview.DetailInfoView;
 import com.tokopedia.tkpdpdp.customview.FlingBehavior;
 import com.tokopedia.tkpdpdp.customview.HeaderInfoView;
 import com.tokopedia.tkpdpdp.customview.LastUpdateView;
-import com.tokopedia.tkpdpdp.customview.MostHelpfulReviewView;
 import com.tokopedia.tkpdpdp.customview.LatestTalkView;
 import com.tokopedia.tkpdpdp.customview.MostHelpfulReviewView;
 import com.tokopedia.tkpdpdp.customview.NewShopView;
@@ -107,16 +102,10 @@ import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.GregorianCalendar;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TimeZone;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -302,7 +291,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         appBarLayout.addOnOffsetChangedListener(new AppBarStateChangeListener() {
             @Override
             public void onStateChanged(AppBarLayout appBarLayout, State state) {
-                switch (state){
+                switch (state) {
                     case COLLAPSED:
                         isAppBarCollapsed = true;
                         collapsedAppBar();
@@ -322,19 +311,19 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             }
         });
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP ) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
             params.setBehavior(new FlingBehavior(R.id.nested_scroll_pdp));
         }
     }
 
-    private void collapsedAppBar(){
+    private void collapsedAppBar() {
         initStatusBarLight();
         initToolbarLight();
         fabWishlist.hide();
     }
 
-    private void expandedAppBar(){
+    private void expandedAppBar() {
         initStatusBarDark();
         initToolbarTransparant();
         if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
@@ -539,7 +528,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onProductShareClicked(@NonNull ShareData data) {
-        startActivity(ShareActivity.createIntent(getActivity(),data));
+        startActivity(ShareActivity.createIntent(getActivity(), data));
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -734,7 +723,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void loadVideo(VideoData data) {
-        this.videoDescriptionLayout.renderVideoData(data,youTubeThumbnailLoadInProcessListener);
+        this.videoDescriptionLayout.renderVideoData(data, youTubeThumbnailLoadInProcessListener);
         videoData = data;
     }
 
@@ -814,7 +803,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         } else {
             throw new RuntimeException("Activity must implement DeepLinkWebViewHandleListener");
         }
-        if(context instanceof YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess)
+        if (context instanceof YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess)
             youTubeThumbnailLoadInProcessListener = (YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess) context;
     }
 
@@ -826,7 +815,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         } else {
             throw new RuntimeException("Activity must implement DeepLinkWebViewHandleListener");
         }
-        if(context instanceof YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess)
+        if (context instanceof YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess)
             youTubeThumbnailLoadInProcessListener = (YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess) context;
     }
 
@@ -917,7 +906,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if(!isAppBarCollapsed)
+        if (!isAppBarCollapsed)
             inflater.inflate(R.menu.product_detail, menu);
         else
             inflater.inflate(R.menu.product_detail_dark, menu);
@@ -988,9 +977,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             return true;
         } else if (i == R.id.action_cart) {
             if (!SessionHandler.isV4Login(getActivity())) {
-                Intent intent = OldSessionRouter.getLoginActivityIntent(context);
-                intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-                intent.putExtra("product_id", String.valueOf(productData.getInfo().getProductId()));
+                Intent intent = ((PdpRouter) MainApplication.getAppContext()).getLoginIntent
+                        (getActivity());
                 navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_LOGIN);
                 if (productData.getInfo().getHasVariant()) UnifyTracking.eventClickCartVariant(generateVariantString());
             } else {
@@ -1293,13 +1281,13 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
 
-                intColor = - verticalOffset;
-                if (intColor>=SCROLL_ELEVATION+toolbar.getHeight() && isAdded() && stateCollapsing==FROM_EXPANDED) {
+                intColor = -verticalOffset;
+                if (intColor >= SCROLL_ELEVATION + toolbar.getHeight() && isAdded() && stateCollapsing == FROM_EXPANDED) {
                     initToolbarLight();
                     initStatusBarLight();
                     fabWishlist.hide();
                     stateCollapsing = FROM_COLLAPSED;
-                } else if (intColor<SCROLL_ELEVATION+toolbar.getHeight() && isAdded() && stateCollapsing==FROM_COLLAPSED) {
+                } else if (intColor < SCROLL_ELEVATION + toolbar.getHeight() && isAdded() && stateCollapsing == FROM_COLLAPSED) {
                     initStatusBarDark();
                     initToolbarTransparant();
                     if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
@@ -1395,7 +1383,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void restoreIsAppBarCollapsed(boolean isAppBarCollapsed) {
         this.isAppBarCollapsed = isAppBarCollapsed;
-        if(isAppBarCollapsed) {
+        if (isAppBarCollapsed) {
             collapsedAppBar();
         } else {
             expandedAppBar();

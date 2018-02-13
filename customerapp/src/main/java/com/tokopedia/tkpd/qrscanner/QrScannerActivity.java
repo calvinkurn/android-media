@@ -20,7 +20,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.session.session.activity.Login;
+import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.di.CampaignComponent;
 import com.tokopedia.tkpd.campaign.di.DaggerCampaignComponent;
@@ -246,7 +246,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
 
     @Override
     public void interruptToLoginPage() {
-        startActivityForResult(Login.getCallingIntent(getApplicationContext()), REQUEST_CODE_LOGIN);
+        startActivityForResult(LoginActivity.getCallingIntent(getApplicationContext()), REQUEST_CODE_LOGIN);
     }
 
     @Override
