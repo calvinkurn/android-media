@@ -6,11 +6,12 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsGetModel;
-import com.tokopedia.inbox.rescenter.shipping.presenter.InputShippingPresenter;
 import com.tokopedia.inbox.rescenter.shipping.presenter.InputShippingImpl;
+import com.tokopedia.inbox.rescenter.shipping.presenter.InputShippingPresenter;
 import com.tokopedia.inbox.rescenter.shipping.view.InputShippingView;
 
 /**
@@ -24,6 +25,8 @@ public class InputShippingActivity extends BasePresenterActivity<InputShippingPr
     public static final java.lang.String EXTRA_PARAM_CONVERSATION_ID = "conversation_id";
     public static final java.lang.String EXTRA_PARAM_SHIPPING_ID = "shipping_id";
     public static final java.lang.String EXTRA_PARAM_SHIPPING_REFNUM = "shipping_ref";
+    public static final java.lang.String EXTRA_PARAM_FROM_CHAT = "is_from_chat";
+    public static final java.lang.String EXTRA_PARAM_EDIT = "is_edit";
 
     private InputShippingParamsGetModel paramsModel;
     private Bundle bundleExtras;
@@ -53,6 +56,61 @@ public class InputShippingActivity extends BasePresenterActivity<InputShippingPr
         return intent;
     }
 
+    public static Intent createNewPageIntentFromChat(Context context,
+                                             String resolutionID) {
+        Intent intent = new Intent(context, InputShippingActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_PARAM_RESOLUTION_ID, resolutionID);
+        bundle.putBoolean(EXTRA_PARAM_EDIT, false);
+        bundle.putBoolean(EXTRA_PARAM_FROM_CHAT, true);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent createNewPageIntentFromDetail(Context context,
+                                                     String resolutionID) {
+        Intent intent = new Intent(context, InputShippingActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_PARAM_RESOLUTION_ID, resolutionID);
+        bundle.putBoolean(EXTRA_PARAM_EDIT, false);
+        bundle.putBoolean(EXTRA_PARAM_FROM_CHAT, false);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent createEditPageIntentFromChat(Context context,
+                                              String resolutionID,
+                                              String conversationID,
+                                              String shippingID,
+                                              String shippingRefNum) {
+        Intent intent = new Intent(context, InputShippingActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_PARAM_RESOLUTION_ID, resolutionID);
+        bundle.putString(EXTRA_PARAM_CONVERSATION_ID, conversationID);
+        bundle.putString(EXTRA_PARAM_SHIPPING_ID, shippingID);
+        bundle.putString(EXTRA_PARAM_SHIPPING_REFNUM, shippingRefNum);
+        bundle.putBoolean(EXTRA_PARAM_EDIT, true);
+        bundle.putBoolean(EXTRA_PARAM_FROM_CHAT, true);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent createEditPageIntentFromDetail(Context context,
+                                              String resolutionID,
+                                              String conversationID,
+                                              String shippingID,
+                                              String shippingRefNum) {
+        Intent intent = new Intent(context, InputShippingActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_PARAM_RESOLUTION_ID, resolutionID);
+        bundle.putString(EXTRA_PARAM_CONVERSATION_ID, conversationID);
+        bundle.putString(EXTRA_PARAM_SHIPPING_ID, shippingID);
+        bundle.putString(EXTRA_PARAM_SHIPPING_REFNUM, shippingRefNum);
+        bundle.putBoolean(EXTRA_PARAM_EDIT, true);
+        bundle.putBoolean(EXTRA_PARAM_FROM_CHAT, false);
+        intent.putExtras(bundle);
+        return intent;
+    }
     @Override
     protected void setupURIPass(Uri data) {
         this.uriData = data;
@@ -80,6 +138,12 @@ public class InputShippingActivity extends BasePresenterActivity<InputShippingPr
 
     @Override
     protected void initView() {
+        if (getParamsModel().isFromChat()) {
+            if (getParamsModel().isEdit())
+                UnifyTracking.eventResoChatImpressionSaveEditAWB(getParamsModel().getResolutionID());
+            else
+                UnifyTracking.eventResoChatImpressionSaveInputAWB(getParamsModel().getResolutionID());
+        }
         presenter.initView(this);
     }
 
@@ -135,6 +199,12 @@ public class InputShippingActivity extends BasePresenterActivity<InputShippingPr
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        if (getParamsModel().isFromChat()) {
+            if (getParamsModel().isEdit())
+                UnifyTracking.eventResoChatClickCancelEditAWB(getParamsModel().getResolutionID());
+            else
+                UnifyTracking.eventResoChatClickCancelInputAWB(getParamsModel().getResolutionID());
+        }
         getBottomBackSheetActivityTransition();
     }
 }

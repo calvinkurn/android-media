@@ -169,6 +169,8 @@ public interface AppEventTracking {
         String EVENT_RESOLUTION = "clickResolution";
         String PRODUCT_VIEW = "productView";
         String CLICK_PDP = "clickPDP";
+        String EVENT_RESOLUTION_CENTER = "resolutionCenter";
+        String EVENT_RESOLUTION_CENTER_VIEW = "resolutionCenterView";
     }
 
     interface Category {
@@ -283,6 +285,7 @@ public interface AppEventTracking {
         String ONBOARDING = "onboarding";
         String RESOLUTION_CENTER = "resolution center";
         String MANAGE_PROFILE = "pengaturan profile";
+        String RESOLUTION_CENTER_CHAT = "resolution chat";
 
         String PROMO_MICROSITE_PROMO_LIST ="promo microsite - promo list";
         String PROMO_MICROSITE_PROMO_TOOLTIP ="promo microsite - promo tooltip";
@@ -453,6 +456,36 @@ public interface AppEventTracking {
         String CLICK_PROVE = "click bukti & keterangan";
         String CLICK_CREATE_RESO = "click buat komplain";
         String CLICK_CREATE_RESO_ABANDON = "click abandon";
+
+        String IMPRESSION_ACCEPT_SOLUTION = "impression terima solusi";
+        String IMPRESSION_CANCEL_COMPLAINT = "impression batalkan komplain";
+        String IMPRESSION_CHANGE_SOLUTION = "impression ubah solusi";
+        String IMPRESSION_ASK_HELP = "impression minta bantuan";
+        String IMPRESSION_APPEAL = "impression naik banding";
+        String IMPRESSION_INPUT_ADDRESS = "impression masukkan alamat";
+        String IMPRESSION_INPUT_AWB = "impression masukkan no resi";
+        String IMPRESSION_RECOMPLAINT = "impression komplain ulang";
+        String IMPRESSION_GREEN_ARROW = "impression green arrow";
+        String IMPRESSION_SAVE_INPUT_AWB_CHAT = "impression from masukkan no resi";
+        String IMPRESSION_SAVE_EDIT_AWB_CHAT = "impression from edit resi";
+
+        String CLICK_ACCEPT_SOLUTION = "click terima solusi";
+        String CLICK_CANCEL_COMPLAINT = "click batalkan komplain";
+        String CLICK_CHANGE_SOLUTION = "click batalkan solusi";
+        String CLICK_ASK_HELP = "click minta bantuan";
+        String CLICK_APPEAL = "click naik banding";
+        String CLICK_INPUT_ADDRESS = "click masukkan alamat";
+        String CLICK_GREEN_ARROW = "click green arrow next conversation";
+        String CLICK_NEXT_ACTION = "click drop down langkah selanjutnya";
+        String CLICK_PRODUCT_CHAT = "click produk yang dikomplain on chatbox";
+        String CLICK_CHANGE_ADDRESS_CHAT = "click ubah alamat on chatbox";
+        String CLICK_CHANGE_AWB_CHAT = "click edit resi on chatbox";
+        String CLICK_TRACK_CHAT = "click lacak paket on chatbox";
+        String CLICK_SAVE_INPUT_AWB_CHAT = "click simpan from masukkan no resi";
+        String CLICK_CANCEL_INPUT_AWB_CHAT = "click kembali from masukkan no resi";
+        String CLICK_SAVE_EDIT_AWB_CHAT = "click simpan from edit resi";
+        String CLICK_CANCEL_EDIT_AWB_CHAT = "click kembali from edit resi";
+
 
         String CLICK_CHANGE_PHONE_NUMBER = "click on ubah";
         String SUCCESS_CHANGE_PHONE_NUMBER = "success change phone number";
@@ -1043,5 +1076,9 @@ public interface AppEventTracking {
         String PRODUCT_ID = "productId";
         String SHOP_ID = "shopId";
         String PROMO_ID = "promoId";
+    }
+
+    interface ResoDimension {
+        String RESOLUTION_ID = "resolution_id";
     }
 }

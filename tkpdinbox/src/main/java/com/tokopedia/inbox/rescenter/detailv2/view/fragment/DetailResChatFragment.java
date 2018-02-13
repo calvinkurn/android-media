@@ -30,6 +30,7 @@ import android.widget.TextView;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gallery.GalleryActivity;
@@ -347,6 +348,7 @@ public class DetailResChatFragment
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
                     fabChat.hide();
                 } else {
+                    UnifyTracking.eventResoChatImpressionGreenArrow(resolutionId);
                     fabChat.show();
                 }
 
@@ -405,6 +407,7 @@ public class DetailResChatFragment
         cvNextStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                UnifyTracking.eventResoChatClickNextAction(resolutionId);
                 startActivity(NextActionActivity.newInstance(
                         getActivity(),
                         resolutionId,
@@ -451,6 +454,7 @@ public class DetailResChatFragment
         fabChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                UnifyTracking.eventResoChatClickGreenArrow(resolutionId);
                 scrollChatToBottom(false);
             }
         });
@@ -650,6 +654,7 @@ public class DetailResChatFragment
                                 .getReportText(), new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                UnifyTracking.eventResoChatClickAskHelp(resolutionId);
                                 presenter.actionAskHelp();
                                 if (resCenterDialog != null)
                                     resCenterDialog.dismiss();
@@ -657,6 +662,7 @@ public class DetailResChatFragment
                         });
                     }
                 });
+                UnifyTracking.eventResoChatImpressionAskHelp(resolutionId);
             }
 
             if (buttonDomain.getCancel() == 1) {
@@ -670,6 +676,7 @@ public class DetailResChatFragment
                                 .getCancelText(), new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                UnifyTracking.eventResoChatClickCancelComplaint(resolutionId);
                                 presenter.actionCancelComplaint();
                                 if (resCenterDialog != null)
                                     resCenterDialog.dismiss();
@@ -677,6 +684,7 @@ public class DetailResChatFragment
                         });
                     }
                 });
+                UnifyTracking.eventResoChatImpressionCancelComplaint(resolutionId);
             }
 
             if (buttonDomain.getEdit() == 1) {
@@ -687,8 +695,10 @@ public class DetailResChatFragment
                     @Override
                     public void onClick(View view) {
                         doEditSolution();
+                        UnifyTracking.eventResoChatClickChangeSolution(resolutionId);
                     }
                 });
+                UnifyTracking.eventResoChatImpressionChangeSolution(resolutionId);
             }
 
             if (buttonDomain.getInputAddress() == 1) {
@@ -699,9 +709,11 @@ public class DetailResChatFragment
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        UnifyTracking.eventResoChatClickInputAddress(resolutionId);
                         doInputAddress();
                     }
                 });
+                UnifyTracking.eventResoChatImpressionInputAddress(resolutionId);
             }
 
             if (buttonDomain.getAppeal() == 1) {
@@ -711,9 +723,11 @@ public class DetailResChatFragment
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        UnifyTracking.eventResoChatClickAppeal(resolutionId);
                         doAppealSolution();
                     }
                 });
+                UnifyTracking.eventResoChatImpressionAppeal(resolutionId);
             }
 
             if (buttonDomain.getInputAWB() == 1) {
@@ -726,6 +740,7 @@ public class DetailResChatFragment
                         doInputAWB();
                     }
                 });
+                UnifyTracking.eventResoChatImpressionInputAWB(resolutionId);
             }
             if (buttonDomain.getFinish() == 1) {
                 final Button button = getChatActionButton(buttonDomain.getFinishLabel());
@@ -739,6 +754,7 @@ public class DetailResChatFragment
                                 .getFinishText(), new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
+                                UnifyTracking.eventResoChatClickAcceptSolution(resolutionId);
                                 presenter.actionFinish();
                                 if (resCenterDialog != null)
                                     resCenterDialog.dismiss();
@@ -746,6 +762,7 @@ public class DetailResChatFragment
                         });
                     }
                 });
+                UnifyTracking.eventResoChatImpressionGetSolution(resolutionId);
             }
 
             if (!isAcceptShown) {
@@ -761,6 +778,7 @@ public class DetailResChatFragment
                                     new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
+                                            UnifyTracking.eventResoChatClickAcceptSolution(resolutionId);
                                             presenter.actionAcceptSolution();
                                             if (resCenterDialog != null)
                                                 resCenterDialog.dismiss();
@@ -769,6 +787,7 @@ public class DetailResChatFragment
                         }
                     });
                 }
+                UnifyTracking.eventResoChatImpressionGetSolution(resolutionId);
             }
 
             if (buttonDomain.getRecomplaint() == 1) {
@@ -785,6 +804,7 @@ public class DetailResChatFragment
                         startActivity(intent);
                     }
                 });
+                UnifyTracking.eventResoChatImpressionRecomplaint(resolutionId);
             }
         }
     }
@@ -839,7 +859,7 @@ public class DetailResChatFragment
 
     private void doInputAWB() {
         startActivityForResult(
-                InputShippingActivity.createNewPageIntent(getActivity(), resolutionId),
+                InputShippingActivity.createNewPageIntentFromChat(getActivity(), resolutionId),
                 REQUEST_INPUT_SHIPPING
         );
         getBottomSheetActivityTransition();
@@ -998,6 +1018,7 @@ public class DetailResChatFragment
 
     @Override
     public void intentToEditAddress(int conversationId, int oldAddressId) {
+        UnifyTracking.eventResoChatClickChangeAddress(resolutionId);
         doEditAddress();
         this.conversationId = conversationId;
         this.oldAddressId = oldAddressId;
@@ -1110,6 +1131,7 @@ public class DetailResChatFragment
 
     @Override
     public void doTrackShipping(String shipmentID, String shipmentRef) {
+        UnifyTracking.eventResoChatClickTrack(resolutionId);
         startActivity(TrackShippingActivity.newInstance(
                 getActivity(),
                 shipmentID,
@@ -1121,7 +1143,8 @@ public class DetailResChatFragment
     @Override
     public void doEditAwb(String conversationId,
                           String shippingId, String shippingRefNum) {
-        startActivityForResult(InputShippingActivity.createEditPageIntent(
+        UnifyTracking.eventResoChatClickEditAwb(resolutionId);
+        startActivityForResult(InputShippingActivity.createEditPageIntentFromChat(
                 getActivity(),
                 resolutionId,
                 conversationId,
@@ -1137,6 +1160,7 @@ public class DetailResChatFragment
 
     @Override
     public void goToProductDetail(ConversationProductDomain product) {
+        UnifyTracking.eventResoChatClickProductOnChat(resolutionId);
         startActivity(
                 ProductDetailActivity.newInstance(context,
                         resolutionId,

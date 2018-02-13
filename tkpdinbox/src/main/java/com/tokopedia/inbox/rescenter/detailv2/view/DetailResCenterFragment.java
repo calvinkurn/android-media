@@ -586,7 +586,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     @Override
     public void setOnActionInputAwbNumberClick() {
         startActivityForResult(
-                InputShippingActivity.createNewPageIntent(getActivity(), getResolutionID()),
+                InputShippingActivity.createNewPageIntentFromDetail(getActivity(), getResolutionID()),
                 REQUEST_INPUT_SHIPPING
         );
         getBottomSheetActivityTransition();
