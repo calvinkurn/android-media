@@ -5,20 +5,19 @@ import com.google.gson.annotations.SerializedName;
 import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
 import com.tokopedia.tokocash.network.exception.TokoCashException;
 
+import java.util.List;
+
 /**
  * Created by nabillasabbaha on 1/17/18.
  */
 
-public class TokoCashErrorResponse extends BaseResponseError {
+public class ActivateTokoCashErrorResponse extends BaseResponseError {
 
-    private static final String ERROR = "error";
+    private static final String ERROR = "message_error";
 
     @SerializedName(ERROR)
     @Expose
-    private String errorMessage;
-    @SerializedName("error_description")
-    @Expose
-    private String errorDesc;
+    private List<String> messageError;
 
     @Override
     public String getErrorKey() {
@@ -27,12 +26,19 @@ public class TokoCashErrorResponse extends BaseResponseError {
 
     @Override
     public boolean hasBody() {
-        return errorMessage != null;
+        return messageError != null;
     }
 
     @Override
     public RuntimeException createException() {
-        return new TokoCashException(errorMessage);
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < messageError.size(); i++) {
+            stringBuilder.append(messageError.get(i));
+            if (i < messageError.size() - 1) {
+                stringBuilder.append(", ");
+            }
+        }
+        return new TokoCashException(stringBuilder.toString().trim());
     }
 
     @Override

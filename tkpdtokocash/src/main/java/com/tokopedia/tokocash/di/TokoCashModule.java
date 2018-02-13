@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.data.model.storage.GlobalCacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.activation.data.ActivateRepository;
+import com.tokopedia.tokocash.network.model.ActivateTokoCashErrorResponse;
 import com.tokopedia.tokocash.pendingcashback.data.PendingCashbackRepository;
 import com.tokopedia.tokocash.pendingcashback.domain.GetPendingCasbackUseCase;
 import com.tokopedia.tokocash.activation.domain.LinkedTokoCashUseCase;
@@ -74,6 +75,7 @@ public class TokoCashModule {
         return new OkHttpClient.Builder()
                 .addInterceptor(tokoCashAuthInterceptor)
                 .addInterceptor(new TokoCashErrorResponseInterceptor(TokoCashErrorResponse.class, gson))
+                .addInterceptor(new TokoCashErrorResponseInterceptor(ActivateTokoCashErrorResponse.class, gson))
                 .build();
     }
 

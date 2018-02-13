@@ -20,8 +20,6 @@ import okhttp3.ResponseBody;
 
 public class TokoCashErrorResponseInterceptor implements Interceptor {
 
-    public final static String BEARER = "Bearer";
-    private final static String AUTHORIZATION = "authorization";
     private static final int BYTE_COUNT = 2048;
 
     private Class<? extends BaseResponseError> responseErrorClass;
