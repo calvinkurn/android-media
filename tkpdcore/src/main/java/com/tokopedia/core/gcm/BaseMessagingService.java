@@ -19,7 +19,7 @@ import com.tokopedia.core.util.GlobalConfig;
  */
 
 public class BaseMessagingService extends BaseNotificationMessagingService {
-    private static final IAppNotificationReceiver appNotificationReceiver = createInstance();
+    private static IAppNotificationReceiver appNotificationReceiver;
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -28,15 +28,16 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
         Bundle data = convertMap(remoteMessage);
         CommonUtils.dumper("FCM " + data.toString());
 
-        if (appNotificationReceiver != null) {
+        if (appNotificationReceiver == null) {
+            appNotificationReceiver = createInstance();
             appNotificationReceiver.init(getApplication());
+        }
 
-            if (MoEngageNotificationUtils.isFromMoEngagePlatform(remoteMessage.getData()) && showPromoNotification()) {
-                appNotificationReceiver.onMoengageNotificationReceived(remoteMessage);
-            } else {
-                AnalyticsLog.logNotification(remoteMessage.getFrom(), data.getString(Constants.ARG_NOTIFICATION_CODE, ""));
-                appNotificationReceiver.onNotificationReceived(remoteMessage.getFrom(), data);
-            }
+        if (MoEngageNotificationUtils.isFromMoEngagePlatform(remoteMessage.getData()) && showPromoNotification()) {
+            appNotificationReceiver.onMoengageNotificationReceived(remoteMessage);
+        } else {
+            AnalyticsLog.logNotification(remoteMessage.getFrom(), data.getString(Constants.ARG_NOTIFICATION_CODE, ""));
+            appNotificationReceiver.onNotificationReceived(remoteMessage.getFrom(), data);
         }
     }
 
