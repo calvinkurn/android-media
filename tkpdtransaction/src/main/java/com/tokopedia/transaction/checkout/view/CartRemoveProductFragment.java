@@ -27,7 +27,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.tokopedia.transaction.checkout.view.CartSingleAddressFragment.ARG_EXTRA_CART_DATA_LIST;
+import static com.tokopedia.transaction.checkout.view.SingleAddressShipmentFragment.ARG_EXTRA_CART_DATA_LIST;
 
 /**
  * @author Aghny A. Putra on 05/02/18

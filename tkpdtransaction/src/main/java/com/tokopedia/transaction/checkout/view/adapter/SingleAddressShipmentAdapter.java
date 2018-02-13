@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -38,9 +37,9 @@ import butterknife.ButterKnife;
 /**
  * @author Aghny A. Putra on 25/01/18
  */
-public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static final String TAG = CartSingleAddressAdapter.class.getSimpleName();
+    private static final String TAG = SingleAddressShipmentAdapter.class.getSimpleName();
 
     private static final int ITEM_VIEW_FREE_SHIPPING_FEE =
             R.layout.view_item_free_shipping_fee;
@@ -60,14 +59,14 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
 
     private Context mContext;
     private CartSingleAddressData mCartSingleAddressData;
-    private SingleAddressShipmentAdapterListener viewListener;
+    private SingleAddressShipmentAdapterListener mAdapterViewListener;
 
-    public CartSingleAddressAdapter() {
+    public SingleAddressShipmentAdapter() {
         Log.d(TAG, "Create instance");
     }
 
-    public void setViewListener(SingleAddressShipmentAdapterListener viewListener) {
-        this.viewListener = viewListener;
+    public void setViewListener(SingleAddressShipmentAdapterListener shipmentAdapterListener) {
+        this.mAdapterViewListener = shipmentAdapterListener;
     }
 
     public void updateData(CartSingleAddressData cartSingleAddressData) {
@@ -217,17 +216,17 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
             pickupPointLayout.setListener(new PickupPointLayout.ViewListener() {
                 @Override
                 public void onChoosePickupPoint() {
-                    viewListener.onChoosePickupPoint(data);
+                    mAdapterViewListener.onChoosePickupPoint(data);
                 }
 
                 @Override
                 public void onClearPickupPoint(Store oldStore) {
-                    viewListener.onClearPickupPoint(data);
+                    mAdapterViewListener.onClearPickupPoint(data);
                 }
 
                 @Override
                 public void onEditPickupPoint(Store oldStore) {
-                    viewListener.onEditPickupPoint(data);
+                    mAdapterViewListener.onEditPickupPoint(data);
                 }
             });
 
@@ -245,7 +244,7 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
             return new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    viewListener.onAddOrChangeAddress();
+                    mAdapterViewListener.onAddOrChangeAddress();
 //                    fragmentTransaction();
                 }
             };
@@ -403,7 +402,12 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
             // Assign variables
             mTvSenderName.setText(model.getShopName());
             mTvShipmentOption.setText(getCourierName(model.getCourierItemData()));
-            mTvSubTotalPrice.setText(model.getTotalPriceFormatted());
+            mTvSubTotalPrice.setText(getPriceFormat(model.getTotalPricePlan()));
+
+            mTvTotalItem.setText(getTotalItemFormatted(model.getTotalItemPlan()));
+            mTvShippingFee.setText(getTotalWeightFormatted(model.getTotalWeightPlan()));
+
+            mTvTotalItemPrice.setText(getPriceFormat(model.getTotalPricePlan()));
 
             ImageHandler.LoadImage(mIvProductImage, mainProductItem.getProductImageUrl());
             mTvProductName.setText(mainProductItem.getProductName());
@@ -416,11 +420,14 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
             mTvExpandOtherProduct.setText(getExpandOtherProductLabel(cartItemModels,
                     mIsExpandAllProduct));
 
-            mRlProductPoliciesContainer.setVisibility(getPoliciesVisibility());
-            mIvFreeReturnIcon.setVisibility(getFreeReturnVisibility(mainProductItem.isFreeReturn()));
-            mTvFreeReturnText.setVisibility(getFreeReturnVisibility(mainProductItem.isFreeReturn()));
-            mTvPoSign.setVisibility(getPoVisibility(mainProductItem.isPoAvailable()));
-            mTvCashback.setVisibility(getCashbackVisibility(mainProductItem.getCashback()));
+            mRlProductPoliciesContainer.setVisibility(getPoliciesVisibility(
+                    mainProductItem.isCashback(),
+                    mainProductItem.isFreeReturn(),
+                    mainProductItem.isPoAvailable()));
+            mIvFreeReturnIcon.setVisibility(getPolicyVisibility(mainProductItem.isFreeReturn()));
+            mTvFreeReturnText.setVisibility(getPolicyVisibility(mainProductItem.isFreeReturn()));
+            mTvPoSign.setVisibility(getPolicyVisibility(mainProductItem.isPoAvailable()));
+            mTvCashback.setVisibility(getPolicyVisibility(mainProductItem.isCashback()));
             mTvCashback.setText(getCashback(mainProductItem.getCashback()));
 
             mTvDetailOptionText.setText(getTextDrawerChevron(mIsExpandCostDetail));
@@ -460,6 +467,18 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
             return courierItemData.getName();
         }
 
+        private String getPriceFormat(double pricePlan) {
+            return pricePlan == 0 ? "-" : "Rp" + String.valueOf(pricePlan);
+        }
+
+        private String getTotalItemFormatted(int totalItem) {
+            return String.format("Jumlah Barang (%s item)", totalItem);
+        }
+
+        private String getTotalWeightFormatted(double totalWeight) {
+            return String.format("Ongkos Kirim (%s gr)", totalWeight);
+        }
+
         private int getExpandOtherProductVisibility(List<CartItemModel> cartItemModels) {
             return cartItemModels.isEmpty() ? View.GONE : View.VISIBLE;
         }
@@ -471,20 +490,13 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
                     String.format("+%s Produk Lainnya", cartItemModels.size());
         }
 
-        private int getPoliciesVisibility() {
-            return View.VISIBLE;
+        private int getPoliciesVisibility(boolean isCashback, boolean isFreeReturn,
+                                          boolean isPreOrder) {
+            return !isCashback && !isFreeReturn && !isPreOrder ? View.GONE : View.VISIBLE;
         }
 
-        private int getFreeReturnVisibility(boolean isFreeReturn) {
-            return isFreeReturn ? View.VISIBLE : View.GONE;
-        }
-
-        private int getPoVisibility(boolean isPoAvailable) {
-            return isPoAvailable ? View.VISIBLE : View.GONE;
-        }
-
-        private int getCashbackVisibility(String cashback) {
-            return NO_CASHBACK.equals(cashback) ? View.GONE : View.VISIBLE;
+        private int getPolicyVisibility(boolean isPolicySupported) {
+            return isPolicySupported ? View.VISIBLE : View.GONE;
         }
 
         private String getCashback(String cashback) {
@@ -516,7 +528,7 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
             return new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    viewListener.onChooseShipment();
+                    mAdapterViewListener.onChooseShipment();
                 }
             };
         }

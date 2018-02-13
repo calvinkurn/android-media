@@ -129,6 +129,7 @@ public class CartRemoveProductAdapter
             CartItemData.OriginData originData = cartItemModel.getOriginData();
             CartItemData.UpdatedData updatedData = cartItemModel.getUpdatedData();
 
+            mTvSenderName.setText(originData.getShopName());
             mTvProductName.setText(originData.getProductName());
             mTvProductPrice.setText(originData.getPriceFormatted());
             mTvProductWeight.setText(originData.getWeightFormatted());
