@@ -35,11 +35,7 @@ public class GetFeedsUseCase extends UseCase<FeedResult> {
     public RequestParams getFeedPlusParam(int page, SessionHandler sessionHandler, String
             currentCursor) {
         RequestParams params = RequestParams.create();
-        try {
-            params.putInt(GetFeedsUseCase.PARAM_USER_ID, Integer.parseInt(sessionHandler.getLoginID()));
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
+        params.putInt(GetFeedsUseCase.PARAM_USER_ID, Integer.parseInt(sessionHandler.getLoginID()));
         params.putString(GetFeedsUseCase.PARAM_CURSOR, currentCursor);
         params.putInt(GetFeedsUseCase.PARAM_PAGE, page);
         return params;
@@ -47,12 +43,8 @@ public class GetFeedsUseCase extends UseCase<FeedResult> {
 
     public RequestParams getRefreshParam(SessionHandler sessionHandler) {
         RequestParams params = RequestParams.create();
-        try {
-            params.putInt(GetFeedsUseCase.PARAM_USER_ID, Integer.parseInt(sessionHandler.getLoginID()));
-            params.putInt(GetRecentViewUseCase.PARAM_USER_ID, Integer.parseInt(sessionHandler.getLoginID()));
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
+        params.putInt(GetFeedsUseCase.PARAM_USER_ID, Integer.parseInt(sessionHandler.getLoginID()));
+        params.putInt(GetRecentViewUseCase.PARAM_USER_ID, Integer.parseInt(sessionHandler.getLoginID()));
         params.putString(GetFeedsUseCase.PARAM_CURSOR, "");
         params.putInt(GetFeedsUseCase.PARAM_PAGE, 1);
         return params;

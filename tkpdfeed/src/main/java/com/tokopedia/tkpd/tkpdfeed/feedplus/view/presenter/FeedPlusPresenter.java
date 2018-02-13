@@ -96,6 +96,7 @@ public class FeedPlusPresenter
                     new GetFirstPageFeedsSubscriber(viewListener, pagingHandler.getPage()));
         } else {
             viewListener.onUserNotLogin();
+            viewListener.addEmptyItem();
         }
     }
 
@@ -163,12 +164,18 @@ public class FeedPlusPresenter
 
     @Override
     public void refreshPage() {
+
         pagingHandler.resetPage();
         viewListener.showRefresh();
         currentCursor = "";
-        getFirstPageFeedsCloudUseCase.execute(
-                getFirstPageFeedsCloudUseCase.getRefreshParam(sessionHandler),
-                new GetFirstPageFeedsSubscriber(viewListener, pagingHandler.getPage()));
+
+        if (sessionHandler != null && sessionHandler.getLoginID() != null && !sessionHandler.getLoginID().isEmpty()) {
+            getFirstPageFeedsCloudUseCase.execute(
+                    getFirstPageFeedsCloudUseCase.getRefreshParam(sessionHandler),
+                    new GetFirstPageFeedsSubscriber(viewListener, pagingHandler.getPage()));
+        } else {
+            viewListener.onUserNotLogin();
+        }
     }
 
     @Override

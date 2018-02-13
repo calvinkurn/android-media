@@ -1148,7 +1148,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
         adapter.clearData();
         topAdsRecyclerAdapter.shouldLoadAds(true);
         topAdsRecyclerAdapter.unsetEndlessScrollListener();
+    }
 
+    @Override
+    public void addEmptyItem() {
         adapter.showUserNotLogin();
         adapter.addItem(new EmptyTopAdsProductModel(""));
         adapter.notifyDataSetChanged();
