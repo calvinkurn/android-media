@@ -130,8 +130,6 @@ public class RideUtils {
         }
     }
 
-    private String className = "com.tokopedia.tkpd.ConsumerSplashScreen";
-
     public static void addUberShortcutOnLauncher(Context context, String shortLabel, String lonLabel) {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // only for gingerbread and newer versions
@@ -154,8 +152,7 @@ public class RideUtils {
             try {
 
                 Intent shortcutIntent = ((TkpdCoreRouter) context.getApplicationContext()).getSplashScreenIntent(context);
-
-                shortcutIntent.putExtra("shortcut", "true");
+                shortcutIntent.putExtra(RideHomeActivity.EXTRA_LAUNCH_SHORTCUT, "true");
 
                 Intent addIntent = new Intent();
                 addIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);

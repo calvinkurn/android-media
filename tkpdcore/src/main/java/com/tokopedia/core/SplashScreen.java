@@ -140,20 +140,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     }
 
     public void finishSplashScreen() {
-
-        Intent intent;
-        if (getIntent() != null &&
-                getIntent().getBooleanExtra("shortcut", false)) {
-
-            intent = new Intent();
-            intent.setClassName(this, "com.tokopedia.ride.bookingride.view.activity.RideHomeActivity");
-            intent.setAction(Intent.ACTION_MAIN);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-        } else {
-            intent = HomeRouter.getHomeActivity(this);
-        }
-
+        Intent intent = HomeRouter.getHomeActivity(this);
         startActivity(intent);
         finish();
     }

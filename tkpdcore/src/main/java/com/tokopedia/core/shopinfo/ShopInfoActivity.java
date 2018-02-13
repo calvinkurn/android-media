@@ -48,10 +48,6 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
-import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -74,7 +70,6 @@ import java.net.URLEncoder;
 import java.util.List;
 
 import static com.tokopedia.core.gcm.Constants.FROM_APP_SHORTCUTS;
-import static com.tokopedia.core.router.InboxRouter.PARAM_OWNER_FULLNAME;
 import static com.tokopedia.core.shopinfo.models.shopmodel.Info.SHOP_OFFICIAL_VALUE;
 
 /**

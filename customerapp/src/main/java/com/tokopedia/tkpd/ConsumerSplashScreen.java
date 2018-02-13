@@ -20,13 +20,15 @@ public class ConsumerSplashScreen extends SplashScreen {
         RideConfiguration rideConfiguration = new RideConfiguration(getApplicationContext());
 
         Intent homeIntent = HomeRouter.getHomeActivity(this);
-        if (TextUtils.isEmpty(rideConfiguration.getActiveRequestId())) {
-            startActivity(homeIntent);
-        } else {
+        if ((getIntent() != null &&
+                getIntent().getBooleanExtra(RideHomeActivity.EXTRA_LAUNCH_SHORTCUT, false)) ||
+                !TextUtils.isEmpty(rideConfiguration.getActiveRequestId())) {
             TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(getApplicationContext());
             taskStackBuilder.addNextIntent(homeIntent);
             taskStackBuilder.addNextIntent(RideHomeActivity.getCallingIntent(this));
             taskStackBuilder.startActivities();
+        } else (TextUtils.isEmpty(rideConfiguration.getActiveRequestId())) {
+            startActivity(homeIntent);
         }
         finish();
     }
