@@ -75,7 +75,9 @@ public class ShopPageActivity extends BaseTabActivity  implements HasComponent<S
 
         super.onCreate(savedInstanceState);
 
-        shopInfoHeaderViewHelper = new ShopInfoHeaderViewHelper(getWindow().getDecorView().getRootView(), userSession);
+        shopInfoHeaderViewHelper = new ShopInfoHeaderViewHelper(getWindow().getDecorView().getRootView(), shopPagePresenter.getUserSession());
+
+        shopPagePresenter.fetchData();
     }
 
     private void initInjector() {
