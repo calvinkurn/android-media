@@ -40,7 +40,6 @@ import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.mitratoppers.MitraToppersRouter;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.fintech.mitratoppers.view.activity.MitraToppersActivity;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;

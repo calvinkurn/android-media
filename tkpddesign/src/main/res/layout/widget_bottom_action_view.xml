@@ -14,9 +14,9 @@
 
         <android.support.v7.widget.LinearLayoutCompat
             android:id="@+id/linear_layout_button_1"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:minWidth="100dp"
             android:clickable="true"
             android:gravity="center_vertical"
             android:minHeight="@dimen/image_width_s"
@@ -58,9 +58,10 @@
 
         <android.support.v7.widget.LinearLayoutCompat
             android:id="@+id/linear_layout_button_2"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:minWidth="100dp"
             android:clickable="true"
             android:gravity="center_vertical"
             android:minHeight="@dimen/image_width_s"

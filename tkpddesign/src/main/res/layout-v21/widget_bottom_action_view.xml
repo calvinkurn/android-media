@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_rect_rounded_white_no_shadow"
-    android:elevation="6dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:elevation="6dp"
+    android:clipToPadding="false"
+    app:cardCornerRadius="20dp">
 
     <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="wrap_content"
@@ -15,9 +17,9 @@
 
         <android.support.v7.widget.LinearLayoutCompat
             android:id="@+id/linear_layout_button_1"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:minWidth="100dp"
             android:clickable="true"
             android:gravity="center_vertical"
             android:minHeight="@dimen/image_width_s"
@@ -59,9 +61,10 @@
 
         <android.support.v7.widget.LinearLayoutCompat
             android:id="@+id/linear_layout_button_2"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:minWidth="100dp"
             android:clickable="true"
             android:gravity="center_vertical"
             android:minHeight="@dimen/image_width_s"
@@ -94,4 +97,4 @@
                 tools:visibility="visible" />
         </android.support.v7.widget.LinearLayoutCompat>
     </android.support.v7.widget.LinearLayoutCompat>
-</FrameLayout>
+</android.support.v7.widget.CardView>
