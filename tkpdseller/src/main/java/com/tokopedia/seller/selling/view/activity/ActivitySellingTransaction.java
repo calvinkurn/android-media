@@ -299,8 +299,6 @@ public class ActivitySellingTransaction extends TkpdActivity
         };
         for (String aCONTENT : CONTENT) indicator.addTab(indicator.newTab().setText(aCONTENT));
         fragmentList = new ArrayList<>();
-//        fragmentList.add(FragmentPeopleTxCenter.createInstance(FragmentPeopleTxCenter.SHOP));
-//        fragmentList.add(FragmentShopNewOrderV2.createInstance()); //TODO UNCOMMENT
         fragmentList.add(FragmentSellingTxCenter.createInstance(FragmentSellingTxCenter.SHOP));
         String query = "";
         if (getIntent().hasExtra(EXTRA_QUERY)) {
@@ -312,9 +310,6 @@ public class ActivitySellingTransaction extends TkpdActivity
         fragmentList.add(FragmentSellingStatus.newInstance());
         fragmentList.add(FragmentSellingTransaction.newInstance());
         mViewPager.setOffscreenPageLimit(fragmentList.size());
-
-//        fragmentList.add(FragmentShopTxStatusV2.createInstanceStatus(R.layout.fragment_shipping_status, FragmentShopTxStatusV2.INSTANCE_STATUS));
-//        fragmentList.add(FragmentShopTxStatusV2.createInstanceTransaction(R.layout.fragment_shop_transaction_list, FragmentShopTxStatusV2.INSTANCE_TX));
     }
 
     private void setAdapter() {
