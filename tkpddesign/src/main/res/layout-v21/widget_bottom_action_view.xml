@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:elevation="6dp"
-    android:clipToPadding="false"
+    android:clipToPadding="true"
+    android:padding="2dp"
     app:cardCornerRadius="20dp">
 
     <android.support.v7.widget.LinearLayoutCompat
