@@ -50,7 +50,6 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
