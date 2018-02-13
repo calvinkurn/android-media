@@ -221,7 +221,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
+    /*@Override
     public void onBackPressed() {
         if (searchView.isSearchOpen()) {
             if (searchView.isFinishOnClose() && isTaskRoot()) {
@@ -239,6 +239,19 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
             Intent homeIntent = ((TkpdCoreRouter) getApplication()).getHomeIntent(this);
             startActivity(homeIntent);
             finish();
+        } else {
+            finish();
+        }
+    }*/
+
+    @Override
+    public void onBackPressed() {
+        if (searchView.isSearchOpen()) {
+            if (searchView.isFinishOnClose()) {
+                finish();
+            } else {
+                searchView.closeSearch();
+            }
         } else {
             finish();
         }

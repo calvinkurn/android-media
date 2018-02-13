@@ -122,7 +122,7 @@ public abstract class TActivity extends BaseActivity {
         return true;
     }
 
-    @Override
+    /*@Override
     public void onBackPressed() {
         if (isTaskRoot() ||
                 (getIntent().getExtras() != null &&
@@ -132,7 +132,7 @@ public abstract class TActivity extends BaseActivity {
             finish();
         } else
             super.onBackPressed();
-    }
+    }*/
 
     public void inflateView(int layoutId) {
         if (parentView != null) getLayoutInflater().inflate(layoutId, parentView);

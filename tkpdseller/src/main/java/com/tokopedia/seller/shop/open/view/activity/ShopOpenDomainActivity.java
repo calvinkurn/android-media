@@ -27,10 +27,13 @@ public class ShopOpenDomainActivity extends BaseSimpleActivity
 
     @Override
     protected Fragment getNewFragment() {
-        ShopOpenReserveDomainFragment shopOpenReserveDomainFragment = ShopOpenReserveDomainFragment.newInstance();
-        if (getIntent() != null)
-            shopOpenReserveDomainFragment.setFromAppShortcut(getIntent().getBooleanExtra(Constants.FROM_APP_SHORTCUTS, false));
-        return shopOpenReserveDomainFragment;
+
+        if (getIntent() != null) {
+            boolean isFromAppShortCut = getIntent().getBooleanExtra(Constants.FROM_APP_SHORTCUTS, false);
+            return ShopOpenReserveDomainFragment.newInstance(isFromAppShortCut);
+        } else {
+            return ShopOpenReserveDomainFragment.newInstance();
+        }
     }
 
     @Override

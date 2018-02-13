@@ -32,6 +32,8 @@ import com.tokopedia.seller.shop.open.view.watcher.AfterTextWatcher;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.core.gcm.Constants.FROM_APP_SHORTCUTS;
+
 /**
  * Created by Hendry on 3/17/2017.
  */
@@ -56,6 +58,14 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
 
     public static ShopOpenReserveDomainFragment newInstance() {
         return new ShopOpenReserveDomainFragment();
+    }
+
+    public static ShopOpenReserveDomainFragment newInstance(boolean isFromAppShortcut) {
+        Bundle args = new Bundle();
+        args.putBoolean(FROM_APP_SHORTCUTS, isFromAppShortcut);
+        ShopOpenReserveDomainFragment fragment = new ShopOpenReserveDomainFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -131,6 +141,17 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
 
         if (isFromAppShortCut())
             UnifyTracking.eventJualLongClick();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void setupArguments(Bundle arguments) {
+        if (arguments != null)
+            fromAppShortCut = arguments.getBoolean(FROM_APP_SHORTCUTS);
     }
 
     private void hideSnackBarRetry() {
@@ -255,10 +276,6 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
         Intent intent = ShopOpenReserveDomainSuccessActivity.getIntent(getContext(), shopName);
         startActivity(intent);
         getActivity().finish();
-    }
-
-    public void setFromAppShortcut(boolean booleanExtra) {
-        fromAppShortCut = booleanExtra;
     }
 
     public boolean isFromAppShortCut() {

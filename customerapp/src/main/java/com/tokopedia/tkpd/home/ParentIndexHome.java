@@ -67,6 +67,7 @@ import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.SessionHandler;
@@ -86,7 +87,6 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import rx.subscriptions.CompositeSubscription;
 
@@ -134,6 +134,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     private int initStateFragment = INIT_STATE_FRAGMENT_HOME;
 
     private BroadcastReceiver hockeyBroadcastReceiver;
+    private TkpdProgressDialog progressDialog;
 
     @DeepLink(Constants.Applinks.HOME)
     public static Intent getApplinkCallingIntent(Context context, Bundle extras) {
@@ -258,23 +259,29 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             shortcutManager.removeAllDynamicShortcuts();
 
 
-            ShortcutInfo shopShortcut = null, referralShortcut = null, productShortcut = null, digitalShortcut = null;
             Bundle args = new Bundle();
             args.putBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, true);
             args.putBoolean(Constants.FROM_APP_SHORTCUTS, true);
 
+            Intent intentHome = ((TkpdCoreRouter) getApplication()).getHomeIntent
+                    (this);
+
             String shopID = SessionHandler.getShopID(this);
             Intent shopIntent;
+
+
             if (shopID.equalsIgnoreCase(SessionHandler.DEFAULT_EMPTY_SHOP_ID)) {
-                shopIntent = new Intent(this, ShopOpenDomainActivity.class);
+                shopIntent = ShopOpenDomainActivity.getIntent(this);
                 shopIntent.setAction(Intent.ACTION_VIEW);
             } else {
-                shopIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("tokopedia://shop/" + shopID));
+                shopIntent = ShopInfoActivity.getCallingIntent(this, shopID);
+                shopIntent.setAction(Intent.ACTION_VIEW);
             }
+
             shopIntent.putExtras(args);
             shopIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             shopIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            shopShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHOP_ID)
+            ShortcutInfo shopShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHOP_ID)
                     .setShortLabel(getResources().getString(R.string.longpress_jual))
                     .setLongLabel(getResources().getString(R.string.longpress_jual))
                     .setIcon(Icon.createWithResource(this, R.drawable.ic_jual))
@@ -285,7 +292,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             referralIntent.putExtras(args);
             referralIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             referralIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            referralShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHARE_ID)
+            ShortcutInfo referralShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHARE_ID)
                     .setShortLabel(getResources().getString(R.string.longpress_share))
                     .setLongLabel(getResources().getString(R.string.longpress_share))
                     .setIcon(Icon.createWithResource(this, R.drawable.ic_referral))
@@ -297,7 +304,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             productIntent.putExtras(args);
             productIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             productIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            productShortcut = new ShortcutInfo.Builder(this, SHORTCUT_BELI_ID)
+            ShortcutInfo productShortcut = new ShortcutInfo.Builder(this, SHORTCUT_BELI_ID)
                     .setShortLabel(getResources().getString(R.string.longpress_beli))
                     .setLongLabel(getResources().getString(R.string.longpress_beli))
                     .setIcon(Icon.createWithResource(this, R.drawable.ic_beli))
@@ -308,7 +315,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             digitalIntent.putExtras(args);
             digitalIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             digitalIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            digitalShortcut = new ShortcutInfo.Builder(this, SHORTCUT_DIGITAL_ID)
+            ShortcutInfo digitalShortcut = new ShortcutInfo.Builder(this, SHORTCUT_DIGITAL_ID)
                     .setShortLabel(getResources().getString(R.string.longpress_bayar))
                     .setLongLabel(getResources().getString(R.string.longpress_bayar))
                     .setIcon(Icon.createWithResource(this, R.drawable.ic_bayar))
@@ -324,33 +331,37 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
             shortcutManager.removeAllDynamicShortcuts();
 
-            ShortcutInfo productShortcut = null, digitalShortcut = null;
 
-            Bundle args = new Bundle();
+            /*Bundle args = new Bundle();
             args.putBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, true);
-            args.putBoolean(Constants.FROM_APP_SHORTCUTS, true);
+            args.putBoolean(Constants.FROM_APP_SHORTCUTS, true);*/
+
+            Intent intentHome = ((TkpdCoreRouter) getApplication()).getHomeIntent
+                    (this);
+            intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
             Intent productIntent;
             productIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.Applinks.DISCOVERY_SEARCH));
             productIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             productIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            productIntent.putExtras(args);
-            productShortcut = new ShortcutInfo.Builder(this, SHORTCUT_BELI_ID)
+//            productIntent.putExtras(args);
+            ShortcutInfo productShortcut = new ShortcutInfo.Builder(this, SHORTCUT_BELI_ID)
                     .setShortLabel(getResources().getString(R.string.longpress_beli))
                     .setLongLabel(getResources().getString(R.string.longpress_beli))
                     .setIcon(Icon.createWithResource(this, R.drawable.ic_beli))
-                    .setIntent(productIntent)
+                    .setIntents(new Intent[]{
+                            productIntent, intentHome
+                    })
                     .build();
 
             Intent digitalIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.Applinks.DIGITAL));
-            digitalIntent.putExtras(args);
-            digitalIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            digitalIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            digitalShortcut = new ShortcutInfo.Builder(this, SHORTCUT_DIGITAL_ID)
+            /*digitalIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            digitalIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);*/
+            ShortcutInfo digitalShortcut = new ShortcutInfo.Builder(this, SHORTCUT_DIGITAL_ID)
                     .setShortLabel(getResources().getString(R.string.longpress_bayar))
                     .setLongLabel(getResources().getString(R.string.longpress_bayar))
                     .setIcon(Icon.createWithResource(this, R.drawable.ic_bayar))
-                    .setIntent(digitalIntent)
+                    .setIntents(new Intent[]{digitalIntent, intentHome})
                     .build();
 
             shortcutManager.addDynamicShortcuts(Arrays.asList(productShortcut, digitalShortcut));
@@ -434,10 +445,12 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
         bottomNavigation.setViewPagerPageChangeListener(new BottomNavigation.ViewPagerPageChangeListener() {
             @Override
-            public void onPageScrollStateChanged(int state) {}
+            public void onPageScrollStateChanged(int state) {
+            }
 
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
 
             @Override
             public void onPageSelected(int position) {
@@ -636,6 +649,12 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         }
 
         isUserFirstTimeLogin = !SessionHandler.isV4Login(this);
+
+        if (SessionHandler.isV4Login(this)) {
+            addShortcutsV4Login();
+        } else {
+            addShortcutsNoLogin();
+        }
 
         invalidateOptionsMenu();
         MainApplication.setCurrentActivity(this);

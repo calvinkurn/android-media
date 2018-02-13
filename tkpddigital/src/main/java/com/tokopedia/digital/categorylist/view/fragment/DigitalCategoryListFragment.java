@@ -57,6 +57,8 @@ import java.util.List;
 import butterknife.BindView;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.tokopedia.core.gcm.Constants.FROM_APP_SHORTCUTS;
+
 /**
  * @author anggaprasetiyo on 7/3/17.
  */
@@ -94,6 +96,14 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         return new DigitalCategoryListFragment();
     }
 
+    public static DigitalCategoryListFragment newInstance(boolean isFromAppShortcut) {
+        Bundle args = new Bundle();
+        args.putBoolean(FROM_APP_SHORTCUTS, isFromAppShortcut);
+        DigitalCategoryListFragment fragment = new DigitalCategoryListFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     protected boolean isRetainInstance() {
         return false;
@@ -126,7 +136,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        if(isFromAppShortcut()){
+        if (isFromAppShortcut()) {
             UnifyTracking.eventBayarLongClick();
         }
     }
@@ -156,7 +166,9 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
 
     @Override
     protected void setupArguments(Bundle arguments) {
-
+        if (arguments != null) {
+            fromAppShortcut = arguments.getBoolean(FROM_APP_SHORTCUTS);
+        }
     }
 
     @Override
@@ -436,7 +448,4 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         return fromAppShortcut;
     }
 
-    public void setFromAppShortcut(boolean fromAppShortcut) {
-        this.fromAppShortcut = fromAppShortcut;
-    }
 }
