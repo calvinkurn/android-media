@@ -75,6 +75,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     private static final int REQUEST_CODE_SHIPMENT_CHOICE = 11;
     private static final int REQUEST_CODE_PINPOINT = 22;
     private static final int DELAY_IN_MILISECOND = 500;
+    private static final String EXTRA_SELECTED_COURIER = "selectedCourier";
 
     @BindView(R2.id.scroll_view_content)
     ScrollView scrollViewContent;
@@ -292,6 +293,10 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
             renderPinpoint();
         }
         llPinpoint.setVisibility(View.VISIBLE);
+    }
+
+    private void showErrorSnackbar(String message) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
     }
 
     private void initializeShipmentChoiceHandler() {
@@ -577,7 +582,10 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
 
     @OnClick(R2.id.bt_save)
     void onSaveClick() {
-        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), "Anda belum menandai lokasi tujuan dalam peta");
+        Intent intentResult = new Intent();
+        intentResult.putExtra(EXTRA_SELECTED_COURIER, presenter.getSelectedCourier());
+        getActivity().setResult(Activity.RESULT_OK, intentResult);
+        getActivity().finish();
     }
 
     @OnCheckedChanged(R2.id.switch_insurance)

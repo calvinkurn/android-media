@@ -21,7 +21,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:buttonTint="@color/medium_green" />
+            android:buttonTint="@color/medium_green"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
 
     </LinearLayout>
 
