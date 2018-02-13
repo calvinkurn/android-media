@@ -160,4 +160,22 @@
     <string name="title_info">Info</string>
     <string name="verification_for_security">Verifikasi untuk Keamanan</string>
     <string name="we_will_send_email_to">Untuk memastikan akun ini benar milik Anda, kami akan mengirimkan kode verifikasi melalui email ke</string>
+
+    <!-- TopProfile -->
+    <string name="title_user_information">Informasi Pengguna</string>
+    <string name="title_user_information_status">Status</string>
+    <string name="status_verified">Verified Account</string>
+    <string name="title_user_information_reputation">Reputasi</string>
+    <string name="reputation_positive">Positif</string>
+    <string name="reputation_netral">Netral</string>
+    <string name="reputation_negative">Negatif</string>
+    <string name="title_user_data">Data Diri</string>
+    <string name="subtitle_user_data">Info ini hanya bisa dilihat oleh Anda</string>
+    <string name="incomplete_profile">Lengkapi data diri Anda untuk menjadi Verified Account. Klik di sini</string>
+    <string name="incomplete_profile_html"><![CDATA[Lengkapi data diri Anda untuk menjadi<br>Verified Account</br>. <font color = "#42b549">Klik di sini</font>]]></string>
+    <string name="title_email">Email</string>
+    <string name="title_gender">Jenis Kelamin</string>
+    <string name="title_birth_date">Tanggal Lahir</string>
+    <string name="data_verified">Terverifikasi</string>
+
 </resources>
