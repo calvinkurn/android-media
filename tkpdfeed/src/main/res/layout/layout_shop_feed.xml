@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:id="@+id/shop_topads_card"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@color/white"
-              android:gravity="center_horizontal"
-              android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/shop_topads_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/container"
@@ -30,8 +30,8 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_shop_item">
 
-                <ImageView
-                    android:id="@+id/shop_image"
+                <com.tokopedia.tkpd.tkpdfeed.feedplus.view.customview.RoundedCornerImageView
+                    android:id="@+id/shop_image_rounded"
                     android:layout_width="@dimen/feed_ava"
                     android:layout_height="@dimen/feed_ava"
                     android:padding="0.5dp" />

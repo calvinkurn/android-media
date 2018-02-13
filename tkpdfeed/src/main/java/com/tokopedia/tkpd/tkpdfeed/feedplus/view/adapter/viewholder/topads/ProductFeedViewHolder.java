@@ -5,11 +5,11 @@ import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.text.Html;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.Data;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.Product;
@@ -17,15 +17,14 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.LocalAdsClickListener;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.ProductFeedTopAdsViewModel;
 
 /**
- * Created by errysuprayogi on 3/27/17.
- * Copied to feed by milhamj 1/18/17.
+ * @author by milhamj on 12/02/18.
  */
 
 public class ProductFeedViewHolder extends AbstractViewHolder<ProductFeedTopAdsViewModel> implements
         View.OnClickListener {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.layout_ads_product_feed;
+    public static final int LAYOUT = R.layout.layout_product_feed;
     private static final String TAG = ProductFeedViewHolder.class.getSimpleName();
 
     private LocalAdsClickListener itemClickListener;
@@ -33,7 +32,7 @@ public class ProductFeedViewHolder extends AbstractViewHolder<ProductFeedTopAdsV
     private Context context;
     public TextView productName;
     public TextView productPrice;
-    public ImageView productImage;
+    public SquareImageView productImage;
 
 
     public ProductFeedViewHolder(View itemView, LocalAdsClickListener itemClickListener) {
@@ -41,7 +40,7 @@ public class ProductFeedViewHolder extends AbstractViewHolder<ProductFeedTopAdsV
         itemView.setOnClickListener(this);
         this.itemClickListener = itemClickListener;
         context = itemView.getContext();
-        productImage = (ImageView) itemView.findViewById(R.id.product_image);
+        productImage = (SquareImageView) itemView.findViewById(R.id.product_image_square);
         productName = (TextView) itemView.findViewById(R.id.title);
         productPrice = (TextView) itemView.findViewById(R.id.price);
     }

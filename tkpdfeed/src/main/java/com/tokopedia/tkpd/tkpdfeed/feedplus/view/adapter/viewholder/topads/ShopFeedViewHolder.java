@@ -12,10 +12,8 @@ import android.text.Spanned;
 import android.text.style.ImageSpan;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
@@ -24,6 +22,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.Data;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.ImageProduct;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.Shop;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.promo.PromotedShopAdapter;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.customview.RoundedCornerImageView;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.LocalAdsClickListener;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.SpacesItemDecoration;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.SpannedGridLayoutManager;
@@ -34,21 +33,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author by errysuprayogi on 3/30/17.
- * Copied to feed by milhamj 1/18/17.
+ * @author by milhamj on 12/02/18.
  */
+
 
 public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedTopAdsViewModel> implements View.OnClickListener {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.layout_ads_shop_feed_plus;
+    public static final int LAYOUT = R.layout.layout_shop_feed;
     private static final String TAG = ShopFeedViewHolder.class.getSimpleName();
     private static final int MARGIN_15DP_PIXEL = 40;
     private static final int PADDING_12DP_PIXEL = 30;
 
 
     private LocalAdsClickListener itemClickListener;
-    private ImageView shopImage;
+    private RoundedCornerImageView shopImage;
     private TextView shopTitle;
     private TextView shopSubtitle;
     private TextView favTxt;
@@ -68,7 +67,7 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedTopAdsViewMod
         this.itemClickListener = itemClickListener;
         context = itemView.getContext();
         shopCard = (LinearLayout) itemView.findViewById(R.id.shop_topads_card);
-        shopImage = (ImageView) itemView.findViewById(R.id.shop_image);
+        shopImage = (RoundedCornerImageView) itemView.findViewById(R.id.shop_image_rounded);
         shopTitle = (TextView) itemView.findViewById(R.id.shop_title);
         shopSubtitle = (TextView) itemView.findViewById(R.id.shop_subtitle);
         favBtn = (LinearLayout) itemView.findViewById(R.id.fav_btn);
