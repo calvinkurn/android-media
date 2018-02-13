@@ -17,6 +17,11 @@ def getTkpdAbstraction() {
             rootProject.ext.tkpdDependencies.abstraction : project(':tkpdabstraction');
 }
 
+def getTkpdCacheApi() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.cacheapi : project(':tkpdcacheapi');
+}
+
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
@@ -100,6 +105,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
+    compile getTkpdCacheApi()
     compile getTkpdAbstraction()
 
     testCompile rootProject.ext.testDependencies.junit

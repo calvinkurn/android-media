@@ -3,7 +3,7 @@ package com.tokopedia.core.base.domain.executor;
 import rx.Scheduler;
 
 /**
- * will use AndroidSchedulers.mainThread()
+ * Use Usecase from tkpd usecase
  */
 @Deprecated
 public interface PostExecutionThread {

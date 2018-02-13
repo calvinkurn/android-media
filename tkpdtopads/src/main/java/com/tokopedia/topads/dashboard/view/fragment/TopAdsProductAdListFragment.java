@@ -75,6 +75,7 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, ad.getId());
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD, ad);
             intent.putExtra(TopAdsExtraConstant.EXTRA_FORCE_REFRESH, true);
+            intent.putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, true);
             startActivityForResult(intent, REQUEST_CODE_AD_CHANGE);
         }
     }

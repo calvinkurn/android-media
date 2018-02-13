@@ -170,7 +170,7 @@ public class ManageShopAddress extends TActivity {
                                                     ShopSettingCache.DeleteCache(ShopSettingCache.CODE_ADDRESS, ManageShopAddress.this);
                                                     ShopCache.DeleteCache(session.getShopID(), ManageShopAddress.this);
                                                     if (deleteShopInfoUseCase!= null) {
-                                                        deleteShopInfoUseCase.executeSync(RequestParams.EMPTY);
+                                                        deleteShopInfoUseCase.executeSync();
                                                     }
 
                                                     jsonObject = new JSONObject(response.getStringData());
@@ -258,7 +258,7 @@ public class ManageShopAddress extends TActivity {
             ShopSettingCache.DeleteCache(ShopSettingCache.CODE_ADDRESS, ManageShopAddress.this);
             ShopCache.DeleteCache(session.getShopID(), ManageShopAddress.this);
             if (deleteShopInfoUseCase!= null) {
-                deleteShopInfoUseCase.executeSync(RequestParams.EMPTY);
+                deleteShopInfoUseCase.executeSync();
             }
             GetShopLocationsV4();
         }

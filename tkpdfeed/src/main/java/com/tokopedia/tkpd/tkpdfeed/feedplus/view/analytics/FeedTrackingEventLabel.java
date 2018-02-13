@@ -9,6 +9,10 @@ public class FeedTrackingEventLabel {
     public static final String PAGE_FEED = "Feed";
     public static final String PAGE_PRODUCT_LIST = "Product List";
 
+    // bottom nav feed before login
+    public static final String USER_INTERACTION_HOMEPAGE = "userInteractionHomePage";
+    public static final String HOME_BOTTOM_NAV = "bottom nav";
+
     public class View {
         public static final String VIEW_RECENT = "View Recent";
 
@@ -17,6 +21,8 @@ public class FeedTrackingEventLabel {
         public static final String FEED_PRODUCT_LIST = "Feed - Product List";
         public static final String FEED_SHOP = "Feed - Shop";
         public static final String PRODUCTLIST_SHOP = "Product List - Shop";
+
+        public static final String FEED_TAB = "feed tab";
     }
 
     public class Click {
@@ -43,6 +49,8 @@ public class FeedTrackingEventLabel {
                 "Shop";
         public static final String TOPPICKS_SEE_ALL = "Toppicks - Lihat Semua";
         public static final String TOPPICKS = "Toppicks : ";
+
+        public static final String FEED_BEFORE_LOGIN = "masuk sekarang";
     }
 
     public class Share {
