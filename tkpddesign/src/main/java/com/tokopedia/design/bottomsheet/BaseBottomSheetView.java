@@ -32,11 +32,14 @@ public abstract class BaseBottomSheetView extends BottomSheetDialog {
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Service.LAYOUT_INFLATER_SERVICE);
         View bottomSheetView = layoutInflater.inflate(getLayoutId(), null);
         setContentView(bottomSheetView);
-        setViewVariables();
+        initView();
     }
 
     @LayoutRes
     protected abstract int getLayoutId();
 
-    protected abstract void setViewVariables();
+    /**
+     * Initialize your view here e.g: findViewById etc...
+     */
+    protected abstract void initView();
 }
