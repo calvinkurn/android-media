@@ -97,7 +97,7 @@ public class RequestOTPWalletFragment extends BaseDaggerFragment implements Requ
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (!cacheHandler.isExpired() && cacheHandler.getBoolean(HAS_PHONE_VERIF_TIMER, false)) {
+        if (cacheHandler != null && !cacheHandler.isExpired() && cacheHandler.getBoolean(HAS_PHONE_VERIF_TIMER, false)) {
             startTimer();
         }
 
