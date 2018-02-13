@@ -40,6 +40,10 @@ public class ShopPagePresenter extends BaseDaggerPresenter<ShopPageView> {
         this.shopInfo = shopInfo;
     }
 
+    public UserSession getUserSession() {
+        return userSession;
+    }
+
     public void fetchData(){
         getSpeedReputationUseCase.execute(RequestParams.EMPTY, new Subscriber<SpeedReputation>() {
             @Override
