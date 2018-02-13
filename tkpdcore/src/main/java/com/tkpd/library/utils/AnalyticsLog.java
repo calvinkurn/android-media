@@ -5,7 +5,6 @@ import android.os.Build;
 import com.logentries.logger.AndroidLogger;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.GlobalConfig;
