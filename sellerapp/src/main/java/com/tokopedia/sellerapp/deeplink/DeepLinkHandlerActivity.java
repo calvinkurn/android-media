@@ -12,7 +12,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.applink.DigitalApplinkModule;
 import com.tokopedia.digital.applink.DigitalApplinkModuleLoader;

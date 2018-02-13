@@ -6,11 +6,11 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.session.R;
+import com.tokopedia.network.ErrorCode;
 import com.tokopedia.session.register.RegisterConstant;
 import com.tokopedia.session.register.data.model.RegisterViewModel;
-import com.tokopedia.session.register.domain.interactor.RegisterEmailUseCase;
-import com.tokopedia.session.register.view.subscriber.RegisterEmailSubscriber;
+import com.tokopedia.session.register.domain.interactor.registeremail.RegisterEmailUseCase;
+import com.tokopedia.session.register.view.subscriber.registeremail.RegisterEmailSubscriber;
 import com.tokopedia.session.register.view.util.RegisterUtil;
 import com.tokopedia.session.register.view.viewlistener.RegisterEmailViewListener;
 import com.tokopedia.session.register.view.viewmodel.RegisterEmailViewModel;
@@ -39,12 +39,10 @@ public class RegisterEmailPresenterImpl implements RegisterEmailPresenter, Regis
     @Override
     public void onRegisterClicked() {
         viewListener.resetError();
-        if (isValidForm()) {
-            viewListener.showLoadingProgress();
-            viewListener.dropKeyboard();
-            sendGTMClickStepTwo();
-            registerEmail();
-        }
+        viewListener.showLoadingProgress();
+        viewListener.dropKeyboard();
+        sendGTMClickStepTwo();
+        registerEmail();
     }
 
     private RequestParams getRegisterStep2Param() {
@@ -82,22 +80,24 @@ public class RegisterEmailPresenterImpl implements RegisterEmailPresenter, Regis
             case GO_TO_ACTIVATION_PAGE:
                 if (viewModel.getIsActive() == STATUS_ACTIVE)
                     viewListener.goToAutomaticLogin();
-                else if (viewModel.getIsActive() == STATUS_INACTIVE || viewModel.getIsActive() == STATUS_PENDING )
+                else if (viewModel.getIsActive() == STATUS_INACTIVE || viewModel.getIsActive() == STATUS_PENDING)
                     viewListener.goToActivationPage(viewModel);
                 break;
             case GO_TO_RESET_PASSWORD:
                 viewListener.showInfo();
                 break;
             default:
-                throw new RuntimeException("ERROR UNKNOWN ACTION");
+                viewListener.onErrorRegister(com.tokopedia.core.network.retrofit.response
+                        .ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
         }
 
-        if(registerViewModel != null) {
+        if (registerViewModel != null) {
             UnifyTracking.eventMoRegister(registerViewModel.getName(), registerViewModel.getPhone());
         }
     }
 
-    private boolean isValidForm() {
+    @Override
+    public boolean isCanRegister() {
         boolean isValid = true;
 
         String name = viewListener.getName().getText().toString();
@@ -106,66 +106,35 @@ public class RegisterEmailPresenterImpl implements RegisterEmailPresenter, Regis
         String phone = viewListener.getPhone().getText().toString();
 
         if (TextUtils.isEmpty(password)) {
-            viewListener.setPasswordError(viewListener.getString(R.string.error_field_required));
             isValid = false;
-            sendGTMRegisterError(AppEventTracking.EventLabel.PASSWORD);
         } else if (password.length() < PASSWORD_MINIMUM_LENGTH) {
-            viewListener.setPasswordError(viewListener.getString(R.string.error_invalid_password));
             isValid = false;
-            sendGTMRegisterError(AppEventTracking.EventLabel.PASSWORD);
         }
 
         if (TextUtils.isEmpty(phone)) {
-            viewListener.setPhoneError(viewListener.getString(com.tokopedia.core.R.string.error_field_required));
             isValid = false;
-            sendGTMRegisterError(AppEventTracking.EventLabel.HANDPHONE);
         } else {
-            boolean validatePhoneNumber = validatePhoneNumber(phone.replace("-", ""));
+            boolean validatePhoneNumber = RegisterUtil.isValidPhoneNumber(phone.replace("-",
+                    ""));
             if (!validatePhoneNumber) {
-                viewListener.setPhoneError(viewListener.getString(com.tokopedia.core.R.string.error_invalid_phone_number));
                 isValid = false;
-                sendGTMRegisterError(AppEventTracking.EventLabel.HANDPHONE);
             }
         }
 
         if (TextUtils.isEmpty(name)) {
-            viewListener.setNameError(viewListener.getString(R.string.error_field_required));
             isValid = false;
         } else if (RegisterUtil.checkRegexNameLocal(name)) {
-            viewListener.setNameError(viewListener.getString(R.string.error_illegal_character));
             isValid = false;
         } else if (RegisterUtil.isExceedMaxCharacter(name)) {
-            viewListener.setNameError(viewListener.getString(R.string.error_max_35_character));
             isValid = false;
         }
 
         if (TextUtils.isEmpty(email)) {
-            viewListener.setEmailError(viewListener.getString(R.string.error_field_required));
             isValid = false;
-            sendGTMRegisterError(AppEventTracking.EventLabel.EMAIL);
         } else if (!CommonUtils.EmailValidation(email)) {
-            viewListener.setEmailError(viewListener.getString(R.string.error_invalid_email));
             isValid = false;
-            sendGTMRegisterError(AppEventTracking.EventLabel.EMAIL);
         }
-
 
         return isValid;
-    }
-
-    public static boolean validatePhoneNumber(String phoneNo) {
-        for (int i = MIN_PHONE_NUMBER; i <= MAX_PHONE_NUMBER; i++) {
-            if (phoneNo.matches("\\d{" + i + "}")) return true;
-        }
-        return false;
-
-    }
-
-    private void sendGTMRegisterError(String label) {
-        UnifyTracking.eventRegisterError(label);
-
-
-
-
     }
 }

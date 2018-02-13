@@ -18,6 +18,8 @@ import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberWa
 
 public class ChangePhoneNumberRequestActivity extends BasePresenterActivity implements ChangePhoneNumberRequestFragment.ChangePhoneNumberRequestListener {
 
+    private ChangePhoneNumberRequestFragment fragment;
+    private boolean isBackPressHandled;
     @Override
     protected void setupURIPass(Uri data) {
 
@@ -39,8 +41,17 @@ public class ChangePhoneNumberRequestActivity extends BasePresenterActivity impl
     }
 
     @Override
+    public void onBackPressed() {
+        if(fragment != null && isBackPressHandled){
+            fragment.handleBackOnView();
+        } else{
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     protected void initView() {
-        ChangePhoneNumberRequestFragment fragment = ChangePhoneNumberRequestFragment.createInstance(this);
+        fragment = ChangePhoneNumberRequestFragment.createInstance(this);
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         if (getFragmentManager().findFragmentById(R.id.container) == null) {
@@ -72,6 +83,12 @@ public class ChangePhoneNumberRequestActivity extends BasePresenterActivity impl
         fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commit();
     }
+
+    @Override
+    public void shouldHandleBackPress(boolean isBackPressHandle) {
+        isBackPressHandled = isBackPressHandle;
+    }
+
 
     @Override
     protected void onResume() {

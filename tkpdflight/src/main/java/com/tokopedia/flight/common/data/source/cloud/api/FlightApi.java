@@ -11,6 +11,7 @@ import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
+import com.tokopedia.flight.orderlist.data.cloud.entity.SendEmailEntity;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
 import com.tokopedia.flight.review.domain.checkout.FlightCheckoutRequest;
@@ -83,4 +84,7 @@ public interface FlightApi {
 
     @GET(FlightUrl.FLIGHT_AIRLINE_PATH)
     Observable<Response<DataResponse<List<AirlineData>>>> getFlightAirline(@Query("id") String airlineId);
+
+    @GET(FlightUrl.FLIGHT_EMAIL)
+    Observable<Response<SendEmailEntity>> sendEmail(@QueryMap Map<String, Object> param);
 }
