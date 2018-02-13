@@ -477,7 +477,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         }
 
         private String getPriceFormat(double pricePlan) {
-            return pricePlan == 0 ? "-" : "Rp" + String.valueOf(pricePlan);
+            return pricePlan == 0 ? "-" : "Rp" + String.valueOf((int) pricePlan);
         }
 
         private String getTotalItemFormatted(int totalItem) {
@@ -485,7 +485,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         }
 
         private String getTotalWeightFormatted(double totalWeight) {
-            return String.format("Ongkos Kirim (%s gr)", totalWeight);
+            return String.format("Ongkos Kirim (%s gr)", (int) totalWeight);
         }
 
         private int getExpandOtherProductVisibility(List<CartItemModel> cartItemModels) {
