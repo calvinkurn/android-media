@@ -10,7 +10,7 @@ import com.tokopedia.seller.product.edit.data.source.db.model.ProductDraftDataBa
  */
 
 /**
- * From version 5 to 6, add column userId and tm
+ * From version 5 to 6, add column version
  */
 @Migration(version = 6, database = TkpdSellerDatabase.class)
 public class MigrationV6 extends AlterTableMigration<ProductDraftDataBase> {

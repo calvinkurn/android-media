@@ -2,24 +2,17 @@ package com.tokopedia.seller.product.edit.domain.interactor.uploadproduct;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.UploadImageModel;
-import com.tokopedia.seller.product.edit.domain.GenerateHostRepository;
-import com.tokopedia.seller.product.edit.domain.ImageProductUploadRepository;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
 import com.tokopedia.seller.product.edit.domain.UploadProductRepository;
 import com.tokopedia.seller.product.edit.domain.listener.AddProductNotificationListener;
 import com.tokopedia.seller.product.edit.domain.model.AddProductDomainModel;
-import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
-import com.tokopedia.seller.product.edit.domain.model.ProductPhotoListDomainModel;
-import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +21,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Action1;
+import rx.functions.Func1;
 
 /**
  * @author sebastianuskh on 4/10/17.
@@ -40,19 +34,15 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
 
     private final ProductDraftRepository productDraftRepository;
     private final UploadProductRepository uploadProductRepository;
+    private ProductViewModel productViewModel;
 
     private AddProductNotificationListener listener;
-    private ProductViewModel productViewModel;
     private UploadImageUseCase<UploadImageModel> uploadImageUseCase;
 
     @Inject
-    public UploadProductUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
-            ProductDraftRepository productDraftRepository,
-            UploadProductRepository uploadProductRepository,
-            UploadImageUseCase<UploadImageModel> uploadImageUseCase) {
-        super(threadExecutor, postExecutionThread);
+    public UploadProductUseCase(ProductDraftRepository productDraftRepository,
+                                UploadProductRepository uploadProductRepository,
+                                UploadImageUseCase<UploadImageModel> uploadImageUseCase) {
         this.productDraftRepository = productDraftRepository;
         this.uploadProductRepository = uploadProductRepository;
         this.uploadImageUseCase = uploadImageUseCase;
@@ -70,19 +60,35 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
 
     @Override
     public Observable<AddProductDomainModel> createObservable(RequestParams requestParams) {
-        long productId = requestParams.getLong(UPLOAD_PRODUCT_ID, UNSELECTED_PRODUCT_ID);
-        if (productId == UNSELECTED_PRODUCT_ID) {
-            throw new RuntimeException("Input model is missing");
-        }
-        productViewModel = productDraftRepository.getDraft(productId).toBlocking().first();
-        if (productViewModel == null) {
-            throw new RuntimeException("Draft is already deleted");
-        }
-
-        return Observable.just(productViewModel)
-                .flatMap(new UploadProduct(productId, listener, uploadProductRepository,
+        long draftProductId = requestParams.getLong(UPLOAD_PRODUCT_ID, UNSELECTED_PRODUCT_ID);
+        return Observable.just(draftProductId)
+                .doOnNext(new Action1<Long>() {
+                    @Override
+                    public void call(Long draftProductId) {
+                        if (draftProductId == UNSELECTED_PRODUCT_ID) {
+                            Observable.error(new RuntimeException("Input model is missing"));
+                        }
+                    }
+                })
+                .flatMap(new Func1<Long, Observable<ProductViewModel>>() {
+                    @Override
+                    public Observable<ProductViewModel> call(Long draftProductId) {
+                        return productDraftRepository.getDraft(draftProductId);
+                    }
+                })
+                .map(new Func1<ProductViewModel, ProductViewModel>() {
+                    @Override
+                    public ProductViewModel call(ProductViewModel productViewModel) {
+                        if (productViewModel == null) {
+                            Observable.error(new RuntimeException("Draft is already deleted"));
+                        }
+                        UploadProductUseCase.this.productViewModel = productViewModel;
+                        return productViewModel;
+                    }
+                })
+                .flatMap(new UploadProduct(draftProductId, listener, uploadProductRepository,
                         uploadImageUseCase))
-                .doOnNext(new DeleteProductDraft(productId, productDraftRepository))
+                .doOnNext(new DeleteProductDraft(draftProductId, productDraftRepository))
                 .doOnNext(new DeleteImageCacheDraftFile());
     }
 
@@ -94,7 +100,7 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
                 return;
             }
             ArrayList<String> pathToDelete = new ArrayList<>();
-            for (int i = 0, sizei = productPictureViewModels.size(); i<sizei; i++) {
+            for (int i = 0, sizei = productPictureViewModels.size(); i < sizei; i++) {
                 ProductPictureViewModel productPictureViewModel = productPictureViewModels.get(i);
                 if (productPictureViewModel == null) {
                     continue;

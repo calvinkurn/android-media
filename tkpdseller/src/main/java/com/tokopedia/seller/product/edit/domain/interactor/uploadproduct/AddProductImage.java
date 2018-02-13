@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.edit.domain.interactor.uploadproduct;
 
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
 import com.tokopedia.seller.base.domain.model.ImageUploadDomainModel;
 import com.tokopedia.seller.product.common.constant.ProductNetworkConstant;

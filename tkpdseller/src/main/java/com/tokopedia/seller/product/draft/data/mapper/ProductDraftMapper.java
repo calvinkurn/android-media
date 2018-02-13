@@ -39,23 +39,28 @@ import rx.functions.Func1;
 public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductViewModel> {
     public static final String UTF_8 = "UTF-8";
 
+    private static final int VERSION_PRODUCT_VIEW_MODEL = 1;
+
     public ProductDraftMapper() {
     }
 
     @Override
     public ProductViewModel call(ProductDraftDataBase productDraftDataBase) {
-        if (productDraftDataBase.getVersion() < ProductDraftDataBase.CURRENT_VERSION) {
+        //  do not use ProductDraftDataBase.CURRENT_VERSION as it can change.
+        if (productDraftDataBase.getVersion() == VERSION_PRODUCT_VIEW_MODEL){
+            return CacheUtil.convertStringToModel(
+                    productDraftDataBase.getData(),
+                    ProductViewModel.class
+            );
+        } else {
             ProductDraftModel draftModel = CacheUtil.convertStringToModel(
                     productDraftDataBase.getData(),
                     ProductDraftModel.class
             );
 
-            return mapDraftToDomain(draftModel);
-        } else {
-            return CacheUtil.convertStringToModel(
-                    productDraftDataBase.getData(),
-                    ProductViewModel.class
-            );
+            ProductViewModel productViewModel = mapDraftToDomain(draftModel);
+            productViewModel.setDraftId(productDraftDataBase.getId());
+            return productViewModel;
         }
     }
 
@@ -174,8 +179,7 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
     public static ProductPictureResultUploadedViewModel generatePicObj(String picObj) throws UnsupportedEncodingException {
         byte[] resultEncoded = Base64.decode(picObj, Base64.DEFAULT);
         Gson gson = new Gson();
-        ProductPictureResultUploadedViewModel resultUploadedViewModel = gson.fromJson(new String(resultEncoded, UTF_8), ProductPictureResultUploadedViewModel.class);
-        return resultUploadedViewModel;
+        return gson.fromJson(new String(resultEncoded, UTF_8), ProductPictureResultUploadedViewModel.class);
     }
 
     public static String mapFromDomain(ProductViewModel domainModel) {

@@ -253,10 +253,6 @@ public class ImagesSelectView extends BaseCustomView {
         return imageSelectorAdapter.getPrimaryImage();
     }
 
-    public int getPrimaryImageIndex() {
-        return imageSelectorAdapter.getPrimaryImageIndex();
-    }
-
     public ImageSelectModel getSelectedImage() {
         return imageSelectorAdapter.getSelectedImage();
     }

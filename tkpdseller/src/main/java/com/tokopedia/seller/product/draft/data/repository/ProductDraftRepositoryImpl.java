@@ -35,7 +35,7 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
     public Observable<Long> saveDraft(ProductViewModel domainModel, boolean isUploading) {
         String productDraft = ProductDraftMapper.mapFromDomain(domainModel);
         String shopId = SessionHandler.getShopID(context);
-        return productDraftDataSource.saveDraft(productDraft, domainModel.getProductId(), isUploading, shopId);
+        return productDraftDataSource.saveDraft(productDraft, domainModel.getDraftId(), isUploading, shopId);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
                                 .map(new Func1<ProductViewModel, ProductDraftViewModel>() {
                                     @Override
                                     public ProductDraftViewModel call(ProductViewModel productViewModel) {
-                                        return ProductDraftListMapper.mapDomainToView(productViewModel, id);
+                                        return ProductDraftListMapper.mapDomainToView(productViewModel);
                                     }
                                 })
                                 .toBlocking().first();
@@ -72,7 +72,7 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
                 .toSortedList(new Func2<ProductDraftViewModel, ProductDraftViewModel, Integer>() {
                     @Override
                     public Integer call(ProductDraftViewModel productViewModel, ProductDraftViewModel productViewModel2) {
-                        return (int) (productViewModel2.getProductId() - productViewModel.getProductId());
+                        return (int) (productViewModel2.getProductDraftId() - productViewModel.getProductDraftId());
                     }
                 });
     }

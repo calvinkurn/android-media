@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.edit.domain.interactor.uploadproduct;
 
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
 import com.tokopedia.seller.product.edit.data.exception.UploadProductException;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.UploadImageModel;
@@ -37,17 +38,12 @@ public class UploadProduct implements Func1<ProductViewModel, Observable<AddProd
         return Observable.just(productViewModel)
                 .doOnNext(notificationManager.getUpdateNotification())
                 .flatMap(new ProceedUploadProduct(notificationManager, uploadProductRepository, uploadImageUseCase))
-                .onErrorResumeNext(new AddProductStatusToError());
+                .onErrorResumeNext(new Func1<Throwable, Observable<? extends AddProductDomainModel>>() {
+                    @Override
+                    public Observable<? extends AddProductDomainModel> call(Throwable throwable) {
+                        throw new UploadProductException(String.valueOf(productId), throwable);
+                    }
+                });
     }
 
-    private class AddProductStatusToError implements Func1<Throwable, Observable<? extends AddProductDomainModel>> {
-
-        public AddProductStatusToError() {
-        }
-
-        @Override
-        public Observable<AddProductDomainModel> call(Throwable throwable) {
-            throw new UploadProductException(String.valueOf(productId), throwable);
-        }
-    }
 }

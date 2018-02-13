@@ -2,7 +2,6 @@ package com.tokopedia.seller.product.edit.view.presenter;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.product.draft.data.source.db.model.DraftNotFoundException;
 import com.tokopedia.seller.product.edit.data.exception.UploadProductException;
 import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
@@ -31,8 +30,8 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
     @Override
     public void uploadProduct(long productDraftId, boolean isAdd) {
         checkViewAttached();
-        RequestParams requestParams = UploadProductUseCase.generateUploadProductParam(productDraftId);
-        uploadProductUseCase.execute(requestParams, new AddProductSubscriber(String.valueOf(productDraftId), isAdd));
+        uploadProductUseCase.execute(UploadProductUseCase.generateUploadProductParam(productDraftId),
+                new AddProductSubscriber(String.valueOf(productDraftId), isAdd));
     }
 
     @Override

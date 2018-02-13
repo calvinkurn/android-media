@@ -1,17 +1,13 @@
 package com.tokopedia.seller.product.draft.domain.interactor;
 
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
-import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * @author sebastianuskh on 4/13/17.
@@ -24,8 +20,7 @@ public class SaveDraftProductUseCase extends UseCase<Long> {
     private final ProductDraftRepository productDraftRepository;
 
     @Inject
-    public SaveDraftProductUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, ProductDraftRepository productDraftRepository) {
-        super(threadExecutor, postExecutionThread);
+    public SaveDraftProductUseCase(ProductDraftRepository productDraftRepository) {
         this.productDraftRepository = productDraftRepository;
     }
 
@@ -41,8 +36,11 @@ public class SaveDraftProductUseCase extends UseCase<Long> {
         }
         long prevDraftId = requestParams.getLong(PREV_DRAFT_ID, 0);
         boolean isUploading = requestParams.getBoolean(IS_UPLOADING, false);
-        return Observable.just(inputModel)
-                .flatMap(new SaveDraft(prevDraftId, isUploading));
+        if (prevDraftId <= 0) {
+            return productDraftRepository.saveDraft(inputModel, isUploading);
+        } else {
+            return productDraftRepository.updateDraftToUpload(prevDraftId, inputModel, isUploading);
+        }
     }
 
     private boolean isInputProductNotNull(RequestParams requestParams) {
@@ -64,20 +62,4 @@ public class SaveDraftProductUseCase extends UseCase<Long> {
         return params;
     }
 
-    private class SaveDraft implements Func1<ProductViewModel, Observable<Long>> {
-        boolean isUploading;
-        long previousDraftId;
-        SaveDraft(long previousDraftId, boolean isUploading){
-            this.previousDraftId = previousDraftId;
-            this.isUploading = isUploading;
-        }
-        @Override
-        public Observable<Long> call(ProductViewModel inputModel) {
-            if (previousDraftId <= 0) {
-                return productDraftRepository.saveDraft(inputModel, isUploading);
-            } else {
-                return productDraftRepository.updateDraftToUpload(previousDraftId, inputModel, isUploading);
-            }
-        }
-    }
 }

@@ -28,13 +28,9 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
-import com.tokopedia.core.instoped.model.InstagramMediaModel;
-import com.tokopedia.core.myproduct.utils.ImageDownloadHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -45,12 +41,7 @@ import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
 import com.tokopedia.seller.instoped.InstopedSellerActivity;
 import com.tokopedia.seller.instoped.InstopedSellerCropWatermarkActivity;
-import com.tokopedia.seller.instoped.InstopedSellerCropperActivity;
-import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
-import com.tokopedia.seller.product.manage.view.fragment.ProductManageFragment;
 import com.tokopedia.seller.product.manage.view.fragment.ProductManageSellerFragment;
-import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
-import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftListComponent;
 import com.tokopedia.seller.product.draft.di.module.ProductDraftListModule;
@@ -129,7 +120,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 adapter.confirmDelete(position);
-                                productDraftListPresenter.deleteProductDraft(draftViewModel.getProductId());
+                                productDraftListPresenter.deleteProductDraft(draftViewModel.getProductDraftId());
                                 // update total item value so scrolllistener won't retrieve next page.
                                 totalItem--;
                                 if (totalItem == 0) {
@@ -328,10 +319,10 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
         Intent intent;
         if (productDraftViewModel.isEdit()) {
             intent = ProductDraftEditActivity.createInstance(getActivity(),
-                    String.valueOf(productDraftViewModel.getProductId()));
+                    String.valueOf(productDraftViewModel.getProductDraftId()));
         } else {
             intent = ProductDraftAddActivity.createInstance(getActivity(),
-                    String.valueOf(productDraftViewModel.getProductId()));
+                    String.valueOf(productDraftViewModel.getProductDraftId()));
         }
         UnifyTracking.eventDraftProductClicked(AppEventTracking.EventLabel.EDIT_DRAFT);
         startActivityForResult(intent, ProductAddActivity.PRODUCT_REQUEST_CODE);

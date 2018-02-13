@@ -73,9 +73,9 @@ public class ProductImageViewHolder extends ProductViewHolder {
             }
 
             @Override
-            public void onItemClick(int position, final ImageSelectModel imageSelectModel) {
+            public void onItemClick(int position, final ImageSelectModel imageSelectModel, boolean isPrimary) {
                 if (listener != null) {
-                    listener.onImagePickerItemClicked(position, imageSelectModel.isPrimary());
+                    listener.onImagePickerItemClicked(position, isPrimary);
                 }
             }
         });
@@ -167,7 +167,6 @@ public class ProductImageViewHolder extends ProductViewHolder {
             imageViewModel.setX(selectModel.getWidth());
             imageViewModel.setY(selectModel.getHeight());
             imageViewModel.setId(selectModel.getId());
-            imageViewModel.setStatus(selectModel.getStatus());
             listImageViewModel.add(imageViewModel);
         }
         return listImageViewModel;
@@ -181,11 +180,9 @@ public class ProductImageViewHolder extends ProductViewHolder {
             ImageSelectModel image = new ImageSelectModel(
                     url,
                     productPhoto.getDescription(),
-                    i == 0,
                     productPhoto.getX(),
                     productPhoto.getY(),
-                    productPhoto.getId(),
-                    productPhoto.getStatus()
+                    productPhoto.getId()
             );
             images.add(image);
         }

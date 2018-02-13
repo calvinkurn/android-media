@@ -4,50 +4,29 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.seller.product.common.di.component.ProductComponent;
-import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
-import com.tokopedia.seller.product.edit.view.dialog.AddWholeSaleDialog;
-import com.tokopedia.seller.base.view.dialog.BaseTextPickerDialogFragment;
-import com.tokopedia.seller.product.edit.view.fragment.BaseProductAddEditFragment;
 import com.tokopedia.seller.product.edit.view.fragment.ProductAddFragment;
-import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
-import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
-import com.tokopedia.seller.product.edit.view.presenter.ProductAddPresenter;
-import com.tokopedia.seller.product.edit.view.service.UploadProductService;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -67,16 +46,12 @@ import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
  */
 
 @RuntimePermissions
-public class ProductAddActivity extends BaseSimpleActivity implements HasComponent<ProductComponent>,
-        BaseTextPickerDialogFragment.Listener, AddWholeSaleDialog.WholeSaleDialogListener, ProductAddFragment.Listener {
+public class ProductAddActivity extends BaseProductAddEditActivity {
 
-    public static final int PRODUCT_REQUEST_CODE = 8293;
     public static final String EXTRA_IMAGE_URLS = "img_urls";
     public static final String IMAGE = "image/";
     public static final String CONTENT_GMAIL_LS = "content://gmail-ls/";
-    public static final int MAX_IMAGES = 5;
 
-    TkpdProgressDialog tkpdProgressDialog;
     // url got from gallery or camera
     private ArrayList<String> imageUrls;
 
@@ -97,6 +72,30 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
         fragment.startActivityForResult(intent, PRODUCT_REQUEST_CODE);
     }
 
+    public static Intent getCallingIntent(Context context) {
+        return new Intent(context, ProductAddActivity.class);
+    }
+
+    @Override
+    protected Fragment getNewFragment() {
+        return ProductAddFragment.createInstance(imageUrls);
+    }
+
+    @Override
+    protected int getCancelMessageRes() {
+        return R.string.product_draft_dialog_cancel_message;
+    }
+
+    @Override
+    protected boolean needDeleteCacheOnBack() {
+        return true;
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_ADD_PRODUCT;
+    }
+
     @DeepLink(Constants.Applinks.PRODUCT_ADD)
     public static Intent getCallingApplinkAddProductMainAppIntent(Context context, Bundle extras) {
         Intent intent = null;
@@ -106,7 +105,7 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
             if (GlobalConfig.isSellerApp()) {
                 intent = SellerAppRouter.getSellerHomeActivity(context);
             } else {
-                intent = HomeRouter.getHomeActivity(context);
+                intent = HomeRouter.getHomeActivityInterfaceRouter(context);
             }
         }
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
@@ -232,7 +231,7 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
 
     private boolean validateHasLoginAndShop() {
         if (SessionHandler.isV4Login(this)) {
-            if (SessionHandler.getShopID(this).equals("0")) {
+            if (!SessionHandler.isUserHasShop(this)) {
                 finish();
                 CommonUtils.UniversalToast(getBaseContext(), getString(R.string.title_no_shop));
                 return false;
@@ -260,101 +259,6 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
         }
     }
 
-    public static Intent getCallingIntent(Context context) {
-        return new Intent(context, ProductAddActivity.class);
-    }
-
-    protected int getCancelMessageRes() {
-        return R.string.product_draft_dialog_cancel_message;
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (showDialogSaveDraftOnBack()) {
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
-                    .setMessage(getString(getCancelMessageRes()))
-                    .setPositiveButton(getString(R.string.label_exit), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            deleteNotUsedTkpdCacheImage();
-                            backPressedHandleTaskRoot();
-                        }
-                    }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface arg0, int arg1) {
-                            // no op, just dismiss
-                        }
-                    });
-            alertDialogBuilder.setNeutralButton(getString(R.string.product_draft_save_as_draft), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    boolean doSave = saveProductToDraft();
-                    if (!doSave) {
-                        UnifyTracking.eventClickAddProduct(AppEventTracking.Category.ADD_PRODUCT,
-                                AppEventTracking.EventLabel.SAVE_DRAFT);
-                        backPressedHandleTaskRoot();
-                    }
-                }
-            });
-            AlertDialog dialog = alertDialogBuilder.create();
-            dialog.show();
-        } else {
-            backPressedHandleTaskRoot();
-        }
-    }
-
-    private void backPressedHandleTaskRoot() {
-        if (isTaskRoot()) {
-            Intent homeIntent = ((TkpdCoreRouter) getApplication()).getHomeIntent(this);
-            startActivity(homeIntent);
-            finish();
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    private boolean showDialogSaveDraftOnBack() {
-        BaseProductAddEditFragment fragment = getProductAddFragment();
-        if (fragment != null) {
-            return fragment.showDialogSaveDraftOnBack();
-        }
-        return false;
-    }
-
-    private void deleteNotUsedTkpdCacheImage() {
-        if (needDeleteCacheOnBack()) {
-            BaseProductAddEditFragment fragment = getProductAddFragment();
-            if (fragment != null) {
-                fragment.deleteNotUsedTkpdCacheImage();
-            }
-        }
-    }
-
-    protected boolean needDeleteCacheOnBack() {
-        return true;
-    }
-
-    private boolean saveProductToDraft() {
-        // save newly added product ToDraft
-        Fragment fragment = getFragment();
-        if (fragment != null && fragment instanceof BaseProductAddEditFragment) {
-            ((BaseProductAddEditFragment) fragment).saveDraft(false);
-            return true;
-        }
-        return false;
-    }
-
-    private void createProductAddFragment() {
-        if (getFragment() != null) {
-            return;
-        }
-        inflateFragment();
-    }
-
-    @Override
-    protected Fragment getNewFragment() {
-        return ProductAddFragment.createInstance(imageUrls);
-    }
-
     private void processMultipleImage(ArrayList<Uri> imageUris) {
         showProgressDialog();
         int imagescount = (imageUris.size() > MAX_IMAGES) ? MAX_IMAGES : imageUris.size();
@@ -375,119 +279,6 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
         createProductAddFragment();
     }
 
-    public void showProgressDialog() {
-        if (tkpdProgressDialog == null) {
-            tkpdProgressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
-        }
-        tkpdProgressDialog.showDialog();
-    }
 
-    public void dismissDialog() {
-        if (tkpdProgressDialog != null) {
-            tkpdProgressDialog.dismiss();
-        }
-    }
-
-    @Override
-    public void onTextPickerSubmitted(String text) {
-
-    }
-
-    @Override
-    public void addWholesaleItem(WholesaleModel item) {
-        if (getProductAddFragment() != null && getProductAddFragment().isVisible()) {
-            getProductAddFragment().addWholesaleItem(item);
-        }
-    }
-
-    public BaseProductAddEditFragment<? extends ProductAddPresenter> getProductAddFragment() {
-        Fragment fragment = getFragment();
-        if (fragment != null && fragment instanceof BaseProductAddEditFragment) {
-            return (BaseProductAddEditFragment<?>) fragment;
-        }
-        return null;
-    }
-
-    @Override
-    public void startAddWholeSaleDialog(
-            WholesaleModel fixedPrice,
-            @CurrencyTypeDef int currencyType,
-            WholesaleModel previousWholesalePrice, boolean officialStore) {
-        AddWholeSaleDialog addWholeSaleDialog = AddWholeSaleDialog.newInstance(
-                fixedPrice, currencyType, previousWholesalePrice, officialStore
-        );
-        addWholeSaleDialog.show(getSupportFragmentManager(), AddWholeSaleDialog.TAG);
-        addWholeSaleDialog.setOnDismissListener(new AddWholeSaleDialog.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                new Handler().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        View view = getCurrentFocus();
-                        if (view != null) {
-                            CommonUtils.hideSoftKeyboard(view);
-                            view.clearFocus();
-                        }
-                    }
-                });
-            }
-        });
-    }
-
-    public void startUploadProduct(long productId) {
-        startUploadProductService(productId);
-        finish();
-    }
-
-    private void startUploadProductService(long productId) {
-        BaseProductAddEditFragment productAddFragment = getProductAddFragment();
-        boolean isAdd = true;
-        if (productAddFragment != null) {
-            isAdd = productAddFragment.getStatusUpload() == ProductStatus.ADD;
-        }
-        startService(UploadProductService.getIntent(this, productId, isAdd));
-    }
-
-    public void startUploadProductWithShare(long productId) {
-        startUploadProductService(productId);
-        startActivity(ProductDetailRouter.createAddProductDetailInfoActivity(this));
-        finish();
-    }
-
-    @Override
-    public void startUploadProductAndAdd(Long productId) {
-        startUploadProductService(productId);
-        start(this);
-        finish();
-    }
-
-    @Override
-    public void successSaveDraftToDBWhenBackpressed() {
-        CommonUtils.UniversalToast(this, getString(R.string.product_draft_product_has_been_saved_as_draft));
-        finish();
-    }
-
-    @Override
-    public void startUploadProductAndAddWithShare(Long productId) {
-        startUploadProductService(productId);
-        start(this);
-        startActivity(ProductDetailRouter.createAddProductDetailInfoActivity(this));
-        finish();
-    }
-
-    @Override
-    protected boolean isToolbarWhite() {
-        return true;
-    }
-
-    @Override
-    public String getScreenName() {
-        return AppScreen.SCREEN_ADD_PRODUCT;
-    }
-
-    @Override
-    public ProductComponent getComponent() {
-        return ((SellerModuleRouter) getApplication()).getProductComponent();
-    }
 
 }

@@ -15,11 +15,11 @@ import rx.functions.Func1;
  */
 
 
-public class PrepareAddProductValidation implements Func1<List<ProductPictureViewModel>, ProductViewModel> {
+public class MergeProductModelWithImage implements Func1<List<ProductPictureViewModel>, ProductViewModel> {
 
     private final ProductViewModel productViewModel;
 
-    public PrepareAddProductValidation(ProductViewModel productViewModel) {
+    public MergeProductModelWithImage(ProductViewModel productViewModel) {
         this.productViewModel = productViewModel;
     }
     @Override

@@ -16,24 +16,20 @@ public class ImageSelectModel implements Parcelable{
     // this is for url / path from sdcard
     private String uriOrPath;
     private String description;
-    private boolean isPrimary;
     private long width;
     private long height;
     private boolean isValidURL;
     private long id;
-    private long status;
 
     public ImageSelectModel(String uriOrPath) {
-        this(uriOrPath, null, false, 0, 0, 0, 0);
+        this(uriOrPath, null, 0, 0, 0);
     }
 
-    public ImageSelectModel(String uriOrPath, String description, boolean isPrimary, long width, long height, long id, long status) {
+    public ImageSelectModel(String uriOrPath, String description, long width, long height, long id) {
         this.description = description;
-        this.isPrimary = isPrimary;
         this.width = width;
         this.height = height;
         this.id = id;
-        this.status = status;
         setUriOrPath(uriOrPath);
     }
 
@@ -78,14 +74,6 @@ public class ImageSelectModel implements Parcelable{
         this.description = description;
     }
 
-    public boolean isPrimary() {
-        return isPrimary;
-    }
-
-    public void setPrimary(boolean primary) {
-        isPrimary = primary;
-    }
-
     public long getWidth() {
         return width;
     }
@@ -112,16 +100,8 @@ public class ImageSelectModel implements Parcelable{
         return id;
     }
 
-    public long getStatus() {
-        return status;
-    }
-
     public void setId(long id) {
         this.id = id;
-    }
-
-    public void setStatus(long status) {
-        this.status = status;
     }
 
     @Override
@@ -133,21 +113,17 @@ public class ImageSelectModel implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.uriOrPath);
         dest.writeString(this.description);
-        dest.writeByte(this.isPrimary ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isValidURL ? (byte) 1 : (byte) 0);
         dest.writeLong(this.id);
-        dest.writeLong(this.status);
     }
 
     protected ImageSelectModel(Parcel in) {
         this.uriOrPath = in.readString();
         this.description = in.readString();
-        this.isPrimary = in.readByte() != 0;
         this.width = in.readInt();
         this.height = in.readInt();
         this.isValidURL = in.readByte() != 0;
         this.id = in.readLong();
-        this.status = in.readLong();
     }
 
     public static final Creator<ImageSelectModel> CREATOR = new Creator<ImageSelectModel>() {

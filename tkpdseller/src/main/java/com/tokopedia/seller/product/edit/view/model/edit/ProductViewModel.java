@@ -21,22 +21,22 @@ public class ProductViewModel implements ItemType {
     private double productPrice;
     @SerializedName("product_price_currency")
     @Expose
-    private long productPriceCurrency;
+    private long productPriceCurrency; // Price Currency ID (IDR=1;USD=2)
     @SerializedName("product_status")
     @Expose
-    private int productStatus;
+    private int productStatus; // Product Status (Active=1, Warehouse=3, Pending=-1)
     @SerializedName("product_min_order")
     @Expose
-    private long productMinOrder;
+    private long productMinOrder; // Minimum Order (1-10000)
     @SerializedName("product_weight")
     @Expose
-    private long productWeight;
+    private long productWeight; // Weight (Gram=1-500000, Kg=1-500)
     @SerializedName("product_weight_unit")
     @Expose
-    private long productWeightUnit;
+    private long productWeightUnit; // Weight Unit (Gram=1, Kg=2)
     @SerializedName("product_condition")
     @Expose
-    private long productCondition;
+    private long productCondition; // Product Condition (new=1, used=2)
     @SerializedName("product_etalase")
     @Expose
     private ProductEtalaseViewModel productEtalase;
@@ -108,6 +108,16 @@ public class ProductViewModel implements ItemType {
     @SerializedName("product_name_editable")
     @Expose
     private boolean productNameEditable;
+
+    private long draftId;
+
+    public long getDraftId() {
+        return draftId;
+    }
+
+    public void setDraftId(long draftId) {
+        this.draftId = draftId;
+    }
 
     public long getProductId() {
         return productId;

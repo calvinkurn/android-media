@@ -70,35 +70,22 @@ public class ImageEditProductDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         if (isPrimary) { // primary image and allow delete
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    imageMenu = new CharSequence[]{
-                            getString(R.string.title_img_delete),
-                            getString(R.string.edit_from_camera_text_description),
-                            getString(R.string.edit_from_gallery_text_description),
-                            getString(R.string.edit_from_instagram_text_description),
-                            getString(R.string.title_img_desc)};
-                } else {
-                    imageMenu = new CharSequence[]{
-                            getString(R.string.title_img_delete),
-                            getString(R.string.edit_from_camera_text_description),
-                            getString(R.string.edit_from_gallery_text_description),
-                            getString(R.string.edit_from_instagram_text_description),
-                            getString(R.string.action_editor),
-                            getString(R.string.title_img_desc)};
-                }
-
+            imageMenu = new CharSequence[]{
+                    getString(R.string.title_img_delete),
+                    getString(R.string.edit_from_camera_text_description),
+                    getString(R.string.edit_from_gallery_text_description),
+                    getString(R.string.edit_from_instagram_text_description),
+                    getString(R.string.action_editor),
+                    getString(R.string.title_img_desc)};
         } else {
-
-                imageMenu = new CharSequence[]{
-                        getString(R.string.title_img_delete),
-                        getString(R.string.edit_from_camera_text_description),
-                        getString(R.string.edit_from_gallery_text_description),
-                        getString(R.string.edit_from_instagram_text_description),
-                        getString(R.string.action_editor),
-                        getString(R.string.title_img_desc),
-                        getString(R.string.title_img_default)};
-
-
+            imageMenu = new CharSequence[]{
+                    getString(R.string.title_img_delete),
+                    getString(R.string.edit_from_camera_text_description),
+                    getString(R.string.edit_from_gallery_text_description),
+                    getString(R.string.edit_from_instagram_text_description),
+                    getString(R.string.action_editor),
+                    getString(R.string.title_img_desc),
+                    getString(R.string.title_img_default)};
         }
         builder.setItems(imageMenu, getImageAddProductListener());
         return builder.create();

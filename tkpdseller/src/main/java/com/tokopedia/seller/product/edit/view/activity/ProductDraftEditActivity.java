@@ -4,10 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.edit.view.fragment.ProductDraftEditFragment;
 
@@ -24,31 +23,9 @@ public class ProductDraftEditActivity extends ProductDraftAddActivity  {
     }
 
     @Override
-    protected void setupFragment(Bundle savedInstance) {
-        String productId = getIntent().getStringExtra(PRODUCT_DRAFT_ID);
-        if (StringUtils.isBlank(productId)){
-            Toast.makeText(this,getString(R.string.product_draft_error_cannot_load_draft), Toast.LENGTH_LONG).show();
-            finish();
-            return;
-        }
-        if (savedInstance == null) {
-            inflateFragment();
-        }
-    }
-
-    @Override
     protected Fragment getNewFragment() {
         String productId = getIntent().getStringExtra(PRODUCT_DRAFT_ID);
         return ProductDraftEditFragment.createInstance(productId);
     }
 
-    @Override
-    protected boolean isToolbarWhite() {
-        return true;
-    }
-
-    @Override
-    protected boolean needDeleteCacheOnBack() {
-        return false;
-    }
 }

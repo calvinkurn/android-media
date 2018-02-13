@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.edit.domain.interactor.uploadproduct;
 
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.UploadImageModel;
 import com.tokopedia.seller.product.edit.domain.UploadProductRepository;
@@ -30,7 +31,7 @@ public class ProceedUploadProduct implements Func1<ProductViewModel, Observable<
         return Observable.just(productViewModel)
                 .flatMap(new AddProductImage(uploadImageUseCase))
                 .doOnNext(notificationManager.getUpdateNotification())
-                .map(new PrepareAddProductValidation(productViewModel))
+                .map(new MergeProductModelWithImage(productViewModel))
                 .doOnNext(notificationManager.getUpdateNotification())
                 .flatMap(new AddProductSubmit(uploadProductRepository))
                 .doOnNext(notificationManager.getUpdateNotification());

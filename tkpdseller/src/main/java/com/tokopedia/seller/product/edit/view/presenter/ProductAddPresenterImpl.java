@@ -126,14 +126,16 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
         }
     }
 
+
     @Override
-    public void saveDraftAndAdd(ProductViewModel viewModel, boolean isUploading) {
-        RequestParams requestParam = generateRequestParamAddDraft(viewModel, isUploading);
-        saveDraftProductUseCase.execute(requestParam, new SaveDraftAndAddSubscriber());
+    public void saveDraftAndAdd(ProductViewModel viewModel) {
+        saveDraftProductUseCase.execute(generateRequestParamAddDraft(viewModel, true),
+                new SaveDraftAndAddSubscriber());
     }
 
-    private RequestParams generateRequestParamAddDraft(ProductViewModel viewModel, boolean isUploading) {
-        return SaveDraftProductUseCase.generateUploadProductParam(viewModel, getProductDraftId(), isUploading);
+    private com.tokopedia.usecase.RequestParams generateRequestParamAddDraft(ProductViewModel viewModel, boolean isUploading) {
+        return SaveDraftProductUseCase.generateUploadProductParam(viewModel, getProductDraftId(),
+                isUploading);
     }
 
     private long getProductDraftId(){
@@ -348,8 +350,8 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
 
     @Override
     public void saveDraft(ProductViewModel viewModel, boolean isUploading) {
-        RequestParams requestParam = generateRequestParamAddDraft(viewModel, isUploading);
-        saveDraftProductUseCase.execute(requestParam, new SaveDraftSubscriber(isUploading));
+        saveDraftProductUseCase.execute(generateRequestParamAddDraft(viewModel, isUploading),
+                new SaveDraftSubscriber(isUploading));
     }
 
     @Override
