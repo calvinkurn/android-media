@@ -1,0 +1,56 @@
+apply plugin: 'com.android.library'
+apply plugin: 'android-apt'
+
+def getTkpdUseCase() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.usecase : project(':tkpdusecase');
+}
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion "26.0.2"
+
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+apt {
+    arguments {
+        targetModuleName 'TkpdCacheApi'
+    }
+}
+
+dependencies {
+    compile getTkpdUseCase()
+
+    compile rootProject.ext.networkDependencies.retrofit
+
+    compile rootProject.ext.miscDependencies.rxAndroid
+    compile rootProject.ext.miscDependencies.rxJava
+    compile rootProject.ext.testDependencies.androidAnnotation
+
+    apt rootProject.ext.dbDependencies.dbFlowProcessor
+    compile rootProject.ext.dbDependencies.dbFlowCore
+    compile rootProject.ext.dbDependencies.dbFlow
+
+    testCompile rootProject.ext.testDependencies.junit
+    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
+}

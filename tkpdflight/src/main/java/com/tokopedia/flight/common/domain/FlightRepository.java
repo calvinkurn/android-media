@@ -6,6 +6,7 @@ import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
+import com.tokopedia.flight.orderlist.data.cloud.entity.SendEmailEntity;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
@@ -76,4 +77,6 @@ public interface FlightRepository {
     Observable<List<FlightAirportDB>> getPhoneCodeList(String string);
 
     Observable<FlightAirlineDB> getAirlineById(String airlineId);
+
+    Observable<SendEmailEntity> sendEmail(Map<String, Object> params);
 }

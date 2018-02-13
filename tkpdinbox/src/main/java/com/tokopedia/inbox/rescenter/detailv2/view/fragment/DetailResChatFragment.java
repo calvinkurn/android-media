@@ -25,7 +25,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.PreviewProductImage;
@@ -270,7 +269,6 @@ public class DetailResChatFragment
     @Override
     public void onSaveState(Bundle state) {
         state.putString(DetailResChatActivity.PARAM_RESOLUTION_ID, resolutionId);
-
     }
 
     @Override
@@ -580,7 +578,7 @@ public class DetailResChatFragment
 
     @Override
     public void errorGetConversation(String error) {
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), error, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 presenter.loadConversation(resolutionId);
@@ -600,7 +598,7 @@ public class DetailResChatFragment
     @Override
     public void errorGetConversationMore(String error) {
         if (resolutionId != null && lastConvId != null) {
-            NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            NetworkErrorHelper.createSnackbarWithAction(getActivity(), error, new NetworkErrorHelper.RetryClickedListener() {
                 @Override
                 public void onRetryClicked() {
                     presenter.doLoadMore(resolutionId, lastConvId, detailResChatDomain);

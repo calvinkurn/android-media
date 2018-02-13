@@ -9,24 +9,27 @@ import android.os.Parcelable;
 
 public class VerificationViewModel implements Parcelable {
 
+    private String imageUrl;
     private String appScreen;
-    private int type;
+    private String mode;
     private int iconResId;
     private String message;
 
-    public VerificationViewModel(int type, int iconResId, String message,
+    public VerificationViewModel(String mode, int iconResId, String imageUrl, String message,
                                  String appScreen) {
-        this.type = type;
+        this.mode = mode;
         this.iconResId = iconResId;
         this.message = message;
         this.appScreen = appScreen;
+        this.imageUrl = imageUrl;
     }
 
     protected VerificationViewModel(Parcel in) {
         appScreen = in.readString();
-        type = in.readInt();
+        mode = in.readString();
         iconResId = in.readInt();
         message = in.readString();
+        imageUrl = in.readString();
     }
 
     public static final Creator<VerificationViewModel> CREATOR = new Creator<VerificationViewModel>() {
@@ -49,17 +52,18 @@ public class VerificationViewModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(appScreen);
-        dest.writeInt(type);
+        dest.writeString(mode);
         dest.writeInt(iconResId);
         dest.writeString(message);
+        dest.writeString(imageUrl);
     }
 
     public String getAppScreen() {
         return appScreen;
     }
 
-    public int getType() {
-        return type;
+    public String getType() {
+        return mode;
     }
 
     public int getIconResId() {
@@ -70,4 +74,7 @@ public class VerificationViewModel implements Parcelable {
         return message;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
 }

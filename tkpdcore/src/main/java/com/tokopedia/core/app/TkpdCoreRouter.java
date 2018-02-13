@@ -62,11 +62,11 @@ public interface TkpdCoreRouter {
 
     void actionOpenGeneralWebView(Activity activity, String mobileUrl);
 
+    Fragment getShopReputationFragment(String shopId, String shopDomain);
+
     Intent getHomeIntent(Context context);
 
     Intent getOnBoardingActivityIntent(Context context);
-
-    Intent getTrueCallerActivityIntent(Context context);
 
     Intent getPhoneVerificationActivityIntent(Context context);
 
@@ -81,8 +81,6 @@ public interface TkpdCoreRouter {
     void onLogout(AppComponent appComponent);
 
     void goToCreateMerchantRedirect(Context context);
-
-    void goToRegister(Context context);
 
     Intent getLoginIntent(Context context);
 
@@ -130,18 +128,20 @@ public interface TkpdCoreRouter {
 
     Intent getActivitySellingTransactionList(Context context);
 
-    Intent getActivitySellingTransactionOpportunity(Context context);
+    Intent getActivitySellingTransactionOpportunity(Context context, String query);
 
     Intent getHomeHotlistIntent(Context context);
 
     NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass,
                                          Bundle data, String notifTitle);
 
-    android.app.Fragment getShopReputationFragment();
-
     Intent getInboxReputationIntent(Context context);
 
     Intent getResolutionCenterIntent(Context context);
+
+    Intent getResolutionCenterIntentBuyer(Context context);
+
+    Intent getResolutionCenterIntentSeller(Context context);
 
     String applink(Activity activity, String deeplink);
 
@@ -149,4 +149,15 @@ public interface TkpdCoreRouter {
 
     Intent getChangePhoneNumberIntent(Context context, String email, String phoneNumber);
 
+    Intent getPhoneVerificationProfileIntent(Context context);
+
+    Intent getPhoneVerificationActivationIntent(Context context);
+
+    Intent getSellerHomeIntent(Activity activity);
+
+    Intent getLoginGoogleIntent(Context context);
+
+    Intent getLoginFacebookIntent(Context context);
+
+    Intent getLoginWebviewIntent(Context context, String name, String url);
 }
