@@ -71,7 +71,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.bottomnavigation.BottomNavigation;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.beranda.presentation.view.fragment.HomeFragment;
+import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;

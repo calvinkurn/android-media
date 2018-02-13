@@ -9,6 +9,7 @@
     <dimen name="font_title">17sp</dimen>
     <dimen name="font_small">14sp</dimen>
     <dimen name="font_micro">12sp</dimen>
+    <dimen name="font_nano">8sp</dimen>
 
     <dimen name="font_line_spacing_headline">38sp</dimen>
     <dimen name="font_line_spacing_subheadline">28sp</dimen>
