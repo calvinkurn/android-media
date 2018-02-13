@@ -4,8 +4,13 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.readystatesoftware.chuck.ChuckInterceptor;
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.image.ImageHandler;
+import com.tokopedia.cacheapi.data.source.CacheApiDataSource;
+import com.tokopedia.cacheapi.data.source.db.CacheApiDatabaseSource;
+import com.tokopedia.cacheapi.domain.CacheApiRepository;
+import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.cacheapi.domain.interactor.CacheApiDataDeleteUseCase;
+import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
@@ -15,13 +20,6 @@ import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.cache.data.source.ApiCacheDataSource;
-import com.tokopedia.core.cache.data.source.db.CacheApiDataManager;
-import com.tokopedia.core.cache.di.module.CacheModule;
-import com.tokopedia.core.cache.di.qualifier.ApiCacheQualifier;
-import com.tokopedia.core.cache.domain.ApiCacheRepository;
-import com.tokopedia.core.cache.domain.interactor.CacheApiClearAllUseCase;
-import com.tokopedia.core.cache.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
@@ -47,7 +45,6 @@ import com.tokopedia.core.util.SessionHandler;
 
 import dagger.Component;
 import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 /**
@@ -56,8 +53,7 @@ import retrofit2.Retrofit;
 @ApplicationScope
 @Component(modules = {
         AppModule.class,
-        UtilModule.class,
-        CacheModule.class
+        UtilModule.class
 })
 public interface AppComponent {
 
@@ -140,19 +136,6 @@ public interface AppComponent {
     GCMHandler gcmHandler();
 
     ImageHandler imageHandler();
-
-    @ApiCacheQualifier
-    LocalCacheHandler localCacheHandler();
-
-    CacheApiDataManager cacheApiDataManager();
-
-    ApiCacheRepository apiCacheRepository();
-
-    CacheApiWhiteListUseCase cacheApiWhiteListUseCase();
-
-    ApiCacheDataSource apiCacheDataSource();
-
-    CacheApiClearAllUseCase cacheApiClearAllUseCase();
 
     BearerInterceptor bearerInterceptor();
 

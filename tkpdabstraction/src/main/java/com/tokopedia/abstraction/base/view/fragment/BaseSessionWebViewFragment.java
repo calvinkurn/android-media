@@ -31,7 +31,7 @@ public class BaseSessionWebViewFragment extends BaseWebViewFragment {
 
     @Override
     protected String getUrl() {
-        String gcmId = userSession.getFcmId();
+        String gcmId = userSession.getDeviceId();
         String userId = userSession.getUserId();
         return URLGenerator.generateURLSessionLogin(
                 Uri.encode(getMitraToppersUrl()),

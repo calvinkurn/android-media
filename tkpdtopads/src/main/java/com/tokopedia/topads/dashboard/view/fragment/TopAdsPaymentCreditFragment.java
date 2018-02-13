@@ -34,7 +34,7 @@ public class TopAdsPaymentCreditFragment extends BaseWebViewFragment {
     protected String getUrl() {
         return URLGenerator.generateURLSessionLogin(
                 Uri.encode(dataCredit.getProductUrl()),
-                userSession.getFcmId(),
+                userSession.getDeviceId(),
                 userSession.getUserId());
     }
 

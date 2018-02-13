@@ -11,6 +11,7 @@ ext {
     tkpdUseCaseVersion = '1.+'
     tkpdAbstractionVersion = '1.+'
     tkpdInterfaceVersion = '1.+'
+    tkpdCacheApiVersion = '1.+'
     tkpdCoreVersion = '1.+'
     tkpdInboxVersion = '1.+'
     tkpdSessionVersion = '1.+'
@@ -181,6 +182,7 @@ ext {
             abstraction: "com.tokopedia.abstraction:abstraction:${tkpdAbstractionVersion}",
             interface  : "com.tokopedia.interface:interface:${tkpdInterfaceVersion}",
             core       : "com.tokopedia.core:core:${tkpdCoreVersion}",
+            cacheapi   : "com.tokopedia.cacheapi:cacheapi:${tkpdCacheApiVersion}",
             inbox      : "com.tokopedia.inbox:inbox:${tkpdInboxVersion}",
             session    : "com.tokopedia.session:session:${tkpdSessionVersion}",
             transaction: "com.tokopedia.transaction:transaction:${tkpdTransactionVersion}",

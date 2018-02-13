@@ -2,6 +2,7 @@ package com.tokopedia.shop.common.di.module;
 
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
+import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.shop.common.data.interceptor.ShopAuthInterceptor;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopApi;
@@ -23,6 +24,12 @@ public class ShopModule {
 
     @ShopScope
     @Provides
+    public CacheApiInterceptor provideApiCacheInterceptor() {
+        return new CacheApiInterceptor();
+    }
+
+    @ShopScope
+    @Provides
     ShopApi provideShopApi(@ShopQualifier Retrofit retrofit){
         return retrofit.create(ShopApi.class);
     }
@@ -39,8 +46,10 @@ public class ShopModule {
     @Provides
     public OkHttpClient provideOkHttpClient(ShopAuthInterceptor ShopAuthInterceptor,
                                             @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
-                                            HeaderErrorResponseInterceptor errorResponseInterceptor) {
+                                            HeaderErrorResponseInterceptor errorResponseInterceptor,
+                                            CacheApiInterceptor cacheApiInterceptor) {
         return new OkHttpClient.Builder()
+                .addInterceptor(cacheApiInterceptor)
                 .addInterceptor(ShopAuthInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
