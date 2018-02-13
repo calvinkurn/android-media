@@ -122,4 +122,6 @@
     <dimen name="toolbar_elevation">4dp</dimen>
 
     <dimen name="range_input_margin_input_text">-4dp</dimen>
+
+    <dimen name="layout_bav_width_min">80dp</dimen>
 </resources>
