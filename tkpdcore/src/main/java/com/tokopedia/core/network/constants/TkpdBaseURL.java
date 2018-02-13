@@ -834,6 +834,7 @@ public class TkpdBaseURL {
         public static final String BASE_RESOLUTION_VERSION_1 = "v1/";
         public static final String BASE_RESOLUTION_VERSION_2 = "v2/";
         public static final String BASE_INBOX_RESOLUTION = BASE_RESOLUTION_VERSION_1 + "inbox";
+        public static final String BASE_INBOX_RESOLUTION_V2 = BASE_RESOLUTION_VERSION_2 + "inbox";
         public static final String BASE_DETAIL_RESOLUTION = BASE_RESOLUTION_VERSION_1 + "detail/{resolution_id}";
         public static final String BASE_DETAIL_RESOLUTION_V2 = BASE_RESOLUTION_VERSION_2 + "detail/{resolution_id}";
 
@@ -877,6 +878,10 @@ public class TkpdBaseURL {
         public static final String POST_RESOLUTION_CONVERSATION_AWB_EDIT = BASE_RESOLUTION_DETAIL_V1 + "/conversation/{conversation_id}/edit_awb";
         public static final String GET_RESOLUTION_CONVERSATION_V2_MORE = BASE_DETAIL_RESOLUTION_V2 + "/more";
 
+
+        public static final String GET_INBOX_RESOLUTION_V2_BUYER = BASE_INBOX_RESOLUTION_V2 + "/buyer";
+        public static final String GET_INBOX_RESOLUTION_V2_SELLER = BASE_INBOX_RESOLUTION_V2 + "/seller";
+        public static final String GET_INBOX_RESOLUTION_V2_SINGLE_ITEM = BASE_INBOX_RESOLUTION_V2 + "/{resolution_id}";
 
     }
 

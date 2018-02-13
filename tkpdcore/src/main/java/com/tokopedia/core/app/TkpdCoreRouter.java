@@ -143,6 +143,10 @@ public interface TkpdCoreRouter {
 
     Intent getResolutionCenterIntent(Context context);
 
+    Intent getResolutionCenterIntentBuyer(Context context);
+
+    Intent getResolutionCenterIntentSeller(Context context);
+
     String applink(Activity activity, String deeplink);
 
     Intent getKolFollowingPageIntent(Context context, int userId);
