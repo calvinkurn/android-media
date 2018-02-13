@@ -57,6 +57,7 @@ dependencies {
     }
     compile rootProject.ext.supportLibDependencies.supportV4
 
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     provided rootProject.ext.miscDependencies.javaxAnnotation
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler

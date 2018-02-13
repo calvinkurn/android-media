@@ -36,4 +36,9 @@ public class ChannelPresenter extends BaseDaggerPresenter<ChannelContract.View> 
         getChannelListUseCase.execute(getChannelListUseCase.createParamFirstTime(),
                 new GetChannelFirstTimeSubscriber(getView()));
     }
+
+    @Override
+    public void getChannelList() {
+
+    }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@id/container"
+    android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/margin_vvs"
@@ -9,6 +9,7 @@
     android:layout_marginRight="@dimen/margin_small"
     android:layout_marginTop="@dimen/margin_vvs"
     android:elevation="1dp"
+    android:paddingTop="@dimen/padding_small"
     android:orientation="vertical">
 
     <LinearLayout
@@ -72,8 +73,7 @@
             <ImageView
                 android:id="@+id/prof_pict"
                 android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:background="@color/colorGray" />
+                android:layout_height="30dp" />
 
             <TextView
                 android:id="@+id/name"

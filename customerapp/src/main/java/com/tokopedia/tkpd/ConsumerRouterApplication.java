@@ -1280,6 +1280,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getGroupChatIntent(Context context) {
-        return new Intent(context, GroupChatActivity.class);
+        return new Intent(context, ChannelActivity.class);
     }
 }

@@ -23,5 +23,6 @@ public interface ChannelContract {
 
     interface Presenter extends CustomerPresenter<View> {
 
+        void getChannelList();
     }
 }
