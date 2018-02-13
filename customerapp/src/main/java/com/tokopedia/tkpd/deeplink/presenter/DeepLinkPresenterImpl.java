@@ -16,6 +16,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.deeplink.DeeplinkConst;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -274,7 +275,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 case DeepLinkChecker.PELUANG:
                     screenName = AppScreen.SCREEN_INDEX_HOME;
                     sendCampaignGTM(uriData.toString(), screenName);
-                    openPeluangPage();
+                    openPeluangPage(uriData.getPathSegments(), uriData);
                     break;
                 default:
                     prepareOpenWebView(uriData);
@@ -297,8 +298,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
     }
 
-    private void openPeluangPage() {
-        Intent intent = SellerRouter.getActivitySellingTransactionOpportunity(context);
+    private void openPeluangPage(List<String> linkSegment, Uri uriData) {
+        String query = uriData.getQueryParameter("q");
+        Intent intent = SellerRouter.getActivitySellingTransactionOpportunity(context, query);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

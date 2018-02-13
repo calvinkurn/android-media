@@ -72,6 +72,8 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
 
     private Unbinder unbinder;
 
+    boolean hasLoadedOnce = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,10 +121,12 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
     public void onResume() {
         super.onResume();
         Log.d(TAG, FragmentHotListV2.class.getSimpleName() + " screen Rotation " + (isLandscape() ? "LANDSCAPE" : "PORTRAIT"));
-        if(hotList.isAfterRotate()) {
-            hotList.initDataAfterRotate();
-        }else {
-            hotList.initData();
+        if (getUserVisibleHint() && hotList != null) {
+            if(hotList.isAfterRotate()) {
+                hotList.initDataAfterRotate();
+            }else {
+                hotList.initData();
+            }
         }
     }
 
@@ -220,6 +224,11 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
             hotList.sendAppsFlyerData(getActivity());
             ScreenTracking.screen(getScreenName());
             TrackingUtils.sendMoEngageOpenHotListEvent();
+
+            if (!hasLoadedOnce && hotList != null) {
+                hotList.initData();
+                hasLoadedOnce = true;
+            }
         }
         super.setUserVisibleHint(isVisibleToUser);
     }

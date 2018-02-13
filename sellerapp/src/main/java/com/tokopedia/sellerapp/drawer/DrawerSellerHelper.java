@@ -40,6 +40,7 @@ import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.mitratoppers.MitraToppersRouter;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.fintech.mitratoppers.view.activity.MitraToppersActivity;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
@@ -113,6 +114,11 @@ public class DrawerSellerHelper extends DrawerHelper
 
         data.add(getGoldMerchantMenu(false));
         data.add(getPaymentAndTopupMenu());
+        data.add(new DrawerItem(context.getString(R.string.drawer_title_new_reso_seller),
+                R.drawable.ic_reso,
+                TkpdState.DrawerPosition.RESOLUTION_CENTER,
+                true,
+                getTotalResoNotif()));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_mitra_toppers),
                 R.drawable.ic_mitra_toppers,
                 TkpdState.DrawerPosition.SELLER_MITRA_TOPPERS,
@@ -125,7 +131,6 @@ public class DrawerSellerHelper extends DrawerHelper
                 R.drawable.ic_top_ads,
                 TkpdState.DrawerPosition.SELLER_TOP_ADS,
                 true));
-
         data.add(new DrawerItem(context.getString(R.string.drawer_title_setting),
                 R.drawable.icon_setting,
                 TkpdState.DrawerPosition.SETTINGS,
@@ -201,10 +206,6 @@ public class DrawerSellerHelper extends DrawerHelper
                 TkpdState.DrawerPosition.INBOX_TICKET,
                 drawerCache.getBoolean(DrawerAdapter.IS_INBOX_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_TICKET)));
-        inboxMenu.add(new DrawerItem(context.getString(R.string.drawer_title_resolution_center),
-                TkpdState.DrawerPosition.RESOLUTION_CENTER,
-                drawerCache.getBoolean(DrawerAdapter.IS_INBOX_OPENED, false),
-                drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER)));
         inboxMenu.add(new DrawerItem(context.getString(R.string.drawer_title_seller_info),
                 TkpdState.DrawerPosition.SELLER_INFO,
                 drawerCache.getBoolean(DrawerAdapter.IS_INBOX_OPENED, false),
@@ -254,7 +255,6 @@ public class DrawerSellerHelper extends DrawerHelper
     private int getTotalInboxNotif() {
         return drawerCache.getInt(DrawerNotification.CACHE_INBOX_MESSAGE, 0) +
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_TALK, 0) +
-                drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER, 0) +
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_REVIEW, 0) +
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_TICKET, 0);
     }
@@ -263,6 +263,10 @@ public class DrawerSellerHelper extends DrawerHelper
         return drawerCache.getInt(DrawerNotification.CACHE_SELLING_SHIPPING_STATUS, 0) +
                 drawerCache.getInt(DrawerNotification.CACHE_SELLING_SHIPPING_CONFIRMATION, 0) +
                 drawerCache.getInt(DrawerNotification.CACHE_SELLING_NEW_ORDER, 0);
+    }
+
+    private int getTotalResoNotif() {
+        return drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER_SELLER, 0);
     }
 
     private DrawerGroup getGoldMerchantMenu(boolean isGoldMerchant) {
@@ -416,7 +420,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.SALES_LIST);
                     break;
                 case TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST:
-                    intent = SellerRouter.getActivitySellingTransactionOpportunity(context);
+                    intent = SellerRouter.getActivitySellingTransactionOpportunity(context,"");
                     context.startActivity(intent);
                     break;
                 case TkpdState.DrawerPosition.ADD_PRODUCT:
@@ -476,6 +480,13 @@ public class DrawerSellerHelper extends DrawerHelper
                     UnifyTracking.eventClickMenuSellerInfo();
                     intent = new Intent(context, SellerInfoActivity.class);
                     context.startActivity(intent);
+                    break;
+                case TkpdState.DrawerPosition.RESOLUTION_CENTER:
+                    if (context.getApplication() instanceof TkpdCoreRouter) {
+                        context.startActivity(((TkpdCoreRouter) context.getApplication())
+                                .getResolutionCenterIntentSeller(context));
+                        sendGTMNavigationEvent(AppEventTracking.EventLabel.RESOLUTION_CENTER);
+                    }
                     break;
                 default:
                     super.onItemClicked(item);

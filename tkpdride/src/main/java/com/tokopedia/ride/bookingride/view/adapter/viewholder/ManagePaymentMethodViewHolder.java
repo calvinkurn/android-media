@@ -49,7 +49,7 @@ public class ManagePaymentMethodViewHolder extends AbstractViewHolder<PaymentMet
 
         otherInfoTextView.setTextColor(ContextCompat.getColor(context, R.color.grey_700));
         if (paymentMethodViewModel.getTokoCashBalance() != null && paymentMethodViewModel.getTokoCashBalance().length() > 0) {
-            otherInfoTextView.setText(paymentMethodViewModel.getTokoCashBalance());
+            otherInfoTextView.setText(context.getString(R.string.info_your_balance_is) + " " + paymentMethodViewModel.getTokoCashBalance());
         } else if (paymentMethodViewModel.getType().equalsIgnoreCase(PaymentMode.CC)) {
             if (paymentMethodViewModel.isSaveWebView()) {
                 otherInfoTextView.setText(context.getString(R.string.auto_debit_not_allowed));
