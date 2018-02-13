@@ -393,10 +393,22 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         tooltipLayout.setVisibility(View.GONE);
     }
 
+    @Override
+    public boolean validateAllFields() {
+        boolean result = true;
+        if(edForm1.getVisibility()==View.VISIBLE)
+            result = result && mPresenter.validateEditText(edForm1);
+        if(edForm2.getVisibility()==View.VISIBLE)
+            result = result && mPresenter.validateEditText(edForm2);
+        if(edForm3.getVisibility()==View.VISIBLE)
+            result = result && mPresenter.validateEditText(edForm3);
+        if(edForm4.getVisibility()==View.VISIBLE)
+            result = result && mPresenter.validateEditText(edForm4);
+        return result;
+    }
+
     @OnClick(R2.id.btn_go_to_payment)
     void clickPay() {
-        btnGoToPayment.requestFocusFromTouch();
-        btnGoToPayment.requestFocus();
         mPresenter.proceedToPayment();
     }
 

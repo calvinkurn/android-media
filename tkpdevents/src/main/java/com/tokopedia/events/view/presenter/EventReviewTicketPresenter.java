@@ -110,7 +110,12 @@ public class EventReviewTicketPresenter
     @Override
     public void proceedToPayment() {
         isPromoCodeCase = false;
-        verifyCart();
+        if (getView().validateAllFields()) {
+            verifyCart();
+        } else {
+            getView().showMessage("Silahkan Isi Data Pelanggan Tambahan");
+        }
+
     }
 
     @Override
@@ -125,13 +130,15 @@ public class EventReviewTicketPresenter
     }
 
     @Override
-    public void validateEditText(EditText view) {
+    public boolean validateEditText(EditText view) {
         String regex = (String) view.getTag();
         int index = hints.indexOf(view.getHint().toString());
-        if (view.getText().length() > 0 && !validateStringWithRegex(view.getText().toString(), regex)) {
+        if (view.getText() == null || view.getText().length() == 0 || !validateStringWithRegex(view.getText().toString(), regex)) {
             view.setError(errors.get(index));
+            return false;
         } else {
             updateForm(view.getHint().toString(), view.getText().toString());
+            return true;
         }
     }
 
@@ -192,7 +199,6 @@ public class EventReviewTicketPresenter
         getView().hideTooltip();
     }
 
-
     private CartItems convertPackageToCartItem(PackageViewModel packageViewModel) {
         Configuration config = new Configuration();
         config.setPrice(packageViewModel.getSalesPrice());
@@ -234,18 +240,20 @@ public class EventReviewTicketPresenter
         meta.setEntityScheduleId(packageViewModel.getProductScheduleId());
         List<EntityPassengerItem> passengerItems = new ArrayList<>();
 
-        for (Form form : packageViewModel.getForms()) {
-            EntityPassengerItem passenger = new EntityPassengerItem();
-            passenger.setId(form.getId());
-            passenger.setProductId(form.getProductId());
-            passenger.setName(form.getName());
-            passenger.setTitle(form.getTitle());
-            passenger.setValue(form.getValue());
-            passenger.setElementType(form.getElementType());
-            passenger.setRequired(String.valueOf(form.getRequired()));
-            passenger.setValidatorRegex(form.getValidatorRegex());
-            passenger.setErrorMessage(form.getErrorMessage());
-            passengerItems.add(passenger);
+        if (packageViewModel.getForms() != null) {
+            for (Form form : packageViewModel.getForms()) {
+                EntityPassengerItem passenger = new EntityPassengerItem();
+                passenger.setId(form.getId());
+                passenger.setProductId(form.getProductId());
+                passenger.setName(form.getName());
+                passenger.setTitle(form.getTitle());
+                passenger.setValue(form.getValue());
+                passenger.setElementType(form.getElementType());
+                passenger.setRequired(String.valueOf(form.getRequired()));
+                passenger.setValidatorRegex(form.getValidatorRegex());
+                passenger.setErrorMessage(form.getErrorMessage());
+                passengerItems.add(passenger);
+            }
         }
 
         meta.setEntityPassengers(passengerItems);
@@ -336,10 +344,13 @@ public class EventReviewTicketPresenter
                         getPaymentLink();
                     }
                 } else {
-                    if ("Kode Promo tidak ditemukan".equals(verifyCartResponse.getCart().getPromocodeFailureMessage())) {
+                    String errorMsg = verifyCartResponse.getCart().getPromocodeFailureMessage();
+                    if (errorMsg != null &&
+                            errorMsg.length() > 0) {
                         getView().hideProgressBar();
-                        getView().showPromoSuccessMessage("Kode Promo tidak ditemukan",
+                        getView().showPromoSuccessMessage(errorMsg,
                                 getView().getActivity().getResources().getColor(R.color.red_a700));
+                        promocode = "";
                     } else {
                         getView().hideProgressBar();
                         getView().showPromoSuccessMessage(getView().getActivity().getResources().getString(R.string.promo_success_msg),

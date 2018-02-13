@@ -51,6 +51,8 @@ public class EventReviewTicketsContractor {
         void showMoreinfoTooltip();
 
         void hideTooltip();
+
+        boolean validateAllFields();
     }
 
     public interface Presenter extends CustomerPresenter<EventReviewTicketsContractor.EventReviewTicketsView> {
@@ -63,7 +65,7 @@ public class EventReviewTicketsContractor {
 
         void updatePromoCode(String code);
 
-        void validateEditText(EditText view);
+        boolean validateEditText(EditText view);
 
         void updateEmail(String email);
 
