@@ -91,6 +91,9 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
 
                 @Override
                 public void onError(Throwable e) {
+                    if(getView() == null) {
+                        return;
+                    }
                     getView().hideProgressDialog();
                     if (e instanceof UnknownHostException || e instanceof ConnectException) {
                         getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
@@ -111,6 +114,9 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
 
                 @Override
                 public void onNext(InfoQrTokoCash infoQrTokoCash) {
+                    if(getView() == null) {
+                        return;
+                    }
                     getView().hideProgressDialog();
                     if (infoQrTokoCash != null) {
                         Intent intent = NominalQrPaymentActivity.newInstance(context, qrcode, infoQrTokoCash);
