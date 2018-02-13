@@ -2083,6 +2083,10 @@ di Tokopedia Sekarang!</string>
     <string name="drawer_title_seller_info">Info Penjual</string>
     <string name="drawer_title_inbox_ticket">Layanan Pengguna</string>
     <string name="drawer_title_top_ads">TopAds</string>
+    <string name="drawer_title_new_reso">Komplain Saya</string>
+    <string name="drawer_title_new_reso_as_buyer">Sebagai Pembeli</string>
+    <string name="drawer_title_new_reso_as_seller">Sebagai Penjual</string>
+    <string name="drawer_title_new_reso_seller">Komplain Pembeli</string>
     <string name="drawer_title_new_order">Order Baru</string>
     <string name="drawer_title_shipping_status">Status Pengiriman</string>
     <string name="drawer_title_activity_contact_us">Hubungi Kami</string>

@@ -234,8 +234,10 @@ public class TkpdState extends com.tokopedia.abstraction.constant.TkpdState {
         public static final int GOLD_MERCHANT = 50;
         public static final int HELP = 51;
         public static final int SHOP_OPPORTUNITY_LIST = 52;
-
         public static final int CATEGORY_NAVIGATION = 54;
+        public static final int RESOLUTION_CENTER_BUYER = 55;
+        public static final int RESOLUTION_CENTER_SELLER = 56;
+
         public static final int FEATURED_PRODUCT = 99;
 
         public static final int APPSHARE = 58;
