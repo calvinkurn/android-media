@@ -25,6 +25,7 @@ import com.tokopedia.core.gcm.utils.NotificationChannelId;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.io.File;
 import java.util.List;
@@ -240,9 +241,10 @@ public class BuildAndShowNotification {
         NotificationCompat.BigTextStyle bigStyle = new NotificationCompat.BigTextStyle();
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(mContext);
-        mBuilder.setContentTitle(applinkNotificationPass.getTitle());
+
+        mBuilder.setContentTitle(MethodChecker.fromHtml(applinkNotificationPass.getTitle()));
         mBuilder.setContentText(applinkNotificationPass.getDescription());
-        bigStyle.bigText(applinkNotificationPass.getDescription());
+        bigStyle.bigText(MethodChecker.fromHtml(applinkNotificationPass.getDescription()));
         mBuilder.setStyle(bigStyle);
         mBuilder.setTicker(applinkNotificationPass.getTicker());
 
@@ -351,8 +353,8 @@ public class BuildAndShowNotification {
                                             true
                                     )
                             );
-                            bigStyle.setBigContentTitle(applinkNotificationPass.getTitle());
-                            bigStyle.setSummaryText(applinkNotificationPass.getDescription());
+                            bigStyle.setBigContentTitle(MethodChecker.fromHtml(applinkNotificationPass.getTitle()));
+                            bigStyle.setSummaryText(MethodChecker.fromHtml(applinkNotificationPass.getDescription()));
 
                             mBuilder.setStyle(bigStyle);
 
