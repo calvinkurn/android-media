@@ -111,21 +111,6 @@ public class TopPayPresenter implements ITopPayPresenter {
     }
 
     @Override
-    public void processCheckoutAnalytics(LocalCacheHandler cacheHandler, String gateway){
-
-//        Gson afGSON = new Gson();
-//        Checkout checkoutData = afGSON.fromJson(
-//                cacheHandler.getString(Jordan.CACHE_KEY_DATA_CHECKOUT),
-//                new TypeToken<Checkout>() {
-//                }.getType());
-//
-//        checkoutData.setStep("2");
-//        checkoutData.setCheckoutOption("click payment option button");
-//
-//        PaymentTracking.eventCartCheckoutStep1(checkoutData);
-    }
-
-    @Override
     public void processPaymentAnalytics(
             LocalCacheHandler cacheHandler, ThanksTopPayData thanksTopPayData
     ) throws Exception {

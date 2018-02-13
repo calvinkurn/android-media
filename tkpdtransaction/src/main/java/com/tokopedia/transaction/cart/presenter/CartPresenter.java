@@ -62,6 +62,8 @@ public class CartPresenter implements ICartPresenter {
     public static final int OPTIONAL_INSURANCE_MODE = 2;
     public static final String VOUCHER_CODE = "voucher_code";
     public static final String IS_SUGGESTED = "suggested";
+    private static final String PARAM_CART_PAGE_LOADED = "cart page loaded";
+    private static final String PARAM_CLICK_PAYMENT_OPTION_BUTTON = "click payment option button";
     private final ICartView view;
     private final ICartDataInteractor cartDataInteractor;
     private Gson gson;
@@ -511,14 +513,14 @@ public class CartPresenter implements ICartPresenter {
     @Override
     public void trackStep1CheckoutEE(Checkout checkoutData) {
         checkoutData.setStep("1");
-        checkoutData.setCheckoutOption("cart page loaded");
+        checkoutData.setCheckoutOption(PARAM_CART_PAGE_LOADED);
         PaymentTracking.eventCartCheckoutStep1(checkoutData);
     }
 
     @Override
     public void trackStep2CheckoutEE(Checkout checkoutData) {
         checkoutData.setStep("2");
-        checkoutData.setCheckoutOption("click payment option button");
+        checkoutData.setCheckoutOption(PARAM_CLICK_PAYMENT_OPTION_BUTTON);
         PaymentTracking.eventCartCheckoutStep2(checkoutData);
     }
 
