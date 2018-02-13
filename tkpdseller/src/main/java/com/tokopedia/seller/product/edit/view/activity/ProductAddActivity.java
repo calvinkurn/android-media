@@ -105,7 +105,7 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
             if (GlobalConfig.isSellerApp()) {
                 intent = SellerAppRouter.getSellerHomeActivity(context);
             } else {
-                intent = HomeRouter.getHomeActivity(context);
+                intent = HomeRouter.getHomeActivityInterfaceRouter(context);
             }
         }
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
