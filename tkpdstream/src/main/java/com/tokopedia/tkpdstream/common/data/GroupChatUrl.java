@@ -7,5 +7,6 @@ package com.tokopedia.tkpdstream.common.data;
 public class GroupChatUrl {
 
     public static final String BASE_URL = "https://ws.tokopedia.com";
-    public static final String GET_ALL_CHANNEL = "v4/notification/get_notification.pl";
+    public static final String GET_ALL_CHANNEL = "/api/v1/channels";
+    public static final String GET_CHANNEL_INFO = "/api/v1/channel/:channel_id";
 }
