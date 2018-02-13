@@ -3,84 +3,71 @@ package com.tokopedia.transaction.checkout.view.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.util.Locale;
+
 /**
  * @author Aghny A. Putra on 25/01/18
  */
 
 public class CartPayableDetailModel implements Parcelable {
 
-    private String totalItem;
-    private String totalItemPrice;
-    private String shippingWeight;
-    private String shippingFee;
-    private String insuranceFee;
-    private String promoPrice;
-    private String payablePrice;
-    private String promoFreeShipping;
+    private int totalItem;
+    private double totalPrice;
+    private double totalWeight;
+    private double shippingFee;
+    private double insuranceFee;
+    private double promoPrice;
 
-    public String getTotalItem() {
+    public int getTotalItem() {
         return totalItem;
     }
 
-    public void setTotalItem(String totalItem) {
+    public void setTotalItem(int totalItem) {
         this.totalItem = totalItem;
     }
 
-    public String getTotalItemPrice() {
-        return totalItemPrice;
+    public double getTotalPrice() {
+        return totalPrice;
     }
 
-    public void setTotalItemPrice(String totalItemPrice) {
-        this.totalItemPrice = totalItemPrice;
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
     }
 
-    public String getShippingWeight() {
-        return shippingWeight;
+    public double getTotalWeight() {
+        return totalWeight;
     }
 
-    public void setShippingWeight(String shippingWeight) {
-        this.shippingWeight = shippingWeight;
+    public void setTotalWeight(double totalWeight) {
+        this.totalWeight = totalWeight;
     }
 
-    public String getShippingFee() {
+    public double getShippingFee() {
         return shippingFee;
     }
 
-    public void setShippingFee(String shippingFee) {
+    public void setShippingFee(double shippingFee) {
         this.shippingFee = shippingFee;
     }
 
-    public String getInsuranceFee() {
+    public double getInsuranceFee() {
         return insuranceFee;
     }
 
-    public void setInsuranceFee(String insuranceFee) {
+    public void setInsuranceFee(double insuranceFee) {
         this.insuranceFee = insuranceFee;
     }
 
-    public String getPromoPrice() {
+    public double getPromoPrice() {
         return promoPrice;
     }
 
-    public void setPromoPrice(String promoPrice) {
+    public void setPromoPrice(double promoPrice) {
         this.promoPrice = promoPrice;
     }
 
-    public String getPayablePrice() {
-        return payablePrice;
-    }
-
-    public void setPayablePrice(String payablePrice) {
-        this.payablePrice = payablePrice;
-    }
-
-    public String getPromoFreeShipping() {
-        return promoFreeShipping;
-    }
-
-    public void setPromoFreeShipping(String promoFreeShipping) {
-        this.promoFreeShipping = promoFreeShipping;
-    }
 
     @Override
     public int describeContents() {
@@ -89,31 +76,27 @@ public class CartPayableDetailModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.totalItem);
-        dest.writeString(this.totalItemPrice);
-        dest.writeString(this.shippingWeight);
-        dest.writeString(this.shippingFee);
-        dest.writeString(this.insuranceFee);
-        dest.writeString(this.promoPrice);
-        dest.writeString(this.payablePrice);
-        dest.writeString(this.promoFreeShipping);
+        dest.writeInt(this.totalItem);
+        dest.writeDouble(this.totalPrice);
+        dest.writeDouble(this.totalWeight);
+        dest.writeDouble(this.shippingFee);
+        dest.writeDouble(this.insuranceFee);
+        dest.writeDouble(this.promoPrice);
     }
 
     public CartPayableDetailModel() {
     }
 
     protected CartPayableDetailModel(Parcel in) {
-        this.totalItem = in.readString();
-        this.totalItemPrice = in.readString();
-        this.shippingWeight = in.readString();
-        this.shippingFee = in.readString();
-        this.insuranceFee = in.readString();
-        this.promoPrice = in.readString();
-        this.payablePrice = in.readString();
-        this.promoFreeShipping = in.readString();
+        this.totalItem = in.readInt();
+        this.totalPrice = in.readDouble();
+        this.totalWeight = in.readDouble();
+        this.shippingFee = in.readDouble();
+        this.insuranceFee = in.readDouble();
+        this.promoPrice = in.readDouble();
     }
 
-    public static final Parcelable.Creator<CartPayableDetailModel> CREATOR = new Parcelable.Creator<CartPayableDetailModel>() {
+    public static final Creator<CartPayableDetailModel> CREATOR = new Creator<CartPayableDetailModel>() {
         @Override
         public CartPayableDetailModel createFromParcel(Parcel source) {
             return new CartPayableDetailModel(source);
@@ -124,4 +107,5 @@ public class CartPayableDetailModel implements Parcelable {
             return new CartPayableDetailModel[size];
         }
     };
+
 }

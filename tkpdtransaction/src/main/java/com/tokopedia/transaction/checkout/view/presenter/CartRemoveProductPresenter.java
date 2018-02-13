@@ -1,9 +1,6 @@
 package com.tokopedia.transaction.checkout.view.presenter;
 
-import com.tokopedia.transaction.cart.model.ShipmentCartPassData;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
-import com.tokopedia.transaction.checkout.view.data.CartItemModel;
-import com.tokopedia.transaction.checkout.view.data.factory.CartItemModelFactory;
 import com.tokopedia.transaction.checkout.view.view.IRemoveProductListView;
 
 import java.util.List;
