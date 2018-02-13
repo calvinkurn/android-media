@@ -59,6 +59,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                               List<FlightBookingPassengerViewModel> flightPassengerViewModels,
                               String contactName, String country, String email, String phone) {
         getView().showCheckoutLoading();
+        flightAnalytics.eventReviewNextClick();
         flightBookingVerifyUseCase.createObservable(
                 flightBookingVerifyUseCase.createRequestParams(
                         promoCode,
