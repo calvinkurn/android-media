@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_rect_rounded_white_shadow">
+    android:background="@drawable/bg_rect_rounded_white_no_shadow"
+    android:elevation="6dp">
 
     <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="wrap_content"
