@@ -1,9 +1,8 @@
 package com.tokopedia.session.register.data.repository;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.session.register.data.RegisterEmailModel;
+import com.tokopedia.session.register.data.model.RegisterEmailModel;
 import com.tokopedia.session.register.data.factory.RegisterEmailSourceFactory;
-import com.tokopedia.session.register.domain.RegisterEmailRepository;
 
 import rx.Observable;
 

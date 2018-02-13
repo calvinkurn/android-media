@@ -5,7 +5,6 @@ import android.os.Build;
 import com.logentries.logger.AndroidLogger;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.GlobalConfig;
@@ -13,6 +12,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Created by ricoharisin on 8/23/16.
@@ -23,34 +24,59 @@ public class AnalyticsLog {
     private static final String TOKEN_LOG_NOTIFIER_NOTP = "44ec54a0-bcc2-437e-a061-9c7b3e124165";
 
     public static void logForceLogout(String url) {
+        String baseUrl = getBaseUrl(url);
+
         AnalyticsLog.log("ErrorType=Force Logout!"
                 + " UserID=" + (SessionHandler.getLoginID(MainApplication.getAppContext())
                 .equals("") ? "0" : SessionHandler.getLoginID(MainApplication.getAppContext()))
                 + " Url=" + "'" + url + "'"
+                + " BaseUrl=" + "'" + baseUrl + "'"
                 + " AppPackage=" + GlobalConfig.getPackageApplicationName()
                 + " AppVersion=" + GlobalConfig.VERSION_NAME
                 + " AppCode=" + GlobalConfig.VERSION_CODE
                 + " OSVersion=" + Build.VERSION.RELEASE
                 + " DeviceModel=" + android.os.Build.MODEL
                 + " DeviceId=" + "'" + GCMHandler.getRegistrationId(MainApplication.getAppContext()) + "'"
+                + " Environment=" + isStaging(baseUrl)
 
         );
     }
 
     public static void logNetworkError(String url, int errorCode) {
+        String baseUrl = getBaseUrl(url);
+
         AnalyticsLog.log("ErrorType=Error Network! "
                 + " ErrorCode=" + errorCode
                 + " UserID=" + (SessionHandler.getLoginID(MainApplication.getAppContext())
                 .equals("") ? "0" : SessionHandler.getLoginID(MainApplication.getAppContext()))
                 + " Url=" + "'" + url + "'"
+                + " BaseUrl=" + "'" + baseUrl + "'"
                 + " AppPackage=" + GlobalConfig.getPackageApplicationName()
                 + " AppVersion=" + GlobalConfig.VERSION_NAME
                 + " AppCode=" + GlobalConfig.VERSION_CODE
                 + " OSVersion=" + Build.VERSION.RELEASE
                 + " DeviceModel=" + android.os.Build.MODEL
                 + " DeviceId=" + "'" + GCMHandler.getRegistrationId(MainApplication.getAppContext()) + "'"
+                + " Environment=" + isStaging(baseUrl)
+
 
         );
+    }
+
+
+    private static String getBaseUrl(String url) {
+        try {
+            URL stringUrl = new URL(url);
+            return stringUrl.getProtocol() + "://" + stringUrl.getHost() + stringUrl
+                    .getPath();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return url;
+        }
+    }
+
+    private static String isStaging(String baseUrl) {
+        return baseUrl.contains("staging") ? "Staging" : "Production";
     }
 
     public static void logNotification(String notificationId, String notificationCode) {
@@ -88,9 +114,13 @@ public class AnalyticsLog {
                 + " - LoginID - " + SessionHandler.getLoginID(MainApplication.getAppContext()));
     }
     private static void log(String message) {
-        AndroidLogger logger = getAndroidLogger();
-        if (logger != null) {
-            logger.log(message);
+        try {
+            AndroidLogger logger = getAndroidLogger();
+            if (logger != null) {
+                logger.log(message);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

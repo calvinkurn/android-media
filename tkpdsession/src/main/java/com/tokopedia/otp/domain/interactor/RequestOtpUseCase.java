@@ -30,6 +30,7 @@ public class RequestOtpUseCase extends UseCase<RequestOtpViewModel> {
 
     public static final String MODE_SMS = "sms";
     public static final String MODE_CALL = "call";
+    public static final String MODE_EMAIL = "email";
 
     public static final int OTP_TYPE_SECURITY_QUESTION = 13;
     public static final int OTP_TYPE_PHONE_NUMBER_VERIFICATION = 11;

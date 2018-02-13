@@ -71,7 +71,10 @@
         <activity
             android:name=".purchase.detail.activity.OrderHistoryActivity"
             android:label="@string/title_activity_people_tx_details"/>
-
+        <activity
+            android:name=".purchase.activity.PaymentProcedureActivity"
+            android:theme="@style/Toolbar.White"
+            android:label="@string/title_payment_procedure"/>
         <service
             android:name=".purchase.services.TxActionIntentService"
             android:exported="false" />
