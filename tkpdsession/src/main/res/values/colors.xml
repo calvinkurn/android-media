@@ -30,4 +30,7 @@
     <color name="shadow_color_3">#15CCCCCC</color>
     <color name="shadow_color_4">#20CCCCCC</color>
     <color name="shadow_color_5">#25CCCCCC</color>
+
+    <color name="background_yellow_incomplete">#fffcd3</color>
+    <color name="background_green_verified">#d4efd5</color>
 </resources>
