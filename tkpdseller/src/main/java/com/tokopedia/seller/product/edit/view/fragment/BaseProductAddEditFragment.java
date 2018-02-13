@@ -39,7 +39,6 @@ import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivit
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.seller.product.edit.view.activity.CatalogPickerActivity;
-import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddInfoActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductScoringDetailActivity;
 import com.tokopedia.seller.product.edit.view.activity.YoutubeAddVideoActivity;
@@ -124,7 +123,7 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
         void successSaveDraftToDBWhenBackpressed();
     }
 
-    public abstract @ProductStatus int getStatusUpload();
+    protected abstract @ProductStatus int getStatusUpload();
 
     public abstract boolean isNeedGetCategoryRecommendation();
 
@@ -285,7 +284,7 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
 
             @Override
             public void clickImageEditor(int position) {
-                if (BaseProductAddEditFragment.this.getStatusUpload() == ProductStatus.ADD) {
+                if (BaseProductAddEditFragment.this.isAddStatus()) {
                     UnifyTracking.eventClickImageInAddProduct(AppEventTracking.AddProduct.EVENT_ACTION_EDIT);
                 } else {
                     UnifyTracking.eventClickImageInEditProduct(AppEventTracking.AddProduct.EVENT_ACTION_EDIT);
@@ -335,7 +334,15 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
     }
 
     private boolean isEdittingDraft(){
-        return ((getStatusUpload()== ProductStatus.EDIT) && (getProductDraftId() > 0));
+        return isEditStatus() && getProductDraftId() > 0;
+    }
+
+    public boolean isAddStatus(){
+        return getStatusUpload() == ProductStatus.ADD;
+    }
+
+    public boolean isEditStatus(){
+        return getStatusUpload() == ProductStatus.EDIT;
     }
 
     @Override
@@ -658,9 +665,9 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
                 productAdditionalInfoViewHolder.isShare()
         );
         for (String labelAnalytics : listLabelAnalytics){
-            if(getStatusUpload() == ProductStatus.ADD) {
+            if(isAddStatus()) {
                 UnifyTracking.eventAddProductAdd(labelAnalytics);
-            } else if(getStatusUpload() == ProductStatus.EDIT){
+            } else if(isEditStatus()){
                 UnifyTracking.eventAddProductEdit(labelAnalytics);
             }
         }
@@ -672,7 +679,7 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
                 productAdditionalInfoViewHolder.isShare()
         );
         for (String labelAnalytics : listLabelAnalytics){
-            if(getStatusUpload() == ProductStatus.ADD) {
+            if(isAddStatus()) {
                 UnifyTracking.eventAddProductAddMore(labelAnalytics);
             }
         }

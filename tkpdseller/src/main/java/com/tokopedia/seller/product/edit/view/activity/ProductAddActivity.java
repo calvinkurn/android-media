@@ -18,11 +18,12 @@ import android.view.View;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.myproduct.utils.FileUtils;
@@ -37,14 +38,12 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.view.dialog.AddWholeSaleDialog;
 import com.tokopedia.seller.base.view.dialog.BaseTextPickerDialogFragment;
 import com.tokopedia.seller.product.edit.view.fragment.BaseProductAddEditFragment;
 import com.tokopedia.seller.product.edit.view.fragment.ProductAddFragment;
-import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.edit.view.presenter.ProductAddPresenter;
 import com.tokopedia.seller.product.edit.view.service.UploadProductService;
@@ -288,9 +287,9 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     boolean doSave = saveProductToDraft();
+                    UnifyTracking.eventClickAddProduct(AppEventTracking.Category.ADD_PRODUCT,
+                            AppEventTracking.EventLabel.SAVE_DRAFT);
                     if (!doSave) {
-                        UnifyTracking.eventClickAddProduct(AppEventTracking.Category.ADD_PRODUCT,
-                                AppEventTracking.EventLabel.SAVE_DRAFT);
                         backPressedHandleTaskRoot();
                     }
                 }
@@ -443,7 +442,7 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
         BaseProductAddEditFragment productAddFragment = getProductAddFragment();
         boolean isAdd = true;
         if (productAddFragment != null) {
-            isAdd = productAddFragment.getStatusUpload() == ProductStatus.ADD;
+            isAdd = productAddFragment.isAddStatus();
         }
         startService(UploadProductService.getIntent(this, productId, isAdd));
     }
@@ -473,11 +472,6 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
         start(this);
         startActivity(ProductDetailRouter.createAddProductDetailInfoActivity(this));
         finish();
-    }
-
-    @Override
-    protected boolean isToolbarWhite() {
-        return true;
     }
 
     @Override
