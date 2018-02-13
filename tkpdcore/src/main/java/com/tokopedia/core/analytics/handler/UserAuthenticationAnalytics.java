@@ -39,17 +39,15 @@ public class UserAuthenticationAnalytics {
         mDiskAnalyticsDataStore.setActiveAuthenticationMedium(medium);
     }
 
-    public static void sendAnalytics(Bundle bundle) {
+    public static void sendAnalytics() {
         checkNotNullAnalyticsData();
         switch (mDiskAnalyticsDataStore.getActiveAuthenticationState()) {
             case AppEventTracking.GTMCacheValue.LOGIN:
                 UnifyTracking.eventLoginSuccess(mDiskAnalyticsDataStore.getActiveAuthenticationMedium());
-                CommonUtils.dumper(bundle.toString());
                 CommonUtils.dumper(mDiskAnalyticsDataStore.getActiveAuthenticationMedium());
                 break;
             case AppEventTracking.GTMCacheValue.REGISTER:
                 UnifyTracking.eventRegisterSuccess(mDiskAnalyticsDataStore.getActiveAuthenticationMedium());
-                CommonUtils.dumper(bundle.toString());
                 CommonUtils.dumper(mDiskAnalyticsDataStore.getActiveAuthenticationMedium());
                 break;
         }

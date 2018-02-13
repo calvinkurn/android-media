@@ -13,9 +13,11 @@ import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.usecase.RequestParams;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
+import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -81,12 +83,11 @@ public class CacheApiInterceptor implements Interceptor {
             }
             return originalResponse;
         } else {
-            Response originalResponse = getDefaultResponse(chain);
             CacheApiLoggingUtils.dumper(String.format("Data exist, return data from db: %s", request.url().toString()));
             Response.Builder builder = new Response.Builder();
             builder.request(request);
-            builder.protocol(originalResponse.protocol());
-            builder.code(originalResponse.code());
+            builder.protocol(Protocol.HTTP_1_1);
+            builder.code(HttpURLConnection.HTTP_OK);
             builder.message("");
             builder.body(ResponseBody.create(MediaType.parse(CacheApiConstant.TYPE_APPLICATION_JSON), cachedResponseData));
             return builder.build();
