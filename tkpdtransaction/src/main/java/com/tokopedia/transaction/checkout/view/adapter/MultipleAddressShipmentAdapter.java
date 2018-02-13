@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
@@ -136,7 +137,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         itemViewHolder.subTotalAmount.setText(data.getSubTotalAmount());
         itemViewHolder.chooseCourierButton.setOnClickListener(onChooseCourierClicked(data));
         itemViewHolder.chooseCourierButton.setOnClickListener(getChooseCourierClickListener(data));
-        renderPickupPoint(itemViewHolder, data);
+//        renderPickupPoint(itemViewHolder, data);
     }
 
     private View.OnClickListener getChooseCourierClickListener(final MultipleAddressShipmentAdapterData data) {
@@ -232,6 +233,16 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
         private TextView phoneNumber;
 
+        private RelativeLayout rlProductPoliciesLayout;
+
+        private ImageView ivFreeReturnIcon;
+
+        private TextView tvFreeReturnText;
+
+        private TextView tvPoSign;
+
+        private TextView tvCashbackText;
+
         MultipleShippingAddressViewHolder(View itemView) {
             super(itemView);
 
@@ -267,6 +278,17 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
             subTotalAmount = itemView.findViewById(R.id.sub_total_amount);
 
             pickupPointLayout = itemView.findViewById(R.id.pickup_point_layout);
+
+            rlProductPoliciesLayout = itemView.findViewById(R.id.rl_product_policies_layout);
+            rlProductPoliciesLayout.setVisibility(View.GONE);
+
+            ivFreeReturnIcon = itemView.findViewById(R.id.iv_free_return_icon);
+
+            tvFreeReturnText = itemView.findViewById(R.id.tv_free_return_text);
+
+            tvPoSign = itemView.findViewById(R.id.tv_po_sign);
+
+            tvCashbackText = itemView.findViewById(R.id.tv_cashback_text);
         }
     }
 
