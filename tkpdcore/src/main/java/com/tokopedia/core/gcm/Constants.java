@@ -54,6 +54,10 @@ public interface Constants {
 
     String WEB_PLAYSTORE_BUYER_APP_URL = "https://play.google.com/store/apps/details?id=com.tokopedia.tkpd";
 
+    /**
+     * @deprecated extends {@link com.tokopedia.abstraction.constant.TkpdAppLink} on module instead
+     */
+    @Deprecated
     interface Applinks {
         String HOME = "tokopedia://home";
         String HOME_FEED = "tokopedia://home/feed";

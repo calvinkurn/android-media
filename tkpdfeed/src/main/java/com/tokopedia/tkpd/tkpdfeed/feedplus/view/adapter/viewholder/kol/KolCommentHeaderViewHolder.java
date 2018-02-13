@@ -48,7 +48,7 @@ public class KolCommentHeaderViewHolder extends AbstractViewHolder<KolCommentHea
 
     @Override
     public void bind(final KolCommentHeaderViewModel element) {
-        ImageHandler.LoadImage(avatar, element.getAvatarUrl());
+        ImageHandler.loadImageCircle2(avatar.getContext(), avatar, element.getAvatarUrl());
         time.setText(element.getTime());
 
         avatar.setOnClickListener(new View.OnClickListener() {

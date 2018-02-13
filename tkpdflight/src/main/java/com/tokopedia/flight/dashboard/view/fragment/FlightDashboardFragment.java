@@ -19,7 +19,7 @@ import android.widget.DatePicker;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.banner.BannerView;
 import com.tokopedia.flight.FlightModuleRouter;
@@ -405,7 +405,17 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
-    public void showArrivalDateShouldGreaterOrEqual(@StringRes int resId) {
+    public void showDepartureDateMaxTwoYears(int resID) {
+        showMessageErrorInSnackBar(resID);
+    }
+
+    @Override
+    public void showReturnDateShouldGreaterOrEqual(@StringRes int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void showReturnDateMaxTwoYears(int resId) {
         showMessageErrorInSnackBar(resId);
     }
 

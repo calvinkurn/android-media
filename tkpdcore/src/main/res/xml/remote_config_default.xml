@@ -109,6 +109,16 @@
         <key>mainapp_rating_message</key>
         <value>Jika Kamu suka dengan aplikasi Tokopedia, silakan berikan dukungan Kamu dengan memberi rating 5 bintang dan ulasan di Google Play.</value>
     </entry>
+
+    <entry>
+        <key>app_notp_test</key>
+        <value>false</value>
+    </entry>
+
+    <entry>
+        <key>app_notp_enabled</key>
+        <value>false</value>
+    </entry>
     <entry>
         <key>mainapp_show_simple_app_rating</key>
         <value>true</value>
