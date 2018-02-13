@@ -3,10 +3,8 @@ package com.tokopedia.tkpd.campaign.data.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
-import com.tokopedia.flight.common.data.model.FlightError;
-import com.tokopedia.flight.common.data.model.FlightException;
 
-import java.util.List;
+import java.io.IOException;
 
 /**
  * Created by sandeepgoyal on 13/02/18.
@@ -26,16 +24,11 @@ public class CampaignErrorResponse extends BaseResponseError {
 
     @Override
     public boolean hasBody() {
-        return error!= null;
+        return error != null;
     }
 
     @Override
-    public RuntimeException createException() {
-        return new RuntimeException(error);
-    }
-
-    @Override
-    public boolean hasCustomAdditionalError() {
-        return false;
+    public IOException createException() {
+        return new CampaignException(error);
     }
 }
