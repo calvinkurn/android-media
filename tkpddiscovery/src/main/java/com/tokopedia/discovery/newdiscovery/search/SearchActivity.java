@@ -86,6 +86,12 @@ public class SearchActivity extends DiscoveryActivity
         return intent;
     }
 
+    public static Intent newInstance(Context context, Bundle bundle) {
+        Intent intent = new Intent(context, SearchActivity.class);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
     public static void moveTo(AppCompatActivity activity,
                               ProductViewModel productViewModel,
                               boolean forceSwipeToShop) {

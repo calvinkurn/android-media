@@ -51,6 +51,12 @@ public class ReferralActivity extends BasePresenterActivity implements HasCompon
 
     }
 
+    public static Intent getCallingIntent(Context context, Bundle bundle) {
+        Intent intent = new Intent(context, ReferralActivity.class);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
     @Override
     protected void setupURIPass(Uri data) {
 

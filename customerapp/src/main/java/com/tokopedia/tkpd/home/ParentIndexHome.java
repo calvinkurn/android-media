@@ -61,6 +61,7 @@ import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.home.GetUserInfoListener;
 import com.tokopedia.core.network.retrofit.utils.DialogHockeyApp;
 import com.tokopedia.core.onboarding.NewOnboardingActivity;
+import com.tokopedia.core.referral.ReferralActivity;
 import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
@@ -74,6 +75,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.bottomnavigation.BottomNavigation;
+import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
+import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.shop.open.view.activity.ShopOpenDomainActivity;
 import com.tokopedia.tkpd.R;
@@ -265,61 +268,77 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
             Intent intentHome = ((TkpdCoreRouter) getApplication()).getHomeIntent
                     (this);
+            intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intentHome.setAction(Intent.ACTION_VIEW);
 
             String shopID = SessionHandler.getShopID(this);
+
             Intent shopIntent;
-
-
             if (shopID.equalsIgnoreCase(SessionHandler.DEFAULT_EMPTY_SHOP_ID)) {
                 shopIntent = ShopOpenDomainActivity.getIntent(this);
-                shopIntent.setAction(Intent.ACTION_VIEW);
             } else {
                 shopIntent = ShopInfoActivity.getCallingIntent(this, shopID);
-                shopIntent.setAction(Intent.ACTION_VIEW);
             }
 
+            shopIntent.setAction(Intent.ACTION_VIEW);
             shopIntent.putExtras(args);
-            shopIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            shopIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+            /*shopIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            shopIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);*/
+
             ShortcutInfo shopShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHOP_ID)
                     .setShortLabel(getResources().getString(R.string.longpress_jual))
                     .setLongLabel(getResources().getString(R.string.longpress_jual))
                     .setIcon(Icon.createWithResource(this, R.drawable.ic_jual))
-                    .setIntent(shopIntent)
+                    .setIntents(new Intent[]{
+                            intentHome, shopIntent
+                    })
                     .build();
 
-            Intent referralIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.Applinks.REFERRAL));
-            referralIntent.putExtras(args);
-            referralIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            referralIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            Intent referralIntent = ReferralActivity.getCallingIntent(this, args);
+            referralIntent.setAction(Intent.ACTION_VIEW);
+
+            /*referralIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            referralIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);*/
+
             ShortcutInfo referralShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHARE_ID)
                     .setShortLabel(getResources().getString(R.string.longpress_share))
                     .setLongLabel(getResources().getString(R.string.longpress_share))
                     .setIcon(Icon.createWithResource(this, R.drawable.ic_referral))
-                    .setIntent(referralIntent)
+                    .setIntents(new Intent[]{
+                            intentHome, referralIntent
+                    })
                     .build();
 
-            Intent productIntent;
-            productIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.Applinks.DISCOVERY_SEARCH));
-            productIntent.putExtras(args);
-            productIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            productIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            Intent productIntent = SearchActivity.newInstance(this, args);
+            productIntent.setAction(Intent.ACTION_VIEW);
+
+            /*productIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            productIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);*/
+
             ShortcutInfo productShortcut = new ShortcutInfo.Builder(this, SHORTCUT_BELI_ID)
                     .setShortLabel(getResources().getString(R.string.longpress_beli))
                     .setLongLabel(getResources().getString(R.string.longpress_beli))
                     .setIcon(Icon.createWithResource(this, R.drawable.ic_beli))
-                    .setIntent(productIntent)
+                    .setIntents(new Intent[]{
+                            intentHome, productIntent
+                    })
                     .build();
 
-            Intent digitalIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.Applinks.DIGITAL));
-            digitalIntent.putExtras(args);
-            digitalIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            digitalIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+            Intent digitalIntent = DigitalCategoryListActivity.newInstance(this, args);
+            digitalIntent.setAction(Intent.ACTION_VIEW);
+
+            /*digitalIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            digitalIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);*/
+
             ShortcutInfo digitalShortcut = new ShortcutInfo.Builder(this, SHORTCUT_DIGITAL_ID)
                     .setShortLabel(getResources().getString(R.string.longpress_bayar))
                     .setLongLabel(getResources().getString(R.string.longpress_bayar))
                     .setIcon(Icon.createWithResource(this, R.drawable.ic_bayar))
-                    .setIntent(digitalIntent)
+                    .setIntents(new Intent[]{
+                            intentHome, digitalIntent
+                    })
                     .build();
 
             shortcutManager.addDynamicShortcuts(Arrays.asList(referralShortcut, shopShortcut, productShortcut, digitalShortcut));
@@ -332,36 +351,40 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             shortcutManager.removeAllDynamicShortcuts();
 
 
-            /*Bundle args = new Bundle();
+            Bundle args = new Bundle();
             args.putBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, true);
-            args.putBoolean(Constants.FROM_APP_SHORTCUTS, true);*/
+            args.putBoolean(Constants.FROM_APP_SHORTCUTS, true);
 
             Intent intentHome = ((TkpdCoreRouter) getApplication()).getHomeIntent
                     (this);
-            intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//            intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intentHome.setAction(Intent.ACTION_VIEW);
 
-            Intent productIntent;
-            productIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.Applinks.DISCOVERY_SEARCH));
-            productIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            productIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//            productIntent.putExtras(args);
+            Intent productIntent = SearchActivity.newInstance(this, args);
+            productIntent.setAction(Intent.ACTION_VIEW);
+
+            /*productIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            productIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);*/
+
             ShortcutInfo productShortcut = new ShortcutInfo.Builder(this, SHORTCUT_BELI_ID)
                     .setShortLabel(getResources().getString(R.string.longpress_beli))
                     .setLongLabel(getResources().getString(R.string.longpress_beli))
                     .setIcon(Icon.createWithResource(this, R.drawable.ic_beli))
                     .setIntents(new Intent[]{
-                            productIntent, intentHome
+                            intentHome, productIntent
                     })
                     .build();
 
-            Intent digitalIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.Applinks.DIGITAL));
+            Intent digitalIntent = DigitalCategoryListActivity.newInstance(this, args);
+            digitalIntent.setAction(Intent.ACTION_VIEW);
+
             /*digitalIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             digitalIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);*/
             ShortcutInfo digitalShortcut = new ShortcutInfo.Builder(this, SHORTCUT_DIGITAL_ID)
                     .setShortLabel(getResources().getString(R.string.longpress_bayar))
                     .setLongLabel(getResources().getString(R.string.longpress_bayar))
                     .setIcon(Icon.createWithResource(this, R.drawable.ic_bayar))
-                    .setIntents(new Intent[]{digitalIntent, intentHome})
+                    .setIntents(new Intent[]{intentHome, digitalIntent})
                     .build();
 
             shortcutManager.addDynamicShortcuts(Arrays.asList(productShortcut, digitalShortcut));

@@ -33,6 +33,12 @@ public class DigitalCategoryListActivity extends BasePresenterActivity {
         return new Intent(context, DigitalCategoryListActivity.class);
     }
 
+    public static Intent newInstance(Context context, Bundle bundle) {
+        Intent intent = new Intent(context, DigitalCategoryListActivity.class);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
     public static Intent newInstance(Context context, boolean isFromSeller) {
         Intent intent = new Intent(context, DigitalCategoryListActivity.class);
         return intent;
