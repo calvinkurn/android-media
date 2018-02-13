@@ -55,7 +55,7 @@ public class ShipmentAddressListAdapter
 
     @Override
     public void onBindViewHolder(final RecipientAddressViewHolder holder, int position) {
-        final ShipmentRecipientModel address = mAddressModelList.get(position);
+        ShipmentRecipientModel address = mAddressModelList.get(position);
 
         if (address.isSelected()) {
             holder.rbCheckAddress.setChecked(true);
@@ -67,7 +67,7 @@ public class ShipmentAddressListAdapter
         holder.mTvRecipientAddress.setText(address.getRecipientAddress());
         holder.tvPhoneNumber.setText(address.getRecipientPhoneNumber());
         holder.tvTextAddressDescription.setText(address.getRecipientAddressDescription());
-        if (!TextUtils.isEmpty(address.getAddressIdentifier())) {
+        if (address.isPrimerAddress()) {
             holder.tvAddressIdentifier.setText(address.getAddressIdentifier());
             holder.tvAddressIdentifier.setVisibility(View.VISIBLE);
         } else {
@@ -79,7 +79,7 @@ public class ShipmentAddressListAdapter
         holder.tvChangeAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                actionListener.onEditClick(address);
+                actionListener.onEditClick(mAddressModelList.get(holder.getAdapterPosition()));
             }
         });
 
