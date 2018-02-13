@@ -99,7 +99,7 @@ public class FlightAnalytics {
 
         if (viewModel.getRouteList() != null && viewModel.getRouteList().size() > 0) {
             String timeResult = viewModel.getRouteList().get(0).getDepartureTimestamp();
-            timeResult += "-" + viewModel.getRouteList().get(viewModel.getRouteList().size() - 1).getArrivalTimestamp();
+            timeResult += " - " + viewModel.getRouteList().get(viewModel.getRouteList().size() - 1).getArrivalTimestamp();
             result.append(timeResult);
         }
         result.append(Label.NORMAL_PRICE);
@@ -148,8 +148,8 @@ public class FlightAnalytics {
         if (viewModel.getRouteList() != null && viewModel.getRouteList().size() > 0) {
             result.append(transformAirlines(viewModel));
 
-            String timeResult = viewModel.getRouteList().get(0).getDepartureTimestamp();
-            timeResult += "-" + viewModel.getRouteList().get(viewModel.getRouteList().size() - 1).getArrivalTimestamp();
+            String timeResult = String.format(" - %s", viewModel.getRouteList().get(0).getDepartureTimestamp());
+            timeResult += String.format(" - %s ", viewModel.getRouteList().get(viewModel.getRouteList().size() - 1).getArrivalTimestamp());
             result.append(timeResult);
         }
         result.append(transformRefundableLabel(viewModel.getIsRefundable()));
@@ -180,12 +180,12 @@ public class FlightAnalytics {
         }
 
         if (viewModel.getRouteList() != null && viewModel.getRouteList().size() > 0) {
-            String timeResult = String.format("-%s", viewModel.getRouteList().get(0).getDepartureTimestamp());
-            timeResult += String.format("-%s", viewModel.getRouteList().get(viewModel.getRouteList().size() - 1).getArrivalTimestamp());
+            String timeResult = String.format(" - %s", viewModel.getRouteList().get(0).getDepartureTimestamp());
+            timeResult += String.format(" - %s", viewModel.getRouteList().get(viewModel.getRouteList().size() - 1).getArrivalTimestamp());
             result.append(timeResult);
         }
         result.append(transformRefundableLabel(viewModel.isRefundable()));
-        result.append(String.format(Locale.getDefault(), "-%d", adapterPosition));
+        result.append(String.format(Locale.getDefault(), " - %d", adapterPosition));
         result.append(Label.NORMAL_PRICE);
         return result;
     }
@@ -337,14 +337,14 @@ public class FlightAnalytics {
 
     private static class Label {
         static String FAILED_PURCHASE = "FAILED";
-        static String NORMAL_PRICE = "- Normal Price";
+        static String NORMAL_PRICE = " - Normal Price";
         static String ADULT = " adult";
         static String CHILD = " child";
         static String INFANT = " baby";
         static String REVIEW_NEXT = " on order details page";
-        static String REFUNDABLE = "-refundable";
-        static String NOT_REFUNDABLE = "-not refundable";
-        static String PARTIALLY_REFUNDABLE = "-partially refundable";
+        static String REFUNDABLE = "- refundable";
+        static String NOT_REFUNDABLE = "- not refundable";
+        static String PARTIALLY_REFUNDABLE = "- partially refundable";
     }
 
 }
