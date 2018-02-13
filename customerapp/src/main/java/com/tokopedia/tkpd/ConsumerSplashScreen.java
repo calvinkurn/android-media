@@ -24,10 +24,15 @@ public class ConsumerSplashScreen extends SplashScreen {
                 getIntent().getStringExtra(RideHomeActivity.EXTRA_LAUNCH_SHORTCUT) != null &&
                 getIntent().getStringExtra(RideHomeActivity.EXTRA_LAUNCH_SHORTCUT).equalsIgnoreCase("true")) ||
                 !TextUtils.isEmpty(rideConfiguration.getActiveRequestId())) {
+
+            Intent rideHomeIntent = RideHomeActivity.getCallingIntent(this);
+            if (getIntent().getExtras() != null) rideHomeIntent.putExtras(getIntent().getExtras());
+
             TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(getApplicationContext());
             taskStackBuilder.addNextIntent(homeIntent);
-            taskStackBuilder.addNextIntent(RideHomeActivity.getCallingIntent(this));
+            taskStackBuilder.addNextIntent(rideHomeIntent);
             taskStackBuilder.startActivities();
+
         } else {
             startActivity(homeIntent);
         }
