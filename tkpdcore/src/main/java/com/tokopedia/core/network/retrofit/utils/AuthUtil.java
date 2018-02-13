@@ -7,7 +7,6 @@ import android.util.Base64;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -100,10 +99,10 @@ public class AuthUtil {
      * default key is KEY_WSV$
      */
     public static class KEY {
-        private static final int[] RAW_KEY_WSV4 = new int[]{65,107,102,105,101,119,56,51,52,50,57,56,80,79,105,110,118};
-        private static final int[] RAW_SCROOGE_KEY = new int[]{49,50,69,56,77,105,69,55,89,69,54,86,122,115,69,80,66,80,101,77 };
-        private static final int[] RAW_ZEUS_KEY = new int[]{102,100,100,98,100,56,49,101,101,52,49,49,54,98,56,99,98,55,97,52,48,56,100,55,102,98,102,98,57,99,49,55 };
-        private static final int[] RAW_NOTP_KEY = new int[]{110,117,108,97,121,117,107,97,119,111,106,117};
+        private static final int[] RAW_KEY_WSV4 = new int[]{65, 107, 102, 105, 101, 119, 56, 51, 52, 50, 57, 56, 80, 79, 105, 110, 118};
+        private static final int[] RAW_SCROOGE_KEY = new int[]{49, 50, 69, 56, 77, 105, 69, 55, 89, 69, 54, 86, 122, 115, 69, 80, 66, 80, 101, 77};
+        private static final int[] RAW_ZEUS_KEY = new int[]{102, 100, 100, 98, 100, 56, 49, 101, 101, 52, 49, 49, 54, 98, 56, 99, 98, 55, 97, 52, 48, 56, 100, 55, 102, 98, 102, 98, 57, 99, 49, 55};
+        private static final int[] RAW_NOTP_KEY = new int[]{110, 117, 108, 97, 121, 117, 107, 97, 119, 111, 106, 117};
         public static final String KEY_WSV4_NEW = convert(RAW_KEY_WSV4);
         public static final String KEY_WSV4 = "web_service_v4";
         public static final String KEY_MOJITO = "mojito_api_v1";
@@ -577,7 +576,7 @@ public class AuthUtil {
     private static String convert(int[] key) {
         String finalKey = "";
         for (int i : key) {
-            finalKey = finalKey+Character.toString((char) i);
+            finalKey = finalKey + Character.toString((char) i);
         }
         return finalKey;
     }

@@ -5,7 +5,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'maven'
 
-group = 'com.tokopedia.core'
+group = rootProject.ext.groupModule
 version = rootProject.ext.tkpdSessionVersion
 
 task wrapper(type: Wrapper) {
@@ -25,8 +25,8 @@ def getTkpdCore() {
 publishing {
     publications {
         aar(MavenPublication) {
-            groupId 'com.tokopedia.core'
-            artifactId 'tkpdsession'
+            groupId rootProject.ext.groupModule
+            artifactId rootProject.ext.tkpdSessionArtifact
             version rootProject.ext.tkpdSessionVersion
             artifact("$buildDir/outputs/aar/tkpdsession-release.aar")
             pom.withXml {

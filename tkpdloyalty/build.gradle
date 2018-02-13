@@ -14,7 +14,7 @@ apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
 apply plugin: 'maven'
 
-group = 'com.tokopedia.core'
+group = rootProject.ext.groupModule
 version = rootProject.ext.tkpdLoyaltyVersion
 
 def getArtifactVersionCode() {
@@ -34,8 +34,8 @@ def getTkpdDesign() {
 publishing {
     publications {
         aar(MavenPublication) {
-            groupId 'com.tokopedia.core'
-            artifactId 'tkpdloyalty'
+            groupId rootProject.ext.groupModule
+            artifactId rootProject.ext.tkpdLoyaltyArtifact
             version rootProject.ext.tkpdLoyaltyVersion
             artifact("$buildDir/outputs/aar/tkpdloyalty-release.aar")
             pom.withXml {

@@ -231,8 +231,6 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
 
-//    compile project(':tkpdcore')
-//
     compile(rootProject.ext.tkpdDependencies.inbox) {
         exclude group: 'com.tokopedia.core', module: 'tkpdcore'
     }
@@ -276,8 +274,6 @@ dependencies {
         exclude group: 'com.tokopedia.core', module: 'tkpdcore'
     }
 
-    // compile(rootProject.ext.tkpdDependencies.core)
-
 //    compile project(':tkpddiscovery')
     compile project(':tkpdtransaction')
 //    compile project(':tkpdseller')
@@ -288,7 +284,7 @@ dependencies {
 //    compile project(':tkpdpdp')
 //    compile project(':tkpdfeed')
 //    compile project(':tkpdreactnative')
-    // compile project(':tkpdloyalty')
+//    compile project(':tkpdloyalty')
 //    compile project(':tkpdreputation')
 //    compile project(':tkpdtokocash')
 //    compile project(':tkpdflight')

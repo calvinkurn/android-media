@@ -3,7 +3,7 @@ apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
 apply plugin: 'maven'
 
-group = 'com.tokopedia.core'
+group = rootProject.ext.groupModule
 version = rootProject.ext.tkpdTopAdsSDKVersion
 
 def getArtifactVersionCode() {
@@ -13,8 +13,8 @@ def getArtifactVersionCode() {
 publishing {
     publications {
         aar(MavenPublication) {
-            groupId 'com.tokopedia.core'
-            artifactId 'tkpdtopadssdk'
+            groupId rootProject.ext.groupModule
+            artifactId rootProject.ext.tkpdTopAdsSDKArtifact
             version rootProject.ext.tkpdTopAdsSDKVersion
             artifact("$buildDir/outputs/aar/tkpdtopadssdk-release.aar")
             pom.withXml {

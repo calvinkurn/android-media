@@ -6,6 +6,7 @@ ext {
     retrofitVersion = '2.1.0'
     okHttpVersion = '3.8.0'
     glideVersion = '3.7.0'
+
     permissionDispatcherVersion = '2.2.0'
     deeplinkDispatchVersion = '3.0.0-rc1'
     tkpdUseCaseVersion = '1.1.BOB-SNAPSHOT'
@@ -17,6 +18,7 @@ ext {
     tkpdTransactionVersion = '1.1.BOB-SNAPSHOT'
     tkpdDiscoveryVersion = '1.1.BOB-SNAPSHOT'
     tkpdDigitalVersion = '1.1.BOB-SNAPSHOT'
+    tkpdTopAdsVersion = '1.1.BOB-SNAPSHOT'
     tkpdTopAdsSDKVersion = '1.1.BOB-SNAPSHOT'
     tkpdPaymentVersion = '1.1.BOB-SNAPSHOT'
     tkpdPdpVersion = '1.1.BOB-SNAPSHOT'
@@ -28,7 +30,11 @@ ext {
     tkpdReputationVersion = '1.1.BOB-SNAPSHOT'
     tkpdTokocashVersion = '1.1.BOB-SNAPSHOT'
     tkpdFlightVersion = '1.1.BOB-SNAPSHOT'
+    tkpdFlightNoOpVersion = '1.1.BOB-SNAPSHOT'
     tkpdGmVersion = '1.1.BOB-SNAPSHOT'
+    tkpdCacheApiVersion = '1.1.BOB-SNAPSHOT'
+    tkpdMitratoppersVersion = '1.1.BOB-SNAPSHOT'
+
     compileSdkVersion = 26
     minSdkVersion = 16
     targetSdkVersion = 26
@@ -39,8 +45,34 @@ ext {
     apolloVersion = '0.3.0'
     lottieVersion = '2.0.0-rc1'
     reactNativeVersion = '0.51.0'
-    
+
     groupModule = 'com.tokopedia.core'
+
+    tkpdUseCaseArtifact = 'tkpdusecase'
+    tkpdAbstractionArtifact = 'tkpdabstraction'
+    tkpdCoreArtifact = 'tkpdcore'
+    tkpdInboxArtifact = 'tkpdinbox'
+    tkpdSessionArtifact = 'tkpdsession'
+    tkpdSellerArtifact = 'tkpdseller'
+    tkpdTransactionArtifact = 'tkpdtransaction'
+    tkpdDiscoveryArtifact = 'tkpddiscovery'
+    tkpdDigitalArtifact = 'tkpddigital'
+    tkpdTopAdsArtifact = 'tkpdtopads'
+    tkpdTopAdsSDKArtifact = 'tkpdtopadssdk'
+    tkpdPaymentArtifact = 'tkpdpayment'
+    tkpdPdpArtifact = 'tkpdpdp'
+    tkpdDesignArtifact = 'tkpddesign'
+    tkpdFeedArtifact = 'tkpdfeed'
+    tkpdRideArtifact = 'tkpdride'
+    tkpdLoyaltyArtifact = 'tkpdloyalty'
+    tkpdReactNativeArtifact = 'tkpdreactnative'
+    tkpdReputationArtifact = 'tkpdreputation'
+    tkpdTokocashArtifact = 'tkpdtokocash'
+    tkpdFlightArtifact = 'tkpdflight'
+    tkpdFlightNoOpArtifact = 'tkpdflight-no-op'
+    tkpdGmArtifact = 'tkpdgm'
+    tkpdCacheApiArtifact = 'tkpdcacheapi'
+    tkpdMitratoppersArtifact = 'tkpdmitratoppers'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -134,7 +166,7 @@ ext {
             facebook              : "com.facebook.android:facebook-android-sdk:4.26.0",
             parcelerApi           : "org.parceler:parceler-api:1.1.6",
             parceler              : "org.parceler:parceler:1.1.6",
-            gson                  : "com.google.code.gson:gson:2.7",
+            gson                  : "com.google.code.gson:gson:2.8.0",
             rxAndroid             : "io.reactivex:rxandroid:1.0.1",
             rxJava                : "io.reactivex:rxjava:1.2.9",
             rxJavaMath            : "io.reactivex:rxjava-math:1.0.0",
@@ -181,28 +213,32 @@ ext {
     ]
 
     tkpdDependencies = [
-            usecase    : "${groupModule}:tkpdusecase:${tkpdUseCaseVersion}",
-            abstraction: "${groupModule}:tkpdabstraction:${tkpdAbstractionVersion}",
-            core       : "${groupModule}:tkpdcore:${tkpdCoreVersion}",
-            inbox      : "${groupModule}:tkpdinbox:${tkpdInboxVersion}",
-            session    : "${groupModule}:tkpdsession:${tkpdSessionVersion}",
-            transaction: "${groupModule}:tkpdtransaction:${tkpdTransactionVersion}",
-            discovery  : "${groupModule}:tkpddiscovery:${tkpdDiscoveryVersion}",
-            seller     : "${groupModule}:tkpdseller:${tkpdSellerVersion}",
-            digital    : "${groupModule}:tkpddigital:${tkpdDigitalVersion}",
-            topads     : "${groupModule}:tkpdtopadssdk:${tkpdTopAdsSDKVersion}",
-            payment    : "${groupModule}:tkpdpayment:${tkpdPaymentVersion}",
-            tkpdpdp    : "${groupModule}:tkpdpdp:${tkpdPdpVersion}",
-            design     : "${groupModule}:tkpddesign:${tkpdDesignVersion}",
-            feed       : "${groupModule}:tkpdfeed:${tkpdFeedVersion}",
-            ride       : "${groupModule}:tkpdride:${tkpdRideVersion}",
-            reactNative: "${groupModule}:tkpdreactnative:${tkpdReactNativeVersion}",
-            loyalty    : "${groupModule}:tkpdloyalty:${tkpdLoyaltyVersion}",
-            flight     : "${groupModule}:tkpdflight:${tkpdFlightVersion}",
-            flightNoOp : "${groupModule}:tkpdflight-no-op:${tkpdFlightVersion}",
-            reputation : "${groupModule}:tkpdreputation:${tkpdReputationVersion}",
-            tokocash   : "${groupModule}:tkpdtokocash:${tkpdTokocashVersion}",
-            gm         : "${groupModule}:tkpdgm:${tkpdGmVersion}"
+            abstraction : "${groupModule}:${tkpdAbstractionArtifact}:${tkpdAbstractionVersion}",
+            core        : "${groupModule}:${tkpdCoreArtifact}:${tkpdCoreVersion}",
+            design      : "${groupModule}:${tkpdDesignArtifact}:${tkpdDesignVersion}",
+            digital     : "${groupModule}:${tkpdDigitalArtifact}:${tkpdDigitalVersion}",
+            discovery   : "${groupModule}:${tkpdDiscoveryArtifact}:${tkpdDiscoveryVersion}",
+            feed        : "${groupModule}:${tkpdFeedArtifact}:${tkpdFeedVersion}",
+            flight      : "${groupModule}:${tkpdFlightArtifact}:${tkpdFlightVersion}",
+            flightNoOp  : "${groupModule}:${tkpdFlightNoOpArtifact}:${tkpdFlightNoOpVersion}",
+            gm          : "${groupModule}:${tkpdGmArtifact}:${tkpdGmVersion}",
+            inbox       : "${groupModule}:${tkpdInboxArtifact}:${tkpdInboxVersion}",
+            loyalty     : "${groupModule}:${tkpdLoyaltyArtifact}:${tkpdLoyaltyVersion}",
+            payment     : "${groupModule}:${tkpdPaymentArtifact}:${tkpdPaymentVersion}",
+            tkpdpdp     : "${groupModule}:${tkpdPdpArtifact}:${tkpdPdpVersion}",
+            reactNative : "${groupModule}:${tkpdReactNativeArtifact}:${tkpdReactNativeVersion}",
+            reputation  : "${groupModule}:${tkpdReputationArtifact}:${tkpdReputationVersion}",
+            ride        : "${groupModule}:${tkpdRideArtifact}:${tkpdRideVersion}",
+            seller      : "${groupModule}:${tkpdSellerArtifact}:${tkpdSellerVersion}",
+            session     : "${groupModule}:${tkpdSessionArtifact}:${tkpdSessionVersion}",
+            tokocash    : "${groupModule}:${tkpdTokocashArtifact}:${tkpdTokocashVersion}",
+            topads      : "${groupModule}:${tkpdTopAdsArtifact}:${tkpdTopAdsVersion}",
+            topadssdk   : "${groupModule}:${tkpdTopAdsSDKArtifact}:${tkpdTopAdsSDKVersion}",
+            transaction : "${groupModule}:${tkpdTransactionArtifact}:${tkpdTransactionVersion}",
+            usecase     : "${groupModule}:${tkpdUseCaseArtifact}:${tkpdUseCaseVersion}",
+            cacheapi    : "${groupModule}:${tkpdUseCaseArtifact}:${tkpdCacheApiVersion}",
+            mitratoppers: "${groupModule}:${tkpdMitratoppersArtifact}:${tkpdMitratoppersVersion}"
+
     ]
 
     tkpdLibDependencies = [

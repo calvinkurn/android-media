@@ -14,7 +14,7 @@ apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
 apply plugin: 'maven'
 
-group = 'com.tokopedia.core'
+group = rootProject.ext.groupModule
 version = rootProject.ext.tkpdTransactionVersion
 
 
@@ -71,8 +71,8 @@ def getTkpdLoyaltyLocalMaven() {
 publishing {
     publications {
         aar(MavenPublication) {
-            groupId 'com.tokopedia.core'
-            artifactId 'tkpdtransaction'
+            groupId rootProject.ext.groupModule
+            artifactId rootProject.ext.tkpdTransactionArtifact
             version rootProject.ext.tkpdTransactionVersion
             artifact("$buildDir/outputs/aar/tkpdtransaction-release.aar")
             pom.withXml {
@@ -151,7 +151,7 @@ dependencies {
 //    compile getTopAdsSdk()
 //    compile getTkpdPayment()
 //    compile getTkpdDesign()
-   // compile getTkpdLoyalty()
+//    compile getTkpdLoyalty()
 
     compile getTkpdCoreLocalMaven()
     compile getTopAdsSdkLocalMaven()

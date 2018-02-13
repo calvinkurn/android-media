@@ -5,7 +5,7 @@ apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
 apply plugin: 'maven'
 
-group = 'com.tokopedia.core'
+group = rootProject.ext.groupModule
 version = rootProject.ext.tkpdRideVersion
 
 buildscript {
@@ -29,8 +29,8 @@ def getTkpdCore() {
 publishing {
     publications {
         aar(MavenPublication) {
-            groupId 'com.tokopedia.core'
-            artifactId 'tkpdride'
+            groupId rootProject.ext.groupModule
+            artifactId rootProject.ext.tkpdRideArtifact
             version rootProject.ext.tkpdRideVersion
             artifact("$buildDir/outputs/aar/tkpdride-release.aar")
             pom.withXml {
