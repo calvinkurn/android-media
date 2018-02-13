@@ -92,9 +92,6 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
 
                 @Override
                 public void onError(Throwable e) {
-                    if (getView() == null) {
-                        return;
-                    }
                     getView().hideProgressDialog();
                     if (e instanceof UnknownHostException || e instanceof ConnectException) {
                         getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
@@ -115,9 +112,6 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
 
                 @Override
                 public void onNext(InfoQrTokoCash infoQrTokoCash) {
-                    if (getView() == null) {
-                        return;
-                    }
                     getView().hideProgressDialog();
                     if (infoQrTokoCash != null) {
                         Intent intent = NominalQrPaymentActivity.newInstance(context, qrcode, infoQrTokoCash);
@@ -141,16 +135,11 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
         postBarCodeDataUseCase.execute(requestParams, new Subscriber<CampaignResponseEntity>() {
             @Override
             public void onCompleted() {
-                if (getView() != null) {
                     getView().finish();
-                }
             }
 
             @Override
             public void onError(Throwable e) {
-                if (getView() == null) {
-                    return;
-                }
                 if (e instanceof UnknownHostException || e instanceof ConnectException) {
                     getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
                 } else if (e instanceof SocketTimeoutException) {
@@ -181,6 +170,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
 
     @Override
     public void destroyView() {
+        postBarCodeDataUseCase.unsubscribe();
         if (getInfoQrTokoCashUseCase != null) getInfoQrTokoCashUseCase.unsubscribe();
         if (postBarCodeDataUseCase != null) postBarCodeDataUseCase.unsubscribe();
     }
