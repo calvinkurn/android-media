@@ -179,7 +179,7 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
     protected void saveAndAddDraft() {
         ProductViewModel viewModel = collectDataFromView();
         sendAnalyticsAddMore(viewModel);
-        presenter.saveDraftAndAdd(viewModel, true);
+        presenter.saveDraftAndAdd(viewModel);
     }
 
     @Override
@@ -780,7 +780,6 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
         AlertDialog alert = builder.create();
         alert.show();
     }
-
 
     public boolean showDialogSaveDraftOnBack(){
         return true;

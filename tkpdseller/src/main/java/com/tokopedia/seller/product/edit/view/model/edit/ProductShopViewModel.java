@@ -23,32 +23,16 @@ public class ProductShopViewModel {
         return shopId;
     }
 
-    public void setShopId(long shopId) {
-        this.shopId = shopId;
-    }
-
     public String getShopName() {
         return shopName;
-    }
-
-    public void setShopName(String shopName) {
-        this.shopName = shopName;
     }
 
     public String getShopDomain() {
         return shopDomain;
     }
 
-    public void setShopDomain(String shopDomain) {
-        this.shopDomain = shopDomain;
-    }
-
     public String getShopUrl() {
         return shopUrl;
-    }
-
-    public void setShopUrl(String shopUrl) {
-        this.shopUrl = shopUrl;
     }
 
 }

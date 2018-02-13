@@ -50,7 +50,9 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
                     ProductDraftModel.class
             );
 
-            return mapDraftToDomain(draftModel);
+            ProductViewModel productViewModel = mapDraftToDomain(draftModel);
+            productViewModel.setDraftId(productDraftDataBase.getId());
+            return productViewModel;
         } else {
             return CacheUtil.convertStringToModel(
                     productDraftDataBase.getData(),
@@ -174,8 +176,7 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
     public static ProductPictureResultUploadedViewModel generatePicObj(String picObj) throws UnsupportedEncodingException {
         byte[] resultEncoded = Base64.decode(picObj, Base64.DEFAULT);
         Gson gson = new Gson();
-        ProductPictureResultUploadedViewModel resultUploadedViewModel = gson.fromJson(new String(resultEncoded, UTF_8), ProductPictureResultUploadedViewModel.class);
-        return resultUploadedViewModel;
+        return gson.fromJson(new String(resultEncoded, UTF_8), ProductPictureResultUploadedViewModel.class);
     }
 
     public static String mapFromDomain(ProductViewModel domainModel) {

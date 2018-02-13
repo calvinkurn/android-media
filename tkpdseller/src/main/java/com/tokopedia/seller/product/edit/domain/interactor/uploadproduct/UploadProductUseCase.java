@@ -2,24 +2,17 @@ package com.tokopedia.seller.product.edit.domain.interactor.uploadproduct;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.UploadImageModel;
-import com.tokopedia.seller.product.edit.domain.GenerateHostRepository;
-import com.tokopedia.seller.product.edit.domain.ImageProductUploadRepository;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
 import com.tokopedia.seller.product.edit.domain.UploadProductRepository;
 import com.tokopedia.seller.product.edit.domain.listener.AddProductNotificationListener;
 import com.tokopedia.seller.product.edit.domain.model.AddProductDomainModel;
-import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
-import com.tokopedia.seller.product.edit.domain.model.ProductPhotoListDomainModel;
-import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +21,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Action1;
+import rx.functions.Func1;
 
 /**
  * @author sebastianuskh on 4/10/17.
@@ -42,17 +36,12 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
     private final UploadProductRepository uploadProductRepository;
 
     private AddProductNotificationListener listener;
-    private ProductViewModel productViewModel;
     private UploadImageUseCase<UploadImageModel> uploadImageUseCase;
 
     @Inject
-    public UploadProductUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
-            ProductDraftRepository productDraftRepository,
-            UploadProductRepository uploadProductRepository,
-            UploadImageUseCase<UploadImageModel> uploadImageUseCase) {
-        super(threadExecutor, postExecutionThread);
+    public UploadProductUseCase(ProductDraftRepository productDraftRepository,
+                                UploadProductRepository uploadProductRepository,
+                                UploadImageUseCase<UploadImageModel> uploadImageUseCase) {
         this.productDraftRepository = productDraftRepository;
         this.uploadProductRepository = uploadProductRepository;
         this.uploadImageUseCase = uploadImageUseCase;
@@ -74,12 +63,16 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
         if (productId == UNSELECTED_PRODUCT_ID) {
             throw new RuntimeException("Input model is missing");
         }
-        productViewModel = productDraftRepository.getDraft(productId).toBlocking().first();
-        if (productViewModel == null) {
-            throw new RuntimeException("Draft is already deleted");
-        }
-
-        return Observable.just(productViewModel)
+        return productDraftRepository.getDraft(productId)
+                .map(new Func1<ProductViewModel, ProductViewModel>() {
+                    @Override
+                    public ProductViewModel call(ProductViewModel productViewModel) {
+                        if (productViewModel == null) {
+                            Observable.error(new RuntimeException("Draft is already deleted"));
+                        }
+                        return productViewModel;
+                    }
+                })
                 .flatMap(new UploadProduct(productId, listener, uploadProductRepository,
                         uploadImageUseCase))
                 .doOnNext(new DeleteProductDraft(productId, productDraftRepository))

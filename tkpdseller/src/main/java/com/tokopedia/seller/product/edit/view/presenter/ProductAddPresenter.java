@@ -24,7 +24,7 @@ public abstract class ProductAddPresenter<T extends ProductAddView> extends Base
 
     public abstract void fetchCategory(long categoryId);
 
-    public abstract void saveDraftAndAdd(ProductViewModel viewModel, boolean isUploading);
+    public abstract void saveDraftAndAdd(ProductViewModel viewModel);
 
     public abstract void fetchProductVariantByCat(long categoryId);
 }

@@ -60,12 +60,17 @@ public abstract class BaseProductAddEditActivity extends BaseSimpleActivity
         return ((SellerModuleRouter) getApplication()).getProductComponent();
     }
 
-    public BaseProductAddEditFragment<? extends ProductAddPresenter> getProductAddFragment() {
+    public BaseProductAddEditFragment<? extends ProductAddPresenter> getBaseProductAddFragment() {
         Fragment fragment = getFragment();
         if (fragment != null && fragment instanceof BaseProductAddEditFragment) {
             return (BaseProductAddEditFragment<?>) fragment;
         }
         return null;
+    }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
     }
 
     @Override
@@ -75,8 +80,8 @@ public abstract class BaseProductAddEditActivity extends BaseSimpleActivity
 
     @Override
     public void addWholesaleItem(WholesaleModel item) {
-        if (getProductAddFragment() != null && getProductAddFragment().isVisible()) {
-            getProductAddFragment().addWholesaleItem(item);
+        if (getBaseProductAddFragment() != null && getBaseProductAddFragment().isVisible()) {
+            getBaseProductAddFragment().addWholesaleItem(item);
         }
     }
 
@@ -112,7 +117,7 @@ public abstract class BaseProductAddEditActivity extends BaseSimpleActivity
     }
 
     private void startUploadProductService(long productId) {
-        BaseProductAddEditFragment productAddFragment = getProductAddFragment();
+        BaseProductAddEditFragment productAddFragment = getBaseProductAddFragment();
         boolean isAdd = true;
         if (productAddFragment != null) {
             isAdd = productAddFragment.isAddStatus();
@@ -202,16 +207,13 @@ public abstract class BaseProductAddEditActivity extends BaseSimpleActivity
     }
 
     private boolean showDialogSaveDraftOnBack() {
-        BaseProductAddEditFragment fragment = getProductAddFragment();
-        if (fragment != null) {
-            return fragment.showDialogSaveDraftOnBack();
-        }
-        return false;
+        BaseProductAddEditFragment fragment = getBaseProductAddFragment();
+        return fragment != null && fragment.showDialogSaveDraftOnBack();
     }
 
     private void deleteNotUsedTkpdCacheImage() {
         if (needDeleteCacheOnBack()) {
-            BaseProductAddEditFragment fragment = getProductAddFragment();
+            BaseProductAddEditFragment fragment = getBaseProductAddFragment();
             if (fragment != null) {
                 fragment.deleteNotUsedTkpdCacheImage();
             }
