@@ -3366,7 +3366,7 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventResoChatImpressionSaveInputAWB(String resolutionId) {
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER_VIEW,
                 AppEventTracking.Category.RESOLUTION_CENTER_CHAT,
                 AppEventTracking.Action.IMPRESSION_SAVE_INPUT_AWB_CHAT,
                 ""
@@ -3393,7 +3393,7 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventResoChatImpressionSaveEditAWB(String resolutionId) {
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER_VIEW,
                 AppEventTracking.Category.RESOLUTION_CENTER_CHAT,
                 AppEventTracking.Action.IMPRESSION_SAVE_EDIT_AWB_CHAT,
                 ""
