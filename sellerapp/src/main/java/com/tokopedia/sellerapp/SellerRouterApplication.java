@@ -52,11 +52,13 @@ import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.mitratoppers.MitraToppersRouter;
 import com.tokopedia.mitratoppers.MitraToppersRouterInternal;
 import com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver;
+import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -762,8 +764,8 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getActivitySellingTransactionOpportunity(Context context) {
-        return TkpdSeller.getActivitySellingTransactionOpportunity(context);
+    public Intent getActivitySellingTransactionOpportunity(Context context, String query) {
+        return TkpdSeller.getActivitySellingTransactionOpportunity(context, query);
     }
 
     @Override
@@ -866,6 +868,16 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public Intent getResolutionCenterIntentBuyer(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getResolutionCenterIntentSeller(Context context) {
+        return ResoInboxActivity.newSellerInstance(context);
+    }
+
+    @Override
     public Intent getDetailResChatIntentBuyer(Context context, String resoId, String shopName) {
         return DetailResChatActivity.newBuyerInstance(context, resoId, shopName);
     }
@@ -916,6 +928,11 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public BroadcastReceiver getBroadcastReceiverTokocashPending() {
         return new TokocashPendingDataBroadcastReceiver();
+    }
+
+    @Override
+    public Intent getContactUsIntent(Context context) {
+        return new Intent(context, ContactUsActivity.class);
     }
 
     @Override
