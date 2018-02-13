@@ -1,6 +1,8 @@
 package com.tokopedia.core.gcm;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.moengage.pushbase.push.MoEngageNotificationUtils;
@@ -18,7 +20,9 @@ import com.tokopedia.core.util.GlobalConfig;
 
 public class BaseMessagingService extends BaseNotificationMessagingService {
     private static final IAppNotificationReceiver appNotificationReceiver = createInstance();
+    private SharedPreferences sharedPreferences;
 
+    @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
         Bundle data = convertMap(remoteMessage);
@@ -27,13 +31,19 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
         if (appNotificationReceiver != null) {
             appNotificationReceiver.init(getApplication());
 
-            if (MoEngageNotificationUtils.isFromMoEngagePlatform(remoteMessage.getData())) {
+            if (MoEngageNotificationUtils.isFromMoEngagePlatform(remoteMessage.getData()) && showPromoNotification()) {
                 appNotificationReceiver.onMoengageNotificationReceived(remoteMessage);
             } else {
                 AnalyticsLog.logNotification(remoteMessage.getFrom(), data.getString(Constants.ARG_NOTIFICATION_CODE, ""));
                 appNotificationReceiver.onNotificationReceived(remoteMessage.getFrom(), data);
             }
         }
+    }
+
+    private boolean showPromoNotification() {
+        if(sharedPreferences == null) sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        return sharedPreferences.getBoolean(Constants.Settings.NOTIFICATION_PROMO, true);
     }
 
     public static IAppNotificationReceiver createInstance() {
