@@ -48,6 +48,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
+import com.tokopedia.profile.view.activity.PeopleInfoActivity;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
@@ -543,8 +544,12 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     @Override
     public void onGoToProfile() {
+        //TODO milhamj
+//        context.startActivity(
+//                PeopleInfoNoDrawerActivity.createInstance(context, sessionHandler.getLoginID())
+//        );
         context.startActivity(
-                PeopleInfoNoDrawerActivity.createInstance(context, sessionHandler.getLoginID())
+                PeopleInfoActivity.newInstance(context)
         );
         sendGTMNavigationEvent(AppEventTracking.EventLabel.PROFILE);
 
