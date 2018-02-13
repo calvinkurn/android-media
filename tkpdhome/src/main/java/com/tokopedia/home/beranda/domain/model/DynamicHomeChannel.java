@@ -281,18 +281,23 @@ public class DynamicHomeChannel {
 
     public class Hero {
         @Expose
+        @SerializedName("id")
         private String id;
 
         @Expose
+        @SerializedName("imageUrl")
         private String imageUrl;
 
         @Expose
+        @SerializedName("name")
         private String name;
 
         @Expose
+        @SerializedName("applink")
         private String applink;
 
         @Expose
+        @SerializedName("url")
         private String url;
 
         public String getId() {

@@ -683,5 +683,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         return getUserVisibleHint();
     }
 
-
+    public void scrollToTop() {
+        if (recyclerView != null) recyclerView.scrollToPosition(0);
+    }
 }

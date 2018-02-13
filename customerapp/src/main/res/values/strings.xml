@@ -61,4 +61,7 @@
     <string name="promo_title_terms">Syarat &amp; Ketentuan</string>
     <string name="digital_widget_title">Produk Digital</string>
 
+    <string name="wishlist_empty_title">Wishlist masih kosong</string>
+    <string name="wishlist_empty_message">Masuk untuk melihat produk-produk pilihan Anda</string>
+
 </resources>

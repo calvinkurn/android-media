@@ -192,8 +192,10 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     public void openShopSetting() {
         String shopId = SessionHandler.getShopID(getContext());
         if (!shopId.equals("0")) {
+            HomePageTracking.eventClickEditShop();
             onGoToShop(shopId);
         } else {
+            HomePageTracking.eventClickOpenShop();
             onGoToCreateShop();
         }
     }

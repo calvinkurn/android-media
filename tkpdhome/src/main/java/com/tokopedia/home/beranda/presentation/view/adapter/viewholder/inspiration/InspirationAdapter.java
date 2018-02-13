@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.listener.HomeFeedListener;
@@ -45,6 +46,9 @@ public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.
             productName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    HomePageTracking.eventEnhancedClickProductHomePage(
+                            inspirationViewModel.getHomePageClickDataLayer(getAdapterPosition())
+                    );
                     viewListener.onGoToProductDetailFromInspiration(
                             String.valueOf(inspirationViewModel.getListProduct().get(getAdapterPosition())
                                     .getProductId()),
@@ -58,6 +62,9 @@ public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.
             productImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    HomePageTracking.eventEnhancedClickProductHomePage(
+                            inspirationViewModel.getHomePageClickDataLayer(getAdapterPosition())
+                    );
                     viewListener.onGoToProductDetailFromInspiration(
                             String.valueOf(inspirationViewModel.getListProduct().get(getAdapterPosition()).getProductId()),
                             inspirationViewModel.getListProduct().get(getAdapterPosition()).getImageSource(),

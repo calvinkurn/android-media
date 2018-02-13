@@ -4,9 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.listener.ViewListener;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
-import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
@@ -22,6 +22,9 @@ import java.util.List;
  * @author ANGGA on 11/2/2015.
  */
 public interface ProductDetailView extends ViewListener {
+
+    String SOURCE_BUTTON_BUY_PDP = "BUTTON_BUY_PDP";
+    String SOURCE_BUTTON_BUY_VARIANT = "BUTTON_BUY_VARIANT";
 
     /**
      * Saat salah satu kategori product di klik.
@@ -63,6 +66,11 @@ public interface ProductDetailView extends ViewListener {
      * @param productData product data model
      */
     void onProductManagePromoteClicked(ProductDetailData productData);
+
+
+    void onBuyClick(String source);
+
+    void onImageZoomClick(int position);
 
     /**
      * Pada saat gambar toko diklik
@@ -123,6 +131,8 @@ public interface ProductDetailView extends ViewListener {
 
     void onWholesaleClicked(@NonNull Bundle bundle);
 
+    void onVariantClicked(@NonNull Bundle bundle);
+
     void onInstallmentClicked(@NonNull Bundle bundle);
 
     void onDescriptionClicked(@NonNull Bundle bundle);
@@ -171,13 +181,6 @@ public interface ProductDetailView extends ViewListener {
      * @param successResult data product detail
      */
     void onProductDetailLoaded(@NonNull ProductDetailData successResult);
-
-    /**
-     * Pada saat salah satu gambar product diklik
-     *
-     * @param bundle model yang dikirim
-     */
-    void onProductPictureClicked(@NonNull Bundle bundle);
 
     /**
      * Megisi/mengupdate UI dengan data product lainnya yang diterima
@@ -253,6 +256,8 @@ public interface ProductDetailView extends ViewListener {
 
     void showProductDetailRetry();
 
+    void showErrorVariant();
+
     void showProductOthersRetry();
 
     void showFaveShopRetry();
@@ -281,11 +286,13 @@ public interface ProductDetailView extends ViewListener {
 
     void onPromoWidgetCopied();
 
-    void showProductCampaign(ProductCampaign productCampaign);
+    void showProductCampaign();
 
     void showMostHelpfulReview(List<Review> reviews);
 
     void showLatestTalkView(LatestTalkViewModel discussion);
+
+    void addProductVariant(ProductVariant productVariant);
 
     void actionSuccessAddToWishlist(Integer productId);
 
@@ -302,4 +309,6 @@ public interface ProductDetailView extends ViewListener {
     void restoreIsAppBarCollapsed(boolean isAppBarCollapsed);
 
     boolean isSellerApp();
+
+    void updateButtonBuyListener();
 }
