@@ -32,9 +32,9 @@ public class ProfileCompletionVerifyPhoneNumberSubscriber extends Subscriber<Val
     @Override
     public void onNext(ValidateVerifyPhoneNumberDomain validateVerifyPhoneNumberDomain) {
         if (validateVerifyPhoneNumberDomain.getValidateOtpDomain().isSuccess()
-                && validateVerifyPhoneNumberDomain.getVerifyPhoneDomain().isSuccess())
+                && validateVerifyPhoneNumberDomain.getVerifyPhoneDomain().isSuccess()) {
             view.onSuccessVerifyPhoneNumber();
-        else {
+        } else {
             view.onErrorVerifyPhoneNumber(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
         }
     }

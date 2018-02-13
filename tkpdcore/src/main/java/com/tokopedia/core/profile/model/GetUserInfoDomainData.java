@@ -195,9 +195,11 @@ public class GetUserInfoDomainData {
             return calendar.get(Calendar.YEAR);
         } catch (ParseException e) {
             e.printStackTrace();
+            return 0;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            e.printStackTrace();
+            return 0;
         }
-        return 0;
-
     }
 
     public int getBdayMonth() {
@@ -206,7 +208,11 @@ public class GetUserInfoDomainData {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
             return calendar.get(Calendar.MONTH) + 1;
-        } catch (Exception e) {
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return 0;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            e.printStackTrace();
             return 0;
         }
     }
@@ -217,7 +223,11 @@ public class GetUserInfoDomainData {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
             return calendar.get(Calendar.DAY_OF_MONTH);
-        } catch (Exception e) {
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return 0;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            e.printStackTrace();
             return 0;
         }
     }

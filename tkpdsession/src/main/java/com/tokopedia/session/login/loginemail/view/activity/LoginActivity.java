@@ -36,9 +36,11 @@ public class LoginActivity extends TActivity implements HasComponent {
     public static Intent getCallingApplinkIntent(Context context, Bundle bundle) {
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         if (SessionHandler.isV4Login(context)) {
-            if (context.getApplicationContext() instanceof SessionRouter)
+            if (context.getApplicationContext() instanceof SessionRouter) {
                 return ((SessionRouter) context.getApplicationContext()).getHomeIntent(context);
-            else throw new RuntimeException("Applinks intent unsufficient");
+            } else {
+                throw new RuntimeException("Applinks intent unsufficient");
+            }
         } else {
             Intent intent = getCallingIntent(context);
             return intent.setData(uri.build());
@@ -56,8 +58,9 @@ public class LoginActivity extends TActivity implements HasComponent {
     private void initView() {
 
         Bundle bundle = new Bundle();
-        if (getIntent().getExtras() != null)
+        if (getIntent().getExtras() != null) {
             bundle.putAll(getIntent().getExtras());
+        }
 
         Fragment fragment = getSupportFragmentManager().findFragmentByTag
                 (LoginFragment.class.getSimpleName());

@@ -8,13 +8,11 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -83,7 +81,6 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.core.manage.people.profile.fragment.ManagePeopleProfileFragment.REQUEST_VERIFY_PHONE;
 import static com.tokopedia.session.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT;
 import static com.tokopedia.session.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT_TOKEN;
 import static com.tokopedia.session.google.GoogleSignInActivity.RC_SIGN_IN_GOOGLE;
@@ -240,9 +237,9 @@ public class LoginFragment extends BaseDaggerFragment
                             presenter.login(emailEditText.getText().toString().trim(),
                                     passwordEditText.getText().toString());
                             return true;
-                        } else {
-                            return false;
                         }
+
+                        return false;
                     }
                 });
 
@@ -284,9 +281,7 @@ public class LoginFragment extends BaseDaggerFragment
             }
         });
 
-        loadMoreFab.setOnClickListener(new View.OnClickListener()
-
-        {
+        loadMoreFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 loginView.post(new Runnable() {
@@ -298,10 +293,6 @@ public class LoginFragment extends BaseDaggerFragment
             }
         });
 
-    }
-
-    private boolean lastItemVisible() {
-        return false;
     }
 
     @Override
@@ -387,8 +378,9 @@ public class LoginFragment extends BaseDaggerFragment
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        if (loadingView != null)
+                        if (loadingView != null) {
                             loadingView.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+                        }
                     }
                 });
 
@@ -397,8 +389,9 @@ public class LoginFragment extends BaseDaggerFragment
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        if (loginView != null)
+                        if (loginView != null) {
                             loginView.setVisibility(isLoading ? View.GONE : View.VISIBLE);
+                        }
                     }
                 });
 
@@ -457,15 +450,17 @@ public class LoginFragment extends BaseDaggerFragment
     public void showLoadingDiscover() {
         ProgressBar pb = new ProgressBar(getActivity(), null, android.R.attr.progressBarStyle);
         int lastPos = loginLayout.getChildCount() - 1;
-        if (loginLayout != null && !(loginLayout.getChildAt(lastPos) instanceof ProgressBar))
+        if (loginLayout != null && !(loginLayout.getChildAt(lastPos) instanceof ProgressBar)) {
             loginLayout.addView(pb, loginLayout.getChildCount());
+        }
     }
 
     @Override
     public void dismissLoadingDiscover() {
         int lastPos = loginLayout.getChildCount() - 1;
-        if (loginLayout != null && loginLayout.getChildAt(lastPos) instanceof ProgressBar)
+        if (loginLayout != null && loginLayout.getChildAt(lastPos) instanceof ProgressBar) {
             loginLayout.removeViewAt(loginLayout.getChildCount() - 1);
+        }
     }
 
     @Override

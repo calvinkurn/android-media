@@ -53,8 +53,9 @@ public class ChangePhoneNumberUseCase extends UseCase<ChangePhoneNumberViewModel
         return new Action1<ChangePhoneNumberViewModel>() {
             @Override
             public void call(ChangePhoneNumberViewModel changePhoneNumberViewModel) {
-                if (changePhoneNumberViewModel.isSuccess())
+                if (changePhoneNumberViewModel.isSuccess()) {
                     sessionHandler.setPhoneNumber(changePhoneNumberViewModel.getPhoneNumber());
+                }
             }
         };
     }

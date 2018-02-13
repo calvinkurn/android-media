@@ -26,9 +26,11 @@ public class RegisterInitialActivity extends TActivity implements HasComponent {
     @DeepLink({SessionApplinkUrl.REGISTER})
     public static Intent getCallingApplinkRegisterIntent(Context context, Bundle bundle) {
         if (SessionHandler.isV4Login(context)) {
-            if (context.getApplicationContext() instanceof SessionRouter)
+            if (context.getApplicationContext() instanceof SessionRouter) {
                 return ((SessionRouter) context.getApplicationContext()).getHomeIntent(context);
-            else throw new RuntimeException("Applinks intent unsufficient");
+            } else {
+                throw new RuntimeException("Applinks intent unsufficient");
+            }
         } else {
             return getCallingIntent(context);
         }
@@ -61,8 +63,7 @@ public class RegisterInitialActivity extends TActivity implements HasComponent {
     }
 
     public static Intent getCallingIntent(Context context) {
-        Intent intent = new Intent(context, RegisterInitialActivity.class);
-        return intent;
+        return new Intent(context, RegisterInitialActivity.class);
     }
 
     @Override

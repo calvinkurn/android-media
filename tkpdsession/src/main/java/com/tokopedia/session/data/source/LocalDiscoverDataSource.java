@@ -36,8 +36,9 @@ public class LocalDiscoverDataSource {
                             return CacheUtil.convertStringToModel(getCache(),
                                     new TypeToken<DiscoverViewModel>() {
                                     }.getType());
-                        } else
+                        } else {
                             throw new RuntimeException(CACHE_EXPIRED);
+                        }
                     }
                 })
                 .first(new Func1<DiscoverViewModel, Boolean>() {

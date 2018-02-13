@@ -11,7 +11,6 @@ import android.text.SpannableString;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,7 +90,6 @@ public class WelcomeFragment extends BaseDaggerFragment implements
 
     @Override
     public void onResume() {
-        Log.d("NISNIS", "WELCOME FRAGMENT ON RESUME");
 
         super.onResume();
 
@@ -376,8 +374,6 @@ public class WelcomeFragment extends BaseDaggerFragment implements
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d("NISNIS", "WELCOME FRAGMENT ON ACTIVITY RESULT");
-
         super.onActivityResult(requestCode, resultCode, data);
         if ((requestCode == REQUEST_LOGIN
                 || requestCode == REQUEST_REGISTER)

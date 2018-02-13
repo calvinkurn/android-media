@@ -1,6 +1,7 @@
 package com.tokopedia.sellerapp.welcome.view;
 
 import android.app.DialogFragment;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -59,10 +60,8 @@ public class InfoWelcomeDialogFragment extends DialogFragment {
                     Intent intent = new Intent(Intent.ACTION_VIEW);
                     intent.setData(Uri.parse("market://details?id=com.tokopedia.tkpd"));
                     startActivity(intent);
-                } catch (Exception e) { //google play app is not installed
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.tokopedia.tkpd"));
-                    startActivity(intent);
+                } catch (ActivityNotFoundException e) { //google play app is not installed
+                    goToBrowser();
                 }
             }
         });
@@ -95,6 +94,12 @@ public class InfoWelcomeDialogFragment extends DialogFragment {
 
         buyerButton.setText(spannable, TextView.BufferType.SPANNABLE);
         buyerButton.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+    private void goToBrowser() {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.tokopedia.tkpd"));
+        startActivity(intent);
     }
 
     @Override

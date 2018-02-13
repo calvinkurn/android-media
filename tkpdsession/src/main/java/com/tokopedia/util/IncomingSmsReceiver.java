@@ -48,13 +48,14 @@ public class IncomingSmsReceiver extends BroadcastReceiver {
 
                         while (matcher.find()) {
                             String otpCode = matcher.group(1).trim();
-                            if (listener != null)
+                            if (listener != null) {
                                 listener.onReceiveOTP(otpCode);
+                            }
                         }
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
@@ -70,7 +71,6 @@ public class IncomingSmsReceiver extends BroadcastReceiver {
     }
 
     public void registerSmsReceiver(Context context) {
-
         IntentFilter filter = new IntentFilter();
         filter.addAction(ACTION_SMS_RECEIVED);
         context.registerReceiver(this, filter);

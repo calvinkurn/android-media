@@ -14,14 +14,14 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.util.CustomPhoneNumberUtil;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.phoneverification.view.listener.ChangePhoneNumber;
 import com.tokopedia.otp.phoneverification.view.presenter.ChangePhoneNumberPresenter;
 import com.tokopedia.session.R;
+import com.tokopedia.util.CustomPhoneNumberUtil;
 
 import javax.inject.Inject;
 
@@ -81,8 +81,9 @@ public class ChangePhoneNumberFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (getActivity().getIntent().getExtras() != null)
+        if (getActivity().getIntent().getExtras() != null) {
             phoneNumberEditText.setText(getActivity().getIntent().getExtras().getString(EXTRA_PHONE_NUMBER, ""));
+        }
     }
 
     private TextWatcher watcher(final EditText editText) {
@@ -114,7 +115,7 @@ public class ChangePhoneNumberFragment extends BaseDaggerFragment
         changePhoneNumberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(phoneNumberEditText!=null && !phoneNumberEditText.getText().toString().isEmpty()) {
+                if (phoneNumberEditText != null && !phoneNumberEditText.getText().toString().isEmpty()) {
                     KeyboardHandler.DropKeyboard(getActivity(), phoneNumberEditText);
                     showLoading();
                     presenter.changePhoneNumber(phoneNumberEditText.getText().toString().replace("-", ""));
@@ -126,11 +127,12 @@ public class ChangePhoneNumberFragment extends BaseDaggerFragment
     }
 
     private void showLoading() {
-        if (progressDialog == null && getActivity() != null)
+        if (progressDialog == null && getActivity() != null) {
             progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
-
-        if (progressDialog != null)
+        }
+        if (progressDialog != null) {
             progressDialog.showDialog();
+        }
     }
 
 

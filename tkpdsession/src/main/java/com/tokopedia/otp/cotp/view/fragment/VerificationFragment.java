@@ -233,8 +233,9 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     protected String getScreenName() {
         if (viewModel != null && !TextUtils.isEmpty(viewModel.getAppScreen())) {
             return viewModel.getAppScreen();
-        } else
+        } else {
             return OTPAnalytics.Screen.SCREEN_COTP_DEFAULT;
+        }
     }
 
     @Nullable
@@ -398,7 +399,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             inputOtp.post(new Runnable() {
                 public void run() {
                     inputOtp.requestFocusFromTouch();
-                    InputMethodManager lManager = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    InputMethodManager lManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                     lManager.showSoftInput(inputOtp, 0);
                 }
             });

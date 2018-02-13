@@ -26,6 +26,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.analytics.LoginAnalytics;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -45,9 +46,9 @@ import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
 import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.session.R;
+import com.tokopedia.session.WebViewLoginFragment;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.google.GoogleSignInActivity;
-import com.tokopedia.analytics.LoginAnalytics;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.view.activity.CreatePasswordActivity;
 import com.tokopedia.session.register.view.activity.RegisterEmailActivity;
@@ -56,7 +57,6 @@ import com.tokopedia.session.register.view.subscriber.registerinitial.GetFaceboo
 import com.tokopedia.session.register.view.viewlistener.RegisterInitial;
 import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
 import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordViewModel;
-import com.tokopedia.session.WebViewLoginFragment;
 
 import java.util.ArrayList;
 
@@ -273,8 +273,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     public void showLoadingDiscover() {
         ProgressBar pb = new ProgressBar(getActivity(), null, android.R.attr.progressBarStyle);
         int lastPos = linearLayout.getChildCount() - 1;
-        if (!(linearLayout.getChildAt(lastPos) instanceof ProgressBar))
+        if (!(linearLayout.getChildAt(lastPos) instanceof ProgressBar)) {
             linearLayout.addView(pb, linearLayout.getChildCount());
+        }
     }
 
     @Override
@@ -399,22 +400,28 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Override
     public void showProgressBar() {
-        if (progressBar != null)
+        if (progressBar != null) {
             progressBar.setVisibility(View.VISIBLE);
-        if (container != null)
+        }
+        if (container != null) {
             container.setVisibility(View.GONE);
-        if (loginButton != null)
+        }
+        if (loginButton != null) {
             loginButton.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public void dismissProgressBar() {
-        if (progressBar != null)
+        if (progressBar != null) {
             progressBar.setVisibility(View.GONE);
-        if (container != null)
+        }
+        if (container != null) {
             container.setVisibility(View.VISIBLE);
-        if (loginButton != null)
+        }
+        if (loginButton != null) {
             loginButton.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

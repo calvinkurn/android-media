@@ -319,7 +319,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             String responseString = response.peekBody(512).string();
             return responseString.toUpperCase().contains("REQUEST_DENIED") &&
                     !response.request().url().encodedPath().contains("make_login");
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
@@ -333,7 +333,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
                     && request.header(AUTHORIZATION).contains(BEARER)
                     && !response.request().url().encodedPath().contains(TOKEN)
                     && !response.request().url().encodedPath().contains("token");
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
@@ -347,7 +347,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         SessionRefresh sessionRefresh = new SessionRefresh(newAccessToken);
         try {
             sessionRefresh.refreshLogin();
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -356,7 +356,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
         try {
             accessTokenRefresh.refreshToken();
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -366,7 +366,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         try {
             String newAccessToken = accessTokenRefresh.refreshToken();
             doRelogin(newAccessToken);
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }private Request recreateRequestWithNewAccessToken(Chain chain) throws IOException{

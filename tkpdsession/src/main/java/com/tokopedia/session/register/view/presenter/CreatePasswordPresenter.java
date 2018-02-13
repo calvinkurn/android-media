@@ -2,7 +2,6 @@ package com.tokopedia.session.register.view.presenter;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.R;
@@ -25,6 +24,7 @@ public class CreatePasswordPresenter extends BaseDaggerPresenter<CreatePassword.
     private final SessionHandler sessionHandler;
     private final CreatePasswordLoginUseCase createPasswordLoginUseCase;
     private CreatePassword.View viewListener;
+    private int MAX_LENGTH_NAME = 35;
 
 
     @Inject
@@ -109,7 +109,7 @@ public class CreatePasswordPresenter extends BaseDaggerPresenter<CreatePassword.
         } else if (RegisterUtil.checkRegexNameLocal(model.getFullName())) {
             viewListener.showErrorName(R.string.error_illegal_character);
             isValid = false;
-        } else if (model.getFullName().length() > 35) {
+        } else if (model.getFullName().length() > MAX_LENGTH_NAME) {
             viewListener.showErrorName(R.string.error_max_35_character);
             isValid = false;
         }

@@ -21,8 +21,8 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.session.R;
 import com.tokopedia.session.activation.view.activity.ActivationActivity;
@@ -71,15 +71,17 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (savedInstanceState != null)
+        if (savedInstanceState != null) {
             email = savedInstanceState.getString(ActivationActivity.INTENT_EXTRA_PARAM_EMAIL, "");
-        else if (getArguments().getString(ActivationActivity.INTENT_EXTRA_PARAM_EMAIL) != null)
+        } else if (getArguments().getString(ActivationActivity.INTENT_EXTRA_PARAM_EMAIL) != null) {
             email = getArguments().getString(ActivationActivity.INTENT_EXTRA_PARAM_EMAIL, "");
+        }
 
-        if (savedInstanceState != null)
+        if (savedInstanceState != null) {
             pw = savedInstanceState.getString(ActivationActivity.INTENT_EXTRA_PARAM_PW, "");
-        else if (getArguments().getString(ActivationActivity.INTENT_EXTRA_PARAM_PW) != null)
+        } else if (getArguments().getString(ActivationActivity.INTENT_EXTRA_PARAM_PW) != null) {
             pw = getArguments().getString(ActivationActivity.INTENT_EXTRA_PARAM_PW, "");
+        }
     }
 
     @Override
@@ -246,20 +248,23 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
 
     @Override
     public void showLoadingProgress() {
-        if (progressDialog == null && getActivity() != null)
+        if (progressDialog == null && getActivity() != null) {
             progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+        }
 
-        if (progressDialog != null)
+        if (progressDialog != null) {
             progressDialog.showDialog();
+        }
     }
 
     @Override
     public void onErrorResendActivation(String errorMessage) {
         finishLoadingProgress();
-        if (errorMessage.equals(""))
+        if (errorMessage.equals("")) {
             NetworkErrorHelper.showSnackbar(getActivity());
-        else
+        } else {
             NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+        }
     }
 
     @Override
@@ -291,10 +296,11 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
         verifyCode.setText("");
         KeyboardHandler.DropKeyboard(getActivity(), verifyCode);
         finishLoadingProgress();
-        if (errorMessage.equals(""))
+        if (errorMessage.equals("")) {
             NetworkErrorHelper.showSnackbar(getActivity());
-        else
+        } else {
             NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+        }
     }
 
     @Override
@@ -311,8 +317,9 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
 
     @Override
     public void finishLoadingProgress() {
-        if (progressDialog != null)
+        if (progressDialog != null) {
             progressDialog.dismiss();
+        }
     }
 
     @Override
@@ -328,7 +335,6 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
                 && data != null
                 && data.getExtras() != null) {
             email = data.getExtras().getString(ChangeEmailFragment.EXTRA_EMAIL, "");
-
             setActivateText();
         } else if (requestCode == REQUEST_AUTO_LOGIN
                 && resultCode == Activity.RESULT_OK) {

@@ -31,9 +31,9 @@ public class VerifyPhoneNumberSubscriber extends Subscriber<ValidateVerifyPhoneN
     @Override
     public void onNext(ValidateVerifyPhoneNumberDomain validateVerifyPhoneNumberDomain) {
         if (validateVerifyPhoneNumberDomain.getValidateOtpDomain().isSuccess()
-                && validateVerifyPhoneNumberDomain.getVerifyPhoneDomain().isSuccess())
+                && validateVerifyPhoneNumberDomain.getVerifyPhoneDomain().isSuccess()) {
             viewListener.onSuccessVerifyPhoneNumber();
-        else {
+        } else {
             viewListener.onErrorVerifyPhoneNumber(ErrorHandler.getDefaultErrorCodeMessage
                     (ErrorCode.UNSUPPORTED_FLOW));
         }

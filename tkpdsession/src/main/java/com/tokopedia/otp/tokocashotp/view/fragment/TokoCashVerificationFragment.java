@@ -143,8 +143,9 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
     protected String getScreenName() {
         if (viewModel != null && !TextUtils.isEmpty(viewModel.getAppScreen())) {
             return viewModel.getAppScreen();
-        } else
+        } else {
             return OTPAnalytics.Screen.SCREEN_COTP_DEFAULT;
+        }
     }
 
     @Nullable
