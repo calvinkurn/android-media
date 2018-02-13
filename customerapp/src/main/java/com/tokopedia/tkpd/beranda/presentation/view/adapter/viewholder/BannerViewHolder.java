@@ -11,6 +11,7 @@ import com.tokopedia.core.analytics.nishikino.model.Promotion;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.design.banner.BannerView;
 import com.tokopedia.loyalty.view.activity.PromoListActivity;
 import com.tokopedia.tkpd.R;
@@ -86,6 +87,22 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
     @Override
     public void onPromoAllClick() {
         UnifyTracking.eventClickViewAllPromo();
-        context.startActivity(PromoListActivity.newInstance(context));
+
+        boolean remoteConfigEnable;
+        FirebaseRemoteConfigImpl remoteConfig = new FirebaseRemoteConfigImpl(context);
+        remoteConfigEnable = remoteConfig.getBoolean("mainapp_native_promo_list");
+
+        if (remoteConfigEnable) {
+            context.startActivity(PromoListActivity.newInstance(context));
+        } else {
+            Intent intent = new Intent(context, BannerWebView.class);
+            intent.putExtra(BannerWebView.EXTRA_TITLE, context.getString(R.string.title_activity_promo));
+            intent.putExtra(BannerWebView.EXTRA_URL,
+                    TkpdBaseURL.URL_PROMO + TkpdBaseURL.FLAG_APP
+            );
+            context.startActivity(intent);
+        }
+
+
     }
 }
