@@ -95,11 +95,6 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
     @Inject
     protected T presenter;
 
-    /**
-     * Url got from gallery or camera or other paths
-     */
-    protected ArrayList<String> imageUrlListFromArg;
-
     protected ProductScoreViewHolder productScoreViewHolder;
 
     protected ProductImageViewHolder productImageViewHolder;
@@ -141,10 +136,6 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         valueIndicatorScoreModel = new ValueIndicatorScoreModel();
-        Bundle args = getArguments();
-        if (args != null && args.containsKey(ProductAddActivity.EXTRA_IMAGE_URLS)) {
-            imageUrlListFromArg = args.getStringArrayList(ProductAddActivity.EXTRA_IMAGE_URLS);
-        }
     }
 
     @Nullable
@@ -787,7 +778,7 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
     }
 
 
-    protected boolean showDialogSaveDraftOnBack(){
+    public boolean showDialogSaveDraftOnBack(){
         return true;
     }
 

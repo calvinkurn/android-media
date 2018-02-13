@@ -107,10 +107,6 @@ public abstract class BaseProductEditFragment<T extends ProductAddPresenter>
     public abstract void fetchInputData();
 
     @CallSuper
-    /*
-     * for onSuccess Variant for edit product, @see ProductEditFragment
-     * {@link #onSuccessFetchProductVariantByPrd(ProductVariantByPrdModel)}
-     */
     public void onSuccessLoadProduct(ProductViewModel model) {
         hideLoading();
         productInfoViewHolder.setName(model.getProductName());

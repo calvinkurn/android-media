@@ -24,7 +24,10 @@ import java.util.ArrayList;
 
 public class ProductAddFragment extends BaseProductAddEditFragment<ProductAddPresenter>  {
 
-    public static final String TAG = ProductAddFragment.class.getSimpleName();
+    /**
+     * Url got from gallery or camera or other paths
+     */
+    protected ArrayList<String> imageUrlListFromArg;
 
     public static ProductAddFragment createInstance(ArrayList<String> tkpdImageUrls) {
         ProductAddFragment fragment = new ProductAddFragment();
@@ -44,6 +47,15 @@ public class ProductAddFragment extends BaseProductAddEditFragment<ProductAddPre
                 .productComponent(getComponent(ProductComponent.class))
                 .build()
                 .inject(this);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        Bundle args = getArguments();
+        if (args != null && args.containsKey(ProductAddActivity.EXTRA_IMAGE_URLS)) {
+            imageUrlListFromArg = args.getStringArrayList(ProductAddActivity.EXTRA_IMAGE_URLS);
+        }
+        super.onCreate(savedInstanceState);
     }
 
     @Nullable
