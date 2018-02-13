@@ -31,5 +31,9 @@
     <string name="reputation_label">Reputasi</string>
     <string name="product_quality_label_value">Kualitas Produk</string>
     <string name="speed_label_value">Kecepatan</string>
+    <string name="manage_shop">Atur Toko</string>
+    <string name="add_product">Tambah Produk</string>
+    <string name="chat_seller">Chat Penjual</string>
+    <string name="favorite">Favoritkan</string>
 
 </resources>

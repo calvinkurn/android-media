@@ -2,16 +2,19 @@ package com.tokopedia.shop.info.view.helper;
 
 import android.content.Intent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.interfaces.merchant.shop.info.ShopInfo;
+import com.tokopedia.reputation.speed.SpeedReputation;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity;
 
@@ -24,6 +27,7 @@ public class ShopInfoHeaderViewHelper {
     public static final int SHOP_OFFICIAL_VALUE = 1;
 
     private final View view;
+    private UserSession userSession;
     private RatingBar ratingBarShopInfo;
     private TextView productQualityValue;
     private ImageView speedImageView;
@@ -37,8 +41,14 @@ public class ShopInfoHeaderViewHelper {
     private ShopInfo shopInfo;
     private LinearLayout containerClickInfo;
 
-    public ShopInfoHeaderViewHelper(View view){
+    private Button buttonManageShop;
+    private Button buttonAddProduct;
+    private Button buttonChatSeller;
+    private Button buttonShopPage;
+
+    public ShopInfoHeaderViewHelper(View view, UserSession userSession){
         this.view = view;
+        this.userSession = userSession;
 
         initView();
     }
@@ -65,6 +75,14 @@ public class ShopInfoHeaderViewHelper {
         shopInfoLocation = view.findViewById(R.id.shop_info_location);
 
         containerClickInfo = view.findViewById(R.id.container_click_info);
+
+        buttonManageShop = view.findViewById(R.id.button_manage_shop);
+
+        buttonAddProduct = view.findViewById(R.id.button_add_product);
+
+        buttonChatSeller = view.findViewById(R.id.button_chat_seller);
+
+        buttonShopPage = view.findViewById(R.id.button_shop_page);
     }
 
     public void renderData(final ShopInfo shopInfo){
@@ -102,9 +120,6 @@ public class ShopInfoHeaderViewHelper {
         ratingBarShopInfo.setMax(5);
         ratingBarShopInfo.setRating(ratingStar);
 
-        // kecepatan get from reputation.
-        // https://phab.tokopedia.com/w/api/jerry/shop-statistic/#shop-speed
-
         final String shopId = shopInfo.getInfo().getShopId();
 
         containerClickInfo.setOnClickListener(new View.OnClickListener() {
@@ -133,5 +148,22 @@ public class ShopInfoHeaderViewHelper {
                 Toast.makeText(view.getContext(), "Speed Click", Toast.LENGTH_LONG).show();
             }
         });
+
+        buttonManageShop.setVisibility(View.GONE);
+        buttonAddProduct.setVisibility(View.GONE);
+        buttonChatSeller.setVisibility(View.GONE);
+        buttonShopPage.setVisibility(View.GONE);
+
+        if(userSession.getShopId().equals(shopInfo.getInfo().getShopId())){
+            buttonManageShop.setVisibility(View.VISIBLE);
+            buttonAddProduct.setVisibility(View.VISIBLE);
+        }else{
+            buttonChatSeller.setVisibility(View.VISIBLE);
+            buttonShopPage.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void renderData(SpeedReputation speedReputation){
+        speedValueDesd.setText(speedReputation.getData().getSpeed().getRecent1Month().getSpeedLevelDescription());
     }
 }

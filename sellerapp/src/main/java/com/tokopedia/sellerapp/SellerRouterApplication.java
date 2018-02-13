@@ -58,6 +58,7 @@ import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.mitratoppers.MitraToppersRouter;
 import com.tokopedia.mitratoppers.MitraToppersRouterInternal;
 import com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver;
+import com.tokopedia.reputation.speed.SpeedReputation;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -66,10 +67,13 @@ import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.seller.product.manage.di.ProductManageComponent;
+import com.tokopedia.seller.reputation.di.SellerReputationComponent;
+import com.tokopedia.seller.reputation.domain.interactor.SpeedReputationUseCase;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
 import com.tokopedia.sellerapp.truecaller.TruecallerActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
+import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
@@ -134,6 +138,7 @@ import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsComponent;
 import com.tokopedia.seller.product.manage.di.DaggerProductManageComponent;
+import com.tokopedia.seller.reputation.di.DaggerSellerReputationComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
@@ -161,7 +166,7 @@ public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
         ReputationRouter, LogisticRouter, SessionRouter,
-        MitraToppersRouter, AbstractionRouter{
+        MitraToppersRouter, AbstractionRouter, ShopModuleRouter{
 
     private DaggerProductComponent.Builder daggerProductBuilder;
     private ProductComponent productComponent;
@@ -174,6 +179,9 @@ public abstract class SellerRouterApplication extends MainApplication
 
     private DaggerShopComponent.Builder daggerShopBuilder;
     private ShopComponent shopComponent;
+
+    private DaggerSellerReputationComponent.Builder daggerSellerReputationBuilder;
+    private SellerReputationComponent reputationComponent;
 
     protected RemoteConfig remoteConfig;
 
@@ -193,6 +201,7 @@ public abstract class SellerRouterApplication extends MainApplication
         daggerProductBuilder = DaggerProductComponent.builder().productModule(new ProductModule());
         daggerTopAdsBuilder = DaggerTopAdsComponent.builder().topAdsModule(new TopAdsModule());
         daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
+        daggerSellerReputationBuilder = DaggerSellerReputationComponent.builder();
     }
 
     @Override
@@ -201,6 +210,16 @@ public abstract class SellerRouterApplication extends MainApplication
             productComponent = daggerProductBuilder.appComponent(getApplicationComponent()).build();
         }
         return productComponent;
+    }
+
+    @Override
+    public Observable<SpeedReputation> getSpeedReputationUseCase() {
+        if(reputationComponent == null){
+            reputationComponent = daggerSellerReputationBuilder.appComponent(getApplicationComponent()).build();
+        }
+        return reputationComponent.speedReputationUseCase().createObservable(
+                SpeedReputationUseCase.generateRequestParam(getApplicationComponent().sessionHandler().getShopID())
+        );
     }
 
     public GMComponent getGMComponent() {

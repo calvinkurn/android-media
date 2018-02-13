@@ -9,7 +9,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.interfaces.merchant.shop.info.ShopInfo;
+import com.tokopedia.reputation.speed.SpeedReputation;
+import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent;
 
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
@@ -19,8 +22,10 @@ import com.tokopedia.shop.ShopComponentInstance;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.info.di.module.ShopInfoModule;
 import com.tokopedia.shop.info.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.shop.info.domain.interactor.GetSpeedReputationUseCase;
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment;
 import com.tokopedia.shop.info.view.helper.ShopInfoHeaderViewHelper;
+import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
 
@@ -48,6 +53,11 @@ public class ShopPageActivity extends BaseTabActivity  implements HasComponent<S
     @Inject
     GetShopInfoUseCase getShopInfoUseCase;
 
+    @Inject
+    UserSession userSession;
+
+    GetSpeedReputationUseCase getSpeedReputationUseCase;
+
     private String shopInfo;
 
     @Override
@@ -59,11 +69,31 @@ public class ShopPageActivity extends BaseTabActivity  implements HasComponent<S
             throw new RuntimeException("please pass shop id");
         }
 
-
         initInjector();
         super.onCreate(savedInstanceState);
 
-        shopInfoHeaderViewHelper = new ShopInfoHeaderViewHelper(getWindow().getDecorView().getRootView());
+        shopInfoHeaderViewHelper = new ShopInfoHeaderViewHelper(getWindow().getDecorView().getRootView(), userSession);
+
+        if(getApplication() != null && getApplication() instanceof ShopModuleRouter){
+            getSpeedReputationUseCase = new GetSpeedReputationUseCase(((ShopModuleRouter)getApplication()).getSpeedReputationUseCase());
+        }
+        getSpeedReputationUseCase.execute(RequestParams.EMPTY, new Subscriber<SpeedReputation>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(SpeedReputation speedReputation) {
+                shopInfoHeaderViewHelper.renderData(speedReputation);
+            }
+        });
+
         getShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(shopInfo), new Subscriber<ShopInfo>() {
             @Override
             public void onCompleted() {

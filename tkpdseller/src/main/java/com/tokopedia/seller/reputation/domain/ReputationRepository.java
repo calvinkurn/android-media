@@ -1,4 +1,4 @@
-package com.tokopedia.seller.reputation.data.source;
+package com.tokopedia.seller.reputation.domain;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.reputation.speed.SpeedReputation;
@@ -9,10 +9,10 @@ import java.util.Map;
 import rx.Observable;
 
 /**
- * @author normansyahputa on 3/16/17.
+ * Created by normansyahputa on 2/13/18.
  */
 
-public interface ReputationReviewDataSource {
+public interface ReputationRepository {
     Observable<SellerReputationDomain> getReputationHistory(String shopId, Map<String, String> param);
 
     Observable<SellerReputationDomain> getReputationHistory(RequestParams requestParams);

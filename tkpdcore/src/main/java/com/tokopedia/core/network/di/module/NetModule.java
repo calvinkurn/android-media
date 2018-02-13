@@ -7,6 +7,7 @@ import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.BearerAuth;
 import com.tokopedia.core.network.di.qualifier.BearerAuthTypeJsonUt;
 import com.tokopedia.core.network.di.qualifier.CartQualifier;
+import com.tokopedia.core.network.di.qualifier.InboxQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoNoRetryAuth;
 import com.tokopedia.core.network.di.qualifier.MojitoSmallTimeoutNoAuth;
 import com.tokopedia.core.network.di.qualifier.MojitoGetWishlistQualifier;
@@ -55,6 +56,14 @@ public class NetModule {
     public Retrofit provideWsV4RetrofitWithErrorHandler(@DefaultAuthWithErrorHandler OkHttpClient okHttpClient,
                                         Retrofit.Builder retrofitBuilder){
         return retrofitBuilder.baseUrl(TkpdBaseURL.BASE_DOMAIN).client(okHttpClient).build();
+    }
+
+    @InboxQualifier
+    @ApplicationScope
+    @Provides
+    public Retrofit provideInboxRetrofit(@DefaultAuthWithErrorHandler OkHttpClient okHttpClient,
+                                                        Retrofit.Builder retrofitBuilder){
+        return retrofitBuilder.baseUrl(TkpdBaseURL.INBOX_DOMAIN).client(okHttpClient).build();
     }
 
     @AceQualifier

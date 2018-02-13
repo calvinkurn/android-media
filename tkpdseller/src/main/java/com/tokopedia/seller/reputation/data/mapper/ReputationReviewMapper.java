@@ -8,6 +8,8 @@ import com.tokopedia.seller.reputation.domain.model.SellerReputationDomain;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -15,8 +17,12 @@ import rx.functions.Func1;
 /**
  * @author normansyahputa on 3/16/17.
  */
-
+@Deprecated
 public class ReputationReviewMapper implements Func1<Response<SellerReputationResponse>, SellerReputationDomain> {
+    @Inject
+    public ReputationReviewMapper() {
+    }
+
     @NonNull
     public static SellerReputationDomain getSellerReputationDomains(
             SellerReputationResponse sellerReputationResponse
