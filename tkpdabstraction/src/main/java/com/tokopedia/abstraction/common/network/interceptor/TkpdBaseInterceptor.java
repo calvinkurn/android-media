@@ -29,7 +29,7 @@ public class TkpdBaseInterceptor implements Interceptor {
         try {
             Response response = chain.proceed(request);
             int count = 0;
-            while (!response.isSuccessful() && count < maxRetryAttempt) {
+            while (response.code() >= 500 && count < maxRetryAttempt) {
                 count++;
                 response = chain.proceed(request);
             }
