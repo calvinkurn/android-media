@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -366,6 +368,8 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
     class ShippedProductDetailsViewHolder extends RecyclerView.ViewHolder {
 
         static final String NO_CASHBACK = "0%";
+        private static final int IMAGE_ALPHA_DISABLED = 128;
+        private static final int IMAGE_ALPHA_ENABLED = 255;
 
         @BindView(R2.id.tv_sender_name)
         TextView mTvSenderName;
@@ -440,6 +444,20 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         @BindView(R2.id.tv_warning)
         TextView tvWarning;
 
+        @BindView(R2.id.ll_shipping_warning_container)
+        LinearLayout llShippingWarningContainer;
+        @BindView(R2.id.img_shipping_warning)
+        ImageView imgShippingWarning;
+        @BindView(R2.id.tv_shipping_warning)
+        TextView tvShippingWarning;
+        @BindView(R2.id.tv_text_product_weight)
+        TextView tvTextProductWeight;
+        @BindView(R2.id.tv_label_item_count)
+        TextView tvLabelItemCount;
+        @BindView(R2.id.tv_label_note_to_seller)
+        TextView tvLabelNoteToSeller;
+
+
         private boolean mIsExpandAllProduct;
         private boolean mIsExpandCostDetail;
 
@@ -511,8 +529,15 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             mTvDetailOptionText.setOnClickListener(costDetailOptionListener());
             mIvDetailOptionChevron.setOnClickListener(costDetailOptionListener());
 
-            // Test Show Warning
-            showRedWarning("Toko sedang tutup sementara, pesanan dapat di proses setelah toko buka kembali");
+            if (getAdapterPosition() % 2 == 1) {
+                // Test show shipment warning
+                showGreyWarning("Terdapat kendala pengiriman pada 1 produk");
+                showShipmentWarning("Produk ini tidak dapat dikirimkan dengan kurir yang dipilih");
+            } else {
+                // Test show general warning
+                showRedWarning("Toko sedang tutup sementara, pesanan dapat di proses setelah toko buka kembali");
+            }
+
         }
 
         private void initInnerRecyclerView(List<CartItemModel> cartItemModels) {
@@ -653,6 +678,62 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         private void hideWarning() {
             llWarningContainer.setVisibility(View.GONE);
         }
+
+        private void showShipmentWarning(String message) {
+            imgShippingWarning.setImageResource(R.drawable.ic_warning_red);
+            tvShippingWarning.setText(message);
+            llShippingWarningContainer.setVisibility(View.VISIBLE);
+            disableItemView();
+        }
+
+        private void hideShipmentWarning() {
+            llShippingWarningContainer.setVisibility(View.GONE);
+            enableItemView();
+        }
+
+        private void disableItemView() {
+            mTvProductName.setTextColor(ContextCompat.getColor(mContext, R.color.grey_nonactive_text));
+            mTvProductPrice.setTextColor(ContextCompat.getColor(mContext, R.color.grey_nonactive_text));
+            mTvFreeReturnText.setTextColor(ContextCompat.getColor(mContext, R.color.grey_nonactive_text));
+            mTvPoSign.setTextColor(ContextCompat.getColor(mContext, R.color.grey_nonactive_text));
+            tvTextProductWeight.setTextColor(ContextCompat.getColor(mContext, R.color.grey_nonactive_text));
+            mTvProductWeight.setTextColor(ContextCompat.getColor(mContext, R.color.grey_nonactive_text));
+            tvLabelItemCount.setTextColor(ContextCompat.getColor(mContext, R.color.grey_nonactive_text));
+            mTvTotalProductItem.setTextColor(ContextCompat.getColor(mContext, R.color.grey_nonactive_text));
+            tvLabelNoteToSeller.setTextColor(ContextCompat.getColor(mContext, R.color.grey_nonactive_text));
+            mTvOptionalNote.setTextColor(ContextCompat.getColor(mContext, R.color.grey_nonactive_text));
+            mTvCashback.setBackgroundColor(ContextCompat.getColor(mContext, R.color.grey_nonactive_text));
+            setImageFilterGrayscale();
+        }
+
+        private void setImageFilterGrayscale() {
+            ColorMatrix matrix = new ColorMatrix();
+            matrix.setSaturation(0);
+            ColorMatrixColorFilter cf = new ColorMatrixColorFilter(matrix);
+            mIvProductImage.setColorFilter(cf);
+            mIvProductImage.setImageAlpha(IMAGE_ALPHA_DISABLED);
+        }
+
+        private void enableItemView() {
+            mTvProductName.setTextColor(ContextCompat.getColor(mContext, R.color.black_70));
+            mTvProductPrice.setTextColor(ContextCompat.getColor(mContext, R.color.orange_red));
+            mTvFreeReturnText.setTextColor(ContextCompat.getColor(mContext, R.color.font_black_secondary_54));
+            mTvPoSign.setTextColor(ContextCompat.getColor(mContext, R.color.font_black_secondary_54));
+            tvTextProductWeight.setTextColor(ContextCompat.getColor(mContext, R.color.black_38));
+            mTvProductWeight.setTextColor(ContextCompat.getColor(mContext, R.color.font_black_secondary_54));
+            tvLabelItemCount.setTextColor(ContextCompat.getColor(mContext, R.color.black_38));
+            mTvTotalProductItem.setTextColor(ContextCompat.getColor(mContext, R.color.font_black_secondary_54));
+            tvLabelNoteToSeller.setTextColor(ContextCompat.getColor(mContext, R.color.black_38));
+            mTvOptionalNote.setTextColor(ContextCompat.getColor(mContext, R.color.black_70));
+            mTvCashback.setBackground(ContextCompat.getDrawable(mContext, R.drawable.layout_bg_cashback));
+            setImageFilterNormal();
+        }
+
+        private void setImageFilterNormal() {
+            mIvProductImage.setColorFilter(null);
+            mIvProductImage.setImageAlpha(IMAGE_ALPHA_ENABLED);
+        }
+
     }
 
 }

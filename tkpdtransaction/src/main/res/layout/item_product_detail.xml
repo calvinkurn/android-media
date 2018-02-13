@@ -11,6 +11,38 @@
     android:paddingRight="16dp"
     android:paddingTop="16dp">
 
+    <LinearLayout
+        android:id="@+id/ll_shipping_warning_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/padding_ms"
+        android:paddingLeft="@dimen/padding_med"
+        android:paddingRight="@dimen/padding_med"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <ImageView
+            android:id="@+id/img_shipping_warning"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="@dimen/margin_ms"
+            android:layout_marginRight="@dimen/margin_ms"
+            tools:src="@drawable/ic_warning_red" />
+
+        <TextView
+            android:id="@+id/tv_shipping_warning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:textColor="#d30b16"
+            android:textSize="11sp"
+            android:textStyle="normal"
+            tools:text="Produk ini tidak dapat dikirimkan dengan kurir yang dipilih" />
+
+    </LinearLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,7 +55,7 @@
             android:layout_height="52dp"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
-            android:background="@color/orange"
+            android:src="@drawable/googleg_standard_color_18"
             tools:ignore="ContentDescription" />
 
         <TextView
@@ -46,9 +78,9 @@
             android:layout_toEndOf="@id/iv_product_image_container"
             android:layout_toRightOf="@id/iv_product_image_container"
             android:fontFamily="sans-serif-medium"
+            android:textColor="@color/orange_red"
             android:textSize="14sp"
             android:textStyle="normal"
-            android:textColor="@color/orange_red"
             tools:text="Rp200.000" />
 
     </RelativeLayout>
@@ -81,6 +113,7 @@
             android:layout_toRightOf="@id/iv_free_return_icon"
             android:fontFamily="sans-serif"
             android:text="Free Returns"
+            android:textColor="@color/font_black_secondary_54"
             android:textSize="12sp"
             android:textStyle="normal" />
 
@@ -97,6 +130,7 @@
             android:fontFamily="sans-serif"
             android:padding="4dp"
             android:text="PO"
+            android:textColor="@color/font_black_secondary_54"
             android:textSize="10sp"
             android:textStyle="normal"
             tools:ignore="SmallSp" />
@@ -129,6 +163,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
             android:text="Berat :"
+            android:textColor="@color/black_38"
             android:textSize="12sp"
             android:textStyle="normal" />
 
@@ -141,6 +176,7 @@
             android:layout_toEndOf="@id/tv_text_product_weight"
             android:layout_toRightOf="@id/tv_text_product_weight"
             android:fontFamily="sans-serif"
+            android:textColor="@color/font_black_secondary_54"
             android:textSize="12sp"
             android:textStyle="normal"
             tools:text="3kg" />
@@ -152,11 +188,13 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:fontFamily="sans-serif"
+            android:textColor="@color/font_black_secondary_54"
             android:textSize="12sp"
             android:textStyle="normal"
             tools:text="1" />
 
         <TextView
+            android:id="@+id/tv_label_item_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="4dp"
@@ -168,17 +206,20 @@
             android:fontFamily="sans-serif"
             android:gravity="end"
             android:text="Jumlah :"
+            android:textColor="@color/black_38"
             android:textSize="12sp"
             android:textStyle="normal" />
 
     </RelativeLayout>
 
     <TextView
+        android:id="@+id/tv_label_note_to_seller"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:fontFamily="sans-serif"
         android:text="Catatan untuk penjual (Opsional)"
+        android:textColor="@color/black_38"
         android:textSize="12sp"
         android:textStyle="normal" />
 

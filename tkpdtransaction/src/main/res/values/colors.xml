@@ -9,4 +9,5 @@
     <color name="bg_warning_grey">#fffcd3</color>
     <color name="text_warning_red">#d30b16</color>
     <color name="text_warning_grey">#8b000000</color>
+    <color name="grey_nonactive_text">#42000000</color>
 </resources>
