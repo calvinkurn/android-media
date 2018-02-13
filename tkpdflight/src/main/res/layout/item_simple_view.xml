@@ -6,11 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/padding_4"
+    android:paddingTop="@dimen/padding_4">
 
     <TextView
         android:id="@+id/tv_title"
-        style="@style/TextView.Small"
+        style="@style/TextView.Micro"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:maxLines="1"
@@ -18,10 +20,8 @@
 
     <TextView
         android:id="@+id/tv_content"
-        style="@style/TextView.Small"
+        style="@style/TextView.Micro"
         android:layout_width="0dp"
-        android:layout_marginLeft="@dimen/margin_ms"
-        android:layout_marginRight="@dimen/margin_ms"
         android:layout_weight="1"
         android:gravity="end"
         android:maxLines="1"
@@ -35,7 +35,7 @@
         android:layout_gravity="center_vertical|end"
         android:layout_marginLeft="@dimen/margin_ms"
         android:layout_marginStart="@dimen/margin_ms"
-        app:srcCompat="@drawable/ic_arrow_right"
         android:visibility="gone"
+        app:srcCompat="@drawable/ic_arrow_right"
         tools:visibility="visible" />
 </LinearLayout>

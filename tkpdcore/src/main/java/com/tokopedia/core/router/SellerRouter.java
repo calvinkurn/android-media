@@ -52,7 +52,7 @@ public class SellerRouter {
         return RouterUtils.getRouterFromContext(context).getActivitySellingTransactionList(context);
     }
 
-    public static Intent getActivitySellingTransactionOpportunity(Context context) {
-        return RouterUtils.getRouterFromContext(context).getActivitySellingTransactionOpportunity(context);
+    public static Intent getActivitySellingTransactionOpportunity(Context context, String query) {
+        return RouterUtils.getRouterFromContext(context).getActivitySellingTransactionOpportunity(context, query);
     }
 }
