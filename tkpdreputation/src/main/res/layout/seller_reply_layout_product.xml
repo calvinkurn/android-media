@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@drawable/line_divider"
+        android:orientation="vertical"
+        android:showDividers="beginning|middle|end">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/padding_small"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/padding_small">
+
+            <LinearLayout
+                android:id="@+id/container_like"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/icon_like"
+                    android:layout_width="@dimen/image_width_xxs"
+                    android:layout_height="@dimen/image_width_xxs"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="@dimen/margin_vs"
+                    android:layout_marginRight="@dimen/margin_vs"
+                    android:src="@drawable/ic_like_normal" />
+
+                <TextView
+                    android:id="@+id/text_counter_like"
+                    style="@style/TextView.Micro.BlackDisabled"
+                    android:layout_gravity="center_vertical"
+                    tools:text="Anda dan 2 orang terbantu" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <LinearLayout
+                android:id="@+id/container_reply_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/see_reply_button"
+                    style="@style/TextView.Micro.BlackDisabled.Bold"
+                    android:layout_gravity="center"
+                    android:text="@string/see_reply" />
+
+                <ImageView
+                    android:id="@+id/reply_chevron"
+                    android:layout_width="@dimen/image_width_xxs"
+                    android:layout_height="@dimen/image_width_xxxs"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/margin_vs"
+                    android:layout_marginStart="@dimen/margin_vs"
+                    android:src="@drawable/ic_arrow_down_grey" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/reply_review_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/padding_small"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/padding_small"
+            android:background="@color/white"
+            android:paddingLeft="@dimen/margin_med"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:layout_toLeftOf="@+id/reply_overflow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/container_reply"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/TextView.Small.BlackSecondary"
+                        android:layout_marginRight="@dimen/margin_vs"
+                        android:text="@string/product_review_label_by" />
+
+                    <TextView
+                        android:id="@+id/seller_reply_name"
+                        style="@style/TextView.Small.Bold.BlackSecondary"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        tools:text="Pretty Sugar Shop" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="@dimen/margin_vvs"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/seller_label"
+                        style="@style/TextView.Micro.WhitePrimary"
+                        android:layout_marginEnd="@dimen/margin_vs"
+                        android:layout_marginRight="@dimen/margin_vs"
+                        android:background="@drawable/label_seller"
+                        android:gravity="center_horizontal"
+                        android:paddingBottom="@dimen/padding_vvvs"
+                        android:paddingLeft="@dimen/padding_vs"
+                        android:paddingRight="@dimen/padding_vs"
+                        android:paddingTop="@dimen/padding_vvvs"
+                        android:text="@string/seller"
+                        android:textSize="@dimen/font_micro" />
+
+
+                    <TextView
+                        android:id="@+id/seller_reply_time"
+                        style="@style/TextView.Micro.BlackDisabled"
+                        android:textSize="@dimen/font_micro"
+                        tools:text="31 Jul 2016, pukul 11:48" />
+                </LinearLayout>
+
+
+                <TextView
+                    android:id="@+id/seller_reply"
+                    style="@style/TextView.Micro.BlackSecondary"
+                    android:layout_marginTop="@dimen/margin_vs"
+                    android:enabled="true"
+                    android:focusable="true"
+                    android:fontFamily="sans-serif"
+                    android:longClickable="true"
+                    android:textIsSelectable="true"
+                    tools:text="Terima kasih sudah mempercayai toko kami. Silahkan melihat-lihat produk” lainnya yang tersedia di toko kami." />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/reply_overflow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_more_vert_grey" />
+        </RelativeLayout>
+    </LinearLayout>
+</merge>

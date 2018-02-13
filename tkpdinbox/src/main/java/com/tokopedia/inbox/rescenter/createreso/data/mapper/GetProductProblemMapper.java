@@ -45,11 +45,6 @@ public class GetProductProblemMapper implements Func1<Response<TkpdResponse>, Pr
     }
 
     private ProductProblemResponseDomain mappingResponse(Response<TkpdResponse> response) {
-        ProductProblemListResponse productProblemListResponse = response.body().convertDataObj(
-                ProductProblemListResponse.class);
-        ProductProblemResponseDomain model = new ProductProblemResponseDomain(
-                mappingProductProblemListDomain(
-                        productProblemListResponse.getProductProblemResponseList()));
         if (response.isSuccessful()) {
             if (response.body().isNullData()) {
                 if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
@@ -57,13 +52,15 @@ public class GetProductProblemMapper implements Func1<Response<TkpdResponse>, Pr
                 } else {
                     throw new ErrorMessageException("");
                 }
-            } else {
-                model.setSuccess(true);
             }
         } else {
             throw new RuntimeException(String.valueOf(response.code()));
         }
-        return model;
+        ProductProblemListResponse productProblemListResponse = response.body().convertDataObj(
+                ProductProblemListResponse.class);
+        return new ProductProblemResponseDomain(
+                mappingProductProblemListDomain(
+                        productProblemListResponse.getProductProblemResponseList()));
     }
 
     private List<ProductProblemDomain> mappingProductProblemListDomain(

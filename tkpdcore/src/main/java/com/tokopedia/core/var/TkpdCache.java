@@ -200,6 +200,8 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String DIGITAL_CATEGORY_ITEM_LIST = "DIGITAL_CATEGORY_ITEM_LIST";
         public static final String DIGITAL_LAST_ORDER = "DIGITAL_LAST_ORDER";
 
+        public static final String DIGITAL_CATEGORY_DETAIL = "DIGITAL_CATEGORY_DETAIL";
+
         public static final String KEY_TOKOCASH_DATA = "TOKOCASH_DATA";
 
         public static final String KEY_LOCATION = "KEY_FP_LOCATION";
@@ -245,6 +247,8 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
 
         public static final String MAINAPP_SHOW_SIMPLE_APP_RATING = "mainapp_show_simple_app_rating";
         public static final String MAINAPP_SHOW_ADVANCED_APP_RATING = "mainapp_show_advanced_app_rating";
+
+        public static final String SELLERAPP_SHOW_ADVANCED_APP_RATING = "sellerapp_show_advanced_app_rating";
 
         public static final String NOTIFICATION_LOGGER = "notification_logger";
     }

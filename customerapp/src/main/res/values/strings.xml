@@ -62,12 +62,12 @@
 
     <string name="title_scan_qr">Scan Kode QR</string>
 
-
-
     <!--For QR Code-->
 
     <string name="error_actiivty_open_permission">Gagal membuka scan kode QR</string>
 
 
+    <string name="wishlist_empty_title">Wishlist masih kosong</string>
+    <string name="wishlist_empty_message">Masuk untuk melihat produk-produk pilihan Anda</string>
 
 </resources>

@@ -183,7 +183,7 @@ public class TheirMessageDataBinder extends DataBinder<TheirMessageDataBinder.Vi
 //            @Override
 //            public void onClick(View v) {
 //                if(messageDetailItem.getUserLabelId() != IS_ADMIN)
-//                presenter.onGoToProfile(String.valueOf(messageDetailItem.getUserId()));
+//                presenter.onGoToProfile(String.valueOf(messageDetailItem.getUserIdForHeader()));
 //            }
 //        };
         return null;
