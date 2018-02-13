@@ -78,7 +78,6 @@ public class FeedTopadsViewHolder extends AbstractViewHolder<FeedTopAdsViewModel
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.info_topads) {
-            Log.d(TAG, "Adapter Position " + getAdapterPosition());
             if (clickListener != null) {
                 clickListener.onInfoClicked();
             } else {
