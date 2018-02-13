@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:elevation="6dp"
     android:clipToPadding="false"
-    android:paddingBottom="@dimen/padding_vvvs"
+    app:cardUseCompatPadding="true"
     app:cardCornerRadius="20dp">
 
     <android.support.v7.widget.LinearLayoutCompat
