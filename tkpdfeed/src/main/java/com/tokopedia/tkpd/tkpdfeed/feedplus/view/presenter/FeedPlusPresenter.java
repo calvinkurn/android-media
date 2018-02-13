@@ -89,9 +89,14 @@ public class FeedPlusPresenter
         pagingHandler.resetPage();
         viewListener.showRefresh();
         currentCursor = "";
-        getFirstPageFeedsUseCase.execute(
-                getFirstPageFeedsUseCase.getRefreshParam(sessionHandler),
-                new GetFirstPageFeedsSubscriber(viewListener, pagingHandler.getPage()));
+
+        if (sessionHandler != null && sessionHandler.getLoginID() != null && !sessionHandler.getLoginID().isEmpty()) {
+            getFirstPageFeedsUseCase.execute(
+                    getFirstPageFeedsUseCase.getRefreshParam(sessionHandler),
+                    new GetFirstPageFeedsSubscriber(viewListener, pagingHandler.getPage()));
+        } else {
+            viewListener.onUserNotLogin();
+        }
     }
 
     @Override

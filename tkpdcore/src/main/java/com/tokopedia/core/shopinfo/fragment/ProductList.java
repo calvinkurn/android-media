@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +15,7 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,7 +60,7 @@ import java.util.List;
 /**
  * Created by Tkpd_Eka on 10/8/2015.
  */
-public class ProductList extends V2BaseFragment {
+public class ProductList extends Fragment {
 
     private final String CACHE_SHOP_PRODUCT = "CACHE_SHOP_PRODUCT";
     private final String TAG = ProductList.class.getSimpleName();
@@ -91,6 +93,7 @@ public class ProductList extends V2BaseFragment {
     public static final String EXTRA_USE_ACE = "EXTRA_USE_ACE";
     private boolean isConnectionErrorShow = false;
     private ProductListCallback callback;
+    protected View rootView;
 
     public static ProductList newInstance(int useAce) {
 
@@ -122,6 +125,33 @@ public class ProductList extends V2BaseFragment {
                 adapter.setSelectedEtalasePos(etalaseIndex);
             }
         }
+    }
+
+    @Nullable
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if(getRootViewId() == 0) {
+            throw new RuntimeException("Needs layout ID");
+        }
+
+        if(rootView == null){
+            rootView = inflater.inflate(getRootViewId(), container, false);
+            initView();
+            rootView.setTag(getHolder());
+        }
+        else{
+            setHolder(rootView.getTag());
+        }
+        setListener();
+        onCreateView();
+        return rootView;
+    }
+
+    protected View findViewById(int id){
+        return rootView.findViewById(id);
+    }
+
+    protected View getRootView(){
+        return rootView;
     }
 
     @Override
@@ -196,12 +226,10 @@ public class ProductList extends V2BaseFragment {
         outState.putParcelable("shop_param", productShopParam);
     }
 
-    @Override
     protected int getRootViewId() {
         return R.layout.fragment_layout_product_shop;
     }
 
-    @Override
     protected void onCreateView() {
         if (productModel.list.isEmpty() && productShopParam.getPage() > 0)
             if (!adapter.isRetry())
@@ -210,17 +238,14 @@ public class ProductList extends V2BaseFragment {
                 adapter.addRetry();
     }
 
-    @Override
     protected Object getHolder() {
         return holder;
     }
 
-    @Override
     protected void setHolder(Object holder) {
         this.holder = (ViewHolder) holder;
     }
 
-    @Override
     protected void initView() {
         holder = new ViewHolder();
         holder.list = (RecyclerView) findViewById(R.id.list);
@@ -437,7 +462,6 @@ public class ProductList extends V2BaseFragment {
         }
     }
 
-    @Override
     protected void setListener() {
         holder.list.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

@@ -36,7 +36,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     private RecyclerView recyclerView;
 
-    private boolean isLoadingInitialData;
+    protected boolean isLoadingInitialData;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -287,6 +287,10 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
 
     protected String getMessageFromThrowable(Context context, Throwable t){
         return ErrorHandler.getErrorMessage(context, t);
+    }
+
+    protected int getCurrentPage(){
+        return endlessRecyclerViewScrollListener.getCurrentPage();
     }
 
 }

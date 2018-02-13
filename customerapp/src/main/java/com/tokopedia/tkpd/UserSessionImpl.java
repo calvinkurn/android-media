@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.gcm.FCMCacheManager;
-import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.SessionHandler;
 
 /**
@@ -15,12 +14,10 @@ public class UserSessionImpl implements UserSession {
 
     private SessionHandler sessionHandler;
     private FCMCacheManager fcmCacheManager;
-    private Context context;
 
     public UserSessionImpl(Context context) {
         this.sessionHandler = new SessionHandler(context);
         this.fcmCacheManager = new FCMCacheManager(context);
-        this.context = context;
     }
 
     @Override
@@ -40,17 +37,12 @@ public class UserSessionImpl implements UserSession {
 
     @Override
     public String getDeviceId() {
-        return GCMHandler.getRegistrationId(context);
+        return fcmCacheManager.getRegistrationId();
     }
 
     @Override
     public boolean isLoggedIn() {
         return sessionHandler.isV4Login();
-    }
-
-    @Override
-    public String getFcmId() {
-        return fcmCacheManager.getRegistrationId();
     }
 
     @Override
