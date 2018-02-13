@@ -763,8 +763,8 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getActivitySellingTransactionOpportunity(Context context) {
-        return TkpdSeller.getActivitySellingTransactionOpportunity(context);
+    public Intent getActivitySellingTransactionOpportunity(Context context, String query) {
+        return TkpdSeller.getActivitySellingTransactionOpportunity(context, query);
     }
 
     @Override

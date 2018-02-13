@@ -500,7 +500,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.SALES_LIST);
                     break;
                 case TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST:
-                    intent = SellerRouter.getActivitySellingTransactionOpportunity(context);
+                    intent = SellerRouter.getActivitySellingTransactionOpportunity(context,"");
                     context.startActivity(intent);
                     break;
                 case TkpdState.DrawerPosition.ADD_PRODUCT:

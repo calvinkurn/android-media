@@ -359,8 +359,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return TkpdSeller.getActivitySellingTransactionList(context);
     }
 
-    public Intent getActivitySellingTransactionOpportunity(Context context) {
-        return TkpdSeller.getActivitySellingTransactionOpportunity(context);
+    public Intent getActivitySellingTransactionOpportunity(Context context, String query) {
+        return TkpdSeller.getActivitySellingTransactionOpportunity(context, query);
     }
 
 
