@@ -194,8 +194,6 @@ public interface FeedPlus {
 
         void onUserNotLogin();
 
-        void addEmptyItem();
-
         void onGoToLogin();
     }
 

@@ -96,7 +96,6 @@ public class FeedPlusPresenter
                     new GetFirstPageFeedsSubscriber(viewListener, pagingHandler.getPage()));
         } else {
             viewListener.onUserNotLogin();
-            viewListener.addEmptyItem();
         }
     }
 
