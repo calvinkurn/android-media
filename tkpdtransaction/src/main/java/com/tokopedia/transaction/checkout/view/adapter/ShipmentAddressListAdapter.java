@@ -49,7 +49,7 @@ public class ShipmentAddressListAdapter
     @Override
     public RecipientAddressViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         mContext = parent.getContext();
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_recipient_address, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_recipient_address_rb_selectable, parent, false);
         return new RecipientAddressViewHolder(view);
     }
 
@@ -123,7 +123,7 @@ public class ShipmentAddressListAdapter
         LinearLayout mLlRadioButtonAddressSelect;
         @BindView(R2.id.rl_shipment_recipient_address_header)
         RelativeLayout mAddressContainer;
-        @BindView(R2.id.tv_phone_number)
+        @BindView(R2.id.tv_recipient_phone)
         TextView tvPhoneNumber;
         @BindView(R2.id.tv_text_address_description)
         TextView tvTextAddressDescription;

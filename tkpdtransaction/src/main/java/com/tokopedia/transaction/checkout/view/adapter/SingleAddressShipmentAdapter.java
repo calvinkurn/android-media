@@ -96,16 +96,16 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         int viewType = getItemViewType(position);
 
         if (viewType == ITEM_VIEW_FREE_SHIPPING_FEE) {
-            ((FreeShippingFeeViewHolder)viewHolder)
+            ((FreeShippingFeeViewHolder) viewHolder)
                     .bindViewHolder(mCartSingleAddressData.getShipmentFeeBannerModel());
         } else if (viewType == ITEM_VIEW_SHIPMENT_RECIPIENT_ADDRESS) {
-            ((ShippingRecipientViewHolder)viewHolder)
+            ((ShippingRecipientViewHolder) viewHolder)
                     .bindViewHolder(mCartSingleAddressData.getShipmentRecipientModel());
         } else if (viewType == ITEM_VIEW_SHIPMENT_COST_DETAIL) {
-            ((ShipmentCostDetailViewHolder)viewHolder)
+            ((ShipmentCostDetailViewHolder) viewHolder)
                     .bindViewHolder(mCartSingleAddressData.getCartPayableDetailModel());
         } else {
-            ((ShippedProductDetailsViewHolder)viewHolder)
+            ((ShippedProductDetailsViewHolder) viewHolder)
                     .bindViewHolder(mCartSingleAddressData.getCartSellerItemModelList()
                             .get(position - ALL_HEADER_SIZE));
         }
@@ -157,8 +157,10 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
     class FreeShippingFeeViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.rl_free_shipment_fee_header) RelativeLayout mRlFreeShipmentFeeHeader;
-        @BindView(R2.id.tv_shpping_fee) TextView mTvShippingFee;
+        @BindView(R2.id.rl_free_shipment_fee_header)
+        RelativeLayout mRlFreeShipmentFeeHeader;
+        @BindView(R2.id.tv_shpping_fee)
+        TextView mTvShippingFee;
 
         FreeShippingFeeViewHolder(View itemView) {
             super(itemView);
@@ -189,12 +191,18 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
     class ShippingRecipientViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.tv_text_address_description) TextView mTvAddressDescription;
-        @BindView(R2.id.tv_recipient_name) TextView mTvRecipientName;
-        @BindView(R2.id.tv_recipient_address) TextView mTvRecipientAddress;
-        @BindView(R2.id.tv_recipient_phone) TextView mTvRecipientPhone;
-        @BindView(R2.id.tv_add_or_change_address) TextView mTvAddOrChangeAddress;
-        @BindView(R2.id.pickup_point_layout) PickupPointLayout pickupPointLayout;
+        @BindView(R2.id.tv_text_address_description)
+        TextView mTvAddressDescription;
+        @BindView(R2.id.tv_recipient_name)
+        TextView mTvRecipientName;
+        @BindView(R2.id.tv_recipient_address)
+        TextView mTvRecipientAddress;
+        @BindView(R2.id.tv_recipient_phone)
+        TextView mTvRecipientPhone;
+        @BindView(R2.id.tv_add_or_change_address)
+        TextView mTvAddOrChangeAddress;
+        @BindView(R2.id.pickup_point_layout)
+        PickupPointLayout pickupPointLayout;
 
         ShippingRecipientViewHolder(View itemView) {
             super(itemView);
@@ -253,7 +261,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         }
 
         private void fragmentTransaction() {
-            FragmentManager fragmentManager = ((Activity)mContext).getFragmentManager();
+            FragmentManager fragmentManager = ((Activity) mContext).getFragmentManager();
             Fragment fragment = ShipmentAddressListFragment.newInstance();
 
             String backStateName = fragment.getClass().getName();
@@ -271,17 +279,28 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
     class ShipmentCostDetailViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.rl_detail_shipment_fee_view_layout) RelativeLayout mRlDetailFee;
-        @BindView(R2.id.tv_total_item) TextView mTvTotalItem;
-        @BindView(R2.id.tv_total_item_price) TextView mTvTotalItemPrice;
-        @BindView(R2.id.tv_shipping_fee) TextView mTvShippingFee;
-        @BindView(R2.id.tv_shipping_fee_price) TextView mTvShippingFeePrice;
-        @BindView(R2.id.tv_insurance_fee_price) TextView mTvInsuranceFeePrice;
-        @BindView(R2.id.tv_promo_price) TextView mTvPromoPrice;
-        @BindView(R2.id.tv_drawer_detail_payable) TextView mTvDrawerDetailPayable;
-        @BindView(R2.id.iv_drawer_chevron) ImageView mIvDrawerChevron;
-        @BindView(R2.id.tv_payable_price) TextView mTvPayablePrice;
-        @BindView(R2.id.tv_promo_free_shipping) TextView mTvPromoFreeShipping;
+        @BindView(R2.id.rl_detail_shipment_fee_view_layout)
+        RelativeLayout mRlDetailFee;
+        @BindView(R2.id.tv_total_item)
+        TextView mTvTotalItem;
+        @BindView(R2.id.tv_total_item_price)
+        TextView mTvTotalItemPrice;
+        @BindView(R2.id.tv_shipping_fee)
+        TextView mTvShippingFee;
+        @BindView(R2.id.tv_shipping_fee_price)
+        TextView mTvShippingFeePrice;
+        @BindView(R2.id.tv_insurance_fee_price)
+        TextView mTvInsuranceFeePrice;
+        @BindView(R2.id.tv_promo_price)
+        TextView mTvPromoPrice;
+        @BindView(R2.id.tv_drawer_detail_payable)
+        TextView mTvDrawerDetailPayable;
+        @BindView(R2.id.iv_drawer_chevron)
+        ImageView mIvDrawerChevron;
+        @BindView(R2.id.tv_payable_price)
+        TextView mTvPayablePrice;
+        @BindView(R2.id.tv_promo_free_shipping)
+        TextView mTvPromoFreeShipping;
 
         private boolean mIsExpanded;
 
@@ -348,45 +367,78 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
         static final String NO_CASHBACK = "0%";
 
-        @BindView(R2.id.tv_sender_name) TextView mTvSenderName;
+        @BindView(R2.id.tv_sender_name)
+        TextView mTvSenderName;
 
-        @BindView(R2.id.iv_product_image_container) ImageView mIvProductImage;
-        @BindView(R2.id.tv_shipping_product_name) TextView mTvProductName;
-        @BindView(R2.id.tv_shipped_product_price) TextView mTvProductPrice;
-        @BindView(R2.id.tv_product_weight) TextView mTvProductWeight;
-        @BindView(R2.id.tv_total_product_item) TextView mTvTotalProductItem;
-        @BindView(R2.id.tv_optional_note_to_seller) TextView mTvOptionalNote;
+        @BindView(R2.id.iv_product_image_container)
+        ImageView mIvProductImage;
+        @BindView(R2.id.tv_shipping_product_name)
+        TextView mTvProductName;
+        @BindView(R2.id.tv_shipped_product_price)
+        TextView mTvProductPrice;
+        @BindView(R2.id.tv_product_weight)
+        TextView mTvProductWeight;
+        @BindView(R2.id.tv_total_product_item)
+        TextView mTvTotalProductItem;
+        @BindView(R2.id.tv_optional_note_to_seller)
+        TextView mTvOptionalNote;
 
-        @BindView(R2.id.rl_product_policies_layout) RelativeLayout mRlProductPoliciesContainer;
-        @BindView(R2.id.iv_free_return_icon) ImageView mIvFreeReturnIcon;
-        @BindView(R2.id.tv_free_return_text) TextView mTvFreeReturnText;
-        @BindView(R2.id.tv_po_sign) TextView mTvPoSign;
-        @BindView(R2.id.tv_cashback_text) TextView mTvCashback;
+        @BindView(R2.id.rl_product_policies_layout)
+        RelativeLayout mRlProductPoliciesContainer;
+        @BindView(R2.id.iv_free_return_icon)
+        ImageView mIvFreeReturnIcon;
+        @BindView(R2.id.tv_free_return_text)
+        TextView mTvFreeReturnText;
+        @BindView(R2.id.tv_po_sign)
+        TextView mTvPoSign;
+        @BindView(R2.id.tv_cashback_text)
+        TextView mTvCashback;
 
-        @BindView(R2.id.rv_product_list) RecyclerView mRvProductList;
+        @BindView(R2.id.rv_product_list)
+        RecyclerView mRvProductList;
 
-        @BindView(R2.id.rl_expand_other_product) RelativeLayout mRlExpandOtherProductContainer;
-        @BindView(R2.id.tv_expand_other_product) TextView mTvExpandOtherProduct;
+        @BindView(R2.id.rl_expand_other_product)
+        RelativeLayout mRlExpandOtherProductContainer;
+        @BindView(R2.id.tv_expand_other_product)
+        TextView mTvExpandOtherProduct;
 
-        @BindView(R2.id.tv_shipment_option) TextView mTvShipmentOption;
-        @BindView(R2.id.iv_chevron_shipment_option) ImageView mIvChevronShipmentOption;
+        @BindView(R2.id.choose_courier_button)
+        TextView mChooseCourierButton;
+        @BindView(R2.id.iv_chevron_shipment_option)
+        ImageView mIvChevronShipmentOption;
+        @BindView(R2.id.tv_selected_shipment)
+        TextView mTvSelectedShipment;
 
-        @BindView(R2.id.rl_detail_shipment_fee) RelativeLayout mRlDetailShipmentFeeContainer;
-        @BindView(R2.id.tv_total_item) TextView mTvTotalItem;
-        @BindView(R2.id.tv_total_item_price) TextView mTvTotalItemPrice;
-        @BindView(R2.id.tv_shipping_fee) TextView mTvShippingFee;
-        @BindView(R2.id.tv_shipping_fee_price) TextView mTvShippingFeePrice;
-        @BindView(R2.id.tv_insurance_fee_price) TextView mTvInsuranceFeePrice;
-        @BindView(R2.id.tv_promo_price) TextView mTvPromoPrice;
+        @BindView(R2.id.rl_detail_shipment_fee)
+        RelativeLayout mRlDetailShipmentFeeContainer;
+        @BindView(R2.id.tv_total_item)
+        TextView mTvTotalItem;
+        @BindView(R2.id.tv_total_item_price)
+        TextView mTvTotalItemPrice;
+        @BindView(R2.id.tv_shipping_fee)
+        TextView mTvShippingFee;
+        @BindView(R2.id.tv_shipping_fee_price)
+        TextView mTvShippingFeePrice;
+        @BindView(R2.id.tv_insurance_fee_price)
+        TextView mTvInsuranceFeePrice;
+        @BindView(R2.id.tv_promo_price)
+        TextView mTvPromoPrice;
 
-        @BindView(R2.id.rl_cart_sub_total) RelativeLayout mRlCartSubTotal;
-        @BindView(R2.id.tv_detail_option_text) TextView mTvDetailOptionText;
-        @BindView(R2.id.iv_detail_option_chevron) ImageView mIvDetailOptionChevron;
-        @BindView(R2.id.tv_sub_total_price) TextView mTvSubTotalPrice;
+        @BindView(R2.id.rl_cart_sub_total)
+        RelativeLayout mRlCartSubTotal;
+        @BindView(R2.id.tv_detail_option_text)
+        TextView mTvDetailOptionText;
+        @BindView(R2.id.iv_detail_option_chevron)
+        ImageView mIvDetailOptionChevron;
+        @BindView(R2.id.tv_sub_total_price)
+        TextView mTvSubTotalPrice;
 
-        @BindView(R2.id.ll_warning_container) LinearLayout llWarningContainer;
-        @BindView(R2.id.img_warning) ImageView imgWarning;
-        @BindView(R2.id.tv_warning) TextView tvWarning;
+        @BindView(R2.id.ll_warning_container)
+        LinearLayout llWarningContainer;
+        @BindView(R2.id.img_warning)
+        ImageView imgWarning;
+        @BindView(R2.id.tv_warning)
+        TextView tvWarning;
 
         private boolean mIsExpandAllProduct;
         private boolean mIsExpandCostDetail;
@@ -407,7 +459,14 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
             // Assign variables
             mTvSenderName.setText(model.getShopName());
-            mTvShipmentOption.setText(getCourierName(model.getCourierItemData()));
+            if (model.getCourierItemData() != null) {
+                mTvSelectedShipment.setText(getCourierName(model.getCourierItemData()));
+                mTvSelectedShipment.setVisibility(View.VISIBLE);
+                mIvChevronShipmentOption.setVisibility(View.VISIBLE);
+            } else {
+                mTvSelectedShipment.setVisibility(View.GONE);
+                mIvChevronShipmentOption.setVisibility(View.GONE);
+            }
             mTvSubTotalPrice.setText(getPriceFormat(model.getTotalPricePlan()));
 
             mTvTotalItem.setText(getTotalItemFormatted(model.getTotalItemPlan()));
@@ -446,7 +505,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             mRlExpandOtherProductContainer.setOnClickListener(showAllProductListener(cartItemModels));
             mTvExpandOtherProduct.setOnClickListener(showAllProductListener(cartItemModels));
 
-            mTvShipmentOption.setOnClickListener(selectShippingOptionListener());
+            mChooseCourierButton.setOnClickListener(selectShippingOptionListener());
             mIvChevronShipmentOption.setOnClickListener(selectShippingOptionListener());
 
             mTvDetailOptionText.setOnClickListener(costDetailOptionListener());
@@ -573,17 +632,21 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
         private void showRedWarning(String message) {
             llWarningContainer.setBackgroundColor(ContextCompat.getColor(
-                    llWarningContainer.getContext(), R.color.warning_red));
+                    llWarningContainer.getContext(), R.color.bg_warning_red));
             imgWarning.setImageResource(R.drawable.ic_warning_red);
             tvWarning.setText(message);
+            tvWarning.setTextColor(ContextCompat.getColor(
+                    llWarningContainer.getContext(), R.color.text_warning_red));
             llWarningContainer.setVisibility(View.VISIBLE);
         }
 
         private void showGreyWarning(String message) {
             llWarningContainer.setBackgroundColor(ContextCompat.getColor(
-                    llWarningContainer.getContext(), R.color.warning_grey));
+                    llWarningContainer.getContext(), R.color.bg_warning_grey));
             imgWarning.setImageResource(R.drawable.ic_warning_grey);
             tvWarning.setText(message);
+            tvWarning.setTextColor(ContextCompat.getColor(
+                    llWarningContainer.getContext(), R.color.black_54));
             llWarningContainer.setVisibility(View.VISIBLE);
         }
 

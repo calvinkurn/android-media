@@ -230,30 +230,35 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
         private PickupPointLayout pickupPointLayout;
 
+        private TextView phoneNumber;
+
         MultipleShippingAddressViewHolder(View itemView) {
             super(itemView);
 
             senderName = itemView.findViewById(R.id.sender_name);
 
-            productImage = itemView.findViewById(R.id.product_image);
+            productImage = itemView.findViewById(R.id.iv_product_image_container);
 
-            productName = itemView.findViewById(R.id.product_name);
+            productName = itemView.findViewById(R.id.tv_shipping_product_name);
 
-            productPrice = itemView.findViewById(R.id.product_price);
+            productPrice = itemView.findViewById(R.id.tv_shipped_product_price);
 
-            productWeight = itemView.findViewById(R.id.product_weight);
+            productWeight = itemView.findViewById(R.id.tv_product_weight);
 
-            productQty = itemView.findViewById(R.id.product_qty);
+            productQty = itemView.findViewById(R.id.tv_total_product_item);
 
             notesField = itemView.findViewById(R.id.tv_optional_note_to_seller);
 
             addressLayout = itemView.findViewById(R.id.address_layout);
 
-            addressTitle = itemView.findViewById(R.id.address_title);
+            addressTitle = itemView.findViewById(R.id.tv_text_address_description);
 
-            addressReceiverName = itemView.findViewById(R.id.address_receiver_name);
+            addressReceiverName = itemView.findViewById(R.id.tv_recipient_name);
 
-            address = itemView.findViewById(R.id.address);
+            address = itemView.findViewById(R.id.tv_recipient_address);
+
+            phoneNumber = itemView.findViewById(R.id.tv_recipient_phone);
+            phoneNumber.setVisibility(View.GONE);
 
             chooseCourierButton = itemView.findViewById(R.id.choose_courier_button);
 
