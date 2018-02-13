@@ -9,6 +9,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_med"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_marginRight="@dimen/margin_med"
+        android:layout_marginStart="@dimen/margin_small"
         android:orientation="vertical">
 
         <LinearLayout
@@ -71,15 +75,15 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/padding_small"
-            android:gravity="end">
+            android:gravity="end"
+            android:padding="@dimen/padding_small">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/ic_pen_ico"
-                android:drawableStart="@drawable/ic_pen_ico"
                 android:drawablePadding="@dimen/padding_vs"
+                android:drawableStart="@drawable/ic_pen_ico"
                 android:text="Ubah Keterangan" />
 
         </LinearLayout>

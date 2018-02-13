@@ -22,6 +22,10 @@ import com.tokopedia.transaction.R;
 public class RejectOrderCourierProblemFragment extends TkpdFragment {
 
     private static final String ORDER_ID_ARGUMENT = "ORDER_ID_ARGUMENT";
+    private static final String ORDER_ID_KEY = "order_id";
+    private static final String REASON_KEY = "reason";
+    private static final String REASON_CODE_KEY = "reason_code";
+    private static final String COURIER_PROVLEM_CONSTANT = "7";
 
     private RejectOrderCourierReasonListener listener;
 
@@ -78,9 +82,9 @@ public class RejectOrderCourierProblemFragment extends TkpdFragment {
                 } else {
                     if (getArguments() != null) {
                         TKPDMapParam<String, String> rejectParam = new TKPDMapParam<>();
-                        rejectParam.put("order_id", getArguments().getString(ORDER_ID_ARGUMENT));
-                        rejectParam.put("reason", notesField.getText().toString());
-                        rejectParam.put("reason_code", "7");
+                        rejectParam.put(ORDER_ID_KEY, getArguments().getString(ORDER_ID_ARGUMENT));
+                        rejectParam.put(REASON_KEY, notesField.getText().toString());
+                        rejectParam.put(REASON_CODE_KEY, COURIER_PROVLEM_CONSTANT);
                         listener.rejectOrderCourierReason(rejectParam);
                     }
                 }

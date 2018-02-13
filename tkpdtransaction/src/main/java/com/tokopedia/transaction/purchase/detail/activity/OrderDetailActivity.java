@@ -363,6 +363,7 @@ public class OrderDetailActivity extends TActivity
                 Intent intent = OrderHistoryActivity
                         .createInstance(OrderDetailActivity.this, orderId, getExtraUserMode());
                 startActivity(intent);
+                overridePendingTransition(0, R.anim.right_to_left_out);
             }
         };
     }
@@ -431,27 +432,29 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onAskBuyer(OrderDetailData orderData) {
         //TODO later change get Shop Logo with get buyer logo once available
-        /*String id;
+        String id;
         String name;
         String logoUrl;
         if(getExtraUserMode() == SELLER_MODE) {
             id = orderData.getBuyerId();
             name = orderData.getBuyerName();
-            logoUrl = orderData.get
+            logoUrl = orderData.getShopLogo();
         } else {
-
-        }*/
+            id = orderData.getShopId();
+            name = orderData.getShopName();
+            logoUrl = orderData.getShopLogo();
+        }
         Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
                 .getAskBuyerIntent(this,
-                        orderData.getShopId(),
-                        orderData.getShopName(),
+                        id,
+                        name,
                         orderData.getInvoiceNumber(),
                         MethodChecker.fromHtml(
                                 getString(R.string.dialog_message_ask_seller)
                                         .replace("XXX",
                                                 orderData.getInvoiceUrl())
                         ).toString(),
-                        TkpdInboxRouter.TX_ASK_BUYER, orderData.getShopLogo());
+                        TkpdInboxRouter.TX_ASK_BUYER, logoUrl);
         startActivity(intent);
     }
 
@@ -647,6 +650,7 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void dismissActivity() {
         setResult(Activity.RESULT_OK);
+        finish();
     }
 
     @Override
@@ -761,6 +765,8 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onAcceptOrder(String orderId) {
         presenter.acceptOrder(this, orderId);
+        setResult(Activity.RESULT_OK);
+        finish();
     }
 
     @Override
@@ -771,6 +777,9 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onAcceptPartialOrderCreated(String orderId, String remark, String param) {
         presenter.partialOrder(this, orderId, remark, param);
+        presenter.acceptOrder(this, orderId);
+        setResult(Activity.RESULT_OK);
+        finish();
     }
 
     @Override

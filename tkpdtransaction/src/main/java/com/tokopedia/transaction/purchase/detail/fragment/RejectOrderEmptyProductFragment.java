@@ -22,6 +22,8 @@ import java.util.List;
 
 public class RejectOrderEmptyProductFragment extends RejectOrderBaseFragment {
 
+    private static final String FRAGMENT_TITLE = "Produk yang Habis";
+    private static final String NO_ITEM_SELECTED_ERROR = "Pilih Barang yang akan ditolak";
     private RejectOrderEmptyStockListener listener;
 
     private RejectOrderEmptyProductsAdapter adapter;
@@ -53,7 +55,7 @@ public class RejectOrderEmptyProductFragment extends RejectOrderBaseFragment {
 
     @Override
     protected String defineTitle() {
-        return "Produk yang Habis";
+        return FRAGMENT_TITLE;
     }
 
     @Override
@@ -89,7 +91,7 @@ public class RejectOrderEmptyProductFragment extends RejectOrderBaseFragment {
                 TKPDMapParam<String, String> productparam = adapter.getMappedProductParameter();
                 if(productparam.isEmpty()) {
                     NetworkErrorHelper.showSnackbar(getActivity(),
-                            "Pilih Barang yang akan ditolak");
+                            NO_ITEM_SELECTED_ERROR);
                 } else listener.onRejectEmptyStock(productparam);
             }
         };

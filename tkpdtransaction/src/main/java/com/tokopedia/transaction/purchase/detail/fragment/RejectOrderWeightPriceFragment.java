@@ -26,6 +26,7 @@ public class RejectOrderWeightPriceFragment extends RejectOrderBaseFragment {
     public static final int FRAGMENT_EDIT_WEIGHT_PRICE_REQUEST_CODE = 24;
 
     private static final int FIXED_KILOGRAM_MODE = 2;
+    private static final String FRAGMENT_TITLE = "Ubah Harga dan Berat Produk";
 
     private RejectOrderChangeWeightPriceListener listener;
 
@@ -48,7 +49,7 @@ public class RejectOrderWeightPriceFragment extends RejectOrderBaseFragment {
 
     @Override
     protected String defineTitle() {
-        return "Ubah Harga dan Berat Produk";
+        return FRAGMENT_TITLE;
     }
 
     @Override
@@ -93,7 +94,7 @@ public class RejectOrderWeightPriceFragment extends RejectOrderBaseFragment {
                     getFragmentManager()
                             .beginTransaction()
                             .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
-                            .replace(R.id.main_view,
+                            .add(R.id.main_view,
                                     editFragment,
                                     FRAGMENT_REJECT_ORDER_SUB_MENU_TAG)
                             .addToBackStack(FRAGMENT_REJECT_ORDER_SUB_MENU_TAG)

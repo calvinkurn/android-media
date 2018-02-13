@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
         android:gravity="center"
         android:text="@string/button_order_detail_confirm"
@@ -21,7 +22,10 @@
         android:id="@+id/title_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_med"
+        android:layout_marginEnd="@dimen/margin_small"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_marginRight="@dimen/margin_small"
+        android:layout_marginStart="@dimen/margin_small"
         android:padding="@dimen/padding_small"
         android:textSize="@dimen/text_size_large"
         android:textStyle="bold"
@@ -31,7 +35,7 @@
         android:id="@+id/main_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/title_text_view"
-        android:layout_above="@id/reject_order_confirm_button"/>
+        android:layout_above="@id/reject_order_confirm_button"
+        android:layout_below="@id/title_text_view" />
 
 </RelativeLayout>

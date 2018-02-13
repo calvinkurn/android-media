@@ -175,9 +175,9 @@ public class OrderDetailRepository implements IOrderDetailRepository {
         for (int i =0; i < emptyVarianProductEditables.size(); i++) {
             TKPDMapParam<String, String> params = new TKPDMapParam<>();
             params.putAll(productParam);
-            params.put("shop_id", emptyVarianProductEditables.get(i).getShopId());
-            params.put("product_id", emptyVarianProductEditables.get(i).getProductId());
-            params.put("product_description", emptyVarianProductEditables.get(i).getProductDescription());
+            params.put(SHOP_ID_KEY, emptyVarianProductEditables.get(i).getShopId());
+            params.put(PRODUCT_ID_KEY, emptyVarianProductEditables.get(i).getProductId());
+            params.put(PRODUCT_DESCRIPTION_KEY, emptyVarianProductEditables.get(i).getProductDescription());
             cartVarianObservableList.add(productActService.getApi().editDescription(params));
         }
         cartVarianObservableList.add(processOrder(rejectParam));
@@ -204,22 +204,22 @@ public class OrderDetailRepository implements IOrderDetailRepository {
         for (int i =0; i < editables.size(); i++) {
             TKPDMapParam<String, String> params = new TKPDMapParam<>();
             params.putAll(productParam);
-            params.put("shop_id", editables.get(i).getShopId());
-            params.put("product_id", editables.get(i).getProductId());
+            params.put(SHOP_ID_KEY, editables.get(i).getShopId());
+            params.put(PRODUCT_ID_KEY, editables.get(i).getProductId());
             params.put(
-                    "product_price",
+                    PRODUCT_PRICE_KEY,
                     editables.get(i).getProductPriceUnformatted()
             );
             params.put(
-                    "product_weight_value",
+                    PRODUCT_WEIGHT_VALUE_KEY,
                     editables.get(i).getProductWeightUnformatted()
             );
             params.put(
-                    "product_price_currency",
+                    PRODUCT_PRICE_CURRENCY_KEY,
                     String.valueOf(editables.get(i).getCurrencyMode())
             );
             params.put(
-                    "product_weight_unit",
+                    PRODUCT_WEIGHT_UNIT_KEY,
                     String.valueOf(editables.get(i).getWeightMode())
             );
             cartWeightPriceObservableList.add(
