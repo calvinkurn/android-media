@@ -9,9 +9,16 @@ public class ProductPictureViewModel {
     @SerializedName("id")
     @Expose
     private long id;
-    @SerializedName("status")
-    @Expose
-    private long status;
+
+    // currently not used in UI, only for backend
+    //0 -> deleted
+    //1 -> active
+    //2 -> primary
+    //-3 -> sizechart
+    //@SerializedName("status")
+    //@Expose
+    //private long status;
+
     @SerializedName("file_name")
     @Expose
     private String fileName;
@@ -34,14 +41,6 @@ public class ProductPictureViewModel {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public long getStatus() {
-        return status;
-    }
-
-    public void setStatus(long status) {
-        this.status = status;
     }
 
     public String getFileName() {
