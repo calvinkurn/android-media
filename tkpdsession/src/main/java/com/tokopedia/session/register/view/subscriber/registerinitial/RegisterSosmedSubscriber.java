@@ -1,8 +1,9 @@
 package com.tokopedia.session.register.view.subscriber.registerinitial;
 
+import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
+import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.network.ErrorCode;
 import com.tokopedia.network.ErrorHandler;
-import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.register.domain.model.LoginSosmedDomain;
 import com.tokopedia.session.register.view.viewlistener.RegisterInitial;
@@ -43,6 +44,7 @@ public class RegisterSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
                 && !isGoToSecurityQuestion(registerSosmedDomain.getMakeLoginModel())
                 && isMsisdnVerified(registerSosmedDomain.getInfo())) {
             viewListener.onSuccessRegisterSosmed(methodName);
+            sendRegisterEventToBranch(registerSosmedDomain);
         } else if (!isGoToSecurityQuestion(registerSosmedDomain.getMakeLoginModel())
                 && !isMsisdnVerified(registerSosmedDomain.getInfo())) {
             viewListener.onGoToPhoneVerification();
@@ -64,5 +66,12 @@ public class RegisterSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
 
     private boolean isGoToSecurityQuestion(MakeLoginDomain makeLoginModel) {
         return !makeLoginModel.isLogin() && makeLoginModel.getSecurityDomain() != null;
+    }
+
+    private void sendRegisterEventToBranch(LoginSosmedDomain registerSosmedDomain){
+        if(registerSosmedDomain!=null && registerSosmedDomain.getInfo()!=null && registerSosmedDomain.getInfo().getGetUserInfoDomainData()!=null) {
+            BranchSdkUtils.sendRegisterEvent(registerSosmedDomain.getInfo().getGetUserInfoDomainData().getEmail(),
+                    registerSosmedDomain.getInfo().getGetUserInfoDomainData().getPhone());
+        }
     }
 }

@@ -52,6 +52,7 @@ import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
+import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.di.DaggerSessionComponent;
@@ -607,6 +608,8 @@ public class LoginFragment extends BaseDaggerFragment
                 LoginAnalytics.Label.EMAIL
         );
 
+        BranchSdkUtils.sendLoginEvent(sessionHandler.getEmail(),sessionHandler.getPhoneNumber());
+
         onSuccessLogin();
     }
 
@@ -625,6 +628,8 @@ public class LoginFragment extends BaseDaggerFragment
                 loginMethod
         );
 
+        BranchSdkUtils.sendLoginEvent(sessionHandler.getEmail(),
+                sessionHandler.getPhoneNumber());
         onSuccessLogin();
     }
 
