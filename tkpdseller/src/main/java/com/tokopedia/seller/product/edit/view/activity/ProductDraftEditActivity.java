@@ -23,26 +23,9 @@ public class ProductDraftEditActivity extends ProductDraftAddActivity  {
     }
 
     @Override
-    protected void setupFragment(Bundle savedInstance) {
-        String productId = getIntent().getStringExtra(PRODUCT_DRAFT_ID);
-        if (TextUtils.isEmpty(productId)){
-            Toast.makeText(this,getString(R.string.product_draft_error_cannot_load_draft), Toast.LENGTH_LONG).show();
-            finish();
-            return;
-        }
-        if (savedInstance == null) {
-            inflateFragment();
-        }
-    }
-
-    @Override
     protected Fragment getNewFragment() {
         String productId = getIntent().getStringExtra(PRODUCT_DRAFT_ID);
         return ProductDraftEditFragment.createInstance(productId);
     }
 
-    @Override
-    protected boolean needDeleteCacheOnBack() {
-        return false;
-    }
 }

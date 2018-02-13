@@ -35,6 +35,7 @@ public class ProductEditActivity extends ProductDraftEditActivity {
         }
     }
 
+    @Override
     protected int getCancelMessageRes(){
         return R.string.product_draft_dialog_edit_cancel_message;
     }

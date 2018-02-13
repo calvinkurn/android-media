@@ -146,9 +146,6 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
 
         productImageViewHolder = new ProductImageViewHolder(view.findViewById(R.id.view_group_product_image));
         productImageViewHolder.setListener(this);
-        if (CommonUtils.checkCollectionNotNull(imageUrlListFromArg)) {
-            productImageViewHolder.setImages(imageUrlListFromArg);
-        }
         productDetailViewHolder = new ProductDetailViewHolder(view);
         productDetailViewHolder.setListener(this);
         productAdditionalInfoViewHolder = new ProductAdditionalInfoViewHolder(view);

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.di.component.DaggerProductAddComponent;
 import com.tokopedia.seller.product.edit.di.module.ProductAddModule;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
  * Created by nathan on 4/3/17.
  */
 
-public class ProductAddFragment extends BaseProductAddEditFragment<ProductAddPresenter>  {
+public class ProductAddFragment extends BaseProductAddEditFragment<ProductAddPresenter> {
 
     /**
      * Url got from gallery or camera or other paths
@@ -62,6 +63,9 @@ public class ProductAddFragment extends BaseProductAddEditFragment<ProductAddPre
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
+        if (savedInstanceState == null && CommonUtils.checkCollectionNotNull(imageUrlListFromArg)) {
+            productImageViewHolder.setImages(imageUrlListFromArg);
+        }
         saveDefaultModel();
         return view;
     }
@@ -72,14 +76,14 @@ public class ProductAddFragment extends BaseProductAddEditFragment<ProductAddPre
         saveDefaultModel();
     }
 
-    private void saveDefaultModel(){
+    private void saveDefaultModel() {
         //save default value here, so we can compare when we want to save draft
         // will be overriden when not adding product
         firstTimeViewModel = collectDataFromView();
     }
 
     @Override
-    public boolean showDialogSaveDraftOnBack(){
+    public boolean showDialogSaveDraftOnBack() {
         // check if this fragment has any data
         // will compare will the default value and the current value
         // if there is the difference, then assume that the data has been added.
