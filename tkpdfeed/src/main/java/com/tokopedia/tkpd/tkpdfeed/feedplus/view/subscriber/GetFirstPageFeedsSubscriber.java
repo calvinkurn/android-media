@@ -398,11 +398,6 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
             }
     }
 
-    //TODO milhamj
-//    private FeedTopAdsViewModel convertToTopadsViewModel(List<Data> topadsDataList) {
-//        return new FeedTopAdsViewModel(topadsDataList);
-//    }
-
     private KolRecommendationViewModel convertToKolRecommendationViewModel(KolRecommendationDomain domain) {
         return new KolRecommendationViewModel(
                 domain.getExploreLink(),

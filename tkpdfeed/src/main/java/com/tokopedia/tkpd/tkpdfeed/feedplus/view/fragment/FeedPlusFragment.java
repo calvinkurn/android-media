@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -208,33 +210,29 @@ public class FeedPlusFragment extends BaseDaggerFragment
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                //TODO milhamj
-//                try {
-//                    if (hasFeed()
-//                            && newState == RecyclerView.SCROLL_STATE_IDLE
-//                            && layoutManager != null
-//                            && topAdsRecyclerAdapter != null
-//                            && topAdsRecyclerAdapter.getPlacer() != null) {
-//                        int position = 0;
-//                        Item item = null;
-//                        if (itemIsFullScreen()) {
-//                            position = layoutManager.findLastVisibleItemPosition();
-//                        } else if (layoutManager.findFirstCompletelyVisibleItemPosition() != -1) {
-//                            position = layoutManager.findFirstCompletelyVisibleItemPosition();
-//                        } else if (layoutManager.findLastCompletelyVisibleItemPosition() != -1) {
-//                            position = layoutManager.findLastCompletelyVisibleItemPosition();
-//                        }
-//
-//                        item = topAdsRecyclerAdapter.getPlacer()
-//                                .getItem(position);
-//
-//                        if (position != 0 && item != null && !isTopads(item)) {
-//                            trackImpression(item, position);
-//                        }
-//                    }
-//                } catch (IndexOutOfBoundsException e) {
-//                    Log.d(FeedPlusFragment.TAG, e.toString());
-//                }
+                try {
+                    if (hasFeed()
+                            && newState == RecyclerView.SCROLL_STATE_IDLE
+                            && layoutManager != null) {
+                        int position = 0;
+                        Visitable item = null;
+                        if (itemIsFullScreen()) {
+                            position = layoutManager.findLastVisibleItemPosition();
+                        } else if (layoutManager.findFirstCompletelyVisibleItemPosition() != -1) {
+                            position = layoutManager.findFirstCompletelyVisibleItemPosition();
+                        } else if (layoutManager.findLastCompletelyVisibleItemPosition() != -1) {
+                            position = layoutManager.findLastCompletelyVisibleItemPosition();
+                        }
+
+                        item = adapter.getlist().get(position);
+
+                        if (position != 0 && item != null && !isTopads(item)) {
+                            trackImpression(item, position);
+                        }
+                    }
+                } catch (IndexOutOfBoundsException e) {
+                    Log.d(FeedPlusFragment.TAG, e.toString());
+                }
 
             }
 
@@ -447,6 +445,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     }
 
+    @SuppressLint("Range")
     @Override
     public void onCopyClicked(int page, int rowNumber, String id, String code, String name) {
         ClipboardHandler.CopyToClipboard(getActivity(), code);
@@ -495,6 +494,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         adapter.getItemViewType(adapterPosition);
     }
 
+    @SuppressLint("Range")
     @Override
     public void showSnackbar(String s) {
         SnackbarManager.make(getActivity(), s, Snackbar.LENGTH_LONG).show();
