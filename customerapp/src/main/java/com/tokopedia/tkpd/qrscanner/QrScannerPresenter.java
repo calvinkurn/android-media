@@ -135,11 +135,16 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
         postBarCodeDataUseCase.execute(requestParams, new Subscriber<CampaignResponseEntity>() {
             @Override
             public void onCompleted() {
-                getView().finish();
+                if(getView()!=null) {
+                    getView().finish();
+                }
             }
 
             @Override
             public void onError(Throwable e) {
+                if(getView() == null) {
+                    return;
+                }
                 if (e instanceof UnknownHostException || e instanceof ConnectException) {
                     getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
                 } else if (e instanceof SocketTimeoutException) {

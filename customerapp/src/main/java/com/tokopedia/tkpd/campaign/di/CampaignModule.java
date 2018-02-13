@@ -1,8 +1,11 @@
 package com.tokopedia.tkpd.campaign.di;
 
+import com.tokopedia.abstraction.common.di.qualifier.OkHttpClientBuilderNonBaseQualifier;
+import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.core.OkHttpFactory;
+import com.tokopedia.tkpd.campaign.data.model.CampaignErrorResponse;
 import com.tokopedia.tkpd.campaign.domain.barcode.CampaignDataRepository;
 import com.tokopedia.tkpd.campaign.domain.barcode.PostBarCodeDataUseCase;
 import com.tokopedia.tkpd.campaign.source.CampaignData;
@@ -14,6 +17,7 @@ import com.tokopedia.tokocash.di.TokoCashModule;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 /**
@@ -51,8 +55,18 @@ public class CampaignModule {
     }
 
     @Provides
-    OkHttpClient provideOkHttpClientRide() {
-        return OkHttpFactory.create().buildClientCampaignAuth();
+    OkHttpClient provideOkHttpClientRide(@OkHttpClientBuilderNonBaseQualifier OkHttpClient.Builder okHttpClientBuilder,
+                                         HttpLoggingInterceptor httpLoggingInterceptor){
+        return okHttpClientBuilder
+                .addInterceptor(httpLoggingInterceptor)
+                .addInterceptor(new ErrorResponseInterceptor(CampaignErrorResponse.class))
+                .build();
+    }
+    @Provides
+    public HttpLoggingInterceptor provideHttpLoggingInterceptor() {
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        return logging;
     }
 
 }

@@ -4,7 +4,6 @@ import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.core.cache.interceptor.ApiCacheInterceptor;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.retrofit.interceptors.AccountsInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.CampaignInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.CreditCardInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.DigitalHmacAuthInterceptor;
@@ -167,15 +166,7 @@ public class OkHttpFactory {
                 .build();
     }
 
-    public OkHttpClient buildClientCampaignAuth() {
-        return new TkpdOkHttpBuilder(builder)
-                .addInterceptor(new FingerprintInterceptor())
-                .addInterceptor(new ApiCacheInterceptor())
-                .addInterceptor(new CampaignInterceptor())
-                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
-                .addDebugInterceptor()
-                .build();
-    }
+
 
     public OkHttpClient buildClientNoAuth() {
         return new TkpdOkHttpBuilder(builder)

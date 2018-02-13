@@ -43,8 +43,6 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     private static final int REQUEST_CODE_LOGIN = 3;
 
     private CampaignComponent campaignComponent;
-    private String barCodeData;
-    private ImageView torch;
     private boolean isTorchOn;
     private TkpdProgressDialog progressDialog;
 
@@ -81,13 +79,13 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
 
     @OnPermissionDenied({Manifest.permission.CAMERA})
     void requestCameraPermissionDenied() {
-        Toast.makeText(this, "Unable to open barcode scanner", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, getResources().getString(R.string.error_actiivty_open_permission), Toast.LENGTH_LONG).show();
         finish();
     }
 
     @OnNeverAskAgain({Manifest.permission.CAMERA})
     void requestCameraPermissionNeverAsk() {
-        Toast.makeText(this, "Unable to open barcode scanner", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, getResources().getString(R.string.error_actiivty_open_permission), Toast.LENGTH_LONG).show();
         finish();
     }
 
@@ -128,7 +126,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
         presenter.attachView(this);
         updateTitle(getString(R.string.title_scan_qr));
 
-        torch = (ImageView) findViewById(com.tokopedia.tokocash.R.id.switch_flashlight);
+        final ImageView torch = (ImageView) findViewById(com.tokopedia.tokocash.R.id.switch_flashlight);
         torch.setVisibility(!hasFlash() ? View.GONE : View.VISIBLE);
         decoratedBarcodeView.setTorchListener(getListener());
         torch.setOnClickListener(new View.OnClickListener() {
@@ -153,8 +151,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     protected void findResult(BarcodeResult barcodeResult) {
         decoratedBarcodeView.pause();
         hideAnimation();
-        barCodeData = barcodeResult.getText();
-        presenter.onBarCodeScanComplete(barCodeData);
+        presenter.onBarCodeScanComplete(barcodeResult.getText());
     }
 
     @Override
