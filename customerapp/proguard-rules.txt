@@ -320,5 +320,11 @@
     public *;
 }
 
+-keep public class com.tokopedia.design.bottomnavigation.BottomNavigation { *; }
+-keep public class android.support.design.widget.BottomNavigationView { *; }
+-keep public class android.support.design.internal.BottomNavigationMenuView { *; }
+-keep public class android.support.design.internal.BottomNavigationPresenter { *; }
+-keep public class android.support.design.internal.BottomNavigationItemView { *; }
+
 #Sendbird
 -dontwarn com.sendbird.android.shadow.**

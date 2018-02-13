@@ -10,32 +10,30 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:paddingLeft="@dimen/padding_ms"
-        android:paddingRight="@dimen/padding_ms">
+        android:padding="@dimen/padding_vs">
 
         <android.support.v7.widget.LinearLayoutCompat
             android:id="@+id/linear_layout_button_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:minWidth="100dp"
             android:clickable="true"
             android:gravity="center_vertical"
             android:minHeight="@dimen/image_width_s"
-            android:paddingBottom="@dimen/padding_small"
-            android:paddingLeft="@dimen/padding_med"
-            android:paddingRight="@dimen/padding_med"
-            android:paddingTop="@dimen/padding_small">
+            android:paddingLeft="@dimen/padding_vs"
+            android:paddingRight="@dimen/padding_vs">
 
             <ImageView
                 android:id="@+id/image_view_icon_1"
                 android:layout_width="@dimen/image_width_xs"
                 android:layout_height="@dimen/image_width_xs"
-                android:layout_marginEnd="@dimen/margin_ms"
-                android:layout_marginRight="@dimen/margin_ms"
+                android:layout_marginEnd="@dimen/padding_vs"
+                android:layout_marginRight="@dimen/padding_vs"
                 tools:src="@drawable/ic_badge_bronze" />
 
             <TextView
                 android:id="@+id/text_view_label_1"
-                style="@style/TextView.Small"
+                style="@style/TextView.Micro"
                 tools:text="@string/app_name" />
 
             <View
@@ -53,22 +51,22 @@
             android:id="@+id/view_separator"
             android:layout_width="2dp"
             android:layout_height="@dimen/image_width_s"
-            android:layout_marginLeft="@dimen/margin_med"
-            android:layout_marginRight="@dimen/margin_med"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_small"
             android:background="@color/grey_300"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
         <android.support.v7.widget.LinearLayoutCompat
             android:id="@+id/linear_layout_button_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:minWidth="100dp"
             android:clickable="true"
             android:gravity="center_vertical"
             android:minHeight="@dimen/image_width_s"
-            android:paddingBottom="@dimen/padding_small"
-            android:paddingLeft="@dimen/padding_med"
-            android:paddingRight="@dimen/padding_med"
-            android:paddingTop="@dimen/padding_small"
+            android:paddingLeft="@dimen/padding_vs"
+            android:paddingRight="@dimen/padding_vs"
             android:visibility="gone"
             tools:visibility="visible">
 
@@ -76,13 +74,13 @@
                 android:id="@+id/image_view_icon_2"
                 android:layout_width="@dimen/image_width_xs"
                 android:layout_height="@dimen/image_width_xs"
-                android:layout_marginEnd="@dimen/margin_ms"
-                android:layout_marginRight="@dimen/margin_ms"
+                android:layout_marginEnd="@dimen/padding_vs"
+                android:layout_marginRight="@dimen/padding_vs"
                 tools:src="@drawable/ic_badge_bronze" />
 
             <TextView
                 android:id="@+id/text_view_label_2"
-                style="@style/TextView.Small"
+                style="@style/TextView.Micro"
                 tools:text="@string/app_name" />
 
             <View

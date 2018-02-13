@@ -13,16 +13,17 @@ public class KolRecommendationViewModel implements Visitable<FeedPlusTypeFactory
 
     String url;
     String title;
+    String exploreText;
     ArrayList<KolRecommendItemViewModel> listRecommend;
     private int page;
     private int rowNumber;
     private boolean swapAdapter;
 
-    public KolRecommendationViewModel(String url,
-                                      String title,
+    public KolRecommendationViewModel(String url, String title, String exploreText,
                                       ArrayList<KolRecommendItemViewModel> listRecommend) {
         this.url = url;
         this.title = title;
+        this.exploreText = exploreText;
         this.listRecommend = listRecommend;
     }
 
@@ -32,6 +33,10 @@ public class KolRecommendationViewModel implements Visitable<FeedPlusTypeFactory
 
     public String getTitle() {
         return title;
+    }
+
+    public String getExploreText() {
+        return exploreText;
     }
 
     public ArrayList<KolRecommendItemViewModel> getListRecommend() {

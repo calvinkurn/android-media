@@ -5,6 +5,7 @@ import android.os.Build;
 import com.logentries.logger.AndroidLogger;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.GlobalConfig;
@@ -19,6 +20,7 @@ import java.io.IOException;
 public class AnalyticsLog {
     private static AndroidLogger instance;
     private static final String TOKEN_LOG_NOTIFIER = "2719adf1-18c8-4cc6-8c92-88a07594f7db";
+    private static final String TOKEN_LOG_NOTIFIER_NOTP = "44ec54a0-bcc2-437e-a061-9c7b3e124165";
 
     public static void logForceLogout(String url) {
         AnalyticsLog.log("ErrorType=Force Logout!"
@@ -61,6 +63,30 @@ public class AnalyticsLog {
         }
     }
 
+    private static AndroidLogger mInstance = null;
+    private static AndroidLogger getAndroidNOTPLogger() {
+        try {
+            if(mInstance == null) {
+                mInstance = AndroidLogger.createInstance(
+                        MainApplication.getAppContext(),
+                        false,
+                        true,
+                        false,
+                        null,
+                        0,
+                        TOKEN_LOG_NOTIFIER_NOTP,
+                        true);
+            }
+            return mInstance;
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    public static void printNOTPLog(String msg) {
+        getAndroidNOTPLogger().log(msg + " - Phone Number:-" + SessionHandler.getPhoneNumber()
+                + " - LoginID - " + SessionHandler.getLoginID(MainApplication.getAppContext()));
+    }
     private static void log(String message) {
         AndroidLogger logger = getAndroidLogger();
         if (logger != null) {

@@ -114,14 +114,6 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                 context.startActivity(intent);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.HELP);
                 break;
-            case TkpdState.DrawerPosition.RESOLUTION_CENTER:
-                if (context.getApplication() instanceof TkpdCoreRouter) {
-                    context.startActivity(((TkpdCoreRouter) context.getApplication())
-                            .getResolutionCenterIntent(context));
-                    sendGTMNavigationEvent(AppEventTracking.EventLabel.RESOLUTION_CENTER);
-
-                }
-                break;
             case TkpdState.DrawerPosition.DEVELOPER_OPTIONS:
                 startIntent(context, DeveloperOptions.class);
                 break;

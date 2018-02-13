@@ -62,6 +62,8 @@ public interface TkpdCoreRouter {
 
     void actionOpenGeneralWebView(Activity activity, String mobileUrl);
 
+    Fragment getShopReputationFragment(String shopId, String shopDomain);
+
     Intent getHomeIntent(Context context);
 
     Intent getOnBoardingActivityIntent(Context context);
@@ -130,18 +132,20 @@ public interface TkpdCoreRouter {
 
     Intent getActivitySellingTransactionList(Context context);
 
-    Intent getActivitySellingTransactionOpportunity(Context context);
+    Intent getActivitySellingTransactionOpportunity(Context context, String query);
 
     Intent getHomeHotlistIntent(Context context);
 
     NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass,
                                          Bundle data, String notifTitle);
 
-    android.app.Fragment getShopReputationFragment();
-
     Intent getInboxReputationIntent(Context context);
 
     Intent getResolutionCenterIntent(Context context);
+
+    Intent getResolutionCenterIntentBuyer(Context context);
+
+    Intent getResolutionCenterIntentSeller(Context context);
 
     String applink(Activity activity, String deeplink);
 

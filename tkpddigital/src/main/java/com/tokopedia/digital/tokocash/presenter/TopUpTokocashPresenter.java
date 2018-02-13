@@ -9,14 +9,12 @@ import com.tokopedia.core.network.exception.ServerErrorException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.digital.product.compoundview.BaseDigitalProductView;
-import com.tokopedia.digital.product.interactor.IProductDigitalInteractor;
-import com.tokopedia.digital.product.model.ProductDigitalData;
+import com.tokopedia.digital.common.domain.interactor.GetCategoryByIdUseCase;
+import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
+import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.tokocash.errorhandle.ResponseTokoCashRuntimeException;
 import com.tokopedia.digital.tokocash.interactor.ITokoCashBalanceInteractor;
 import com.tokopedia.digital.tokocash.listener.TopUpTokoCashListener;
@@ -37,20 +35,18 @@ import rx.Subscriber;
 public class TopUpTokocashPresenter implements ITopUpTokocashPresenter {
 
     private final static String TOPUP_CATEGORY_ID = "103";
-    private final static String PARAM_IS_RESELLER = "is_reseller";
-    private final static String VALUE_RESSELER = "1";
-    private final static String CATEGORY_ID = "category_id";
     private SessionHandler sessionHandler;
     private Context context;
 
-    private final IProductDigitalInteractor productDigitalInteractor;
+    private GetCategoryByIdUseCase getCategoryByIdUseCase;
     private final ITokoCashBalanceInteractor balanceInteractor;
     private final TopUpTokoCashListener view;
 
-    public TopUpTokocashPresenter(Context context, IProductDigitalInteractor productDigitalInteractor,
+    public TopUpTokocashPresenter(Context context,
+                                  GetCategoryByIdUseCase getCategoryByIdUseCase,
                                   ITokoCashBalanceInteractor balanceInteractor,
                                   TopUpTokoCashListener view) {
-        this.productDigitalInteractor = productDigitalInteractor;
+        this.getCategoryByIdUseCase = getCategoryByIdUseCase;
         this.balanceInteractor = balanceInteractor;
         this.view = view;
         this.context = context;
@@ -59,21 +55,9 @@ public class TopUpTokocashPresenter implements ITopUpTokocashPresenter {
 
     @Override
     public void processGetCategoryTopUp() {
-        TKPDMapParam<String, String> paramQueryCategory = new TKPDMapParam<>();
-        if (GlobalConfig.isSellerApp()) {
-            paramQueryCategory.put(PARAM_IS_RESELLER, VALUE_RESSELER);
-        }
-        TKPDMapParam<String, String> paramQueryBanner = new TKPDMapParam<>();
-        paramQueryBanner.put(CATEGORY_ID, TOPUP_CATEGORY_ID);
-
-        productDigitalInteractor.getCategoryAndBanner(
-                TOPUP_CATEGORY_ID,
-                view.getGeneratedAuthParamNetwork(paramQueryCategory),
-                view.getGeneratedAuthParamNetwork(paramQueryBanner),
-                view.getGeneratedAuthParamNetwork(new TKPDMapParam<String, String>()),
-                view.getGeneratedAuthParamNetwork(new TKPDMapParam<String, String>()),
+        getCategoryByIdUseCase.execute(
+                getCategoryByIdUseCase.createRequestParam(TOPUP_CATEGORY_ID),
                 getSubscriberProductDigitalData()
-
         );
     }
 
@@ -199,7 +183,7 @@ public class TopUpTokocashPresenter implements ITopUpTokocashPresenter {
             @Override
             public void onNext(WalletToken walletToken) {
                 sessionHandler.setTokenTokoCash(walletToken.getToken());
-                Log.d("TOKEN TOKOCASH", "onNext: " + sessionHandler.getAccessTokenTokoCash());
+                Log.d("TOKEN TOKOCASH", "onNext: " + SessionHandler.getAccessTokenTokoCash());
             }
         };
     }
