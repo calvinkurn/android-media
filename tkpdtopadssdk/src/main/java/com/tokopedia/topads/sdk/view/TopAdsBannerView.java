@@ -1,5 +1,6 @@
 package com.tokopedia.topads.sdk.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -79,6 +80,8 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
     }
 
     private void createViewCpmShop(Context context, final CpmData.Cpm cpm) {
+        if (checkActivityIsExist(context))
+            return;
         inflate(getContext(), R.layout.layout_ads_banner_shop, this);
         final ImageView iconImg = (ImageView) findViewById(R.id.icon);
         TextView promotedTxt = (TextView) findViewById(R.id.title_promote);
@@ -113,6 +116,14 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         }
     }
 
+    private boolean checkActivityIsExist(Context context) {
+        if (context instanceof Activity) {
+            Activity activity = (Activity) context;
+            return activity.isFinishing();
+        }
+        return false;
+    }
+
     private void setTextColor(TextView view, String fulltext, String subtext, int color) {
         view.setText(fulltext, TextView.BufferType.SPANNABLE);
         Spannable str = (Spannable) view.getText();
@@ -122,6 +133,8 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
     }
 
     private void createViewCpmDigital(Context context, final CpmData.Cpm cpm) {
+        if (checkActivityIsExist(context))
+            return;
         inflate(getContext(), R.layout.layout_ads_banner_digital, this);
         final ImageView iconImg = (ImageView) findViewById(R.id.icon);
         TextView nameTxt = (TextView) findViewById(R.id.name);
@@ -161,7 +174,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
             final CpmData data = cpmModel.getData().get(0);
             if (data.getCpm().getCpmShop() != null && isResponseValid(data)) {
                 createViewCpmShop(getContext(), data.getCpm());
-            } else if(data.getCpm().getTemplateId() == 4) {
+            } else if (data.getCpm().getTemplateId() == 4) {
                 createViewCpmDigital(getContext(), data.getCpm());
             }
             setOnClickListener(new OnClickListener() {
@@ -186,6 +199,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
     public void onCanceled() {
 
     }
+
     @Override
     public void hideLoading() {
 
@@ -207,5 +221,11 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         imageLoader = new ImageLoader(getContext());
         presenter = new BannerAdsPresenter(getContext());
         presenter.attachView(this);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        presenter.detachView();
     }
 }
