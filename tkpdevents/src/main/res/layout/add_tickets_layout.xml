@@ -76,14 +76,13 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <ImageButton
+            <TextView
                 android:id="@+id/btn_decrement"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_marginLeft="@dimen/margin_default"
-                android:background="@color/transparent"
-                android:scaleType="fitXY"
-                android:src="@drawable/minus_button_layerlist_green" />
+                android:background="@drawable/minus_button_layerlist_green"
+                android:scaleType="fitXY" />
 
             <TextView
                 android:id="@+id/tv_ticket_cnt"
@@ -96,13 +95,12 @@
                 android:textSize="12sp"
                 android:textStyle="normal" />
 
-            <ImageButton
+            <TextView
                 android:id="@+id/btn_increment"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:background="#00000000"
-                android:scaleType="fitXY"
-                android:src="@drawable/add_button_layerlist_green" />
+                android:background="@drawable/add_button_layerlist_green"
+                android:scaleType="fitXY" />
         </LinearLayout>
     </FrameLayout>
 

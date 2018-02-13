@@ -63,11 +63,11 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         @BindView(R2.id.ticket_sale_price)
         TextView ticketSalePrice;
         @BindView(R2.id.btn_decrement)
-        ImageButton btnDecrement;
+        TextView btnDecrement;
         @BindView(R2.id.tv_ticket_cnt)
         TextView tvTicketCnt;
         @BindView(R2.id.btn_increment)
-        ImageButton btnIncrement;
+        TextView btnIncrement;
         @BindView(R2.id.tv_sold_out)
         TextView tvSoldOut;
         @BindView(R2.id.button_layout)
@@ -102,11 +102,11 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             tvTicketCnt.setText(String.valueOf(viewModel.getSelectedQuantity()));
             if (holderViewModel.getSelectedQuantity() > 0) {
                 //btnDecrement.setAlpha(1.0f);
-                btnDecrement.setImageDrawable(mContext.getResources().getDrawable(R.drawable.minus_button_layerlist_green));
+                btnDecrement.setBackground(mContext.getResources().getDrawable(R.drawable.minus_button_layerlist_green));
                 btnDecrement.setClickable(true);
             } else {
                 //btnDecrement.setAlpha(0.2f);
-                btnDecrement.setImageDrawable(mContext.getResources().getDrawable(R.drawable.minus_button_layerlist_grey));
+                btnDecrement.setBackground(mContext.getResources().getDrawable(R.drawable.minus_button_layerlist_grey));
                 btnDecrement.setClickable(false);
             }
             if (holderViewModel.getAvailable() > 0) {
@@ -129,10 +129,10 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         void onClickIncrement() {
             mPresenter.addTickets(index, holderViewModel, this);
             if (holderViewModel.getSelectedQuantity() > 0) {
-                btnDecrement.setImageDrawable(mContext.getResources().getDrawable(R.drawable.minus_button_layerlist_green));
+                btnDecrement.setBackground(mContext.getResources().getDrawable(R.drawable.minus_button_layerlist_green));
                 btnDecrement.setClickable(true);
             } else {
-                btnDecrement.setImageDrawable(mContext.getResources().getDrawable(R.drawable.minus_button_layerlist_grey));
+                btnDecrement.setBackground(mContext.getResources().getDrawable(R.drawable.minus_button_layerlist_grey));
                 btnDecrement.setClickable(false);
             }
             //notifyItemChanged(index,holderViewModel);
@@ -143,11 +143,11 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             mPresenter.removeTickets();
             if (holderViewModel.getSelectedQuantity() > 0) {
                 //btnDecrement.setColorFilter(mContext.getResources().getColor(R.color.green_nob));
-                btnDecrement.setImageDrawable(mContext.getResources().getDrawable(R.drawable.minus_button_layerlist_green));
+                btnDecrement.setBackground(mContext.getResources().getDrawable(R.drawable.minus_button_layerlist_green));
                 btnDecrement.setClickable(true);
             } else {
                 //btnDecrement.setColorFilter(mContext.getResources().getColor(R.color.grey_button));
-                btnDecrement.setImageDrawable(mContext.getResources().getDrawable(R.drawable.minus_button_layerlist_grey));
+                btnDecrement.setBackground(mContext.getResources().getDrawable(R.drawable.minus_button_layerlist_grey));
                 btnDecrement.setClickable(false);
             }
             //notifyItemChanged(index,holderViewModel);
@@ -183,11 +183,11 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             if (visibility != maksTicket.getVisibility()) {
                 if (visibility == View.VISIBLE) {
                     maksTicket.setVisibility(visibility);
-                    btnIncrement.setImageDrawable(mContext.getResources().getDrawable(R.drawable.add_button_layerlist_grey));
+                    btnIncrement.setBackground(mContext.getResources().getDrawable(R.drawable.add_button_layerlist_grey));
                     btnIncrement.setClickable(false);
                 } else {
                     maksTicket.setVisibility(visibility);
-                    btnIncrement.setImageDrawable(mContext.getResources().getDrawable(R.drawable.add_button_layerlist_green));
+                    btnIncrement.setBackground(mContext.getResources().getDrawable(R.drawable.add_button_layerlist_green));
                     btnIncrement.setClickable(true);
                 }
             }

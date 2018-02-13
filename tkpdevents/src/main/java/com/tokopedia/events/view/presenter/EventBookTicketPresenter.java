@@ -129,8 +129,6 @@ public class EventBookTicketPresenter
                 } else {
                     getView().showMessage(objectResponse.getMessageError());
                 }
-                getView().hideProgressBar();
-
             }
         });
     }

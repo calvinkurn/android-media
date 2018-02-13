@@ -278,6 +278,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
         selectedSeatViewModel.setQuantity(quantity);
         selectedSeatViewModel.setSeatIds(seatIds);
         selectedSeatViewModel.setAreaId(areaId);
+        selectedSeatViewModel.setPhysicalRowIds(physicalRowIds);
     }
 
     @Override
@@ -300,6 +301,8 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
 
     @Override
     public void setSelectedSeatModel() {
+        seatIds.clear();
+        physicalRowIds.clear();
         if (selectedSeats.size() > 0 && selectedSeats.size() == maxTickets) {
             for (int i = 0; i < selectedSeats.size(); i++) {
                 Character firstChar = selectedSeats.get(i).charAt(0);
@@ -307,7 +310,6 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
                 if (Character.isLetter(firstChar)) {
                     physicalRowIds.add("" + selectedSeats.get(i).charAt(0));
                     seatIds.add(selectedSeats.get(i).substring(1, selectedSeats.get(i).length()));
-                    selectedSeatViewModel.setPhysicalRowIds(physicalRowIds);
                 } else {
                     seatIds.add(selectedSeats.get(i).substring(0, selectedSeats.get(i).length()));
                 }

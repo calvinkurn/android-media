@@ -132,6 +132,7 @@ public class EventBookTicketActivity extends TActivity implements EventBookTicke
 
     @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
+        hideProgressBar();
         startActivity(intent);
     }
 
