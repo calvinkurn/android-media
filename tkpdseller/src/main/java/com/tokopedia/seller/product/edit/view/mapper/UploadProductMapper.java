@@ -1,7 +1,5 @@
 package com.tokopedia.seller.product.edit.view.mapper;
 
-import android.text.TextUtils;
-
 import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.ProductPhotoListDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.ProductWholesaleDomainModel;
@@ -10,11 +8,7 @@ import com.tokopedia.seller.product.edit.view.model.upload.ImageProductInputView
 import com.tokopedia.seller.product.edit.view.model.upload.ProductPhotoListViewModel;
 import com.tokopedia.seller.product.edit.view.model.upload.ProductWholesaleViewModel;
 import com.tokopedia.seller.product.edit.view.model.upload.UploadProductInputViewModel;
-import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantDataSubmit;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantOptionSubmit;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantUnitSubmit;
-import com.tokopedia.seller.product.variant.util.ProductVariantViewConverter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +40,7 @@ public class UploadProductMapper {
         domainModel.setProductReturnable(viewModel.getProductReturnable());
         domainModel.setProductUploadTo(viewModel.getProductUploadTo());
         domainModel.setProductInvenageSwitch(viewModel.getProductInvenageSwitch());
-        domainModel.setProductInvenageValue(viewModel.getProductInvenageValue());
+        domainModel.setProductStock(viewModel.getProductInvenageValue());
         domainModel.setProductWeight(viewModel.getProductWeight());
         domainModel.setProductWeightUnit(viewModel.getProductWeightUnit());
         domainModel.setPoProcessType(viewModel.getPoProcessType());
@@ -121,7 +115,7 @@ public class UploadProductMapper {
         viewModel.setProductReturnable(domainModel.getProductReturnable());
         viewModel.setProductUploadTo(domainModel.getProductUploadTo());
         viewModel.setProductInvenageSwitch(domainModel.getProductInvenageSwitch());
-        viewModel.setProductInvenageValue(domainModel.getProductInvenageValue());
+        viewModel.setProductInvenageValue(domainModel.getProductStock());
         viewModel.setProductWeight(domainModel.getProductWeight());
         viewModel.setProductWeightUnit(domainModel.getProductWeightUnit());
         viewModel.setPoProcessType(domainModel.getPoProcessType());

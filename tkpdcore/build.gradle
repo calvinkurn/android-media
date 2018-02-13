@@ -12,6 +12,11 @@ def getArtifactVersionCode() {
     return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
 }
 
+def getTkpdCacheApi() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.cacheapi : project(':tkpdcacheapi');
+}
+
 def getTkpdAbstraction() {
     return project.hasProperty('isArtifact') ?
             rootProject.ext.tkpdDependencies.abstraction : project(':tkpdabstraction');
@@ -100,6 +105,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
+    compile getTkpdCacheApi()
     compile getTkpdAbstraction()
 
     testCompile rootProject.ext.testDependencies.junit

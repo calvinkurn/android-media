@@ -9,8 +9,7 @@ import com.tokopedia.seller.product.edit.domain.interactor.ProductScoringUseCase
 import com.tokopedia.core.common.category.domain.interactor.FetchCategoryDisplayUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.SaveDraftProductUseCase;
 import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
-import com.tokopedia.seller.product.edit.view.mapper.UploadProductMapper;
-import com.tokopedia.seller.product.edit.view.model.upload.UploadProductInputViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.variant.domain.interactor.FetchProductVariantByCatUseCase;
 
 import javax.inject.Inject;
@@ -70,8 +69,9 @@ public class ProductEditPresenter extends ProductAddPresenterImpl<ProductEditVie
 
             @Override
             public void onNext(UploadProductInputDomainModel editProductFormDomainModel) {
-                UploadProductInputViewModel model = UploadProductMapper.mapDomainToView(editProductFormDomainModel);
-//                getView().onSuccessLoadDraftProduct(model);
+                //TODO will be mapped to view model
+//                UploadProductInputViewModel model = UploadProductMapper.mapDomainToView(editProductFormDomainModel);
+                getView().onSuccessLoadProduct(new ProductViewModel());
             }
         };
     }

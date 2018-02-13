@@ -38,8 +38,6 @@ import java.util.List;
 
 public class ProductInfoViewHolder extends ProductViewHolder implements RadioGroup.OnCheckedChangeListener {
 
-    private final TextWatcher nameTextWatcher;
-
     public interface Listener {
         void onCategoryPickerClicked(long categoryId);
 
@@ -106,7 +104,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
                 }
             }
         });
-        nameTextWatcher = new TextWatcher() {
+        TextWatcher nameTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -172,12 +170,6 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
     public void setName(String name) {
         nameEditText.setText(name==null?null:MethodChecker.fromHtml(name));
         nameEditText.setSelection( nameEditText.getText() == null? 0 : nameEditText.getText().length());
-    }
-
-    public void setNameNoWatcher(String name) {
-        nameEditText.removeTextChangedListener(nameTextWatcher);
-        setName(name);
-        nameEditText.addTextChangedListener(nameTextWatcher);
     }
 
     public String getCatalogName() {
