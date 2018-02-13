@@ -29,6 +29,10 @@ def getTkpdPayment() {
             rootProject.ext.tkpdDependencies.payment : project(':tkpdpayment');
 }
 
+def getTkpdInterface() {
+    return project(':tkpdinterface');
+}
+
 publishing {
     publications {
         aar(MavenPublication) {
@@ -112,6 +116,7 @@ dependencies {
     compile getTkpdCore()
     compile getTkpdDesign()
     compile getTkpdPayment()
+    compile getTkpdInterface()
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
