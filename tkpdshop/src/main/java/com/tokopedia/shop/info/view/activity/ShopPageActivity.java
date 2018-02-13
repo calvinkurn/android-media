@@ -25,6 +25,8 @@ import com.tokopedia.shop.info.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.info.domain.interactor.GetSpeedReputationUseCase;
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment;
 import com.tokopedia.shop.info.view.helper.ShopInfoHeaderViewHelper;
+import com.tokopedia.shop.info.view.listener.ShopPageView;
+import com.tokopedia.shop.info.view.presenter.ShopPagePresenter;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
@@ -35,7 +37,7 @@ import rx.Subscriber;
  * Created by nathan on 2/3/18.
  */
 
-public class ShopPageActivity extends BaseTabActivity  implements HasComponent<ShopComponent> {
+public class ShopPageActivity extends BaseTabActivity  implements HasComponent<ShopComponent>,ShopPageView {
 
     private static final int PAGE_LIMIT = 3;
     public static final String SHOP_INFO = "SHOP_INFO";
@@ -51,18 +53,11 @@ public class ShopPageActivity extends BaseTabActivity  implements HasComponent<S
     private ShopInfoHeaderViewHelper shopInfoHeaderViewHelper;
 
     @Inject
-    GetShopInfoUseCase getShopInfoUseCase;
-
-    @Inject
-    UserSession userSession;
-
-    GetSpeedReputationUseCase getSpeedReputationUseCase;
-
-    private String shopInfo;
+    ShopPagePresenter shopPagePresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        String shopInfo = null;
         if(savedInstanceState == null){
             shopInfo = getIntent().getStringExtra(SHOP_INFO);
         }else{
@@ -70,46 +65,17 @@ public class ShopPageActivity extends BaseTabActivity  implements HasComponent<S
         }
 
         initInjector();
+        shopPagePresenter.attachView(this);
+        shopPagePresenter.setShopInfo(shopInfo);
+        if(getApplication() != null && getApplication() instanceof ShopModuleRouter){
+            shopPagePresenter.setGetSpeedReputationUseCase(
+                    new GetSpeedReputationUseCase(((ShopModuleRouter)getApplication()).getSpeedReputationUseCase())
+            ) ;
+        }
+
         super.onCreate(savedInstanceState);
 
         shopInfoHeaderViewHelper = new ShopInfoHeaderViewHelper(getWindow().getDecorView().getRootView(), userSession);
-
-        if(getApplication() != null && getApplication() instanceof ShopModuleRouter){
-            getSpeedReputationUseCase = new GetSpeedReputationUseCase(((ShopModuleRouter)getApplication()).getSpeedReputationUseCase());
-        }
-        getSpeedReputationUseCase.execute(RequestParams.EMPTY, new Subscriber<SpeedReputation>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(SpeedReputation speedReputation) {
-                shopInfoHeaderViewHelper.renderData(speedReputation);
-            }
-        });
-
-        getShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(shopInfo), new Subscriber<ShopInfo>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(ShopInfo shopInfo) {
-                shopInfoHeaderViewHelper.renderData(shopInfo);
-            }
-        });
     }
 
     private void initInjector() {
@@ -120,8 +86,6 @@ public class ShopPageActivity extends BaseTabActivity  implements HasComponent<S
                 .build()
                 .inject(this);
     }
-
-
 
     @Override
     protected int getLayoutRes() {
@@ -212,5 +176,21 @@ public class ShopPageActivity extends BaseTabActivity  implements HasComponent<S
             component = ShopComponentInstance.getComponent(getApplication());
         }
         return component;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        shopPagePresenter.detachView();
+    }
+
+    @Override
+    public void renderData(SpeedReputation speedReputation) {
+        shopInfoHeaderViewHelper.renderData(speedReputation);
+    }
+
+    @Override
+    public void renderData(ShopInfo shopInfo) {
+        shopInfoHeaderViewHelper.renderData(shopInfo);
     }
 }

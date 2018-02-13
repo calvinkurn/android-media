@@ -3,7 +3,14 @@ package com.tokopedia.reputation.speed;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Recent3Month {
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+/**
+ * Created by normansyahputa on 2/13/18.
+ */
+
+public class RecentMonth {
 
     @SerializedName("speed_level")
     @Expose
