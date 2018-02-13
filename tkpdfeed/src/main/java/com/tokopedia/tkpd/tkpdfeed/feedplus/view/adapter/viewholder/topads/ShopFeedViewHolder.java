@@ -11,7 +11,6 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ImageSpan;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -42,7 +41,6 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedTopAdsViewMod
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_shop_feed;
     private static final String TAG = ShopFeedViewHolder.class.getSimpleName();
-    private static final int MARGIN_15DP_PIXEL = 40;
     private static final int PADDING_12DP_PIXEL = 30;
 
 
@@ -53,7 +51,6 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedTopAdsViewMod
     private TextView favTxt;
     private LinearLayout favBtn;
     private LinearLayout container;
-    private LinearLayout shopCard;
     private View header;
     private Data data;
     private Context context;
@@ -66,7 +63,6 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedTopAdsViewMod
         super(itemView);
         this.itemClickListener = itemClickListener;
         context = itemView.getContext();
-        shopCard = (LinearLayout) itemView.findViewById(R.id.shop_topads_card);
         shopImage = (RoundedCornerImageView) itemView.findViewById(R.id.shop_image_rounded);
         shopTitle = (TextView) itemView.findViewById(R.id.shop_title);
         shopSubtitle = (TextView) itemView.findViewById(R.id.shop_subtitle);
@@ -123,10 +119,6 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedTopAdsViewMod
         data = element.getData();
         Shop shop = data.getShop();
 
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams
-                .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.setMargins(0, 0, 0, MARGIN_15DP_PIXEL);
-        shopCard.setLayoutParams(lp);
         header.setPadding(0, PADDING_12DP_PIXEL, 0, 0);
 
         if (shop != null) {
