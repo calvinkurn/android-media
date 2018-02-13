@@ -1,7 +1,6 @@
 package com.tokopedia.core.router.productdetail;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -36,6 +35,9 @@ public interface PdpRouter {
 
     void openImagePreview(Context context, ArrayList<String> images, ArrayList<String>
             imageDesc, int position);
+
+    void openImagePreviewFromChat(Context context, ArrayList<String> images,
+                                  ArrayList<String> imageDesc, String title, String date);
 
     Intent getProductReputationIntent(Context context, String productId, String productName);
 }

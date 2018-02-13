@@ -33,12 +33,12 @@ public class UnifyTracking extends TrackingUtils {
 
     public static final String EXTRA_LABEL = "label";
 
-    public static void eventHomeTab(String label) {
+    public static void eventHomeTab(String action, String label) {
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.HOMEPAGE_UNIFY,
-                AppEventTracking.Category.HOMEPAGE_UNIFY,
-                String.format("click %s", label),
-                ""
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOME_BOTTOM_NAV,
+                String.format("click %s", action),
+                label
         ).getEvent());
     }
 
@@ -57,6 +57,63 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.TOP_PICKS_HOME,
                 action,
                 label
+        ).getEvent());
+    }
+
+     /* VARIANT */
+
+
+    public static void eventClickVariant(String eventLabel) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_PDP,
+                AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
+                AppEventTracking.Action.CLICK_VARIANTS,
+                eventLabel
+        ).getEvent());
+    }
+
+    public static void eventBuyPDPVariant(String eventLabel) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_PDP,
+                AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
+                AppEventTracking.Action.CLICK_BUY_VARIANT_PDP,
+                eventLabel
+        ).getEvent());
+    }
+
+    public static void eventClickCartVariant(String eventLabel) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_PDP,
+                AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
+                AppEventTracking.Action.CLICK_CART_BUTTON_VARIANT,
+                eventLabel
+        ).getEvent());
+    }
+
+    public static void eventSelectColorVariant(String eventLabel) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_PDP,
+                AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
+                AppEventTracking.Action.SELECT_COLOR_VARIANT,
+                eventLabel
+        ).getEvent());
+    }
+
+    public static void eventSelectSizeVariant(String eventLabel) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_PDP,
+                AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
+                AppEventTracking.Action.SELECT_SIZE_VARIANT,
+                eventLabel
+        ).getEvent());
+    }
+
+    public static void eventBuyPageVariant(String eventLabel) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_PDP,
+                AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
+                AppEventTracking.Action.CLICK_BUY_VARIANT_PAGE,
+                eventLabel
         ).getEvent());
     }
 
