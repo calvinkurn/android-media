@@ -1,122 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rl_shipment_recipient_address_header"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:foreground="?android:selectableItemBackground"
-    android:padding="16dp">
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentStart="true"
+    android:background="@color/white">
 
     <LinearLayout
-        android:id="@+id/ll_address_radio_button_container"
-        android:layout_width="wrap_content"
+        android:id="@+id/ll_name"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true">
+        android:orientation="horizontal">
 
-        <RadioButton
-            android:id="@+id/rb_check_address"
-            android:layout_width="0dp"
+        <TextView
+            android:id="@+id/tv_text_address_description"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:buttonTint="@color/medium_green"
-            android:clickable="false"
-            android:focusable="false"
-            android:focusableInTouchMode="false" />
+            android:layout_marginBottom="3dp"
+            android:layout_marginEnd="@dimen/margin_ms"
+            android:layout_marginRight="@dimen/margin_ms"
+            android:textColor="@color/black_54"
+            android:textSize="12sp"
+            tools:ignore="SmallSp"
+            tools:text="Alamat Kantor" />
+
+        <TextView
+            android:id="@+id/tv_address_identifier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_outline_address_identifier"
+            android:fontFamily="sans-serif"
+            android:paddingBottom="4dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="4dp"
+            android:textColor="@color/medium_green"
+            android:textSize="10sp"
+            android:textStyle="normal"
+            tools:text="Utama"
+            android:visibility="gone"/>
 
     </LinearLayout>
 
-    <RelativeLayout
-        android:id="@+id/rl_recipient_address"
+    <TextView
+        android:id="@+id/tv_recipient_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@id/ll_address_radio_button_container"
-        android:layout_toStartOf="@id/ll_address_radio_button_container"
-        android:background="@color/white">
+        android:layout_below="@id/ll_name"
+        android:layout_marginBottom="3dp"
+        android:textColor="@color/black_70"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        tools:ignore="SmallSp"
+        tools:text="Agus Maulana" />
 
-        <LinearLayout
-            android:id="@+id/ll_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+    <TextView
+        android:id="@+id/tv_recipient_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_recipient_name"
+        android:lineSpacingExtra="3dp"
+        android:textColor="@color/black_70"
+        android:textSize="12sp"
+        tools:ignore="SmallSp"
+        tools:text="Jl. Letjen S. Parman Kav.77, Wisma 77 Tower 2,\nTokopedia Lt. 2, Jakarta" />
 
-            <TextView
-                android:id="@+id/tv_text_address_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="3dp"
-                android:layout_marginEnd="@dimen/margin_ms"
-                android:layout_marginRight="@dimen/margin_ms"
-                android:textColor="@color/black_54"
-                android:textSize="12sp"
-                tools:ignore="SmallSp"
-                tools:text="Alamat Kantor" />
+    <TextView
+        android:id="@+id/tv_recipient_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_recipient_address"
+        android:layout_marginTop="6dp"
+        android:lineSpacingExtra="3dp"
+        android:textColor="@color/black_70"
+        android:textSize="12sp"
+        tools:text="080989999" />
 
-            <TextView
-                android:id="@+id/tv_address_identifier"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_outline_address_identifier"
-                android:fontFamily="sans-serif"
-                android:paddingBottom="4dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingTop="4dp"
-                android:textColor="@color/medium_green"
-                android:textSize="10sp"
-                android:textStyle="normal"
-                tools:text="Utama" />
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/tv_recipient_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/ll_name"
-            android:layout_marginBottom="3dp"
-            android:textColor="@color/black_70"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            tools:ignore="SmallSp"
-            tools:text="Agus Maulana" />
-
-        <TextView
-            android:id="@+id/tv_recipient_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_recipient_name"
-            android:lineSpacingExtra="3dp"
-            android:textColor="@color/black_70"
-            android:textSize="12sp"
-            tools:ignore="SmallSp"
-            tools:text="Jl. Letjen S. Parman Kav.77, Wisma 77 Tower 2,\nTokopedia Lt. 2, Jakarta, 0817 1234 5678" />
-
-        <TextView
-            android:id="@+id/tv_phone_number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_recipient_address"
-            android:lineSpacingExtra="3dp"
-            android:textColor="@color/black_70"
-            android:textSize="12sp"
-            tools:text="080989999" />
-
-        <TextView
-            android:id="@+id/tv_change_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_phone_number"
-            android:layout_marginTop="@dimen/margin_ms"
-            android:drawableLeft="@drawable/ic_action_edit"
-            android:drawablePadding="@dimen/padding_ms"
-            android:drawableStart="@drawable/ic_action_edit"
-            android:text="@string/action_edit" />
-
-    </RelativeLayout>
+    <TextView
+        android:id="@+id/tv_change_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_phone_number"
+        android:layout_marginTop="@dimen/margin_ms"
+        android:drawableLeft="@drawable/ic_action_edit"
+        android:drawablePadding="@dimen/padding_ms"
+        android:drawableStart="@drawable/ic_action_edit"
+        android:text="@string/action_edit"
+        android:visibility="gone"/>
 
 </RelativeLayout>
