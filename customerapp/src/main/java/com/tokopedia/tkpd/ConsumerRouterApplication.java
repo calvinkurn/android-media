@@ -102,6 +102,9 @@ import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
 import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.SendMessageActivityOld;
+import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
+import com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver;
+import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver;
@@ -356,8 +359,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return TkpdSeller.getActivitySellingTransactionList(context);
     }
 
-    public Intent getActivitySellingTransactionOpportunity(Context context) {
-        return TkpdSeller.getActivitySellingTransactionOpportunity(context);
+    public Intent getActivitySellingTransactionOpportunity(Context context, String query) {
+        return TkpdSeller.getActivitySellingTransactionOpportunity(context, query);
     }
 
 
@@ -1065,6 +1068,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getResolutionCenterIntent(Context context) {
         return InboxResCenterActivity.createIntent(context);
+    }
+
+    @Override
+    public Intent getResolutionCenterIntentBuyer(Context context) {
+        return ResoInboxActivity.newBuyerInstance(context);
+    }
+
+    @Override
+    public Intent getResolutionCenterIntentSeller(Context context) {
+        return ResoInboxActivity.newSellerInstance(context);
     }
 
     @Override

@@ -20,6 +20,7 @@ public interface Constants {
     String ARG_NOTIFICATION_APPLINK = "applinks";
     String ARG_NOTIFICATION_ISPROMO = "ispromo";
     String ARG_NOTIFICATION_APPLINK_MESSAGE = "message";
+    String ARG_NOTIFICATION_APPLINK_SELLER_INFO = "seller_info";
     String ARG_NOTIFICATION_APPLINK_MESSAGE_CUSTOM_INDEX = "sender_id";
     String ARG_NOTIFICATION_APPLINK_DISCUSSION = "talk";
     String ARG_NOTIFICATION_APPLINK_DISCUSSION_CUSTOM_INDEX = "sender_id";
@@ -130,6 +131,7 @@ public interface Constants {
         String KOLCOMMENT = "tokopedia://kolcomment/{id}";
         String PROMO_LIST = "tokopedia://promoNative";
 
+        String SELLER_INFO_DETAIL = "tokopedia://sellerinfo/detail";
 
         interface SellerApp {
             String PRODUCT_ADD = "sellerapp://product/add";
@@ -163,6 +165,7 @@ public interface Constants {
         String NOTIFICATION_SALES = "notification_sales";
         String NOTIFICATION_PURCHASE = "notification_purchase";
         String NOTIFICATION_RESCENTER = "notification_receive_rescenter";
+        String NOTIFICATION_SELLER_INFO = "notification_receive_seller_info";
     }
 
     interface AppLinkQueryParameter {

@@ -211,6 +211,20 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         }
     }
 
+    public static void loadImageCenterCrop(ImageView imageview, String url) {
+        if (imageview.getContext() != null) {
+            try {
+                Glide.with(imageview.getContext())
+                        .load(url)
+                        .centerCrop()
+                        .dontAnimate()
+                        .placeholder(R.drawable.loading_page)
+                        .error(R.drawable.error_drawable)
+                        .into(imageview);
+            }catch (Exception e){}
+        }
+    }
+
     public static void loadImageWithTarget(Context context, String url, SimpleTarget<Bitmap> simpleTarget) {
         Glide.with(context)
                 .load(url)

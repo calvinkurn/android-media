@@ -1,6 +1,5 @@
 package com.tokopedia.core.router;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
@@ -37,6 +36,8 @@ public interface TkpdInboxRouter {
     Intent getInboxMessageIntent(Context context);
 
     Intent getContactUsIntent(Context context);
+
+    Intent getHomeIntent(Context context);
 
     Intent getGalleryIntent(Context context, boolean forceOpenCamera, int maxImageSelection, boolean compressToTkpd);
 }

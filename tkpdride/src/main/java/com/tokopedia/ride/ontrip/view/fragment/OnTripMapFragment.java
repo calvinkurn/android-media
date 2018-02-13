@@ -431,11 +431,11 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
-    public RequestParams getPolyLineParamDriverBetweenDestination(double latitude, double longitude) {
+    public RequestParams getPolyLineParamBetweenTwoLocations(Location origin, Location destination) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(GetOverviewPolylineUseCase.PARAM_ORIGIN, String.format("%s,%s",
-                latitude,
-                longitude
+                origin.getLatitude(),
+                origin.getLongitude()
         ));
         requestParams.putString(GetOverviewPolylineUseCase.PARAM_DESTINATION, String.format("%s,%s",
                 destination.getLatitude(),
@@ -550,8 +550,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 break;
             case REQUEST_CODE_DRIVER_NOT_FOUND:
                 if (resultCode == DriverNotFoundDialogFragment.BOOK_AGAIN_RESULT_CODE) {
-                    getActivity().setResult(OnTripActivity.RIDE_HOME_RESULT_CODE);
-                    getActivity().finish();
+                    setResultWithSourceAndDestination();
                 } else {
                     getActivity().setResult(OnTripActivity.RIDE_HOME_RESULT_CODE);
                     getActivity().finish();
@@ -559,8 +558,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 break;
             case REQUEST_CODE_CANCEL_REASON:
                 if (resultCode == Activity.RESULT_OK) {
-                    getActivity().setResult(OnTripActivity.RIDE_HOME_RESULT_CODE);
-                    getActivity().finish();
+                    setResultWithSourceAndDestination();
                 }
                 break;
             case PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE:
@@ -664,8 +662,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        getActivity().setResult(OnTripActivity.RIDE_HOME_RESULT_CODE);
-                        getActivity().finish();
+                        setResultWithSourceAndDestination();
                     }
                 });
 
@@ -746,7 +743,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
-    public void onSuccessCancelRideRequest() {
+    public void setResultWithSourceAndDestination() {
         PlacePassViewModel source = null, destination = null;
         if (confirmBookingViewModel != null) {
             source = confirmBookingViewModel.getSource();
