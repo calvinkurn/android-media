@@ -70,7 +70,7 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
 
             ShipmentRecipientModel addressTwo = new ShipmentRecipientModel();
             addressTwo.setId("2");
-            addressTwo.setPrimerAddress(true);
+            addressTwo.setPrimerAddress(false);
             addressTwo.setAddressIdentifier("");
             addressTwo.setRecipientName("John Doe");
             addressTwo.setRecipientAddressDescription("Alamat Rumah");

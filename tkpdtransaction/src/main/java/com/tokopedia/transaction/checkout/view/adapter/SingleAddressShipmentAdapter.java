@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -382,6 +384,10 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         @BindView(R2.id.iv_detail_option_chevron) ImageView mIvDetailOptionChevron;
         @BindView(R2.id.tv_sub_total_price) TextView mTvSubTotalPrice;
 
+        @BindView(R2.id.ll_warning_container) LinearLayout llWarningContainer;
+        @BindView(R2.id.img_warning) ImageView imgWarning;
+        @BindView(R2.id.tv_warning) TextView tvWarning;
+
         private boolean mIsExpandAllProduct;
         private boolean mIsExpandCostDetail;
 
@@ -445,6 +451,9 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
             mTvDetailOptionText.setOnClickListener(costDetailOptionListener());
             mIvDetailOptionChevron.setOnClickListener(costDetailOptionListener());
+
+            // Test Show Warning
+            showRedWarning("Toko sedang tutup sementara, pesanan dapat di proses setelah toko buka kembali");
         }
 
         private void initInnerRecyclerView(List<CartItemModel> cartItemModels) {
@@ -562,6 +571,25 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             return mIsExpandCostDetail ? View.VISIBLE : View.GONE;
         }
 
+        private void showRedWarning(String message) {
+            llWarningContainer.setBackgroundColor(ContextCompat.getColor(
+                    llWarningContainer.getContext(), R.color.warning_red));
+            imgWarning.setImageResource(R.drawable.ic_warning_red);
+            tvWarning.setText(message);
+            llWarningContainer.setVisibility(View.VISIBLE);
+        }
+
+        private void showGreyWarning(String message) {
+            llWarningContainer.setBackgroundColor(ContextCompat.getColor(
+                    llWarningContainer.getContext(), R.color.warning_grey));
+            imgWarning.setImageResource(R.drawable.ic_warning_grey);
+            tvWarning.setText(message);
+            llWarningContainer.setVisibility(View.VISIBLE);
+        }
+
+        private void hideWarning() {
+            llWarningContainer.setVisibility(View.GONE);
+        }
     }
 
 }

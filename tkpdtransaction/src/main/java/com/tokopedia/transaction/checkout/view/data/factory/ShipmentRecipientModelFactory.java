@@ -47,7 +47,7 @@ public class ShipmentRecipientModelFactory {
 
     private static ShipmentRecipientModel createDummyShipmentRecipientModel(String id,
                                                                             boolean isPrimerAddress,
-                                                                            String addressIdentifier,
+                                                                            String addressDescription,
                                                                             String recipientName,
                                                                             String recipientAddress,
                                                                             String recipientPhone) {
@@ -55,10 +55,10 @@ public class ShipmentRecipientModelFactory {
         ShipmentRecipientModel shipmentRecipientModel = new ShipmentRecipientModel();
         shipmentRecipientModel.setId(id);
         shipmentRecipientModel.setPrimerAddress(isPrimerAddress);
-        shipmentRecipientModel.setAddressIdentifier(addressIdentifier);
+        shipmentRecipientModel.setAddressIdentifier("Utama");
         shipmentRecipientModel.setRecipientName(recipientName);
         shipmentRecipientModel.setRecipientAddress(recipientAddress);
-        shipmentRecipientModel.setRecipientAddressDescription("Alamat Kantor");
+        shipmentRecipientModel.setRecipientAddressDescription(addressDescription);
         shipmentRecipientModel.setRecipientPhoneNumber(recipientPhone);
         shipmentRecipientModel.setDestinationDistrictId("2283");
         shipmentRecipientModel.setDestinationDistrictName("Kelapa Gading");
