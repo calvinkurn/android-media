@@ -474,6 +474,7 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
     private List<Data> convertToTopadsDomain(String display, List<FeedQuery.Data.Topad> topadList) {
         ArrayList<Data> topadDataDomainList = new ArrayList<>();
         if (topadList != null && display != null && !display.isEmpty()) {
+
             for (FeedQuery.Data.Topad topad : topadList) {
                 topadDataDomainList.add(
                         new Data(topad.id(),
@@ -506,16 +507,24 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                 topadShop.tagline(),
                 topadShop.location(),
                 topadShop.city(),
-                convertToTopadsImageShop(topadShop.image_shop()),
-                topadShop.gold_shop() == null ? false : topadShop.gold_shop(),
-                topadShop.gold_shop_badge() == null ? false : topadShop.gold_shop_badge(),
-                topadShop.lucky_shop() == null ? "" : topadShop.lucky_shop().toString(),
-                topadShop.shop_is_official() == null ? false : topadShop.shop_is_official(),
-                topadShop.uri() == null ? "" : topadShop.uri().toString(),
-                convertToTopadsImageProduct(topadShop.image_product()),
+                topadShop.image_shop() == null ? null :
+                        convertToTopadsImageShop(topadShop.image_shop()),
+                topadShop.gold_shop() == null ? false :
+                        topadShop.gold_shop(),
+                topadShop.gold_shop_badge() == null ? false :
+                        topadShop.gold_shop_badge(),
+                topadShop.lucky_shop() == null ? "" :
+                        topadShop.lucky_shop().toString(),
+                topadShop.shop_is_official() == null ? false :
+                        topadShop.shop_is_official(),
+                topadShop.uri() == null ? "" :
+                        topadShop.uri().toString(),
+                topadShop.image_product() == null ? null :
+                        convertToTopadsImageProduct(topadShop.image_product()),
                 topadShop.owner_id(),
                 topadShop.is_owner() == null ? false : topadShop.is_owner(),
-                convertToTopadsBadge(topadShop.badges()));
+                topadShop.badges() == null ? null :
+                        convertToTopadsBadge(topadShop.badges()));
     }
 
     private ImageShop convertToTopadsImageShop(FeedQuery.Data.Image_shop imageShop) {
@@ -558,13 +567,15 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
     private Product convertToTopadsProduct(FeedQuery.Data.Product2 topadProduct) {
         return new Product(topadProduct.id(),
                 topadProduct.name(),
-                convertToTopadsProductImage(topadProduct.image()),
+                topadProduct.image() == null ? null :
+                        convertToTopadsProductImage(topadProduct.image()),
                 topadProduct.uri() == null ? "" : topadProduct.uri().toString(),
                 topadProduct.relative_uri(),
                 topadProduct.price_format(),
                 topadProduct.count_talk_format(),
                 topadProduct.count_review_format(),
-                convertToTopadsCategory(topadProduct.category()),
+                topadProduct.category() == null ? null :
+                        convertToTopadsCategory(topadProduct.category()),
                 topadProduct.product_preorder() == null ? false : topadProduct.product_preorder(),
                 topadProduct.product_wholesale() == null ? false : topadProduct.product_wholesale(),
                 topadProduct.free_return() == null ? "" : topadProduct.free_return().toString(),
