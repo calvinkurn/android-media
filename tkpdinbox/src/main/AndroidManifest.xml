@@ -130,6 +130,14 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
+            android:name=".rescenter.inboxv2.view.activity.ResoInboxActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".rescenter.inboxv2.view.activity.InboxFilterActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
             android:name=".rescenter.detailv2.view.activity.DetailResChatActivity"
             android:label="@string/title_activity_rescenter_discussion"
             android:screenOrientation="portrait"

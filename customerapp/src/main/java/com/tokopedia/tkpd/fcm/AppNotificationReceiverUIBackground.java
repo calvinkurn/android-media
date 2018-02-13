@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.fcm;
 
 import android.app.Application;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -12,6 +13,7 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.gcm.Visitable;
 import com.tokopedia.core.gcm.base.BaseAppNotificationReceiverUIBackground;
+import com.tokopedia.core.gcm.notification.applink.ApplinkPushNotificationBuildAndShow;
 import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToBuyerEditNotification;
 import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToBuyerNotification;
 import com.tokopedia.core.gcm.notification.dedicated.ResCenterBuyerAgreeNotification;
@@ -27,6 +29,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
+import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAcceptedNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAutoCancel2DNotification;
@@ -181,8 +184,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 break;
             case Constants.ARG_NOTIFICATION_APPLINK_RIDE:
                 if (Uri.parse(applinks).getPathSegments().size() == 1) {
-                    ApplinkBuildAndShowNotification applinkBuildAndShowNotification = new ApplinkBuildAndShowNotification(mContext);
-                    applinkBuildAndShowNotification.showApplinkNotification(data);
+                    buildNotifByData(data);
                 } else {
                     CommonUtils.dumper("AppNotificationReceiverUIBackground handleApplinkNotification for Ride");
                     RidePushNotificationBuildAndShow push = new RidePushNotificationBuildAndShow(mContext);
@@ -202,16 +204,25 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                                 .getString("full_name");
                         applink += "?" + "fullname=" + fullname;
                         data.putString(Constants.ARG_NOTIFICATION_APPLINK, applink);
-                        ApplinkBuildAndShowNotification applinkBuildAndShowNotification = new ApplinkBuildAndShowNotification(mContext);
-                        applinkBuildAndShowNotification.showApplinkNotification(data);
+                        buildNotifByData(data);
                     }
                 }
                 break;
+            case Constants.ARG_NOTIFICATION_APPLINK_SELLER_INFO:
+                if (SessionHandler.isUserHasShop(mContext)) {
+                    buildNotifByData(data);
+                }
+                break;
             default:
-                ApplinkBuildAndShowNotification applinkBuildAndShowNotification = new ApplinkBuildAndShowNotification(mContext);
-                applinkBuildAndShowNotification.showApplinkNotification(data);
+                buildNotifByData(data);
                 break;
         }
+    }
+
+    private void buildNotifByData(Bundle data) {
+        ApplinkPushNotificationBuildAndShow buildAndShow = new ApplinkPushNotificationBuildAndShow(data);
+        Intent intent = new Intent(mContext, DeeplinkHandlerActivity.class);
+        buildAndShow.process(mContext, intent);
     }
 
 

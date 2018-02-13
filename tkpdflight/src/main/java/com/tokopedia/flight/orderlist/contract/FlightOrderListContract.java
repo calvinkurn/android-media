@@ -6,8 +6,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
+import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 
 import java.util.List;
+
+import rx.Observable;
 
 /**
  * Created by alvarisi on 12/6/17.
@@ -25,7 +28,9 @@ public interface FlightOrderListContract {
 
         Context getActivity();
 
-        void navigateToOpenBrowser(String urlPdf);
+        void navigateToInputEmailForm(String invoiceId, String userId, String userEmail);
+
+        Observable<ProfileInfo> getProfileObservable();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -34,6 +39,8 @@ public interface FlightOrderListContract {
 
         void onDestroyView();
 
-        void onDownloadEticket(String invoiceId, String filename);
+        void onDownloadEticket(String invoiceId);
+
+        void onGetProfileData();
     }
 }

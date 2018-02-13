@@ -128,7 +128,7 @@ public interface TkpdCoreRouter {
 
     Intent getActivitySellingTransactionList(Context context);
 
-    Intent getActivitySellingTransactionOpportunity(Context context);
+    Intent getActivitySellingTransactionOpportunity(Context context, String query);
 
     Intent getHomeHotlistIntent(Context context);
 
@@ -138,6 +138,10 @@ public interface TkpdCoreRouter {
     Intent getInboxReputationIntent(Context context);
 
     Intent getResolutionCenterIntent(Context context);
+
+    Intent getResolutionCenterIntentBuyer(Context context);
+
+    Intent getResolutionCenterIntentSeller(Context context);
 
     String applink(Activity activity, String deeplink);
 
