@@ -1,13 +1,12 @@
 package com.tokopedia.tokocash.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.tokocash.historytokocash.presentation.fragment.DetailTransactionFragment;
-import com.tokopedia.tokocash.pendingcashback.domain.GetPendingCasbackUseCase;
 import com.tokopedia.tokocash.activation.presentation.fragment.ActivateTokoCashFragment;
 import com.tokopedia.tokocash.activation.presentation.fragment.RequestOTPWalletFragment;
 import com.tokopedia.tokocash.activation.presentation.fragment.SuccessActivateFragment;
 import com.tokopedia.tokocash.historytokocash.presentation.fragment.HistoryTokoCashFragment;
 import com.tokopedia.tokocash.historytokocash.presentation.fragment.HomeTokoCashFragment;
+import com.tokopedia.tokocash.pendingcashback.domain.GetPendingCasbackUseCase;
 import com.tokopedia.tokocash.qrpayment.domain.GetBalanceTokoCashUseCase;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.CustomScannerTokoCashActivity;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.NominalQrPaymentActivity;
@@ -41,6 +40,4 @@ public interface TokoCashComponent {
     void inject(HistoryTokoCashFragment historyTokoCashFragment);
 
     void inject(HomeTokoCashFragment homeTokoCashFragment);
-
-    void inject(DetailTransactionFragment detailTransactionFragment);
 }

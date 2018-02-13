@@ -44,6 +44,11 @@
             android:label="@string/tokocash"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
+        <activity android:name=".historytokocash.presentation.activity.WaitingTransactionActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:label="@string/tokocash"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
     </application>
 
 </manifest>

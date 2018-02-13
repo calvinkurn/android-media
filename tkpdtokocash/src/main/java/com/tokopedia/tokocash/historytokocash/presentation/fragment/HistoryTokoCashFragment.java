@@ -32,6 +32,7 @@ import com.tokopedia.tokocash.historytokocash.data.mapper.FilterHistoryTokoCashM
 import com.tokopedia.tokocash.historytokocash.domain.GetHistoryDataUseCase;
 import com.tokopedia.tokocash.historytokocash.presentation.DatePickerTokoCashUtil;
 import com.tokopedia.tokocash.historytokocash.presentation.activity.DetailTransactionActivity;
+import com.tokopedia.tokocash.historytokocash.presentation.activity.WaitingTransactionActivity;
 import com.tokopedia.tokocash.historytokocash.presentation.adapter.HistoryTokoCashAdapter;
 import com.tokopedia.tokocash.historytokocash.presentation.contract.TokoCashHistoryContract;
 import com.tokopedia.tokocash.historytokocash.presentation.model.HeaderHistory;
@@ -94,7 +95,6 @@ public class HistoryTokoCashFragment extends BaseDaggerFragment implements TokoC
     private String stateDataAfterFilter = "";
 
     private TokoCashHistoryData tokoCashHistoryData;
-    private TokoCashComponent tokoCashComponent;
     private int oldScrollY = 0;
 
     @Inject
@@ -200,7 +200,7 @@ public class HistoryTokoCashFragment extends BaseDaggerFragment implements TokoC
         waitingTransactionView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO arahin ke waiting
+                startActivity(WaitingTransactionActivity.newInstance(getActivity(), tokoCashHistoryData));
             }
         });
 

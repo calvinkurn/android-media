@@ -1,6 +1,5 @@
 package com.tokopedia.tokocash.historytokocash.presentation.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,10 +14,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.tokocash.R;
-import com.tokopedia.tokocash.di.TokoCashComponent;
 import com.tokopedia.tokocash.historytokocash.presentation.model.ActionHistory;
 import com.tokopedia.tokocash.historytokocash.presentation.model.ItemHistory;
 
@@ -41,7 +39,6 @@ public class DetailTransactionFragment extends BaseDaggerFragment {
     private TextView notesItem;
 
     private ItemHistory itemHistory;
-    private ActionListener listener;
 
     public static DetailTransactionFragment newInstance(ItemHistory itemHistory) {
         DetailTransactionFragment fragment = new DetailTransactionFragment();
@@ -83,7 +80,6 @@ public class DetailTransactionFragment extends BaseDaggerFragment {
                 }
             }
         }
-        listener.setTitle(getString(R.string.title_detail_transaction));
         bantuanBtn.setOnClickListener(getHelpListener());
         setActionVar();
     }
@@ -95,13 +91,7 @@ public class DetailTransactionFragment extends BaseDaggerFragment {
 
     @Override
     protected void initInjector() {
-        getComponent(TokoCashComponent.class).inject(this);
-    }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        listener = (ActionListener) activity;
     }
 
     private void setActionVar() {
@@ -113,12 +103,7 @@ public class DetailTransactionFragment extends BaseDaggerFragment {
         priceItem.setTextColor(ContextCompat.getColor(getActivity(),
                 itemHistory.getAmountChangesSymbol().equals("+") ? R.color.green_500 : R.color.red_500));
 
-        if (itemHistory.getUrlImage() != null) {
-            Glide.with(this)
-                    .load(itemHistory.getUrlImage())
-                    .placeholder(ContextCompat.getDrawable(getActivity(), R.drawable.ic_loading_toped))
-                    .into(iconItem);
-        }
+        ImageHandler.LoadImage(iconItem, itemHistory.getUrlImage());
         if (!TextUtils.isEmpty(itemHistory.getNotes())) {
             notesItem.setText(itemHistory.getNotes());
             notesItem.setVisibility(View.VISIBLE);
@@ -186,9 +171,5 @@ public class DetailTransactionFragment extends BaseDaggerFragment {
             buttonOpsiContainer.removeAllViews();
         }
         super.onDestroy();
-    }
-
-    public interface ActionListener {
-        void setTitle(String title);
     }
 }
