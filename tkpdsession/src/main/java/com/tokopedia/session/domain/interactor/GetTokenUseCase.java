@@ -27,14 +27,8 @@ public class GetTokenUseCase extends UseCase<TokenViewModel> {
 
     public static final String USER_NAME = "username";
     public static final String PASSWORD = "password";
-    public static final String EMAIL_ACCOUNTS = "email";
-    public static final String PICTURE_ACCOUNTS = "picture";
-    public static final String FULL_NAME = "full_name";
-    public static final String BIRTHDATE = "birthdate";
-    public static final String GENDER_ACCOUNTS = "gender";
     public static final String CODE = "code";
     public static final String REDIRECT_URI = "redirect_uri";
-    public static final String MSISDN = "msisdn";
 
     public static final String GRANT_PASSWORD = "password";
     public static final String GRANT_SDK = "extension";
@@ -67,6 +61,14 @@ public class GetTokenUseCase extends UseCase<TokenViewModel> {
         params.putString(GRANT_TYPE, GRANT_WEBVIEW);
         params.putString(CODE, code);
         params.putString(REDIRECT_URI, redirectUri);
+        return params;
+    }
+
+    public static RequestParams getParamLogin(String email, String password) {
+        RequestParams params = RequestParams.create();
+        params.putString(GRANT_TYPE, GRANT_PASSWORD);
+        params.putString(PASSWORD, password);
+        params.putString(USER_NAME, email);
         return params;
     }
 }

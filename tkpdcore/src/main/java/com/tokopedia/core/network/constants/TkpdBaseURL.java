@@ -140,8 +140,6 @@ public class TkpdBaseURL {
         public static final String URL_INTERRUPT_ACTION = BASE_DOMAIN + "v4/action/interrupt/";
         public static final String URL_INTERRUPT = BASE_DOMAIN + "v4/interrupt/";
         public static final String URL_INVOICE = BASE_DOMAIN + "v4/";
-        public static final String URL_MSISDN_ACTION = BASE_DOMAIN + "v4/action/msisdn/";
-        public static final String URL_MSISDN = BASE_DOMAIN + "v4/msisdn/";
         public static final String PATH_NOTIFICATION = "v4/notification/";
         public static final String URL_NOTIFICATION = BASE_DOMAIN + PATH_NOTIFICATION;
         public static final String URL_PEOPLE_ACTION = BASE_DOMAIN + "v4/action/people/";
@@ -687,20 +685,8 @@ public class TkpdBaseURL {
 
     public static class Accounts {
         public static final String PATH_GET_TOKEN = "token";
-        public static final String PATH_GET_INFO = "info";
-        public static final String PATH_GET_PROFILE = "profile/json/{id}";
         public static final String PATH_DISCOVER_LOGIN = "api/discover";
-        public static final String PATH_DISCOVER_REGISTER = "/api/discover?type=register";
-        public static final String DO_REGISTER = "api/register";
-        public static final String CREATE_PASSWORD = "api/create-password";
-        public static final String RESET_PASSWORD = "api/reset";
-        public static final String VALIDATE_EMAIL = "/api/register/validate-email";
-        public static final String RESENT_ACTIVATION = "/api/resend";
         public static final String GENERATE_HOST = "/api/upload-host";
-        public static final String VERIFY_PHONE_NUMBER = "/api/msisdn/verify-msisdn";
-        public static final String ACTIVATE_UNICODE = "/token";
-        public static final String CHANGE_EMAIL = "/api/v1/activation/change-email";
-        public static final String PATH_EDIT_PROFILE = "/api/v1/user/profile-edit";
 
 
         public class OTP {
@@ -710,31 +696,10 @@ public class TkpdBaseURL {
             public static final String REQUEST_OTP_EMAIL = BASE_OTP + "/email/request";
         }
 
-        public class Image {
-            public static final String VALIDATE_SIZE = "/api/image/validate-size";
-            public static final String GET_UPLOAD_HOST = "/api/image/upload-host";
-            public static final String SUBMIT_DETAIL = "/api/image/submit-detail";
-        }
-
-        public class Ktp {
-            public static final String CHECK_STATUS = "/api/ktp/check-status";
-        }
-
-        public class MSISDN {
-            public static final String VERIFY_PHONE_NUMBER = "/api/msisdn/verify-msisdn";
-            public static final String CHANGE_PHONE_NUMBER = "/api/msisdn/change-msisdn";
-        }
-
         public class Wallet {
             public static final String GET_BALANCE = "api/v1/wallet/balance";
         }
 
-        public class ChangeMSISDN {
-            public static final String GET_WARNING = "/api/v1/change-msisdn/get-warning";
-            public static final String SEND_EMAIL = "/api/v1/change-msisdn/update";
-            public static final String VALIDATE = "/api/v1/change-msisdn/validate";
-            public static final String VALIDATE_EMAIL_CODE = "/api/v1/change-msisdn/validate-code";
-        }
     }
 
     public static class Home {
@@ -784,10 +749,6 @@ public class TkpdBaseURL {
         public static final String VERIFY_OTP_LOGIN = "oauth/verify_native";
         public static final String AUTHORIZE = "oauth/authorize_native";
         public static final String CHECK_MSISDN = "oauth/check/msisdn";
-    }
-
-    public static class Truecaller {
-        public static final String VERIFY_PHONE = "/web-service/v4/truecaller/check";
     }
 
     public static class DigitalApi {

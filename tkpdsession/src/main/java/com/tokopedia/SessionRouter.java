@@ -8,5 +8,5 @@ import android.content.Intent;
  */
 
 public interface SessionRouter {
-    Intent getTrueCallerIntent(Context context);
+    Intent getHomeIntent(Context context);
 }

@@ -9,17 +9,17 @@ import android.widget.TextView;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.util.CustomPhoneNumberUtil;
+import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.phoneverification.view.activity.ChangePhoneNumberActivity;
 import com.tokopedia.session.R;
+import com.tokopedia.util.CustomPhoneNumberUtil;
 
 /**
  * Created by ashwanityagi on 12/12/17.
  */
 
-public class ReferralPhoneNumberVerificationFragment extends BasePresenterFragment {
+public class ReferralPhoneNumberVerificationFragment extends BasePresenterFragmentV4 {
 
     public interface ReferralPhoneNumberVerificationFragmentListener {
         void onSkipVerification();
