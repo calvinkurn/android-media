@@ -14,17 +14,17 @@ import android.widget.Toast;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
-import com.tokopedia.transaction.checkout.di.component.CartSingleAddressComponent;
-import com.tokopedia.transaction.checkout.di.component.DaggerCartSingleAddressComponent;
-import com.tokopedia.transaction.checkout.di.module.CartSingleAddressModule;
-import com.tokopedia.transaction.checkout.domain.SingleShipmentDataConverter;
+import com.tokopedia.transaction.checkout.di.component.SingleAddressShipmentComponent;
+import com.tokopedia.transaction.checkout.di.component.DaggerSingleAddressShipmentComponent;
+import com.tokopedia.transaction.checkout.di.module.SingleAddressShipmentModule;
+import com.tokopedia.transaction.checkout.domain.SingleAddressShipmentDataConverter;
 import com.tokopedia.transaction.checkout.view.activity.CartAddressChoiceActivity;
 import com.tokopedia.transaction.checkout.view.activity.ShipmentDetailActivity;
-import com.tokopedia.transaction.checkout.view.adapter.CartSingleAddressAdapter;
+import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
-import com.tokopedia.transaction.checkout.view.presenter.CartSingleAddressPresenter;
+import com.tokopedia.transaction.checkout.view.presenter.SingleAddressShipmentPresenter;
 import com.tokopedia.transaction.checkout.view.view.ICartSingleAddressView;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
@@ -44,29 +44,33 @@ import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointCon
 /**
  * @author Aghny A. Putra on 24/1/18
  */
-public class CartSingleAddressFragment extends BasePresenterFragment
+public class SingleAddressShipmentFragment extends BasePresenterFragment
         implements ICartSingleAddressView<CartSingleAddressData>,
-        CartSingleAddressAdapter.SingleAddressShipmentAdapterListener {
+        SingleAddressShipmentAdapter.SingleAddressShipmentAdapterListener {
 
     public static final String ARG_EXTRA_CART_DATA_LIST = "ARG_EXTRA_CART_DATA_LIST";
 
-    private static final String TAG = CartSingleAddressFragment.class.getSimpleName();
+    private static final String TAG = SingleAddressShipmentFragment.class.getSimpleName();
     private static final int REQUEST_CODE_SHIPMENT_DETAIL = 11;
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
     private static final int REQUEST_CODE_CHOOSE_ADDRESS = 13;
 
     @BindView(R2.id.rv_cart_order_details) RecyclerView mRvCartOrderDetails;
 
-    @Inject CartSingleAddressAdapter mCartSingleAddressAdapter;
-    @Inject CartSingleAddressPresenter mCartSingleAddressPresenter;
-    @Inject SingleShipmentDataConverter mSingleShipmentDataConverter;
+    @Inject
+    SingleAddressShipmentAdapter mSingleAddressShipmentAdapter;
+    @Inject
+    SingleAddressShipmentPresenter mSingleAddressShipmentPresenter;
+    @Inject
+    SingleAddressShipmentDataConverter mSingleAddressShipmentDataConverter;
 
     private CartSingleAddressData mCartSingleAddressData;
 
-    public static CartSingleAddressFragment newInstance(List<CartItemData> cartItemDataList) {
-        CartSingleAddressFragment fragment = new CartSingleAddressFragment();
+    public static SingleAddressShipmentFragment newInstance(List<CartItemData> cartItemDataList) {
+        SingleAddressShipmentFragment fragment = new SingleAddressShipmentFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(ARG_EXTRA_CART_DATA_LIST, (ArrayList<? extends Parcelable>) cartItemDataList);
+        bundle.putParcelableArrayList(ARG_EXTRA_CART_DATA_LIST,
+                (ArrayList<? extends Parcelable>) cartItemDataList);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -74,8 +78,8 @@ public class CartSingleAddressFragment extends BasePresenterFragment
     @Override
     protected void initInjector() {
         super.initInjector();
-        CartSingleAddressComponent component = DaggerCartSingleAddressComponent.builder()
-                .cartSingleAddressModule(new CartSingleAddressModule())
+        SingleAddressShipmentComponent component = DaggerSingleAddressShipmentComponent.builder()
+                .singleAddressShipmentModule(new SingleAddressShipmentModule())
                 .build();
         component.inject(this);
     }
@@ -136,7 +140,7 @@ public class CartSingleAddressFragment extends BasePresenterFragment
     @Override
     protected void setupArguments(Bundle arguments) {
         List<CartItemData> cartDataList = arguments.getParcelableArrayList(ARG_EXTRA_CART_DATA_LIST);
-        mCartSingleAddressData = mSingleShipmentDataConverter.convert(cartDataList);
+        mCartSingleAddressData = mSingleAddressShipmentDataConverter.convert(cartDataList);
     }
 
     @Override
@@ -149,10 +153,9 @@ public class CartSingleAddressFragment extends BasePresenterFragment
         ButterKnife.bind(this, view);
 
         mRvCartOrderDetails.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRvCartOrderDetails.setAdapter(mCartSingleAddressAdapter);
+        mRvCartOrderDetails.setAdapter(mSingleAddressShipmentAdapter);
 
-        mCartSingleAddressPresenter.attachView(this);
-        mCartSingleAddressAdapter.setViewListener(this);
+        mSingleAddressShipmentPresenter.attachView(this);
     }
 
     /**
@@ -160,7 +163,8 @@ public class CartSingleAddressFragment extends BasePresenterFragment
      */
     @Override
     protected void setViewListener() {
-        mCartSingleAddressPresenter.getCartSingleAddressItemView(mCartSingleAddressData);
+        mSingleAddressShipmentAdapter.setViewListener(this);
+        mSingleAddressShipmentPresenter.getCartSingleAddressItemView(mCartSingleAddressData);
     }
 
     /**
@@ -185,8 +189,8 @@ public class CartSingleAddressFragment extends BasePresenterFragment
 
     @Override
     public void show(CartSingleAddressData cartSingleAddressData) {
-        mCartSingleAddressAdapter.updateData(cartSingleAddressData);
-        mCartSingleAddressAdapter.notifyDataSetChanged();
+        mSingleAddressShipmentAdapter.updateData(cartSingleAddressData);
+        mSingleAddressShipmentAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -201,8 +205,8 @@ public class CartSingleAddressFragment extends BasePresenterFragment
         builder.setPositiveButton(R.string.title_yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mCartSingleAddressAdapter.unSetPickupPoint();
-                mCartSingleAddressAdapter.notifyDataSetChanged();
+                mSingleAddressShipmentAdapter.unSetPickupPoint();
+                mSingleAddressShipmentAdapter.notifyDataSetChanged();
             }
         });
         builder.setNegativeButton(R.string.title_no, null);
@@ -249,8 +253,8 @@ public class CartSingleAddressFragment extends BasePresenterFragment
             switch (requestCode) {
                 case REQUEST_CHOOSE_PICKUP_POINT:
                     Store pickupBooth = data.getParcelableExtra(INTENT_DATA_STORE);
-                    mCartSingleAddressAdapter.setPickupPoint(pickupBooth);
-                    mCartSingleAddressAdapter.notifyDataSetChanged();
+                    mSingleAddressShipmentAdapter.setPickupPoint(pickupBooth);
+                    mSingleAddressShipmentAdapter.notifyDataSetChanged();
                     break;
                 default:
                     break;
