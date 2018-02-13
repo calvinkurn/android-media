@@ -37,4 +37,8 @@
     <string name="send_email">Kirim Email</string>
     <string name="title_session_expired">Sesi anda telah habis, silahkan login kembali</string>
     <string name="title_ok">OK</string>
+
+    <string name="webview_label_menu">Menu</string>
+    <string name="webview_label_menu_home">Beranda</string>
+    <string name="webview_label_menu_help">Bantuan</string>
 </resources>
