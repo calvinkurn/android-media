@@ -13,6 +13,7 @@ import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -42,7 +43,7 @@ public class FlightAnalytics {
         analyticTracker.sendEventTracking(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_PROMOTION,
-                position + "-" + label + "-" + imgUrl
+                String.format("%d-%s-%s", position, label, imgUrl)
         );
     }
 
@@ -184,7 +185,7 @@ public class FlightAnalytics {
             result.append(timeResult);
         }
         result.append(transformRefundableLabel(viewModel.isRefundable()));
-        result.append("-" + adapterPosition);
+        result.append(String.format(Locale.getDefault(), "-%d", adapterPosition));
         result.append(Label.NORMAL_PRICE);
         return result;
     }
@@ -194,11 +195,11 @@ public class FlightAnalytics {
     private String transformRefundableLabel(RefundableEnum refundableEnum) {
         String refundable;
         if (refundableEnum == RefundableEnum.REFUNDABLE) {
-            refundable = "-refundable";
+            refundable = Label.REFUNDABLE;
         } else if (refundableEnum == RefundableEnum.PARTIAL_REFUNDABLE) {
-            refundable = "-partially refundable";
+            refundable = Label.PARTIALLY_REFUNDABLE;
         } else {
-            refundable = "-not refundable";
+            refundable = Label.NOT_REFUNDABLE;
         }
         return refundable;
     }
@@ -239,7 +240,7 @@ public class FlightAnalytics {
         analyticTracker.sendEventTracking(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.VOUCHER_SUCCESS,
-                label + "- " + message
+                String.format("%s- %s", label, message)
         );
     }
 
@@ -247,7 +248,7 @@ public class FlightAnalytics {
         analyticTracker.sendEventTracking(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.VOUCHER_ERROR,
-                label + "- " + message
+                String.format("%s- %s", label, message)
         );
     }
 
@@ -272,7 +273,15 @@ public class FlightAnalytics {
         analyticTracker.sendEventTracking(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.SELECT_PASSENGER,
-                adult + Label.ADULT + " -" + children + Label.CHILD + "-" + infant + Label.INFANT
+                String.format(Locale.getDefault(),
+                        "%d%s -%d%s-%d%s",
+                        adult,
+                        Label.ADULT,
+                        children,
+                        Label.CHILD,
+                        infant,
+                        Label.INFANT
+                )
         );
     }
 
@@ -327,12 +336,15 @@ public class FlightAnalytics {
     }
 
     private static class Label {
-        public static String FAILED_PURCHASE = "FAILED";
+        static String FAILED_PURCHASE = "FAILED";
         static String NORMAL_PRICE = "- Normal Price";
         static String ADULT = " adult";
         static String CHILD = " child";
         static String INFANT = " baby";
         static String REVIEW_NEXT = " on order details page";
+        static String REFUNDABLE = "-refundable";
+        static String NOT_REFUNDABLE = "-not refundable";
+        static String PARTIALLY_REFUNDABLE = "-partially refundable";
     }
 
 }
