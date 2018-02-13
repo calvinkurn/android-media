@@ -905,11 +905,6 @@ public class CartPresenter implements ICartPresenter {
                 && !cartItem.getCartErrorMessage1().equals("0"));
     }
 
-
-    private void saveCartDataToCache(CheckoutData checkoutData, List<CartItem> cartItemList) {
-        cartDataInteractor.saveCartDataToCache(checkoutData, cartItemList);
-    }
-
     @Override
     public void processUpdatePickupPoint(String cartId, String oldStoreId, String newStoreId) {
         editCartPickupPointsUseCase.execute(
