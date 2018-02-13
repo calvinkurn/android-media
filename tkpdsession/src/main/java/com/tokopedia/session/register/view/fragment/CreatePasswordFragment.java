@@ -56,7 +56,7 @@ public class CreatePasswordFragment extends BaseDaggerFragment
     PasswordView vPasswordRetype;
     EditText vPhoneNumber;
     View vSendButton;
-    CheckBox vTos;
+    CheckBox termsOfServiceCheckBox;
     View vError;
     TextView termAndCond;
     TextView privacy;
@@ -142,7 +142,7 @@ public class CreatePasswordFragment extends BaseDaggerFragment
         vPasswordRetype = (PasswordView) view.findViewById(R.id.password_retype);
         vPhoneNumber = (EditText) view.findViewById(R.id.phone_number);
         vSendButton = view.findViewById(R.id.send_button);
-        vTos = (CheckBox) view.findViewById(R.id.tos_check);
+        termsOfServiceCheckBox = (CheckBox) view.findViewById(R.id.tos_check);
         vError = view.findViewById(R.id.error);
         termAndCond = (TextView) view.findViewById(R.id.tos_tos);
         privacy = (TextView) view.findViewById(R.id.tos_privacy);
@@ -244,7 +244,7 @@ public class CreatePasswordFragment extends BaseDaggerFragment
 
             }
         });
-        vTos.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        termsOfServiceCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 model.setRegisterTos(isChecked ? "1" : "0");

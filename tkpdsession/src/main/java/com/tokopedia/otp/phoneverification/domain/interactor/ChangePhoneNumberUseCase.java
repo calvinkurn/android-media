@@ -37,17 +37,20 @@ public class ChangePhoneNumberUseCase extends UseCase<ChangePhoneNumberViewModel
     @Override
     public Observable<ChangePhoneNumberViewModel> createObservable(final RequestParams requestParams) {
         return changeMsisdnSource.changePhoneNumber(requestParams.getParameters())
-                .flatMap(new Func1<ChangePhoneNumberViewModel, Observable<ChangePhoneNumberViewModel>>() {
-                    @Override
-                    public Observable<ChangePhoneNumberViewModel> call(ChangePhoneNumberViewModel changePhoneNumberViewModel) {
-                        changePhoneNumberViewModel.setPhoneNumber(
-                                requestParams.getString(PARAM_MSISDN, ""));
-                        return Observable.just(changePhoneNumberViewModel);
-                    }
-                })
+                .flatMap(addPhoneNumberToViewModel(requestParams))
                 .doOnNext(savePhoneNumber());
     }
 
+    private Func1<ChangePhoneNumberViewModel, Observable<ChangePhoneNumberViewModel>> addPhoneNumberToViewModel(final RequestParams requestParams) {
+        return new Func1<ChangePhoneNumberViewModel, Observable<ChangePhoneNumberViewModel>>() {
+            @Override
+            public Observable<ChangePhoneNumberViewModel> call(ChangePhoneNumberViewModel changePhoneNumberViewModel) {
+                changePhoneNumberViewModel.setPhoneNumber(
+                        requestParams.getString(PARAM_MSISDN, ""));
+                return Observable.just(changePhoneNumberViewModel);
+            }
+        };
+    }
 
     private Action1<ChangePhoneNumberViewModel> savePhoneNumber() {
         return new Action1<ChangePhoneNumberViewModel>() {

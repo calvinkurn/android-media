@@ -84,7 +84,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     public static final int TYPE_SQ_PHONE = 1;
     public static final int TYPE_SQ_EMAIL = 2;
 
-    LinearLayout linearLayout;
+    LinearLayout registerContainer;
     LoginTextView registerButton;
     TextView loginButton;
     ScrollView container;
@@ -142,7 +142,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_register_initial, parent, false);
 
-        linearLayout = (LinearLayout) view.findViewById(R.id.linearLayout);
+        registerContainer = (LinearLayout) view.findViewById(R.id.register_container);
         registerButton = (LoginTextView) view.findViewById(R.id.register);
         loginButton = (TextView) view.findViewById(R.id.login_button);
         container = (ScrollView) view.findViewById(R.id.container);
@@ -265,6 +265,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
         if (sessionHandler != null &&
                 sessionHandler.isV4Login()) {
+            getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
         }
     }
@@ -272,9 +273,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     @Override
     public void showLoadingDiscover() {
         ProgressBar pb = new ProgressBar(getActivity(), null, android.R.attr.progressBarStyle);
-        int lastPos = linearLayout.getChildCount() - 1;
-        if (!(linearLayout.getChildAt(lastPos) instanceof ProgressBar)) {
-            linearLayout.addView(pb, linearLayout.getChildCount());
+        int lastPos = registerContainer.getChildCount() - 1;
+        if (!(registerContainer.getChildAt(lastPos) instanceof ProgressBar)) {
+            registerContainer.addView(pb, registerContainer.getChildCount());
         }
     }
 
@@ -314,8 +315,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
             setDiscoverOnClickListener(listProvider.get(i), loginTextView);
 
-            if (linearLayout != null) {
-                linearLayout.addView(loginTextView, linearLayout.getChildCount(), layoutParams);
+            if (registerContainer != null) {
+                registerContainer.addView(loginTextView, registerContainer.getChildCount(), layoutParams);
             }
         }
 
@@ -393,9 +394,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Override
     public void dismissLoadingDiscover() {
-        int lastPos = linearLayout.getChildCount() - 1;
-        if (linearLayout.getChildAt(lastPos) instanceof ProgressBar) {
-            linearLayout.removeViewAt(linearLayout.getChildCount() - 1);
+        int lastPos = registerContainer.getChildCount() - 1;
+        if (registerContainer.getChildAt(lastPos) instanceof ProgressBar) {
+            registerContainer.removeViewAt(registerContainer.getChildCount() - 1);
         }
     }
 

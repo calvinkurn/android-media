@@ -24,6 +24,7 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.R;
 import com.tokopedia.session.activation.view.activity.ActivationActivity;
 import com.tokopedia.session.activation.view.activity.ChangeEmailActivity;
@@ -33,6 +34,8 @@ import com.tokopedia.session.activation.view.viewListener.RegisterActivationView
 import com.tokopedia.session.activation.view.viewmodel.LoginTokenViewModel;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.RegisterConstant;
+
+import javax.inject.Inject;
 
 /**
  * Created by nisie on 1/31/17.
@@ -49,8 +52,10 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
     TkpdProgressDialog progressDialog;
 
     String email;
-    String pw;
+    String password;
 
+    @Inject
+    SessionHandler sessionHandler;
 
     public static RegisterActivationFragment createInstance(Bundle args) {
         RegisterActivationFragment fragment = new RegisterActivationFragment();
@@ -78,9 +83,9 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
         }
 
         if (savedInstanceState != null) {
-            pw = savedInstanceState.getString(ActivationActivity.INTENT_EXTRA_PARAM_PW, "");
+            password = savedInstanceState.getString(ActivationActivity.INTENT_EXTRA_PARAM_PW, "");
         } else if (getArguments().getString(ActivationActivity.INTENT_EXTRA_PARAM_PW) != null) {
-            pw = getArguments().getString(ActivationActivity.INTENT_EXTRA_PARAM_PW, "");
+            password = getArguments().getString(ActivationActivity.INTENT_EXTRA_PARAM_PW, "");
         }
     }
 
@@ -92,6 +97,16 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
     @Override
     public void onRestoreState(Bundle savedState) {
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (sessionHandler != null &&
+                sessionHandler.isV4Login()) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        }
     }
 
     @Override
@@ -308,7 +323,7 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
         Intent autoLoginIntent = LoginActivity.getAutomaticLogin(
                 getActivity(),
                 email,
-                pw);
+                password);
         startActivityForResult(
                 autoLoginIntent,
                 REQUEST_AUTO_LOGIN
@@ -350,7 +365,7 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putString(ActivationActivity.INTENT_EXTRA_PARAM_EMAIL, email);
-        outState.putString(ActivationActivity.INTENT_EXTRA_PARAM_PW, pw);
+        outState.putString(ActivationActivity.INTENT_EXTRA_PARAM_PW, password);
         super.onSaveInstanceState(outState);
     }
 }

@@ -66,10 +66,7 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
         drawerLayout.openDrawer(GravityCompat.START);
     }
 
-
     public abstract void initDrawer(Activity activity);
-
-//    public abstract ToolbarBuyerHandler.OnDrawerToggleClickListener onDrawerToggleClick();
 
     @Override
     public void onItemClicked(DrawerItem item) {
