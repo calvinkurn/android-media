@@ -1,6 +1,5 @@
 package com.tokopedia.design.quickfilter;
 
-import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -15,24 +14,20 @@ import com.tokopedia.design.R;
 
 public class ItemFilterViewHolder extends BaseItemFilterViewHolder {
 
-    private LinearLayout layoutBorder;
-    private LinearLayout layoutInside;
+    protected LinearLayout layoutBorder;
+    protected LinearLayout layoutInside;
     private TextView filterName;
-    private Context context;
 
-    public ItemFilterViewHolder(View itemView, Context context, QuickSingleFilterListener listener) {
+    public ItemFilterViewHolder(View itemView, QuickSingleFilterListener listener) {
         super(itemView, listener);
-        this.context = context;
         layoutBorder = (LinearLayout) itemView.findViewById(R.id.layout_border);
         layoutInside = (LinearLayout) itemView.findViewById(R.id.layout_inside);
         filterName = (TextView) itemView.findViewById(R.id.filter_name);
     }
 
     public void renderItemViewHolder(final QuickFilterItem filterItem) {
-        filterName.setText(filterItem.getName());
-        layoutBorder.setBackgroundResource(R.drawable.bg_round_corner);
-        layoutInside.setBackgroundResource(R.drawable.bg_round_corner);
-        handleViewFilter(filterItem.isSelected());
+        updateData(filterItem);
+        updateItemColor(filterItem.isSelected());
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -41,20 +36,27 @@ public class ItemFilterViewHolder extends BaseItemFilterViewHolder {
         });
     }
 
+    protected void updateData(QuickFilterItem filterItem) {
+        filterName.setText(filterItem.getName());
+        layoutBorder.setBackgroundResource(R.drawable.bg_round_corner);
+        layoutInside.setBackgroundResource(R.drawable.bg_round_corner);
+    }
+
     /**
      * @param selected using mutate for lock the drawable and set the color
      *                 documentation https://android-developers.googleblog.com/2009/05/drawable-mutations.html
      */
-    private void handleViewFilter(boolean selected) {
-        GradientDrawable drawableBorder = (GradientDrawable) layoutBorder.getBackground().getCurrent().mutate();
-        drawableBorder.setColor(selected ? ContextCompat.getColor(context, R.color.tkpd_main_green) :
-                ContextCompat.getColor(context, R.color.grey_300));
-
+    protected void updateItemColor(boolean selected) {
         GradientDrawable drawableInside = (GradientDrawable) layoutInside.getBackground().getCurrent().mutate();
-        drawableInside.setColor(selected ? ContextCompat.getColor(context, R.color.light_green) :
-                ContextCompat.getColor(context, R.color.white));
-
-        filterName.setTextColor(ContextCompat.getColor(context, selected ? R.color.tkpd_main_green :
-                R.color.font_black_primary_70));
+        GradientDrawable drawableBorder = (GradientDrawable) layoutBorder.getBackground().getCurrent().mutate();
+        if (selected) {
+            drawableBorder.setColor(ContextCompat.getColor(layoutInside.getContext(), R.color.tkpd_main_green));
+            drawableInside.setColor(ContextCompat.getColor(layoutBorder.getContext(), R.color.light_green));
+            filterName.setTextColor(ContextCompat.getColor(filterName.getContext(), R.color.tkpd_main_green));
+        } else {
+            drawableBorder.setColor(ContextCompat.getColor(layoutInside.getContext(), R.color.grey_300));
+            drawableInside.setColor(ContextCompat.getColor(layoutBorder.getContext(), R.color.white));
+            filterName.setTextColor(ContextCompat.getColor(filterName.getContext(), R.color.font_black_primary_70));
+        }
     }
 }

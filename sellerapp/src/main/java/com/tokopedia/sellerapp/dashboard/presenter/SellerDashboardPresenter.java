@@ -1,8 +1,8 @@
 package com.tokopedia.sellerapp.dashboard.presenter;
 
+import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.cache.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.core.common.ticker.model.Ticker;
 import com.tokopedia.core.common.ticker.usecase.GetTickerUseCase;
 import com.tokopedia.core.drawer2.data.pojo.notification.NotificationModel;
@@ -83,7 +83,7 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
     }
 
     public void refreshShopInfo(){
-        cacheApiClearAllUseCase.execute(RequestParams.EMPTY, new Subscriber<Boolean>() {
+        cacheApiClearAllUseCase.execute(new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
 

@@ -27,6 +27,8 @@ import com.tokopedia.events.deeplink.EventsDeepLinkModule;
 import com.tokopedia.events.deeplink.EventsDeepLinkModuleLoader;
 import com.tokopedia.flight.applink.FlightApplinkModule;
 import com.tokopedia.flight.applink.FlightApplinkModuleLoader;
+import com.tokopedia.home.applink.HomeApplinkModule;
+import com.tokopedia.home.applink.HomeApplinkModuleLoader;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
 import com.tokopedia.ride.deeplink.RideDeeplinkModule;
@@ -53,6 +55,7 @@ import io.branch.referral.Branch;
         TransactionApplinkModule.class,
         DigitalApplinkModule.class,
         PdpApplinkModule.class,
+        HomeApplinkModule.class,
         RideDeeplinkModule.class,
         DiscoveryApplinkModule.class,
         SessionApplinkModule.class,
@@ -73,6 +76,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new TransactionApplinkModuleLoader(),
                 new DigitalApplinkModuleLoader(),
                 new PdpApplinkModuleLoader(),
+                new HomeApplinkModuleLoader(),
                 new RideDeeplinkModuleLoader(),
                 new DiscoveryApplinkModuleLoader(),
                 new SessionApplinkModuleLoader(),

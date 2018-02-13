@@ -1,13 +1,13 @@
 package com.tokopedia.session.activation.view.subscriber;
 
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.session.activation.data.ChangeEmailModel;
 import com.tokopedia.session.activation.view.viewListener.ChangeEmailView;
 
 import rx.Subscriber;
 
 /**
- * Created by nisie on 4/18/17.
+ * @author by nisie on 4/18/17.
  */
 
 public class ChangeEmailSubscriber extends Subscriber<ChangeEmailModel> {
@@ -24,7 +24,8 @@ public class ChangeEmailSubscriber extends Subscriber<ChangeEmailModel> {
 
     @Override
     public void onError(Throwable e) {
-        viewListener.onErrorChangeEmail(ErrorHandler.getErrorMessage(e));
+        viewListener.onErrorChangeEmail(ErrorHandler.getErrorMessageWithErrorCode(viewListener
+                .getActivity(), e));
 
     }
 

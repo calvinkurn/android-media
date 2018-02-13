@@ -4,7 +4,6 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -14,7 +13,6 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.session.R;
@@ -26,7 +24,8 @@ import com.tokopedia.session.activation.view.fragment.RegisterActivationFragment
 
 public class ActivationActivity extends BasePresenterActivity {
 
-    private static final String INTENT_EXTRA_PARAM_EMAIL = "INTENT_EXTRA_PARAM_EMAIL";
+    public static final String INTENT_EXTRA_PARAM_EMAIL = "email";
+    public static final String INTENT_EXTRA_PARAM_PW = "pw";
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -54,7 +53,7 @@ public class ActivationActivity extends BasePresenterActivity {
         setToolbar();
 
         RegisterActivationFragment fragment = RegisterActivationFragment.createInstance(
-                getIntent().getExtras().getString(INTENT_EXTRA_PARAM_EMAIL)
+                getIntent().getExtras()
         );
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -105,9 +104,10 @@ public class ActivationActivity extends BasePresenterActivity {
         return null;
     }
 
-    public static Intent getCallingIntent(Context context, String email) {
+    public static Intent getCallingIntent(Context context, String email, String pw) {
         Intent callingIntent = new Intent(context, ActivationActivity.class);
         callingIntent.putExtra(INTENT_EXTRA_PARAM_EMAIL, email);
+        callingIntent.putExtra(INTENT_EXTRA_PARAM_PW, pw);
         return callingIntent;
     }
 

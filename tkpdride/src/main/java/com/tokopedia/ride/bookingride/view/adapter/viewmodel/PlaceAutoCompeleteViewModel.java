@@ -83,6 +83,7 @@ public class PlaceAutoCompeleteViewModel implements Visitable<PlaceAutoCompleteT
 
     public enum TYPE {
         MARKETPLACE_PLACE,
-        GOOGLE_PLACE
+        GOOGLE_PLACE,
+        NEARBY_PLACE
     }
 }

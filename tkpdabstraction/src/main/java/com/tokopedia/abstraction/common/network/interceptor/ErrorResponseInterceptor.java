@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
-import com.tokopedia.abstraction.common.utils.CommonUtils;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 
 import java.io.IOException;
 
@@ -19,26 +19,24 @@ import okhttp3.ResponseBody;
 
 public class ErrorResponseInterceptor implements Interceptor {
     private static final int BYTE_COUNT = 2048;
-
     private Class<? extends BaseResponseError> responseErrorClass;
-    private BaseResponseError responseError;
 
     public ErrorResponseInterceptor(@NonNull Class<? extends BaseResponseError> responseErrorClass) {
         this.responseErrorClass = responseErrorClass;
     }
 
     @Override
-    public Response intercept(Chain chain) throws IOException {
+    public Response intercept(@NonNull Chain chain) throws IOException {
         Response response = chain.proceed(chain.request());
 
         ResponseBody responseBody = null;
         String responseBodyString = "";
-        if (null != response) {
+        if (mightContainCustomError(response)) {
             responseBody = response.peekBody(BYTE_COUNT);
             responseBodyString = responseBody.string();
 
             Gson gson = new Gson();
-            responseError = null;
+            BaseResponseError responseError = null;
             try {
                 responseError = gson.fromJson(responseBodyString, responseErrorClass);
             } catch (JsonSyntaxException e) { // the json might not be TkpdResponseError instance, so just return it
@@ -47,18 +45,21 @@ public class ErrorResponseInterceptor implements Interceptor {
             if (responseError == null) { // no error object
                 return response;
             } else {
-                if (responseError.hasBody() ) {
+                if (responseError.hasBody()) {
                     CommonUtils.dumper(response.headers().toString());
                     CommonUtils.dumper(responseBodyString);
+                    //noinspection ConstantConditions
                     response.body().close();
                     throw responseError.createException();
-                }
-                else {
+                } else {
                     return response;
                 }
             }
-        } else {
-            return null;
         }
+        return response;
+    }
+
+    protected boolean mightContainCustomError(Response response) {
+        return response != null;
     }
 }

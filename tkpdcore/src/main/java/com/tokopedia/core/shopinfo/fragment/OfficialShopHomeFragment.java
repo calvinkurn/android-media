@@ -27,6 +27,7 @@ import android.widget.ProgressBar;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -54,7 +55,7 @@ import butterknife.ButterKnife;
  *         modified by brilliant.oka
  */
 
-public class OfficialShopHomeFragment extends BasePresenterFragment<OsHomePresenter>
+public class OfficialShopHomeFragment extends BasePresenterFragmentV4<OsHomePresenter>
         implements OsHomeFragmentView {
 
     private static final String TAG = OfficialShopHomeFragment.class.getSimpleName();
