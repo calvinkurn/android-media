@@ -48,7 +48,7 @@ gradle.projectsEvaluated {
             def resourcesMapTempFileName = "CodePushResourcesMap-" + java.util.UUID.randomUUID().toString().substring(0, 8) + ".json"
 
             // Additional node commandline arguments
-            def nodeExecutableAndArgs = config.nodeExecutableAndArgs ?: ["/usr/local/bin/node"]
+            def nodeExecutableAndArgs = config.nodeExecutableAndArgs ?: ["node"]
 
             // Make this task run right before the bundle task
             def recordFilesBeforeBundleCommand = tasks.create(
