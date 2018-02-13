@@ -11,12 +11,14 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.manage.people.address.ManageAddressConstant;
+import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
-import com.tokopedia.transaction.checkout.di.component.CartAddressListComponent;
-import com.tokopedia.transaction.checkout.di.component.DaggerCartAddressListComponent;
-import com.tokopedia.transaction.checkout.di.module.CartAddressListModule;
+import com.tokopedia.transaction.checkout.di.component.DaggerShipmentAddressListComponent;
+import com.tokopedia.transaction.checkout.di.component.ShipmentAddressListComponent;
+import com.tokopedia.transaction.checkout.di.module.ShipmentAddressListModule;
 import com.tokopedia.transaction.checkout.view.adapter.ShipmentAddressListAdapter;
 import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 import com.tokopedia.transaction.checkout.view.presenter.ShipmentAddressListPresenter;
@@ -63,8 +65,8 @@ public class ShipmentAddressListFragment extends BasePresenterFragment
     @Override
     protected void initInjector() {
         super.initInjector();
-        CartAddressListComponent component = DaggerCartAddressListComponent.builder()
-                .cartAddressListModule(new CartAddressListModule(this))
+        ShipmentAddressListComponent component = DaggerShipmentAddressListComponent.builder()
+                .shipmentAddressListModule(new ShipmentAddressListModule(this))
                 .build();
         component.inject(this);
     }
@@ -275,7 +277,14 @@ public class ShipmentAddressListFragment extends BasePresenterFragment
     }
 
     @Override
-    public void onAddressContainerClicked(int position) {
+    public void onAddressContainerClicked(ShipmentRecipientModel model) {
+
+    }
+
+    @Override
+    public void onEditClick(ShipmentRecipientModel model) {
+        startActivityForResult(AddAddressActivity.createInstance(getActivity(),
+                model.convertToAddressModel()), ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
 
     }
 }

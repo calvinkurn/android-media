@@ -9,10 +9,10 @@ import rx.Observer;
 /**
  * @author Aghny A. Putra on 26/01/18
  */
-public class CartSingleAddressPresenter
+public class SingleAddressShipmentPresenter
         extends CartMvpPresenter<ICartSingleAddressView<CartSingleAddressData>> {
 
-    public CartSingleAddressPresenter() {
+    public SingleAddressShipmentPresenter() {
 
     }
 

@@ -53,7 +53,7 @@ def getTkpdCoreLocalMaven() {
 }
 
 def getTopAdsSdkLocalMaven() {
-    return rootProject.ext.tkpdDependencies.topads;
+    return rootProject.ext.tkpdDependencies.topadssdk;
 }
 
 def getTkpdPaymentLocalMaven() {

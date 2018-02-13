@@ -10,18 +10,69 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:orientation="vertical">
 
-        <Button
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_400" />
+
+        <LinearLayout
+            android:id="@+id/ll_total_payment_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/btn_height"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/padding_small"
+            android:paddingEnd="@dimen/padding_med"
+            android:paddingLeft="@dimen/padding_med"
+            android:paddingRight="@dimen/padding_med"
+            android:paddingStart="@dimen/padding_med"
+            android:paddingTop="@dimen/padding_small">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Total Pembayaran"
+                android:textColor="@color/black_70" />
+
+            <TextView
+                android:id="@+id/tv_total_payment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="-" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_400" />
+
+        <LinearLayout
             android:id="@+id/btn_next_to_payment_option"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_margin="8dp"
+            android:layout_height="@dimen/btn_height"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginEnd="@dimen/margin_med"
+            android:layout_marginLeft="@dimen/margin_med"
+            android:layout_marginRight="@dimen/margin_med"
+            android:layout_marginStart="@dimen/margin_med"
+            android:layout_marginTop="@dimen/margin_small"
             android:background="@drawable/orange_button_rounded"
-            android:text="Pilih Metode Pembayaran"
-            android:textSize="16sp"
-            android:textColor="@color/white"
-            android:textAllCaps="false"/>
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pilih Metode Pembayaran"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

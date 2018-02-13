@@ -17,14 +17,14 @@ import javax.inject.Inject;
  * @author anggaprasetiyo on 08/02/18,
  *         Aghny A. Putra on 08/02/18.
  */
-public class SingleShipmentDataConverter extends ConverterData<List<CartItemData>,
+public class SingleAddressShipmentDataConverter extends ConverterData<List<CartItemData>,
         CartSingleAddressData> {
 
-    private static final int GRAM = 0;
-    private static final int KILOGRAM = 1;
+    private static final int GRAM = 1;
+    private static final int KILOGRAM = 0;
 
     @Inject
-    public SingleShipmentDataConverter() {
+    public SingleAddressShipmentDataConverter() {
     }
 
     @Override
@@ -51,6 +51,7 @@ public class SingleShipmentDataConverter extends ConverterData<List<CartItemData
                 List<CartItemModel> cartItemModelList = new ArrayList<>();
                 cartItemModelList.add(cartItemModel);
 
+                cartSellerItemModel.setShopName(cartItemModel.getShopName());
                 cartSellerItemModel.setTotalItemPlan(cartItemModel.getTotalProductItem());
                 cartSellerItemModel.setTotalWeightPlan(cartItemModel.getProductWeightPlan());
                 cartSellerItemModel.setTotalPricePlan(cartItemModel.getProductPricePlan());
@@ -137,7 +138,7 @@ public class SingleShipmentDataConverter extends ConverterData<List<CartItemData
             case KILOGRAM:
                 return weight + " Kg";
             case GRAM:
-                return weight + " g";
+                return weight + " gr";
             default:
                 return weight;
         }

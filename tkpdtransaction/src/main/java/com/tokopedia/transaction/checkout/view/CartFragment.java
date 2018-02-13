@@ -55,6 +55,19 @@ public class CartFragment extends BasePresenterFragment implements
     @Inject
     RecyclerView.ItemDecoration cartItemDecoration;
 
+    OnPassingCartDataListener mDataPasserListener;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mDataPasserListener = (OnPassingCartDataListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() +
+                    " must implement OnPassingCartDataListener");
+        }
+    }
+
     @Override
     protected void initInjector() {
         super.initInjector();
@@ -233,6 +246,9 @@ public class CartFragment extends BasePresenterFragment implements
     @Override
     public void renderCartListData(List<CartItemData> cartItemDataList) {
         cartListAdapter.addDataList(cartItemDataList);
+
+        // Pass data to its container activity trough PassingCartDataListener interface
+        mDataPasserListener.onPassingCartData(cartItemDataList);
     }
 
     @Override
@@ -289,4 +305,14 @@ public class CartFragment extends BasePresenterFragment implements
     public static CartFragment newInstance() {
         return new CartFragment();
     }
+
+    public interface OnPassingCartDataListener {
+
+        /**
+         * Pass data from cart fragment into its container activity
+         * @param cartItemData List of cart items
+         */
+        void onPassingCartData(List<CartItemData> cartItemData);
+    }
+
 }

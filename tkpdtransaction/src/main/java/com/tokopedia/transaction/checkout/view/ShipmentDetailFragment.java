@@ -7,7 +7,6 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,7 +24,6 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -49,16 +47,15 @@ import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.checkout.di.component.DaggerShipmentDetailComponent;
+import com.tokopedia.transaction.checkout.di.component.ShipmentDetailComponent;
 import com.tokopedia.transaction.checkout.view.adapter.CourierChoiceAdapter;
 import com.tokopedia.transaction.checkout.view.data.CourierItemData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
 import com.tokopedia.transaction.checkout.view.presenter.IShipmentDetailPresenter;
-import com.tokopedia.transaction.checkout.view.presenter.ShipmentDetailPresenter;
 import com.tokopedia.transaction.checkout.view.view.IShipmentDetailView;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -78,6 +75,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     private static final int REQUEST_CODE_SHIPMENT_CHOICE = 11;
     private static final int REQUEST_CODE_PINPOINT = 22;
     private static final int DELAY_IN_MILISECOND = 500;
+    private static final String EXTRA_SELECTED_COURIER = "selectedCourier";
 
     @BindView(R2.id.scroll_view_content)
     ScrollView scrollViewContent;
@@ -211,8 +209,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
 
     @Override
     protected void initialPresenter() {
-        presenter = new ShipmentDetailPresenter();
-        presenter.setContext(getActivity());
+
     }
 
     @Override
@@ -233,8 +230,18 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     @Override
     protected void initView(View view) {
         ButterKnife.bind(view);
+        initializeInjector();
         presenter.attachView(this);
+        presenter.setContext(getActivity());
+        courierChoiceAdapter.setViewListener(this);
+        courierChoiceAdapter.setCouriers(presenter.getCouriers());
         presenter.loadShipmentData();
+    }
+
+    private void initializeInjector() {
+        ShipmentDetailComponent shipmentDetailComponent = DaggerShipmentDetailComponent.builder()
+                .build();
+        shipmentDetailComponent.inject(this);
     }
 
     @Override
@@ -288,6 +295,10 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         llPinpoint.setVisibility(View.VISIBLE);
     }
 
+    private void showErrorSnackbar(String message) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
+    }
+
     private void initializeShipmentChoiceHandler() {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -338,8 +349,8 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     }
 
     @Override
-    public void showAllCouriers(List<CourierItemData> couriers) {
-        setupRecyclerView(couriers);
+    public void showAllCouriers() {
+        setupRecyclerView();
     }
 
     private void formatInsuranceTncView() {
@@ -363,8 +374,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         tvInsuranceTerms.setText(tosAgreementText);
     }
 
-    private void setupRecyclerView(List<CourierItemData> couriers) {
-//        courierChoiceAdapter = new CourierChoiceAdapter(couriers, this);
+    private void setupRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL, false);
         rvCourierChoice.setLayoutManager(linearLayoutManager);
@@ -551,13 +561,13 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     @OnClick(R2.id.img_bt_partly_accept_info)
     void onPartlyAcceptInfoClick() {
         showBottomSheet(getString(R.string.label_accept_partial_order_new),
-                presenter.getShipmentDetailData().getPartialOrderInfo(), R.drawable.ic_insurance);
+                presenter.getShipmentDetailData().getPartialOrderInfo(), R.drawable.ic_partial_order);
     }
 
     @OnClick(R2.id.img_bt_dropshipper_info)
     void onDropshipperInfoClick() {
         showBottomSheet(getString(R.string.label_dropshipper_new),
-                presenter.getShipmentDetailData().getDropshipperInfo(), R.drawable.ic_insurance);
+                presenter.getShipmentDetailData().getDropshipperInfo(), R.drawable.ic_dropshipper);
     }
 
     @OnClick(R2.id.img_bt_close_ticker)
@@ -572,7 +582,10 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
 
     @OnClick(R2.id.bt_save)
     void onSaveClick() {
-        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), "Anda belum menandai lokasi tujuan dalam peta");
+        Intent intentResult = new Intent();
+        intentResult.putExtra(EXTRA_SELECTED_COURIER, presenter.getSelectedCourier());
+        getActivity().setResult(Activity.RESULT_OK, intentResult);
+        getActivity().finish();
     }
 
     @OnCheckedChanged(R2.id.switch_insurance)

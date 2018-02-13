@@ -18,12 +18,8 @@ import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 
 public class CartAddressChoiceActivity extends BasePresenterActivity {
 
-    public static final String INTENT_EXTRA_RECIPIENT = "recipient";
-
-    public static Intent createInstance(Activity activity, ShipmentRecipientModel shipmentRecipientModel) {
+    public static Intent createInstance(Activity activity) {
         Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
-        intent.putExtra(INTENT_EXTRA_RECIPIENT, shipmentRecipientModel);
-
         return intent;
     }
 
@@ -49,9 +45,7 @@ public class CartAddressChoiceActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
-        CartAddressChoiceFragment fragment = CartAddressChoiceFragment.newInstance(
-                (ShipmentRecipientModel) getIntent().getParcelableExtra(INTENT_EXTRA_RECIPIENT)
-        );
+        CartAddressChoiceFragment fragment = CartAddressChoiceFragment.newInstance();
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         fragmentTransaction.add(R.id.container, fragment, CartAddressChoiceFragment.class.getSimpleName());

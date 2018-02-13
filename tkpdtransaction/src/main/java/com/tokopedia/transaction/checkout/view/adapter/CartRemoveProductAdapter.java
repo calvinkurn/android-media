@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.transaction.R;
 
 import com.tokopedia.transaction.R2;
-import com.tokopedia.transaction.checkout.view.data.CartItemModel;
+import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import java.util.List;
 
 import butterknife.BindView;
@@ -33,7 +33,7 @@ public class CartRemoveProductAdapter
     private static final int TOP_POSITION = 0;
 
     private Context mContext;
-    private List<CartItemModel> mCartItemModelList;
+    private List<CartItemData> mCartItemModelList;
 
     private boolean isRemoveAll;
 
@@ -41,7 +41,7 @@ public class CartRemoveProductAdapter
         isRemoveAll = false;
     }
 
-    public void updateData(List<CartItemModel> cartItemModels) {
+    public void updateData(List<CartItemData> cartItemModels) {
         mCartItemModelList = cartItemModels;
     }
 
@@ -125,12 +125,16 @@ public class CartRemoveProductAdapter
             ButterKnife.bind(this, itemView);
         }
 
-        void bindViewHolder(CartItemModel cartItemModel) {
-            mTvProductName.setText(cartItemModel.getProductName());
-            mTvProductPrice.setText(cartItemModel.getProductPriceFormatted());
-            mTvProductWeight.setText(cartItemModel.getProductWeightFormatted());
-            mTvTotalProductItem.setText(cartItemModel.getTotalProductItem());
-            ImageHandler.LoadImage(mIvProductImage, cartItemModel.getProductImageUrl());
+        void bindViewHolder(CartItemData cartItemModel) {
+            CartItemData.OriginData originData = cartItemModel.getOriginData();
+            CartItemData.UpdatedData updatedData = cartItemModel.getUpdatedData();
+
+            mTvSenderName.setText(originData.getShopName());
+            mTvProductName.setText(originData.getProductName());
+            mTvProductPrice.setText(originData.getPriceFormatted());
+            mTvProductWeight.setText(originData.getWeightFormatted());
+            mTvTotalProductItem.setText(String.valueOf(updatedData.getQuantity()));
+            ImageHandler.LoadImage(mIvProductImage, originData.getProductImage());
         }
 
     }
