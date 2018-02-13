@@ -3,35 +3,37 @@ package com.tokopedia.session.changephonenumber.view.presenter;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
 
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
-import com.tokopedia.core.network.apiservices.accounts.UploadImageService;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
+import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.otp.securityquestion.data.factory.KtpSourceFactory;
-import com.tokopedia.otp.securityquestion.data.factory.UploadImageSourceFactory;
-import com.tokopedia.otp.securityquestion.data.model.changephonenumberrequest.ChangePhoneNumberRequestModel;
-import com.tokopedia.otp.securityquestion.data.model.changephonenumberrequest.ChangePhoneNumberRequestPass;
-import com.tokopedia.otp.securityquestion.data.model.changephonenumberrequest.CheckStatusModel;
-import com.tokopedia.otp.securityquestion.data.repository.KtpRepositoryImpl;
-import com.tokopedia.otp.securityquestion.data.repository.UploadImageRepositoryImpl;
-import com.tokopedia.otp.securityquestion.domain.interactor.changephonenumberrequest.CheckStatusUseCase;
-import com.tokopedia.otp.securityquestion.domain.interactor.changephonenumberrequest.GetUploadHostUseCase;
-import com.tokopedia.otp.securityquestion.domain.interactor.changephonenumberrequest.SubmitImageUseCase;
-import com.tokopedia.otp.securityquestion.domain.interactor.changephonenumberrequest.UploadChangePhoneNumberRequestUseCase;
-import com.tokopedia.otp.securityquestion.domain.interactor.changephonenumberrequest.UploadImageUseCase;
-import com.tokopedia.otp.securityquestion.domain.interactor.changephonenumberrequest.ValidateImageUseCase;
-import com.tokopedia.otp.securityquestion.domain.mapper.changephonenumberrequest.CheckStatusMapper;
-import com.tokopedia.otp.securityquestion.domain.mapper.changephonenumberrequest.GetUploadHostMapper;
-import com.tokopedia.otp.securityquestion.domain.mapper.changephonenumberrequest.SubmitImageMapper;
-import com.tokopedia.otp.securityquestion.domain.mapper.changephonenumberrequest.UploadImageMapper;
-import com.tokopedia.otp.securityquestion.domain.mapper.changephonenumberrequest.ValidateImageMapper;
+import com.tokopedia.network.ErrorMessageException;
+import com.tokopedia.network.service.AccountsService;
+import com.tokopedia.network.service.UploadImageService;
+import com.tokopedia.session.changephonenumber.data.factory.KtpSourceFactory;
+import com.tokopedia.session.changephonenumber.data.factory.UploadImageSourceFactory;
+import com.tokopedia.session.changephonenumber.domain.model.changephonenumberrequest.ChangePhoneNumberRequestModel;
+import com.tokopedia.session.changephonenumber.domain.model.changephonenumberrequest.ChangePhoneNumberRequestPass;
+import com.tokopedia.session.changephonenumber.domain.model.changephonenumberrequest.CheckStatusModel;
+import com.tokopedia.session.changephonenumber.data.repository.KtpRepositoryImpl;
+import com.tokopedia.session.changephonenumber.data.repository.UploadImageRepositoryImpl;
+import com.tokopedia.session.changephonenumber.domain.interactor.changephonenumberrequest.CheckStatusUseCase;
+import com.tokopedia.session.changephonenumber.domain.interactor.changephonenumberrequest.GetUploadHostUseCase;
+import com.tokopedia.session.changephonenumber.domain.interactor.changephonenumberrequest.SubmitImageUseCase;
+import com.tokopedia.session.changephonenumber.domain.interactor.changephonenumberrequest.UploadChangePhoneNumberRequestUseCase;
+import com.tokopedia.session.changephonenumber.domain.interactor.changephonenumberrequest.UploadImageUseCase;
+import com.tokopedia.session.changephonenumber.domain.interactor.changephonenumberrequest.ValidateImageUseCase;
+import com.tokopedia.session.changephonenumber.data.mapper.changephonenumberrequest.CheckStatusMapper;
+import com.tokopedia.session.changephonenumber.data.mapper.changephonenumberrequest.GetUploadHostMapper;
+import com.tokopedia.session.changephonenumber.data.mapper.changephonenumberrequest.SubmitImageMapper;
+import com.tokopedia.session.changephonenumber.data.mapper.changephonenumberrequest.UploadImageMapper;
+import com.tokopedia.session.changephonenumber.data.mapper.changephonenumberrequest.ValidateImageMapper;
 import com.tokopedia.session.R;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberRequestView;
 
@@ -46,10 +48,13 @@ import rx.Subscriber;
 
 public class ChangePhoneNumberRequestPresenterImpl implements ChangePhoneNumberRequestPresenter {
 
+    private static final int MINIMUM_NUMBER_LENGTH = 7;
+    private static final int MAXIMUM_NUMBER_LENGTH = 15;
     private final ChangePhoneNumberRequestView viewListener;
     private final CheckStatusUseCase checkStatusUseCase;
     private final UploadChangePhoneNumberRequestUseCase uploadChangePhoneNumberRequestUseCase;
     private ChangePhoneNumberRequestPass pass;
+    private String phoneNumber;
 
     public ChangePhoneNumberRequestPresenterImpl(ChangePhoneNumberRequestView viewListener) {
         this.viewListener = viewListener;
@@ -111,7 +116,16 @@ public class ChangePhoneNumberRequestPresenterImpl implements ChangePhoneNumberR
     }
 
     @Override
-    public void submitRequest() {
+    public void continueToNext() {
+        if (isValidParam()) {
+            viewListener.showLoading();
+            viewListener.onSuccessValidRequest();
+        }
+    }
+
+    @Override
+    public void submitRequest(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
         if (isValidParam()) {
             viewListener.showLoading();
             uploadChangePhoneNumberRequestUseCase.execute(getUploadChangePhoneNumberRequestParam(),
@@ -190,8 +204,16 @@ public class ChangePhoneNumberRequestPresenterImpl implements ChangePhoneNumberR
         setParamValidateImage(params);
         setParamGetUploadHost(params);
         setParamUploadIdImage(params);
-        setParamUploadBankBookImage(params);
+        if(pass.getUploadBankBookPath() != null){
+            setParamUploadBankBookImage(params);
+        }
+        setParamPhoneNumber(params);
         return params;
+    }
+
+    private void setParamPhoneNumber(RequestParams params) {
+        params.putString(UploadChangePhoneNumberRequestUseCase.PARAM_PHONE_NUMBER,
+                phoneNumber);
     }
 
     private void setParamValidateImage(RequestParams params) {
@@ -199,10 +221,12 @@ public class ChangePhoneNumberRequestPresenterImpl implements ChangePhoneNumberR
                 pass.getIdHeight());
         params.putString(UploadChangePhoneNumberRequestUseCase.PARAM_ID_WIDTH,
                 pass.getIdWidth());
-        params.putString(UploadChangePhoneNumberRequestUseCase.PARAM_BANKBOOK_HEIGHT,
-                pass.getBankBookHeight());
-        params.putString(UploadChangePhoneNumberRequestUseCase.PARAM_BANKBOOK_WIDTH,
-                pass.getBankBookWidth());
+        if(pass.getUploadBankBookPath() != null) {
+            params.putString(UploadChangePhoneNumberRequestUseCase.PARAM_BANKBOOK_HEIGHT,
+                    pass.getBankBookHeight());
+            params.putString(UploadChangePhoneNumberRequestUseCase.PARAM_BANKBOOK_WIDTH,
+                    pass.getBankBookWidth());
+        }
     }
 
     private void setParamUploadBankBookImage(RequestParams params) {
@@ -222,13 +246,42 @@ public class ChangePhoneNumberRequestPresenterImpl implements ChangePhoneNumberR
 
     @Override
     public boolean isValidParam() {
-        return pass.getUploadBankBookPath() != null && pass.getUploadIdPath() != null;
+        return pass.getUploadIdPath() != null;
     }
 
     @Override
     public void onDestroyView() {
         checkStatusUseCase.unsubscribe();
         uploadChangePhoneNumberRequestUseCase.unsubscribe();
+    }
+
+    @Override
+    public void onNewNumberTextChanged(Editable editable, int selection) {
+        String newNumber = editable.toString().replaceAll("\\s+", "");
+        newNumber = CustomPhoneNumberUtil.transform(newNumber);
+
+        if (isNumberLengthValid(newNumber)) {
+            viewListener.enableNextButton();
+        } else {
+            viewListener.disableNextButton();
+        }
+
+        if (editable.toString().length() != newNumber.length()) {
+            int lengthDifference = newNumber.length() - editable.toString().length();
+            if (selection + lengthDifference < 0)
+                viewListener.correctPhoneNumber(newNumber, 0);
+            else if (selection > newNumber.length())
+                viewListener.correctPhoneNumber(newNumber, newNumber.length());
+            else
+                viewListener.correctPhoneNumber(newNumber, selection + lengthDifference);
+
+        }
+    }
+
+    private boolean isNumberLengthValid(String newNumber) {
+        newNumber = newNumber.replace("-", "");
+        return (newNumber.length() >= MINIMUM_NUMBER_LENGTH && newNumber.length() <=
+                MAXIMUM_NUMBER_LENGTH);
     }
 
     @Override

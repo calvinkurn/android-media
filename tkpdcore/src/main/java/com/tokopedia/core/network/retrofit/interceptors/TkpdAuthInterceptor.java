@@ -22,11 +22,11 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okio.Buffer;
 
-import static com.tokopedia.core.network.retrofit.utils.NetworkCalculator.AUTHORIZATION;
-
 /**
  * @author Angga.Prasetiyo on 27/11/2015.
+ * refer {@link com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor}
  */
+@Deprecated
 public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private static final String TAG = TkpdAuthInterceptor.class.getSimpleName();
     private static final int ERROR_FORBIDDEN_REQUEST = 403;
@@ -331,7 +331,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             String responseString = response.peekBody(512).string();
             return responseString.toLowerCase().contains("invalid_request")
                     && request.header(AUTHORIZATION).contains(BEARER)
-                    && !response.request().url().encodedPath().contains(TOKEN);
+                    && !response.request().url().encodedPath().contains(TOKEN)
+                    && !response.request().url().encodedPath().contains("token");
         } catch (IOException e) {
             e.printStackTrace();
             return false;
@@ -368,9 +369,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private Request recreateRequestWithNewAccessToken(Chain chain) throws IOException {
+    }private Request recreateRequestWithNewAccessToken(Chain chain) throws IOException{
         Request newest = chain.request();
         Request.Builder newestRequestBuilder = chain.request().newBuilder();
         generateHmacAuthRequest(newest, newestRequestBuilder);

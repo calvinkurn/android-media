@@ -101,7 +101,6 @@
     <string name="phone_number">Nomor Ponsel</string>
     <string name="we_will_send_verification_code">Kami akan mengirimkan SMS kode verifikasi</string>
     <string name="title_verify">Verifikasi</string>
-    <string name="verification_code_sent_to">Kode verifikasi telah dikirimkan ke</string>
     <string name="verification_code_email_sent_to">Kode verifikasi telah dikirimkan melalui email ke</string>
     <string name="verification_code_sms_sent_to">Kode verifikasi telah dikirimkan melalui SMS ke</string>
     <string name="verification_code_call_sent_to">Kode verifikasi telah dikirimkan melalui panggilan telepon ke</string>
@@ -160,6 +159,21 @@
     <string name="title_info">Info</string>
     <string name="verification_for_security">Verifikasi untuk Keamanan</string>
     <string name="we_will_send_email_to">Untuk memastikan akun ini benar milik Anda, kami akan mengirimkan kode verifikasi melalui email ke</string>
+    <string name="change_phone_text">Setelah pengajuan Anda berhasil dan diterima, Saldo Tokopedia Anda <b>tidak dapat digunakan untuk bertransaksi selama 3x24 jam.</b></string>
+
+    <string name="make_sure_phone_is_active">Pastikan nomor ponsel  Anda aktif untuk keamanan dan kemudahan transaksi.</string>
+    <string name="minimal_6_character">Minimal 6 karakter</string>
+    <string name="please_click_this_button_to_continue">Silahkan klik tombol ini untuk melanjutkan</string>
+    <string name="to_verify_sms">Untuk memastikan akun ini benar milik Anda, kami akan mengirimkan kode verifikasi melalui SMS ke</string>
+    <string name="send_sms_verification">Kirim SMS Verifikasi</string>
+    <string name="to_verify_email">Untuk memastikan akun ini benar milik Anda, kami akan
+        mengirimkan kode verifikasi melalui email ke</string>
+    <string name="send_email_verification">Kirim Email Verifikasi</string>
+    <string name="or_login_with">Atau masuk dengan:</string>
+    <string name="limit_otp_reached_many_times">Anda telah melakukan permintaan kode berkali-kali.</string>
+    <string name="my_phone_number_is_inactive">Nomor saya sudah tidak aktif</string>
+    <string name="verification_code_sent">Kode verifikasi telah dikirim</string>
+    <string name="dialog_cancel">BATAL</string>
 
     <!-- TopProfile -->
     <string name="title_user_information">Informasi Pengguna</string>

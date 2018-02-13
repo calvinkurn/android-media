@@ -16,7 +16,6 @@ import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
@@ -25,6 +24,7 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.util.TkpdAuthWebViewClient;
 import com.tokopedia.core.util.TkpdWebView;
 
 /**
@@ -54,7 +54,7 @@ public class TokoPointWebViewFragment extends Fragment {
         }
     }
 
-    private class MyWebClient extends WebViewClient {
+    private class MyWebClient extends TkpdAuthWebViewClient {
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
@@ -93,7 +93,7 @@ public class TokoPointWebViewFragment extends Fragment {
                 }
             }
 
-            return false;
+            return super.shouldOverrideUrlLoading(view, url);
         }
 
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {

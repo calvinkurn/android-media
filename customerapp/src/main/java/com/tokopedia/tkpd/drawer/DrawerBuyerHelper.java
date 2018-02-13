@@ -28,8 +28,6 @@ import com.tokopedia.core.drawer2.view.databinder.DrawerHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
-import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.home.SimpleWebViewActivity;
 import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
@@ -59,6 +57,7 @@ import java.util.ArrayList;
 
 import static com.tokopedia.core.drawer2.view.DrawerAdapter.IS_INBOX_OPENED;
 import static com.tokopedia.core.drawer2.view.DrawerAdapter.IS_PEOPLE_OPENED;
+import static com.tokopedia.core.drawer2.view.DrawerAdapter.IS_RESO_OPENED;
 import static com.tokopedia.core.drawer2.view.DrawerAdapter.IS_SHOP_OPENED;
 
 /**
@@ -70,6 +69,7 @@ public class DrawerBuyerHelper extends DrawerHelper
         DrawerHeaderDataBinder.DrawerHeaderListener {
 
     private static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
+    private static final int VAL_DEFAULT = 0;
 
     private TextView shopName;
     private TextView shopLabel;
@@ -158,14 +158,22 @@ public class DrawerBuyerHelper extends DrawerHelper
                 true));
         data.add(getInboxMenu());
         data.add(getBuyerMenu());
+
         if (SessionHandler.isUserHasShop(context)) {
             data.add(getSellerMenu());
             data.add(getProductMenu());
+            data.add(getResoMenu());
             data.add(getGoldMerchantMenu());
             data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
                     R.drawable.ic_top_ads,
                     TkpdState.DrawerPosition.SELLER_TOP_ADS,
                     true));
+        }
+        if (!SessionHandler.isUserHasShop(context)) {
+            data.add(new DrawerItem(context.getString(R.string.drawer_title_new_reso),
+                    R.drawable.ic_reso,
+                    TkpdState.DrawerPosition.RESOLUTION_CENTER,
+                    true, getTotalResoBuyerNotif()));
         }
         data.add(new DrawerItem(context.getString(R.string.drawer_title_setting),
                 R.drawable.icon_setting,
@@ -260,6 +268,23 @@ public class DrawerBuyerHelper extends DrawerHelper
         return sellerMenu;
     }
 
+    private DrawerGroup getResoMenu() {
+        DrawerGroup resoMenu = new DrawerGroup(context.getString(R.string.drawer_title_new_reso),
+                R.drawable.ic_reso,
+                TkpdState.DrawerPosition.RESOLUTION_CENTER,
+                drawerCache.getBoolean(IS_RESO_OPENED, false),
+                getTotalResoNotif());
+        resoMenu.add(new DrawerItem(context.getString(R.string.drawer_title_new_reso_as_buyer),
+                TkpdState.DrawerPosition.RESOLUTION_CENTER_BUYER,
+                drawerCache.getBoolean(IS_RESO_OPENED, false),
+                drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER_BUYER, VAL_DEFAULT)));
+        resoMenu.add(new DrawerItem(context.getString(R.string.drawer_title_new_reso_as_seller),
+                TkpdState.DrawerPosition.RESOLUTION_CENTER_SELLER,
+                drawerCache.getBoolean(IS_RESO_OPENED, false),
+                drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER_SELLER, VAL_DEFAULT)));
+        return resoMenu;
+    }
+
     private DrawerGroup getBuyerMenu() {
         DrawerGroup buyerMenu = new DrawerGroup(context.getString(R.string.drawer_title_buyer),
                 R.drawable.icon_pembelian,
@@ -310,10 +335,6 @@ public class DrawerBuyerHelper extends DrawerHelper
                 TkpdState.DrawerPosition.INBOX_TICKET,
                 drawerCache.getBoolean(IS_INBOX_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_TICKET)));
-        inboxMenu.add(new DrawerItem(context.getString(R.string.drawer_title_resolution_center),
-                TkpdState.DrawerPosition.RESOLUTION_CENTER,
-                drawerCache.getBoolean(IS_INBOX_OPENED, false),
-                drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER)));
 
         if(SessionHandler.isUserHasShop(context)){
             inboxMenu.add(new DrawerItem(context.getString(R.string.drawer_title_seller_info),
@@ -327,7 +348,6 @@ public class DrawerBuyerHelper extends DrawerHelper
     private int getTotalInboxNotif() {
         return drawerCache.getInt(DrawerNotification.CACHE_INBOX_MESSAGE, 0) +
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_TALK, 0) +
-                drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER, 0) +
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_REVIEW, 0) +
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_TICKET, 0);
     }
@@ -343,6 +363,15 @@ public class DrawerBuyerHelper extends DrawerHelper
         return drawerCache.getInt(DrawerNotification.CACHE_SELLING_SHIPPING_STATUS, 0) +
                 drawerCache.getInt(DrawerNotification.CACHE_SELLING_SHIPPING_CONFIRMATION, 0) +
                 drawerCache.getInt(DrawerNotification.CACHE_SELLING_NEW_ORDER, 0);
+    }
+
+    private int getTotalResoBuyerNotif() {
+        return drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER_BUYER, 0);
+    }
+
+    private int getTotalResoNotif() {
+        return drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER_BUYER, 0)  +
+                drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER_SELLER, 0);
     }
 
     @Override
@@ -404,6 +433,7 @@ public class DrawerBuyerHelper extends DrawerHelper
         checkExpand(DrawerAdapter.IS_PEOPLE_OPENED, TkpdState.DrawerPosition.PEOPLE);
         checkExpand(DrawerAdapter.IS_SHOP_OPENED, TkpdState.DrawerPosition.SHOP);
         checkExpand(DrawerAdapter.IS_PRODUCT_OPENED, TkpdState.DrawerPosition.SELLER_PRODUCT_EXTEND);
+        checkExpand(DrawerAdapter.IS_RESO_OPENED, TkpdState.DrawerPosition.RESOLUTION_CENTER);
         adapter.notifyDataSetChanged();
     }
 
@@ -471,7 +501,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.SALES_LIST);
                     break;
                 case TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST:
-                    intent = SellerRouter.getActivitySellingTransactionOpportunity(context);
+                    intent = SellerRouter.getActivitySellingTransactionOpportunity(context,"");
                     context.startActivity(intent);
                     break;
                 case TkpdState.DrawerPosition.ADD_PRODUCT:
@@ -521,6 +551,30 @@ public class DrawerBuyerHelper extends DrawerHelper
                     UnifyTracking.eventClickMenuSellerInfo();
                     intent = new Intent(context, SellerInfoActivity.class);
                     context.startActivity(intent);
+                    break;
+                case TkpdState.DrawerPosition.RESOLUTION_CENTER:
+                    if (context.getApplication() instanceof TkpdCoreRouter) {
+                        context.startActivity(((TkpdCoreRouter) context.getApplication())
+                                .getResolutionCenterIntentBuyer(context));
+                        sendGTMNavigationEvent(AppEventTracking.EventLabel.RESOLUTION_CENTER);
+
+                    }
+                    break;
+                case TkpdState.DrawerPosition.RESOLUTION_CENTER_BUYER:
+                    if (context.getApplication() instanceof TkpdCoreRouter) {
+                        context.startActivity(((TkpdCoreRouter) context.getApplication())
+                                .getResolutionCenterIntentBuyer(context));
+                        sendGTMNavigationEvent(AppEventTracking.EventLabel.RESOLUTION_CENTER);
+
+                    }
+                    break;
+                case TkpdState.DrawerPosition.RESOLUTION_CENTER_SELLER:
+                    if (context.getApplication() instanceof TkpdCoreRouter) {
+                        context.startActivity(((TkpdCoreRouter) context.getApplication())
+                                .getResolutionCenterIntentSeller(context));
+                        sendGTMNavigationEvent(AppEventTracking.EventLabel.RESOLUTION_CENTER);
+
+                    }
                     break;
                 default:
                     super.onItemClicked(item);

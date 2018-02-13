@@ -3,16 +3,15 @@ package com.tokopedia.core.product.interactor;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.product.listener.ReportProductDialogView;
 import com.tokopedia.core.product.model.etalase.Etalase;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
-import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
+import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.promowidget.DataPromoWidget;
-import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 
@@ -62,8 +61,10 @@ public interface RetrofitInteractor {
 
     void downloadReportType(Context context, Integer productId, ReportProductDialogView viewListener);
 
-    void getProductCampaign(@NonNull Context context, @NonNull String productId,
-                            @NonNull ProductCampaignListener listener);
+    void getProductVariant(@NonNull Context context, @NonNull String productId,
+                              @NonNull ProductVariantListener listener);
+
+    void updateRecentView(@NonNull Context context, @NonNull String productId);
 
     void getPromo(@NonNull Context context, @NonNull String targetType, @NonNull String userId,
                   @NonNull String shopType, @NonNull PromoListener listener);
@@ -163,9 +164,9 @@ public interface RetrofitInteractor {
         void onError();
     }
 
-    interface ProductCampaignListener {
+    interface ProductVariantListener {
 
-        void onSucccess(ProductCampaign productCampaign);
+        void onSucccess(ProductVariant productVariant);
 
         void onError(String error);
     }

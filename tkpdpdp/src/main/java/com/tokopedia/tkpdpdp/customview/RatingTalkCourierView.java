@@ -155,12 +155,12 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
 
         @Override
         public void onClick(View v) {
-            Bundle bundle = new Bundle();
-            bundle.putString("product_id", String.valueOf(data.getInfo().getProductId()));
-            bundle.putString("shop_id", String.valueOf(data.getShopInfo().getShopId()));
-            bundle.putString("prod_name", data.getInfo().getProductName());
-            listener.onProductReviewClicked(bundle);
             if(data != null) {
+                String productId = String.valueOf(data.getInfo().getProductId());
+                String shopId = String.valueOf(data.getShopInfo().getShopId());
+                String productName = data.getInfo().getProductName();
+                listener.onProductReviewClicked(productId, shopId, productName);
+
                 TrackingUtils.sendMoEngageClickUlasan(data);
             }
         }

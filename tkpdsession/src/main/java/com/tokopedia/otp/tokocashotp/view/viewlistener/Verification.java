@@ -1,7 +1,9 @@
 package com.tokopedia.otp.tokocashotp.view.viewlistener;
 
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
+import android.content.Context;
+
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.VerificationViewModel;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.VerifyOtpTokoCashViewModel;
 
@@ -28,6 +30,8 @@ public interface Verification {
         boolean isCountdownFinished();
 
         void dropKeyboard();
+
+        Context getContext();
     }
 
     interface Presenter extends CustomerPresenter<Verification.View> {

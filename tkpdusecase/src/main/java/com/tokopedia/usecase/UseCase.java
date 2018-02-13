@@ -27,8 +27,17 @@ public abstract class UseCase<T> implements Interactor<T> {
     }
 
     @Override
+    public final void execute(Subscriber<T> subscriber) {
+        execute(RequestParams.EMPTY, subscriber, false);
+    }
+
+    @Override
     public final void execute(RequestParams requestParams, Subscriber<T> subscriber) {
         execute(requestParams, subscriber, false);
+    }
+
+    public final void executeSync() {
+        execute(RequestParams.EMPTY, null, true);
     }
 
     public final void executeSync(RequestParams requestParams) {

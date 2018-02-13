@@ -277,6 +277,7 @@ dependencies {
     compile project(':tkpdreputation')
     compile project(':tkpdtokocash')
     compile project(':tkpdflight')
+    compile project(':tkpdhome')
     compile project(':tkpdcontent')
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {

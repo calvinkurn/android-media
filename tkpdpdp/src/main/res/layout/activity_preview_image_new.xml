@@ -1,0 +1,68 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <com.tkpd.library.ui.widget.TouchViewPager
+        android:id="@+id/view_pager_product"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/margin_med"
+        android:paddingRight="@dimen/margin_med"
+        android:paddingTop="@dimen/margin_med"
+        android:paddingBottom="@dimen/margin_med"
+        android:background="#66000000">
+        <ImageView
+            android:id="@+id/close_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_close_white"
+            android:layout_centerVertical="true"/>
+
+        <ImageView
+            android:id="@+id/download_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/close_button"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_download"
+            android:layout_centerVertical="true"/>
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_l_medium"
+            android:textStyle="bold"
+            android:layout_toRightOf="@id/close_button"
+            android:layout_toEndOf="@id/close_button"
+            android:layout_toLeftOf="@id/download_image"
+            android:layout_toStartOf="@id/download_image"
+            android:layout_marginLeft="@dimen/margin_med"
+            android:layout_marginRight="@dimen/margin_med"
+            tools:text="Store"/>
+
+        <TextView
+            android:id="@+id/subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_small"
+            android:layout_below="@id/title"
+            android:layout_toRightOf="@id/close_button"
+            android:layout_toEndOf="@id/close_button"
+            android:layout_toLeftOf="@id/download_image"
+            android:layout_toStartOf="@id/download_image"
+            android:layout_marginLeft="@dimen/margin_med"
+            android:layout_marginRight="@dimen/margin_med"
+            tools:text="12:20"/>
+    </RelativeLayout>
+
+</RelativeLayout>
