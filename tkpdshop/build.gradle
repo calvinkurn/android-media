@@ -2,18 +2,19 @@ apply plugin: 'com.android.library'
 apply plugin: 'android-apt'
 
 def getTkpdAbstraction() {
-    return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.abstraction : project(':tkpdabstraction');
+    return project.hasProperty('isArtifact') ? rootProject.ext.tkpdDependencies.abstraction : project(':tkpdabstraction')
 }
 
 def getTkpdUseCase() {
-    return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.usecase : project(':tkpdusecase');
+    return project.hasProperty('isArtifact') ? rootProject.ext.tkpdDependencies.usecase : project(':tkpdusecase')
 }
 
 def getTkpdInterface() {
-    return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.interface : project(':tkpdinterface');
+    return project.hasProperty('isArtifact') ? rootProject.ext.tkpdDependencies.interface : project(':tkpdinterface')
+}
+
+def getTkpdCacheApi() {
+    return project.hasProperty('isArtifact') ? rootProject.ext.tkpdDependencies.cacheapi : project(':tkpdcacheapi')
 }
 
 android {
@@ -43,6 +44,7 @@ dependencies {
     compile getTkpdUseCase()
     compile getTkpdAbstraction()
     compile getTkpdInterface()
+    compile getTkpdCacheApi()
 
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler

@@ -1,17 +1,18 @@
-package com.tokopedia.seller.shop.common.utils;
+package com.tokopedia.topads.common.util;
 
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by nathan on 9/16/17.
+ * Created by nathan on 12/28/17.
  */
 
-public class ShopWhiteList {
+public class TopAdsCacheApiWhiteList {
 
     private static final long TEN_SECOND = TimeUnit.SECONDS.toSeconds(10);
     private static final long THIRTY_SECOND = TimeUnit.SECONDS.toSeconds(30);
@@ -25,15 +26,21 @@ public class ShopWhiteList {
     public static List<CacheApiWhiteListDomain> getWhiteList() {
         List<CacheApiWhiteListDomain> cacheApiWhiteList = new ArrayList<>();
 
-        // Shop info
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.BASE_DOMAIN,
-                TkpdBaseURL.Shop.PATH_SHOP + TkpdBaseURL.Shop.PATH_GET_SHOP_INFO, THREE_HOURS));
-        // Open Shop form
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.BASE_DOMAIN,
-                TkpdBaseURL.Shop.PATH_MY_SHOP + TkpdBaseURL.Shop.PATH_GET_OPEN_SHOP_FORM, ONE_HOUR));
-        // Generate Host
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.BASE_DOMAIN,
-                TkpdBaseURL.Upload.V4_ACTION_GENERATE_HOST + TkpdBaseURL.Upload.PATH_GENERATE_HOST, THREE_HOURS));
+        // TopAds Deposit
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.TOPADS_DOMAIN,
+                TopAdsNetworkConstant.PATH_DASHBOARD_DEPOSIT, TEN_SECOND));
+
+        // TopAds Credit
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.TOPADS_DOMAIN,
+                TopAdsNetworkConstant.PATH_DASHBOARD_CREDIT, ONE_HOUR));
+
+        // TopAds Statistic
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.TOPADS_DOMAIN,
+                TopAdsNetworkConstant.PATH_DASHBOARD_STATISTIC, FIVE_MINUTE));
+
+        // Suggestion Bid
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.TOPADS_DOMAIN,
+                TopAdsNetworkConstant.GET_SUGGESTION, ONE_HOUR));
 
         return cacheApiWhiteList;
     }

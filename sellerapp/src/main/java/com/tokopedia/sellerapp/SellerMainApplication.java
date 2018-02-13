@@ -30,11 +30,9 @@ import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
-import com.tokopedia.sellerapp.utils.WhiteList;
+import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
 
 import java.util.List;
-
-import rx.Subscriber;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -186,9 +184,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
                 .build());
     }
 
-    public void initCacheApi() {
+    private void initCacheApi() {
         CacheApiLoggingUtils.setLogEnabled(GlobalConfig.isAllowDebuggingTools());
-        List<CacheApiWhiteListDomain> cacheApiWhiteListDomains = WhiteList.getWhiteList();
+        List<CacheApiWhiteListDomain> cacheApiWhiteListDomains = CacheApiWhiteList.getWhiteList();
         new CacheApiWhiteListUseCase().executeSync(CacheApiWhiteListUseCase.createParams(
                 cacheApiWhiteListDomains,
                 String.valueOf(getCurrentVersion(getApplicationContext()))));

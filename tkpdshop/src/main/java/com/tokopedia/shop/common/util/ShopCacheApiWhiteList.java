@@ -1,8 +1,7 @@
-package com.tokopedia.topads.common.util;
+package com.tokopedia.shop.common.util;
 
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
+import com.tokopedia.shop.common.constant.ShopUrl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +11,7 @@ import java.util.concurrent.TimeUnit;
  * Created by nathan on 12/28/17.
  */
 
-public class TopAdsWhiteList {
+public class ShopCacheApiWhiteList {
 
     private static final long TEN_SECOND = TimeUnit.SECONDS.toSeconds(10);
     private static final long THIRTY_SECOND = TimeUnit.SECONDS.toSeconds(30);
@@ -26,21 +25,11 @@ public class TopAdsWhiteList {
     public static List<CacheApiWhiteListDomain> getWhiteList() {
         List<CacheApiWhiteListDomain> cacheApiWhiteList = new ArrayList<>();
 
-        // TopAds Deposit
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.TOPADS_DOMAIN,
-                TopAdsNetworkConstant.PATH_DASHBOARD_DEPOSIT, TEN_SECOND));
+        // Shop info
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(ShopUrl.BASE_URL, ShopUrl.SHOP_INFO_PATH, ONE_HOUR));
 
-        // TopAds Credit
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.TOPADS_DOMAIN,
-                TopAdsNetworkConstant.PATH_DASHBOARD_CREDIT, ONE_HOUR));
-
-        // TopAds Statistic
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.TOPADS_DOMAIN,
-                TopAdsNetworkConstant.PATH_DASHBOARD_STATISTIC, FIVE_MINUTE));
-
-        // Suggestion Bid
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.TOPADS_DOMAIN,
-                TopAdsNetworkConstant.GET_SUGGESTION, ONE_HOUR));
+        // Shop note
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(ShopUrl.BASE_URL, ShopUrl.SHOP_NOTE_PATH, ONE_HOUR));
 
         return cacheApiWhiteList;
     }

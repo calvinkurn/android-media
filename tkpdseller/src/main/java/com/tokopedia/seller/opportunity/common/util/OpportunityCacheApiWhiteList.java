@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  * Created by nathan on 12/28/17.
  */
 
-public class OpportunityWhiteList {
+public class OpportunityCacheApiWhiteList {
 
     private static final long TEN_SECOND = TimeUnit.SECONDS.toSeconds(10);
     private static final long THIRTY_SECOND = TimeUnit.SECONDS.toSeconds(30);
