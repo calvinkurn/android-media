@@ -96,6 +96,8 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
 
         private View borderLine;
 
+        private TextView phoneNumber;
+
         MultipleAddressItemViewHolder(View itemView) {
             super(itemView);
 
@@ -115,14 +117,16 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
 
             addressLayout = itemView.findViewById(R.id.address_layout);
 
-            addressTitle = itemView.findViewById(R.id.address_title);
+            addressTitle = itemView.findViewById(R.id.tv_text_address_description);
 
-            addressReceiverName = itemView.findViewById(R.id.address_receiver_name);
+            addressReceiverName = itemView.findViewById(R.id.tv_recipient_name);
 
-            address = itemView.findViewById(R.id.address);
+            address = itemView.findViewById(R.id.tv_recipient_address);
 
             borderLine = itemView.findViewById(R.id.border_line);
 
+            phoneNumber = itemView.findViewById(R.id.tv_recipient_phone);
+            phoneNumber.setVisibility(View.GONE);
         }
 
     }

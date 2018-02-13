@@ -16,7 +16,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/grey_400" />
+            android:background="@color/grey_300" />
 
         <LinearLayout
             android:id="@+id/total_payment_layout"
@@ -34,23 +34,29 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:fontFamily="sans-serif"
                 android:text="Total Pembayaran"
-                android:textColor="@color/black_70" />
+                android:textColor="@color/black_70"
+                android:textSize="12sp"
+                android:textStyle="normal" />
 
             <TextView
                 android:id="@+id/total_payment_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:fontFamily="sans-serif"
                 android:gravity="end"
-                android:text="-" />
+                android:text="-"
+                android:textSize="14sp"
+                android:textStyle="normal" />
 
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/grey_400" />
+            android:background="@color/grey_300" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -67,9 +73,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
                 android:text="Pilih Metode Pembayaran"
                 android:textColor="@color/white"
-                android:textStyle="bold" />
+                android:textSize="13sp"
+                android:textStyle="normal" />
 
         </LinearLayout>
 
