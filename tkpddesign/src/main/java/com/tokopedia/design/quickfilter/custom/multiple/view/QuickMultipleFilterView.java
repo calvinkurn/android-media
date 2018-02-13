@@ -48,7 +48,7 @@ public class QuickMultipleFilterView extends BaseCustomView {
     }
 
     public void renderFilter(List<QuickFilterItem> quickFilterItems) {
-        adapterFilter.addFilterTokoCashList(quickFilterItems);
+        adapterFilter.addQuickFilterList(quickFilterItems);
     }
 
 

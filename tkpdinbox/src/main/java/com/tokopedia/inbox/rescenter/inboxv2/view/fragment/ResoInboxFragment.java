@@ -164,8 +164,6 @@ public class ResoInboxFragment
         });
     }
 
-
-
     @Override
     protected String getScreenName() {
         return null;
@@ -223,7 +221,7 @@ public class ResoInboxFragment
         sortDialog.setContentView(R.layout.layout_bottomsheet_sort);
         RecyclerView rvSort = sortDialog.findViewById(R.id.rv_sort);
         rvSort.setLayoutManager(new LinearLayoutManager(getActivity()));
-        SortAdapter adapter = new SortAdapter(getActivity(), this, inboxSortModel);
+        SortAdapter adapter = new SortAdapter(this, inboxSortModel);
         rvSort.setAdapter(adapter);
         sortDialog.show();
     }
