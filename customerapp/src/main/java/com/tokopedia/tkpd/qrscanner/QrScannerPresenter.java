@@ -170,7 +170,6 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
 
     @Override
     public void destroyView() {
-        postBarCodeDataUseCase.unsubscribe();
         if (getInfoQrTokoCashUseCase != null) getInfoQrTokoCashUseCase.unsubscribe();
         if (postBarCodeDataUseCase != null) postBarCodeDataUseCase.unsubscribe();
     }
