@@ -38,12 +38,10 @@ public class CartRemoveProductAdapter
     private Context mContext;
     private List<CartItemData> mCartItemModelList;
 
-    private boolean isRemoveAll;
+    private boolean isRemoveAll = false;
 
     public CartRemoveProductAdapter(CartRemoveProductActionListener actionListener) {
         mActionListener = actionListener;
-        isRemoveAll = false;
-
     }
 
     public void updateData(List<CartItemData> cartItemModels) {
@@ -99,6 +97,7 @@ public class CartRemoveProductAdapter
         }
 
         void bindViewHolder() {
+            mCbRemoveAll.setChecked(isRemoveAll);
             mCbRemoveAll.setOnClickListener(checkBoxClickedListener());
         }
 
@@ -159,7 +158,7 @@ public class CartRemoveProductAdapter
             CartItemData.OriginData originData = cartItemModel.getOriginData();
             CartItemData.UpdatedData updatedData = cartItemModel.getUpdatedData();
 
-            mCbRemoveProduct.setChecked(isRemoveAll || isChecked);
+            mCbRemoveProduct.setChecked(isRemoveAll);
             mCbRemoveProduct.setOnClickListener(checkBoxClickedListener());
             mCbRemoveProduct.setOnCheckedChangeListener(onChangeStateListener(position));
 
@@ -185,7 +184,7 @@ public class CartRemoveProductAdapter
                 @Override
                 public void onClick(View view) {
                     isChecked = !isChecked;
-                    mCbRemoveProduct.setChecked(isRemoveAll || isChecked);
+                    mCbRemoveProduct.setChecked(isChecked);
                 }
             };
         }
