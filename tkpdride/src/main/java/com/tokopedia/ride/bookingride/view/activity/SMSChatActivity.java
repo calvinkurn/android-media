@@ -101,6 +101,8 @@ public class SMSChatActivity extends BaseActivity {
         driverPhoneTV = view.findViewById(R.id.driver_phone);
         driverImageView = view.findViewById(R.id.driver_image);
         initToolbar();
+
+        proceed();
     }
 
     private void initToolbar() {
