@@ -137,6 +137,11 @@
             android:label="@string/title_verify"
             android:screenOrientation="portrait"
             />
+        <activity
+            android:name="com.tokopedia.profile.view.activity.PeopleInfoActivity"
+            android:label="@string/title_verify"
+            android:screenOrientation="portrait"
+            />
         <!-- ======================================================= -->
         <!-- RECEIVERS REGISTRY -->
         <!-- ======================================================= -->
