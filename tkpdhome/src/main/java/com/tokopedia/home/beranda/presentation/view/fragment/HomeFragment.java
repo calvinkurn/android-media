@@ -41,7 +41,7 @@ import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.BrandsWebViewActivity;
-import com.tokopedia.core.home.SimpleWebViewActivity;
+import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -594,7 +594,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void openWebViewGimicURL(String url, String label, String title) {
         if (!url.equals("")) {
-            Intent intent = SimpleWebViewActivity.getIntentWithTitle(getActivity(), url, title);
+            Intent intent = SimpleWebViewWithFilePickerActivity.getIntentWithTitle(getActivity(), url, title);
             startActivity(intent);
             UnifyTracking.eventHomeGimmick(label);
         }
