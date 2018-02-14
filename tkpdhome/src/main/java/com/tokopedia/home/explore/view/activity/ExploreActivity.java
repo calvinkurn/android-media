@@ -133,11 +133,8 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch(requestCode){
-            case REQUEST_LOGIN:
-                Log.d(TAG, "onActivityResult request login");
-                presenter.getData();
-                break;
+        if(resultCode == RESULT_OK && requestCode == REQUEST_LOGIN){
+            presenter.getData();
         }
     }
 
