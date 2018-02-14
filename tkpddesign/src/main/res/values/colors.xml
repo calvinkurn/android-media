@@ -51,4 +51,6 @@
     <color name="bottomnav_active">@color/green_250</color>
     <color name="bottomnav_inactive">#8C000000</color>
 
+    <color name="red2">#f05f68</color>
+    <color name="green2">#87d58b</color>
 </resources>
