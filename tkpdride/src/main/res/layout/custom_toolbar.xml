@@ -19,7 +19,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/drivers_image"
+        android:layout_toEndOf="@+id/driver_image"
+        android:layout_toRightOf="@+id/driver_image"
         android:gravity="center_vertical"
         android:orientation="vertical">
 
