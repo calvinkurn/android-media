@@ -124,4 +124,6 @@ public interface ICartView extends IBaseView {
     void renderPromoView(boolean isCouponActive);
 
     Activity getActivity();
+
+    void setListnerCancelPromoLayoutOnAutoApplyCode();
 }

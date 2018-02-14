@@ -18,6 +18,7 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.applink.DigitalApplinkModule;
 import com.tokopedia.digital.applink.DigitalApplinkModuleLoader;
@@ -43,7 +44,10 @@ import com.tokopedia.tkpdpdp.applink.PdpApplinkModuleLoader;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
 
+import org.json.JSONObject;
+
 import io.branch.referral.Branch;
+import io.branch.referral.BranchError;
 
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
@@ -86,10 +90,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Branch.getInstance() != null) {
-            Branch.getInstance().setRequestMetadata("$google_analytics_client_id", TrackingUtils.getClientID());
-            Branch.getInstance().initSession(this);
-        }
+        initBranchSession();
         DeepLinkDelegate deepLinkDelegate = getDelegateInstance();
         DeepLinkAnalyticsImpl presenter = new DeepLinkAnalyticsImpl();
         if (getIntent() != null) {
@@ -154,5 +155,20 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
         Intent destination = new Intent(Intent.ACTION_VIEW);
         destination.setData(Uri.parse(webUrl));
         return destination;
+    }
+
+    private void initBranchSession() {
+        Branch branch = Branch.getInstance();
+        if (branch != null) {
+            branch.setRequestMetadata("$google_analytics_client_id", TrackingUtils.getClientID());
+            branch.initSession(new Branch.BranchReferralInitListener() {
+                @Override
+                public void onInitFinished(JSONObject referringParams, BranchError error) {
+                    if (error == null) {
+                        BranchSdkUtils.storeWebToAppPromoCodeIfExist(referringParams,DeeplinkHandlerActivity.this);
+                    }
+                }
+            }, this.getIntent().getData(), this);
+        }
     }
 }

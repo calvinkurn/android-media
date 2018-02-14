@@ -13,6 +13,8 @@ import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.var.TkpdCache;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +34,7 @@ public class BranchSdkUtils {
     private static final String BRANCH_IOS_DEEPLINK_PATH_KEY = "$ios_deeplink_path";
     private static final String BRANCH_DESKTOP_URL_KEY = "$desktop_url";
     private static final String CAMPAIGN_NAME = "Android App";
+    private static final String BRANCH_PROMOCODE_KEY="branch_promo";
     public static String REFERRAL_ADVOCATE_PROMO_CODE;
 
     private static BranchUniversalObject createBranchUniversalObject(ShareData data) {
@@ -188,6 +191,22 @@ public class BranchSdkUtils {
         REFERRAL_ADVOCATE_PROMO_CODE = null;
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.CACHE_PROMO_CODE);
         localCacheHandler.clearCache(TkpdCache.Key.KEY_CACHE_PROMO_CODE);
+    }
+
+
+    public static void storeWebToAppPromoCodeIfExist(JSONObject referringParams, Context context) {
+        try {
+            String branch_promo = referringParams.optString(BRANCH_PROMOCODE_KEY);
+            if (!TextUtils.isEmpty(branch_promo)) {
+                LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.CACHE_PROMO_CODE);
+                localCacheHandler.putString(TkpdCache.Key.KEY_CACHE_PROMO_CODE, branch_promo);
+                localCacheHandler.applyEditor();
+            }
+
+        } catch (Exception e) {
+
+        }
+
     }
 
     public interface GenerateShareContents {

@@ -1253,4 +1253,9 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         return kursIndonesia.format(value);
     }
 
+    @Override
+    public void setListnerCancelPromoLayoutOnAutoApplyCode(){
+        cancelPromoLayout.setOnClickListener(onPromoCancelled());
+
+    }
 }

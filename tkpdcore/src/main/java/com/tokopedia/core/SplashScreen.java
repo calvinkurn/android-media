@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.view.View;
 
 import com.tkpd.library.utils.CommonUtils;
@@ -26,11 +25,11 @@ import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
+import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.PasswordGenerator.PGListener;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdCache;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -213,12 +212,8 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
                 @Override
                 public void onInitFinished(JSONObject referringParams, BranchError error) {
                     if (error == null) {
-                        CommonUtils.dumper(referringParams.toString());
                         try {
-                            String branch_promo = referringParams.optString("branch_promo");
-                            if (!TextUtils.isEmpty(branch_promo)) {
-                                storeWebToAppPromoCode(branch_promo);
-                            }
+                            BranchSdkUtils.storeWebToAppPromoCodeIfExist(referringParams,SplashScreen.this);
 
                             String deeplink = referringParams.getString("$android_deeplink_path");
                             Uri uri = Uri.parse(Constants.Schemes.APPLINKS + "://" + deeplink);
@@ -237,12 +232,6 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
                 }
             }, this.getIntent().getData(), this);
         }
-    }
-
-    private void storeWebToAppPromoCode(String promoCode) {
-        LocalCacheHandler localCacheHandler = new LocalCacheHandler(SplashScreen.this, TkpdCache.CACHE_PROMO_CODE);
-        localCacheHandler.putString(TkpdCache.Key.KEY_CACHE_PROMO_CODE, promoCode);
-        localCacheHandler.applyEditor();
     }
 
 }

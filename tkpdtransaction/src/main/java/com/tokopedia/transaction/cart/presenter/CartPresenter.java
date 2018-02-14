@@ -888,6 +888,7 @@ public class CartPresenter implements ICartPresenter {
         String savedCoupon = BranchSdkUtils.getAutoApplyCouponIfAvailable(view.getActivity());
         if (!TextUtils.isEmpty(savedCoupon)) {
             processCheckVoucherCode(savedCoupon, selectedProduct);
+            view.setListnerCancelPromoLayoutOnAutoApplyCode();
         }
     }
 
