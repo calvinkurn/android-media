@@ -15,9 +15,6 @@
         <activity
             android:name=".bookingride.view.activity.RideHomeActivity"
             android:theme="@style/AppTheme.Ride.NoActionBar">
-           <!-- <intent-filter>
-                <action android:name="android.intent.action.CREATE_SHORTCUT" />
-            </intent-filter>-->
         </activity>
         <activity
             android:name=".bookingride.view.activity.GooglePlacePickerActivity"

@@ -304,10 +304,6 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             if (v == mBackBtn) {
                 if (finishOnClose && activity != null) {
                     KeyboardHandler.DropKeyboard(activity, mSearchSrcTextView);
-                    /*if (activity.isTaskRoot()) {
-                        Intent homeIntent = ((TkpdCoreRouter) activity.getApplication()).getHomeIntent(mContext);
-                        mContext.startActivity(homeIntent);
-                    }*/
                     activity.finish();
                 } else {
                     closeSearch();

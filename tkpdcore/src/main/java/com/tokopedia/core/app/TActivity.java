@@ -109,17 +109,7 @@ public abstract class TActivity extends BaseActivity {
         return true;
     }
 
-    /*@Override
-    public void onBackPressed() {
-        if (isTaskRoot() ||
-                (getIntent().getExtras() != null &&
-                        getIntent().getExtras().getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false))) {
-            Intent homeIntent = ((TkpdCoreRouter) getApplication()).getHomeIntent(this);
-            startActivity(homeIntent);
-            finish();
-        } else
-            super.onBackPressed();
-    }*/
+
 
     public void inflateView(int layoutId) {
         if (parentView != null) getLayoutInflater().inflate(layoutId, parentView);

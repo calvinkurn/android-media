@@ -283,9 +283,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             shopIntent.setAction(Intent.ACTION_VIEW);
             shopIntent.putExtras(args);
 
-            /*shopIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            shopIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);*/
-
             ShortcutInfo shopShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHOP_ID)
                     .setShortLabel(getResources().getString(R.string.longpress_jual))
                     .setLongLabel(getResources().getString(R.string.longpress_jual))
@@ -297,9 +294,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
             Intent referralIntent = ReferralActivity.getCallingIntent(this, args);
             referralIntent.setAction(Intent.ACTION_VIEW);
-
-            /*referralIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            referralIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);*/
 
             ShortcutInfo referralShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHARE_ID)
                     .setShortLabel(getResources().getString(R.string.longpress_share))
@@ -313,9 +307,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             Intent productIntent = SearchActivity.newInstance(this, args);
             productIntent.setAction(Intent.ACTION_VIEW);
 
-            /*productIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            productIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);*/
-
             ShortcutInfo productShortcut = new ShortcutInfo.Builder(this, SHORTCUT_BELI_ID)
                     .setShortLabel(getResources().getString(R.string.longpress_beli))
                     .setLongLabel(getResources().getString(R.string.longpress_beli))
@@ -328,9 +319,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
             Intent digitalIntent = DigitalCategoryListActivity.newInstance(this, args);
             digitalIntent.setAction(Intent.ACTION_VIEW);
-
-            /*digitalIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            digitalIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);*/
 
             ShortcutInfo digitalShortcut = new ShortcutInfo.Builder(this, SHORTCUT_DIGITAL_ID)
                     .setShortLabel(getResources().getString(R.string.longpress_bayar))
@@ -357,14 +345,11 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
             Intent intentHome = ((TkpdCoreRouter) getApplication()).getHomeIntent
                     (this);
-//            intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intentHome.setAction(Intent.ACTION_VIEW);
 
             Intent productIntent = SearchActivity.newInstance(this, args);
             productIntent.setAction(Intent.ACTION_VIEW);
-
-            /*productIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            productIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);*/
 
             ShortcutInfo productShortcut = new ShortcutInfo.Builder(this, SHORTCUT_BELI_ID)
                     .setShortLabel(getResources().getString(R.string.longpress_beli))
@@ -378,8 +363,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             Intent digitalIntent = DigitalCategoryListActivity.newInstance(this, args);
             digitalIntent.setAction(Intent.ACTION_VIEW);
 
-            /*digitalIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            digitalIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);*/
             ShortcutInfo digitalShortcut = new ShortcutInfo.Builder(this, SHORTCUT_DIGITAL_ID)
                     .setShortLabel(getResources().getString(R.string.longpress_bayar))
                     .setLongLabel(getResources().getString(R.string.longpress_bayar))

@@ -17,8 +17,6 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.R;
@@ -221,28 +219,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    /*@Override
-    public void onBackPressed() {
-        if (searchView.isSearchOpen()) {
-            if (searchView.isFinishOnClose() && isTaskRoot()) {
-                Intent homeIntent = ((TkpdCoreRouter) getApplication()).getHomeIntent(this);
-                startActivity(homeIntent);
-                finish();
-            } else if (searchView.isFinishOnClose()) {
-                finish();
-            } else {
-                searchView.closeSearch();
-            }
-        } else if (isTaskRoot() ||
-                (getIntent().getExtras() != null &&
-                        getIntent().getExtras().getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false))) {
-            Intent homeIntent = ((TkpdCoreRouter) getApplication()).getHomeIntent(this);
-            startActivity(homeIntent);
-            finish();
-        } else {
-            finish();
-        }
-    }*/
+
 
     @Override
     public void onBackPressed() {
