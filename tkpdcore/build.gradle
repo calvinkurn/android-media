@@ -8,11 +8,15 @@ apply plugin: 'maven-publish'
 apply plugin: 'maven'
 apply plugin: 'com.apollographql.android'
 
-group = 'com.tokopedia.core'
+group = rootProject.ext.groupModule
 version = rootProject.ext.tkpdCoreVersion
 
 def getArtifactVersionCode() {
     return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
+}
+
+def getTkpdCacheApi() {
+    return project(':tkpdcacheapi')
 }
 
 def getTkpdAbstraction() {
@@ -38,8 +42,8 @@ buildscript {
 publishing {
     publications {
         aar(MavenPublication) {
-            groupId 'com.tokopedia.core'
-            artifactId 'tkpdcore'
+            groupId rootProject.ext.groupModule
+            artifactId rootProject.ext.tkpdCoreArtifact
             version rootProject.ext.tkpdCoreVersion
             artifact("$buildDir/outputs/aar/tkpdcore-release.aar")
             pom.withXml {
@@ -103,6 +107,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
+    compile getTkpdCacheApi()
     compile getTkpdAbstraction()
 
     testCompile rootProject.ext.testDependencies.junit

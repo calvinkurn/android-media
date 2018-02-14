@@ -53,6 +53,10 @@ public interface Constants {
 
     String WEB_PLAYSTORE_BUYER_APP_URL = "https://play.google.com/store/apps/details?id=com.tokopedia.tkpd";
 
+    /**
+     * @deprecated extends {@link com.tokopedia.abstraction.constant.TkpdAppLink} on module instead
+     */
+    @Deprecated
     interface Applinks {
         String HOME = "tokopedia://home";
         String HOME_FEED = "tokopedia://home/feed";
@@ -125,8 +129,11 @@ public interface Constants {
         String BROWSER = "tokopedia://browser";
         String REGISTER = "tokopedia://registration";
         String FAVORITE = "tokopedia://home/favorite";
-        String PROMO_LIST = "tokopedia://promoNative";
+
+        String REFERRAL_WELCOME = "tokopedia://referral/{code}/{owner}";
         String KOLCOMMENT = "tokopedia://kolcomment/{id}";
+        String PROMO_LIST = "tokopedia://promoNative";
+
 
         interface SellerApp {
             String PRODUCT_ADD = "sellerapp://product/add";

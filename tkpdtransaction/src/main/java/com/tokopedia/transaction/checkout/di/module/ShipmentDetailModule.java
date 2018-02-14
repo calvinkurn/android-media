@@ -11,7 +11,6 @@ import dagger.Provides;
 /**
  * Created by Irfan Khoirul on 09/02/18.
  */
-
 @Module
 public class ShipmentDetailModule {
 

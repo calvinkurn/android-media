@@ -13,6 +13,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * @author normansyahputa on 5/18/17.
@@ -77,5 +78,30 @@ public class FlightAirportDataListSource extends DataListSource<FlightAirportCou
 
     public Observable<List<FlightAirportDB>> getPhoneCodeList(String query) {
         return flightAirportDataListDBSource.getPhoneCodeList(query);
+    }
+
+    public Observable<FlightAirportDB> getAirport(final String airportCode) {
+        return flightAirportDataListDBSource.isDataAvailable().flatMap(new Func1<Boolean, Observable<FlightAirportDB>>() {
+            @Override
+            public Observable<FlightAirportDB> call(Boolean aBoolean) {
+                if (aBoolean) {
+                    return flightAirportDataListDBSource.getAirport(airportCode);
+                } else {
+                    return getCloudData(new HashMap<String, Object>())
+                            .flatMap(new Func1<List<FlightAirportDB>, Observable<FlightAirportDB>>() {
+                                @Override
+                                public Observable<FlightAirportDB> call(List<FlightAirportDB> flightAirportDBS) {
+                                    return Observable.from(flightAirportDBS)
+                                            .filter(new Func1<FlightAirportDB, Boolean>() {
+                                                @Override
+                                                public Boolean call(FlightAirportDB airportDB) {
+                                                    return airportDB.getAirportId().equalsIgnoreCase(airportCode);
+                                                }
+                                            });
+                                }
+                            });
+                }
+            }
+        });
     }
 }

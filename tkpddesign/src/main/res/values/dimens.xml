@@ -10,6 +10,13 @@
     <dimen name="font_small">14sp</dimen>
     <dimen name="font_micro">12sp</dimen>
 
+    <dimen name="font_line_spacing_headline">38sp</dimen>
+    <dimen name="font_line_spacing_subheadline">28sp</dimen>
+    <dimen name="font_line_spacing_title_big">24sp</dimen>
+    <dimen name="font_line_spacing_title">22sp</dimen>
+    <dimen name="font_line_spacing_small">18sp</dimen>
+    <dimen name="font_line_spacing_micro">16sp</dimen>
+
     <dimen name="font_loading_height_display4">112dp</dimen>
     <dimen name="font_loading_height_display3">56dp</dimen>
     <dimen name="font_loading_height_display2">45dp</dimen>
@@ -107,4 +114,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="toolbar_elevation">4dp</dimen>
+
+    <dimen name="range_input_margin_input_text">-4dp</dimen>
 </resources>

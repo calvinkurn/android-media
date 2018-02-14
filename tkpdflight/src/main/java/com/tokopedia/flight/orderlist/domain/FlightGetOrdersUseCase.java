@@ -51,36 +51,34 @@ public class FlightGetOrdersUseCase extends UseCase<List<FlightOrder>> {
                                                             @Override
                                                             public Observable<FlightOrderJourney> call(FlightOrderJourney flightOrderJourney) {
                                                                 return Observable.zip(Observable.just(flightOrderJourney),
-                                                                        flightRepository.getAirportList(flightOrderJourney.getDepartureAiportId()),
-                                                                        flightRepository.getAirportList(flightOrderJourney.getArrivalAirportId()),
+                                                                        flightRepository.getAirportById(flightOrderJourney.getDepartureAiportId()),
+                                                                        flightRepository.getAirportById(flightOrderJourney.getArrivalAirportId()),
                                                                         Observable
                                                                                 .from(flightOrderJourney.getRouteViewModels())
                                                                                 .flatMap(new Func1<FlightDetailRouteViewModel, Observable<FlightDetailRouteViewModel>>() {
                                                                                     @Override
                                                                                     public Observable<FlightDetailRouteViewModel> call(FlightDetailRouteViewModel flightDetailRouteViewModel) {
                                                                                         return Observable.zip(Observable.just(flightDetailRouteViewModel),
-                                                                                                flightRepository.getAirportList(flightDetailRouteViewModel.getDepartureAirportCode()),
-                                                                                                flightRepository.getAirportList(flightDetailRouteViewModel.getArrivalAirportCode()),
+                                                                                                flightRepository.getAirportById(flightDetailRouteViewModel.getDepartureAirportCode()),
+                                                                                                flightRepository.getAirportById(flightDetailRouteViewModel.getArrivalAirportCode()),
                                                                                                 flightRepository.getAirlineList(flightDetailRouteViewModel.getAirlineCode()),
                                                                                                 new Func4<FlightDetailRouteViewModel,
-                                                                                                        List<FlightAirportDB>,
-                                                                                                        List<FlightAirportDB>,
+                                                                                                        FlightAirportDB,
+                                                                                                        FlightAirportDB,
                                                                                                         List<FlightAirlineDB>,
                                                                                                         FlightDetailRouteViewModel>() {
                                                                                                     @Override
                                                                                                     public FlightDetailRouteViewModel call(FlightDetailRouteViewModel flightDetailRouteViewModel,
-                                                                                                                                           List<FlightAirportDB> departureAirports,
-                                                                                                                                           List<FlightAirportDB> arrivalAirports,
+                                                                                                                                           FlightAirportDB departureAirports,
+                                                                                                                                           FlightAirportDB arrivalAirports,
                                                                                                                                            List<FlightAirlineDB> flightAirlineDBS) {
-                                                                                                        if (departureAirports != null && departureAirports.size() > 0) {
-                                                                                                            FlightAirportDB flightAirportDB = departureAirports.get(0);
-                                                                                                            flightDetailRouteViewModel.setDepartureAirportCity(flightAirportDB.getCityName());
-                                                                                                            flightDetailRouteViewModel.setDepartureAirportName(flightAirportDB.getAirportName());
+                                                                                                        if (departureAirports != null) {
+                                                                                                            flightDetailRouteViewModel.setDepartureAirportCity(departureAirports.getCityName());
+                                                                                                            flightDetailRouteViewModel.setDepartureAirportName(departureAirports.getAirportName());
                                                                                                         }
-                                                                                                        if (arrivalAirports != null && arrivalAirports.size() > 0) {
-                                                                                                            FlightAirportDB flightAirportDB = arrivalAirports.get(0);
-                                                                                                            flightDetailRouteViewModel.setArrivalAirportCity(flightAirportDB.getCityName());
-                                                                                                            flightDetailRouteViewModel.setArrivalAirportName(flightAirportDB.getAirportName());
+                                                                                                        if (arrivalAirports != null) {
+                                                                                                            flightDetailRouteViewModel.setArrivalAirportCity(arrivalAirports.getCityName());
+                                                                                                            flightDetailRouteViewModel.setArrivalAirportName(arrivalAirports.getAirportName());
                                                                                                         }
 
                                                                                                         if (flightAirlineDBS != null && flightAirlineDBS.size() > 0) {
@@ -95,24 +93,22 @@ public class FlightGetOrdersUseCase extends UseCase<List<FlightOrder>> {
                                                                                     }
                                                                                 }).toList(),
                                                                         new Func4<FlightOrderJourney,
-                                                                                List<FlightAirportDB>,
-                                                                                List<FlightAirportDB>,
+                                                                                FlightAirportDB,
+                                                                                FlightAirportDB,
                                                                                 List<FlightDetailRouteViewModel>,
                                                                                 FlightOrderJourney>() {
                                                                             @Override
                                                                             public FlightOrderJourney call(FlightOrderJourney flightOrderJourney,
-                                                                                                           List<FlightAirportDB> departureAirports,
-                                                                                                           List<FlightAirportDB> arrivalAirports,
+                                                                                                           FlightAirportDB departureAirports,
+                                                                                                           FlightAirportDB arrivalAirports,
                                                                                                            List<FlightDetailRouteViewModel> routeViewModels) {
-                                                                                if (departureAirports != null && departureAirports.size() > 0) {
-                                                                                    FlightAirportDB flightAirportDB = departureAirports.get(0);
-                                                                                    flightOrderJourney.setDepartureCityCode(flightAirportDB.getCityCode());
-                                                                                    flightOrderJourney.setDepartureCity(flightAirportDB.getCityName());
+                                                                                if (departureAirports != null) {
+                                                                                    flightOrderJourney.setDepartureCityCode(departureAirports.getCityCode());
+                                                                                    flightOrderJourney.setDepartureCity(departureAirports.getCityName());
                                                                                 }
-                                                                                if (arrivalAirports != null && arrivalAirports.size() > 0) {
-                                                                                    FlightAirportDB flightAirportDB = arrivalAirports.get(0);
-                                                                                    flightOrderJourney.setArrivalCityCode(flightAirportDB.getCityCode());
-                                                                                    flightOrderJourney.setArrivalCity(flightAirportDB.getCityName());
+                                                                                if (arrivalAirports != null) {
+                                                                                    flightOrderJourney.setArrivalCityCode(arrivalAirports.getCityCode());
+                                                                                    flightOrderJourney.setArrivalCity(arrivalAirports.getCityName());
                                                                                 }
                                                                                 if (routeViewModels != null && routeViewModels.size() > 0) {
                                                                                     flightOrderJourney.setRouteViewModels(routeViewModels);

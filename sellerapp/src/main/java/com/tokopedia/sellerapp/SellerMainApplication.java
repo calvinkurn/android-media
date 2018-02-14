@@ -1,5 +1,6 @@
 package com.tokopedia.sellerapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -14,31 +15,37 @@ import com.moengage.inapp.InAppTracker;
 import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
 import com.raizlabs.android.dbflow.config.TkpdGMGeneratedDatabaseHolder;
 import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
+import com.tokopedia.abstraction.constant.AbstractionBaseURL;
+import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
+import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
+import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.router.TkpdInboxRouter;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
-import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
-import com.tokopedia.inbox.inboxchat.activity.SendMessageActivity;
-import com.tokopedia.inbox.inboxmessageold.activity.SendMessageActivityOld;
+import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.WhiteList;
 
 import java.util.List;
 
+import rx.Observable;
+import rx.Subscriber;
+
 /**
  * Created by ricoharisin on 11/11/16.
  */
 
-public class SellerMainApplication extends SellerRouterApplication implements MoEPushCallBacks.OnMoEPushNavigationAction, InAppManager.InAppMessageListener {
+public class SellerMainApplication extends SellerRouterApplication implements MoEPushCallBacks.OnMoEPushNavigationAction,
+        InAppManager.InAppMessageListener {
 
     public static final int SELLER_APPLICATION = 2;
 
@@ -115,7 +122,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
-        initializeDatabase();
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             com.tokopedia.core.util.GlobalConfig.VERSION_NAME = pInfo.versionName;
@@ -128,6 +134,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
+        initCacheApi();
     }
 
     private void generateSellerAppBaseUrl() {
@@ -159,6 +166,10 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TkpdBaseURL.CHAT_WEBSOCKET_DOMAIN = SellerAppBaseUrl.CHAT_WEBSOCKET_DOMAIN;
         TkpdBaseURL.WALLET_DOMAIN = SellerAppBaseUrl.BASE_WALLET;
 
+        AbstractionBaseURL.JS_DOMAIN = SellerAppBaseUrl.BASE_JS_DOMAIN;
+
+        MitraToppersBaseURL.WEB_DOMAIN = SellerAppBaseUrl.BASE_WEB_DOMAIN;
+        MitraToppersBaseURL.PATH_MITRA_TOPPERS = SellerAppBaseUrl.PATH_MITRA_TOPPERS;
     }
 
     private void generateSellerAppNetworkKeys() {
@@ -166,27 +177,34 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         AuthUtil.KEY.ZEUS_WHITELIST = SellerAppNetworkKeys.ZEUS_WHITELIST;
     }
 
-    public void initializeDatabase() {
+    public void initDbFlow() {
+        super.initDbFlow();
         FlowManager.init(new FlowConfig.Builder(this)
                 .addDatabaseHolder(TkpdSellerGeneratedDatabaseHolder.class)
                 .build());
         FlowManager.init(new FlowConfig.Builder(this)
                 .addDatabaseHolder(TkpdGMGeneratedDatabaseHolder.class)
                 .build());
+        FlowManager.init(new FlowConfig.Builder(this)
+                .addDatabaseHolder(TkpdCacheApiGeneratedDatabaseHolder.class)
+                .build());
+    }
+
+    public void initCacheApi() {
+        CacheApiLoggingUtils.setLogEnabled(GlobalConfig.isAllowDebuggingTools());
+        List<CacheApiWhiteListDomain> cacheApiWhiteListDomains = WhiteList.getWhiteList();
+        new CacheApiWhiteListUseCase().executeSync(CacheApiWhiteListUseCase.createParams(
+                cacheApiWhiteListDomains,
+                String.valueOf(getCurrentVersion(getApplicationContext()))));
     }
 
     @Override
-    protected List<CacheApiWhiteListDomain> getWhiteList() {
-        return WhiteList.getWhiteList();
+    public Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest) {
+        return null;
     }
 
     @Override
-    public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String customSubject, String customMessage, String source, String avatar) {
-        if(remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
-            return ChatRoomActivity.getAskSellerIntent(context, toShopId, shopName,
-                    customSubject, customMessage, source, avatar);
-        else
-            return SendMessageActivityOld.getAskSellerIntent(context, toShopId, shopName,
-                    customSubject, customMessage, source);
+    public Intent getCartIntent(Activity activity) {
+        return null;
     }
 }

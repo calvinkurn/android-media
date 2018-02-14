@@ -5,6 +5,7 @@ import android.support.v4.util.ArrayMap;
 import android.util.Base64;
 
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
@@ -37,6 +38,10 @@ public class AuthUtil {
     private static final String HEADER_CONTENT_MD5 = "Content-MD5";
     private static final String HEADER_DATE = "Date";
     public static final String HEADER_AUTHORIZATION = "Authorization";
+    private static final String HEADER_ACCOUNTS_AUTHORIZATION = "accounts-authorization";
+    private static final String HEADER_TKPD_SESSION_ID = "tkpd-sessionid";
+    private static final String HEADER_TKPD_USER_AGENT = "tkpd-useragent";
+
     private static final String HEADER_USER_ID = "X-User-ID";
     private static final String HEADER_X_TKPD_USER_ID = "X-Tkpd-UserId";
     public static final String HEADER_DEVICE = "X-Device";
@@ -55,6 +60,7 @@ public class AuthUtil {
     private static final String PARAM_OS_TYPE = "os_type";
     private static final String PARAM_TIMESTAMP = "device_time";
     private static final String PARAM_X_TKPD_USER_ID = "x-tkpd-userid";
+    private static final String PARAM_BEARER = "Bearer ";
 
     public static final String WEBVIEW_FLAG_PARAM_FLAG_APP = "flag_app";
     public static final String WEBVIEW_FLAG_PARAM_DEVICE = "device";
@@ -65,6 +71,8 @@ public class AuthUtil {
     public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP = "1";
     public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE = "android";
     public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE = "android";
+
+    public static final String HEADER_HMAC_SIGNATURE_KEY = "TKPDROID AndroidApps:";
 
     public static Map<String, String> generateHeaderCartCheckout(String path,
                                                                  String strParam,
@@ -77,9 +85,6 @@ public class AuthUtil {
         );
 
         finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
-        //    finalHeader.put(HEADER_X_TKPD_PATH, path);
-//        finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
-//        finalHeader.put(HEADER_X_TKPD_PATH, path);
         finalHeader.put("Tkpd-UserId", SessionHandler.getLoginID(MainApplication.getAppContext()));
         finalHeader.put(HEADER_DEVICE, "android");
         finalHeader.put("Tkpd-SessionId", GCMHandler.getRegistrationId(MainApplication.getAppContext()));
@@ -91,12 +96,18 @@ public class AuthUtil {
      * default key is KEY_WSV$
      */
     public static class KEY {
+        private static final int[] RAW_KEY_WSV4 = new int[]{65, 107, 102, 105, 101, 119, 56, 51, 52, 50, 57, 56, 80, 79, 105, 110, 118};
+        private static final int[] RAW_SCROOGE_KEY = new int[]{49, 50, 69, 56, 77, 105, 69, 55, 89, 69, 54, 86, 122, 115, 69, 80, 66, 80, 101, 77};
+        private static final int[] RAW_ZEUS_KEY = new int[]{102, 100, 100, 98, 100, 56, 49, 101, 101, 52, 49, 49, 54, 98, 56, 99, 98, 55, 97, 52, 48, 56, 100, 55, 102, 98, 102, 98, 57, 99, 49, 55};
+        private static final int[] RAW_NOTP_KEY = new int[]{110, 117, 108, 97, 121, 117, 107, 97, 119, 111, 106, 117};
+        public static final String KEY_WSV4_NEW = convert(RAW_KEY_WSV4);
         public static final String KEY_WSV4 = "web_service_v4";
         public static final String KEY_MOJITO = "mojito_api_v1";
         public static final String KEY_KEROPPI = "Keroppi";
         public static final String TOKO_CASH_HMAC = "CPAnAGpC3NIg7ZSj";
-        public static String KEY_CREDIT_CARD_VAULT = "AdKc1ag2NmYgRUF97eQQ8J";
-        public static String ZEUS_WHITELIST = "abf49d067c9ca8585f3a1059464d22b9";
+        public static String KEY_CREDIT_CARD_VAULT = convert(RAW_SCROOGE_KEY);
+        public static String ZEUS_WHITELIST = convert(RAW_ZEUS_KEY);
+        public static String KEY_NOTP = convert(RAW_NOTP_KEY);
     }
 
     public static Map<String, String> generateHeadersWithXUserId(
@@ -169,10 +180,48 @@ public class AuthUtil {
         return finalHeader;
     }
 
+    public static Map<String, String> generateWebviewHeaders(String path,
+                                                             String strParam,
+                                                             String method,
+                                                             String authKey) {
+        Map<String, String> finalHeader = getDefaultHeaderMap(
+                path,
+                strParam,
+                method,
+                CONTENT_TYPE,
+                authKey,
+                DATE_FORMAT
+        );
+        finalHeader.put(
+                HEADER_ACCOUNTS_AUTHORIZATION,
+                PARAM_BEARER + SessionHandler.getAccessToken()
+        );
+        finalHeader.put(
+                HEADER_TKPD_SESSION_ID,
+                FCMCacheManager.getRegistrationIdWithTemp(MainApplication.getAppContext())
+        );
+        finalHeader.put(
+                HEADER_TKPD_USER_AGENT,
+                DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
+        );
+        return finalHeader;
+    }
+
     public static Map<String, String> generateHeaders(
             String path, String strParam, String method, String authKey, String contentType
     ) {
         Map<String, String> finalHeader = getDefaultHeaderMap(
+                path, strParam, method, contentType != null ? contentType : CONTENT_TYPE,
+                authKey, DATE_FORMAT
+        );
+        finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
+        return finalHeader;
+    }
+
+    public static Map<String, String> generateHeadersNew(
+            String path, String strParam, String method, String authKey, String contentType
+    ) {
+        Map<String, String> finalHeader = getDefaultHeaderMapNew(
                 path, strParam, method, contentType != null ? contentType : CONTENT_TYPE,
                 authKey, DATE_FORMAT
         );
@@ -199,6 +248,8 @@ public class AuthUtil {
         return finalHeader;
     }
 
+    //depecrated, use getDefaultHeaderMapNew() instead
+    @Deprecated
     public static Map<String, String> getDefaultHeaderMap(String path, String strParam, String method,
                                                           String contentType, String authKey, String dateFormat) {
         String date = generateDate(dateFormat);
@@ -215,6 +266,31 @@ public class AuthUtil {
         headerMap.put(HEADER_CONTENT_MD5, contentMD5);
         headerMap.put(HEADER_DATE, date);
         headerMap.put(HEADER_AUTHORIZATION, "TKPD Tokopedia:" + signature.trim());
+        headerMap.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
+        headerMap.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
+        headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
+
+        headerMap.put(HEADER_USER_ID, userId);
+        headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
+        return headerMap;
+    }
+
+    public static Map<String, String> getDefaultHeaderMapNew(String path, String strParam, String method,
+                                                             String contentType, String authKey, String dateFormat) {
+        String date = generateDate(dateFormat);
+        String contentMD5 = generateContentMd5(strParam);
+        String userId = SessionHandler.getLoginID(MainApplication.getAppContext());
+
+        String authString = method + "\n" + contentMD5 + "\n" + contentType + "\n" + date + "\n" + path;
+        String signature = calculateRFC2104HMAC(authString, authKey);
+
+        Map<String, String> headerMap = new ArrayMap<>();
+        headerMap.put(HEADER_CONTENT_TYPE, contentType);
+        headerMap.put(HEADER_X_METHOD, method);
+        headerMap.put(HEADER_REQUEST_METHOD, method);
+        headerMap.put(HEADER_CONTENT_MD5, contentMD5);
+        headerMap.put(HEADER_DATE, date);
+        headerMap.put(HEADER_AUTHORIZATION, HEADER_HMAC_SIGNATURE_KEY + signature.trim());
         headerMap.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         headerMap.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
         headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
@@ -492,5 +568,13 @@ public class AuthUtil {
             e.printStackTrace();
             return "";
         }
+    }
+
+    private static String convert(int[] key) {
+        String finalKey = "";
+        for (int i : key) {
+            finalKey = finalKey + Character.toString((char) i);
+        }
+        return finalKey;
     }
 }

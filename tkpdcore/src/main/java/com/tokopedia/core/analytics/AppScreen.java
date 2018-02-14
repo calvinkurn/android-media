@@ -266,6 +266,8 @@ public final class AppScreen {
     public static final String SCREEN_DISCOVERY_PAGE = "Discovery Page";
     public static final String SCREEN_CHAT = "inbox-chat";
     public static final String SCREEN_CHAT_DETAIL = "chat detail";
+    public static final String SCREEN_TEMPLATE_CHAT_SETTING = "template setting";
+    public static final String SCREEN_TEMPLATE_CHAT_SET = "template update";
 
     public static final String SCREEN_SELECT_VERIFICATION_METHOD = "change method";
     public static final String SCREEN_COTP_DEFAULT = "Input OTP";
@@ -282,6 +284,13 @@ public final class AppScreen {
 
     public static final String SCREEN_CHANGE_PHONE_NUMBER_WARNING = "Warning";
     public static final String SCREEN_CHANGE_PHONE_NUMBER_INPUT = "Change Number";
+
+    public static class UnifyScreenTracker {
+        public static final String SCREEN_UNIFY_HOME_BERANDA = "/";
+        public static final String SCREEN_UNIFY_HOME_FEED = "/feed";
+        public static final String SCREEN_UNIFY_HOME_SHOP_FAVORIT = "/fav-shop";
+        public static final String SCREEN_UNIFY_HOME_HOTLIST = "/hotlist";
+    }
 
     private AppScreen() {
 

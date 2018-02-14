@@ -153,6 +153,7 @@ public class SessionHandler {
         LocalCacheHandler.clearCache(context, CACHE_PHONE_VERIF_TIMER);
         LocalCacheHandler.clearCache(context, TkpdCache.DIGITAL_INSTANT_CHECKOUT_HISTORY);
         LocalCacheHandler.clearCache(context, TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER);
+        LocalCacheHandler.clearCache(context, TOKOCASH_SESSION);
         logoutInstagram(context);
         MethodChecker.removeAllCookies(context);
         LocalCacheHandler.clearCache(context, DrawerHelper.DRAWER_CACHE);
@@ -162,6 +163,8 @@ public class SessionHandler {
         AppWidgetUtil.sendBroadcastToAppWidget(context);
 
         deleteCacheBalanceTokoCash();
+
+        LocalCacheHandler.clearCache(context,TkpdCache.REFERRAL);
         deleteCacheTokoPoint();
     }
 
@@ -269,9 +272,17 @@ public class SessionHandler {
     }
 
     public static String getShopID(Context context) {
-        String shopId = null;
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        shopId = sharedPrefs.getString(SHOP_ID, DEFAULT_EMPTY_SHOP_ID);
+        String shopId = sharedPrefs.getString(SHOP_ID, DEFAULT_EMPTY_SHOP_ID);
+        if (DEFAULT_EMPTY_SHOP_ID_ON_PREF.equals(shopId)) {
+            shopId = DEFAULT_EMPTY_SHOP_ID;
+        }
+        return shopId;
+    }
+
+    public String getShopID() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        String shopId = sharedPrefs.getString(SHOP_ID, DEFAULT_EMPTY_SHOP_ID);
         if (DEFAULT_EMPTY_SHOP_ID_ON_PREF.equals(shopId)) {
             shopId = DEFAULT_EMPTY_SHOP_ID;
         }
@@ -285,6 +296,12 @@ public class SessionHandler {
         return u_name;
     }
 
+    /**
+     * Use shop info use case to get gold merchant status
+     * @param context
+     * @return
+     */
+    @Deprecated
     public static boolean isGoldMerchant(Context context) {
         Boolean isGoldMerchant = false;
         SharedPreferences sharedPrefs = context.getSharedPreferences(SHOP_DOMAIN, Context.MODE_PRIVATE);
@@ -293,6 +310,11 @@ public class SessionHandler {
         return isGoldMerchant;
     }
 
+    /**
+     * Use shop info use case to get gold merchant status
+     * @param context
+     * @param goldMerchant
+     */
     public static void setGoldMerchant(Context context, int goldMerchant) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(SHOP_DOMAIN, Context.MODE_PRIVATE);
         Editor edit = sharedPrefs.edit();
@@ -505,7 +527,16 @@ public class SessionHandler {
 
     public static boolean isUserHasShop(Context context) {
         String shopID = SessionHandler.getShopID(context);
-        return !TextUtils.isEmpty(shopID) && !DEFAULT_EMPTY_SHOP_ID.equals(shopID);
+        return isShopIdValid(shopID);
+    }
+
+    public boolean isUserHasShop() {
+        String shopID = getShopID();
+        return isShopIdValid(shopID);
+    }
+
+    private static boolean isShopIdValid(String shopId) {
+        return !TextUtils.isEmpty(shopId) && !DEFAULT_EMPTY_SHOP_ID.equals(shopId);
     }
 
     public static String getUUID(Context context) {
@@ -590,13 +621,6 @@ public class SessionHandler {
 
     public String getLoginID() {
         return getLoginID(context);
-    }
-
-    public String getShopID() {
-        String shopId = null;
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        shopId = sharedPrefs.getString(SHOP_ID, DEFAULT_EMPTY_SHOP_ID);
-        return shopId;
     }
 
     public String getLoginName() {
@@ -689,15 +713,14 @@ public class SessionHandler {
     }
 
     public void setTokenTokoCash(String token) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(TOKOCASH_SESSION, Context.MODE_PRIVATE);
-        Editor editor = sharedPrefs.edit();
-        saveToSharedPref(editor, ACCESS_TOKEN_TOKOCASH, token);
-        editor.apply();
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TOKOCASH_SESSION);
+        localCacheHandler.putString(ACCESS_TOKEN_TOKOCASH, token);
+        localCacheHandler.applyEditor();
     }
 
     public static String getAccessTokenTokoCash() {
-        SharedPreferences sharedPrefs = MainApplication.getAppContext().getSharedPreferences(TOKOCASH_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(ACCESS_TOKEN_TOKOCASH, "");
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(MainApplication.getAppContext(), TOKOCASH_SESSION);
+        return localCacheHandler.getString(ACCESS_TOKEN_TOKOCASH, "");
     }
 
     public void setUUID(String uuid) {

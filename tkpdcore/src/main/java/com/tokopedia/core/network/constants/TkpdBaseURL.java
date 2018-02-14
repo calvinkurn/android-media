@@ -60,7 +60,7 @@ public class TkpdBaseURL {
     public static String BASE_API_DOMAIN = "https://api.tokopedia.com/";
 
     public static String WALLET_DOMAIN = "https://www.tokocash.com/";
-    public static String TOKOPOINT_API_DOMAIN = "https://api.tokopedia.com/tokoplus/";
+    public static String TOKOPOINT_API_DOMAIN = "https://gw.tokopedia.com/tokopoints/api/";
     public static String PROMO_API_DOMAIN = "https://www.tokopedia.com/promo/";
 
     public static class Product {
@@ -634,7 +634,7 @@ public class TkpdBaseURL {
         public static final String PATH_WISHLIST = "wishlist/";
         public static final String PATH_WISH_LIST_V_1_1 = "v1.1";
         public static final String API_HOME_CATEGORY_MENU = "/api/v1.3/layout/category";
-        public static final String API_HOME_CATEGORY_MENU_V2 = "/api/v2/layout/category";
+        public static final String API_HOME_CATEGORY_MENU_V2 = "/api/v2.1/layout/category";
         public static final String PATH_USER_RECENT_VIEW = "users/";
         public static final String PATH_RECENT_VIEW = "/recentview/products/v1";
         public static final String API_V1_BRANDS = "/os/api/v1/brands/list";
@@ -648,20 +648,6 @@ public class TkpdBaseURL {
         public static final String PATH_V1_BRAND_CAMPAIGN_DETAIL = "/os/v1/campaign/product_detail";
         public static final String PATH_V1_BRAND_CAMPAIGN_PRODUCT = "/os/v1/campaign/product/info";
         public static final String PATH_OS_BANNER = "/os/api/search/banner/android";
-    }
-
-
-    public static class Recharge {
-        public static final String VERSION = "v1.4";
-        public static final String RECHARGE = "recharge";
-
-        public static final String PATH_STATUS = VERSION + "/status";
-        public static final String PATH_CATEGORY = VERSION + "/category/list";
-        public static final String PATH_OPERATOR = VERSION + "/operator/list";
-        public static final String PATH_PRODUCT = VERSION + "/product/list";
-        public static final String PATH_RECENT_NUMBER = VERSION + "/recent-number";
-        public static final String PATH_LAST_ORDER = VERSION + "/last-order";
-        public static final String PATH_SALDO = "/saldo/";
     }
 
     public static class KunyitTalk {
@@ -817,13 +803,10 @@ public class TkpdBaseURL {
         public static final String PATH_CATEGORY = "category";
         public static final String PATH_OPERATOR = "operator/list";
         public static final String PATH_PRODUCT = "product/list";
-        public static final String PATH_RECENT_NUMBER = "recent-number";
-        public static final String PATH_NUMBER_LIST = "favorite/list";
-        public static final String PATH_LAST_ORDER = "last-order";
+        public static final String PATH_FAVORITE_LIST = "favorite/list";
         public static final String PATH_SALDO = "saldo";
         public static final String PATH_GET_CART = "cart";
         public static final String PATH_PATCH_OTP_SUCCESS = "cart/otp-success";
-        public static final String PATH_BANNER = "banner";
         public static final String PATH_ORDER = "order";
         public static final String PATH_ADD_TO_CART = "cart";
         public static final String PATH_CHECKOUT = "checkout";
@@ -917,6 +900,9 @@ public class TkpdBaseURL {
         public static final String PATH_CANCEL_TRANSACTION = "cancel";
         public static final String PATH_ZEUS_CHECK_WHITELIST = "zeus/whitelist/status";
         public static final String PATH_ZEUS_UPDATE_WHITELIST = "zeus/whitelist";
+
+        public static final String CDN_IMG_ANDROID_DOMAIN = "https://ecs7.tokopedia.net/img/android/";
+
     }
 
     public static class FinTech {
@@ -947,6 +933,7 @@ public class TkpdBaseURL {
     public static class Reputation {
         public static final String URL_REPUTATION = BASE_DOMAIN + "reputationapp/";
         public static final String PATH_SEND_REPUTATION_SMILEY = "reputation/api/v1/insert";
+        public static final String REPUTATIONAPP_REVIEW_API = "reputationapp/review/api/";
         private static final String REPUTATION_VERSION = "v1";
         public static final String PATH_GET_INBOX_REPUTATION = "reputation/api/"
                 + REPUTATION_VERSION + "/inbox";
@@ -971,6 +958,16 @@ public class TkpdBaseURL {
                 + REPUTATION_VERSION + "/likedislike";
         public static final String PATH_LIKE_DISLIKE_REVIEW = "review/api/"
                 + REPUTATION_VERSION + "/likedislike";
+        public static final String PATH_GET_REVIEW_PRODUCT_LIST = REPUTATIONAPP_REVIEW_API
+                + REPUTATION_VERSION + "/product";
+        public static final String PATH_GET_REVIEW_SHOP_LIST = REPUTATIONAPP_REVIEW_API
+                + REPUTATION_VERSION + "/shop";
+        public static final String PATH_GET_REVIEW_HELPFUL_LIST = REPUTATIONAPP_REVIEW_API
+                + REPUTATION_VERSION + "/mosthelpful";
+        public static final String PATH_GET_REVIEW_PRODUCT_RATING = REPUTATIONAPP_REVIEW_API
+                + REPUTATION_VERSION + "/rating";
+        public static final String PATH_GET_REVIEW_PRODUCT_COUNT = REPUTATIONAPP_REVIEW_API
+                + REPUTATION_VERSION + "/total/p/";
     }
 
     public class TkpdCart {
@@ -1006,9 +1003,15 @@ public class TkpdBaseURL {
         public static final String PATH_ORDER_HISTORY = "/v4/order/history";
     }
 
+
+    public class Referral {
+        public static final String PATH_GET_REFERRAL_VOUCHER_CODE = "galadriel/promos/referral/code";
+    }
+
     public class Promo {
         public static final String PATH_MENU_INDEX = "wp-json/wp/v2/hmenu";
         public static final String PATH_PROMO_LIST = "wp-json/wp/v2/posts";
+
     }
 
     public class Cart {

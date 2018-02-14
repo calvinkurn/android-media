@@ -3,6 +3,7 @@ package com.tokopedia.transaction.checkout.domain;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.transaction.checkout.domain.response.addtocart.AddToCartDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.cartlist.CartDataListResponse;
 import com.tokopedia.transaction.checkout.domain.response.deletecart.DeleteCartDataResponse;
 
@@ -40,6 +41,11 @@ public class CartRepositoryDataDummy implements ICartRepository {
                 return generateDummyDeleteCart();
             }
         });
+    }
+
+    @Override
+    public Observable<AddToCartDataResponse> addToCartData(TKPDMapParam<String, String> param) {
+        return null;
     }
 
     private DeleteCartDataResponse generateDummyDeleteCart() {

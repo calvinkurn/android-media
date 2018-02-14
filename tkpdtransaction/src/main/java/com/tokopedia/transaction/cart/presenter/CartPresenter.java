@@ -721,7 +721,6 @@ public class CartPresenter implements ICartPresenter {
             view.showToastMessage(view.getStringFromResource(
                     R.string.label_message_error_cannot_checkout));
         } else {
-            saveCartDataToCache(checkoutData, cartItemList);
             Bundle bundle = new Bundle();
             bundle.putParcelable(TopPayIntentService.EXTRA_CHECKOUT_DATA, checkoutData);
             bundle.putInt(TopPayIntentService.EXTRA_ACTION,
@@ -904,11 +903,6 @@ public class CartPresenter implements ICartPresenter {
                 && !cartItem.getCartErrorMessage2().equals("0"))
                 || (cartItem.getCartErrorMessage1() != null
                 && !cartItem.getCartErrorMessage1().equals("0"));
-    }
-
-
-    private void saveCartDataToCache(CheckoutData checkoutData, List<CartItem> cartItemList) {
-        cartDataInteractor.saveCartDataToCache(checkoutData, cartItemList);
     }
 
     @Override

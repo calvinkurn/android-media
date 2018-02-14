@@ -11,6 +11,7 @@ import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.data.ShopAd;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDetailGroupFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDetailShopFragment;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewScheduleNewGroupFragment;
 
 public class TopAdsDetailShopActivity extends BaseSimpleActivity {
 
@@ -30,11 +31,13 @@ public class TopAdsDetailShopActivity extends BaseSimpleActivity {
         }else{
             ShopAd ad = null;
             String adId = null;
+            boolean isEnoughDeposit = false;
             if (getIntent() != null && getIntent().getExtras() != null) {
                 ad = getIntent().getExtras().getParcelable(TopAdsExtraConstant.EXTRA_AD);
                 adId = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
+                isEnoughDeposit = getIntent().getBooleanExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, false);
             }
-            fragment = TopAdsDetailShopFragment.createInstance(ad, adId);
+            fragment = TopAdsDetailShopFragment.createInstance(ad, adId, isEnoughDeposit);
             return fragment;
         }
     }

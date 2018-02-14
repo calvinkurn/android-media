@@ -114,6 +114,11 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     }
 
     @Override
+    public void renderEmptyResultGetPromoDataList() {
+        handleErrorEmptyState(getString(R.string.message_error_data_empty_get_promo_list));
+    }
+
+    @Override
     public void renderErrorHttpGetPromoDataList(String message) {
         handleErrorEmptyState(message);
     }
@@ -121,6 +126,16 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     @Override
     public void renderErrorNoConnectionGetPromoDataList(String message) {
         handleErrorEmptyState(message);
+    }
+
+    @Override
+    public void renderErrorLoadNextPage(String message, int actualPage) {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                dPresenter.processGetPromoListLoadMore(filterSelected, promoMenuData.getTitle());
+            }
+        }).showRetrySnackbar();
     }
 
     @Override
@@ -142,6 +157,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     public Context getActivityContext() {
         return getActivity();
     }
+
 
     @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
@@ -354,7 +370,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
         if (getActivity().getApplication() instanceof TkpdCoreRouter) {
             TkpdCoreRouter tkpdCoreRouter = (TkpdCoreRouter) getActivity().getApplication();
 //            if (!TextUtils.isEmpty(appLink) && tkpdCoreRouter.isSupportedDelegateDeepLink(appLink))
-//                tkpdCoreRouter.actionAppLink(getActivity(), appLink);
+//                tkpdCoreRouter.actionApplinkFromActivity(getActivity(), appLink);
 //            else
                 tkpdCoreRouter.actionOpenGeneralWebView(getActivity(), redirectUrl);
         }
@@ -402,9 +418,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        endlessRecyclerviewListener.resetState();
-                        dPresenter.setPage(1);
-                        dPresenter.processGetPromoList(filterSelected, promoMenuData.getTitle());
+                        refreshHandler.startRefresh();
                     }
                 });
     }

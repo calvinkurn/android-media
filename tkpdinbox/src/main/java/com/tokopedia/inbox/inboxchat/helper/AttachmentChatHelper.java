@@ -25,10 +25,10 @@ public class AttachmentChatHelper {
     private static final String DEFAULT = "1";
 
     public void parse(ImageView view, TextView message, final Attachment attachment, String role, String msg, final ChatRoomContract.View viewListener) {
-        if(attachment!=null){
-            switch (attachment.getType()){
+        if (attachment != null) {
+            switch (attachment.getType()) {
                 case DEFAULT:
-                    parseType(view, message, attachment,role, msg, viewListener);
+                    parseType(view, message, attachment, role, msg, viewListener);
                     break;
                 default:
                     parseDefaultType(message, attachment, viewListener);
@@ -42,24 +42,24 @@ public class AttachmentChatHelper {
     }
 
     private void parseType(final ImageView view, TextView message, final Attachment attachment, String role, String msg, final ChatRoomContract.View viewListener) {
-        if(attachment.getAttributes().getImageUrl()!=null) {
+        if (attachment.getAttributes().getImageUrl() != null) {
             view.setVisibility(View.VISIBLE);
             ImageHandler.loadImageChat(view, attachment.getAttributes().getImageUrl(), R.drawable.product_no_photo_default);
-        }else {
+        } else {
             view.setVisibility(View.GONE);
         }
 
         boolean isAdmin = role.toLowerCase().contains(ROLE_ADMINISTRATOR.toLowerCase()) || role.toLowerCase().contains(ROLE_OFFICIAL.toLowerCase());
-        if(isAdmin){
+        if (isAdmin) {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (attachment != null && attachment.getFallbackAttachment()!=null) {
-                        viewListener.onGoToWebView(attachment.getAttributes().getUrl());
+                    if (attachment != null && attachment.getFallbackAttachment() != null) {
+                        viewListener.onGoToWebView(attachment.getAttributes().getUrl(), attachment.getId());
                     }
                 }
             });
-        }else {
+        } else {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -71,31 +71,38 @@ public class AttachmentChatHelper {
         setMessage(attachment, viewListener, message);
     }
 
-    private void setMessage(Attachment attachment, final ChatRoomContract.View viewListener, final TextView message){
-        if(attachment.getFallbackAttachment().getMessage()!=null){
+    private void setMessage(final Attachment attachment, final ChatRoomContract.View viewListener, final TextView message) {
+        if (attachment.getFallbackAttachment().getMessage() != null) {
             final FallbackAttachment fallback = attachment.getFallbackAttachment();
-            String string = String.format("%s\n%s", fallback.getMessage(), fallback.getSpan());
 
-            Spannable spannable = new SpannableString(string);
+            Spannable spannable = new SpannableString(fallback.getMessage());
 
-            spannable.setSpan(new ClickableSpan() {
-                                  @Override
-                                  public void onClick(View view) {
-                                      viewListener.onGoToWebView(fallback.getUrl());
+            if (hasFallback(fallback.getSpan())) {
+                String string = String.format("%s\n%s", fallback.getMessage(), fallback.getSpan());
+                spannable = new SpannableString(string);
+                spannable.setSpan(new ClickableSpan() {
+                                      @Override
+                                      public void onClick(View view) {
+                                          viewListener.onGoToWebView(fallback.getUrl(), attachment.getId());
+                                      }
+
+                                      @Override
+                                      public void updateDrawState(TextPaint ds) {
+                                          ds.setColor(message.getContext().getResources().getColor(com.tokopedia.core.R.color.medium_green));
+                                          ds.setUnderlineText(false);
+                                      }
                                   }
-
-                                  @Override
-                                  public void updateDrawState(TextPaint ds) {
-                                      ds.setColor(message.getContext().getResources().getColor(com.tokopedia.core.R.color.medium_green));
-                                      ds.setUnderlineText(false);
-                                  }
-                              }
-                    , string.indexOf(fallback.getSpan())
-                    , string.length()
-                    , 0);
+                        , string.indexOf(fallback.getSpan())
+                        , string.length()
+                        , 0);
+            }
 
             message.setText(spannable, TextView.BufferType.SPANNABLE);
 
         }
+    }
+
+    private boolean hasFallback(String fallback) {
+        return fallback != null;
     }
 }

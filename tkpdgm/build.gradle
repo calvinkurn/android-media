@@ -4,14 +4,14 @@ apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
 apply plugin: 'maven'
 
-group = 'com.tokopedia.core'
+group = rootProject.ext.groupModule
 version = rootProject.ext.tkpdGmVersion
 
 publishing {
     publications {
         aar(MavenPublication) {
-            groupId 'com.tokopedia.core'
-            artifactId 'tkpdgm'
+            groupId rootProject.ext.groupModule
+            artifactId rootProject.ext.tkpdGmArtifact
             version rootProject.ext.tkpdGmVersion
             artifact("$buildDir/outputs/aar/tkpdgm-release.aar")
             pom.withXml {

@@ -47,14 +47,15 @@ import com.tokopedia.core.product.model.productdetail.promowidget.DataPromoWidge
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
-import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.OldSessionRouter;
+import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.talk.talkproduct.activity.TalkProductActivity;
@@ -80,6 +81,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.network.apiservices.galadriel.GaladrielApi.VALUE_TARGET_GOLD_MERCHANT;
 import static com.tokopedia.core.network.apiservices.galadriel.GaladrielApi.VALUE_TARGET_GUEST;
@@ -148,11 +153,42 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
-    public void processToCart(@NonNull Context context, @NonNull ProductCartPass data) {
+    public void processToCart(@NonNull Activity context, @NonNull ProductCartPass data) {
         sendAppsFlyerCheckout(context, data);
-        viewListener.navigateToActivity(
-                TransactionAddToCartRouter.createInstanceAddToCartActivity(context, data)
-        );
+
+        if (context.getApplication() instanceof PdpRouter) {
+            ((PdpRouter) context.getApplication()).addToCartProduct(
+                    new AddToCartRequest.Builder()
+                            .productId(Integer.parseInt(data.getProductId()))
+                            .notes("")
+                            .quantity(data.getMinOrder())
+                            .shopId(Integer.parseInt(data.getShopId()))
+                            .build()
+            ).subscribeOn(Schedulers.newThread())
+                    .unsubscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<AddToCartResult>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                            viewListener.showToastMessage(e.getMessage());
+                        }
+
+                        @Override
+                        public void onNext(AddToCartResult addToCartResult) {
+                            viewListener.showToastMessage(addToCartResult.getMessage());
+                        }
+                    });
+        }
+
+//        viewListener.navigateToActivity(
+//                TransactionAddToCartRouter.createInstanceAddToCartActivity(context, data)
+//        );
         UnifyTracking.eventPDPCart();
     }
 
@@ -166,12 +202,11 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
-    public void processToReputation(@NonNull Context context, @NonNull Bundle bundle) {
+    public void processToReputation(@NonNull Context context, String productId, String productName) {
         UnifyTracking.eventPDPReputation();
         if (context.getApplicationContext() instanceof PdpRouter) {
             Intent intent = ((PdpRouter) context.getApplicationContext())
-                    .getProductReputationIntent(context);
-            intent.putExtras(bundle);
+                    .getProductReputationIntent(context, productId, productName);
             viewListener.navigateToActivity(intent);
         }
     }
@@ -308,7 +343,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             getTalk(context, productDetailData.getInfo().getProductId().toString(), productDetailData.getShopInfo().getShopId());
                             getMostHelpfulReview(context, productDetailData.getInfo().getProductId
                                     ().toString(), productDetailData.getShopInfo().getShopId());
-                            String shopType = productDetailData.getShopInfo().getShopIsOfficial()== SHOP_IS_OFFICIAL_TRUE ? OFFICIAL_STORE_TYPE : MERCHANT_TYPE;
+                            String shopType = productDetailData.getShopInfo().getShopIsOfficial() == SHOP_IS_OFFICIAL_TRUE ? OFFICIAL_STORE_TYPE : MERCHANT_TYPE;
                             if (!GlobalConfig.isSellerApp()) {
                                 getPromoWidget(context, generatePromoTargetType(productDetailData, context),
                                         SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID, shopType);
@@ -812,11 +847,11 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         getMostHelpfulReview(context, data.getInfo().getProductId().toString(),
                                 data.getShopInfo().getShopId());
                         getTalk(context, data.getInfo().getProductId().toString(), data.getShopInfo().getShopId());
-                        String shopType = data.getShopInfo().getShopIsOfficial()==SHOP_IS_OFFICIAL_TRUE ? OFFICIAL_STORE_TYPE : MERCHANT_TYPE;
+                        String shopType = data.getShopInfo().getShopIsOfficial() == SHOP_IS_OFFICIAL_TRUE ? OFFICIAL_STORE_TYPE : MERCHANT_TYPE;
                         if (!GlobalConfig.isSellerApp()) {
                             getPromoWidget(context, generatePromoTargetType(data, context),
-                                    SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID,shopType
-                                    );
+                                    SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID, shopType
+                            );
                         }
                     }
 

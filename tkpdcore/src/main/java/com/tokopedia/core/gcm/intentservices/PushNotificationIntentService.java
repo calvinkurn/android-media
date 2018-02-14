@@ -50,7 +50,6 @@ public class PushNotificationIntentService extends IntentService {
         @Override
         public void onError(Throwable e) {
             e.printStackTrace();
-            FCMCacheManager.setFcmExpired(getApplicationContext());
         }
 
         @Override

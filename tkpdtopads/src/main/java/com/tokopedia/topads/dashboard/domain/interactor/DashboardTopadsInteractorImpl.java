@@ -53,7 +53,7 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
     public DashboardTopadsInteractorImpl(Context context) {
         this.context = context;
         compositeSubscription = new CompositeSubscription();
-        topAdsManagementService = new TopAdsManagementService(new SessionHandler(context).getAccessToken(context));
+        topAdsManagementService = new TopAdsManagementService(new SessionHandler(context));
         topAdsCacheDataSource = new TopAdsCacheDataSourceImpl(context);
     }
 

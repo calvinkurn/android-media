@@ -5,5 +5,6 @@
     android:layout_marginBottom="@dimen/margin_ms"
     android:background="@drawable/bg_rect_stroke_lighter_gray"
     app:eo_checked="false"
+    app:eo_enable_animation="true"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto" />

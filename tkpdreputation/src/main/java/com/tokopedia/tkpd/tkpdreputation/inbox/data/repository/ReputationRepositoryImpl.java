@@ -3,18 +3,24 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.data.repository;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.GetLikeDislikeReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
+import com.tokopedia.tkpd.tkpdreputation.domain.model.ReportReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.ReputationFactory;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendReplyReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.CheckShopFavoriteDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.FavoriteShopDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReviewDomain;
-import com.tokopedia.tkpd.tkpdreputation.domain.model.ReportReviewDomain;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.CheckShopFavoriteDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendReplyReviewDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendSmileyReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewSubmitDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewValidateDomain;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendSmileyReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SkipReviewDomain;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewHelpful;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewProduct;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewShop;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewstarcount.DataResponseReviewStarCount;
+
+import java.util.HashMap;
 
 import rx.Observable;
 
@@ -140,5 +146,33 @@ public class ReputationRepositoryImpl implements ReputationRepository {
         return reputationFactory
                 .createCloudLikeDislikeDataSource()
                 .getLikeDislikeReview(requestParams);
+    }
+
+    @Override
+    public Observable<DataResponseReviewProduct> getReviewProductList(String productId, String page, String perPage, String rating) {
+        return reputationFactory
+                .createCloudGetReviewProductList()
+                .getReviewProductList(productId, page, perPage, rating);
+    }
+
+    @Override
+    public Observable<DataResponseReviewShop> getReviewShopList(HashMap<String, String> params) {
+        return reputationFactory
+                .createCloudGetReviewShopList()
+                .getReviewShopList(params);
+    }
+
+    @Override
+    public Observable<DataResponseReviewHelpful> getReviewHelpful(String shopId, String productId) {
+        return reputationFactory
+                .createCloudGetReviewHelpful()
+                .getReviewHelpfulList(shopId, productId);
+    }
+
+    @Override
+    public Observable<DataResponseReviewStarCount> getReviewStarCount(String productId) {
+        return reputationFactory
+                .createCloudGetReviewStarCount()
+                .getReviewStarCount(productId);
     }
 }

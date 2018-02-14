@@ -4,23 +4,14 @@ apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
 apply plugin: 'maven'
 
-group = 'com.tokopedia.core'
+group = rootProject.ext.groupModule
 version = rootProject.ext.tkpdAbstractionVersion
-
-def getTkpdDesign() {
-    return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.design : project(':tkpddesign');
-}
-
-def getArtifactVersionCode() {
-    return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
-}
 
 publishing {
     publications {
         aar(MavenPublication) {
-            groupId 'com.tokopedia.core'
-            artifactId 'tkpdabstraction'
+            groupId rootProject.ext.groupModule
+            artifactId rootProject.ext.tkpdAbstractionArtifact
             version rootProject.ext.tkpdAbstractionVersion
             artifact("$buildDir/outputs/aar/tkpdabstraction-release.aar")
             pom.withXml {
@@ -37,6 +28,15 @@ publishing {
             }
         }
     }
+}
+
+def getTkpdDesign() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.design : project(':tkpddesign');
+}
+
+def getArtifactVersionCode() {
+    return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
 }
 
 buildscript {
