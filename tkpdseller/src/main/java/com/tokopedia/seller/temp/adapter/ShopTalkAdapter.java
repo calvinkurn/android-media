@@ -1,0 +1,42 @@
+package com.tokopedia.seller.temp.adapter;
+
+import android.content.Context;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.temp.model.ShopTalkSeeMore;
+
+/**
+ * Created by normansyahputa on 2/14/18.
+ */
+
+public class ShopTalkAdapter extends com.tokopedia.core.shopinfo.adapter.ShopTalkAdapter {
+    public ShopTalkAdapter(Context context, ActionShopTalkListener listener) {
+        super(context, listener);
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        switch (viewType) {
+            case ShopTalkSeeMore.TYPE:
+                return new ViewHolder2(LayoutInflater.from(viewGroup.getContext())
+                        .inflate(R.layout.item_shop_talk_see_more, viewGroup, false));
+            default:
+                return super.onCreateViewHolder(viewGroup, viewType);
+        }
+    }
+
+    public class ViewHolder2 extends RecyclerView.ViewHolder{
+
+        private final View shopTalkButtonSeeMore;
+
+        public ViewHolder2(View itemView) {
+            super(itemView);
+
+            shopTalkButtonSeeMore = itemView.findViewById(R.id.shop_talk_button_see_more);
+        }
+    }
+}
