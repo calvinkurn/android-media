@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
@@ -40,6 +41,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.type
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactoryImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
@@ -270,6 +272,11 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
+    public boolean isEvenPage() {
+        return adapter.isEvenPage();
+    }
+
+    @Override
     public int getStartFrom() {
         return adapter.getStartFrom();
     }
@@ -428,6 +435,13 @@ public class ProductListFragment extends SearchSectionFragment
     protected void onFirstTimeLaunch() {
         super.onFirstTimeLaunch();
         getDynamicFilter();
+        getGuidedSearch();
+    }
+
+    private void getGuidedSearch() {
+        if (!TextUtils.isEmpty(productViewModel.getQuery())) {
+            presenter.loadGuidedSearch(productViewModel.getQuery());
+        }
     }
 
     @Override
@@ -499,6 +513,11 @@ public class ProductListFragment extends SearchSectionFragment
         if (!TextUtils.isEmpty(appLink)) {
             ((TkpdCoreRouter) getActivity().getApplication()).actionApplink(getActivity(), appLink);
         }
+    }
+
+    @Override
+    public void onSearchGuideClicked(String keyword) {
+        performNewProductSearch(keyword, true);
     }
 
     @Override
@@ -702,6 +721,17 @@ public class ProductListFragment extends SearchSectionFragment
         if (recyclerView != null) {
             recyclerView.smoothScrollToPosition(0);
         }
+    }
+
+    @Override
+    public void addGuidedSearch() {
+        adapter.addGuidedSearch();
+    }
+
+    @Override
+    public void onGetGuidedSearchComplete(GuidedSearchViewModel guidedSearchViewModel) {
+        adapter.setGuidedSearch(guidedSearchViewModel);
+        Toast.makeText(getContext(), "Retrieve Guided Search Complete", Toast.LENGTH_SHORT).show();
     }
 
     @Override
