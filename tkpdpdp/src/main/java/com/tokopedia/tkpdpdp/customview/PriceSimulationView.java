@@ -144,4 +144,8 @@ public class PriceSimulationView extends BaseView<ProductDetailData, ProductDeta
         tvVariant.setText(variantSelected);
         tvVariant.setTextColor(ContextCompat.getColor(context,R.color.medium_green));
     }
+
+    public View getVariantView() {
+        return variantLayout;
+    }
 }

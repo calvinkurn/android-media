@@ -70,12 +70,18 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
+import com.tokopedia.showcase.ShowCaseBuilder;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.tkpdpdp.CourierActivity;
 import com.tokopedia.tkpdpdp.DescriptionActivity;
 import com.tokopedia.tkpdpdp.DinkFailedActivity;
 import com.tokopedia.tkpdpdp.DinkSuccessActivity;
 import com.tokopedia.tkpdpdp.InstallmentActivity;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
+import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.VariantActivity;
 import com.tokopedia.tkpdpdp.WholesaleActivity;
@@ -155,6 +161,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public static final String STATE_VIDEO = "STATE_VIDEO";
     public static final String STATE_PROMO_WIDGET = "STATE_PROMO_WIDGET";
     public static final String STATE_APP_BAR_COLLAPSED = "STATE_APP_BAR_COLLAPSED";
+    public static final String TAG_SHOWCASE_VARIANT = "-SHOWCASE_VARIANT";
 
     private CoordinatorLayout coordinatorLayout;
     private HeaderInfoView headerInfoView;
@@ -203,6 +210,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private boolean onClickBuyWhileRequestingVariant = false;
 
     private RemoteConfig remoteConfig;
+    private ShowCaseDialog showCaseDialog;
 
     public static ProductDetailFragment newInstance(@NonNull ProductPass productPass) {
         ProductDetailFragment fragment = new ProductDetailFragment();
@@ -1226,6 +1234,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 ?  productVariant.getDefaultChild() : productData.getInfo().getProductId();
         buttonBuyView.updateButtonForVariantProduct(productVariant.getChildFromProductId(
                 defaultChild).isIsBuyable(),productData.getShopInfo().getShopStatus());
+
+        startShowCase();
+
     }
 
     @Override
@@ -1394,6 +1405,44 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public boolean isSellerApp() {
         return GlobalConfig.isSellerApp();
+    }
+
+    private void startShowCase() {
+        final String showCaseTag = ProductInfoActivity.class.getName()+TAG_SHOWCASE_VARIANT;
+        if (ShowCasePreference.hasShown(getActivity(), showCaseTag) || showCaseDialog != null) {
+            return;
+        }
+        showCaseDialog = createShowCase();
+        showCaseDialog.setShowCaseStepListener(new ShowCaseDialog.OnShowCaseStepListener() {
+            @Override
+            public boolean onShowCaseGoTo(int previousStep, int nextStep, ShowCaseObject showCaseObject) {
+                return false;
+            }
+        });
+
+        ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
+        showCaseObjectList.add(new ShowCaseObject(
+                priceSimulationView.getVariantView(),
+                getResources().getString(R.string.product_variant),
+                getResources().getString(R.string.product_variant_onboarding),
+                ShowCaseContentPosition.TOP));
+        showCaseDialog.show(getActivity(), showCaseTag, showCaseObjectList);
+    }
+
+    private ShowCaseDialog createShowCase() {
+        return new ShowCaseBuilder()
+                .customView(R.layout.view_onboarding_variant)
+                .titleTextColorRes(R.color.white)
+                .spacingRes(R.dimen.spacing_show_case)
+                .textColorRes(R.color.grey_400)
+                .shadowColorRes(R.color.shadow)
+                .backgroundContentColorRes(R.color.black)
+                .textSizeRes(R.dimen.fontvs)
+                .finishStringRes(R.string.title_understand)
+                .useCircleIndicator(true)
+                .clickable(true)
+                .useArrow(true)
+                .build();
     }
 
 }
