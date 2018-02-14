@@ -1,10 +1,11 @@
 package com.tokopedia.tkpdstream.channel.view.listener;
 
 import android.content.Context;
-import android.text.Editable;
 
+import com.sendbird.android.OpenChannel;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.tkpdstream.chatroom.domain.usecase.LoginGroupChatUseCase;
 
 /**
  * @author by nisie on 2/6/18.
@@ -20,8 +21,12 @@ public interface GroupChatContract {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void initMessageFirstTime();
+        void initMessageFirstTime(String channelUrl, OpenChannel mChannel);
 
         void sendReply(String replyText);
+
+        void enterChannel(String s, LoginGroupChatUseCase.LoginGroupChatListener loginGroupChatListener);
+
+        void logoutChannel(OpenChannel mChannel);
     }
 }

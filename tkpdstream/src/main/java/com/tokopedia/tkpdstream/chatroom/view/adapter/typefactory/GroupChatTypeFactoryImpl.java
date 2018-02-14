@@ -1,14 +1,14 @@
-package com.tokopedia.tkpdstream.channel.view.adapter.typefactory;
+package com.tokopedia.tkpdstream.chatroom.view.adapter.typefactory;
 
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.tkpdstream.channel.view.adapter.viewholder.MyChatViewHolder;
-import com.tokopedia.tkpdstream.channel.view.adapter.viewholder.OppositeChatViewHolder;
-import com.tokopedia.tkpdstream.channel.view.fragment.GroupChatFragment;
-import com.tokopedia.tkpdstream.channel.view.viewmodel.MyChatViewModel;
-import com.tokopedia.tkpdstream.channel.view.viewmodel.OppositeChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
+import com.tokopedia.tkpdstream.chatroom.view.adapter.viewholder.MyChatViewHolder;
+import com.tokopedia.tkpdstream.chatroom.view.adapter.viewholder.OppositeChatViewHolder;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.MyChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.OppositeChatViewModel;
 
 /**
  * @author by nisie on 2/7/18.

@@ -1,4 +1,4 @@
-package com.tokopedia.tkpdstream.channel.domain;
+package com.tokopedia.tkpdstream.chatroom.domain;
 
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;

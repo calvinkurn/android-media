@@ -2,12 +2,17 @@ package com.tokopedia.tkpdstream.channel.view.presenter;
 
 import android.util.Log;
 
+import com.sendbird.android.OpenChannel;
 import com.sendbird.android.SendBirdException;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.tkpdstream.channel.domain.ConnectionManager;
-import com.tokopedia.tkpdstream.channel.domain.usecase.GetGroupChatMessagesFirstTimeUseCase;
+import com.tokopedia.tkpdstream.chatroom.domain.ConnectionManager;
+import com.tokopedia.tkpdstream.chatroom.domain.usecase.GetGroupChatMessagesFirstTimeUseCase;
+import com.tokopedia.tkpdstream.chatroom.domain.usecase.LoginGroupChatUseCase;
+import com.tokopedia.tkpdstream.chatroom.domain.usecase.SendGroupChatMessageUseCase;
 import com.tokopedia.tkpdstream.channel.view.listener.GroupChatContract;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -19,24 +24,28 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
         GroupChatContract.Presenter {
 
     private final GetGroupChatMessagesFirstTimeUseCase getGroupChatMessagesFirstTimeUseCase;
+    private final LoginGroupChatUseCase loginGroupChatUseCase;
 
     @Inject
-    public GroupChatPresenter(
-                              GetGroupChatMessagesFirstTimeUseCase getGroupChatMessagesFirstTimeUseCase) {
+    public GroupChatPresenter(LoginGroupChatUseCase loginGroupChatUseCase,
+                              GetGroupChatMessagesFirstTimeUseCase
+                                      getGroupChatMessagesFirstTimeUseCase,
+                              SendGroupChatMessageUseCase sendMessageUseCase) {
+        this.loginGroupChatUseCase = loginGroupChatUseCase;
         this.getGroupChatMessagesFirstTimeUseCase = getGroupChatMessagesFirstTimeUseCase;
 
     }
 
     @Override
-    public void initMessageFirstTime() {
+    public void initMessageFirstTime(final String channelUrl, final OpenChannel mChannel) {
         ConnectionManager.addConnectionManagementHandler("Nisie123", ConnectionManager
                 .CONNECTION_HANDLER_ID, new ConnectionManager.ConnectionManagementHandler() {
             @Override
             public void onConnected(boolean reconnect) {
                 if (reconnect) {
-                    getMessages();
+                    getMessages(mChannel);
                 } else {
-                    getMessagesFirstTime();
+                    getMessagesFirstTime(channelUrl, mChannel);
                 }
             }
         });
@@ -47,11 +56,22 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
     }
 
-    private void getMessagesFirstTime() {
-        getGroupChatMessagesFirstTimeUseCase.execute("pub1",
-                new GetGroupChatMessagesFirstTimeUseCase.SendbirdChannelListener() {
+    @Override
+    public void enterChannel(String channelUrl, LoginGroupChatUseCase.LoginGroupChatListener
+            loginGroupChatListener) {
+        loginGroupChatUseCase.execute(channelUrl, loginGroupChatListener);
+    }
+
+    @Override
+    public void logoutChannel(OpenChannel mChannel) {
+
+    }
+
+    private void getMessagesFirstTime(String channelUrl, OpenChannel mChannel) {
+        getGroupChatMessagesFirstTimeUseCase.execute(channelUrl,mChannel,
+                new GetGroupChatMessagesFirstTimeUseCase.GetGroupChatMessagesListener() {
                     @Override
-                    public void onGetMessages() {
+                    public void onGetMessages(List<Visitable> listChat) {
                         Log.d("NISNIS", "onGetMessages");
                     }
 
@@ -62,7 +82,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                 });
     }
 
-    private void getMessages() {
+    private void getMessages(OpenChannel mChannel) {
 
     }
 }

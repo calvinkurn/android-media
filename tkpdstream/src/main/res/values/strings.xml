@@ -3,5 +3,6 @@
 
     <!--Channel List-->
     <string name="activity_channel">Channel</string>
+    <string name="error_open_group_chat">Gagal masuk ke ruangan.</string>
 
 </resources>

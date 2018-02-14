@@ -1,7 +1,11 @@
-package com.tokopedia.tkpdstream.channel.domain.usecase;
+package com.tokopedia.tkpdstream.chatroom.domain.usecase;
 
+import com.sendbird.android.OpenChannel;
 import com.sendbird.android.SendBirdException;
-import com.tokopedia.tkpdstream.channel.domain.source.GroupChatMessageSource;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.tkpdstream.chatroom.domain.source.GroupChatMessageSource;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -16,11 +20,10 @@ public class GetGroupChatMessagesFirstTimeUseCase {
 
     private GroupChatMessageSource source;
 
-    public interface SendbirdChannelListener {
-        void onGetMessages();
+    public interface GetGroupChatMessagesListener {
+        void onGetMessages(List<Visitable> map);
 
         void onErrorGetMessagesFirstTime(SendBirdException e);
-
     }
 
     @Inject
@@ -30,8 +33,9 @@ public class GetGroupChatMessagesFirstTimeUseCase {
 
 
     public void execute(String channelUrl,
-                        final GetGroupChatMessagesFirstTimeUseCase.SendbirdChannelListener listener) {
-        source.getMessagesFirstTime(channelUrl, listener);
+                        OpenChannel mChannel,
+                        final GetGroupChatMessagesListener listener) {
+        source.getMessagesFirstTime(channelUrl,mChannel, listener);
     }
 
 

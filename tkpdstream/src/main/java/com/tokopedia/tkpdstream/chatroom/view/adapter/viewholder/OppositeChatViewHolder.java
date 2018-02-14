@@ -1,12 +1,11 @@
-package com.tokopedia.tkpdstream.channel.view.adapter.viewholder;
+package com.tokopedia.tkpdstream.chatroom.view.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
 import android.view.View;
 
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpdstream.R;
-import com.tokopedia.tkpdstream.channel.view.viewmodel.OppositeChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.OppositeChatViewModel;
 
 /**
  * @author by nisie on 2/7/18.

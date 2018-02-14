@@ -1,5 +1,6 @@
 package com.tokopedia.tkpdstream.channel.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,15 +15,17 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.tkpdstream.R;
+import com.tokopedia.tkpdstream.channel.di.DaggerChannelComponent;
+import com.tokopedia.tkpdstream.channel.view.activity.ChannelActivity;
+import com.tokopedia.tkpdstream.channel.view.activity.GroupChatActivity;
 import com.tokopedia.tkpdstream.channel.view.adapter.typefactory.ChannelTypeFactory;
 import com.tokopedia.tkpdstream.channel.view.listener.ChannelContract;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelListViewModel;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
 import com.tokopedia.tkpdstream.channel.view.presenter.ChannelPresenter;
 import com.tokopedia.tkpdstream.common.analytics.ChannelAnalytics;
-import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
-import com.tokopedia.tkpdstream.channel.di.DaggerChannelComponent;
+import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
 
 import javax.inject.Inject;
 
@@ -34,6 +37,7 @@ import javax.inject.Inject;
 public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelTypeFactory> implements ChannelContract.View {
 
 
+    private static final int REQUEST_OPEN_GROUPCHAT = 111;
     @Inject
     ChannelPresenter presenter;
 
@@ -130,6 +134,17 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
 
     @Override
     public void onItemClicked(ChannelViewModel channelViewModel) {
+        startActivityForResult(GroupChatActivity.getCallingIntent(getActivity()),
+                REQUEST_OPEN_GROUPCHAT);
+    }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_OPEN_GROUPCHAT && resultCode == ChannelActivity
+                .RESULT_ERROR_LOGIN){
+            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string
+                    .error_open_group_chat));
+        }
     }
 }

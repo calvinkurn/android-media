@@ -1,23 +1,30 @@
-package com.tokopedia.tkpdstream.channel.view.fragment;
+package com.tokopedia.tkpdstream.chatroom.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.sendbird.android.OpenChannel;
+import com.sendbird.android.SendBirdException;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.channel.di.DaggerChannelComponent;
+import com.tokopedia.tkpdstream.chatroom.domain.usecase.LoginGroupChatUseCase;
+import com.tokopedia.tkpdstream.channel.view.activity.ChannelActivity;
 import com.tokopedia.tkpdstream.channel.view.adapter.GroupChatAdapter;
-import com.tokopedia.tkpdstream.channel.view.adapter.typefactory.GroupChatTypeFactory;
-import com.tokopedia.tkpdstream.channel.view.adapter.typefactory.GroupChatTypeFactoryImpl;
 import com.tokopedia.tkpdstream.channel.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.channel.view.presenter.GroupChatPresenter;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.adapter.typefactory.GroupChatTypeFactory;
+import com.tokopedia.tkpdstream.chatroom.view.adapter.typefactory.GroupChatTypeFactoryImpl;
 import com.tokopedia.tkpdstream.common.analytics.ChannelAnalytics;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
@@ -33,10 +40,13 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     @Inject
     GroupChatPresenter presenter;
 
-    RecyclerView chatRecyclerView;
-    EditText replyEditText;
-    View sendButton;
-    GroupChatAdapter adapter;
+    private RecyclerView chatRecyclerView;
+    private EditText replyEditText;
+    private View sendButton;
+    private GroupChatAdapter adapter;
+
+    private OpenChannel mChannel;
+    private GroupChatViewModel viewModel;
 
     @Override
     protected String getScreenName() {
@@ -75,18 +85,62 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         GroupChatTypeFactory groupChatTypeFactory = new GroupChatTypeFactoryImpl(this);
         adapter = GroupChatAdapter.createInstance(groupChatTypeFactory);
 
+        replyEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    setSendButtonEnabled(true);
+                } else {
+                    setSendButtonEnabled(false);
+                }
+            }
+        });
+
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.sendReply(replyEditText.getText());
+                presenter.sendReply(replyEditText.getText().toString());
             }
         });
+    }
+
+    private void setSendButtonEnabled(boolean isEnabled) {
+        sendButton.setEnabled(isEnabled);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter.initMessageFirstTime();
+        presenter.enterChannel(viewModel.getChannelUrl(), new LoginGroupChatUseCase.LoginGroupChatListener() {
+            @Override
+            public void onSuccessEnterChannel(OpenChannel openChannel) {
+                mChannel = openChannel;
+                presenter.initMessageFirstTime(viewModel.getChannelUrl(), mChannel);
+            }
+
+            @Override
+            public void onErrorEnterChannel(SendBirdException e) {
+                getActivity().finish();
+                getActivity().setResult(ChannelActivity.RESULT_ERROR_LOGIN);
+            }
+        });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.logoutChannel(mChannel);
+
     }
 
     @Override

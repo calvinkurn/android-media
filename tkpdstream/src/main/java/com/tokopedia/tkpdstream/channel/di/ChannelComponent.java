@@ -1,7 +1,7 @@
 package com.tokopedia.tkpdstream.channel.di;
 
 import com.tokopedia.tkpdstream.channel.view.fragment.ChannelFragment;
-import com.tokopedia.tkpdstream.channel.view.fragment.GroupChatFragment;
+import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
 
 import dagger.Component;
