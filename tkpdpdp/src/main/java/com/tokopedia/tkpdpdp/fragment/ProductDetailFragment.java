@@ -994,6 +994,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 if (productData.getInfo().getHasVariant()) UnifyTracking.eventClickCartVariant(generateVariantString());
             } else {
                 startActivity(TransactionCartRouter.createInstanceCartActivity(getActivity()));
+                if (productData.getInfo().getHasVariant()) UnifyTracking.eventClickCartVariant(generateVariantString());
             }
             return true;
         } else if (i == R.id.action_report) {
