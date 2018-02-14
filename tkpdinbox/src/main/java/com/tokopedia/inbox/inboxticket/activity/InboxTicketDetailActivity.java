@@ -3,14 +3,19 @@ package com.tokopedia.inbox.inboxticket.activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.TaskStackBuilder;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.inbox.inboxticket.InboxTicketConstant;
+import com.tokopedia.inbox.inboxticket.applink.InboxTicketAppLink;
 import com.tokopedia.inbox.inboxticket.fragment.InboxTicketDetailFragment;
 import com.tokopedia.inbox.inboxticket.fragment.InboxTicketFragment;
 import com.tokopedia.inbox.inboxticket.intentservice.InboxTicketIntentService;
@@ -25,7 +30,21 @@ public class InboxTicketDetailActivity extends BasePresenterActivity<InboxTicket
         implements InboxTicketDetailFragment.DoActionInboxTicketListener, InboxTicketConstant,
         InboxTicketResultReceiver.Receiver {
 
+    public static final String PARAM_TICKET_ID = "ticket_id";
+
     InboxTicketResultReceiver mReceiver;
+
+    @DeepLink(InboxTicketAppLink.CUSTOMER_CARE)
+    public static TaskStackBuilder getCallingIntent(Context context, Bundle bundle) {
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        Intent parentIntent = new Intent(context, InboxTicketActivity.class);
+        Intent destinationIntent = new Intent(context, InboxTicketDetailActivity.class);
+        String ticketId = bundle.getString(PARAM_TICKET_ID, "");
+        destinationIntent.putExtra(PARAM_TICKET_ID, ticketId);
+        taskStackBuilder.addNextIntent(parentIntent);
+        taskStackBuilder.addNextIntent(destinationIntent);
+        return taskStackBuilder;
+    }
 
     @Override
     public String getScreenName() {
