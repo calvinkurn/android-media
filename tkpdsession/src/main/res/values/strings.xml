@@ -176,6 +176,10 @@
     <string name="dialog_cancel">BATAL</string>
 
     <!-- TopProfile -->
+    <string name="manage_profile">Atur Akun</string>
+    <string name="favorite_shop">Toko Favorit</string>
+    <string name="followers">Followers</string>
+    <string name="following">Following</string>
     <string name="title_user_information">Informasi Pengguna</string>
     <string name="title_user_information_status">Status</string>
     <string name="status_verified">Verified Account</string>
