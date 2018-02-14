@@ -3,9 +3,11 @@ package com.tokopedia.tokocash.qrpayment.data.datasource;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.tokocash.apiservice.WalletService;
+import com.tokopedia.tokocash.qrpayment.data.entity.BalanceTokoCashEntity;
 import com.tokopedia.tokocash.qrpayment.data.entity.InfoQrEntity;
 import com.tokopedia.tokocash.qrpayment.data.entity.QrPaymentEntity;
-import com.tokopedia.tokocash.qrpayment.data.entity.BalanceTokoCashEntity;
+
+import java.util.HashMap;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -26,7 +28,7 @@ public class CloudQrPaymentDataSource implements QrPaymentDataSource {
     }
 
     @Override
-    public Observable<InfoQrEntity> getInfoQrTokoCash(TKPDMapParam<String, Object> mapParams) {
+    public Observable<InfoQrEntity> getInfoQrTokoCash(HashMap<String, Object> mapParams) {
         return walletService.getApi().getInfoQrTokoCash(mapParams.get(IDENTIFIER).toString())
                 .flatMap(new Func1<Response<TkpdDigitalResponse>, Observable<InfoQrEntity>>() {
                     @Override
@@ -37,7 +39,7 @@ public class CloudQrPaymentDataSource implements QrPaymentDataSource {
     }
 
     @Override
-    public Observable<QrPaymentEntity> postQrPaymentTokoCash(TKPDMapParam<String, Object> mapParams) {
+    public Observable<QrPaymentEntity> postQrPaymentTokoCash(HashMap<String, Object> mapParams) {
         return walletService.getApi().postQrPaymentTokoCash(mapParams)
                 .flatMap(new Func1<Response<TkpdDigitalResponse>, Observable<QrPaymentEntity>>() {
                     @Override
@@ -48,7 +50,7 @@ public class CloudQrPaymentDataSource implements QrPaymentDataSource {
     }
 
     @Override
-    public Observable<BalanceTokoCashEntity> getBalanceTokoCash(TKPDMapParam<String, Object> mapParams) {
+    public Observable<BalanceTokoCashEntity> getBalanceTokoCash(HashMap<String, Object> mapParams) {
         return walletService.getApi().getBalanceTokoCash(mapParams)
                 .flatMap(new Func1<Response<TkpdDigitalResponse>, Observable<BalanceTokoCashEntity>>() {
                     @Override

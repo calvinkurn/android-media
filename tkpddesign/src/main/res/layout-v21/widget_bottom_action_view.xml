@@ -6,6 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:elevation="6dp"
     android:clipToPadding="false"
+    app:cardUseCompatPadding="true"
     app:cardCornerRadius="20dp">
 
     <android.support.v7.widget.LinearLayoutCompat
@@ -19,9 +20,9 @@
             android:id="@+id/linear_layout_button_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minWidth="100dp"
+            android:minWidth="@dimen/layout_bav_width_min"
             android:clickable="true"
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:minHeight="@dimen/image_width_s"
             android:paddingLeft="@dimen/padding_vs"
             android:paddingRight="@dimen/padding_vs">
@@ -46,7 +47,7 @@
                 android:layout_marginLeft="@dimen/margin_vs"
                 android:layout_marginStart="@dimen/margin_vs"
                 android:background="@drawable/circle_red"
-                android:visibility="invisible"
+                android:visibility="gone"
                 tools:visibility="visible" />
         </android.support.v7.widget.LinearLayoutCompat>
 
@@ -64,7 +65,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:minWidth="100dp"
+            android:minWidth="@dimen/layout_bav_width_min"
             android:clickable="true"
             android:gravity="center_vertical"
             android:minHeight="@dimen/image_width_s"
@@ -93,7 +94,7 @@
                 android:layout_marginLeft="@dimen/margin_vs"
                 android:layout_marginStart="@dimen/margin_vs"
                 android:background="@drawable/circle_red"
-                android:visibility="invisible"
+                android:visibility="gone"
                 tools:visibility="visible" />
         </android.support.v7.widget.LinearLayoutCompat>
     </android.support.v7.widget.LinearLayoutCompat>

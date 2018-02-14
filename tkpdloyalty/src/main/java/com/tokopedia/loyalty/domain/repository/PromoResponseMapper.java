@@ -1,7 +1,6 @@
 package com.tokopedia.loyalty.domain.repository;
 
 import android.annotation.SuppressLint;
-import android.net.Uri;
 
 import com.tokopedia.loyalty.domain.entity.response.promo.Children;
 import com.tokopedia.loyalty.domain.entity.response.promo.GroupCode;
@@ -30,8 +29,6 @@ public class PromoResponseMapper implements IPromoResponseMapper {
 
     private static final String TYPE_FILTER_ALL = "all";
     private static final String TITLE_FILTER_ALL = "Lihat Semua";
-    private static final String QUERY_FLAG_APP = "flag_app";
-    private static final String DEFAULT_VALUE_QUERY_FLAG_APP = "1";
 
     @Inject
     public PromoResponseMapper() {
@@ -44,7 +41,7 @@ public class PromoResponseMapper implements IPromoResponseMapper {
             PromoData promoData = new PromoData();
             promoData.setId(String.valueOf(promoResponse.getId()));
             promoData.setTitle(promoResponse.getTitle().getRendered());
-            promoData.setAppLink("");
+            promoData.setAppLink(promoResponse.getMeta().getAppLink());
             promoData.setMultiplePromoCodeCount(promoResponse.getAcf().getPromoCodeList().size());
             try {
                 promoData.setPeriodFormatted(
@@ -56,11 +53,7 @@ public class PromoResponseMapper implements IPromoResponseMapper {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            String urlPromo = Uri.parse(promoResponse.getLink())
-                    .buildUpon()
-                    .appendQueryParameter(QUERY_FLAG_APP, DEFAULT_VALUE_QUERY_FLAG_APP)
-                    .build().toString();
-            promoData.setPromoLink(urlPromo);
+            promoData.setPromoLink(promoResponse.getMeta().getPromoLink());
             promoData.setThumbnailImage(promoResponse.getMeta().getThumbnailImage());
             promoData.setMinTransaction(promoResponse.getMeta().getMinTransaction());
             promoData.setStartDate(promoResponse.getMeta().getStartDate());
