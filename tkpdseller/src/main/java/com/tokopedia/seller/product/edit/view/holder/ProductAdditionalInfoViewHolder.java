@@ -30,7 +30,7 @@ import com.tokopedia.seller.product.edit.view.listener.YoutubeAddVideoView;
 import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPreorderViewModel;
-import com.tokopedia.seller.product.edit.view.model.edit.ProductVariantViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.variantbyprd.ProductVariantViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductVideoViewModel;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;

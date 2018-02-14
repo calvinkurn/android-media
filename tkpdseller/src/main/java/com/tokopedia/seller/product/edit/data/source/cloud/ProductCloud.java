@@ -18,6 +18,8 @@ import rx.Observable;
 public class ProductCloud {
     private final ProductApi productApi;
 
+    public static final int SHOW_VARIANT = 1;
+
     @Inject
     public ProductCloud(ProductApi productApi) {
         this.productApi = productApi;
@@ -34,7 +36,7 @@ public class ProductCloud {
     }
 
     public Observable<ProductViewModel> getProductDetail(String productId) {
-        return productApi.getProductDetail(productId)
+        return productApi.getProductDetail(productId, SHOW_VARIANT)
                 .map(new DataResponseMapper<ProductViewModel>());
     }
 }

@@ -11,10 +11,10 @@ public class ProductPreorderViewModel {
     private long preorderProcessTime;
     @SerializedName("preorder_time_unit")
     @Expose
-    private long preorderTimeUnit;
+    private long preorderTimeUnit; //1:day, 2:week
     @SerializedName("preorder_status")
     @Expose
-    private long preorderStatus;
+    private long preorderStatus; // 1:active; -1: not active
 
     public long getPreorderProcessTime() {
         return preorderProcessTime;
