@@ -357,10 +357,11 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
     class ShippedProductDetailsViewHolder extends RecyclerView.ViewHolder {
 
-        static final String NO_CASHBACK = "0%";
         private static final int IMAGE_ALPHA_DISABLED = 128;
         private static final int IMAGE_ALPHA_ENABLED = 255;
 
+        @BindView(R2.id.tv_sender_name)
+        TextView mTvSenderName;
         @BindView(R2.id.iv_product_image_container)
         ImageView mIvProductImage;
         @BindView(R2.id.tv_shipping_product_name)
@@ -444,7 +445,6 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         @BindView(R2.id.tv_label_note_to_seller)
         TextView tvLabelNoteToSeller;
 
-
         private boolean mIsExpandAllProduct;
         private boolean mIsExpandCostDetail;
 
@@ -464,10 +464,10 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
             // Assign variables
             mTvSenderName.setText(model.getShopName());
-            mTvShipmentOption.setText(getCourierName(model.getCourierItemData()));
+            mTvSelectedShipment.setText(getCourierName(model.getCourierItemData()));
             mTvSubTotalPrice.setText(getPriceFormat(model.getTotalPrice()));
 
-            mTvTotalItem.setText(model.getTotalQuantity());
+            mTvTotalItem.setText(String.valueOf(model.getTotalQuantity()));
             mTvShippingFee.setText(getTotalWeightFormat(model.getTotalWeight(), model.getWeightUnit()));
 
             mTvTotalItemPrice.setText(getPriceFormat(model.getTotalPrice()));
@@ -543,7 +543,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         }
 
         private String getPriceFormat(double pricePlan) {
-            return pricePlan == 0 ? "-" : "Rp" + String.valueOf((int) pricePlan);
+            return pricePlan == 0 ? "-" : CURRENCY_RUPIAH.format(pricePlan);
         }
 
         private String getTotalItemFormat(int totalItem) {
