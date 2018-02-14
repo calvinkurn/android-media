@@ -46,9 +46,10 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
 
     @Override
     public ProductViewModel call(ProductDraftDataBase productDraftDataBase) {
+        ProductViewModel productViewModel;
         //  do not use ProductDraftDataBase.CURRENT_VERSION as it can change.
         if (productDraftDataBase.getVersion() == VERSION_PRODUCT_VIEW_MODEL){
-            return CacheUtil.convertStringToModel(
+            productViewModel = CacheUtil.convertStringToModel(
                     productDraftDataBase.getData(),
                     ProductViewModel.class
             );
@@ -58,12 +59,15 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
                     ProductDraftModel.class
             );
 
-            ProductViewModel productViewModel = mapDraftToDomain(draftModel);
-            productViewModel.setDraftId(productDraftDataBase.getId());
-            return productViewModel;
+            productViewModel = mapDraftToDomain(draftModel);
         }
+        productViewModel.setDraftId(productDraftDataBase.getId());
+        return productViewModel;
     }
 
+    /**
+     * convert the old-version draft to current model
+     */
     private ProductViewModel mapDraftToDomain(ProductDraftModel draftModel) {
         ProductViewModel domainModel = new ProductViewModel();
         domainModel.setProductPicture(mapPhotosDraftToDomain(draftModel.getProductPhotos().getPhotos()));

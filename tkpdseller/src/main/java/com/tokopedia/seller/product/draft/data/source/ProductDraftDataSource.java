@@ -59,8 +59,8 @@ public class ProductDraftDataSource {
         return productDraftDataManager.updateDraft(productId, draftDataBase);
     }
 
-    public Observable<Long> updateDraft(long productId, String draftDataBase, boolean isUploading) {
-        return productDraftDataManager.updateDraft(productId, draftDataBase, isUploading);
+    public Observable<Long> updateDraft(long productDraftId, String draftDataBaseJson, boolean isUploading) {
+        return productDraftDataManager.updateDraft(productDraftId, draftDataBaseJson, isUploading);
     }
 
     public Observable<Boolean> updateUploadingStatusDraft(long productId, boolean draftDataBase) {
