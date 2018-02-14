@@ -34,7 +34,6 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment {
     public static final int PROGRESS_COMPLETED = 100;
     private ProgressBar progressBar;
     private TkpdWebView webview;
-    private String mCM;
     private ValueCallback<Uri> callbackBeforeL;
     public ValueCallback<Uri[]> callbackAfterL;
     public final static int ATTACH_FILE_REQUEST = 1;
