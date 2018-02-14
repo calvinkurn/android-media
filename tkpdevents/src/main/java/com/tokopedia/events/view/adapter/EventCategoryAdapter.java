@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.events.R;
-import com.tokopedia.events.R2;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
@@ -21,8 +20,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
-
-import butterknife.BindView;
 
 /**
  * Created by ashwanityagi on 16/11/17.
@@ -112,7 +109,7 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
             holder.tvDisplayTag.setVisibility(View.GONE);
         }
 
-        ImageHandler.loadImageCover2(holder.eventImage, categoryItems.get(position).getImageApp());
+        ImageHandler.loadImageCover2(holder.eventImage, categoryItems.get(position).getThumbnailApp());
 
         CategoryItemViewListener listener = new CategoryItemViewListener(holder);
 

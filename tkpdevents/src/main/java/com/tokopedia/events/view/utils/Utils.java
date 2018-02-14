@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.google.gson.Gson;
 import com.tokopedia.events.R;
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
 import com.tokopedia.events.domain.model.EventsItemDomain;
@@ -78,6 +77,7 @@ public class Utils {
                 CategoryItemsViewModel.setDisplayName(categoryEntity.getDisplayName());
                 CategoryItemsViewModel.setTitle(categoryEntity.getTitle());
                 CategoryItemsViewModel.setImageApp(categoryEntity.getImageApp());
+                CategoryItemsViewModel.setThumbnailApp(categoryEntity.getThumbnailApp());
                 CategoryItemsViewModel.setSalesPrice(categoryEntity.getSalesPrice());
                 CategoryItemsViewModel.setMinStartTime(categoryEntity.getMinStartTime());
                 CategoryItemsViewModel.setCityName(categoryEntity.getCityName());
@@ -253,7 +253,7 @@ public class Utils {
         SimpleDateFormat dateTimeInGMT = new SimpleDateFormat("HH:mm");
         //Setting the time zone
         dateTimeInGMT.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
-        Log.d("Naveen","Current Time in Jakarta" + dateTimeInGMT.format(new Date()));
+        Log.d("Naveen", "Current Time in Jakarta" + dateTimeInGMT.format(new Date()));
         return dateTimeInGMT.format(new Date());
     }
 
@@ -290,7 +290,7 @@ public class Utils {
         v.setDrawingCacheEnabled(true);
         v.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
                 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-        Bitmap bmp = Bitmap.createBitmap(v.getMeasuredWidth(),v.getMeasuredHeight(),Bitmap.Config.ARGB_8888);
+        Bitmap bmp = Bitmap.createBitmap(v.getMeasuredWidth(), v.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bmp);
         v.layout(0, 0, v.getMeasuredWidth(), v.getMeasuredHeight());
         canvas.drawColor(ContextCompat.getColor(context, R.color.preview_bg));
@@ -302,14 +302,14 @@ public class Utils {
 
 
         String extStorageDirectory = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).toString();
-        File folder = new File(extStorageDirectory,  "store_image");
+        File folder = new File(extStorageDirectory, "store_image");
         if (!folder.exists())
             folder.mkdir();
 
         Random generator = new Random();
         int n = 10000;
         n = generator.nextInt(n);
-        String fname = "Image"+ n +".png";
+        String fname = "Image" + n + ".png";
 
         File pdfFile = new File(folder, fname);
 
