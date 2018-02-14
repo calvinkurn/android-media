@@ -107,6 +107,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     }
 
     public void startShowCase(){
+
         final String showCaseTag = OpportunityListFragment.class.getName();
         if (ShowCasePreference.hasShown(getActivity(), showCaseTag)){
             return;
@@ -116,6 +117,9 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         }
 
         final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
+
+        if(opportunityList == null)
+            return;
 
         opportunityList.postDelayed(new Runnable() {
             @Override
@@ -499,6 +503,9 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
         enableView();
 
+        if(!getUserVisibleHint())
+            return;
+
         startShowCase();
     }
 
@@ -534,6 +541,10 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
             if (adapter.getList().size() == 0)
                 adapter.showEmptyFull(true);
             adapter.notifyDataSetChanged();
+        } else if(requestCode == REQUEST_CODE_OPPORTUNITY_DETAIL
+                && resultCode == Activity.RESULT_OK
+                && data != null && data.getBooleanExtra(OpportunityTncFragment.ACCEPTED_OPPORTUNITY, false)){
+            resetOpportunityList();
         } else if (requestCode == REQUEST_SORT && resultCode == Activity.RESULT_OK) {
             setOpportunitySortData(data);
         } else if (requestCode == REQUEST_FILTER && resultCode == Activity.RESULT_OK) {
@@ -608,6 +619,8 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser && getActivity() != null) {
             ScreenTracking.screen(getScreenName());
+
+            startShowCase();
         }
     }
 }

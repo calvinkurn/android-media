@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_warning_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#fce3e4"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/padding_ms"
+    android:paddingLeft="@dimen/padding_med"
+    android:paddingRight="@dimen/padding_med"
+    android:paddingTop="@dimen/padding_ms"
+    android:visibility="gone"
+    tools:visibility="visible">
+
+    <ImageView
+        android:id="@+id/img_warning"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginEnd="@dimen/margin_ms"
+        android:layout_marginRight="@dimen/margin_ms"
+        tools:src="@drawable/ic_warning_red" />
+
+    <TextView
+        android:id="@+id/tv_warning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:textSize="11sp"
+        android:textStyle="normal"
+        tools:text="Toko sedang tutup sementara, pesanan dapat di proses setelah toko buka kembali"
+        tools:textColor="#d30b16" />
+
+</LinearLayout>

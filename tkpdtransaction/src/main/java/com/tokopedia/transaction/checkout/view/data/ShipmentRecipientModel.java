@@ -3,6 +3,7 @@ package com.tokopedia.transaction.checkout.view.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 
 /**
@@ -10,6 +11,7 @@ import com.tokopedia.transaction.pickuppoint.domain.model.Store;
  */
 public class ShipmentRecipientModel implements Parcelable {
 
+    private String id;
     private boolean isPrimerAddress;
     private String addressIdentifier;
     private String recipientName;
@@ -21,9 +23,17 @@ public class ShipmentRecipientModel implements Parcelable {
     private String tokenPickup;
     private String unixTime;
     private Store store;
-    private String recipientPhone;
+    private boolean selected;
 
     public ShipmentRecipientModel() {
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public boolean isPrimerAddress() {
@@ -114,12 +124,12 @@ public class ShipmentRecipientModel implements Parcelable {
         this.recipientPhoneNumber = recipientPhoneNumber;
     }
 
-    public String getRecipientPhone() {
-        return recipientPhone;
+    public boolean isSelected() {
+        return selected;
     }
 
-    public void setRecipientPhone(String recipientPhone) {
-        this.recipientPhone = recipientPhone;
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
     @Override
@@ -129,6 +139,7 @@ public class ShipmentRecipientModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
         dest.writeString(recipientName);
         dest.writeString(recipientAddress);
         dest.writeString(recipientAddressDescription);
@@ -142,10 +153,11 @@ public class ShipmentRecipientModel implements Parcelable {
         dest.writeString(this.addressIdentifier);
         dest.writeString(this.recipientName);
         dest.writeString(this.recipientAddress);
-        dest.writeString(this.recipientPhone);
+        dest.writeByte(this.selected ? (byte) 1 : (byte) 0);
     }
 
     protected ShipmentRecipientModel(Parcel in) {
+        id = in.readString();
         recipientName = in.readString();
         recipientAddress = in.readString();
         recipientAddressDescription = in.readString();
@@ -159,7 +171,7 @@ public class ShipmentRecipientModel implements Parcelable {
         this.addressIdentifier = in.readString();
         this.recipientName = in.readString();
         this.recipientAddress = in.readString();
-        this.recipientPhone = in.readString();
+        this.selected = in.readByte() != 0;
     }
 
     public static final Creator<ShipmentRecipientModel> CREATOR = new Creator<ShipmentRecipientModel>() {
@@ -173,5 +185,20 @@ public class ShipmentRecipientModel implements Parcelable {
             return new ShipmentRecipientModel[size];
         }
     };
+
+    public AddressModel convertToAddressModel() {
+        AddressModel data = new AddressModel();
+//        data.setAddressId(id);
+//        data.setAddressName();
+//        data.setAddressStatus();
+//        data.setAddressStreet(recipientAddress);
+//        data.setCityId();
+//        data.setCityName();
+//        data.setDistrictId();
+//        data.setDistrictName();
+//        data.setProvinceId();
+//        data.setProvinceName();
+        return data;
+    }
 
 }

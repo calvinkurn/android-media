@@ -4,11 +4,9 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.di.qualifier.AuthKeyQualifier;
-import com.tokopedia.abstraction.common.di.qualifier.FreshAccessTokenQualifier;
-import com.tokopedia.abstraction.common.utils.AuthUtil;
+import com.tokopedia.abstraction.common.utils.network.AuthUtil;
+import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -25,12 +23,11 @@ import okhttp3.Response;
 
 public class FlightAuthInterceptor extends TkpdAuthInterceptor {
 
-    private static final String CONTENT_TYPE = "";
-
     @Inject
-    public FlightAuthInterceptor(@AuthKeyQualifier String authKey, @ApplicationContext Context context, @FreshAccessTokenQualifier String freshAccessToken, AbstractionRouter abstractionRouter,
+    public FlightAuthInterceptor(@ApplicationContext Context context, AbstractionRouter abstractionRouter,
                                  UserSession userSession) {
-        super(authKey, context, freshAccessToken, abstractionRouter, userSession);
+        super(context, abstractionRouter, userSession);
+        this.maxRetryAttempt = 0;
     }
 
 

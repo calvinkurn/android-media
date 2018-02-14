@@ -22,9 +22,7 @@ public interface IShipmentDetailView extends CustomerView {
 
     void renderShipmentWithoutMap(ShipmentDetailData shipmentDetailData);
 
-    void showFirstThreeCouriers(List<CourierItemData> couriers);
-
-    void showAllCouriers(List<CourierItemData> couriers);
+    void showAllCouriers();
 
     void showPinPointChooserMap(ShipmentDetailData shipmentDetailData);
 

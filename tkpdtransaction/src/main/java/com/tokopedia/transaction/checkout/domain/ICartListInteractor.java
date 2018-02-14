@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.checkout.domain;
 
 import com.google.gson.JsonObject;
+
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 

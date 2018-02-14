@@ -19,12 +19,21 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.checkout.di.component.DaggerShipmentChoiceComponent;
+import com.tokopedia.transaction.checkout.di.component.ShipmentChoiceComponent;
 import com.tokopedia.transaction.checkout.view.adapter.ShipmentChoiceAdapter;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
 import com.tokopedia.transaction.checkout.view.presenter.IShipmentChoicePresenter;
 import com.tokopedia.transaction.checkout.view.presenter.ShipmentChoicePresenter;
 import com.tokopedia.transaction.checkout.view.view.IShipmentChoiceView;
+
+import javax.inject.Inject;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by Irfan Khoirul on 30/01/18.
@@ -33,17 +42,28 @@ import com.tokopedia.transaction.checkout.view.view.IShipmentChoiceView;
 public class ShipmentChoiceBottomSheet extends BottomSheetDialog
         implements IShipmentChoiceView, ShipmentChoiceAdapter.ViewListener {
 
-    private RecyclerView rvShipmentChoice;
-    private LinearLayout llNetworkErrorView;
-    private ProgressBar pbLoading;
-    private LinearLayout llShipmentInfoTicker;
-    private ImageView imgBtCloseTicker;
-    private TextView tvShipmentInfoTicker;
-    private ImageButton imgBtClose;
+    @BindView(R2.id.rv_shipment_choice)
+    RecyclerView rvShipmentChoice;
+    @BindView(R2.id.ll_network_error_view)
+    LinearLayout llNetworkErrorView;
+    @BindView(R2.id.pb_loading)
+    ProgressBar pbLoading;
+    @BindView(R2.id.ll_shipment_info_ticker)
+    LinearLayout llShipmentInfoTicker;
+    @BindView(R2.id.img_bt_close_ticker)
+    ImageView imgBtCloseTicker;
+    @BindView(R2.id.tv_shipment_info_ticker)
+    TextView tvShipmentInfoTicker;
+    @BindView(R2.id.img_bt_close)
+    ImageButton imgBtClose;
 
-    private ShipmentChoiceAdapter shipmentChoiceAdapter;
-    private IShipmentChoicePresenter presenter;
     private ActionListener listener;
+
+    @Inject
+    ShipmentChoiceAdapter shipmentChoiceAdapter;
+
+    @Inject
+    IShipmentChoicePresenter presenter;
 
     public ShipmentChoiceBottomSheet(@NonNull Context context,
                                      @NonNull ShipmentDetailData shipmentDetailData,
@@ -53,40 +73,24 @@ public class ShipmentChoiceBottomSheet extends BottomSheetDialog
         initializeData(shipmentDetailData, selectedShipment);
     }
 
+    private void initializeView(Context context) {
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View bottomSheetView = layoutInflater.inflate(R.layout.fragment_shipment_choice, null);
+        setContentView(bottomSheetView);
+        ButterKnife.bind(this, bottomSheetView);
+        initializeInjector();
+    }
+
     private void initializeData(ShipmentDetailData shipmentDetailData, ShipmentItemData selectedShipment) {
-        presenter = new ShipmentChoicePresenter();
         presenter.attachView(this);
         presenter.loadShipmentChoice(shipmentDetailData, selectedShipment);
         setupRecyclerView();
     }
 
-    public void initializeView(Context context) {
-        LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View bottomSheetView = layoutInflater.inflate(R.layout.fragment_shipment_choice, null);
-        setContentView(bottomSheetView);
-
-        rvShipmentChoice = bottomSheetView.findViewById(R.id.rv_shipment_choice);
-        llNetworkErrorView = bottomSheetView.findViewById(R.id.ll_network_error_view);
-        pbLoading = bottomSheetView.findViewById(R.id.pb_loading);
-        llShipmentInfoTicker = bottomSheetView.findViewById(R.id.ll_shipment_info_ticker);
-        imgBtCloseTicker = bottomSheetView.findViewById(R.id.img_bt_close_ticker);
-        tvShipmentInfoTicker = bottomSheetView.findViewById(R.id.tv_shipment_info_ticker);
-        imgBtClose = bottomSheetView.findViewById(R.id.img_bt_close);
-
-        imgBtCloseTicker.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                llShipmentInfoTicker.setVisibility(View.GONE);
-            }
-        });
-
-        imgBtClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ShipmentChoiceBottomSheet.this.dismiss();
-            }
-        });
-
+    private void initializeInjector() {
+        ShipmentChoiceComponent shipmentChoiceComponent = DaggerShipmentChoiceComponent.builder()
+                .build();
+        shipmentChoiceComponent.inject(this);
     }
 
     public void setListener(ActionListener listener) {
@@ -94,7 +98,8 @@ public class ShipmentChoiceBottomSheet extends BottomSheetDialog
     }
 
     private void setupRecyclerView() {
-        shipmentChoiceAdapter = new ShipmentChoiceAdapter(presenter.getShipmentChoices(), this);
+        shipmentChoiceAdapter.setShipments(presenter.getShipmentChoices());
+        shipmentChoiceAdapter.setViewListener(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 getContext(), LinearLayoutManager.VERTICAL, false);
         rvShipmentChoice.setLayoutManager(linearLayoutManager);
@@ -142,6 +147,16 @@ public class ShipmentChoiceBottomSheet extends BottomSheetDialog
     public void onShipmentItemClick(ShipmentItemData shipmentItemData) {
         listener.onShipmentItemClick(shipmentItemData);
         this.dismiss();
+    }
+
+    @OnClick(R2.id.img_bt_close_ticker)
+    void onCloseTickerClick(){
+        llShipmentInfoTicker.setVisibility(View.GONE);
+    }
+
+    @OnClick(R2.id.img_bt_close)
+    void onCloseClick(){
+        ShipmentChoiceBottomSheet.this.dismiss();
     }
 
     public interface ActionListener {

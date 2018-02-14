@@ -16,14 +16,10 @@ public class CartSellerItemModel implements Parcelable {
 
     private CourierItemData courierItemData;
 
-    private String totalPriceFormatted;
-    private double totalPricePlan;
-
-    private String totalWeightFormatted;
-    private double totalWeightPlan;
-
-    private String totalItemFormatted;
-    private int totalItemPlan;
+    private double totalPrice;
+    private double totalWeight;
+    private int weightUnit;
+    private int totalQuantity;
 
     public String getShopId() {
         return shopId;
@@ -57,52 +53,36 @@ public class CartSellerItemModel implements Parcelable {
         this.courierItemData = courierItemData;
     }
 
-    public String getTotalPriceFormatted() {
-        return totalPriceFormatted;
+    public double getTotalPrice() {
+        return totalPrice;
     }
 
-    public void setTotalPriceFormatted(String totalPriceFormatted) {
-        this.totalPriceFormatted = totalPriceFormatted;
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
     }
 
-    public double getTotalPricePlan() {
-        return totalPricePlan;
+    public double getTotalWeight() {
+        return totalWeight;
     }
 
-    public void setTotalPricePlan(double totalPricePlan) {
-        this.totalPricePlan = totalPricePlan;
+    public void setTotalWeight(double totalWeight) {
+        this.totalWeight = totalWeight;
     }
 
-    public String getTotalWeightFormatted() {
-        return totalWeightFormatted;
+    public int getWeightUnit() {
+        return weightUnit;
     }
 
-    public void setTotalWeightFormatted(String totalWeightFormatted) {
-        this.totalWeightFormatted = totalWeightFormatted;
+    public void setWeightUnit(int weightUnit) {
+        this.weightUnit = weightUnit;
     }
 
-    public double getTotalWeightPlan() {
-        return totalWeightPlan;
+    public int getTotalQuantity() {
+        return totalQuantity;
     }
 
-    public void setTotalWeightPlan(double totalWeightPlan) {
-        this.totalWeightPlan = totalWeightPlan;
-    }
-
-    public String getTotalItemFormatted() {
-        return totalItemFormatted;
-    }
-
-    public void setTotalItemFormatted(String totalItemFormatted) {
-        this.totalItemFormatted = totalItemFormatted;
-    }
-
-    public int getTotalItemPlan() {
-        return totalItemPlan;
-    }
-
-    public void setTotalItemPlan(int totalItemPlan) {
-        this.totalItemPlan = totalItemPlan;
+    public void setTotalQuantity(int totalQuantity) {
+        this.totalQuantity = totalQuantity;
     }
 
 
@@ -117,12 +97,9 @@ public class CartSellerItemModel implements Parcelable {
         dest.writeString(this.shopName);
         dest.writeTypedList(this.cartItemModels);
         dest.writeParcelable(this.courierItemData, flags);
-        dest.writeString(this.totalPriceFormatted);
-        dest.writeDouble(this.totalPricePlan);
-        dest.writeString(this.totalWeightFormatted);
-        dest.writeDouble(this.totalWeightPlan);
-        dest.writeString(this.totalItemFormatted);
-        dest.writeInt(this.totalItemPlan);
+        dest.writeDouble(this.totalPrice);
+        dest.writeDouble(this.totalWeight);
+        dest.writeInt(this.totalQuantity);
     }
 
     public CartSellerItemModel() {
@@ -133,12 +110,9 @@ public class CartSellerItemModel implements Parcelable {
         this.shopName = in.readString();
         this.cartItemModels = in.createTypedArrayList(CartItemModel.CREATOR);
         this.courierItemData = in.readParcelable(CourierItemData.class.getClassLoader());
-        this.totalPriceFormatted = in.readString();
-        this.totalPricePlan = in.readDouble();
-        this.totalWeightFormatted = in.readString();
-        this.totalWeightPlan = in.readDouble();
-        this.totalItemFormatted = in.readString();
-        this.totalItemPlan = in.readInt();
+        this.totalPrice = in.readDouble();
+        this.totalWeight = in.readDouble();
+        this.totalQuantity = in.readInt();
     }
 
     public static final Creator<CartSellerItemModel> CREATOR = new Creator<CartSellerItemModel>() {

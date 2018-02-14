@@ -10,23 +10,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/padding_small"
-        android:paddingEnd="@dimen/padding_med"
-        android:paddingLeft="@dimen/padding_med"
-        android:paddingRight="@dimen/padding_med"
-        android:paddingStart="@dimen/padding_med"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
         android:paddingTop="@dimen/padding_small">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:lineSpacingExtra="5sp"
             android:text="Dikirim oleh : "
-            android:textColor="@color/label_color" />
+            android:textColor="@color/label_color"
+            android:textSize="12sp"
+            android:textStyle="normal" />
 
         <TextView
             android:id="@+id/sender_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:lineSpacingExtra="5sp"
             android:textColor="@color/black_70"
+            android:textSize="12sp"
+            android:textStyle="normal"
             tools:text="Adidas" />
 
     </LinearLayout>
@@ -34,241 +40,96 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/grey_400" />
+        android:background="@color/grey_300" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/padding_small"
-        android:paddingEnd="@dimen/padding_med"
-        android:paddingLeft="@dimen/padding_med"
-        android:paddingRight="@dimen/padding_med"
-        android:paddingStart="@dimen/padding_med"
-        android:paddingTop="@dimen/padding_small">
-
-        <ImageView
-            android:id="@+id/product_image"
-            android:layout_width="52dp"
-            android:layout_height="52dp"
-            tools:src="@drawable/googleg_standard_color_18" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginStart="@dimen/margin_small"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/product_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black_70"
-                android:textStyle="bold"
-                tools:text="Kaos Adidas Camo Tongue Tee... White and Red, XS" />
-
-            <TextView
-                android:id="@+id/product_price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/orange_900"
-                android:textStyle="bold"
-                tools:text="Rp 20.000" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/padding_small"
-        android:paddingEnd="@dimen/padding_med"
-        android:paddingLeft="@dimen/padding_med"
-        android:paddingRight="@dimen/padding_med"
-        android:paddingStart="@dimen/padding_med"
-        android:paddingTop="@dimen/padding_small">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Berat : " />
-
-            <TextView
-                android:id="@+id/product_weight"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black_70"
-                tools:text="3 Kg" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Jumlah : " />
-
-            <TextView
-                android:id="@+id/product_qty"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1"
-                android:textColor="@color/black_70" />
-
-        </LinearLayout>
-
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="@dimen/margin_small"
-        android:layout_marginTop="@dimen/margin_small"
-        android:background="@color/grey_400" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/margin_med"
-        android:layout_marginLeft="@dimen/margin_med"
-        android:layout_marginRight="@dimen/margin_med"
-        android:layout_marginStart="@dimen/margin_med"
-        android:text="Catatan untuk penjual (optional)" />
-
-    <TextView
-        android:id="@+id/notes_field"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/margin_med"
-        android:layout_marginLeft="@dimen/margin_med"
-        android:layout_marginRight="@dimen/margin_med"
-        android:layout_marginStart="@dimen/margin_med"
-        android:hint="Tidak ada catatan"
-        android:textSize="14sp"
-        tools:text="Saya kirim warna merah ya min! jangan sampai salah kirim barangnya" />
+    <include layout="@layout/item_product_detail" />
 
     <LinearLayout
         android:id="@+id/address_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:paddingBottom="@dimen/padding_small"
-        android:paddingEnd="@dimen/padding_med"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="@dimen/padding_small">
+
+        <include
+            layout="@layout/item_recipient_address"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/chevron_thin_right" />
+
+    </LinearLayout>
+
+    <com.tokopedia.transaction.pickuppoint.view.customview.PickupPointLayout
+        android:id="@+id/pickup_point_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/padding_med"
         android:paddingLeft="@dimen/padding_med"
         android:paddingRight="@dimen/padding_med"
-        android:paddingStart="@dimen/padding_med"
+        android:visibility="gone" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_300" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/padding_small"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
         android:paddingTop="@dimen/padding_small">
 
         <TextView
-            android:id="@+id/address_title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            tools:text="Alamat Kantor" />
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-medium"
+            android:foregroundGravity="center_vertical"
+            android:text="Kurir Pengiriman"
+            android:textColor="@color/black_54"
+            android:textSize="12sp"
+            android:textStyle="normal" />
 
         <TextView
-            android:id="@+id/address_receiver_name"
+            android:id="@+id/choose_courier_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black_70"
-            android:textStyle="bold"
-            tools:text="Agus Maulana" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/address"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:textColor="@color/black_70"
-                tools:text="Jl. Letjen S. Parman Kav.77, Wisma 77 Tower 2, Tokopedia Lt. 2, Jakarta, 0817 1234 5678" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center_vertical|end">
-
-                <ImageView
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:src="@drawable/chevron_thin_right" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <com.tokopedia.transaction.pickuppoint.view.customview.PickupPointLayout
-            android:id="@+id/pickup_point_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="16dp"
-            android:visibility="gone" />
+            android:background="@drawable/green_button_rounded_unify"
+            android:fontFamily="sans-serif-medium"
+            android:paddingBottom="9dp"
+            android:paddingLeft="27dp"
+            android:paddingRight="27dp"
+            android:paddingTop="9dp"
+            android:text="Pilih Kurir"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:textStyle="normal" />
 
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/grey_400" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/padding_small"
-        android:paddingEnd="@dimen/padding_med"
-        android:paddingLeft="@dimen/padding_med"
-        android:paddingRight="@dimen/padding_med"
-        android:paddingStart="@dimen/padding_med"
-        android:paddingTop="@dimen/padding_small">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:text="Pengiriman" />
-
-        <TextView
-            android:id="@+id/choose_courier_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:text="Pilih Kurir"
-            android:textColor="@color/tkpd_main_green"
-            android:textStyle="bold" />
-
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey_400" />
+        android:background="@color/grey_300" />
 
     <RelativeLayout
         android:id="@+id/sub_total_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/padding_small"
-        android:paddingEnd="@dimen/padding_med"
-        android:paddingLeft="@dimen/padding_med"
-        android:paddingRight="@dimen/padding_med"
-        android:paddingStart="@dimen/padding_med"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
         android:paddingTop="@dimen/padding_small">
 
         <TextView
@@ -277,7 +138,12 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:text="Sub total " />
+            android:fontFamily="sans-serif-medium"
+            android:gravity="end"
+            android:text="Sub total "
+            android:textColor="@color/black_54"
+            android:textSize="12sp"
+            android:textStyle="normal" />
 
         <ImageView
             android:id="@+id/sub_total_detail_button"
@@ -301,5 +167,10 @@
             tools:text="-" />
 
     </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="16dp"
+        android:background="@color/grey_200" />
 
 </LinearLayout>

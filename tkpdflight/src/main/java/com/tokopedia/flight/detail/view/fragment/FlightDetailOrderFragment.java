@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,7 +58,7 @@ import javax.inject.Inject;
 public class FlightDetailOrderFragment extends BaseDaggerFragment implements FlightDetailOrderContract.View, ExpandableOnClickListener {
 
     public static final String EXTRA_ORDER_DETAIL_PASS = "EXTRA_ORDER_DETAIL_PASS";
-    private static final String CANCEL_SOLUTION_ID = "1377";
+    private static final String CANCEL_SOLUTION_ID = "1378";
     private static final int CONTACT_US_REQUEST_CODE = 100;
     @Inject
     FlightDetailOrderPresenter flightDetailOrderPresenter;
@@ -84,11 +85,16 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private FlightSimpleAdapter flightBookingReviewPriceAdapter;
     private FlightOrderDetailPassData flightOrderDetailPassData;
     private FlightOrder flightOrder;
-
     private String eticketLink = "";
     private String invoiceLink = "";
     private String cancelMessage = "";
     private boolean isPassengerInfoShowed = true;
+    private LinearLayout paymentInfoLayout;
+    private TextView tvPaymentDescriptionLabel;
+    private TextView tvPaymentDescription;
+    private TextView tvPaymentCost;
+    private TextView tvPaymentCostLabel;
+    private TextView tvPaymentDueDate;
 
     public static Fragment createInstance(FlightOrderDetailPassData flightOrderDetailPassData) {
         FlightDetailOrderFragment flightDetailOrderFragment = new FlightDetailOrderFragment();
@@ -136,6 +142,13 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         buttonCancelTicket = view.findViewById(R.id.button_cancel);
         buttonRescheduleTicket = view.findViewById(R.id.button_reschedule);
         buttonReorder = view.findViewById(R.id.button_reorder);
+
+        paymentInfoLayout = (LinearLayout) view.findViewById(R.id.payment_info_layout);
+        tvPaymentDescriptionLabel = (TextView) view.findViewById(R.id.tv_payment_description_label);
+        tvPaymentDescription = (TextView) view.findViewById(R.id.tv_payment_description);
+        tvPaymentCost = (TextView) view.findViewById(R.id.tv_payment_cost);
+        tvPaymentCostLabel = (TextView) view.findViewById(R.id.tv_payment_cost_label);
+        tvPaymentDueDate = (TextView) view.findViewById(R.id.tv_payment_due_date);
         progressDialog = new ProgressDialog(getActivity());
 
         setViewClickListener();
@@ -153,6 +166,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         progressDialog.setMessage(getString(R.string.flight_booking_loading_title));
         progressDialog.setCancelable(false);
         orderId.setText(flightOrderDetailPassData.getOrderId());
+
         return view;
     }
 
@@ -173,7 +187,9 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
                 clipboard.addPrimaryClipChangedListener(new ClipboardManager.OnPrimaryClipChangedListener() {
                     @Override
                     public void onPrimaryClipChanged() {
-                        Toast.makeText(getActivity(), R.string.flight_label_copy_clipboard, Toast.LENGTH_SHORT).show();
+                        if (getActivity() != null) {
+                            Toast.makeText(getActivity(), R.string.flight_label_copy_clipboard, Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
             }
@@ -208,11 +224,11 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         containerDownloadInvoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(invoiceLink));
-                    startActivity(browserIntent);
-                } catch (Exception e) {
-
+                if (getActivity().getApplication() instanceof FlightModuleRouter
+                        && ((FlightModuleRouter) getActivity().getApplication())
+                        .getWebviewActivity(getActivity(), invoiceLink) != null) {
+                    startActivity(((FlightModuleRouter) getActivity().getApplication())
+                            .getWebviewActivity(getActivity(), invoiceLink));
                 }
             }
         });
@@ -267,6 +283,10 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void updatePassengerList(List<FlightDetailPassenger> flightDetailPassengers) {
+        if (flightBookingReviewPassengerAdapter.getDataSize() < 2) {
+            removePassengerRecyclerDivider();
+        }
+
         flightBookingReviewPassengerAdapter.addElement(flightDetailPassengers);
         flightBookingReviewPassengerAdapter.notifyDataSetChanged();
     }
@@ -279,61 +299,19 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     @Override
-    public void updateOrderData(String transactionDate, String eTicketLink, String invoiceLink, String cancelMessage) {
+    public void setTransactionDate(String transactionDate) {
         this.transactionDate.setText(transactionDate);
+    }
+
+    @Override
+    public void updateOrderData(String eTicketLink, String invoiceLink, String cancelMessage) {
         this.eticketLink = eTicketLink;
         this.invoiceLink = invoiceLink;
         this.cancelMessage = cancelMessage;
     }
 
-    @Override
-    public void updateViewExpired() {
-        updateViewStatus(R.string.flight_label_transaction_failed, R.color.deep_orange_500, false, false, false, true);
-    }
-
-    @Override
-    public void updateViewConfirmed() {
-        updateViewStatus(R.string.flight_label_transaction_success, R.color.font_black_primary_70, true, true, true, false);
-    }
-
-    @Override
-    public void updateViewFailed() {
-        updateViewStatus(R.string.flight_label_canceled_ticket, R.color.font_black_primary_70, true, false, false, false);
-    }
-
-    @Override
-    public void updateViewFinished() {
-        updateViewStatus(R.string.flight_label_transaction_success, R.color.font_black_primary_70, true, true, true, false);
-    }
-
-    @Override
-    public void updateViewProgress() {
-        updateViewStatus(R.string.flight_label_waiting_for_confirm, R.color.font_black_primary_70, false, false, false, false);
-    }
-
-    @Override
-    public void updateViewReadyForQueue() {
-        updateViewStatus(R.string.flight_label_waiting_for_confirm, R.color.font_black_primary_70, false, false, false, false);
-    }
-
-    @Override
-    public void updateViewRefunded() {
-        updateViewStatus(R.string.flight_label_refunded, R.color.font_black_primary_70, true, false, false, false);
-    }
-
-    @Override
-    public void updateViewWaitingForPayment() {
-        updateViewStatus(R.string.flight_label_waiting_payment, R.color.deep_orange_500, false, false, false, false);
-    }
-
-    @Override
-    public void updateViewWaitingForThirdParty() {
-        updateViewStatus(R.string.flight_label_waiting_for_confirm, R.color.font_black_primary_70, false, false, false, false);
-    }
-
-    @Override
-    public void updateViewWaitingForTransfer() {
-        updateViewStatus(R.string.flight_label_waiting_payment, R.color.deep_orange_500, false, false, false, false);
+    private void removePassengerRecyclerDivider() {
+        recyclerViewPassenger.clearItemDecoration();
     }
 
     private void togglePassengerInfo() {
@@ -356,8 +334,9 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         imageExpendablePassenger.setRotation(0);
     }
 
-    void updateViewStatus(int orderStatusString, int color, boolean isTicketVisible, boolean isScheduleVisible,
-                          boolean isCancelVisible, boolean isReorderVisible) {
+    @Override
+    public void updateViewStatus(String orderStatusString, int color, boolean isTicketVisible, boolean isScheduleVisible,
+                                 boolean isCancelVisible, boolean isReorderVisible) {
         orderStatus.setText(orderStatusString);
         orderStatus.setTextColor(ContextCompat.getColor(getActivity(), color));
         if (isTicketVisible) {
@@ -397,9 +376,9 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     public void navigateToWebview(String url) {
         if (getActivity().getApplication() instanceof FlightModuleRouter
                 && ((FlightModuleRouter) getActivity().getApplication())
-                .getBannerWebViewIntent(getActivity(), url) != null) {
+                .getDefaultContactUsIntent(getActivity()) != null) {
             startActivity(((FlightModuleRouter) getActivity().getApplication())
-                    .getBannerWebViewIntent(getActivity(), url));
+                    .getDefaultContactUsIntent(getActivity()));
         }
     }
 
@@ -464,5 +443,43 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     @Override
     public void onCloseExpand(int position) {
         // do something to scroll the view
+    }
+
+    @Override
+    public void showPaymentInfoLayout() {
+        paymentInfoLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hidePaymentInfoLayout() {
+        paymentInfoLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setPaymentLabel(int resId) {
+        tvPaymentDescriptionLabel.setText(resId);
+    }
+
+    @Override
+    public void setPaymentDescription(CharSequence description) {
+        tvPaymentDescription.setText(description);
+    }
+
+    @Override
+    public void setTotalTransfer(String price) {
+        tvPaymentCost.setVisibility(View.VISIBLE);
+        tvPaymentCost.setText(price);
+    }
+
+    @Override
+    public void hideTotalTransfer() {
+        tvPaymentCostLabel.setVisibility(View.GONE);
+        tvPaymentCost.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setPaymentDueDate(String dueDate) {
+        tvPaymentDueDate.setVisibility(View.VISIBLE);
+        tvPaymentDueDate.setText(dueDate);
     }
 }

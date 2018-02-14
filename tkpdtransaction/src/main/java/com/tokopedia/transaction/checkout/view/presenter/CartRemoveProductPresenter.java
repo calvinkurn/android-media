@@ -1,7 +1,6 @@
 package com.tokopedia.transaction.checkout.view.presenter;
 
-import com.tokopedia.transaction.checkout.view.data.CartItemModel;
-import com.tokopedia.transaction.checkout.view.data.factory.CartItemModelFactory;
+import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.view.IRemoveProductListView;
 
 import java.util.List;
@@ -13,14 +12,14 @@ import rx.Observer;
  */
 
 public class CartRemoveProductPresenter
-        extends CartMvpPresenter<IRemoveProductListView<List<CartItemModel>>> {
+        extends CartMvpPresenter<IRemoveProductListView<List<CartItemData>>> {
 
     public CartRemoveProductPresenter() {
 
     }
 
     @Override
-    public void attachView(IRemoveProductListView<List<CartItemModel>> mvpView) {
+    public void attachView(IRemoveProductListView<List<CartItemData>> mvpView) {
         super.attachView(mvpView);
     }
 
@@ -29,15 +28,15 @@ public class CartRemoveProductPresenter
         super.checkViewAttached();
     }
 
-    public void getCartItems() {
+    public void getCartItems(List<CartItemData> cartItemModels) {
         // TODO remove this, and invoke use case
-        getMvpView().showList(CartItemModelFactory.getDummyCartItemModelList());
+        getMvpView().showList(cartItemModels);
     }
 
-    private final class CartRemoveProductObserver implements Observer<List<CartItemModel>> {
+    private final class CartRemoveProductObserver implements Observer<List<CartItemData>> {
 
         @Override
-        public void onNext(List<CartItemModel> cartItemModels) {
+        public void onNext(List<CartItemData> cartItemModels) {
             getMvpView().showList(cartItemModels);
         }
 

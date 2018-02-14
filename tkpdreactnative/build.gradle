@@ -5,7 +5,7 @@ apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
 apply plugin: 'maven'
 
-group = 'com.tokopedia.core'
+group = rootProject.ext.groupModule
 version = rootProject.ext.tkpdReactNativeVersion
 
 def getTkpdCore() {
@@ -20,8 +20,8 @@ def getArtifactVersionCode() {
 publishing {
     publications {
         aar(MavenPublication) {
-            groupId 'com.tokopedia.core'
-            artifactId 'tkpdreactnative'
+            groupId rootProject.ext.groupModule
+            artifactId rootProject.ext.tkpdReactNativeArtifact
             version rootProject.ext.tkpdReactNativeVersion
             artifact("$buildDir/outputs/aar/tkpdreactnative-release.aar")
             pom.withXml {

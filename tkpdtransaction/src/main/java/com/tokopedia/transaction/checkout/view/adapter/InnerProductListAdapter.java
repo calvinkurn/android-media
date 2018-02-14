@@ -11,9 +11,15 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.view.data.CartItemModel;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * @author Aghny A. Putra on 05/02/18
@@ -22,6 +28,9 @@ public class InnerProductListAdapter
         extends RecyclerView.Adapter<InnerProductListAdapter.CartItemViewHolder> {
 
     private static final String TAG = InnerProductListAdapter.class.getSimpleName();
+
+    private static final NumberFormat CURRENCY_RUPIAH =
+            NumberFormat.getCurrencyInstance(new Locale("in", "ID"));
 
     private List<CartItemModel> mProductList;
     private Context mContext;
@@ -41,19 +50,23 @@ public class InnerProductListAdapter
     public void onBindViewHolder(final CartItemViewHolder holder, int position) {
         CartItemModel cartItemModel = mProductList.get(position);
 
-        ImageHandler.LoadImage(holder.mIvProductImage, cartItemModel.getProductImageUrl());
-        holder.mTvProductName.setText(cartItemModel.getProductName());
-        holder.mTvProductPrice.setText(cartItemModel.getProductPriceFormatted());
-        holder.mTvProductWeight.setText(cartItemModel.getProductWeightFormatted());
-        holder.mTvTotalProductItem.setText(cartItemModel.getTotalProductItem());
+        ImageHandler.LoadImage(holder.mIvProductImage, cartItemModel.getImageUrl());
+        holder.mTvProductName.setText(cartItemModel.getName());
+        holder.mTvProductPrice.setText(CURRENCY_RUPIAH.format(cartItemModel.getPrice()));
+        holder.mTvProductWeight.setText(getWeightFormat(cartItemModel.getWeight(),
+                cartItemModel.getWeightUnit()));
+        holder.mTvTotalProductItem.setText(String.valueOf(cartItemModel.getQuantity()));
         holder.mTvOptionalNote.setText(cartItemModel.getNoteToSeller());
 
-        holder.mRlProductPoliciesContainer.setVisibility(getPoliciesVisibility());
-        holder.mIvFreeReturnIcon.setVisibility(getFreeReturnVisibility(cartItemModel.isFreeReturn()));
-        holder.mTvFreeReturnText.setVisibility(getFreeReturnVisibility(cartItemModel.isFreeReturn()));
-        holder.mTvPoSign.setVisibility(getPoVisibility(cartItemModel.isPoAvailable()));
-        holder.mTvCashback.setVisibility(getCashbackVisibility(cartItemModel.getCashback()));
-        holder.mTvCashback.setText(getCashback(cartItemModel.getCashback()));
+        holder.mRlProductPoliciesContainer.setVisibility(getPoliciesVisibility(
+                cartItemModel.isCashback(),
+                cartItemModel.isFreeReturn(),
+                cartItemModel.isPreOrder()));
+        holder.mIvFreeReturnIcon.setVisibility(cartItemModel.isFreeReturn() ? View.VISIBLE : View.GONE);
+        holder.mTvFreeReturnText.setVisibility(cartItemModel.isFreeReturn() ? View.VISIBLE : View.GONE);
+        holder.mTvPoSign.setVisibility(cartItemModel.isPreOrder() ? View.VISIBLE : View.GONE);
+        holder.mTvCashback.setVisibility(cartItemModel.isCashback() ? View.VISIBLE : View.GONE);
+        holder.mTvCashback.setText(cartItemModel.getCashback());
     }
 
     @Override
@@ -61,56 +74,36 @@ public class InnerProductListAdapter
         return mProductList.size();
     }
 
-    private int getPoliciesVisibility() {
-        return View.VISIBLE;
+    private String getWeightFormat(double totalWeight, int weightUnit) {
+        String unit = weightUnit == 0 ? "Kg" : "g";
+        return String.format("Ongkos Kirim (%s %s)", (int) totalWeight, unit);
     }
 
-    private int getFreeReturnVisibility(boolean isFreeReturn) {
-        return isFreeReturn ? View.VISIBLE : View.GONE;
-    }
+    private int getPoliciesVisibility(boolean isCashback,
+                                      boolean isFreeReturn,
+                                      boolean isPreOrder) {
 
-    private int getPoVisibility(boolean isPoAvailable) {
-        return isPoAvailable ? View.VISIBLE : View.GONE;
-    }
-
-    private int getCashbackVisibility(String cashback) {
-        return cashback.equals("0%") ? View.GONE : View.VISIBLE;
-    }
-
-    private String getCashback(String cashback) {
-        return "Cashback " + cashback;
+        return !isCashback && !isFreeReturn && !isPreOrder ? View.GONE : View.VISIBLE;
     }
 
     class CartItemViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView mIvProductImage;
-        TextView mTvProductName;
-        TextView mTvProductPrice;
-        TextView mTvProductWeight;
-        TextView mTvTotalProductItem;
-        TextView mTvOptionalNote;
+        @BindView(R2.id.iv_product_image_container) ImageView mIvProductImage;
+        @BindView(R2.id.tv_shipping_product_name) TextView mTvProductName;
+        @BindView(R2.id.tv_shipped_product_price) TextView mTvProductPrice;
+        @BindView(R2.id.tv_product_weight) TextView mTvProductWeight;
+        @BindView(R2.id.tv_total_product_item) TextView mTvTotalProductItem;
+        @BindView(R2.id.tv_optional_note_to_seller) TextView mTvOptionalNote;
 
-        RelativeLayout mRlProductPoliciesContainer;
-        ImageView mIvFreeReturnIcon;
-        TextView mTvFreeReturnText;
-        TextView mTvPoSign;
-        TextView mTvCashback;
+        @BindView(R2.id.rl_product_policies_layout) RelativeLayout mRlProductPoliciesContainer;
+        @BindView(R2.id.iv_free_return_icon) ImageView mIvFreeReturnIcon;
+        @BindView(R2.id.tv_free_return_text) TextView mTvFreeReturnText;
+        @BindView(R2.id.tv_po_sign) TextView mTvPoSign;
+        @BindView(R2.id.tv_cashback_text) TextView mTvCashback;
 
         CartItemViewHolder(View view) {
             super(view);
-
-            mIvProductImage = view.findViewById(R.id.iv_product_image_container);
-            mTvProductName = view.findViewById(R.id.tv_shipping_product_name);
-            mTvProductPrice = view.findViewById(R.id.tv_shipped_product_price);
-            mTvProductWeight = view.findViewById(R.id.tv_product_weight);
-            mTvTotalProductItem = view.findViewById(R.id.tv_total_product_item);
-            mTvOptionalNote = view.findViewById(R.id.tv_optional_note_to_seller);
-
-            mRlProductPoliciesContainer = view.findViewById(R.id.rl_product_policies_layout);
-            mIvFreeReturnIcon = view.findViewById(R.id.iv_free_return_icon);
-            mTvFreeReturnText = view.findViewById(R.id.tv_free_return_text);
-            mTvPoSign = view.findViewById(R.id.tv_po_sign);
-            mTvCashback = view.findViewById(R.id.tv_cashback_text);
+            ButterKnife.bind(this, view);
         }
 
     }

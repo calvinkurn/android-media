@@ -9,7 +9,6 @@ import com.tokopedia.core.network.core.TkpdOkHttpBuilder;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.services.AuthService;
-import com.tokopedia.loyalty.domain.apiservice.TokoPointResponseConverter;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -60,7 +59,7 @@ public class CartService extends AuthService<CartApi> {
 
         return new Retrofit.Builder()
                 .baseUrl(processedBaseUrl)
-                .addConverterFactory(TokoPointResponseConverter.create())
+                .addConverterFactory(CartResponseConverter.create())
                 .addConverterFactory(new StringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())

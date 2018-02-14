@@ -19,10 +19,12 @@
             android:id="@+id/shipping_index"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black_70"
+            android:fontFamily="sans-serif-medium"
+            android:lineSpacingExtra="3sp"
             android:text="Pengiriman #"
-            android:textSize="@dimen/text_size_medium"
-            android:textStyle="bold" />
+            android:textColor="@color/black_70"
+            android:textSize="14sp"
+            android:textStyle="normal" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -34,6 +36,9 @@
                 android:id="@+id/edit_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="@dimen/padding_ms"
+                android:paddingRight="@dimen/padding_ms"
                 android:src="@drawable/ic_edit_pencil" />
 
             <ImageView
@@ -97,7 +102,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/padding_small"
-        android:paddingTop="@dimen/padding_small">
+        android:paddingTop="16dp">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -107,13 +112,16 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Berat : " />
+                android:text="Berat : "
+                android:textColor="@color/black_38"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/product_weight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black_70"
+                android:textSize="12sp"
                 tools:text="3 Kg" />
 
         </LinearLayout>
@@ -121,19 +129,23 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:gravity="end">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Jumlah : " />
+                android:text="Jumlah : "
+                android:textColor="@color/black_38"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/product_qty"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="1"
-                android:textColor="@color/black_70" />
+                android:textColor="@color/black_70"
+                android:textSize="12sp" />
 
         </LinearLayout>
 
@@ -142,75 +154,38 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Catatan untuk penjual (optional)" />
+        android:layout_marginBottom="3dp"
+        android:fontFamily="sans-serif"
+        android:text="Catatan untuk penjual (optional)"
+        android:textColor="@color/black_38"
+        android:textSize="12sp"
+        android:textStyle="normal" />
 
     <TextView
         android:id="@+id/notes_for_seller"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
         android:hint="Tidak ada catatan"
         android:textColor="@color/black_70"
-        android:textSize="14sp"
+        android:textSize="12sp"
+        android:textStyle="normal"
         tools:text="Saya kirim warna merah ya min! jangan sampai salah kirim barangnya" />
 
-    <LinearLayout
+    <include
         android:id="@+id/address_layout"
+        layout="@layout/item_recipient_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingTop="@dimen/padding_small"
-        android:paddingBottom="@dimen/padding_small">
-
-        <TextView
-            android:id="@+id/address_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="Alamat Kantor" />
-
-        <TextView
-            android:id="@+id/address_receiver_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black_70"
-            android:textStyle="bold"
-            tools:text="Agus Maulana" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/address"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:textColor="@color/black_70"
-                tools:text="Jl. Letjen S. Parman Kav.77, Wisma 77 Tower 2, Tokopedia Lt. 2, Jakarta, 0817 1234 5678" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center_vertical|end">
-
-                <ImageView
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:src="@drawable/chevron_thin_right" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </LinearLayout>
+        android:layout_marginTop="16dp" />
 
     <View
         android:id="@+id/border_line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/margin_small"
         android:layout_marginBottom="@dimen/margin_small"
-        android:background="@color/grey_400"
+        android:layout_marginTop="@dimen/margin_small"
+        android:background="@color/grey_300"
         android:visibility="gone"
         tools:visibility="visible" />
 

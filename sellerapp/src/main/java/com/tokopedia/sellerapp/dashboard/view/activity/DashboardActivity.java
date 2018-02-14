@@ -1,6 +1,7 @@
 package com.tokopedia.sellerapp.dashboard.view.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,8 +27,8 @@ public class DashboardActivity extends DrawerPresenterActivity
 
     public static final String TAG = DashboardActivity.class.getSimpleName();
 
-    public static Intent createInstance(Activity activity) {
-        Intent intent = new Intent(activity, DashboardActivity.class);
+    public static Intent createInstance(Context context) {
+        Intent intent = new Intent(context, DashboardActivity.class);
         return intent;
     }
 

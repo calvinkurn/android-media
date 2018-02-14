@@ -10,6 +10,7 @@ import java.util.List;
 public class Courier {
 
     public static final String EXPRESS_COURIER_ID = "1000"; // from API
+    public static final String CARGO_COURIER_ID = "1001"; // from API
 
     @Expose
     private String name;
@@ -68,6 +69,10 @@ public class Courier {
 
     public boolean isExpressCourierId(){
         return EXPRESS_COURIER_ID.equals(id);
+    }
+
+    public boolean isCargoCourierId(){
+        return CARGO_COURIER_ID.equals(id);
     }
 
     public List<CourierServiceModel> getServices() {

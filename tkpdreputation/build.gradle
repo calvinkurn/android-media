@@ -4,7 +4,7 @@ apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
 apply plugin: 'maven'
 
-group = 'com.tokopedia.core'
+group = rootProject.ext.groupModule
 version = rootProject.ext.tkpdReputationVersion
 
 def getArtifactVersionCode() {
@@ -21,11 +21,16 @@ def getTkpdDesign() {
             rootProject.ext.tkpdDependencies.design : project(':tkpddesign');
 }
 
+def getTkpdUseCase() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.usecase : project(':tkpdusecase');
+}
+
 publishing {
     publications {
         aar(MavenPublication) {
-            groupId 'com.tokopedia.core'
-            artifactId 'tkpdreputation'
+            groupId rootProject.ext.groupModule
+            artifactId rootProject.ext.tkpdReputationArtifact
             version rootProject.ext.tkpdReputationVersion
             artifact("$buildDir/outputs/aar/tkpdreputation-release.aar")
             pom.withXml {
@@ -98,6 +103,7 @@ dependencies {
 
     compile getTkpdCore()
     compile getTkpdDesign()
+    compile getTkpdUseCase()
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

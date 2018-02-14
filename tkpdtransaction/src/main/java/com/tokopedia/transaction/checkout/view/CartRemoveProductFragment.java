@@ -2,9 +2,11 @@ package com.tokopedia.transaction.checkout.view;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.transaction.R;
@@ -13,11 +15,15 @@ import com.tokopedia.transaction.checkout.di.component.CartRemoveProductComponen
 import com.tokopedia.transaction.checkout.di.component.DaggerCartRemoveProductComponent;
 import com.tokopedia.transaction.checkout.di.module.CartRemoveProductModule;
 import com.tokopedia.transaction.checkout.view.adapter.CartRemoveProductAdapter;
-import com.tokopedia.transaction.checkout.view.data.CartItemModel;
+import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.presenter.CartRemoveProductPresenter;
 import com.tokopedia.transaction.checkout.view.view.IRemoveProductListView;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -25,31 +31,43 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.tokopedia.transaction.checkout.view.SingleAddressShipmentFragment.ARG_EXTRA_CART_DATA_LIST;
+
 /**
  * @author Aghny A. Putra on 05/02/18
  */
 public class CartRemoveProductFragment extends BasePresenterFragment
-    implements IRemoveProductListView<List<CartItemModel>>{
+    implements IRemoveProductListView<List<CartItemData>>,
+        CartRemoveProductAdapter.CartRemoveProductActionListener {
 
+    private static final Locale LOCALE_ID = new Locale("in", "ID");
     private static final String TAG = CartRemoveProductFragment.class.getSimpleName();
 
-    @BindView(R2.id.rv_cart_remove_product)
-    RecyclerView mRvCartRemoveProduct;
+    @BindView(R2.id.rv_cart_remove_product) RecyclerView mRvCartRemoveProduct;
+    @BindView(R2.id.btn_remove_product) Button mBtnRemoveProduct;
 
-    @Inject
-    CartRemoveProductAdapter mCartRemoveProductAdapter;
-    @Inject
-    CartRemoveProductPresenter mCartRemoveProductPresenter;
+    @Inject CartRemoveProductAdapter mCartRemoveProductAdapter;
+    @Inject CartRemoveProductPresenter mCartRemoveProductPresenter;
 
-    public static CartRemoveProductFragment newInstance() {
-        return new CartRemoveProductFragment();
+    private List<CartItemData> mCartItemDataList;
+
+    private int mCheckedCartItem = 0;
+    private Set<Integer> mSetCheckedCartItemIndex = new HashSet<>();
+
+    public static CartRemoveProductFragment newInstance(List<CartItemData> cartItemDataList) {
+        CartRemoveProductFragment fragment = new CartRemoveProductFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(ARG_EXTRA_CART_DATA_LIST,
+                (ArrayList<? extends Parcelable>) cartItemDataList);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
     protected void initInjector() {
         super.initInjector();
         CartRemoveProductComponent component = DaggerCartRemoveProductComponent.builder()
-                .cartRemoveProductModule(new CartRemoveProductModule())
+                .cartRemoveProductModule(new CartRemoveProductModule(this))
                 .build();
         component.inject(this);
     }
@@ -109,7 +127,7 @@ public class CartRemoveProductFragment extends BasePresenterFragment
      */
     @Override
     protected void setupArguments(Bundle arguments) {
-
+        mCartItemDataList = arguments.getParcelableArrayList(ARG_EXTRA_CART_DATA_LIST);
     }
 
     /**
@@ -135,6 +153,7 @@ public class CartRemoveProductFragment extends BasePresenterFragment
         mRvCartRemoveProduct.setAdapter(mCartRemoveProductAdapter);
 
         mCartRemoveProductPresenter.attachView(this);
+        mBtnRemoveProduct.setEnabled(false);
     }
 
     /**
@@ -142,7 +161,7 @@ public class CartRemoveProductFragment extends BasePresenterFragment
      */
     @Override
     protected void setViewListener() {
-        mCartRemoveProductPresenter.getCartItems();
+        mCartRemoveProductPresenter.getCartItems(mCartItemDataList);
     }
 
     /**
@@ -162,8 +181,8 @@ public class CartRemoveProductFragment extends BasePresenterFragment
     }
 
     @Override
-    public void showList(List<CartItemModel> cartItemModels) {
-        mCartRemoveProductAdapter.updateData(cartItemModels);
+    public void showList(List<CartItemData> cartItemDataList) {
+        mCartRemoveProductAdapter.updateData(cartItemDataList);
         mCartRemoveProductAdapter.notifyDataSetChanged();
     }
 
@@ -179,7 +198,34 @@ public class CartRemoveProductFragment extends BasePresenterFragment
 
     @OnClick(R2.id.btn_remove_product)
     public void removeCheckedProducts() {
-
+        for (Integer index : mSetCheckedCartItemIndex) {
+            mCartItemDataList.remove((int) index);
+        }
+        mCartRemoveProductAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * Executed when state of checkbox is changed
+     *
+     * @param checked  boolean state of checked on unchecked
+     * @param position index of list where the item is checked
+     */
+    @Override
+    public void onCheckBoxStateChangedListener(boolean checked, int position) {
+        if (checked) {
+            mSetCheckedCartItemIndex.add(position);
+            mCheckedCartItem++;
+        } else {
+            mSetCheckedCartItemIndex.remove(position);
+            mCheckedCartItem--;
+        }
+
+        if (mCheckedCartItem == 0) {
+            mBtnRemoveProduct.setEnabled(false);
+            mBtnRemoveProduct.setText("Hapus");
+        } else {
+            mBtnRemoveProduct.setEnabled(true);
+            mBtnRemoveProduct.setText(String.format(LOCALE_ID, "Hapus (%d)", mCheckedCartItem));
+        }
+    }
 }

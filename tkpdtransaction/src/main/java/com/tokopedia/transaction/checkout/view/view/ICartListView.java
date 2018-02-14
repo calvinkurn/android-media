@@ -2,6 +2,7 @@ package com.tokopedia.transaction.checkout.view.view;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.transaction.base.IBaseView;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
@@ -33,4 +34,6 @@ public interface ICartListView extends IBaseView {
     List<CartItemHolderData> getFinalCartList();
 
     Context getActivityContext();
+
+    void renderDetailInfoSubTotal(String qty, String subtotalPrice);
 }

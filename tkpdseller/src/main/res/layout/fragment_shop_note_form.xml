@@ -21,7 +21,8 @@
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/layout_note_name"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:hint="@string/title_notes_name">
 
                 <EditText
                     android:id="@+id/note_name"
@@ -29,7 +30,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_small"
                     android:enabled="false"
-                    android:hint="@string/title_notes_name"
                     android:imeOptions="actionNext">
 
                     <requestFocus />
@@ -41,14 +41,14 @@
                 android:id="@+id/layout_note_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/layout_note_name">
+                android:layout_below="@id/layout_note_name"
+                android:hint="@string/title_notes_content">
 
                 <EditText
                     android:id="@+id/note_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_small"
-                    android:hint="@string/title_notes_content"
                     android:imeOptions="actionDone"
                     android:inputType="textMultiLine" />
 

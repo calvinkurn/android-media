@@ -12,6 +12,8 @@ import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsCreatePromoExistingGroupActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsCreatePromoNewGroupActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsCreatePromoWithoutGroupActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailGroupActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailProductActivity;
 
 /**
  * Created by zulfikarrahman on 2/22/17.
@@ -67,6 +69,24 @@ public class TopAdsGroupNewPromoFragment extends TopAdsBaseManageGroupPromoFragm
         if (requestCode == REQUEST_CODE_AD_STATUS && data != null) {
             boolean adStatusChanged = data.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
             if (adStatusChanged) {
+                boolean isEnoughDeposit = data.getBooleanExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, false);
+                long productId = data.getLongExtra(TopAdsNewCostWithoutGroupFragment.EXTRA_NEW_PRODUCT_ID, -1);
+                if(productId != -1){
+                    Intent intent = TopAdsDetailProductActivity.getCallingIntent(getActivity(), Long.toString(productId));
+                    intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
+                    intent.putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, isEnoughDeposit);
+                    getActivity().startActivity(intent);
+                }
+
+                long groupId = data.getLongExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_NEW_GROUP_ID, -1);
+                if(groupId != -1){
+                    Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
+                    intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, Long.toString(groupId));
+                    intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
+                    intent.putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, isEnoughDeposit);
+                    getActivity().startActivity(intent);
+                }
+
                 Intent intent = new Intent();
                 intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
                 getActivity().setResult(Activity.RESULT_OK, intent);

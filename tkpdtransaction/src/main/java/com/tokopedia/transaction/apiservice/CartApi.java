@@ -2,11 +2,14 @@ package com.tokopedia.transaction.apiservice;
 
 import com.google.gson.JsonObject;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
 
 import java.util.Map;
 
 import retrofit2.Response;
 import retrofit2.http.Body;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
@@ -19,9 +22,10 @@ import rx.Observable;
 
 public interface CartApi {
 
+    @FormUrlEncoded
     @POST(TkpdBaseURL.Cart.PATH_ADD_TO_CART)
-    @Headers({"Content-Type: application/json"})
-    Observable<Response<CartResponse>> postAddToCart(@Body JsonObject requestBody);
+   // @Headers({"Content-Type: application/x-www-form-urlencoded"})
+    Observable<Response<CartResponse>> postAddToCart(@FieldMap Map<String, String> params);
 
     @GET(TkpdBaseURL.Cart.PATH_CART_LIST)
     Observable<Response<CartResponse>> getCartList(@QueryMap Map<String, String> params);

@@ -5,54 +5,37 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
-import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.checkout.view.adapter.ShipmentAddressListAdapter;
 import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 import com.tokopedia.transaction.checkout.view.presenter.CartAddressChoicePresenter;
 import com.tokopedia.transaction.checkout.view.presenter.ICartAddressChoicePresenter;
 import com.tokopedia.transaction.checkout.view.view.ICartAddressChoiceView;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static com.tokopedia.transaction.checkout.view.activity.CartAddressChoiceActivity.INTENT_EXTRA_RECIPIENT;
 
 /**
  * Created by Irfan Khoirul on 05/02/18.
  */
 
 public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddressChoicePresenter>
-        implements ICartAddressChoiceView {
+        implements ICartAddressChoiceView, ShipmentAddressListAdapter.ActionListener {
 
-    private static final String ARG_SHIPMENT_RECIPIENT = "recipient";
+    public static String INTENT_EXTRA_SELECTED_RECIPIENT_ADDRESS = "selectedAddress";
 
-    @BindView(R2.id.rb_check_address)
-    RadioButton rbCheckAddress;
-    @BindView(R2.id.ll_address_radio_button_container)
-    LinearLayout llAddressRadioButtonContainer;
-    @BindView(R2.id.tv_text_address_description)
-    TextView tvTextAddressDescription;
-    @BindView(R2.id.tv_recipient_name)
-    TextView tvRecipientName;
-    @BindView(R2.id.tv_recipient_address)
-    TextView tvRecipientAddress;
-    @BindView(R2.id.rl_recipient_address)
-    RelativeLayout rlRecipientAddress;
-    @BindView(R2.id.rl_shipment_recipient_address_header)
-    RelativeLayout rlShipmentRecipientAddressHeader;
-    @BindView(R2.id.tv_change_address)
-    TextView tvChangeAddress;
     @BindView(R2.id.tv_choose_other_address)
     TextView tvChooseOtherAddress;
     @BindView(R2.id.ll_add_new_address)
@@ -61,14 +44,13 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     LinearLayout llSendToMultipleAddress;
     @BindView(R2.id.bt_send_to_current_address)
     Button btSendToCurrentAddress;
-    @BindView(R2.id.tv_phone_number)
-    TextView tvPhoneNumber;
+    @BindView(R2.id.rv_address)
+    RecyclerView rvAddress;
 
-    public static CartAddressChoiceFragment newInstance(ShipmentRecipientModel shipmentRecipientModel) {
+    private ShipmentAddressListAdapter recipientAdapter;
+
+    public static CartAddressChoiceFragment newInstance() {
         CartAddressChoiceFragment fragment = new CartAddressChoiceFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ARG_SHIPMENT_RECIPIENT, shipmentRecipientModel);
-        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -99,8 +81,7 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
 
     @Override
     protected void initialPresenter() {
-        presenter = new CartAddressChoicePresenter();
-        presenter.attachView(this);
+
     }
 
     @Override
@@ -120,18 +101,16 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
 
     @Override
     protected void initView(View view) {
-        rbCheckAddress.setVisibility(View.GONE);
-        presenter.setRecipientAddress(
-                (ShipmentRecipientModel) getArguments().getParcelable(ARG_SHIPMENT_RECIPIENT)
-        );
+        ButterKnife.bind(this, view);
+        presenter = new CartAddressChoicePresenter();
+        setupRecyclerView();
+        presenter.attachView(this);
+        presenter.loadAddresses();
     }
 
     @Override
-    public void renderRecipientData(ShipmentRecipientModel shipmentRecipientModel) {
-        tvTextAddressDescription.setText(shipmentRecipientModel.getRecipientAddressDescription());
-        tvRecipientName.setText(shipmentRecipientModel.getRecipientName());
-        tvRecipientAddress.setText(shipmentRecipientModel.getRecipientAddress());
-        tvPhoneNumber.setText(shipmentRecipientModel.getRecipientPhoneNumber());
+    public void renderRecipientData() {
+        setupRecyclerView();
     }
 
     @Override
@@ -149,6 +128,15 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
 
     }
 
+    private void setupRecyclerView() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.VERTICAL, false);
+        recipientAdapter = new ShipmentAddressListAdapter(this);
+        recipientAdapter.setAddressList(presenter.getRecipientAddresses());
+        rvAddress.setLayoutManager(linearLayoutManager);
+        rvAddress.setAdapter(recipientAdapter);
+    }
+
     @OnClick(R2.id.tv_choose_other_address)
     void onChooseOtherAddressClick() {
         FragmentManager fragmentManager = getActivity().getFragmentManager();
@@ -163,20 +151,6 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
                     .addToBackStack(backStateName)
                     .commit();
         }
-    }
-
-    @OnClick(R2.id.tv_change_address)
-    void onChangeAddressClick() {
-        AddressModel data = new AddressModel();
-//        data.setAddressId();
-//        data.setAddressName();
-//        data.setAddressStatus();
-//        data.setAddressStreet();
-//        data.setCityId();
-//        data.setCityName();
-//        data.setDistrictId();
-//        data.setDistrictName();
-        startActivityForResult(AddAddressActivity.createInstance(getActivity(), data), ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
     }
 
     @OnClick(R2.id.ll_add_new_address)
@@ -203,8 +177,19 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     @OnClick(R2.id.bt_send_to_current_address)
     void onSendToCurrentAddress() {
         Intent intent = new Intent();
-        intent.putExtra(INTENT_EXTRA_RECIPIENT, presenter.getRecipientAddress());
+        intent.putExtra(INTENT_EXTRA_SELECTED_RECIPIENT_ADDRESS, presenter.getSelectedRecipientAddress());
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
+    }
+
+    @Override
+    public void onAddressContainerClicked(ShipmentRecipientModel model) {
+        presenter.setSelectedRecipientAddress(model);
+    }
+
+    @Override
+    public void onEditClick(ShipmentRecipientModel model) {
+        startActivityForResult(AddAddressActivity.createInstance(getActivity(),
+                model.convertToAddressModel()), ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
     }
 }

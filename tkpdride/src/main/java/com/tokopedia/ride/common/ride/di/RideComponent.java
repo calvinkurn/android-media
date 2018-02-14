@@ -7,6 +7,7 @@ import com.tokopedia.core.drawer2.domain.TokoCashRepository;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
+import com.tokopedia.ride.bookingride.domain.GetLocationAddressUseCase;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.common.place.domain.PlaceRepository;
 import com.tokopedia.ride.common.ride.di.scope.RideScope;
@@ -41,4 +42,7 @@ public interface RideComponent {
     GiveDriverRatingUseCase giveDriverRatingUseCase();
 
     TokoCashRepository getTokoCashRepository();
+
+    GetLocationAddressUseCase getLocationAddressUseCase();
+
 }

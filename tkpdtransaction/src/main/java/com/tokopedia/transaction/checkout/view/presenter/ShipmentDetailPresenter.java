@@ -74,12 +74,9 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
 
     @Override
     public void setCourierList(List<CourierItemData> couriers) {
-        this.couriers = couriers;
-        if (couriers.size() > 3) {
-            loadFirstThreeCourier();
-        } else {
-            loadAllCourier();
-        }
+        this.couriers.clear();
+        this.couriers.addAll(couriers);
+        loadAllCourier();
     }
 
     @Override
@@ -99,15 +96,14 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
     }
 
     @Override
-    public void loadFirstThreeCourier() {
+    public void loadAllCourier() {
         chooseSelectedCourier(selectedCourier);
-        getView().showFirstThreeCouriers(couriers.subList(0, 3));
+        getView().showAllCouriers();
     }
 
     @Override
-    public void loadAllCourier() {
-        chooseSelectedCourier(selectedCourier);
-        getView().showAllCouriers(couriers);
+    public List<CourierItemData> getCouriers() {
+        return couriers;
     }
 
     private void chooseSelectedCourier(CourierItemData currentCourier) {

@@ -9,7 +9,7 @@ import android.os.Parcelable;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.checkout.view.CartSingleAddressFragment;
+import com.tokopedia.transaction.checkout.view.SingleAddressShipmentFragment;
 import com.tokopedia.transaction.checkout.view.MultipleAddressFragment;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 
@@ -68,10 +68,10 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
     protected void initView() {
         Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
         if (fragment == null || !((fragment instanceof MultipleAddressFragment)
-                || (fragment instanceof CartSingleAddressFragment))) {
+                || (fragment instanceof SingleAddressShipmentFragment))) {
             if (typeAddressShipment == TYPE_ADDRESS_SHIPMENT_SINGLE) {
                 getFragmentManager().beginTransaction().replace(R.id.container,
-                        CartSingleAddressFragment.newInstance(cartItemDataList)).commit();
+                        SingleAddressShipmentFragment.newInstance(cartItemDataList)).commit();
             } else {
                 getFragmentManager().beginTransaction().replace(R.id.container,
                         MultipleAddressFragment.newInstance()).commit();
@@ -107,5 +107,10 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
     @Override
     public void goToMultipleAddressCart(Object data) {
 
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

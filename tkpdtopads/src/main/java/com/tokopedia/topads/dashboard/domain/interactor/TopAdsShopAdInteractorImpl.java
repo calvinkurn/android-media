@@ -30,7 +30,7 @@ public class TopAdsShopAdInteractorImpl implements TopAdsShopAdInteractor {
     public TopAdsShopAdInteractorImpl(Context context) {
         this.context = context;
         compositeSubscription = new CompositeSubscription();
-        topAdsManagementService = new TopAdsManagementService(new SessionHandler(context).getAccessToken(context));
+        topAdsManagementService = new TopAdsManagementService(new SessionHandler(context));
         topAdsCacheDataSource = new TopAdsCacheDataSourceImpl(context);
     }
 

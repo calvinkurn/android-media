@@ -48,4 +48,8 @@ public class CartResponseConverter extends Converter.Factory {
         }
         return null;
     }
+
+    public static Converter.Factory create() {
+        return new CartResponseConverter();
+    }
 }

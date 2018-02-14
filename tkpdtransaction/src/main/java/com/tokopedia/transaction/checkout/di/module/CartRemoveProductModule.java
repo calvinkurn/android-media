@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.checkout.di.module;
 
 import com.tokopedia.transaction.checkout.di.scope.CartRemoveProductScope;
+import com.tokopedia.transaction.checkout.view.CartRemoveProductFragment;
 import com.tokopedia.transaction.checkout.view.adapter.CartRemoveProductAdapter;
 import com.tokopedia.transaction.checkout.view.presenter.CartRemoveProductPresenter;
 
@@ -13,6 +14,12 @@ import dagger.Provides;
 @Module
 public class CartRemoveProductModule {
 
+    private final CartRemoveProductAdapter.CartRemoveProductActionListener actionListener;
+
+    public CartRemoveProductModule(CartRemoveProductFragment cartRemoveProductFragment) {
+        actionListener = cartRemoveProductFragment;
+    }
+
     @Provides
     @CartRemoveProductScope
     CartRemoveProductPresenter provideCartRemoveProductPresenter() {
@@ -22,7 +29,7 @@ public class CartRemoveProductModule {
     @Provides
     @CartRemoveProductScope
     CartRemoveProductAdapter provideCartRemoveProductAdapter() {
-        return new CartRemoveProductAdapter();
+        return new CartRemoveProductAdapter(actionListener);
     }
 
 

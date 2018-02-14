@@ -3,6 +3,7 @@ package com.tokopedia.transaction.checkout.view.presenter;
 import android.content.Intent;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.transaction.checkout.domain.ICartListInteractor;
 import com.tokopedia.transaction.checkout.view.activity.CartShipmentActivity;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
@@ -99,6 +100,18 @@ public class CartListPresenter implements ICartListPresenter {
         );
         view.navigateToActivity(intent);
 
+    }
+
+    @Override
+    public void reCalculateSubTotal(List<CartItemHolderData> dataList) {
+        double subtotalPrice = 0;
+        int qty = 0;
+        for (CartItemHolderData data : dataList) {
+            qty = qty + data.getCartItemData().getUpdatedData().getQuantity();
+            subtotalPrice = subtotalPrice + (data.getCartItemData().getUpdatedData().getQuantity() * data.getCartItemData().getOriginData().getPricePlan());
+        }
+
+        view.renderDetailInfoSubTotal(String.valueOf(qty), CurrencyFormatHelper.ConvertToRupiah(String.valueOf((int) subtotalPrice)));
     }
 
     private List<CartItemData> extractCartItemList(List<CartItemHolderData> finalCartList) {

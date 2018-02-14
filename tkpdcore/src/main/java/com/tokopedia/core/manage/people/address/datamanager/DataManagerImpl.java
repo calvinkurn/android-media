@@ -110,7 +110,7 @@ public class DataManagerImpl implements DataManager {
                 .map(new Func1<String, Boolean>() {
                     @Override
                     public Boolean call(String cacheKey) {
-                        // initialize local variable GlobalCacheManager
+                        // initialize local variable CacheManager
                         GlobalCacheManager cacheManager = new GlobalCacheManager();
 
                         // delete value
@@ -149,7 +149,7 @@ public class DataManagerImpl implements DataManager {
                 new Func2<String, GetPeopleAddress, Boolean>() {
                     @Override
                     public Boolean call(String cacheKey, GetPeopleAddress cacheData) {
-                        // initialize local variable GlobalCacheManager
+                        // initialize local variable CacheManager
                         GlobalCacheManager cacheManager = new GlobalCacheManager();
 
                         // initialize class you want to be converted from string
@@ -191,7 +191,7 @@ public class DataManagerImpl implements DataManager {
                 .map(new Func1<String, GetPeopleAddress>() {
                     @Override
                     public GetPeopleAddress call(String cacheKey) {
-                        // initialize local variable GlobalCacheManager
+                        // initialize local variable CacheManager
                         GlobalCacheManager cacheManager = new GlobalCacheManager();
 
                         // initialize class you want to be converted from string

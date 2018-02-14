@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
@@ -136,7 +137,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         itemViewHolder.subTotalAmount.setText(data.getSubTotalAmount());
         itemViewHolder.chooseCourierButton.setOnClickListener(onChooseCourierClicked(data));
         itemViewHolder.chooseCourierButton.setOnClickListener(getChooseCourierClickListener(data));
-        renderPickupPoint(itemViewHolder, data);
+//        renderPickupPoint(itemViewHolder, data);
     }
 
     private View.OnClickListener getChooseCourierClickListener(final MultipleAddressShipmentAdapterData data) {
@@ -230,30 +231,45 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
         private PickupPointLayout pickupPointLayout;
 
+        private TextView phoneNumber;
+
+        private RelativeLayout rlProductPoliciesLayout;
+
+        private ImageView ivFreeReturnIcon;
+
+        private TextView tvFreeReturnText;
+
+        private TextView tvPoSign;
+
+        private TextView tvCashbackText;
+
         MultipleShippingAddressViewHolder(View itemView) {
             super(itemView);
 
             senderName = itemView.findViewById(R.id.sender_name);
 
-            productImage = itemView.findViewById(R.id.product_image);
+            productImage = itemView.findViewById(R.id.iv_product_image_container);
 
-            productName = itemView.findViewById(R.id.product_name);
+            productName = itemView.findViewById(R.id.tv_shipping_product_name);
 
-            productPrice = itemView.findViewById(R.id.product_price);
+            productPrice = itemView.findViewById(R.id.tv_shipped_product_price);
 
-            productWeight = itemView.findViewById(R.id.product_weight);
+            productWeight = itemView.findViewById(R.id.tv_product_weight);
 
-            productQty = itemView.findViewById(R.id.product_qty);
+            productQty = itemView.findViewById(R.id.tv_total_product_item);
 
-            notesField = itemView.findViewById(R.id.notes_field);
+            notesField = itemView.findViewById(R.id.tv_optional_note_to_seller);
 
             addressLayout = itemView.findViewById(R.id.address_layout);
 
-            addressTitle = itemView.findViewById(R.id.address_title);
+            addressTitle = itemView.findViewById(R.id.tv_text_address_description);
 
-            addressReceiverName = itemView.findViewById(R.id.address_receiver_name);
+            addressReceiverName = itemView.findViewById(R.id.tv_recipient_name);
 
-            address = itemView.findViewById(R.id.address);
+            address = itemView.findViewById(R.id.tv_recipient_address);
+
+            phoneNumber = itemView.findViewById(R.id.tv_recipient_phone);
+            phoneNumber.setVisibility(View.GONE);
 
             chooseCourierButton = itemView.findViewById(R.id.choose_courier_button);
 
@@ -262,6 +278,17 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
             subTotalAmount = itemView.findViewById(R.id.sub_total_amount);
 
             pickupPointLayout = itemView.findViewById(R.id.pickup_point_layout);
+
+            rlProductPoliciesLayout = itemView.findViewById(R.id.rl_product_policies_layout);
+            rlProductPoliciesLayout.setVisibility(View.GONE);
+
+            ivFreeReturnIcon = itemView.findViewById(R.id.iv_free_return_icon);
+
+            tvFreeReturnText = itemView.findViewById(R.id.tv_free_return_text);
+
+            tvPoSign = itemView.findViewById(R.id.tv_po_sign);
+
+            tvCashbackText = itemView.findViewById(R.id.tv_cashback_text);
         }
     }
 

@@ -166,19 +166,24 @@
             <com.tokopedia.tkpdpdp.customview.OtherProductsView
                 android:id="@+id/view_other_products"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
 
             <com.tokopedia.tkpdpdp.customview.NewShopView
                 android:id="@+id/view_new_shop"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
 
             <com.tokopedia.tkpdpdp.customview.LastUpdateView
                 android:id="@+id/view_last_update"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:layout_marginBottom="@dimen/margin_med"/>
+
         </LinearLayout>
+
     </android.support.v4.widget.NestedScrollView>
 
     <com.tokopedia.tkpdpdp.customview.ButtonBuyView

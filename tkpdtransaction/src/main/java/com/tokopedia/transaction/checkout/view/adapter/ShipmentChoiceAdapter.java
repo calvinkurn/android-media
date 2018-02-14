@@ -28,9 +28,12 @@ public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAd
     private ViewListener viewListener;
     private List<ShipmentItemData> shipments;
 
-    public ShipmentChoiceAdapter(List<ShipmentItemData> shipments, ViewListener viewListener) {
-        this.shipments = shipments;
+    public void setViewListener(ViewListener viewListener) {
         this.viewListener = viewListener;
+    }
+
+    public void setShipments(List<ShipmentItemData> shipments) {
+        this.shipments = shipments;
     }
 
     @Override

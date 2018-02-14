@@ -35,7 +35,7 @@ public class TopAdsGroupAdInteractorImpl implements TopAdsGroupAdInteractor {
     public TopAdsGroupAdInteractorImpl(Context context) {
         this.context = context;
         compositeSubscription = new CompositeSubscription();
-        topAdsManagementService = new TopAdsManagementService(new SessionHandler(context).getAccessToken(context));
+        topAdsManagementService = new TopAdsManagementService(new SessionHandler(context));
         topAdsCacheDataSource = new TopAdsCacheDataSourceImpl(context);
     }
 

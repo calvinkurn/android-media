@@ -57,15 +57,6 @@ public abstract class TopAdsNewProductListFragment<T extends TopAdsProductListSt
     private RecyclerView recyclerView;
     protected ProgressDialog progressDialog;
 
-    protected void onNextClicked() {
-        showLoading();
-        if (stepperModel == null) {
-            initiateStepperModel();
-        }
-        stepperModel.setTopAdsProductViewModels(adapter.getData());
-        goToNextPage();
-    }
-
     protected abstract void initiateStepperModel();
 
     protected abstract void goToNextPage();
@@ -120,7 +111,12 @@ public abstract class TopAdsNewProductListFragment<T extends TopAdsProductListSt
         buttonNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onNextClicked();
+                showLoading();
+                if (stepperModel == null) {
+                    initiateStepperModel();
+                }
+                stepperModel.setTopAdsProductViewModels(adapter.getData());
+                goToNextPage();
             }
         });
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));

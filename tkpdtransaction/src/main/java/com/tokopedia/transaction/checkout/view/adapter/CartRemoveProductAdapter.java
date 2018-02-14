@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,7 +14,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.transaction.R;
 
 import com.tokopedia.transaction.R2;
-import com.tokopedia.transaction.checkout.view.data.CartItemModel;
+import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import java.util.List;
 
 import butterknife.BindView;
@@ -32,16 +33,18 @@ public class CartRemoveProductAdapter
     
     private static final int TOP_POSITION = 0;
 
+    private CartRemoveProductActionListener mActionListener;
+
     private Context mContext;
-    private List<CartItemModel> mCartItemModelList;
+    private List<CartItemData> mCartItemModelList;
 
-    private boolean isRemoveAll;
+    private boolean isRemoveAll = false;
 
-    public CartRemoveProductAdapter() {
-        isRemoveAll = false;
+    public CartRemoveProductAdapter(CartRemoveProductActionListener actionListener) {
+        mActionListener = actionListener;
     }
 
-    public void updateData(List<CartItemModel> cartItemModels) {
+    public void updateData(List<CartItemData> cartItemModels) {
         mCartItemModelList = cartItemModels;
     }
 
@@ -64,7 +67,8 @@ public class CartRemoveProductAdapter
         if (viewType == ITEM_VIEW_REMOVE_ALL_CHECKBOX) {
             ((SelectRemoveAllCheckboxViewHolder)viewHolder).bindViewHolder();
         } else {
-            ((CartProductDataViewHolder)viewHolder).bindViewHolder(mCartItemModelList.get(position - 1));
+            int pos = position - 1;
+            ((CartProductDataViewHolder)viewHolder).bindViewHolder(mCartItemModelList.get(pos), pos);
         }
     }
 
@@ -93,13 +97,33 @@ public class CartRemoveProductAdapter
         }
 
         void bindViewHolder() {
-            mCbRemoveAll.setOnClickListener(new View.OnClickListener() {
+            mCbRemoveAll.setChecked(isRemoveAll);
+            mCbRemoveAll.setOnClickListener(checkBoxClickedListener());
+        }
+
+        private View.OnClickListener checkBoxClickedListener() {
+            return new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     isRemoveAll = !isRemoveAll;
+                    notifyDataSetChanged();
                 }
-            });
+            };
         }
+
+    }
+
+    /**
+     * To be implemented by container fragment which will receive the data from adapter
+     */
+    public interface CartRemoveProductActionListener {
+
+        /**
+         * Executed when state of checkbox is changed
+         * @param state boolean state of checked on unchecked
+         * @param position index of list where the item is checked
+         */
+        void onCheckBoxStateChangedListener(boolean state, int position);
 
     }
 
@@ -120,17 +144,49 @@ public class CartRemoveProductAdapter
         @BindView(R2.id.tv_total_product_item)
         TextView mTvTotalProductItem;
 
+        int position;
+        boolean isChecked = false;
+
         CartProductDataViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        void bindViewHolder(CartItemModel cartItemModel) {
-            mTvProductName.setText(cartItemModel.getProductName());
-            mTvProductPrice.setText(cartItemModel.getProductPriceFormatted());
-            mTvProductWeight.setText(cartItemModel.getProductWeightFormatted());
-            mTvTotalProductItem.setText(cartItemModel.getTotalProductItem());
-            ImageHandler.LoadImage(mIvProductImage, cartItemModel.getProductImageUrl());
+        void bindViewHolder(CartItemData cartItemModel, int position) {
+            this.position = position;
+
+            CartItemData.OriginData originData = cartItemModel.getOriginData();
+            CartItemData.UpdatedData updatedData = cartItemModel.getUpdatedData();
+
+            mCbRemoveProduct.setChecked(isRemoveAll);
+            mCbRemoveProduct.setOnClickListener(checkBoxClickedListener());
+            mCbRemoveProduct.setOnCheckedChangeListener(onChangeStateListener(position));
+
+            mTvSenderName.setText(originData.getShopName());
+            mTvProductName.setText(originData.getProductName());
+            mTvProductPrice.setText(originData.getPriceFormatted());
+            mTvProductWeight.setText(originData.getWeightFormatted());
+            mTvTotalProductItem.setText(String.valueOf(updatedData.getQuantity()));
+            ImageHandler.LoadImage(mIvProductImage, originData.getProductImage());
+        }
+
+        private CompoundButton.OnCheckedChangeListener onChangeStateListener(final int position) {
+            return new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean state) {
+                    mActionListener.onCheckBoxStateChangedListener(state, position);
+                }
+            };
+        }
+
+        private View.OnClickListener checkBoxClickedListener() {
+            return new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    isChecked = !isChecked;
+                    mCbRemoveProduct.setChecked(isChecked);
+                }
+            };
         }
 
     }

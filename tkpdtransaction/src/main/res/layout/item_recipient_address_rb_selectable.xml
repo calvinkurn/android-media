@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_shipment_recipient_address_header"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:foreground="?android:selectableItemBackground"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:id="@+id/ll_address_radio_button_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true">
+
+        <RadioButton
+            android:id="@+id/rb_check_address"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:buttonTint="@color/medium_green"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_recipient_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@id/ll_address_radio_button_container"
+        android:layout_toStartOf="@id/ll_address_radio_button_container"
+        android:background="@color/white">
+
+        <include layout="@layout/item_recipient_address" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

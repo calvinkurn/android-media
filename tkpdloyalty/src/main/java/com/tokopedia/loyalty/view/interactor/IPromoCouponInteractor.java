@@ -46,4 +46,6 @@ public interface IPromoCouponInteractor {
 
     void getCatalogFilterCategory(TKPDMapParam<String, String> param, Subscriber<String> subscriber);
 
+    void unsubscribe();
+
 }
