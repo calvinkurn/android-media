@@ -22,11 +22,11 @@ import rx.Subscriber;
 
 public class ReviewShopPresenter extends BaseDaggerPresenter<ReviewShopContract.View> implements ReviewShopContract.Presenter {
 
-    private final ReviewShopUseCase shopReviewUseCase;
+    protected final ReviewShopUseCase shopReviewUseCase;
     private final LikeDislikeReviewUseCase likeDislikeReviewUseCase;
     private final DeleteReviewResponseUseCase deleteReviewResponseUseCase;
-    private final ReviewProductListMapper productReviewListMapper;
-    private final UserSession userSession;
+    protected final ReviewProductListMapper productReviewListMapper;
+    protected final UserSession userSession;
 
     @Inject
     public ReviewShopPresenter(ReviewShopUseCase shopReviewUseCase,
@@ -108,7 +108,7 @@ public class ReviewShopPresenter extends BaseDaggerPresenter<ReviewShopContract.
                 getSubscriberGetShopReview());
     }
 
-    private Subscriber<DataResponseReviewShop> getSubscriberGetShopReview() {
+    protected Subscriber<DataResponseReviewShop> getSubscriberGetShopReview() {
         return new Subscriber<DataResponseReviewShop>() {
             @Override
             public void onCompleted() {

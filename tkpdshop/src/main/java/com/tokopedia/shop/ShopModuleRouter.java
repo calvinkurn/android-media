@@ -1,5 +1,7 @@
 package com.tokopedia.shop;
 
+import android.support.v4.app.Fragment;
+
 import com.tokopedia.reputation.speed.SpeedReputation;
 
 import rx.Observable;
@@ -10,4 +12,6 @@ import rx.Observable;
 
 public interface ShopModuleRouter {
     Observable<SpeedReputation> getSpeedReputationUseCase();
+
+    Fragment getShopReputationFragmentShop(String shopId, String shopDomain);
 }
