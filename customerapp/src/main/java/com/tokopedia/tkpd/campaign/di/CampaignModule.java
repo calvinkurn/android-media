@@ -1,6 +1,10 @@
 package com.tokopedia.tkpd.campaign.di;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.tkpd.campaign.data.model.CampaignErrorResponse;
 import com.tokopedia.tkpd.campaign.domain.barcode.CampaignDataRepository;
 import com.tokopedia.tkpd.campaign.domain.barcode.PostBarCodeDataUseCase;
@@ -9,6 +13,7 @@ import com.tokopedia.tkpd.campaign.source.CampaignDataFactory;
 import com.tokopedia.tkpd.campaign.source.api.CampaignAPI;
 import com.tokopedia.tkpd.campaign.source.api.CampaignURL;
 import com.tokopedia.tokocash.di.TokoCashModule;
+import com.tokopedia.tokocash.qrpayment.domain.GetInfoQrTokoCashUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -56,5 +61,11 @@ public class CampaignModule {
                 .addInterceptor(httpLoggingInterceptor)
                 .addInterceptor(new ErrorResponseInterceptor(CampaignErrorResponse.class))
                 .build();
+    }
+
+    @IdentifierWalletQualifier
+    @Provides
+    LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context) {
+        return new LocalCacheHandler(context, GetInfoQrTokoCashUseCase.IDENTIFIER);
     }
 }

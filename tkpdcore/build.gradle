@@ -170,7 +170,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'design'
     }
 
-    compile rootProject.ext.miscDependencies.captureActivity
     compile rootProject.ext.miscDependencies.scannerZxing
     compile rootProject.ext.miscDependencies.multiDex
     compile rootProject.ext.miscDependencies.parcelerApi

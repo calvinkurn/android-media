@@ -18,13 +18,11 @@ import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.di.CampaignComponent;
 import com.tokopedia.tkpd.campaign.di.DaggerCampaignComponent;
-import com.tokopedia.tokocash.qrpayment.domain.GetInfoQrTokoCashUseCase;
 
 import javax.inject.Inject;
 
@@ -38,7 +36,6 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
         HasComponent<CampaignComponent> {
 
     public static final int RESULT_CODE_HOME = 1;
-    public static final int RESULT_CODE_SCANNER = 2;
     private static final int REQUEST_CODE_NOMINAL = 211;
     private static final int REQUEST_CODE_LOGIN = 3;
 
@@ -69,7 +66,6 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
         super.onCreate(savedInstanceState);
         QrScannerActivityPermissionsDispatcher.isCameraPermissionAvailableWithCheck(this);
     }
-
 
 
     @NeedsPermission({Manifest.permission.CAMERA})
@@ -254,14 +250,8 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_NOMINAL && resultCode == RESULT_CODE_HOME) {
             finish();
-        } else if (requestCode == REQUEST_CODE_LOGIN) {
-            LocalCacheHandler localCacheHandler = new LocalCacheHandler(getApplicationContext(), GetInfoQrTokoCashUseCase.IDENTIFIER);
-            if (resultCode == RESULT_OK && presenter.isUserLogin()) {
-                String qrCode = localCacheHandler.getString(GetInfoQrTokoCashUseCase.IDENTIFIER);
-                presenter.onBarCodeScanComplete(qrCode);
-            } else {
-                localCacheHandler.putString(GetInfoQrTokoCashUseCase.IDENTIFIER, "");
-            }
+        } else if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_LOGIN) {
+            presenter.onScanCompleteAfterLoginQrPayment();
         }
     }
 }
