@@ -33,7 +33,7 @@ public interface QrScannerContract {
     interface Presenter extends CustomerPresenter<View> {
         void onBarCodeScanComplete(String barcodeData);
 
-        boolean isUserLogin();
+        void onScanCompleteAfterLoginQrPayment();
 
         void destroyView();
     }
