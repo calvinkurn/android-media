@@ -446,11 +446,11 @@ public class OkHttpFactory {
                 .build();
     }
 
-    public OkHttpClient buildDaggerClientBearerEventhailing(EventInerceptors eventInterceptor,
-                                                           OkHttpRetryPolicy okHttpRetryPolicy,
-                                                           ChuckInterceptor chuckInterceptor,
-                                                           DebugInterceptor debugInterceptor,
-                                                           HttpLoggingInterceptor loggingInterceptor) {
+    public OkHttpClient buildDaggerClientBearerEvents(EventInerceptors eventInterceptor,
+                                                      OkHttpRetryPolicy okHttpRetryPolicy,
+                                                      ChuckInterceptor chuckInterceptor,
+                                                      DebugInterceptor debugInterceptor,
+                                                      HttpLoggingInterceptor loggingInterceptor) {
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(builder)
                 .addInterceptor(eventInterceptor)
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);

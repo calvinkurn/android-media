@@ -2,9 +2,6 @@ package com.tokopedia.events.domain.model.searchdomainmodel;
 
 import com.google.gson.annotations.SerializedName;
 
-import javax.annotation.Generated;
-
-@Generated("com.robohorse.robopojogenerator")
 public class ValuesItemDomain {
 
 	@SerializedName("name")

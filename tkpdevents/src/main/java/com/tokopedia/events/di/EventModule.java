@@ -90,7 +90,7 @@ public class EventModule {
                                           DebugInterceptor debugInterceptor,
                                           HttpLoggingInterceptor loggingInterceptor) {
 
-        return OkHttpFactory.create().buildDaggerClientBearerEventhailing(
+        return OkHttpFactory.create().buildDaggerClientBearerEvents(
                 eventInerceptors,
                 okHttpRetryPolicy,
                 chuckInterceptor,

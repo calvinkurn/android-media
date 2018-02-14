@@ -1,10 +1,8 @@
 package com.tokopedia.events.data.entity.response.checkoutreponse;
 
 import java.util.List;
-import javax.annotation.Generated;
 import com.google.gson.annotations.SerializedName;
 
-@Generated("com.robohorse.robopojogenerator")
 public class Parameter{
 
 	@SerializedName("transaction_id")

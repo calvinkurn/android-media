@@ -1,9 +1,7 @@
 package com.tokopedia.events.data.entity.response.checkoutreponse;
 
-import javax.annotation.Generated;
 import com.google.gson.annotations.SerializedName;
 
-@Generated("com.robohorse.robopojogenerator")
 public class CheckoutResponse{
 
 	@SerializedName("thanks_url")

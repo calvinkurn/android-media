@@ -2,9 +2,7 @@ package com.tokopedia.events.data.entity.response.searchresponse;
 
 import com.google.gson.annotations.SerializedName;
 
-import javax.annotation.Generated;
 
-@Generated("com.robohorse.robopojogenerator")
 public class AppliedItem {
 
     @SerializedName("id")

@@ -80,6 +80,7 @@
                                 app:fillColor="@color/green_nob"
                                 app:pageColor="@color/grey_400"
                                 app:radius="@dimen/margin_padding_small"
+                                app:centered="false"
                                 app:strokeColor="@color/grey_400" />
 
                             <TextView

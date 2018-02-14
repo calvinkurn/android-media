@@ -1,10 +1,8 @@
 package com.tokopedia.events.data.entity.response.verifyresponse;
 
 import java.util.List;
-import javax.annotation.Generated;
 import com.google.gson.annotations.SerializedName;
 
-@Generated("com.robohorse.robopojogenerator")
 public class MetaData{
 
 	@SerializedName("end_date")

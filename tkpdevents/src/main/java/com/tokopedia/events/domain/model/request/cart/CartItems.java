@@ -1,10 +1,8 @@
 package com.tokopedia.events.domain.model.request.cart;
 
 import java.util.List;
-import javax.annotation.Generated;
 import com.google.gson.annotations.SerializedName;
 
-@Generated("com.robohorse.robopojogenerator")
 public class CartItems{
 
 	@SerializedName("cart_items")
