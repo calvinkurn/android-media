@@ -254,10 +254,6 @@
       "applink":"tokopedia://digital/form?category_id=12&operator_id=97"
     },
     {
-      "path":"berbagi",
-      "applink":"tokopedia://webview?url=https://www.tokopedia.com/berbagi"
-    },
-    {
       "path":"voucher",
       "applink":"tokopedia://digital/form?category_id=24"
     },
@@ -660,10 +656,6 @@
     {
       "path":"gift-card/uber",
       "applink":"tokopedia://digital/form?category_id=24&operator_id=256"
-    },
-    {
-      "path":"gift-card/tokopedia",
-      "applink":"tokopedia://webview?url=https://www.tokopedia.com/gift-card/tokopedia"
     },
     {
       "path":"gift-card/itunes",
