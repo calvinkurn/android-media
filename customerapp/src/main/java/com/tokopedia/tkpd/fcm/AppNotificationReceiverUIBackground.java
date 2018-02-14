@@ -21,7 +21,6 @@ import com.tokopedia.core.gcm.notification.promotions.CartNotification;
 import com.tokopedia.core.gcm.notification.promotions.DeeplinkNotification;
 import com.tokopedia.core.gcm.notification.promotions.GeneralNotification;
 import com.tokopedia.core.gcm.notification.promotions.PromoNotification;
-import com.tokopedia.core.gcm.notification.promotions.VerificationNotification;
 import com.tokopedia.core.gcm.notification.promotions.WishlistNotification;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
@@ -271,7 +270,6 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         promoNotifications.put(TkpdState.GCMServiceState.GCM_PROMO, new PromoNotification(mContext));
         promoNotifications.put(TkpdState.GCMServiceState.GCM_GENERAL, new GeneralNotification(mContext));
         promoNotifications.put(TkpdState.GCMServiceState.GCM_CART, new CartNotification(mContext));
-        promoNotifications.put(TkpdState.GCMServiceState.GCM_VERIFICATION, new VerificationNotification(mContext));
         promoNotifications.put(TkpdState.GCMServiceState.GCM_WISHLIST, new WishlistNotification(mContext));
         promoNotifications.put(TkpdState.GCMServiceState.GCM_DEEPLINK, new DeeplinkNotification(mContext));
         Visitable visitable = promoNotifications.get(getCode(data));

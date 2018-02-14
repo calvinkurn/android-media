@@ -82,10 +82,6 @@
         <activity android:name=".onboarding.activity.OnboardingSellerActivity" />
 
         <activity
-            android:name=".truecaller.TruecallerActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name=".deeplink.DeepLinkActivity"
             android:hardwareAccelerated="true"
             android:label="@string/title_activity_deep_link"

@@ -1,13 +1,13 @@
 package com.tokopedia.otp.phoneverification.view.activity;
 
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.PersistableBundle;
+import android.support.v4.app.FragmentTransaction;
 
-import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.otp.phoneverification.view.fragment.ChangePhoneNumberFragment;
 import com.tokopedia.session.R;
 
@@ -15,13 +15,13 @@ import com.tokopedia.session.R;
  * Created by nisie on 2/23/17.
  */
 
-public class ChangePhoneNumberActivity extends BasePresenterActivity {
-
-
+public class ChangePhoneNumberActivity extends TActivity implements HasComponent {
 
     @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        inflateView(R.layout.activity_simple_fragment);
+        initView();
     }
 
     @Override
@@ -29,31 +29,10 @@ public class ChangePhoneNumberActivity extends BasePresenterActivity {
         super.onResume();
     }
 
-    @Override
-    protected void setupURIPass(Uri data) {
-
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_simple_fragment;
-    }
-
-    @Override
-    protected void initView() {
+    private void initView() {
 
         ChangePhoneNumberFragment fragment = ChangePhoneNumberFragment.createInstance();
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if (getFragmentManager().findFragmentById(R.id.container) == null) {
             fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
         }
@@ -61,25 +40,15 @@ public class ChangePhoneNumberActivity extends BasePresenterActivity {
 
     }
 
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
-
     public static Intent getChangePhoneNumberIntent(Context context, String phoneNumber) {
         Intent intent = new Intent(context, ChangePhoneNumberActivity.class);
         intent.putExtra(ChangePhoneNumberFragment.EXTRA_PHONE_NUMBER, phoneNumber);
         return intent;
+    }
+
+    @Override
+    public AppComponent getComponent() {
+        return getApplicationComponent();
     }
 
     @Override

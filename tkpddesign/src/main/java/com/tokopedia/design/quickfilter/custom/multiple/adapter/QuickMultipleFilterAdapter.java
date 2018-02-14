@@ -29,8 +29,8 @@ public class QuickMultipleFilterAdapter extends BaseQuickSingleFilterAdapter<Ite
 
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_quick_multiple_filter_view, parent, false);
-        return new ItemFilterViewHolder(view, parent.getContext(), listener);
-    }
+        return new ItemFilterViewHolder(view, listener);
+}
 
     @Override
     public void onBindViewHolder(ItemFilterViewHolder holder, int position) {
