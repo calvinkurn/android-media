@@ -1,6 +1,5 @@
 package com.tokopedia.seller.base.view.activity;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
@@ -22,8 +21,6 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 
 import com.tokopedia.core.app.BaseActivity;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.utils.MenuTintUtils;
 
@@ -177,16 +174,4 @@ abstract class BaseToolbarActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onBackPressed() {
-        if (isTaskRoot() ||
-                (getIntent().getExtras() != null &&
-                        getIntent().getExtras().getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false))) {
-            Intent homeIntent = ((TkpdCoreRouter) getApplication()).getHomeIntent(this);
-            startActivity(homeIntent);
-            finish();
-        } else {
-            super.onBackPressed();
-        }
-    }
 }
