@@ -15,7 +15,7 @@
         android:text="First Class"
         android:textAllCaps="false"
         android:textColor="@color/black_70"
-        android:textSize="14sp"
+        android:textSize="@dimen/textsize_title"
         android:textStyle="bold" />
 
     <TextView
@@ -28,7 +28,7 @@
         android:layout_marginTop="@dimen/margin_default"
         android:text="Anak kecil di bawah umur 12 tahun harus didampingi orang dewasa berusia 18 tahun ke atas. Harga tiket sudah termasuk biaya layanan."
         android:textColor="@color/black_54"
-        android:textSize="12sp"
+        android:textSize="@dimen/text_subtitle_size"
         android:textStyle="normal" />
 
     <TextView
@@ -38,10 +38,10 @@
         android:layout_alignBottom="@+id/frameLayout"
         android:layout_marginLeft="@dimen/margin_default"
         android:layout_marginStart="@dimen/margin_default"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="@dimen/margin_25"
         android:text="Rp 170000"
         android:textColor="@color/price_pdp"
-        android:textSize="14sp"
+        android:textSize="@dimen/textsize_title"
         android:textStyle="bold" />
 
 
@@ -54,7 +54,7 @@
         android:layout_below="@+id/tv_ticket_description"
         android:layout_marginEnd="@dimen/margin_default"
         android:layout_marginRight="@dimen/margin_default"
-        android:layout_marginTop="25dp">
+        android:layout_marginTop="@dimen/margin_25">
 
         <TextView
             android:id="@+id/tv_sold_out"
@@ -88,8 +88,8 @@
 
             <TextView
                 android:id="@+id/tv_ticket_cnt"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="@dimen/small_icon_size"
+                android:layout_height="@dimen/small_icon_size"
                 android:background="@drawable/rectangle_transparent"
                 android:gravity="center"
                 android:text="0"

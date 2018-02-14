@@ -36,15 +36,15 @@
             android:imeOptions="actionSearch"
             android:inputType="text"
             android:maxLines="1"
-            android:textSize="14sp" />
+            android:textSize="@dimen/textsize_title" />
 
         <ImageButton
             android:id="@+id/image_button_close"
             android:layout_width="@dimen/image_width_xxs"
             android:layout_height="@dimen/image_width_xxs"
             android:background="@null"
-            app:srcCompat="@drawable/ic_close"
-            android:visibility="gone" />
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_close" />
     </LinearLayout>
 
 </FrameLayout>

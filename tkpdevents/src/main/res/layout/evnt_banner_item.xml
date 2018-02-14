@@ -7,5 +7,5 @@
         android:id="@+id/banner_item"
         android:layout_width="match_parent"
         android:scaleType="centerCrop"
-        android:layout_height="180dp" />
+        android:layout_height="@dimen/banner_height" />
 </FrameLayout>

@@ -25,9 +25,9 @@
                 app:layout_behavior="com.tokopedia.events.view.behaviours.ToolBarBehaviour"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:subtitleTextAppearance="@style/EventToolbarTextStyle"
                 app:theme="@style/AppBarTheme"
-                app:titleTextAppearance="@style/EventToolbarTextStyle"
-                app:subtitleTextAppearance="@style/EventToolbarTextStyle"/>
+                app:titleTextAppearance="@style/EventToolbarTextStyle" />
         </android.support.design.widget.AppBarLayout>
 
         <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -56,7 +56,7 @@
                     <ImageView
                         android:id="@+id/event_detail_banner"
                         android:layout_width="match_parent"
-                        android:layout_height="180dp"
+                        android:layout_height="@dimen/banner_height"
                         android:scaleType="centerCrop"
                         app:layout_collapseMode="pin" />
 
@@ -106,7 +106,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@color/white"
-                        android:paddingBottom="70dp">
+                        android:paddingBottom="@dimen/margin_stepper_nob">
 
                         <include layout="@layout/terms_conditions" />
                     </FrameLayout>

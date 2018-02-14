@@ -5,6 +5,6 @@
     android:layout_height="match_parent"
     android:background="@color/grey_background"
     android:clipToPadding="false"
-    android:paddingBottom="100dp">
+    android:paddingBottom="@dimen/notif_height">
 
 </android.support.v7.widget.RecyclerView>

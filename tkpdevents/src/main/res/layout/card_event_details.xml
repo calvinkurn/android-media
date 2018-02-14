@@ -14,24 +14,24 @@
         android:layout_marginStart="16dp"
         android:text="The 90s Festival"
         android:textColor="@color/grey_700"
-        android:textSize="16sp"
+        android:textSize="@dimen/textsize_large"
         android:textStyle="bold" />
 
     <LinearLayout
         android:id="@+id/event_display_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="16dp"
-        android:visibility="gone"
-        android:orientation="horizontal" />
+        android:layout_marginLeft="@dimen/textsize_large"
+        android:layout_marginTop="@dimen/margin_padding_medium"
+        android:orientation="horizontal"
+        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginEnd="@dimen/margin_default"
+        android:layout_marginStart="@dimen/margin_default"
+        android:layout_marginTop="@dimen/margin_med"
         android:orientation="vertical">
 
         <include
@@ -39,54 +39,54 @@
             layout="@layout/image_textview_holder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp" />
+            android:layout_marginTop="@dimen/margin_padding_small" />
 
         <include
             android:id="@+id/event_location"
             layout="@layout/image_textview_holder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp" />
+            android:layout_marginTop="@dimen/margin_padding_small" />
 
         <include
             android:id="@+id/event_address"
             layout="@layout/image_textview_holder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp" />
+            android:layout_marginTop="@dimen/margin_padding_small" />
 
 
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="@dimen/divider_height_thin"
         android:layout_marginTop="@dimen/margin_default"
         android:background="@color/grey_100" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="@dimen/margin_default"
+        android:layout_marginTop="@dimen/margin_med"
         android:text="Deskripsi"
         android:textColor="@color/grey_700"
-        android:textSize="12sp"
+        android:textSize="@dimen/text_subtitle_size"
         android:textStyle="bold" />
 
     <at.blogc.android.views.ExpandableTextView
         android:id="@+id/tv_expandable_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginEnd="@dimen/margin_default"
+        android:layout_marginStart="@dimen/margin_default"
+        android:layout_marginTop="@dimen/margin_padding_medium"
         android:autoLink="web"
         android:ellipsize="end"
         android:maxLines="3"
         android:text="@string/bigcontent"
         android:textColor="@color/grey_500"
-        android:textSize="12sp"
+        android:textSize="@dimen/text_subtitle_size"
         android:textStyle="normal"
         app:animation_duration="300" />
 
@@ -95,27 +95,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-    <TextView
-        android:id="@+id/seemorebutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/expand"
-        android:textColor="@color/green_nob"
-        android:textSize="12sp"
-        android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/seemorebutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_default"
+            android:layout_marginStart="@dimen/margin_default"
+            android:layout_marginTop="@dimen/margin_padding_medium"
+            android:text="@string/expand"
+            android:textColor="@color/green_nob"
+            android:textSize="@dimen/text_subtitle_size"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/down_arrow"
-            android:layout_width="8dp"
-            android:layout_height="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="12dp"
-            android:tint="@color/green_nob"
-            android:src="@drawable/ic_arrow_down"/>
+            android:layout_width="@dimen/margin_padding_medium"
+            android:layout_height="@dimen/margin_padding_medium"
+            android:layout_marginBottom="@dimen/margin_padding_medium"
+            android:layout_marginStart="@dimen/margin_padding_medium"
+            android:layout_marginTop="@dimen/margin_small_sm"
+            android:src="@drawable/ic_arrow_down"
+            android:tint="@color/green_nob" />
 
     </LinearLayout>
 

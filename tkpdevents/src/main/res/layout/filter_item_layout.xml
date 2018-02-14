@@ -6,7 +6,7 @@
     android:paddingBottom="8dp"
     android:paddingEnd="@dimen/margin_default"
     android:paddingStart="@dimen/margin_default"
-    android:paddingTop="8dp"
+    android:paddingTop="@dimen/margin_padding_medium"
     android:id="@+id/filter_item">
 
     <CheckBox
@@ -20,6 +20,6 @@
         android:layout_height="wrap_content"
         android:text="Sample Filter Text"
         android:textStyle="normal"
-        android:textSize="12sp" />
+        android:textSize="@dimen/text_subtitle_size" />
 
 </LinearLayout>
