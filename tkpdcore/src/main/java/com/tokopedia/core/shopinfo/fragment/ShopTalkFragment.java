@@ -47,18 +47,18 @@ public class ShopTalkFragment extends BasePresenterFragmentV4<ShopTalkPresenter>
     private static final String PARAM_FROM = "from";
     private static final String PARAM_MODEL = "talk";
     private static final String PARAM_POSITION = "position";
-    private boolean isViewShown;
+    protected boolean isViewShown;
 
     public static Fragment createInstance() {
         return new ShopTalkFragment();
     }
 
     @BindView(R2.id.list)
-    RecyclerView list;
+    protected RecyclerView list;
 
-    ShopTalkAdapter adapter;
-    TkpdProgressDialog progressDialog;
-    LinearLayoutManager layoutManager;
+    protected ShopTalkAdapter adapter;
+    protected TkpdProgressDialog progressDialog;
+    protected LinearLayoutManager layoutManager;
 
     @Override
     protected boolean isRetainInstance() {
@@ -132,9 +132,13 @@ public class ShopTalkFragment extends BasePresenterFragmentV4<ShopTalkPresenter>
                 int lastItemPosition = layoutManager.findLastVisibleItemPosition();
                 int visibleItem = layoutManager.getItemCount() - 1;
                 if (lastItemPosition == visibleItem && !presenter.isRequesting() && !adapter.getList().isEmpty())
-                    presenter.loadMore();
+                    loadMore();
             }
         });
+    }
+
+    protected void loadMore(){
+        presenter.loadMore();
     }
 
     @Override
@@ -415,7 +419,7 @@ public class ShopTalkFragment extends BasePresenterFragmentV4<ShopTalkPresenter>
 
     }
 
-    private void fetchData() {
+    protected void fetchData() {
         if (presenter != null
                 && adapter != null
                 && !adapter.isEmpty()

@@ -104,7 +104,7 @@ public class ShopTalkAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
 
-    private ArrayList<ShopTalk> list;
+    protected ArrayList<ShopTalk> list;
     private final Context context;
     ActionShopTalkListener listener;
 
@@ -329,6 +329,11 @@ public class ShopTalkAdapter extends BaseLinearRecyclerViewAdapter {
 
     public void addList(List<ShopTalk> list) {
         this.list.addAll(list);
+        notifyDataSetChanged();
+    }
+
+    public void addItem(ShopTalk list) {
+        this.list.add(list);
         notifyDataSetChanged();
     }
 

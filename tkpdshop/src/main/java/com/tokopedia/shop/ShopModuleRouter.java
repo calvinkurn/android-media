@@ -14,4 +14,6 @@ public interface ShopModuleRouter {
     Observable<SpeedReputation> getSpeedReputationUseCase();
 
     Fragment getShopReputationFragmentShop(String shopId, String shopDomain);
+
+    Fragment getShopTalkFragment();
 }

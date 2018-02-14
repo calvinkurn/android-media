@@ -71,6 +71,7 @@ import com.tokopedia.seller.reputation.di.SellerReputationComponent;
 import com.tokopedia.seller.reputation.domain.interactor.SpeedReputationUseCase;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
+import com.tokopedia.seller.temp.fragment.ShopTalkFragment;
 import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
 import com.tokopedia.sellerapp.truecaller.TruecallerActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
@@ -224,7 +225,12 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Fragment getShopReputationFragmentShop(String shopId, String shopDomain) {
-        return  TkpdReputationInternalRouter.getReviewShopInfoFragment(shopId, shopDomain);
+        return TkpdReputationInternalRouter.getReviewShopInfoFragment(shopId, shopDomain);
+    }
+
+    @Override
+    public Fragment getShopTalkFragment() {
+        return ShopTalkFragment.createInstance();
     }
 
     public GMComponent getGMComponent() {

@@ -40,7 +40,7 @@ import rx.Subscriber;
 public class ShopPageActivity extends BaseTabActivity  implements HasComponent<ShopComponent>,ShopPageView {
 
     private static final int PAGE_LIMIT = 3;
-    public static final String SHOP_INFO = "SHOP_INFO";
+    public static final String SHOP_INFO = "shop_id";
     public static final String SHOP_DOMAIN = "SHOP_DOMAIN";
     private String shopInfo;
     private String shopDomain;
@@ -165,6 +165,9 @@ public class ShopPageActivity extends BaseTabActivity  implements HasComponent<S
                         }
                         return ShopInfoFragment.createInstance("");
                     case 2:
+                        if(shopModuleRouter != null){
+                            return shopModuleRouter.getShopTalkFragment();
+                        }
                         return ShopInfoFragment.createInstance("");
                     default:
                         return null;
