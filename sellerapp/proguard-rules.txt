@@ -327,3 +327,4 @@
 
 -dontwarn android.net.http.**
 -dontwarn org.apache.http.impl.auth.NegotiateScheme
+-dontwarn com.android.internal.http.multipart.MultipartEntity
