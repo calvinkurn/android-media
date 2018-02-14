@@ -16,6 +16,7 @@ import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource;
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
+import com.tokopedia.flight.orderlist.data.cloud.entity.SendEmailEntity;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderMapper;
 import com.tokopedia.flight.review.data.FlightBookingDataSource;
@@ -121,6 +122,11 @@ public class FlightRepositoryImpl implements FlightRepository {
     @Override
     public Observable<FlightAirlineDB> getAirlineById(final String airlineId) {
         return flightAirlineDataListSource.getAirline(airlineId);
+    }
+
+    @Override
+    public Observable<SendEmailEntity> sendEmail(Map<String, Object> params) {
+        return flightOrderDataSource.sendEmail(params);
     }
 
     @Override

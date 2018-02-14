@@ -22,7 +22,7 @@ import android.widget.DatePicker;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
@@ -253,6 +253,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
             }
         FlightSimpleAdapter adapter = new FlightSimpleAdapter();
         adapter.setArrowVisible(true);
+        adapter.setFontSize(getResources().getDimension(R.dimen.font_micro));
         adapter.setInteractionListener(new FlightSimpleAdapter.OnAdapterInteractionListener() {
             @Override
             public void onItemClick(int adapterPosition, SimpleViewModel viewModel) {
@@ -296,7 +297,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
             }
         FlightSimpleAdapter adapter = new FlightSimpleAdapter();
         adapter.setArrowVisible(true);
-        adapter.setFontSize(getResources().getDimension(R.dimen.font_small));
+        adapter.setFontSize(getResources().getDimension(R.dimen.font_micro));
         adapter.setInteractionListener(new FlightSimpleAdapter.OnAdapterInteractionListener() {
             @Override
             public void onItemClick(int adapterPosition, SimpleViewModel viewModel) {

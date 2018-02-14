@@ -29,6 +29,7 @@ public class CartItemEditable {
     private int errorType;
     private boolean isUseInsurance;
     private String insuranceUsedInfo;
+    private int insuranceType;
 
     public CartItemEditable(CartItem data) {
         this.cartItem = data;
@@ -162,5 +163,13 @@ public class CartItemEditable {
 
     public void setInsuranceUsedInfo(String insuranceUsedInfo) {
         this.insuranceUsedInfo = insuranceUsedInfo;
+    }
+
+    public int getInsuranceType() {
+        return insuranceType;
+    }
+
+    public void setInsuranceType(int insuranceType) {
+        this.insuranceType = insuranceType;
     }
 }
