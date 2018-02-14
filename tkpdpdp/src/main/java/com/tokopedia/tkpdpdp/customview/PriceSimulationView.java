@@ -1,6 +1,7 @@
 package com.tokopedia.tkpdpdp.customview;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -145,7 +146,4 @@ public class PriceSimulationView extends BaseView<ProductDetailData, ProductDeta
         tvVariant.setTextColor(ContextCompat.getColor(context,R.color.medium_green));
     }
 
-    public View getVariantView() {
-        return variantLayout;
-    }
 }

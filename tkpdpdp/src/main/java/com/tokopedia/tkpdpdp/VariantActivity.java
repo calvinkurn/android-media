@@ -180,7 +180,15 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         if (child.isIsBuyable() && productDetailData.getShopInfo().getShopStatus()==1) {
             buttonSave.setBackground(ContextCompat.getDrawable(VariantActivity.this,R.drawable.button_save_orange));
             textButtonSave.setTextColor(ContextCompat.getColor(VariantActivity.this,R.color.href_link_rev));
-            textButtonSave.setText(getResources().getString(R.string.title_buy));
+            if (productDetailData.getPreOrder() != null && productDetailData.getPreOrder().getPreorderStatus().equals("1")
+                    && !productDetailData.getPreOrder().getPreorderStatus().equals("0")
+                    && !productDetailData.getPreOrder().getPreorderProcessTime().equals("0")
+                    && !productDetailData.getPreOrder().getPreorderProcessTimeType().equals("0")
+                    && !productDetailData.getPreOrder().getPreorderProcessTimeTypeString().equals("0")) {
+                textButtonSave.setText(getResources().getString(R.string.title_pre_order));
+            } else {
+                textButtonSave.setText(getResources().getString(R.string.title_buy));
+            }
             buttonSave.setClickable(true);
             buttonSave.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -196,7 +204,15 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             buttonSave.setBackground(ContextCompat.getDrawable(VariantActivity.this,R.drawable.button_save_grey));
             buttonSave.setClickable(false);
         } else {
-            textButtonSave.setText(getResources().getString(R.string.title_buy));
+            if (productDetailData.getPreOrder() != null && productDetailData.getPreOrder().getPreorderStatus().equals("1")
+                    && !productDetailData.getPreOrder().getPreorderStatus().equals("0")
+                    && !productDetailData.getPreOrder().getPreorderProcessTime().equals("0")
+                    && !productDetailData.getPreOrder().getPreorderProcessTimeType().equals("0")
+                    && !productDetailData.getPreOrder().getPreorderProcessTimeTypeString().equals("0")) {
+                textButtonSave.setText(getResources().getString(R.string.title_pre_order));
+            } else {
+                textButtonSave.setText(getResources().getString(R.string.title_buy));
+            }
             textButtonSave.setTextColor(ContextCompat.getColor(VariantActivity.this,R.color.black_38));
             buttonSave.setClickable(false);
             buttonSave.setBackground(ContextCompat.getDrawable(VariantActivity.this,R.drawable.button_save_grey));

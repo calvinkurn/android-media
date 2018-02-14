@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -139,6 +140,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private static final int FROM_COLLAPSED = 0;
     private static final int FROM_EXPANDED = 1;
     private static final int SCROLL_ELEVATION = 324;
+    private static final int SHOWCASE_MARGIN = 10;
+    private static final int SHOWCASE_HEIGHT = 100;
 
     public static final int REQUEST_CODE_SHOP_INFO = 998;
     public static final int REQUEST_CODE_TALK_PRODUCT = 1;
@@ -1045,7 +1048,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         ratingTalkCourierView.renderData(productData);
                         latestTalkView.renderData(productData);
                         buttonBuyView.updateButtonForVariantProduct(productVariant.getChildFromProductId(
-                                productData.getInfo().getProductId()).isIsBuyable(),productData.getShopInfo().getShopStatus());
+                                productData.getInfo().getProductId()).isIsBuyable(),productData);
                         updateWishListStatus(productData.getInfo().getProductAlreadyWishlist());
                         productPass.setProductId(Integer.toString(productData.getInfo().getProductId()));
                     }
@@ -1233,7 +1236,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         int defaultChild =  productVariant.getParentId() == productData.getInfo().getProductId()
                 ?  productVariant.getDefaultChild() : productData.getInfo().getProductId();
         buttonBuyView.updateButtonForVariantProduct(productVariant.getChildFromProductId(
-                defaultChild).isIsBuyable(),productData.getShopInfo().getShopStatus());
+                defaultChild).isIsBuyable(),productData);
 
         startShowCase();
 
@@ -1420,12 +1423,16 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             }
         });
 
+        Rect rectToShowCase = new Rect();
+        priceSimulationView.getGlobalVisibleRect(rectToShowCase);
+
         ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
         showCaseObjectList.add(new ShowCaseObject(
-                priceSimulationView.getVariantView(),
+                priceSimulationView,
                 getResources().getString(R.string.product_variant),
                 getResources().getString(R.string.product_variant_onboarding),
-                ShowCaseContentPosition.TOP));
+                ShowCaseContentPosition.TOP).withCustomTarget(new int[]{ rectToShowCase.left + SHOWCASE_MARGIN,
+                rectToShowCase.top - 50, rectToShowCase.right - SHOWCASE_MARGIN, rectToShowCase.top + SHOWCASE_HEIGHT}));
         showCaseDialog.show(getActivity(), showCaseTag, showCaseObjectList);
     }
 
