@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
@@ -41,7 +40,6 @@ public class ChatView extends RelativeLayout {
     private EditText inputEditText;
 
     private ViewBuilderInterface viewBuilder;
-    //    private FloatingActionsMenu actionsMenu;
     private FloatingActionButton actionButton;
     private boolean previousFocusState = false, useEditorAction, isTyping;
 

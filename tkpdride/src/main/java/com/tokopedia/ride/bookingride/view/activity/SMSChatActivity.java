@@ -16,6 +16,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Telephony;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
@@ -43,6 +44,8 @@ import com.tokopedia.ride.chat.utils.ChatMessage;
 import com.tokopedia.ride.chat.utils.ChatView;
 import com.tokopedia.ride.common.ride.domain.model.Driver;
 
+import java.util.ArrayList;
+
 /**
  * Created by sachinbansal on 2/13/18.
  */
@@ -66,6 +69,9 @@ public class SMSChatActivity extends BaseActivity {
     private ImageView driverImageView;
     private TextView driverPhoneTV;
     private TextView driverNameTV;
+    private ArrayList<ChatMessage> sentMessagesArrayList = new ArrayList<>();
+    private ArrayList<ChatMessage> receivedMessagesArrayList = new ArrayList<>();
+    private ArrayList<ChatMessage> chatArrayList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,6 +144,142 @@ public class SMSChatActivity extends BaseActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    public void readInboxSMS() {
+
+        String[] projection = new String[]{"_id", "address", "person", "body", "date", "type"};
+
+        StringBuilder smsBuilder = new StringBuilder();
+
+        try {
+            Cursor cur = getContentResolver().query(Uri.parse(INBOX_URI), projection, "address='" + PHONE_NO + "'", null, "date asc");
+            if (cur.moveToFirst()) {
+                receivedMessagesArrayList.clear();
+                int index_Address = cur.getColumnIndex("address");
+                int index_Person = cur.getColumnIndex("person");
+                int index_Body = cur.getColumnIndex("body");
+                int index_Date = cur.getColumnIndex("date");
+                int index_Type = cur.getColumnIndex("type");
+                do {
+
+                    ChatMessage chatMessage = new ChatMessage();
+
+                    String strAddress = cur.getString(index_Address);
+                    int intPerson = cur.getInt(index_Person);
+                    String strbody = cur.getString(index_Body);
+                    long longDate = cur.getLong(index_Date);
+                    int int_Type = cur.getInt(index_Type);
+
+                    chatMessage.setMessage(strbody);
+                    chatMessage.setTimestamp(longDate);
+                    chatMessage.setType(ChatMessage.Type.RECEIVED);
+                    chatMessage.setSender(strAddress);
+
+                    receivedMessagesArrayList.add(chatMessage);
+                } while (cur.moveToNext());
+
+                if (!cur.isClosed()) {
+                    cur.close();
+                    cur = null;
+                }
+            } else {
+                smsBuilder.append("no result!");
+            } // end if
+
+        } catch (SQLiteException ex) {
+            Log.d("SQLiteException", ex.getMessage());
+        }
+
+
+        /*int senderIndex = smsInboxCursor.getColumnIndex("address");
+        int messageIndex = smsInboxCursor.getColumnIndex("body");
+        if (messageIndex < 0 || !smsInboxCursor.moveToFirst()) return;
+        do {
+            String sender = smsInboxCursor.getString(senderIndex);
+            String message = smsInboxCursor.getString(messageIndex);
+        } while (smsInboxCursor.moveToNext());
+
+
+        contentResolver = getContentResolver();
+        final String[] projection = new String[]{"*"};
+        Uri uri = Uri.parse("content://mms-sms/conversations/");
+        Cursor query = contentResolver.query(uri, projection, null, null, null);
+
+        Toast.makeText(this, "", Toast.LENGTH_SHORT).show();*/
+    }
+
+    private void mergeSMS() {
+
+        int receiveSMSCount = receivedMessagesArrayList.size();
+        int sentSMSCount = sentMessagesArrayList.size();
+
+        int i = 0, j = 0;
+        chatArrayList.clear();
+
+        while (i < receiveSMSCount && j < sentSMSCount) {
+
+            if (receivedMessagesArrayList.get(i).getTimestamp() < sentMessagesArrayList.get(j).getTimestamp()) {
+                chatArrayList.add(receivedMessagesArrayList.get(i));
+                i++;
+            } else {
+                chatArrayList.add(sentMessagesArrayList.get(j));
+                j++;
+            }
+        }
+
+        for (int k = i; k < receiveSMSCount; k++)
+            chatArrayList.add(receivedMessagesArrayList.get(k));
+
+        for (int k = j; k < sentSMSCount; k++)
+            chatArrayList.add(sentMessagesArrayList.get(k));
+
+        chatView.addMessages(chatArrayList);
+
+    }
+
+    private void readSentSMS() {
+
+        String[] projection = new String[]{"_id", "address", "person", "body", "date", "type"};
+
+        StringBuilder smsBuilder = new StringBuilder();
+
+        try {
+            Cursor cur = getContentResolver().query(Uri.parse(SENT_URI), projection, "address='" + PHONE_NO + "'", null, "date asc");
+            if (cur.moveToFirst()) {
+
+                sentMessagesArrayList.clear();
+
+                int index_Address = cur.getColumnIndex("address");
+                int index_Person = cur.getColumnIndex("person");
+                int index_Body = cur.getColumnIndex("body");
+                int index_Date = cur.getColumnIndex("date");
+                int index_Type = cur.getColumnIndex("type");
+                do {
+                    ChatMessage chatMessage = new ChatMessage();
+                    String strAddress = cur.getString(index_Address);
+                    String strbody = cur.getString(index_Body);
+                    long longDate = cur.getLong(index_Date);
+
+                    chatMessage.setMessage(strbody);
+                    chatMessage.setTimestamp(longDate);
+                    chatMessage.setType(ChatMessage.Type.SENT);
+                    chatMessage.setSender(strAddress);
+
+                    sentMessagesArrayList.add(chatMessage);
+
+                } while (cur.moveToNext());
+
+                if (!cur.isClosed()) {
+                    cur.close();
+                    cur = null;
+                }
+            } else {
+                smsBuilder.append("no result!");
+            } // end if
+
+        } catch (SQLiteException ex) {
+            Log.d("SQLiteException", ex.getMessage());
+        }
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -147,7 +289,7 @@ public class SMSChatActivity extends BaseActivity {
                 onBackPressed();
                 return true;
 
-            case R.id.call_driver:
+            /*case R.id.call_driver:
                 if (!TextUtils.isEmpty(PHONE_NO)) {
                     Intent intent = new Intent(Intent.ACTION_CALL);
                     intent.setData(Uri.parse("tel:" + PHONE_NO));
@@ -157,7 +299,7 @@ public class SMSChatActivity extends BaseActivity {
                         SMSChatActivity.this.startActivity(intent);
                     }
                 }
-                return true;
+                return true;*/
 
         }
         return super.onOptionsItemSelected(item);
@@ -365,6 +507,22 @@ public class SMSChatActivity extends BaseActivity {
         ActivityCompat.requestPermissions(SMSChatActivity.this, new String[]{Manifest.permission.READ_SMS,
                 Manifest.permission.RECEIVE_SMS,
                 Manifest.permission.SEND_SMS, Manifest.permission.READ_PHONE_STATE}, SMS_PERMISSION_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == SMS_PERMISSION_CODE && grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+            // permission was granted, yay! Do the
+            // contacts-related task you need to do.
+
+            readInboxSMS();
+            readSentSMS();
+            mergeSMS();
+        }
     }
 
     @Override
