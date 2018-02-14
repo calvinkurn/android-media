@@ -14,6 +14,10 @@ public class ChatMessage {
     private Type type;
     private String sender;
 
+    public ChatMessage(){
+
+    }
+
     public ChatMessage(String message, long timestamp, Type type) {
         this.message = message;
         this.timestamp = timestamp;
