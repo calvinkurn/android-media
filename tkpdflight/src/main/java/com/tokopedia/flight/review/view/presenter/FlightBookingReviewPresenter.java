@@ -123,13 +123,11 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                             } else {
                                 getView().showErrorInEmptyState(FlightErrorUtil.getMessageFromException(getView().getActivity(), e));
                             }
-                            flightAnalytics.eventFailedPurchaseAttempt();
                         }
                     }
 
                     @Override
                     public void onNext(FlightCheckoutViewModel flightCheckoutViewModel) {
-                        flightAnalytics.eventPurchaseAttempt(flightCheckoutViewModel);
                         getView().setNeedToRefreshOnPassengerInfo();
                         getView().navigateToTopPay(flightCheckoutViewModel);
                     }
@@ -151,17 +149,20 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
     @Override
     public void onPaymentSuccess() {
         getView().navigateToOrderList();
+        flightAnalytics.eventPurchaseAttemptSuccess();
     }
 
     @Override
     public void onPaymentFailed() {
         getView().showPaymentFailedErrorMessage(R.string.flight_review_failed_checkout_message);
+        flightAnalytics.eventPurchaseAttemptFailed();
     }
 
     @Override
     public void onPaymentCancelled() {
         getView().setNeedToRefreshOnPassengerInfo();
         getView().showPaymentFailedErrorMessage(R.string.flight_review_cancel_checkout_message);
+        flightAnalytics.eventPurchaseAttemptCancelled();
     }
 
     private Subscriber<DataResponseVerify> getSubscriberVerifyBooking() {

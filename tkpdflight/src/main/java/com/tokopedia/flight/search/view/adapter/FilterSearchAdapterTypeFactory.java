@@ -58,5 +58,7 @@ public class FilterSearchAdapterTypeFactory extends BaseAdapterTypeFactory imple
         void onRetryClicked();
 
         void onDetailClicked(FlightSearchViewModel flightSearchViewModel, int adapterPosition);
+
+        void onItemClicked(FlightSearchViewModel flightSearchViewModel, int adapterPosition);
     }
 }

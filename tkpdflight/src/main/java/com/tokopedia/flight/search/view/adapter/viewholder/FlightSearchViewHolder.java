@@ -73,6 +73,12 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightSearchViewM
         setRefundableInfo(flightSearchViewModel);
         setSavingPrice(flightSearchViewModel);
         setArrivalAddDay(flightSearchViewModel);
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onFlightSearchListener.onItemClicked(flightSearchViewModel, getAdapterPosition());
+            }
+        });
     }
 
     private void setArrivalAddDay(FlightSearchViewModel flightSearchViewModel) {

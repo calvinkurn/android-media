@@ -44,8 +44,12 @@ public class FlightAnalytics {
         analyticTracker.sendEventTracking(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_PROMOTION,
-                String.format("%d-%s-%s", position, label, imgUrl)
+                String.format(getDefaultLocale(), "%d-%s-%s", position, label, imgUrl)
         );
+    }
+
+    private Locale getDefaultLocale() {
+        return Locale.getDefault();
     }
 
     public void eventTripTypeClick(String label) {
@@ -89,6 +93,29 @@ public class FlightAnalytics {
     }
 
     public void eventSearchProductClick(FlightSearchViewModel viewModel) {
+        StringBuilder result = transformSearchProductClickLabel(viewModel);
+        result.append(Label.NORMAL_PRICE);
+        analyticTracker.sendEventTracking(GENERIC_EVENT,
+                GENERIC_CATEGORY,
+                Category.CLICK_SEARCH_PRODUCT,
+                result.toString()
+        );
+    }
+
+
+    public void eventSearchProductClick(FlightSearchViewModel viewModel, int adapterPosition) {
+        StringBuilder result = transformSearchProductClickLabel(viewModel);
+        result.append(String.format(getDefaultLocale(), " - %d", adapterPosition));
+        result.append(Label.NORMAL_PRICE);
+        analyticTracker.sendEventTracking(GENERIC_EVENT,
+                GENERIC_CATEGORY,
+                Category.CLICK_SEARCH_PRODUCT,
+                result.toString()
+        );
+    }
+
+    @NonNull
+    private StringBuilder transformSearchProductClickLabel(FlightSearchViewModel viewModel) {
         StringBuilder result = new StringBuilder();
         if (viewModel.getAirlineList() != null) {
             List<String> airlines = new ArrayList<>();
@@ -103,12 +130,7 @@ public class FlightAnalytics {
             timeResult += " - " + viewModel.getRouteList().get(viewModel.getRouteList().size() - 1).getArrivalTimestamp();
             result.append(timeResult);
         }
-        result.append(Label.NORMAL_PRICE);
-        analyticTracker.sendEventTracking(GENERIC_EVENT,
-                GENERIC_CATEGORY,
-                Category.CLICK_SEARCH_PRODUCT,
-                result.toString()
-        );
+        return result;
     }
 
     public void eventSearchDetailClick(FlightSearchViewModel viewModel, int adapterPosition) {
@@ -186,7 +208,7 @@ public class FlightAnalytics {
             result.append(timeResult);
         }
         result.append(transformRefundableLabel(viewModel.isRefundable()));
-        result.append(String.format(Locale.getDefault(), " - %d", adapterPosition));
+        result.append(String.format(getDefaultLocale(), " - %d", adapterPosition));
         result.append(Label.NORMAL_PRICE);
         return result;
     }
@@ -253,15 +275,7 @@ public class FlightAnalytics {
         );
     }
 
-    public void eventPurchaseAttempt(FlightCheckoutViewModel viewModel) {
-        analyticTracker.sendEventTracking(GENERIC_EVENT,
-                GENERIC_CATEGORY,
-                Category.PURCHASE_ATTEMPT,
-                viewModel.getTransactionId()
-        );
-    }
-
-    public void eventAddToCart(FlightDetailViewModel viewModel) {
+    private void eventAddToCart(FlightDetailViewModel viewModel) {
 
         analyticTracker.sendEventTracking(GENERIC_EVENT,
                 GENERIC_CATEGORY,
@@ -274,8 +288,8 @@ public class FlightAnalytics {
         analyticTracker.sendEventTracking(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.SELECT_PASSENGER,
-                String.format(Locale.getDefault(),
-                        "%d%s -%d%s-%d%s",
+                String.format(getDefaultLocale(),
+                        "%d %s - %d %s - %d %s",
                         adult,
                         Label.ADULT,
                         children,
@@ -293,7 +307,39 @@ public class FlightAnalytics {
             eventAddToCart(returnViewModel);
     }
 
-    public void eventFailedPurchaseAttempt() {
+    public void eventPromoImpression(int position, BannerDetail bannerData) {
+        analyticTracker.sendEventTracking(
+                GENERIC_EVENT,
+                GENERIC_CATEGORY,
+                Category.PROMOTION_IMPRESSION,
+                String.format(getDefaultLocale(),
+                        "%d - %s - %s",
+                        position + 1,
+                        bannerData.getAttributes().getTitle(),
+                        bannerData.getAttributes().getImgUrl()
+                )
+        );
+    }
+
+    public void eventProductDetailImpression(FlightSearchViewModel flightSearchViewModel, int adapterPosition) {
+        StringBuilder result = transformSearchDetailLabel(flightSearchViewModel, adapterPosition);
+        analyticTracker.sendEventTracking(GENERIC_EVENT,
+                GENERIC_CATEGORY,
+                Category.PRODUCT_DETAIL_IMPRESSION,
+                result.toString()
+        );
+    }
+
+    public void eventPurchaseAttemptSuccess() {
+        analyticTracker.sendEventTracking(
+                GENERIC_EVENT,
+                GENERIC_CATEGORY,
+                Category.PURCHASE_ATTEMPT,
+                Label.SUCCESS_PURCHASE
+        );
+    }
+
+    public void eventPurchaseAttemptFailed() {
         analyticTracker.sendEventTracking(
                 GENERIC_EVENT,
                 GENERIC_CATEGORY,
@@ -302,19 +348,15 @@ public class FlightAnalytics {
         );
     }
 
-    public void eventPromoImpression(int position, BannerDetail bannerData) {
+    public void eventPurchaseAttemptCancelled() {
         analyticTracker.sendEventTracking(
                 GENERIC_EVENT,
                 GENERIC_CATEGORY,
-                Category.PROMOTION_IMPRESSION,
-                String.format(Locale.getDefault(),
-                        "%d - %s - %s",
-                        position + 1,
-                        bannerData.getAttributes().getTitle(),
-                        bannerData.getAttributes().getImgUrl()
-                )
+                Category.PURCHASE_ATTEMPT,
+                Label.CANCEL_PURCHASE
         );
     }
+
 
     public static final class Screen {
 
@@ -337,6 +379,7 @@ public class FlightAnalytics {
         static String CLICK_SEARCH = "click search flight";
         static String CLICK_SEARCH_PRODUCT = "product click";
         static String CLICK_SEARCH_DETAIL = "click see the details";
+        static String PRODUCT_DETAIL_IMPRESSION = "product detail impression";
         static String CLICK_PRICE_TAB = "click price tab";
         static String CLICK_FACILITIES_TAB = "click facilities tab";
         static String CLICK_DETAIL_TAB = "click flights detail tab";
@@ -353,10 +396,12 @@ public class FlightAnalytics {
 
     private static class Label {
         static String FAILED_PURCHASE = "FAILED";
+        static String SUCCESS_PURCHASE = "SUCCESS";
+        static String CANCEL_PURCHASE = "CANCEL";
         static String NORMAL_PRICE = " - Normal Price";
-        static String ADULT = " adult";
-        static String CHILD = " child";
-        static String INFANT = " baby";
+        static String ADULT = "adult";
+        static String CHILD = "child";
+        static String INFANT = "baby";
         static String REVIEW_NEXT = " on order details page";
         static String REFUNDABLE = "- refundable";
         static String NOT_REFUNDABLE = "- not refundable";
