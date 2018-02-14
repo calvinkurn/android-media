@@ -154,6 +154,7 @@
             android:exported="true"
             android:label="Tokopedia"
             android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="APPS_HOME"
@@ -190,11 +191,9 @@
                 <data android:scheme="tokopedia" />
             </intent-filter>
         </activity>
+
         <activity
-            android:name=".truecaller.TruecallerActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity"
+            android:name="com.tokopedia.otp.phoneverification.view.activity.RidePhoneNumberVerificationActivity"
             android:screenOrientation="portrait" />
 
         <service
@@ -240,9 +239,16 @@
         <service
             android:name=".thankyou.view.ThanksTrackerService"
             android:exported="false" />
-        <activity android:name=".datepicker.DatePickerTokoCashActivity"
+
+        <activity
+            android:name=".datepicker.DatePickerTokoCashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3" />
+
+        <activity android:name=".qrscanner.QrScannerActivity"
+            android:label="@string/title_scan_qr"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
     </application>
 
 </manifest>

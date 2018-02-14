@@ -9,6 +9,14 @@
     <dimen name="font_title">17sp</dimen>
     <dimen name="font_small">14sp</dimen>
     <dimen name="font_micro">12sp</dimen>
+    <dimen name="font_nano">8sp</dimen>
+
+    <dimen name="font_line_spacing_headline">38sp</dimen>
+    <dimen name="font_line_spacing_subheadline">28sp</dimen>
+    <dimen name="font_line_spacing_title_big">24sp</dimen>
+    <dimen name="font_line_spacing_title">22sp</dimen>
+    <dimen name="font_line_spacing_small">18sp</dimen>
+    <dimen name="font_line_spacing_micro">16sp</dimen>
 
     <dimen name="font_loading_height_display4">112dp</dimen>
     <dimen name="font_loading_height_display3">56dp</dimen>
@@ -41,6 +49,12 @@
     <dimen name="image_width_xl">72dp</dimen>
     <dimen name="image_width_xxl">96dp</dimen>
     <dimen name="image_width_xxxl">128dp</dimen>
+
+    <dimen name="new_margin_tiny">4dp</dimen>
+    <dimen name="new_margin_small">8dp</dimen>
+    <dimen name="new_margin_med">16dp</dimen>
+    <dimen name="new_margin_sm">24dp</dimen>
+    <dimen name="new_margin_big">32dp</dimen>
 
     <dimen name="margin_vs">5dp</dimen>
     <dimen name="margin_ms">8dp</dimen>
@@ -109,4 +123,6 @@
     <dimen name="toolbar_elevation">4dp</dimen>
 
     <dimen name="range_input_margin_input_text">-4dp</dimen>
+
+    <dimen name="layout_bav_width_min">80dp</dimen>
 </resources>

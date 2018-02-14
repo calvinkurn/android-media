@@ -5,8 +5,8 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
-import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.orderlist.contract.FlightOrderListContract;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrdersUseCase;
 import com.tokopedia.flight.orderlist.domain.FlightSendEmailUseCase;
@@ -19,6 +19,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by alvarisi on 12/6/17.
@@ -28,18 +31,19 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
         implements FlightOrderListContract.Presenter {
     private UserSession userSession;
     private FlightGetOrdersUseCase flightGetOrdersUseCase;
-    private FlightSendEmailUseCase sendEmailUseCase;
     private FlightOrderViewModelMapper flightOrderViewModelMapper;
+    private CompositeSubscription compositeSubscription;
+
+    private String userResendEmail = "";
 
     @Inject
     public FlightOrderListPresenter(UserSession userSession,
                                     FlightGetOrdersUseCase flightGetOrdersUseCase,
-                                    FlightSendEmailUseCase sendEmailUseCase,
                                     FlightOrderViewModelMapper flightOrderViewModelMapper) {
         this.userSession = userSession;
         this.flightGetOrdersUseCase = flightGetOrdersUseCase;
-        this.sendEmailUseCase = sendEmailUseCase;
         this.flightOrderViewModelMapper = flightOrderViewModelMapper;
+        compositeSubscription = new CompositeSubscription();
     }
 
     @Override
@@ -73,11 +77,14 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
     public void onDestroyView() {
         detachView();
         flightGetOrdersUseCase.unsubscribe();
+        if (compositeSubscription.hasSubscriptions()) {
+            compositeSubscription.unsubscribe();
+        }
     }
 
     @Override
-    public void onDownloadEticket(String invoiceId, String filename) {
-        getView().navigateToOpenBrowser(FlightUrl.getUrlPdf(invoiceId, filename, userSession.getUserId()));
+    public void onDownloadEticket(String invoiceId) {
+        getView().navigateToInputEmailForm(invoiceId, userSession.getUserId(), userResendEmail);
     }
 
     private void buildAndRenderFilterList() {
@@ -119,5 +126,33 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
 
         getView().renderOrderStatus(filterItems);
 
+    }
+
+    @Override
+    public void onGetProfileData() {
+        compositeSubscription.add(getView().getProfileObservable()
+                .onBackpressureDrop()
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<ProfileInfo>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(ProfileInfo profileInfo) {
+                        if (profileInfo != null && isViewAttached()) {
+                            userResendEmail = profileInfo.getEmail();
+                        }
+                    }
+                })
+        );
     }
 }

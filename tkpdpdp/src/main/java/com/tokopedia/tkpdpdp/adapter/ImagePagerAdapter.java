@@ -106,22 +106,6 @@ public class ImagePagerAdapter extends PagerAdapter {
         this.actionListener = actionListener;
     }
 
-    public ArrayList<String> getImageURIPaths() {
-        ArrayList<String> arrayList = new ArrayList<>();
-        for (ProductImage productImage : productImages) {
-            arrayList.add(productImage.getImageSrc());
-        }
-        return arrayList;
-    }
-
-    public ArrayList<String> getImageDescs() {
-        ArrayList<String> arrayList = new ArrayList<>();
-        for (ProductImage productImage : productImages) {
-            arrayList.add(productImage.getImageDescription());
-        }
-        return arrayList;
-    }
-
     private class OnClickImage implements View.OnClickListener {
         private final int position;
 
@@ -132,13 +116,13 @@ public class ImagePagerAdapter extends PagerAdapter {
         @Override
         public void onClick(View v) {
             if (actionListener != null)
-                actionListener.onItemImageClicked(productImages.get(position), position);
+                actionListener.onItemImageClicked(position);
         }
     }
 
     public interface OnActionListener {
 
-        void onItemImageClicked(ProductImage productImage, int position);
+        void onItemImageClicked(int position);
 
     }
 }

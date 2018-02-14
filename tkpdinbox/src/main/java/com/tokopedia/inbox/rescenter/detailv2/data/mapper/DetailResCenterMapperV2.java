@@ -1,7 +1,6 @@
 package com.tokopedia.inbox.rescenter.detailv2.data.mapper;
 
 import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailrescenter.v2.ActionByResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailrescenter.v2.AddressResponse;
@@ -47,6 +46,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.FirstData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.InvoiceData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.LastData;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.LastSolutionData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.LogData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.OrderData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.PictureData;
@@ -56,7 +56,6 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.SellerAddressData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.ShippingData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.ShopData;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.LastSolutionData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.StatusData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.TroubleData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.UserAwbData;
@@ -81,28 +80,21 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
 
     @Override
     public DetailResponseData call(Response<TkpdResponse> response) {
-        DetailResponse detailResponse = response.body().convertDataObj(
-                DetailResponse.class);
-        if (detailResponse == null) {
-            throw new ErrorMessageException(ErrorMessageException.DEFAULT_ERROR);
-        }
-        DetailResponseData model = mappingResponse(detailResponse);
+
         if (response.isSuccessful()) {
-            if (response.raw().code() == ResponseStatus.SC_OK) {
-                if (response.body().isNullData()) {
-                    if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
-                        throw new ErrorMessageException(response.body().getErrorMessageJoined());
-                    } else {
-                        throw new ErrorMessageException(ErrorMessageException.DEFAULT_ERROR);
-                    }
+            if (response.body().isNullData()) {
+                if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
+                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
                 } else {
-                    model.setSuccess(true);
+                    throw new ErrorMessageException("");
                 }
             }
         } else {
             throw new RuntimeException(String.valueOf(response.code()));
         }
-        return model;
+        DetailResponse detailResponse = response.body().convertDataObj(
+                DetailResponse.class);
+        return  mappingResponse(detailResponse);
     }
 
     public DetailResponseData mappingResponse(DetailResponse response) {

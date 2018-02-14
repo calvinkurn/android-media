@@ -20,18 +20,17 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.CustomPhoneNumberUtil;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.di.SessionComponent;
 import com.tokopedia.di.SessionModule;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
-import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
 import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.session.R;
@@ -261,19 +260,19 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     private void goToVerification() {
         GlobalCacheManager cacheManager = new GlobalCacheManager();
 
-        VerificationPassModel passModel = new VerificationPassModel(cleanPhoneNumber
-                (newPhoneNumber), email,
-                getListAvailableMethod(cleanPhoneNumber(newPhoneNumber)), RequestOtpUseCase
-                .OTP_TYPE_CHANGE_PHONE_NUMBER);
+        VerificationPassModel passModel = new VerificationPassModel(
+                cleanPhoneNumber(newPhoneNumber),
+                email,
+                RequestOtpUseCase.OTP_TYPE_CHANGE_PHONE_NUMBER,
+                true);
         cacheManager.setKey(VerificationActivity.PASS_MODEL);
         cacheManager.setValue(CacheUtil.convertModelToString(passModel,
                 new TypeToken<VerificationPassModel>() {
                 }.getType()));
         cacheManager.store();
 
-
         Intent intent = VerificationActivity.getCallingIntent(getActivity(),
-                VerificationActivity.TYPE_SMS);
+                RequestOtpUseCase.MODE_SMS);
         startActivityForResult(intent, REQUEST_VERIFY_CODE);
     }
 
@@ -284,22 +283,6 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
         if (requestCode == REQUEST_VERIFY_CODE && resultCode == Activity.RESULT_OK) {
             presenter.submitNumber(cleanPhoneNumber(newPhoneNumber));
         }
-    }
-
-    private ArrayList<MethodItem> getListAvailableMethod(String phone) {
-        ArrayList<MethodItem> list = new ArrayList<>();
-        list.add(new MethodItem(
-                VerificationActivity.TYPE_SMS,
-                com.tokopedia.session.R.drawable.ic_verification_sms,
-                MethodItem.getSmsMethodText(phone)
-        ));
-        list.add(new MethodItem(
-                VerificationActivity.TYPE_PHONE_CALL,
-                com.tokopedia.session.R.drawable.ic_verification_call,
-                MethodItem.getCallMethodText(phone)
-        ));
-
-        return list;
     }
 
     private String cleanPhoneNumber(EditText newPhoneNumber) {

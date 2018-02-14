@@ -1,13 +1,18 @@
 package com.tokopedia.profilecompletion.data.mapper;
 
+import android.text.TextUtils;
+
 import com.google.gson.GsonBuilder;
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.profilecompletion.data.pojo.GetUserInfoData;
+import com.tokopedia.network.ErrorMessageException;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
+import com.tokopedia.profilecompletion.data.pojo.GetUserInfoData;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import javax.inject.Inject;
 
 import retrofit2.Response;
 import rx.functions.Func1;
@@ -20,6 +25,10 @@ public class GetUserInfoMapper implements Func1<Response<String>, GetUserInfoDom
 
     private static final String ERROR = "error";
     private static final String ERROR_DESCRIPTION = "error_description";
+
+    @Inject
+    public GetUserInfoMapper() {
+    }
 
     @Override
     public GetUserInfoDomainModel call(Response<String> response) {
@@ -43,7 +52,12 @@ public class GetUserInfoMapper implements Func1<Response<String>, GetUserInfoDom
 
 
         } else {
-            throw new RuntimeException(String.valueOf(response.code()));
+            String messageError = ErrorHandler.getErrorMessage(response);
+            if (!TextUtils.isEmpty(messageError)) {
+                throw new ErrorMessageException(messageError);
+            } else {
+                throw new RuntimeException(String.valueOf(response.code()));
+            }
         }
         return model;
     }
@@ -69,6 +83,7 @@ public class GetUserInfoMapper implements Func1<Response<String>, GetUserInfoDom
         domainData.setRoles(data.getRoles());
         domainData.setStatus(data.getStatus());
         domainData.setUserId(data.getUserId());
+        domainData.setCreatePasswordList(data.getCreatePasswordList());
         return domainData;
     }
 }

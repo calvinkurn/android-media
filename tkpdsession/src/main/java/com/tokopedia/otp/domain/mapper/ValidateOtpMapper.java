@@ -2,13 +2,12 @@ package com.tokopedia.otp.domain.mapper;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.network.ErrorHandler;
+import com.tokopedia.network.ErrorMessageException;
 import com.tokopedia.otp.data.model.ValidateOtpDomain;
 import com.tokopedia.otp.domain.pojo.ValidateOtpPojo;
-import com.tokopedia.session.R;
+import com.tokopedia.otp.domain.pojo.ValidateOtpSQPojo;
 
 import javax.inject.Inject;
 
@@ -32,9 +31,15 @@ public class ValidateOtpMapper implements Func1<Response<TkpdResponse>, Validate
                     && response.body().getErrorMessageJoined().equals(""))
                     || (!response.body().isNullData()
                     && response.body().getErrorMessages() == null)) {
-                ValidateOtpPojo validateOtpData = response.body().convertDataObj(
-                        ValidateOtpPojo.class);
-                return convertToDomain(validateOtpData);
+                if (responseIsSecurityQuestion(response.body())) {
+                    ValidateOtpSQPojo validateOtpSQData = response.body().convertDataObj(
+                            ValidateOtpSQPojo.class);
+                    return convertToDomain(validateOtpSQData.isSuccess(), validateOtpSQData.getUuid());
+                } else {
+                    ValidateOtpPojo validateOtpData = response.body().convertDataObj(
+                            ValidateOtpPojo.class);
+                    return convertToDomain(validateOtpData.isSuccess(), "");
+                }
             } else {
                 if (response.body().getErrorMessages() != null
                         && !response.body().getErrorMessages().isEmpty()) {
@@ -53,7 +58,11 @@ public class ValidateOtpMapper implements Func1<Response<TkpdResponse>, Validate
         }
     }
 
-    private ValidateOtpDomain convertToDomain(ValidateOtpPojo validateOtpData) {
-        return new ValidateOtpDomain(validateOtpData.isSuccess(), validateOtpData.getUuid());
+    private boolean responseIsSecurityQuestion(TkpdResponse body) {
+        return body.toString().contains("uuid");
+    }
+
+    private ValidateOtpDomain convertToDomain(boolean isSuccess, String uuid) {
+        return new ValidateOtpDomain(isSuccess, uuid);
     }
 }
