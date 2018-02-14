@@ -9,6 +9,7 @@ import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -22,6 +23,8 @@ import rx.functions.Func1;
 public class FlightAirportDataListSource extends DataListSource<FlightAirportCountry, FlightAirportDB> {
 
     public static final String ID_COUNTRY = "ID_COUNTRY";
+    public static final String CITY_CODE = "CITY_CODE";
+    public static final String AIRPORT_ID = "AIRPORT_ID";
     private FlightAirportDataListDBSource flightAirportDataListDBSource;
 
     @Inject
@@ -81,6 +84,7 @@ public class FlightAirportDataListSource extends DataListSource<FlightAirportCou
     }
 
     public Observable<FlightAirportDB> getAirport(final String airportCode) {
+
         return flightAirportDataListDBSource.isDataAvailable().flatMap(new Func1<Boolean, Observable<FlightAirportDB>>() {
             @Override
             public Observable<FlightAirportDB> call(Boolean aBoolean) {
@@ -96,6 +100,39 @@ public class FlightAirportDataListSource extends DataListSource<FlightAirportCou
                                                 @Override
                                                 public Boolean call(FlightAirportDB airportDB) {
                                                     return airportDB.getAirportId().equalsIgnoreCase(airportCode);
+                                                }
+                                            });
+                                }
+                            });
+                }
+            }
+        });
+    }
+
+    public Observable<FlightAirportDB> getAirport(final Map<String, String> params) {
+        return flightAirportDataListDBSource.isDataAvailable().flatMap(new Func1<Boolean, Observable<FlightAirportDB>>() {
+            @Override
+            public Observable<FlightAirportDB> call(Boolean aBoolean) {
+                if (aBoolean) {
+                    return flightAirportDataListDBSource.getAirport(params);
+                } else {
+                    return getCloudData(new HashMap<String, Object>())
+                            .flatMap(new Func1<List<FlightAirportDB>, Observable<FlightAirportDB>>() {
+                                @Override
+                                public Observable<FlightAirportDB> call(List<FlightAirportDB> flightAirportDBS) {
+                                    return Observable.from(flightAirportDBS)
+                                            .filter(new Func1<FlightAirportDB, Boolean>() {
+                                                @Override
+                                                public Boolean call(FlightAirportDB flightAirportDB) {
+                                                    for (Map.Entry<String, String> entry : params.entrySet()) {
+                                                        if (entry.getKey().equals(FlightAirportDataListSource.CITY_CODE)) {
+                                                            return flightAirportDB.getCityCode().equalsIgnoreCase(entry.getValue());
+                                                        } else if (entry.getKey().equals(FlightAirportDataListSource.AIRPORT_ID)) {
+                                                            return flightAirportDB.getAirportId().equalsIgnoreCase(entry.getValue());
+                                                        }
+                                                    }
+
+                                                    return false;
                                                 }
                                             });
                                 }

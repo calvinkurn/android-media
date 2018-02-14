@@ -391,6 +391,11 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
+    public void showPassengerAdultBirthdateShouldMoreThan12Years(int resID) {
+        showMessageErrorInSnackBar(resID);
+    }
+
+    @Override
     public void showPassengerFirstNameShouldNoMoreThanMaxError(int resId) {
         showMessageErrorInSnackBar(resId);
     }

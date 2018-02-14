@@ -14,16 +14,16 @@ import com.tokopedia.flight.common.data.domain.DeleteFlightCacheUseCase;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
-import com.tokopedia.flight.dashboard.domain.GetFlightAirportByIdUseCase;
+import com.tokopedia.flight.dashboard.domain.GetFlightAirportWithParamUseCase;
 import com.tokopedia.flight.dashboard.domain.GetFlightClassByIdUseCase;
-import com.tokopedia.flight.dashboard.domain.GetFlightClassesUseCase;
 import com.tokopedia.flight.dashboard.view.fragment.cache.FlightDashboardCache;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardPassDataViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardAirportsWrapper;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.mapper.FlightClassViewModelMapper;
 import com.tokopedia.flight.dashboard.view.validator.FlightDashboardValidator;
-import com.tokopedia.usecase.RequestParams;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -34,7 +34,8 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func3;
+import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -56,12 +57,14 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     private static final int INDEX_DATE_YEAR = 0;
     private static final int INDEX_DATE_MONTH = 1;
     private static final int INDEX_DATE_DATE = 2;
+    private static final int DEFAULT_ADULT_PASSENGER = 1;
+    private static final int DEFAULT_CHILD_PASSENGER = 0;
+    private static final int DEFAULT_INFANT_PASSENGER = 0;
 
     private BannerGetDataUseCase bannerGetDataUseCase;
     private FlightDashboardValidator validator;
     private DeleteFlightCacheUseCase deleteFlightCacheUseCase;
-    private GetFlightClassesUseCase getFlightClassesUseCase;
-    private GetFlightAirportByIdUseCase getFlightAirportByIdUseCase;
+    private GetFlightAirportWithParamUseCase getFlightAirportWithParamUseCase;
     private GetFlightClassByIdUseCase getFlightClassByIdUseCase;
     private FlightClassViewModelMapper flightClassViewModelMapper;
     private FlightDashboardCache flightDashboardCache;
@@ -73,8 +76,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     public FlightDashboardPresenter(BannerGetDataUseCase bannerGetDataUseCase,
                                     FlightDashboardValidator validator,
                                     DeleteFlightCacheUseCase deleteFlightCacheUseCase,
-                                    GetFlightClassesUseCase getFlightClassesUseCase,
-                                    GetFlightAirportByIdUseCase getFlightAirportByIdUseCase,
+                                    GetFlightAirportWithParamUseCase getFlightAirportWithParamUseCase,
                                     GetFlightClassByIdUseCase getFlightClassByIdUseCase,
                                     FlightClassViewModelMapper flightClassViewModelMapper,
                                     FlightDashboardCache flightDashboardCache,
@@ -83,8 +85,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         this.bannerGetDataUseCase = bannerGetDataUseCase;
         this.validator = validator;
         this.deleteFlightCacheUseCase = deleteFlightCacheUseCase;
-        this.getFlightClassesUseCase = getFlightClassesUseCase;
-        this.getFlightAirportByIdUseCase = getFlightAirportByIdUseCase;
+        this.getFlightAirportWithParamUseCase = getFlightAirportWithParamUseCase;
         this.getFlightClassByIdUseCase = getFlightClassByIdUseCase;
         this.flightClassViewModelMapper = flightClassViewModelMapper;
         this.flightDashboardCache = flightDashboardCache;
@@ -96,6 +97,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     @Override
     public void onSingleTripChecked() {
         flightAnalytics.eventTripTypeClick(getView().getString(R.string.flight_dashboard_analytic_one_way).toString());
+        flightDashboardCache.putRoundTrip(false);
         getView().getCurrentDashboardViewModel().setOneWay(true);
         getView().renderSingleTripView();
     }
@@ -103,6 +105,14 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     @Override
     public void onRoundTripChecked() {
         flightAnalytics.eventTripTypeClick(getView().getString(R.string.flight_dashboard_analytic_round_trip).toString());
+        flightDashboardCache.putRoundTrip(true);
+        if (!flightDashboardCache.getReturnDate().isEmpty()) {
+            FlightDashboardViewModel viewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
+            Date returnDate = FlightDateUtil.stringToDate(flightDashboardCache.getReturnDate());
+            viewModel.setReturnDate(FlightDateUtil.dateToString(returnDate, FlightDateUtil.DEFAULT_FORMAT));
+            viewModel.setReturnDateFmt(FlightDateUtil.dateToString(returnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT));
+            getView().setDashBoardViewModel(viewModel);
+        }
         getView().getCurrentDashboardViewModel().setOneWay(false);
         getView().renderRoundTripView();
     }
@@ -122,54 +132,25 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
         if (!getView().isFromApplink()) {
             actionLoadFromCache();
-            actionGetClassesAndSetDefaultClass();
         } else {
             transformExtras();
         }
     }
 
     private void actionLoadFromCache() {
-        boolean isChanged = false;
-        if (flightDashboardCache.getDepartureAirport() != null) {
-            getView().getCurrentDashboardViewModel().setDepartureAirport(flightDashboardCache.getDepartureAirport());
-            getView().getCurrentDashboardViewModel().setDepartureAirportFmt(buildAirportFmt(flightDashboardCache.getDepartureAirport()));
-            isChanged = true;
-        }
-        if (flightDashboardCache.getArrivalAirport() != null) {
-            getView().getCurrentDashboardViewModel().setArrivalAirport(flightDashboardCache.getArrivalAirport());
-            getView().getCurrentDashboardViewModel().setArrivalAirportFmt(buildAirportFmt(flightDashboardCache.getArrivalAirport()));
-            isChanged = true;
-        }
-        if (isChanged) {
-            renderUi();
-        }
-    }
+        FlightDashboardPassDataViewModel flightDashboardPassDataViewModel = getView().getDashboardPassData();
+        flightDashboardPassDataViewModel.setDepartureAirportId(flightDashboardCache.getDepartureAirport());
+        flightDashboardPassDataViewModel.setArrivalAirportId(flightDashboardCache.getArrivalAirport());
+        flightDashboardPassDataViewModel.setDepartureDate(flightDashboardCache.getDepartureDate());
+        flightDashboardPassDataViewModel.setReturnDate(flightDashboardCache.getReturnDate());
+        flightDashboardPassDataViewModel.setAdultPassengerCount(flightDashboardCache.getPassengerAdult());
+        flightDashboardPassDataViewModel.setChildPassengerCount(flightDashboardCache.getPassengerChild());
+        flightDashboardPassDataViewModel.setInfantPassengerCount(flightDashboardCache.getPassengerInfant());
+        flightDashboardPassDataViewModel.setFlightClass(flightDashboardCache.getClassCache());
+        flightDashboardPassDataViewModel.setRoundTrip(flightDashboardCache.isRoundTrip());
+        getView().setDashboardPassData(flightDashboardPassDataViewModel);
 
-    private void actionGetClassesAndSetDefaultClass() {
-        getFlightClassesUseCase.execute(RequestParams.EMPTY, new Subscriber<List<FlightClassEntity>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-
-            }
-
-            @Override
-            public void onNext(List<FlightClassEntity> entities) {
-                if (isViewAttached()) {
-                    if (entities != null && entities.size() > 0) {
-                        FlightDashboardViewModel flightDashboardViewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
-                        flightDashboardViewModel.setFlightClass(flightClassViewModelMapper.transform(entities.get(0)));
-                        getView().setDashBoardViewModel(flightDashboardViewModel);
-                        renderUi();
-                    }
-                }
-            }
-        });
+        actionRenderFromPassData(false);
     }
 
     private void setupViewModel() {
@@ -223,6 +204,9 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         viewModel.setDepartureAirport(flightAirportDB);
         viewModel.setDepartureAirportFmt(destinationFmt);
         getView().setDashBoardViewModel(viewModel);
+        String airportTemp = flightDashboardCache.getArrivalAirport();
+        flightDashboardCache.putArrivalAirport(flightDashboardCache.getDepartureAirport());
+        flightDashboardCache.putDepartureAirport(airportTemp);
         renderUi();
     }
 
@@ -250,6 +234,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         } else {
             String newDepartureDateStr = FlightDateUtil.dateToString(newDepartureDate, FlightDateUtil.DEFAULT_FORMAT);
             viewModel.setDepartureDate(newDepartureDateStr);
+            flightDashboardCache.putDepartureDate(newDepartureDateStr);
             String newDepartureDateFmtStr = FlightDateUtil.dateToString(newDepartureDate, FlightDateUtil.DEFAULT_VIEW_FORMAT);
             viewModel.setDepartureDateFmt(newDepartureDateFmtStr);
             if (!viewModel.isOneWay()) {
@@ -295,6 +280,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
             getView().showReturnDateShouldGreaterOrEqual(R.string.flight_dashboard_return_should_greater_equal_error);
         } else {
             String newReturnDateStr = FlightDateUtil.dateToString(newReturnDate, FlightDateUtil.DEFAULT_FORMAT);
+            flightDashboardCache.putReturnDate(newReturnDateStr);
             viewModel.setReturnDate(newReturnDateStr);
             String newReturnDateFmtStr = FlightDateUtil.dateToString(newReturnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT);
             viewModel.setReturnDateFmt(newReturnDateFmtStr);
@@ -313,6 +299,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void onFlightClassesChange(FlightClassViewModel viewModel) {
+        flightDashboardCache.putClassCache(viewModel.getId());
         flightAnalytics.eventClassClick(viewModel.getTitle());
         FlightDashboardViewModel flightDashboardViewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
         flightDashboardViewModel.setFlightClass(viewModel);
@@ -322,6 +309,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void onFlightPassengerChange(FlightPassengerViewModel passengerViewModel) {
+        flightDashboardCache.putPassengerCount(passengerViewModel.getAdult(), passengerViewModel.getChildren(), passengerViewModel.getInfant());
         flightAnalytics.eventPassengerClick(passengerViewModel.getAdult(), passengerViewModel.getChildren(), passengerViewModel.getInfant());
         FlightDashboardViewModel flightDashboardViewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
         flightDashboardViewModel.setFlightPassengerViewModel(passengerViewModel);
@@ -338,7 +326,11 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         String code = buildAirportFmt(departureAirport);
         flightDashboardViewModel.setDepartureAirportFmt(code);
         getView().setDashBoardViewModel(flightDashboardViewModel);
-        flightDashboardCache.putDepartureAirport(departureAirport);
+        if (!departureAirport.getAirportIds().isEmpty() && departureAirport.getAirportIds() != null) {
+            flightDashboardCache.putDepartureAirport(departureAirport.getCityCode());
+        } else {
+            flightDashboardCache.putDepartureAirport(departureAirport.getAirportId());
+        }
         renderUi();
     }
 
@@ -363,7 +355,11 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         }
         flightDashboardViewModel.setArrivalAirportFmt(arrivalAirport.getCityName() + " (" + code + ")");
         getView().setDashBoardViewModel(flightDashboardViewModel);
-        flightDashboardCache.putArrivalAirport(arrivalAirport);
+        if (!arrivalAirport.getAirportIds().isEmpty() && arrivalAirport.getAirportIds() != null) {
+            flightDashboardCache.putArrivalAirport(arrivalAirport.getCityCode());
+        } else {
+            flightDashboardCache.putArrivalAirport(arrivalAirport.getAirportId());
+        }
         renderUi();
     }
 
@@ -409,6 +405,8 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     private void transformExtras() {
         try {
+            FlightDashboardPassDataViewModel flightDashboardPassDataViewModel = getView().getDashboardPassData();
+
             boolean isDepartureDateValid = true;
             boolean isReturnDateValid = true;
             boolean isPassengerValid = true;
@@ -416,108 +414,160 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
             // transform trip extras
             String[] tempExtras = getView().getTripArguments().split(",");
             String[] extrasTripDeparture = tempExtras[INDEX_DEPARTURE_TRIP].split("_");
-            String[] departureTripDate = extrasTripDeparture[INDEX_DATE_TRIP].split("-");
 
             /**
              * tokopedia://flight/search?dest=CGK_DPS_2018-04-01,CGK_DPS_2018-05-01&a=1&c=1&i=1&s=1
              */
-            onDepartureDateChange(Integer.parseInt(departureTripDate[INDEX_DATE_YEAR]), Integer.parseInt(departureTripDate[INDEX_DATE_MONTH]) - 1, Integer.parseInt(departureTripDate[INDEX_DATE_DATE]));
-            onSingleTripChecked();
 
-            Calendar today = FlightDateUtil.getCurrentCalendar();
-            if (!validator.validateDepartureDateAtLeastToday(getView().getCurrentDashboardViewModel())) {
-                isDepartureDateValid = false;
-                getView().showDepartureDateShouldAtLeastToday(R.string.flight_dashboard_departure_should_atleast_today_error);
-                onDepartureDateChange(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
-            } else if ((Integer.parseInt(departureTripDate[INDEX_DATE_YEAR]) - today.get(Calendar.YEAR)) > MAX_TWO_YEARS) {
-                isDepartureDateValid = false;
-                getView().showApplinkErrorMessage(R.string.flight_dashboard_departure_max_two_years_from_today_error);
-                onDepartureDateChange(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
-            }
-
+            flightDashboardPassDataViewModel.setDepartureAirportId(extrasTripDeparture[INDEX_ID_AIRPORT_DEPARTURE_TRIP]);
+            flightDashboardPassDataViewModel.setArrivalAirportId(extrasTripDeparture[INDEX_ID_AIRPORT_ARRIVAL_TRIP]);
+            flightDashboardPassDataViewModel.setRoundTrip(false);
+            flightDashboardPassDataViewModel.setDepartureDate(extrasTripDeparture[INDEX_DATE_TRIP]);
+            flightDashboardPassDataViewModel.setReturnDate("");
+            
             if (tempExtras.length > 1) {
                 String[] extrasTripReturn = tempExtras[INDEX_RETURN_TRIP].split("_");
-                String[] returnTripDate = extrasTripReturn[INDEX_DATE_TRIP].split("-");
-                onReturnDateChange(Integer.parseInt(returnTripDate[INDEX_DATE_YEAR]), Integer.parseInt(returnTripDate[INDEX_DATE_MONTH]) - 1, Integer.parseInt(returnTripDate[INDEX_DATE_DATE]));
-                onRoundTripChecked();
-
-                if (!validator.validateReturnDateShouldGreaterOrEqualDeparture(getView().getCurrentDashboardViewModel())) {
-                    isReturnDateValid = false;
-                    if (isDepartureDateValid) {
-                        getView().showReturnDateShouldGreaterOrEqual(R.string.flight_dashboard_return_should_greater_equal_error);
-                        onReturnDateChange(Integer.parseInt(departureTripDate[INDEX_DATE_YEAR]), Integer.parseInt(departureTripDate[INDEX_DATE_MONTH]), Integer.parseInt(departureTripDate[INDEX_DATE_DATE]) + 1);
-                    } else {
-                        onReturnDateChange(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE) + 1);
-                    }
-                } else if ((Integer.parseInt(returnTripDate[INDEX_DATE_YEAR]) - today.get(Calendar.YEAR)) > MAX_TWO_YEARS) {
-                    isReturnDateValid = false;
-                    if (isDepartureDateValid) {
-                        getView().showApplinkErrorMessage(R.string.flight_dashboard_return_max_two_years_from_today_error);
-                        onReturnDateChange(Integer.parseInt(departureTripDate[INDEX_DATE_YEAR]), Integer.parseInt(departureTripDate[INDEX_DATE_MONTH]), Integer.parseInt(departureTripDate[INDEX_DATE_DATE]) + 1);
-                    } else {
-                        onReturnDateChange(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE) + 1);
-                    }
-                }
+                flightDashboardPassDataViewModel.setRoundTrip(true);
+                flightDashboardPassDataViewModel.setReturnDate(extrasTripReturn[INDEX_DATE_TRIP]);
             }
 
             // transform passenger count
             if (Integer.parseInt(getView().getChildPassengerArguments()) > Integer.parseInt(getView().getAdultPassengerArguments()) || Integer.parseInt(getView().getInfantPassengerArguments()) > Integer.parseInt(getView().getAdultPassengerArguments())) {
                 isPassengerValid = false;
                 getView().showApplinkErrorMessage(R.string.select_passenger_infant_greater_than_adult_error_message);
+                flightDashboardPassDataViewModel.setAdultPassengerCount(DEFAULT_ADULT_PASSENGER);
+                flightDashboardPassDataViewModel.setChildPassengerCount(DEFAULT_CHILD_PASSENGER);
+                flightDashboardPassDataViewModel.setInfantPassengerCount(DEFAULT_INFANT_PASSENGER);
             } else if (Integer.parseInt(getView().getChildPassengerArguments()) + Integer.parseInt(getView().getAdultPassengerArguments()) > MAX_PASSENGER_VALUE) {
                 isPassengerValid = false;
                 getView().showApplinkErrorMessage(R.string.select_passenger_total_passenger_error_message);
+                flightDashboardPassDataViewModel.setAdultPassengerCount(DEFAULT_ADULT_PASSENGER);
+                flightDashboardPassDataViewModel.setChildPassengerCount(DEFAULT_CHILD_PASSENGER);
+                flightDashboardPassDataViewModel.setInfantPassengerCount(DEFAULT_INFANT_PASSENGER);
             } else {
-                FlightPassengerViewModel flightPassengerViewModel = new FlightPassengerViewModel(Integer.parseInt(getView().getAdultPassengerArguments()), Integer.parseInt(getView().getChildPassengerArguments()), Integer.parseInt(getView().getInfantPassengerArguments()));
-                onFlightPassengerChange(flightPassengerViewModel);
+                flightDashboardPassDataViewModel.setAdultPassengerCount(Integer.parseInt(getView().getAdultPassengerArguments()));
+                flightDashboardPassDataViewModel.setChildPassengerCount(Integer.parseInt(getView().getChildPassengerArguments()));
+                flightDashboardPassDataViewModel.setInfantPassengerCount(Integer.parseInt(getView().getInfantPassengerArguments()));
             }
 
             // transform class
             int classId = Integer.parseInt(getView().getClassArguments());
+            flightDashboardPassDataViewModel.setFlightClass(classId);
 
-            final boolean finalIsDepartureDateValid = isDepartureDateValid;
-            final boolean finalIsReturnDateValid = isReturnDateValid;
-            final boolean finalIsPassengerValid = isPassengerValid;
-            compositeSubscription.add(
-                    Observable.zip(getFlightAirportByIdUseCase
-                                    .createObservable(getFlightAirportByIdUseCase.createRequestParams(extrasTripDeparture[INDEX_ID_AIRPORT_DEPARTURE_TRIP])),
-                            getFlightAirportByIdUseCase
-                                    .createObservable(getFlightAirportByIdUseCase.createRequestParams(extrasTripDeparture[INDEX_ID_AIRPORT_ARRIVAL_TRIP])),
-                            getFlightClassByIdUseCase.createObservable(getFlightClassByIdUseCase.createRequestParams(classId)),
-                            new Func3<FlightAirportDB, FlightAirportDB, FlightClassEntity, Boolean>() {
-                                @Override
-                                public Boolean call(FlightAirportDB flightAirportDB, FlightAirportDB flightAirportDB2, FlightClassEntity flightClassEntity) {
-                                    onDepartureAirportChange(flightAirportDB);
-                                    onArrivalAirportChange(flightAirportDB2);
-                                    onFlightClassesChange(flightClassViewModelMapper.transform(flightClassEntity));
-                                    return true;
-                                }
-                            }
-                    )
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Boolean>() {
-                        @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable throwable) {
-
-                        }
-
-                        @Override
-                        public void onNext(Boolean aBoolean) {
-                            if (finalIsDepartureDateValid && finalIsReturnDateValid && finalIsPassengerValid)
-                                onSearchTicketButtonClicked();
-                        }
-                    })
-            );
-
-
+            getView().setDashboardPassData(flightDashboardPassDataViewModel);
+            actionRenderFromPassData(isDepartureDateValid && isReturnDateValid && isPassengerValid);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+    }
+
+    private void actionRenderFromPassData(final boolean isSearchImmediately) {
+        final FlightDashboardPassDataViewModel flightDashboardPassDataViewModel = getView().getDashboardPassData();
+
+        if (flightDashboardPassDataViewModel.getDepartureDate() != null && !flightDashboardPassDataViewModel.getDepartureDate().isEmpty()) {
+            Calendar departureCalendar = FlightDateUtil.getCurrentCalendar();
+            departureCalendar.setTime(FlightDateUtil.stringToDate(flightDashboardPassDataViewModel.getDepartureDate()));
+            onDepartureDateChange(departureCalendar.get(Calendar.YEAR), departureCalendar.get(Calendar.MONTH), departureCalendar.get(Calendar.DATE));
+            onSingleTripChecked();
+        }
+
+        if (!flightDashboardPassDataViewModel.getReturnDate().isEmpty() && flightDashboardPassDataViewModel.isRoundTrip()) {
+            Calendar returnDate = FlightDateUtil.getCurrentCalendar();
+            returnDate.setTime(FlightDateUtil.stringToDate(flightDashboardPassDataViewModel.getReturnDate()));
+            onReturnDateChange(returnDate.get(Calendar.YEAR), returnDate.get(Calendar.MONTH), returnDate.get(Calendar.DATE));
+            onRoundTripChecked();
+        }
+
+        onFlightPassengerChange(
+                new FlightPassengerViewModel(
+                        flightDashboardPassDataViewModel.getAdultPassengerCount(),
+                        flightDashboardPassDataViewModel.getChildPassengerCount(),
+                        flightDashboardPassDataViewModel.getInfantPassengerCount()
+                )
+        );
+
+        Observable<FlightDashboardAirportsWrapper> airportObservable = getFlightAirportWithParamUseCase
+                .createObservable(getFlightAirportWithParamUseCase.createRequestParams(flightDashboardPassDataViewModel.getDepartureAirportId()))
+                .flatMap(new Func1<FlightAirportDB, Observable<FlightDashboardAirportsWrapper>>() {
+                    @Override
+                    public Observable<FlightDashboardAirportsWrapper> call(FlightAirportDB airportDB) {
+                        FlightDashboardAirportsWrapper wrapper = new FlightDashboardAirportsWrapper();
+                        wrapper.setDepartureAirport(airportDB);
+                        return Observable.zip(
+                                getFlightAirportWithParamUseCase
+                                        .createObservable(getFlightAirportWithParamUseCase
+                                                .createRequestParams(flightDashboardPassDataViewModel.getArrivalAirportId())
+                                        ),
+                                Observable.just(wrapper),
+                                new Func2<FlightAirportDB, FlightDashboardAirportsWrapper, FlightDashboardAirportsWrapper>() {
+                                    @Override
+                                    public FlightDashboardAirportsWrapper call(FlightAirportDB airportDB, FlightDashboardAirportsWrapper wrapper1) {
+                                        wrapper1.setArrivalAirport(airportDB);
+                                        return wrapper1;
+                                    }
+                                });
+                    }
+                }).zipWith(getFlightClassByIdUseCase
+                                .createObservable(getFlightClassByIdUseCase.createRequestParams(flightDashboardPassDataViewModel.getFlightClass())),
+                        new Func2<FlightDashboardAirportsWrapper, FlightClassEntity, FlightDashboardAirportsWrapper>() {
+                            @Override
+                            public FlightDashboardAirportsWrapper call(FlightDashboardAirportsWrapper flightDashbordAirportsWrapper, FlightClassEntity flightClassEntity) {
+                                if (flightClassEntity != null) {
+                                    flightDashbordAirportsWrapper.setFlightClassEntity(flightClassEntity);
+                                }
+                                return flightDashbordAirportsWrapper;
+                            }
+                        });
+
+        compositeSubscription.add(
+                airportObservable
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.io())
+                        .subscribe(new Subscriber<FlightDashboardAirportsWrapper>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                e.printStackTrace();
+                            }
+
+                            @Override
+                            public void onNext(FlightDashboardAirportsWrapper flightDashboardAirportsWrapper) {
+                                if (flightDashboardAirportsWrapper != null) {
+                                    boolean isAvailableToSearch = true;
+                                    if (flightDashboardAirportsWrapper.getDepartureAirport() != null
+                                            && getView().getCurrentDashboardViewModel().getDepartureAirport() == null) {
+                                        onDepartureAirportChange(flightDashboardAirportsWrapper.getDepartureAirport());
+                                    } else {
+                                        isAvailableToSearch = false;
+                                    }
+                                    if (flightDashboardAirportsWrapper.getArrivalAirport() != null
+                                            && getView().getCurrentDashboardViewModel().getArrivalAirport() == null) {
+                                        onArrivalAirportChange(flightDashboardAirportsWrapper.getArrivalAirport());
+                                    } else {
+                                        isAvailableToSearch = false;
+                                    }
+                                    if (flightDashboardAirportsWrapper.getFlightClassEntity() != null
+                                            && getView().getCurrentDashboardViewModel().getFlightClass() == null) {
+                                        onFlightClassesChange(
+                                                flightClassViewModelMapper.transform(flightDashboardAirportsWrapper.getFlightClassEntity())
+                                        );
+                                    } else {
+                                        isAvailableToSearch = false;
+                                    }
+                                    if (isSearchImmediately && isAvailableToSearch) {
+                                        onSearchTicketButtonClicked();
+                                    }
+                                }
+
+                            }
+                        })
+        );
     }
 
     @Override
