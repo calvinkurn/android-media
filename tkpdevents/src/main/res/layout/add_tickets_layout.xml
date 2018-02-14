@@ -90,7 +90,7 @@
                 android:id="@+id/tv_ticket_cnt"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:background="@drawable/rectange_transparent"
+                android:background="@drawable/rectangle_transparent"
                 android:gravity="center"
                 android:text="0"
                 android:textColor="@color/black_54"
