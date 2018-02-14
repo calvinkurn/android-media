@@ -64,8 +64,8 @@ public class ExploreDataSource {
         this.gson = gson;
     }
 
-    public Observable<List<ExploreSectionViewModel>> getExploreData(Context context) {
-        if (SessionHandler.getLoginID(context).isEmpty()) {
+    public Observable<List<ExploreSectionViewModel>> getExploreData(String userId) {
+        if (userId.isEmpty()) {
             return getData("");
         } else {
             return profileSource.getProfile(RequestParams.EMPTY.getParameters())

@@ -55,8 +55,8 @@ public class ExploreModule {
 
     @ExploreScope
     @Provides
-    GetExploreDataUseCase getExploreDataUseCase(ExploreRepositoryImpl repository) {
-        return new GetExploreDataUseCase(repository);
+    GetExploreDataUseCase getExploreDataUseCase(ExploreRepositoryImpl repository, @ApplicationContext Context context) {
+        return new GetExploreDataUseCase(repository, context);
     }
 
     @ExploreScope
