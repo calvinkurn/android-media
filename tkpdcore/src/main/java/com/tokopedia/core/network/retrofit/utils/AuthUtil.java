@@ -85,9 +85,6 @@ public class AuthUtil {
         );
 
         finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
-        //    finalHeader.put(HEADER_X_TKPD_PATH, path);
-//        finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
-//        finalHeader.put(HEADER_X_TKPD_PATH, path);
         finalHeader.put("Tkpd-UserId", SessionHandler.getLoginID(MainApplication.getAppContext()));
         finalHeader.put(HEADER_DEVICE, "android");
         finalHeader.put("Tkpd-SessionId", GCMHandler.getRegistrationId(MainApplication.getAppContext()));

@@ -15,6 +15,7 @@ import android.text.TextUtils;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
+import com.google.gson.Gson;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -71,9 +72,10 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.session.presenter.Session;
-import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
@@ -91,6 +93,8 @@ import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.TkpdFlight;
+import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
+import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
@@ -106,8 +110,8 @@ import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver;
 import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity;
-import com.tokopedia.otp.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
+import com.tokopedia.otp.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
@@ -136,6 +140,7 @@ import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
+import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.session.activity.Login;
@@ -158,8 +163,8 @@ import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolFollowingListActivity;
-import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
+import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.truecaller.TruecallerActivity;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
@@ -168,7 +173,12 @@ import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tokocash.historytokocash.presentation.activity.HistoryTokoCashActivity;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.CustomScannerTokoCashActivity;
+import com.tokopedia.transaction.apiservice.CartService;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
+import com.tokopedia.transaction.checkout.domain.AddToCartUseCase;
+import com.tokopedia.transaction.checkout.domain.CartRepository;
+import com.tokopedia.transaction.checkout.domain.response.addtocart.AddToCartDataResponse;
+import com.tokopedia.transaction.checkout.view.activity.CartActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
 
@@ -181,6 +191,7 @@ import javax.inject.Inject;
 
 import okhttp3.Response;
 import rx.Observable;
+import rx.functions.Func1;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
@@ -1274,7 +1285,48 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return new TokocashPendingDataBroadcastReceiver();
     }
 
-    public GetShopInfoUseCase getShopInfo(){
+    public GetShopInfoUseCase getShopInfo() {
         return getShopComponent().getShopInfoUseCase();
+    }
+
+
+    public Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest) {
+        AddToCartUseCase addToCartUseCase =
+                new AddToCartUseCase(new CartRepository(new CartService()), new Gson());
+        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
+        requestParams.putObject(AddToCartUseCase.PARAM_ADD_TO_CART, addToCartRequest);
+
+        return addToCartUseCase.createObservable(requestParams)
+                .map(new Func1<AddToCartDataResponse, AddToCartResult>() {
+                    @Override
+                    public AddToCartResult call(AddToCartDataResponse addToCartDataResponse) {
+                        List<String> messageList = addToCartDataResponse.getMessage();
+                        StringBuilder stringBuilder = new StringBuilder();
+                        for (int i = 0; i < messageList.size(); i++) {
+                            String string = messageList.get(i);
+                            stringBuilder.append(string).append(",");
+                        }
+                        return new AddToCartResult.Builder()
+                                .message(stringBuilder.toString())
+                                .success(addToCartDataResponse.getSuccess() == 1)
+                                .build();
+                    }
+                });
+    }
+
+    @Override
+    public Intent getCartIntent(Activity activity) {
+        return new Intent(activity, CartActivity.class);
+    }
+
+    public Observable<String> getAtcObsr() {
+        FlightAddToCartUseCase useCase = new FlightAddToCartUseCase(null, null);
+        return useCase.createObservable(null)
+                .map(new Func1<CartEntity, String>() {
+                    @Override
+                    public String call(CartEntity cartEntity) {
+                        return cartEntity.toString();
+                    }
+                });
     }
 }

@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
@@ -310,6 +311,7 @@ public class CartFragment extends BasePresenterFragment implements
 
         /**
          * Pass data from cart fragment into its container activity
+         *
          * @param cartItemData List of cart items
          */
         void onPassingCartData(List<CartItemData> cartItemData);

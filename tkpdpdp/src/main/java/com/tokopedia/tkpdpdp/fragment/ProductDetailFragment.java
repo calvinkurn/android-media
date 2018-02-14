@@ -479,7 +479,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onProductBuySessionLogin(@NonNull ProductCartPass data) {
-        presenter.processToCart(context, data);
+        presenter.processToCart(getActivity(), data);
     }
 
     @Override

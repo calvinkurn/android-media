@@ -1,5 +1,6 @@
 package com.tokopedia.sellerapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -25,6 +26,8 @@ import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
@@ -34,6 +37,7 @@ import com.tokopedia.sellerapp.utils.WhiteList;
 
 import java.util.List;
 
+import rx.Observable;
 import rx.Subscriber;
 
 /**
@@ -192,5 +196,15 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         new CacheApiWhiteListUseCase().executeSync(CacheApiWhiteListUseCase.createParams(
                 cacheApiWhiteListDomains,
                 String.valueOf(getCurrentVersion(getApplicationContext()))));
+    }
+
+    @Override
+    public Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest) {
+        return null;
+    }
+
+    @Override
+    public Intent getCartIntent(Activity activity) {
+        return null;
     }
 }
