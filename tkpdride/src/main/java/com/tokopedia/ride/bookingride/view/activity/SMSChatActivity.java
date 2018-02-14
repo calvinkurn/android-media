@@ -387,6 +387,10 @@ public class SMSChatActivity extends BaseActivity {
             public void onClick(DialogInterface dialog, int which) {
                 if (!hasReadSendSmsPermission()) {
                     requestReadAndSendSmsPermission();
+                } else {
+                    readSentSMS();
+                    readInboxSMS();
+                    mergeSMS();
                 }
                 dialog.dismiss();
             }
