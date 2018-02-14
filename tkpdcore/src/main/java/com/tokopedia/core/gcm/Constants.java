@@ -53,6 +53,7 @@ public interface Constants {
     String ARG_NOTIFICATION_APPLINK_LOGIN_REQUIRED = "login_required";
 
     String WEB_PLAYSTORE_BUYER_APP_URL = "https://play.google.com/store/apps/details?id=com.tokopedia.tkpd";
+    String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
 
     /**
      * @deprecated extends {@link com.tokopedia.abstraction.constant.TkpdAppLink} on module instead

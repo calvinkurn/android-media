@@ -168,6 +168,8 @@ public class OkHttpFactory {
                 .build();
     }
 
+
+
     public OkHttpClient buildClientNoAuth() {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new FingerprintInterceptor())
