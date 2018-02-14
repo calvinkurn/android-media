@@ -20,12 +20,6 @@ public class FilterSearchAdapterTypeFactory extends BaseAdapterTypeFactory imple
 
     private OnFlightSearchListener onFlightSearchListener;
 
-    public interface OnFlightSearchListener {
-        void onRetryClicked();
-
-        void onDetailClicked(FlightSearchViewModel flightSearchViewModel);
-    }
-
     public FilterSearchAdapterTypeFactory(OnFlightSearchListener onFlightSearchListener) {
         this.onFlightSearchListener = onFlightSearchListener;
     }
@@ -58,5 +52,13 @@ public class FilterSearchAdapterTypeFactory extends BaseAdapterTypeFactory imple
 
     public int type(FlightSearchViewModel flightSearchViewModel) {
         return FlightSearchViewHolder.LAYOUT;
+    }
+
+    public interface OnFlightSearchListener {
+        void onRetryClicked();
+
+        void onDetailClicked(FlightSearchViewModel flightSearchViewModel, int adapterPosition);
+
+        void onItemClicked(FlightSearchViewModel flightSearchViewModel, int adapterPosition);
     }
 }
