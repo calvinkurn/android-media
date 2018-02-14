@@ -19,7 +19,6 @@ import com.tokopedia.core.drawer2.domain.ProfileRepository;
 import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
-import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.events.R;
 import com.tokopedia.events.data.entity.response.Form;
@@ -166,8 +165,8 @@ public class EventReviewTicketPresenter
                 throwable.printStackTrace();
                 Intent intent = ((TkpdCoreRouter) getView().getActivity().getApplication()).
                         getLoginIntent(getView().getActivity());
-                intent.removeExtra(SessionView.MOVE_TO_CART_KEY);
-                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.EVENTS_CART);
+//                intent.removeExtra(SessionView.MOVE_TO_CART_KEY);
+//                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.EVENTS_CART);
                 getView().getActivity().startActivity(intent);
                 getView().hideProgressBar();
             }
