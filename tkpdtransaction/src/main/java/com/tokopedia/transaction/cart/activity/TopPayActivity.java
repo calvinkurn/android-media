@@ -193,7 +193,6 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
 
     @Override
     public void onGetThanksTopPaySuccess(ThanksTopPayData data) {
-        presenter.processCheckoutAnalytics(new LocalCacheHandler(this, TkpdCache.NOTIFICATION_DATA), data.getParameter().getGatewayName());
         presenter.clearNotificationCart();
         try {
             presenter.processPaymentAnalytics(
@@ -212,7 +211,6 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
     @Override
     public void onGetThanksTopPayFailed(String message) {
         hideProgressLoading();
-        presenter.processCheckoutAnalytics(new LocalCacheHandler(this, TkpdCache.NOTIFICATION_DATA), PAYMENT_FAILED);
         NetworkErrorHelper.createSnackbarWithAction(this, message,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override

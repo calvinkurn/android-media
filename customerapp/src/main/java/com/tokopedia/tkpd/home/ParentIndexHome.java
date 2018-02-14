@@ -5,7 +5,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ShortcutInfo;
+import android.content.pm.ShortcutManager;
+import android.graphics.drawable.Icon;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
@@ -57,17 +61,25 @@ import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.home.GetUserInfoListener;
 import com.tokopedia.core.network.retrofit.utils.DialogHockeyApp;
 import com.tokopedia.core.onboarding.NewOnboardingActivity;
+import com.tokopedia.core.referral.ReferralActivity;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.rxjava.RxUtils;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.bottomnavigation.BottomNavigation;
+import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
+import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
+import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
+import com.tokopedia.seller.shop.open.view.activity.ShopOpenDomainActivity;
 import com.tokopedia.tkpd.R;
+
+import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -77,6 +89,7 @@ import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import rx.subscriptions.CompositeSubscription;
 
@@ -103,7 +116,13 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     public static final String messageTAG = TAG + " : ";
     public static final String VIEW_PAGE_POSITION = "VIEW_PAGE_POSITION";
 
-    protected TkpdProgressDialog progressDialog;
+    public static final String FETCH_BANK = "FETCH_BANK";
+    private static final java.lang.String BUNDLE_EXTRA_REFRESH = "refresh";
+    private static final String IMAGE_GALLERY = "IMAGE_GALLERY";
+    private static final String SHORTCUT_BELI_ID = "Beli";
+    private static final String SHORTCUT_DIGITAL_ID = "Bayar";
+    private static final String SHORTCUT_SHARE_ID = "Share";
+    private static final String SHORTCUT_SHOP_ID = "Jual";
     protected PagerAdapter adapter;
     protected TouchViewPager mViewPager;
     protected BottomNavigation bottomNavigation;
@@ -118,6 +137,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     private int initStateFragment = INIT_STATE_FRAGMENT_HOME;
 
     private BroadcastReceiver hockeyBroadcastReceiver;
+    private TkpdProgressDialog progressDialog;
 
     @DeepLink(Constants.Applinks.HOME)
     public static Intent getApplinkCallingIntent(Context context, Bundle extras) {
@@ -235,10 +255,129 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         initHockeyBroadcastReceiver();
     }
 
+    private void addShortcutsV4Login() {
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
+            shortcutManager.removeAllDynamicShortcuts();
+
+
+            Bundle args = new Bundle();
+            args.putBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, true);
+            args.putBoolean(Constants.FROM_APP_SHORTCUTS, true);
+
+            Intent intentHome = ((TkpdCoreRouter) getApplication()).getHomeIntent
+                    (this);
+            intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intentHome.setAction(Intent.ACTION_VIEW);
+
+            String shopID = SessionHandler.getShopID(this);
+
+            Intent shopIntent;
+            if (shopID.equalsIgnoreCase(SessionHandler.DEFAULT_EMPTY_SHOP_ID)) {
+                shopIntent = ShopOpenDomainActivity.getIntent(this);
+            } else {
+                shopIntent = ShopInfoActivity.getCallingIntent(this, shopID);
+            }
+
+            shopIntent.setAction(Intent.ACTION_VIEW);
+            shopIntent.putExtras(args);
+
+            ShortcutInfo shopShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHOP_ID)
+                    .setShortLabel(getResources().getString(R.string.longpress_jual))
+                    .setLongLabel(getResources().getString(R.string.longpress_jual))
+                    .setIcon(Icon.createWithResource(this, R.drawable.ic_jual))
+                    .setIntents(new Intent[]{
+                            intentHome, shopIntent
+                    })
+                    .build();
+
+            Intent referralIntent = ReferralActivity.getCallingIntent(this, args);
+            referralIntent.setAction(Intent.ACTION_VIEW);
+
+            ShortcutInfo referralShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHARE_ID)
+                    .setShortLabel(getResources().getString(R.string.longpress_share))
+                    .setLongLabel(getResources().getString(R.string.longpress_share))
+                    .setIcon(Icon.createWithResource(this, R.drawable.ic_referral))
+                    .setIntents(new Intent[]{
+                            intentHome, referralIntent
+                    })
+                    .build();
+
+            Intent productIntent = SearchActivity.newInstance(this, args);
+            productIntent.setAction(Intent.ACTION_VIEW);
+
+            ShortcutInfo productShortcut = new ShortcutInfo.Builder(this, SHORTCUT_BELI_ID)
+                    .setShortLabel(getResources().getString(R.string.longpress_beli))
+                    .setLongLabel(getResources().getString(R.string.longpress_beli))
+                    .setIcon(Icon.createWithResource(this, R.drawable.ic_beli))
+                    .setIntents(new Intent[]{
+                            intentHome, productIntent
+                    })
+                    .build();
+
+
+            Intent digitalIntent = DigitalCategoryListActivity.newInstance(this, args);
+            digitalIntent.setAction(Intent.ACTION_VIEW);
+
+            ShortcutInfo digitalShortcut = new ShortcutInfo.Builder(this, SHORTCUT_DIGITAL_ID)
+                    .setShortLabel(getResources().getString(R.string.longpress_bayar))
+                    .setLongLabel(getResources().getString(R.string.longpress_bayar))
+                    .setIcon(Icon.createWithResource(this, R.drawable.ic_bayar))
+                    .setIntents(new Intent[]{
+                            intentHome, digitalIntent
+                    })
+                    .build();
+
+            shortcutManager.addDynamicShortcuts(Arrays.asList(referralShortcut, shopShortcut, productShortcut, digitalShortcut));
+        }
+    }
+
+    private void addShortcutsNoLogin() {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
+            shortcutManager.removeAllDynamicShortcuts();
+
+
+            Bundle args = new Bundle();
+            args.putBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, true);
+            args.putBoolean(Constants.FROM_APP_SHORTCUTS, true);
+
+            Intent intentHome = ((TkpdCoreRouter) getApplication()).getHomeIntent
+                    (this);
+            intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intentHome.setAction(Intent.ACTION_VIEW);
+
+            Intent productIntent = SearchActivity.newInstance(this, args);
+            productIntent.setAction(Intent.ACTION_VIEW);
+
+            ShortcutInfo productShortcut = new ShortcutInfo.Builder(this, SHORTCUT_BELI_ID)
+                    .setShortLabel(getResources().getString(R.string.longpress_beli))
+                    .setLongLabel(getResources().getString(R.string.longpress_beli))
+                    .setIcon(Icon.createWithResource(this, R.drawable.ic_beli))
+                    .setIntents(new Intent[]{
+                            intentHome, productIntent
+                    })
+                    .build();
+
+            Intent digitalIntent = DigitalCategoryListActivity.newInstance(this, args);
+            digitalIntent.setAction(Intent.ACTION_VIEW);
+
+            ShortcutInfo digitalShortcut = new ShortcutInfo.Builder(this, SHORTCUT_DIGITAL_ID)
+                    .setShortLabel(getResources().getString(R.string.longpress_bayar))
+                    .setLongLabel(getResources().getString(R.string.longpress_bayar))
+                    .setIcon(Icon.createWithResource(this, R.drawable.ic_bayar))
+                    .setIntents(new Intent[]{intentHome, digitalIntent})
+                    .build();
+
+            shortcutManager.addDynamicShortcuts(Arrays.asList(productShortcut, digitalShortcut));
+        }
+    }
+
+
     @Override
     public void onGetProfile(DrawerProfile profile) {
         super.onGetProfile(profile);
-
         setMoengageUserAttributes();
     }
 
@@ -312,10 +451,12 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
         bottomNavigation.setViewPagerPageChangeListener(new BottomNavigation.ViewPagerPageChangeListener() {
             @Override
-            public void onPageScrollStateChanged(int state) {}
+            public void onPageScrollStateChanged(int state) {
+            }
 
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
 
             @Override
             public void onPageSelected(int position) {
@@ -460,6 +601,9 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                     startActivity(TransactionCartRouter.createInstanceCartActivity(this));
                 }
                 return true;
+            case R.id.action_barcode_scan:
+                startActivity(QrScannerActivity.newInstance(this));
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -513,6 +657,12 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         }
 
         isUserFirstTimeLogin = !SessionHandler.isV4Login(this);
+
+        if (SessionHandler.isV4Login(this)) {
+            addShortcutsV4Login();
+        } else {
+            addShortcutsNoLogin();
+        }
 
         invalidateOptionsMenu();
         MainApplication.setCurrentActivity(this);
