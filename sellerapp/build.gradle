@@ -234,6 +234,9 @@ dependencies {
     compile project(':tkpdtransaction')
     compile project(':tkpdreputation')
     compile project(':tkpdmitratoppers')
+    compile(project(':tkpdshop')) {
+        exclude group: 'com.tokopedia.core'
+    }
 
     compile(rootProject.ext.miscDependencies.trueCaller) {
         exclude group: 'com.android.support'
