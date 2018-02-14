@@ -18,7 +18,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.home.SimpleWebViewActivity;
+import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
@@ -220,7 +220,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
 
     private void openWebViewGimicURL(String url, String label, String title) {
         if (!url.equals("")) {
-            Intent intent = SimpleWebViewActivity.getIntent(getActivity(), url);
+            Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(getActivity(), url);
             intent.putExtra(BannerWebView.EXTRA_TITLE, title);
             startActivity(intent);
             UnifyTracking.eventHomeGimmick(label);

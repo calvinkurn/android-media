@@ -84,7 +84,7 @@
         <activity
             android:name=".deeplink.DeepLinkActivity"
             android:hardwareAccelerated="true"
-            android:label="@string/title_activity_deep_link"
+            android:label="@string/title_activity_deep_link_topseller"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
