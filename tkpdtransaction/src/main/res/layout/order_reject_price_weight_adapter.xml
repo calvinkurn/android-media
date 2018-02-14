@@ -3,23 +3,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginEnd="8dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginStart="8dp"
     android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/product_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/margin_med"
-        android:layout_marginLeft="@dimen/margin_small"
-        android:layout_marginRight="@dimen/margin_med"
-        android:layout_marginStart="@dimen/margin_small"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/padding_small"
+        android:paddingEnd="8dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingStart="8dp"
+        android:paddingTop="@dimen/padding_small">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="top"
-            android:padding="@dimen/padding_small">
+            android:layout_gravity="top">
 
             <ImageView
                 android:id="@+id/product_image"
@@ -84,6 +89,10 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/white_four" />
+        android:background="@color/white_four"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"/>
 
 </LinearLayout>
