@@ -10,37 +10,37 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_small">
+        android:layout_margin="@dimen/new_margin_med">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Penjual : "
-            android:textColor="@color/label_color" />
+            android:fontFamily="sans-serif-medium"
+            android:text="Dikirim oleh : "
+            android:textColor="@color/label_color"
+            android:textSize="12sp"
+            android:textStyle="normal" />
 
         <TextView
             android:id="@+id/sender_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
             android:textColor="@color/black_70"
+            android:textSize="12sp"
+            android:textStyle="normal"
             tools:text="Adidas" />
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey_400" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/padding_med"
-        android:paddingStart="@dimen/padding_med"
-        android:paddingRight="@dimen/padding_med"
+        android:paddingBottom="@dimen/padding_small"
         android:paddingEnd="@dimen/padding_med"
-        android:paddingTop="@dimen/padding_small"
-        android:paddingBottom="@dimen/padding_small">
+        android:paddingLeft="@dimen/padding_med"
+        android:paddingRight="@dimen/padding_med"
+        android:paddingStart="@dimen/padding_med">
 
         <ImageView
             android:id="@+id/product_image"
@@ -59,16 +59,20 @@
                 android:id="@+id/product_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
                 android:textColor="@color/black_70"
-                android:textStyle="bold"
+                android:textSize="14sp"
+                android:textStyle="normal"
                 tools:text="Kaos Adidas Camo Tongue Tee... White and Red, XS" />
 
             <TextView
                 android:id="@+id/product_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/orange_900"
-                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
+                android:textColor="@color/orange_red"
+                android:textSize="14sp"
+                android:textStyle="normal"
                 tools:text="Rp 20.000" />
 
         </LinearLayout>
@@ -78,37 +82,39 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/grey_400" />
+        android:background="@color/grey_300" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/shipping_destination_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/grey_400" />
+        android:layout_marginTop="@dimen/new_margin_med"
+        android:background="@color/grey_300" />
 
     <LinearLayout
         android:id="@+id/add_new_shipment_address_button"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/btn_height"
+        android:layout_height="wrap_content"
         android:gravity="center"
-        android:padding="@dimen/padding_small">
+        android:padding="16dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
             android:text="Tambah Pengiriman Baru"
-            android:textStyle="bold"
-            android:textColor="@color/tkpd_main_green"/>
+            android:textColor="@color/tkpd_main_green"
+            android:textSize="12sp" />
 
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/grey_400" />
+        android:background="@color/grey_300" />
 
 </LinearLayout>

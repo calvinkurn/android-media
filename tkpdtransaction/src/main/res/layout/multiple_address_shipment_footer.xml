@@ -7,12 +7,10 @@
     android:background="@color/white"
     android:gravity="center"
     android:orientation="vertical"
-    android:paddingTop="@dimen/padding_small"
     android:paddingBottom="@dimen/padding_small"
-    android:paddingLeft="@dimen/padding_med"
-    android:paddingStart="@dimen/padding_med"
-    android:paddingEnd="@dimen/padding_med"
-    android:paddingRight="@dimen/padding_med">
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="@dimen/padding_small">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,16 +21,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:fontFamily="sans-serif"
             android:text="Jumlah Barang(# Barang)"
-            android:textColor="@color/black_70" />
+            android:textColor="@color/black_70"
+            android:textSize="12sp"
+            android:textStyle="normal" />
 
         <TextView
             android:id="@+id/total_product_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:fontFamily="sans-serif"
             android:gravity="end"
             android:textColor="@color/black_70"
+            android:textSize="14sp"
+            android:textStyle="normal"
             tools:text="Rp 10.000" />
 
     </LinearLayout>
@@ -46,16 +50,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:fontFamily="sans-serif"
             android:text="Ongkos Kirim"
-            android:textColor="@color/black_70" />
+            android:textColor="@color/black_70"
+            android:textSize="12sp"
+            android:textStyle="normal" />
 
         <TextView
             android:id="@+id/total_shipping_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:fontFamily="sans-serif"
             android:gravity="end"
             android:textColor="@color/black_70"
+            android:textSize="14sp"
+            android:textStyle="normal"
             tools:text="Rp 10.000" />
 
     </LinearLayout>
@@ -69,16 +79,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:fontFamily="sans-serif"
             android:text="Biaya Asuransi"
-            android:textColor="@color/black_70" />
+            android:textColor="@color/black_70"
+            android:textSize="12sp"
+            android:textStyle="normal" />
 
         <TextView
             android:id="@+id/insurance_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:fontFamily="sans-serif"
             android:gravity="end"
             android:textColor="@color/black_70"
+            android:textSize="14sp"
+            android:textStyle="normal"
             tools:text="Rp 10.000" />
 
     </LinearLayout>
@@ -92,16 +108,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:fontFamily="sans-serif"
             android:text="Biaya Tambahan"
-            android:textColor="@color/black_70" />
+            android:textColor="@color/black_70"
+            android:textSize="12sp"
+            android:textStyle="normal" />
 
         <TextView
             android:id="@+id/additional_fee"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:fontFamily="sans-serif"
             android:gravity="end"
             android:textColor="@color/black_70"
+            android:textSize="14sp"
+            android:textStyle="normal"
             tools:text="Rp 10.000" />
 
     </LinearLayout>
@@ -115,16 +137,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:fontFamily="sans-serif"
             android:text="Promo"
-            android:textColor="@color/black_70" />
+            android:textColor="@color/black_70"
+            android:textSize="12sp"
+            android:textStyle="normal" />
 
         <TextView
             android:id="@+id/promo_discount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:fontFamily="sans-serif"
             android:gravity="end"
             android:textColor="@color/black_70"
+            android:textSize="14sp"
+            android:textStyle="normal"
             tools:text="Rp 10.000" />
 
     </LinearLayout>

@@ -5,6 +5,9 @@
     <color name="yellow_ticker">#ecdb77</color>
     <color name="background_no_pinpoint">#ccfffffe</color>
 
-    <color name="warning_red">#fce3e4</color>
-    <color name="warning_grey">#fffcd3</color>
+    <color name="bg_warning_red">#fce3e4</color>
+    <color name="bg_warning_grey">#fffcd3</color>
+    <color name="text_warning_red">#d30b16</color>
+    <color name="text_warning_grey">#8b000000</color>
+    <color name="grey_nonactive_text">#42000000</color>
 </resources>

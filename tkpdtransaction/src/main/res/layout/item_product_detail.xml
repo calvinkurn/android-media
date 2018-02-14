@@ -1,111 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_item_product_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     android:orientation="vertical"
-    android:paddingTop="16dp"
+    android:paddingBottom="3dp"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:paddingBottom="3dp"
-    android:background="@color/white">
+    android:paddingTop="16dp">
+
+    <LinearLayout
+        android:id="@+id/ll_shipping_warning_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/padding_ms"
+        android:paddingLeft="@dimen/padding_med"
+        android:paddingRight="@dimen/padding_med"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <ImageView
+            android:id="@+id/img_shipping_warning"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="@dimen/margin_ms"
+            android:layout_marginRight="@dimen/margin_ms"
+            tools:src="@drawable/ic_warning_red" />
+
+        <TextView
+            android:id="@+id/tv_shipping_warning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:textColor="#d30b16"
+            android:textSize="11sp"
+            android:textStyle="normal"
+            tools:text="Produk ini tidak dapat dikirimkan dengan kurir yang dipilih" />
+
+    </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="8dp"
+        android:background="@color/white">
 
-        <ImageView android:id="@+id/iv_product_image_container"
+        <ImageView
+            android:id="@+id/iv_product_image_container"
             android:layout_width="52dp"
             android:layout_height="52dp"
-            android:layout_marginRight="16dp"
             android:layout_marginEnd="16dp"
-            android:background="@color/orange"
+            android:layout_marginRight="16dp"
+            android:src="@drawable/googleg_standard_color_18"
             tools:ignore="ContentDescription" />
 
-        <TextView android:id="@+id/tv_shipping_product_name"
+        <TextView
+            android:id="@+id/tv_shipping_product_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/iv_product_image_container"
             android:layout_toRightOf="@id/iv_product_image_container"
-            android:textSize="14sp"
             android:fontFamily="sans-serif-medium"
+            android:textColor="@color/black_70"
+            android:textSize="14sp"
             android:textStyle="normal"
             tools:text="Kaos Adidas Camo Tongue Tee... White &amp; Red, XS" />
 
-        <TextView android:id="@+id/tv_shipped_product_price"
+        <TextView
+            android:id="@+id/tv_shipped_product_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/tv_shipping_product_name"
             android:layout_toEndOf="@id/iv_product_image_container"
             android:layout_toRightOf="@id/iv_product_image_container"
-            android:layout_below="@id/tv_shipping_product_name"
-            android:textSize="14sp"
             android:fontFamily="sans-serif-medium"
+            android:textColor="@color/orange_red"
+            android:textSize="14sp"
             android:textStyle="normal"
             tools:text="Rp200.000" />
 
     </RelativeLayout>
 
-    <RelativeLayout android:id="@+id/rl_product_policies_layout"
+    <RelativeLayout
+        android:id="@+id/rl_product_policies_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp">
+        android:paddingBottom="12dp"
+        android:paddingTop="12dp">
 
-        <ImageView android:id="@+id/iv_free_return_icon"
+        <ImageView
+            android:id="@+id/iv_free_return_icon"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_centerVertical="true"
             android:src="@drawable/ic_free_return"
             tools:ignore="ContentDescription" />
 
-        <TextView android:id="@+id/tv_free_return_text"
+        <TextView
+            android:id="@+id/tv_free_return_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/iv_free_return_icon"
-            android:layout_toEndOf="@id/iv_free_return_icon"
-            android:layout_marginLeft="4dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginRight="16dp"
+            android:layout_centerVertical="true"
             android:layout_marginEnd="16dp"
-            android:layout_centerVertical="true"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="4dp"
+            android:layout_toEndOf="@id/iv_free_return_icon"
+            android:layout_toRightOf="@id/iv_free_return_icon"
+            android:fontFamily="sans-serif"
+            android:text="Free Returns"
+            android:textColor="@color/font_black_secondary_54"
             android:textSize="12sp"
-            android:fontFamily="sans-serif"
-            android:textStyle="normal"
-            android:text="Free Returns" />
+            android:textStyle="normal" />
 
-        <TextView android:id="@+id/tv_po_sign"
+        <TextView
+            android:id="@+id/tv_po_sign"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/tv_free_return_text"
-            android:layout_toEndOf="@id/tv_free_return_text"
-            android:layout_marginRight="8dp"
+            android:layout_centerVertical="true"
             android:layout_marginEnd="8dp"
-            android:layout_centerVertical="true"
-            android:padding="4dp"
+            android:layout_marginRight="8dp"
+            android:layout_toEndOf="@id/tv_free_return_text"
+            android:layout_toRightOf="@id/tv_free_return_text"
             android:background="@drawable/layout_bg_pre_order"
-            android:textSize="10sp"
             android:fontFamily="sans-serif"
-            android:textStyle="normal"
+            android:padding="4dp"
             android:text="PO"
+            android:textColor="@color/font_black_secondary_54"
+            android:textSize="10sp"
+            android:textStyle="normal"
             tools:ignore="SmallSp" />
 
-        <TextView android:id="@+id/tv_cashback_text"
+        <TextView
+            android:id="@+id/tv_cashback_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/tv_po_sign"
-            android:layout_toEndOf="@id/tv_po_sign"
-            android:padding="4dp"
             android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/tv_po_sign"
+            android:layout_toRightOf="@id/tv_po_sign"
             android:background="@drawable/layout_bg_cashback"
-            android:textSize="10sp"
-            android:textColor="@color/white"
             android:fontFamily="sans-serif"
+            android:padding="4dp"
+            android:textColor="@color/white"
+            android:textSize="10sp"
             android:textStyle="normal"
-            tools:text="Cashback 5%"
-            tools:ignore="SmallSp" />
+            tools:ignore="SmallSp"
+            tools:text="Cashback 5%" />
 
     </RelativeLayout>
 
@@ -113,76 +157,87 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView android:id="@+id/tv_text_product_weight"
+        <TextView
+            android:id="@+id/tv_text_product_weight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
             android:fontFamily="sans-serif"
-            android:textStyle="normal"
-            android:text="Berat :" />
+            android:text="Berat :"
+            android:textColor="@color/black_38"
+            android:textSize="12sp"
+            android:textStyle="normal" />
 
-        <TextView android:id="@+id/tv_product_weight"
+        <TextView
+            android:id="@+id/tv_product_weight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
             android:layout_marginLeft="4dp"
             android:layout_marginStart="4dp"
-            android:layout_toRightOf="@id/tv_text_product_weight"
             android:layout_toEndOf="@id/tv_text_product_weight"
+            android:layout_toRightOf="@id/tv_text_product_weight"
             android:fontFamily="sans-serif"
+            android:textColor="@color/font_black_secondary_54"
+            android:textSize="12sp"
             android:textStyle="normal"
             tools:text="3kg" />
 
-        <TextView android:id="@+id/tv_total_product_item"
+        <TextView
+            android:id="@+id/tv_total_product_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:textSize="12sp"
+            android:layout_alignParentRight="true"
             android:fontFamily="sans-serif"
+            android:textColor="@color/font_black_secondary_54"
+            android:textSize="12sp"
             android:textStyle="normal"
             tools:text="1" />
 
         <TextView
+            android:id="@+id/tv_label_item_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/tv_total_product_item"
-            android:layout_toStartOf="@id/tv_total_product_item"
-            android:layout_toRightOf="@id/tv_product_weight"
-            android:layout_toEndOf="@id/tv_product_weight"
-            android:layout_marginRight="4dp"
             android:layout_marginEnd="4dp"
-            android:gravity="end"
+            android:layout_marginRight="4dp"
+            android:layout_toEndOf="@id/tv_product_weight"
+            android:layout_toLeftOf="@id/tv_total_product_item"
+            android:layout_toRightOf="@id/tv_product_weight"
+            android:layout_toStartOf="@id/tv_total_product_item"
             android:fontFamily="sans-serif"
+            android:gravity="end"
+            android:text="Jumlah :"
+            android:textColor="@color/black_38"
             android:textSize="12sp"
-            android:textStyle="normal"
-            android:text="Jumlah :" />
+            android:textStyle="normal" />
 
     </RelativeLayout>
 
     <TextView
+        android:id="@+id/tv_label_note_to_seller"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:textSize="12sp"
         android:fontFamily="sans-serif"
-        android:textStyle="normal"
-        android:text="Catatan untuk penjual (Opsional)" />
+        android:text="Catatan untuk penjual (Opsional)"
+        android:textColor="@color/black_38"
+        android:textSize="12sp"
+        android:textStyle="normal" />
 
-    <TextView android:id="@+id/tv_optional_note_to_seller"
+    <TextView
+        android:id="@+id/tv_optional_note_to_seller"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:textSize="12sp"
         android:fontFamily="sans-serif"
-        android:textStyle="normal"
         android:textColor="@color/black_70"
+        android:textSize="12sp"
+        android:textStyle="normal"
         tools:text="Saya pesan warna merah yah min.. jangan sampai salah kirim barangnya gan!" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="#e0e0e0"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"
+        android:background="#e0e0e0" />
 
 </LinearLayout>
