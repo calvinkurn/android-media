@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseEmptyActivity;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.profile.view.fragment.PeopleInfoFragment;
+import com.tokopedia.session.R;
 
 /**
  * @author by milhamj on 08/02/18.
@@ -21,7 +22,7 @@ public class PeopleInfoActivity extends BaseEmptyActivity implements HasComponen
 
     @Override
     protected int getLayoutRes() {
-        return 0;
+        return R.layout.activity_people_info;
     }
 
     @Override

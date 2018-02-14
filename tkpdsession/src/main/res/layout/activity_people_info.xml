@@ -43,12 +43,56 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <com.tokopedia.core.widgets.NonSwipeableViewPager
-        android:id="@id/view_pager"
+    <!--<com.tokopedia.core.widgets.NonSwipeableViewPager-->
+        <!--android:id="@id/view_pager"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:visibility="visible"-->
+        <!--app:layout_behavior="@string/appbar_scrolling_view_behavior" />-->
+    
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="visible"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus in dolor est. Proin non dignissim nibh. Suspendisse convallis eros orci. Praesent porttitor iaculis laoreet. Nullam sagittis fringilla consequat. Duis pellentesque eleifend neque, vitae consequat turpis rhoncus interdum. Nullam at finibus sem. Duis auctor efficitur dolor, vel posuere mi blandit at. Phasellus risus neque, egestas sit amet luctus vel, egestas a enim. Sed aliquet, leo et egestas faucibus, nisi mi pellentesque diam, quis placerat diam tellus id mauris. Integer rutrum elit mauris, a suscipit arcu faucibus at. Duis congue dapibus dui ac egestas."
+                android:layout_marginBottom="16dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus in dolor est. Proin non dignissim nibh. Suspendisse convallis eros orci. Praesent porttitor iaculis laoreet. Nullam sagittis fringilla consequat. Duis pellentesque eleifend neque, vitae consequat turpis rhoncus interdum. Nullam at finibus sem. Duis auctor efficitur dolor, vel posuere mi blandit at. Phasellus risus neque, egestas sit amet luctus vel, egestas a enim. Sed aliquet, leo et egestas faucibus, nisi mi pellentesque diam, quis placerat diam tellus id mauris. Integer rutrum elit mauris, a suscipit arcu faucibus at. Duis congue dapibus dui ac egestas."
+                android:layout_marginBottom="16dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus in dolor est. Proin non dignissim nibh. Suspendisse convallis eros orci. Praesent porttitor iaculis laoreet. Nullam sagittis fringilla consequat. Duis pellentesque eleifend neque, vitae consequat turpis rhoncus interdum. Nullam at finibus sem. Duis auctor efficitur dolor, vel posuere mi blandit at. Phasellus risus neque, egestas sit amet luctus vel, egestas a enim. Sed aliquet, leo et egestas faucibus, nisi mi pellentesque diam, quis placerat diam tellus id mauris. Integer rutrum elit mauris, a suscipit arcu faucibus at. Duis congue dapibus dui ac egestas."
+                android:layout_marginBottom="16dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus in dolor est. Proin non dignissim nibh. Suspendisse convallis eros orci. Praesent porttitor iaculis laoreet. Nullam sagittis fringilla consequat. Duis pellentesque eleifend neque, vitae consequat turpis rhoncus interdum. Nullam at finibus sem. Duis auctor efficitur dolor, vel posuere mi blandit at. Phasellus risus neque, egestas sit amet luctus vel, egestas a enim. Sed aliquet, leo et egestas faucibus, nisi mi pellentesque diam, quis placerat diam tellus id mauris. Integer rutrum elit mauris, a suscipit arcu faucibus at. Duis congue dapibus dui ac egestas."
+                android:layout_marginBottom="16dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus in dolor est. Proin non dignissim nibh. Suspendisse convallis eros orci. Praesent porttitor iaculis laoreet. Nullam sagittis fringilla consequat. Duis pellentesque eleifend neque, vitae consequat turpis rhoncus interdum. Nullam at finibus sem. Duis auctor efficitur dolor, vel posuere mi blandit at. Phasellus risus neque, egestas sit amet luctus vel, egestas a enim. Sed aliquet, leo et egestas faucibus, nisi mi pellentesque diam, quis placerat diam tellus id mauris. Integer rutrum elit mauris, a suscipit arcu faucibus at. Duis congue dapibus dui ac egestas."
+                android:layout_marginBottom="16dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus in dolor est. Proin non dignissim nibh. Suspendisse convallis eros orci. Praesent porttitor iaculis laoreet. Nullam sagittis fringilla consequat. Duis pellentesque eleifend neque, vitae consequat turpis rhoncus interdum. Nullam at finibus sem. Duis auctor efficitur dolor, vel posuere mi blandit at. Phasellus risus neque, egestas sit amet luctus vel, egestas a enim. Sed aliquet, leo et egestas faucibus, nisi mi pellentesque diam, quis placerat diam tellus id mauris. Integer rutrum elit mauris, a suscipit arcu faucibus at. Duis congue dapibus dui ac egestas."
+                android:layout_marginBottom="16dp"/>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
 
     <LinearLayout
         android:id="@id/progress_view"

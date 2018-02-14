@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,9 +8,17 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar1"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:gravity="top"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:orientation="horizontal">
 
         <ImageView
@@ -17,7 +26,7 @@
             android:layout_height="70dp"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
-            tools:src="@drawable/ic_set_profile"/>
+            tools:src="@drawable/ic_set_profile" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -62,11 +71,131 @@
                     android:lineSpacingExtra="5sp"
                     android:textColor="@color/black_54"
                     android:textSize="12sp"
-                    tools:text="Atur Akun" />
+                    android:text="@string/manage_profile"/>
             </LinearLayout>
 
         </LinearLayout>
 
     </LinearLayout>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:fontFamily="sans-serif-medium"
+        android:lineSpacingExtra="7sp"
+        android:textColor="@color/black_54"
+        android:textSize="12sp"
+        tools:text="Footballer" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:fontFamily="sans-serif"
+        android:lineSpacingExtra="4sp"
+        android:textColor="@color/black_54"
+        android:textSize="12sp"
+        tools:text="I am is an English former professional footballer. He played for Manchester United." />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:textColor="@color/black_70"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                tools:text="364" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/black_38"
+                android:textSize="11sp"
+                android:textStyle="normal"
+                android:text="@string/following" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="@color/grey_300" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:textColor="@color/black_70"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                tools:text="1M" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/black_38"
+                android:textSize="11sp"
+                android:textStyle="normal"
+                android:text="@string/followers" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="@color/grey_300" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:textColor="@color/black_70"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                tools:text="1.532" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/black_38"
+                android:textSize="11sp"
+                android:textStyle="normal"
+                android:text="@string/favorite_shop" />
+        </LinearLayout>
+    </LinearLayout>
+    
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/grey_400"/>
 </LinearLayout>
