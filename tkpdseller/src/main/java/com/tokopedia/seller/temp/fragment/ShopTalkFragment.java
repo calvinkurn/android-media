@@ -1,5 +1,6 @@
 package com.tokopedia.seller.temp.fragment;
 
+import android.os.Bundle;
 import android.view.View;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
@@ -53,6 +54,12 @@ public class ShopTalkFragment extends com.tokopedia.core.shopinfo.fragment.ShopT
             adapter.addItem(new ShopTalkSeeMore());
         }
         adapter.setHaveNext(false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        list.clearOnScrollListeners();
     }
 
     protected void setViewListener(){
