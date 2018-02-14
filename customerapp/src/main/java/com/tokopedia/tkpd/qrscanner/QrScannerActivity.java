@@ -18,13 +18,11 @@ import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.session.session.activity.Login;
+import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.di.CampaignComponent;
 import com.tokopedia.tkpd.campaign.di.DaggerCampaignComponent;
-import com.tokopedia.tokocash.qrpayment.domain.GetInfoQrTokoCashUseCase;
 
 import javax.inject.Inject;
 
@@ -38,13 +36,10 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
         HasComponent<CampaignComponent> {
 
     public static final int RESULT_CODE_HOME = 1;
-    public static final int RESULT_CODE_SCANNER = 2;
     private static final int REQUEST_CODE_NOMINAL = 211;
     private static final int REQUEST_CODE_LOGIN = 3;
 
     private CampaignComponent campaignComponent;
-    private String barCodeData;
-    private ImageView torch;
     private boolean isTorchOn;
     private TkpdProgressDialog progressDialog;
 
@@ -73,7 +68,6 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     }
 
 
-
     @NeedsPermission({Manifest.permission.CAMERA})
     void isCameraPermissionAvailable() {
 
@@ -81,13 +75,13 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
 
     @OnPermissionDenied({Manifest.permission.CAMERA})
     void requestCameraPermissionDenied() {
-        Toast.makeText(this, "Unable to open barcode scanner", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, getResources().getString(R.string.error_actiivty_open_permission), Toast.LENGTH_LONG).show();
         finish();
     }
 
     @OnNeverAskAgain({Manifest.permission.CAMERA})
     void requestCameraPermissionNeverAsk() {
-        Toast.makeText(this, "Unable to open barcode scanner", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, getResources().getString(R.string.error_actiivty_open_permission), Toast.LENGTH_LONG).show();
         finish();
     }
 
@@ -128,7 +122,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
         presenter.attachView(this);
         updateTitle(getString(R.string.title_scan_qr));
 
-        torch = (ImageView) findViewById(com.tokopedia.tokocash.R.id.switch_flashlight);
+        final ImageView torch = (ImageView) findViewById(com.tokopedia.tokocash.R.id.switch_flashlight);
         torch.setVisibility(!hasFlash() ? View.GONE : View.VISIBLE);
         decoratedBarcodeView.setTorchListener(getListener());
         torch.setOnClickListener(new View.OnClickListener() {
@@ -153,8 +147,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     protected void findResult(BarcodeResult barcodeResult) {
         decoratedBarcodeView.pause();
         hideAnimation();
-        barCodeData = barcodeResult.getText();
-        presenter.onBarCodeScanComplete(barCodeData);
+        presenter.onBarCodeScanComplete(barcodeResult.getText());
     }
 
     @Override
@@ -249,7 +242,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
 
     @Override
     public void interruptToLoginPage() {
-        startActivityForResult(Login.getCallingIntent(getApplicationContext()), REQUEST_CODE_LOGIN);
+        startActivityForResult(LoginActivity.getCallingIntent(getApplicationContext()), REQUEST_CODE_LOGIN);
     }
 
     @Override
@@ -257,14 +250,8 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_NOMINAL && resultCode == RESULT_CODE_HOME) {
             finish();
-        } else if (requestCode == REQUEST_CODE_LOGIN) {
-            LocalCacheHandler localCacheHandler = new LocalCacheHandler(getApplicationContext(), GetInfoQrTokoCashUseCase.IDENTIFIER);
-            if (resultCode == RESULT_OK && presenter.isUserLogin()) {
-                String qrCode = localCacheHandler.getString(GetInfoQrTokoCashUseCase.IDENTIFIER);
-                presenter.onBarCodeScanComplete(qrCode);
-            } else {
-                localCacheHandler.putString(GetInfoQrTokoCashUseCase.IDENTIFIER, "");
-            }
+        } else if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_LOGIN) {
+            presenter.onScanCompleteAfterLoginQrPayment();
         }
     }
 }

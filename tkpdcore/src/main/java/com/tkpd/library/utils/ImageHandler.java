@@ -211,6 +211,20 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         }
     }
 
+    public static void loadImageCenterCrop(ImageView imageview, String url) {
+        if (imageview.getContext() != null) {
+            try {
+                Glide.with(imageview.getContext())
+                        .load(url)
+                        .centerCrop()
+                        .dontAnimate()
+                        .placeholder(R.drawable.loading_page)
+                        .error(R.drawable.error_drawable)
+                        .into(imageview);
+            }catch (Exception e){}
+        }
+    }
+
     public static void loadImageWithTarget(Context context, String url, SimpleTarget<Bitmap> simpleTarget) {
         Glide.with(context)
                 .load(url)
@@ -239,20 +253,25 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         }
     }
 
-    public static void loadImageChat(ImageView imageview, String url, int resId) {
-        if (url != null && !TextUtils.isEmpty(url)) {
+    public static void loadImageChat(ImageView imageview, String url) {
+        if (url != null) {
             Glide.with(imageview.getContext())
                     .load(url)
-                    .placeholder(R.drawable.loading_page)
                     .dontAnimate()
-                    .error(resId)
                     .fitCenter()
+                    .placeholder(R.drawable.loading_page)
                     .into(imageview);
-        } else {
+        }
+    }
+
+    public static void loadImageChatBlurred(ImageView imageview, String url) {
+        if (url != null) {
             Glide.with(imageview.getContext())
                     .load(url)
-                    .placeholder(resId)
-                    .error(resId)
+                    .dontAnimate()
+                    .override(30,30)
+                    .fitCenter()
+                    .placeholder(R.drawable.loading_page)
                     .into(imageview);
         }
     }

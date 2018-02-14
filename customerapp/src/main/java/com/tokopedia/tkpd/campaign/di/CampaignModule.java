@@ -1,8 +1,10 @@
 package com.tokopedia.tkpd.campaign.di;
+import android.content.Context;
 
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.network.core.OkHttpFactory;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.tkpd.campaign.data.model.CampaignErrorResponse;
 import com.tokopedia.tkpd.campaign.domain.CampaignDataRepository;
 import com.tokopedia.tkpd.campaign.domain.barcode.PostBarCodeDataUseCase;
 import com.tokopedia.tkpd.campaign.source.CampaignData;
@@ -10,10 +12,12 @@ import com.tokopedia.tkpd.campaign.source.CampaignDataFactory;
 import com.tokopedia.tkpd.campaign.source.api.CampaignAPI;
 import com.tokopedia.tkpd.campaign.source.api.CampaignURL;
 import com.tokopedia.tokocash.di.TokoCashModule;
+import com.tokopedia.tokocash.qrpayment.domain.GetInfoQrTokoCashUseCase;
 
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 /**
@@ -45,14 +49,22 @@ public class CampaignModule {
     }
 
     @Provides
-    Retrofit provideRideRetrofit(OkHttpClient okHttpClient,
-                                 Retrofit.Builder retrofitBuilder) {
+    Retrofit provideRetrofit(OkHttpClient okHttpClient,
+                             Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(CampaignURL.BASE_URL).client(okHttpClient).build();
     }
 
     @Provides
-    OkHttpClient provideOkHttpClientRide() {
-        return OkHttpFactory.create().buildClientCampaignAuth();
+    OkHttpClient provideOkHttpClient(HttpLoggingInterceptor httpLoggingInterceptor) {
+        return new OkHttpClient.Builder()
+                .addInterceptor(httpLoggingInterceptor)
+                .addInterceptor(new ErrorResponseInterceptor(CampaignErrorResponse.class))
+                .build();
     }
 
+    @IdentifierWalletQualifier
+    @Provides
+    LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context) {
+        return new LocalCacheHandler(context, GetInfoQrTokoCashUseCase.IDENTIFIER);
+    }
 }

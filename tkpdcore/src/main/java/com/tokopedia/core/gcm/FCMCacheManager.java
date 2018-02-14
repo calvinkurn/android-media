@@ -166,50 +166,44 @@ public class FCMCacheManager {
                 return settings.getBoolean(Constants.Settings.NOTIFICATION_PM, true);
             case TkpdState.GCMServiceState.GCM_TALK:
                 return settings.getBoolean(Constants.Settings.NOTIFICATION_TALK, true);
+
             case TkpdState.GCMServiceState.GCM_REVIEW:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_REVIEW, true);
             case TkpdState.GCMServiceState.GCM_REVIEW_EDIT:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_REVIEW, true);
             case TkpdState.GCMServiceState.GCM_REVIEW_REPLY:
                 return settings.getBoolean(Constants.Settings.NOTIFICATION_REVIEW, true);
+
             case TkpdState.GCMServiceState.GCM_PROMO:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_PROMO, true);
             case TkpdState.GCMServiceState.GCM_HOT_LIST:
                 return settings.getBoolean(Constants.Settings.NOTIFICATION_PROMO, true);
+
             case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_BUYER:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_REP, true);
             case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_BUYER:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_REP, true);
             case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_SELLER:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_REP, true);
             case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_SELLER:
                 return settings.getBoolean(Constants.Settings.NOTIFICATION_REP, true);
+
             case TkpdState.GCMServiceState.GCM_NEWORDER:
                 return settings.getBoolean(Constants.Settings.NOTIFICATION_SALES, true);
+
             case TkpdState.GCMServiceState.GCM_PURCHASE_VERIFIED:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_PURCHASE, true);
             case TkpdState.GCMServiceState.GCM_PURCHASE_ACCEPTED:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_PURCHASE, true);
             case TkpdState.GCMServiceState.GCM_PURCHASE_PARTIAL_PROCESSED:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_PURCHASE, true);
             case TkpdState.GCMServiceState.GCM_PURCHASE_REJECTED:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_PURCHASE, true);
             case TkpdState.GCMServiceState.GCM_PURCHASE_DELIVERED:
                 return settings.getBoolean(Constants.Settings.NOTIFICATION_PURCHASE, true);
+
             case TkpdState.GCMServiceState.GCM_PURCHASE_DISPUTE:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_RESCENTER, true);
             case TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_REPLY:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_RESCENTER, true);
             case TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_REPLY:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_RESCENTER, true);
             case TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_AGREE:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_RESCENTER, true);
             case TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_AGREE:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_RESCENTER, true);
             case TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_SELLER_REPLY:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_RESCENTER, true);
             case TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_BUYER_REPLY:
                 return settings.getBoolean(Constants.Settings.NOTIFICATION_RESCENTER, true);
+
+            case TkpdState.GCMServiceState.GCM_SELLER_INFO:
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_SELLER_INFO, true);
+
             default:
                 return true;
         }
@@ -298,6 +292,11 @@ public class FCMCacheManager {
     }
 
     public static String getRegistrationId(Context context) {
+        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
+        return cache.getString(GCM_ID, "");
+    }
+
+    public String getRegistrationId() {
         LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
         return cache.getString(GCM_ID, "");
     }

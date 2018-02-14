@@ -14,6 +14,8 @@ import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.exception.ServerErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
+import com.tokopedia.tkpd.campaign.data.model.CampaignException;
+import com.tokopedia.tkpd.campaign.di.IdentifierWalletQualifier;
 import com.tokopedia.tkpd.campaign.domain.barcode.PostBarCodeDataUseCase;
 import com.tokopedia.tokocash.historytokocash.presentation.ServerErrorHandlerUtil;
 import com.tokopedia.tokocash.qrpayment.domain.GetInfoQrTokoCashUseCase;
@@ -43,15 +45,18 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
     private GetInfoQrTokoCashUseCase getInfoQrTokoCashUseCase;
     private Context context;
     private UserSession userSession;
+    private LocalCacheHandler localCacheHandler;
 
     @Inject
     public QrScannerPresenter(PostBarCodeDataUseCase postBarCodeDataUseCase,
                               GetInfoQrTokoCashUseCase getInfoQrTokoCashUseCase,
-                              @ApplicationContext Context context, UserSession userSession) {
+                              @ApplicationContext Context context, UserSession userSession,
+                              @IdentifierWalletQualifier LocalCacheHandler localCacheHandler) {
         this.postBarCodeDataUseCase = postBarCodeDataUseCase;
         this.getInfoQrTokoCashUseCase = getInfoQrTokoCashUseCase;
         this.context = context;
         this.userSession = userSession;
+        this.localCacheHandler = localCacheHandler;
     }
 
     @Override
@@ -60,7 +65,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
         String host = uri.getHost();
 
         //NPE Fix if host returned is null
-        if(host == null) {
+        if (host == null) {
             getView().showErrorGetInfo(context.getString(com.tokopedia.tokocash.R.string.msg_dialog_wrong_scan));
             return;
         }
@@ -74,7 +79,16 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
     }
 
     @Override
-    public boolean isUserLogin() {
+    public void onScanCompleteAfterLoginQrPayment() {
+        if (isUserLogin()) {
+            getInfoQrWallet(localCacheHandler.getString(GetInfoQrTokoCashUseCase.IDENTIFIER));
+        } else {
+            localCacheHandler.putString(GetInfoQrTokoCashUseCase.IDENTIFIER, "");
+            localCacheHandler.applyEditor();
+        }
+    }
+
+    private boolean isUserLogin() {
         return userSession.isLoggedIn();
     }
 
@@ -121,8 +135,8 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                 }
             });
         } else {
-            LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, GetInfoQrTokoCashUseCase.IDENTIFIER);
             localCacheHandler.putString(GetInfoQrTokoCashUseCase.IDENTIFIER, qrcode);
+            localCacheHandler.applyEditor();
             getView().interruptToLoginPage();
         }
     }
@@ -143,7 +157,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                     getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
                 } else if (e instanceof SocketTimeoutException) {
                     getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
-                } else if (e instanceof ResponseErrorException) {
+                } else if (e instanceof CampaignException) {
                     getView().showErrorGetInfo(context.getString(com.tokopedia.tokocash.R.string.msg_dialog_wrong_scan));
                 } else if (e instanceof ResponseDataNullException) {
                     getView().showErrorNetwork(e.getMessage());

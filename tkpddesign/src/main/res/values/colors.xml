@@ -34,6 +34,7 @@
 
     <color name="colorGray">#DDDDDD</color>
     <color name="colorRed">#EA212D</color>
+    <color name="colorPink">#FDEBEC</color>
 
     <color name="colorSheetText">#DE000000</color>
     <color name="colorSheetTitle">#8A000000</color>
@@ -43,5 +44,11 @@
     <color name="tkpd_secondary_orange">#FFF2EE</color>
 
     <color name="grey_transparent_background">#28000000</color>
+
+    <color name="black_55">#8C000000</color>
+
+    <color name="bottomnav_bg">#FAFAFA</color>
+    <color name="bottomnav_active">@color/green_250</color>
+    <color name="bottomnav_inactive">#8C000000</color>
 
 </resources>

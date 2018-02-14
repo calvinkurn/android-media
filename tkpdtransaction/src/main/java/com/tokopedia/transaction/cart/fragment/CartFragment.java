@@ -45,10 +45,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.appsflyer.Jordan;
+import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -238,7 +242,10 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     protected void initialPresenter() {
-        presenter = new CartPresenter(this);
+        presenter = new CartPresenter(
+                this,
+                new LocalCacheHandler(getActivity(), TkpdCache.NOTIFICATION_DATA)
+        );
     }
 
     @Override
@@ -908,10 +915,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void onGetThanksTopPaySuccess(ThanksTopPayData data) {
-        presenter.processCheckoutAnalytics(
-                new LocalCacheHandler(getActivity(), TkpdCache.NOTIFICATION_DATA),
-                data.getParameter().getGatewayName()
-        );
         presenter.clearNotificationCart();
         try {
             presenter.processPaymentAnalytics(
@@ -930,10 +933,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void onGetThanksTopPayFailed(String message, final String paymentId) {
         hideProgressLoading();
-        presenter.processCheckoutAnalytics(
-                new LocalCacheHandler(getActivity(), TkpdCache.NOTIFICATION_DATA),
-                ANALYTICS_GATEWAY_PAYMENT_FAILED
-        );
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), message,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
