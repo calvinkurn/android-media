@@ -65,7 +65,7 @@ public class ExploreDataSource {
     }
 
     public Observable<List<ExploreSectionViewModel>> getExploreData(Context context) {
-        if (SessionHandler.getLoginID(context).equals("")) {
+        if (SessionHandler.getLoginID(context).isEmpty()) {
             return getData("");
         } else {
             return profileSource.getProfile(RequestParams.EMPTY.getParameters())
