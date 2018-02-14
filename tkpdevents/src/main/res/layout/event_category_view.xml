@@ -8,7 +8,7 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="4dp"
+        android:padding="@dimen/margin_padding_small"
         android:background="@drawable/bg_white_border_grey"
         android:orientation="vertical">
 
@@ -28,7 +28,7 @@
                 android:text="Category Title"
                 android:textColor="@color/black"
                 android:textStyle="normal"
-                android:textSize="18sp" />
+                android:textSize="@dimen/textsize_big" />
 
             <TextView
                 android:id="@+id/txt_show_all"

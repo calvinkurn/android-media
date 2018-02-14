@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white">
@@ -62,7 +63,7 @@
             android:gravity="center"
             android:text="HABIS TERJUAL"
             android:textColor="@color/black_38"
-            android:textSize="16sp"
+            android:textSize="@dimen/textsize_large"
             android:textStyle="normal"
             android:visibility="gone" />
 
@@ -76,13 +77,14 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <TextView
+            <ImageView
                 android:id="@+id/btn_decrement"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="@dimen/small_icon_size"
+                android:layout_height="@dimen/small_icon_size"
                 android:layout_marginLeft="@dimen/margin_default"
                 android:background="@drawable/minus_button_layerlist_green"
-                android:scaleType="fitXY" />
+                android:scaleType="center"
+                app:srcCompat="@drawable/ic_remove" />
 
             <TextView
                 android:id="@+id/tv_ticket_cnt"
@@ -92,15 +94,16 @@
                 android:gravity="center"
                 android:text="0"
                 android:textColor="@color/black_54"
-                android:textSize="12sp"
+                android:textSize="@dimen/text_subtitle_size"
                 android:textStyle="normal" />
 
-            <TextView
+            <ImageView
                 android:id="@+id/btn_increment"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="@dimen/small_icon_size"
+                android:layout_height="@dimen/small_icon_size"
                 android:background="@drawable/add_button_layerlist_green"
-                android:scaleType="fitXY" />
+                android:scaleType="center"
+                app:srcCompat="@drawable/ic_add" />
         </LinearLayout>
     </FrameLayout>
 

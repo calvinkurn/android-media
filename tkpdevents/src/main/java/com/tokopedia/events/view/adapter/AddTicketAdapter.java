@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.events.R;
@@ -63,11 +63,11 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         @BindView(R2.id.ticket_sale_price)
         TextView ticketSalePrice;
         @BindView(R2.id.btn_decrement)
-        TextView btnDecrement;
+        ImageView btnDecrement;
         @BindView(R2.id.tv_ticket_cnt)
         TextView tvTicketCnt;
         @BindView(R2.id.btn_increment)
-        TextView btnIncrement;
+        ImageView btnIncrement;
         @BindView(R2.id.tv_sold_out)
         TextView tvSoldOut;
         @BindView(R2.id.button_layout)
@@ -174,8 +174,8 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
 
         public void setTicketViewColor(int color) {
-//            btnDecrement.setImageDrawable(mContext.getResources().getDrawable(R.drawable.minus_button_layerlist_grey));
-//            btnDecrement.setClickable(false);
+            btnDecrement.setBackground(mContext.getResources().getDrawable(R.drawable.minus_button_layerlist_grey));
+            btnDecrement.setClickable(false);
             thisView.setBackgroundColor(color);
         }
 

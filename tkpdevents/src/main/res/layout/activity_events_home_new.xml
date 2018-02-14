@@ -55,7 +55,7 @@
                         <com.tkpd.library.ui.widget.TouchViewPager
                             android:id="@+id/event_bannerpager"
                             android:layout_width="match_parent"
-                            android:layout_height="180dp" />
+                            android:layout_height="@dimen/banner_height" />
 
                         <FrameLayout
                             android:id="@+id/indicator_promo_layout"
@@ -76,17 +76,17 @@
                                 android:layout_marginLeft="@dimen/margin_default"
                                 android:layout_marginRight="@dimen/margin_default"
                                 android:layout_marginStart="@dimen/margin_default"
-                                android:padding="2dp"
+                                android:padding="@dimen/divider_height_thin"
                                 app:fillColor="@color/green_nob"
                                 app:pageColor="@color/grey_400"
-                                app:radius="4dp"
+                                app:radius="@dimen/margin_padding_small"
                                 app:strokeColor="@color/grey_400" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical|right"
-                                android:layout_marginRight="32dp"
+                                android:layout_marginRight="@dimen/icon_size_large"
                                 android:gravity="top"
                                 android:text="Lihat Semua Promo"
                                 android:textColor="@color/green_nob"
@@ -94,8 +94,8 @@
                                 android:visibility="gone" />
 
                             <ImageView
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
+                                android:layout_width="@dimen/margin_default"
+                                android:layout_height="@dimen/margin_default"
                                 android:layout_gravity="center_vertical|right"
                                 android:layout_marginRight="@dimen/margin_default"
                                 android:visibility="gone"
@@ -144,8 +144,8 @@
 
         <ProgressBar
             android:id="@+id/prog_bar"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="@dimen/progbar_height"
+            android:layout_height="@dimen/progbar_height"
             android:layout_gravity="center" />
     </FrameLayout>
 </FrameLayout>

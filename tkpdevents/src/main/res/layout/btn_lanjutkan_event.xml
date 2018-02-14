@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="16dp"
+        android:layout_marginLeft="@dimen/margin_default"
         android:orientation="vertical">
 
         <TextView
@@ -23,7 +23,7 @@
             android:layout_alignTop="@+id/linearLayout2"
             android:text="Mulai dari harga:"
             android:textColor="@color/grey_500"
-            android:textSize="12sp"
+            android:textSize="@dimen/text_subtitle_size"
             android:textStyle="normal" />
 
         <TextView
@@ -35,7 +35,7 @@
             android:layout_below="@+id/textView3"
             android:text="Rp 552.00"
             android:textColor="@color/orange"
-            android:textSize="14sp"
+            android:textSize="@dimen/textsize_title"
             android:textStyle="bold" />
 
 
@@ -45,9 +45,9 @@
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="16dp"
+        android:layout_marginRight="@dimen/margin_default"
         app:cardBackgroundColor="@color/green_nob"
-        app:cardCornerRadius="4dp"
+        app:cardCornerRadius="@dimen/margin_padding_small"
         app:cardElevation="0dp">
 
         <TextView
@@ -55,10 +55,10 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
+            android:padding="@dimen/margin_padding_medium"
             android:text="@string/lanjutkan"
             android:textColor="@android:color/white"
-            android:padding="8dp"
-            android:textSize="18sp"
+            android:textSize="@dimen/textsize_big"
             android:textStyle="bold" />
     </android.support.v7.widget.CardView>
 </RelativeLayout>

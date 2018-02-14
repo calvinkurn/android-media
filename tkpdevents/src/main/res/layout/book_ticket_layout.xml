@@ -41,7 +41,7 @@
                 app:tabGravity="center"
                 app:tabMaxWidth="0dp"
                 app:tabMode="scrollable"
-                app:tabPaddingEnd="2dp"
+                app:tabPaddingEnd="@dimen/divider_height_thin"
                 app:tabPaddingStart="0dp" />
 
             <View
@@ -89,7 +89,7 @@
             android:layout_marginTop="3dp"
             android:text="1 x Festival"
             android:textColor="@color/green_nob"
-            android:textSize="12sp"
+            android:textSize="@dimen/text_subtitle_size"
             android:textStyle="bold" />
 
         <TextView
@@ -103,7 +103,7 @@
             android:layout_marginTop="@dimen/margin_ms"
             android:text="TOTAL:"
             android:textColor="@color/black_70"
-            android:textSize="10sp"
+            android:textSize="@dimen/textsize_tiny"
             android:textStyle="bold" />
 
         <TextView
@@ -118,7 +118,7 @@
             android:layout_marginRight="@dimen/margin_default"
             android:text="TOTAL:"
             android:textColor="@color/price_pdp"
-            android:textSize="12sp"
+            android:textSize="@dimen/text_subtitle_size"
             android:textStyle="bold" />
 
 
@@ -145,8 +145,8 @@
 
         <ProgressBar
             android:id="@+id/prog_bar"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="@dimen/progbar_height"
+            android:layout_height="@dimen/progbar_height"
             android:layout_gravity="center" />
     </FrameLayout>
 
