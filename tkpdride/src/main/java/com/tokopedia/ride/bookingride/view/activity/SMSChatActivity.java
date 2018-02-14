@@ -286,25 +286,25 @@ public class SMSChatActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
 
-            /*case R.id.call_driver:
-                if (!TextUtils.isEmpty(PHONE_NO)) {
-                    Intent intent = new Intent(Intent.ACTION_CALL);
-                    intent.setData(Uri.parse("tel:" + PHONE_NO));
-                    if (!hasMakeCallPermission()) {
-                        requestMakeCallPermission();
-                    } else {
-                        SMSChatActivity.this.startActivity(intent);
-                    }
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            onBackPressed();
+            return true;
+        } else if (id == R.id.call_driver) {
+            if (!TextUtils.isEmpty(PHONE_NO)) {
+                if (!hasMakeCallPermission()) {
+                    requestMakeCallPermission();
+                } else {
+                    callDriver();
                 }
-                return true;*/
-
+            }
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+
     }
 
     private void proceed() {
@@ -528,7 +528,15 @@ public class SMSChatActivity extends BaseActivity {
             readInboxSMS();
             readSentSMS();
             mergeSMS();
+        } else if (requestCode == CALL_PERMISSION_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            callDriver();
         }
+    }
+
+    private void callDriver() {
+        Intent intent = new Intent(Intent.ACTION_CALL);
+        intent.setData(Uri.parse("tel:" + PHONE_NO));
+        SMSChatActivity.this.startActivity(intent);
     }
 
     @Override
