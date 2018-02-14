@@ -207,15 +207,12 @@ public class DriverDetailFragment extends BaseFragment {
     public void actionSMSDriver() {
         RideGATracking.eventClickSMS(status);
 
-        // TODO: 2/13/18 open chat activity
-
         Intent intent = new Intent(getActivity(),SMSChatActivity.class);
         Bundle bundle = new Bundle();
-
         bundle.putParcelable("DRIVER_INFO", driver);
         intent.putExtras(bundle);
-
-        openSmsIntent(driver.getPhoneNumber());
+        startActivity(intent);
+//        openSmsIntent(driver.getPhoneNumber());
     }
 
     @NeedsPermission({Manifest.permission.CALL_PHONE})

@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -17,6 +18,8 @@ import android.os.Bundle;
 import android.provider.Telephony;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
@@ -31,7 +34,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.chat.utils.ChatMessage;
 import com.tokopedia.ride.chat.utils.ChatView;
@@ -57,7 +63,7 @@ public class SMSChatActivity extends BaseActivity {
     private Driver driverDetails;
 
     public static final String DRIVER_INFO = "DRIVER_INFO";
-    private ImageView imageView;
+    private ImageView driverImageView;
     private TextView driverPhoneTV;
     private TextView driverNameTV;
 
@@ -85,15 +91,32 @@ public class SMSChatActivity extends BaseActivity {
         ActionBar.LayoutParams layout = new ActionBar.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.FILL_PARENT);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setCustomView(view, layout);
+        driverNameTV = view.findViewById(R.id.driver_name);
+        driverPhoneTV = view.findViewById(R.id.driver_phone);
+        driverImageView = view.findViewById(R.id.driver_image);
         initToolbar();
     }
 
     private void initToolbar() {
-        driverNameTV = view.findViewById(R.id.driver_name);
-        driverPhoneTV = view.findViewById(R.id.driver_phone);
-        imageView = view.findViewById(R.id.driver_image);
 
-        dr
+        driverNameTV.setText(driverDetails.getName());
+        driverPhoneTV.setText(driverDetails.getPhoneNumber());
+
+        Glide.with(this).load(driverDetails.getPictureUrl())
+                .asBitmap()
+                .centerCrop()
+                .error(R.drawable.default_user_pic_light)
+                .into(new BitmapImageViewTarget(driverImageView) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        if (!isFinishing()) {
+                            RoundedBitmapDrawable roundedBitmapDrawable =
+                                    RoundedBitmapDrawableFactory.create(getResources(), resource);
+                            roundedBitmapDrawable.setCircular(true);
+                            driverImageView.setImageDrawable(roundedBitmapDrawable);
+                        }
+                    }
+                });
     }
 
     @Override
@@ -218,7 +241,7 @@ public class SMSChatActivity extends BaseActivity {
         builder.setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (!hasReadSmsPermission()) {
+                if (!hasReadSendSmsPermission()) {
                     requestReadAndSendSmsPermission();
                 }
                 dialog.dismiss();
@@ -318,27 +341,23 @@ public class SMSChatActivity extends BaseActivity {
         Toast.makeText(this, "", Toast.LENGTH_SHORT).show();*/
     }
 
-    private boolean hasReadSmsPermission() {
+    private boolean hasReadSendSmsPermission() {
+
+        return RequestPermissionUtil.checkHasPermission(this, Manifest.permission.READ_SMS) &&
+                RequestPermissionUtil.checkHasPermission(this, Manifest.permission.RECEIVE_SMS) &&
+                RequestPermissionUtil.checkHasPermission(this, Manifest.permission.SEND_SMS) &&
+                RequestPermissionUtil.checkHasPermission(this, Manifest.permission.READ_PHONE_STATE);
+    }
+
+    private boolean hasMakeCallPermission() {
         return ActivityCompat.checkSelfPermission(SMSChatActivity.this,
-                Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(SMSChatActivity.this,
-                        Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(SMSChatActivity.this,
-                        Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED &&
+                Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(SMSChatActivity.this,
                         Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED;
     }
 
-    private boolean hasMakeCallPermission() {
-        return
-
-                ActivityCompat.checkSelfPermission(SMSChatActivity.this,
-                        Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED &&
-                        ActivityCompat.checkSelfPermission(SMSChatActivity.this,
-                                Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED;
-    }
-
     private void requestReadAndSendSmsPermission() {
+
         if (ActivityCompat.shouldShowRequestPermissionRationale(SMSChatActivity.this, Manifest.permission.READ_SMS)) {
             Log.d(TAG, "shouldShowRequestPermissionRationale(), no permission requested");
             return;
