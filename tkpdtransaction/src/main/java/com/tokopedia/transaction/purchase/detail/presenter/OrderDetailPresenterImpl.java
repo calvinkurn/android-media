@@ -8,7 +8,12 @@ import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailView;
 import com.tokopedia.transaction.purchase.detail.interactor.OrderDetailInteractor;
+import com.tokopedia.transaction.purchase.detail.model.detail.editmodel.OrderDetailShipmentModel;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
+import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
+import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
+
+import java.util.List;
 
 import rx.Subscriber;
 
@@ -35,14 +40,14 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
     public void fetchData(Context context, String orderId, int userMode) {
         mainView.showMainViewLoadingPage();
         TKPDMapParam<String, String> temporaryHash = new TKPDMapParam<>();
-        temporaryHash.put("order_id", orderId);
-        temporaryHash.put("user_id", SessionHandler.getLoginID(context));
-        temporaryHash.put("lang", "id");
+        temporaryHash.put(ORDER_ID_KEY, orderId);
+        temporaryHash.put(USER_ID_KEY, SessionHandler.getLoginID(context));
+        temporaryHash.put(LANGUAGE_KEY, INDONESIAN_LANGUAGE_CONSTANT);
         temporaryHash = AuthUtil.generateParamsNetwork(context, temporaryHash);
         TKPDMapParam<String, Object> params = new TKPDMapParam<>();
         params.putAll(temporaryHash);
-        params.put("os_type", 1);
-        params.put("request_by", userMode);
+        params.put(OS_TYPE_KEY, 1);
+        params.put(REQUEST_BY_KEY, userMode);
         orderDetailInteractor.requestDetailData(orderDetailDataSubscriber(), params);
     }
 
@@ -115,6 +120,11 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
     }
 
     @Override
+    public void processAcceptPartialOrder(Context context, OrderDetailData data) {
+        mainView.onAcceptOrderPartially(data);
+    }
+
+    @Override
     public void processRequestPickup(Context context, OrderDetailData data) {
         mainView.onRequestPickup(data);
     }
@@ -130,16 +140,156 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
     }
 
     @Override
+    public void processRejectShipment(Context context, OrderDetailData data) {
+        mainView.onRejectShipment(data);
+    }
+
+    @Override
     public void processCancelSearch(Context context, OrderDetailData data) {
         mainView.onCancelSearchReplacement(data);
+    }
+
+    @Override
+    public void acceptOrder(Context context, String orderId) {
+        mainView.showProgressDialog();
+        TKPDMapParam<String, String> acceptOrderParam = new TKPDMapParam<>();
+        acceptOrderParam.put(ACTION_TYPE_KEY, ACCEPT_ORDER_CONSTANT);
+        acceptOrderParam.put(ORDER_ID_KEY, orderId);
+        orderDetailInteractor.processOrder(refreshActivitySubscriber(),
+                AuthUtil.generateParamsNetwork(context, acceptOrderParam));
+
+    }
+
+    @Override
+    public void confirmChangeAwb(Context context, String orderId, String refNumber) {
+        mainView.showProgressDialog();
+        TKPDMapParam<String, String> changeAwbParam = new TKPDMapParam<>();
+        changeAwbParam.put(ORDER_ID_KEY, orderId);
+        changeAwbParam.put(SHIPPING_REF_KEY, refNumber);
+        orderDetailInteractor.confirmAwb(sellerActionSubscriber(),
+                AuthUtil.generateParamsNetwork(context, changeAwbParam));
+    }
+
+    @Override
+    public void partialOrder(Context context,
+                             String orderId,
+                             String reason,
+                             String quantityAccept) {
+        mainView.showProgressDialog();
+        TKPDMapParam<String, String> partialParam = new TKPDMapParam<>();
+        partialParam.put(ACTION_TYPE_KEY, PARTIAL_ORDER_CONSTANT);
+        partialParam.put(ORDER_ID_KEY, orderId);
+        partialParam.put(REASON_KEY, reason);
+        partialParam.put(QUANTITY_ACCEPT_KEY, quantityAccept);
+        orderDetailInteractor.processOrder(refreshActivitySubscriber(),
+                AuthUtil.generateParamsNetwork(context, partialParam));
+    }
+
+    @Override
+    public void rejectOrder(Context context, String orderId, String reason) {
+        mainView.showProgressDialog();
+        TKPDMapParam<String, String> rejectOrderParam = new TKPDMapParam<>();
+        rejectOrderParam.put(ACTION_TYPE_KEY, REJECT_ORDER_CONSTANT);
+        rejectOrderParam.put(ORDER_ID_KEY, orderId);
+        rejectOrderParam.put(REASON_KEY, reason);
+        orderDetailInteractor.processOrder(sellerFragmentActionSubscriber(),
+                AuthUtil.generateParamsNetwork(context, rejectOrderParam));
+    }
+
+    @Override
+    public void rejectOrderGenericReason(Context context, TKPDMapParam<String, String> reasonParam) {
+        mainView.showProgressDialog();
+        reasonParam.put(ACTION_TYPE_KEY, REJECT_ORDER_CONSTANT);
+        orderDetailInteractor.processOrder(rejectOrderActionSubscriber(),
+                AuthUtil.generateParamsNetwork(context, reasonParam));
+    }
+
+    @Override
+    public void rejectOrderChangeVarian(Context context,
+                                        List<EmptyVarianProductEditable> emptyVarianProductEditables) {
+        mainView.showProgressDialog();
+        TKPDMapParam<String, String> rejectVarianParam = new TKPDMapParam<>();
+        rejectVarianParam.put(ACTION_TYPE_KEY, REJECT_ORDER_CONSTANT);
+        rejectVarianParam.put(REASON_CODE_KEY, CHANGE_VARIAN_CODE);
+        rejectVarianParam.put(ORDER_ID_KEY, emptyVarianProductEditables.get(0).getOrderId());
+        orderDetailInteractor.rejectEmptyOrderVarian(
+                rejectOrderActionSubscriber(),
+                emptyVarianProductEditables,
+                AuthUtil.generateParamsNetwork(context, new TKPDMapParam<String, String>()),
+                AuthUtil.generateParamsNetwork(context, rejectVarianParam));
+
+    }
+
+    @Override
+    public void rejectOrderChangeWeightPrice(
+            Context context,
+            List<WrongProductPriceWeightEditable> editables
+    ) {
+        mainView.showProgressDialog();
+        TKPDMapParam<String, String> changeWeightPriceParam = new TKPDMapParam<>();
+        changeWeightPriceParam.put(ACTION_TYPE_KEY, REJECT_ORDER_CONSTANT);
+        changeWeightPriceParam.put(REASON_CODE_KEY, CHANGE_PRODUCT_CODE);
+        changeWeightPriceParam.put(ORDER_ID_KEY, editables.get(0).getOrderId());
+        orderDetailInteractor.rejectChangeWeightPrice(
+                rejectOrderActionSubscriber(),
+                editables,
+                AuthUtil.generateParamsNetwork(context, new TKPDMapParam<String, String>()),
+                AuthUtil.generateParamsNetwork(context, changeWeightPriceParam));
+    }
+
+    @Override
+    public void processInstantCourierShipping(Context context, String orderId) {
+        mainView.showProgressDialog();
+        TKPDMapParam<String, String> processShippingParam = new TKPDMapParam<>();
+        processShippingParam.put(ACTION_TYPE_KEY, CONFIRM_SHIPPING_CONSTANT);
+        processShippingParam.put(ORDER_ID_KEY, orderId);
+        orderDetailInteractor.confirmShipping(sellerActionSubscriber(),
+                AuthUtil.generateParamsNetwork(context, processShippingParam));
+    }
+
+    @Override
+    public void processShipping(Context context,
+                                OrderDetailShipmentModel shipmentModel) {
+        mainView.showProgressDialog();
+        TKPDMapParam<String, String> processShippingParam = new TKPDMapParam<>();
+        processShippingParam.put(ACTION_TYPE_KEY, CONFIRM_SHIPPING_CONSTANT);
+        processShippingParam.put(ORDER_ID_KEY, shipmentModel.getOrderId());
+        processShippingParam.put(SHIPPING_REF_KEY, shipmentModel.getShippingRef());
+        processShippingParam.put(SHIPMENT_ID_KEY, shipmentModel.getShipmentId());
+        processShippingParam.put(SHIPMENT_NAME_KEY, shipmentModel.getShipmentName());
+        processShippingParam.put(SERVICE_ID_KEY, shipmentModel.getPackageId());
+        orderDetailInteractor.processOrder(sellerActionSubscriber(),
+                AuthUtil.generateParamsNetwork(context, processShippingParam));
+
+    }
+
+    @Override
+    public void cancelShipping(Context context, String orderId, String reason) {
+        mainView.showProgressDialog();
+        TKPDMapParam<String, String> processShippingParam = new TKPDMapParam<>();
+        processShippingParam.put(ACTION_TYPE_KEY, REJECT_ORDER_CONSTANT);
+        processShippingParam.put(ORDER_ID_KEY, orderId);
+        processShippingParam.put(REASON_KEY, reason);
+        orderDetailInteractor.cancelShipping(sellerActionSubscriber(),
+                AuthUtil.generateParamsNetwork(context, processShippingParam));
+    }
+
+    @Override
+    public void retryOrder(Context context, OrderDetailData data) {
+        mainView.showProgressDialog();
+        TKPDMapParam<String, String> retryPickUpParams = new TKPDMapParam<>();
+        retryPickUpParams.put(ORDER_ID_KEY, data.getOrderId());
+        orderDetailInteractor.retryPickup(
+                sellerActionSubscriber(),
+                AuthUtil.generateParamsNetwork(context, retryPickUpParams));
     }
 
     @Override
     public void cancelOrder(Context context, String orderId, String notes) {
         mainView.showProgressDialog();
         TKPDMapParam<String, String> cancelOrderParam = new TKPDMapParam<>();
-        cancelOrderParam.put("order_id", orderId);
-        cancelOrderParam.put("reason_cancel", notes);
+        cancelOrderParam.put(ORDER_ID_KEY, orderId);
+        cancelOrderParam.put(REASON_CANCEL_KEY, notes);
         orderDetailInteractor.cancelOrder(cancelOrderSubscriber(),
                 AuthUtil.generateParamsNetwork(context, cancelOrderParam));
     }
@@ -150,20 +300,20 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
                                   String reasonText) {
         mainView.showProgressDialog();
         TKPDMapParam<String, String> temporaryParam = new TKPDMapParam<>();
-        temporaryParam.put("order_id", orderId);
-        temporaryParam.put("reason", reasonText);
-        temporaryParam.put("user_id", SessionHandler.getLoginID(context));
+        temporaryParam.put(ORDER_ID_KEY, orderId);
+        temporaryParam.put(REASON_KEY, reasonText);
+        temporaryParam.put(USER_ID_KEY, SessionHandler.getLoginID(context));
         temporaryParam = AuthUtil.generateParamsNetwork(context, temporaryParam);
         TKPDMapParam<String, Object> params = new TKPDMapParam<>();
         params.putAll(temporaryParam);
-        params.put("r_code", reasonCode);
+        params.put(REPLACEMENT_REASON_CODE, reasonCode);
         orderDetailInteractor.cancelReplacement(cancelReplacementSubscriber(), params);
     }
 
     @Override
     public void processFinish(Context context, String orderId, String orderStatus) {
         TKPDMapParam<String, String> orderDetailParams = new TKPDMapParam<>();
-        orderDetailParams.put("order_id", orderId);
+        orderDetailParams.put(ORDER_ID_KEY, orderId);
         if (orderStatus.equals(context.getString(com.tokopedia.core.R.string.ORDER_DELIVERED))
                 || orderStatus.equals(context.getString(com.tokopedia.core.R.string.ORDER_DELIVERY_FAILURE))) {
             orderDetailInteractor.confirmDeliveryConfirm(confirmShipmentSubscriber(),
@@ -209,7 +359,7 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
 
             @Override
             public void onError(Throwable e) {
-                mainView.showErrorSnackbar(e.getMessage());
+                mainView.showSnackbar(e.getMessage());
             }
 
             @Override
@@ -229,13 +379,128 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
             @Override
             public void onError(Throwable e) {
                 mainView.dismissProgressDialog();
-                mainView.showErrorSnackbar(e.getMessage());
+                mainView.showSnackbar(e.getMessage());
             }
 
             @Override
             public void onNext(String s) {
                 mainView.dismissProgressDialog();
                 mainView.onOrderCancelled(s);
+            }
+        };
+    }
+
+    private Subscriber<String> closeActivitySubscriber() {
+        return new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                mainView.dismissProgressDialog();
+                mainView.showSnackbar(e.getMessage());
+            }
+
+            @Override
+            public void onNext(String s) {
+                mainView.dismissProgressDialog();
+                mainView.showSnackbar(s);
+                mainView.dismissActivity();
+                //TODO put action to finish activity and refresh
+            }
+        };
+    }
+
+    private Subscriber<String> refreshActivitySubscriber() {
+        return new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                mainView.dismissProgressDialog();
+                mainView.showSnackbar(e.getMessage());
+            }
+
+            @Override
+            public void onNext(String s) {
+                mainView.dismissProgressDialog();
+                mainView.showSnackbar(s);
+                mainView.onRefreshActivity();
+                //TODO put action to finish activity and refresh
+            }
+        };
+    }
+
+    private Subscriber<String> sellerActionSubscriber() {
+        return new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                mainView.dismissProgressDialog();
+                mainView.showSnackbar(e.getMessage());
+            }
+
+            @Override
+            public void onNext(String s) {
+                mainView.dismissProgressDialog();
+                mainView.showSnackbar(s);
+                mainView.dismissSellerActionFragment();
+                //TODO put action to finish activity and refresh
+            }
+        };
+    }
+
+    private Subscriber<String> sellerFragmentActionSubscriber() {
+        return new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                mainView.dismissProgressDialog();
+                mainView.showSnackbar(e.getMessage());
+            }
+
+            @Override
+            public void onNext(String s) {
+                mainView.dismissProgressDialog();
+                mainView.showSnackbar(s);
+                mainView.dismissSellerActionFragment();
+                //TODO put action to finish activity and refresh
+            }
+        };
+    }
+
+    private Subscriber<String> rejectOrderActionSubscriber() {
+        return new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                mainView.dismissProgressDialog();
+                mainView.showSnackbar(e.getMessage());
+            }
+
+            @Override
+            public void onNext(String s) {
+                mainView.dismissProgressDialog();
+                mainView.showSnackbar(s);
+                mainView.dismissRejectOrderActionFragment();
+                //TODO put action to finish activity and refresh
             }
         };
     }
@@ -250,7 +515,7 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
             @Override
             public void onError(Throwable e) {
                 mainView.dismissProgressDialog();
-                mainView.showErrorSnackbar(e.getMessage());
+                mainView.showSnackbar(e.getMessage());
             }
 
             @Override

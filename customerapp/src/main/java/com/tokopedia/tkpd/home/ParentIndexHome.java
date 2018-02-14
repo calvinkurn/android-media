@@ -68,6 +68,8 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.bottomnavigation.BottomNavigation;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.tkpd.R;
+
+import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -459,6 +461,9 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 } else {
                     startActivity(TransactionCartRouter.createInstanceCartActivity(this));
                 }
+                return true;
+            case R.id.action_barcode_scan:
+                startActivity(QrScannerActivity.newInstance(this));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
