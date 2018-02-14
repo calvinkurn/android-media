@@ -14,7 +14,6 @@ import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
 import com.tokopedia.core.drawer2.data.source.CloudProfileSource;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.home.R;
@@ -66,18 +65,28 @@ public class ExploreDataSource {
     }
 
     public Observable<List<ExploreSectionViewModel>> getExploreData(Context context) {
-//        return homeDataApi.getExploreData(String.format(getRequestPayload(), SessionHandler.getShopDomain(context)))
-//                .doOnNext(saveToCache())
-//                .map(getMapper());
+        if (SessionHandler.getLoginID(context).equals("")) {
+            return getData("");
+        } else {
+            return profileSource.getProfile(RequestParams.EMPTY.getParameters())
+                    .flatMap(new Func1<ProfileModel, Observable<List<ExploreSectionViewModel>>>() {
+                        @Override
+                        public Observable<List<ExploreSectionViewModel>> call(ProfileModel profileModel) {
+                            if (profileModel.getProfileData().getShopInfo() != null) {
+                                return getData(profileModel.getProfileData().getShopInfo().getShopDomain());
+                            } else {
+                                return getData("");
+                            }
+                        }
+                    });
+        }
+    }
 
-        return profileSource.getProfile(RequestParams.EMPTY.getParameters()).flatMap(new Func1<ProfileModel, Observable<List<ExploreSectionViewModel>>>() {
-            @Override
-            public Observable<List<ExploreSectionViewModel>> call(ProfileModel profileModel) {
-                return homeDataApi.getExploreData(String.format(getRequestPayload(), profileModel.getProfileData().getShopInfo().getShopDomain()))
-                        .doOnNext(saveToCache())
-                        .map(getMapper());
-            }
-        });
+    @NonNull
+    private Observable<List<ExploreSectionViewModel>> getData(String shopDomain) {
+        return homeDataApi.getExploreData(String.format(getRequestPayload(), shopDomain))
+                .doOnNext(saveToCache())
+                .map(getMapper());
     }
 
     private Action1<Response<GraphqlResponse<DataResponseModel>>> saveToCache() {
