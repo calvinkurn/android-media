@@ -58,10 +58,10 @@ import javax.inject.Inject;
 public class FlightDashboardFragment extends BaseDaggerFragment implements FlightDashboardContract.View {
 
     public static final String EXTRA_TRIP = "EXTRA_TRIP";
+    public static final String EXTRA_CLASS = "EXTRA_CLASS";
     private static final String EXTRA_ADULT = "EXTRA_ADULT";
     private static final String EXTRA_CHILD = "EXTRA_CHILD";
     private static final String EXTRA_INFANT = "EXTRA_INFANT";
-    public static final String EXTRA_CLASS = "EXTRA_CLASS";
     private static final int REQUEST_CODE_AIRPORT_DEPARTURE = 1;
     private static final int REQUEST_CODE_AIRPORT_ARRIVAL = 2;
     private static final int REQUEST_CODE_AIRPORT_PASSENGER = 3;
@@ -219,7 +219,9 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         bannerView.setOnPromoScrolledListener(new BannerView.OnPromoScrolledListener() {
             @Override
             public void onPromoScrolled(int position) {
-
+                if (getBannerData(position) != null) {
+                    presenter.actionOnPromoScrolled(position, getBannerData(position));
+                }
             }
         });
         bannerView.setOnPromoClickListener(new BannerView.OnPromoClickListener() {
@@ -236,6 +238,14 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         });
 
         return view;
+    }
+
+    private BannerDetail getBannerData(int position) {
+        if (bannerList.size() > position) {
+            return bannerList.get(position);
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -540,12 +550,14 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     }
 
     private void bannerClickAction(int position) {
-        if (getActivity().getApplication() instanceof FlightModuleRouter
-                && ((FlightModuleRouter) getActivity().getApplication())
-                .getBannerWebViewIntent(getActivity(), bannerList.get(position).getAttributes().getImgUrl()) != null) {
-            presenter.onBannerItemClick(position, bannerList.get(position));
-            startActivity(((FlightModuleRouter) getActivity().getApplication())
-                    .getBannerWebViewIntent(getActivity(), bannerList.get(position).getAttributes().getImgUrl()));
+        if (getBannerData(position) != null) {
+            if (getActivity().getApplication() instanceof FlightModuleRouter
+                    && ((FlightModuleRouter) getActivity().getApplication())
+                    .getBannerWebViewIntent(getActivity(), getBannerData(position).getAttributes().getImgUrl()) != null) {
+                presenter.onBannerItemClick(position, getBannerData(position));
+                startActivity(((FlightModuleRouter) getActivity().getApplication())
+                        .getBannerWebViewIntent(getActivity(), getBannerData(position).getAttributes().getImgUrl()));
+            }
         }
     }
 

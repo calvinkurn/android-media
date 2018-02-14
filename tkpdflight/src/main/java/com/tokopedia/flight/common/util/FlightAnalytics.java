@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
+import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
@@ -301,6 +302,20 @@ public class FlightAnalytics {
         );
     }
 
+    public void eventPromoImpression(int position, BannerDetail bannerData) {
+        analyticTracker.sendEventTracking(
+                GENERIC_EVENT,
+                GENERIC_CATEGORY,
+                Category.PROMOTION_IMPRESSION,
+                String.format(Locale.getDefault(),
+                        "%d - %s - %s",
+                        position + 1,
+                        bannerData.getAttributes().getTitle(),
+                        bannerData.getAttributes().getImgUrl()
+                )
+        );
+    }
+
     public static final class Screen {
 
         public static String HOMEPAGE = "Homepage";
@@ -313,6 +328,7 @@ public class FlightAnalytics {
     private static class Category {
         static String CLICK_TRANSACTIONS = "click transaction list";
         static String CLICK_PROMOTION = "promotion click";
+        static String PROMOTION_IMPRESSION = "promotion impressions";
         static String CLICK_TRIP_TYPE = "select trip type";
         static String SELECT_ORIGIN = "select origin";
         static String SELECT_DESTINATION = "select destination";
