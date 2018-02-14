@@ -66,7 +66,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         View view = inflater.inflate(R.layout.fragment_group_chat_room, container, false);
         chatRecyclerView = view.findViewById(R.id.chat_list);
         replyEditText = view.findViewById(R.id.reply_edit_text);
-
+        sendButton = view.findViewById(R.id.button_send);
         prepareView();
         return view;
     }
@@ -74,6 +74,13 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     private void prepareView() {
         GroupChatTypeFactory groupChatTypeFactory = new GroupChatTypeFactoryImpl(this);
         adapter = GroupChatAdapter.createInstance(groupChatTypeFactory);
+
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.sendReply(replyEditText.getText());
+            }
+        });
     }
 
     @Override

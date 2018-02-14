@@ -42,6 +42,11 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
         });
     }
 
+    @Override
+    public void sendReply(String replyText) {
+
+    }
+
     private void getMessagesFirstTime() {
         getGroupChatMessagesFirstTimeUseCase.execute("pub1",
                 new GetGroupChatMessagesFirstTimeUseCase.SendbirdChannelListener() {

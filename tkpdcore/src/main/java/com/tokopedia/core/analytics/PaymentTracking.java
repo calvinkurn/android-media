@@ -63,12 +63,4 @@ public class PaymentTracking extends TrackingUtils {
                 .clearCheckoutDataLayer();
     }
 
-
-    public static void eventPromoImpression(Promotion promotion) {
-        getGTMEngine().eventBannerImpression(promotion);
-    }
-
-    public static void eventPromoClick(Promotion promotion) {
-        getGTMEngine().eventBannerClick(promotion);
-    }
 }

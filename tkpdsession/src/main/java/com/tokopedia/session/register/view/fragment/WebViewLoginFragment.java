@@ -37,6 +37,7 @@ import java.util.Set;
 /**
  * Created by stevenfredian on 5/31/16.
  */
+@Deprecated
 public class WebViewLoginFragment extends android.support.v4.app.DialogFragment {
     //private View pic;
 
