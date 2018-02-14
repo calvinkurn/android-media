@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardPassDataViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 
@@ -42,7 +43,11 @@ public interface FlightDashboardContract {
 
         void showDepartureDateShouldAtLeastToday(@StringRes int resID);
 
-        void showArrivalDateShouldGreaterOrEqual(@StringRes int resId);
+        void showDepartureDateMaxTwoYears(@StringRes int resID);
+
+        void showReturnDateShouldGreaterOrEqual(@StringRes int resId);
+
+        void showReturnDateMaxTwoYears(@StringRes int resId);
 
         void showPassengerAtLeastOneAdult(@StringRes int resId);
 
@@ -75,6 +80,10 @@ public interface FlightDashboardContract {
         String getInfantPassengerArguments();
 
         String getClassArguments();
+
+        FlightDashboardPassDataViewModel getDashboardPassData();
+
+        void setDashboardPassData(FlightDashboardPassDataViewModel flightDashboardPassDataViewModel);
     }
 
     interface Presenter extends CustomerPresenter<View> {

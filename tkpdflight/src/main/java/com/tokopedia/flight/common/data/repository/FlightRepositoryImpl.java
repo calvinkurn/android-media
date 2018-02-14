@@ -41,7 +41,6 @@ import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -103,6 +102,11 @@ public class FlightRepositoryImpl implements FlightRepository {
     @Override
     public Observable<FlightAirportDB> getAirportById(final String aiport) {
         return flightAirportDataListSource.getAirport(aiport);
+    }
+
+    @Override
+    public Observable<FlightAirportDB> getAirportWithParam(Map<String, String> params) {
+        return flightAirportDataListSource.getAirport(params);
     }
 
     @Override
