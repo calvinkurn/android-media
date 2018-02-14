@@ -1,7 +1,7 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
 import android.content.Context;
-import android.os.Build;
+import android.text.TextUtils;
 import android.util.Base64;
 
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
@@ -17,7 +17,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 
@@ -135,18 +134,22 @@ public class FingerprintInterceptor implements Interceptor {
                         AdvertisingIdClient.Info adInfo = null;
                         try {
                             adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
-                            return adInfo.getId();
                         } catch (IOException | GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
                             e.printStackTrace();
                         }
-                        return null;
+                        return adInfo.getId();
+                    }
+                }).onErrorReturn(new Func1<Throwable, String>() {
+                    @Override
+                    public String call(Throwable throwable) {
+                        return "";
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Action1<String>() {
                     @Override
                     public void call(String adID) {
-                        if (adID != null) {
+                        if (!TextUtils.isEmpty(adID)) {
                             localCacheHandler.putString(TkpdCache.Key.KEY_ADVERTISINGID, adID);
                             localCacheHandler.applyEditor();
                         }

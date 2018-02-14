@@ -1,46 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/white"
-              android:orientation="vertical"
-              android:paddingBottom="@dimen/padding_med">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    >
 
-    <TextView
+    <ProgressBar
+        android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/margin_large"
-        android:fontFamily="sans-serif"
-        android:gravity="center_horizontal"
-        android:lineSpacingExtra="6sp"
-        android:text="@string/choose_verification_method"
-        android:textColor="@color/black_70"
-        android:textSize="@dimen/text_size_l_medium"
-        android:textStyle="bold"
-        />
+        android:layout_centerInParent="true"
+        android:visibility="visible"
+        tools:visibility="gone"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="@dimen/margin_med"
-        android:layout_marginRight="@dimen/margin_med"
-        android:layout_marginTop="@dimen/new_margin_small"
-        android:fontFamily="sans-serif"
-        android:gravity="center_horizontal"
-        android:lineSpacingExtra="5sp"
-        android:text="@string/pick_one_of_these_method_to_get_verification_code"
-        android:textColor="@color/black_54"
-        android:textSize="@dimen/text_size_medium"
-        android:textStyle="normal"
-        />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/method_list"
-        android:layout_marginTop="@dimen/margin_sm"
+    <RelativeLayout
+        android:id="@+id/main_view"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/padding_med"
+        android:visibility="gone"
+        tools:visibility="visible">
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/phone_inactive"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_horizontal"
+            android:padding="@dimen/padding_small_sm"
+            android:text="@string/my_phone_number_is_inactive"
+            android:textColor="@color/medium_green"
+            android:textSize="13sp"
+            android:textStyle="normal"
+            />
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_above="@id/phone_inactive"
+                      android:layout_alignParentTop="true"
+                      android:orientation="vertical"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/margin_large"
+                android:fontFamily="sans-serif"
+                android:gravity="center_horizontal"
+                android:lineSpacingExtra="6sp"
+                android:text="@string/choose_verification_method"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/text_size_l_medium"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="@dimen/margin_med"
+                android:layout_marginRight="@dimen/margin_med"
+                android:layout_marginTop="@dimen/new_margin_small"
+                android:fontFamily="sans-serif"
+                android:gravity="center_horizontal"
+                android:lineSpacingExtra="5sp"
+                android:text="@string/pick_one_of_these_method_to_get_verification_code"
+                android:textColor="@color/black_54"
+                android:textSize="@dimen/text_size_medium"
+                android:textStyle="normal"
+                />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/method_list"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="@dimen/margin_sm"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

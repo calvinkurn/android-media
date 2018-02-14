@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/color_white_fafafa"
+    android:orientation="vertical">
+
+    <com.tokopedia.core.customwidget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_inbox"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </com.tokopedia.core.customwidget.SwipeToRefresh>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="visible" />
+
+    <com.tokopedia.design.button.BottomActionView
+        android:id="@+id/bav"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|bottom"
+        android:layout_marginBottom="@dimen/margin_sm"
+        app:bav_1_display="true"
+        app:bav_label_1="@string/string_title_sort"
+        app:bav_icon_1="@drawable/ic_sort_reso"
+        app:bav_2_display="true"
+        app:bav_label_2="@string/string_title_filter"
+        app:bav_icon_2="@drawable/ic_filter_list"/>
+
+</FrameLayout>

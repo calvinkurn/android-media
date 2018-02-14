@@ -18,6 +18,9 @@ public class NotificationData {
     @SerializedName("resolution")
     @Expose
     private int resolution;
+    @SerializedName("resolution_as")
+    @Expose
+    private Resolution resolutionModel;
     @SerializedName("purchase")
     @Expose
     private Purchase purchase;
@@ -86,4 +89,13 @@ public class NotificationData {
     public void setTotalNotif(int totalNotif) {
         this.totalNotif = totalNotif;
     }
+
+    public Resolution getResolutionModel() {
+        return resolutionModel;
+    }
+
+    public void setResolutionModel(Resolution resolutionModel) {
+        this.resolutionModel = resolutionModel;
+    }
+
 }

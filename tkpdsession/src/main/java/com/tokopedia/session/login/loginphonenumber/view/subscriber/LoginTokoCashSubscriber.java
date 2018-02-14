@@ -1,7 +1,7 @@
 package com.tokopedia.session.login.loginphonenumber.view.subscriber;
 
-import com.tokopedia.core.network.retrofit.response.ErrorCode;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.network.ErrorCode;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.LoginTokoCashViewModel;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.login.loginphonenumber.view.viewlistener.ChooseTokocashAccount;
@@ -32,7 +32,7 @@ public class LoginTokoCashSubscriber extends Subscriber<LoginTokoCashViewModel> 
     @Override
     public void onError(Throwable e) {
         view.dismissLoadingProgress();
-        view.onErrorLoginTokoCash(ErrorHandler.getErrorMessage(e));
+        view.onErrorLoginTokoCash(ErrorHandler.getErrorMessageWithErrorCode(view.getContext(), e));
     }
 
     @Override
@@ -40,7 +40,7 @@ public class LoginTokoCashSubscriber extends Subscriber<LoginTokoCashViewModel> 
         view.dismissLoadingProgress();
         if (canGoToSecurityQuestion(loginTokoCashViewModel.getMakeLoginDomain())) {
             view.goToSecurityQuestion(accountTokocash,
-                    loginTokoCashViewModel.getMakeLoginDomain());
+                    loginTokoCashViewModel);
         } else if (loginTokoCashViewModel.getMakeLoginDomain().isLogin()) {
             view.onSuccessLogin();
         } else {

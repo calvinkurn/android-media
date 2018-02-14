@@ -2,8 +2,13 @@ package com.tokopedia.core.shopinfo.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.V2BaseFragment;
@@ -23,7 +28,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Tkpd_Eka on 10/8/2015.
  */
-public class NotesList extends V2BaseFragment {
+public class NotesList extends Fragment {
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
@@ -36,6 +41,26 @@ public class NotesList extends V2BaseFragment {
     NoteListAdapterR adapter;
     ArrayList<NoteModel> noteList = new ArrayList<>();
     private boolean noResult = false;
+    protected View rootView;
+
+    @Nullable
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if(getRootViewId() == 0) {
+            throw new RuntimeException("Needs layout ID");
+        }
+
+        if(rootView == null){
+            rootView = inflater.inflate(getRootViewId(), container, false);
+            initView();
+            rootView.setTag(getHolder());
+        }
+        else{
+            setHolder(rootView.getTag());
+        }
+        setListener();
+        onCreateView();
+        return rootView;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,12 +98,10 @@ public class NotesList extends V2BaseFragment {
         outState.putBoolean("noresult", noResult);
     }
 
-    @Override
     protected int getRootViewId() {
         return R.layout.fragment_recycler_view;
     }
 
-    @Override
     protected void onCreateView() {
         if (noteList.isEmpty() && !adapter.hasNoResult() && !noResult)
             adapter.setLoading();
@@ -102,17 +125,22 @@ public class NotesList extends V2BaseFragment {
         RxUtils.unsubscribeIfNotNull(compositeSubscription);
     }
 
-    @Override
+    protected View findViewById(int id){
+        return rootView.findViewById(id);
+    }
+
+    protected View getRootView(){
+        return rootView;
+    }
+
     protected Object getHolder() {
         return holder;
     }
 
-    @Override
     protected void setHolder(Object holder) {
         this.holder = (ViewHolder) holder;
     }
 
-    @Override
     protected void initView() {
         holder = new ViewHolder();
         holder.list = (RecyclerView) findViewById(R.id.list);
@@ -120,7 +148,6 @@ public class NotesList extends V2BaseFragment {
         holder.list.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
     }
 
-    @Override
     protected void setListener() {
         adapter.setListener(new NoteListAdapterR.NoteListAdapterInterface() {
             @Override
