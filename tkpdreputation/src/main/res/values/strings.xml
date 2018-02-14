@@ -111,5 +111,14 @@
     <string name="query_hint_review_buyer">Invoice / Nama Penjual / Nama Produk</string>
     <string name="query_hint_review_seller">Invoice / Nama Pembeli / Nama Produk</string>
     <string name="product_is_banned">Produk telah diban</string>
-
+    <string name="product_review_label_rating_comparison">/ 5</string>
+    <string name="product_review_label_helpful_review">Ulasan Paling Membantu</string>
+    <string name="product_review_label_all_review">Semua Ulasan</string>
+    <string name="product_review_counter_review_formatted">%1$d Ulasan</string>
+    <string name="product_review_label_formatted_name">Oleh <![CDATA[<b>%1$s</b>]]></string>
+    <string name="product_review_label_counter_like_1_formatted">Anda dan %1$d orang terbantu</string>
+    <string name="product_review_label_counter_like_2_formatted">Anda terbantu</string>
+    <string name="product_review_label_counter_like_3_formatted">Terbantu?</string>
+    <string name="product_review_label_counter_like_4_formatted">%1$d orang terbantu</string>
+    <string name="product_review_label_by">Oleh</string>
 </resources>

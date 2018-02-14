@@ -130,7 +130,9 @@ public class FlightSearchUseCase extends UseCase<List<FlightSearchViewModel>> {
                             public Observable<FlightSearchViewModel> call(FlightSearchViewModel flightSearchViewModel) {
                                 List<String> airlineList = new ArrayList<>();
                                 for (Route route : flightSearchViewModel.getRouteList()) {
-                                    airlineList.add(route.getAirline());
+                                    if (!airlineList.contains(route.getAirline())) {
+                                        airlineList.add(route.getAirline());
+                                    }
                                 }
                                 return Observable.zip(
                                         Observable.from(airlineList)
@@ -169,24 +171,6 @@ public class FlightSearchUseCase extends UseCase<List<FlightSearchViewModel>> {
 
             }
         });
-    }
-
-    private List<FlightSearchViewModel> mergeViewModel(List<FlightSearchViewModel> flightSearchViewModelList,
-                                                       List<FlightAirportDB> airportDBList,
-                                                       List<FlightAirlineDB> airlineDBList) {
-        HashMap<String, FlightAirlineDB> dbAirlineMaps = new HashMap<>();
-        HashMap<String, FlightAirportDB> dbAirportMaps = new HashMap<>();
-        for (int i = 0, sizei = airlineDBList.size(); i < sizei; i++) {
-            dbAirlineMaps.put(airlineDBList.get(i).getId(), airlineDBList.get(i));
-        }
-        for (int i = 0, sizei = airportDBList.size(); i < sizei; i++) {
-            dbAirportMaps.put(airportDBList.get(i).getAirportId(), airportDBList.get(i));
-        }
-        for (int i = 0, sizei = flightSearchViewModelList.size(); i < sizei; i++) {
-            FlightSearchViewModel flightSearchViewModel = flightSearchViewModelList.get(i);
-            flightSearchViewModel.mergeWithAirportAndAirlines(dbAirlineMaps, dbAirportMaps);
-        }
-        return flightSearchViewModelList;
     }
 
 }

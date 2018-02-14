@@ -1,16 +1,19 @@
 package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.topads.R;
@@ -19,6 +22,7 @@ import com.tokopedia.topads.dashboard.data.model.data.BulkAction;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAdBulkAction;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGroupAdInteractorImpl;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsAddCreditActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsEditGroupMainPageActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailGroupPresenter;
@@ -33,15 +37,24 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
     public static final String GROUP_AD_PARCELABLE = "GROUP_AD_PARCELABLE";
     private LabelView items;
     private OnTopAdsDetailGroupListener listener;
+    private boolean isEnoughDeposit;
+    private boolean isDismissToTopUp = false;
 
-    public static Fragment createInstance(GroupAd groupAd, String adId, boolean forceRefresh) {
+    public static Fragment createInstance(GroupAd groupAd, String adId, boolean forceRefresh, boolean isEnoughDeposit) {
         Fragment fragment = new TopAdsDetailGroupFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(TopAdsExtraConstant.EXTRA_AD, groupAd);
         bundle.putString(TopAdsExtraConstant.EXTRA_AD_ID, adId);
         bundle.putBoolean(TopAdsExtraConstant.EXTRA_FORCE_REFRESH, forceRefresh);
+        bundle.putBoolean(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, isEnoughDeposit);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    protected void setupArguments(Bundle bundle) {
+        super.setupArguments(bundle);
+        isEnoughDeposit = bundle.getBoolean(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, false);
     }
 
     @Override
@@ -132,9 +145,59 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
         super.onTurnOnAdSuccess(dataResponseActionAds);
     }
 
+    private static final String TAG = "TopAdsDetailGroupFragme";
+
     @Override
     public void onAdLoaded(GroupAd ad) {
         super.onAdLoaded(ad);
+        if(!isEnoughDeposit){
+            final BottomSheetView bottomSheetView = new BottomSheetView(getActivity());
+
+            bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
+                    .BottomSheetFieldBuilder()
+                    .setTitle(getString(R.string.promo_not_active))
+                    .setBody(getString(R.string.promo_not_active_body))
+                    .setCloseButton(getString(R.string.promo_not_active_add_top_ads_credit))
+                    .build());
+
+            bottomSheetView.setBtnCloseOnClick(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    bottomSheetView.dismiss();
+
+                    Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
+                    TopAdsDetailGroupFragment.this.startActivity(intent);
+
+                    isDismissToTopUp = true;
+                }
+            });
+
+            bottomSheetView.setBtnOpsiOnClick(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    bottomSheetView.dismiss();
+
+                    isDismissToTopUp = false;
+                }
+            });
+
+            bottomSheetView.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialogInterface) {
+                    if(isDismissToTopUp)
+                        return;
+
+                    if (listener != null) {
+                        listener.startShowCase();
+                    }
+                }
+            });
+
+            bottomSheetView.show();
+
+            isEnoughDeposit = true;
+            return;
+        }
         if (listener != null) {
             listener.startShowCase();
         }

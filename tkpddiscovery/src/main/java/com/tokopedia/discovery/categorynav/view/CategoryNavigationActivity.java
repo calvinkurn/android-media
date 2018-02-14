@@ -14,10 +14,12 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterNoLayoutActivity;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.applink.DiscoveryAppLink;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterPresenter;
 import com.tokopedia.discovery.fragment.BrowseParentFragment;
 import com.tokopedia.discovery.intermediary.view.IntermediaryFragment;
@@ -40,6 +42,11 @@ public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
     View buttonClose;
 
     ProgressBar progressBar;
+
+    @DeepLink(DiscoveryAppLink.CATEGORY)
+    public static Intent getAppLinkIntent(Context context, Bundle bundle) {
+        return new Intent(context, CategoryNavigationActivity.class).putExtras(bundle);
+    }
 
     @BindView(R2.id.container)
     FrameLayout frameLayout;

@@ -16,6 +16,7 @@ public class SellerRouter {
         return RouterUtils.getRouterFromContext(context).getIntentCreateShop(context);
     }
 
+
     public static Intent getActivityManageShop(Context context) {
         return RouterUtils.getRouterFromContext(context).getIntentManageShop(context);
     }
@@ -52,7 +53,9 @@ public class SellerRouter {
         return RouterUtils.getRouterFromContext(context).getActivitySellingTransactionList(context);
     }
 
-    public static Intent getActivitySellingTransactionOpportunity(Context context) {
-        return RouterUtils.getRouterFromContext(context).getActivitySellingTransactionOpportunity(context);
+    public static Intent getActivitySellingTransactionOpportunity(Context context, String query) {
+        return RouterUtils.getRouterFromContext(context).getActivitySellingTransactionOpportunity(context, query);
     }
+
+
 }

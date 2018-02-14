@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.people.activity.PeopleInfoDrawerActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;

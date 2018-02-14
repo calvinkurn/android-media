@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 
 import com.nytimes.android.external.cache.Stopwatch;
 import com.tkpd.library.utils.CommonUtils;
@@ -18,9 +19,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import rx.Observable;
 import rx.Subscriber;
