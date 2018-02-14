@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.transaction.R;
@@ -20,6 +21,7 @@ import com.tokopedia.transaction.checkout.view.view.IRemoveProductListView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -33,16 +35,20 @@ import static com.tokopedia.transaction.checkout.view.SingleAddressShipmentFragm
  * @author Aghny A. Putra on 05/02/18
  */
 public class CartRemoveProductFragment extends BasePresenterFragment
-    implements IRemoveProductListView<List<CartItemData>>{
+    implements IRemoveProductListView<List<CartItemData>>,
+        CartRemoveProductAdapter.CartRemoveProductActionListener {
 
+    private static final Locale LOCALE_ID = new Locale("in", "ID");
     private static final String TAG = CartRemoveProductFragment.class.getSimpleName();
 
     @BindView(R2.id.rv_cart_remove_product) RecyclerView mRvCartRemoveProduct;
+    @BindView(R2.id.btn_remove_product) Button mBtnRemoveProduct;
 
     @Inject CartRemoveProductAdapter mCartRemoveProductAdapter;
     @Inject CartRemoveProductPresenter mCartRemoveProductPresenter;
 
     private List<CartItemData> mCartItemDataList;
+    private int mCheckedCartItem = 0;
 
     public static CartRemoveProductFragment newInstance(List<CartItemData> cartItemDataList) {
         CartRemoveProductFragment fragment = new CartRemoveProductFragment();
@@ -56,7 +62,7 @@ public class CartRemoveProductFragment extends BasePresenterFragment
     protected void initInjector() {
         super.initInjector();
         CartRemoveProductComponent component = DaggerCartRemoveProductComponent.builder()
-                .cartRemoveProductModule(new CartRemoveProductModule())
+                .cartRemoveProductModule(new CartRemoveProductModule(this))
                 .build();
         component.inject(this);
     }
@@ -189,4 +195,18 @@ public class CartRemoveProductFragment extends BasePresenterFragment
 
     }
 
+    /**
+     * Executed when state of checkbox is changed
+     *
+     * @param checked  boolean state of checked on unchecked
+     * @param position index of list where the item is checked
+     */
+    @Override
+    public void onCheckBoxStateChangedListener(boolean checked, int position) {
+        mCheckedCartItem = checked ? mCheckedCartItem + 1 : mCheckedCartItem - 1;
+
+        String btnText = mCheckedCartItem == 0 ?
+                "Hapus" : String.format(LOCALE_ID, "Hapus (%d)", mCheckedCartItem);
+        mBtnRemoveProduct.setText(btnText);
+    }
 }

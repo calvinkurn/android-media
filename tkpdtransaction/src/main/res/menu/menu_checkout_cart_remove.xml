@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/menu_cart_remove"
-        android:title="Hapus"
-        app:showAsAction="always|withText" />
+        android:icon="@drawable/ic_remove_text"
+        app:showAsAction="ifRoom|withText"
+        android:title="Hapus" />
 </menu>

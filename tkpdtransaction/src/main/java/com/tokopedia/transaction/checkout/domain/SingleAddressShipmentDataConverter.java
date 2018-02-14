@@ -2,6 +2,7 @@ package com.tokopedia.transaction.checkout.domain;
 
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CartItemModel;
+import com.tokopedia.transaction.checkout.view.data.CartPayableDetailModel;
 import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.view.data.factory.CartSingleAddressDataFactory;
@@ -20,9 +21,6 @@ import javax.inject.Inject;
 public class SingleAddressShipmentDataConverter extends ConverterData<List<CartItemData>,
         CartSingleAddressData> {
 
-    private static final int GRAM = 1;
-    private static final int KILOGRAM = 0;
-
     @Inject
     public SingleAddressShipmentDataConverter() {
     }
@@ -34,10 +32,31 @@ public class SingleAddressShipmentDataConverter extends ConverterData<List<CartI
 
         List<CartItemModel> cartItemModels = convertCartItemList(cartItemDataList);
         List<CartSellerItemModel> cartSellerItemModels = groupItemBySeller(cartItemModels);
-
         cartSingleAddressData.setCartSellerItemModelList(cartSellerItemModels);
 
+        cartSingleAddressData.setCartPayableDetailModel(getTotalPayableDetail(cartSellerItemModels));
+
         return cartSingleAddressData;
+    }
+
+    private CartPayableDetailModel getTotalPayableDetail(List<CartSellerItemModel> cartSellerItemModels) {
+
+        int totalItem = 0;
+        double totalPrice = 0.0;
+        double totalWeight = 0.0;
+
+        for (CartSellerItemModel cartSellerItemModel : cartSellerItemModels) {
+            totalItem += cartSellerItemModel.getTotalQuantity();
+            totalPrice += cartSellerItemModel.getTotalPrice();
+            totalWeight += cartSellerItemModel.getTotalWeight();
+        }
+
+        CartPayableDetailModel cartPayableDetailModel = new CartPayableDetailModel();
+        cartPayableDetailModel.setTotalPrice(totalPrice);
+        cartPayableDetailModel.setTotalWeight(totalWeight);
+        cartPayableDetailModel.setTotalItem(totalItem);
+
+        return cartPayableDetailModel;
     }
 
     private List<CartSellerItemModel> groupItemBySeller(List<CartItemModel> cartItemModels) {
@@ -52,9 +71,10 @@ public class SingleAddressShipmentDataConverter extends ConverterData<List<CartI
                 cartItemModelList.add(cartItemModel);
 
                 cartSellerItemModel.setShopName(cartItemModel.getShopName());
-                cartSellerItemModel.setTotalItemPlan(cartItemModel.getTotalProductItem());
-                cartSellerItemModel.setTotalWeightPlan(cartItemModel.getProductWeightPlan());
-                cartSellerItemModel.setTotalPricePlan(cartItemModel.getProductPricePlan());
+                cartSellerItemModel.setTotalQuantity(cartItemModel.getQuantity());
+                cartSellerItemModel.setTotalWeight(cartItemModel.getWeight());
+                cartSellerItemModel.setWeightUnit(cartItemModel.getWeightUnit());
+                cartSellerItemModel.setTotalPrice(cartItemModel.getPrice());
                 cartSellerItemModel.setCartItemModels(cartItemModelList);
 
                 itemGroupMap.put(shopId, cartSellerItemModel);
@@ -64,17 +84,17 @@ public class SingleAddressShipmentDataConverter extends ConverterData<List<CartI
 
                 cartSellerItemModel.getCartItemModels().add(cartItemModel);
 
-                int totalItem = cartSellerItemModel.getTotalItemPlan()
-                        + cartItemModel.getTotalProductItem();
-                cartSellerItemModel.setTotalItemPlan(totalItem);
+                int totalItem = cartSellerItemModel.getTotalQuantity()
+                        + cartItemModel.getQuantity();
+                cartSellerItemModel.setTotalQuantity(totalItem);
 
-                double weightSum = cartSellerItemModel.getTotalWeightPlan()
-                        + cartItemModel.getProductWeightPlan();
-                cartSellerItemModel.setTotalWeightPlan(weightSum);
+                double weightSum = cartSellerItemModel.getTotalWeight()
+                        + cartItemModel.getWeight();
+                cartSellerItemModel.setTotalWeight(weightSum);
 
-                double priceSum = cartSellerItemModel.getTotalPricePlan()
-                        + cartItemModel.getProductPricePlan();
-                cartSellerItemModel.setTotalPricePlan(priceSum);
+                double priceSum = cartSellerItemModel.getTotalPrice()
+                        + cartItemModel.getPrice();
+                cartSellerItemModel.setTotalPrice(priceSum);
             }
         }
 
@@ -104,44 +124,27 @@ public class SingleAddressShipmentDataConverter extends ConverterData<List<CartI
         CartItemModel cartItemModel = new CartItemModel();
 
         cartItemModel.setFreeReturn(cartItemData.getOriginData().isFreeReturn());
-        cartItemModel.setPoAvailable(cartItemData.getOriginData().isPreOrder());
+        cartItemModel.setPreOrder(cartItemData.getOriginData().isPreOrder());
         cartItemModel.setCashback(cartItemData.getOriginData().isCashBack());
         cartItemModel.setCashback(cartItemData.getOriginData().getCashBackInfo());
 
-        cartItemModel.setProductImageUrl(cartItemData.getOriginData().getProductImage());
+        cartItemModel.setImageUrl(cartItemData.getOriginData().getProductImage());
 
         cartItemModel.setShopName(cartItemData.getOriginData().getShopName());
         cartItemModel.setShopId(cartItemData.getOriginData().getShopId());
-        cartItemModel.setProductId(cartItemData.getOriginData().getProductId());
-        cartItemModel.setProductName(cartItemData.getOriginData().getProductName());
+        cartItemModel.setId(cartItemData.getOriginData().getProductId());
+        cartItemModel.setName(cartItemData.getOriginData().getProductName());
 
-        cartItemModel.setProductPriceFormatted(cartItemData.getOriginData().getPriceFormatted());
-        cartItemModel.setProductPriceCurrency(cartItemData.getOriginData().getPriceCurrency());
-        cartItemModel.setProductPricePlan(cartItemData.getOriginData().getPricePlan());
+        cartItemModel.setCurrency(cartItemData.getOriginData().getPriceCurrency());
+        cartItemModel.setPrice(cartItemData.getOriginData().getPricePlan());
 
-        cartItemModel.setProductWeightPlan(cartItemData.getOriginData().getWeightPlan());
-        cartItemModel.setProductWeightUnit(cartItemData.getOriginData().getWeightUnit());
-        cartItemModel.setProductWeightFormatted(getWeightFormat(
-                cartItemData.getOriginData().getWeightPlan(),
-                cartItemData.getOriginData().getWeightUnit()));
+        cartItemModel.setWeight(cartItemData.getOriginData().getWeightPlan());
+        cartItemModel.setWeightUnit(cartItemData.getOriginData().getWeightUnit());
 
         cartItemModel.setNoteToSeller(cartItemData.getUpdatedData().getRemark());
-        cartItemModel.setTotalProductItem(cartItemData.getUpdatedData().getQuantity());
+        cartItemModel.setQuantity(cartItemData.getUpdatedData().getQuantity());
 
         return cartItemModel;
-    }
-
-    private String getWeightFormat(double weightPlan, int weightUnit) {
-        String weight = String.valueOf(weightPlan);
-
-        switch (weightUnit) {
-            case KILOGRAM:
-                return weight + " Kg";
-            case GRAM:
-                return weight + " gr";
-            default:
-                return weight;
-        }
     }
 
 }

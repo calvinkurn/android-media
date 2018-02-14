@@ -10,25 +10,24 @@ public class CartItemModel implements Parcelable {
 
     private String shopId;
     private String shopName;
-    private String productId;
-    private String productName;
-    private String productPriceFormatted;
-    private double productPricePlan;
-    private int productPriceCurrency;
+    private String id;
+    private String name;
+    private double price;
+    private int currency;
 
-    private int productWeightUnit;
-    private double productWeightPlan;
-    private String productWeightFormatted;
+    private int weightUnit;
+    private double weight;
 
-    private int totalProductItem;
+    private int quantity;
     private String noteToSeller;
 
-    private String productImageUrl;
+    private String imageUrl;
 
     private String cashback;
+
     private boolean isCashback;
-    private boolean poAvailable;
-    private boolean freeReturn;
+    private boolean isPreOrder;
+    private boolean isFreeReturn;
 
     public String getShopId() {
         return shopId;
@@ -46,76 +45,60 @@ public class CartItemModel implements Parcelable {
         this.shopName = shopName;
     }
 
-    public String getProductId() {
-        return productId;
+    public String getId() {
+        return id;
     }
 
-    public void setProductId(String productId) {
-        this.productId = productId;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getProductName() {
-        return productName;
+    public String getName() {
+        return name;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getProductPriceFormatted() {
-        return productPriceFormatted;
+    public double getPrice() {
+        return price;
     }
 
-    public void setProductPriceFormatted(String productPriceFormatted) {
-        this.productPriceFormatted = productPriceFormatted;
+    public void setPrice(double price) {
+        this.price = price;
     }
 
-    public double getProductPricePlan() {
-        return productPricePlan;
+    public int getCurrency() {
+        return currency;
     }
 
-    public void setProductPricePlan(double productPricePlan) {
-        this.productPricePlan = productPricePlan;
+    public void setCurrency(int currency) {
+        this.currency = currency;
     }
 
-    public int getProductPriceCurrency() {
-        return productPriceCurrency;
+    public int getWeightUnit() {
+        return weightUnit;
     }
 
-    public void setProductPriceCurrency(int productPriceCurrency) {
-        this.productPriceCurrency = productPriceCurrency;
+    public void setWeightUnit(int weightUnit) {
+        this.weightUnit = weightUnit;
     }
 
-    public int getProductWeightUnit() {
-        return productWeightUnit;
+    public double getWeight() {
+        return weight;
     }
 
-    public void setProductWeightUnit(int productWeightUnit) {
-        this.productWeightUnit = productWeightUnit;
+    public void setWeight(double weight) {
+        this.weight = weight;
     }
 
-    public double getProductWeightPlan() {
-        return productWeightPlan;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setProductWeightPlan(double productWeightPlan) {
-        this.productWeightPlan = productWeightPlan;
-    }
-
-    public String getProductWeightFormatted() {
-        return productWeightFormatted;
-    }
-
-    public void setProductWeightFormatted(String productWeightFormatted) {
-        this.productWeightFormatted = productWeightFormatted;
-    }
-
-    public int getTotalProductItem() {
-        return totalProductItem;
-    }
-
-    public void setTotalProductItem(int totalProductItem) {
-        this.totalProductItem = totalProductItem;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public String getNoteToSeller() {
@@ -126,12 +109,12 @@ public class CartItemModel implements Parcelable {
         this.noteToSeller = noteToSeller;
     }
 
-    public String getProductImageUrl() {
-        return productImageUrl;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setProductImageUrl(String productImageUrl) {
-        this.productImageUrl = productImageUrl;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getCashback() {
@@ -150,20 +133,20 @@ public class CartItemModel implements Parcelable {
         isCashback = cashback;
     }
 
-    public boolean isPoAvailable() {
-        return poAvailable;
+    public boolean isPreOrder() {
+        return isPreOrder;
     }
 
-    public void setPoAvailable(boolean poAvailable) {
-        this.poAvailable = poAvailable;
+    public void setPreOrder(boolean preOrder) {
+        isPreOrder = preOrder;
     }
 
     public boolean isFreeReturn() {
-        return freeReturn;
+        return isFreeReturn;
     }
 
     public void setFreeReturn(boolean freeReturn) {
-        this.freeReturn = freeReturn;
+        isFreeReturn = freeReturn;
     }
 
 
@@ -176,21 +159,19 @@ public class CartItemModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.shopId);
         dest.writeString(this.shopName);
-        dest.writeString(this.productId);
-        dest.writeString(this.productName);
-        dest.writeString(this.productPriceFormatted);
-        dest.writeDouble(this.productPricePlan);
-        dest.writeInt(this.productPriceCurrency);
-        dest.writeInt(this.productWeightUnit);
-        dest.writeDouble(this.productWeightPlan);
-        dest.writeString(this.productWeightFormatted);
-        dest.writeInt(this.totalProductItem);
+        dest.writeString(this.id);
+        dest.writeString(this.name);
+        dest.writeDouble(this.price);
+        dest.writeInt(this.currency);
+        dest.writeInt(this.weightUnit);
+        dest.writeDouble(this.weight);
+        dest.writeInt(this.quantity);
         dest.writeString(this.noteToSeller);
-        dest.writeString(this.productImageUrl);
+        dest.writeString(this.imageUrl);
         dest.writeString(this.cashback);
         dest.writeByte(this.isCashback ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.poAvailable ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.freeReturn ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isPreOrder ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isFreeReturn ? (byte) 1 : (byte) 0);
     }
 
     public CartItemModel() {
@@ -199,21 +180,19 @@ public class CartItemModel implements Parcelable {
     protected CartItemModel(Parcel in) {
         this.shopId = in.readString();
         this.shopName = in.readString();
-        this.productId = in.readString();
-        this.productName = in.readString();
-        this.productPriceFormatted = in.readString();
-        this.productPricePlan = in.readDouble();
-        this.productPriceCurrency = in.readInt();
-        this.productWeightUnit = in.readInt();
-        this.productWeightPlan = in.readDouble();
-        this.productWeightFormatted = in.readString();
-        this.totalProductItem = in.readInt();
+        this.id = in.readString();
+        this.name = in.readString();
+        this.price = in.readDouble();
+        this.currency = in.readInt();
+        this.weightUnit = in.readInt();
+        this.weight = in.readDouble();
+        this.quantity = in.readInt();
         this.noteToSeller = in.readString();
-        this.productImageUrl = in.readString();
+        this.imageUrl = in.readString();
         this.cashback = in.readString();
         this.isCashback = in.readByte() != 0;
-        this.poAvailable = in.readByte() != 0;
-        this.freeReturn = in.readByte() != 0;
+        this.isPreOrder = in.readByte() != 0;
+        this.isFreeReturn = in.readByte() != 0;
     }
 
     public static final Creator<CartItemModel> CREATOR = new Creator<CartItemModel>() {
