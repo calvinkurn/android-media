@@ -211,4 +211,9 @@
         <item name="android:background">@drawable/border_bottom_no_rounded</item>
     </style>
 
+    <style name="Dialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/tkpd_main_green</item>
+        <item name="android:background">@color/white</item>
+    </style>
+
 </resources>
