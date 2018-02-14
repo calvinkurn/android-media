@@ -1,11 +1,9 @@
 package com.tokopedia.seller.product.edit.data.source.cloud.api;
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.seller.product.edit.constant.ProductUrl;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.ProductUploadResultModel;
-import com.tokopedia.seller.product.edit.data.source.cloud.model.addproductsubmit.AddProductSubmitServiceModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
-import com.tokopedia.seller.shop.open.data.model.response.DataResponse;
 
 import retrofit2.Response;
 import retrofit2.http.Body;
@@ -31,5 +29,5 @@ public interface ProductApi {
     Observable<Response<DataResponse<ProductUploadResultModel>>> editProductSubmit(@Body ProductViewModel productViewModel, @Path(ProductUrl.PRODUCT_ID) String productId);
 
     @GET(ProductUrl.URL_EDIT_PRODUCT)
-    Observable<Response<DataResponse<ProductViewModel>>> getProductEdit(@Path(ProductUrl.PRODUCT_ID) String productId);
+    Observable<Response<DataResponse<ProductViewModel>>> getProductDetail(@Path(ProductUrl.PRODUCT_ID) String productId);
 }

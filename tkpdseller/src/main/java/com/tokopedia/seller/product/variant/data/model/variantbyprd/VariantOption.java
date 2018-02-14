@@ -15,6 +15,7 @@ import java.util.List;
 /**
  * {"variant_option":[{"pv_id":656228,"name":"Warna","identifier":"colour","unit_name":"","v_id":1,"vu_id":0,"status":2,"position":1,"optionList":[{"pvo_id":2184932,"v_id":1,"vu_id":0,"vuv_id":0,"value":"custom merah","status":1,"hex":"","picture":null},{"pvo_id":2184931,"v_id":1,"vu_id":0,"vuv_id":0,"value":"custom biru","status":1,"hex":"","picture":null}]},{"pv_id":656229,"name":"Ukuran Pakaian","identifier":"size","unit_name":"UK","v_id":6,"vu_id":9,"status":1,"position":2,"optionList":[{"pvo_id":2184933,"v_id":6,"vu_id":0,"vuv_id":0,"value":"custom 15","status":1,"hex":"","picture":null},{"pvo_id":2184383,"v_id":6,"vu_id":0,"vuv_id":37,"value":"6","status":1,"hex":"","picture":null}]}]}
  */
+@Deprecated
 public class VariantOption implements Parcelable {
 
     @SerializedName("pv_id")

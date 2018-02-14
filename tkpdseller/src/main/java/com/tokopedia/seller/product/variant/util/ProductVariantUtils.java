@@ -17,13 +17,12 @@ import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVari
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantUnitSubmit;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by nathan on 8/19/17.
  */
-
+@Deprecated
 public class ProductVariantUtils {
 
     private static final String SPLIT_DELIMITER = ":"; // this depends on the api.

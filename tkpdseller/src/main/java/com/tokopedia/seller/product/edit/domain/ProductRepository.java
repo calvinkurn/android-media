@@ -13,9 +13,11 @@ import rx.Observable;
  * @author sebastianuskh on 4/10/17.
  */
 
-public interface UploadProductRepository {
+public interface ProductRepository {
     Observable<AddProductDomainModel> addProductSubmit(ProductViewModel productViewModel);
 
     Observable<AddProductDomainModel> editProduct(ProductViewModel productViewModel);
+
+    Observable<ProductViewModel> getProductDetail(String productId);
 
 }

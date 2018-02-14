@@ -13,6 +13,7 @@ import java.util.List;
  * "option":[{"pvo_id":2184932,"v_id":1,"vu_id":0,"vuv_id":0,"value":"custom merah","status":1,"hex":"","picture":null},{"pvo_id":2184931,"v_id":1,"vu_id":0,"vuv_id":0,"value":"custom biru","status":1,"hex":"","picture":null}]
  */
 
+@Deprecated
 public class Option implements Parcelable {
 
     @SerializedName("pvo_id")

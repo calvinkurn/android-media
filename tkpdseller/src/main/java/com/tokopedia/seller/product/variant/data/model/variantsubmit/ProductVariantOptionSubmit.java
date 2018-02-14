@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by hendry on 8/15/2017.
  */
-
+@Deprecated
 public class ProductVariantOptionSubmit implements Parcelable {
 
     @SerializedName("vuv")

@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * @author sebastianuskh on 4/13/17.
  */
-
+@Deprecated
 public class UploadProductMapper {
     public static UploadProductInputDomainModel mapViewToDomain(UploadProductInputViewModel viewModel) {
         UploadProductInputDomainModel domainModel = new UploadProductInputDomainModel();

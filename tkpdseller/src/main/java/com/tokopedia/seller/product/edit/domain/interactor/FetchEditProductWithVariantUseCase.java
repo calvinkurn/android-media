@@ -19,7 +19,7 @@ import rx.functions.Func2;
 /**
  * @author sebastianuskh on 4/21/17.
  */
-
+@Deprecated
 public class FetchEditProductWithVariantUseCase extends UseCase<UploadProductInputDomainModel> {
     private static final String UNSELECTED_PRODUCT_ID = "-1";
     private static final String PRODUCT_ID = "PRODUCT_ID";
