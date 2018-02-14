@@ -25,7 +25,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
  * Created by nisie on 2/7/17.
  */
 
-abstract class BaseActivity extends AppCompatActivity implements
+public abstract class BaseActivity extends AppCompatActivity implements
         ErrorNetworkReceiver.ReceiveListener {
 
     public static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";

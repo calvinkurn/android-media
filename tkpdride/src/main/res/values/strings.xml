@@ -208,4 +208,10 @@
     <string name="status_driver_cancelled">DRIVER CANCELED</string>
     <string name="status_user_cancelled">YOU CANCELED</string>
     <string name="status_completed">COMPLETED</string>
+    <string name="default_input_hint">Enter Message</string>
+
+    <string name="permission_alert_dialog_title" >Permission required</string>
+    <string name="permission_dialog_message" >Need permissions to send and receive messages. Standard SMS charges will apply</string>
+    <string name="action_ok">OK</string>
+    <string name="call">Call</string>
 </resources>

@@ -23,6 +23,7 @@ import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.base.presentation.BaseFragment;
+import com.tokopedia.ride.bookingride.view.activity.SMSChatActivity;
 import com.tokopedia.ride.common.configuration.PaymentMode;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.domain.model.Driver;
@@ -205,6 +206,15 @@ public class DriverDetailFragment extends BaseFragment {
     @OnClick(R2.id.icon_message)
     public void actionSMSDriver() {
         RideGATracking.eventClickSMS(status);
+
+        // TODO: 2/13/18 open chat activity
+
+        Intent intent = new Intent(getActivity(),SMSChatActivity.class);
+        Bundle bundle = new Bundle();
+
+        bundle.putParcelable("DRIVER_INFO", driver);
+        intent.putExtras(bundle);
+
         openSmsIntent(driver.getPhoneNumber());
     }
 
