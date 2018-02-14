@@ -222,6 +222,11 @@ public abstract class SellerRouterApplication extends MainApplication
         );
     }
 
+    @Override
+    public Fragment getShopReputationFragmentShop(String shopId, String shopDomain) {
+        return  TkpdReputationInternalRouter.getReviewShopInfoFragment(shopId, shopDomain);
+    }
+
     public GMComponent getGMComponent() {
         if (gmComponent == null) {
             gmComponent = daggerGMBuilder.appComponent(getApplicationComponent()).build();

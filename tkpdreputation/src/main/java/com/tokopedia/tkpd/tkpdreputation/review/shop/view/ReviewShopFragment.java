@@ -52,8 +52,8 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
 
     private ProgressDialog progressDialog;
 
-    private String shopId;
-    private String shopDomain;
+    protected String shopId;
+    protected String shopDomain;
 
     public static ReviewShopFragment createInstance(String shopId, String shopDomain) {
         ReviewShopFragment shopReviewFragment = new ReviewShopFragment();

@@ -41,10 +41,14 @@ public class ShopPageActivity extends BaseTabActivity  implements HasComponent<S
 
     private static final int PAGE_LIMIT = 3;
     public static final String SHOP_INFO = "SHOP_INFO";
+    public static final String SHOP_DOMAIN = "SHOP_DOMAIN";
+    private String shopInfo;
+    private String shopDomain;
 
-    public static Intent createIntent(Context context, String shopInfo) {
+    public static Intent createIntent(Context context, String shopInfo, String shopDomain) {
         Intent intent = new Intent(context, ShopPageActivity.class);
         intent.putExtra(SHOP_INFO, shopInfo);
+        intent.putExtra(SHOP_DOMAIN, shopDomain);
         return intent;
     }
 
@@ -52,14 +56,17 @@ public class ShopPageActivity extends BaseTabActivity  implements HasComponent<S
 
     private ShopInfoHeaderViewHelper shopInfoHeaderViewHelper;
 
+    private ShopModuleRouter shopModuleRouter;
+
     @Inject
     ShopPagePresenter shopPagePresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        String shopInfo = null;
+
         if(savedInstanceState == null){
             shopInfo = getIntent().getStringExtra(SHOP_INFO);
+            shopDomain = getIntent().getStringExtra(SHOP_DOMAIN);
         }else{
             throw new RuntimeException("please pass shop id");
         }
@@ -68,8 +75,9 @@ public class ShopPageActivity extends BaseTabActivity  implements HasComponent<S
         shopPagePresenter.attachView(this);
         shopPagePresenter.setShopInfo(shopInfo);
         if(getApplication() != null && getApplication() instanceof ShopModuleRouter){
+            shopModuleRouter = (ShopModuleRouter) getApplication();
             shopPagePresenter.setGetSpeedReputationUseCase(
-                    new GetSpeedReputationUseCase(((ShopModuleRouter)getApplication()).getSpeedReputationUseCase())
+                    new GetSpeedReputationUseCase((shopModuleRouter).getSpeedReputationUseCase())
             ) ;
         }
 
@@ -152,6 +160,9 @@ public class ShopPageActivity extends BaseTabActivity  implements HasComponent<S
                     case 0:
                         return ShopInfoFragment.createInstance("");
                     case 1:
+                        if(shopModuleRouter != null){
+                            return shopModuleRouter.getShopReputationFragmentShop(shopInfo, shopDomain);
+                        }
                         return ShopInfoFragment.createInstance("");
                     case 2:
                         return ShopInfoFragment.createInstance("");
