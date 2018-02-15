@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="16dp"
+    android:layout_marginTop="@dimen/margin_default"
     android:background="@android:color/white"
     android:orientation="vertical">
 
@@ -11,7 +11,8 @@
         android:id="@+id/text_view_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginLeft="@dimen/margin_default"
+        android:layout_marginStart="@dimen/margin_default"
         android:text="The 90s Festival"
         android:textColor="@color/grey_700"
         android:textSize="@dimen/textsize_large"
@@ -21,7 +22,7 @@
         android:id="@+id/event_display_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/textsize_large"
+        android:layout_marginLeft="@dimen/margin_default"
         android:layout_marginTop="@dimen/margin_padding_medium"
         android:orientation="horizontal"
         android:visibility="gone" />
@@ -67,6 +68,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_default"
         android:layout_marginStart="@dimen/margin_default"
         android:layout_marginTop="@dimen/margin_med"
         android:text="Deskripsi"
@@ -101,6 +103,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_default"
+            android:layout_marginLeft="@dimen/margin_default"
             android:layout_marginStart="@dimen/margin_default"
             android:layout_marginTop="@dimen/margin_padding_medium"
             android:text="@string/expand"
@@ -113,10 +116,11 @@
             android:layout_width="@dimen/margin_padding_medium"
             android:layout_height="@dimen/margin_padding_medium"
             android:layout_marginBottom="@dimen/margin_padding_medium"
+            android:layout_marginLeft="@dimen/margin_padding_medium"
             android:layout_marginStart="@dimen/margin_padding_medium"
             android:layout_marginTop="@dimen/margin_small_sm"
-            android:src="@drawable/ic_arrow_down"
-            android:tint="@color/green_nob" />
+            android:tint="@color/green_nob"
+            app:srcCompat="@drawable/ic_arrow_down" />
 
     </LinearLayout>
 

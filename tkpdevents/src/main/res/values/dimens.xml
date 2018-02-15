@@ -28,4 +28,5 @@
     <dimen name="circle_indicator_height">12dp</dimen>
     <dimen name="seat_plan_height">350dp</dimen>
     <dimen name="seatmap_fixed_height">340dp</dimen>
+    <dimen name="height_tablayout">76dp</dimen>
 </resources>

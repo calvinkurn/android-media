@@ -1,15 +1,12 @@
 package com.tokopedia.events.data;
 
 import com.google.gson.JsonObject;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.events.data.entity.response.EventLocationEntity;
 import com.tokopedia.events.data.entity.response.EventResponseEntity;
-import com.tokopedia.events.data.entity.response.EventsDetailsEntity;
 import com.tokopedia.events.data.entity.response.SeatLayoutItem;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
-import com.tokopedia.events.data.entity.response.searchresponse.SearchResponse;
 import com.tokopedia.events.data.entity.response.seatlayoutresponse.SeatLayoutResponse;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.events.domain.EventRepository;
@@ -49,26 +46,14 @@ public class EventRepositoryData implements EventRepository {
     public Observable<SearchDomainModel> getSearchEvents(TKPDMapParam<String, Object> params) {
         return eventsDataStoreFactory
                 .createCloudDataStore()
-                .getSearchEvents(params).map(new Func1<SearchResponse, SearchDomainModel>() {
-                    @Override
-                    public SearchDomainModel call(SearchResponse searchResponseEntity) {
-                        CommonUtils.dumper("inside SearchResponseEntity = " + searchResponseEntity);
-                        return EventSearchMapper.getSearchMapper().convertToSearchDomain(searchResponseEntity);
-                    }
-                });
+                .getSearchEvents(params).map(new SearchResponseMapper());
     }
 
     @Override
     public Observable<SearchDomainModel> getSearchNext(String nextUrl) {
         return eventsDataStoreFactory
                 .createCloudDataStore()
-                .getSearchNext(nextUrl).map(new Func1<SearchResponse, SearchDomainModel>() {
-                    @Override
-                    public SearchDomainModel call(SearchResponse searchResponseEntity) {
-                        CommonUtils.dumper("inside SearchResponseEntity = " + searchResponseEntity);
-                        return EventSearchMapper.getSearchMapper().convertToSearchDomain(searchResponseEntity);
-                    }
-                });
+                .getSearchNext(nextUrl).map(new SearchResponseMapper());
     }
 
     @Override
@@ -101,13 +86,7 @@ public class EventRepositoryData implements EventRepository {
     public Observable<EventDetailsDomain> getEventDetails(String url) {
         return eventsDataStoreFactory
                 .createCloudDataStore()
-                .getEventDetails(url).map(new Func1<EventsDetailsEntity, EventDetailsDomain>() {
-                    @Override
-                    public EventDetailsDomain call(EventsDetailsEntity eventsDetailsEntity) {
-                        EventEntityMaper eventEntityMaper = new EventEntityMaper();
-                        return eventEntityMaper.tranformEventDetails(eventsDetailsEntity);
-                    }
-                });
+                .getEventDetails(url).map(new EventDetailsResponseMapper());
     }
 
     @Override

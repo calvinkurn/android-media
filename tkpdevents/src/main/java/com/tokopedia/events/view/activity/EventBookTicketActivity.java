@@ -40,7 +40,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class EventBookTicketActivity extends TActivity implements EventBookTicketContract.EventBookTicketView {
+public class EventBookTicketActivity
+        extends TActivity implements EventBookTicketContract.EventBookTicketView {
 
 
     //    @BindView(R2.id.collasing_toolbar)
@@ -175,12 +176,19 @@ public class EventBookTicketActivity extends TActivity implements EventBookTicke
         buttonPayTickets.setBackgroundColor(getResources().getColor(R.color.white));
         if (buttonCountLayout.getVisibility() != View.VISIBLE)
             buttonCountLayout.setVisibility(View.VISIBLE);
+//        int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 116.0f, getResources().getDisplayMetrics());
+//        ViewGroup.LayoutParams params = bookTicketViewPager.getLayoutParams();
+//        params.
+//
+//        bookTicketViewPager.(0, 0, 0, px);
     }
 
     @Override
     public void hidePayButton() {
-        buttonCountLayout.setVisibility(View.GONE);
-        buttonPayTickets.setVisibility(View.GONE);
+        buttonCountLayout.setVisibility(View.INVISIBLE);
+        buttonPayTickets.setVisibility(View.INVISIBLE);
+//        int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
+//        bookTicketViewPager.setPadding(0, 0, 0, px);
     }
 
     @Override
@@ -275,6 +283,11 @@ public class EventBookTicketActivity extends TActivity implements EventBookTicke
     @Override
     public View getRootView() {
         return mainContent;
+    }
+
+    @Override
+    public int getButtonLayoutHeight() {
+        return buttonCountLayout.getHeight();
     }
 
     public class AddTicketFragmentAdapter extends FragmentStatePagerAdapter {

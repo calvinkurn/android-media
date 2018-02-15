@@ -44,6 +44,8 @@ public class EventBookTicketContract {
         void hideSeatmap();
 
         android.view.View getRootView();
+
+        int getButtonLayoutHeight();
     }
 
     public interface Presenter extends CustomerPresenter<EventBookTicketContract.EventBookTicketView> {

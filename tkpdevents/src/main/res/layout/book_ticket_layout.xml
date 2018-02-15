@@ -7,33 +7,46 @@
     android:background="@color/transparent"
     android:orientation="vertical">
 
-    <android.support.v4.widget.NestedScrollView
+    <android.support.design.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
-        android:fillViewport="true">
+        tools:context="com.tokopedia.events.view.activity.EventBookTicketActivity">
 
-        <LinearLayout
+        <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:descendantFocusability="blocksDescendants"
-            android:orientation="vertical"
-            android:weightSum="10">
+            android:layout_height="wrap_content">
 
-            <include
-                android:id="@+id/seating_layout_card"
-                layout="@layout/seating_layout" />
-
-            <View
+            <android.support.design.widget.CollapsingToolbarLayout
+                android:id="@+id/collapse_toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/grey_100" />
+                android:layout_height="match_parent"
+                app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Title"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:titleEnabled="false">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:descendantFocusability="blocksDescendants"
+                    android:orientation="vertical">
+
+                    <include
+                        android:id="@+id/seating_layout_card"
+                        layout="@layout/seating_layout" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:background="@color/grey_100" />
+                </LinearLayout>
+            </android.support.design.widget.CollapsingToolbarLayout>
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
-                android:layout_height="76dp"
+                android:layout_height="@dimen/height_tablayout"
                 android:background="@color/white"
                 android:overScrollMode="ifContentScrolls"
                 android:paddingBottom="@dimen/margin_padding_small"
@@ -48,16 +61,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/divider_height_thin"
                 android:background="@color/grey_100" />
+        </android.support.design.widget.AppBarLayout>
 
-            <android.support.v4.view.ViewPager
-                android:id="@+id/viewpager_book_ticket"
-                android:layout_width="match_parent"
-                android:layout_height="680dp"
-                android:background="@color/grey_background"
-                android:paddingBottom="@dimen/margin_default" />
-        </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
 
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager_book_ticket"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/grey_background"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    </android.support.design.widget.CoordinatorLayout>
 
     <RelativeLayout
         android:id="@+id/button_count_layout"
@@ -65,7 +79,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="@color/white"
-        android:visibility="gone">
+        android:visibility="invisible">
 
         <TextView
             android:id="@+id/tiket"

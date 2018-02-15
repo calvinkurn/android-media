@@ -1,6 +1,7 @@
 package com.tokopedia.events.view.fragment;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
@@ -24,6 +25,8 @@ public class FragmentAddTickets extends Fragment {
     private List<PackageViewModel> mPackages;
 
     EventBookTicketPresenter mPresenter;
+    SpaceItemDecoration dividerItemDecoration;
+    RecyclerView scrollView;
 
 
     public FragmentAddTickets() {
@@ -56,12 +59,11 @@ public class FragmentAddTickets extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        RecyclerView scrollView = (RecyclerView) inflater.inflate(R.layout.fragment_add_tickets, container, false);
+        scrollView = (RecyclerView) inflater.inflate(R.layout.fragment_add_tickets, container, false);
         scrollView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         scrollView.setAdapter(new AddTicketAdapter(getActivity(), mPackages, mPresenter));
         scrollView.setHasFixedSize(true);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
+        dividerItemDecoration = new SpaceItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
         dividerItemDecoration.setDrawable(getContext().getResources().getDrawable(R.drawable.recycler_view_divider));
         scrollView.addItemDecoration(dividerItemDecoration);
 
@@ -73,6 +75,56 @@ public class FragmentAddTickets extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.setChildFragment(this);
+    }
+
+    class SpaceItemDecoration extends DividerItemDecoration {
+
+        /**
+         * Creates a divider {@link RecyclerView.ItemDecoration} that can be used with a
+         * {@link LinearLayoutManager}.
+         *
+         * @param context     Current context, it will be used to access resources.
+         * @param orientation Divider orientation. Should be {@link #HORIZONTAL} or {@link #VERTICAL}.
+         */
+        private int mSpace;
+
+        public SpaceItemDecoration(Context context, int orientation) {
+            super(context, orientation);
+        }
+
+        public void setSpace(int space) {
+            mSpace = space;
+        }
+
+        public int getSpace() {
+            return mSpace;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            super.getItemOffsets(outRect, view, parent, state);
+            if (parent.getChildAdapterPosition(view) == state.getItemCount() - 1) {
+                outRect.bottom = mSpace;
+                outRect.top = 0; //don't forget about recycling...
+            }
+        }
+    }
+
+    public void setDecorationHeight(int buttonHeight) {
+        if (dividerItemDecoration.getSpace() != buttonHeight) {
+            dividerItemDecoration.setSpace(buttonHeight);
+            scrollView.invalidateItemDecorations();
+        }
+    }
+
+    public void scrollToLast(){
+        scrollView.smoothScrollToPosition(scrollView.getBottom());
     }
 
 }

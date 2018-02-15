@@ -2,6 +2,7 @@ package com.tokopedia.events.view.presenter;
 
 import android.content.Intent;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 
 import com.google.gson.Gson;
@@ -19,6 +20,7 @@ import com.tokopedia.events.view.activity.ReviewTicketActivity;
 import com.tokopedia.events.view.activity.SeatSelectionActivity;
 import com.tokopedia.events.view.adapter.AddTicketAdapter;
 import com.tokopedia.events.view.contractor.EventBookTicketContract;
+import com.tokopedia.events.view.fragment.FragmentAddTickets;
 import com.tokopedia.events.view.mapper.SeatLayoutResponseToSeatLayoutViewModelMapper;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
@@ -38,19 +40,20 @@ public class EventBookTicketPresenter
         extends BaseDaggerPresenter<EventBookTicketContract.EventBookTicketView>
         implements EventBookTicketContract.Presenter {
 
-    PackageViewModel selectedPackageViewModel;
-    GetEventSeatLayoutUseCase getSeatLayoutUseCase;
+    private PackageViewModel selectedPackageViewModel;
+    private GetEventSeatLayoutUseCase getSeatLayoutUseCase;
     private SeatLayoutViewModel seatLayoutViewModel;
-    int mSelectedPackage = -1;
-    int mSelectedSchedule = 0;
-    AddTicketAdapter.TicketViewHolder selectedViewHolder;
-    List<SchedulesViewModel> schedulesList;
-    PostValidateShowUseCase postValidateShowUseCase;
-    String dateRange;
-    String seatingURL;
-    String eventTitle;
-    int hasSeatLayout;
-    String url;
+    private int mSelectedPackage = -1;
+    private int mSelectedSchedule = 0;
+    private AddTicketAdapter.TicketViewHolder selectedViewHolder;
+    private List<SchedulesViewModel> schedulesList;
+    private PostValidateShowUseCase postValidateShowUseCase;
+    private String dateRange;
+    private String eventTitle;
+    private int hasSeatLayout;
+    private FragmentAddTickets mChildFragment;
+    private int px;
+
 
     public static String EXTRA_PACKAGEVIEWMODEL = "packageviewmodel";
     public static String EXTRA_SEATLAYOUTVIEWMODEL = "seatlayoutviewmodel";
@@ -136,6 +139,7 @@ public class EventBookTicketPresenter
     @Override
     public void attachView(EventBookTicketContract.EventBookTicketView view) {
         super.attachView(view);
+        px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getView().getActivity().getResources().getDisplayMetrics());
     }
 
     public void payTicketsClick(String title) {
@@ -163,13 +167,15 @@ public class EventBookTicketPresenter
             mSelectedPackage = index;
             selectedPackageViewModel = packageVM;
             selectedViewHolder = ticketViewHolder;
+            scrollToLastIfNeeded();
         } else if (mSelectedPackage == -1) {
             mSelectedPackage = index;
             selectedPackageViewModel = packageVM;
             selectedViewHolder = ticketViewHolder;
+            scrollToLastIfNeeded();
         }
         int selectedCount = selectedPackageViewModel.getSelectedQuantity();
-        if (selectedCount < selectedPackageViewModel.getAvailable() && selectedCount < selectedPackageViewModel.getMaxQty() ) {
+        if (selectedCount < selectedPackageViewModel.getAvailable() && selectedCount < selectedPackageViewModel.getMaxQty()) {
             selectedPackageViewModel.setSelectedQuantity(++selectedCount);
             selectedViewHolder.setTvTicketCnt(selectedCount);
             selectedViewHolder.setTicketViewColor(getView().getActivity().getResources().getColor(R.color.light_green));
@@ -191,6 +197,7 @@ public class EventBookTicketPresenter
             selectedViewHolder.setTicketViewColor(getView().getActivity().getResources().getColor(R.color.white));
             mSelectedPackage = -1;
             selectedViewHolder = null;
+            mChildFragment.setDecorationHeight(0);
             getView().hidePayButton();
         }
     }
@@ -255,6 +262,16 @@ public class EventBookTicketPresenter
         seatLayoutViewModel = SeatLayoutResponseToSeatLayoutViewModelMapper.map(response, seatLayoutViewModel);
 
         return seatLayoutViewModel;
+    }
+
+    public void setChildFragment(FragmentAddTickets childFragment) {
+        mChildFragment = childFragment;
+    }
+
+    private void scrollToLastIfNeeded() {
+        mChildFragment.setDecorationHeight(getView().getButtonLayoutHeight() + px);
+        if (mSelectedPackage == schedulesList.get(mSelectedSchedule).getPackages().size() - 1)
+            mChildFragment.scrollToLast();
     }
 
 }

@@ -52,6 +52,8 @@ public class EventsContract {
 
         void startBannerSlide(TouchViewPager viewPager);
 
+        void onBannerSlide(int page);
+
         boolean onOptionMenuClick(int id);
     }
 }

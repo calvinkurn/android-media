@@ -66,7 +66,8 @@
 
             <android.support.v4.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:fillViewport="true"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
                 <LinearLayout
@@ -106,7 +107,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@color/white"
-                        android:paddingBottom="@dimen/margin_stepper_nob">
+                        android:paddingBottom="70dp">
 
                         <include layout="@layout/terms_conditions" />
                     </FrameLayout>

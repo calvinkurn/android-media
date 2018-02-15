@@ -354,7 +354,7 @@ public class EventsHomeActivity extends TActivity
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageSelected(int arg0) {
-                mBannnerPos = arg0;
+                mPresenter.onBannerSlide(arg0);
             }
 
             @Override

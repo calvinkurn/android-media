@@ -25,7 +25,6 @@ public class SlidingImageAdapter extends PagerAdapter {
     private List<String> IMAGES;
     private LayoutInflater inflater;
     private Context context;
-    CategoryItemsViewModel model;
     EventHomePresenter mPresenter;
 
 

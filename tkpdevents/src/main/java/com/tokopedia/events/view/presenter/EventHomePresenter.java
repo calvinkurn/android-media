@@ -101,12 +101,17 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     }
 
     @Override
+    public void onBannerSlide(int page) {
+        currentPage = page;
+    }
+
+    @Override
     public boolean onOptionMenuClick(int id) {
         if (id == R.id.action_menu_search) {
             ArrayList<SearchViewModel> searchViewModelList = Utils.getSingletonInstance()
                     .convertIntoSearchViewModel(categoryViewModels);
             Intent searchIntent = EventSearchActivity.getCallingIntent(getView().getActivity());
-            searchIntent.putParcelableArrayListExtra("TOPEVENTS",searchViewModelList);
+            searchIntent.putParcelableArrayListExtra("TOPEVENTS", searchViewModelList);
             getView().navigateToActivityRequest(searchIntent,
                     EventsHomeActivity.REQUEST_CODE_EVENTSEARCHACTIVITY);
             return true;
