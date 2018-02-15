@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar1"
@@ -19,7 +20,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp">
 
         <ImageView
             android:layout_width="70dp"
@@ -86,7 +89,9 @@
         android:lineSpacingExtra="7sp"
         android:textColor="@color/black_54"
         android:textSize="12sp"
-        tools:text="Footballer" />
+        tools:text="Footballer"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -96,14 +101,18 @@
         android:lineSpacingExtra="4sp"
         android:textColor="@color/black_54"
         android:textSize="12sp"
-        tools:text="I am is an English former professional footballer. He played for Manchester United." />
+        tools:text="I am is an English former professional footballer. He played for Manchester United."
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         android:orientation="horizontal"
-        android:weightSum="3">
+        android:weightSum="3"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp">
 
         <LinearLayout
             android:layout_width="0dp"
