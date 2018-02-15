@@ -17,7 +17,7 @@
             android:textSize="12sp"
             android:fontFamily="sans-serif"
             android:textStyle="normal"
-            tools:text="Jumlah Barang (1 Item)" />
+            android:text="Jumlah Barang (1 Barang)" />
 
         <TextView android:id="@+id/tv_total_item_price"
             android:layout_width="wrap_content"
@@ -30,7 +30,7 @@
             android:fontFamily="sans-serif"
             android:textStyle="normal"
             android:gravity="end"
-            tools:text="Rp1.400.000" />
+            android:text="Rp1.400.000" />
 
         <TextView android:id="@+id/tv_shipping_fee"
             android:layout_width="wrap_content"
@@ -40,7 +40,7 @@
             android:textSize="12sp"
             android:fontFamily="sans-serif"
             android:textStyle="normal"
-            tools:text="Ongkos Kirim (1kg)" />
+            android:text="Ongkos Kirim (1kg)" />
 
         <TextView android:id="@+id/tv_shipping_fee_price"
             android:layout_width="wrap_content"
@@ -52,7 +52,7 @@
             android:fontFamily="sans-serif"
             android:textStyle="normal"
             android:gravity="end"
-            tools:text="Rp0" />
+            android:text="-" />
 
         <TextView android:id="@+id/tv_insurance_fee"
             android:layout_width="wrap_content"
@@ -74,13 +74,12 @@
             android:fontFamily="sans-serif"
             android:textStyle="normal"
             android:gravity="end"
-            tools:text="Rp0" />
+            android:text="-" />
 
         <TextView android:id="@+id/tv_promo_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_insurance_fee"
-            android:layout_marginBottom="26dp"
             android:textSize="12sp"
             android:fontFamily="sans-serif"
             android:textStyle="normal"
@@ -104,39 +103,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/rl_detail_shipment_fee_view_layout"
+        android:layout_marginTop="9dp"
         android:layout_marginBottom="9dp"
         android:textSize="12sp"
         android:fontFamily="sans-serif"
         android:textStyle="normal"
-        android:text="Tagihan" />
-
-    <TextView android:id="@+id/tv_drawer_detail_payable"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_below="@id/rl_detail_shipment_fee_view_layout"
-        android:layout_toRightOf="@id/tv_payable_text"
-        android:layout_toEndOf="@id/tv_payable_text"
-        android:textSize="12sp"
-        android:textColor="@color/medium_green"
-        android:fontFamily="sans-serif-medium"
-        android:textStyle="normal"
-        android:gravity="end"
-        tools:text="Tutup" />
-
-    <ImageView android:id="@+id/iv_drawer_chevron"
-        android:layout_width="10dp"
-        android:layout_height="10dp"
-        android:layout_below="@id/rl_detail_shipment_fee_view_layout"
-        android:layout_toEndOf="@id/tv_drawer_detail_payable"
-        android:layout_toRightOf="@id/tv_drawer_detail_payable"
-        android:layout_marginTop="4dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"
-        android:tint="@color/medium_green"
-        tools:src="@drawable/chevron_thin_down"
-        tools:ignore="ContentDescription" />
+        android:text="Total Pembayaran" />
 
     <TextView android:id="@+id/tv_payable_price"
         android:layout_width="wrap_content"
@@ -144,11 +116,12 @@
         android:layout_below="@id/rl_detail_shipment_fee_view_layout"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
+        android:layout_marginTop="9dp"
         android:textSize="14sp"
         android:fontFamily="sans-serif-medium"
         android:textStyle="normal"
         android:gravity="end"
-        tools:text="Rp1.300.000" />
+        android:text="Rp1.300.000" />
 
     <TextView android:id="@+id/tv_promo_free_shipping"
         android:layout_width="wrap_content"
@@ -157,6 +130,6 @@
         android:textSize="12sp"
         android:fontFamily="sans-serif"
         android:textStyle="normal"
-        tools:text="Anda mendapat gratis ongkir Rp20.000" />
+        android:text="Anda mendapat gratis ongkir Rp20.000" />
 
 </RelativeLayout>
