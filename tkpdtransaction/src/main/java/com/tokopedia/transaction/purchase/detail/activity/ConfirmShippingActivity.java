@@ -106,7 +106,10 @@ public class ConfirmShippingActivity extends TActivity
         confirmButton.setOnClickListener(onConfirmButtonClickedListener(barcodeEditText));
         barcodeEditText.setText(orderDetailData.getAwb());
         barcodeScanner.setOnClickListener(onBarcodeScanClickedListener());
-        courierName.setText(editableModel.getShipmentName() + " " + editableModel.getPackageName());
+        if(!editableModel.getShipmentName().isEmpty())
+            courierName.setText(
+                    editableModel.getShipmentName() + " " + editableModel.getPackageName()
+            );
     }
 
     private boolean isChangeCourierMode(int orderCode) {
@@ -122,6 +125,9 @@ public class ConfirmShippingActivity extends TActivity
             editableModel.setPackageId(orderDetailData.getShipmentServiceId());
             editableModel.setShipmentName(orderDetailData.getShipmentName());
             editableModel.setPackageName(orderDetailData.getShipmentServiceName());
+        } else {
+            editableModel.setShipmentName("");
+            editableModel.setPackageName("");
         }
         editableModel.setOrderId(orderDetailData.getOrderId());
         editableModel.setOrderStatusCode(Integer.parseInt(orderDetailData.getOrderCode()));

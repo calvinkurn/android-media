@@ -62,11 +62,12 @@ public class RejectOrderPriceWeightChangeAdapter extends RecyclerView.Adapter<Re
     }
 
     public boolean isEdited() {
+        boolean isEdited = false;
         for (int i = 0; i < productPriceWeightData.size(); i++) {
-            if(productPriceWeightData.get(i).equals(originalPriceWeightData.get(i)))
-                return false;
+            if(!productPriceWeightData.get(i).equals(originalPriceWeightData.get(i)))
+                isEdited = true;
         }
-        return true;
+        return isEdited;
     }
 
     @Override

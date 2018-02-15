@@ -442,7 +442,7 @@ public class OrderDetailActivity extends TActivity
         } else {
             id = orderData.getShopId();
             name = orderData.getShopName();
-            logoUrl = orderData.getShopLogo();
+            logoUrl = orderData.getBuyerLogo();
         }
         Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
                 .getAskBuyerIntent(this,
