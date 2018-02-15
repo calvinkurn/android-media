@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/new_margin_med"
+    android:padding="@dimen/new_margin_med">
+
+    <TextView
+        android:id="@+id/tv_title_dialog"
+        android:layout_marginBottom="@dimen/new_margin_med"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/font_title"
+        android:textStyle="bold"
+        android:text="Title Goes Here"/>
+
+    <TextView
+        android:id="@+id/tv_desc_dialog"
+        android:layout_marginBottom="@dimen/new_margin_sm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/font_small"
+        android:text="Make the copy compact to communicate what you want, approx 50 character like this"/>
+
+    <LinearLayout
+        android:layout_gravity="right|end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_cancel_dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:textSize="@dimen/font_small"
+            android:textColor="@color/grey_550"
+            android:textAllCaps="false"/>
+
+        <Button
+            android:id="@+id/btn_ok_dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:textSize="@dimen/font_small"
+            android:textColor="@color/tkpd_main_green"
+            android:textAllCaps="false"/>
+
+    </LinearLayout>
+
+</LinearLayout>

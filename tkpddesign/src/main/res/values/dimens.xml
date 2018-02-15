@@ -6,7 +6,7 @@
     <dimen name="font_headline">34sp</dimen>
     <dimen name="font_sub_headline">24sp</dimen>
     <dimen name="font_title_big">20sp</dimen>
-    <dimen name="font_title">17sp</dimen>
+    <dimen name="font_title">16sp</dimen>
     <dimen name="font_small">14sp</dimen>
     <dimen name="font_micro">12sp</dimen>
     <dimen name="font_nano">8sp</dimen>
