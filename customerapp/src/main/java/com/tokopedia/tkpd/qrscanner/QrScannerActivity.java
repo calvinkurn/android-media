@@ -11,11 +11,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -41,7 +41,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
 
     private CampaignComponent campaignComponent;
     private boolean isTorchOn;
-    private TkpdProgressDialog progressDialog;
+    private ProgressBar progressBar;
 
     @Inject
     QrScannerPresenter presenter;
@@ -64,6 +64,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        progressBar = findViewById(R.id.progress_bar_scanner);
         QrScannerActivityPermissionsDispatcher.isCameraPermissionAvailableWithCheck(this);
     }
 
@@ -174,17 +175,15 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
 
     @Override
     public void showProgressDialog() {
-        if (progressDialog != null) {
-            progressDialog.showDialog();
-        } else {
-            progressDialog = new TkpdProgressDialog(getApplicationContext(), TkpdProgressDialog.NORMAL_PROGRESS);
-        }
+        if (progressBar != null)
+            progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgressDialog() {
-        if (progressDialog != null)
-            progressDialog.dismiss();
+        if (progressBar.getVisibility() == View.VISIBLE) {
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     @Override
