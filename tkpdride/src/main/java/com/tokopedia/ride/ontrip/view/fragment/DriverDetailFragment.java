@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -207,7 +208,7 @@ public class DriverDetailFragment extends BaseFragment {
     public void actionSMSDriver() {
         RideGATracking.eventClickSMS(status);
 
-        Log.e("Driver phone no", driver.getPhoneNumber);
+        Log.e("Driver phone no", driver.getPhoneNumber());
         Log.e("Driver sms phone no", driver.getSmsNumber());
         Log.e("Driver pic url", driver.getPictureUrl());
 
