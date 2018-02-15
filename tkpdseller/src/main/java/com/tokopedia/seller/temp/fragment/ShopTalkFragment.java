@@ -1,6 +1,7 @@
 package com.tokopedia.seller.temp.fragment;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
@@ -18,6 +19,10 @@ import java.util.List;
  */
 
 public class ShopTalkFragment extends com.tokopedia.core.shopinfo.fragment.ShopTalkFragment {
+
+    public static Fragment createInstance() {
+        return new ShopTalkFragment();
+    }
 
     @Override
     protected void initView(View view) {
@@ -56,16 +61,7 @@ public class ShopTalkFragment extends com.tokopedia.core.shopinfo.fragment.ShopT
         adapter.setHaveNext(false);
     }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        list.clearOnScrollListeners();
+    protected boolean isEnableScroll(){
+        return false;
     }
-
-    protected void setViewListener(){
-        super.setViewListener();
-        list.clearOnScrollListeners();
-    }
-
-    protected void loadMore(){}
 }
