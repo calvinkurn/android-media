@@ -164,7 +164,8 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
 
             if (shipment != null) {
                 locationShippingViewHolder.updateDistrictId(Integer.toString(shipment.getDistrictId()));
-                locationShippingViewHolder.updateZipCodes(Integer.toString(shipment.getPostal()));
+                if(shipment.getPostal() != 0)
+                    locationShippingViewHolder.updateZipCodes(Integer.toString(shipment.getPostal()));
 
                 GoogleLocationViewModel googleLocationViewModel
                         = new GoogleLocationViewModel();
