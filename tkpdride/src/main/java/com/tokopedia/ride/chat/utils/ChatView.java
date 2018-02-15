@@ -22,6 +22,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 
 import java.util.ArrayList;
@@ -370,6 +371,7 @@ public class ChatView extends RelativeLayout {
     private void sendMessage(String message, long stamp) {
 
         ChatMessage chatMessage = new ChatMessage(message, stamp, ChatMessage.Type.SENT);
+        chatMessage.setSender(SessionHandler.getLoginName(context));
         if (onSentMessageListener != null && onSentMessageListener.sendMessage(chatMessage)) {
             chatViewListAdapter.addMessage(chatMessage);
             inputEditText.setText("");

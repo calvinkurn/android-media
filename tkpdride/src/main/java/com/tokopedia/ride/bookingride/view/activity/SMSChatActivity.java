@@ -364,7 +364,6 @@ public class SMSChatActivity extends BaseActivity {
         };
 
         IntentFilter intentFilter = new IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION);
-//        IntentFilter localIntentFilter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
         intentFilter.setPriority(2000);
         registerReceiver(broadcastReceiver, intentFilter);
 
@@ -376,8 +375,8 @@ public class SMSChatActivity extends BaseActivity {
         chatView.addMessage(chatMessage);
     }
 
-    private void onSMSReceived(String string, long timestamp) {
-        ChatMessage chatMessage = new ChatMessage(string, timestamp, ChatMessage.Type.RECEIVED);
+    private void onSMSReceived(String message, long timestamp) {
+        ChatMessage chatMessage = new ChatMessage(message, timestamp, ChatMessage.Type.RECEIVED, driverDetails.getName());
         chatView.addMessage(chatMessage);
     }
 
