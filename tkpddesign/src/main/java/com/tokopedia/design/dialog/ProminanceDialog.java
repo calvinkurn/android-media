@@ -17,8 +17,6 @@ public class ProminanceDialog extends Dialog {
     private TextView title, desc;
     private Button btnCancel, btnOk;
 
-    private View.OnClickListener onOkClickListener, onCancelClickListener;
-
     public ProminanceDialog(Activity context) {
         super(context);
     }
@@ -30,31 +28,24 @@ public class ProminanceDialog extends Dialog {
 
     @Override
     public void initView(View dialogView) {
-
         title = dialogView.findViewById(R.id.tv_title_dialog);
         desc = dialogView.findViewById(R.id.tv_desc_dialog);
         btnOk = dialogView.findViewById(R.id.btn_ok_dialog);
         btnCancel = dialogView.findViewById(R.id.btn_cancel_dialog);
-
-        if (onOkClickListener != null)
-            btnOk.setOnClickListener(onOkClickListener);
-
-        if (onCancelClickListener != null)
-            btnCancel.setOnClickListener(onCancelClickListener);
     }
 
     @Override
     public void initListener(AlertDialog dialog) {
-        dialog.setCancelable(true);
-        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
     }
 
     public void setOnOkClickListener(View.OnClickListener onOkClickListener) {
-        this.onOkClickListener = onOkClickListener;
+        btnOk.setOnClickListener(onOkClickListener);
     }
 
     public void setOnCancelClickListener(View.OnClickListener onCancelClickListener) {
-        this.onCancelClickListener = onCancelClickListener;
+        btnCancel.setOnClickListener(onCancelClickListener);
     }
 
     public void setTitle(String title) {
