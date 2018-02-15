@@ -29,6 +29,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
@@ -78,14 +79,12 @@ import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.shop.open.view.activity.ShopOpenDomainActivity;
 import com.tokopedia.tkpd.R;
-
-import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
-import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
 import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
+import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 
 import java.util.ArrayList;
@@ -123,6 +122,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     private static final String SHORTCUT_DIGITAL_ID = "Bayar";
     private static final String SHORTCUT_SHARE_ID = "Share";
     private static final String SHORTCUT_SHOP_ID = "Jual";
+
+    public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
     protected PagerAdapter adapter;
     protected TouchViewPager mViewPager;
     protected BottomNavigation bottomNavigation;
@@ -816,6 +817,11 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     private void checkIsHaveApplinkComeFromDeeplink(Intent intent) {
         if (!TextUtils.isEmpty(intent.getStringExtra(HomeRouter.EXTRA_APPLINK))) {
             String applink = intent.getStringExtra(HomeRouter.EXTRA_APPLINK);
+
+            if (intent.getStringExtra(MO_ENGAGE_COUPON_CODE) != null &&
+                    !TextUtils.isEmpty(intent.getStringExtra(MO_ENGAGE_COUPON_CODE))) {
+                Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
+            }
             if (!isPausing()) {
                 try {
                     DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
