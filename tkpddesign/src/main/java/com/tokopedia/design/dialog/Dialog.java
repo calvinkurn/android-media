@@ -18,6 +18,8 @@ public abstract class Dialog {
 
     public abstract void initView(View dialogView);
 
+    public abstract void initListener(AlertDialog dialog);
+
     public Dialog(Activity context) {
         this.context = context;
         init();
@@ -30,6 +32,8 @@ public abstract class Dialog {
         alertDialog = new AlertDialog.Builder(context)
                 .setView(dialogView)
                 .create();
+
+        initListener(alertDialog);
     }
 
     public AlertDialog getAlertDialog() {
@@ -39,5 +43,10 @@ public abstract class Dialog {
     public void show() {
         if (alertDialog != null)
             alertDialog.show();
+    }
+
+    public void dismiss() {
+        if (alertDialog != null)
+            alertDialog.dismiss();
     }
 }

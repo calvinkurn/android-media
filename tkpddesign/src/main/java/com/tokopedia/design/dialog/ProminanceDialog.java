@@ -1,6 +1,7 @@
 package com.tokopedia.design.dialog;
 
 import android.app.Activity;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -35,13 +36,17 @@ public class ProminanceDialog extends Dialog {
         btnOk = dialogView.findViewById(R.id.btn_ok_dialog);
         btnCancel = dialogView.findViewById(R.id.btn_cancel_dialog);
 
-        getAlertDialog().setCanceledOnTouchOutside(true);
-
         if (onOkClickListener != null)
             btnOk.setOnClickListener(onOkClickListener);
 
         if (onCancelClickListener != null)
             btnCancel.setOnClickListener(onCancelClickListener);
+    }
+
+    @Override
+    public void initListener(AlertDialog dialog) {
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
     }
 
     public void setOnOkClickListener(View.OnClickListener onOkClickListener) {

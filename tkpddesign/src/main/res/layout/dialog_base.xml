@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/new_margin_med"
+    android:layout_margin="@dimen/new_margin_big"
     android:padding="@dimen/new_margin_med">
 
     <TextView
@@ -12,16 +12,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/font_title"
-        android:textStyle="bold"
-        android:text="Title Goes Here"/>
+        android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/tv_desc_dialog"
         android:layout_marginBottom="@dimen/new_margin_sm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/font_small"
-        android:text="Make the copy compact to communicate what you want, approx 50 character like this"/>
+        android:textSize="@dimen/font_small" />
 
     <LinearLayout
         android:layout_gravity="right|end"
