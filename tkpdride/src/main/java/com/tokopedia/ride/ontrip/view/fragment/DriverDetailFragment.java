@@ -209,7 +209,8 @@ public class DriverDetailFragment extends BaseFragment {
         RideGATracking.eventClickSMS(status);
 
         Log.e("Driver phone no", driver.getPhoneNumber());
-        Log.e("Driver sms phone no", driver.getSmsNumber());
+        if (driver.getSmsNumber() != null && !driver.getSmsNumber().isEmpty())
+            Log.e("Driver sms phone no", driver.getSmsNumber());
         Log.e("Driver pic url", driver.getPictureUrl());
 
         driver.setPhoneNumber("+919896386254");
