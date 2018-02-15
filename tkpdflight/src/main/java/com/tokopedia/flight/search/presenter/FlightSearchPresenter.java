@@ -1,6 +1,7 @@
 package com.tokopedia.flight.search.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.domain.FlightBookingGetSingleResultUseCase;
 import com.tokopedia.flight.common.data.domain.DeleteFlightCacheUseCase;
@@ -8,6 +9,7 @@ import com.tokopedia.flight.common.subscriber.OnNextSubscriber;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.search.constant.FlightSortOption;
+import com.tokopedia.flight.search.di.FlightSearchQualifier;
 import com.tokopedia.flight.search.domain.FlightSearchMetaUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchStatisticUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchUseCase;
@@ -41,6 +43,8 @@ import rx.subscriptions.CompositeSubscription;
 public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView> {
 
     public static final int DELAY_HORIZONTAL_PROGRESS = 500;
+    private static final String FLIGHT_SEARCH_CACHE_TIME_KEY = "FLIGHT_SEARCH_CACHE_TIME";
+    private static final int MINUTES_CACHE_EXPIRED = 5;
 
     private FlightSearchWithSortUseCase flightSearchWithSortUseCase;
     private FlightSortUseCase flightSortUseCase;
@@ -50,6 +54,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
     private CompositeSubscription compositeSubscription;
     private DeleteFlightCacheUseCase deleteFlightCacheUseCase;
     private FlightAnalytics flightAnalytics;
+    private LocalCacheHandler localCacheHandler;
 
     @Inject
     public FlightSearchPresenter(FlightSearchWithSortUseCase flightSearchWithSortUseCase,
@@ -58,7 +63,8 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                                  FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase,
                                  FlightSearchMetaUseCase flightSearchMetaUseCase,
                                  DeleteFlightCacheUseCase deleteFlightCacheUseCase,
-                                 FlightAnalytics flightAnalytics) {
+                                 FlightAnalytics flightAnalytics,
+                                 @FlightSearchQualifier LocalCacheHandler localCacheHandler) {
         this.flightSearchWithSortUseCase = flightSearchWithSortUseCase;
         this.flightSortUseCase = flightSortUseCase;
         this.flightSearchStatisticUseCase = flightSearchStatisticUseCase;
@@ -66,6 +72,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
         this.flightSearchMetaUseCase = flightSearchMetaUseCase;
         this.deleteFlightCacheUseCase = deleteFlightCacheUseCase;
         this.flightAnalytics = flightAnalytics;
+        this.localCacheHandler = localCacheHandler;
     }
 
     public void searchAndSortFlight(FlightSearchApiRequestModel flightSearchApiRequestModel,
@@ -149,6 +156,27 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                 getView().onSuccessDeleteFlightCache();
             }
         });
+    }
+
+    public void setSearchCacheTime() {
+        Date now = FlightDateUtil.getCurrentDate();
+        localCacheHandler.putString(FLIGHT_SEARCH_CACHE_TIME_KEY,
+                FlightDateUtil.dateToString(now, FlightDateUtil.DEFAULT_TIMESTAMP_FORMAT));
+        localCacheHandler.applyEditor();
+    }
+
+    public boolean isCacheExpired() {
+        if (!localCacheHandler.getString(FLIGHT_SEARCH_CACHE_TIME_KEY, "")
+                .equalsIgnoreCase("")) {
+            Date firstDataSaved = FlightDateUtil.stringToDate(
+                    FlightDateUtil.DEFAULT_TIMESTAMP_FORMAT,
+                    localCacheHandler.getString(FLIGHT_SEARCH_CACHE_TIME_KEY)
+            );
+            Date expiredTime = FlightDateUtil.addTimeToSpesificDate(firstDataSaved, Calendar.MINUTE, MINUTES_CACHE_EXPIRED);
+
+            return (FlightDateUtil.getCurrentDate().after(expiredTime));
+        }
+        return false;
     }
 
     private void addSubscription(Subscription subscription) {

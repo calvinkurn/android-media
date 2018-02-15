@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
@@ -270,6 +271,10 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     public void onResume() {
         super.onResume();
         flightSearchPresenter.attachView(this);
+        if (flightSearchPresenter.isCacheExpired()) {
+            getActivity().finish();
+        }
+
         if (needRefreshFromCache) {
             reloadDataFromCache();
             setUIMarkFilter();
@@ -526,6 +531,10 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     public void onSuccessGetDataFromCloud(boolean isDataEmpty, FlightMetaDataDB flightMetaDataDB) {
+        if (!isDataEmpty) {
+            flightSearchPresenter.setSearchCacheTime();
+        }
+
         this.addToolbarElevation();
         String depAirport = flightMetaDataDB.getDepartureAirport();
         String arrivalAirport = flightMetaDataDB.getArrivalAirport();
