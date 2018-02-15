@@ -11,6 +11,8 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.typefactory.GroupChatTypeFactory;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,7 @@ import java.util.List;
 public class GroupChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     private List<Visitable> list;
+    private List<Visitable> listDummy;
     private GroupChatTypeFactory typeFactory;
     private EmptyModel emptyModel;
     private LoadingModel loadingModel;
@@ -29,6 +32,7 @@ public class GroupChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     public GroupChatAdapter(GroupChatTypeFactory typeFactory) {
         this.list = new ArrayList<>();
+        this.listDummy = new ArrayList<>();
         this.typeFactory = typeFactory;
         this.emptyModel = new EmptyModel();
         this.loadingModel = new LoadingModel();
@@ -65,5 +69,24 @@ public class GroupChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     public void addList(List<Visitable> listChat) {
         this.list.addAll(listChat);
         notifyDataSetChanged();
+    }
+
+    public void addReply(ChatViewModel chatItem) {
+        this.list.add(chatItem);
+    }
+
+    public void addDummyReply(PendingChatViewModel pendingChatViewModel) {
+        list.add(pendingChatViewModel);
+    }
+
+    public void removeDummy(PendingChatViewModel pendingChatViewModel) {
+        list.remove(pendingChatViewModel);
+    }
+
+    public void setRetry(PendingChatViewModel pendingChatViewModel) {
+        if (list.get(list.indexOf(pendingChatViewModel)) instanceof PendingChatViewModel) {
+            ((PendingChatViewModel) list.get(list.indexOf(pendingChatViewModel))).setRetry(true);
+        }
+        notifyItemChanged(list.indexOf(pendingChatViewModel));
     }
 }

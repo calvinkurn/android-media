@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.LoginGroupChatUseCase;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
 
 import java.util.List;
 
@@ -23,13 +25,17 @@ public interface GroupChatContract {
         void onSuccessGetMessage(List<Visitable> listChat);
 
         void onSuccessGetMessageFirstTime(List<Visitable> listChat);
+
+        void onErrorSendMessage(PendingChatViewModel pendingChatViewModel, String errorMessage);
+
+        void onSuccessSendMessage(PendingChatViewModel pendingChatViewModel, ChatViewModel viewModel);
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
         void initMessageFirstTime(String channelUrl, OpenChannel mChannel);
 
-        void sendReply(String replyText);
+        void sendReply(PendingChatViewModel pendingChatViewModel, OpenChannel mChannel);
 
         void enterChannel(String s, LoginGroupChatUseCase.LoginGroupChatListener loginGroupChatListener);
 

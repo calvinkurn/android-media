@@ -6,11 +6,12 @@ import com.sendbird.android.OpenChannel;
 import com.sendbird.android.SendBirdException;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.tkpdstream.chatroom.domain.ConnectionManager;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.GetGroupChatMessagesFirstTimeUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.LoginGroupChatUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.SendGroupChatMessageUseCase;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
 
 import java.util.List;
 
@@ -55,8 +56,20 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     }
 
     @Override
-    public void sendReply(String replyText) {
+    public void sendReply(final PendingChatViewModel pendingChatViewModel, OpenChannel mChannel) {
+        sendMessageUseCase.execute(pendingChatViewModel, mChannel,
+                new SendGroupChatMessageUseCase.SendGroupChatMessageListener() {
 
+                    @Override
+                    public void onSuccessSendMessage(ChatViewModel viewModel) {
+                        getView().onSuccessSendMessage(pendingChatViewModel, viewModel);
+                    }
+
+                    @Override
+                    public void onErrorSendMessage(PendingChatViewModel pendingChatViewModel, SendBirdException e) {
+                        getView().onErrorSendMessage(pendingChatViewModel, e.toString());
+                    }
+                });
     }
 
     @Override

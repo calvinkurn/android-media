@@ -3,8 +3,9 @@ package com.tokopedia.tkpdstream.chatroom.view.adapter.typefactory;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.AdminAnnouncementViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
 
 /**
  * @author by nisie on 2/7/18.
@@ -17,5 +18,8 @@ public interface GroupChatTypeFactory {
     int type(AdminAnnouncementViewModel adminAnnouncementViewModel);
 
     int type(ChatViewModel myChatViewModel);
+
+    int type(PendingChatViewModel pendingChatViewModel);
+
 
 }

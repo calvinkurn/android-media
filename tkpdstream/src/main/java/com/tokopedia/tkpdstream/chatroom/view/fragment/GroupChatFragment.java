@@ -27,7 +27,9 @@ import com.tokopedia.tkpdstream.chatroom.view.adapter.typefactory.GroupChatTypeF
 import com.tokopedia.tkpdstream.chatroom.view.adapter.typefactory.GroupChatTypeFactoryImpl;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.chatroom.view.presenter.GroupChatPresenter;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
 import com.tokopedia.tkpdstream.common.analytics.ChannelAnalytics;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
@@ -142,7 +144,13 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.sendReply(replyEditText.getText().toString());
+                PendingChatViewModel pendingChatViewModel = new PendingChatViewModel(replyEditText.getText().toString(),
+                        "", "", "",
+                        "Nisie123", "Nisie",
+                        "https://yt3.ggpht.com/-uwClWniyyFU/AAAAAAAAAAI/AAAAAAAAAAA/nVrBEY3dzuY/s176-c-k-no-mo-rj-c0xffffff/photo.jpg",
+                        false);
+                adapter.addDummyReply(pendingChatViewModel);
+                presenter.sendReply(pendingChatViewModel, mChannel);
             }
         });
     }
@@ -196,5 +204,17 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     public void onSuccessGetMessageFirstTime(List<Visitable> listChat) {
         adapter.addList(listChat);
 
+    }
+
+    @Override
+    public void onErrorSendMessage(PendingChatViewModel pendingChatViewModel, String errorMessage) {
+        adapter.setRetry(pendingChatViewModel);
+    }
+
+    @Override
+    public void onSuccessSendMessage(PendingChatViewModel pendingChatViewModel, ChatViewModel viewModel) {
+        adapter.removeDummy(pendingChatViewModel);
+        adapter.addReply(viewModel);
+        adapter.notifyDataSetChanged();
     }
 }
