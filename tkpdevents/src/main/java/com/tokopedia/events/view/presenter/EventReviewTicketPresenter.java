@@ -325,6 +325,7 @@ public class EventReviewTicketPresenter
                     if (errorMsg != null &&
                             errorMsg.length() > 0) {
                         getView().hideProgressBar();
+                        getView().hideSuccessMessage();
                         getView().showPromoSuccessMessage(errorMsg,
                                 getView().getActivity().getResources().getColor(R.color.red_a700));
                         promocode = "";

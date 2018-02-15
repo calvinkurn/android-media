@@ -140,7 +140,7 @@ public class EventInerceptors extends TkpdAuthInterceptor {
 
             generateHmacAuthRequest(originRequest, newRequest);
             newRequest.removeHeader("Authorization")
-                    .addHeader("Authorization", authorizationString)
+                    .addHeader("Authorization", "Bearer " + SessionHandler.getAccessToken())
                     .addHeader("Tkpd-UserId", SessionHandler.getLoginID(mContext));
 
             final Request finalRequest = newRequest.build();
