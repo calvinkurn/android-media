@@ -1,6 +1,6 @@
 package com.tokopedia.session.changephonenumber.view.presenter;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.session.changephonenumber.domain.interactor.GetWarningUseCase;
 import com.tokopedia.session.changephonenumber.view.listener
         .ChangePhoneNumberWarningFragmentListener;

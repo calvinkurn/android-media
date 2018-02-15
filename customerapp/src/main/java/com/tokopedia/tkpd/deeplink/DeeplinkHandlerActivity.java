@@ -25,6 +25,8 @@ import com.tokopedia.discovery.applink.DiscoveryApplinkModule;
 import com.tokopedia.discovery.applink.DiscoveryApplinkModuleLoader;
 import com.tokopedia.flight.applink.FlightApplinkModule;
 import com.tokopedia.flight.applink.FlightApplinkModuleLoader;
+import com.tokopedia.home.applink.HomeApplinkModule;
+import com.tokopedia.home.applink.HomeApplinkModuleLoader;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
 import com.tokopedia.ride.deeplink.RideDeeplinkModule;
@@ -51,6 +53,7 @@ import io.branch.referral.Branch;
         TransactionApplinkModule.class,
         DigitalApplinkModule.class,
         PdpApplinkModule.class,
+        HomeApplinkModule.class,
         RideDeeplinkModule.class,
         DiscoveryApplinkModule.class,
         SessionApplinkModule.class,
@@ -70,6 +73,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new TransactionApplinkModuleLoader(),
                 new DigitalApplinkModuleLoader(),
                 new PdpApplinkModuleLoader(),
+                new HomeApplinkModuleLoader(),
                 new RideDeeplinkModuleLoader(),
                 new DiscoveryApplinkModuleLoader(),
                 new SessionApplinkModuleLoader(),
@@ -93,17 +97,16 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             Uri applink = Uri.parse(intent.getData().toString().replaceAll("%", "%25"));
             presenter.processUTM(applink);
+            Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
             if (deepLinkDelegate.supportsUri(applink.toString())) {
-                Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
                 homeIntent.putExtra(HomeRouter.EXTRA_APPLINK, applink.toString());
-                if (intent.getExtras() != null) homeIntent.putExtras(intent.getExtras());
-                startActivity(homeIntent);
             } else {
-                Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
                 homeIntent.putExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, true);
-                if (intent.getExtras() != null) homeIntent.putExtras(intent.getExtras());
-                startActivity(homeIntent);
             }
+
+            if (getIntent() != null && getIntent().getExtras() != null)
+                homeIntent.putExtras(getIntent().getExtras());
+            startActivity(homeIntent);
 
             if (getIntent().getExtras() != null) {
                 Bundle bundle = getIntent().getExtras();

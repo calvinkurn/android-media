@@ -10,5 +10,5 @@
         android:right="@dimen/padding_vs"
         android:top="@dimen/padding_vs" />
 
-    <corners android:radius="18dp" />
+    <corners android:radius="3dp" />
 </shape>

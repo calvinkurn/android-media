@@ -3,15 +3,13 @@ package com.tokopedia.seller.shop.open.view.presenter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
-import com.tokopedia.core.session.presenter.Session;
-import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.logistic.domain.interactor.GetLogisticAvailableUseCase;
 import com.tokopedia.seller.logistic.model.CouriersModel;
 import com.tokopedia.seller.shop.open.data.model.response.ResponseCreateShop;
-import com.tokopedia.seller.shop.open.view.model.CourierServiceIdWrapper;
-import com.tokopedia.seller.logistic.domain.interactor.GetLogisticAvailableUseCase;
 import com.tokopedia.seller.shop.open.domain.interactor.ShopOpenCreateUseCase;
 import com.tokopedia.seller.shop.open.domain.interactor.ShopOpenSaveCourierUseCase;
+import com.tokopedia.seller.shop.open.view.model.CourierServiceIdWrapper;
 
 import javax.inject.Inject;
 
