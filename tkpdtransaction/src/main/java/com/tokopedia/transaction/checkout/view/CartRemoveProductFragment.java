@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Button;
+import android.widget.TextView;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.transaction.R;
@@ -44,7 +44,7 @@ public class CartRemoveProductFragment extends BasePresenterFragment
     private static final String TAG = CartRemoveProductFragment.class.getSimpleName();
 
     @BindView(R2.id.rv_cart_remove_product) RecyclerView mRvCartRemoveProduct;
-    @BindView(R2.id.btn_remove_product) Button mBtnRemoveProduct;
+    @BindView(R2.id.tv_remove_product) TextView mTvRemoveProduct;
 
     @Inject CartRemoveProductAdapter mCartRemoveProductAdapter;
     @Inject CartRemoveProductPresenter mCartRemoveProductPresenter;
@@ -153,7 +153,6 @@ public class CartRemoveProductFragment extends BasePresenterFragment
         mRvCartRemoveProduct.setAdapter(mCartRemoveProductAdapter);
 
         mCartRemoveProductPresenter.attachView(this);
-        mBtnRemoveProduct.setEnabled(false);
     }
 
     /**
@@ -201,14 +200,15 @@ public class CartRemoveProductFragment extends BasePresenterFragment
         for (Integer index : mSetCheckedCartItemIndex) {
             mCartItemDataList.remove((int) index);
         }
+
         mCartRemoveProductAdapter.notifyDataSetChanged();
     }
 
     /**
      * Executed when state of checkbox is changed
      *
-     * @param checked  boolean state of checked on unchecked
-     * @param position index of list where the item is checked
+     * @param checked  state of checkbox
+     * @param position index of list where the state of checkbox is changed
      */
     @Override
     public void onCheckBoxStateChangedListener(boolean checked, int position) {
@@ -220,12 +220,21 @@ public class CartRemoveProductFragment extends BasePresenterFragment
             mCheckedCartItem--;
         }
 
-        if (mCheckedCartItem == 0) {
-            mBtnRemoveProduct.setEnabled(false);
-            mBtnRemoveProduct.setText("Hapus");
-        } else {
-            mBtnRemoveProduct.setEnabled(true);
-            mBtnRemoveProduct.setText(String.format(LOCALE_ID, "Hapus (%d)", mCheckedCartItem));
-        }
+        String btnText = mCheckedCartItem == 0 ? "Hapus" :
+                String.format(LOCALE_ID, "Hapus (%d)", mCheckedCartItem);
+
+        mTvRemoveProduct.setText(btnText);
     }
+
+    /**
+     * Executed when checkbox is clicked
+     *
+     * @param checked  state of checkbox
+     * @param position index of list where the checkbox is clicked
+     */
+    @Override
+    public void onCheckBoxClickedListener(boolean checked, int position) {
+
+    }
+
 }

@@ -86,7 +86,8 @@ public class CartRemoveProductAdapter
         }
     }
 
-    class SelectRemoveAllCheckboxViewHolder extends RecyclerView.ViewHolder {
+    class SelectRemoveAllCheckboxViewHolder extends RecyclerView.ViewHolder
+        implements CartRemoveProductActionListener {
 
         @BindView(R2.id.checkBox)
         CheckBox mCbRemoveAll;
@@ -111,19 +112,51 @@ public class CartRemoveProductAdapter
             };
         }
 
+        /**
+         * Executed when state of checkbox is changed
+         *
+         * @param checked  state of checkbox
+         * @param position index of list where the checkbox state is changed
+         */
+        @Override
+        public void onCheckBoxStateChangedListener(boolean checked, int position) {
+
+        }
+
+        /**
+         * Executed when checkbox is clicked
+         *
+         * @param checked  state of checkbox
+         * @param position index of list where the checkbox is clicked
+         */
+        @Override
+        public void onCheckBoxClickedListener(boolean checked, int position) {
+            if (!checked && isRemoveAll) {
+                isRemoveAll = false;
+                mCbRemoveAll.setChecked(false);
+            }
+        }
     }
 
     /**
-     * To be implemented by container fragment which will receive the data from adapter
+     * Implemented by any entities which will receive events and data from adapter
      */
     public interface CartRemoveProductActionListener {
 
         /**
          * Executed when state of checkbox is changed
-         * @param state boolean state of checked on unchecked
-         * @param position index of list where the item is checked
+         * @param checked state of checkbox
+         * @param position index of list where the checkbox state is changed
          */
-        void onCheckBoxStateChangedListener(boolean state, int position);
+        void onCheckBoxStateChangedListener(boolean checked, int position);
+
+
+        /**
+         * Executed when checkbox is clicked
+         * @param checked state of checkbox
+         * @param position index of list where the checkbox is clicked
+         */
+        void onCheckBoxClickedListener(boolean checked, int position);
 
     }
 
@@ -144,7 +177,6 @@ public class CartRemoveProductAdapter
         @BindView(R2.id.tv_total_product_item)
         TextView mTvTotalProductItem;
 
-        int position;
         boolean isChecked = false;
 
         CartProductDataViewHolder(View itemView) {
@@ -153,13 +185,11 @@ public class CartRemoveProductAdapter
         }
 
         void bindViewHolder(CartItemData cartItemModel, int position) {
-            this.position = position;
-
             CartItemData.OriginData originData = cartItemModel.getOriginData();
             CartItemData.UpdatedData updatedData = cartItemModel.getUpdatedData();
 
             mCbRemoveProduct.setChecked(isRemoveAll);
-            mCbRemoveProduct.setOnClickListener(checkBoxClickedListener());
+            mCbRemoveProduct.setOnClickListener(checkBoxClickedListener(position));
             mCbRemoveProduct.setOnCheckedChangeListener(onChangeStateListener(position));
 
             mTvSenderName.setText(originData.getShopName());
@@ -173,18 +203,19 @@ public class CartRemoveProductAdapter
         private CompoundButton.OnCheckedChangeListener onChangeStateListener(final int position) {
             return new CompoundButton.OnCheckedChangeListener() {
                 @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean state) {
-                    mActionListener.onCheckBoxStateChangedListener(state, position);
+                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                    mActionListener.onCheckBoxStateChangedListener(checked, position);
                 }
             };
         }
 
-        private View.OnClickListener checkBoxClickedListener() {
+        private View.OnClickListener checkBoxClickedListener(final int position) {
             return new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     isChecked = !isChecked;
                     mCbRemoveProduct.setChecked(isChecked);
+                    mActionListener.onCheckBoxClickedListener(isChecked, position);
                 }
             };
         }
