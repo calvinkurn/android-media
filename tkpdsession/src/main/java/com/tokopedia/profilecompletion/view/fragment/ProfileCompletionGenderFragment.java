@@ -11,7 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.RadioGroup;
 
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.profilecompletion.domain.EditUserProfileUseCase;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;
 import com.tokopedia.session.R;

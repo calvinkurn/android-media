@@ -8,7 +8,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.TaskStackBuilder;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,12 +17,12 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.detailv2.view.DetailResCenterFragment;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatActivityListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResChatActivityPresenter;
-import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
+import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 
 /**
  * Created by yoasfs on 10/6/17.
@@ -48,6 +47,7 @@ public class DetailResChatActivity
     private String userName;
     private boolean isSeller;
 
+
     public static Intent newBuyerInstance(Context context, String resolutionId, String shopName) {
         Intent intent = new Intent(context, DetailResChatActivity.class);
         intent.putExtra(PARAM_RESOLUTION_ID, resolutionId);
@@ -67,7 +67,7 @@ public class DetailResChatActivity
     @DeepLink(Constants.Applinks.RESCENTER)
     public static TaskStackBuilder getCallingIntent(Context context, Bundle bundle) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        Intent parentIntent = InboxResCenterActivity.createIntent(context);
+        Intent parentIntent;
         Intent destinationIntent = new Intent(context, DetailResChatActivity.class);
         String resoId = bundle.getString(PARAM_RESOLUTION_ID, "");
         destinationIntent.putExtra(PARAM_RESOLUTION_ID, resoId);
@@ -76,15 +76,21 @@ public class DetailResChatActivity
         String userNameSpanned = userName.replaceAll("%20"," ");
         String shopNameSpanned = shopName.replaceAll("%20"," ");
         if (TextUtils.isEmpty(shopName)) {
+            parentIntent = ResoInboxActivity.newSellerInstance(context);
             destinationIntent.putExtra(PARAM_USER_NAME, userNameSpanned);
             destinationIntent.putExtra(PARAM_IS_SELLER, true);
             bundle.putString(PARAM_USER_NAME, userNameSpanned);
         } else {
+            parentIntent = ResoInboxActivity.newBuyerInstance(context);
             destinationIntent.putExtra(PARAM_SHOP_NAME, shopNameSpanned);
             destinationIntent.putExtra(PARAM_IS_SELLER,false);
             bundle.putString(PARAM_SHOP_NAME, shopNameSpanned);
         }
         destinationIntent.putExtras(bundle);
+        if (context.getApplicationContext() instanceof TkpdInboxRouter){
+            Intent intent = ((TkpdInboxRouter) context.getApplicationContext()).getHomeIntent(context);
+            taskStackBuilder.addNextIntent(intent);
+        }
         taskStackBuilder.addNextIntent(parentIntent);
         taskStackBuilder.addNextIntent(destinationIntent);
         return taskStackBuilder;
@@ -235,5 +241,13 @@ public class DetailResChatActivity
             shopName = savedInstanceState.getString(PARAM_SHOP_NAME);
         }
         initView();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent data = new Intent();
+        data.putExtra(PARAM_RESOLUTION_ID, resolutionId);
+        setResult(Activity.RESULT_OK, data);
+        finish();
     }
 }

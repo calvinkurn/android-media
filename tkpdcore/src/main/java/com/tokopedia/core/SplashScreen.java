@@ -9,10 +9,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 
-import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -27,16 +25,13 @@ import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
-import com.tokopedia.core.session.model.LoginBypassModel;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.PasswordGenerator.PGListener;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.welcome.WelcomeActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.parceler.Parcels;
 
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
@@ -150,23 +145,6 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         finish();
     }
 
-    private void bypassV2Login() {
-        if (SessionHandler.isV2Login(MainApplication.getAppContext())
-                && !SessionHandler.isV4Login(MainApplication.getAppContext())) {
-
-            LoginBypassModel loginBypassModel = new LoginBypassModel();
-            loginBypassModel.setUserID(SessionHandler.getLoginID(MainApplication.getAppContext()));
-            loginBypassModel.setDeviceID(GCMHandler.getRegistrationId(MainApplication.getAppContext()));
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(DownloadService.LOGIN_BYPASS_MODEL_KEY, Parcels.wrap(loginBypassModel));
-            DownloadService.startDownload(this, mReceiver, bundle, DownloadService.LOGIN_BYPASS);
-            Crashlytics.setUserIdentifier(SessionHandler.getLoginID(MainApplication.getAppContext()));
-        } else {
-            finishSplashScreen();
-        }
-
-    }
-
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
         CommonUtils.dumper(resultData);
@@ -225,9 +203,9 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
 
     private void handleBranchDefferedDeeplink() {
         Branch branch = Branch.getInstance();
-        if (branch == null){
+        if (branch == null) {
             moveToHome();
-        }else {
+        } else {
             branch.setRequestMetadata("$google_analytics_client_id", TrackingUtils.getClientID());
             branch.initSession(new Branch.BranchReferralInitListener() {
                 @Override

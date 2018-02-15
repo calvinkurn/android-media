@@ -45,6 +45,7 @@ public class KolRecommendationViewHolder extends AbstractViewHolder<KolRecommend
     public void bind(final KolRecommendationViewModel element) {
         element.setRowNumber(getAdapterPosition());
         title.setText(MethodChecker.fromHtml(element.getTitle()));
+        seeAll.setText(MethodChecker.fromHtml(element.getExploreText()));
         seeAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

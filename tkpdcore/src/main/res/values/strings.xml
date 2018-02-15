@@ -588,7 +588,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_currency_rp">Rp</string>
     <string name="title_currency_rp_space">Rp&#160;</string>
     <string name="title_all_categories">Semua Kategori</string>
-    <string name="title_categories">BERANDA</string>
+    <string name="title_categories">Home</string>
     <string name="title_all_location">Semua Lokasi</string>
     <string name="title_category_view_all">Lihat Produk Kategori Lainnya</string>
 
@@ -673,6 +673,11 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="item_unread">Belum Dibaca</string>
     <string name="chat_edit_text">Tulis pesan ...</string>
     <string name="add_template_chat">Tambah Template</string>
+    <string name="exit_chat_title">Keluar dari Chat?</string>
+    <string name="exit_chat_body">Keluar dari Chat akan membatalkan pengiriman gambar yang sedang berlangsung.</string>
+    <string name="exit_chat_yes">Keluar dari Chat</string>
+
+
 
     <!-- Strings related to inbox -->
 
@@ -1124,8 +1129,8 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_activity_settings_notification">Atur nada dan getar</string>
     <string name="title_change_ring">Atur nada dan getar</string>
     <string name="title_select_agency_error">Kurir harus dipilih</string>
-    <string name="title_index_prod_shop">FEED</string>
-    <string name="title_index_hot_list">HOT LIST</string>
+    <string name="title_index_prod_shop">Feed</string>
+    <string name="title_index_hot_list">Hot List</string>
     <string name="title_index_favorite">FAVORIT</string>
 
     <string name="title_done">Selesai</string>
@@ -1658,7 +1663,8 @@ di Tokopedia Sekarang!</string>
 
     <string name="default_request_error_timeout">Koneksi timeout. Silakan coba beberapa saat lagi</string>
     <string name="default_request_error_internal_server">Terjadi kesalahan pada server. Ulangi beberapa saat lagi</string>
-    <string name="default_request_error_forbidden_auth">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
+    <string name="default_request_error_forbidden_auth">Halaman tidak dapat diakses. Mohon
+        untuk menunggu beberapa saat lagi.</string>
     <string name="default_request_error_unknown">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
     <string name="default_request_error_bad_request">Silakan coba kembali</string>
     <string name="default_request_error_null_data">Data Kosong. Mohon ulangi beberapa saat lagi</string>
@@ -1987,9 +1993,9 @@ di Tokopedia Sekarang!</string>
     <string name="notification_error_ssl_cert_invalid">Invalid SSL Certificate. Apakah anda ingin melanjutkan?</string>
     <string name="title_email_address">Alamat Email</string>
     <string name="error_attachment">Mohon tambahkan lampiran.</string>
-    <string name="action_send_otp_with_call">Atau kirim Kode Verifikasi melalui telepon</string>
+    <string name="action_send_otp_with_call">Atau lewat telepon</string>
     <string name="action_send_otp_with_call_2">Atau lewat telepon</string>
-    <string name="content_change_number">Jika nomor Anda sudah tidak aktif, silakan klik
+    <string name="content_change_number">Jika nomor Anda sudah tidak aktif, silahkan klik
         disini</string>
     <string name="title_resend_otp">Kirim ulang Kode Verifikasi</string>
     <string name="truecaller_verif">Lanjutkan dengan Truecaller</string>
@@ -2078,6 +2084,10 @@ di Tokopedia Sekarang!</string>
     <string name="drawer_title_seller_info">Info Penjual</string>
     <string name="drawer_title_inbox_ticket">Layanan Pengguna</string>
     <string name="drawer_title_top_ads">TopAds</string>
+    <string name="drawer_title_new_reso">Komplain Saya</string>
+    <string name="drawer_title_new_reso_as_buyer">Sebagai Pembeli</string>
+    <string name="drawer_title_new_reso_as_seller">Sebagai Penjual</string>
+    <string name="drawer_title_new_reso_seller">Komplain Pembeli</string>
     <string name="drawer_title_new_order">Order Baru</string>
     <string name="drawer_title_shipping_status">Status Pengiriman</string>
     <string name="drawer_title_activity_contact_us">Hubungi Kami</string>
@@ -2129,8 +2139,8 @@ di Tokopedia Sekarang!</string>
     <string name="app_share_title">Tokopedia, Satu Aplikasi untuk Semua Kebutuhan</string>
     <string name="app_share_contents"><![CDATA[Mudahnya beli produk idaman, pulsa, token listrik, tiket liburan, hingga bayar berbagai tagihan, semua dimulai dari aplikasi Tokopedia. Kamu juga bisa mulai & kembangkan bisnis di sini. Yuk, download sekarang!]]></string>
     <string name="app_share_label">Share ke Temanmu, Yuk!</string>
-    <string name="app_share_label_desc"><![CDATA[Sudah merasakan berbagai kemudahan dengan aplikasi Tokopedia? Ayo ajak orang-orang terdekatmu untuk ikut menikmati mudahnya beli & bayar ini itu lewat aplikasi Tokopedia]]></string>
-    <string name="app_share_btn_label">Undang Teman</string>
+    <string name="app_share_referral_label_desc"><![CDATA[Ayo share kode ini dan dapatkan voucher cashback TokoCash 25% hingga Rp20.000 saat mereka melakukan transaksi pertama di Tokopedia.]]></string>
+    <string name="app_share_btn_label">Ajak Teman</string>
     <string name="tambah_produk">+ Tambah Produk</string>
     <string name="product_share_subtitle">Dimana saja dan kapan saja</string>
     <string name="product_share_app_subtitle">Pilih cara berbagimu</string>
@@ -2141,6 +2151,8 @@ di Tokopedia Sekarang!</string>
     <string name="app_rating_button_later">Nanti</string>
     <string name="app_rating_title">Beri Rating Aplikasi Kami</string>
     <string name="app_rating_message">Jika Kamu suka dengan aplikasi Tokopedia, silakan berikan dukungan Kamu dengan memberi rating 5 bintang dan ulasan di Google Play.</string>
+
+    <string name="title_app_referral_howitworks">Info lebih lanjut</string>
     <string name="app_rating_title_2">Bagaimana penilaian Kamu terhadap aplikasi Tokopedia?</string>
     <string name="app_rating_message_2">Geser kanan atau kiri untuk memberikan rating</string>
     <string name="app_rating_button_send">Kirim</string>
@@ -2155,4 +2167,20 @@ di Tokopedia Sekarang!</string>
     <string name="notif_channel_general">Notifikasi</string>
     <string name="title_hockeyapp_download">Nakama harus menggunakan aplikasi Tokopedia versi beta</string>
     <string name="title_download">Download</string>
+    <string name="app_share_explore_btn_label">Mulai Belanja</string>
+    <string name="app_share_label_desc"><![CDATA[Sudah merasakan berbagai kemudahan dengan aplikasi Tokopedia? Ayo ajak orang-orang terdekatmu untuk ikut menikmati mudahnya beli, bayar ini itu lewat aplikasi Tokopedia]]></string>
+    <string name="drawer_title_referral_appshare">Dapatkan TokoCash</string>
+    <string name="app_share_default_msg"><![CDATA[Ada bonus cashback hingga Rp30.000 khusus buat kamu! Yuk mulai beli & bayar ini itu di Aplikasi Tokopedia, gunakan kode %s.]]></string>
+    <string name="no_coupon_to_copy_text">Gagal menyalin kode voucher</string>
+    <string name="referral_friend_welcome_screen_name">Friend View After Install</string>
+    <string name="referral_screen_name">Referral Home</string>
+    <string name="referral_share_screen_name">Share Channel</string>
+    <string name="referral_phone_number_verify_screen_name">Phone Number Verification</string>
+    <string name="phone_not_verified_error_message">Silakan verifikasi nomor handphone Anda untuk masuk ke halaman berikutnya.</string>
+    <string name="copy_coupon_code_text">Kode voucher telah tersalin</string>
+
+
+    <!--QR CODE-->
+    <string name="scan_qr">Scan Kode QR</string>
 </resources>
+
