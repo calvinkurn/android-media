@@ -21,13 +21,7 @@ import com.tokopedia.design.button.Button;
  * tooltip.setDesc("Type your information about the hint in a compact way, don’t take it to long.");
  * tooltip.setTextButton("CTA Here");
  * tooltip.setIcon(R.drawable.ic_search_icon);
-
- * tooltip.getBtnAction().setOnClickListener(new View.OnClickListener() {
- *  @Override
- *  public void onClick(View view) {
- *      Toast.makeText(MainActivity.this, "Hello World!", Toast.LENGTH_SHORT).show();
- *  }
- * });
+ * tooltip.getBtnAction().setOnClickListener(iew.OnClickListener);
  * tooltip.show();
  */
 
