@@ -5,6 +5,7 @@ import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
+import com.tokopedia.core.network.di.qualifier.AceMediumTimeoutNoAuth;
 import com.tokopedia.core.network.di.qualifier.BearerAuth;
 import com.tokopedia.core.network.di.qualifier.BearerAuthTypeJsonUt;
 import com.tokopedia.core.network.di.qualifier.DefaultAuth;
@@ -188,6 +189,26 @@ public class OkHttpClientModule {
                 fingerprintInterceptor,
                 globalTkpdAuthInterceptor,
                 OkHttpRetryPolicy.createdOkHttpRetryPolicyQuickTimeOut(),
+                chuckInterceptor,
+                debugInterceptor,
+                cacheApiInterceptor
+        );
+    }
+
+    @AceMediumTimeoutNoAuth
+    @ApplicationScope
+    @Provides
+    public OkHttpClient provideOkHttpClientAceMediumTimeoutNoAuth(FingerprintInterceptor fingerprintInterceptor,
+                                                                    @KeyDefaultQualifier GlobalTkpdAuthInterceptor globalTkpdAuthInterceptor,
+                                                                    ChuckInterceptor chuckInterceptor,
+                                                                    DebugInterceptor debugInterceptor,
+                                                                    CacheApiInterceptor cacheApiInterceptor) {
+
+        cacheApiInterceptor.setResponseValidator(new CacheApiTKPDResponseValidator<>(TkpdV4ResponseError.class));
+        return OkHttpFactory.create().buildDaggerClientNoAuth(
+                fingerprintInterceptor,
+                globalTkpdAuthInterceptor,
+                OkHttpRetryPolicy.createdOkHttpRetryPolicyMediumTimeOut(),
                 chuckInterceptor,
                 debugInterceptor,
                 cacheApiInterceptor

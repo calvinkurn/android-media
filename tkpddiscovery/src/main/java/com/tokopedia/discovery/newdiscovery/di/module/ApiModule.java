@@ -5,6 +5,7 @@ import com.tokopedia.core.network.apiservices.hades.apis.HadesApi;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoAuthApi;
 import com.tokopedia.core.network.apiservices.search.apis.HotListApi;
+import com.tokopedia.core.network.di.qualifier.AceGetGuidedSearchQualifier;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoGetWishlistQualifier;
@@ -25,6 +26,12 @@ public class ApiModule {
 
     @Provides
     BrowseApi provideSearchApi(@AceQualifier Retrofit retrofit) {
+        return retrofit.create(BrowseApi.class);
+    }
+
+    @AceGetGuidedSearchQualifier
+    @Provides
+    BrowseApi aceGetGuidedSearch(@AceGetGuidedSearchQualifier Retrofit retrofit){
         return retrofit.create(BrowseApi.class);
     }
 
