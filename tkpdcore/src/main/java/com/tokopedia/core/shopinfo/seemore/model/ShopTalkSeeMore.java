@@ -1,6 +1,4 @@
-package com.tokopedia.seller.temp.model;
-
-import android.os.Parcel;
+package com.tokopedia.core.shopinfo.seemore.model;
 
 import com.tokopedia.core.shopinfo.models.talkmodel.ShopTalk;
 

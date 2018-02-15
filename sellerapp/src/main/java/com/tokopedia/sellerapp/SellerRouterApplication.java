@@ -66,12 +66,10 @@ import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
-import com.tokopedia.seller.product.manage.di.ProductManageComponent;
 import com.tokopedia.seller.reputation.di.SellerReputationComponent;
 import com.tokopedia.seller.reputation.domain.interactor.SpeedReputationUseCase;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
-import com.tokopedia.seller.temp.fragment.ShopTalkFragment;
+import com.tokopedia.core.shopinfo.seemore.fragment.ShopTalkSeeMoreFragment;
 import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
 import com.tokopedia.sellerapp.truecaller.TruecallerActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
@@ -230,7 +228,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Fragment getShopTalkFragment() {
-        return ShopTalkFragment.createInstance();
+        return ShopTalkSeeMoreFragment.createInstance();
     }
 
     public GMComponent getGMComponent() {

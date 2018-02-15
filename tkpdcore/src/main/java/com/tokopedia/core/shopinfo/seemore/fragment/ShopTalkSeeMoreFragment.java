@@ -1,6 +1,5 @@
-package com.tokopedia.seller.temp.fragment;
+package com.tokopedia.core.shopinfo.seemore.fragment;
 
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
@@ -8,8 +7,8 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.shopinfo.models.talkmodel.ShopTalk;
 import com.tokopedia.core.shopinfo.models.talkmodel.ShopTalkResult;
 import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.seller.temp.adapter.ShopTalkAdapter;
-import com.tokopedia.seller.temp.model.ShopTalkSeeMore;
+import com.tokopedia.core.shopinfo.seemore.adapter.ShopTalkSeeMoreAdapter;
+import com.tokopedia.core.shopinfo.seemore.model.ShopTalkSeeMore;
 import android.support.v7.widget.LinearLayoutManager;
 
 import java.util.List;
@@ -18,15 +17,15 @@ import java.util.List;
  * Created by normansyahputa on 2/14/18.
  */
 
-public class ShopTalkFragment extends com.tokopedia.core.shopinfo.fragment.ShopTalkFragment {
+public class ShopTalkSeeMoreFragment extends com.tokopedia.core.shopinfo.fragment.ShopTalkFragment {
 
     public static Fragment createInstance() {
-        return new ShopTalkFragment();
+        return new ShopTalkSeeMoreFragment();
     }
 
     @Override
     protected void initView(View view) {
-        adapter = ShopTalkAdapter.createInstance(getActivity(), getShopTalkListener());
+        adapter = ShopTalkSeeMoreAdapter.createInstance(getActivity(), getShopTalkListener());
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         list.setLayoutManager(layoutManager);
         list.setAdapter(adapter);
