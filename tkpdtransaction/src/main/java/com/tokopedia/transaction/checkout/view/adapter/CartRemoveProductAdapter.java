@@ -141,14 +141,6 @@ public class CartRemoveProductAdapter
          */
         void onCheckBoxStateChangedListener(boolean checked, int position);
 
-
-        /**
-         * Executed when checkbox is clicked
-         * @param checked state of checkbox
-         * @param position index of list where the checkbox is clicked
-         */
-        void onCheckBoxClickedListener(boolean checked, int position);
-
     }
 
     /**
