@@ -42,17 +42,7 @@ public class EventRepositoryData implements EventRepository {
 
         return eventsDataStoreFactory
                 .createCloudDataStore()
-                .getEvents(params).map(new Func1<EventResponseEntity, List<EventsCategoryDomain>>() {
-                    @Override
-                    public List<EventsCategoryDomain> call(EventResponseEntity eventResponseEntity) {
-                        CommonUtils.dumper("inside EventResponseEntity = " + eventResponseEntity);
-                        EventEntityMaper eventEntityMaper = new EventEntityMaper();
-
-                        return eventEntityMaper.tranform(eventResponseEntity);
-                    }
-                });
-
-
+                .getEvents(params).map(new EventTransformMapper());
     }
 
     @Override

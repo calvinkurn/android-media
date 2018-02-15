@@ -161,7 +161,6 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         ButterKnife.bind(addressHolder, eventAddressTv);
 
         mPresenter.attachView(this);
-        mPresenter.initialize();
 
         promoCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

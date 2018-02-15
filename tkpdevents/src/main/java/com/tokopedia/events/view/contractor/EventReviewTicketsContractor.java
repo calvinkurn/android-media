@@ -57,8 +57,6 @@ public class EventReviewTicketsContractor {
 
     public interface Presenter extends CustomerPresenter<EventReviewTicketsContractor.EventReviewTicketsView> {
 
-        void initialize();
-
         void onDestroy();
 
         void proceedToPayment();
