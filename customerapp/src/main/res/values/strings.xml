@@ -76,5 +76,6 @@
     <string name="longpress_bayar">Bayar</string>
     <string name="longpress_jual">Jual</string>
     <string name="longpress_share">Share</string>
+    <string name="flight_title_activity_phone_verification">Verifikasi Nomor Ponsel</string>
 
 </resources>

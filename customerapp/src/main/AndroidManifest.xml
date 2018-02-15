@@ -157,8 +157,8 @@
             android:exported="true"
             android:label="Tokopedia"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan">
             <meta-data
                 android:name="APPS_HOME"
                 android:value="true" />
@@ -250,6 +250,12 @@
 
         <activity android:name=".qrscanner.QrScannerActivity"
             android:label="@string/title_scan_qr"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".flight.presentation.FlightPhoneVerificationActivity"
+            android:label="@string/flight_title_activity_phone_verification"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
     </application>
