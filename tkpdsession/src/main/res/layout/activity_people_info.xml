@@ -1,36 +1,30 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@id/main_view"
+    android:id="@+id/main_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
-        android:id="@id/app_bar_layout"
+        android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="0dp"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        android:stateListAnimator="@null"
-        android:visibility="visible">
+        android:fitsSystemWindows="true"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@id/collapsing_toolbar"
+            android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
-            app:contentScrim="@color/tkpd_main_green"
-            app:expandedTitleMarginEnd="12dp"
-            app:expandedTitleMarginStart="12dp"
-            app:collapsedTitleTextAppearance="@style/TextAppearance.Tokopedia.Title.Collapsed"
-            app:expandedTitleTextAppearance="@style/TextAppearance.Tokopedia.Title.Expanded"
-            app:layout_scrollFlags="scroll|snap|exitUntilCollapsed">
+            app:contentScrim="@color/white"
+            app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
 
             <include layout="@layout/partial_header_top_profile" />
 
             <android.support.v7.widget.Toolbar
-                android:id="@id/toolbar"
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:gravity="top"
@@ -44,7 +38,7 @@
     </android.support.design.widget.AppBarLayout>
 
     <!--<com.tokopedia.core.widgets.NonSwipeableViewPager-->
-        <!--android:id="@id/view_pager"-->
+        <!--android:id="@+id/view_pager"-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="match_parent"-->
         <!--android:visibility="visible"-->
@@ -95,7 +89,7 @@
     </android.support.v4.widget.NestedScrollView>
 
     <LinearLayout
-        android:id="@id/progress_view"
+        android:id="@+id/progress_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
@@ -103,7 +97,7 @@
         android:visibility="gone">
 
         <ProgressBar
-            android:id="@id/progress_bar"
+            android:id="@+id/progress_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:indeterminate="true" />
