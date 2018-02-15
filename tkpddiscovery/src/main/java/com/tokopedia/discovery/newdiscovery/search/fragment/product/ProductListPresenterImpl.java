@@ -131,7 +131,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     }
 
     @Override
-    public void loadMoreData(SearchParameter searchParameter, HashMap<String, String> additionalParams) {
+    public void loadMoreData(final SearchParameter searchParameter, HashMap<String, String> additionalParams) {
         RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter, false);
         enrichWithFilterAndSortParams(requestParams);
         enrichWithAdditionalParams(requestParams, additionalParams);
@@ -180,7 +180,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                     public void onError(Throwable e) {
                         if (isViewAttached()) {
                             getView().hideRefreshLayout();
-                            getView().showNetworkError(0);
+                            getView().showNetworkError(searchParameter.getStartRow());
                             getView().showBottomBarNavigation(false);
                         }
                     }
@@ -212,7 +212,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                     @Override
                     public void onError(Throwable e) {
                         if (isViewAttached()) {
-                            getView().showNetworkError(searchParameter.getStartRow());
+                            getView().showNetworkError(0);
                             getView().hideRefreshLayout();
                             getView().showBottomBarNavigation(false);
                         }

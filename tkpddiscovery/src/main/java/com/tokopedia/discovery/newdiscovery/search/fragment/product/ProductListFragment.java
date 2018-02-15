@@ -335,6 +335,7 @@ public class ProductListFragment extends SearchSectionFragment
             NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
                 @Override
                 public void onRetryClicked() {
+                    adapter.setStartFrom(startRow);
                     loadMoreProduct(startRow);
                 }
             }).showRetrySnackbar();
