@@ -427,8 +427,8 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
         @BindView(R2.id.ll_warning_container)
         LinearLayout llWarningContainer;
-        @BindView(R2.id.img_warning)
-        ImageView imgWarning;
+//        @BindView(R2.id.img_warning)
+//        ImageView imgWarning;
         @BindView(R2.id.tv_warning)
         TextView tvWarning;
 
@@ -511,14 +511,14 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             mTvDetailOptionText.setOnClickListener(costDetailOptionListener());
             mIvDetailOptionChevron.setOnClickListener(costDetailOptionListener());
 
-            if (getAdapterPosition() % 2 == 1) {
-                // Test show shipment warning
-                showGreyWarning("Terdapat kendala pengiriman pada 1 produk");
-                showShipmentWarning("Produk ini tidak dapat dikirimkan dengan kurir yang dipilih");
-            } else {
-                // Test show general warning
-                showRedWarning("Toko sedang tutup sementara, pesanan dapat di proses setelah toko buka kembali");
-            }
+//            if (getAdapterPosition() % 2 == 1) {
+//                // Test show shipment warning
+//                showGreyWarning("Terdapat kendala pengiriman pada 1 produk");
+//                showShipmentWarning("Produk ini tidak dapat dikirimkan dengan kurir yang dipilih");
+//            } else {
+//                // Test show general warning
+//                showRedWarning("Toko sedang tutup sementara, pesanan dapat di proses setelah toko buka kembali");
+//            }
 
         }
 
@@ -619,33 +619,32 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         private void showRedWarning(String message) {
             llWarningContainer.setBackgroundColor(ContextCompat.getColor(
                     llWarningContainer.getContext(), R.color.bg_warning_red));
-            imgWarning.setImageResource(R.drawable.ic_warning_red);
             tvWarning.setText(message);
             tvWarning.setTextColor(ContextCompat.getColor(
                     llWarningContainer.getContext(), R.color.text_warning_red));
             llWarningContainer.setVisibility(View.VISIBLE);
         }
 
-        private void showGreyWarning(String message) {
-            llWarningContainer.setBackgroundColor(ContextCompat.getColor(
-                    llWarningContainer.getContext(), R.color.bg_warning_grey));
-            imgWarning.setImageResource(R.drawable.ic_warning_grey);
-            tvWarning.setText(message);
-            tvWarning.setTextColor(ContextCompat.getColor(
-                    llWarningContainer.getContext(), R.color.black_54));
-            llWarningContainer.setVisibility(View.VISIBLE);
-        }
-
+//        private void showGreyWarning(String message) {
+//            llWarningContainer.setBackgroundColor(ContextCompat.getColor(
+//                    llWarningContainer.getContext(), R.color.bg_warning_grey));
+//            imgWarning.setImageResource(R.drawable.ic_warning_grey);
+//            tvWarning.setText(message);
+//            tvWarning.setTextColor(ContextCompat.getColor(
+//                    llWarningContainer.getContext(), R.color.black_54));
+//            llWarningContainer.setVisibility(View.VISIBLE);
+//        }
+//
         private void hideWarning() {
             llWarningContainer.setVisibility(View.GONE);
         }
-
-        private void showShipmentWarning(String message) {
-            imgShippingWarning.setImageResource(R.drawable.ic_warning_red);
-            tvShippingWarning.setText(message);
-            llShippingWarningContainer.setVisibility(View.VISIBLE);
-            disableItemView();
-        }
+//
+//        private void showShipmentWarning(String message) {
+//            imgShippingWarning.setImageResource(R.drawable.ic_warning_red);
+//            tvShippingWarning.setText(message);
+//            llShippingWarningContainer.setVisibility(View.VISIBLE);
+//            disableItemView();
+//        }
 
         private void hideShipmentWarning() {
             llShippingWarningContainer.setVisibility(View.GONE);

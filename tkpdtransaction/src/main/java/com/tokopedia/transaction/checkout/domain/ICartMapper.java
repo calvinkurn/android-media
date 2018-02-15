@@ -2,6 +2,7 @@ package com.tokopedia.transaction.checkout.domain;
 
 import com.tokopedia.transaction.checkout.domain.response.cartlist.CartDataListResponse;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
+import com.tokopedia.transaction.checkout.view.data.CartListData;
 
 import java.util.List;
 
@@ -11,5 +12,5 @@ import java.util.List;
 
 public interface ICartMapper {
 
-    List<CartItemData> convertToCartItemDataList(CartDataListResponse cartDataListResponse);
+    CartListData convertToCartItemDataList(CartDataListResponse cartDataListResponse);
 }
