@@ -2,6 +2,8 @@ package com.tokopedia.tkpd.home;
 
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -820,6 +822,13 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
             if (intent.getStringExtra(MO_ENGAGE_COUPON_CODE) != null &&
                     !TextUtils.isEmpty(intent.getStringExtra(MO_ENGAGE_COUPON_CODE))) {
+
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("Coupon Code", intent.getStringExtra(MO_ENGAGE_COUPON_CODE));
+                if (clipboard != null) {
+                    clipboard.setPrimaryClip(clip);
+                }
+
                 Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
             }
             if (!isPausing()) {
