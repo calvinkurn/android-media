@@ -1,4 +1,4 @@
-package com.tokopedia.seller.temp.adapter;
+package com.tokopedia.core.shopinfo.seemore.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -6,20 +6,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.temp.model.ShopTalkSeeMore;
+import com.tokopedia.core.R;
+import com.tokopedia.core.shopinfo.seemore.model.ShopTalkSeeMore;
 
 /**
  * Created by normansyahputa on 2/14/18.
  */
 
-public class ShopTalkAdapter extends com.tokopedia.core.shopinfo.adapter.ShopTalkAdapter {
+public class ShopTalkSeeMoreAdapter extends com.tokopedia.core.shopinfo.adapter.ShopTalkAdapter {
 
-    public static ShopTalkAdapter createInstance(Context context, com.tokopedia.core.shopinfo.adapter.ShopTalkAdapter.ActionShopTalkListener listener) {
-        return new ShopTalkAdapter(context, listener);
+    public static ShopTalkSeeMoreAdapter createInstance(Context context, com.tokopedia.core.shopinfo.adapter.ShopTalkAdapter.ActionShopTalkListener listener) {
+        return new ShopTalkSeeMoreAdapter(context, listener);
     }
 
-    public ShopTalkAdapter(Context context, ActionShopTalkListener listener) {
+    public ShopTalkSeeMoreAdapter(Context context, ActionShopTalkListener listener) {
         super(context, listener);
     }
 
