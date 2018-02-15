@@ -32,7 +32,7 @@ import butterknife.ButterKnife;
 
 public class ShopTalkAdapter extends BaseLinearRecyclerViewAdapter {
 
-    private static final int VIEW_TALK = 100;
+    protected static final int VIEW_TALK = 100;
     private boolean actionsEnabled;
     private boolean isHaveNext;
 
@@ -313,7 +313,7 @@ public class ShopTalkAdapter extends BaseLinearRecyclerViewAdapter {
         notifyDataSetChanged();
     }
 
-    private boolean isLastItemPosition(int position) {
+    protected boolean isLastItemPosition(int position) {
         return position == list.size() + ((!isHaveNext && !list.isEmpty())? 1 : 0);
     }
 

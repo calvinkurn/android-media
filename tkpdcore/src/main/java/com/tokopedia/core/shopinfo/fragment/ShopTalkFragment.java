@@ -53,6 +53,10 @@ public class ShopTalkFragment extends BasePresenterFragmentV4<ShopTalkPresenter>
         return new ShopTalkFragment();
     }
 
+    public static Fragment createInstance(boolean isLoadMoreEnabled) {
+        return new ShopTalkFragment();
+    }
+
     @BindView(R2.id.list)
     protected RecyclerView list;
 
@@ -118,6 +122,10 @@ public class ShopTalkFragment extends BasePresenterFragmentV4<ShopTalkPresenter>
         }
     }
 
+    protected boolean isEnableScroll(){
+        return true;
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -125,6 +133,9 @@ public class ShopTalkFragment extends BasePresenterFragmentV4<ShopTalkPresenter>
 
     @Override
     protected void setViewListener() {
+        if(!isEnableScroll()){
+            return;
+        }
         list.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -137,7 +148,7 @@ public class ShopTalkFragment extends BasePresenterFragmentV4<ShopTalkPresenter>
         });
     }
 
-    protected void loadMore(){
+    public void loadMore(){
         presenter.loadMore();
     }
 

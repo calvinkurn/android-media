@@ -27,7 +27,7 @@
             <include
                 layout="@layout/include_header_shop_info_detail"
                 android:layout_width="match_parent"
-                android:layout_height="320dp"
+                android:layout_height="wrap_content"
                 android:gravity="bottom"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.6" />

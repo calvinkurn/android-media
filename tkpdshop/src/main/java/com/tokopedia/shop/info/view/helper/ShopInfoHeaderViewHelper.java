@@ -18,6 +18,8 @@ import com.tokopedia.reputation.speed.SpeedReputation;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity;
 
+import java.util.Random;
+
 /**
  * Created by normansyahputa on 2/12/18.
  */
@@ -45,6 +47,7 @@ public class ShopInfoHeaderViewHelper {
     private Button buttonAddProduct;
     private Button buttonChatSeller;
     private Button buttonShopPage;
+    private Button button;
 
     public ShopInfoHeaderViewHelper(View view, UserSession userSession){
         this.view = view;
@@ -83,6 +86,8 @@ public class ShopInfoHeaderViewHelper {
         buttonChatSeller = view.findViewById(R.id.button_chat_seller);
 
         buttonShopPage = view.findViewById(R.id.button_shop_page);
+
+        button = view.findViewById(R.id.button);
     }
 
     public void renderData(final ShopInfo shopInfo){
@@ -146,6 +151,8 @@ public class ShopInfoHeaderViewHelper {
             @Override
             public void onClick(View view) {
                 Toast.makeText(view.getContext(), "Speed Click", Toast.LENGTH_LONG).show();
+
+                button.setVisibility(new Random().nextBoolean() ? View.VISIBLE : View.GONE);
             }
         });
 

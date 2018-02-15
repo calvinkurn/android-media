@@ -14,6 +14,11 @@ import com.tokopedia.seller.temp.model.ShopTalkSeeMore;
  */
 
 public class ShopTalkAdapter extends com.tokopedia.core.shopinfo.adapter.ShopTalkAdapter {
+
+    public static ShopTalkAdapter createInstance(Context context, com.tokopedia.core.shopinfo.adapter.ShopTalkAdapter.ActionShopTalkListener listener) {
+        return new ShopTalkAdapter(context, listener);
+    }
+
     public ShopTalkAdapter(Context context, ActionShopTalkListener listener) {
         super(context, listener);
     }
@@ -26,6 +31,31 @@ public class ShopTalkAdapter extends com.tokopedia.core.shopinfo.adapter.ShopTal
                         .inflate(R.layout.item_shop_talk_see_more, viewGroup, false));
             default:
                 return super.onCreateViewHolder(viewGroup, viewType);
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        switch (getItemViewType(position)) {
+            case ShopTalkSeeMore.TYPE:
+                // do nothing
+                break;
+            default:
+                super.onBindViewHolder(holder, position);
+                break;
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (isLastItemPosition(position) && (list.isEmpty() || isLoading() || isRetry())) {
+            return super.getItemViewType(position);
+        } else {
+            if(position >= 0 && position < list.size() && list.get(position) instanceof ShopTalkSeeMore){
+                return ShopTalkSeeMore.TYPE;
+            }else{
+                return VIEW_TALK;
+            }
         }
     }
 
