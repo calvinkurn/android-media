@@ -72,11 +72,11 @@ public class GroupChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public void addReply(ChatViewModel chatItem) {
-        this.list.add(chatItem);
+        this.list.add(0, chatItem);
     }
 
     public void addDummyReply(PendingChatViewModel pendingChatViewModel) {
-        list.add(pendingChatViewModel);
+        list.add(0,pendingChatViewModel);
     }
 
     public void removeDummy(PendingChatViewModel pendingChatViewModel) {

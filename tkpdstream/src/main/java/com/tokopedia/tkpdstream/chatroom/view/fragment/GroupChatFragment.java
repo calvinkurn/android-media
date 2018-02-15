@@ -52,6 +52,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     private EditText replyEditText;
     private View sendButton;
     private GroupChatAdapter adapter;
+    private LinearLayoutManager layoutManager;
 
     private OpenChannel mChannel;
     private GroupChatViewModel viewModel;
@@ -105,8 +106,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     private void prepareView() {
         GroupChatTypeFactory groupChatTypeFactory = new GroupChatTypeFactoryImpl(this);
         adapter = GroupChatAdapter.createInstance(groupChatTypeFactory);
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),
-                LinearLayoutManager.VERTICAL, true);
+        layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
         chatRecyclerView.setLayoutManager(layoutManager);
         chatRecyclerView.setAdapter(adapter);
 
@@ -203,7 +205,11 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     @Override
     public void onSuccessGetMessageFirstTime(List<Visitable> listChat) {
         adapter.addList(listChat);
+        scrollToBottom();
+    }
 
+    private void scrollToBottom() {
+        layoutManager.scrollToPosition(0);
     }
 
     @Override
@@ -216,5 +222,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         adapter.removeDummy(pendingChatViewModel);
         adapter.addReply(viewModel);
         adapter.notifyDataSetChanged();
+        replyEditText.setText("");
+        scrollToBottom();
+
     }
 }
