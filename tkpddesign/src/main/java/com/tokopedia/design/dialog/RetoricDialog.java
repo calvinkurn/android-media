@@ -5,6 +5,14 @@ import android.view.View;
 
 /**
  * Created by meyta on 2/14/18.
+ *
+ * How to use?
+ * setTitle("Title Goes Here");
+ * setDesc("Make the copy compact to communicate what you want, approx 50 character like this");
+ * setBtnOk("CTA Here");
+ * setOnOkClickListener(View.OnClickListener());
+ *
+ * important! cancel button will invisible
  */
 
 public class RetoricDialog extends ProminanceDialog {
