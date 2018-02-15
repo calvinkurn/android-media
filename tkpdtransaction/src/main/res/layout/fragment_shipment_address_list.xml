@@ -12,16 +12,17 @@
         android:layout_alignParentBottom="true"
         android:background="@color/white">
 
-        <Button
-            android:id="@+id/btn_add_new_address"
+        <TextView
+            android:id="@+id/tv_add_new_address"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_margin="8dp"
-            android:background="@drawable/orange_button_rounded"
+            android:layout_height="@dimen/btn_height"
+            android:layout_margin="@dimen/margin_small"
+            android:background="@drawable/medium_green_button_rounded"
+            android:gravity="center"
             android:text="Tambahkan Alamat Baru"
-            android:textSize="16sp"
+            android:textAllCaps="false"
             android:textColor="@color/white"
-            android:textAllCaps="false"/>
+            android:textSize="13sp" />
 
     </LinearLayout>
 

@@ -55,22 +55,21 @@
         <LinearLayout
             android:id="@+id/btn_next_to_payment_option"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/btn_height"
-            android:layout_marginBottom="@dimen/margin_small"
-            android:layout_marginEnd="@dimen/margin_med"
-            android:layout_marginLeft="@dimen/margin_med"
-            android:layout_marginRight="@dimen/margin_med"
-            android:layout_marginStart="@dimen/margin_med"
-            android:layout_marginTop="@dimen/margin_small"
-            android:background="@drawable/orange_button_rounded"
-            android:gravity="center">
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/white">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/tv_select_payment_method"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/btn_height"
+                android:layout_margin="@dimen/margin_small"
+                android:background="@drawable/medium_green_button_rounded"
+                android:gravity="center"
                 android:text="Pilih Metode Pembayaran"
+                android:textAllCaps="false"
                 android:textColor="@color/white"
-                android:textStyle="bold" />
+                android:textSize="13sp" />
 
         </LinearLayout>
 
