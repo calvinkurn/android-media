@@ -13,7 +13,7 @@ import javax.inject.Inject;
 /**
  * @author sebastianuskh on 4/26/17.
  */
-
+@Deprecated
 public class AddProductValidationInputMapper extends UploadProductPictureInputMapper{
 
     @Inject

@@ -1,9 +1,8 @@
 package com.tokopedia.seller.product.edit.domain.interactor.uploadproduct;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.UploadImageModel;
-import com.tokopedia.seller.product.edit.domain.UploadProductRepository;
+import com.tokopedia.seller.product.edit.domain.ProductRepository;
 import com.tokopedia.seller.product.edit.domain.model.AddProductDomainModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 
@@ -16,13 +15,13 @@ import rx.functions.Func1;
 
 public class ProceedUploadProduct implements Func1<ProductViewModel, Observable<AddProductDomainModel>> {
     private final NotificationManager notificationManager;
-    private final UploadProductRepository uploadProductRepository;
+    private final ProductRepository productRepository;
     private UploadImageUseCase<UploadImageModel> uploadImageUseCase;
 
-    public ProceedUploadProduct(NotificationManager notificationManager, UploadProductRepository uploadProductRepository,
+    public ProceedUploadProduct(NotificationManager notificationManager, ProductRepository productRepository,
                                 UploadImageUseCase<UploadImageModel> uploadImageUseCase) {
         this.notificationManager = notificationManager;
-        this.uploadProductRepository = uploadProductRepository;
+        this.productRepository = productRepository;
         this.uploadImageUseCase = uploadImageUseCase;
     }
 
@@ -33,7 +32,7 @@ public class ProceedUploadProduct implements Func1<ProductViewModel, Observable<
                 .doOnNext(notificationManager.getUpdateNotification())
                 .map(new MergeProductModelWithImage(productViewModel))
                 .doOnNext(notificationManager.getUpdateNotification())
-                .flatMap(new AddProductSubmit(uploadProductRepository))
+                .flatMap(new AddProductSubmit(productRepository))
                 .doOnNext(notificationManager.getUpdateNotification());
     }
 }

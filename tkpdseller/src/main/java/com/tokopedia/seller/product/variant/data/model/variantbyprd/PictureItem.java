@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by hendry on 9/5/2017.
  */
-
+@Deprecated
 public class PictureItem implements Parcelable {
     @SerializedName("v_pic_id")
     @Expose

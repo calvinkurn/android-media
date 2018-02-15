@@ -127,26 +127,31 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
 
         final ImageSelectModel imageSelectModel = imageSelectModelList.get(position);
         if (imageSelectModel.isValidURL()) {
-            ImageHandler.loadImageWithTarget(holder.imageView.getContext(), imageSelectModel.getUriOrPath(), new SimpleTarget<Bitmap>() {
-                @Override
-                public void onLoadStarted(Drawable placeholder) {
-                    super.onLoadStarted(placeholder);
-                    holder.imageView.setImageDrawable(placeholder);
-                }
+            if (imageSelectModel.getWidth() != 0 && imageSelectModel.getHeight()!= 0) {
+                ImageHandler.loadImageFitCenter(holder.imageView.getContext(), holder.imageView,
+                        imageSelectModel.getUriOrPath());
+            } else {
+                ImageHandler.loadImageWithTarget(holder.imageView.getContext(), imageSelectModel.getUriOrPath(), new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onLoadStarted(Drawable placeholder) {
+                        super.onLoadStarted(placeholder);
+                        holder.imageView.setImageDrawable(placeholder);
+                    }
 
-                @Override
-                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                    holder.imageView.setImageBitmap(resource);
-                    imageSelectModel.setWidth(resource.getWidth());
-                    imageSelectModel.setHeight(resource.getHeight());
-                }
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        holder.imageView.setImageBitmap(resource);
+                        imageSelectModel.setWidth(resource.getWidth());
+                        imageSelectModel.setHeight(resource.getHeight());
+                    }
 
-                @Override
-                public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                    super.onLoadFailed(e, errorDrawable);
-                    holder.imageView.setImageDrawable(errorDrawable);
-                }
-            });
+                    @Override
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        super.onLoadFailed(e, errorDrawable);
+                        holder.imageView.setImageDrawable(errorDrawable);
+                    }
+                });
+            }
         } else { // local Uri
             ImageHandler.loadImageFromFileFitCenter(
                     holder.itemView.getContext(),

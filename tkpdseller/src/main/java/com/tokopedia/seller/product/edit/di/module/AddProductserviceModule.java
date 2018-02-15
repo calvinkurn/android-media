@@ -3,13 +3,15 @@ package com.tokopedia.seller.product.edit.di.module;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.common.network.exception.HeaderErrorResponse;
+import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
+import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.util.GlobalConfig;
@@ -17,24 +19,19 @@ import com.tokopedia.seller.base.data.repository.UploadImageRepositoryImpl;
 import com.tokopedia.seller.base.data.source.UploadImageDataSource;
 import com.tokopedia.seller.base.domain.UploadImageRepository;
 import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
-import com.tokopedia.seller.product.edit.constant.ProductUrl;
-import com.tokopedia.seller.product.edit.data.mapper.UploadProductPictureInputMapper;
 import com.tokopedia.seller.product.edit.data.repository.GenerateHostRepositoryImpl;
-import com.tokopedia.seller.product.edit.data.repository.ImageProductUploadRepositoryImpl;
 import com.tokopedia.seller.product.draft.data.repository.ProductDraftRepositoryImpl;
-import com.tokopedia.seller.product.edit.data.repository.UploadProductRepositoryImpl;
+import com.tokopedia.seller.product.edit.data.repository.ProductRepositoryImpl;
 import com.tokopedia.seller.product.edit.data.source.GenerateHostDataSource;
-import com.tokopedia.seller.product.edit.data.source.ImageProductUploadDataSource;
 import com.tokopedia.seller.product.draft.data.source.ProductDraftDataSource;
-import com.tokopedia.seller.product.edit.data.source.UploadProductDataSource;
+import com.tokopedia.seller.product.edit.data.source.ProductDataSource;
 import com.tokopedia.seller.product.edit.data.source.cloud.api.GenerateHostApi;
 import com.tokopedia.seller.product.edit.data.source.cloud.api.ProductApi;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.UploadImageModel;
 import com.tokopedia.seller.product.edit.di.scope.AddProductServiceScope;
 import com.tokopedia.seller.product.edit.domain.GenerateHostRepository;
-import com.tokopedia.seller.product.edit.domain.ImageProductUploadRepository;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
-import com.tokopedia.seller.product.edit.domain.UploadProductRepository;
+import com.tokopedia.seller.product.edit.domain.ProductRepository;
 import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.edit.domain.interactor.uploadproduct.UploadProductUseCase;
 import com.tokopedia.seller.product.edit.view.presenter.AddProductServicePresenter;
@@ -51,8 +48,6 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
-import com.tokopedia.seller.common.exception.model.TomeErrorResponse;
-import com.tokopedia.seller.shop.common.di.ShopScope;
 
 /**
  * @author sebastianuskh on 4/20/17.
@@ -81,14 +76,8 @@ public class AddProductserviceModule {
 
     @AddProductServiceScope
     @Provides
-    UploadProductRepository provideUploadProductRepository(UploadProductDataSource uploadProductDataSource){
-        return new UploadProductRepositoryImpl(uploadProductDataSource);
-    }
-
-    @AddProductServiceScope
-    @Provides
-    ImageProductUploadRepository provideImageProductUploadRepository(ImageProductUploadDataSource imageProductUploadDataSource, UploadProductPictureInputMapper uploadProductPictureInputMapper){
-        return new ImageProductUploadRepositoryImpl(imageProductUploadDataSource, uploadProductPictureInputMapper);
+    ProductRepository provideUploadProductRepository(ProductDataSource productDataSource){
+        return new ProductRepositoryImpl(productDataSource);
     }
 
     @AddProductServiceScope
@@ -122,16 +111,17 @@ public class AddProductserviceModule {
         return retrofitBuilder.baseUrl(TkpdBaseURL.TOME_DOMAIN).client(okHttpClient).build();
     }
 
+    //TODO add header error interceptor
     @ProductTomeQualifier
     @AddProductServiceScope
     @Provides
     public OkHttpClient provideOkHttpClientTomeBearerAuth(@ProductTomeQualifier HttpLoggingInterceptor httpLoggingInterceptor,
                                                           BearerInterceptor bearerInterceptor,
-                                                          @ProductTomeQualifier TkpdErrorResponseInterceptor tkpdErrorResponseInterceptor
+                                                          @ProductTomeQualifier ErrorResponseInterceptor errorResponseInterceptor
     ) {
         return new OkHttpClient.Builder()
                 .addInterceptor(bearerInterceptor)
-                .addInterceptor(tkpdErrorResponseInterceptor)
+                .addInterceptor(errorResponseInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
                 .build();
     }
@@ -152,9 +142,9 @@ public class AddProductserviceModule {
     @ProductTomeQualifier
     @AddProductServiceScope
     @Provides
-    //todo hendry change this interceptor to HeaderErrorResponseInterceptor
-    public TkpdErrorResponseInterceptor provideResponseInterceptor() {
-        return new TkpdErrorResponseInterceptor(TomeErrorResponse.class);
+    //todo hendry change this interceptor to HeaderErrorResponseInterceptor, check
+    public ErrorResponseInterceptor provideResponseInterceptor() {
+        return new HeaderErrorResponseInterceptor(HeaderErrorResponse.class);
     }
 
     @AddProductServiceScope

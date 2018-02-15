@@ -1,21 +1,8 @@
 package com.tokopedia.seller.product.edit.view.fragment;
 
-import android.Manifest;
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.CallSuper;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,70 +10,16 @@ import android.view.ViewGroup;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.core.ImageGallery;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
-import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
-import com.tokopedia.seller.common.imageeditor.ImageEditorWatermarkActivity;
-import com.tokopedia.seller.instoped.InstopedSellerCropWatermarkActivity;
-import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
-import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.constant.UploadToTypeDef;
-import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.Catalog;
-import com.tokopedia.seller.product.edit.view.activity.CatalogPickerActivity;
-import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
-import com.tokopedia.seller.product.edit.view.activity.ProductAddInfoActivity;
-import com.tokopedia.seller.product.edit.view.activity.ProductScoringDetailActivity;
-import com.tokopedia.seller.product.edit.view.activity.YoutubeAddVideoActivity;
-import com.tokopedia.seller.product.edit.view.dialog.ImageAddDialogFragment;
-import com.tokopedia.seller.product.edit.view.dialog.ImageDescriptionDialog;
-import com.tokopedia.seller.product.edit.view.dialog.ImageEditProductDialogFragment;
-import com.tokopedia.seller.product.edit.view.holder.ProductAdditionalInfoViewHolder;
-import com.tokopedia.seller.product.edit.view.holder.ProductDetailViewHolder;
-import com.tokopedia.seller.product.edit.view.holder.ProductImageViewHolder;
-import com.tokopedia.seller.product.edit.view.holder.ProductInfoViewHolder;
-import com.tokopedia.seller.product.edit.view.holder.ProductScoreViewHolder;
-import com.tokopedia.seller.product.edit.view.listener.ProductAddView;
-import com.tokopedia.seller.product.edit.view.listener.YoutubeAddVideoView;
-import com.tokopedia.seller.product.edit.view.mapper.AnalyticsMapper;
-import com.tokopedia.seller.product.edit.view.model.ImageSelectModel;
-import com.tokopedia.seller.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductVideoViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
-import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
-import com.tokopedia.seller.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
-import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
-import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.edit.view.presenter.ProductAddPresenter;
 import com.tokopedia.seller.product.edit.view.presenter.ProductEditView;
-import com.tokopedia.seller.product.edit.view.widget.ImagesSelectView;
-import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
-import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
-import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantDataSubmit;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantOptionSubmit;
-import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
-
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
-
-import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE;
 
 public abstract class BaseProductEditFragment<T extends ProductAddPresenter>
         extends BaseProductAddEditFragment<T>
@@ -154,6 +87,8 @@ public abstract class BaseProductEditFragment<T extends ProductAddPresenter>
             productAdditionalInfoViewHolder.setPreOrderUnit((int)model.getProductPreorder().getPreorderTimeUnit());
             productAdditionalInfoViewHolder.setPreOrderValue((int)model.getProductPreorder().getPreorderProcessTime());
         }
+
+        //TODO hendry set variant view
 //        if (model.getSwitchVariant() == ProductVariantConstant.SWITCH_VARIANT_EXIST) {
 //            productAdditionalInfoViewHolder.setProductVariantDataSubmit(model.getProductVariantDataSubmit(),
 //                    model.getVariantStringSelection());

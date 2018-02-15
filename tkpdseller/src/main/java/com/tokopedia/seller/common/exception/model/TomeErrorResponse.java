@@ -2,7 +2,7 @@ package com.tokopedia.seller.common.exception.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.network.retrofit.response.BaseResponseError;
+import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
 import com.tokopedia.seller.common.exception.TomeException;
 
 import java.io.IOException;

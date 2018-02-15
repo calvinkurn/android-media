@@ -96,10 +96,10 @@ public class ProductDraftDataManager {
         }
     }
 
-    public Observable<Long> updateDraft(long productId, String draftData, boolean isUploading) {
+    public Observable<Long> updateDraft(long productDraftId, String draftData, boolean isUploading) {
         ProductDraftDataBase productDraftDataBase = new Select()
                 .from(ProductDraftDataBase.class)
-                .where(ProductDraftDataBase_Table.id.is(productId))
+                .where(ProductDraftDataBase_Table.id.is(productDraftId))
                 .querySingle();
         if (productDraftDataBase != null){
             productDraftDataBase.setData(draftData);

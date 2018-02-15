@@ -6,7 +6,9 @@ import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.seller.base.view.adapter.ItemType;
+import com.tokopedia.seller.product.edit.view.model.edit.variantbyprd.ProductVariantViewModel;
 
+//TODO need this: product_sizechart from_ig image_id
 public class ProductViewModel implements ItemType {
 
     public static final int TYPE = 382;
@@ -16,6 +18,10 @@ public class ProductViewModel implements ItemType {
     @SerializedName("product_name")
     @Expose
     private String productName;
+    @SerializedName("product_alias")
+    @Expose
+    private String productAlias;
+
     @SerializedName("product_price")
     @Expose
     private double productPrice;
@@ -49,9 +55,7 @@ public class ProductViewModel implements ItemType {
     @SerializedName("product_shop")
     @Expose
     private ProductShopViewModel productShop;
-    @SerializedName("product_alias")
-    @Expose
-    private String productAlias;
+
     @SerializedName("product_url")
     @Expose
     private String productUrl;
@@ -109,6 +113,11 @@ public class ProductViewModel implements ItemType {
     @Expose
     private boolean productNameEditable;
 
+    @SerializedName("product_is_variant")
+    @Expose
+    private boolean productIsVariant;
+
+    @Expose
     private long draftId;
 
     public long getDraftId() {
@@ -117,6 +126,14 @@ public class ProductViewModel implements ItemType {
 
     public void setDraftId(long draftId) {
         this.draftId = draftId;
+    }
+
+    public void setProductIsVariant(boolean productIsVariant) {
+        this.productIsVariant = productIsVariant;
+    }
+
+    public boolean isProductIsVariant() {
+        return productIsVariant;
     }
 
     public long getProductId() {

@@ -6,7 +6,7 @@ import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.UploadImageModel;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
-import com.tokopedia.seller.product.edit.domain.UploadProductRepository;
+import com.tokopedia.seller.product.edit.domain.ProductRepository;
 import com.tokopedia.seller.product.edit.domain.listener.AddProductNotificationListener;
 import com.tokopedia.seller.product.edit.domain.model.AddProductDomainModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
@@ -33,7 +33,7 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
     public static final int UNSELECTED_PRODUCT_ID = -1;
 
     private final ProductDraftRepository productDraftRepository;
-    private final UploadProductRepository uploadProductRepository;
+    private final ProductRepository productRepository;
     private ProductViewModel productViewModel;
 
     private AddProductNotificationListener listener;
@@ -41,10 +41,10 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
 
     @Inject
     public UploadProductUseCase(ProductDraftRepository productDraftRepository,
-                                UploadProductRepository uploadProductRepository,
+                                ProductRepository productRepository,
                                 UploadImageUseCase<UploadImageModel> uploadImageUseCase) {
         this.productDraftRepository = productDraftRepository;
-        this.uploadProductRepository = uploadProductRepository;
+        this.productRepository = productRepository;
         this.uploadImageUseCase = uploadImageUseCase;
     }
 
@@ -86,7 +86,7 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
                         return productViewModel;
                     }
                 })
-                .flatMap(new UploadProduct(draftProductId, listener, uploadProductRepository,
+                .flatMap(new UploadProduct(draftProductId, listener, productRepository,
                         uploadImageUseCase))
                 .doOnNext(new DeleteProductDraft(draftProductId, productDraftRepository))
                 .doOnNext(new DeleteImageCacheDraftFile());

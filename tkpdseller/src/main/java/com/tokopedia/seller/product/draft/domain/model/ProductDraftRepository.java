@@ -23,7 +23,7 @@ public interface ProductDraftRepository {
 
     Observable<Long> getAllDraftCount();
 
-    Observable<Long> updateDraftToUpload(long productId, ProductViewModel domainModel, boolean isUploading);
+    Observable<Long> updateDraftToUpload(long productDraftIdToUpdate, ProductViewModel domainModel, boolean isUploading);
 
     Observable<Boolean> updateuploadingStatusDraft(long productId, boolean isUploading);
 }

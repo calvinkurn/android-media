@@ -12,6 +12,7 @@ import java.util.List;
  * @author sebastianuskh on 4/10/17.
  */
 
+@Deprecated
 public class UploadProductInputDomainModel {
 
     private long id;

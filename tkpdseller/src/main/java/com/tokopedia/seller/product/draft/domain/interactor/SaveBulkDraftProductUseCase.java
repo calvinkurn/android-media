@@ -41,7 +41,12 @@ public class SaveBulkDraftProductUseCase extends UseCase<List<Long>> {
         ArrayList<ProductViewModel> inputModelList =
                 (ArrayList<ProductViewModel>) requestParams.getObject(UPLOAD_PRODUCT_INPUT_MODEL_LIST);
         return Observable.from(inputModelList)
-                .flatMap(new SaveDraft(0, false))
+                .flatMap(new Func1<ProductViewModel, Observable<Long>>() {
+                    @Override
+                    public Observable<Long> call(ProductViewModel productViewModel) {
+                        return productDraftRepository.saveDraft(productViewModel, false);
+                    }
+                })
                 .toList();
     }
 
@@ -84,20 +89,4 @@ public class SaveBulkDraftProductUseCase extends UseCase<List<Long>> {
         return params;
     }
 
-    private class SaveDraft implements Func1<ProductViewModel, Observable<Long>> {
-        boolean isUploading;
-        long previousDraftId;
-        SaveDraft(long previousDraftId, boolean isUploading){
-            this.previousDraftId = previousDraftId;
-            this.isUploading = isUploading;
-        }
-        @Override
-        public Observable<Long> call(ProductViewModel inputModel) {
-            if (previousDraftId <= 0) {
-                return productDraftRepository.saveDraft(inputModel, isUploading);
-            } else {
-                return productDraftRepository.updateDraftToUpload(previousDraftId, inputModel, isUploading);
-            }
-        }
-    }
 }

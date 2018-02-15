@@ -2,12 +2,9 @@ package com.tokopedia.seller.product.draft.view.mapper;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.seller.product.draft.view.model.ProductDraftViewModel;
-import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
-import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 
 import java.util.List;
 

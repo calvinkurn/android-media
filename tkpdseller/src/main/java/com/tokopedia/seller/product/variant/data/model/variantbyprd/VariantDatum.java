@@ -13,7 +13,7 @@ import java.util.List;
  * Created by hendry on 8/15/2017.
  * {"variant_data":[{"pvd_id":3016392,"status":1,"stock":0,"PvoListString":"{2184381,2184932}","v_code":"2184932:2184381"},{"pvd_id":3016391,"status":1,"stock":0,"PvoListString":"{2184382,2184932}","v_code":"2184932:2184382"}]}
  */
-
+@Deprecated
 public class VariantDatum implements Parcelable {
 
     @SerializedName("pvd_id")

@@ -6,6 +6,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class ProductPictureViewModel {
 
+    public static final int ACTIVE_STATUS = 1;
+
     @SerializedName("id")
     @Expose
     private long id;
@@ -15,9 +17,9 @@ public class ProductPictureViewModel {
     //1 -> active
     //2 -> primary
     //-3 -> sizechart
-    //@SerializedName("status")
-    //@Expose
-    //private long status;
+    @SerializedName("status")
+    @Expose
+    private long status = ACTIVE_STATUS;
 
     @SerializedName("file_name")
     @Expose
