@@ -402,7 +402,7 @@ public class FlightAnalytics {
         static String ADULT = "adult";
         static String CHILD = "child";
         static String INFANT = "baby";
-        static String REVIEW_NEXT = " on order details page";
+        static String REVIEW_NEXT = "on order details page";
         static String REFUNDABLE = "- refundable";
         static String NOT_REFUNDABLE = "- not refundable";
         static String PARTIALLY_REFUNDABLE = "- partially refundable";
