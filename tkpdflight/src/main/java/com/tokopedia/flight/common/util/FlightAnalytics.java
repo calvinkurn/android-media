@@ -386,7 +386,7 @@ public class FlightAnalytics {
         static String ADD_TO_CART = "add to cart";
         static String BOOKING_DETAIL = "click detail";
         static String BOOKING_NEXT = "click next";
-        static String REVIEW_NEXT = "review next";
+        static String REVIEW_NEXT = "click next";
         static String VOUCHER = "click gunakan voucher code";
         static String VOUCHER_SUCCESS = "voucher success";
         static String VOUCHER_ERROR = "voucher error";
