@@ -27,6 +27,7 @@ import com.tokopedia.shop.info.view.fragment.ShopInfoFragment;
 import com.tokopedia.shop.info.view.helper.ShopInfoHeaderViewHelper;
 import com.tokopedia.shop.info.view.listener.ShopPageView;
 import com.tokopedia.shop.info.view.presenter.ShopPagePresenter;
+import com.tokopedia.shop.product.view.fragment.ShopProductListFragment;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
@@ -158,7 +159,7 @@ public class ShopPageActivity extends BaseTabActivity  implements HasComponent<S
             public Fragment getItem(int position) {
                 switch (position) {
                     case 0:
-                        return ShopInfoFragment.createInstance("");
+                        return ShopProductListFragment.createInstance(shopInfo);
                     case 1:
                         if(shopModuleRouter != null){
                             return shopModuleRouter.getShopReputationFragmentShop(shopInfo, shopDomain);

@@ -1,10 +1,10 @@
 package com.tokopedia.shop.product.di.module;
 
-import com.tokopedia.shop.note.data.repository.ShopNoteRepositoryImpl;
-import com.tokopedia.shop.note.data.source.ShopNoteDataSource;
-import com.tokopedia.shop.note.domain.repository.ShopNoteRepository;
-import com.tokopedia.shop.note.view.model.ShopNoteViewModel;
+import com.tokopedia.shop.product.data.repository.ShopProductRepositoryImpl;
+import com.tokopedia.shop.product.data.source.cloud.ShopProductCloudDataSource;
 import com.tokopedia.shop.product.di.scope.ShopProductScope;
+import com.tokopedia.shop.product.domain.repository.ShopProductRepository;
+import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
 import dagger.Module;
 import dagger.Provides;
@@ -15,14 +15,14 @@ public class ShopProductModule {
 
     @ShopProductScope
     @Provides
-    public ShopNoteRepository provideShopNoteRepository(ShopNoteDataSource shopNoteDataSource){
-        return new ShopNoteRepositoryImpl(shopNoteDataSource);
+    public ShopProductRepository provideShopProductRepository(ShopProductCloudDataSource shopProductDataSource){
+        return new ShopProductRepositoryImpl(shopProductDataSource);
     }
 
     @ShopProductScope
     @Provides
-    public ShopNoteViewModel provideShopNoteViewModel(){
-        return new ShopNoteViewModel();
+    public ShopProductViewModel provideShopProductViewModel(){
+        return new ShopProductViewModel();
     }
 }
 
