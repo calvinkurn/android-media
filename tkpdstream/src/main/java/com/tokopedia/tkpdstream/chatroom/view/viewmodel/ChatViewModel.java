@@ -28,4 +28,20 @@ public class ChatViewModel extends BaseChatViewModel implements Visitable<GroupC
     public int type(GroupChatTypeFactory typeFactory) {
         return typeFactory.type(this);
     }
+
+    public String getSenderId() {
+        return senderId;
+    }
+
+    public String getSenderName() {
+        return senderName;
+    }
+
+    public String getSenderIconUrl() {
+        return senderIconUrl;
+    }
+
+    public boolean isInfluencer() {
+        return isInfluencer;
+    }
 }

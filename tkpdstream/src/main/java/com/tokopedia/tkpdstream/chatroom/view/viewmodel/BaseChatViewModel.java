@@ -17,4 +17,20 @@ public class BaseChatViewModel {
         this.updatedAt = updatedAt;
         this.messageId = messageId;
     }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public String getMessageId() {
+        return messageId;
+    }
 }

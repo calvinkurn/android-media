@@ -25,6 +25,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
     private final GetGroupChatMessagesFirstTimeUseCase getGroupChatMessagesFirstTimeUseCase;
     private final LoginGroupChatUseCase loginGroupChatUseCase;
+    private final SendGroupChatMessageUseCase sendMessageUseCase;
 
     @Inject
     public GroupChatPresenter(LoginGroupChatUseCase loginGroupChatUseCase,
@@ -33,6 +34,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                               SendGroupChatMessageUseCase sendMessageUseCase) {
         this.loginGroupChatUseCase = loginGroupChatUseCase;
         this.getGroupChatMessagesFirstTimeUseCase = getGroupChatMessagesFirstTimeUseCase;
+        this.sendMessageUseCase = sendMessageUseCase;
 
     }
 
@@ -42,7 +44,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                 new GetGroupChatMessagesFirstTimeUseCase.GetGroupChatMessagesListener() {
                     @Override
                     public void onGetMessages(List<Visitable> listChat) {
-                        Log.d("NISNIS", "onGetMessages");
+                        getView().onSuccessGetMessageFirstTime(listChat);
                     }
 
                     @Override

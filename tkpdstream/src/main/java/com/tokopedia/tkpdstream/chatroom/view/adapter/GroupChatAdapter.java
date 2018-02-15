@@ -44,6 +44,7 @@ public class GroupChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
+        holder.bind(list.get(position));
 
     }
 
@@ -59,5 +60,10 @@ public class GroupChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     public static GroupChatAdapter createInstance(GroupChatTypeFactory groupChatTypeFactory) {
         return new GroupChatAdapter(groupChatTypeFactory);
+    }
+
+    public void addList(List<Visitable> listChat) {
+        this.list.addAll(listChat);
+        notifyDataSetChanged();
     }
 }

@@ -15,6 +15,7 @@ import android.widget.EditText;
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.SendBirdException;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.channel.view.activity.ChannelActivity;
@@ -30,6 +31,8 @@ import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
 import com.tokopedia.tkpdstream.common.analytics.ChannelAnalytics;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -183,5 +186,15 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     public void onDestroy() {
         presenter.detachView();
         super.onDestroy();
+    }
+
+    @Override
+    public void onSuccessGetMessage(List<Visitable> listChat) {
+    }
+
+    @Override
+    public void onSuccessGetMessageFirstTime(List<Visitable> listChat) {
+        adapter.addList(listChat);
+
     }
 }

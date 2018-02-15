@@ -21,7 +21,7 @@ public class GroupChatTypeFactoryImpl extends BaseAdapterTypeFactory implements 
     }
 
     @Override
-    public int type(AdminAnnouncementViewModel oppositeChatViewModel) {
+    public int type(AdminAnnouncementViewModel adminAnnouncementViewModel) {
         return AdminAnnouncementViewHolder.LAYOUT;
     }
 

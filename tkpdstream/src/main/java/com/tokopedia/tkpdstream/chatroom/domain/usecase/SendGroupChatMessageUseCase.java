@@ -21,5 +21,11 @@ public class SendGroupChatMessageUseCase {
 
     }
 
+    public void execute(final String channelUrl,
+                        String userId,
+                        final SendGroupChatMessageListener listener) {
+
+    }
+
 
 }

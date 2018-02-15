@@ -14,7 +14,7 @@ public interface GroupChatTypeFactory {
 
     AbstractViewHolder createViewHolder(View view, int viewType);
 
-    int type(AdminAnnouncementViewModel oppositeChatViewModel);
+    int type(AdminAnnouncementViewModel adminAnnouncementViewModel);
 
     int type(ChatViewModel myChatViewModel);
 
