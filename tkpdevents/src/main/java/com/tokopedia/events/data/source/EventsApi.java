@@ -42,9 +42,6 @@ public interface EventsApi {
     Observable<EventResponseEntity> getEventsByLocation(@Path("location") String location);
 
     @GET()
-    Observable<EventResponseEntity> getSearchEvents(@Url String url);
-
-    @GET()
     Observable<EventsDetailsEntity> getEventDetails(@Url String url);
 
     @GET()

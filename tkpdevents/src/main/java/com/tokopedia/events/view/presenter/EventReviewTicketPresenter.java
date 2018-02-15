@@ -58,48 +58,25 @@ public class EventReviewTicketPresenter
         extends BaseDaggerPresenter<EventReviewTicketsContractor.EventReviewTicketsView>
         implements EventReviewTicketsContractor.Presenter {
 
-    PackageViewModel checkoutData;
-    PostVerifyCartUseCase postVerifyCartUseCase;
-    PostPaymentUseCase postPaymentUseCase;
-    ProfileUseCase profileUseCase;
-    ProfileModel profileModel;
-    String promocode;
-    String email;
-    String number;
-    boolean isPromoCodeCase;
-    SelectedSeatViewModel selectedSeatViewModel;
-    ArrayList<String> hints = new ArrayList<>();
-    ArrayList<String> errors = new ArrayList<>();
+    private PackageViewModel checkoutData;
+    private PostVerifyCartUseCase postVerifyCartUseCase;
+    private PostPaymentUseCase postPaymentUseCase;
+    private ProfileUseCase profileUseCase;
+    private ProfileModel profileModel;
+    private String promocode;
+    private String email;
+    private String number;
+    private boolean isPromoCodeCase;
+    private SelectedSeatViewModel selectedSeatViewModel;
+    private ArrayList<String> hints = new ArrayList<>();
+    private ArrayList<String> errors = new ArrayList<>();
 
     @Inject
-    public EventReviewTicketPresenter(PostVerifyCartUseCase usecase, PostPaymentUseCase payment) {
+    public EventReviewTicketPresenter(PostVerifyCartUseCase usecase, PostPaymentUseCase payment, ProfileUseCase profileUseCase) {
         this.postVerifyCartUseCase = usecase;
         this.postPaymentUseCase = payment;
+        this.profileUseCase = profileUseCase;
     }
-
-    @Override
-    public void initialize() {
-        getView().showProgressBar();
-        GlobalCacheManager profileCache = new GlobalCacheManager();
-
-        ProfileSourceFactory profileSourceFactory = new ProfileSourceFactory(
-                getView().getActivity(),
-                new PeopleService(),
-                new ProfileMapper(),
-                profileCache,
-                new AnalyticsCacheHandler(),
-                new SessionHandler(getView().getActivity())
-        );
-
-        ProfileRepository profileRepository = new ProfileRepositoryImpl(profileSourceFactory);
-
-        profileUseCase = new ProfileUseCase(
-                new JobExecutor(),
-                new UIThread(),
-                profileRepository
-        );
-    }
-
 
     @Override
     public void onDestroy() {
@@ -153,6 +130,7 @@ public class EventReviewTicketPresenter
 
     @Override
     public void getProfile() {
+        getView().showProgressBar();
         profileUseCase.execute(RequestParams.EMPTY, new Subscriber<ProfileModel>() {
             @Override
             public void onCompleted() {

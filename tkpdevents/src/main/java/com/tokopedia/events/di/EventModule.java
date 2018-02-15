@@ -3,8 +3,18 @@ package com.tokopedia.events.di;
 import android.content.Context;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
+import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
+import com.tokopedia.core.drawer2.data.mapper.ProfileMapper;
+import com.tokopedia.core.drawer2.data.repository.ProfileRepositoryImpl;
+import com.tokopedia.core.drawer2.domain.ProfileRepository;
+import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
+import com.tokopedia.core.network.apiservices.user.PeopleService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
@@ -177,8 +187,8 @@ public class EventModule {
     @Provides
     @EventScope
     GetEventSeatLayoutUseCase providesGetEventSeatLayoutUseCase(ThreadExecutor threadExecutor,
-                                                      PostExecutionThread postExecutionThread,
-                                                      EventRepository eventRepository) {
+                                                                PostExecutionThread postExecutionThread,
+                                                                EventRepository eventRepository) {
         return new GetEventSeatLayoutUseCase(threadExecutor, postExecutionThread, eventRepository);
     }
 
@@ -194,6 +204,32 @@ public class EventModule {
     @EventScope
     Context getActivityContext() {
         return thisContext;
+    }
+
+    @Provides
+    @EventScope
+    ProfileSourceFactory providesProfileSourceFactory(Context context) {
+        return new ProfileSourceFactory(context,
+                new PeopleService(),
+                new ProfileMapper(),
+                new GlobalCacheManager(),
+                new AnalyticsCacheHandler(),
+                new SessionHandler(context));
+    }
+
+    @Provides
+    @EventScope
+    ProfileRepository providesProfileRepository(ProfileSourceFactory profileSourceFactory) {
+        return new ProfileRepositoryImpl(profileSourceFactory);
+    }
+
+    @Provides
+    @EventScope
+    ProfileUseCase providesProfileUseCase(ThreadExecutor threadExecutor,
+                                          PostExecutionThread postExecutionThread,
+                                          ProfileRepository profileRepository) {
+        return new ProfileUseCase(
+                threadExecutor, postExecutionThread, profileRepository);
     }
 
 
