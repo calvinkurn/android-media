@@ -74,7 +74,7 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventBuyPDPVariant(String eventLabel) {
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_PDP,
+                AppEventTracking.Event.ADD_TO_CART_PDP,
                 AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
                 AppEventTracking.Action.CLICK_BUY_VARIANT_PDP,
                 eventLabel
@@ -110,7 +110,7 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventBuyPageVariant(String eventLabel) {
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_PDP,
+                AppEventTracking.Event.ADD_TO_CART_PDP,
                 AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
                 AppEventTracking.Action.CLICK_BUY_VARIANT_PAGE,
                 eventLabel

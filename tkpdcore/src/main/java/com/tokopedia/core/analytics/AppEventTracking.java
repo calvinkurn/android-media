@@ -169,6 +169,7 @@ public interface AppEventTracking {
         String EVENT_RESOLUTION = "clickResolution";
         String PRODUCT_VIEW = "productView";
         String CLICK_PDP = "clickPDP";
+        String ADD_TO_CART_PDP = "addToCart";
     }
 
     interface Category {
