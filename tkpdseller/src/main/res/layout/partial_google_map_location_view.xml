@@ -63,7 +63,16 @@
         android:layout_height="@dimen/image_width_xxxl"
         android:visibility="gone">
 
-        <Button
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/mapview"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:clickable="false"
+            app:liteMode="true"
+            app:mapType="normal"
+            app:cameraZoom="15" />
+        
+         <Button
             android:id="@+id/delete_pinpoint"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/image_width_s"
@@ -74,15 +83,6 @@
             android:layout_marginRight="@dimen/margin_small"
             android:layout_marginEnd="@dimen/margin_small"
             android:layout_gravity="top|right"/>
-
-        <com.google.android.gms.maps.MapView
-            android:id="@+id/mapview"
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:clickable="false"
-            app:liteMode="true"
-            app:mapType="normal"
-            app:cameraZoom="15" />
     </FrameLayout>
 
     <TextView
