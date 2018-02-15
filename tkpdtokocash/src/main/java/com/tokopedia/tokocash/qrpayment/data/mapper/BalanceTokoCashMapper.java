@@ -4,6 +4,8 @@ import com.tokopedia.tokocash.qrpayment.data.entity.BalanceTokoCashEntity;
 import com.tokopedia.tokocash.qrpayment.presentation.model.ActionBalance;
 import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
 
+import javax.inject.Inject;
+
 import rx.functions.Func1;
 
 /**
@@ -11,6 +13,10 @@ import rx.functions.Func1;
  */
 
 public class BalanceTokoCashMapper implements Func1<BalanceTokoCashEntity, BalanceTokoCash> {
+
+    @Inject
+    public BalanceTokoCashMapper() {
+    }
 
     @Override
     public BalanceTokoCash call(BalanceTokoCashEntity balanceTokoCashEntity) {
