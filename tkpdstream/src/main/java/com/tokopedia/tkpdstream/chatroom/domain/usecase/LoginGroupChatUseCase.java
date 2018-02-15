@@ -2,6 +2,7 @@ package com.tokopedia.tkpdstream.chatroom.domain.usecase;
 
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.SendBirdException;
+import com.tokopedia.tkpdstream.chatroom.domain.ConnectionManager;
 
 import javax.inject.Inject;
 
@@ -21,29 +22,40 @@ public class LoginGroupChatUseCase {
     public LoginGroupChatUseCase() {
     }
 
-    public void execute(String channelUrl,
+    public void execute(final String channelUrl,
+                        String userId,
                         final LoginGroupChatListener listener) {
-        OpenChannel.getChannel(channelUrl, new OpenChannel.OpenChannelGetHandler() {
+
+        ConnectionManager.addConnectionManagementHandler(userId,
+                ConnectionManager.CONNECTION_HANDLER_ID,
+                new ConnectionManager.ConnectionManagementHandler() {
             @Override
-            public void onResult(final OpenChannel openChannel, SendBirdException e) {
-                if (e != null) {
-                    listener.onErrorEnterChannel(e);
-                    return;
-                }
-
-                openChannel.enter(new OpenChannel.OpenChannelEnterHandler() {
-
+            public void onConnected(boolean reconnect) {
+                OpenChannel.getChannel(channelUrl, new OpenChannel.OpenChannelGetHandler() {
                     @Override
-                    public void onResult(SendBirdException e) {
+                    public void onResult(final OpenChannel openChannel, SendBirdException e) {
                         if (e != null) {
                             listener.onErrorEnterChannel(e);
+                            return;
                         }
 
-                        listener.onSuccessEnterChannel(openChannel);
+                        openChannel.enter(new OpenChannel.OpenChannelEnterHandler() {
 
+                            @Override
+                            public void onResult(SendBirdException e) {
+                                if (e != null) {
+                                    listener.onErrorEnterChannel(e);
+                                }
+
+                                listener.onSuccessEnterChannel(openChannel);
+
+                            }
+                        });
                     }
                 });
             }
         });
+
+
     }
 }

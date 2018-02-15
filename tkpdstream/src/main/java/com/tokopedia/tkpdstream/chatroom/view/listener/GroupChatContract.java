@@ -1,4 +1,4 @@
-package com.tokopedia.tkpdstream.channel.view.listener;
+package com.tokopedia.tkpdstream.chatroom.view.listener;
 
 import android.content.Context;
 
@@ -28,5 +28,7 @@ public interface GroupChatContract {
         void enterChannel(String s, LoginGroupChatUseCase.LoginGroupChatListener loginGroupChatListener);
 
         void logoutChannel(OpenChannel mChannel);
+
+        void loadPreviousMessages();
     }
 }

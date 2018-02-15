@@ -23,9 +23,9 @@ public interface StreamComponent {
     @ApplicationContext
     Context context();
 
-    OkHttpClient provideOkHttpClient();
-
-    Retrofit.Builder retrofitBuilder();
+//    OkHttpClient provideOkHttpClient();
+//
+//    Retrofit.Builder retrofitBuilder();
 
     void inject(BaseStreamActivity baseChatActivity);
 

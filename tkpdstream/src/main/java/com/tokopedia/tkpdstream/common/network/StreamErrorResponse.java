@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -29,12 +30,8 @@ public class StreamErrorResponse extends BaseResponseError {
     }
 
     @Override
-    public RuntimeException createException() {
+    public IOException createException() {
         return new ErrorNetworkException(errorList);
     }
 
-    @Override
-    public boolean hasCustomAdditionalError() {
-        return false;
-    }
 }

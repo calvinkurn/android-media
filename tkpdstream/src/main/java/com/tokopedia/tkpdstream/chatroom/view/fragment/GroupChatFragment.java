@@ -3,6 +3,7 @@ package com.tokopedia.tkpdstream.chatroom.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,15 +17,16 @@ import com.sendbird.android.SendBirdException;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.tkpdstream.R;
-import com.tokopedia.tkpdstream.channel.di.DaggerChannelComponent;
-import com.tokopedia.tkpdstream.chatroom.domain.usecase.LoginGroupChatUseCase;
 import com.tokopedia.tkpdstream.channel.view.activity.ChannelActivity;
-import com.tokopedia.tkpdstream.channel.view.adapter.GroupChatAdapter;
-import com.tokopedia.tkpdstream.channel.view.listener.GroupChatContract;
-import com.tokopedia.tkpdstream.channel.view.presenter.GroupChatPresenter;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.di.DaggerChatroomComponent;
+import com.tokopedia.tkpdstream.chatroom.domain.usecase.LoginGroupChatUseCase;
+import com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity;
+import com.tokopedia.tkpdstream.chatroom.view.adapter.GroupChatAdapter;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.typefactory.GroupChatTypeFactory;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.typefactory.GroupChatTypeFactoryImpl;
+import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
+import com.tokopedia.tkpdstream.chatroom.view.presenter.GroupChatPresenter;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
 import com.tokopedia.tkpdstream.common.analytics.ChannelAnalytics;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
@@ -37,6 +39,7 @@ import javax.inject.Inject;
 
 public class GroupChatFragment extends BaseDaggerFragment implements GroupChatContract.View {
 
+    public static final String ARGS_VIEW_MODEL = "GC_VIEW_MODEL";
     @Inject
     GroupChatPresenter presenter;
 
@@ -58,7 +61,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         StreamComponent streamComponent = DaggerStreamComponent.builder().baseAppComponent(
                 ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent()).build();
 
-        DaggerChannelComponent.builder()
+        DaggerChatroomComponent.builder()
                 .streamComponent(streamComponent)
                 .build().inject(this);
 
@@ -66,8 +69,21 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         presenter.attachView(this);
     }
 
-    public static Fragment createInstance() {
-        return new GroupChatFragment();
+    public static Fragment createInstance(Bundle bundle) {
+        Fragment fragment = new GroupChatFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            viewModel = savedInstanceState.getParcelable(ARGS_VIEW_MODEL);
+        } else if (getArguments() != null) {
+            viewModel = new GroupChatViewModel(getArguments().getString(GroupChatActivity
+                    .EXTRA_CHANNEL_URL, ""));
+        }
     }
 
     @Nullable
@@ -84,6 +100,20 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     private void prepareView() {
         GroupChatTypeFactory groupChatTypeFactory = new GroupChatTypeFactoryImpl(this);
         adapter = GroupChatAdapter.createInstance(groupChatTypeFactory);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.VERTICAL, true);
+        chatRecyclerView.setLayoutManager(layoutManager);
+        chatRecyclerView.setAdapter(adapter);
+
+        chatRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+
+                if (layoutManager.findLastVisibleItemPosition() == adapter.getItemCount() - 1) {
+                    presenter.loadPreviousMessages();
+                }
+            }
+        });
 
         replyEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -130,10 +160,16 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
             @Override
             public void onErrorEnterChannel(SendBirdException e) {
-                getActivity().finish();
                 getActivity().setResult(ChannelActivity.RESULT_ERROR_LOGIN);
+                getActivity().finish();
             }
         });
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(ARGS_VIEW_MODEL, viewModel);
     }
 
     @Override

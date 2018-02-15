@@ -17,24 +17,27 @@ import rx.Subscriber;
 public class ChannelPresenter extends BaseDaggerPresenter<ChannelContract.View> implements
         ChannelContract.Presenter {
 
-    private final GetChannelListUseCase getChannelListUseCase;
+//    private final GetChannelListUseCase getChannelListUseCase;
+//
+//    @Inject
+//    public ChannelPresenter(GetChannelListUseCase getChannelListUseCase) {
+//        this.getChannelListUseCase = getChannelListUseCase;
+//    }
 
     @Inject
-    public ChannelPresenter(GetChannelListUseCase getChannelListUseCase) {
-        this.getChannelListUseCase = getChannelListUseCase;
+    public ChannelPresenter() {
     }
-
 
 
     @Override
     public void detachView() {
         super.detachView();
-        getChannelListUseCase.unsubscribe();
+//        getChannelListUseCase.unsubscribe();
     }
 
     public void getChannelListFirstTime() {
-        getChannelListUseCase.execute(getChannelListUseCase.createParamFirstTime(),
-                new GetChannelFirstTimeSubscriber(getView()));
+//        getChannelListUseCase.execute(getChannelListUseCase.createParamFirstTime(),
+//                new GetChannelFirstTimeSubscriber(getView()));
     }
 
     @Override

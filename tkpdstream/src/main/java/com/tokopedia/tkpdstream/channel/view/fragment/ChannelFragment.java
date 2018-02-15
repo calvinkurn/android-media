@@ -17,7 +17,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.channel.di.DaggerChannelComponent;
 import com.tokopedia.tkpdstream.channel.view.activity.ChannelActivity;
-import com.tokopedia.tkpdstream.channel.view.activity.GroupChatActivity;
+import com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.tkpdstream.channel.view.adapter.typefactory.ChannelTypeFactory;
 import com.tokopedia.tkpdstream.channel.view.listener.ChannelContract;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelListViewModel;
@@ -26,6 +26,9 @@ import com.tokopedia.tkpdstream.channel.view.presenter.ChannelPresenter;
 import com.tokopedia.tkpdstream.common.analytics.ChannelAnalytics;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -81,10 +84,20 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
 
     @Override
     protected void loadInitialData() {
-        if(getAdapter().getItemCount() == 0){
-            showLoading();
+//        if(getAdapter().getItemCount() == 0){
+//            showLoading();
+//        }
+//        presenter.getChannelListFirstTime();
+
+        List<ChannelViewModel> list = new ArrayList<>();
+        String dummyImage = "http://www.behindthevoiceactors.com/_img/games/banner_11.jpg";
+        String dummyProfile = "https://orig00.deviantart.net/80ce/f/2007/349/d/f/__kingdom_hearts___coded___by_mazjojo.jpg";
+        for (int i = 0; i < 10; i++) {
+            ChannelViewModel channelViewModel = new ChannelViewModel("id"+i, "name"+i, dummyImage, dummyProfile, "title"+i, "subtitle"+i, i);
+            list.add(channelViewModel);
         }
-        presenter.getChannelListFirstTime();
+
+        onSuccessGetChannelFirstTime(new ChannelListViewModel(list));
     }
 
     @Override

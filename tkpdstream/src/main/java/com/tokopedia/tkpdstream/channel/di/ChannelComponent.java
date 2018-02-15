@@ -15,7 +15,4 @@ public interface ChannelComponent {
 
     void inject(ChannelFragment fragment);
 
-    void inject(GroupChatFragment fragment);
-
-
 }

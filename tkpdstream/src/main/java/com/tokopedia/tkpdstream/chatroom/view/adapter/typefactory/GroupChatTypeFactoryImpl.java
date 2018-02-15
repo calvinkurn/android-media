@@ -5,10 +5,10 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
-import com.tokopedia.tkpdstream.chatroom.view.adapter.viewholder.MyChatViewHolder;
-import com.tokopedia.tkpdstream.chatroom.view.adapter.viewholder.OppositeChatViewHolder;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.MyChatViewModel;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.OppositeChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.adapter.viewholder.ChatViewHolder;
+import com.tokopedia.tkpdstream.chatroom.view.adapter.viewholder.AdminAnnouncementViewHolder;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.AdminAnnouncementViewModel;
 
 /**
  * @author by nisie on 2/7/18.
@@ -21,23 +21,23 @@ public class GroupChatTypeFactoryImpl extends BaseAdapterTypeFactory implements 
     }
 
     @Override
-    public int type(OppositeChatViewModel oppositeChatViewModel) {
-        return OppositeChatViewHolder.LAYOUT;
+    public int type(AdminAnnouncementViewModel oppositeChatViewModel) {
+        return AdminAnnouncementViewHolder.LAYOUT;
     }
 
     @Override
-    public int type(MyChatViewModel myChatViewModel) {
-        return MyChatViewHolder.LAYOUT;
+    public int type(ChatViewModel myChatViewModel) {
+        return ChatViewHolder.LAYOUT;
     }
 
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         AbstractViewHolder viewHolder;
 
-        if (type == MyChatViewHolder.LAYOUT) {
-            viewHolder = new MyChatViewHolder(parent);
-        } else if (type == OppositeChatViewHolder.LAYOUT) {
-            viewHolder = new OppositeChatViewHolder(parent);
+        if (type == ChatViewHolder.LAYOUT) {
+            viewHolder = new ChatViewHolder(parent);
+        } else if (type == AdminAnnouncementViewHolder.LAYOUT) {
+            viewHolder = new AdminAnnouncementViewHolder(parent);
         } else {
             viewHolder = super.createViewHolder(parent, type);
         }

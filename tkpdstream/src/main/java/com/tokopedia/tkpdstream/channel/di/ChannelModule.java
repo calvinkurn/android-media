@@ -18,17 +18,17 @@ import retrofit2.Retrofit;
 @Module
 public class ChannelModule {
 
-    @ChannelScope
-    @Provides
-    @GroupChatQualifier
-    public Retrofit provideGroupChatRetrofit(OkHttpClient okHttpClient,
-                                          Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(GroupChatUrl.BASE_URL).client(okHttpClient).build();
-    }
-
-    @ChannelScope
-    @Provides
-    public GroupChatApi provideGroupChatApi(@GroupChatQualifier Retrofit retrofit) {
-        return retrofit.create(GroupChatApi.class);
-    }
+//    @ChannelScope
+//    @Provides
+//    @GroupChatQualifier
+//    public Retrofit provideGroupChatRetrofit(OkHttpClient okHttpClient,
+//                                          Retrofit.Builder retrofitBuilder) {
+//        return retrofitBuilder.baseUrl(GroupChatUrl.BASE_URL).client(okHttpClient).build();
+//    }
+//
+//    @ChannelScope
+//    @Provides
+//    public GroupChatApi provideGroupChatApi(@GroupChatQualifier Retrofit retrofit) {
+//        return retrofit.create(GroupChatApi.class);
+//    }
 }

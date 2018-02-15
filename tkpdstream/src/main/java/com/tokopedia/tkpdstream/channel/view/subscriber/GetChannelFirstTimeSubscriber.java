@@ -1,6 +1,6 @@
 package com.tokopedia.tkpdstream.channel.view.subscriber;
 
-import com.tokopedia.abstraction.common.utils.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.tkpdstream.channel.view.listener.ChannelContract;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelListViewModel;
 

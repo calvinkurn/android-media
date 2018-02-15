@@ -19,12 +19,13 @@
         <EditText
             android:id="@+id/reply_edit_text"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
 
         <ImageView
             android:id="@+id/button_send"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
             app:srcCompat="@drawable/ic_arrow_right"/>
 
     </LinearLayout>

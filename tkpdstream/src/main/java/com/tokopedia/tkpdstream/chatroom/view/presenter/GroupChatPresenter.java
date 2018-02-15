@@ -1,4 +1,4 @@
-package com.tokopedia.tkpdstream.channel.view.presenter;
+package com.tokopedia.tkpdstream.chatroom.view.presenter;
 
 import android.util.Log;
 
@@ -10,7 +10,7 @@ import com.tokopedia.tkpdstream.chatroom.domain.ConnectionManager;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.GetGroupChatMessagesFirstTimeUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.LoginGroupChatUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.SendGroupChatMessageUseCase;
-import com.tokopedia.tkpdstream.channel.view.listener.GroupChatContract;
+import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 
 import java.util.List;
 
@@ -38,37 +38,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
     @Override
     public void initMessageFirstTime(final String channelUrl, final OpenChannel mChannel) {
-        ConnectionManager.addConnectionManagementHandler("Nisie123", ConnectionManager
-                .CONNECTION_HANDLER_ID, new ConnectionManager.ConnectionManagementHandler() {
-            @Override
-            public void onConnected(boolean reconnect) {
-                if (reconnect) {
-                    getMessages(mChannel);
-                } else {
-                    getMessagesFirstTime(channelUrl, mChannel);
-                }
-            }
-        });
-    }
-
-    @Override
-    public void sendReply(String replyText) {
-
-    }
-
-    @Override
-    public void enterChannel(String channelUrl, LoginGroupChatUseCase.LoginGroupChatListener
-            loginGroupChatListener) {
-        loginGroupChatUseCase.execute(channelUrl, loginGroupChatListener);
-    }
-
-    @Override
-    public void logoutChannel(OpenChannel mChannel) {
-
-    }
-
-    private void getMessagesFirstTime(String channelUrl, OpenChannel mChannel) {
-        getGroupChatMessagesFirstTimeUseCase.execute(channelUrl,mChannel,
+        getGroupChatMessagesFirstTimeUseCase.execute(channelUrl, mChannel,
                 new GetGroupChatMessagesFirstTimeUseCase.GetGroupChatMessagesListener() {
                     @Override
                     public void onGetMessages(List<Visitable> listChat) {
@@ -82,7 +52,29 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                 });
     }
 
-    private void getMessages(OpenChannel mChannel) {
+    @Override
+    public void sendReply(String replyText) {
 
+    }
+
+    @Override
+    public void enterChannel(String channelUrl, LoginGroupChatUseCase.LoginGroupChatListener
+            loginGroupChatListener) {
+        loginGroupChatUseCase.execute(channelUrl, "Nisie123", loginGroupChatListener);
+    }
+
+    @Override
+    public void logoutChannel(OpenChannel mChannel) {
+
+    }
+
+    @Override
+    public void loadPreviousMessages() {
+
+    }
+
+    @Override
+    public void detachView() {
+        super.detachView();
     }
 }

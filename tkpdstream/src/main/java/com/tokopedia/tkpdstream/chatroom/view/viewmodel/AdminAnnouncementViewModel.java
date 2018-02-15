@@ -7,7 +7,12 @@ import com.tokopedia.tkpdstream.chatroom.view.adapter.typefactory.GroupChatTypeF
  * @author by nisie on 2/7/18.
  */
 
-public class MyChatViewModel implements Visitable<GroupChatTypeFactory> {
+public class AdminAnnouncementViewModel extends BaseChatViewModel implements
+        Visitable<GroupChatTypeFactory> {
+
+    public AdminAnnouncementViewModel(String message, String createdAt, String updatedAt, String messageId) {
+        super(message, createdAt, updatedAt, messageId);
+    }
 
     @Override
     public int type(GroupChatTypeFactory typeFactory) {
