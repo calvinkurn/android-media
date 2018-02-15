@@ -24,6 +24,9 @@ public interface ShopApi {
     @GET(ShopUrl.SHOP_INFO_PATH)
     Observable<Response<DataResponse<ShopInfo>>> getShopInfo(@Query(ShopParamApiContant.SHOP_ID) String shopId);
 
+    @GET(ShopUrl.SHOP_INFO_PATH)
+    Observable<Response<DataResponse<ShopInfo>>> getShopInfoByDomain(@Query(ShopParamApiContant.SHOP_ID) String shopId);
+
     @GET(ShopUrl.SHOP_NOTE_PATH)
     Observable<Response<DataResponse<ShopNoteList>>> getShopNotes(@Query(ShopParamApiContant.SHOP_ID) String shopId);
 

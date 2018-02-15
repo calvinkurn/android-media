@@ -29,4 +29,13 @@ public class ShopInfoDataSource {
             }
         });
     }
+
+    public Observable<ShopInfo> getShopInfoByDomain(String shopDomain) {
+        return shopInfoCloudDataSource.getShopInfoByDomain(shopDomain).flatMap(new Func1<Response<DataResponse<ShopInfo>>, Observable<ShopInfo>>() {
+            @Override
+            public Observable<ShopInfo> call(Response<DataResponse<ShopInfo>> dataResponseResponse) {
+                return Observable.just(dataResponseResponse.body().getData());
+            }
+        });
+    }
 }

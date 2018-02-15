@@ -30,4 +30,8 @@ public class ShopInfoCloudDataSource {
     public Observable<Response<DataResponse<ShopInfo>>> getShopInfo(String shopId) {
         return shopApi.getShopInfo(shopId);
     }
+
+    public Observable<Response<DataResponse<ShopInfo>>> getShopInfoByDomain(String shopDomain) {
+        return shopApi.getShopInfoByDomain(shopDomain);
+    }
 }
