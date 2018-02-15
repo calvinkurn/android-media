@@ -55,7 +55,7 @@ public class SMSChatActivity extends BaseActivity {
     private static final String TAG = "SMSChatActivity";
     private static final int SMS_PERMISSION_CODE = 0;
     private static final int CALL_PERMISSION_CODE = 1;
-    private String PHONE_NO = "";
+    private String phoneNo = "";
 
     private String INBOX_URI = "content://sms/inbox";
     private String SENT_URI = "content://sms/sent";
@@ -81,7 +81,10 @@ public class SMSChatActivity extends BaseActivity {
         chatView = findViewById(R.id.chat_view);
 
         driverDetails = getIntent().getParcelableExtra(DRIVER_INFO);
-        PHONE_NO = driverDetails.getPhoneNumber();
+        phoneNo = driverDetails.getPhoneNumber();
+
+        phoneNo = driverDetails.getPhoneNumber().replaceAll("[-,(]", "");
+
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -95,7 +98,7 @@ public class SMSChatActivity extends BaseActivity {
         }
 
         View view = getLayoutInflater().inflate(R.layout.custom_toolbar, null);
-        ActionBar.LayoutParams layout = new ActionBar.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.FILL_PARENT);
+        ActionBar.LayoutParams layout = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setCustomView(view, layout);
         driverNameTV = view.findViewById(R.id.driver_name);
@@ -113,7 +116,6 @@ public class SMSChatActivity extends BaseActivity {
 
         Glide.with(this).load(driverDetails.getPictureUrl())
                 .asBitmap()
-                .centerCrop()
                 .error(R.drawable.default_user_pic_light)
                 .into(new BitmapImageViewTarget(driverImageView) {
                     @Override
@@ -154,7 +156,7 @@ public class SMSChatActivity extends BaseActivity {
         StringBuilder smsBuilder = new StringBuilder();
 
         try {
-            Cursor cur = getContentResolver().query(Uri.parse(INBOX_URI), projection, "address='" + PHONE_NO + "'", null, "date asc");
+            Cursor cur = getContentResolver().query(Uri.parse(INBOX_URI), projection, "address='" + phoneNo + "'", null, "date asc");
             if (cur.moveToFirst()) {
                 receivedMessagesArrayList.clear();
                 int index_Address = cur.getColumnIndex("address");
@@ -212,6 +214,7 @@ public class SMSChatActivity extends BaseActivity {
 
     private void mergeSMS() {
 
+        Log.e("Merge sms call", "   True");
         int receiveSMSCount = receivedMessagesArrayList.size();
         int sentSMSCount = sentMessagesArrayList.size();
 
@@ -246,7 +249,7 @@ public class SMSChatActivity extends BaseActivity {
         StringBuilder smsBuilder = new StringBuilder();
 
         try {
-            Cursor cur = getContentResolver().query(Uri.parse(SENT_URI), projection, "address='" + PHONE_NO + "'", null, "date asc");
+            Cursor cur = getContentResolver().query(Uri.parse(SENT_URI), projection, "address='" + phoneNo + "'", null, "date asc");
             if (cur.moveToFirst()) {
 
                 sentMessagesArrayList.clear();
@@ -294,7 +297,7 @@ public class SMSChatActivity extends BaseActivity {
             onBackPressed();
             return true;
         } else if (id == R.id.call_driver) {
-            if (!TextUtils.isEmpty(PHONE_NO)) {
+            if (!TextUtils.isEmpty(phoneNo)) {
                 if (!hasMakeCallPermission()) {
                     requestMakeCallPermission();
                 } else {
@@ -316,7 +319,7 @@ public class SMSChatActivity extends BaseActivity {
             @Override
             public boolean sendMessage(ChatMessage chatMessage) {
 
-                return !TextUtils.isEmpty(chatMessage.getMessage()) && sendSMS(PHONE_NO, chatMessage.getMessage());
+                return !TextUtils.isEmpty(chatMessage.getMessage()) && sendSMS(phoneNo, chatMessage.getMessage());
             }
         });
 
@@ -353,7 +356,7 @@ public class SMSChatActivity extends BaseActivity {
                         }
                     }
 
-                    if (smsSender.equals(PHONE_NO) /*&& smsBody.toString().startsWith(serviceProviderSmsCondition)*/) {
+                    if (smsSender.equals(phoneNo) /*&& smsBody.toString().startsWith(serviceProviderSmsCondition)*/) {
                         onSMSReceived(smsBody.toString(), timeStamp);
                     }
                 }
@@ -380,23 +383,26 @@ public class SMSChatActivity extends BaseActivity {
 
 
     private void showRequestPermissionsInfoAlertDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.permission_alert_dialog_title);
-        builder.setMessage(R.string.permission_dialog_message);
-        builder.setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (!hasReadSendSmsPermission()) {
+
+        if (!hasReadSendSmsPermission()) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.permission_alert_dialog_title);
+            builder.setMessage(R.string.permission_dialog_message);
+            builder.setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
                     requestReadAndSendSmsPermission();
-                } else {
-                    readSentSMS();
-                    readInboxSMS();
-                    mergeSMS();
+                    dialog.dismiss();
                 }
-                dialog.dismiss();
-            }
-        });
-        builder.show();
+            });
+            builder.show();
+        } else {
+            readSentSMS();
+            readInboxSMS();
+            mergeSMS();
+        }
+
     }
 
     public boolean sendSMS(String phoneNo, String msg) {
@@ -437,7 +443,7 @@ public class SMSChatActivity extends BaseActivity {
         StringBuilder smsBuilder = new StringBuilder();
 
         try {
-            Cursor cur = getContentResolver().query(Uri.parse(ALL_SMS_URI), projection, "address='" + PHONE_NO + "'", null, "date asc");
+            Cursor cur = getContentResolver().query(Uri.parse(ALL_SMS_URI), projection, "address='" + phoneNo + "'", null, "date asc");
             if (cur.moveToFirst()) {
                 int index_Address = cur.getColumnIndex("address");
                 int index_Person = cur.getColumnIndex("person");
@@ -526,17 +532,21 @@ public class SMSChatActivity extends BaseActivity {
             // permission was granted, yay! Do the
             // contacts-related task you need to do.
 
+            Log.e("SMS Permission granted", "true");
+
             readInboxSMS();
             readSentSMS();
             mergeSMS();
         } else if (requestCode == CALL_PERMISSION_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+            Log.e("Call Permission granted", "true");
             callDriver();
         }
     }
 
     private void callDriver() {
         Intent intent = new Intent(Intent.ACTION_CALL);
-        intent.setData(Uri.parse("tel:" + PHONE_NO));
+        intent.setData(Uri.parse("tel:" + phoneNo));
         SMSChatActivity.this.startActivity(intent);
     }
 
