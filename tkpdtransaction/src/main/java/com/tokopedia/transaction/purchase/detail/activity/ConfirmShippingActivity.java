@@ -117,11 +117,13 @@ public class ConfirmShippingActivity extends TActivity
 
     private void initateData(OrderDetailData orderDetailData) {
         editableModel = new OrderDetailShipmentModel();
+        if(getIntent().getExtras().getInt(EXTRA_ORDER_MODE_KEY) == CONFIRM_SHIPMENT_MODE) {
+            editableModel.setShipmentId(orderDetailData.getShipmentId());
+            editableModel.setPackageId(orderDetailData.getShipmentServiceId());
+            editableModel.setShipmentName(orderDetailData.getShipmentName());
+            editableModel.setPackageName(orderDetailData.getShipmentServiceName());
+        }
         editableModel.setOrderId(orderDetailData.getOrderId());
-        editableModel.setShipmentId(orderDetailData.getShipmentId());
-        editableModel.setPackageId(orderDetailData.getShipmentServiceId());
-        editableModel.setShipmentName(orderDetailData.getShipmentName());
-        editableModel.setPackageName(orderDetailData.getShipmentServiceName());
         editableModel.setOrderStatusCode(Integer.parseInt(orderDetailData.getOrderCode()));
     }
 
@@ -200,9 +202,17 @@ public class ConfirmShippingActivity extends TActivity
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                editableModel.setShippingRef(barcodeEditText.getText().toString());
-                presenter.onProcessCourier(ConfirmShippingActivity.this, editableModel,
-                        isChangeCourierMode(editableModel.getOrderStatusCode()));
+                if(editableModel.getPackageId() == null || editableModel.getPackageId().isEmpty()) {
+                    NetworkErrorHelper.showSnackbar(
+                            ConfirmShippingActivity.this,
+                            getString(R.string.error_no_courier_chosen)
+                    );
+                } else {
+                    editableModel.setShippingRef(barcodeEditText.getText().toString());
+                    presenter.onProcessCourier(
+                            ConfirmShippingActivity.this, editableModel,
+                            isChangeCourierMode(editableModel.getOrderStatusCode()));
+                }
             }
         };
     }

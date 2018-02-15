@@ -16,6 +16,8 @@
     <string name="label_error_request_cancel_order_reason_to_short">Alasan pembatalan terlalu pendek, minimum 10 karakter</string>
     <string name="title_look">Lihat</string>
     <string name="title_download">Unduh</string>
+    <string name="title_choose">Pilih</string>
+    <string name="title_courier">Kurir</string>
     <string name="title_save">Simpan</string>
     <string name="title_status">Status</string>
     <string name="toko_cash_info">TokoCash</string>
@@ -173,6 +175,8 @@
     <string name="title_replacement_reason_3">Saya sudah menemukan barang dari toko lain</string>
     <string name="title_replacement_other_reason">Lainnya</string>
     <string name="error_replacement_reason">Mohon Pilih Alasan Pembatalan</string>
+    <string name="error_no_courier_chosen">Mohon Pilih Kurir</string>
+    <string name="error_no_change_price_weight">Mohon Ubah Harga dan Berat Produk</string>
     <string name="success_request_cancel_order">Sukses mengajukan pembatalan</string>
     <string name="success_finish_order_message">Pesanan Anda sudah selesai. Beri Rating dan Review di halaman ulasan.</string>
     <string name="title_dialog_finish_order">Selesaikan Pesanan</string>

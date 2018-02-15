@@ -11,15 +11,18 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by kris on 1/10/18. Tokopedia
  */
 
-public class RejectOrderPriceWeightChangeAdapter extends RecyclerView.Adapter<RejectOrderPriceWeightChangeAdapter.RejectOrderWeightPriceViewHolder>{
+public class RejectOrderPriceWeightChangeAdapter extends RecyclerView.Adapter<RejectOrderPriceWeightChangeAdapter.RejectOrderWeightPriceViewHolder> {
 
     private List<WrongProductPriceWeightEditable> productPriceWeightData;
+
+    private List<WrongProductPriceWeightEditable> originalPriceWeightData;
 
     private RejectOrderPriceWeightAdapterListener listener;
 
@@ -27,6 +30,12 @@ public class RejectOrderPriceWeightChangeAdapter extends RecyclerView.Adapter<Re
             List<WrongProductPriceWeightEditable> productPriceWeightData,
             RejectOrderPriceWeightAdapterListener listener) {
         this.productPriceWeightData = productPriceWeightData;
+        this.originalPriceWeightData = new ArrayList<>();
+        for (int i = 0; i < productPriceWeightData.size(); i++) {
+            originalPriceWeightData.add(
+                    new WrongProductPriceWeightEditable(productPriceWeightData.get(i))
+            );
+        }
         this.listener = listener;
     }
 
@@ -50,6 +59,14 @@ public class RejectOrderPriceWeightChangeAdapter extends RecyclerView.Adapter<Re
 
     public List<WrongProductPriceWeightEditable> getProductPriceWeightData() {
         return productPriceWeightData;
+    }
+
+    public boolean isEdited() {
+        for (int i = 0; i < productPriceWeightData.size(); i++) {
+            if(productPriceWeightData.get(i).equals(originalPriceWeightData.get(i)))
+                return false;
+        }
+        return true;
     }
 
     @Override
@@ -90,7 +107,7 @@ public class RejectOrderPriceWeightChangeAdapter extends RecyclerView.Adapter<Re
         };
     }
 
-    public interface RejectOrderPriceWeightAdapterListener{
+    public interface RejectOrderPriceWeightAdapterListener {
 
         void onProductChoosen(WrongProductPriceWeightEditable model);
 
