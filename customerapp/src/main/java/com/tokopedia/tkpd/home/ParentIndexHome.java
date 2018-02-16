@@ -824,7 +824,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                     !TextUtils.isEmpty(intent.getStringExtra(MO_ENGAGE_COUPON_CODE))) {
 
                 ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("Coupon Code", intent.getStringExtra(MO_ENGAGE_COUPON_CODE));
+                ClipData clip = ClipData.newPlainText(MO_ENGAGE_COUPON_CODE, intent.getStringExtra(MO_ENGAGE_COUPON_CODE));
                 if (clipboard != null) {
                     clipboard.setPrimaryClip(clip);
                 }
