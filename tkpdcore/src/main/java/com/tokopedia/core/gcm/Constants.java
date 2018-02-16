@@ -129,6 +129,7 @@ public interface Constants {
 
         String EVENTS = "tokopedia://events";
         String EVENTS_ACTIVITIES = "tokopedia://events/activities";
+        String EVENTS_DETAILS = "tokopedia://events/{event}";
         String REFERRAL_WELCOME = "tokopedia://referral/{code}/{owner}";
         String KOLCOMMENT = "tokopedia://kolcomment/{id}";
         String PROMO_LIST = "tokopedia://promoNative";

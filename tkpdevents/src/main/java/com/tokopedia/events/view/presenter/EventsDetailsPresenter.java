@@ -10,14 +10,11 @@ import com.tokopedia.events.domain.GetEventDetailsRequestUseCase;
 import com.tokopedia.events.domain.GetSeatLayoutUseCase;
 import com.tokopedia.events.domain.model.EventDetailsDomain;
 import com.tokopedia.events.view.activity.EventBookTicketActivity;
+import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.contractor.EventsDetailsContract;
 import com.tokopedia.events.view.mapper.EventDetailsViewModelMapper;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
 
 import javax.inject.Inject;
 
@@ -62,10 +59,16 @@ public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsCon
     @Override
     public void attachView(EventsDetailsContract.EventDetailsView view) {
         super.attachView(view);
-        CategoryItemsViewModel dataFromHome = (CategoryItemsViewModel)
-                getView().getActivity().getIntent().getParcelableExtra("homedata");
-        getView().renderFromHome(dataFromHome);
-        String url = dataFromHome.getUrl();
+        Intent inIntent = getView().getActivity().getIntent();
+        int from = inIntent.getIntExtra(EventDetailsActivity.FROM, 1);
+        String url = "";
+        if (from == EventDetailsActivity.FROM_HOME_OR_SEARCH) {
+            CategoryItemsViewModel dataFromHome = inIntent.getParcelableExtra("homedata");
+            getView().renderFromHome(dataFromHome);
+            url = dataFromHome.getUrl();
+        } else if (from == EventDetailsActivity.FROM_DEEPLINK) {
+            url = inIntent.getExtras().getString(EventDetailsActivity.EXTRA_EVENT_NAME_KEY);
+        }
         getEventDetailsRequestUseCase.setUrl(url);
     }
 
@@ -108,7 +111,6 @@ public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsCon
             }
         });
     }
-
 
 
     private EventsDetailsViewModel convertIntoEventDetailsViewModel(EventDetailsDomain eventDetailsDomain) {

@@ -1,19 +1,15 @@
 package com.tokopedia.events.view.activity;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.view.ViewCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.View;
@@ -25,10 +21,12 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
 import com.tokopedia.events.di.DaggerEventComponent;
@@ -41,9 +39,6 @@ import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -102,7 +97,7 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     @BindView(R2.id.down_arrow_tnc)
     ImageView ivArrowSeatingTnC;
     @BindView(R2.id.tv_event_price)
-            TextView eventPrice;
+    TextView eventPrice;
 
     ImageTextViewHolder timeHolder;
     ImageTextViewHolder locationHolder;
@@ -112,6 +107,26 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     @Inject
     EventsDetailsPresenter mPresenter;
 
+    public static String FROM = "from";
+
+    public static String EXTRA_EVENT_NAME_KEY = "event";
+
+    public static final int FROM_HOME_OR_SEARCH = 1;
+
+    public static final int FROM_DEEPLINK = 2;
+
+
+    @DeepLink({Constants.Applinks.EVENTS_DETAILS})
+    public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
+        String deepLink = extras.getString(DeepLink.URI);
+        Uri.Builder uri = Uri.parse(deepLink).buildUpon();
+        Intent destination = new Intent(context, EventDetailsActivity.class)
+                .setData(uri.build())
+                .putExtras(extras);
+        destination.putExtra(Constants.EXTRA_FROM_PUSH, true);
+        destination.putExtra(FROM, FROM_DEEPLINK);
+        return destination;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -228,9 +243,18 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
 
     @Override
     public void renderFromCloud(EventsDetailsViewModel data) {
-        setHolder(R.drawable.ic_skyline, data.getSchedulesViewModels().get(0).getaDdress(), addressHolder);
-        tvExpandableDescription.setText(Html.fromHtml(data.getLongRichDesc()));
+        toolbar.setTitle(data.getTitle());
+        ImageHandler.loadImageCover2(eventDetailBanner, data.getImageApp());
 
+        if (data.getTimeRange() != null && data.getTimeRange().length() > 3)
+            setHolder(R.drawable.ic_time, data.getTimeRange(), timeHolder);
+        else
+            timeView.setVisibility(View.GONE);
+
+        setHolder(R.drawable.ic_placeholder, data.getCityName(), locationHolder);
+        setHolder(R.drawable.ic_skyline, data.getSchedulesViewModels().get(0).getaDdress(), addressHolder);
+        textViewTitle.setText(data.getTitle());
+        tvExpandableDescription.setText(Html.fromHtml(data.getLongRichDesc()));
 
         String tnc = data.getTnc();
         String splitArray[] = tnc.split("~");

@@ -17,10 +17,7 @@ import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 /**
  * Created by ashwanityagi on 16/11/17.
@@ -128,6 +125,7 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
         @Override
         public void onClick(View view) {
             Intent detailsIntent = new Intent(context, EventDetailsActivity.class);
+            detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
             detailsIntent.putExtra("homedata", categoryItems.get(mViewHolder.getIndex()));
             context.startActivity(detailsIntent);
         }

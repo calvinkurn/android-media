@@ -95,10 +95,6 @@ public class EventsHomeActivity extends TActivity
 
     private SlidingImageAdapter adapter;
 
-    public static Intent getCallingIntent(Activity activity) {
-        return new Intent(activity, EventsHomeActivity.class);
-    }
-
     @DeepLink({Constants.Applinks.EVENTS, Constants.Applinks.EVENTS_ACTIVITIES})
     public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
         String deepLink = extras.getString(DeepLink.URI);

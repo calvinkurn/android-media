@@ -41,6 +41,7 @@ public class EventDetailsViewModelMapper {
         target.setThumbsUp(source.getThumbsUp());
         target.setSeatMapImage(source.getSeatMapImage());
         target.setForms(source.getForms());
+        target.setCityName(source.getCityName());
         String dateRange;
         if (source.getMinStartDate().equals(source.getMaxEndDate())) {
             dateRange = Utils.convertEpochToString(source.getMinStartDate());

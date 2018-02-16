@@ -180,6 +180,7 @@ public class EventSearchPresenter
         detailsViewModel.setLongRichDesc("Fetching Description");
         detailsViewModel.setTnc("Fetching TnC");
         Intent detailsIntent = new Intent(getView().getActivity(), EventDetailsActivity.class);
+        detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
         detailsIntent.putExtra("homedata", detailsViewModel);
         getView().getActivity().startActivity(detailsIntent);
     }

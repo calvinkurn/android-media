@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import com.tokopedia.events.data.entity.response.Form;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class EventsDetailsViewModel implements Parcelable {
@@ -35,6 +34,7 @@ public class EventsDetailsViewModel implements Parcelable {
     private Integer isFoodAvailable;
     private String seatMapImage;
     private Boolean dateRange;
+    private String cityName;
     private List<SchedulesViewModel> schedulesViewModels;
 
     public List<Form> getForms() {
@@ -123,6 +123,14 @@ public class EventsDetailsViewModel implements Parcelable {
     }
 
 
+    public String getCityName() {
+        return cityName;
+    }
+
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
+    }
+
     public Integer getConvenienceFee() {
         return convenienceFee;
     }
@@ -170,7 +178,6 @@ public class EventsDetailsViewModel implements Parcelable {
     public void setSeatMapImage(String seatMapImage) {
         this.seatMapImage = seatMapImage;
     }
-
 
 
     public Integer getRating() {
@@ -291,6 +298,7 @@ public class EventsDetailsViewModel implements Parcelable {
         dest.writeValue(this.isFoodAvailable);
         dest.writeString(this.seatMapImage);
         dest.writeValue(this.dateRange);
+        dest.writeString(this.cityName);
         dest.writeTypedList(this.schedulesViewModels);
         dest.writeTypedList(this.forms);
     }
@@ -320,6 +328,7 @@ public class EventsDetailsViewModel implements Parcelable {
         this.isFoodAvailable = (Integer) in.readValue(Integer.class.getClassLoader());
         this.seatMapImage = in.readString();
         this.dateRange = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.cityName = in.readString();
         this.schedulesViewModels = in.createTypedArrayList(SchedulesViewModel.CREATOR);
         this.forms = in.createTypedArrayList(Form.CREATOR);
     }
