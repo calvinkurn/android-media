@@ -2,7 +2,6 @@ package com.tokopedia.ride.bookingride.view.activity;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,14 +10,12 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Telephony;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.ActionBar;
@@ -43,6 +40,7 @@ import com.tokopedia.ride.R;
 import com.tokopedia.ride.chat.utils.ChatMessage;
 import com.tokopedia.ride.chat.utils.ChatView;
 import com.tokopedia.ride.common.ride.domain.model.Driver;
+import com.tokopedia.ride.common.ride.domain.model.Vehicle;
 
 import java.util.ArrayList;
 
@@ -66,23 +64,25 @@ public class SMSChatActivity extends BaseActivity {
     private Driver driverDetails;
 
     public static final String DRIVER_INFO = "DRIVER_INFO";
+    public static final String VEHICLE_INFO = "VEHICLE_INFO";
     private ImageView driverImageView;
-    private TextView driverPhoneTV;
+    private TextView licensePlateTV;
     private TextView driverNameTV;
     private ArrayList<ChatMessage> sentMessagesArrayList = new ArrayList<>();
     private ArrayList<ChatMessage> receivedMessagesArrayList = new ArrayList<>();
     private ArrayList<ChatMessage> chatArrayList = new ArrayList<>();
+    private Vehicle vehicleDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sms_chat);
-
         chatView = findViewById(R.id.chat_view);
 
         driverDetails = getIntent().getParcelableExtra(DRIVER_INFO);
-        phoneNo = driverDetails.getPhoneNumber();
+        vehicleDetails = getIntent().getParcelableExtra(VEHICLE_INFO);
 
+        phoneNo = driverDetails.getPhoneNumber();
         phoneNo = driverDetails.getPhoneNumber().replaceAll("[-,(]", "");
 
 
@@ -102,17 +102,18 @@ public class SMSChatActivity extends BaseActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setCustomView(view, layout);
         driverNameTV = view.findViewById(R.id.driver_name);
-        driverPhoneTV = view.findViewById(R.id.driver_phone);
+        licensePlateTV = view.findViewById(R.id.driver_phone);
         driverImageView = view.findViewById(R.id.driver_image);
-        initToolbar();
 
+        initToolbar();
         proceed();
     }
 
     private void initToolbar() {
 
         driverNameTV.setText(driverDetails.getName());
-        driverPhoneTV.setText(driverDetails.getPhoneNumber());
+        String vehicleInfo = vehicleDetails.getVehicleModel() + " | " + vehicleDetails.getLicensePlate();
+        licensePlateTV.setText(vehicleInfo);
 
         Glide.with(this).load(driverDetails.getPictureUrl())
                 .asBitmap()
@@ -133,19 +134,6 @@ public class SMSChatActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_message, menu);
-
-        MenuItem menuItem = menu.findItem(R.id.call_driver);
-
-        if (menuItem != null) {
-
-            Drawable normalDrawable = menuItem.getIcon();
-            Drawable wrapDrawable = DrawableCompat.wrap(normalDrawable);
-            DrawableCompat.setTint(wrapDrawable, SMSChatActivity.this.getResources().getColor(R.color.white));
-
-            menuItem.setIcon(wrapDrawable);
-        }
-
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -153,63 +141,38 @@ public class SMSChatActivity extends BaseActivity {
 
         String[] projection = new String[]{"_id", "address", "person", "body", "date", "type"};
 
-        StringBuilder smsBuilder = new StringBuilder();
-
         try {
             Cursor cur = getContentResolver().query(Uri.parse(INBOX_URI), projection, "address='" + phoneNo + "'", null, "date asc");
-            if (cur.moveToFirst()) {
+            if (cur != null && cur.moveToFirst()) {
                 receivedMessagesArrayList.clear();
                 int index_Address = cur.getColumnIndex("address");
-                int index_Person = cur.getColumnIndex("person");
                 int index_Body = cur.getColumnIndex("body");
                 int index_Date = cur.getColumnIndex("date");
-                int index_Type = cur.getColumnIndex("type");
-                do {
 
+                do {
                     ChatMessage chatMessage = new ChatMessage();
 
                     String strAddress = cur.getString(index_Address);
-                    int intPerson = cur.getInt(index_Person);
-                    String strbody = cur.getString(index_Body);
+                    String strBody = cur.getString(index_Body);
                     long longDate = cur.getLong(index_Date);
-                    int int_Type = cur.getInt(index_Type);
 
-                    chatMessage.setMessage(strbody);
+                    chatMessage.setMessage(strBody);
                     chatMessage.setTimestamp(longDate);
                     chatMessage.setType(ChatMessage.Type.RECEIVED);
                     chatMessage.setSender(strAddress);
 
                     receivedMessagesArrayList.add(chatMessage);
+
                 } while (cur.moveToNext());
 
                 if (!cur.isClosed()) {
                     cur.close();
                     cur = null;
                 }
-            } else {
-                smsBuilder.append("no result!");
-            } // end if
-
+            }
         } catch (SQLiteException ex) {
             Log.d("SQLiteException", ex.getMessage());
         }
-
-
-        /*int senderIndex = smsInboxCursor.getColumnIndex("address");
-        int messageIndex = smsInboxCursor.getColumnIndex("body");
-        if (messageIndex < 0 || !smsInboxCursor.moveToFirst()) return;
-        do {
-            String sender = smsInboxCursor.getString(senderIndex);
-            String message = smsInboxCursor.getString(messageIndex);
-        } while (smsInboxCursor.moveToNext());
-
-
-        contentResolver = getContentResolver();
-        final String[] projection = new String[]{"*"};
-        Uri uri = Uri.parse("content://mms-sms/conversations/");
-        Cursor query = contentResolver.query(uri, projection, null, null, null);
-
-        Toast.makeText(this, "", Toast.LENGTH_SHORT).show();*/
     }
 
     private void mergeSMS() {
@@ -246,19 +209,13 @@ public class SMSChatActivity extends BaseActivity {
 
         String[] projection = new String[]{"_id", "address", "person", "body", "date", "type"};
 
-        StringBuilder smsBuilder = new StringBuilder();
-
         try {
             Cursor cur = getContentResolver().query(Uri.parse(SENT_URI), projection, "address='" + phoneNo + "'", null, "date asc");
-            if (cur.moveToFirst()) {
-
+            if (cur != null && cur.moveToFirst()) {
                 sentMessagesArrayList.clear();
-
                 int index_Address = cur.getColumnIndex("address");
-                int index_Person = cur.getColumnIndex("person");
                 int index_Body = cur.getColumnIndex("body");
                 int index_Date = cur.getColumnIndex("date");
-                int index_Type = cur.getColumnIndex("type");
                 do {
                     ChatMessage chatMessage = new ChatMessage();
                     String strAddress = cur.getString(index_Address);
@@ -278,10 +235,7 @@ public class SMSChatActivity extends BaseActivity {
                     cur.close();
                     cur = null;
                 }
-            } else {
-                smsBuilder.append("no result!");
-            } // end if
-
+            }
         } catch (SQLiteException ex) {
             Log.d("SQLiteException", ex.getMessage());
         }
@@ -289,8 +243,6 @@ public class SMSChatActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-
         int id = item.getItemId();
 
         if (id == android.R.id.home) {
@@ -326,11 +278,10 @@ public class SMSChatActivity extends BaseActivity {
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                abortBroadcast();
                 if (intent.getAction() != null && intent.getAction().equals(Telephony.Sms.Intents.SMS_RECEIVED_ACTION)) {
                     String smsSender = "";
                     StringBuilder smsBody = new StringBuilder();
-                    long timeStamp = 0l;
+                    long timeStamp = 0L;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         for (SmsMessage smsMessage : Telephony.Sms.Intents.getMessagesFromIntent(intent)) {
                             smsSender = smsMessage.getDisplayOriginatingAddress();
@@ -356,7 +307,7 @@ public class SMSChatActivity extends BaseActivity {
                         }
                     }
 
-                    if (smsSender.equals(phoneNo) /*&& smsBody.toString().startsWith(serviceProviderSmsCondition)*/) {
+                    if (smsSender.equals(phoneNo)) {
                         onSMSReceived(smsBody.toString(), timeStamp);
                     }
                 }
@@ -364,16 +315,11 @@ public class SMSChatActivity extends BaseActivity {
         };
 
         IntentFilter intentFilter = new IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION);
-        intentFilter.setPriority(2000);
+        intentFilter.setPriority(1000);
         registerReceiver(broadcastReceiver, intentFilter);
 
-//        readSMS();
     }
 
-    private void onSMSReceived(String string, long timestamp, String senderName) {
-        ChatMessage chatMessage = new ChatMessage(string, timestamp, ChatMessage.Type.RECEIVED, senderName);
-        chatView.addMessage(chatMessage);
-    }
 
     private void onSMSReceived(String message, long timestamp) {
         ChatMessage chatMessage = new ChatMessage(message, timestamp, ChatMessage.Type.RECEIVED, driverDetails.getName());
@@ -384,7 +330,6 @@ public class SMSChatActivity extends BaseActivity {
     private void showRequestPermissionsInfoAlertDialog() {
 
         if (!hasReadSendSmsPermission()) {
-
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.permission_alert_dialog_title);
             builder.setMessage(R.string.permission_dialog_message);
@@ -397,12 +342,22 @@ public class SMSChatActivity extends BaseActivity {
             });
             builder.show();
         } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.permission_alert_dialog_title);
+            builder.setMessage(R.string.permission_dialog_message);
+            builder.setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            builder.show();
             readSentSMS();
             readInboxSMS();
             mergeSMS();
         }
-
     }
+
 
     public boolean sendSMS(String phoneNo, String msg) {
         try {
@@ -410,8 +365,6 @@ public class SMSChatActivity extends BaseActivity {
             smsManager.sendTextMessage(phoneNo, null, msg, null, null);
 
             return true;
-            /*Toast.makeText(getApplicationContext(), "Message Sent",
-                    Toast.LENGTH_LONG).show();*/
         } catch (Exception ex) {
             Toast.makeText(getApplicationContext(), ex.getMessage().toString(),
                     Toast.LENGTH_LONG).show();
@@ -420,80 +373,6 @@ public class SMSChatActivity extends BaseActivity {
         }
     }
 
-
-    public void refreshSmsInbox() {
-        ContentResolver contentResolver = getContentResolver();
-        Cursor smsInboxCursor = contentResolver.query(Uri.parse("content://sms/inbox"), null, null, null, null);
-        int indexBody = smsInboxCursor.getColumnIndex("body");
-        int indexAddress = smsInboxCursor.getColumnIndex("address");
-        if (indexBody < 0 || !smsInboxCursor.moveToFirst()) return;
-        do {
-            String str = "SMS From: " + smsInboxCursor.getString(indexAddress) +
-                    "\n" + smsInboxCursor.getString(indexBody) + "\n";
-
-
-        } while (smsInboxCursor.moveToNext());
-    }
-
-    public void readSMS() {
-
-        String[] projection = new String[]{"_id", "address", "person", "body", "date", "type"};
-
-        StringBuilder smsBuilder = new StringBuilder();
-
-        try {
-            Cursor cur = getContentResolver().query(Uri.parse(ALL_SMS_URI), projection, "address='" + phoneNo + "'", null, "date asc");
-            if (cur.moveToFirst()) {
-                int index_Address = cur.getColumnIndex("address");
-                int index_Person = cur.getColumnIndex("person");
-                int index_Body = cur.getColumnIndex("body");
-                int index_Date = cur.getColumnIndex("date");
-                int index_Type = cur.getColumnIndex("type");
-                do {
-                    String strAddress = cur.getString(index_Address);
-                    int intPerson = cur.getInt(index_Person);
-                    String strbody = cur.getString(index_Body);
-                    long longDate = cur.getLong(index_Date);
-                    int int_Type = cur.getInt(index_Type);
-
-                    smsBuilder.append("[ ");
-                    smsBuilder.append(strAddress + ", ");
-                    smsBuilder.append(intPerson + ", ");
-                    smsBuilder.append(strbody + ", ");
-                    smsBuilder.append(longDate + ", ");
-                    smsBuilder.append(int_Type);
-                    smsBuilder.append(" ]\n\n");
-                } while (cur.moveToNext());
-
-                if (!cur.isClosed()) {
-                    cur.close();
-                    cur = null;
-                }
-            } else {
-                smsBuilder.append("no result!");
-            } // end if
-
-        } catch (SQLiteException ex) {
-            Log.d("SQLiteException", ex.getMessage());
-        }
-
-
-        /*int senderIndex = smsInboxCursor.getColumnIndex("address");
-        int messageIndex = smsInboxCursor.getColumnIndex("body");
-        if (messageIndex < 0 || !smsInboxCursor.moveToFirst()) return;
-        do {
-            String sender = smsInboxCursor.getString(senderIndex);
-            String message = smsInboxCursor.getString(messageIndex);
-        } while (smsInboxCursor.moveToNext());
-
-
-        contentResolver = getContentResolver();
-        final String[] projection = new String[]{"*"};
-        Uri uri = Uri.parse("content://mms-sms/conversations/");
-        Cursor query = contentResolver.query(uri, projection, null, null, null);
-
-        Toast.makeText(this, "", Toast.LENGTH_SHORT).show();*/
-    }
 
     private boolean hasReadSendSmsPermission() {
 
@@ -510,15 +389,27 @@ public class SMSChatActivity extends BaseActivity {
                         Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED;
     }
 
+    private void requestMakeCallPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(SMSChatActivity.this, Manifest.permission.READ_SMS)) {
+            Log.d(TAG, "shouldShowRequestPermissionRationale(), no permission requested");
+            return;
+        }
+        ActivityCompat.requestPermissions(SMSChatActivity.this, new String[]{Manifest.permission.CALL_PHONE,
+                Manifest.permission.READ_PHONE_STATE}, CALL_PERMISSION_CODE);
+    }
+
+
     private void requestReadAndSendSmsPermission() {
 
         if (ActivityCompat.shouldShowRequestPermissionRationale(SMSChatActivity.this, Manifest.permission.READ_SMS)) {
             Log.d(TAG, "shouldShowRequestPermissionRationale(), no permission requested");
             return;
         }
-        ActivityCompat.requestPermissions(SMSChatActivity.this, new String[]{Manifest.permission.READ_SMS,
-                Manifest.permission.RECEIVE_SMS,
-                Manifest.permission.SEND_SMS, Manifest.permission.READ_PHONE_STATE}, SMS_PERMISSION_CODE);
+        ActivityCompat.requestPermissions(SMSChatActivity.this, new String[]
+                        {Manifest.permission.READ_SMS, Manifest.permission.RECEIVE_SMS,
+                                Manifest.permission.SEND_SMS, Manifest.permission.READ_PHONE_STATE
+                        },
+                SMS_PERMISSION_CODE);
     }
 
     @Override
@@ -528,18 +419,17 @@ public class SMSChatActivity extends BaseActivity {
         if (requestCode == SMS_PERMISSION_CODE && grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-            // permission was granted, yay! Do the
-            // contacts-related task you need to do.
-
             Log.e("SMS Permission granted", "true");
 
             readInboxSMS();
             readSentSMS();
             mergeSMS();
+
         } else if (requestCode == CALL_PERMISSION_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
             Log.e("Call Permission granted", "true");
             callDriver();
+
         }
     }
 
@@ -550,34 +440,9 @@ public class SMSChatActivity extends BaseActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == SMS_PERMISSION_CODE && resultCode == RESULT_OK) {
-            readSMS();
-        }
-    }
-
-    private void requestMakeCallPermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(SMSChatActivity.this, Manifest.permission.READ_SMS)) {
-            Log.d(TAG, "shouldShowRequestPermissionRationale(), no permission requested");
-            return;
-        }
-        ActivityCompat.requestPermissions(SMSChatActivity.this, new String[]{Manifest.permission.CALL_PHONE,
-                Manifest.permission.READ_PHONE_STATE}, CALL_PERMISSION_CODE);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (broadcastReceiver != null)
             unregisterReceiver(broadcastReceiver);
     }
-
-
 }

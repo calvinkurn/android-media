@@ -12,7 +12,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -216,7 +215,8 @@ public class DriverDetailFragment extends BaseFragment {
 //        driver.setPhoneNumber("+919896386254");
         Intent intent = new Intent(getActivity(), SMSChatActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable("DRIVER_INFO", driver);
+        bundle.putParcelable(SMSChatActivity.DRIVER_INFO, driver);
+        bundle.putParcelable(SMSChatActivity.VEHICLE_INFO, vehicle);
         intent.putExtras(bundle);
         startActivity(intent);
 //        openSmsIntent(driver.getPhoneNumber());
