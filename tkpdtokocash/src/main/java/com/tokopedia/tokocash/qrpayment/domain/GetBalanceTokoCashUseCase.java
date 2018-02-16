@@ -22,12 +22,11 @@ public class GetBalanceTokoCashUseCase extends UseCase<BalanceTokoCash> {
 
     @Override
     public Observable<BalanceTokoCash> createObservable(RequestParams requestParams) {
-        return Observable.concat(repository.getLocalBalanceTokoCash(), repository.getBalanceTokoCash())
-                .first(new Func1<BalanceTokoCash, Boolean>() {
+        return repository.getLocalBalanceTokoCash()
+                .onErrorResumeNext(new Func1<Throwable, Observable<BalanceTokoCash>>() {
                     @Override
-                    public Boolean call(BalanceTokoCash balanceTokoCash) {
-                        return balanceTokoCash != null && balanceTokoCash.getBalance() != null &&
-                                balanceTokoCash.getRaw_balance() != null;
+                    public Observable<BalanceTokoCash> call(Throwable throwable) {
+                        return repository.getBalanceTokoCash();
                     }
                 });
     }

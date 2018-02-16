@@ -18,8 +18,10 @@ import com.tokopedia.tkpd.campaign.data.model.CampaignException;
 import com.tokopedia.tkpd.campaign.di.IdentifierWalletQualifier;
 import com.tokopedia.tkpd.campaign.domain.barcode.PostBarCodeDataUseCase;
 import com.tokopedia.tokocash.historytokocash.presentation.ServerErrorHandlerUtil;
+import com.tokopedia.tokocash.qrpayment.domain.GetBalanceTokoCashUseCase;
 import com.tokopedia.tokocash.qrpayment.domain.GetInfoQrTokoCashUseCase;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.NominalQrPaymentActivity;
+import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.usecase.RequestParams;
 
@@ -43,6 +45,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
 
     private PostBarCodeDataUseCase postBarCodeDataUseCase;
     private GetInfoQrTokoCashUseCase getInfoQrTokoCashUseCase;
+    private GetBalanceTokoCashUseCase getBalanceTokoCashUseCase;
     private Context context;
     private UserSession userSession;
     private LocalCacheHandler localCacheHandler;
@@ -50,6 +53,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
     @Inject
     public QrScannerPresenter(PostBarCodeDataUseCase postBarCodeDataUseCase,
                               GetInfoQrTokoCashUseCase getInfoQrTokoCashUseCase,
+                              GetBalanceTokoCashUseCase getBalanceTokoCashUseCase,
                               @ApplicationContext Context context, UserSession userSession,
                               @IdentifierWalletQualifier LocalCacheHandler localCacheHandler) {
         this.postBarCodeDataUseCase = postBarCodeDataUseCase;
@@ -57,6 +61,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
         this.context = context;
         this.userSession = userSession;
         this.localCacheHandler = localCacheHandler;
+        this.getBalanceTokoCashUseCase = getBalanceTokoCashUseCase;
     }
 
     @Override
@@ -81,7 +86,28 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
     @Override
     public void onScanCompleteAfterLoginQrPayment() {
         if (isUserLogin()) {
-            getInfoQrWallet(localCacheHandler.getString(GetInfoQrTokoCashUseCase.IDENTIFIER));
+            getBalanceTokoCashUseCase.execute(RequestParams.EMPTY, new Subscriber<BalanceTokoCash>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    getView().hideProgressDialog();
+                    e.printStackTrace();
+                    getView().showErrorNetwork(e.getMessage());
+                }
+
+                @Override
+                public void onNext(BalanceTokoCash balanceTokoCash) {
+                    if (balanceTokoCash.getAbTags().contains("QR")) {
+                        getInfoQrWallet(localCacheHandler.getString(GetInfoQrTokoCashUseCase.IDENTIFIER));
+                    } else {
+                        getView().showErrorGetInfo(context.getString(com.tokopedia.tokocash.R.string.no_available_feature));
+                    }
+                }
+            });
         } else {
             localCacheHandler.putString(GetInfoQrTokoCashUseCase.IDENTIFIER, "");
             localCacheHandler.applyEditor();
