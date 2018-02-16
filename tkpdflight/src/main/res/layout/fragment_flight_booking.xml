@@ -79,9 +79,9 @@
                     android:id="@+id/cwa_departure_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_card_with_action_main"
                     android:visibility="gone"
                     app:cmw_action="Detail"
-                    android:background="@drawable/bg_card_with_action_main"
                     tools:visibility="visible" />
 
                 <com.tokopedia.flight.booking.widget.CardWithActionView
@@ -104,7 +104,7 @@
                     android:layout_marginTop="@dimen/margin_med"
                     android:background="@color/white"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/margin_large"
+                    android:paddingBottom="@dimen/padding_small"
                     android:paddingEnd="@dimen/padding_16"
                     android:paddingLeft="@dimen/padding_16"
                     android:paddingRight="@dimen/padding_16"

@@ -40,9 +40,11 @@ import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.Constants;
@@ -50,15 +52,13 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.RideModuleRouter;
 import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.bookingride.di.BookingRideComponent;
 import com.tokopedia.ride.bookingride.di.DaggerBookingRideComponent;
@@ -112,9 +112,12 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     private static final String MAP_FRAGMENT_TAG = "map_fragment_tag";
     private static final String PRODUCTS_FRAGMENT_TAG = "products_fragment_tag";
     private static final String CONFIRM_FRAGMENT_TAG = "confirm_fragment_tag";
+    public static final String EXTRA_LAUNCH_SHORTCUT = "shortcut";
+
     private static final int RIDE_PHONE_VERIFY_REQUEST_CODE = 1011;
     public static final int LOGIN_REQUEST_CODE = 1005;
     public static final int REQUEST_GO_TO_ONTRIP_REQUEST_CODE = 1009;
+
     private Unbinder unbinder;
 
     @BindView(R2.id.cabs_sliding_layout)
@@ -156,22 +159,10 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-
-        Intent homeIntent = null;
-        if (GlobalConfig.isSellerApp()) {
-            homeIntent = SellerAppRouter.getSellerHomeActivity(context);
-        } else {
-            homeIntent = HomeRouter.getHomeActivity(context);
-        }
-        homeIntent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
-                HomeRouter.INIT_STATE_FRAGMENT_HOME);
-
         Intent destination = new Intent(context, RideHomeActivity.class)
                 .setData(uri.build())
                 .putExtras(extras);
         destination.putExtra(Constants.EXTRA_FROM_PUSH, true);
-        taskStackBuilder.addNextIntent(homeIntent);
-        taskStackBuilder.addNextIntent(destination);
         return destination;
     }
 
@@ -200,6 +191,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking_ride);
+
         unbinder = ButterKnife.bind(this);
         initInjector();
         executeInjector();
@@ -208,6 +200,13 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
 
         mSlidingPanelMinHeightInPx = (int) getResources().getDimension(R.dimen.sliding_panel_min_height);
         mToolBarHeightinPx = (int) getResources().getDimension(R.dimen.tooler_height);
+
+        //send GA event if launch from shortcut
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null && bundle.getString(EXTRA_LAUNCH_SHORTCUT, null) != null) {
+            CommonUtils.dumper("Sending Shortcut Event to GA");
+            RideGATracking.eventUberOpenViaShortcut(getScreenName());
+        }
     }
 
     private void executeInjector() {
@@ -442,8 +441,8 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
         mToolbar.setVisibility(View.GONE);
 
         if (source != null && destination != null) {
-            replaceFragment(R.id.top_container, RideHomeMapFragment.newInstance(source, destination), MAP_FRAGMENT_TAG);
             replaceFragment(R.id.bottom_container, UberProductFragment.newInstance(source, destination), PRODUCTS_FRAGMENT_TAG);
+            replaceFragment(R.id.top_container, RideHomeMapFragment.newInstance(source, destination), MAP_FRAGMENT_TAG);
         } else {
             replaceFragment(R.id.top_container, RideHomeMapFragment.newInstance(), MAP_FRAGMENT_TAG);
             replaceFragment(R.id.bottom_container, UberProductFragment.newInstance(), PRODUCTS_FRAGMENT_TAG);
@@ -875,9 +874,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
 
     @Override
     public void navigateToLoginPage() {
-        Intent intent = OldSessionRouter.getLoginActivityIntent(this);
-        intent.putExtra(Session.WHICH_FRAGMENT_KEY,
-                TkpdState.DrawerPosition.LOGIN);
+        Intent intent = ((RideModuleRouter) MainApplication.getAppContext()).getLoginIntent(this);
         startActivityForResult(intent, RideHomeActivity.LOGIN_REQUEST_CODE);
     }
 

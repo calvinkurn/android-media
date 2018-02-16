@@ -11,6 +11,7 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
@@ -102,7 +103,7 @@ public class RideUtils {
     public static boolean isUberMoto(String productDisplayName) {
         boolean isMoto = false;
         if (productDisplayName != null) {
-            isMoto = (productDisplayName.toLowerCase().contains("ubermo") || productDisplayName.toLowerCase().contains("moto"));
+            isMoto = productDisplayName.toLowerCase().contains("ubermo") || productDisplayName.toLowerCase().contains("moto");
         }
 
         return isMoto;
@@ -141,7 +142,7 @@ public class RideUtils {
                         .setLongLabel(lonLabel)
                         .setIcon(Icon.createWithResource(context, R.drawable.uber_shortcut))
                         .setIntent(new Intent(Intent.ACTION_VIEW,
-                                Uri.parse(Constants.Applinks.RIDE)))
+                                Uri.parse(Constants.Applinks.RIDE + "?" + RideHomeActivity.EXTRA_LAUNCH_SHORTCUT + "=true")))
                         .build();
 
                 mShortcutManager.requestPinShortcut(shortcut, null);
@@ -149,7 +150,9 @@ public class RideUtils {
             }
         } else {
             try {
-                Intent shortcutIntent = new Intent(context, RideHomeActivity.class);
+
+                Intent shortcutIntent = ((TkpdCoreRouter) context.getApplicationContext()).getSplashScreenIntent(context);
+                shortcutIntent.putExtra(RideHomeActivity.EXTRA_LAUNCH_SHORTCUT, "true");
 
                 Intent addIntent = new Intent();
                 addIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
