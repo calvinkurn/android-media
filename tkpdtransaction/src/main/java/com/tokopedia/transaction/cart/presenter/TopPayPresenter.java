@@ -12,7 +12,6 @@ import com.tokopedia.core.analytics.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
-import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.cart.listener.ITopPayView;
@@ -25,7 +24,6 @@ import org.json.JSONArray;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -174,11 +172,5 @@ public class TopPayPresenter implements ITopPayPresenter {
                 thanksTopPayData.getParameter().getPaymentId(),
                 revenue, arrJas, qty, mapResult
         );
-
-          /*
-            Branch.io block
-         */
-        BranchSdkUtils.sendCommerceEvent(locaProducts,revenue,totalShipping);
-
     }
 }

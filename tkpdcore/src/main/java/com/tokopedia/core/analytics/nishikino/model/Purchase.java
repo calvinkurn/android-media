@@ -91,6 +91,10 @@ public class Purchase {
         ActionField.put("id", id);
     }
 
+    public Object getTransactionID() {
+       return ActionField.get("id");
+    }
+
     public void setAffiliation(Object aff) {
         ActionField.put("affiliation", aff);
     }
@@ -101,6 +105,14 @@ public class Purchase {
 
     public void setShipping(Object shipping) {
         ActionField.put("shipping", shipping);
+    }
+
+    public Object getRevenue() {
+       return ActionField.get("revenue");
+    }
+
+    public Object getShipping() {
+       return ActionField.get("shipping");
     }
 
     public void setVoucherCode(Object voucherCode) { ActionField.put("coupon", voucherCode); }

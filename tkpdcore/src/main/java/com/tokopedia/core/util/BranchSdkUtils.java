@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.model.Product;
+import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -18,6 +20,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import io.branch.indexing.BranchUniversalObject;
 import io.branch.referral.Branch;
@@ -34,8 +37,12 @@ public class BranchSdkUtils {
     private static final String BRANCH_ANDROID_DEEPLINK_PATH_KEY = "$android_deeplink_path";
     private static final String BRANCH_IOS_DEEPLINK_PATH_KEY = "$ios_deeplink_path";
     private static final String BRANCH_DESKTOP_URL_KEY = "$desktop_url";
-    private static final String URI_REDIRECT_MODE_KEY = "$uri_redirect_mode";
     private static final String CAMPAIGN_NAME = "Android App";
+    private static final String ORDERID_KEY = "orderId";
+    private static final String PRODUCTTYPE_KEY = "productType";
+    private static final String USERID_KEY = "userId";
+    public static final String PRODUCTTYPE_DIGITAL = "digital";
+    public static final String PRODUCTTYPE_MARKETPLACE = "marketplace";
 
     private static BranchUniversalObject createBranchUniversalObject(ShareData data) {
         BranchUniversalObject branchUniversalObject = new BranchUniversalObject()
@@ -141,8 +148,45 @@ public class BranchSdkUtils {
                 commerceEvent.setCurrencyType(CurrencyType.IDR);
                 commerceEvent.setShipping(convertStringToDouble("" + totalShipping));
                 commerceEvent.setProducts(branchProductList);
+                CommonUtils.dumper("Revenue" + " old" + revenue + "  "+ totalShipping+ " "+ commerceEvent.toString());
+              //  Branch.getInstance().sendCommerceEvent(commerceEvent, null, null);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
-                Branch.getInstance().sendCommerceEvent(commerceEvent, null, null);
+    }
+
+    public static void sendCommerceEvent(Purchase purchase, String productType) {
+        try {
+            if (Branch.getInstance() != null && purchase != null && purchase.getListProduct() != null) {
+
+                List<io.branch.referral.util.Product> branchProductList = new ArrayList<>();
+
+                for (Object objProduct : purchase.getListProduct()) {
+                    Map<String, Object> product = (Map<String, Object>) objProduct;
+                    io.branch.referral.util.Product branchProduct = new io.branch.referral.util.Product();
+
+                    branchProduct.setSku("" + product.get(com.tokopedia.core.analytics.nishikino.model.Product.KEY_ID));
+                    branchProduct.setName("" + product.get(com.tokopedia.core.analytics.nishikino.model.Product.KEY_NAME));
+                    branchProduct.setPrice(convertStringToDouble(""+product.get(com.tokopedia.core.analytics.nishikino.model.Product.KEY_PRICE)));
+                    branchProductList.add(branchProduct);
+
+                }
+                CommerceEvent commerceEvent = new CommerceEvent();
+                commerceEvent.setTransactionID(purchase.getPaymentId());
+                commerceEvent.setRevenue(convertStringToDouble("" + purchase.getRevenue()));
+                commerceEvent.setCurrencyType(CurrencyType.IDR);
+                commerceEvent.setShipping(convertStringToDouble("" + purchase.getShipping()));
+                commerceEvent.setProducts(branchProductList);
+
+                JSONObject metadata=new JSONObject();
+                metadata.put(ORDERID_KEY,purchase.getTransactionID());
+                metadata.put(PRODUCTTYPE_KEY,productType);
+                metadata.put(USERID_KEY,purchase.getUserId());
+
+                Branch.getInstance().sendCommerceEvent(commerceEvent, metadata, null);
+                CommonUtils.dumper("Revenue"+ purchase.getRevenue()+" n " + purchase.getShipping() +"   " + commerceEvent.toString() );
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -169,7 +213,7 @@ public class BranchSdkUtils {
             try {
                 metadata.put(AppEventTracking.Branch.EMAIL, email);
                 metadata.put(AppEventTracking.Branch.PHONE, normalizePhoneNumber(phone));
-            } catch ( JSONException e ) {
+            } catch (JSONException e) {
             }
             Branch.getInstance().userCompletedAction(AppEventTracking.EventBranch.EVENT_LOGIN, metadata);
         }
@@ -181,7 +225,7 @@ public class BranchSdkUtils {
             try {
                 metadata.put(AppEventTracking.Branch.EMAIL, email);
                 metadata.put(AppEventTracking.Branch.PHONE, normalizePhoneNumber(phone));
-            } catch ( JSONException e ) {
+            } catch (JSONException e) {
             }
             Branch.getInstance().userCompletedAction(AppEventTracking.EventBranch.EVENT_REGISTER, metadata);
         }
@@ -197,7 +241,7 @@ public class BranchSdkUtils {
         return result;
     }
 
-    public static Boolean isappShowReferralButtonActivated(Context context){
+    public static Boolean isappShowReferralButtonActivated(Context context) {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON);
     }
