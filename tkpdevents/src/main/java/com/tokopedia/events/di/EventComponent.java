@@ -49,7 +49,7 @@ public interface EventComponent {
 
     //PostExecutionThread postExecutionThread();
 
-    SessionHandler sessionHandler();
+    //SessionHandler sessionHandler();
 
     //EventRepository eventRepository();
 

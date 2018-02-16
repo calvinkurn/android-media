@@ -61,11 +61,8 @@ public class CategoryFragment extends TkpdBaseV4Fragment {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         EventCategoryAdapter eventCategoryAdapter = new EventCategoryAdapter(getActivity(), categoryViewModel.getItems());
-//        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
-//        dividerItemDecoration.setDrawable(getContext().getResources().getDrawable(R.drawable.recycler_view_divider));
         recyclerview.setLayoutManager(linearLayoutManager);
         recyclerview.setAdapter(eventCategoryAdapter);
-//        recyclerview.addItemDecoration(dividerItemDecoration);
 
         return view;
     }

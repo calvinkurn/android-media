@@ -26,9 +26,9 @@ import butterknife.OnClick;
 
 public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    List<PackageViewModel> packageViewModelList;
-    Context mContext;
-    EventBookTicketPresenter mPresenter;
+    private List<PackageViewModel> packageViewModelList;
+    private Context mContext;
+    private EventBookTicketPresenter mPresenter;
 
 
     public AddTicketAdapter(Context context, List<PackageViewModel> data, EventBookTicketPresenter presenter) {

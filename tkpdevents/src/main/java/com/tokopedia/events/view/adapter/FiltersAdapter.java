@@ -24,9 +24,9 @@ import butterknife.OnClick;
 
 public class FiltersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    FilterDomainModel filterModel;
-    Context mContext;
-    EventSearchPresenter mPresenter;
+    private FilterDomainModel filterModel;
+    private Context mContext;
+    private EventSearchPresenter mPresenter;
 
     public FiltersAdapter(FilterDomainModel model, Context context, EventSearchPresenter presenter) {
         this.filterModel = model;
@@ -64,12 +64,12 @@ public class FiltersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         ValuesItemDomain valueItem;
         int mPosition;
 
-        public FilterViewHolder(View itemView) {
+        private FilterViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        public void setFilterView(int position, ValuesItemDomain value) {
+        private void setFilterView(int position, ValuesItemDomain value) {
             this.valueItem = value;
             this.mPosition = position;
             tvFilterText.setText(valueItem.getName());

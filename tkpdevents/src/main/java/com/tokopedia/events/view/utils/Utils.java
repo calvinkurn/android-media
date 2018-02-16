@@ -220,12 +220,13 @@ public class Utils {
         return dateString;
     }
 
-    public static String[] getDateArray(String date) {
-        String[] splitdate = new String[2];
-        splitdate[0] = date.substring(0, 3);//day
+    public static String[] getDateArray(String dateRange) {
+        String[] date = new String[3];
+        date[0] = dateRange.substring(0, 3);//day
         //Sat, 14 Apr 2018 - Sat, 14 Apr 2018
-        splitdate[1] = date.substring(5, 7).trim();//date
-        return splitdate;
+        date[1] = dateRange.substring(5, 7).trim();//date
+        date[2] = dateRange.substring(7, 11).trim();//month
+        return date;
     }
 
     public static String[] scheduleDateArray(int time, int pos, int size) {

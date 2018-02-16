@@ -3,25 +3,14 @@ package com.tokopedia.events.view.presenter;
 import android.content.Intent;
 import android.util.Log;
 
-import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.base.presentation.UIThread;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
-import com.tokopedia.core.drawer2.data.mapper.ProfileMapper;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
-import com.tokopedia.core.drawer2.data.repository.ProfileRepositoryImpl;
-import com.tokopedia.core.drawer2.domain.ProfileRepository;
 import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.apiservices.user.PeopleService;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.events.data.entity.response.Form;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
-import com.tokopedia.events.domain.GetEventSeatLayoutUseCase;
 import com.tokopedia.events.domain.model.request.cart.CartItem;
 import com.tokopedia.events.domain.model.request.cart.CartItems;
 import com.tokopedia.events.domain.model.request.cart.Configuration;
@@ -34,7 +23,6 @@ import com.tokopedia.events.domain.model.request.cart.TaxPerQuantityItem;
 import com.tokopedia.events.domain.postusecase.PostVerifyCartUseCase;
 import com.tokopedia.events.view.activity.ReviewTicketActivity;
 import com.tokopedia.events.view.contractor.SeatSelectionContract;
-import com.tokopedia.events.view.customview.SeatLayoutInfo;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SeatLayoutViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
@@ -54,57 +42,31 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
         implements SeatSelectionContract.Presenter {
 
 
-    public static String EXTRA_PACKAGEVIEWMODEL = "packageviewmodel";
+    private static String EXTRA_PACKAGEVIEWMODEL = "packageviewmodel";
     public static String EXTRA_SEATSELECTEDMODEL = "selectedseatviewmodel";
 
-    GetEventSeatLayoutUseCase getSeatLayoutUseCase;
     private SeatLayoutViewModel seatLayoutViewModel;
-    PostVerifyCartUseCase postVerifyCartUseCase;
-    String url;
-    String title;
-    SeatLayoutInfo seatLayoutInfo;
-    PackageViewModel selectedpkgViewModel;
-    String eventTitle;
-    int maxTickets;
-    ProfileUseCase profileUseCase;
-    ProfileModel profileModel;
-    String promocode;
-    String email;
-    String number;
-    List<String> selectedSeats = new ArrayList<>();
-    List<String> rowIds;
-    SelectedSeatViewModel mSelectedSeatViewModel;
-    int quantity;
+    private PostVerifyCartUseCase postVerifyCartUseCase;
+    private String url;
+    private PackageViewModel selectedpkgViewModel;
+    private String eventTitle;
+    private int maxTickets;
+    private ProfileUseCase profileUseCase;
+    private ProfileModel profileModel;
+    private String promocode;
+    private String email;
+    private String number;
+    private List<String> selectedSeats = new ArrayList<>();
+    private List<String> rowIds;
+    private SelectedSeatViewModel mSelectedSeatViewModel;
+    private int quantity;
 
 
     @Inject
-    public SeatSelectionPresenter(GetEventSeatLayoutUseCase seatLayoutUseCase, PostVerifyCartUseCase postVerifyCartUseCase) {
-        this.getSeatLayoutUseCase = seatLayoutUseCase;
+    public SeatSelectionPresenter(PostVerifyCartUseCase postVerifyCartUseCase, ProfileUseCase profileCase) {
         this.postVerifyCartUseCase = postVerifyCartUseCase;
+        this.profileUseCase = profileCase;
     }
-
-    public void initialize() {
-        getView().showProgressBar();
-        GlobalCacheManager profileCache = new GlobalCacheManager();
-
-        ProfileSourceFactory profileSourceFactory = new ProfileSourceFactory(
-                getView().getActivity(),
-                new PeopleService(),
-                new ProfileMapper(),
-                profileCache,
-                new AnalyticsCacheHandler(),
-                new SessionHandler(getView().getActivity())
-        );
-
-        ProfileRepository profileRepository = new ProfileRepositoryImpl(profileSourceFactory);
-
-        profileUseCase = new ProfileUseCase(
-                new JobExecutor(),
-                new UIThread(),
-                profileRepository
-        );
-    }
-
 
     public void getProfile() {
         profileUseCase.execute(RequestParams.EMPTY, new Subscriber<ProfileModel>() {
@@ -130,6 +92,11 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
                 getView().hideProgressBar();
             }
         });
+    }
+
+    @Override
+    public void initialize() {
+
     }
 
     @Override
@@ -168,7 +135,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
     public void setSelectedSeatText(List<String> selectedSeatList, List<String> rowIds) {
         selectedSeats = selectedSeatList;
         this.rowIds = rowIds;
-        getView().initializeSeatLayoutModel(selectedSeatList,rowIds);
+        getView().initializeSeatLayoutModel(selectedSeatList, rowIds);
     }
 
     public void setSeatData() {
@@ -297,9 +264,5 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
 
 //todo tax per quantity
         return cart;
-    }
-
-    public void setSelectedSeatViewModel() {
-        getView().setSelectedSeatModel();
     }
 }

@@ -6,9 +6,13 @@ import android.util.TypedValue;
 import android.view.View;
 
 import com.google.gson.Gson;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
+import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.events.R;
 import com.tokopedia.events.data.entity.response.SeatLayoutItem;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
@@ -42,6 +46,7 @@ public class EventBookTicketPresenter
 
     private PackageViewModel selectedPackageViewModel;
     private GetEventSeatLayoutUseCase getSeatLayoutUseCase;
+    private ProfileUseCase profileUseCase;
     private SeatLayoutViewModel seatLayoutViewModel;
     private int mSelectedPackage = -1;
     private int mSelectedSchedule = 0;
@@ -59,9 +64,10 @@ public class EventBookTicketPresenter
     public static String EXTRA_SEATLAYOUTVIEWMODEL = "seatlayoutviewmodel";
 
     @Inject
-    public EventBookTicketPresenter(GetEventSeatLayoutUseCase seatLayoutUseCase, PostValidateShowUseCase useCase) {
+    public EventBookTicketPresenter(GetEventSeatLayoutUseCase seatLayoutUseCase, PostValidateShowUseCase useCase, ProfileUseCase profileCase) {
         this.getSeatLayoutUseCase = seatLayoutUseCase;
         this.postValidateShowUseCase = useCase;
+        this.profileUseCase = profileCase;
     }
 
 
@@ -110,7 +116,7 @@ public class EventBookTicketPresenter
                         getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
                             @Override
                             public void onRetryClicked() {
-                                payTicketsClick(eventTitle + "");
+                                validateSelection();
                             }
                         });
             }
@@ -137,11 +143,50 @@ public class EventBookTicketPresenter
     }
 
     @Override
+    public void onActivityResult(int requestCode) {
+        if (requestCode == getView().getRequestCode()) {
+            if (SessionHandler.isV4Login(getView().getActivity())) {
+                getProfile();
+            }
+        }
+    }
+
+    private void getProfile() {
+        getView().showProgressBar();
+        profileUseCase.execute(RequestParams.EMPTY, new Subscriber<ProfileModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                Log.d("ProfileUseCase", "ON ERROR");
+                throwable.printStackTrace();
+                Intent intent = ((TkpdCoreRouter) getView().getActivity().getApplication()).
+                        getLoginIntent(getView().getActivity());
+                getView().navigateToActivityRequest(intent, getView().getRequestCode());
+                getView().hideProgressBar();
+            }
+
+            @Override
+            public void onNext(ProfileModel model) {
+                getView().hideProgressBar();
+                if (hasSeatLayout == 1)
+                    getSeatSelectionDetails();
+                else
+                    validateSelection();
+            }
+        });
+    }
+
+    @Override
     public void attachView(EventBookTicketContract.EventBookTicketView view) {
         super.attachView(view);
         px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getView().getActivity().getResources().getDisplayMetrics());
     }
 
+    @Override
     public void payTicketsClick(String title) {
         eventTitle = title;
         ValidateShow validateShow = new ValidateShow();
@@ -151,12 +196,7 @@ public class EventBookTicketPresenter
         validateShow.setScheduleId(selectedPackageViewModel.getProductScheduleId());
         validateShow.setProductId(selectedPackageViewModel.getProductId());
         postValidateShowUseCase.setValidateShowModel(validateShow);
-        getView().showProgressBar();
-        if (hasSeatLayout == 1)
-            getSeatSelectionDetails();
-        else
-            validateSelection();
-
+        getProfile();
     }
 
     public void addTickets(int index, PackageViewModel packageVM, AddTicketAdapter.TicketViewHolder ticketViewHolder) {
@@ -207,18 +247,14 @@ public class EventBookTicketPresenter
         mSelectedPackage = -1;
     }
 
-    public String[] getDateArray() {
-        String[] date = new String[3];
-        date[0] = dateRange.substring(0, 3);//day
-        //Sat, 14 Apr 2018 - Sat, 14 Apr 2018
-        date[1] = dateRange.substring(5, 7).trim();//date
-        date[2] = dateRange.substring(7, 11).trim();//month
-        return date;
+    public String getDateArray() {
+        return dateRange;
     }
 
 
     private void getSeatSelectionDetails() {
         getSeatLayoutUseCase.setUrl(selectedPackageViewModel.getFetchSectionUrl());
+        getView().showProgressBar();
         getSeatLayoutUseCase.execute(RequestParams.EMPTY, new Subscriber<List<SeatLayoutItem>>() {
             @Override
             public void onCompleted() {
@@ -240,6 +276,7 @@ public class EventBookTicketPresenter
 
             @Override
             public void onNext(List<SeatLayoutItem> response) {
+                getView().hideProgressBar();
                 seatLayoutViewModel = convertResponseToViewModel(convertoSeatLayoutResponse(response.get(0)));
                 validateSelection();
             }

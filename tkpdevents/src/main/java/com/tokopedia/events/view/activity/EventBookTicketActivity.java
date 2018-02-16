@@ -29,6 +29,7 @@ import com.tokopedia.events.view.presenter.EventBookTicketPresenter;
 import com.tokopedia.events.view.utils.CalendarItemHolder;
 import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.utils.ImageTextViewHolder;
+import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
 import com.tokopedia.events.view.viewmodel.SchedulesViewModel;
 
@@ -83,10 +84,12 @@ public class EventBookTicketActivity
 //    ImageTextViewHolder addressHolder;
 //    ImageTextViewHolder timeHolder;
 
-    EventComponent eventComponent;
+    private EventComponent eventComponent;
     @Inject
     EventBookTicketPresenter mPresenter;
-    String title;
+    private String title;
+
+    private static final int EVENT_LOGIN_REQUEST = 1099;
 
 
     @Override
@@ -134,7 +137,7 @@ public class EventBookTicketActivity
     @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
         hideProgressBar();
-        startActivity(intent);
+        startActivityForResult(intent, requestCode);
     }
 
     @Override
@@ -212,7 +215,7 @@ public class EventBookTicketActivity
                 View tV = tab.getCustomView();
                 if (tV != null) {
                     CalendarItemHolder holder = (CalendarItemHolder) tV.getTag();
-                    String[] date = mPresenter.getDateArray();
+                    String[] date = Utils.getDateArray(mPresenter.getDateArray());
                     holder.setTvMonth(date[2]);
                     holder.setTvDate(date[1]);
                     holder.setTvDay(date[0]);
@@ -223,7 +226,7 @@ public class EventBookTicketActivity
                     CalendarItemHolder holder = new CalendarItemHolder();
                     ButterKnife.bind(holder, tV);
                     tV.setTag(holder);
-                    String[] date = mPresenter.getDateArray();
+                    String[] date = Utils.getDateArray(mPresenter.getDateArray());
                     holder.setTvMonth(date[2]);
                     holder.setTvDate(date[1]);
                     holder.setTvDay(date[0]);
@@ -242,7 +245,7 @@ public class EventBookTicketActivity
             public void onTabReselected(TabLayout.Tab tab) {
                 View tV = tab.getCustomView();
                 CalendarItemHolder holder = (CalendarItemHolder) tV.getTag();
-                String[] date = mPresenter.getDateArray();
+                String[] date = Utils.getDateArray(mPresenter.getDateArray());
                 holder.setTvMonth(date[2]);
                 holder.setTvDate(date[1]);
                 holder.setTvDay(date[0]);
@@ -267,10 +270,6 @@ public class EventBookTicketActivity
     }
 
     @Override
-    public void renderSeatLayout(String url) {
-    }
-
-    @Override
     public void renderSeatmap(String url) {
         ImageHandler.loadImageCover2(imgvSeatingLayout, url);
     }
@@ -288,6 +287,11 @@ public class EventBookTicketActivity
     @Override
     public int getButtonLayoutHeight() {
         return buttonCountLayout.getHeight();
+    }
+
+    @Override
+    public int getRequestCode() {
+        return EVENT_LOGIN_REQUEST;
     }
 
     public class AddTicketFragmentAdapter extends FragmentStatePagerAdapter {
@@ -360,5 +364,9 @@ public class EventBookTicketActivity
         return true;
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mPresenter.onActivityResult(requestCode);
+    }
 }

@@ -53,7 +53,6 @@ public class FragmentAddTickets extends Fragment {
             mTicketTypeCount = getArguments().getInt(ARG_PARAM1);
         }
 
-//        executeInjector();
     }
 
     @Override

@@ -39,8 +39,8 @@ import rx.android.schedulers.AndroidSchedulers;
 public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
         implements EventsContract.Presenter {
 
-    public GetEventsListRequestUseCase getEventsListRequestUsecase;
-    public GetEventsListByLocationRequestUseCase getEventsListByLocationRequestUseCase;
+    private GetEventsListRequestUseCase getEventsListRequestUsecase;
+    private GetEventsListByLocationRequestUseCase getEventsListByLocationRequestUseCase;
     CategoryViewModel carousel;
     List<CategoryViewModel> categoryViewModels;
     TouchViewPager mTouchViewPager;

@@ -20,7 +20,7 @@ import rx.Subscriber;
 
 public class EventLocationsPresenter extends BaseDaggerPresenter<EventsLocationContract.View> implements EventsLocationContract.Presenter {
 
-    public GetEventsLocationListRequestUseCase getEventsLocationListRequestUseCase;
+    private GetEventsLocationListRequestUseCase getEventsLocationListRequestUseCase;
 
     @Inject
     public EventLocationsPresenter(GetEventsLocationListRequestUseCase getEventsLocationListRequestUseCase) {

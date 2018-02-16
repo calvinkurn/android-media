@@ -7,7 +7,6 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.events.view.utils.ImageTextViewHolder;
-import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
 
 /**
@@ -29,7 +28,8 @@ public class EventBookTicketContract {
 
         void setHolder(int resID, String label, ImageTextViewHolder holder);
 
-        void showPayButton(int ticketQuantity, int price,String type);
+        void showPayButton(int ticketQuantity, int price, String type);
+
         void hidePayButton();
 
         void showProgressBar();
@@ -38,7 +38,6 @@ public class EventBookTicketContract {
 
         void initTablayout();
 
-        void renderSeatLayout(String url);
         void renderSeatmap(String url);
 
         void hideSeatmap();
@@ -46,6 +45,8 @@ public class EventBookTicketContract {
         android.view.View getRootView();
 
         int getButtonLayoutHeight();
+
+        int getRequestCode();
     }
 
     public interface Presenter extends CustomerPresenter<EventBookTicketContract.EventBookTicketView> {
@@ -56,7 +57,11 @@ public class EventBookTicketContract {
 
 
         void getTicketDetails();
+
         void validateSelection();
 
+        void onActivityResult(int requestCode);
+
+        void payTicketsClick(String title);
     }
 }

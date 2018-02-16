@@ -3,15 +3,13 @@ package com.tokopedia.events.view.mapper;
 import com.tokopedia.events.data.entity.response.Package;
 import com.tokopedia.events.domain.model.EventDetailsDomain;
 import com.tokopedia.events.domain.model.ScheduleDomain;
+import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SchedulesViewModel;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 /**
  * Created by pranaymohapatra on 27/11/17.
@@ -43,22 +41,18 @@ public class EventDetailsViewModelMapper {
         target.setThumbsUp(source.getThumbsUp());
         target.setSeatMapImage(source.getSeatMapImage());
         target.setForms(source.getForms());
-        String dateRange = "";
+        String dateRange;
         if (source.getMinStartDate().equals(source.getMaxEndDate())) {
-            dateRange = convertEpochToString(source.getMinStartDate());
+            dateRange = Utils.convertEpochToString(source.getMinStartDate());
         } else {
-            dateRange = convertEpochToString(source.getMinStartDate())
-                    + " - " + convertEpochToString(source.getMaxEndDate());
+            dateRange = Utils.convertEpochToString(source.getMinStartDate())
+                    + " - " + Utils.convertEpochToString(source.getMaxEndDate());
         }
         target.setTimeRange(dateRange);
         int size = source.getSchedules().size();
         List<SchedulesViewModel> schedules = new ArrayList<>(size);
         for (ScheduleDomain item : source.getSchedules()) {
             SchedulesViewModel s = new SchedulesViewModel();
-//            StringBuilder stringBuilder = new StringBuilder();
-//            stringBuilder.append(item.getAddressDetail().getName()).
-//                    append(", ").append(item.getAddressDetail().getAddress())
-//                    .append(", ").append(item.getAddressDetail().getCity());
             s.setaDdress(item.getAddressDetail().getAddress());
             s.setStartDate(item.getSchedule().getStartDate());
             s.setEndDate(item.getSchedule().getEndDate());
@@ -108,15 +102,6 @@ public class EventDetailsViewModelMapper {
         }
 
         target.setSchedulesViewModels(schedules);
-    }
-
-    static String convertEpochToString(int time) {
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy");
-        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
-        Long epochTime = time * 1000L;
-        Date date = new Date(epochTime);
-        String dateString = sdf.format(date);
-        return dateString;
     }
 
 }

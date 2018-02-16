@@ -354,8 +354,6 @@ public class EventReviewTicketPresenter
             public void onError(Throwable throwable) {
                 Log.d("PaymentLinkUseCase", "ON ERROR");
                 throwable.printStackTrace();
-//                getView().hideProgressBar();
-//                getView().showMessage("Kode Promo tidak ditemukan");
                 getView().hideProgressBar();
                 NetworkErrorHelper.showEmptyState(getView().getActivity(),
                         getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {

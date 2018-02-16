@@ -29,16 +29,16 @@ import butterknife.OnClick;
 
 public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    Context mContext;
+    private Context mContext;
     private List<SearchViewModel> categoryItems;
-    EventSearchPresenter mPresenter;
-    String highLightText;
-    String lowerhighlight;
-    String upperhighlight;
-    protected boolean isFooterAdded = false;
+    private EventSearchPresenter mPresenter;
+    private String highLightText;
+    private String lowerhighlight;
+    private String upperhighlight;
+    private boolean isFooterAdded = false;
 
-    protected static final int ITEM = 1;
-    protected static final int FOOTER = 2;
+    private static final int ITEM = 1;
+    private static final int FOOTER = 2;
 
     public TopEventsSuggestionsAdapter(Context context, List<SearchViewModel> categoryItems, EventSearchPresenter presenter) {
         this.mContext = context;
@@ -101,7 +101,7 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
         }
     }
 
-    public SearchViewModel getItem(int position) {
+    private SearchViewModel getItem(int position) {
         return categoryItems.get(position);
     }
 
@@ -135,7 +135,7 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
         return getItemCount() == 0;
     }
 
-    public boolean isLastPosition(int position) {
+    private boolean isLastPosition(int position) {
         return (position == categoryItems.size() - 1);
     }
 
@@ -167,12 +167,12 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
         SearchViewModel valueItem;
         int mPosition;
 
-        public EventsTitleHolder(View itemView) {
+        private EventsTitleHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        public void setEventTitle(int position, SearchViewModel value) {
+        private void setEventTitle(int position, SearchViewModel value) {
             this.valueItem = value;
             this.mPosition = position;
             SpannableString spannableString = new SpannableString(valueItem.getTitle());
@@ -203,7 +203,7 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
         @BindView(R2.id.loading_fl)
         View loadingLayout;
 
-        public FooterViewHolder(View itemView) {
+        private FooterViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

@@ -208,13 +208,13 @@ public class EventModule {
 
     @Provides
     @EventScope
-    ProfileSourceFactory providesProfileSourceFactory(Context context) {
+    ProfileSourceFactory providesProfileSourceFactory(Context context,SessionHandler sessionHandler) {
         return new ProfileSourceFactory(context,
                 new PeopleService(),
                 new ProfileMapper(),
                 new GlobalCacheManager(),
                 new AnalyticsCacheHandler(),
-                new SessionHandler(context));
+                sessionHandler);
     }
 
     @Provides

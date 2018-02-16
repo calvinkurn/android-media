@@ -107,6 +107,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignTop="@+id/linearLayout2"
+                android:layout_below="@+id/event_title"
                 android:text="Mulai dari harga:"
                 android:textColor="@color/grey_500"
                 android:textSize="@dimen/textsize_tiny"

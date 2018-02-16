@@ -103,8 +103,6 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     ImageView ivArrowSeatingTnC;
     @BindView(R2.id.tv_event_price)
             TextView eventPrice;
-    @BindView(R2.id.event_display_layout)
-    LinearLayout eventDisplayTagLayout;
 
     ImageTextViewHolder timeHolder;
     ImageTextViewHolder locationHolder;
@@ -145,18 +143,12 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
                     upArrow.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
                     getSupportActionBar().setHomeAsUpIndicator(upArrow);
 
-//                    Drawable drawable = ContextCompat.getDrawable(getApplicationContext(),R.drawable.option_menu_icon);
-//                    drawable.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
-//                    toolbar.setOverflowIcon(drawable);
                 } else {
 
                     upArrow.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
                     getSupportActionBar().setHomeAsUpIndicator(upArrow);
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-//                    Drawable drawable = ContextCompat.getDrawable(getApplicationContext(),R.drawable.option_menu_icon);
-//                    drawable.setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
-//                    toolbar.setOverflowIcon(drawable);
                 }
             }
         });
@@ -192,10 +184,10 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         if (homedata.getMinStartDate() == 0) {
             timeView.setVisibility(View.GONE);
         } else if (homedata.getMinStartDate().equals(homedata.getMaxEndDate())) {
-            dateRange = mPresenter.convertEpochToString(homedata.getMinStartDate());
+            dateRange = Utils.convertEpochToString(homedata.getMinStartDate());
         } else {
-            dateRange = mPresenter.convertEpochToString(homedata.getMinStartDate())
-                    + " - " + mPresenter.convertEpochToString(homedata.getMaxEndDate());
+            dateRange = Utils.convertEpochToString(homedata.getMinStartDate())
+                    + " - " + Utils.convertEpochToString(homedata.getMaxEndDate());
         }
         setHolder(R.drawable.ic_time, dateRange, timeHolder);
         setHolder(R.drawable.ic_placeholder, homedata.getCityName(), locationHolder);
@@ -205,22 +197,7 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
                 , ViewGroup.LayoutParams.WRAP_CONTENT);
-//        if (homedata.getDisplayTags() != null && homedata.getDisplayTags().length() > 3) {
-//            List<TextView> list = addTextViews(Utils.getDisplayTags(homedata.getDisplayTags()));
-//
-//            eventDisplayTagLayout.removeAllViews();
-//            for (int i = 0; i < list.size(); i++) {
-//                eventDisplayTagLayout.addView(list.get(i), params);
-//            }
-//
-//            eventDisplayTagLayout.setVisibility(View.VISIBLE);
-//        } else {
-//            eventDisplayTagLayout.setVisibility(View.GONE);
-//        }
-
-
         String tnc = homedata.getTnc();
-//            tnc = tnc.replace("\n", "<br>").replace("\r" , "");
         String splitArray[] = tnc.split("~");
         int flag = 1;
 
@@ -236,16 +213,7 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
             }
         }
         tvExpandableTermsNCondition.setText(Html.fromHtml(tncBuffer.toString()));
-//        } else {
-//            tvExpandableTermsNCondition.setText(Html.fromHtml(homedata.getTnc()));
-//        }
-//        if (homedata.getHasSeatLayout() != 1)
-//            seatingLayoutCard.setVisibility(View.GONE);
 
-//        String buttonText = getString(R.string.lanjutkan) + " " +
-//                String.format(getString(R.string.starting_from),
-//                        "Rp " + CurrencyUtil.convertToCurrencyString(homedata.getSalesPrice()));
-//        buttonTextView.setText(buttonText);
         eventPrice.setText("Rp " + CurrencyUtil.convertToCurrencyString(homedata.getSalesPrice()));
     }
 
@@ -283,11 +251,6 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
 
         if (data.getHasSeatLayout() != 1)
             seatingLayoutCard.setVisibility(View.GONE);
-
-//        String buttonText = getString(R.string.lanjutkan) + " " +
-//                String.format(getString(R.string.starting_from),
-//                        "Rp " + CurrencyUtil.convertToCurrencyString(data.getSalesPrice()));
-//        buttonTextView.setText(buttonText);
         eventPrice.setText("Rp " + CurrencyUtil.convertToCurrencyString(data.getSalesPrice()));
     }
 
@@ -320,54 +283,6 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     public View getRootView() {
         return mainContent;
     }
-
-    public class ToolbarElevationOffsetListener implements AppBarLayout.OnOffsetChangedListener {
-        private final Toolbar mToolbar;
-        private float mTargetElevation;
-        private final AppCompatActivity mActivity;
-
-        public ToolbarElevationOffsetListener(AppCompatActivity appCompatActivity, Toolbar toolbar) {
-            mActivity = appCompatActivity;
-            mToolbar = toolbar;
-            mTargetElevation = mToolbar.getContext().getResources().getDimension(R.dimen.appbar_elevation);
-        }
-
-        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-        @Override
-        public void onOffsetChanged(AppBarLayout appBarLayout, int offset) {
-            offset = Math.abs(offset);
-            mTargetElevation = Math.max(mTargetElevation, appBarLayout.getTargetElevation());
-            if (offset >= appBarLayout.getTotalScrollRange() - mToolbar.getHeight()) {
-                float flexibleSpace = appBarLayout.getTotalScrollRange() - offset;
-                float ratio = 1 - (flexibleSpace / mToolbar.getHeight());
-                float elevation = ratio * mTargetElevation;
-                setToolbarElevation(elevation);
-            } else {
-                setToolbarElevation(0);
-            }
-
-        }
-
-        private void setToolbarElevation(float targetElevation) {
-            ActionBar supportActionBar = mActivity.getSupportActionBar();
-            if (supportActionBar != null) supportActionBar.setElevation(targetElevation);
-            else if (mToolbar != null)
-                ViewCompat.setElevation(mToolbar, targetElevation);
-        }
-    }
-
-//    @OnClick(R2.id.btn_show_seating)
-//    void showHideSeating() {
-//        if (imgvSeatingLayout.getVisibility() != View.VISIBLE) {
-//            imgvSeatingLayout.setVisibility(View.VISIBLE);
-//            ivArrowSeating.animate().rotation(180f);
-//
-//        } else {
-//            ivArrowSeating.animate().rotation(0f);
-//            imgvSeatingLayout.setVisibility(View.GONE);
-//        }
-//    }
-
 
     @OnClick(R2.id.expand_view)
     void setSeemorebutton() {
@@ -422,27 +337,5 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
-    }
-
-
-    private List<TextView> addTextViews(List<String> displayTagLIst) {
-
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
-                , ViewGroup.LayoutParams.WRAP_CONTENT);
-        List<TextView> textViewList = new ArrayList<>();
-        for (int i = 0; i<displayTagLIst.size(); i++){
-            String s = displayTagLIst.get(i);
-            TextView tv = new TextView(this);
-            tv.setId(i);
-            tv.setText(s);
-            tv.setTextColor(ContextCompat.getColor(this, R.color.black_38));
-            tv.setBackgroundResource(R.drawable.rounded_rectange_transparent);
-            tv.setPadding(12, 4, 12, 4);
-            tv.setTextSize(14);
-            tv.setLayoutParams(params);
-            textViewList.add(tv);
-        }
-
-        return textViewList;
     }
 }

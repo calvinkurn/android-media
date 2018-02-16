@@ -41,13 +41,12 @@ public class EventSearchPresenter
     private String FRAGMENT_TAG = "FILTERFRAGMENT";
     private ArrayList<SearchViewModel> mTopEvents;
     private SearchDomainModel mSearchData;
-    FiltersAdapter.FilterViewHolder filterViewHolder;
-    ValuesItemDomain selectedTime;
-    String catgoryFilters;
-    String timeFilter;
-    String highlight;
-    boolean isLoading;
-    boolean isLastPage;
+    private ValuesItemDomain selectedTime;
+    private String catgoryFilters;
+    private String timeFilter;
+    private String highlight;
+    private boolean isLoading;
+    private boolean isLastPage;
     private final int PAGE_SIZE = 20;
 
     @Inject

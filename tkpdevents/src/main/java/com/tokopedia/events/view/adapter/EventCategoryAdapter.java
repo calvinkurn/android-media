@@ -14,6 +14,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.events.R;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.utils.CurrencyUtil;
+import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 
 import java.text.SimpleDateFormat;
@@ -48,14 +49,14 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
 
         public ViewHolder(View itemLayoutView) {
             super(itemLayoutView);
-            eventTitle = (TextView) itemView.findViewById(R.id.event_title);
-            eventPrice = (TextView) itemView.findViewById(R.id.tv_event_price);
-            eventImage = (ImageView) itemView.findViewById(R.id.img_event);
+            eventTitle = itemView.findViewById(R.id.event_title);
+            eventPrice = itemView.findViewById(R.id.tv_event_price);
+            eventImage = itemView.findViewById(R.id.img_event);
             //btnBookticket = (TextView) itemView.findViewById(R.id.btn_bookticket);
-            eventLocation = (TextView) itemView.findViewById(R.id.tv_location);
-            eventTime = (TextView) itemView.findViewById(R.id.tv_time);
-            eventTimeLayout = (LinearLayout) itemView.findViewById(R.id.linearLayout2);
-            tvDisplayTag = (TextView) itemView.findViewById(R.id.text_view_display_tag);
+            eventLocation = itemView.findViewById(R.id.tv_location);
+            eventTime = itemView.findViewById(R.id.tv_time);
+            eventTimeLayout = itemView.findViewById(R.id.linearLayout2);
+            tvDisplayTag = itemView.findViewById(R.id.text_view_display_tag);
 
         }
 
@@ -95,10 +96,10 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
             holder.eventTimeLayout.setVisibility(View.GONE);
         } else {
             if (model.getMinStartDate().equals(model.getMaxEndDate()))
-                holder.eventTime.setText(convertEpochToString(model.getMinStartDate()));
+                holder.eventTime.setText(Utils.convertEpochToString(model.getMinStartDate()));
             else
-                holder.eventTime.setText(convertEpochToString(model.getMinStartDate())
-                        + " - " + convertEpochToString(model.getMaxEndDate()));
+                holder.eventTime.setText(Utils.convertEpochToString(model.getMinStartDate())
+                        + " - " + Utils.convertEpochToString(model.getMaxEndDate()));
         }
         holder.setIndex(position);
 
@@ -132,12 +133,4 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
         }
     }
 
-    public String convertEpochToString(int time) {
-        SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy");
-        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
-        Long epochTime = time * 1000L;
-        Date date = new Date(epochTime);
-        String dateString = sdf.format(date);
-        return dateString;
-    }
 }

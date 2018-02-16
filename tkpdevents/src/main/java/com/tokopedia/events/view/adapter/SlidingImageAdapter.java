@@ -25,7 +25,7 @@ public class SlidingImageAdapter extends PagerAdapter {
     private List<String> IMAGES;
     private LayoutInflater inflater;
     private Context context;
-    EventHomePresenter mPresenter;
+    private EventHomePresenter mPresenter;
 
 
     public SlidingImageAdapter(Context context, List<String> IMAGES, EventHomePresenter presenter) {
