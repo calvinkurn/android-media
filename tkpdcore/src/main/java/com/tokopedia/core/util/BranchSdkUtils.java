@@ -38,7 +38,7 @@ public class BranchSdkUtils {
     private static final String BRANCH_IOS_DEEPLINK_PATH_KEY = "$ios_deeplink_path";
     private static final String BRANCH_DESKTOP_URL_KEY = "$desktop_url";
     private static final String CAMPAIGN_NAME = "Android App";
-    private static final String ORDERID_KEY = "orderId";
+    private static final String PAYMENT_KEY = "paymentID";
     private static final String PRODUCTTYPE_KEY = "productType";
     private static final String USERID_KEY = "userId";
     public static final String PRODUCTTYPE_DIGITAL = "digital";
@@ -174,14 +174,14 @@ public class BranchSdkUtils {
 
                 }
                 CommerceEvent commerceEvent = new CommerceEvent();
-                commerceEvent.setTransactionID(purchase.getPaymentId());
+                commerceEvent.setTransactionID("" + purchase.getTransactionID());
                 commerceEvent.setRevenue(convertStringToDouble("" + purchase.getRevenue()));
                 commerceEvent.setCurrencyType(CurrencyType.IDR);
                 commerceEvent.setShipping(convertStringToDouble("" + purchase.getShipping()));
                 commerceEvent.setProducts(branchProductList);
 
                 JSONObject metadata=new JSONObject();
-                metadata.put(ORDERID_KEY,purchase.getTransactionID());
+                metadata.put(PAYMENT_KEY,purchase.getPaymentId());
                 metadata.put(PRODUCTTYPE_KEY,productType);
                 metadata.put(USERID_KEY,purchase.getUserId());
 
