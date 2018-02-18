@@ -6,6 +6,8 @@
               android:background="@color/white"
               android:orientation="vertical">
 
+    <include layout="@layout/layout_item_warning"/>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -254,20 +256,6 @@
                 android:textSize="12sp"
                 android:textStyle="normal"/>
 
-            <TextView
-                android:id="@+id/tv_action_form_remark"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/tv_label_form_remark"
-                android:layout_toRightOf="@id/tv_label_form_remark"
-                android:fontFamily="sans-serif"
-                android:text=" Tulis Catatan"
-                android:textColor="@color/medium_green"
-                android:textSize="12sp"
-                android:textStyle="normal"
-                android:visibility="gone"
-                tools:visibility="visible"/>
-
             <EditText
                 android:id="@+id/et_remark"
                 android:layout_width="match_parent"
@@ -275,17 +263,18 @@
                 android:layout_below="@id/tv_label_form_remark"
                 android:background="@color/transparent"
                 android:fontFamily="sans-serif"
-                android:imeActionLabel="Simpan"
-                android:imeOptions="actionSend"
+                android:imeActionLabel="Selesai"
+                android:imeOptions="actionDone"
+                android:maxLines="3"
                 android:paddingBottom="8dp"
                 android:paddingTop="8dp"
                 android:textSize="12sp"
                 android:textStyle="normal"
-                android:visibility="gone"
+                android:visibility="visible"
                 tools:ignore="TextFields"
                 tools:text="Saya pesan warna merah yah min.. jangan sampai salah kirim
 barangnya gan!"
-                tools:visibility="gone"/>
+                tools:visibility="visible"/>
         </RelativeLayout>
 
         <View

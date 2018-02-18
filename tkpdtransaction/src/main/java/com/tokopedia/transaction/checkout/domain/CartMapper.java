@@ -3,6 +3,8 @@ package com.tokopedia.transaction.checkout.domain;
 import com.tokopedia.transaction.checkout.domain.response.cartlist.CartDataListResponse;
 import com.tokopedia.transaction.checkout.domain.response.cartlist.CartList;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
+import com.tokopedia.transaction.checkout.view.data.CartListData;
+import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +22,7 @@ public class CartMapper implements ICartMapper {
     }
 
     @Override
-    public List<CartItemData> convertToCartItemDataList(CartDataListResponse cartDataListResponse) {
+    public CartListData convertToCartItemDataList(CartDataListResponse cartDataListResponse) {
 
         List<CartItemData> cartItemDataList = new ArrayList<>();
         for (CartList data : cartDataListResponse.getCartList()) {
@@ -42,7 +44,6 @@ public class CartMapper implements ICartMapper {
             cartItemDataOrigin.setPriceCurrency(data.getProduct().getProductPriceCurrency());
             cartItemDataOrigin.setPreOrder(data.getProduct().getIsPreorder() == 1);
             cartItemDataOrigin.setFavorite(false);
-            cartItemDataOrigin.setMaximalQtyOrder(1000);
             cartItemDataOrigin.setMinimalQtyOrder(data.getProduct().getProductMinOrder());
             cartItemDataOrigin.setFreeReturn(data.getProduct().getIsFreereturns() == 1);
             cartItemDataOrigin.setCashBackInfo(data.getProduct().getProductCashback());
@@ -51,13 +52,47 @@ public class CartMapper implements ICartMapper {
             CartItemData.UpdatedData cartItemDataUpdated = new CartItemData.UpdatedData();
             cartItemDataUpdated.setRemark(cartItemDataOrigin.getProductVarianRemark());
             cartItemDataUpdated.setQuantity(data.getProduct().getProductQuantity());
+            cartItemDataUpdated.setMaxCharRemark(cartDataListResponse.getMaxCharNote());
+            cartItemDataUpdated.setMaxQuantity(cartDataListResponse.getMaxQuantity());
+
+            CartItemData.MessageErrorData cartItemMessageErrorData = new CartItemData.MessageErrorData();
+            cartItemMessageErrorData.setErrorCheckoutPriceLimit(cartDataListResponse.getMessages().getErrorCheckoutPriceLimit());
+            cartItemMessageErrorData.setErrorAdditional(data.getErrors());
+            cartItemMessageErrorData.setErrorFieldBetween(cartDataListResponse.getMessages().getErrorFieldBetween());
+            cartItemMessageErrorData.setErrorFieldMaxChar(cartDataListResponse.getMessages().getErrorFieldMaxChar());
+            cartItemMessageErrorData.setErrorFieldRequired(cartDataListResponse.getMessages().getErrorFieldRequired());
+            cartItemMessageErrorData.setErrorProductAvailableStock(cartDataListResponse.getMessages().getErrorProductAvailableStock());
+            cartItemMessageErrorData.setErrorProductAvailableStockDetail(cartDataListResponse.getMessages().getErrorProductAvailableStockDetail());
+            cartItemMessageErrorData.setErrorProductMaxQuantity(cartDataListResponse.getMessages().getErrorProductMaxQuantity());
+            cartItemMessageErrorData.setErrorProductMinQuantity(cartDataListResponse.getMessages().getErrorProductMinQuantity());
+
 
             cartItemData.setOriginData(cartItemDataOrigin);
             cartItemData.setUpdatedData(cartItemDataUpdated);
+            cartItemData.setErrorData(cartItemMessageErrorData);
 
             cartItemDataList.add(cartItemData);
         }
 
-        return cartItemDataList;
+        CartPromoSuggestion cartPromoSuggestion = new CartPromoSuggestion();
+//        cartPromoSuggestion.setCta(cartDataListResponse.getPromoSuggestion().getCta());
+//        cartPromoSuggestion.setCtaColor(cartDataListResponse.getPromoSuggestion().getCtaColor());
+//        cartPromoSuggestion.setPromoCode(cartDataListResponse.getPromoSuggestion().getPromoCode());
+//        cartPromoSuggestion.setText(cartDataListResponse.getPromoSuggestion().getText());
+//        cartPromoSuggestion.setVisible(cartDataListResponse.getPromoSuggestion().getIsVisible() == 1);
+
+
+        cartPromoSuggestion.setCta("Gunakan Sekarang!");
+        cartPromoSuggestion.setCtaColor("#42b549");
+        cartPromoSuggestion.setPromoCode("TOKOCASH");
+        cartPromoSuggestion.setText("[iOS] Cashback hingga 25% menggunakan Promo <b>TOKOCASH</b> !");
+        cartPromoSuggestion.setVisible(true);
+
+
+        CartListData cartListData = new CartListData();
+        cartListData.setCartItemDataList(cartItemDataList);
+        cartListData.setCartPromoSuggestion(cartPromoSuggestion);
+
+        return cartListData;
     }
 }

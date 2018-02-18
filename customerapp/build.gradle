@@ -231,63 +231,63 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
 
-//    compile(rootProject.ext.tkpdDependencies.inbox) {
+    compile(rootProject.ext.tkpdDependencies.inbox) {
+        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
+    }
+    compile(rootProject.ext.tkpdDependencies.discovery) {
+        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
+    }
+//    compile(rootProject.ext.tkpdDependencies.transaction) {
 //        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
 //    }
-//    compile(rootProject.ext.tkpdDependencies.discovery) {
-//        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
-//    }
-////    compile(rootProject.ext.tkpdDependencies.transaction) {
-////        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
-////    }
-//    compile(rootProject.ext.tkpdDependencies.seller) {
-//        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
-//    }
-//    compile(rootProject.ext.tkpdDependencies.session) {
-//        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
-//    }
-//    compile(rootProject.ext.tkpdDependencies.tkpdpdp) {
-//        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
-//    }
-//    compile(rootProject.ext.tkpdDependencies.feed) {
-//        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
-//    }
-//    compile(rootProject.ext.tkpdDependencies.ride) {
-//        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
-//    }
-//    compile(rootProject.ext.tkpdDependencies.digital) {
-//        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
-//    }
-//    compile(rootProject.ext.tkpdDependencies.reactNative) {
-//        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
-//    }
-//    compile(rootProject.ext.tkpdDependencies.loyalty) {
-//        exclude group: 'com.tokopedia.core', module:'tkpdcore'
-//    }
-//    compile(rootProject.ext.tkpdDependencies.reputation) {
-//        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
-//    }
-//    compile(rootProject.ext.tkpdDependencies.tokocash) {
-//        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
-//    }
-//    compile(rootProject.ext.tkpdDependencies.flight) {
-//        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
-//    }
+    compile(rootProject.ext.tkpdDependencies.seller) {
+        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
+    }
+    compile(rootProject.ext.tkpdDependencies.session) {
+        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
+    }
+    compile(rootProject.ext.tkpdDependencies.tkpdpdp) {
+        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
+    }
+    compile(rootProject.ext.tkpdDependencies.feed) {
+        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
+    }
+    compile(rootProject.ext.tkpdDependencies.ride) {
+        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
+    }
+    compile(rootProject.ext.tkpdDependencies.digital) {
+        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
+    }
+    compile(rootProject.ext.tkpdDependencies.reactNative) {
+        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
+    }
+    compile(rootProject.ext.tkpdDependencies.loyalty) {
+        exclude group: 'com.tokopedia.core', module:'tkpdcore'
+    }
+    compile(rootProject.ext.tkpdDependencies.reputation) {
+        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
+    }
+    compile(rootProject.ext.tkpdDependencies.tokocash) {
+        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
+    }
+    compile(rootProject.ext.tkpdDependencies.flight) {
+        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
+    }
 
-    compile project(':tkpddiscovery')
+//    compile project(':tkpddiscovery')
     compile project(':tkpdtransaction')
-    compile project(':tkpdseller')
-    compile project(':tkpdsession')
-    compile project(':tkpdinbox')
-    compile project(':tkpdride')
-    compile project(':tkpddigital')
-    compile project(':tkpdpdp')
-    compile project(':tkpdfeed')
-    compile project(':tkpdreactnative')
-    compile project(':tkpdloyalty')
-    compile project(':tkpdreputation')
-    compile project(':tkpdtokocash')
-    compile project(':tkpdflight')
+//    compile project(':tkpdseller')
+//    compile project(':tkpdsession')
+//    compile project(':tkpdinbox')
+//    compile project(':tkpdride')
+//    compile project(':tkpddigital')
+//    compile project(':tkpdpdp')
+//    compile project(':tkpdfeed')
+//    compile project(':tkpdreactnative')
+//    compile project(':tkpdloyalty')
+//    compile project(':tkpdreputation')
+//    compile project(':tkpdtokocash')
+//    compile project(':tkpdflight')
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

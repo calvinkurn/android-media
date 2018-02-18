@@ -12,6 +12,7 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.view.SingleAddressShipmentFragment;
 import com.tokopedia.transaction.checkout.view.MultipleAddressFragment;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
+import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,23 +23,31 @@ import java.util.List;
 
 public class CartShipmentActivity extends BasePresenterActivity implements ICartShipmentActivity {
     public static final String EXTRA_CART_DATA_LIST = "EXTRA_CART_DATA_LIST";
+    public static final String EXTRA_CART_PROMO_SUGGESTION = "EXTRA_CART_PROMO_SUGGESTION";
     public static final String EXTRA_ADDRESS_SHIPMENT_TYPE = "EXTRA_ADDRESS_SHIPMENT_TYPE";
     public static final int TYPE_ADDRESS_SHIPMENT_SINGLE = 1;
     public static final int TYPE_ADDRESS_SHIPMENT_MULTIPLE = 2;
 
     private int typeAddressShipment;
     private List<CartItemData> cartItemDataList;
+    private CartPromoSuggestion cartPromoSuggestionData;
 
-    public static Intent createInstanceSingleAddress(Context context, List<CartItemData> cartItemDataList) {
+    public static Intent createInstanceSingleAddress(Context context,
+                                                     List<CartItemData> cartItemDataList,
+                                                     CartPromoSuggestion cartPromoSuggestion) {
         Intent intent = new Intent(context, CartShipmentActivity.class);
         intent.putParcelableArrayListExtra(EXTRA_CART_DATA_LIST, (ArrayList<? extends Parcelable>) cartItemDataList);
+        intent.putExtra(EXTRA_CART_PROMO_SUGGESTION, cartPromoSuggestion);
         intent.putExtra(EXTRA_ADDRESS_SHIPMENT_TYPE, TYPE_ADDRESS_SHIPMENT_SINGLE);
         return intent;
     }
 
-    public static Intent createInstanceMultipleAddress(Context context, List<CartItemData> cartItemDataList) {
+    public static Intent createInstanceMultipleAddress(Context context,
+                                                       List<CartItemData> cartItemDataList,
+                                                       CartPromoSuggestion cartPromoSuggestion) {
         Intent intent = new Intent(context, CartShipmentActivity.class);
         intent.putParcelableArrayListExtra(EXTRA_CART_DATA_LIST, (ArrayList<? extends Parcelable>) cartItemDataList);
+        intent.putExtra(EXTRA_CART_PROMO_SUGGESTION, cartPromoSuggestion);
         intent.putExtra(EXTRA_ADDRESS_SHIPMENT_TYPE, TYPE_ADDRESS_SHIPMENT_MULTIPLE);
         return intent;
     }
@@ -52,6 +61,7 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
     protected void setupBundlePass(Bundle extras) {
         typeAddressShipment = extras.getInt(EXTRA_ADDRESS_SHIPMENT_TYPE);
         cartItemDataList = extras.getParcelableArrayList(EXTRA_CART_DATA_LIST);
+        cartPromoSuggestionData = extras.getParcelable(EXTRA_CART_PROMO_SUGGESTION);
     }
 
     @Override
@@ -71,7 +81,7 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
                 || (fragment instanceof SingleAddressShipmentFragment))) {
             if (typeAddressShipment == TYPE_ADDRESS_SHIPMENT_SINGLE) {
                 getFragmentManager().beginTransaction().replace(R.id.container,
-                        SingleAddressShipmentFragment.newInstance(cartItemDataList)).commit();
+                        SingleAddressShipmentFragment.newInstance(cartItemDataList, cartPromoSuggestionData)).commit();
             } else {
                 getFragmentManager().beginTransaction().replace(R.id.container,
                         MultipleAddressFragment.newInstance()).commit();

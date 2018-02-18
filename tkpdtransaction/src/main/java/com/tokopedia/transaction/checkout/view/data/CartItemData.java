@@ -3,6 +3,9 @@ package com.tokopedia.transaction.checkout.view.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author anggaprasetiyo on 18/01/18.
  */
@@ -11,6 +14,7 @@ public class CartItemData implements Parcelable {
 
     private OriginData originData;
     private UpdatedData updatedData;
+    private MessageErrorData errorData;
 
     public OriginData getOriginData() {
         return originData;
@@ -28,6 +32,13 @@ public class CartItemData implements Parcelable {
         this.updatedData = updatedData;
     }
 
+    public MessageErrorData getErrorData() {
+        return errorData;
+    }
+
+    public void setErrorData(MessageErrorData errorData) {
+        this.errorData = errorData;
+    }
 
     public static class OriginData implements Parcelable {
         public static final int CURRENCY_IDR = 1;
@@ -39,7 +50,6 @@ public class CartItemData implements Parcelable {
         private String productId;
         private String productName;
         private int minimalQtyOrder;
-        private int maximalQtyOrder;
         private double pricePlan;
         private int priceCurrency;
         private String priceFormatted;
@@ -56,13 +66,6 @@ public class CartItemData implements Parcelable {
         private boolean isFavorite;
         private String cashBackInfo;
 
-        public int getMaximalQtyOrder() {
-            return maximalQtyOrder;
-        }
-
-        public void setMaximalQtyOrder(int maximalQtyOrder) {
-            this.maximalQtyOrder = maximalQtyOrder;
-        }
 
         public String getShopName() {
             return shopName;
@@ -209,6 +212,9 @@ public class CartItemData implements Parcelable {
         }
 
 
+        public OriginData() {
+        }
+
         @Override
         public int describeContents() {
             return 0;
@@ -219,7 +225,6 @@ public class CartItemData implements Parcelable {
             dest.writeString(this.productId);
             dest.writeString(this.productName);
             dest.writeInt(this.minimalQtyOrder);
-            dest.writeInt(this.maximalQtyOrder);
             dest.writeDouble(this.pricePlan);
             dest.writeInt(this.priceCurrency);
             dest.writeString(this.priceFormatted);
@@ -237,14 +242,10 @@ public class CartItemData implements Parcelable {
             dest.writeString(this.cashBackInfo);
         }
 
-        public OriginData() {
-        }
-
         protected OriginData(Parcel in) {
             this.productId = in.readString();
             this.productName = in.readString();
             this.minimalQtyOrder = in.readInt();
-            this.maximalQtyOrder = in.readInt();
             this.pricePlan = in.readDouble();
             this.priceCurrency = in.readInt();
             this.priceFormatted = in.readString();
@@ -262,23 +263,24 @@ public class CartItemData implements Parcelable {
             this.cashBackInfo = in.readString();
         }
 
-        public static final Parcelable.Creator<OriginData> CREATOR =
-                new Parcelable.Creator<OriginData>() {
-                    @Override
-                    public OriginData createFromParcel(Parcel source) {
-                        return new OriginData(source);
-                    }
+        public static final Creator<OriginData> CREATOR = new Creator<OriginData>() {
+            @Override
+            public OriginData createFromParcel(Parcel source) {
+                return new OriginData(source);
+            }
 
-                    @Override
-                    public OriginData[] newArray(int size) {
-                        return new OriginData[size];
-                    }
-                };
+            @Override
+            public OriginData[] newArray(int size) {
+                return new OriginData[size];
+            }
+        };
     }
 
     public static class UpdatedData implements Parcelable {
         private int quantity;
         private String remark;
+        private int maxQuantity;
+        private int maxCharRemark;
 
         public int getQuantity() {
             return quantity;
@@ -296,6 +298,33 @@ public class CartItemData implements Parcelable {
             this.remark = remark;
         }
 
+        public UpdatedData() {
+        }
+
+        public int getMaxQuantity() {
+            return maxQuantity;
+        }
+
+        public void setMaxQuantity(int maxQuantity) {
+            this.maxQuantity = maxQuantity;
+        }
+
+        public int getMaxCharRemark() {
+            return maxCharRemark;
+        }
+
+        public void setMaxCharRemark(int maxCharRemark) {
+            this.maxCharRemark = maxCharRemark;
+        }
+
+        public void decreaseQuantity() {
+            this.quantity--;
+        }
+
+        public void increaseQuantity() {
+            this.quantity++;
+        }
+
         @Override
         public int describeContents() {
             return 0;
@@ -305,36 +334,161 @@ public class CartItemData implements Parcelable {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.quantity);
             dest.writeString(this.remark);
-        }
-
-        public UpdatedData() {
+            dest.writeInt(this.maxQuantity);
+            dest.writeInt(this.maxCharRemark);
         }
 
         protected UpdatedData(Parcel in) {
             this.quantity = in.readInt();
             this.remark = in.readString();
+            this.maxQuantity = in.readInt();
+            this.maxCharRemark = in.readInt();
         }
 
-        public static final Parcelable.Creator<UpdatedData> CREATOR =
-                new Parcelable.Creator<UpdatedData>() {
-                    @Override
-                    public UpdatedData createFromParcel(Parcel source) {
-                        return new UpdatedData(source);
-                    }
+        public static final Creator<UpdatedData> CREATOR = new Creator<UpdatedData>() {
+            @Override
+            public UpdatedData createFromParcel(Parcel source) {
+                return new UpdatedData(source);
+            }
 
-                    @Override
-                    public UpdatedData[] newArray(int size) {
-                        return new UpdatedData[size];
-                    }
-                };
+            @Override
+            public UpdatedData[] newArray(int size) {
+                return new UpdatedData[size];
+            }
+        };
+    }
 
-        public void decreaseQuantity() {
-            this.quantity--;
+
+    public static class MessageErrorData implements Parcelable{
+        private String errorCheckoutPriceLimit;
+        private String errorFieldBetween;
+        private String errorFieldMaxChar;
+        private String errorFieldRequired;
+        private String errorProductAvailableStock;
+        private String errorProductAvailableStockDetail;
+        private String errorProductMaxQuantity;
+        private String errorProductMinQuantity;
+        private List<String> errorAdditional = new ArrayList<>();
+
+        public List<String> getErrorAdditional() {
+            return errorAdditional;
         }
 
-        public void increaseQuantity() {
-            this.quantity++;
+        public void setErrorAdditional(List<String> errorAdditional) {
+            this.errorAdditional = errorAdditional;
         }
+
+        public String getErrorCheckoutPriceLimit() {
+            return errorCheckoutPriceLimit;
+        }
+
+        public void setErrorCheckoutPriceLimit(String errorCheckoutPriceLimit) {
+            this.errorCheckoutPriceLimit = errorCheckoutPriceLimit;
+        }
+
+        public String getErrorFieldBetween() {
+            return errorFieldBetween;
+        }
+
+        public void setErrorFieldBetween(String errorFieldBetween) {
+            this.errorFieldBetween = errorFieldBetween;
+        }
+
+        public String getErrorFieldMaxChar() {
+            return errorFieldMaxChar;
+        }
+
+        public void setErrorFieldMaxChar(String errorFieldMaxChar) {
+            this.errorFieldMaxChar = errorFieldMaxChar;
+        }
+
+        public String getErrorFieldRequired() {
+            return errorFieldRequired;
+        }
+
+        public void setErrorFieldRequired(String errorFieldRequired) {
+            this.errorFieldRequired = errorFieldRequired;
+        }
+
+        public String getErrorProductAvailableStock() {
+            return errorProductAvailableStock;
+        }
+
+        public void setErrorProductAvailableStock(String errorProductAvailableStock) {
+            this.errorProductAvailableStock = errorProductAvailableStock;
+        }
+
+        public String getErrorProductAvailableStockDetail() {
+            return errorProductAvailableStockDetail;
+        }
+
+        public void setErrorProductAvailableStockDetail(String errorProductAvailableStockDetail) {
+            this.errorProductAvailableStockDetail = errorProductAvailableStockDetail;
+        }
+
+        public String getErrorProductMaxQuantity() {
+            return errorProductMaxQuantity;
+        }
+
+        public void setErrorProductMaxQuantity(String errorProductMaxQuantity) {
+            this.errorProductMaxQuantity = errorProductMaxQuantity;
+        }
+
+        public String getErrorProductMinQuantity() {
+            return errorProductMinQuantity;
+        }
+
+        public void setErrorProductMinQuantity(String errorProductMinQuantity) {
+            this.errorProductMinQuantity = errorProductMinQuantity;
+        }
+
+        public MessageErrorData() {
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.errorCheckoutPriceLimit);
+            dest.writeString(this.errorFieldBetween);
+            dest.writeString(this.errorFieldMaxChar);
+            dest.writeString(this.errorFieldRequired);
+            dest.writeString(this.errorProductAvailableStock);
+            dest.writeString(this.errorProductAvailableStockDetail);
+            dest.writeString(this.errorProductMaxQuantity);
+            dest.writeString(this.errorProductMinQuantity);
+            dest.writeStringList(this.errorAdditional);
+        }
+
+        protected MessageErrorData(Parcel in) {
+            this.errorCheckoutPriceLimit = in.readString();
+            this.errorFieldBetween = in.readString();
+            this.errorFieldMaxChar = in.readString();
+            this.errorFieldRequired = in.readString();
+            this.errorProductAvailableStock = in.readString();
+            this.errorProductAvailableStockDetail = in.readString();
+            this.errorProductMaxQuantity = in.readString();
+            this.errorProductMinQuantity = in.readString();
+            this.errorAdditional = in.createStringArrayList();
+        }
+
+        public static final Creator<MessageErrorData> CREATOR = new Creator<MessageErrorData>() {
+            @Override
+            public MessageErrorData createFromParcel(Parcel source) {
+                return new MessageErrorData(source);
+            }
+
+            @Override
+            public MessageErrorData[] newArray(int size) {
+                return new MessageErrorData[size];
+            }
+        };
+    }
+
+    public CartItemData() {
     }
 
     @Override
@@ -346,26 +500,24 @@ public class CartItemData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(this.originData, flags);
         dest.writeParcelable(this.updatedData, flags);
-    }
-
-    public CartItemData() {
+        dest.writeParcelable(this.errorData, flags);
     }
 
     protected CartItemData(Parcel in) {
         this.originData = in.readParcelable(OriginData.class.getClassLoader());
         this.updatedData = in.readParcelable(UpdatedData.class.getClassLoader());
+        this.errorData = in.readParcelable(MessageErrorData.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<CartItemData> CREATOR =
-            new Parcelable.Creator<CartItemData>() {
-                @Override
-                public CartItemData createFromParcel(Parcel source) {
-                    return new CartItemData(source);
-                }
+    public static final Creator<CartItemData> CREATOR = new Creator<CartItemData>() {
+        @Override
+        public CartItemData createFromParcel(Parcel source) {
+            return new CartItemData(source);
+        }
 
-                @Override
-                public CartItemData[] newArray(int size) {
-                    return new CartItemData[size];
-                }
-            };
+        @Override
+        public CartItemData[] newArray(int size) {
+            return new CartItemData[size];
+        }
+    };
 }

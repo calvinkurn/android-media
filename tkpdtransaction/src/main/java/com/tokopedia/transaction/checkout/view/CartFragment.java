@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
@@ -21,6 +20,7 @@ import com.tokopedia.transaction.checkout.di.component.DaggerCartListComponent;
 import com.tokopedia.transaction.checkout.di.module.CartListModule;
 import com.tokopedia.transaction.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
+import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.transaction.checkout.view.presenter.ICartListPresenter;
 import com.tokopedia.transaction.checkout.view.view.ICartListView;
@@ -43,7 +43,6 @@ public class CartFragment extends BasePresenterFragment implements
     @BindView(R2.id.go_to_courier_page_button)
     TextView btnToShipment;
 
-
     @BindView(R2.id.tv_item_count)
     TextView tvItemCount;
     @BindView(R2.id.tv_total_prices)
@@ -57,6 +56,7 @@ public class CartFragment extends BasePresenterFragment implements
     RecyclerView.ItemDecoration cartItemDecoration;
 
     OnPassingCartDataListener mDataPasserListener;
+    private CartPromoSuggestion cartPromoSuggestionData;
 
     @Override
     public void onAttach(Activity activity) {
@@ -136,6 +136,7 @@ public class CartFragment extends BasePresenterFragment implements
         btnToShipment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                cartListAdapter.notifyDataSetChanged();
                 dPresenter.processToShipmentStep();
             }
         });
@@ -179,13 +180,18 @@ public class CartFragment extends BasePresenterFragment implements
     }
 
     @Override
-    public void onCartItemActionRemarkClicked(CartItemHolderData cartItemHolderData, int position) {
-        cartListAdapter.updateEditableRemark(position);
+    public void onCartItemRemarkEditChange(CartItemData cartItemData, int position, String remark) {
+
     }
 
     @Override
-    public void onCartItemRemarkEditChange(CartItemData cartItemData, int position, String remark) {
-        cartListAdapter.updateRemark(position, remark);
+    public void onCartPromoSuggestionActionClicked(CartPromoSuggestion data, int position) {
+
+    }
+
+    @Override
+    public void onCartPromoSuggestionButtonCloseClicked(CartPromoSuggestion data, int position) {
+        cartListAdapter.deleteItem(position);
     }
 
     @Override
@@ -301,6 +307,18 @@ public class CartFragment extends BasePresenterFragment implements
     public void renderDetailInfoSubTotal(String qty, String subtotalPrice) {
         tvItemCount.setText(MessageFormat.format("Harga Barang ({0} Item)", qty));
         tvTotalPrice.setText(subtotalPrice);
+    }
+
+    @Override
+    public void renderPromoSuggestion(CartPromoSuggestion cartPromoSuggestion) {
+        this.cartPromoSuggestionData = cartPromoSuggestion;
+        if (cartPromoSuggestion.isVisible())
+            cartListAdapter.addPromoSuggestion(cartPromoSuggestion);
+    }
+
+    @Override
+    public CartPromoSuggestion getCartPromoSuggestionData() {
+        return this.cartPromoSuggestionData;
     }
 
     public static CartFragment newInstance() {

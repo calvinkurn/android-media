@@ -10,9 +10,14 @@ import com.tokopedia.transaction.checkout.view.data.CartItemData;
  */
 
 public class CartItemHolderData implements Parcelable {
-    public static final int ERROR_SHOP_CLOSED = 0;
-    public static final int ERROR_PRODUCT_NOT_AVAILABLE = 1;
-    public static final int ERROR_STOCK = 2;
+    public static final int ERROR_FIELD_BETWEEN = 1;
+    public static final int ERROR_FIELD_MAX_CHAR = 2;
+    public static final int ERROR_FIELD_REQUIRED = 3;
+    public static final int ERROR_FIELD_AVAILABLE_STOCK = 4;
+    public static final int ERROR_PRODUCT_MAX_QUANTITY = 5;
+    public static final int ERROR_PRODUCT_MIN_QUANTITY = 6;
+    public static final int ERROR_ADDITIONAL = 7;
+    public static final int ERROR_EMPTY = 0;
 
     private CartItemData cartItemData;
     private boolean isErrorItem;
@@ -37,7 +42,26 @@ public class CartItemHolderData implements Parcelable {
     }
 
     public int getErrorType() {
-        return errorType;
+        if (cartItemData.getUpdatedData().getRemark().length() > 140) {
+            this.messageError = cartItemData.getErrorData().getErrorFieldMaxChar()
+                    .replace("{{value}}", String.valueOf(cartItemData.getUpdatedData().getMaxCharRemark()));
+            return ERROR_FIELD_MAX_CHAR;
+        } else if (cartItemData.getUpdatedData().getQuantity() > cartItemData.getUpdatedData().getMaxQuantity()) {
+            this.messageError = cartItemData.getErrorData().getErrorProductMaxQuantity()
+                    .replace("{{value}}", String.valueOf(cartItemData.getUpdatedData().getMaxQuantity()));
+            return ERROR_PRODUCT_MAX_QUANTITY;
+        } else if (cartItemData.getUpdatedData().getQuantity() < cartItemData.getOriginData().getMinimalQtyOrder()) {
+            this.messageError = cartItemData.getErrorData().getErrorProductMinQuantity()
+                    .replace("{{value}}", String.valueOf(cartItemData.getOriginData().getMinimalQtyOrder()));
+            return ERROR_PRODUCT_MIN_QUANTITY;
+        } else if (!cartItemData.getErrorData().getErrorAdditional().isEmpty()) {
+            this.messageError = cartItemData.getErrorData().getErrorAdditional().get(0);
+            return ERROR_ADDITIONAL;
+        } else {
+            this.messageError = "";
+            return ERROR_EMPTY;
+        }
+
     }
 
     public void setErrorType(int errorType) {
@@ -61,6 +85,9 @@ public class CartItemHolderData implements Parcelable {
     }
 
 
+    public CartItemHolderData() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -75,9 +102,6 @@ public class CartItemHolderData implements Parcelable {
         dest.writeByte(this.editableRemark ? (byte) 1 : (byte) 0);
     }
 
-    public CartItemHolderData() {
-    }
-
     protected CartItemHolderData(Parcel in) {
         this.cartItemData = in.readParcelable(CartItemData.class.getClassLoader());
         this.isErrorItem = in.readByte() != 0;
@@ -86,7 +110,7 @@ public class CartItemHolderData implements Parcelable {
         this.editableRemark = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<CartItemHolderData> CREATOR = new Parcelable.Creator<CartItemHolderData>() {
+    public static final Creator<CartItemHolderData> CREATOR = new Creator<CartItemHolderData>() {
         @Override
         public CartItemHolderData createFromParcel(Parcel source) {
             return new CartItemHolderData(source);

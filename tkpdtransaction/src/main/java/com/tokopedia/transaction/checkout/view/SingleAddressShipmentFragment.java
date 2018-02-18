@@ -14,14 +14,15 @@ import android.widget.Toast;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
-import com.tokopedia.transaction.checkout.di.component.SingleAddressShipmentComponent;
 import com.tokopedia.transaction.checkout.di.component.DaggerSingleAddressShipmentComponent;
+import com.tokopedia.transaction.checkout.di.component.SingleAddressShipmentComponent;
 import com.tokopedia.transaction.checkout.di.module.SingleAddressShipmentModule;
 import com.tokopedia.transaction.checkout.domain.SingleAddressShipmentDataConverter;
 import com.tokopedia.transaction.checkout.view.activity.CartAddressChoiceActivity;
 import com.tokopedia.transaction.checkout.view.activity.ShipmentDetailActivity;
 import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
+import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 import com.tokopedia.transaction.checkout.view.presenter.SingleAddressShipmentPresenter;
@@ -49,13 +50,16 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         SingleAddressShipmentAdapter.SingleAddressShipmentAdapterListener {
 
     public static final String ARG_EXTRA_CART_DATA_LIST = "ARG_EXTRA_CART_DATA_LIST";
+    public static final String ARG_EXTRA_CART_PROMO_SUGGESTION = "ARG_EXTRA_CART_PROMO_SUGGESTION";
+
 
     private static final String TAG = SingleAddressShipmentFragment.class.getSimpleName();
     private static final int REQUEST_CODE_SHIPMENT_DETAIL = 11;
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
     private static final int REQUEST_CODE_CHOOSE_ADDRESS = 13;
 
-    @BindView(R2.id.rv_cart_order_details) RecyclerView mRvCartOrderDetails;
+    @BindView(R2.id.rv_cart_order_details)
+    RecyclerView mRvCartOrderDetails;
 
     @Inject
     SingleAddressShipmentAdapter mSingleAddressShipmentAdapter;
@@ -66,11 +70,13 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     private CartSingleAddressData mCartSingleAddressData;
 
-    public static SingleAddressShipmentFragment newInstance(List<CartItemData> cartItemDataList) {
+    public static SingleAddressShipmentFragment newInstance(List<CartItemData> cartItemDataList,
+                                                            CartPromoSuggestion cartPromoSuggestionData) {
         SingleAddressShipmentFragment fragment = new SingleAddressShipmentFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(ARG_EXTRA_CART_DATA_LIST,
                 (ArrayList<? extends Parcelable>) cartItemDataList);
+        bundle.putParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION, cartPromoSuggestionData);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -141,6 +147,8 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     protected void setupArguments(Bundle arguments) {
         List<CartItemData> cartDataList = arguments.getParcelableArrayList(ARG_EXTRA_CART_DATA_LIST);
         mCartSingleAddressData = mSingleAddressShipmentDataConverter.convert(cartDataList);
+        CartPromoSuggestion cartPromoSuggestion = arguments.getParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION);
+
     }
 
     @Override
