@@ -60,6 +60,8 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     private CompositeSubscription compositeSubscription;
     private FlightAnalytics flightAnalytics;
 
+    private boolean isChecked = false;
+
     @Inject
     public FlightBookingPresenter(FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase,
                                   FlightAddToCartUseCase flightAddToCartUseCase,
@@ -615,6 +617,16 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     @Override
     protected void onCountDownTimestimeChanged(String timestamp) {
         getView().getCurrentBookingParamViewModel().setOrderDueTimestamp(timestamp);
+    }
+
+    @Override
+    public void toggleSameAsContactCheckbox() {
+        if (isChecked) {
+            isChecked = false;
+        } else {
+            isChecked = true;
+        }
+        getView().setSameAsContactChecked(isChecked);
     }
 
     private boolean isAirAsiaAirline(FlightBookingCartData flightBookingCartData) {

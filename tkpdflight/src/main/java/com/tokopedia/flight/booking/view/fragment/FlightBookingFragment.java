@@ -21,6 +21,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -108,6 +110,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private FlightBookingPassengerAdapter adapter;
     private FlightSimpleAdapter priceListAdapter;
     private ProgressDialog progressDialog;
+    private LinearLayout sameAsContactContainer;
+    private CheckBox sameAsContactCheckbox;
 
     public FlightBookingFragment() {
         // Required empty public constructor
@@ -157,6 +161,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         pricelistsRecyclerView = (RecyclerView) view.findViewById(R.id.rv_price_lists);
         fullPageLoadingLayout = (LinearLayout) view.findViewById(R.id.full_page_loading);
         fullPageLayout = (NestedScrollView) view.findViewById(R.id.container_full_page);
+        sameAsContactContainer = view.findViewById(R.id.container_same_as_contact);
+        sameAsContactCheckbox = view.findViewById(R.id.checkbox);
 
         tvPhoneCountryCode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -182,6 +188,13 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
             @Override
             public void actionClicked() {
                 presenter.onReturnInfoClicked();
+            }
+        });
+
+        sameAsContactContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.toggleSameAsContactCheckbox();
             }
         });
 
@@ -632,5 +645,10 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     @Override
     public void showContactEmailInvalidSymbolError(int resId) {
         showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void setSameAsContactChecked(boolean isChecked) {
+        ((CompoundButton) sameAsContactCheckbox).setChecked(isChecked);
     }
 }

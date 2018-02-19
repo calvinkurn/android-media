@@ -103,6 +103,8 @@ public interface FlightBookingContract {
         void setContactPhoneNumber(String phone);
 
         void showContactEmailInvalidSymbolError(@StringRes int resId);
+
+        void setSameAsContactChecked(boolean isChecked);
     }
 
     interface Presenter extends FlightBaseBookingContact.Presenter<View> {
@@ -132,5 +134,8 @@ public interface FlightBookingContract {
         void onChangePassengerButtonClicked(FlightBookingPassengerViewModel viewModel, FlightBookingCartData cartData, String departureDate);
 
         void onGetProfileData();
+
+        void toggleSameAsContactCheckbox();
+
     }
 }
