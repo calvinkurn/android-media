@@ -263,7 +263,7 @@ public class FlightAnalytics {
         analyticTracker.sendEventTracking(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.VOUCHER_SUCCESS,
-                String.format("%s- %s", label, message)
+                String.format("%s - %s", label, message)
         );
     }
 
@@ -271,7 +271,7 @@ public class FlightAnalytics {
         analyticTracker.sendEventTracking(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.VOUCHER_ERROR,
-                String.format("%s- %s", label, message)
+                String.format("%s - %s", label, message)
         );
     }
 
