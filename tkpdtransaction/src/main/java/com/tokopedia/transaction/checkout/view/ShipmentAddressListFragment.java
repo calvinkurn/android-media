@@ -247,6 +247,7 @@ public class ShipmentAddressListFragment extends BasePresenterFragment
     @Override
     public void onSearchReset() {
         mShipmentAddressListPresenter.resetSearch();
+        closeSoftKeyboard();
     }
 
     @Override
