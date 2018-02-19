@@ -31,6 +31,7 @@ public class InboxTicketDetailActivity extends BasePresenterActivity<InboxTicket
         InboxTicketResultReceiver.Receiver {
 
     public static final String PARAM_TICKET_ID = "ticket_id";
+    public static final String PARAM_INBOX_ID = "inbox_id";
 
     InboxTicketResultReceiver mReceiver;
 
@@ -41,6 +42,7 @@ public class InboxTicketDetailActivity extends BasePresenterActivity<InboxTicket
         Intent destinationIntent = new Intent(context, InboxTicketDetailActivity.class);
         String ticketId = bundle.getString(PARAM_TICKET_ID, "");
         destinationIntent.putExtra(PARAM_TICKET_ID, ticketId);
+        destinationIntent.putExtra(PARAM_INBOX_ID, ticketId);
         taskStackBuilder.addNextIntent(parentIntent);
         taskStackBuilder.addNextIntent(destinationIntent);
         return taskStackBuilder;
