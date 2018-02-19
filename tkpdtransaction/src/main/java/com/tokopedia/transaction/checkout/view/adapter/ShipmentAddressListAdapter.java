@@ -64,6 +64,7 @@ public class ShipmentAddressListAdapter
 
         holder.mAddressContainer.setOnClickListener(new OnItemClickListener(position));
         holder.mLlRadioButtonAddressSelect.setOnClickListener(new OnItemClickListener(position));
+        holder.mTvChangeAddress.setVisibility(View.VISIBLE);
         holder.mTvChangeAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

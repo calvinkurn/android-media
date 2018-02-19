@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.checkout.view.presenter;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
@@ -41,7 +42,7 @@ public class ShipmentAddressListPresenter
     }
 
     public void resetSearch() {
-
+        filter(fetchAddressList(), "");
     }
 
     public void getAddressList() {
@@ -58,12 +59,19 @@ public class ShipmentAddressListPresenter
                 .filter(new Func1<ShipmentRecipientModel, Boolean>() {
                     @Override
                     public Boolean call(ShipmentRecipientModel shippingRecipientMode) {
-                        boolean isNameContainsKeyword = shippingRecipientMode.getRecipientName()
-                                .contains(keyword);
-                        boolean isAddressContainKeyword = shippingRecipientMode.getRecipientAddress()
-                                .contains(keyword);
+                        if (TextUtils.isEmpty(keyword)) return true;
 
-                        return isAddressContainKeyword || isNameContainsKeyword;
+                        String lowCaseKeyword = keyword.toLowerCase();
+
+                        boolean isNameContainsKeyword = shippingRecipientMode.getRecipientName().toLowerCase()
+                                .contains(lowCaseKeyword);
+                        boolean isAddressContainsKeyword = shippingRecipientMode.getRecipientAddress().toLowerCase()
+                                .contains(lowCaseKeyword);
+                        boolean isIdentifierContainsKeyword = shippingRecipientMode.getAddressIdentifier().toLowerCase()
+                                .contains(lowCaseKeyword);
+
+                        return isNameContainsKeyword || isAddressContainsKeyword
+                                || isIdentifierContainsKeyword;
                     }
                 })
                 .toList()

@@ -3,6 +3,7 @@ package com.tokopedia.transaction.checkout.view.adapter;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,7 +59,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder,
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder,
                                  @SuppressLint("RecyclerView") final int position) {
         onBind = true;
         if (getItemViewType(position) == TYPE_VIEW_ITEM_CART) {
@@ -86,7 +87,23 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     return false;
                 }
             });
-            holderView.etRemark.setText(data.getCartItemData().getUpdatedData().getRemark());
+
+            holderView.tvLabelRemarkOption.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    holderView.etRemark.setVisibility(View.VISIBLE);
+                    holderView.tvLabelRemarkOption.setVisibility(View.GONE);
+                }
+            });
+
+            if (TextUtils.isEmpty(data.getCartItemData().getUpdatedData().getRemark())) {
+                holderView.etRemark.setVisibility(View.GONE);
+                holderView.tvLabelRemarkOption.setVisibility(View.VISIBLE);
+            } else {
+                holderView.etRemark.setVisibility(View.VISIBLE);
+                holderView.tvLabelRemarkOption.setVisibility(View.GONE);
+                holderView.etRemark.setText(data.getCartItemData().getUpdatedData().getRemark());
+            }
 
             holderView.tvInfoRFreeReturn.setVisibility(
                     data.getCartItemData().getOriginData().isFreeReturn() ? View.VISIBLE : View.GONE
@@ -97,7 +114,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             holderView.tvInfoCashBack.setVisibility(
                     data.getCartItemData().getOriginData().isCashBack() ? View.VISIBLE : View.GONE
             );
-            holderView.tvInfoRFreeReturn.setText(data.getCartItemData().getOriginData().getCashBackInfo());
+            holderView.tvInfoCashBack.setText(data.getCartItemData().getOriginData().getCashBackInfo());
 
 
             holderView.btnQtyPlus.setOnClickListener(new View.OnClickListener() {
@@ -253,6 +270,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         private TextView tvInfoPreOrder;
         private TextView tvInfoCashBack;
         private EditText etRemark;
+        private TextView tvLabelRemarkOption;
         private ImageView btnDelete;
 
         private LinearLayout errorContainer;
@@ -272,8 +290,11 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             this.tvInfoRFreeReturn = itemView.findViewById(R.id.tv_info_free_return);
             this.tvInfoPreOrder = itemView.findViewById(R.id.tv_info_preorder);
             this.tvInfoCashBack = itemView.findViewById(R.id.tv_info_cashback);
+            this.tvLabelRemarkOption = itemView.findViewById(R.id.tv_label_remark_option);
             this.etRemark = itemView.findViewById(R.id.et_remark);
             this.btnDelete = itemView.findViewById(R.id.btn_delete_cart);
+
+
             this.errorContainer = itemView.findViewById(R.id.ll_warning_container);
             this.tvError = itemView.findViewById(R.id.tv_warning);
             this.tvErrorDetail = itemView.findViewById(R.id.tv_warning_detail);

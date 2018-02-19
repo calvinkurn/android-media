@@ -9,11 +9,14 @@ import com.tokopedia.transaction.checkout.view.activity.CartShipmentActivity;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CartListData;
 import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
+import com.tokopedia.transaction.checkout.view.data.factory.CartDataFactory;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.transaction.checkout.view.view.ICartListView;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -69,6 +72,9 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public void reCalculateSubTotal(List<CartItemHolderData> dataList) {
+        Locale LOCALE_ID = new Locale("in", "ID");
+        NumberFormat CURRENCY_IDR = NumberFormat.getCurrencyInstance(LOCALE_ID);
+
         double subtotalPrice = 0;
         int qty = 0;
         for (CartItemHolderData data : dataList) {
@@ -76,7 +82,7 @@ public class CartListPresenter implements ICartListPresenter {
             subtotalPrice = subtotalPrice + (data.getCartItemData().getUpdatedData().getQuantity() * data.getCartItemData().getOriginData().getPricePlan());
         }
 
-        view.renderDetailInfoSubTotal(String.valueOf(qty), CurrencyFormatHelper.ConvertToRupiah(String.valueOf((int) subtotalPrice)));
+        view.renderDetailInfoSubTotal(String.valueOf(qty), CURRENCY_IDR.format(((int) subtotalPrice)));
     }
 
     private List<CartItemData> extractCartItemList(List<CartItemHolderData> finalCartList) {
