@@ -1190,7 +1190,6 @@ public class DetailResChatFragment
         ivSend.setEnabled(true);
         etChat.setClickable(true);
         etChat.setEnabled(true);
-        rvAttachment.setEnabled(true);
         rvAttachment.setClickable(true);
     }
 
@@ -1200,7 +1199,6 @@ public class DetailResChatFragment
         ivSend.setEnabled(false);
         etChat.setClickable(false);
         etChat.setEnabled(false);
-        rvAttachment.setEnabled(false);
         rvAttachment.setClickable(false);
     }
 
