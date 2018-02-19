@@ -157,7 +157,6 @@
             android:exported="true"
             android:label="Tokopedia"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="APPS_HOME"

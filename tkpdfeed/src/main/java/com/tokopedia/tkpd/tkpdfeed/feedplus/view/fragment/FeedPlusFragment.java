@@ -848,15 +848,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (firstCursor == null)
             firstCursor = "";
         if (getUserVisibleHint() && presenter != null) {
-            presenter.checkNewFeed(firstCursor);
+            loadData(getUserVisibleHint());
         }
     }
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (firstCursor == null)
-            firstCursor = "";
+    private void loadData(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded()
                 && getActivity()!= null && presenter != null) {
 
@@ -870,6 +866,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
             presenter.checkNewFeed(firstCursor);
             ScreenTracking.screen(getScreenName());
         }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (firstCursor == null)
+            firstCursor = "";
+        loadData(isVisibleToUser);
+
     }
 
     @Override

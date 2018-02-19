@@ -412,7 +412,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                initStateFragment = tab.getPosition();
                 mViewPager.setCurrentItem(tab.getPosition());
 //                sendGTMButtonEvent(tab.getPosition()); // on confirm
             }
@@ -436,6 +435,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
         tabs.setupWithViewPager(mViewPager);
+
+        mViewPager.setCurrentItem(initStateFragment);
     }
 
     private void setView() {
