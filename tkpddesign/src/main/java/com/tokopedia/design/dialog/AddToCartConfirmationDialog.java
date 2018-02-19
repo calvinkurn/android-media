@@ -1,9 +1,6 @@
 package com.tokopedia.design.dialog;
 
-import android.app.Activity;
 import android.app.DialogFragment;
-import android.app.Fragment;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -22,7 +19,6 @@ public class AddToCartConfirmationDialog extends DialogFragment {
             = "ADD_TO_CART_DIALOG_FRAGMENT_TAG";
     public static final String ARG_EXTRA_MESSAGE = "ARG_EXTRA_MESSAGE";
 
-
     TextView tvMessage;
     TextView btnToCart;
     TextView btnToShopping;
@@ -31,12 +27,17 @@ public class AddToCartConfirmationDialog extends DialogFragment {
     private ActionListener actionListener;
 
 
-    public static DialogFragment newInstance(String message) {
+    public static DialogFragment newInstance(String message, ActionListener actionListener) {
         Bundle bundle = new Bundle();
         bundle.putString(ARG_EXTRA_MESSAGE, message);
-        DialogFragment fragment = new AddToCartConfirmationDialog();
+        AddToCartConfirmationDialog fragment = new AddToCartConfirmationDialog();
         fragment.setArguments(bundle);
+        fragment.setActionListener(actionListener);
         return fragment;
+    }
+
+    private void setActionListener(ActionListener actionListener) {
+        this.actionListener = actionListener;
     }
 
     @Override
@@ -53,9 +54,6 @@ public class AddToCartConfirmationDialog extends DialogFragment {
         tvMessage = view.findViewById(R.id.tv_message);
         btnToCart = view.findViewById(R.id.btn_go_to_cart);
         btnToShopping = view.findViewById(R.id.btn_dismiss);
-
-        actionListener = (ActionListener) getParentFragment();
-
         tvMessage.setText(message);
         btnToCart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,30 +69,6 @@ public class AddToCartConfirmationDialog extends DialogFragment {
             }
         });
         return view;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof ActionListener) {
-            actionListener = (ActionListener) context;
-        }
-    }
-
-    @Override
-    public void onAttachFragment(Fragment childFragment) {
-        super.onAttachFragment(childFragment);
-        if (childFragment instanceof ActionListener) {
-            actionListener = (ActionListener) childFragment;
-        }
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (activity instanceof ActionListener) {
-            actionListener = (ActionListener) activity;
-        }
     }
 
     public interface ActionListener {

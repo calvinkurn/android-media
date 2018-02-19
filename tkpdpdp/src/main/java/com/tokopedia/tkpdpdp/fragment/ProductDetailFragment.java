@@ -116,7 +116,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WISHLI
  */
 @RuntimePermissions
 public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPresenter>
-        implements ProductDetailView, AddToCartConfirmationDialog.ActionListener {
+        implements ProductDetailView {
     public static final int REQUEST_CODE_SHOP_INFO = 998;
     public static final int REQUEST_CODE_TALK_PRODUCT = 1;
     public static final int REQUEST_CODE_EDIT_PRODUCT = 2;
@@ -1164,20 +1164,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         }
     }
 
-    @Override
-    public void onButtonAddToCartPayClicked() {
-        if (getActivity().getApplication() instanceof PdpRouter) {
-            startActivity(
-                    ((PdpRouter) getActivity().getApplication()).getCartIntent(getActivity())
-            );
-        }
-    }
-
-    @Override
-    public void onButtonAddToCartContinueShopingClicked() {
-
-    }
-
     private class EditClick implements View.OnClickListener {
         private final ProductDetailData data;
 
@@ -1219,7 +1205,23 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void renderAddToCartSuccess(String message) {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.add(
-                AddToCartConfirmationDialog.newInstance(message),
+                AddToCartConfirmationDialog.newInstance(
+                        message,
+                        new AddToCartConfirmationDialog.ActionListener() {
+                            @Override
+                            public void onButtonAddToCartPayClicked() {
+                                if (getActivity().getApplication() instanceof PdpRouter) {
+                                    Intent intent = ((PdpRouter) getActivity().getApplication())
+                                            .getCartIntent(getActivity());
+                                    startActivity(intent);
+                                }
+                            }
+
+                            @Override
+                            public void onButtonAddToCartContinueShopingClicked() {
+
+                            }
+                        }),
                 AddToCartConfirmationDialog.ADD_TO_CART_DIALOG_FRAGMENT_TAG
         );
         ft.commitAllowingStateLoss();
