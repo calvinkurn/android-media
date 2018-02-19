@@ -12,6 +12,7 @@ import rx.subscriptions.Subscriptions;
 
 /**
  * @author Kulomady on 2/1/17.
+ * refer UseCase at {@link com.tokopedia.usecase}
  */
 
 /**
