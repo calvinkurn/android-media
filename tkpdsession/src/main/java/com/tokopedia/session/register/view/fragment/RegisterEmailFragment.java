@@ -612,7 +612,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     public void onSuccessRegister(RegisterEmailViewModel registerResult) {
 
         UnifyTracking.eventTracking(LoginAnalytics.getEventSuccessRegisterEmail());
-        BranchSdkUtils.sendRegisterEvent(email.getText().toString(),phone.getText().toString());
         dismissLoadingProgress();
         setActionsEnabled(true);
         presenter.startAction(registerResult);

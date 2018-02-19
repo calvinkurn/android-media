@@ -67,7 +67,6 @@ public class BranchSdkUtils {
                         ShareContentsCreateListener.onCreateShareContents(data.getTextContentForBranch(url), url, url);
                     } else {
                         ShareContentsCreateListener.onCreateShareContents(data.getTextContent(activity), data.renderShareUri(), url);
-
                     }
                 }
             });
@@ -104,7 +103,6 @@ public class BranchSdkUtils {
         linkProperties.setCampaign(CAMPAIGN_NAME);
         linkProperties.setChannel(channel);
         linkProperties.setFeature(data.getType());
-        // linkProperties.addControlParameter(URI_REDIRECT_MODE_KEY, URI_REDIRECT_MODE_VALUE);
         linkProperties.addControlParameter(BRANCH_ANDROID_DEEPLINK_PATH_KEY, data.renderBranchShareUri(deeplinkPath));
         linkProperties.addControlParameter(BRANCH_IOS_DEEPLINK_PATH_KEY, data.renderBranchShareUri(deeplinkPath));
         return linkProperties;
@@ -207,12 +205,13 @@ public class BranchSdkUtils {
         }
     }
 
-    public static void sendLoginEvent(String email, String phone) {
+    public static void sendLoginEvent(Context context) {
         if (Branch.getInstance() != null) {
+            SessionHandler sessionHandler =new SessionHandler(context);
             JSONObject metadata = new JSONObject();
             try {
-                metadata.put(AppEventTracking.Branch.EMAIL, email);
-                metadata.put(AppEventTracking.Branch.PHONE, normalizePhoneNumber(phone));
+                metadata.put(AppEventTracking.Branch.EMAIL, sessionHandler.getEmail());
+                metadata.put(AppEventTracking.Branch.PHONE, normalizePhoneNumber(sessionHandler.getPhoneNumber()));
             } catch (JSONException e) {
             }
             Branch.getInstance().userCompletedAction(AppEventTracking.EventBranch.EVENT_LOGIN, metadata);

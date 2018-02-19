@@ -608,7 +608,7 @@ public class LoginFragment extends BaseDaggerFragment
                 LoginAnalytics.Label.EMAIL
         );
 
-        BranchSdkUtils.sendLoginEvent(sessionHandler.getEmail(),sessionHandler.getPhoneNumber());
+        BranchSdkUtils.sendLoginEvent(getActivity());
 
         onSuccessLogin();
     }
@@ -628,8 +628,7 @@ public class LoginFragment extends BaseDaggerFragment
                 loginMethod
         );
 
-        BranchSdkUtils.sendLoginEvent(sessionHandler.getEmail(),
-                sessionHandler.getPhoneNumber());
+        BranchSdkUtils.sendLoginEvent(getActivity());
         onSuccessLogin();
     }
 

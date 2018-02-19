@@ -44,7 +44,7 @@ public class RegisterSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
                 && !isGoToSecurityQuestion(registerSosmedDomain.getMakeLoginModel())
                 && isMsisdnVerified(registerSosmedDomain.getInfo())) {
             viewListener.onSuccessRegisterSosmed(methodName);
-            sendRegisterEventToBranch(registerSosmedDomain);
+            sendRegisterEventToBranch(registerSosmedDomain.getInfo());
         } else if (!isGoToSecurityQuestion(registerSosmedDomain.getMakeLoginModel())
                 && !isMsisdnVerified(registerSosmedDomain.getInfo())) {
             viewListener.onGoToPhoneVerification();
@@ -68,10 +68,10 @@ public class RegisterSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
         return !makeLoginModel.isLogin() && makeLoginModel.getSecurityDomain() != null;
     }
 
-    private void sendRegisterEventToBranch(LoginSosmedDomain registerSosmedDomain){
-        if(registerSosmedDomain!=null && registerSosmedDomain.getInfo()!=null && registerSosmedDomain.getInfo().getGetUserInfoDomainData()!=null) {
-            BranchSdkUtils.sendRegisterEvent(registerSosmedDomain.getInfo().getGetUserInfoDomainData().getEmail(),
-                    registerSosmedDomain.getInfo().getGetUserInfoDomainData().getPhone());
+    private void sendRegisterEventToBranch(GetUserInfoDomainModel userInfoDomainModel){
+        if(userInfoDomainModel.getGetUserInfoDomainData()!=null) {
+            BranchSdkUtils.sendRegisterEvent(userInfoDomainModel.getGetUserInfoDomainData().getEmail(),
+                    userInfoDomainModel.getGetUserInfoDomainData().getPhone());
         }
     }
 }
