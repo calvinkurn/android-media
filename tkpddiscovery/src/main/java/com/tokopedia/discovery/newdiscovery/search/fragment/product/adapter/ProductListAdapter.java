@@ -158,7 +158,7 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
     }
 
     public void addGuidedSearch() {
-        if (guidedSearch != null) {
+        if (guidedSearch != null && !guidedSearch.getItemList().isEmpty()) {
             int start = getItemCount();
             list.add(guidedSearch);
             notifyItemInserted(start);
@@ -171,5 +171,9 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
 
     public boolean isGuidedSearch(int position) {
         return checkDataSize(position) && getItemList().get(position) instanceof GuidedSearchViewModel;
+    }
+
+    public boolean hasGuidedSearch() {
+        return guidedSearch != null;
     }
 }

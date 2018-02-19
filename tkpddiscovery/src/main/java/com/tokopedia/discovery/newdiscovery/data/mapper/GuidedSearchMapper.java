@@ -44,8 +44,10 @@ public class GuidedSearchMapper implements Func1<Response<GuidedSearchResponse>,
         GuidedSearchViewModel model = new GuidedSearchViewModel();
         List<GuidedSearchViewModel.Item> itemList = new ArrayList<>();
 
-        for (GuidedSearchResponse.GuidedSearchItem item : guidedSearchResponse.getData()) {
-            itemList.add(mappingGuidedSearchItem(item));
+        if (guidedSearchResponse.getData() != null) {
+            for (GuidedSearchResponse.GuidedSearchItem item : guidedSearchResponse.getData()) {
+                itemList.add(mappingGuidedSearchItem(item));
+            }
         }
         model.setItemList(itemList);
         return model;

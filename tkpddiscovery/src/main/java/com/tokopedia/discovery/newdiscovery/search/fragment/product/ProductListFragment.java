@@ -604,6 +604,9 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     protected void reloadData() {
+        if (!adapter.hasGuidedSearch()) {
+            getGuidedSearch();
+        }
         adapter.clearData();
         initTopAdsParams();
         topAdsRecyclerAdapter.setConfig(topAdsConfig);
