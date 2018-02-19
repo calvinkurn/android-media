@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="20dp"
-    app:cardElevation="3dp"
+    app:cardCornerRadius="@dimen/widget_bottom_action_radius"
+    app:cardElevation="@dimen/widget_bottom_action_elevation"
     app:cardUseCompatPadding="true">
 
     <android.support.v7.widget.LinearLayoutCompat
