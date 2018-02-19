@@ -66,8 +66,6 @@ public class EventsHomeActivity extends TActivity
     @Inject
     public EventHomePresenter mPresenter;
 
-    //@BindView(R2.id.holder_category_list)
-    //LinearLayout holderCategoryListLayout;
     @BindView(R2.id.event_bannerpager)
     TouchViewPager viewPager;
     @BindView(R2.id.pager_indicator)
@@ -195,31 +193,6 @@ public class EventsHomeActivity extends TActivity
     public void showMessage(String message) {
 
     }
-
-//    @Override
-//    protected void setupURIPass(Uri data) {
-//
-//    }
-//
-//    @Override
-//    protected void setupBundlePass(Bundle extras) {
-//
-//    }
-//
-//    @Override
-//    protected void initialPresenter() {
-//
-//    }
-//
-//    @Override
-//    protected int getLayoutId() {
-//        return R.layout.activity_events_home_new;
-//    }
-//
-//    @Override
-//    protected void initView() {
-//
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

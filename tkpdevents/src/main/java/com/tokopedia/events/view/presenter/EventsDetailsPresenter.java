@@ -5,9 +5,7 @@ import android.content.Intent;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.events.data.entity.response.seatlayoutresponse.SeatLayoutResponse;
 import com.tokopedia.events.domain.GetEventDetailsRequestUseCase;
-import com.tokopedia.events.domain.GetSeatLayoutUseCase;
 import com.tokopedia.events.domain.model.EventDetailsDomain;
 import com.tokopedia.events.view.activity.EventBookTicketActivity;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
@@ -28,21 +26,16 @@ import rx.functions.Func1;
 public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsContract.EventDetailsView> implements EventsDetailsContract.Presenter {
 
     private GetEventDetailsRequestUseCase getEventDetailsRequestUseCase;
-    private GetSeatLayoutUseCase getSeatLayoutUseCase;
     private EventsDetailsViewModel eventsDetailsViewModel;
-    private Subscriber<SeatLayoutResponse> seatLayoutResponseSubscriber;
-    private Subscriber<EventDetailsDomain> eventDetailsDomainSubscriber;
     public static String EXTRA_EVENT_VIEWMODEL = "extraeventviewmodel";
-    //public static String EXTRA_SEATING_URL = "extraseatingurl";
+    String url = "";
     public static String EXTRA_SEATING_PARAMETER = "hasSeatLayout";
 
     private int hasSeatLayout;
 
     @Inject
-    public EventsDetailsPresenter(GetEventDetailsRequestUseCase eventDetailsRequestUseCase,
-                                  GetSeatLayoutUseCase seatLayoutUseCase) {
+    public EventsDetailsPresenter(GetEventDetailsRequestUseCase eventDetailsRequestUseCase) {
         this.getEventDetailsRequestUseCase = eventDetailsRequestUseCase;
-        this.getSeatLayoutUseCase = seatLayoutUseCase;
     }
 
     @Override
@@ -61,21 +54,25 @@ public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsCon
         super.attachView(view);
         Intent inIntent = getView().getActivity().getIntent();
         int from = inIntent.getIntExtra(EventDetailsActivity.FROM, 1);
-        String url = "";
-        if (from == EventDetailsActivity.FROM_HOME_OR_SEARCH) {
-            CategoryItemsViewModel dataFromHome = inIntent.getParcelableExtra("homedata");
-            getView().renderFromHome(dataFromHome);
-            url = dataFromHome.getUrl();
-        } else if (from == EventDetailsActivity.FROM_DEEPLINK) {
-            url = inIntent.getExtras().getString(EventDetailsActivity.EXTRA_EVENT_NAME_KEY);
+        try {
+            if (from == EventDetailsActivity.FROM_HOME_OR_SEARCH) {
+                CategoryItemsViewModel dataFromHome = inIntent.getParcelableExtra("homedata");
+                getView().renderFromHome(dataFromHome);
+                url = dataFromHome.getUrl();
+            } else if (from == EventDetailsActivity.FROM_DEEPLINK) {
+                url = inIntent.getExtras().getString(EventDetailsActivity.EXTRA_EVENT_NAME_KEY);
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
-        getEventDetailsRequestUseCase.setUrl(url);
     }
 
     @Override
     public void getEventDetails() {
         getView().showProgressBar();
-        getEventDetailsRequestUseCase.getExecuteObservableAsync(getView().getParams()).map(new Func1<EventDetailsDomain, EventsDetailsViewModel>() {
+        com.tokopedia.core.base.domain.RequestParams params = com.tokopedia.core.base.domain.RequestParams.create();
+        params.putString("detailsurl", url);
+        getEventDetailsRequestUseCase.getExecuteObservableAsync(params).map(new Func1<EventDetailsDomain, EventsDetailsViewModel>() {
             @Override
             public EventsDetailsViewModel call(EventDetailsDomain eventDetailsDomain) {
                 return convertIntoEventDetailsViewModel(eventDetailsDomain);

@@ -8,15 +8,15 @@ import java.util.List;
 
 public class ScheduleDomain {
 
-    private ScheduleDomain_ schedule;
+    private ScheduleDetailDomain schedule;
     private AddressDetail addressDetail;
     private List<Group> groups = null;
 
-    public ScheduleDomain_ getSchedule() {
+    public ScheduleDetailDomain getSchedule() {
         return schedule;
     }
 
-    public void setSchedule(ScheduleDomain_ schedule) {
+    public void setSchedule(ScheduleDetailDomain schedule) {
         this.schedule = schedule;
     }
 

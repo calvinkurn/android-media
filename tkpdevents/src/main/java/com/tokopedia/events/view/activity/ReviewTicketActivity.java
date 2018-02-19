@@ -193,26 +193,10 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            tvEmailID.setShowSoftInputOnFocus(false);
-//            tvTelephone.setShowSoftInputOnFocus(false);
-//        }
-//        else {
-//            tvEmailID.setTextIsSelectable(true);
-//            tvTelephone.setTextIsSelectable(true);
-//        }
-
         tvEmailID.setEnabled(false);
         tvEmailID.setTextIsSelectable(false);
         tvEmailID.setFocusable(false);
         tvEmailID.setInputType(InputType.TYPE_NULL);
-//        tvEmailID.setOnKeyListener(new View.OnKeyListener() {
-//            @Override
-//            public boolean onKey(View v, int keyCode, KeyEvent event) {
-//                return true;  // Blocks input from hardware keyboards.
-//            }
-//        });
 
         tvTelephone.setEnabled(false);
         tvTelephone.setTextIsSelectable(false);

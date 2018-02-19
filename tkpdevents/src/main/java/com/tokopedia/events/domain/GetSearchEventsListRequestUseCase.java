@@ -15,8 +15,6 @@ import rx.Observable;
 public class GetSearchEventsListRequestUseCase extends UseCase<SearchDomainModel> {
     private final EventRepository eventRepository;
     public final String TAG = "tags";
-    public final String CATEGORY = "child_category_ids";
-    public final String TIME = "time";
 
     public GetSearchEventsListRequestUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, EventRepository eventRepository) {
         super(threadExecutor, postExecutionThread);

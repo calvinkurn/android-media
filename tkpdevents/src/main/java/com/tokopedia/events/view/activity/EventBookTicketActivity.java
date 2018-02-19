@@ -73,16 +73,6 @@ public class EventBookTicketActivity
     TextView totalPrice;
     @BindView(R2.id.button_count_layout)
     View buttonCountLayout;
-//    @BindView(R2.id.event_address)
-//    View addressView;
-//    @BindView(R2.id.event_time)
-//    View timeView;
-
-//    @BindView(R2.id.banner_image)
-//    ImageView bannerImage;
-
-//    ImageTextViewHolder addressHolder;
-//    ImageTextViewHolder timeHolder;
 
     private EventComponent eventComponent;
     @Inject
@@ -98,29 +88,16 @@ public class EventBookTicketActivity
         setContentView(R.layout.book_ticket_layout);
         ButterKnife.bind(this);
 
-//        addressHolder = new ImageTextViewHolder();
-//        timeHolder = new ImageTextViewHolder();
-
-//        ButterKnife.bind(addressHolder, addressView);
-//        ButterKnife.bind(timeHolder, timeView);
-
-
-//        collasingToolbar.setExpandedTitleColor(Color.parseColor("#00ffffff"));
-//        collasingToolbar.setCollapsedTitleTextColor(Color.parseColor("#ff000000"));
-
         executeInjector();
 
         mPresenter.attachView(this);
 
         mPresenter.getTicketDetails();
-//        setupToolbar();
         appBar.setTitle(R.string.book_ticket_title);
         setSupportActionBar(appBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-//        toolbar.setTitle("Events");
-
     }
 
 
@@ -145,9 +122,6 @@ public class EventBookTicketActivity
         appBar.setTitle(detailsViewModel.getTitle());
         appBar.setNavigationIcon(R.drawable.ic_arrow_back_black);
         title = detailsViewModel.getTitle();
-//        ImageHandler.loadImageCover2(bannerImage, detailsViewModel.getImageApp());
-//        setHolder(R.drawable.ic_time, detailsViewModel.getTimeRange(), timeHolder);
-//        setHolder(R.drawable.ic_skyline, detailsViewModel.getSchedulesViewModels().get(0).getaDdress(), addressHolder);
 
         AddTicketFragmentAdapter fragmentAdapter = new AddTicketFragmentAdapter(getSupportFragmentManager(),
                 detailsViewModel.getSchedulesViewModels());
@@ -179,19 +153,12 @@ public class EventBookTicketActivity
         buttonPayTickets.setBackgroundColor(getResources().getColor(R.color.white));
         if (buttonCountLayout.getVisibility() != View.VISIBLE)
             buttonCountLayout.setVisibility(View.VISIBLE);
-//        int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 116.0f, getResources().getDisplayMetrics());
-//        ViewGroup.LayoutParams params = bookTicketViewPager.getLayoutParams();
-//        params.
-//
-//        bookTicketViewPager.(0, 0, 0, px);
     }
 
     @Override
     public void hidePayButton() {
         buttonCountLayout.setVisibility(View.INVISIBLE);
         buttonPayTickets.setVisibility(View.INVISIBLE);
-//        int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
-//        bookTicketViewPager.setPadding(0, 0, 0, px);
     }
 
     @Override
@@ -335,8 +302,6 @@ public class EventBookTicketActivity
 
     @Override
     protected void onResume() {
-//        bookTicketViewPager.setCurrentItem(1);
-//        bookTicketViewPager.setCurrentItem(0);
         if (tabLayout.getVisibility() == View.VISIBLE)
             tabLayout.getTabAt(0).select();
         super.onResume();

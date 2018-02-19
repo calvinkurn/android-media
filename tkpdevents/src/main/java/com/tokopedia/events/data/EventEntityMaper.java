@@ -13,7 +13,7 @@ import com.tokopedia.events.domain.model.EventDetailsDomain;
 import com.tokopedia.events.domain.model.EventLocationDomain;
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
 import com.tokopedia.events.domain.model.ScheduleDomain;
-import com.tokopedia.events.domain.model.ScheduleDomain_;
+import com.tokopedia.events.domain.model.ScheduleDetailDomain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,21 +101,21 @@ public class EventEntityMaper {
         try {
             for (Schedule item : eventsDetailsEntity.getSchedules()) {
                 ScheduleDomain scheduleDomain = new ScheduleDomain();
-                ScheduleDomain_ scheduleDomain_ = new ScheduleDomain_();
+                ScheduleDetailDomain scheduleDetailDomain = new ScheduleDetailDomain();
                 AddressDetail addressDetailDomain = new AddressDetail();
 
-                scheduleDomain_.setId(item.getSchedule().getId());
-                scheduleDomain_.setCreatedAt(item.getSchedule().getCreatedAt());
-                scheduleDomain_.setEndDate(item.getSchedule().getEndDate());
-                scheduleDomain_.setProductId(item.getSchedule().getProductId());
-                scheduleDomain_.setProviderMetaData(item.getSchedule().getProviderMetaData());
-                scheduleDomain_.setProviderScheduleId(item.getSchedule().getProviderScheduleId());
-                scheduleDomain_.setStartDate(item.getSchedule().getStartDate());
-                scheduleDomain_.setStatus(item.getSchedule().getStatus());
-                scheduleDomain_.setTitle(item.getSchedule().getTitle());
-                scheduleDomain_.setTnc(item.getSchedule().getTnc());
-                scheduleDomain_.setUpdatedAt(item.getSchedule().getUpdatedAt());
-                scheduleDomain.setSchedule(scheduleDomain_);
+                scheduleDetailDomain.setId(item.getSchedule().getId());
+                scheduleDetailDomain.setCreatedAt(item.getSchedule().getCreatedAt());
+                scheduleDetailDomain.setEndDate(item.getSchedule().getEndDate());
+                scheduleDetailDomain.setProductId(item.getSchedule().getProductId());
+                scheduleDetailDomain.setProviderMetaData(item.getSchedule().getProviderMetaData());
+                scheduleDetailDomain.setProviderScheduleId(item.getSchedule().getProviderScheduleId());
+                scheduleDetailDomain.setStartDate(item.getSchedule().getStartDate());
+                scheduleDetailDomain.setStatus(item.getSchedule().getStatus());
+                scheduleDetailDomain.setTitle(item.getSchedule().getTitle());
+                scheduleDetailDomain.setTnc(item.getSchedule().getTnc());
+                scheduleDetailDomain.setUpdatedAt(item.getSchedule().getUpdatedAt());
+                scheduleDomain.setSchedule(scheduleDetailDomain);
 
                 addressDetailDomain.setId(item.getAddressDetail().getId());
                 addressDetailDomain.setAddress(item.getAddressDetail().getAddress());

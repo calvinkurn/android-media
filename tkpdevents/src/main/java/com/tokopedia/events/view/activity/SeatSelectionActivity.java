@@ -155,7 +155,6 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
 
     @Override
     public void renderSeatSelection(int salesPrice, int maxTickets, SeatLayoutViewModel viewModel) {
-//        movieName.setText(title);
         appBar.setNavigationIcon(R.drawable.ic_arrow_back_black);
         price = salesPrice;
         this.maxTickets = maxTickets;
@@ -202,24 +201,6 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
         final Bitmap bp = Utils.getBitmap(this, seatTextLayout);
         Utils.saveImage(SeatSelectionActivity.this, bp);
 
-//        seatTextLayout.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                if (event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_DOWN) {
-//                    Log.d("Naveen", "OnTouch Event action down or action move");
-//                    previewLayout.setVisibility(View.VISIBLE);
-//                    previewWindow.setVisibility(View.VISIBLE);
-//                    previewWindow.setImageBitmap(bp);
-//                    return true;
-//                } else if (event.getAction() == MotionEvent.ACTION_UP) {
-//                    Log.d("Naveen", "OnTouch Event action up");
-//                    previewLayout.setVisibility(View.GONE);
-//                    previewWindow.setVisibility(View.GONE);
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
     }
 
     @Override
@@ -240,7 +221,6 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     @OnClick(R2.id.verifySeat)
     void verifySeat() {
         setSelectedSeatModel();
-//        mPresenter.verifySeatSelection(selectedSeatViewModel);
     }
 
     @Override

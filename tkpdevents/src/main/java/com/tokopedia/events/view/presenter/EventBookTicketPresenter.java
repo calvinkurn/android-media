@@ -253,9 +253,10 @@ public class EventBookTicketPresenter
 
 
     private void getSeatSelectionDetails() {
-        getSeatLayoutUseCase.setUrl(selectedPackageViewModel.getFetchSectionUrl());
+        RequestParams params = RequestParams.create();
+        params.putString("seatlayouturl",selectedPackageViewModel.getFetchSectionUrl());
         getView().showProgressBar();
-        getSeatLayoutUseCase.execute(RequestParams.EMPTY, new Subscriber<List<SeatLayoutItem>>() {
+        getSeatLayoutUseCase.execute(params, new Subscriber<List<SeatLayoutItem>>() {
             @Override
             public void onCompleted() {
                 Log.d("Naveen", " on Completed");

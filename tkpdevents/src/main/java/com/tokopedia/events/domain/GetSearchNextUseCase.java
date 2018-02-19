@@ -15,7 +15,7 @@ import rx.Observable;
 public class GetSearchNextUseCase extends UseCase<SearchDomainModel> {
 
     private final EventRepository eventRepository;
-    String nextUrl;
+    private String nextUrl;
 
     public GetSearchNextUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, EventRepository eventRepository) {
         super(threadExecutor, postExecutionThread);

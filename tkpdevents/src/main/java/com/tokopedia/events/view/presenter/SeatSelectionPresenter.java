@@ -146,8 +146,11 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
     public void verifySeatSelection(SelectedSeatViewModel selectedSeatViewModel) {
         getView().showProgressBar();
         this.mSelectedSeatViewModel = selectedSeatViewModel;
-        postVerifyCartUseCase.setCartItems(convertPackageToCartItem(selectedpkgViewModel), true);
-        postVerifyCartUseCase.execute(RequestParams.EMPTY, new Subscriber<VerifyCartResponse>() {
+//        postVerifyCartUseCase.setCartItems(convertPackageToCartItem(selectedpkgViewModel), true);
+        RequestParams params = RequestParams.create();
+        params.putObject("checkoutdata", convertPackageToCartItem(selectedpkgViewModel));
+        params.putBoolean("ispromocodecase", true);
+        postVerifyCartUseCase.execute(params, new Subscriber<VerifyCartResponse>() {
             @Override
             public void onCompleted() {
                 Intent reviewTicketIntent = new Intent(getView().getActivity(), ReviewTicketActivity.class);

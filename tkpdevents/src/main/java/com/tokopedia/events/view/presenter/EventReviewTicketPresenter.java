@@ -287,8 +287,11 @@ public class EventReviewTicketPresenter
 
     public void verifyCart() {
         getView().showProgressBar();
-        postVerifyCartUseCase.setCartItems(convertPackageToCartItem(checkoutData), !isPromoCodeCase);
-        postVerifyCartUseCase.execute(RequestParams.EMPTY, new Subscriber<VerifyCartResponse>() {
+//        postVerifyCartUseCase.setCartItems(convertPackageToCartItem(checkoutData), !isPromoCodeCase);
+        RequestParams params = RequestParams.create();
+        params.putObject("checkoutdata",convertPackageToCartItem(checkoutData));
+        params.putBoolean("ispromocodecase",!isPromoCodeCase);
+        postVerifyCartUseCase.execute(params, new Subscriber<VerifyCartResponse>() {
             @Override
             public void onCompleted() {
 

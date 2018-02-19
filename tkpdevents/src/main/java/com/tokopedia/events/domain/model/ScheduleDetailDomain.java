@@ -1,7 +1,7 @@
 
 package com.tokopedia.events.domain.model;
 
-public class ScheduleDomain_ {
+public class ScheduleDetailDomain {
 
     private Integer id;
     private Integer productId;

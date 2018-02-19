@@ -227,17 +227,6 @@ public class EventSearchActivity extends TActivity implements
                 .build();
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_event_search, menu);
-//        return super.onCreateOptionsMenu(menu);
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        return mPresenter.onOptionMenuClick(item.getItemId());
-//    }
-
     @Override
     protected boolean isLightToolbarThemes() {
         return true;

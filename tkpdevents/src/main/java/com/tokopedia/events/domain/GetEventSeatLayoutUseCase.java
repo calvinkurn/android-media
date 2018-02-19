@@ -17,7 +17,6 @@ import rx.Observable;
 public class GetEventSeatLayoutUseCase extends UseCase<List<SeatLayoutItem>> {
 
     private final EventRepository eventRepository;
-    String url;
 
     public GetEventSeatLayoutUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, EventRepository eventRepository) {
         super(threadExecutor, postExecutionThread);
@@ -26,10 +25,8 @@ public class GetEventSeatLayoutUseCase extends UseCase<List<SeatLayoutItem>> {
 
     @Override
     public Observable<List<SeatLayoutItem>> createObservable(RequestParams requestParams) {
+        String url = requestParams.getString("seatlayouturl", null);
         return eventRepository.getEventSeatLayout(url);
     }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
 }

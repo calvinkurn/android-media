@@ -15,7 +15,6 @@ import rx.Observable;
 
 public class GetEventDetailsRequestUseCase extends UseCase<EventDetailsDomain> {
     private final EventRepository eventRepository;
-    private String url;
 
     public GetEventDetailsRequestUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, EventRepository eventRepository) {
         super(threadExecutor, postExecutionThread);
@@ -24,15 +23,10 @@ public class GetEventDetailsRequestUseCase extends UseCase<EventDetailsDomain> {
 
     @Override
     public Observable<EventDetailsDomain> createObservable(RequestParams requestParams) {
-        return eventRepository.getEventDetails(url);
-
-    }
-
-    public void setUrl(String url) {
+        String url = requestParams.getString("detailsurl", null);
         String substr = url.substring(0, 4);
         if (!substr.equals("http"))
-            this.url = EventsUrl.EVENT_DETAIL + url;
-        else
-            this.url = url;
+            url = EventsUrl.EVENT_DETAIL + url;
+        return eventRepository.getEventDetails(url);
     }
 }
