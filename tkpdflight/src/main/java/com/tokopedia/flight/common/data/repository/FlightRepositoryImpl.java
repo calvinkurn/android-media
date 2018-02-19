@@ -42,6 +42,7 @@ import java.util.Map;
 
 import rx.Observable;
 import rx.functions.Func1;
+import rx.functions.Func2;
 
 /**
  * Created by zulfikarrahman on 10/25/17.
@@ -127,6 +128,29 @@ public class FlightRepositoryImpl implements FlightRepository {
     @Override
     public Observable<SendEmailEntity> sendEmail(Map<String, Object> params) {
         return flightOrderDataSource.sendEmail(params);
+    }
+
+    @Override
+    public Observable<Boolean> isSearchCacheExpired(RequestParams requestParams, String key) {
+        if (requestParams.getBoolean(key, false)) {
+            return flightSearchReturnDataListSource.isCacheExpired()
+                    .zipWith(flightSearchReturnDataListSource.isDataAvailable(),
+                            new Func2<Boolean, Boolean, Boolean>() {
+                                @Override
+                                public Boolean call(Boolean aBoolean, Boolean aBoolean2) {
+                                    return aBoolean && aBoolean2;
+                                }
+                            });
+        } else {
+            return flightSearchSingleDataListSource.isCacheExpired()
+                    .zipWith(flightSearchSingleDataListSource.isDataAvailable(),
+                            new Func2<Boolean, Boolean, Boolean>() {
+                                @Override
+                                public Boolean call(Boolean aBoolean, Boolean aBoolean2) {
+                                    return aBoolean && aBoolean2;
+                                }
+                            });
+        }
     }
 
     @Override

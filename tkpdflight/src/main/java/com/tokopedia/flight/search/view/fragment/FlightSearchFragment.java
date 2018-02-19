@@ -100,7 +100,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     private boolean needRefreshFromCache;
     private boolean inFilterMode = false;
 
-
     public static FlightSearchFragment newInstance(FlightSearchPassDataViewModel passDataViewModel) {
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_PASS_DATA, passDataViewModel);
@@ -266,15 +265,18 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         showMessageErrorInSnackBar(resId);
     }
 
+    @Override
+    public void finishFragment() {
+        getActivity().finish();
+    }
+
     @CallSuper
     @Override
     public void onResume() {
         super.onResume();
         flightSearchPresenter.attachView(this);
-        if (flightSearchPresenter.isCacheExpired()) {
-            getActivity().finish();
-        }
 
+        flightSearchPresenter.checkCacheExpired();
         if (needRefreshFromCache) {
             reloadDataFromCache();
             setUIMarkFilter();
@@ -531,10 +533,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     public void onSuccessGetDataFromCloud(boolean isDataEmpty, FlightMetaDataDB flightMetaDataDB) {
-        if (!isDataEmpty) {
-            flightSearchPresenter.setSearchCacheTime();
-        }
-
         this.addToolbarElevation();
         String depAirport = flightMetaDataDB.getDepartureAirport();
         String arrivalAirport = flightMetaDataDB.getArrivalAirport();

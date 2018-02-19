@@ -1,7 +1,6 @@
 package com.tokopedia.flight.search.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.domain.FlightBookingGetSingleResultUseCase;
 import com.tokopedia.flight.common.data.domain.DeleteFlightCacheUseCase;
@@ -9,7 +8,7 @@ import com.tokopedia.flight.common.subscriber.OnNextSubscriber;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.search.constant.FlightSortOption;
-import com.tokopedia.flight.search.di.FlightSearchQualifier;
+import com.tokopedia.flight.search.domain.FlightSearchExpiredUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchMetaUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchStatisticUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchUseCase;
@@ -54,7 +53,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
     private CompositeSubscription compositeSubscription;
     private DeleteFlightCacheUseCase deleteFlightCacheUseCase;
     private FlightAnalytics flightAnalytics;
-    private LocalCacheHandler localCacheHandler;
+    private FlightSearchExpiredUseCase flightSearchExpiredUseCase;
 
     @Inject
     public FlightSearchPresenter(FlightSearchWithSortUseCase flightSearchWithSortUseCase,
@@ -64,7 +63,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                                  FlightSearchMetaUseCase flightSearchMetaUseCase,
                                  DeleteFlightCacheUseCase deleteFlightCacheUseCase,
                                  FlightAnalytics flightAnalytics,
-                                 @FlightSearchQualifier LocalCacheHandler localCacheHandler) {
+                                 FlightSearchExpiredUseCase flightSearchExpiredUseCase) {
         this.flightSearchWithSortUseCase = flightSearchWithSortUseCase;
         this.flightSortUseCase = flightSortUseCase;
         this.flightSearchStatisticUseCase = flightSearchStatisticUseCase;
@@ -72,7 +71,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
         this.flightSearchMetaUseCase = flightSearchMetaUseCase;
         this.deleteFlightCacheUseCase = deleteFlightCacheUseCase;
         this.flightAnalytics = flightAnalytics;
-        this.localCacheHandler = localCacheHandler;
+        this.flightSearchExpiredUseCase = flightSearchExpiredUseCase;
     }
 
     public void searchAndSortFlight(FlightSearchApiRequestModel flightSearchApiRequestModel,
@@ -158,25 +157,27 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
         });
     }
 
-    public void setSearchCacheTime() {
-        Date now = FlightDateUtil.getCurrentDate();
-        localCacheHandler.putString(FLIGHT_SEARCH_CACHE_TIME_KEY,
-                FlightDateUtil.dateToString(now, FlightDateUtil.DEFAULT_TIMESTAMP_FORMAT));
-        localCacheHandler.applyEditor();
-    }
+    public void checkCacheExpired() {
+        flightSearchExpiredUseCase.execute(flightSearchExpiredUseCase.createRequestParams(
+                getView().isReturning()),
+                new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
 
-    public boolean isCacheExpired() {
-        if (!localCacheHandler.getString(FLIGHT_SEARCH_CACHE_TIME_KEY, "")
-                .equalsIgnoreCase("")) {
-            Date firstDataSaved = FlightDateUtil.stringToDate(
-                    FlightDateUtil.DEFAULT_TIMESTAMP_FORMAT,
-                    localCacheHandler.getString(FLIGHT_SEARCH_CACHE_TIME_KEY)
-            );
-            Date expiredTime = FlightDateUtil.addTimeToSpesificDate(firstDataSaved, Calendar.MINUTE, MINUTES_CACHE_EXPIRED);
+                    }
 
-            return (FlightDateUtil.getCurrentDate().after(expiredTime));
-        }
-        return false;
+                    @Override
+                    public void onError(Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        if (aBoolean) {
+                            getView().finishFragment();
+                        }
+                    }
+                });
     }
 
     private void addSubscription(Subscription subscription) {
