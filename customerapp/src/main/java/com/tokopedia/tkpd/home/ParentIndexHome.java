@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.home;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -26,7 +27,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
@@ -71,7 +71,8 @@ import com.tokopedia.design.bottomnavigation.BottomNavigation;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.configuration.ShakeDetector;
-import com.tokopedia.tkpd.campaign.view.CapturedAudioCampaignActivity;
+import com.tokopedia.tkpd.campaign.view.activity.CapturedAudioCampaignActivity;
+import com.tokopedia.tkpd.campaign.view.activity.ShakeDetectCampaignActivity;
 import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
@@ -102,6 +103,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     public static final int INIT_STATE_FRAGMENT_HOTLIST = 3;
     public static final int ONBOARDING_REQUEST = 101;
     public static final int WISHLIST_REQUEST = 202;
+
+    public static final int SHAKE_SHAKE_REQUEST = 301;
 
     public static final String EXTRA_INIT_FRAGMENT = "EXTRA_INIT_FRAGMENT";
     public static final String TAG = ParentIndexHome.class.getSimpleName();
@@ -395,7 +398,11 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     @Override
     public void hearShake() {
-        startActivity(CapturedAudioCampaignActivity.getCapturedAudioCampaignActivity(this));
+        if(true) {
+            startActivityForResult(ShakeDetectCampaignActivity.getShakeDetectCampaignActivity(this),SHAKE_SHAKE_REQUEST);
+        }else {
+            startActivity(CapturedAudioCampaignActivity.getCapturedAudioCampaignActivity(this));
+        }
     }
 
 
@@ -578,6 +585,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == WISHLIST_REQUEST && resultCode == RESULT_OK) {
             mViewPager.setCurrentItem(INIT_STATE_FRAGMENT_HOTLIST);
+        }else if(requestCode == SHAKE_SHAKE_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
+            startActivity(data);
         }
     }
 

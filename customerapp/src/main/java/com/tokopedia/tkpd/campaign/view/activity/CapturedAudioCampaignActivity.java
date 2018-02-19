@@ -1,25 +1,16 @@
-package com.tokopedia.tkpd.campaign.view;
+package com.tokopedia.tkpd.campaign.view.activity;
 
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.hardware.SensorManager;
-import android.media.AudioFormat;
-import android.media.AudioRecord;
-import android.media.MediaRecorder;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.view.View;
+import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
-import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.tkpd.R;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.tkpd.campaign.configuration.AudioRecorder;
-import com.tokopedia.tkpd.campaign.configuration.ShakeDetector;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 import permissions.dispatcher.NeedsPermission;
@@ -32,47 +23,26 @@ import permissions.dispatcher.RuntimePermissions;
  */
 
 @RuntimePermissions
-public class CapturedAudioCampaignActivity extends BasePresenterActivity implements AudioRecorder.RecordCompleteListener{
-    @Override
-    protected void setupURIPass(Uri data) {
-
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
+public class CapturedAudioCampaignActivity extends BaseSimpleActivity implements AudioRecorder.RecordCompleteListener{
 
     public static Intent getCapturedAudioCampaignActivity(Context context) {
         Intent i = new Intent(context, CapturedAudioCampaignActivity.class);
         return i;
     }
 
+
     @Override
-    protected int getLayoutId() {
+    protected int getLayoutRes() {
         return 0;
     }
 
-    @Override
-    protected void initView() {
-
-
-    }
 
     @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         CapturedAudioCampaignActivityPermissionsDispatcher.isRequiredPermissionAvailableWithCheck(this);
     }
+
 
     @NeedsPermission({Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void isRequiredPermissionAvailable() {
@@ -105,10 +75,6 @@ public class CapturedAudioCampaignActivity extends BasePresenterActivity impleme
     }
 
 
-    @Override
-    protected void setActionVar() {
-
-    }
 
     AudioRecorder recorder;
 
@@ -128,6 +94,11 @@ public class CapturedAudioCampaignActivity extends BasePresenterActivity impleme
     public void onBackPressed() {
         super.onBackPressed();
         Toast.makeText(this,"Recording in Progress",Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected Fragment getNewFragment() {
+        return null;
     }
 }
 

@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         tools:node="remove"
@@ -244,7 +245,7 @@
             android:name=".datepicker.DatePickerTokoCashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3" />
-        <activity android:name=".campaign.view.CapturedAudioCampaignActivity"
+        <activity android:name=".campaign.view.activity.CapturedAudioCampaignActivity"
             android:launchMode="singleTop"
             android:theme="@style/Theme.White"></activity>
 
@@ -252,6 +253,11 @@
             android:label="@string/title_scan_qr"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
+
+        <activity android:name=".campaign.view.activity.ShakeDetectCampaignActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"
+            android:theme="@style/DialogTheme"/>
     </application>
 
 </manifest>

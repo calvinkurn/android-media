@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.tkpd.campaign.data.model.CampaignErrorResponse;
 import com.tokopedia.tkpd.campaign.domain.CampaignDataRepository;
 import com.tokopedia.tkpd.campaign.domain.barcode.PostBarCodeDataUseCase;
+import com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase;
 import com.tokopedia.tkpd.campaign.source.CampaignData;
 import com.tokopedia.tkpd.campaign.source.CampaignDataFactory;
 import com.tokopedia.tkpd.campaign.source.api.CampaignAPI;
@@ -31,7 +32,10 @@ public class CampaignModule {
     PostBarCodeDataUseCase providePostBarCodeDataUseCase(CampaignDataRepository bookingRideRepository) {
         return new PostBarCodeDataUseCase(bookingRideRepository);
     }
-
+    @Provides
+    ShakeUseCase provideShakeUseCase(CampaignDataRepository bookingRideRepository) {
+        return new ShakeUseCase(bookingRideRepository);
+    }
     @Provides
     CampaignDataRepository provideCampaignRideRepository(CampaignDataFactory campaignDataFactory) {
         return new CampaignData(campaignDataFactory);
