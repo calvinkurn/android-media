@@ -1,6 +1,5 @@
 package com.tokopedia.tokocash.historytokocash.data.repository;
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.tokocash.historytokocash.data.datasource.WalletDataSourceFactory;
 import com.tokopedia.tokocash.historytokocash.data.entity.OAuthInfoEntity;
 import com.tokopedia.tokocash.historytokocash.data.entity.ResponseHelpHistoryEntity;
@@ -12,6 +11,7 @@ import com.tokopedia.tokocash.historytokocash.presentation.model.HelpHistoryToko
 import com.tokopedia.tokocash.historytokocash.presentation.model.ParamsActionHistory;
 import com.tokopedia.tokocash.historytokocash.presentation.model.TokoCashHistoryData;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -32,7 +32,7 @@ public class WalletRepository implements IWalletRepository {
     }
 
     @Override
-    public Observable<TokoCashHistoryData> getTokoCashHistoryData(TKPDMapParam<String, Object> mapParams) {
+    public Observable<TokoCashHistoryData> getTokoCashHistoryData(HashMap<String, Object> mapParams) {
         return walletDataSourceFactory.create()
                 .getTokoCashHistoryData(mapParams)
                 .map(new TokoCashHistoryMapper());

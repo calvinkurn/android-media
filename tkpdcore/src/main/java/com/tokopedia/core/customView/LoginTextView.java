@@ -12,7 +12,6 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Space;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
@@ -110,8 +109,6 @@ public class LoginTextView extends LinearLayout {
 
         if (!imageEnabled || drawable == null) {
             (findViewById(R.id.provider_image)).setVisibility(GONE);
-            Space space = (Space) findViewById(R.id.space);
-            space.setVisibility(GONE);
         }
     }
 
@@ -197,8 +194,6 @@ public class LoginTextView extends LinearLayout {
     public void setTextVisibility(int visibility) {
         TextView textView = (TextView) findViewById(R.id.provider_name);
         textView.setVisibility(visibility);
-        Space space = (Space) findViewById(R.id.space);
-        space.setVisibility(visibility);
     }
 
     public void setImageNextToText() {
