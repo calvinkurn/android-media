@@ -8,10 +8,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
  * @author by milhamj on 08/02/18.
  */
 
-public class PeopleInfoFragment extends BaseDaggerFragment {
+public class TopProfileFragment extends BaseDaggerFragment {
 
-    public static PeopleInfoFragment newInstance() {
-        PeopleInfoFragment fragment = new PeopleInfoFragment();
+    public static TopProfileFragment newInstance() {
+        TopProfileFragment fragment = new TopProfileFragment();
         Bundle bundle = new Bundle();
         fragment.setArguments(bundle);
         return fragment;
@@ -19,7 +19,7 @@ public class PeopleInfoFragment extends BaseDaggerFragment {
 
     @Override
     protected void initInjector() {
-        getChildFragmentManager().findFragmentByTag("HAI")
+        getChildFragmentManager().findFragmentByTag("HAI");
         //TODO milhamj
     }
 

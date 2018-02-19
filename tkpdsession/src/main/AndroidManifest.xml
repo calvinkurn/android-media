@@ -138,7 +138,7 @@
             android:screenOrientation="portrait"
             />
         <activity
-            android:name="com.tokopedia.profile.view.activity.PeopleInfoActivity"
+            android:name="com.tokopedia.profile.view.activity.TopProfileActivity"
             android:screenOrientation="portrait"
             />
         <!-- ======================================================= -->
