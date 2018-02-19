@@ -9,6 +9,8 @@ import com.tokopedia.shop.common.data.source.cloud.api.ShopApi;
 import com.tokopedia.shop.common.di.ShopQualifier;
 import com.tokopedia.shop.common.di.scope.ShopScope;
 
+import javax.inject.Named;
+
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;

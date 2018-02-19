@@ -51,7 +51,10 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
 
             @Override
             public void onNext(ShopProductList shopProductList) {
-                shopProductList.getList();
+                if(!isViewAttached())
+                    return;
+
+//                getView().renderList();shopProductList.getList();
             }
         });
     }

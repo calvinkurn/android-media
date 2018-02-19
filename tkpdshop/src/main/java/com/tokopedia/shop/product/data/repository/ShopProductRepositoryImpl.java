@@ -34,4 +34,14 @@ public class ShopProductRepositoryImpl implements ShopProductRepository {
             }
         });
     }
+
+    @Override
+    public Observable<ShopProductList> getShopProductList(String baseUrl, ShopProductRequestModel shopProductRequestModel) {
+        return shopProductCloudDataSource.getShopProductList(baseUrl, shopProductRequestModel).flatMap(new Func1<Response<DataResponse<ShopProductList>>, Observable<ShopProductList>>() {
+            @Override
+            public Observable<ShopProductList> call(Response<DataResponse<ShopProductList>> dataResponseResponse) {
+                return Observable.just(dataResponseResponse.body().getData());
+            }
+        });
+    }
 }
