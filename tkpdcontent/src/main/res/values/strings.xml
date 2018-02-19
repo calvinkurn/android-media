@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TkpdContent</string>
+    <string name="action_follow">Follow</string>
 </resources>

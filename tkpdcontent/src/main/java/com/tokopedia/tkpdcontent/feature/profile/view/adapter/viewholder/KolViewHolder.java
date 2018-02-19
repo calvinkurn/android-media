@@ -100,7 +100,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             ImageHandler.loadImageWithIdWithoutPlaceholder(followIcon, R.drawable.ic_plus_green);
             followText.setTextColor(MethodChecker.getColor(followText.getContext(),
                     R.color.green_500));
-            followText.setText(R.string.action_follow_english);
+            followText.setText(R.string.action_follow);
             topSeparator.setVisibility(View.VISIBLE);
         }
 

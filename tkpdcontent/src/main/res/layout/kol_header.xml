@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
@@ -13,7 +14,7 @@
         android:layout_marginLeft="@dimen/margin_small"
         android:layout_marginRight="@dimen/margin_small"
         android:layout_marginTop="@dimen/margin_sm"
-        android:background="@drawable/feed_container_circle_corners_border"
+        android:background="@drawable/container_circle_corners_border"
         tools:src="@drawable/ic_check_green_24dp"/>
 
     <RelativeLayout
@@ -27,18 +28,20 @@
             android:layout_width="14dp"
             android:layout_height="14dp"
             android:layout_marginRight="@dimen/margin_vs"
+            android:layout_marginEnd="@dimen/margin_vs"
             android:layout_marginTop="@dimen/margin_vvvs"
-            android:src="@drawable/ic_kol_badge"/>
+            app:srcCompat="@drawable/ic_kol_badge"/>
 
         <TextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/kol_badge"
+            android:layout_toEndOf="@id/kol_badge"
             android:fontFamily="sans-serif-medium"
             android:lineSpacingExtra="6sp"
             android:textColor="@color/black_70"
-            android:textSize="@dimen/text_size_medium"
+            android:textSize="@dimen/font_small"
             android:textStyle="normal"
             tools:text="Young Lex"
             />
@@ -51,7 +54,7 @@
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="6sp"
             android:textColor="@color/black_38"
-            android:textSize="@dimen/text_size_xsmall"
+            android:textSize="@dimen/font_micro"
             android:textStyle="normal"
             tools:text="Artist"
             />
@@ -71,7 +74,8 @@
             android:layout_centerVertical="true"
             android:padding="@dimen/padding_vs"
             android:layout_marginRight="@dimen/margin_vs"
-            android:src="@drawable/ic_plus_green"
+            android:layout_marginEnd="5dp"
+            app:srcCompat="@drawable/ic_plus_green"
             />
 
         <TextView
@@ -80,13 +84,14 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/margin_sm"
+            android:layout_marginEnd="@dimen/margin_sm"
             android:layout_toEndOf="@id/follow_icon"
             android:layout_toRightOf="@id/follow_icon"
             android:fontFamily="sans-serif-medium"
             android:lineSpacingExtra="6sp"
-            android:text="@string/action_follow_english"
+            android:text="@string/action_follow"
             android:textColor="@color/green_500"
-            android:textSize="@dimen/text_size_l_medium"
+            android:textSize="@dimen/font_title"
             android:textStyle="normal"/>
     </RelativeLayout>
 </LinearLayout>
