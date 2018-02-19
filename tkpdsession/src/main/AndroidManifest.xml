@@ -139,6 +139,7 @@
             />
         <activity
             android:name="com.tokopedia.profile.view.activity.TopProfileActivity"
+            android:label=""
             android:screenOrientation="portrait"
             />
         <!-- ======================================================= -->
