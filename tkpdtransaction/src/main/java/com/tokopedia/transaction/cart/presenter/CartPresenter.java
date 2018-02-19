@@ -104,6 +104,10 @@ public class CartPresenter implements ICartPresenter {
                 }
                 processRenderViewCartData(cartData);
                 view.renderVisibleMainCartContainer();
+                if(!cartData.getCartItemList().isEmpty()){
+                    autoApplyCouponIfAvailable(1);
+
+                }
             }
         });
     }
@@ -893,7 +897,7 @@ public class CartPresenter implements ICartPresenter {
                 && !cartItem.getCartErrorMessage1().equals("0"));
     }
 
-    @Override
+
     public void autoApplyCouponIfAvailable(Integer selectedProduct) {
         String savedCoupon = BranchSdkUtils.getAutoApplyCouponIfAvailable(view.getActivity());
         if (!TextUtils.isEmpty(savedCoupon)) {

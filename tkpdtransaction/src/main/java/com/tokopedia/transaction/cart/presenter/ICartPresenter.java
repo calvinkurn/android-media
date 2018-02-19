@@ -49,6 +49,4 @@ public interface ICartPresenter {
     void processPaymentAnalytics(LocalCacheHandler localCacheHandler, ThanksTopPayData data);
 
     void clearNotificationCart();
-
-    void autoApplyCouponIfAvailable(Integer selectedProduct);
 }

@@ -45,14 +45,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.appsflyer.Jordan;
-import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -223,7 +219,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     protected void onFirstTimeLaunched() {
         checkoutDataBuilder = new CheckoutData.Builder();
         presenter.processGetCartData();
-        presenter.autoApplyCouponIfAvailable(1);
     }
 
     @Override
