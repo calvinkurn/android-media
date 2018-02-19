@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'android-apt'
 
 def getTkpdAbstraction() {
     return project.hasProperty('isArtifact') ? rootProject.ext.tkpdDependencies.abstraction : project(':tkpdabstraction')
@@ -7,14 +6,6 @@ def getTkpdAbstraction() {
 
 def getTkpdUseCase() {
     return project.hasProperty('isArtifact') ? rootProject.ext.tkpdDependencies.usecase : project(':tkpdusecase')
-}
-
-def getTkpdInterface() {
-    return project.hasProperty('isArtifact') ? rootProject.ext.tkpdDependencies.interface : project(':tkpdinterface')
-}
-
-def getTkpdCacheApi() {
-    return project.hasProperty('isArtifact') ? rootProject.ext.tkpdDependencies.cacheapi : project(':tkpdcacheapi')
 }
 
 android {
@@ -37,21 +28,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
 dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
 
     compile getTkpdUseCase()
     compile getTkpdAbstraction()
-    compile getTkpdInterface()
-    compile getTkpdCacheApi()
-
-    compile project(':tkpdshop-common')
-
-    compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
-
-    compile rootProject.ext.supportLibDependencies.constraintLayout
 
     testCompile 'junit:junit:4.12'
     androidTestCompile('com.android.support.test.espresso:espresso-core:3.0.1', {
