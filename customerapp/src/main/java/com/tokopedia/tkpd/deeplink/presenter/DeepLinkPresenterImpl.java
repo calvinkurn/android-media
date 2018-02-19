@@ -19,12 +19,12 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkConst;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
@@ -43,9 +43,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
-import com.tokopedia.session.session.interactor.SignInInteractor;
-import com.tokopedia.session.session.interactor.SignInInteractorImpl;
-import com.tokopedia.session.session.presenter.Login;
+import com.tokopedia.session.domain.interactor.SignInInteractor;
+import com.tokopedia.session.domain.interactor.SignInInteractorImpl;
 import com.tokopedia.tkpd.deeplink.WhitelistItem;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.deeplink.di.component.DaggerDeeplinkComponent;
@@ -315,10 +314,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 Log.d(TAG, "onSuccess: ");
                 if (SessionHandler.isMsisdnVerified()) {
                     finishLogin();
-                } else {
+                } else if (MainApplication.getAppContext() instanceof TkpdCoreRouter){
                     Intent intentHome = HomeRouter.getHomeActivity(context);
                     intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    Intent intentPhoneVerif = OldSessionRouter.getPhoneVerificationActivationActivityIntent(context);
+                    Intent intentPhoneVerif = ((TkpdCoreRouter) MainApplication.getAppContext())
+                            .getPhoneVerificationActivationIntent(context);
 
                     context.startActivities(new Intent[]
                             {
@@ -359,7 +359,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         data.setEmail(" ");
         data.setPassword(uriData.getPathSegments().get(1));
         data.setAttempt(uriData.getQueryParameter("a"));
-        data.setGrantType(Login.GRANT_PASSWORD);
+        data.setGrantType(SignInInteractor.GRANT_PASSWORD);
         data.setPasswordType(SignInInteractor.ACTIVATION_CODE);
         return data;
     }

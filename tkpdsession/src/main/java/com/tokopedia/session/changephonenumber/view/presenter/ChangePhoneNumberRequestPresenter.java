@@ -1,11 +1,15 @@
 package com.tokopedia.session.changephonenumber.view.presenter;
 
+import android.text.Editable;
+
 /**
  * Created by nisie on 3/2/17.
  */
 
 public interface ChangePhoneNumberRequestPresenter {
-    void submitRequest();
+    void continueToNext();
+
+    void submitRequest(String phoneNumber);
 
     void checkStatus();
 
@@ -17,4 +21,5 @@ public interface ChangePhoneNumberRequestPresenter {
 
     void onDestroyView();
 
+    void onNewNumberTextChanged(Editable editable, int selectionStart);
 }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:fontFamily="sans-serif"
+        android:lineSpacingExtra="8sp"
+        android:padding="@dimen/page_margin"
+        android:textColor="@color/black_70"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        tools:text="Beli ini itu di Tokopedia" />
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/margin_small_sm"
+        android:paddingLeft="@dimen/margin_small_sm"
+        android:paddingRight="@dimen/margin_small_sm"
+        android:descendantFocusability="blocksDescendants"
+        android:clipToPadding="false" />
+
+</LinearLayout>

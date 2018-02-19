@@ -9,6 +9,7 @@
     <dimen name="font_title">17sp</dimen>
     <dimen name="font_small">14sp</dimen>
     <dimen name="font_micro">12sp</dimen>
+    <dimen name="font_nano">8sp</dimen>
 
     <dimen name="font_line_spacing_headline">38sp</dimen>
     <dimen name="font_line_spacing_subheadline">28sp</dimen>
@@ -122,4 +123,6 @@
     <dimen name="toolbar_elevation">4dp</dimen>
 
     <dimen name="range_input_margin_input_text">-4dp</dimen>
+
+    <dimen name="layout_bav_width_min">80dp</dimen>
 </resources>
