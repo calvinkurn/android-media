@@ -6,8 +6,12 @@ package com.tokopedia.profile.view.viewmodel;
 
 public class TopProfileViewModel {
 
+    private String userId;
     private String name;
+    private String title;
+    private String biodata;
     private String following;
+    private String followers;
     private String favoritedShop;
 
     private boolean isVerified;
@@ -21,44 +25,85 @@ public class TopProfileViewModel {
     private String netralScore;
     private String negativeScore;
 
+    private String shopName;
+    private boolean isGoldShop;
+    private boolean isOfficialShop;
+    private String shopLocation;
+    private String shopLogo;
+    private String shopBadge;
+    private String shopLastOnline;
+    private String shopAppLink;
+
     public TopProfileViewModel() {
 
     }
 
-    public boolean getVerified(){
-        return this.isVerified;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setVerified(boolean isVerified){
-        this.isVerified = isVerified;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getBiodata() {
+        return biodata;
+    }
+
+    public void setBiodata(String biodata) {
+        this.biodata = biodata;
+    }
+
     public String getFollowing() {
-        return this.following;
+        return following;
     }
 
     public void setFollowing(String following) {
         this.following = following;
     }
 
+    public String getFollowers() {
+        return followers;
+    }
+
+    public void setFollowers(String followers) {
+        this.followers = followers;
+    }
+
     public String getFavoritedShop() {
-        return this.favoritedShop;
+        return favoritedShop;
     }
 
     public void setFavoritedShop(String favoritedShop) {
         this.favoritedShop = favoritedShop;
     }
 
+    public boolean isVerified() {
+        return isVerified;
+    }
+
+    public void setVerified(boolean verified) {
+        isVerified = verified;
+    }
+
     public String getPhoneNumber() {
-        return this.phoneNumber;
+        return phoneNumber;
     }
 
     public void setPhoneNumber(String phoneNumber) {
@@ -66,7 +111,7 @@ public class TopProfileViewModel {
     }
 
     public String getEmail() {
-        return this.email;
+        return email;
     }
 
     public void setEmail(String email) {
@@ -74,7 +119,7 @@ public class TopProfileViewModel {
     }
 
     public String getGender() {
-        return this.gender;
+        return gender;
     }
 
     public void setGender(String gender) {
@@ -82,7 +127,7 @@ public class TopProfileViewModel {
     }
 
     public String getBirthDate() {
-        return this.birthDate;
+        return birthDate;
     }
 
     public void setBirthDate(String birthDate) {
@@ -90,7 +135,7 @@ public class TopProfileViewModel {
     }
 
     public String getSummaryScore() {
-        return this.summaryScore;
+        return summaryScore;
     }
 
     public void setSummaryScore(String summaryScore) {
@@ -98,26 +143,90 @@ public class TopProfileViewModel {
     }
 
     public String getPositiveScore() {
-        return this.positiveScore;
+        return positiveScore;
     }
 
     public void setPositiveScore(String positiveScore) {
         this.positiveScore = positiveScore;
     }
 
-    public String getNegativeScore() {
-        return this.negativeScore;
-    }
-
-    public void setNEgativeScore(String negativeScore) {
-        this.negativeScore = negativeScore;
-    }
-
     public String getNetralScore() {
-        return this.netralScore;
+        return netralScore;
     }
 
     public void setNetralScore(String netralScore) {
         this.netralScore = netralScore;
+    }
+
+    public String getNegativeScore() {
+        return negativeScore;
+    }
+
+    public void setNegativeScore(String negativeScore) {
+        this.negativeScore = negativeScore;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
+
+    public boolean isGoldShop() {
+        return isGoldShop;
+    }
+
+    public void setGoldShop(boolean goldShop) {
+        isGoldShop = goldShop;
+    }
+
+    public boolean isOfficialShop() {
+        return isOfficialShop;
+    }
+
+    public void setOfficialShop(boolean officialShop) {
+        isOfficialShop = officialShop;
+    }
+
+    public String getShopLocation() {
+        return shopLocation;
+    }
+
+    public void setShopLocation(String shopLocation) {
+        this.shopLocation = shopLocation;
+    }
+
+    public String getShopLogo() {
+        return shopLogo;
+    }
+
+    public void setShopLogo(String shopLogo) {
+        this.shopLogo = shopLogo;
+    }
+
+    public String getShopBadge() {
+        return shopBadge;
+    }
+
+    public void setShopBadge(String shopBadge) {
+        this.shopBadge = shopBadge;
+    }
+
+    public String getShopLastOnline() {
+        return shopLastOnline;
+    }
+
+    public void setShopLastOnline(String shopLastOnline) {
+        this.shopLastOnline = shopLastOnline;
+    }
+
+    public String getShopAppLink() {
+        return shopAppLink;
+    }
+
+    public void setShopAppLink(String shopAppLink) {
+        this.shopAppLink = shopAppLink;
     }
 }
