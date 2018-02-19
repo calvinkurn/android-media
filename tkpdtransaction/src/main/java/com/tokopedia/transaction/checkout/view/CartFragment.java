@@ -26,7 +26,9 @@ import com.tokopedia.transaction.checkout.view.presenter.ICartListPresenter;
 import com.tokopedia.transaction.checkout.view.view.ICartListView;
 
 import java.text.MessageFormat;
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -38,6 +40,7 @@ import butterknife.BindView;
 
 public class CartFragment extends BasePresenterFragment implements
         CartListAdapter.ActionListener, ICartListView {
+
     @BindView(R2.id.rv_cart)
     RecyclerView cartRecyclerView;
     @BindView(R2.id.go_to_courier_page_button)
@@ -253,6 +256,7 @@ public class CartFragment extends BasePresenterFragment implements
     @Override
     public void renderCartListData(List<CartItemData> cartItemDataList) {
         cartListAdapter.addDataList(cartItemDataList);
+        dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
 
         // Pass data to its container activity trough PassingCartDataListener interface
         mDataPasserListener.onPassingCartData(cartItemDataList);
@@ -305,7 +309,7 @@ public class CartFragment extends BasePresenterFragment implements
 
     @Override
     public void renderDetailInfoSubTotal(String qty, String subtotalPrice) {
-        tvItemCount.setText(MessageFormat.format("Harga Barang ({0} Item)", qty));
+        tvItemCount.setText(MessageFormat.format("Harga Barang ({0} Item): ", qty));
         tvTotalPrice.setText(subtotalPrice);
     }
 

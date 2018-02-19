@@ -17,7 +17,8 @@
             android:textSize="12sp"
             android:fontFamily="sans-serif"
             android:textStyle="normal"
-            android:text="Jumlah Barang (1 Barang)" />
+            android:text="Jumlah Barang (1 Barang)"
+            android:textColor="@color/black_70" />
 
         <TextView android:id="@+id/tv_total_item_price"
             android:layout_width="wrap_content"
@@ -29,6 +30,7 @@
             android:textSize="14sp"
             android:fontFamily="sans-serif"
             android:textStyle="normal"
+            android:textColor="@color/black_70"
             android:gravity="end"
             android:text="Rp1.400.000" />
 
@@ -38,6 +40,7 @@
             android:layout_marginBottom="18dp"
             android:layout_below="@id/tv_total_item"
             android:textSize="12sp"
+            android:textColor="@color/black_70"
             android:fontFamily="sans-serif"
             android:textStyle="normal"
             android:text="Ongkos Kirim (1kg)" />
@@ -49,6 +52,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:textSize="14sp"
+            android:textColor="@color/black_70"
             android:fontFamily="sans-serif"
             android:textStyle="normal"
             android:gravity="end"
@@ -60,6 +64,7 @@
             android:layout_marginBottom="18dp"
             android:layout_below="@id/tv_shipping_fee"
             android:textSize="12sp"
+            android:textColor="@color/black_70"
             android:fontFamily="sans-serif"
             android:textStyle="normal"
             android:text="Biaya Asuransi" />
@@ -71,6 +76,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:textSize="14sp"
+            android:textColor="@color/black_70"
             android:fontFamily="sans-serif"
             android:textStyle="normal"
             android:gravity="end"
@@ -81,6 +87,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_insurance_fee"
             android:textSize="12sp"
+            android:textColor="@color/black_70"
             android:fontFamily="sans-serif"
             android:textStyle="normal"
             android:text="Promo" />
@@ -92,6 +99,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:textSize="14sp"
+            android:textColor="@color/black_70"
             android:fontFamily="sans-serif"
             android:textStyle="normal"
             android:gravity="end"
@@ -99,16 +107,18 @@
 
     </RelativeLayout>
 
-    <TextView android:id="@+id/tv_payable_text"
+    <TextView
+        android:id="@+id/tv_payable_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/rl_detail_shipment_fee_view_layout"
-        android:layout_marginTop="9dp"
-        android:layout_marginBottom="9dp"
-        android:textSize="12sp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/tv_payable_price"
         android:fontFamily="sans-serif"
-        android:textStyle="normal"
-        android:text="Total Pembayaran" />
+        android:text="Total Pembayaran"
+        android:textColor="@color/black_70"
+        android:textSize="12sp"
+        android:textStyle="normal" />
 
     <TextView android:id="@+id/tv_payable_price"
         android:layout_width="wrap_content"
@@ -118,7 +128,8 @@
         android:layout_alignParentRight="true"
         android:layout_marginTop="9dp"
         android:textSize="14sp"
-        android:fontFamily="sans-serif-medium"
+        android:textColor="@color/black_70"
+        android:fontFamily="sans-serif"
         android:textStyle="normal"
         android:gravity="end"
         android:text="Rp1.300.000" />
@@ -127,9 +138,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_payable_text"
+        android:layout_marginTop="9dp"
         android:textSize="12sp"
+        android:textColor="@color/black_54"
         android:fontFamily="sans-serif"
         android:textStyle="normal"
         android:text="Anda mendapat gratis ongkir Rp20.000" />
+
+    <TextView android:id="@+id/tv_promo_free_shipping_remove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_payable_text"
+        android:layout_toRightOf="@id/tv_promo_free_shipping"
+        android:layout_toEndOf="@id/tv_promo_free_shipping"
+        android:layout_marginTop="9dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
+        android:textSize="12sp"
+        android:fontFamily="sans-serif"
+        android:textStyle="normal"
+        android:textColor="@color/black_70"
+        android:text="Hapus" />
 
 </RelativeLayout>

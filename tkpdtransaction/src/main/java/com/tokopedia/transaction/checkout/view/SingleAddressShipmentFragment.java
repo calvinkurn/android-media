@@ -189,12 +189,6 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     protected void setActionVar() {
     }
 
-    @OnClick(R2.id.btn_next_to_payment_option)
-    protected void onClickToPaymentSection() {
-        Toast.makeText(getActivity(), "Select Payment Options", Toast.LENGTH_SHORT)
-                .show();
-    }
-
     @Override
     public void show(CartSingleAddressData cartSingleAddressData) {
         mSingleAddressShipmentAdapter.updateData(cartSingleAddressData);
