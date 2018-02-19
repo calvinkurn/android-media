@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="avatar_size">40dp</dimen>
+    <dimen name="btn_height">44dp</dimen>
+    <dimen name="footer_height">48dp</dimen>
 </resources>

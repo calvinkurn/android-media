@@ -8,4 +8,5 @@
     <color name="black_70">#b3000000</color>
     <color name="black_70b">#b3000000</color>
     <color name="black_87">#de000000</color>
+    <color name="black_tooltip">#96000000</color>
 </resources>
