@@ -85,6 +85,7 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_webview_back_button);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
     }
