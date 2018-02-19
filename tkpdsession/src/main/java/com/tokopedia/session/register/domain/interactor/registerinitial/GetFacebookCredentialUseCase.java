@@ -40,13 +40,13 @@ public class GetFacebookCredentialUseCase {
     }
 
     public void execute(RequestParams requestParams, GetFacebookCredentialSubscriber subscriber) {
-        final Fragment fragment = (Fragment) requestParams.getObject(PARAM_FRAGMENT);
-        final CallbackManager callbackManager = (CallbackManager) requestParams.getObject(PARAM_CALLBACK_MANAGER);
+        Fragment fragment = (Fragment) requestParams.getObject(PARAM_FRAGMENT);
+        CallbackManager callbackManager = (CallbackManager) requestParams.getObject(PARAM_CALLBACK_MANAGER);
         promptFacebookLogin(fragment, callbackManager, subscriber);
 
     }
 
-    private void promptFacebookLogin(final Fragment fragment, final CallbackManager callbackManager,
+    private void promptFacebookLogin(Fragment fragment, CallbackManager callbackManager,
                                      final GetFacebookCredentialSubscriber subscriber) {
         LoginManager.getInstance().logInWithReadPermissions(fragment, FacebookContainer.readPermissions);
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
