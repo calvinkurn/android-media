@@ -84,6 +84,7 @@ public class SearchChatMapper implements Func1<Response<TkpdResponse>, InboxChat
                 viewModel.setReadStatus(STATE_CHAT_READ);
                 viewModel.setLabel(getRole(item.getOppositeType()));
                 viewModel.setSpanMode(ChatListViewModel.SPANNED_CONTACT);
+                viewModel.setSenderId(String.valueOf(item.getOppositeId()));
                 listContact.add(viewModel);
                 if (index == 0) {
                     viewModel.setSectionSize(data.getContacts().getData().size());
@@ -119,6 +120,7 @@ public class SearchChatMapper implements Func1<Response<TkpdResponse>, InboxChat
                 viewModel.setLabel(getRole(item.getOppositeType()));
                 viewModel.setSpanMode(ChatListViewModel.SPANNED_MESSAGE);
                 viewModel.setRole("user");
+                viewModel.setSenderId(String.valueOf(item.getOppositeId()));
                 listReplies.add(viewModel);
                 if (index == 0) {
                     viewModel.setSectionSize(data.getReplies().getData().size());
