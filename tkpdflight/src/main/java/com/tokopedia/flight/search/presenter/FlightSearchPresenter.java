@@ -346,7 +346,12 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
         flightAnalytics.eventSearchProductClick(flightSearchViewModel);
     }
 
-    public void onSeeDetailItemClicked(FlightSearchViewModel flightSearchViewModel) {
-        flightAnalytics.eventSearchDetailClick(flightSearchViewModel);
+    public void onSeeDetailItemClicked(FlightSearchViewModel flightSearchViewModel, int adapterPosition) {
+        flightAnalytics.eventSearchDetailClick(flightSearchViewModel, adapterPosition);
+        flightAnalytics.eventProductDetailImpression(flightSearchViewModel, adapterPosition);
+    }
+
+    public void onSearchItemClicked(FlightSearchViewModel flightSearchViewModel, int adapterPosition) {
+        flightAnalytics.eventSearchProductClick(flightSearchViewModel, adapterPosition);
     }
 }

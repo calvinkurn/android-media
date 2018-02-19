@@ -67,7 +67,7 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightSearchViewM
         View.OnClickListener detailClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onFlightSearchListener.onDetailClicked(flightSearchViewModel);
+                onFlightSearchListener.onDetailClicked(flightSearchViewModel, getAdapterPosition());
             }
         };
         tvPrice.setOnClickListener(detailClickListener);
@@ -76,6 +76,12 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightSearchViewM
         setRefundableInfo(flightSearchViewModel);
         setSavingPrice(flightSearchViewModel);
         setArrivalAddDay(flightSearchViewModel);
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onFlightSearchListener.onItemClicked(flightSearchViewModel, getAdapterPosition());
+            }
+        });
         setMarginOnFirstItem();
     }
 
