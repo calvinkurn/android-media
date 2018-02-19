@@ -1,11 +1,9 @@
 package com.tokopedia.seller.product.edit.domain.interactor.uploadproduct;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
 import com.tokopedia.seller.base.domain.model.ImageUploadDomainModel;
 import com.tokopedia.seller.product.common.constant.ProductNetworkConstant;
 import com.tokopedia.seller.product.draft.data.mapper.ProductDraftMapper;
-import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.UploadImageModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureResultUploadedViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
@@ -15,7 +13,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -32,7 +29,7 @@ public class AddProductImage implements Func1<ProductViewModel, Observable<List<
 
     @Override
     public Observable<List<ProductPictureViewModel>> call(ProductViewModel productViewModel) {
-        return Observable.from(productViewModel.getProductPicture())
+        return Observable.from(productViewModel.getProductPictureViewModelList())
                 .flatMap(new UploadSingleImage(productViewModel.getProductId()))
                 .toList();
     }

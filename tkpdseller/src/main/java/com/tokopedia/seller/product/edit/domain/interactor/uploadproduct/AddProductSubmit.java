@@ -26,7 +26,7 @@ public class AddProductSubmit implements Func1<ProductViewModel, Observable<AddP
             return productRepository
                     .addProductSubmit(productViewModel);
         }else{
-            return productRepository.editProduct(productViewModel);
+            return productRepository.editProductSubmit(productViewModel);
         }
     }
 

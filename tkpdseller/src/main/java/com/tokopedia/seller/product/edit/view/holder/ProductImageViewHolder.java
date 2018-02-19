@@ -11,15 +11,12 @@ import android.util.Pair;
 import android.view.View;
 
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
 import com.tokopedia.seller.product.edit.view.adapter.ImageSelectorAdapter;
 import com.tokopedia.seller.product.edit.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
-import com.tokopedia.seller.product.edit.view.model.upload.ImageProductInputViewModel;
-import com.tokopedia.seller.product.edit.view.model.upload.ProductPhotoListViewModel;
 import com.tokopedia.seller.product.edit.view.widget.ImagesSelectView;
 
 import java.util.ArrayList;
@@ -160,14 +157,21 @@ public class ProductImageViewHolder extends ProductViewHolder {
 
         List<ImageSelectModel> selectModelList = imagesSelectView.getImageList();
         for (int i = 0; i < selectModelList.size(); i++) {
-            ProductPictureViewModel imageViewModel = new ProductPictureViewModel();
+            ProductPictureViewModel productPictureViewModel = new ProductPictureViewModel();
             ImageSelectModel selectModel = selectModelList.get(i);
-            imageViewModel.setFilePath(selectModel.getUriOrPath());
-            imageViewModel.setDescription(selectModel.getDescription());
-            imageViewModel.setX(selectModel.getWidth());
-            imageViewModel.setY(selectModel.getHeight());
-            imageViewModel.setId(selectModel.getId());
-            listImageViewModel.add(imageViewModel);
+            productPictureViewModel.setDescription(selectModel.getDescription());
+            productPictureViewModel.setX(selectModel.getWidth());
+            productPictureViewModel.setY(selectModel.getHeight());
+            productPictureViewModel.setId(selectModel.getId());
+
+            if (selectModel.getId() > 0) { // means file still from server, no change from local
+                productPictureViewModel.setFilePath(selectModel.getServerFilePath());
+            } else {
+                productPictureViewModel.setFilePath(selectModel.getUriOrPath());
+            }
+            productPictureViewModel.setFileName(selectModel.getServerFileName());
+
+            listImageViewModel.add(productPictureViewModel);
         }
         return listImageViewModel;
     }
@@ -176,13 +180,15 @@ public class ProductImageViewHolder extends ProductViewHolder {
         ArrayList<ImageSelectModel> images = new ArrayList<>();
         for (int i = 0; i < productPhotos.size(); i++) {
             ProductPictureViewModel productPhoto = productPhotos.get(i);
-            String url = productPhoto.getFilePath();
+            String url = productPhoto.getUrlOriginal();
             ImageSelectModel image = new ImageSelectModel(
                     url,
                     productPhoto.getDescription(),
                     productPhoto.getX(),
                     productPhoto.getY(),
-                    productPhoto.getId()
+                    productPhoto.getId(),
+                    productPhoto.getFilePath(),
+                    productPhoto.getFileName()
             );
             images.add(image);
         }

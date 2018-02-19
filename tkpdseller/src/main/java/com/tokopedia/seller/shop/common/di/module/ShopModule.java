@@ -2,6 +2,7 @@ package com.tokopedia.seller.shop.common.di.module;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -90,11 +91,11 @@ public class ShopModule {
     @Provides
     public OkHttpClient provideOkHttpClientTomeBearerAuth(HttpLoggingInterceptor httpLoggingInterceptor,
                                                           BearerInterceptor bearerInterceptor,
-                                                          @ShopQualifier TkpdErrorResponseInterceptor tkpdErrorResponseInterceptor
+                                                          @ShopQualifier ErrorResponseInterceptor errorResponseInterceptor
                                                           ) {
         return new OkHttpClient.Builder()
                 .addInterceptor(bearerInterceptor)
-                .addInterceptor(tkpdErrorResponseInterceptor)
+                .addInterceptor(errorResponseInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
                 .build();
     }
@@ -102,7 +103,7 @@ public class ShopModule {
     @ShopQualifier
     @ShopScope
     @Provides
-    public TkpdErrorResponseInterceptor provideTkpdErrorResponseInterceptor() {
+    public ErrorResponseInterceptor provideErrorResponseInterceptor() {
         return new HeaderErrorResponseInterceptor(TomeErrorResponse.class);
     }
 

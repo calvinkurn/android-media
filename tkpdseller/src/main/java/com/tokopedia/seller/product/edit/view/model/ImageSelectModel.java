@@ -21,20 +21,36 @@ public class ImageSelectModel implements Parcelable{
     private boolean isValidURL;
     private long id;
 
+    private String serverFileName;
+    private String serverFilePath;
+
     public ImageSelectModel(String uriOrPath) {
-        this(uriOrPath, null, 0, 0, 0);
+        this(uriOrPath, null, 0, 0, 0, null, null);
     }
 
-    public ImageSelectModel(String uriOrPath, String description, long width, long height, long id) {
+    public ImageSelectModel(String uriOrPath, String description, long width, long height, long id,
+                            String serverFilePath, String serverFileName) {
         this.description = description;
         this.width = width;
         this.height = height;
         this.id = id;
+
+        this.serverFilePath = serverFilePath;
+        this.serverFileName = serverFileName;
+
         setUriOrPath(uriOrPath);
     }
 
     public String getUriOrPath() {
         return uriOrPath;
+    }
+
+    public String getServerFileName() {
+        return serverFileName;
+    }
+
+    public String getServerFilePath() {
+        return serverFilePath;
     }
 
     public boolean isValidURL(String urlStr) {
@@ -109,17 +125,23 @@ public class ImageSelectModel implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.uriOrPath);
         dest.writeString(this.description);
+        dest.writeLong(this.width);
+        dest.writeLong(this.height);
         dest.writeByte(this.isValidURL ? (byte) 1 : (byte) 0);
         dest.writeLong(this.id);
+        dest.writeString(this.serverFileName);
+        dest.writeString(this.serverFilePath);
     }
 
     protected ImageSelectModel(Parcel in) {
         this.uriOrPath = in.readString();
         this.description = in.readString();
-        this.width = in.readInt();
-        this.height = in.readInt();
+        this.width = in.readLong();
+        this.height = in.readLong();
         this.isValidURL = in.readByte() != 0;
         this.id = in.readLong();
+        this.serverFileName = in.readString();
+        this.serverFilePath = in.readString();
     }
 
     public static final Creator<ImageSelectModel> CREATOR = new Creator<ImageSelectModel>() {

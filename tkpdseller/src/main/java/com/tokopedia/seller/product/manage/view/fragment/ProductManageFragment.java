@@ -579,19 +579,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     public void onClickOptionItem(ProductManageViewModel productManageViewModel) {
-        if (productManageViewModel.getProductVariant() == 1) {
-            showDialogVariant();
-        } else {
-            showActionProductDialog(productManageViewModel);
-        }
-    }
-
-    void showDialogVariant() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-        alertDialog.setTitle(R.string.product_manage_title_dialog_variant);
-        alertDialog.setMessage(R.string.product_manage_label_dialog_variant);
-        alertDialog.setPositiveButton(R.string.close, null);
-        alertDialog.show();
+        showActionProductDialog(productManageViewModel);
     }
 
     @Override

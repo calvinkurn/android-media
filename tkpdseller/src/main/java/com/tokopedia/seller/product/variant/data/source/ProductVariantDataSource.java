@@ -1,6 +1,6 @@
 package com.tokopedia.seller.product.variant.data.source;
 
-import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
+import com.tokopedia.abstraction.common.network.mapper.DataResponseMapper;
 import com.tokopedia.seller.product.variant.data.cloud.ProductVariantCloud;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
@@ -26,11 +26,11 @@ public class ProductVariantDataSource {
 
     public Observable<List<ProductVariantByCatModel>> fetchProductVariantByCat(long categoryId) {
         return productVariantCloud.fetchProductVariantByCat(categoryId)
-                .map(new SimpleDataResponseMapper<List<ProductVariantByCatModel>>());
+                .map(new DataResponseMapper<List<ProductVariantByCatModel>>());
     }
 
     public Observable<ProductVariantByPrdModel> fetchProductVariantByPrd(long productId) {
         return productVariantCloud.fetchProductVariantByPrd(productId)
-                .map(new SimpleDataResponseMapper<ProductVariantByPrdModel>());
+                .map(new DataResponseMapper<ProductVariantByPrdModel>());
     }
 }

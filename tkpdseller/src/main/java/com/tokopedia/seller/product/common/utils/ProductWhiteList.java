@@ -2,7 +2,8 @@ package com.tokopedia.seller.product.common.utils;
 
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.seller.product.variant.data.cloud.api.TomeApi;
+import com.tokopedia.seller.product.edit.constant.ProductUrl;
+import com.tokopedia.seller.product.variant.data.cloud.api.TomeProductApi;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ public class ProductWhiteList {
                 TkpdBaseURL.Merlin.PATH_CATEGORY_RECOMMENDATION, ONE_DAY));
         // Product variant by category
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.TOME_DOMAIN,
-                TomeApi.GET_VARIANT_BY_CAT_PATH, ONE_DAY));
+                ProductUrl.GET_VARIANT_BY_CAT_PATH, ONE_DAY));
         // Product catalog
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.ACE_DOMAIN,
                 TkpdBaseURL.Ace.PATH_SEARCH + TkpdBaseURL.Ace.PATH_CATALOG, ONE_DAY));

@@ -1,8 +1,5 @@
 package com.tokopedia.seller.product.edit.domain.interactor.uploadproduct;
 
-import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
-import com.tokopedia.seller.product.edit.domain.model.ProductPhotoListDomainModel;
-import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 
@@ -24,7 +21,7 @@ public class MergeProductModelWithImage implements Func1<List<ProductPictureView
     }
     @Override
     public ProductViewModel call(List<ProductPictureViewModel> productPictureViewModels) {
-        productViewModel.setProductPicture(productPictureViewModels);
+        productViewModel.setProductPictureViewModelList(productPictureViewModels);
         return productViewModel;
     }
 

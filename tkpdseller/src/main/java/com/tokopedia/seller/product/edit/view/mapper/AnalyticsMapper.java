@@ -16,7 +16,7 @@ public class AnalyticsMapper {
 
     public static List<String> mapViewToAnalytic(ProductViewModel viewModel, int freeReturnActive, boolean isShare) {
         List<String> listOfFields = new ArrayList<>();
-        if(viewModel.getProductPicture().size() > 0){
+        if(viewModel.getProductPictureViewModelList().size() > 0){
             listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PICTURE);
         }
         if(viewModel.getProductWholesale()!= null && viewModel.getProductWholesale().size() >0 ){

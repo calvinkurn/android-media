@@ -84,7 +84,7 @@ import permissions.dispatcher.RuntimePermissions;
 import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE;
 
 @RuntimePermissions
-public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
+public abstract class BaseProductAddEditFragmentOld<T extends ProductAddPresenter>
         extends BaseDaggerFragment
         implements ProductAddView,
         ProductScoreViewHolder.Listener, ProductAdditionalInfoViewHolder.Listener,
@@ -238,18 +238,18 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
         dialogFragment.setOnImageAddListener(new ImageAddDialogFragment.OnImageAddListener() {
             @Override
             public void clickAddProductFromCamera(int position) {
-                BaseProductAddEditFragmentPermissionsDispatcher.goToCameraWithCheck(BaseProductAddEditFragment.this, imagePosition);
+                BaseProductAddEditFragmentPermissionsDispatcher.goToCameraWithCheck(BaseProductAddEditFragmentOld.this, imagePosition);
             }
 
             @Override
             public void clickAddProductFromGallery(int position) {
-                BaseProductAddEditFragmentPermissionsDispatcher.goToGalleryWithCheck(BaseProductAddEditFragment.this, imagePosition);
+                BaseProductAddEditFragmentPermissionsDispatcher.goToGalleryWithCheck(BaseProductAddEditFragmentOld.this, imagePosition);
             }
 
             @Override
             public void clickAddProductFromInstagram(int position) {
                 int remainingEmptySlot = productImageViewHolder.getImagesSelectView().getRemainingEmptySlot();
-                InstopedSellerCropWatermarkActivity.startInstopedActivityForResult(getContext(), BaseProductAddEditFragment.this,
+                InstopedSellerCropWatermarkActivity.startInstopedActivityForResult(getContext(), BaseProductAddEditFragmentOld.this,
                         INSTAGRAM_SELECT_REQUEST_CODE, remainingEmptySlot);
             }
         });
@@ -264,24 +264,24 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
 
             @Override
             public void clickEditImagePathFromCamera(int position) {
-                GalleryCropWatermarkActivity.moveToImageGalleryCamera(getActivity(), BaseProductAddEditFragment.this, position,
+                GalleryCropWatermarkActivity.moveToImageGalleryCamera(getActivity(), BaseProductAddEditFragmentOld.this, position,
                         true, 1,true);
             }
 
             @Override
             public void clickEditImagePathFromGallery(int position) {
-                GalleryCropWatermarkActivity.moveToImageGallery(getActivity(), BaseProductAddEditFragment.this, position, 1, true);
+                GalleryCropWatermarkActivity.moveToImageGallery(getActivity(), BaseProductAddEditFragmentOld.this, position, 1, true);
             }
 
             @Override
             public void clickEditImagePathFromInstagram(int position) {
-                InstopedSellerCropWatermarkActivity.startInstopedActivityForResult(getContext(), BaseProductAddEditFragment.this,
+                InstopedSellerCropWatermarkActivity.startInstopedActivityForResult(getContext(), BaseProductAddEditFragmentOld.this,
                         INSTAGRAM_SELECT_REQUEST_CODE, 1);
             }
 
             @Override
             public void clickImageEditor(int position) {
-                if (BaseProductAddEditFragment.this.isAddStatus()) {
+                if (BaseProductAddEditFragmentOld.this.isAddStatus()) {
                     UnifyTracking.eventClickImageInAddProduct(AppEventTracking.AddProduct.EVENT_ACTION_EDIT);
                 } else {
                     UnifyTracking.eventClickImageInEditProduct(AppEventTracking.AddProduct.EVENT_ACTION_EDIT);
@@ -305,7 +305,7 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
 
                     @Override
                     public void onDismiss() {
-                        BaseProductAddEditFragment.this.clearFocus();
+                        BaseProductAddEditFragmentOld.this.clearFocus();
                     }
                 });
             }
@@ -347,7 +347,7 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
         ArrayList<String> imageUrls = new ArrayList<>();
         imageUrls.add(uriOrPath);
         ImageEditorWatermarkActivity.start(getContext(),
-                BaseProductAddEditFragment.this, imageUrls,
+                BaseProductAddEditFragmentOld.this, imageUrls,
                 !isEdittingDraft());
     }
 

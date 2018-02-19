@@ -224,8 +224,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     public List<ProductVideoViewModel> getVideoList() {
         List<ProductVideoViewModel> productVideoViewModelList = new ArrayList<>();
         for(String videoId : getVideoIdList()) {
-            ProductVideoViewModel productVideoViewModel = new ProductVideoViewModel();
-            productVideoViewModel.setUrl(videoId);
+            ProductVideoViewModel productVideoViewModel = new ProductVideoViewModel(videoId);
             productVideoViewModelList.add(productVideoViewModel);
         }
         return productVideoViewModelList;

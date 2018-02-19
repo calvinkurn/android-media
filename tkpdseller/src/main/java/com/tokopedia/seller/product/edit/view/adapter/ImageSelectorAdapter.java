@@ -130,7 +130,7 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
             if (imageSelectModel.getWidth() != 0 && imageSelectModel.getHeight()!= 0) {
                 ImageHandler.loadImageFitCenter(holder.imageView.getContext(), holder.imageView,
                         imageSelectModel.getUriOrPath());
-            } else {
+            } else { // we want to load image, meanwhile also to know its width/height
                 ImageHandler.loadImageWithTarget(holder.imageView.getContext(), imageSelectModel.getUriOrPath(), new SimpleTarget<Bitmap>() {
                     @Override
                     public void onLoadStarted(Drawable placeholder) {

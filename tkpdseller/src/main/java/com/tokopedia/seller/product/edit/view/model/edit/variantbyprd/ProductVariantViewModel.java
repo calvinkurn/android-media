@@ -8,17 +8,11 @@ import com.tokopedia.seller.product.edit.view.model.edit.variantbyprd.variantcom
 import com.tokopedia.seller.product.edit.view.model.edit.variantbyprd.variantoption.ProductVariantOptionParent;
 
 public class ProductVariantViewModel {
-    @SerializedName("parent_id")
-    @Expose
-    private long parentId;
-
-    @SerializedName("default_child")
-    @Expose
-    private long defaultChild;
 
     @SerializedName("variant")
     @Expose
     private List<ProductVariantOptionParent> variantOptionParent = null;
+
     @SerializedName("product_variant")
     @Expose
     private List<ProductVariantCombinationViewModel> productVariant = null;

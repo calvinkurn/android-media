@@ -27,7 +27,7 @@ import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
-import com.tokopedia.seller.product.variant.data.cloud.api.TomeApi;
+import com.tokopedia.seller.product.variant.data.cloud.api.TomeProductApi;
 import com.tokopedia.seller.shop.common.data.source.ShopInfoDataSource;
 import com.tokopedia.seller.shop.common.data.source.cloud.api.ShopApi;
 import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoUseCase;
@@ -80,8 +80,8 @@ public class SellerDashboardModule {
 
     @SellerDashboardScope
     @Provides
-    TomeApi provideTomeApi(@TomeQualifier Retrofit retrofit) {
-        return retrofit.create(TomeApi.class);
+    TomeProductApi provideTomeApi(@TomeQualifier Retrofit retrofit) {
+        return retrofit.create(TomeProductApi.class);
     }
 
     @SellerDashboardScope

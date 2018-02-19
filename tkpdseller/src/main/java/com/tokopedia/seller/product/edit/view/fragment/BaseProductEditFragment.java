@@ -48,7 +48,7 @@ public abstract class BaseProductEditFragment<T extends ProductAddPresenter>
         if (model.getProductCatalog().getCatalogId() > 0) {
             productInfoViewHolder.setCatalog(model.getProductCatalog().getCatalogId(), model.getProductCatalog().getCatalogName());
         }
-        productImageViewHolder.setProductPhotos(model.getProductPicture());
+        productImageViewHolder.setProductPhotos(model.getProductPictureViewModelList());
 
         productDetailViewHolder.setPriceUnit((int)model.getProductPriceCurrency());
         if (model.getProductPrice()>0) {
@@ -89,8 +89,8 @@ public abstract class BaseProductEditFragment<T extends ProductAddPresenter>
         }
 
         //TODO hendry set variant view
-//        if (model.getSwitchVariant() == ProductVariantConstant.SWITCH_VARIANT_EXIST) {
-//            productAdditionalInfoViewHolder.setProductVariantDataSubmit(model.getProductVariantDataSubmit(),
+//        if (model.getProductVariant()!= null) {
+//            productAdditionalInfoViewHolder.setProductVariantDataSubmit(model.getProductVariant(),
 //                    model.getVariantStringSelection());
 //            productAdditionalInfoViewHolder.setOptionSubmitLv1(model.getProductVariantDataSubmit());
 //        }
