@@ -3490,24 +3490,6 @@ public class UnifyTracking extends TrackingUtils {
         ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
     }
 
-    public static void eventResoDetailClickSubmitInputAddressPage(String resolutionId) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
-                AppEventTracking.Category.RESOLUTION_CENTER,
-                AppEventTracking.Action.CLICK_SUBMIT_INPUT_ADDRESS_PAGE_DETAIL,
-                ""
-        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
-    }
-
-    public static void eventResoDetailClickCancelInputAddressPage(String resolutionId) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
-                AppEventTracking.Category.RESOLUTION_CENTER,
-                AppEventTracking.Action.CLICK_CANCEL_INPUT_ADDRESS_PAGE_DETAIL,
-                ""
-        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
-    }
-
     public static void eventResoDetailClickBackInputAddressPage(String resolutionId) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
@@ -3517,23 +3499,6 @@ public class UnifyTracking extends TrackingUtils {
         ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
     }
 
-    public static void eventResoDetailClickSubmitEditAddressPage(String resolutionId) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
-                AppEventTracking.Category.RESOLUTION_CENTER,
-                AppEventTracking.Action.CLICK_SUBMIT_EDIT_ADDRESS_PAGE_DETAIL,
-                ""
-        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
-    }
-
-    public static void eventResoDetailClickCancelEditAddressPage(String resolutionId) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
-                AppEventTracking.Category.RESOLUTION_CENTER,
-                AppEventTracking.Action.CLICK_CANCEL_EDIT_ADDRESS_PAGE_DETAIL,
-                ""
-        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
-    }
 
     public static void eventResoDetailClickBackEditAddressPage(String resolutionId) {
         sendGTMEvent(new EventTracking(
@@ -3544,7 +3509,356 @@ public class UnifyTracking extends TrackingUtils {
         ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
     }
 
+    public static void eventResoChatClickSolutionAppealDetailPage(String resolutionId, String solution) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER_CHAT,
+                AppEventTracking.Action.CLICK_SOLUTION_APPEAL_DETAIL_PAGE_CHAT,
+                solution
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
 
+    public static void eventResoChatClickSolutionEditDetailPage(String resolutionId, String solution) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER_CHAT,
+                AppEventTracking.Action.CLICK_SOLUTION_EDIT_DETAIL_PAGE_CHAT,
+                solution
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoChatImpressionSolutionAppealDetailPage(String resolutionId, String solution) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER_VIEW,
+                AppEventTracking.Category.RESOLUTION_CENTER_CHAT,
+                AppEventTracking.Action.IMPRESSION_SOLUTION_APPEAL_DETAIL_PAGE_CHAT,
+                solution
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoChatImpressionSolutionEditDetailPage(String resolutionId, String solution) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER_VIEW,
+                AppEventTracking.Category.RESOLUTION_CENTER_CHAT,
+                AppEventTracking.Action.IMPRESSION_SOLUTION_EDIT_DETAIL_PAGE_CHAT,
+                solution
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoChatCloseSolutionAppealDetailPage(String resolutionId, String solution) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER_CHAT,
+                AppEventTracking.Action.CLICK_CLOSE_APPEAL_DETAIL_PAGE_CHAT,
+                solution
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoChatCloseSolutionEditDetailPage(String resolutionId, String solution) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER_CHAT,
+                AppEventTracking.Action.CLICK_CLOSE_EDIT_DETAIL_PAGE_CHAT,
+                solution
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoChatClickDetail(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER_CHAT,
+                AppEventTracking.Action.CLICK_DETAIL_CHAT,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoDetailClickChatBox(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_BACK_ARROW_CHATBOX_DETAIL,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoDetailImpressionAcceptSolution(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER_VIEW,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.IMPRESSION_ACCEPT_SOLUTION,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoDetailImpressionFinishComplaint(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER_VIEW,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.IMPRESSION_FINISH_COMPLAINT,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoDetailImpressionRecomplaint(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER_VIEW,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.IMPRESSION_RECOMPLAINT,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoDetailImpressionCancelComplaint(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER_VIEW,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.IMPRESSION_CANCEL_COMPLAINT,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoDetailImpressionChangeSolution(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER_VIEW,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.IMPRESSION_CHANGE_SOLUTION,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoDetailImpressionAppealSolution(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER_VIEW,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.IMPRESSION_APPEAL,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoDetailImpressionAskHelp(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER_VIEW,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.IMPRESSION_ASK_HELP,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoDetailImpressionInputAddress(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER_VIEW,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.IMPRESSION_INPUT_ADDRESS,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoDetailImpressionInputAwb(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER_VIEW,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.IMPRESSION_INPUT_AWB,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoDetailClickAcceptSolution(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_ACCEPT_SOLUTION,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoDetailClickCancelComplaint(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_CANCEL_COMPLAINT,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoDetailClickEditSolution(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_CHANGE_SOLUTION,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoDetailClickAskHelp(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_ASK_HELP,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoDetailClickInputAddress(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_INPUT_ADDRESS,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoDetailClickInputAwb(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_INPUT_AWB,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoDetailClickRecomplaint(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_RECOMPLAINT,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoDetailClickFinish(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_FINISH_COMPLAINT,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoDetailClickAddAWB(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_ADD_NEW_AWB_DETAIL,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoDetailClickFreeReturn(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_RESO_FREE_RETURN_DETAIL,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoDetailClickCopyInvoice(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_RESO_COPY_INVOICE_DETAIL,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoDetailClickTrack(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_RESO_TRACK_DETAIL,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoDetailClickSeeAllResoHistory(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_RESO_SEE_RESO_HISTORY_DETAIL,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoDetailClickAskHelpButton(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_RESO_ASK_HELP_DETAIL,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoDetailClickAppealSolution(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_APPEAL,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoDetailClickNextAction(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_NEXT_ACTION,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoDetailClickAddressHistory(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_RESO_SEE_ADDRESS_HISTORY_DETAIL,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoDetailClickAWBHistory(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_RESO_SEE_AWB_HISTORY_DETAIL,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoDetailClickEditSolutionView(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_RESO_EDIT_SOLUTION_DETAIL,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoDetailClickBuyerName(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_RESO_BUYER_NAME_DETAIL,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoClickDetailBack(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_RESO_ARROW_BACK,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoClickDiscussion(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_RESO_DISCUSSION,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
 
 
     public static void eventClickChangePhoneNumber() {

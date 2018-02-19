@@ -147,7 +147,25 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
         }
 
         tilAmount.setHint(context.getResources().getString(R.string.string_money_amount_returned));
+        if (editAppealSolutionModel != null) {
+            if (editAppealSolutionModel.isEdit) {
+                if (editAppealSolutionModel.isChatReso) {
+                    UnifyTracking.eventResoChatImpressionSolutionEditDetailPage(
+                            editAppealSolutionModel.resolutionId,
+                            editAppealSolutionModel.getSolutionName());
+                } else {
 
+                }
+            } else {
+                if (editAppealSolutionModel.isChatReso) {
+                    UnifyTracking.eventResoChatImpressionSolutionAppealDetailPage(
+                            editAppealSolutionModel.resolutionId,
+                            editAppealSolutionModel.getSolutionName());
+                } else {
+
+                }
+            }
+        }
     }
 
     @Override
@@ -310,6 +328,25 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
 
     @Override
     public void submitData(ResultViewModel resultViewModel) {
+        if (editAppealSolutionModel != null) {
+            if (editAppealSolutionModel.isEdit) {
+                if (editAppealSolutionModel.isChatReso) {
+                    UnifyTracking.eventResoChatClickSolutionEditDetailPage(
+                            editAppealSolutionModel.resolutionId,
+                            editAppealSolutionModel.getSolutionName());
+                } else {
+
+                }
+            } else {
+                if (editAppealSolutionModel.isChatReso) {
+                    UnifyTracking.eventResoChatClickSolutionAppealDetailPage(
+                            editAppealSolutionModel.resolutionId,
+                            editAppealSolutionModel.getSolutionName());
+                } else {
+
+                }
+            }
+        }
         Intent output = new Intent();
         output.putExtra(RESULT_VIEW_MODEL_DATA, resultViewModel);
         getActivity().setResult(Activity.RESULT_OK, output);

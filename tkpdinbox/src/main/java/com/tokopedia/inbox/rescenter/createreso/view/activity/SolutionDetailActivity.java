@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.inbox.R;
@@ -98,5 +99,29 @@ public class SolutionDetailActivity extends
     @Override
     public Object getComponent() {
         return getApplicationComponent();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (editAppealSolutionModel != null) {
+            if (editAppealSolutionModel.isEdit) {
+                if (editAppealSolutionModel.isChatReso) {
+                    UnifyTracking.eventResoChatCloseSolutionEditDetailPage(
+                            editAppealSolutionModel.resolutionId,
+                            editAppealSolutionModel.getSolutionName());
+                } else {
+
+                }
+            } else {
+                if (editAppealSolutionModel.isChatReso) {
+                    UnifyTracking.eventResoChatCloseSolutionAppealDetailPage(
+                            editAppealSolutionModel.resolutionId,
+                            editAppealSolutionModel.getSolutionName());
+                } else {
+
+                }
+            }
+        }
+        super.onBackPressed();
     }
 }

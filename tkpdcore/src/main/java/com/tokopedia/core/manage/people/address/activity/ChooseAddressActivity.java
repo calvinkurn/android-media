@@ -37,10 +37,10 @@ public class ChooseAddressActivity extends BasePresenterActivity {
         return new Intent(context, ChooseAddressActivity.class);
     }
 
-    public static Intent createResolutionInstance(Context context, String resolutionId, boolean isResolution, boolean isResoChat, boolean isEditAddress) {
+    public static Intent createResolutionInstance(Context context, String resolutionId, boolean isResoChat, boolean isEditAddress) {
         Intent intent = createInstance(context);
         intent.putExtra(RESOLUTION_ID, resolutionId);
-        intent.putExtra(IS_RESOLUTION, isResolution);
+        intent.putExtra(IS_RESOLUTION, true);
         intent.putExtra(IS_RESO_CHAT, isResoChat);
         intent.putExtra(IS_EDIT_ADDRESS, isEditAddress);
         return new Intent(context, ChooseAddressActivity.class);

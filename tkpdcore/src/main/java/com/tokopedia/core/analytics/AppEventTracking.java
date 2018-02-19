@@ -457,6 +457,7 @@ public interface AppEventTracking {
         String CLICK_CREATE_RESO = "click buat komplain";
         String CLICK_CREATE_RESO_ABANDON = "click abandon";
 
+        String IMPRESSION_FINISH_COMPLAINT = "impression selesaikan komplain";
         String IMPRESSION_ACCEPT_SOLUTION = "impression terima solusi";
         String IMPRESSION_CANCEL_COMPLAINT = "impression batalkan komplain";
         String IMPRESSION_CHANGE_SOLUTION = "impression ubah solusi";
@@ -470,13 +471,18 @@ public interface AppEventTracking {
         String IMPRESSION_SAVE_EDIT_AWB_CHAT = "impression from edit resi";
         String IMPRESSION_ACCEPT_SOLUTION_DIALOG_CHAT = "impression from terima solusi";
         String IMPRESSION_CANCEL_COMPLAINT_DIALOG_CHAT = "impression from batalkan komplain";
+        String IMPRESSION_SOLUTION_APPEAL_DETAIL_PAGE_CHAT = "impression solusi detail naik banding";
+        String IMPRESSION_SOLUTION_EDIT_DETAIL_PAGE_CHAT = "impression solusi detail ubah solusi";
 
         String CLICK_ACCEPT_SOLUTION = "click terima solusi";
         String CLICK_CANCEL_COMPLAINT = "click batalkan komplain";
-        String CLICK_CHANGE_SOLUTION = "click batalkan solusi";
+        String CLICK_CHANGE_SOLUTION = "click ubah solusi";
         String CLICK_ASK_HELP = "click minta bantuan";
         String CLICK_APPEAL = "click naik banding";
         String CLICK_INPUT_ADDRESS = "click masukkan alamat";
+        String CLICK_INPUT_AWB = "click masukkan no resi";
+        String CLICK_RECOMPLAINT = "click komplain ulang";
+        String CLICK_FINISH_COMPLAINT = "click selesaikan komplain";
         String CLICK_GREEN_ARROW = "click green arrow next conversation";
         String CLICK_NEXT_ACTION = "click drop down langkah selanjutnya";
         String CLICK_PRODUCT_CHAT = "click produk yang dikomplain on chatbox";
@@ -491,6 +497,10 @@ public interface AppEventTracking {
         String CLICK_SOLUTION_APPEAL_PAGE_CHAT = "click solusi naik banding";
         String CLICK_CLOSE_EDIT_PAGE_CHAT = "click x from ubah solusi";
         String CLICK_SOLUTION_EDIT_PAGE_CHAT = "click solusi ubah solusi";
+        String CLICK_SOLUTION_APPEAL_DETAIL_PAGE_CHAT = "click solusi detail naik banding";
+        String CLICK_SOLUTION_EDIT_DETAIL_PAGE_CHAT = "click solusi detail ubah solusi";
+        String CLICK_CLOSE_APPEAL_DETAIL_PAGE_CHAT = "click x solusi detail naik banding";
+        String CLICK_CLOSE_EDIT_DETAIL_PAGE_CHAT = "click x solusi detail ubah solusi";
         String CLICK_ACCEPT_SOLUTION_YES_DIALOG_CHAT = "click ya from terima solusi";
         String CLICK_ACCEPT_SOLUTION_BACK_DIALOG_CHAT = "click kembali from terima solusi";
         String CLICK_CANCEL_COMPLAINT_YES_DIALOG_CHAT = "click ya from batalkan komplain";
@@ -501,6 +511,20 @@ public interface AppEventTracking {
         String CLICK_SUBMIT_EDIT_ADDRESS_PAGE_DETAIL = "click submit from ubah alamat";
         String CLICK_CANCEL_EDIT_ADDRESS_PAGE_DETAIL = "click cancel from ubah alamat";
         String CLICK_BACK_EDIT_ADDRESS_PAGE_DETAIL = "click back arrow from ubah alamat";
+        String CLICK_DETAIL_CHAT = "click detail";
+        String CLICK_BACK_ARROW_CHATBOX_DETAIL = "click back arrow from chatbox";
+        String CLICK_ADD_NEW_AWB_DETAIL = "click tambah on detail";
+        String CLICK_RESO_FREE_RETURN_DETAIL = "click disini on detail";
+        String CLICK_RESO_COPY_INVOICE_DETAIL = "click invoice on detail";
+        String CLICK_RESO_TRACK_DETAIL = "click lacak on detail";
+        String CLICK_RESO_SEE_RESO_HISTORY_DETAIL = "click lihat selengakpnya on detail";
+        String CLICK_RESO_ASK_HELP_DETAIL = "click minta bantuan on detail";
+        String CLICK_RESO_SEE_ADDRESS_HISTORY_DETAIL = "click lihat riwayat alamat pengembalian on detail";
+        String CLICK_RESO_SEE_AWB_HISTORY_DETAIL = "click lihat riwayat no resi on detail";
+        String CLICK_RESO_EDIT_SOLUTION_DETAIL = "click ubah on detail";
+        String CLICK_RESO_BUYER_NAME_DETAIL = "click nama pembeli on detail";
+        String CLICK_RESO_ARROW_BACK = "click arrow back";
+        String CLICK_RESO_DISCUSSION = "click diskusi";
 
 
         String CLICK_CHANGE_PHONE_NUMBER = "click on ubah";

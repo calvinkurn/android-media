@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.customView.TextDrawable;
@@ -188,6 +189,7 @@ public class DetailResChatActivity
                 intent = DetailResCenterActivity.newBuyerInstance(DetailResChatActivity.this, resolutionId, shopName);
             }
             startActivityForResult(intent, REQUEST_GO_DETAIL);
+            UnifyTracking.eventResoChatClickDetail(resolutionId);
             return true;
         } else
             return super.onOptionsItemSelected(item);

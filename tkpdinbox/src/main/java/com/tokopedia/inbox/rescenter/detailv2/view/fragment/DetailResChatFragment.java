@@ -929,7 +929,7 @@ public class DetailResChatFragment
 
     public Intent getChooseAddressIntent(boolean isEditAddress) {
         return ChooseAddressActivity.createResolutionInstance(
-                getActivity(), resolutionId, true, true, isEditAddress);
+                getActivity(), resolutionId, true, isEditAddress);
     }
 
     private Intent getIntentEditResCenter() {
