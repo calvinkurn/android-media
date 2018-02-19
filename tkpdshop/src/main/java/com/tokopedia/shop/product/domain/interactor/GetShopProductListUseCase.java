@@ -3,6 +3,7 @@ package com.tokopedia.shop.product.domain.interactor;
 import android.view.View;
 
 import com.tokopedia.interfaces.merchant.shop.info.ShopInfo;
+import com.tokopedia.shop.common.constant.ShopStatusDef;
 import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.shop.info.domain.repository.ShopInfoRepository;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductList;
@@ -43,13 +44,13 @@ public class GetShopProductListUseCase extends UseCase<ShopProductList> {
             public Observable<ShopProductList> call(ShopInfo shopInfo) {
                 String baseUrl = ShopUrl.BASE_ACE_URL+"/";
                 switch ((int) shopInfo.getInfo().getShopStatus()){
-                    case 2:
+                    case ShopStatusDef.CLOSED:
                         baseUrl = ShopUrl.BASE_URL+"/";
                         break;
-                    case 0:
-                    case 3:
-                    case 4:
-                    case 5:
+                    case ShopStatusDef.DELETED:
+                    case ShopStatusDef.MODERATED:
+                    case ShopStatusDef.NOT_ACTIVE:
+                    case ShopStatusDef.MODERATED_PERMANENTLY:
                         break;
                 }
                 return shopNoteRepository.getShopProductList(baseUrl, shopProductRequestModel);
