@@ -21,6 +21,22 @@ query HomeFeedQuery($userID: Int!, $limit: Int!, $cursor: String) {
             }
             content {
               type
+              topads {
+                id
+                ad_ref_key
+                redirect
+                sticker_id
+                sticker_image
+                product_click_url
+                shop_click_url
+                  product {
+                    id
+                  }
+                  shop {
+                    id
+                  }
+                applinks
+              }
               inspirasi {
                 experiment_version
                 source
