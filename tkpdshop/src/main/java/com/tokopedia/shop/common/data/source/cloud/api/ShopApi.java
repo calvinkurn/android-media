@@ -14,6 +14,7 @@ import retrofit2.Response;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
+import retrofit2.http.Url;
 import rx.Observable;
 
 /**
@@ -36,4 +37,7 @@ public interface ShopApi {
 
     @GET(ShopUrl.SHOP_PRODUCT_PATH)
     Observable<Response<DataResponse<ShopProductList>>> getShopProductList(@QueryMap Map<String, String> params);
+
+    @GET
+    Observable<Response<DataResponse<ShopProductList>>> getShopProductList(@Url String url, @QueryMap Map<String, String> params);
 }

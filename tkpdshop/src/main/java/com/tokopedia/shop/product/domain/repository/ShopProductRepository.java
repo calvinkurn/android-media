@@ -11,5 +11,8 @@ import rx.Observable;
 
 public interface ShopProductRepository {
 
+    @Deprecated
     Observable<ShopProductList> getShopProductList(ShopProductRequestModel shopProductRequestModel);
+
+    Observable<ShopProductList> getShopProductList(String baseUrl, ShopProductRequestModel shopProductRequestModel);
 }
