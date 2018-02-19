@@ -438,11 +438,11 @@ public class OrderDetailActivity extends TActivity
         if(getExtraUserMode() == SELLER_MODE) {
             id = orderData.getBuyerId();
             name = orderData.getBuyerName();
-            logoUrl = orderData.getShopLogo();
+            logoUrl = orderData.getBuyerLogo();
         } else {
             id = orderData.getShopId();
             name = orderData.getShopName();
-            logoUrl = orderData.getBuyerLogo();
+            logoUrl = orderData.getShopLogo();
         }
         Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
                 .getAskBuyerIntent(this,
