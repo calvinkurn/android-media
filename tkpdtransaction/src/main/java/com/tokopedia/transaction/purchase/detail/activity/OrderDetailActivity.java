@@ -437,7 +437,7 @@ public class OrderDetailActivity extends TActivity
         String logoUrl;
         if(getExtraUserMode() == SELLER_MODE) {
             id = orderData.getBuyerId();
-            name = orderData.getBuyerName();
+            name = orderData.getBuyerUserName();
             logoUrl = orderData.getBuyerLogo();
         } else {
             id = orderData.getShopId();
