@@ -111,7 +111,7 @@ public class HotListAdapter extends BaseRecyclerViewAdapter {
                                                         "id", model.getHotListId(),
                                                         "name", model.getTrackerEnhanceName(),
                                                         "creative", model.getHotListName(),
-                                                        "position", model.getTrackerEnhancePosition()
+                                                        "position", String.valueOf(model.getTrackerEnhancePosition())
                                                 )
                                         )
                                 )
