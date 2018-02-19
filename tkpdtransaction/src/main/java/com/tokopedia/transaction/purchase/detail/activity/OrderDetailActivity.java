@@ -777,8 +777,6 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onAcceptPartialOrderCreated(String orderId, String remark, String param) {
         presenter.partialOrder(this, orderId, remark, param);
-        setResult(Activity.RESULT_OK);
-        finish();
     }
 
     @Override
