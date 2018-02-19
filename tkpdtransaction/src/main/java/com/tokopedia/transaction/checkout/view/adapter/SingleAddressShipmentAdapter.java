@@ -9,6 +9,7 @@ import android.graphics.ColorMatrixColorFilter;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -148,6 +149,10 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
         void onEditPickupPoint(ShipmentRecipientModel addressAdapterData);
 
+        void onTotalPaymentUpdate(String priceFormat);
+
+        void onRecyclerViewReachBottom();
+
     }
 
     public void setPickupPoint(Store store) {
@@ -172,7 +177,11 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
     private String getTotalWeightFormat(double totalWeight, int weightUnit) {
         String unit = weightUnit == 0 ? "Kg" : "gr";
-        return String.format("Ongkos Kirim (%s %s)", (int) totalWeight, unit);
+        return String.format("%s %s", (int) totalWeight, unit);
+    }
+
+    private String getLabelShipmentFeeWeight(double totalWeight, int weightUnit) {
+        return String.format("Ongkos Kirim (%s)", getTotalWeightFormat(totalWeight, weightUnit));
     }
 
     private int getResourceDrawerChevron(boolean isExpanded) {
@@ -267,7 +276,6 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
                 pickupPointLayout.setData(pickupPointLayout.getContext(), data.getStore());
             }
 
-            pickupPointLayout.setVisibility(View.VISIBLE);
         }
 
         private View.OnClickListener addOrChangeAddressListener(final ShipmentRecipientModel model) {
@@ -328,11 +336,12 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             mIsExpanded = false;
 
             mTvTotalItem.setText(getTotalItemFormat(model.getTotalItem()));
-            mTvTotalItemPrice.setText(CURRENCY_IDR.format(model.getTotalPrice()));
-            mTvShippingFee.setText(getTotalWeightFormat(model.getTotalWeight(), 0));
-            mTvShippingFeePrice.setText(CURRENCY_IDR.format(model.getShippingFee()));
-            mTvInsuranceFeePrice.setText(CURRENCY_IDR.format(model.getInsuranceFee()));
-            mTvPromoPrice.setText(CURRENCY_IDR.format(model.getPromoPrice()));
+            mTvTotalItemPrice.setText(getPriceFormat(model.getTotalPrice()));
+            mTvShippingFee.setText(getLabelShipmentFeeWeight(model.getTotalWeight(), 0));
+            mTvShippingFeePrice.setText(getPriceFormat(model.getShippingFee()));
+            mTvInsuranceFeePrice.setText(getPriceFormat(model.getInsuranceFee()));
+            mTvPromoPrice.setText(getPriceFormat(model.getPromoPrice()));
+            mTvPayablePrice.setText(getPriceFormat(model.getTotalPrice()));
         }
 
         private void toggleDetail() {
@@ -434,6 +443,8 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         TextView tvLabelItemCount;
         @BindView(R2.id.tv_label_note_to_seller)
         TextView tvLabelNoteToSeller;
+        @BindView(R2.id.ll_note_to_seller)
+        LinearLayout mLlNoteToSellerLayout;
 
         private boolean mIsExpandAllProduct;
         private boolean mIsExpandCostDetail;
@@ -457,8 +468,21 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             mTvSelectedShipment.setText(getCourierName(model.getCourierItemData()));
             mTvSubTotalPrice.setText(getPriceFormat(model.getTotalPrice()));
 
-            mTvTotalItem.setText(String.valueOf(model.getTotalQuantity()));
-            mTvShippingFee.setText(getTotalWeightFormat(model.getTotalWeight(), model.getWeightUnit()));
+            mRlDetailShipmentFeeContainer.setVisibility(mIsExpandCostDetail ? View.VISIBLE : View.GONE);
+
+            String insuranceFee ="-";
+            String shippingFee = "-";
+
+            if (model.getCourierItemData() != null) {
+                insuranceFee = model.getCourierItemData().getInsurancePrice();
+                shippingFee = model.getCourierItemData().getDeliveryPrice();
+            }
+
+            mTvShippingFeePrice.setText(shippingFee);
+            mTvInsuranceFeePrice.setText(insuranceFee);
+
+            mTvTotalItem.setText(getTotalItemFormat(model.getTotalQuantity()));
+            mTvShippingFee.setText(getLabelShipmentFeeWeight(model.getTotalWeight(), model.getWeightUnit()));
 
             mTvTotalItemPrice.setText(getPriceFormat(model.getTotalPrice()));
 
@@ -468,7 +492,6 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             mTvProductWeight.setText(getTotalWeightFormat(firstItem.getWeight(),
                     firstItem.getWeightUnit()));
             mTvTotalProductItem.setText(String.valueOf(firstItem.getQuantity()));
-            mTvOptionalNote.setText(firstItem.getNoteToSeller());
 
             mRlExpandOtherProductContainer.setVisibility(cartItemModels.isEmpty() ?
                     View.GONE : View.VISIBLE);
@@ -507,6 +530,11 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 //                // Test show general warning
 //                showRedWarning("Toko sedang tutup sementara, pesanan dapat di proses setelah toko buka kembali");
 //            }
+
+            boolean isEmptyNotes = TextUtils.isEmpty(firstItem.getNoteToSeller());
+
+            mLlNoteToSellerLayout.setVisibility(isEmptyNotes ? View.GONE : View.VISIBLE);
+            mTvOptionalNote.setText(firstItem.getNoteToSeller());
 
         }
 

@@ -75,122 +75,115 @@
                 tools:ignore="ContentDescription"
                 tools:src="@drawable/ic_tokocash_icon"/>
 
-            <TextView
-                android:id="@+id/tv_product_name"
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/iv_image_product"
                 android:layout_toRightOf="@id/iv_image_product"
                 android:paddingLeft="@dimen/padding_ms"
                 android:paddingStart="@dimen/padding_ms"
-                android:paddingRight="@dimen/padding_ms"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                android:lineSpacingMultiplier="1.4"
-                tools:text="Tas organizer sepeda double container"/>
-
-            <TextView
-                android:id="@+id/tv_product_price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tv_product_name"
-                android:layout_toEndOf="@id/iv_image_product"
-                android:layout_toRightOf="@id/iv_image_product"
-                android:layout_marginTop="4dp"
-                android:paddingLeft="@dimen/padding_ms"
-                android:paddingStart="@dimen/padding_ms"
-                android:paddingRight="@dimen/padding_ms"
-                android:textColor="@color/orange_red"
-                android:textSize="14sp"
-                tools:text="Rp 200.000"/>
-
-            <LinearLayout
-                android:id="@+id/product_properties"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/iv_image_product"
-                android:layout_toRightOf="@id/iv_image_product"
-                android:layout_below="@id/tv_product_price"
-                android:paddingLeft="@dimen/padding_ms"
-                android:paddingStart="@dimen/padding_ms"
-                android:paddingTop="@dimen/padding_ms"
                 android:paddingRight="@dimen/padding_ms">
 
                 <TextView
-                    android:id="@+id/tv_info_free_return"
+                    android:id="@+id/tv_product_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_badge_free_return"
-                    android:drawablePadding="@dimen/padding_vvs"
-                    android:drawableStart="@drawable/ic_badge_free_return"
-                    android:fontFamily="sans-serif"
-                    android:paddingEnd="8dp"
-                    android:paddingLeft="0dp"
-                    android:paddingRight="8dp"
-                    android:paddingStart="0dp"
-                    android:text="Free Returns"
-                    android:textSize="12sp"
-                    android:textStyle="normal" />
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    tools:text="Tas organizer sepeda double container" />
 
                 <TextView
-                    android:id="@+id/tv_info_preorder"
+                    android:id="@+id/tv_product_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
-                    android:background="@drawable/btn_cancel"
-                    android:fontFamily="sans-serif"
-                    android:padding="2dp"
-                    android:textSize="10sp"
-                    android:textStyle="normal"
-                    android:text="PO" />
+                    android:layout_below="@id/tv_product_name"
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/orange_red"
+                    android:textSize="14sp"
+                    tools:text="Rp 200.000" />
 
-                <TextView
-                    android:id="@+id/tv_info_cashback"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/product_properties"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/green_button"
-                    android:fontFamily="sans-serif"
-                    android:padding="2dp"
-                    android:paddingEnd="5dp"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-                    android:paddingStart="5dp"
-                    android:textColor="@color/white"
-                    android:textSize="10sp"
-                    android:textStyle="normal"
-                    android:text="Cashback 5%" />
+                    android:layout_below="@id/tv_product_price"
+                    android:layout_marginTop="4dp">
 
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/tv_info_free_return"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/ic_badge_free_return"
+                        android:drawablePadding="@dimen/padding_vvs"
+                        android:drawableStart="@drawable/ic_badge_free_return"
+                        android:fontFamily="sans-serif"
+                        android:paddingEnd="8dp"
+                        android:paddingLeft="0dp"
+                        android:paddingRight="8dp"
+                        android:paddingStart="0dp"
+                        android:text="Free Returns"
+                        android:textSize="12sp"
+                        android:textStyle="normal" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="@dimen/padding_ms"
-                android:layout_below="@id/product_properties"
-                android:layout_toRightOf="@id/iv_image_product"
-                android:layout_toEndOf="@id/iv_image_product">
+                    <TextView
+                        android:id="@+id/tv_info_preorder"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:background="@drawable/btn_cancel"
+                        android:fontFamily="sans-serif"
+                        android:padding="2dp"
+                        android:textSize="10sp"
+                        android:textStyle="normal"
+                        android:text="PO" />
 
-                <TextView
-                    android:layout_width="wrap_content"
+                    <TextView
+                        android:id="@+id/tv_info_cashback"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/green_button"
+                        android:fontFamily="sans-serif"
+                        android:padding="2dp"
+                        android:paddingEnd="5dp"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:paddingStart="5dp"
+                        android:textColor="@color/white"
+                        android:textSize="10sp"
+                        android:textStyle="normal"
+                        android:text="Cashback 5%" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif"
-                    android:text="Berat : "
-                    android:textSize="12sp"
-                    android:textColor="@color/black_38"
-                    android:textStyle="normal" />
+                    android:orientation="horizontal"
+                    android:layout_below="@id/product_properties"
+                    android:layout_marginTop="4dp">
 
-                <TextView
-                    android:id="@+id/tv_product_weight"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif"
-                    android:textColor="@color/black_70"
-                    android:textSize="12sp"
-                    android:textStyle="normal"
-                    tools:text="3kg" />
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:text="Berat : "
+                        android:textSize="12sp"
+                        android:textColor="@color/black_38"
+                        android:textStyle="normal" />
+
+                    <TextView
+                        android:id="@+id/tv_product_weight"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:textColor="@color/black_70"
+                        android:textSize="12sp"
+                        android:textStyle="normal"
+                        tools:text="3kg" />
+                </LinearLayout>
+
+            </RelativeLayout>
 
         </RelativeLayout>
 

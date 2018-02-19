@@ -213,27 +213,35 @@
 
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/tv_label_note_to_seller"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:fontFamily="sans-serif"
-        android:text="Catatan untuk penjual (Opsional)"
-        android:textColor="@color/black_38"
-        android:textSize="12sp"
-        android:textStyle="normal" />
-
-    <TextView
-        android:id="@+id/tv_optional_note_to_seller"
+    <LinearLayout
+        android:id="@+id/ll_note_to_seller"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:fontFamily="sans-serif"
-        android:textColor="@color/black_70"
-        android:textSize="12sp"
-        android:textStyle="normal"
-        tools:text="Saya pesan warna merah yah min.. jangan sampai salah kirim barangnya gan!" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_label_note_to_seller"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="sans-serif"
+            android:text="Catatan untuk penjual (Opsional)"
+            android:textColor="@color/black_38"
+            android:textSize="12sp"
+            android:textStyle="normal" />
+
+        <TextView
+            android:id="@+id/tv_optional_note_to_seller"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/black_70"
+            android:textSize="12sp"
+            android:textStyle="normal"
+            tools:text="Saya pesan warna merah yah min.. jangan sampai salah kirim barangnya gan!" />
+
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"

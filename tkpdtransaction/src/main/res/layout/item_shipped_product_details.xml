@@ -64,7 +64,10 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:orientation="horizontal"
-        android:padding="16dp">
+        android:paddingTop="16dp"
+        android:paddingLeft="16dp"
+        android:paddingStart="16dp"
+        android:paddingRight="16dp">
 
         <TextView
             android:id="@+id/tv_expand_other_product"
@@ -72,18 +75,21 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
+            android:layout_marginTop="16dp"
             android:fontFamily="sans-serif-medium"
             android:textColor="@color/medium_green"
             android:textSize="12sp"
             android:textStyle="normal"
             tools:text="+3 Produk Lainnya" />
 
-    </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="4dp"
+            android:layout_below="@id/tv_expand_other_product"
+            android:background="#e0e0e0" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="#e0e0e0" />
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/ll_shipment_option_view_layout"
@@ -222,7 +228,7 @@
                 android:layout_marginBottom="18dp"
                 android:fontFamily="sans-serif"
                 android:textColor="@color/black_70"
-                android:text="Jumlah Barang (1 Item)"
+                tools:text="Jumlah Barang (1 Item)"
                 android:textSize="12sp"
                 android:textStyle="normal" />
 
@@ -236,7 +242,7 @@
                 android:layout_toRightOf="@id/tv_total_item"
                 android:fontFamily="sans-serif"
                 android:gravity="end"
-                android:text="Rp1.400.000"
+                tools:text="Rp1.400.000"
                 android:textColor="@color/black_70"
                 android:textSize="14sp"
                 android:textStyle="normal" />
@@ -248,7 +254,7 @@
                 android:layout_below="@id/tv_total_item"
                 android:layout_marginBottom="18dp"
                 android:fontFamily="sans-serif"
-                android:text="Ongkos Kirim (1kg)"
+                tools:text="Ongkos Kirim (1kg)"
                 android:textColor="@color/black_70"
                 android:textSize="12sp"
                 android:textStyle="normal" />
@@ -262,7 +268,7 @@
                 android:layout_below="@id/tv_total_item"
                 android:fontFamily="sans-serif"
                 android:gravity="end"
-                android:text="Rp10.000"
+                tools:text="Rp10.000"
                 android:textColor="@color/black_70"
                 android:textSize="14sp"
                 android:textStyle="normal" />
@@ -287,7 +293,7 @@
                 android:layout_below="@id/tv_shipping_fee"
                 android:fontFamily="sans-serif"
                 android:gravity="end"
-                android:text="-"
+                tools:text="-"
                 android:textColor="@color/black_70"
                 android:textSize="14sp"
                 android:textStyle="normal" />
@@ -312,7 +318,7 @@
                 android:layout_below="@id/tv_insurance_fee"
                 android:fontFamily="sans-serif"
                 android:gravity="end"
-                android:text="Rp100.000"
+                tools:text="Rp100.000"
                 android:textSize="14sp"
                 android:textStyle="normal"
                 android:visibility="gone" />

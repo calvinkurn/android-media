@@ -2,10 +2,12 @@ package com.tokopedia.transaction.checkout.view.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -53,7 +55,7 @@ public class InnerProductListAdapter
         ImageHandler.LoadImage(holder.mIvProductImage, cartItemModel.getImageUrl());
         holder.mTvProductName.setText(cartItemModel.getName());
         holder.mTvProductPrice.setText(CURRENCY_RUPIAH.format(cartItemModel.getPrice()));
-        holder.mTvProductWeight.setText(getWeightFormat(cartItemModel.getWeight(),
+        holder.mTvProductWeight.setText(getTotalWeightFormat(cartItemModel.getWeight(),
                 cartItemModel.getWeightUnit()));
         holder.mTvTotalProductItem.setText(String.valueOf(cartItemModel.getQuantity()));
         holder.mTvOptionalNote.setText(cartItemModel.getNoteToSeller());
@@ -67,6 +69,11 @@ public class InnerProductListAdapter
         holder.mTvPoSign.setVisibility(cartItemModel.isPreOrder() ? View.VISIBLE : View.GONE);
         holder.mTvCashback.setVisibility(cartItemModel.isCashback() ? View.VISIBLE : View.GONE);
         holder.mTvCashback.setText(cartItemModel.getCashback());
+
+        boolean isEmptyNotes = TextUtils.isEmpty(cartItemModel.getNoteToSeller());
+
+        holder.mLlNoteToSellerLayout.setVisibility(isEmptyNotes ? View.GONE : View.VISIBLE);
+        holder.mTvOptionalNote.setText(cartItemModel.getNoteToSeller());
     }
 
     @Override
@@ -74,9 +81,9 @@ public class InnerProductListAdapter
         return mProductList.size();
     }
 
-    private String getWeightFormat(double totalWeight, int weightUnit) {
+    private String getTotalWeightFormat(double totalWeight, int weightUnit) {
         String unit = weightUnit == 0 ? "Kg" : "g";
-        return String.format("Ongkos Kirim (%s %s)", (int) totalWeight, unit);
+        return String.format("%s %s", (int) totalWeight, unit);
     }
 
     private int getPoliciesVisibility(boolean isCashback,
@@ -100,6 +107,7 @@ public class InnerProductListAdapter
         @BindView(R2.id.tv_free_return_text) TextView mTvFreeReturnText;
         @BindView(R2.id.tv_po_sign) TextView mTvPoSign;
         @BindView(R2.id.tv_cashback_text) TextView mTvCashback;
+        @BindView(R2.id.ll_note_to_seller) LinearLayout mLlNoteToSellerLayout;
 
         CartItemViewHolder(View view) {
             super(view);
