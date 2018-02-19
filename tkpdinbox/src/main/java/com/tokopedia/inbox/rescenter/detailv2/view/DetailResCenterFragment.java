@@ -542,9 +542,14 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionInputAddressClick() {
-        Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
+        Intent intent = getChooseAddressIntent(false);
         intent.putExtra("resolution_center", true);
         startActivityForResult(intent, REQUEST_CHOOSE_ADDRESS_MIGRATE_VERSION);
+    }
+
+    public Intent getChooseAddressIntent(boolean isEditAddress) {
+        return ChooseAddressActivity.createResolutionInstance(
+                getActivity(), getResolutionID(), true, false, isEditAddress);
     }
 
     @Override
@@ -554,7 +559,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
                     @Override
                     public void onSubmitButtonClick() {
                         if (getViewData().getButtonData().isAcceptReturSolution()) {
-                            Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
+                            Intent intent = getChooseAddressIntent(false);
                             intent.putExtra("resolution_center", true);
                             startActivityForResult(intent, REQUEST_CHOOSE_ADDRESS_ACCEPT_ADMIN_SOLUTION);
                         } else {
@@ -660,7 +665,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionEditAddressClick() {
-        Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
+        Intent intent = getChooseAddressIntent(true);
         intent.putExtra("resolution_center", true);
         startActivityForResult(intent, REQUEST_EDIT_ADDRESS);
     }

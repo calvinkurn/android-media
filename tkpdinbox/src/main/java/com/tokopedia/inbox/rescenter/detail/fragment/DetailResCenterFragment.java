@@ -461,31 +461,31 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
         if (apiModelData.getDetail().getResolutionBy().getByCustomer() == 1) {
 //            return EditResCenterActivity.newBuyerInstance(getActivity(), passData, apiModelData);
             return SolutionListActivity.newBuyerEditInstance(getActivity(),
-                    passData.getResCenterId(), false);
+                    passData.getResCenterId());
         } else {
 //            return EditResCenterActivity.newSellerInstance(getActivity(), passData, apiModelData);
             return SolutionListActivity.newSellerEditInstance(getActivity(),
-                    passData.getResCenterId(), false);
+                    passData.getResCenterId());
         }
     }
 
     @Override
     public void openInputAddress() {
-        Intent intent = getChooseAddressIntent(false);
+        Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
         intent.putExtra("resolution_center", true);
         startActivityForResult(intent, CHOOSE_ADDRESS);
     }
 
     @Override
     public void openInputAddressForAcceptAdmin() {
-        Intent intent = getChooseAddressIntent(false);
+        Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
         intent.putExtra("resolution_center", true);
         startActivityForResult(intent, CHOOSE_ADDRESS_ACCEPT_ADMIN_SOLUTION);
     }
 
     @Override
     public void openInputAddressMigrateVersion() {
-        Intent intent = getChooseAddressIntent(false);
+        Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
         intent.putExtra("resolution_center", true);
         startActivityForResult(intent, CHOOSE_ADDRESS_MIGRATE_VERSION);
     }
@@ -493,15 +493,11 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     @Override
     public void openEditAddress(String url) {
         this.ahrefEditAddressURL = url;
-        Intent intent = getChooseAddressIntent(true);
+        Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
         intent.putExtra("resolution_center", true);
         startActivityForResult(intent, EDIT_ADDRESS);
     }
 
-    public Intent getChooseAddressIntent(boolean isEditAddress) {
-        return ChooseAddressActivity.createResolutionInstance(
-                getActivity(), getResolutionID(), true, false, isEditAddress);
-    }
     @Override
     public void openAttachment(String url) {
         ArrayList<String> imageUrls = new ArrayList<>();

@@ -916,15 +916,20 @@ public class DetailResChatFragment
     }
 
     private void doInputAddress() {
-        Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
+        Intent intent = getChooseAddressIntent(false);
         intent.putExtra("resolution_center", true);
         startActivityForResult(intent, REQUEST_CHOOSE_ADDRESS);
     }
 
     private void doEditAddress() {
-        Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
+        Intent intent = getChooseAddressIntent(true);
         intent.putExtra("resolution_center", true);
         startActivityForResult(intent, REQUEST_EDIT_ADDRESS);
+    }
+
+    public Intent getChooseAddressIntent(boolean isEditAddress) {
+        return ChooseAddressActivity.createResolutionInstance(
+                getActivity(), resolutionId, true, true, isEditAddress);
     }
 
     private Intent getIntentEditResCenter() {
