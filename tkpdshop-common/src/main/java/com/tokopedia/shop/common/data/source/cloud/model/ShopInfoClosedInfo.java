@@ -8,35 +8,35 @@ public class ShopInfoClosedInfo {
 
     @SerializedName("note")
     @Expose
-    private long note;
+    private String note;
     @SerializedName("reason")
     @Expose
-    private long reason;
+    private String reason;
     @SerializedName("until")
     @Expose
-    private long until;
+    private String until;
 
-    public long getNote() {
+    public String getNote() {
         return note;
     }
 
-    public void setNote(long note) {
+    public void setNote(String note) {
         this.note = note;
     }
 
-    public long getReason() {
+    public String getReason() {
         return reason;
     }
 
-    public void setReason(long reason) {
+    public void setReason(String reason) {
         this.reason = reason;
     }
 
-    public long getUntil() {
+    public String getUntil() {
         return until;
     }
 
-    public void setUntil(long until) {
+    public void setUntil(String until) {
         this.until = until;
     }
 

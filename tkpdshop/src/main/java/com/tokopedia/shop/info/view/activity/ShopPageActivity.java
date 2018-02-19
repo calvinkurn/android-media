@@ -9,30 +9,24 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.interfaces.merchant.shop.info.ShopInfo;
-import com.tokopedia.reputation.speed.SpeedReputation;
-import com.tokopedia.shop.ShopModuleRouter;
-import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent;
-
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.reputation.speed.SpeedReputation;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopComponentInstance;
+import com.tokopedia.shop.ShopModuleRouter;
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
+import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent;
 import com.tokopedia.shop.info.di.module.ShopInfoModule;
-import com.tokopedia.shop.info.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.info.domain.interactor.GetSpeedReputationUseCase;
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment;
 import com.tokopedia.shop.info.view.helper.ShopInfoHeaderViewHelper;
 import com.tokopedia.shop.info.view.listener.ShopPageView;
 import com.tokopedia.shop.info.view.presenter.ShopPagePresenter;
 import com.tokopedia.shop.product.view.fragment.ShopProductListFragment;
-import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
-
-import rx.Subscriber;
 
 /**
  * Created by nathan on 2/3/18.

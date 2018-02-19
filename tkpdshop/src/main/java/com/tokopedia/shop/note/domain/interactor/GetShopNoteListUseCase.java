@@ -1,7 +1,6 @@
 package com.tokopedia.shop.note.domain.interactor;
 
 import com.tokopedia.shop.note.data.source.cloud.model.ShopNote;
-import com.tokopedia.shop.info.domain.repository.ShopInfoRepository;
 import com.tokopedia.shop.note.domain.repository.ShopNoteRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;

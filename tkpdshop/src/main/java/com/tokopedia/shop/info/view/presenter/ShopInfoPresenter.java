@@ -1,8 +1,8 @@
 package com.tokopedia.shop.info.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.interfaces.merchant.shop.info.ShopInfo;
-import com.tokopedia.shop.info.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
+import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.info.view.listener.ShopInfoView;
 
 import javax.inject.Inject;

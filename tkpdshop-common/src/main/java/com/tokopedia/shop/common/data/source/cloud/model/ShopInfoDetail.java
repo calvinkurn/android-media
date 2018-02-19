@@ -109,10 +109,10 @@ public class ShopInfoDetail {
     private long shopStatus;
     @SerializedName("shop_status_message")
     @Expose
-    private long shopStatusMessage;
+    private String shopStatusMessage;
     @SerializedName("shop_status_title")
     @Expose
-    private long shopStatusTitle;
+    private String shopStatusTitle;
     @SerializedName("shop_tagline")
     @Expose
     private String shopTagline;
@@ -390,19 +390,19 @@ public class ShopInfoDetail {
         this.shopStatus = shopStatus;
     }
 
-    public long getShopStatusMessage() {
+    public String getShopStatusMessage() {
         return shopStatusMessage;
     }
 
-    public void setShopStatusMessage(long shopStatusMessage) {
+    public void setShopStatusMessage(String shopStatusMessage) {
         this.shopStatusMessage = shopStatusMessage;
     }
 
-    public long getShopStatusTitle() {
+    public String getShopStatusTitle() {
         return shopStatusTitle;
     }
 
-    public void setShopStatusTitle(long shopStatusTitle) {
+    public void setShopStatusTitle(String shopStatusTitle) {
         this.shopStatusTitle = shopStatusTitle;
     }
 

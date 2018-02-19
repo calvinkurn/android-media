@@ -3,16 +3,12 @@ package com.tokopedia.shop.info.view.mapper;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.interfaces.merchant.shop.info.ShopInfoShipment;
-import com.tokopedia.interfaces.merchant.shop.info.ShopInfoShipmentPackage;
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoShipment;
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoShipmentPackage;
 import com.tokopedia.shop.info.view.model.ShopInfoLogisticViewModel;
-import com.tokopedia.shop.note.data.source.cloud.model.ShopNote;
-import com.tokopedia.shop.note.view.model.ShopNoteViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 /**
  * Created by alvarisi on 12/14/17.
