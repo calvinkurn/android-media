@@ -2,9 +2,9 @@ package com.tokopedia.shop.info.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.interfaces.merchant.shop.info.ShopInfo;
 import com.tokopedia.reputation.speed.SpeedReputation;
-import com.tokopedia.shop.info.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
+import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.info.domain.interactor.GetSpeedReputationUseCase;
 import com.tokopedia.shop.info.view.listener.ShopPageView;
 import com.tokopedia.usecase.RequestParams;

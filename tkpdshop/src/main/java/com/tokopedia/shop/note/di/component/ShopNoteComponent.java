@@ -1,9 +1,6 @@
 package com.tokopedia.shop.note.di.component;
 
 import com.tokopedia.shop.common.di.component.ShopComponent;
-import com.tokopedia.shop.info.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.shop.info.view.activity.ShopPageActivity;
-import com.tokopedia.shop.info.view.fragment.ShopInfoFragment;
 import com.tokopedia.shop.note.di.module.ShopNoteModule;
 import com.tokopedia.shop.note.di.scope.ShopNoteScope;
 import com.tokopedia.shop.note.view.fragment.ShopNoteDetailFragment;

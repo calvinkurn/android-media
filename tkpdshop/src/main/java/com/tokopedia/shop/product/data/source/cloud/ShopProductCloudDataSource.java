@@ -1,7 +1,6 @@
 package com.tokopedia.shop.product.data.source.cloud;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.interfaces.merchant.shop.info.ShopInfo;
 import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopApi;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductList;

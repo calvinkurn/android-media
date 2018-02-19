@@ -1,9 +1,6 @@
 package com.tokopedia.shop.product.di.component;
 
 import com.tokopedia.shop.common.di.component.ShopComponent;
-import com.tokopedia.shop.note.view.fragment.ShopNoteDetailFragment;
-import com.tokopedia.shop.note.view.fragment.ShopNoteListFragment;
-import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.di.scope.ShopProductScope;
 import com.tokopedia.shop.product.view.fragment.ShopProductListFragment;

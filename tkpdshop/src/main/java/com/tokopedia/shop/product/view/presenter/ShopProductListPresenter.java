@@ -1,6 +1,7 @@
 package com.tokopedia.shop.product.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.note.data.source.cloud.model.ShopNote;
 import com.tokopedia.shop.note.domain.interactor.GetShopNoteListUseCase;
 import com.tokopedia.shop.note.view.listener.ShopNoteListView;
@@ -23,11 +24,13 @@ import rx.Subscriber;
 
 public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductListView> {
 
+    private final GetShopInfoUseCase getShopInfoUseCase;
     private final GetShopProductListUseCase getShopProductListUseCase;
     private final ShopProductViewModelMapper shopProductViewModelMapper;
 
     @Inject
-    public ShopProductListPresenter(GetShopProductListUseCase getShopProductListUseCase, ShopProductViewModelMapper shopProductViewModelMapper) {
+    public ShopProductListPresenter(GetShopInfoUseCase getShopInfoUseCase, GetShopProductListUseCase getShopProductListUseCase, ShopProductViewModelMapper shopProductViewModelMapper) {
+        this.getShopInfoUseCase = getShopInfoUseCase;
         this.getShopProductListUseCase = getShopProductListUseCase;
         this.shopProductViewModelMapper = shopProductViewModelMapper;
     }

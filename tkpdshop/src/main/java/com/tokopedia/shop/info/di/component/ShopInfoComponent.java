@@ -1,13 +1,15 @@
 package com.tokopedia.shop.info.di.component;
 
 import com.tokopedia.shop.address.view.fragment.ShopAddressListFragment;
+import com.tokopedia.shop.common.data.source.ShopCommonDataSource;
+import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource;
 import com.tokopedia.shop.common.di.component.ShopComponent;
+import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.shop.common.domain.repository.ShopCommonRepository;
 import com.tokopedia.shop.info.di.module.ShopInfoModule;
 import com.tokopedia.shop.info.di.scope.ShopInfoScope;
-import com.tokopedia.shop.info.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.info.view.activity.ShopPageActivity;
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment;
-import com.tokopedia.shop.note.view.fragment.ShopNoteListFragment;
 
 import dagger.Component;
 
@@ -24,5 +26,4 @@ public interface ShopInfoComponent {
 
     void inject(ShopAddressListFragment shopAddressListFragment);
 
-    GetShopInfoUseCase getShopInfoUseCase();
 }

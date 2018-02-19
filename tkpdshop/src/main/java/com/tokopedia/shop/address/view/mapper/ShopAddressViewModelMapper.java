@@ -1,10 +1,9 @@
 package com.tokopedia.shop.address.view.mapper;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.interfaces.merchant.shop.info.ShopInfo;
-import com.tokopedia.interfaces.merchant.shop.info.ShopInfoAddress;
 import com.tokopedia.shop.address.view.model.ShopAddressViewModel;
-import com.tokopedia.shop.note.data.source.cloud.model.ShopNote;
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoAddress;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,7 @@
 package com.tokopedia.shop.common.util;
 
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
+import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.constant.ShopUrl;
 
 import java.util.ArrayList;
@@ -26,10 +27,10 @@ public class ShopCacheApiWhiteList {
         List<CacheApiWhiteListDomain> cacheApiWhiteList = new ArrayList<>();
 
         // Shop info
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(ShopUrl.BASE_URL, ShopUrl.SHOP_INFO_PATH, ONE_HOUR));
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(ShopCommonUrl.BASE_URL, ShopCommonUrl.SHOP_INFO_PATH, ONE_HOUR));
 
         // Shop note
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(ShopUrl.BASE_URL, ShopUrl.SHOP_NOTE_PATH, ONE_HOUR));
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(ShopCommonUrl.BASE_URL, ShopUrl.SHOP_NOTE_PATH, ONE_HOUR));
 
         return cacheApiWhiteList;
     }

@@ -1,14 +1,10 @@
 package com.tokopedia.shop.address.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.interfaces.merchant.shop.info.ShopInfo;
 import com.tokopedia.shop.address.view.listener.ShopAddressListView;
 import com.tokopedia.shop.address.view.mapper.ShopAddressViewModelMapper;
-import com.tokopedia.shop.info.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.shop.note.data.source.cloud.model.ShopNote;
-import com.tokopedia.shop.note.domain.interactor.GetShopNoteListUseCase;
-
-import java.util.List;
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
+import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 
 import javax.inject.Inject;
 

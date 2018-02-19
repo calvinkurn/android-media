@@ -1,15 +1,10 @@
 package com.tokopedia.shop.note.data.source.cloud;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopApi;
+import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi;
 import com.tokopedia.shop.note.data.source.cloud.model.ShopNoteDetail;
 import com.tokopedia.shop.note.data.source.cloud.model.ShopNoteList;
-import com.tokopedia.shop.note.data.source.cloud.model.ShopNote;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.inject.Inject;
 
