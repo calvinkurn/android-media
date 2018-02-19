@@ -56,4 +56,10 @@ public class UserSessionImpl implements UserSession {
     public boolean hasShop() {
         return sessionHandler.isUserHasShop();
     }
+
+    @Override
+    public String getName() {
+        return sessionHandler.getLoginName();
+        sessionHandler.getu
+    }
 }

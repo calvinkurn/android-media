@@ -7,19 +7,25 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.sendbird.android.OpenChannel;
+import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.channel.view.activity.ChannelActivity;
 import com.tokopedia.tkpdstream.chatroom.di.DaggerChatroomComponent;
+import com.tokopedia.tkpdstream.chatroom.domain.ConnectionManager;
+import com.tokopedia.tkpdstream.chatroom.domain.usecase.ChannelHandlerUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.LoginGroupChatUseCase;
 import com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.GroupChatAdapter;
@@ -42,11 +48,13 @@ import javax.inject.Inject;
  * @author by nisie on 2/6/18.
  */
 
-public class GroupChatFragment extends BaseDaggerFragment implements GroupChatContract.View {
+public class GroupChatFragment extends BaseDaggerFragment implements GroupChatContract.View,
+        ChannelHandlerUseCase.ChannelHandlerListener {
 
     public static final String ARGS_VIEW_MODEL = "GC_VIEW_MODEL";
     @Inject
     GroupChatPresenter presenter;
+
 
     private RecyclerView chatRecyclerView;
     private EditText replyEditText;
@@ -56,6 +64,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     private OpenChannel mChannel;
     private GroupChatViewModel viewModel;
+    private UserSession userSession;
+
 
     @Override
     protected String getScreenName() {
@@ -90,6 +100,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
             viewModel = new GroupChatViewModel(getArguments().getString(GroupChatActivity
                     .EXTRA_CHANNEL_URL, ""));
         }
+
+        userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+
     }
 
     @Nullable
@@ -146,11 +159,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PendingChatViewModel pendingChatViewModel = new PendingChatViewModel(replyEditText.getText().toString(),
-                        "", "", "",
-                        "Nisie123", "Nisie",
-                        "https://yt3.ggpht.com/-uwClWniyyFU/AAAAAAAAAAI/AAAAAAAAAAA/nVrBEY3dzuY/s176-c-k-no-mo-rj-c0xffffff/photo.jpg",
-                        false);
+                PendingChatViewModel pendingChatViewModel = new PendingChatViewModel
+                        (replyEditText.getText().toString(),
+                                userSession.getUserId(),
+                                userSession.getName(),
+                                "https://yt3.ggpht.com/-uwClWniyyFU/AAAAAAAAAAI/AAAAAAAAAAA/nVrBEY3dzuY/s176-c-k-no-mo-rj-c0xffffff/photo.jpg",
+                                false);
                 adapter.addDummyReply(pendingChatViewModel);
                 presenter.sendReply(pendingChatViewModel, mChannel);
             }
@@ -164,19 +178,24 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter.enterChannel(viewModel.getChannelUrl(), new LoginGroupChatUseCase.LoginGroupChatListener() {
-            @Override
-            public void onSuccessEnterChannel(OpenChannel openChannel) {
-                mChannel = openChannel;
-                presenter.initMessageFirstTime(viewModel.getChannelUrl(), mChannel);
-            }
+        presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUrl(),
+                userSession.getName(), "https://yt3.ggpht" +
+                        ".com/-uwClWniyyFU/AAAAAAAAAAI/AAAAAAAAAAA/nVrBEY3dzuY/s176-c-k-no-mo-rj" +
+                        "-c0xffffff/photo.jpg", new
+                LoginGroupChatUseCase
+                        .LoginGroupChatListener() {
+                    @Override
+                    public void onSuccessEnterChannel(OpenChannel openChannel) {
+                        mChannel = openChannel;
+                        presenter.initMessageFirstTime(viewModel.getChannelUrl(), mChannel);
+                    }
 
-            @Override
-            public void onErrorEnterChannel(SendBirdException e) {
-                getActivity().setResult(ChannelActivity.RESULT_ERROR_LOGIN);
-                getActivity().finish();
-            }
-        });
+                    @Override
+                    public void onErrorEnterChannel(SendBirdException e) {
+                        getActivity().setResult(ChannelActivity.RESULT_ERROR_LOGIN);
+                        getActivity().finish();
+                    }
+                });
     }
 
     @Override
@@ -190,6 +209,32 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         super.onDestroyView();
         presenter.logoutChannel(mChannel);
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        ConnectionManager.addConnectionManagementHandler(userSession.getUserId(), ConnectionManager
+                .CONNECTION_HANDLER_ID, new
+                ConnectionManager.ConnectionManagementHandler() {
+                    @Override
+                    public void onConnected(boolean reconnect) {
+                        if (reconnect) {
+//                    presenter.refreshData();
+                        } else {
+
+                        }
+                    }
+                });
+        presenter.setReceiver(viewModel.getChannelUrl(), this);
+    }
+
+    @Override
+    public void onPause() {
+        ConnectionManager.removeConnectionManagementHandler(ConnectionManager.CONNECTION_HANDLER_ID);
+        SendBird.removeChannelHandler(ConnectionManager.CHANNEL_HANDLER_ID);
+        super.onPause();
     }
 
     @Override
@@ -225,5 +270,22 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         replyEditText.setText("");
         scrollToBottom();
 
+    }
+
+    @Override
+    public void onMessageReceived(Visitable messageItem) {
+        adapter.addIncomingMessage(messageItem);
+        adapter.notifyItemInserted(0);
+        scrollToBottom();
+    }
+
+    @Override
+    public void onMessageDeleted(long msgId) {
+//TODO : Implement this later
+    }
+
+    @Override
+    public void onMessageUpdated(Visitable map) {
+//TODO : Implement this later
     }
 }

@@ -1,7 +1,9 @@
 package com.tokopedia.tkpdstream.chatroom.domain.usecase;
 
 import com.sendbird.android.OpenChannel;
+import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
+import com.sendbird.android.User;
 import com.tokopedia.tkpdstream.chatroom.domain.ConnectionManager;
 
 import javax.inject.Inject;
@@ -24,38 +26,50 @@ public class LoginGroupChatUseCase {
 
     public void execute(final String channelUrl,
                         String userId,
-                        final LoginGroupChatListener listener) {
+                        final String userName, final String userAvatar, final LoginGroupChatListener listener) {
 
-        ConnectionManager.addConnectionManagementHandler(userId,
-                ConnectionManager.CONNECTION_HANDLER_ID,
-                new ConnectionManager.ConnectionManagementHandler() {
+        SendBird.connect(userId, new SendBird.ConnectHandler() {
             @Override
-            public void onConnected(boolean reconnect) {
-                OpenChannel.getChannel(channelUrl, new OpenChannel.OpenChannelGetHandler() {
+            public void onConnected(User user, SendBirdException e) {
+                if (e != null) {
+                    listener.onErrorEnterChannel(e);
+                    return;
+                }
+
+                SendBird.updateCurrentUserInfo(userName, userAvatar, new SendBird.UserInfoUpdateHandler() {
                     @Override
-                    public void onResult(final OpenChannel openChannel, SendBirdException e) {
+                    public void onUpdated(SendBirdException e) {
                         if (e != null) {
                             listener.onErrorEnterChannel(e);
                             return;
                         }
 
-                        openChannel.enter(new OpenChannel.OpenChannelEnterHandler() {
-
+                        OpenChannel.getChannel(channelUrl, new OpenChannel.OpenChannelGetHandler() {
                             @Override
-                            public void onResult(SendBirdException e) {
+                            public void onResult(final OpenChannel openChannel, SendBirdException e) {
                                 if (e != null) {
                                     listener.onErrorEnterChannel(e);
+                                    return;
                                 }
 
-                                listener.onSuccessEnterChannel(openChannel);
+                                openChannel.enter(new OpenChannel.OpenChannelEnterHandler() {
 
+                                    @Override
+                                    public void onResult(SendBirdException e) {
+                                        if (e != null) {
+                                            listener.onErrorEnterChannel(e);
+                                        }
+
+                                        listener.onSuccessEnterChannel(openChannel);
+
+                                    }
+                                });
                             }
                         });
                     }
                 });
             }
         });
-
 
     }
 }

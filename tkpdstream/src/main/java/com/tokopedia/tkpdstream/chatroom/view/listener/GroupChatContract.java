@@ -37,7 +37,8 @@ public interface GroupChatContract {
 
         void sendReply(PendingChatViewModel pendingChatViewModel, OpenChannel mChannel);
 
-        void enterChannel(String s, LoginGroupChatUseCase.LoginGroupChatListener loginGroupChatListener);
+        void enterChannel(String userId, String channelUrl, String userName, String userAvatar,
+                          LoginGroupChatUseCase.LoginGroupChatListener loginGroupChatListener);
 
         void logoutChannel(OpenChannel mChannel);
 

@@ -6,8 +6,10 @@ import com.sendbird.android.OpenChannel;
 import com.sendbird.android.SendBirdException;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.tkpdstream.chatroom.domain.usecase.ChannelHandlerUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.GetGroupChatMessagesFirstTimeUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.LoginGroupChatUseCase;
+import com.tokopedia.tkpdstream.chatroom.domain.usecase.LogoutGroupChatUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.SendGroupChatMessageUseCase;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
@@ -27,15 +29,21 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     private final GetGroupChatMessagesFirstTimeUseCase getGroupChatMessagesFirstTimeUseCase;
     private final LoginGroupChatUseCase loginGroupChatUseCase;
     private final SendGroupChatMessageUseCase sendMessageUseCase;
+    private final LogoutGroupChatUseCase logoutGroupChatUseCase;
+    private final ChannelHandlerUseCase channelHandlerUseCase;
 
     @Inject
     public GroupChatPresenter(LoginGroupChatUseCase loginGroupChatUseCase,
                               GetGroupChatMessagesFirstTimeUseCase
                                       getGroupChatMessagesFirstTimeUseCase,
-                              SendGroupChatMessageUseCase sendMessageUseCase) {
+                              SendGroupChatMessageUseCase sendMessageUseCase,
+                              LogoutGroupChatUseCase logoutGroupChatUseCase,
+                              ChannelHandlerUseCase channelHandlerUseCase) {
         this.loginGroupChatUseCase = loginGroupChatUseCase;
         this.getGroupChatMessagesFirstTimeUseCase = getGroupChatMessagesFirstTimeUseCase;
         this.sendMessageUseCase = sendMessageUseCase;
+        this.logoutGroupChatUseCase = logoutGroupChatUseCase;
+        this.channelHandlerUseCase = channelHandlerUseCase;
 
     }
 
@@ -73,14 +81,15 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     }
 
     @Override
-    public void enterChannel(String channelUrl, LoginGroupChatUseCase.LoginGroupChatListener
-            loginGroupChatListener) {
-        loginGroupChatUseCase.execute(channelUrl, "Nisie123", loginGroupChatListener);
+    public void enterChannel(String userId, String channelUrl, String userName, String userAvatar,
+                             LoginGroupChatUseCase.LoginGroupChatListener loginGroupChatListener) {
+        loginGroupChatUseCase.execute(channelUrl, userId, userName, userAvatar,
+                loginGroupChatListener);
     }
 
     @Override
     public void logoutChannel(OpenChannel mChannel) {
-
+        logoutGroupChatUseCase.execute(mChannel);
     }
 
     @Override
@@ -90,6 +99,11 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
     @Override
     public void detachView() {
+
         super.detachView();
+    }
+
+    public void setReceiver(String channelUrl, ChannelHandlerUseCase.ChannelHandlerListener listener) {
+        channelHandlerUseCase.execute(channelUrl, listener);
     }
 }

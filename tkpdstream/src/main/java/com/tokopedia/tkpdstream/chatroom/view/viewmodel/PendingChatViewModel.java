@@ -26,6 +26,15 @@ public class PendingChatViewModel extends BaseChatViewModel implements Visitable
         this.isRetry = false;
     }
 
+    public PendingChatViewModel(String message, String senderId, String senderName, String senderIconUrl, boolean isInfluencer) {
+        super(message, "", "", "");
+        this.senderId = senderId;
+        this.senderName = senderName;
+        this.senderIconUrl = senderIconUrl;
+        this.isInfluencer = isInfluencer;
+        this.isRetry = false;
+    }
+
     @Override
     public int type(GroupChatTypeFactory typeFactory) {
         return typeFactory.type(this);

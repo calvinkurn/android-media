@@ -25,16 +25,19 @@ public class GroupChatMessagesMapper {
     public List<Visitable> map(List<BaseMessage> list) {
         List<Visitable> listViewModel = new ArrayList<>();
         for (BaseMessage message : list) {
-            addToList(listViewModel, message);
+            if (mapMessage(message) != null)
+                listViewModel.add(mapMessage(message));
         }
         return listViewModel;
     }
 
-    private void addToList(List<Visitable> listViewModel, BaseMessage message) {
+    private Visitable mapMessage(BaseMessage message) {
         if (message instanceof AdminMessage) {
-            listViewModel.add(mapToAdminMessage(message));
+            return mapToAdminMessage(message);
         } else if (message instanceof UserMessage) {
-            listViewModel.add(mapToUserMessage(message));
+            return mapToUserMessage(message);
+        } else {
+            return null;
         }
     }
 
@@ -58,5 +61,9 @@ public class GroupChatMessagesMapper {
                 String.valueOf(message.getUpdatedAt()),
                 String.valueOf(message.getMessageId())
         );
+    }
+
+    public Visitable map(BaseMessage baseMessage) {
+        return mapMessage(baseMessage);
     }
 }

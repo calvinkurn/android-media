@@ -89,4 +89,9 @@ public class GroupChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         }
         notifyItemChanged(list.indexOf(pendingChatViewModel));
     }
+
+    public void addIncomingMessage(Visitable messageItem) {
+        this.list.add(0, messageItem);
+
+    }
 }
