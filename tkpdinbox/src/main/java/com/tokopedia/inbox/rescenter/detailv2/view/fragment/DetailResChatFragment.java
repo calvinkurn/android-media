@@ -389,7 +389,8 @@ public class DetailResChatFragment
                                 rvAttachment.setVisibility(View.GONE);
                                 initActionButton(detailResChatDomain.getButton());
                             }
-                            attachmentAdapter.notifyDataSetChanged();
+                            attachmentAdapter.notifyItemRemoved(position);
+                            attachmentAdapter.notifyItemRangeRemoved(position, attachmentAdapter.getItemCount());
                         }
                     }
                 };
@@ -911,12 +912,12 @@ public class DetailResChatFragment
 
     @Override
     public void successReplyDiscussion(DiscussionItemViewModel discussionItemViewModel) {
+        rvAttachment.setVisibility(View.GONE);
         attachmentAdapter.getList().clear();
         attachmentAdapter.notifyDataSetChanged();
-        rvAttachment.setVisibility(View.GONE);
         conversationDomain.setCreateTime(getConversationCreateTime());
         chatAdapter.replaceLastItem(new ChatRightViewModel(null, null, conversationDomain));
-        chatAdapter.notifyDataSetChanged();
+        chatAdapter.notifyItemChanged(chatAdapter.getItemCount() - 1);
         initActionButton(detailResChatDomain.getButton());
         etChat.setText("");
         enableIvSend();
