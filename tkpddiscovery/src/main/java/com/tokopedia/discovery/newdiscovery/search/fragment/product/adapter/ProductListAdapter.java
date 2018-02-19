@@ -159,7 +159,9 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
 
     public void addGuidedSearch() {
         if (guidedSearch != null) {
+            int start = getItemCount();
             list.add(guidedSearch);
+            notifyItemInserted(start);
         }
     }
 

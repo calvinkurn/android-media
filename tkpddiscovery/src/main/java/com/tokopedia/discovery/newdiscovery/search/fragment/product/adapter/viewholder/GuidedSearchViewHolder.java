@@ -2,6 +2,7 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.vie
 
 import android.net.Uri;
 import android.support.annotation.LayoutRes;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +35,7 @@ public class GuidedSearchViewHolder extends AbstractViewHolder<GuidedSearchViewM
         super(itemView);
         recyclerView = itemView.findViewById(R.id.recyclerView);
         adapter = new GuidedSearchAdapter(itemClickListener);
+        recyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(adapter);
     }
 
