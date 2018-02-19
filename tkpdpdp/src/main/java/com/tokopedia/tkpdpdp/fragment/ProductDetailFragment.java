@@ -157,6 +157,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private static final String ARG_PARAM_PRODUCT_PASS_DATA = "ARG_PARAM_PRODUCT_PASS_DATA";
     private static final String ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK";
     private static final String ENABLE_VARIANT = "mainapp_discovery_enable_pdp_variant";
+    private static final String NON_VARIANT = "non-variant";
 
     public static final String STATE_DETAIL_PRODUCT = "STATE_DETAIL_PRODUCT";
     public static final String STATE_PRODUCT_VARIANT = "STATE_PRODUCT_VARIANT";
@@ -428,12 +429,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 buttonBuyView.changeToLoading();
             } else if ( !productData.getInfo().getHasVariant() && productVariant==null ||
                     productData.getInfo().getHasVariant() && productVariant!=null && variantLevel1!=null) {
-                if (!TextUtils.isEmpty(source) && source.equals(SOURCE_BUTTON_BUY_PDP) &&productData.getInfo().getHasVariant() ) {
-                    UnifyTracking.eventBuyPDPVariant(generateVariantString());
-                } else if (!TextUtils.isEmpty(source) && source.equals(SOURCE_BUTTON_BUY_VARIANT) && productData.getInfo().getHasVariant()) {
-                    Long timestamp = System.currentTimeMillis()/1000;
-                    UnifyTracking.eventBuyPageVariant(timestamp.toString() + "-" + generateVariantString());
-                }
                 String weightProduct = "";
                 switch (productData.getInfo().getProductWeightUnit()) {
                     case "gr":
@@ -462,6 +457,16 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 bundle.putParcelable(VariantActivity.KEY_VARIANT_DATA, productVariant);
                 bundle.putParcelable(VariantActivity.KEY_PRODUCT_DETAIL_DATA, productData);
                 onVariantClicked(bundle);
+            }
+            if (!TextUtils.isEmpty(source) && source.equals(SOURCE_BUTTON_BUY_PDP) && productData.getInfo().getHasVariant() && variantLevel1 != null ) {
+                UnifyTracking.eventBuyPDPVariant(generateVariantString());
+            } else if (!TextUtils.isEmpty(source) && source.equals(SOURCE_BUTTON_BUY_PDP) && productData.getInfo().getHasVariant()) {
+                UnifyTracking.eventBuyPDPVariant("");
+            } else if (!TextUtils.isEmpty(source) && source.equals(SOURCE_BUTTON_BUY_PDP) && !productData.getInfo().getHasVariant()) {
+                UnifyTracking.eventBuyPDPVariant(NON_VARIANT);
+            } else if (!TextUtils.isEmpty(source) && source.equals(SOURCE_BUTTON_BUY_VARIANT) && productData.getInfo().getHasVariant()) {
+                Long timestamp = System.currentTimeMillis()/1000;
+                UnifyTracking.eventBuyPageVariant(timestamp.toString() + "-" + generateVariantString());
             }
         } else {
             Bundle bundle = new Bundle();
