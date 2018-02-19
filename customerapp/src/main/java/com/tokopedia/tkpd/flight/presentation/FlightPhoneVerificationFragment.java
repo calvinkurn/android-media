@@ -39,7 +39,7 @@ public class FlightPhoneVerificationFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         addFragment(R.id.container, PhoneVerificationFragment.createInstance
-                (phoneVerificationFragmentListener, false));
+                (phoneVerificationFragmentListener, true));
     }
 
     @Override
