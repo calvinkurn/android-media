@@ -40,7 +40,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.VisibleRegion;
 import com.google.maps.android.PolyUtil;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tokopedia.core.app.MainApplication;
@@ -141,6 +140,8 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     private int MAX_CABS_COUNT = 3;
     private int MAX_MOTO_COUNT = 2;
     private boolean showUberMoto = false;
+    private boolean showUberCab = true;
+    private ArrayList<Location> locationArrayList = new ArrayList<>();
 
     public interface OnFragmentInteractionListener {
         void onSourceAndDestinationChanged(PlacePassViewModel source, PlacePassViewModel destination);
@@ -366,15 +367,23 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
     public void displayNearByCabs(List<ProductEstimate> productEstimates) {
         if (!productEstimates.isEmpty()) {
+
+            int radius = 400;
+
+            if(productEstimates.size() > 1){
+                showUberCab = true;
+            }
+
             for (ProductEstimate productEstimate : productEstimates) {
                 if (RideUtils.isUberMoto(productEstimate.getProduct().getDisplayName())) {
                     showUberMoto = true;
                 }
             }
+
             if (googleMap != null && getVisibleCabsMarkerCount() < MAX_CABS_COUNT) {
                 double latitude = googleMap.getCameraPosition().target.latitude;
                 double longitude = googleMap.getCameraPosition().target.longitude;
-                ArrayList<Location> locationArrayList = getRandomLocations(latitude, longitude);
+                getRandomLocations(latitude, longitude, radius);
                 presenter.getNearbyRoadsData(locationArrayList);
             }
         }
@@ -754,45 +763,45 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     public void renderNearbyCabs(NearbyRoads nearbyRoads) {
         int cabsToShow = MAX_CABS_COUNT - getVisibleCabsMarkerCount();
         int motoToShow = MAX_MOTO_COUNT - getVisibleMOTOMarkerCount();
-        int markersToShow = cabsToShow + motoToShow;
 
-        for (int i = 0; i < markersToShow; i++) {
+        int i = 0, j = nearbyRoads.getSnappedPointsArrayList().size();
 
-            Random random = new Random();
-            if (cabsToShow > 0) {
+        Random random = new Random();
 
-                Marker marker = googleMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLatitude(),
-                                nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLongitude()))
-                        .icon(getMarkerIconForCab(R.drawable.car_map_icon)));
+        while (cabsToShow > 0) {
+            Marker marker = googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLatitude(),
+                            nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLongitude()))
+                    .icon(getMarkerIconForCab(R.drawable.car_map_icon)));
 
-                LatLng oldLocation = new LatLng(nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLatitude(),
-                        nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLongitude());
-                LatLng newLocation = new LatLng(random.nextDouble(), random.nextDouble());
+            LatLng oldLocation = new LatLng(nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLatitude(),
+                    nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLongitude());
+            LatLng newLocation = new LatLng(random.nextDouble(), random.nextDouble());
 
-                float bearing = (float) bearingBetweenLocations(oldLocation, newLocation);
-                rotateMarker(marker, bearing);
-                nearbyCabsMarkerList.add(marker);
-                cabsToShow--;
+            float bearing = (float) bearingBetweenLocations(oldLocation, newLocation);
+            rotateMarker(marker, bearing);
+            nearbyCabsMarkerList.add(marker);
+            cabsToShow--;
+            i++;
+        }
 
-            } else if (showUberMoto && (motoToShow > 0)) {
+        while (showUberMoto && (motoToShow > 0)) {
 
-                Marker marker = googleMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLatitude(),
-                                nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLongitude()))
-                        .icon(getMarkerIconForCab(R.drawable.moto_map_icon)));
+            Marker marker = googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(nearbyRoads.getSnappedPointsArrayList().get(j).getLocation().getLatitude(),
+                            nearbyRoads.getSnappedPointsArrayList().get(j).getLocation().getLongitude()))
+                    .icon(getMarkerIconForCab(R.drawable.moto_map_icon)));
 
-                LatLng oldLocation = new LatLng(nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLatitude(),
-                        nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLongitude());
-                LatLng newLocation = new LatLng(random.nextDouble(), random.nextDouble());
+            LatLng oldLocation = new LatLng(nearbyRoads.getSnappedPointsArrayList().get(j).getLocation().getLatitude(),
+                    nearbyRoads.getSnappedPointsArrayList().get(j).getLocation().getLongitude());
+            LatLng newLocation = new LatLng(random.nextDouble(), random.nextDouble());
 
-                float bearing = (float) bearingBetweenLocations(oldLocation, newLocation);
-                marker.setRotation(bearing);
-                rotateMarker(marker, bearing);
-                nearbyMOTOMarkerList.add(marker);
-                motoToShow--;
-
-            }
+            float bearing = (float) bearingBetweenLocations(oldLocation, newLocation);
+            marker.setRotation(bearing);
+            rotateMarker(marker, bearing);
+            nearbyMOTOMarkerList.add(marker);
+            motoToShow--;
+            j--;
         }
     }
 
@@ -862,12 +871,10 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         return BitmapDescriptorFactory.fromBitmap(resizedBitmap);
     }
 
-    public ArrayList<Location> getRandomLocations(double x0, double y0) {
+    private void getRandomLocations(double x0, double y0, int radius) {
 
-        ArrayList<Location> randomLocations = new ArrayList<>();
-
-        double radiusInDegrees = 350 / 111000f;
-        for (int i = 0; i < 5; i++) {
+        double radiusInDegrees = radius / 111000f;
+        for (int i = 0; i < 2; i++) {
             Random random = new Random();
             double u = random.nextDouble();
             double v = random.nextDouble();
@@ -884,11 +891,10 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
             Location location = new Location();
             location.setLatitude(foundLatitude);
             location.setLongitude(foundLongitude);
-            randomLocations.add(location);
+            locationArrayList.add(location);
 
             Log.e("Random Points: ", String.valueOf(foundLatitude) + ", " + String.valueOf(foundLongitude));
         }
-        return randomLocations;
     }
 
 
