@@ -382,7 +382,9 @@ public class DetailResChatFragment
                     @Override
                     public void onClick(View v) {
                         if (attachmentAdapter.isClickable) {
-                            attachmentAdapter.getList().remove(position);
+                            if (attachmentAdapter.getList().get(position) != null) {
+                                attachmentAdapter.getList().remove(position);
+                            }
                             if (attachmentAdapter.getList().size() == 0) {
                                 rvAttachment.setVisibility(View.GONE);
                                 initActionButton(detailResChatDomain.getButton());
