@@ -204,7 +204,6 @@ public class ResoInboxFragment
 
     @Override
     public void onRefresh() {
-        adapter.clearData();
         resetParams();
         if (inboxFilterModel.getSelectedFilterList().size() != 0
                 || !TextUtils.isEmpty(inboxFilterModel.getDateFromString())
