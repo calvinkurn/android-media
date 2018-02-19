@@ -381,12 +381,14 @@ public class DetailResChatFragment
                 return new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        attachmentAdapter.getList().remove(position);
-                        if (attachmentAdapter.getList().size() == 0) {
-                            rvAttachment.setVisibility(View.GONE);
-                            initActionButton(detailResChatDomain.getButton());
+                        if (attachmentAdapter.isClickable) {
+                            attachmentAdapter.getList().remove(position);
+                            if (attachmentAdapter.getList().size() == 0) {
+                                rvAttachment.setVisibility(View.GONE);
+                                initActionButton(detailResChatDomain.getButton());
+                            }
+                            attachmentAdapter.notifyDataSetChanged();
                         }
-                        attachmentAdapter.notifyDataSetChanged();
                     }
                 };
             }
@@ -1191,6 +1193,7 @@ public class DetailResChatFragment
         etChat.setClickable(true);
         etChat.setEnabled(true);
         rvAttachment.setClickable(true);
+        attachmentAdapter.isClickable = true;
     }
 
     @Override
@@ -1200,6 +1203,7 @@ public class DetailResChatFragment
         etChat.setClickable(false);
         etChat.setEnabled(false);
         rvAttachment.setClickable(false);
+        attachmentAdapter.isClickable = false;
     }
 
     @Override
