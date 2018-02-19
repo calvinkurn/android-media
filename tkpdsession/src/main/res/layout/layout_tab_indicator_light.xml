@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.core.widgets.CustomTabLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/indicator"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    app:tabGravity="fill"
+    app:tabIndicatorColor="@color/medium_green"
+    app:tabIndicatorHeight="4dp"
+    app:tabMode="scrollable"
+    app:tabSelectedTextColor="@color/medium_green"
+    app:tabTextAppearance="@style/LightTitlePageIndicator"
+    tools:layout_width="match_parent" />

@@ -31,7 +31,7 @@
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
-        <include layout="@layout/layout_tab_indicator_main" />
+        <include layout="@layout/layout_tab_indicator_light" />
 
     </android.support.design.widget.AppBarLayout>
 
