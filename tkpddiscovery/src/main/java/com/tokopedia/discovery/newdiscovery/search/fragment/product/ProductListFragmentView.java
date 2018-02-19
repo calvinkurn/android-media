@@ -58,4 +58,6 @@ public interface ProductListFragmentView extends SearchSectionFragmentView {
     void addGuidedSearch();
 
     void onGetGuidedSearchComplete(GuidedSearchViewModel guidedSearchViewModel);
+
+    void onGetGuidedSearchFailed();
 }

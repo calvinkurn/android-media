@@ -737,6 +737,11 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
+    public void onGetGuidedSearchFailed() {
+        Toast.makeText(getContext(), "Retrieve Guided Search Failed", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     protected void openFilterActivity() {
         if (isFilterDataAvailable()) {
             String preFilteredSc = getSearchParameter().getDepartmentId();
