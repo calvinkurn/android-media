@@ -203,9 +203,9 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
 
     private void handleBranchDefferedDeeplink() {
         Branch branch = Branch.getInstance();
-        if (branch == null){
+        if (branch == null) {
             moveToHome();
-        }else {
+        } else {
             branch.setRequestMetadata("$google_analytics_client_id", TrackingUtils.getClientID());
             branch.initSession(new Branch.BranchReferralInitListener() {
                 @Override
