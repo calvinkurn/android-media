@@ -14,4 +14,6 @@ import rx.Observable;
 public interface ShopInfoRepository {
 
     Observable<ShopInfo> getShopInfo(String shopId);
+
+    Observable<ShopInfo> getShopInfoByDomain(String shopDomain);
 }

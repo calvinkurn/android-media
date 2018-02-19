@@ -1,12 +1,10 @@
 package com.tokopedia.shop.product.domain.interactor;
 
-import com.tokopedia.shop.common.constant.ShopParamApiContant;
-import com.tokopedia.shop.note.data.source.cloud.model.ShopNoteDetail;
+import com.tokopedia.shop.product.data.source.cloud.model.ShopProductList;
+import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.domain.repository.ShopProductRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
-
-import java.util.HashMap;
 
 import javax.inject.Inject;
 
@@ -16,9 +14,9 @@ import rx.Observable;
  * Created by normansyahputa on 2/8/18.
  */
 
-public class GetShopProductListUseCase extends UseCase<ShopNoteDetail> {
+public class GetShopProductListUseCase extends UseCase<ShopProductList> {
 
-    private final static String SHOP_CLOSED = "SHOP_CLOSED";
+    private final static String SHOP_REQUEST = "SHOP_REQUEST";
 
     private final ShopProductRepository shopNoteRepository;
 
@@ -29,21 +27,14 @@ public class GetShopProductListUseCase extends UseCase<ShopNoteDetail> {
     }
 
     @Override
-    public Observable<ShopNoteDetail> createObservable(RequestParams requestParams) {
-        HashMap<String, Object> parameters = requestParams.getParameters();
-        parameters.remove(SHOP_CLOSED);
-        boolean shopClosed = requestParams.getBoolean(SHOP_CLOSED, false);
-        return shopNoteRepository.getShopProductList(parameters, shopClosed);
+    public Observable<ShopProductList> createObservable(RequestParams requestParams) {
+        ShopProductRequestModel shopProductRequestModel = (ShopProductRequestModel) requestParams.getObject(SHOP_REQUEST);
+        return shopNoteRepository.getShopProductList(shopProductRequestModel);
     }
 
-    public static RequestParams createRequestParam(String shopId, String keyword, String etalaseId, int page, int orderBy, boolean shopClosed) {
+    public static RequestParams createRequestParam(ShopProductRequestModel shopProductRequestModel) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(ShopParamApiContant.SHOP_ID, shopId);
-        requestParams.putString(ShopParamApiContant.KEYWORD, keyword);
-        requestParams.putString(ShopParamApiContant.ETALASE_ID, etalaseId);
-        requestParams.putInt(ShopParamApiContant.PAGE, page);
-        requestParams.putInt(ShopParamApiContant.ORDER_BY, orderBy);
-        requestParams.putBoolean(SHOP_CLOSED, shopClosed);
+        requestParams.putObject(SHOP_REQUEST, shopProductRequestModel);
         return requestParams;
     }
 }

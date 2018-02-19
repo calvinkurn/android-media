@@ -7,6 +7,7 @@ package com.tokopedia.shop.common.constant;
 public class ShopParamApiContant {
 
     public static final String SHOP_ID = "shop_id";
+    public static final String SHOP_DOMAIN = "shop_domain";
     public static final String SHOP_NODE_ID = "note_id";
 
     public static final String KEYWORD = "keyword";
@@ -15,5 +16,4 @@ public class ShopParamApiContant {
     public static final String ORDER_BY = "order_by";
     public static final String PER_PAGE = "per_page";
     public static final String WHOLESALE = "wholesale";
-    public static final String SHOP_DOMAIN = "shop_domain";
 }
