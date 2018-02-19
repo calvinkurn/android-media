@@ -72,7 +72,7 @@ public class Tabs extends TabLayout {
         this.setTabGravity(GRAVITY_FILL);
         this.setSelectedTabIndicatorColor(white);
         this.setSelectedTabIndicatorHeight(4);
-        this.setTabMode(MODE_SCROLLABLE);
+        this.setTabMode(MODE_FIXED);
         this.setTabTextColors(white, white);
     }
 
