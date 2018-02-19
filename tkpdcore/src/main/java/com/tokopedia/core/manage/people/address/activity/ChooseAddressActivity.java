@@ -10,6 +10,7 @@ import android.os.PersistableBundle;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.fragment.ChooseAddressFragment;
@@ -27,8 +28,21 @@ public class ChooseAddressActivity extends BasePresenterActivity {
     public static final int RESULT_NOT_SELECTED_DESTINATION = 2;
 
     private static final String TAG = "CHOOSE_ADDRESS_FRAGMENT";
+    private static final String RESOLUTION_ID = "resolution_id";
+    private static final String IS_RESOLUTION = "is_resolution";
+    private static final String IS_RESO_CHAT = "is_reso_chat";
+    private static final String IS_EDIT_ADDRESS = "is_edit_address";
 
     public static Intent createInstance(Context context) {
+        return new Intent(context, ChooseAddressActivity.class);
+    }
+
+    public static Intent createResolutionInstance(Context context, String resolutionId, boolean isResolution, boolean isResoChat, boolean isEditAddress) {
+        Intent intent = createInstance(context);
+        intent.putExtra(RESOLUTION_ID, resolutionId);
+        intent.putExtra(IS_RESOLUTION, isResolution);
+        intent.putExtra(IS_RESO_CHAT, isResoChat);
+        intent.putExtra(IS_EDIT_ADDRESS, isEditAddress);
         return new Intent(context, ChooseAddressActivity.class);
     }
 
@@ -63,7 +77,9 @@ public class ChooseAddressActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
-        ChooseAddressFragment fragment = ChooseAddressFragment.createInstance();
+        ChooseAddressFragment fragment;
+        if (getIntent().getExtras() != null) fragment = ChooseAddressFragment.createInstance(getIntent().getExtras());
+        else fragment =  ChooseAddressFragment.createInstance();
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         fragmentTransaction.add(R.id.container, fragment, TAG);
@@ -88,6 +104,18 @@ public class ChooseAddressActivity extends BasePresenterActivity {
     @Override
     public void onBackPressed() {
         Intent intent = getIntent();
+        if (intent.getExtras() != null) {
+            Bundle bundle = intent.getExtras();
+            if (bundle.get(IS_RESOLUTION) != null && bundle.getBoolean(IS_RESOLUTION)) {
+                if (bundle.get(IS_RESO_CHAT) != null && !bundle.getBoolean(IS_RESO_CHAT)) {
+                    if (bundle.get(IS_EDIT_ADDRESS) != null && bundle.getBoolean(IS_EDIT_ADDRESS)) {
+                        UnifyTracking.eventResoDetailClickBackEditAddressPage(bundle.getString(RESOLUTION_ID));
+                    } else {
+                        UnifyTracking.eventResoDetailClickBackInputAddressPage(bundle.getString(RESOLUTION_ID));
+                    }
+                }
+            }
+        }
         if (intent.getExtras() != null &&
                 getFragmentManager().findFragmentById(R.id.container) instanceof OnChooseAddressViewListener) {
 
@@ -115,4 +143,6 @@ public class ChooseAddressActivity extends BasePresenterActivity {
     protected boolean isLightToolbarThemes() {
         return true;
     }
+
+
 }

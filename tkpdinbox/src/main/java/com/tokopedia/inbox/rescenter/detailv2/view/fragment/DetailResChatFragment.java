@@ -840,7 +840,7 @@ public class DetailResChatFragment
                                             if (resCenterDialog != null)
                                                 resCenterDialog.dismiss();
                                         }
-                                    }););
+                                    });
                         }
                     });
                 }

@@ -162,14 +162,14 @@ public class SolutionListActivity extends BasePresenterActivity<SolutionListActi
         if (!isCreateReso) {
             if (editAppealSolutionModel.isEdit) {
                 if (editAppealSolutionModel.isChatReso) {
-                    UnifyTracking.eventResoChatChatClickCloseEditPage(
+                    UnifyTracking.eventResoChatClickCloseEditPage(
                             editAppealSolutionModel.resolutionId);
                 } else {
 
                 }
             } else {
                 if (editAppealSolutionModel.isChatReso) {
-                    UnifyTracking.eventResoChatChatClickCloseAppealPage(
+                    UnifyTracking.eventResoChatClickCloseAppealPage(
                             editAppealSolutionModel.resolutionId);
                 } else {
 

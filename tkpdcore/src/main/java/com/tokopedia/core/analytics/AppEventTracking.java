@@ -495,6 +495,12 @@ public interface AppEventTracking {
         String CLICK_ACCEPT_SOLUTION_BACK_DIALOG_CHAT = "click kembali from terima solusi";
         String CLICK_CANCEL_COMPLAINT_YES_DIALOG_CHAT = "click ya from batalkan komplain";
         String CLICK_CANCEL_COMPLAINT_BACK_DIALOG_CHAT = "click kembali from batalkan komplain";
+        String CLICK_SUBMIT_INPUT_ADDRESS_PAGE_DETAIL = "click submit from masukkan alamat";
+        String CLICK_CANCEL_INPUT_ADDRESS_PAGE_DETAIL = "click cancel from masukkan alamat";
+        String CLICK_BACK_INPUT_ADDRESS_PAGE_DETAIL = "click back arrow from masukkan alamat";
+        String CLICK_SUBMIT_EDIT_ADDRESS_PAGE_DETAIL = "click submit from ubah alamat";
+        String CLICK_CANCEL_EDIT_ADDRESS_PAGE_DETAIL = "click cancel from ubah alamat";
+        String CLICK_BACK_EDIT_ADDRESS_PAGE_DETAIL = "click back arrow from ubah alamat";
 
 
         String CLICK_CHANGE_PHONE_NUMBER = "click on ubah";

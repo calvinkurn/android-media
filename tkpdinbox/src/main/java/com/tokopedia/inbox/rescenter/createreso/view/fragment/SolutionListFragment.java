@@ -174,7 +174,7 @@ public class SolutionListFragment extends BaseDaggerFragment
             if (editAppealSolutionModel.isEdit) {
                 if (editAppealSolutionModel.isChatReso) {
 
-                    UnifyTracking.eventResoChatChatClickSolutionEditPage(
+                    UnifyTracking.eventResoChatClickSolutionEditPage(
                             editAppealSolutionModel.resolutionId,
                             solutionViewModel.getSolutionName());
                 } else {
@@ -182,7 +182,7 @@ public class SolutionListFragment extends BaseDaggerFragment
                 }
             } else {
                 if (editAppealSolutionModel.isChatReso) {
-                    UnifyTracking.eventResoChatChatClickSolutionAppealPage(
+                    UnifyTracking.eventResoChatClickSolutionAppealPage(
                             editAppealSolutionModel.resolutionId,
                             solutionViewModel.getSolutionName());
                 } else {
