@@ -94,7 +94,7 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             this.index = position;
             tvTicketName.setText(viewModel.getDisplayName());
 //            tvTicketMaxprice.setText("Rp" + " " + CurrencyUtil.convertToCurrencyString(viewModel.getMrp()));
-            if (viewModel.getDescription() != null && viewModel.getDescription().length() > 0)
+            if (viewModel.getDescription() != null && viewModel.getDescription().length() > 3)
                 tickeyDescriptionText.setText(viewModel.getDescription());
             else
                 tickeyDescriptionText.setVisibility(View.GONE);

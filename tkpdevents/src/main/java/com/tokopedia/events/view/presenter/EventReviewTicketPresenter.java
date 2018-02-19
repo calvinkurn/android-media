@@ -70,6 +70,7 @@ public class EventReviewTicketPresenter
     private SelectedSeatViewModel selectedSeatViewModel;
     private ArrayList<String> hints = new ArrayList<>();
     private ArrayList<String> errors = new ArrayList<>();
+    private RequestParams paymentparams;
 
     @Inject
     public EventReviewTicketPresenter(PostVerifyCartUseCase usecase, PostPaymentUseCase payment, ProfileUseCase profileUseCase) {
@@ -288,7 +289,7 @@ public class EventReviewTicketPresenter
     public void verifyCart() {
         getView().showProgressBar();
 //        postVerifyCartUseCase.setCartItems(convertPackageToCartItem(checkoutData), !isPromoCodeCase);
-        RequestParams params = RequestParams.create();
+        final RequestParams params = RequestParams.create();
         params.putObject("checkoutdata",convertPackageToCartItem(checkoutData));
         params.putBoolean("ispromocodecase",!isPromoCodeCase);
         postVerifyCartUseCase.execute(params, new Subscriber<VerifyCartResponse>() {
@@ -320,7 +321,8 @@ public class EventReviewTicketPresenter
                         getView().hideProgressBar();
                         getView().showMessage("Silahkan Isi Data Pelanggan Tambahan");
                     } else {
-                        postPaymentUseCase.setVerfiedCart(verifyCartResponse.getCart());
+                        paymentparams = RequestParams.create();
+                        paymentparams.putObject("verfiedcart",verifyCartResponse.getCart());
                         getPaymentLink();
                     }
                 } else {
@@ -347,7 +349,7 @@ public class EventReviewTicketPresenter
     }
 
     private void getPaymentLink() {
-        postPaymentUseCase.execute(RequestParams.EMPTY, new Subscriber<CheckoutResponse>() {
+        postPaymentUseCase.execute(paymentparams, new Subscriber<CheckoutResponse>() {
             @Override
             public void onCompleted() {
 

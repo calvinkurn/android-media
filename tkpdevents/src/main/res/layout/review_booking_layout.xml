@@ -605,7 +605,7 @@
                             android:layout_marginRight="@dimen/margin_default"
                             android:paddingLeft="@dimen/margin_default"
                             android:paddingStart="@dimen/margin_default"
-                            android:text="@string/_2_x_rp100000"
+                            android:text="@string/rp_5980000"
                             android:textSize="@dimen/font_micro"
                             android:textStyle="normal" />
                     </RelativeLayout>

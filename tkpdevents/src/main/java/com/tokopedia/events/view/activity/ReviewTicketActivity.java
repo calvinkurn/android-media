@@ -379,13 +379,13 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     @Override
     public boolean validateAllFields() {
         boolean result = true;
-        if(edForm1.getVisibility()==View.VISIBLE)
+        if (edForm1.getVisibility() == View.VISIBLE)
             result = result && mPresenter.validateEditText(edForm1);
-        if(edForm2.getVisibility()==View.VISIBLE)
+        if (edForm2.getVisibility() == View.VISIBLE)
             result = result && mPresenter.validateEditText(edForm2);
-        if(edForm3.getVisibility()==View.VISIBLE)
+        if (edForm3.getVisibility() == View.VISIBLE)
             result = result && mPresenter.validateEditText(edForm3);
-        if(edForm4.getVisibility()==View.VISIBLE)
+        if (edForm4.getVisibility() == View.VISIBLE)
             result = result && mPresenter.validateEditText(edForm4);
         return result;
     }
@@ -489,14 +489,11 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
                     showToastMessage(
                             getString(R.string.alert_payment_canceled_or_failed_digital_module)
                     );
-                    //presenter.processGetCartDataAfterCheckout();
                     break;
                 case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_CANCELLED:
                     showToastMessage(getString(R.string.alert_payment_canceled_digital_module));
-                    //presenter.processGetCartDataAfterCheckout();
                     break;
                 default:
-                    //presenter.processGetCartData();
                     break;
             }
         }
