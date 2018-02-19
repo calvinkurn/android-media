@@ -19,6 +19,7 @@ public class PeopleInfoFragment extends BaseDaggerFragment {
 
     @Override
     protected void initInjector() {
+        getChildFragmentManager().findFragmentByTag("HAI")
         //TODO milhamj
     }
 
