@@ -168,4 +168,8 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
     public void setGuidedSearch(GuidedSearchViewModel guidedSearch) {
         this.guidedSearch = guidedSearch;
     }
+
+    public boolean isGuidedSearch(int position) {
+        return checkDataSize(position) && getItemList().get(position) instanceof GuidedSearchViewModel;
+    }
 }

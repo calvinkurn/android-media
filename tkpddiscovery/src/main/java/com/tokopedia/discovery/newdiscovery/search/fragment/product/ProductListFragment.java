@@ -414,6 +414,7 @@ public class ProductListFragment extends SearchSectionFragment
             public int getSpanSize(int position) {
                 if (adapter.isEmptyItem(position) ||
                         adapter.isHeaderBanner(position) ||
+                        adapter.isGuidedSearch(position) ||
                         topAdsRecyclerAdapter.isLoading(position) ||
                         topAdsRecyclerAdapter.isTopAdsViewHolder(position)) {
                     return spanCount;
