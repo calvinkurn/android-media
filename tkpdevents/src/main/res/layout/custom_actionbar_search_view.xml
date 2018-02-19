@@ -24,7 +24,7 @@
         android:gravity="center"
         android:paddingLeft="@dimen/padding_med"
         android:paddingRight="@dimen/padding_med"
-        android:text="Cari"
+        android:text="@string/cari"
         android:textColor="@color/white" />
 
 </RelativeLayout>

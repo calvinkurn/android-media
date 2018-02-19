@@ -64,7 +64,7 @@
                         android:paddingRight="@dimen/margin_default"
                         android:text="The 90s Festival"
                         android:textColor="@color/grey_150"
-                        android:textSize="@dimen/textsize_title"
+                        android:textSize="@dimen/font_small"
                         android:textStyle="bold" />
 
                     <include
@@ -107,7 +107,7 @@
                             android:paddingStart="@dimen/margin_default"
                             android:text="Tiket:"
                             android:textColor="@color/black_70"
-                            android:textSize="@dimen/text_subtitle_size"
+                            android:textSize="@dimen/font_micro"
                             android:textStyle="normal" />
 
                         <TextView
@@ -137,7 +137,7 @@
                             android:layout_marginTop="@dimen/margin_padding_small"
                             android:paddingLeft="@dimen/margin_default"
                             android:paddingStart="@dimen/margin_default"
-                            android:text="Nomor Kursi:"
+                            android:text="@string/nomor_kursi"
                             android:textColor="@color/black_70"
                             android:textSize="12sp"
                             android:textStyle="normal" />
@@ -149,9 +149,8 @@
                             android:layout_alignParentRight="true"
                             android:layout_marginRight="100dp"
                             android:layout_marginTop="@dimen/margin_padding_small"
-                            android:text="C4,C5,C6,C7"
                             android:textColor="@color/black_54"
-                            android:textSize="@dimen/text_subtitle_size"
+                            android:textSize="@dimen/font_micro"
                             android:textStyle="normal" />
                     </RelativeLayout>
                 </LinearLayout>
@@ -213,9 +212,9 @@
                         android:foreground="?attr/selectableItemBackground"
                         android:gravity="center"
                         android:padding="@dimen/divider_height_thin"
-                        android:text="Ubah"
+                        android:text="@string/ubah"
                         android:textColor="@color/black_38"
-                        android:textSize="@dimen/text_subtitle_size"
+                        android:textSize="@dimen/font_micro"
                         android:textStyle="bold" />
 
                     <TextView
@@ -226,9 +225,9 @@
                         android:layout_marginBottom="-8dp"
                         android:layout_marginLeft="@dimen/margin_default"
                         android:layout_marginStart="@dimen/margin_default"
-                        android:text="E-mail"
+                        android:text="@string/email"
                         android:textColor="@color/grey_700"
-                        android:textSize="@dimen/text_subtitle_size"
+                        android:textSize="@dimen/font_micro"
                         android:textStyle="normal" />
 
                     <EditText
@@ -241,7 +240,7 @@
                         android:layout_marginStart="12dp"
                         android:text="Mad Max and 4 Others"
                         android:textColor="@color/grey_500"
-                        android:textSize="@dimen/textsize_title"
+                        android:textSize="@dimen/font_small"
                         android:textStyle="normal" />
 
                     <TextView
@@ -260,9 +259,9 @@
                         android:foreground="?attr/selectableItemBackground"
                         android:gravity="center"
                         android:padding="@dimen/divider_height_thin"
-                        android:text="Ubah"
+                        android:text="@string/ubah"
                         android:textColor="@color/black_38"
-                        android:textSize="@dimen/text_subtitle_size"
+                        android:textSize="@dimen/font_micro"
                         android:textStyle="bold" />
 
                     <TextView
@@ -275,7 +274,7 @@
                         android:layout_marginStart="@dimen/margin_default"
                         android:text="No. Telepon"
                         android:textColor="@color/black_70"
-                        android:textSize="@dimen/text_subtitle_size"
+                        android:textSize="@dimen/font_micro"
                         android:textStyle="normal" />
 
                     <EditText
@@ -288,7 +287,7 @@
                         android:paddingBottom="8dp"
                         android:text="Mad Max and 4 Others"
                         android:textColor="@color/grey_500"
-                        android:textSize="@dimen/textsize_title"
+                        android:textSize="@dimen/font_small"
                         android:textStyle="normal" />
                 </RelativeLayout>
 
@@ -348,7 +347,7 @@
                         android:layout_marginStart="@dimen/margin_default"
                         android:text="Informasi ini akan digunakan pada saat penukaran tiket"
                         android:textColor="@color/grey_500"
-                        android:textSize="@dimen/textsize_title"
+                        android:textSize="@dimen/font_small"
                         android:textStyle="normal" />
 
                     <EditText
@@ -358,7 +357,7 @@
                         android:layout_marginLeft="12dp"
                         android:layout_marginStart="12dp"
                         android:textColor="@color/grey_500"
-                        android:textSize="@dimen/textsize_title"
+                        android:textSize="@dimen/font_small"
                         android:textStyle="normal"
                         android:visibility="gone" />
 
@@ -370,7 +369,7 @@
                         android:layout_marginStart="12dp"
                         android:paddingBottom="8dp"
                         android:textColor="@color/grey_500"
-                        android:textSize="@dimen/textsize_title"
+                        android:textSize="@dimen/font_small"
                         android:textStyle="normal"
                         android:visibility="gone" />
 
@@ -382,7 +381,7 @@
                         android:layout_marginStart="12dp"
                         android:paddingBottom="8dp"
                         android:textColor="@color/grey_500"
-                        android:textSize="@dimen/textsize_title"
+                        android:textSize="@dimen/font_small"
                         android:textStyle="normal"
                         android:visibility="gone" />
 
@@ -394,7 +393,7 @@
                         android:layout_marginStart="12dp"
                         android:paddingBottom="@dimen/margin_padding_medium"
                         android:textColor="@color/grey_500"
-                        android:textSize="@dimen/textsize_title"
+                        android:textSize="@dimen/font_small"
                         android:textStyle="normal"
                         android:visibility="gone" />
                 </LinearLayout>
@@ -431,7 +430,7 @@
                             android:layout_marginStart="@dimen/margin_default"
                             android:text="Gunakan Kode Promo Tokopedia"
                             android:textColor="@color/black_70"
-                            android:textSize="@dimen/textsize_title"
+                            android:textSize="@dimen/font_small"
                             android:textStyle="normal" />
                     </LinearLayout>
 
@@ -456,7 +455,7 @@
                             android:paddingLeft="0dp"
                             android:paddingRight="0dp"
                             android:paddingStart="0dp"
-                            android:textSize="@dimen/textsize_title"
+                            android:textSize="@dimen/font_small"
                             android:textStyle="normal" />
 
                         <TextView
@@ -472,7 +471,7 @@
                             android:gravity="center"
                             android:text="@string/cek_kode"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/text_subtitle_size"
+                            android:textSize="@dimen/font_micro"
                             android:textStyle="normal" />
 
                         <TextView
@@ -490,7 +489,7 @@
                             android:gravity="center"
                             android:text="Batal"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/text_subtitle_size"
+                            android:textSize="@dimen/font_micro"
                             android:textStyle="normal"
                             android:visibility="gone" />
 
@@ -508,7 +507,7 @@
                             android:gravity="center"
                             android:text="Anda mendapatkan promo:"
                             android:textColor="@color/grey_700"
-                            android:textSize="@dimen/text_subtitle_size"
+                            android:textSize="@dimen/font_micro"
                             android:textStyle="normal"
                             android:visibility="gone" />
 
@@ -521,12 +520,12 @@
                             android:layout_gravity="end|center_vertical"
                             android:layout_marginLeft="@dimen/margin_default"
                             android:layout_marginStart="@dimen/margin_default"
-                            android:layout_marginTop="8dp"
+                            android:layout_marginTop="@dimen/margin_padding_medium"
                             android:foreground="?attr/selectableItemBackground"
                             android:gravity="center"
                             android:text="cashback mesage"
                             android:textColor="@color/colorPrimary"
-                            android:textSize="@dimen/text_subtitle_size"
+                            android:textSize="@dimen/font_micro"
                             android:textStyle="normal"
                             android:visibility="gone" />
 
@@ -576,7 +575,7 @@
                             android:paddingStart="@dimen/margin_default"
                             android:text="Base Fare"
                             android:textColor="@color/grey_700"
-                            android:textSize="@dimen/text_subtitle_size"
+                            android:textSize="@dimen/font_micro"
                             android:textStyle="normal" />
 
                         <TextView
@@ -591,7 +590,7 @@
                             android:paddingStart="@dimen/margin_default"
                             android:text="Rp 540000"
                             android:textColor="@color/grey_500"
-                            android:textSize="@dimen/text_subtitle_size"
+                            android:textSize="@dimen/font_micro"
                             android:textStyle="normal" />
 
                         <TextView
@@ -607,7 +606,7 @@
                             android:paddingLeft="@dimen/margin_default"
                             android:paddingStart="@dimen/margin_default"
                             android:text="@string/_2_x_rp100000"
-                            android:textSize="@dimen/text_subtitle_size"
+                            android:textSize="@dimen/font_micro"
                             android:textStyle="normal" />
                     </RelativeLayout>
 
@@ -624,7 +623,7 @@
                             android:paddingStart="@dimen/margin_default"
                             android:text="Biaya Layanan"
                             android:textColor="@color/grey_700"
-                            android:textSize="@dimen/text_subtitle_size"
+                            android:textSize="@dimen/font_micro"
                             android:textStyle="normal" />
 
                         <TextView
@@ -639,7 +638,7 @@
                             android:paddingStart="@dimen/margin_default"
                             android:text="Rp 540000"
                             android:textColor="@color/grey_500"
-                            android:textSize="@dimen/text_subtitle_size"
+                            android:textSize="@dimen/font_micro"
                             android:textStyle="normal" />
                     </RelativeLayout>
 
@@ -663,7 +662,7 @@
                             android:paddingStart="@dimen/margin_default"
                             android:text="Pembayaran Anda"
                             android:textColor="@color/black_70"
-                            android:textSize="@dimen/textsize_title"
+                            android:textSize="@dimen/font_small"
                             android:textStyle="bold" />
 
                         <TextView
@@ -701,7 +700,7 @@
                     android:layout_marginTop="@dimen/margin_default"
                     android:text="@string/some_info"
                     android:textColor="@color/black_54"
-                    android:textSize="@dimen/text_subtitle_size" />
+                    android:textSize="@dimen/font_micro" />
 
                 <include
                     android:id="@+id/btn_go_to_payment"

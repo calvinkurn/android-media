@@ -7,7 +7,7 @@
         android:id="@+id/abc"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="@dimen/margin_small"
         android:focusableInTouchMode="false"
         android:scrollbars="vertical">
 

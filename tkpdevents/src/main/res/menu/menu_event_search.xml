@@ -5,7 +5,7 @@
         android:id="@+id/action_filter"
         android:icon="@drawable/ic_filter_list"
         android:orderInCategory="500"
-        android:title="Filters"
+        android:title="@string/filter"
         app:showAsAction="always" />
 
 </menu>

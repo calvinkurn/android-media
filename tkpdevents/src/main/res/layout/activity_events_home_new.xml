@@ -65,7 +65,8 @@
                             android:layout_alignParentLeft="true"
                             android:layout_below="@id/event_bannerpager"
                             android:background="@color/grey_100"
-                            android:visibility="gone">
+                            android:visibility="gone"
+                            android:layout_alignParentStart="true">
 
                             <com.tokopedia.events.view.utils.CirclePageIndicator
                                 android:id="@+id/pager_indicator"
@@ -87,12 +88,13 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical|right"
-                                android:layout_marginRight="@dimen/icon_size_large"
+                                android:layout_marginRight="@dimen/new_margin_big"
                                 android:gravity="top"
-                                android:text="Lihat Semua Promo"
+                                android:text="@string/promo_button_text"
                                 android:textColor="@color/green_nob"
                                 android:textStyle="normal"
-                                android:visibility="gone" />
+                                android:visibility="gone"
+                                android:layout_marginEnd="@dimen/new_margin_big" />
 
                             <ImageView
                                 android:layout_width="@dimen/margin_default"
@@ -100,7 +102,8 @@
                                 android:layout_gravity="center_vertical|right"
                                 android:layout_marginRight="@dimen/margin_default"
                                 android:visibility="gone"
-                                app:srcCompat="@drawable/ic_arrow_right" />
+                                app:srcCompat="@drawable/ic_arrow_right"
+                                android:layout_marginEnd="@dimen/margin_default" />
                         </FrameLayout>
                     </RelativeLayout>
 

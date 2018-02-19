@@ -57,6 +57,22 @@
     <string name="seat_selection_title">Pilih Kursi</string>
     <string name="review_title">Rincian</string>
     <string name="price_holder">Rp %1$s</string>
+    <string name="promo_button_text">Lihat Semua Promo</string>
+    <string name="top_events">TOP EVENTS</string>
+    <string name="max_ticket_warning">Maks. 4 tiket</string>
+    <string name="zero">0</string>
+    <string name="habis_terjual">HABIS TERJUAL</string>
+    <string name="first_class">First Class</string>
+    <string name="ticket_desc">Anak kecil di bawah umur 12 tahun harus didampingi orang dewasa berusia 18 tahun ke atas. Harga tiket sudah termasuk biaya layanan.</string>
+    <string name="cari">Cari</string>
+    <string name="filter">Filters</string>
+    <string name="search">Search</string>
+    <string name="daftar_transaksi">Daftar Transaksi</string>
+    <string name="bantuan">Bantuan</string>
+    <string name="promo">Promo</string>
+    <string name="nomor_kursi">Nomor Kursi:</string>
+    <string name="ubah">Ubah</string>
+    <string name="email">E-mail</string>
 
     <!-- need to changed -->
 

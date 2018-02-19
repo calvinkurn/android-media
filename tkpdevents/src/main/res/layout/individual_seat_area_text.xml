@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="8dp"
+    android:layout_marginLeft="@dimen/margin_padding_medium"
     android:orientation="horizontal">
 
     <TextView
@@ -13,7 +13,7 @@
         android:layout_margin="@dimen/divider_height_thin"
         android:layout_marginLeft="@dimen/margin_left_skip_nob"
         android:textColor="@color/black"
-        android:textSize="@dimen/text_subtitle_size" />
+        android:textSize="@dimen/font_micro" />
 
     <LinearLayout
         android:id="@+id/seatTextLayout"

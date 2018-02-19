@@ -28,7 +28,7 @@
             android:layout_marginTop="@dimen/margin_default"
             android:text="@string/data_pelanggan_tambahan"
             android:textColor="@color/black_70"
-            android:textSize="@dimen/textsize_title"
+            android:textSize="@dimen/font_small"
             android:textStyle="bold" />
 
         <TextView
@@ -40,7 +40,7 @@
             android:layout_marginStart="@dimen/margin_default"
             android:text="@string/additionallinfo_text"
             android:textColor="@color/black_54"
-            android:textSize="@dimen/textsize_title" />
+            android:textSize="@dimen/font_small" />
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"

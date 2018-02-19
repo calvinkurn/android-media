@@ -20,7 +20,7 @@
             android:layout_marginTop="@dimen/margin_med"
             android:text="@string/show_tnc"
             android:textColor="@color/black_70"
-            android:textSize="@dimen/text_subtitle_size"
+            android:textSize="@dimen/font_micro"
             android:textStyle="bold" />
 
         <at.blogc.android.views.ExpandableTextView
@@ -34,7 +34,7 @@
             android:maxLines="3"
             android:text="@string/bigcontent"
             android:textColor="@color/grey_500"
-            android:textSize="@dimen/text_subtitle_size"
+            android:textSize="@dimen/font_micro"
             app:animation_duration="300" />
 
         <LinearLayout
@@ -52,7 +52,7 @@
                 android:layout_marginTop="@dimen/margin_padding_medium"
                 android:text="@string/expand"
                 android:textColor="@color/green_nob"
-                android:textSize="@dimen/text_subtitle_size"
+                android:textSize="@dimen/font_micro"
                 android:textStyle="bold" />
 
             <ImageView
@@ -62,7 +62,7 @@
                 android:layout_marginBottom="@dimen/margin_padding_medium"
                 android:layout_marginLeft="@dimen/margin_padding_medium"
                 android:layout_marginStart="@dimen/margin_padding_medium"
-                android:layout_marginTop="@dimen/text_subtitle_size"
+                android:layout_marginTop="@dimen/font_micro"
                 android:tint="@color/green_nob"
                 app:srcCompat="@drawable/ic_arrow_down" />
         </LinearLayout>

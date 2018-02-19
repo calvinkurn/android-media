@@ -13,8 +13,7 @@
         android:paddingEnd="@dimen/margin_default"
         android:paddingStart="@dimen/margin_default"
         android:textStyle="normal"
-        android:text="Sample Filter LAbel"
-        android:textSize="@dimen/textsize_title" />
+        android:textSize="@dimen/font_small" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_filter_list"

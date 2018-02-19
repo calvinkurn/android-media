@@ -6,23 +6,23 @@
         android:id="@+id/action_menu_search"
         android:icon="@drawable/ic_search_icon"
         android:orderInCategory="100"
-        android:title="Search"
+        android:title="@string/search"
         android:visible="false"
         app:showAsAction="always"
         tools:ignore="AppCompatResource" />
     <item
         android:id="@+id/action_booked_history"
         android:orderInCategory="50"
-        android:title="Daftar Transaksi"
+        android:title="@string/daftar_transaksi"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_faq"
         android:orderInCategory="50"
-        android:title="Bantuan"
+        android:title="@string/bantuan"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_promo"
         android:orderInCategory="50"
-        android:title="Promo"
+        android:title="@string/promo"
         app:showAsAction="never" />
 </menu>

@@ -40,7 +40,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginRight="@dimen/margin_default"
-                android:layout_marginTop="@dimen/margin_padding_medium"
+                android:layout_marginTop="@dimen/margin_default"
                 android:background="@drawable/rounded_rectange_transparent"
                 android:gravity="center_horizontal"
                 android:paddingBottom="@dimen/margin_padding_small"
@@ -49,7 +49,7 @@
                 android:paddingTop="@dimen/margin_padding_small"
                 android:text="@string/_350_u0020_ticket_u0020_sold"
                 android:textColor="@color/black_38"
-                android:textSize="@dimen/textsize_title"
+                android:textSize="@dimen/font_small"
                 android:textStyle="normal"
                 android:visibility="visible" />
 
@@ -71,7 +71,7 @@
                 android:layout_alignParentTop="true"
                 android:text="The 90's Festival"
                 android:textColor="@color/grey_150"
-                android:textSize="@dimen/textsize_title"
+                android:textSize="@dimen/font_small"
                 android:textStyle="bold" />
 
             <!--<TextView-->
@@ -97,7 +97,7 @@
                 android:layout_below="@+id/textView3"
                 android:text="Rp 552.00"
                 android:textColor="@color/orange"
-                android:textSize="@dimen/textsize_title"
+                android:textSize="@dimen/font_small"
                 android:textStyle="bold" />
 
             <TextView
@@ -140,7 +140,7 @@
                     android:paddingStart="@dimen/margin_padding_small"
                     android:text="25 Nov 2017 Pukul"
                     android:textColor="@color/grey_500"
-                    android:textSize="@dimen/text_subtitle_size"
+                    android:textSize="@dimen/font_micro"
                     android:textStyle="normal" />
             </LinearLayout>
 
@@ -170,7 +170,7 @@
                     android:paddingStart="@dimen/margin_padding_small"
                     android:text="25 Nov 2017 Pukul"
                     android:textColor="@color/grey_500"
-                    android:textSize="@dimen/text_subtitle_size"
+                    android:textSize="@dimen/font_micro"
                     android:textStyle="normal" />
 
             </LinearLayout>
