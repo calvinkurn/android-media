@@ -42,7 +42,13 @@ public class ValidateOtpLoginUseCase extends UseCase<ValidateOtpLoginDomain> {
     public Observable<ValidateOtpLoginDomain> createObservable(RequestParams requestParams) {
         ValidateOtpLoginDomain domain = new ValidateOtpLoginDomain();
         return validateOTP(requestParams, domain)
-                .flatMap(makeLogin(requestParams, domain));
+                .flatMap(makeLogin(requestParams, domain))
+                .doOnError(new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        sessionHandler.clearToken();
+                    }
+                });
     }
 
     private Observable<ValidateOtpLoginDomain> validateOTP(RequestParams requestParams,
