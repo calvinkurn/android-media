@@ -470,7 +470,7 @@ public class LoginFragment extends BaseDaggerFragment
             public void onRetryClicked() {
                 presenter.discoverLogin();
             }
-        });
+        }).showRetrySnackbar();
         loginButton.setEnabled(false);
     }
 
