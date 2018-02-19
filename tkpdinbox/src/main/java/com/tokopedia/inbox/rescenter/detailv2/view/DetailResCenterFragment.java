@@ -579,7 +579,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     @Override
     public void setOnActionAppealClick() {
         startActivityForResult(
-                SolutionListActivity.newAppealInstance(getActivity(), resolutionID),
+                SolutionListActivity.newAppealInstance(getActivity(), resolutionID, false),
                 REQUEST_APPEAL_SOLUTION);
     }
 
@@ -600,10 +600,10 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     private Intent getIntentEditResCenter() {
         if (isSeller()) {
             return SolutionListActivity.newSellerEditInstance(getActivity(),
-                    resolutionID);
+                    resolutionID, false);
         } else {
             return SolutionListActivity.newBuyerEditInstance(getActivity(),
-                    resolutionID);
+                    resolutionID, false);
         }
     }
 

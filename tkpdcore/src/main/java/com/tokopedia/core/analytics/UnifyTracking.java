@@ -3400,6 +3400,96 @@ public class UnifyTracking extends TrackingUtils {
         ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
     }
 
+    public static void eventResoChatChatClickCloseAppealPage(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER_CHAT,
+                AppEventTracking.Action.CLICK_CLOSE_APPEAL_PAGE_CHAT,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoChatChatClickCloseEditPage(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER_CHAT,
+                AppEventTracking.Action.CLICK_CLOSE_EDIT_PAGE_CHAT,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoChatChatClickSolutionAppealPage(String resolutionId, String solution) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER_CHAT,
+                AppEventTracking.Action.CLICK_SOLUTION_APPEAL_PAGE_CHAT,
+                solution
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoChatChatClickSolutionEditPage(String resolutionId, String solution) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER_CHAT,
+                AppEventTracking.Action.CLICK_SOLUTION_EDIT_PAGE_CHAT,
+                solution
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoChatImpressionAcceptSolutionDialog(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER_VIEW,
+                AppEventTracking.Category.RESOLUTION_CENTER_CHAT,
+                AppEventTracking.Action.IMPRESSION_ACCEPT_SOLUTION_DIALOG_CHAT,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoChatClickYesAcceptSolutionDialog(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER_CHAT,
+                AppEventTracking.Action.CLICK_ACCEPT_SOLUTION_YES_DIALOG_CHAT,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoChatClickBackAcceptSolutionDialog(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER_CHAT,
+                AppEventTracking.Action.CLICK_ACCEPT_SOLUTION_BACK_DIALOG_CHAT,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoChatImpressionCancelComplaintDialog(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER_VIEW,
+                AppEventTracking.Category.RESOLUTION_CENTER_CHAT,
+                AppEventTracking.Action.IMPRESSION_CANCEL_COMPLAINT_DIALOG_CHAT,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoChatClickYesCancelComplaintDialog(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER_CHAT,
+                AppEventTracking.Action.CLICK_CANCEL_COMPLAINT_YES_DIALOG_CHAT,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
+    public static void eventResoChatClickBackCancelComplaintDialog(String resolutionId) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
+                AppEventTracking.Category.RESOLUTION_CENTER_CHAT,
+                AppEventTracking.Action.CLICK_CANCEL_COMPLAINT_BACK_DIALOG_CHAT,
+                ""
+        ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId).getEvent());
+    }
+
 
 
     public static void eventClickChangePhoneNumber() {

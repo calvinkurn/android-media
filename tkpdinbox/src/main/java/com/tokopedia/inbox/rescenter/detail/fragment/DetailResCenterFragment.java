@@ -461,11 +461,11 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
         if (apiModelData.getDetail().getResolutionBy().getByCustomer() == 1) {
 //            return EditResCenterActivity.newBuyerInstance(getActivity(), passData, apiModelData);
             return SolutionListActivity.newBuyerEditInstance(getActivity(),
-                    passData.getResCenterId());
+                    passData.getResCenterId(), false);
         } else {
 //            return EditResCenterActivity.newSellerInstance(getActivity(), passData, apiModelData);
             return SolutionListActivity.newSellerEditInstance(getActivity(),
-                    passData.getResCenterId());
+                    passData.getResCenterId(), false);
         }
     }
 

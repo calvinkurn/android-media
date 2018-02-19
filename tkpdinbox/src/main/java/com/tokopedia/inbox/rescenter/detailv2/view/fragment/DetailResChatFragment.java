@@ -650,12 +650,24 @@ public class DetailResChatFragment
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        UnifyTracking.eventResoChatClickAskHelp(resolutionId);
                         showActionDialog(buttonDomain.getReportLabel(), buttonDomain
                                 .getReportText(), new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                UnifyTracking.eventResoChatClickAskHelp(resolutionId);
                                 presenter.actionAskHelp();
+                                if (resCenterDialog != null)
+                                    resCenterDialog.dismiss();
+                            }
+                        }, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                if (resCenterDialog != null)
+                                    resCenterDialog.dismiss();
+                            }
+                        }, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
                                 if (resCenterDialog != null)
                                     resCenterDialog.dismiss();
                             }
@@ -672,12 +684,27 @@ public class DetailResChatFragment
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        UnifyTracking.eventResoChatClickCancelComplaint(resolutionId);
+                        UnifyTracking.eventResoChatImpressionCancelComplaintDialog(resolutionId);
                         showActionDialog(buttonDomain.getCancelLabel(), buttonDomain
                                 .getCancelText(), new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                UnifyTracking.eventResoChatClickCancelComplaint(resolutionId);
                                 presenter.actionCancelComplaint();
+                                UnifyTracking.eventResoChatClickYesCancelComplaintDialog(resolutionId);
+                                if (resCenterDialog != null)
+                                    resCenterDialog.dismiss();
+                            }
+                        }, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                UnifyTracking.eventResoChatClickBackCancelComplaintDialog(resolutionId);
+                                if (resCenterDialog != null)
+                                    resCenterDialog.dismiss();
+                            }
+                        }, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
                                 if (resCenterDialog != null)
                                     resCenterDialog.dismiss();
                             }
@@ -694,8 +721,8 @@ public class DetailResChatFragment
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        doEditSolution();
                         UnifyTracking.eventResoChatClickChangeSolution(resolutionId);
+                        doEditSolution();
                     }
                 });
                 UnifyTracking.eventResoChatImpressionChangeSolution(resolutionId);
@@ -750,12 +777,27 @@ public class DetailResChatFragment
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        UnifyTracking.eventResoChatClickAcceptSolution(resolutionId);
+                        UnifyTracking.eventResoChatImpressionAcceptSolutionDialog(resolutionId);
                         showActionDialog(buttonDomain.getFinishLabel(), buttonDomain
                                 .getFinishText(), new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                UnifyTracking.eventResoChatClickAcceptSolution(resolutionId);
+                                UnifyTracking.eventResoChatClickYesAcceptSolutionDialog(resolutionId);
                                 presenter.actionFinish();
+                                if (resCenterDialog != null)
+                                    resCenterDialog.dismiss();
+                            }
+                        }, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                UnifyTracking.eventResoChatClickBackAcceptSolutionDialog(resolutionId);
+                                if (resCenterDialog != null)
+                                    resCenterDialog.dismiss();
+                            }
+                        }, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
                                 if (resCenterDialog != null)
                                     resCenterDialog.dismiss();
                             }
@@ -773,17 +815,32 @@ public class DetailResChatFragment
                     button.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            UnifyTracking.eventResoChatClickAcceptSolution(resolutionId);
+                            UnifyTracking.eventResoChatImpressionAcceptSolutionDialog(resolutionId);
                             showActionDialog(buttonDomain.getAcceptLabel(),
                                     buttonDomain.getAcceptTextLite(),
                                     new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            UnifyTracking.eventResoChatClickAcceptSolution(resolutionId);
+                                            UnifyTracking.eventResoChatClickYesAcceptSolutionDialog(resolutionId);
                                             presenter.actionAcceptSolution();
                                             if (resCenterDialog != null)
                                                 resCenterDialog.dismiss();
                                         }
-                                    });
+                                    }, new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            UnifyTracking.eventResoChatClickBackAcceptSolutionDialog(resolutionId);
+                                            if (resCenterDialog != null)
+                                                resCenterDialog.dismiss();
+                                        }
+                                    }, new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            if (resCenterDialog != null)
+                                                resCenterDialog.dismiss();
+                                        }
+                                    }););
                         }
                     });
                 }
@@ -829,7 +886,10 @@ public class DetailResChatFragment
         return spaceView;
     }
 
-    private void showActionDialog(String title, String solution, View.OnClickListener action) {
+    private void showActionDialog(String title, String solution,
+                                  View.OnClickListener acceptAction,
+                                  View.OnClickListener backAction,
+                                  View.OnClickListener closeAction) {
         resCenterDialog = new Dialog(getActivity());
         resCenterDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         resCenterDialog.setContentView(R.layout.layout_rescenter_dialog);
@@ -841,19 +901,9 @@ public class DetailResChatFragment
         String newTitle = title + "?";
         tvTitle.setText(newTitle);
         tvSolution.setText(MethodChecker.fromHtml(solution));
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                resCenterDialog.dismiss();
-            }
-        });
-        ivClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                resCenterDialog.dismiss();
-            }
-        });
-        btnAccept.setOnClickListener(action);
+        btnBack.setOnClickListener(backAction);
+        ivClose.setOnClickListener(closeAction);
+        btnAccept.setOnClickListener(acceptAction);
         resCenterDialog.show();
     }
 
@@ -880,15 +930,15 @@ public class DetailResChatFragment
     private Intent getIntentEditResCenter() {
         if (isSeller()) {
             return SolutionListActivity.newSellerEditInstance(getActivity(),
-                    resolutionId);
+                    resolutionId, true);
         } else {
             return SolutionListActivity.newBuyerEditInstance(getActivity(),
-                    resolutionId);
+                    resolutionId, true);
         }
     }
 
     private Intent getAppealResCenter() {
-        return SolutionListActivity.newAppealInstance(getActivity(), resolutionId);
+        return SolutionListActivity.newAppealInstance(getActivity(), resolutionId, true);
     }
 
     private boolean isSeller() {

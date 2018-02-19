@@ -468,6 +468,8 @@ public interface AppEventTracking {
         String IMPRESSION_GREEN_ARROW = "impression green arrow";
         String IMPRESSION_SAVE_INPUT_AWB_CHAT = "impression from masukkan no resi";
         String IMPRESSION_SAVE_EDIT_AWB_CHAT = "impression from edit resi";
+        String IMPRESSION_ACCEPT_SOLUTION_DIALOG_CHAT = "impression from terima solusi";
+        String IMPRESSION_CANCEL_COMPLAINT_DIALOG_CHAT = "impression from batalkan komplain";
 
         String CLICK_ACCEPT_SOLUTION = "click terima solusi";
         String CLICK_CANCEL_COMPLAINT = "click batalkan komplain";
@@ -485,6 +487,14 @@ public interface AppEventTracking {
         String CLICK_CANCEL_INPUT_AWB_CHAT = "click kembali from masukkan no resi";
         String CLICK_SAVE_EDIT_AWB_CHAT = "click simpan from edit resi";
         String CLICK_CANCEL_EDIT_AWB_CHAT = "click kembali from edit resi";
+        String CLICK_CLOSE_APPEAL_PAGE_CHAT = "click x from naik banding";
+        String CLICK_SOLUTION_APPEAL_PAGE_CHAT = "click solusi naik banding";
+        String CLICK_CLOSE_EDIT_PAGE_CHAT = "click x from ubah solusi";
+        String CLICK_SOLUTION_EDIT_PAGE_CHAT = "click solusi ubah solusi";
+        String CLICK_ACCEPT_SOLUTION_YES_DIALOG_CHAT = "click ya from terima solusi";
+        String CLICK_ACCEPT_SOLUTION_BACK_DIALOG_CHAT = "click kembali from terima solusi";
+        String CLICK_CANCEL_COMPLAINT_YES_DIALOG_CHAT = "click ya from batalkan komplain";
+        String CLICK_CANCEL_COMPLAINT_BACK_DIALOG_CHAT = "click kembali from batalkan komplain";
 
 
         String CLICK_CHANGE_PHONE_NUMBER = "click on ubah";

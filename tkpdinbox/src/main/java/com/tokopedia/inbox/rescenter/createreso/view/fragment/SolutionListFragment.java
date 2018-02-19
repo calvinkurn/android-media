@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
@@ -169,6 +170,26 @@ public class SolutionListFragment extends BaseDaggerFragment
     @Override
     public void onItemClicked(SolutionViewModel solutionViewModel) {
         presenter.solutionClicked(solutionViewModel);
+        if (isEditAppeal) {
+            if (editAppealSolutionModel.isEdit) {
+                if (editAppealSolutionModel.isChatReso) {
+
+                    UnifyTracking.eventResoChatChatClickSolutionEditPage(
+                            editAppealSolutionModel.resolutionId,
+                            solutionViewModel.getSolutionName());
+                } else {
+
+                }
+            } else {
+                if (editAppealSolutionModel.isChatReso) {
+                    UnifyTracking.eventResoChatChatClickSolutionAppealPage(
+                            editAppealSolutionModel.resolutionId,
+                            solutionViewModel.getSolutionName());
+                } else {
+
+                }
+            }
+        }
     }
 
     @Override

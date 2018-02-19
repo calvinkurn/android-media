@@ -8,6 +8,7 @@ import android.os.Parcelable;
  */
 
 public class EditAppealSolutionModel implements Parcelable {
+    public boolean isChatReso;
     public boolean isEdit;
     public String resolutionId;
     public boolean isSeller;
@@ -15,6 +16,14 @@ public class EditAppealSolutionModel implements Parcelable {
     public String name;
     public String solutionName;
     public int refundAmount;
+
+    public boolean isChatReso() {
+        return isChatReso;
+    }
+
+    public void setChatReso(boolean chatReso) {
+        isChatReso = chatReso;
+    }
 
     public boolean isEdit() {
         return isEdit;
@@ -72,10 +81,11 @@ public class EditAppealSolutionModel implements Parcelable {
         this.refundAmount = refundAmount;
     }
 
-    public EditAppealSolutionModel(boolean isEdit, String resolutionId, boolean isSeller) {
+    public EditAppealSolutionModel(boolean isEdit, String resolutionId, boolean isSeller, boolean isChatReso) {
         this.isEdit = isEdit;
         this.resolutionId = resolutionId;
         this.isSeller = isSeller;
+        this.isChatReso = isChatReso;
     }
 
     @Override

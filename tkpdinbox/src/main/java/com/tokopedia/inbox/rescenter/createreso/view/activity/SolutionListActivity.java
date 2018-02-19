@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.inbox.R;
@@ -25,40 +26,56 @@ public class SolutionListActivity extends BasePresenterActivity<SolutionListActi
     public static final String RESULT_VIEW_MODEL_DATA = "result_view_model_data";
     private static final String ARGS_PARAM_FLAG_EDIT = "ARGS_PARAM_FLAG_EDIT";
 
+    private static final String PARAM_IS_CREATE_RESO = "param_is_create_reso";
+
+
+    private ResultViewModel resultViewModel;
     private EditAppealSolutionModel editAppealSolutionModel;
+    private boolean isCreateReso;
 
     public static Intent newBuyerEditInstance(Context context,
-                                              String resolutionID) {
+                                              String resolutionID,
+                                              Boolean isChatReso) {
         Intent intent = new Intent(context, SolutionListActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARGS_PARAM_PASS_DATA,
-                generateEditPassData(true, resolutionID, false));
+                generateEditPassData(true, resolutionID, false, isChatReso));
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent newCreateInstance(Context context,
+                                           ResultViewModel resultViewModel) {
+        Intent intent = new Intent(context, SolutionListActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(RESULT_VIEW_MODEL_DATA, resultViewModel);
+        bundle.putBoolean(PARAM_IS_CREATE_RESO, true);
         intent.putExtras(bundle);
         return intent;
     }
 
     public static Intent newSellerEditInstance(Context context,
-                                               String resolutionID) {
+                                               String resolutionID,
+                                               Boolean isChatReso) {
         Intent intent = new Intent(context, SolutionListActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARGS_PARAM_PASS_DATA,
-                generateEditPassData(true, resolutionID, true));
+                generateEditPassData(true, resolutionID, true, isChatReso));
         intent.putExtras(bundle);
         return intent;
     }
 
     public static Intent newAppealInstance(Context context,
-                                           String resolutionID) {
+                                           String resolutionID,
+                                           Boolean isChatReso) {
         Intent intent = new Intent(context, SolutionListActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARGS_PARAM_PASS_DATA,
-                generateEditPassData(false, resolutionID, false));
+                generateEditPassData(false, resolutionID, false, isChatReso));
         intent.putExtras(bundle);
         return intent;
     }
 
-
-    ResultViewModel resultViewModel;
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -77,7 +94,7 @@ public class SolutionListActivity extends BasePresenterActivity<SolutionListActi
         } else {
             editAppealSolutionModel = extras.getParcelable(ARGS_PARAM_PASS_DATA);
         }
-
+        isCreateReso = extras.getBoolean(PARAM_IS_CREATE_RESO, false);
     }
 
     @Override
@@ -135,7 +152,30 @@ public class SolutionListActivity extends BasePresenterActivity<SolutionListActi
 
     public static EditAppealSolutionModel generateEditPassData(boolean isEdit,
                                                                String resolutionId,
-                                                               boolean isSeller) {
-        return new EditAppealSolutionModel(isEdit, resolutionId, isSeller);
+                                                               boolean isSeller,
+                                                               boolean isChatReso) {
+        return new EditAppealSolutionModel(isEdit, resolutionId, isSeller, isChatReso);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!isCreateReso) {
+            if (editAppealSolutionModel.isEdit) {
+                if (editAppealSolutionModel.isChatReso) {
+                    UnifyTracking.eventResoChatChatClickCloseEditPage(
+                            editAppealSolutionModel.resolutionId);
+                } else {
+
+                }
+            } else {
+                if (editAppealSolutionModel.isChatReso) {
+                    UnifyTracking.eventResoChatChatClickCloseAppealPage(
+                            editAppealSolutionModel.resolutionId);
+                } else {
+
+                }
+            }
+        }
+        super.onBackPressed();
     }
 }
