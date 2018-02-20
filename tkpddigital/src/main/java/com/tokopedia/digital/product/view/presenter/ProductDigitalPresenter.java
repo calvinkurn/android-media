@@ -586,6 +586,13 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                 });
     }
 
+    @Override
+    public void onHelpMenuClicked() {
+        if (view.getHelpUrl() != null && view.getHelpUrl().length() > 0) {
+            view.navigateToWebview(view.getHelpUrl());
+        }
+    }
+
     private String getPhoneNumberForSim(int simIndex, Operator operator, List<Validation> validationList) {
         String phoneNumber = getUssdPhoneNumberFromCache(simIndex);
         if (!DeviceUtil.validateNumberAndMatchOperator(validationList, operator, phoneNumber)) {

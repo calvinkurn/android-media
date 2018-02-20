@@ -61,6 +61,7 @@ import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
 import com.tokopedia.digital.common.data.source.FavoriteListDataSource;
 import com.tokopedia.digital.common.domain.IDigitalCategoryRepository;
 import com.tokopedia.digital.common.domain.interactor.GetCategoryByIdUseCase;
+import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.compoundview.ClientNumberInputView;
 import com.tokopedia.digital.product.data.mapper.USSDMapper;
@@ -417,6 +418,22 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public void showHelpMenu(String url) {
         digitalHelpUrl = url;
         getActivity().invalidateOptionsMenu();
+    }
+
+    @Override
+    public String getHelpUrl() {
+        return digitalHelpUrl;
+    }
+
+    @Override
+    public void navigateToWebview(String helpUrl) {
+        if (getActivity() != null && getActivity().getApplication() instanceof DigitalModuleRouter) {
+            Intent intent = ((DigitalModuleRouter) getActivity().getApplication())
+                    .getDefaultContactUsIntent(getActivity(), helpUrl);
+            if (intent != null) {
+                startActivity(intent);
+            }
+        }
     }
 
     @Override
@@ -858,6 +875,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                                     + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST
                     )
             );
+            return true;
+        } else if (item.getItemId() == R.id.action_menu_help_digital) {
+            presenter.onHelpMenuClicked();
             return true;
         } else {
             return super.onOptionsItemSelected(item);

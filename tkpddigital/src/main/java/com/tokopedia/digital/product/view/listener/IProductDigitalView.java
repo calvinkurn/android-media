@@ -64,4 +64,8 @@ public interface IProductDigitalView extends IBaseView {
     void removeCheckPulsaCards();
 
     void showHelpMenu(String url);
+
+    String getHelpUrl();
+
+    void navigateToWebview(String helpUrl);
 }
