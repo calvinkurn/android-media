@@ -110,7 +110,7 @@ public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerI
     @Override
     public void onSearchLoaded(@NonNull List<SellerInfoModel> list, int totalItem, boolean hasNext) {
         onSearchLoaded(list, totalItem);
-        hasNextPage = hasNext;
+        hasNextPage = hasNext && !list.isEmpty() && totalItem > 0;
     }
 
     @Override
