@@ -15,10 +15,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
+import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,7 @@ import javax.inject.Inject;
 public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_VIEW_ITEM_CART = R.layout.holder_item_cart_new;
     private static final int TYPE_VIEW_PROMO_SUGGESTION = R.layout.holder_item_cart_potential_promo;
+    private static final int TYPE_VIEW_PROMO = R.layout.holder_item_cart_promo;
 
     private final ActionListener actionListener;
     private List<Object> cartItemHolderDataList;
@@ -173,6 +176,18 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     actionListener.onCartPromoSuggestionButtonCloseClicked(data, position);
                 }
             });
+        } else if (getItemViewType(position) == TYPE_VIEW_PROMO) {
+            final CartPromoHolder holderView = (CartPromoHolder) holder;
+            final CartItemPromoHolderData data = (CartItemPromoHolderData) cartItemHolderDataList.get(position);
+            if (data.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_COUPON) {
+                holderView.voucherCartHachikoView.setCoupon(
+                        data.getCouponTitle(), data.getCouponMessage(), data.getCouponCode()
+                );
+            } else if (data.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_NOT_ACTIVE) {
+                holderView.voucherCartHachikoView.setVoucher(
+                        data.getVoucherCode(), data.getVoucherMessage()
+                );
+            }
         }
 
         onBind = false;
@@ -349,6 +364,15 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             this.btnClose = itemView.findViewById(R.id.btn_close);
             this.tvAction = itemView.findViewById(R.id.tv_action);
             this.tvDesc = itemView.findViewById(R.id.tv_desc);
+        }
+    }
+
+    public class CartPromoHolder extends RecyclerView.ViewHolder {
+        private VoucherCartHachikoView voucherCartHachikoView;
+
+        public CartPromoHolder(View itemView) {
+            super(itemView);
+            this.voucherCartHachikoView = itemView.findViewById(R.id.voucher_cart_holder_view);
         }
     }
 
