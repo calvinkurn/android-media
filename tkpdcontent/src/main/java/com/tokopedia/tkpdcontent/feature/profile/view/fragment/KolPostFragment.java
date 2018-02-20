@@ -1,5 +1,7 @@
 package com.tokopedia.tkpdcontent.feature.profile.view.fragment;
 
+import android.os.Bundle;
+
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.tkpdcontent.feature.profile.di.KolProfileComponent;
 import com.tokopedia.tkpdcontent.feature.profile.view.listener.KolPostListener;
@@ -14,6 +16,13 @@ import javax.inject.Inject;
 public class KolPostFragment extends BaseDaggerFragment implements KolPostListener.View {
     @Inject
     KolPostListener.Presenter presenter;
+
+    public static KolPostFragment newInstance() {
+        KolPostFragment fragment = new KolPostFragment();
+        Bundle bundle = new Bundle();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Override
     protected String getScreenName() {

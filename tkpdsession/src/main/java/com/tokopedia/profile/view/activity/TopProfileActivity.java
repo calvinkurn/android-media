@@ -9,7 +9,9 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseEmptyActivity;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.session.R;
 
@@ -22,9 +24,18 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
     private AppBarLayout appBarLayout;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private Toolbar toolbar;
+    private BaseDaggerFragment kolPostFragment;
 
     public static Intent newInstance(Context context) {
         return new Intent(context, TopProfileActivity.class);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getApplicationContext() instanceof SessionRouter) {
+            kolPostFragment = ((SessionRouter) getApplicationContext()).getKolPostFragment();
+        }
     }
 
     @Override

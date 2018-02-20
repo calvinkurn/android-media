@@ -18,6 +18,7 @@ import com.facebook.react.ReactNativeHost;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
@@ -174,6 +175,7 @@ import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.truecaller.TruecallerActivity;
 import com.tokopedia.tkpdcontent.KolRouter;
+import com.tokopedia.tkpdcontent.feature.profile.view.fragment.KolPostFragment;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
@@ -730,6 +732,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getHomeIntent(Context context) {
         return new Intent(context, ParentIndexHome.class);
+    }
+
+    @Override
+    public BaseDaggerFragment getKolPostFragment() {
+        return KolPostFragment.newInstance();
     }
 
     @Override
