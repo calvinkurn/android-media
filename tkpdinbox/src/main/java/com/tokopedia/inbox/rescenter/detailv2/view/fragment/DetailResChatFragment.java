@@ -390,7 +390,6 @@ public class DetailResChatFragment
                                 initActionButton(detailResChatDomain.getButton());
                             }
                             attachmentAdapter.notifyItemRemoved(position);
-                            attachmentAdapter.notifyItemRangeRemoved(position, attachmentAdapter.getItemCount());
                         }
                     }
                 };
