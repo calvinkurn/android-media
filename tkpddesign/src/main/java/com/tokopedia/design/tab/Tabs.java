@@ -59,6 +59,9 @@ public class Tabs extends TabLayout {
         } else if (tabType == SECONDARY) {
             secondaryStyle();
         }
+
+        this.setTabGravity(GRAVITY_FILL);
+        this.setSelectedTabIndicatorHeight((int) (4 * getResources().getDisplayMetrics().density));
     }
 
     public void setTabType(int tabType) {
@@ -69,21 +72,17 @@ public class Tabs extends TabLayout {
     private void mainStyle() {
         int white = ContextCompat.getColor(getContext(), R.color.white);
         this.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
-        this.setTabGravity(GRAVITY_FILL);
         this.setSelectedTabIndicatorColor(white);
-        this.setSelectedTabIndicatorHeight(4);
-        this.setTabMode(MODE_SCROLLABLE);
         this.setTabTextColors(white, white);
+        this.setTabMode(MODE_FIXED);
     }
 
     private void secondaryStyle() {
         int green = ContextCompat.getColor(getContext(), R.color.tkpd_main_green);
         this.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
-        this.setTabGravity(GRAVITY_FILL);
         this.setSelectedTabIndicatorColor(green);
-        this.setSelectedTabIndicatorHeight(4);
-        this.setTabMode(MODE_SCROLLABLE);
         this.setTabTextColors(green, green);
+        this.setTabMode(MODE_SCROLLABLE);
     }
 
 }
