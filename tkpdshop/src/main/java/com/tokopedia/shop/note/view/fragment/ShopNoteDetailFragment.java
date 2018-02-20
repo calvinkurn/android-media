@@ -2,6 +2,7 @@ package com.tokopedia.shop.note.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,11 +31,11 @@ public class ShopNoteDetailFragment extends BaseDaggerFragment implements ShopNo
     @Inject
     ShopNoteDetailPresenter shopNoteDetailPresenter;
     private String shopNoteId;
-    private TextView shopNoteTitle;
-    private TextView shopNoteDate;
-    private TextView shopNoteDesc;
+    private TextView titleTextView;
+    private TextView dateTextView;
+    private TextView descTextView;
 
-    public static ShopNoteDetailFragment newInstance(String noteId){
+    public static ShopNoteDetailFragment newInstance(String noteId) {
         ShopNoteDetailFragment shopNoteListFragment = new ShopNoteDetailFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ShopParamConstant.SHOP_NOTE_ID, noteId);
@@ -58,10 +59,10 @@ public class ShopNoteDetailFragment extends BaseDaggerFragment implements ShopNo
         return view;
     }
 
-    private void initView(View view){
-        shopNoteTitle = view.findViewById(R.id.shop_note_title);
-        shopNoteDate = view.findViewById(R.id.shop_note_date);
-        shopNoteDesc = view.findViewById(R.id.shop_note_desc);
+    private void initView(View view) {
+        titleTextView = view.findViewById(R.id.text_view_title);
+        dateTextView = view.findViewById(R.id.text_view_date);
+        descTextView = view.findViewById(R.id.text_view_desc);
     }
 
     @Override
@@ -81,7 +82,7 @@ public class ShopNoteDetailFragment extends BaseDaggerFragment implements ShopNo
         DaggerShopNoteComponent
                 .builder()
                 .shopNoteModule(new ShopNoteModule())
-                .shopComponent( ShopComponentInstance.getComponent(getActivity().getApplication()))
+                .shopComponent(ShopComponentInstance.getComponent(getActivity().getApplication()))
                 .build()
                 .inject(this);
 
@@ -99,14 +100,18 @@ public class ShopNoteDetailFragment extends BaseDaggerFragment implements ShopNo
     }
 
     @Override
-    public void showError(Throwable e) {
-
+    public void onErrorGetShopNoteList(Throwable e) {
+        //TODO Need to show error
     }
 
     @Override
-    public void render(ShopNoteDetail shopNoteDetail) {
-        shopNoteTitle.setText(shopNoteDetail.getNotes().getTitle());
-        shopNoteDate.setText(shopNoteDetail.getNotes().getLastUpdate());
-        shopNoteDesc.setText(shopNoteDetail.getNotes().getContent());
+    public void onSuccessGetShopNoteList(ShopNoteDetail shopNoteDetail) {
+        titleTextView.setText(shopNoteDetail.getNotes().getTitle());
+        dateTextView.setText(shopNoteDetail.getNotes().getLastUpdate());
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            descTextView.setText(Html.fromHtml(shopNoteDetail.getNotes().getContent(), Html.FROM_HTML_MODE_LEGACY));
+        } else {
+            descTextView.setText(Html.fromHtml(shopNoteDetail.getNotes().getContent()));
+        }
     }
 }

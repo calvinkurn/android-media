@@ -1,9 +1,13 @@
 package com.tokopedia.shop.address.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
+import com.tokopedia.shop.R;
 import com.tokopedia.shop.address.view.adapter.ShopAddressAdapterTypeFactory;
 import com.tokopedia.shop.address.view.adapter.ShopAddressTypeFactory;
 import com.tokopedia.shop.address.view.listener.ShopAddressListView;
@@ -38,6 +42,13 @@ public class ShopAddressListFragment extends BaseListFragment<Visitable, ShopAdd
         super.onCreate(savedInstanceState);
         shopId = getArguments().getString(ShopParamConstant.SHOP_ID);
         shopAddressListPresenter.attachView(this);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        VerticalRecyclerView recyclerView = view.findViewById(R.id.recycler_view);
+        recyclerView.clearItemDecoration();
     }
 
     @Override

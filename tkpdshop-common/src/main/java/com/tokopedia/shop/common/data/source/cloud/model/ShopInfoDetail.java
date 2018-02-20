@@ -82,10 +82,10 @@ public class ShopInfoDetail {
     private String shopName;
     @SerializedName("shop_official_bot")
     @Expose
-    private long shopOfficialBot;
+    private String shopOfficialBot;
     @SerializedName("shop_official_top")
     @Expose
-    private long shopOfficialTop;
+    private String shopOfficialTop;
     @SerializedName("shop_open_since")
     @Expose
     private String shopOpenSince;
@@ -318,19 +318,19 @@ public class ShopInfoDetail {
         this.shopName = shopName;
     }
 
-    public long getShopOfficialBot() {
+    public String getShopOfficialBot() {
         return shopOfficialBot;
     }
 
-    public void setShopOfficialBot(long shopOfficialBot) {
+    public void setShopOfficialBot(String shopOfficialBot) {
         this.shopOfficialBot = shopOfficialBot;
     }
 
-    public long getShopOfficialTop() {
+    public String getShopOfficialTop() {
         return shopOfficialTop;
     }
 
-    public void setShopOfficialTop(long shopOfficialTop) {
+    public void setShopOfficialTop(String shopOfficialTop) {
         this.shopOfficialTop = shopOfficialTop;
     }
 

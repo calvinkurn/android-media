@@ -26,6 +26,7 @@
     <string name="shop_info_label_shop_owner">Pemilik Toko</string>
     <string name="shop_info_physical_shop_location_count">%1d Lokasi</string>
     <string name="shop_info_physical_shop_location_only_online">Hanya Online</string>
+    <string name="shop_info_success_percentage">%1$s%%</string>
 
     <string name="shop_info_label_default_content">-</string>
     <string name="reputation_label">Reputasi</string>

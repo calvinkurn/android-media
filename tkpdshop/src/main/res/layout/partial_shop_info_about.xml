@@ -17,9 +17,27 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:divider="@drawable/bg_line_separator"
+        android:divider="@drawable/bg_list_separator"
         android:orientation="vertical"
         android:showDividers="middle">
+
+        <LinearLayout
+            style="@style/LabelLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_view_tagline"
+                style="@style/TextView.Small.BlackDisabled"
+                tools:text="@string/app_name" />
+
+            <TextView
+                android:id="@+id/text_view_description"
+                style="@style/TextView.Small.BlackDisabled"
+                android:layout_marginTop="@dimen/margin_small"
+                tools:text="@string/app_name" />
+        </LinearLayout>
 
         <com.tokopedia.design.label.LabelView
             android:id="@+id/label_view_physical_shop"

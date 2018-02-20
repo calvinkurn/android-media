@@ -34,9 +34,14 @@ import javax.inject.Inject;
 
 public class ShopPageActivity extends BaseTabActivity implements HasComponent<ShopComponent>, ShopPageView {
 
-    public static Intent createIntent(Context context, String shopInfo, String shopDomain) {
+    public static Intent createIntent(Context context, String shopId) {
         Intent intent = new Intent(context, ShopPageActivity.class);
-        intent.putExtra(SHOP_ID, shopInfo);
+        intent.putExtra(SHOP_ID, shopId);
+        return intent;
+    }
+
+    public static Intent createIntentWithDomain(Context context, String shopDomain) {
+        Intent intent = new Intent(context, ShopPageActivity.class);
         intent.putExtra(SHOP_DOMAIN, shopDomain);
         return intent;
     }
@@ -56,16 +61,11 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        if (savedInstanceState == null) {
-            shopId = getIntent().getStringExtra(SHOP_ID);
-            shopDomain = getIntent().getStringExtra(SHOP_DOMAIN);
-        } else {
-            throw new RuntimeException("please pass shop id");
-        }
+        super.onCreate(savedInstanceState);
         initInjector();
         shopPagePresenter.attachView(this);
-        super.onCreate(savedInstanceState);
+        shopId = getIntent().getStringExtra(SHOP_ID);
+        shopDomain = getIntent().getStringExtra(SHOP_DOMAIN);
         shopInfoHeaderViewHelper = new ShopInfoHeaderViewHelper(getWindow().getDecorView().getRootView(), shopPagePresenter.getUserSession());
         shopPagePresenter.getShopInfo(shopId);
         if (getApplication() != null && getApplication() instanceof ShopModuleRouter) {

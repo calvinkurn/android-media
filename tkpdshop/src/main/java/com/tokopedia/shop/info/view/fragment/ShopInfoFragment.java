@@ -1,8 +1,10 @@
 package com.tokopedia.shop.info.view.fragment;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,7 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.shop.R;
@@ -58,6 +62,9 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
     private TextView scoreNeutralTextView;
     private TextView scoreBadTextView;
 
+    private TextView taglineTextView;
+    private TextView descriptionTextView;
+
     private RecyclerView recyclerView;
 
     private ShopInfoLogisticAdapter shopInfoLogisticAdapter;
@@ -95,7 +102,11 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
         scoreNeutralTextView = view.findViewById(R.id.text_view_score_neutral);
         scoreBadTextView = view.findViewById(R.id.text_view_score_bad);
 
+        taglineTextView = view.findViewById(R.id.text_view_tagline);
+        descriptionTextView = view.findViewById(R.id.text_view_description);
+
         recyclerView = view.findViewById(R.id.recycler_view);
+        recyclerView.setNestedScrollingEnabled(false);
         return view;
     }
 
@@ -106,7 +117,10 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
     }
 
     private void displayBasicShopInfo(ShopInfo shopInfo) {
-        transactionSuccessLabelView.setContent(shopInfo.getShopTxStats().getShopTxSuccessRate1Year());
+        if (getActivity() instanceof BaseTabActivity) {
+            ((BaseTabActivity) getActivity()).updateTitle(shopInfo.getInfo().getShopName());
+        }
+        transactionSuccessLabelView.setContent(getString(R.string.shop_info_success_percentage, shopInfo.getShopTxStats().getShopTxSuccessRate1Year()));
         totalTransactionLabelView.setContent(shopInfo.getStats().getShopTotalTransaction());
         productSoldLabelView.setContent(shopInfo.getStats().getShopItemSold());
 //        totalReviewLabelView.setContent(shopInfo.getStats().rev);
@@ -119,6 +133,9 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
         scoreGoodTextView.setText(shopInfo.getStats().getShopLastTwelveMonths().getCountScoreGood());
         scoreNeutralTextView.setText(shopInfo.getStats().getShopLastTwelveMonths().getCountScoreNeutral());
         scoreBadTextView.setText(shopInfo.getStats().getShopLastTwelveMonths().getCountScoreBad());
+
+        taglineTextView.setText(shopInfo.getInfo().getShopTagline());
+        descriptionTextView.setText(shopInfo.getInfo().getShopDescription());
 
         String physicalAddressContent = getString(R.string.shop_info_physical_shop_location_only_online);
         if (shopInfo.getAddress().size() > 0) {
@@ -149,6 +166,7 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(shopInfoLogisticAdapter);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
     }
 
     @Override

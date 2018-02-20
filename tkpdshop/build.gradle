@@ -9,10 +9,6 @@ def getTkpdUseCase() {
     return project.hasProperty('isArtifact') ? rootProject.ext.tkpdDependencies.usecase : project(':tkpdusecase')
 }
 
-def getTkpdInterface() {
-    return project.hasProperty('isArtifact') ? rootProject.ext.tkpdDependencies.interface : project(':tkpdinterface')
-}
-
 def getTkpdCacheApi() {
     return project.hasProperty('isArtifact') ? rootProject.ext.tkpdDependencies.cacheapi : project(':tkpdcacheapi')
 }
@@ -43,7 +39,6 @@ dependencies {
 
     compile getTkpdUseCase()
     compile getTkpdAbstraction()
-    compile getTkpdInterface()
     compile getTkpdCacheApi()
 
     compile project(':tkpdshop-common')

@@ -2,7 +2,8 @@ package com.tokopedia.shop.product.domain.model;
 
 import android.text.TextUtils;
 
-import com.tokopedia.shop.common.constant.ShopParamApiContant;
+import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant;
+import com.tokopedia.shop.common.constant.ShopParamApiConstant;
 
 import java.util.HashMap;
 
@@ -89,13 +90,13 @@ public class ShopProductRequestModel {
     public HashMap<String, String> getHashMap() {
         HashMap<String, String> hashMap = new HashMap<>();
         if (!TextUtils.isEmpty(shopId)) {
-            hashMap.put(ShopParamApiContant.SHOP_ID, shopId);
+            hashMap.put(ShopCommonParamApiConstant.SHOP_ID, shopId);
         }
         if (!TextUtils.isEmpty(keyword)) {
-            hashMap.put(ShopParamApiContant.KEYWORD, keyword);
+            hashMap.put(ShopParamApiConstant.KEYWORD, keyword);
         }
         if (!TextUtils.isEmpty(etalaseId)) {
-            hashMap.put(ShopParamApiContant.ETALASE_ID, etalaseId);
+            hashMap.put(ShopParamApiConstant.ETALASE_ID, etalaseId);
         }
 //        hashMap.put(ShopParamApiContant.PAGE, String.valueOf(page));
 //        hashMap.put(ShopParamApiContant.ORDER_BY, String.valueOf(orderBy));

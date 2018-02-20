@@ -2,10 +2,6 @@ package com.tokopedia.shop;
 
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.reputation.speed.SpeedReputation;
-
-import rx.Observable;
-
 /**
  * Created by normansyahputa on 2/13/18.
  */

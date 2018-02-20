@@ -7,8 +7,9 @@ import com.tokopedia.shop.note.data.source.cloud.model.ShopNoteDetail;
  * Created by normansyahputa on 2/8/18.
  */
 
-public interface ShopNoteDetailView extends CustomerView{
-    void showError(Throwable e);
+public interface ShopNoteDetailView extends CustomerView {
 
-    void render(ShopNoteDetail shopNoteDetail);
+    void onErrorGetShopNoteList(Throwable e);
+
+    void onSuccessGetShopNoteList(ShopNoteDetail shopNoteDetail);
 }
