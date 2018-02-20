@@ -262,6 +262,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 shortcutManager.removeAllDynamicShortcuts();
             }
 
+
             Bundle args = new Bundle();
             args.putBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, true);
             args.putBoolean(Constants.FROM_APP_SHORTCUTS, true);
@@ -292,7 +293,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                     .setIcon(Icon.createWithResource(this, R.drawable.ic_bayar))
                     .setIntents(new Intent[]{intentHome, digitalIntent})
                     .build();
-
 
             if (SessionHandler.isV4Login(this)) {
                 String shopID = SessionHandler.getShopID(this);
@@ -331,10 +331,12 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 if (shortcutManager != null) {
                     shortcutManager.addDynamicShortcuts(Arrays.asList(referralShortcut, shopShortcut, productShortcut, digitalShortcut));
                 }
+            } else {
+                if (shortcutManager != null) {
+                    shortcutManager.addDynamicShortcuts(Arrays.asList(productShortcut, digitalShortcut));
+                }
             }
-            if (shortcutManager != null) {
-                shortcutManager.addDynamicShortcuts(Arrays.asList(productShortcut, digitalShortcut));
-            }
+
         }
     }
 

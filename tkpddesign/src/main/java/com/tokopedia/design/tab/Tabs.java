@@ -71,7 +71,7 @@ public class Tabs extends TabLayout {
         this.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
         this.setTabGravity(GRAVITY_FILL);
         this.setSelectedTabIndicatorColor(white);
-        this.setSelectedTabIndicatorHeight(4);
+        this.setSelectedTabIndicatorHeight((int) (4 * getResources().getDisplayMetrics().density));
         this.setTabMode(MODE_FIXED);
         this.setTabTextColors(white, white);
     }
@@ -81,7 +81,7 @@ public class Tabs extends TabLayout {
         this.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
         this.setTabGravity(GRAVITY_FILL);
         this.setSelectedTabIndicatorColor(green);
-        this.setSelectedTabIndicatorHeight(4);
+        this.setSelectedTabIndicatorHeight((int) (4 * getResources().getDisplayMetrics().density));
         this.setTabMode(MODE_SCROLLABLE);
         this.setTabTextColors(green, green);
     }
