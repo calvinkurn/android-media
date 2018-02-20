@@ -71,4 +71,10 @@
     <string name="payment_description_transfer_procedure">Mohon lakukan pembayaran pesanan Rp. %1$s ke %2$s %3$s sebelum %4$s. Untuk info lebih lanjut cek status pembayaran Anda.</string>
     <string name="wishlist_empty_title">Wishlist masih kosong</string>
     <string name="wishlist_empty_message">Masuk untuk melihat produk-produk pilihan Anda</string>
+
+    <string name="longpress_beli">Beli</string>
+    <string name="longpress_bayar">Bayar</string>
+    <string name="longpress_jual">Jual</string>
+    <string name="longpress_share">Share</string>
+
 </resources>
