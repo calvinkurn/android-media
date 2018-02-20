@@ -26,6 +26,10 @@ public interface KolPostListener {
     }
 
     interface Presenter extends CustomerPresenter<View> {
+        void initView();
+
+        void getKolPost();
+
         void followKol(int id, int rowNumber, View kolListener);
 
         void unfollowKol(int id, int rowNumber, View kolListener);

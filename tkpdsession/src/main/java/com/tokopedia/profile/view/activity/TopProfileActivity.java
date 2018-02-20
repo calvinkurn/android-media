@@ -8,12 +8,14 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseEmptyActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.session.R;
+import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberWarningFragment;
 
 /**
  * @author by milhamj on 08/02/18.
@@ -45,6 +47,22 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
         collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
         toolbar = findViewById(R.id.toolbar);
         setupToolbar();
+        inflateFragment();
+    }
+
+    //TODO milhamj remove this func
+    private void inflateFragment() {
+        String TAG = "LOL";
+        if (getSupportFragmentManager().findFragmentByTag(TAG) != null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container,
+                            getSupportFragmentManager().findFragmentByTag(TAG))
+                    .commit();
+        } else {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.container, kolPostFragment, TAG)
+                    .commit();
+        }
     }
 
     @Override
