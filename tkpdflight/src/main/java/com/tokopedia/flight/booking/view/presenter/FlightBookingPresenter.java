@@ -418,6 +418,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                             if (getView().getContactPhoneNumber().length() == 0) {
                                 getView().setContactPhoneNumber(transform(profileInfo.getPhoneNumber()));
                             }
+                            getView().setContactBirthdate(FlightDateUtil.dateToString(FlightDateUtil.stringToDate(profileInfo.getBday()), FlightDateUtil.DEFAULT_VIEW_FORMAT));
                         }
                     }
                 })

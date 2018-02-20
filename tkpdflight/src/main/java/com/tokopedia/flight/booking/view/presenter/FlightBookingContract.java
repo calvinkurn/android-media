@@ -102,6 +102,10 @@ public interface FlightBookingContract {
 
         void setContactPhoneNumber(String phone);
 
+        void setContactBirthdate(String birthdate);
+
+        String getContactBirthdate();
+
         void showContactEmailInvalidSymbolError(@StringRes int resId);
 
         void setSameAsContactChecked(boolean isChecked);

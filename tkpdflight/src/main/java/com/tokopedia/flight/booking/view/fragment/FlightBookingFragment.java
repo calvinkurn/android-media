@@ -114,6 +114,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private LinearLayout sameAsContactContainer;
     private CheckBox sameAsContactCheckbox;
 
+    private String contactBirthdate;
+
     public FlightBookingFragment() {
         // Required empty public constructor
     }
@@ -638,6 +640,16 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     @Override
     public void setContactPhoneNumber(String phone) {
         etPhoneNumber.setText(phone);
+    }
+
+    @Override
+    public void setContactBirthdate(String birthdate) {
+        contactBirthdate = birthdate;
+    }
+
+    @Override
+    public String getContactBirthdate() {
+        return contactBirthdate;
     }
 
     @Override
