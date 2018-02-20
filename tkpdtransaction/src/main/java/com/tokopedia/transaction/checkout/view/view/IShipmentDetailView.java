@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.checkout.view.view;
 
+import android.app.Activity;
+
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.transaction.checkout.view.data.CourierItemData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
@@ -22,10 +24,14 @@ public interface IShipmentDetailView extends CustomerView {
 
     void renderShipmentWithoutMap(ShipmentDetailData shipmentDetailData);
 
+    void renderFirstLoadedRatesData(ShipmentDetailData shipmentDetailData);
+
     void showAllCouriers();
 
     void showPinPointChooserMap(ShipmentDetailData shipmentDetailData);
 
     void showPinPointMap(ShipmentDetailData shipmentDetailData);
+
+    Activity getActivity();
 
 }

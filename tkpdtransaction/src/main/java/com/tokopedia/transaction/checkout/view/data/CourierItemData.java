@@ -8,12 +8,12 @@ import android.os.Parcelable;
  */
 
 public class CourierItemData implements Parcelable {
-    private String id;
+    private int shipperProductId;
     private String name;
     private String estimatedTimeDelivery;
     private String deliverySchedule;
     private String deliveryPrice;
-    private String insurancePrice;
+    private int insurancePrice;
     private String additionalPrice;
     private String courierInfo;
     private int insuranceType;
@@ -28,12 +28,12 @@ public class CourierItemData implements Parcelable {
     }
 
     protected CourierItemData(Parcel in) {
-        id = in.readString();
+        shipperProductId = in.readInt();
         name = in.readString();
         estimatedTimeDelivery = in.readString();
         deliverySchedule = in.readString();
         deliveryPrice = in.readString();
-        insurancePrice = in.readString();
+        insurancePrice = in.readInt();
         additionalPrice = in.readString();
         courierInfo = in.readString();
         insuranceType = in.readInt();
@@ -57,12 +57,12 @@ public class CourierItemData implements Parcelable {
         }
     };
 
-    public String getId() {
-        return id;
+    public int getShipperProductId() {
+        return shipperProductId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setShipperProductId(int shipperProductId) {
+        this.shipperProductId = shipperProductId;
     }
 
     public String getName() {
@@ -105,11 +105,11 @@ public class CourierItemData implements Parcelable {
         this.deliveryPrice = deliveryPrice;
     }
 
-    public String getInsurancePrice() {
+    public int getInsurancePrice() {
         return insurancePrice;
     }
 
-    public void setInsurancePrice(String insurancePrice) {
+    public void setInsurancePrice(int insurancePrice) {
         this.insurancePrice = insurancePrice;
     }
 
@@ -184,12 +184,12 @@ public class CourierItemData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
+        dest.writeInt(shipperProductId);
         dest.writeString(name);
         dest.writeString(estimatedTimeDelivery);
         dest.writeString(deliverySchedule);
         dest.writeString(deliveryPrice);
-        dest.writeString(insurancePrice);
+        dest.writeInt(insurancePrice);
         dest.writeString(additionalPrice);
         dest.writeString(courierInfo);
         dest.writeInt(insuranceType);

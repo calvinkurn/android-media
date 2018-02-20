@@ -124,13 +124,6 @@ public class PickupPointPresenter extends BaseDaggerPresenter<PickupPointContrac
         requestParams.putAll(params);
         requestParams.putString(GetPickupPointsUseCase.PARAM_QUERY, "");
 
-        Log.e("PickupPointPresParams", "This");
-        for (Map.Entry<String, String> entry : requestParams.getParamsAllValueInString().entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-            Log.e(key, value);
-        }
-
         return requestParams;
     }
 }
