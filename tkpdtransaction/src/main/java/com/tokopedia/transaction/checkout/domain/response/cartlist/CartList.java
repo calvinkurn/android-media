@@ -26,7 +26,7 @@ public class CartList {
     private Product product;
     @SerializedName("errors")
     @Expose
-    private List<Object> errors = new ArrayList<>();
+    private List<String> errors = new ArrayList<>();
     @SerializedName("messages")
     @Expose
     private List<Object> messages = new ArrayList<>();
@@ -47,7 +47,7 @@ public class CartList {
         return product;
     }
 
-    public List<Object> getErrors() {
+    public List<String> getErrors() {
         return errors;
     }
 

@@ -1,11 +1,12 @@
 package com.tokopedia.transaction.checkout.domain;
 
-import com.google.gson.JsonObject;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.checkout.domain.response.cartlist.CartDataListResponse;
-import com.tokopedia.transaction.checkout.view.data.CartItemData;
-
-import java.util.List;
+import com.tokopedia.transaction.checkout.domain.response.deletecart.DeleteCartDataResponse;
+import com.tokopedia.transaction.checkout.domain.response.updatecart.UpdateCartDataResponse;
+import com.tokopedia.transaction.checkout.view.data.CartListData;
+import com.tokopedia.transaction.checkout.view.data.DeleteCartData;
+import com.tokopedia.transaction.checkout.view.data.UpdateCartData;
 
 import javax.inject.Inject;
 
@@ -35,12 +36,12 @@ public class CartListInteractor implements ICartListInteractor {
 
 
     @Override
-    public void getCartList(Subscriber<List<CartItemData>> subscriber, TKPDMapParam<String, String> param) {
+    public void getCartList(Subscriber<CartListData> subscriber, TKPDMapParam<String, String> param) {
         compositeSubscription.add(
                 cartRepository.getCartList(param)
-                        .map(new Func1<CartDataListResponse, List<CartItemData>>() {
+                        .map(new Func1<CartDataListResponse, CartListData>() {
                             @Override
-                            public List<CartItemData> call(CartDataListResponse cartDataListResponse) {
+                            public CartListData call(CartDataListResponse cartDataListResponse) {
                                 return mapper.convertToCartItemDataList(cartDataListResponse);
                             }
                         })
@@ -52,7 +53,42 @@ public class CartListInteractor implements ICartListInteractor {
     }
 
     @Override
-    public void deleteCart(Subscriber<String> subscriber, JsonObject param) {
+    public void deleteCart(Subscriber<DeleteCartData> subscriber, TKPDMapParam<String, String> param) {
+        compositeSubscription.add(
+                cartRepository.deleteCartData(param)
+                        .map(new Func1<DeleteCartDataResponse, DeleteCartData>() {
+                            @Override
+                            public DeleteCartData call(DeleteCartDataResponse deleteCartDataResponse) {
+                                return mapper.convertToDeleteCartData(deleteCartDataResponse);
+                            }
+                        })
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(subscriber)
+        );
+    }
+
+    @Override
+    public void updateCart(Subscriber<UpdateCartData> subscriber, TKPDMapParam<String, String> param) {
+        compositeSubscription.add(
+                cartRepository.updateCartData(param)
+                        .map(new Func1<UpdateCartDataResponse, UpdateCartData>() {
+                            @Override
+                            public UpdateCartData call(UpdateCartDataResponse updateCartDataResponse) {
+                                return mapper.convertToUpdateCartData(updateCartDataResponse);
+                            }
+                        }).subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(subscriber)
+        );
+    }
+
+    @Override
+    public void deleteCartWithRefresh(Subscriber<CartListData> subscriber,
+                                      TKPDMapParam<String, String> paramDelete,
+                                      TKPDMapParam<String, String> paramCartList) {
 
     }
 }

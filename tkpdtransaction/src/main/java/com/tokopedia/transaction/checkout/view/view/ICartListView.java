@@ -2,9 +2,9 @@ package com.tokopedia.transaction.checkout.view.view;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.transaction.base.IBaseView;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
+import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
 
 import java.util.List;
@@ -36,4 +36,18 @@ public interface ICartListView extends IBaseView {
     Context getActivityContext();
 
     void renderDetailInfoSubTotal(String qty, String subtotalPrice);
+
+    void renderPromoSuggestion(CartPromoSuggestion cartPromoSuggestion);
+
+    CartPromoSuggestion getCartPromoSuggestionData();
+
+    void renderSuccessDeleteCart(CartItemData cartItemData, String message, boolean addWishList);
+
+    void renderPromoVoucher();
+
+    void showToastMessageRed(String message);
+
+    void renderUpdateDataSuccess(String message);
+
+    void renderUpdateDataFailed(String message);
 }

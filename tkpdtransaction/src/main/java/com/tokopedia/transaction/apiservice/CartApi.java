@@ -2,7 +2,6 @@ package com.tokopedia.transaction.apiservice;
 
 import com.google.gson.JsonObject;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
 
 import java.util.Map;
 
@@ -24,7 +23,6 @@ public interface CartApi {
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Cart.PATH_ADD_TO_CART)
-   // @Headers({"Content-Type: application/x-www-form-urlencoded"})
     Observable<Response<CartResponse>> postAddToCart(@FieldMap Map<String, String> params);
 
     @GET(TkpdBaseURL.Cart.PATH_CART_LIST)
@@ -33,16 +31,13 @@ public interface CartApi {
     @GET(TkpdBaseURL.Cart.PATH_CART_LIST)
     Observable<Response<String>> getCartListString(@QueryMap Map<String, String> params);
 
+    @FormUrlEncoded
     @POST(TkpdBaseURL.Cart.PATH_REMOVE_FROM_CART)
-    @Headers({"Content-Type: application/json"})
-    Observable<Response<CartResponse>> postDeleteCart(@Body JsonObject requestBody);
+    Observable<Response<CartResponse>> postDeleteCart(@FieldMap Map<String, String> params);
 
+    @FormUrlEncoded
     @POST(TkpdBaseURL.Cart.PATH_UPDATE_CART)
-    @Headers({"Content-Type: application/json"})
-    Observable<Response<CartResponse>> postUpdateCart(@Body JsonObject requestBody);
-
-
-
+    Observable<Response<CartResponse>> postUpdateCart(@FieldMap Map<String, String> params);
 
 
 //    public static final String PATH_REMOVE_FROM_CART = "api/" + VERSION + "/remove_product_cart";

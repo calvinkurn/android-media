@@ -9,19 +9,22 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
-import com.tokopedia.transaction.checkout.di.component.SingleAddressShipmentComponent;
 import com.tokopedia.transaction.checkout.di.component.DaggerSingleAddressShipmentComponent;
+import com.tokopedia.transaction.checkout.di.component.SingleAddressShipmentComponent;
 import com.tokopedia.transaction.checkout.di.module.SingleAddressShipmentModule;
 import com.tokopedia.transaction.checkout.domain.SingleAddressShipmentDataConverter;
 import com.tokopedia.transaction.checkout.view.activity.CartAddressChoiceActivity;
 import com.tokopedia.transaction.checkout.view.activity.ShipmentDetailActivity;
 import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
+import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 import com.tokopedia.transaction.checkout.view.presenter.SingleAddressShipmentPresenter;
@@ -30,8 +33,10 @@ import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
 import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -49,13 +54,24 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         SingleAddressShipmentAdapter.SingleAddressShipmentAdapterListener {
 
     public static final String ARG_EXTRA_CART_DATA_LIST = "ARG_EXTRA_CART_DATA_LIST";
+    public static final String ARG_EXTRA_CART_PROMO_SUGGESTION = "ARG_EXTRA_CART_PROMO_SUGGESTION";
+
+    private static final Locale LOCALE_ID = new Locale("in", "ID");
+    private static final NumberFormat CURRENCY_ID = NumberFormat.getCurrencyInstance(LOCALE_ID);
 
     private static final String TAG = SingleAddressShipmentFragment.class.getSimpleName();
     private static final int REQUEST_CODE_SHIPMENT_DETAIL = 11;
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
     private static final int REQUEST_CODE_CHOOSE_ADDRESS = 13;
 
-    @BindView(R2.id.rv_cart_order_details) RecyclerView mRvCartOrderDetails;
+    @BindView(R2.id.rv_cart_order_details)
+    RecyclerView mRvCartOrderDetails;
+    @BindView(R2.id.tv_select_payment_method)
+    TextView mTvSelectPaymentMethod;
+    @BindView(R2.id.ll_total_payment_layout)
+    LinearLayout mLlTotalPaymentLayout;
+    @BindView(R2.id.tv_total_payment)
+    TextView mTvTotalPayment;
 
     @Inject
     SingleAddressShipmentAdapter mSingleAddressShipmentAdapter;
@@ -66,11 +82,13 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     private CartSingleAddressData mCartSingleAddressData;
 
-    public static SingleAddressShipmentFragment newInstance(List<CartItemData> cartItemDataList) {
+    public static SingleAddressShipmentFragment newInstance(List<CartItemData> cartItemDataList,
+                                                            CartPromoSuggestion cartPromoSuggestionData) {
         SingleAddressShipmentFragment fragment = new SingleAddressShipmentFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(ARG_EXTRA_CART_DATA_LIST,
                 (ArrayList<? extends Parcelable>) cartItemDataList);
+        bundle.putParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION, cartPromoSuggestionData);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -141,6 +159,8 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     protected void setupArguments(Bundle arguments) {
         List<CartItemData> cartDataList = arguments.getParcelableArrayList(ARG_EXTRA_CART_DATA_LIST);
         mCartSingleAddressData = mSingleAddressShipmentDataConverter.convert(cartDataList);
+        CartPromoSuggestion cartPromoSuggestion = arguments.getParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION);
+
     }
 
     @Override
@@ -154,8 +174,21 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
         mRvCartOrderDetails.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRvCartOrderDetails.setAdapter(mSingleAddressShipmentAdapter);
+        mRvCartOrderDetails.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (mRvCartOrderDetails != null) {
+                    boolean isReachBottomEnd = mRvCartOrderDetails.canScrollVertically(1);
+                    mLlTotalPaymentLayout.setVisibility(isReachBottomEnd ? View.VISIBLE : View.GONE);
+                }
+            }
+        });
 
         mSingleAddressShipmentPresenter.attachView(this);
+
+        double price = mCartSingleAddressData.getCartPayableDetailModel().getTotalPrice();
+        mTvTotalPayment.setText(CURRENCY_ID.format(price));
     }
 
     /**
@@ -179,12 +212,6 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
      */
     @Override
     protected void setActionVar() {
-    }
-
-    @OnClick(R2.id.btn_next_to_payment_option)
-    protected void onClickToPaymentSection() {
-        Toast.makeText(getActivity(), "Select Payment Options", Toast.LENGTH_SHORT)
-                .show();
     }
 
     @Override
@@ -245,6 +272,16 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                 addressAdapterData.getDestinationDistrictName(),
                 GetPickupPointsUseCase.generateParams(addressAdapterData)
         ), REQUEST_CHOOSE_PICKUP_POINT);
+    }
+
+    @Override
+    public void onTotalPaymentUpdate(String priceFormat) {
+        mTvTotalPayment.setText(priceFormat);
+    }
+
+    @Override
+    public void onRecyclerViewReachBottom() {
+
     }
 
     @Override

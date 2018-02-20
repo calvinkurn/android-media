@@ -1,7 +1,6 @@
 package com.tokopedia.transaction.checkout.view.activity;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -21,14 +20,17 @@ import java.util.List;
  */
 
 public class CartActivity extends BasePresenterActivity
-        implements CartFragment.OnPassingCartDataListener {
+        implements CartFragment.OnPassingCartDataListener,
+        CartRemoveProductFragment.OnPassingCartDataListener {
 
     private List<CartItemData> mCartItemData;
+    private List<CartItemData> mCartItemDataAfterRemove;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCartItemData = new ArrayList<>();
+        mCartItemDataAfterRemove = new ArrayList<>();
     }
 
     @Override
@@ -53,18 +55,22 @@ public class CartActivity extends BasePresenterActivity
     }
 
     @Override
+    public void onBackPressed() {
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            getFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_cart_remove) {
-            Fragment fragment = CartRemoveProductFragment.newInstance(mCartItemData);
-
-            FragmentManager fragmentManager = getFragmentManager();
-            String backStateName = fragment.getClass().getName();
-
-            boolean isFragmentPopped = fragmentManager.popBackStackImmediate(backStateName, 0);
-            if (!isFragmentPopped) {
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, fragment)
-                        .addToBackStack(backStateName)
+            Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
+            if (fragment == null || !(fragment instanceof CartRemoveProductFragment)) {
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.container, CartRemoveProductFragment.newInstance(mCartItemData))
+                        .addToBackStack(null)
                         .commit();
             }
 
@@ -83,8 +89,9 @@ public class CartActivity extends BasePresenterActivity
     protected void initView() {
         Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
         if (fragment == null || !(fragment instanceof CartFragment)) {
-            getFragmentManager().beginTransaction().replace(R.id.container,
-                    CartFragment.newInstance()).commit();
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.container, CartFragment.newInstance())
+                    .commit();
         }
     }
 
@@ -116,4 +123,20 @@ public class CartActivity extends BasePresenterActivity
     public void onPassingCartData(List<CartItemData> cartItemData) {
         mCartItemData = new ArrayList<>(cartItemData);
     }
+
+    /**
+     * Pass data from cart fragment into its container activity
+     *
+     * @param cartItemData List of cart items
+     */
+    @Override
+    public void onAfterRemovePassingCartData(List<CartItemData> cartItemData) {
+        mCartItemDataAfterRemove = new ArrayList<>(cartItemData);
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }
+
 }

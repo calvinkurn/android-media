@@ -1,14 +1,16 @@
 package com.tokopedia.transaction.checkout.view;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Button;
+import android.widget.TextView;
 
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.di.component.CartRemoveProductComponent;
@@ -16,6 +18,8 @@ import com.tokopedia.transaction.checkout.di.component.DaggerCartRemoveProductCo
 import com.tokopedia.transaction.checkout.di.module.CartRemoveProductModule;
 import com.tokopedia.transaction.checkout.view.adapter.CartRemoveProductAdapter;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
+import com.tokopedia.transaction.checkout.view.data.CheckedCartItemData;
+import com.tokopedia.transaction.checkout.view.dialog.CartRemoveItemDialog;
 import com.tokopedia.transaction.checkout.view.presenter.CartRemoveProductPresenter;
 import com.tokopedia.transaction.checkout.view.view.IRemoveProductListView;
 
@@ -35,27 +39,48 @@ import static com.tokopedia.transaction.checkout.view.SingleAddressShipmentFragm
  * @author Aghny A. Putra on 05/02/18
  */
 public class CartRemoveProductFragment extends BasePresenterFragment
-    implements IRemoveProductListView<List<CartItemData>>,
-        CartRemoveProductAdapter.CartRemoveProductActionListener {
+        implements IRemoveProductListView<List<CartItemData>>,
+        CartRemoveProductAdapter.CartRemoveProductActionListener,
+        CartRemoveItemDialog.CartItemRemoveCallbackAction {
 
     private static final Locale LOCALE_ID = new Locale("in", "ID");
     private static final String TAG = CartRemoveProductFragment.class.getSimpleName();
 
-    @BindView(R2.id.rv_cart_remove_product) RecyclerView mRvCartRemoveProduct;
-    @BindView(R2.id.btn_remove_product) Button mBtnRemoveProduct;
+    @BindView(R2.id.rv_cart_remove_product)
+    RecyclerView mRvCartRemoveProduct;
+    @BindView(R2.id.tv_remove_product)
+    TextView mTvRemoveProduct;
 
-    @Inject CartRemoveProductAdapter mCartRemoveProductAdapter;
-    @Inject CartRemoveProductPresenter mCartRemoveProductPresenter;
+    @Inject
+    CartRemoveProductAdapter mCartRemoveProductAdapter;
+    @Inject
+    CartRemoveProductPresenter mCartRemoveProductPresenter;
 
-    private List<CartItemData> mCartItemDataList;
+    private OnPassingCartDataListener mDataPasserListener;
+
     private int mCheckedCartItem = 0;
+
+    private ArrayList<CartItemData> mCartItemDataList = new ArrayList<>();
+    private List<CheckedCartItemData> mCheckedCartItemList = new ArrayList<>();
 
     public static CartRemoveProductFragment newInstance(List<CartItemData> cartItemDataList) {
         CartRemoveProductFragment fragment = new CartRemoveProductFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(ARG_EXTRA_CART_DATA_LIST, (ArrayList<? extends Parcelable>) cartItemDataList);
+        bundle.putParcelableArrayList(ARG_EXTRA_CART_DATA_LIST,
+                (ArrayList<? extends Parcelable>) cartItemDataList);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mDataPasserListener = (OnPassingCartDataListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() +
+                    " must implement OnPassingCartDataListener");
+        }
     }
 
     @Override
@@ -123,6 +148,11 @@ public class CartRemoveProductFragment extends BasePresenterFragment
     @Override
     protected void setupArguments(Bundle arguments) {
         mCartItemDataList = arguments.getParcelableArrayList(ARG_EXTRA_CART_DATA_LIST);
+        if (mCartItemDataList != null) {
+            for (CartItemData cartItemData : mCartItemDataList) {
+                mCheckedCartItemList.add(new CheckedCartItemData(false, cartItemData));
+            }
+        }
     }
 
     /**
@@ -190,23 +220,94 @@ public class CartRemoveProductFragment extends BasePresenterFragment
 
     }
 
-    @OnClick(R2.id.btn_remove_product)
+    @OnClick(R2.id.tv_remove_product)
     public void removeCheckedProducts() {
+        showDeleteCartItemDialog(mCartItemDataList);
+    }
+
+    @Override
+    public List<CartItemData> getSelectedCartList() {
+        List<CartItemData> selectedCartList = new ArrayList<>();
+
+        for (CheckedCartItemData checkedCartItemData : mCheckedCartItemList) {
+            if (checkedCartItemData.isChecked()) {
+                selectedCartList.add(checkedCartItemData.getCartItemData());
+            }
+        }
+
+        return selectedCartList;
+    }
+
+    @Override
+    public TKPDMapParam<String, String> getGenerateParamAuth(TKPDMapParam<String, String> param) {
+        return param == null ? com.tokopedia.core.network.retrofit.utils.AuthUtil.generateParamsNetwork(getActivity())
+                : com.tokopedia.core.network.retrofit.utils.AuthUtil.generateParamsNetwork(getActivity(), param);
+    }
+
+    @Override
+    public void renderSuccessDeleteCart(String message) {
+        for (CheckedCartItemData checkedCartItemData : mCheckedCartItemList) {
+            if (checkedCartItemData.isChecked()) {
+                mCartItemDataList.remove(checkedCartItemData.getCartItemData());
+            }
+
+            mCartRemoveProductAdapter.notifyDataSetChanged();
+        }
+
+        mDataPasserListener.onAfterRemovePassingCartData(mCartItemDataList);
+        getActivity().onBackPressed();
+    }
+
+    @Override
+    public void renderOnFailureDeleteCart(String message) {
 
     }
 
     /**
      * Executed when state of checkbox is changed
      *
-     * @param checked  boolean state of checked on unchecked
-     * @param position index of list where the item is checked
+     * @param checked  state of checkbox
+     * @param position index of list where the state of checkbox is changed
      */
     @Override
     public void onCheckBoxStateChangedListener(boolean checked, int position) {
+        mCheckedCartItemList.get(position).setChecked(checked);
         mCheckedCartItem = checked ? mCheckedCartItem + 1 : mCheckedCartItem - 1;
 
-        String btnText = mCheckedCartItem == 0 ?
-                "Hapus" : String.format(LOCALE_ID, "Hapus (%d)", mCheckedCartItem);
-        mBtnRemoveProduct.setText(btnText);
+        String btnText = mCheckedCartItem == 0 ? "Hapus" :
+                String.format(LOCALE_ID, "Hapus (%d)", mCheckedCartItem);
+
+        mTvRemoveProduct.setText(btnText);
     }
+
+    void showDeleteCartItemDialog(ArrayList<CartItemData> cartItemDataList) {
+        DialogFragment dialog = CartRemoveItemDialog.newInstance(cartItemDataList, this);
+        dialog.show(getFragmentManager(), "dialog");
+    }
+
+    @Override
+    public void deleteSingleItem(List<CartItemData> cartItemDataList) {
+        mCartRemoveProductPresenter.processDeleteCart(true);
+    }
+
+    @Override
+    public void addBulkToWishListOnly(List<CartItemData> cartItemDataList) {
+        mCartRemoveProductPresenter.processDeleteCart(true);
+    }
+
+    @Override
+    public void deleteBulkItems(List<CartItemData> cartItemDataList) {
+        mCartRemoveProductPresenter.processDeleteCart(false);
+    }
+
+    public interface OnPassingCartDataListener {
+
+        /**
+         * Pass data from cart fragment into its container activity
+         *
+         * @param cartItemData List of cart items
+         */
+        void onAfterRemovePassingCartData(List<CartItemData> cartItemData);
+    }
+
 }

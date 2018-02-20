@@ -6,7 +6,6 @@
                 android:orientation="vertical">
 
     <LinearLayout
-
         android:id="@+id/layout_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,9 +25,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="sans-serif"
+                android:textColor="@color/black_70"
                 android:textSize="12sp"
                 android:textStyle="normal"
-                tools:text="Harga Barang (3 Item):"/>
+                tools:text="Harga Barang (3 Item): "/>
 
             <TextView
                 android:id="@+id/tv_total_prices"
@@ -37,6 +37,7 @@
                 android:layout_weight="1"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="end"
+                android:textColor="@color/orange_red"
                 android:textSize="14sp"
                 android:textStyle="normal"
                 tools:text="Rp600.000"/>
@@ -53,19 +54,27 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/btn_height"
             android:layout_margin="@dimen/margin_small"
-            android:background="@drawable/orange_button_rounded"
+            android:background="@drawable/medium_green_button_rounded"
             android:gravity="center"
             android:text="Pilih Kurir Pengiriman"
+            android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="13sp"/>
 
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_cart"
+    <com.tokopedia.core.customwidget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/layout_1"/>
+        android:layout_above="@id/layout_1"
+        android:layout_gravity="bottom"
+        android:visibility="visible">
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_cart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </com.tokopedia.core.customwidget.SwipeToRefresh>
 
 </RelativeLayout>

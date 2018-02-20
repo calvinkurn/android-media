@@ -180,7 +180,7 @@ public class ShipmentAddressListFragment extends BasePresenterFragment
 
     }
 
-    @OnClick(R2.id.btn_add_new_address)
+    @OnClick(R2.id.tv_add_new_address)
     protected void addNewAddress() {
 
     }
@@ -247,6 +247,7 @@ public class ShipmentAddressListFragment extends BasePresenterFragment
     @Override
     public void onSearchReset() {
         mShipmentAddressListPresenter.resetSearch();
+        closeSoftKeyboard();
     }
 
     @Override

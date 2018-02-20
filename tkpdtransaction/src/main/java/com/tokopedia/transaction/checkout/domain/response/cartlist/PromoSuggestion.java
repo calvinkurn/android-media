@@ -24,4 +24,24 @@ public class PromoSuggestion {
     @SerializedName("text")
     @Expose
     private String text;
+
+    public String getCta() {
+        return cta;
+    }
+
+    public String getCtaColor() {
+        return ctaColor;
+    }
+
+    public int getIsVisible() {
+        return isVisible;
+    }
+
+    public String getPromoCode() {
+        return promoCode;
+    }
+
+    public String getText() {
+        return text;
+    }
 }
