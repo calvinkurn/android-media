@@ -1,10 +1,14 @@
 package com.tokopedia.tkpdcontent.feature.profile.view.viewmodel;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.tkpdcontent.feature.profile.view.adapter.typefactory.KolTypeFactory;
+import com.tokopedia.tkpdcontent.feature.profile.view.adapter.viewholder.KolViewHolder;
+
 /**
  * @author by nisie on 10/27/17.
  */
 
-public class KolViewModel {
+public class KolViewModel implements Visitable<KolTypeFactory> {
     private final String tagsType;
     private final String contentLink;
     private final int userId;
@@ -216,6 +220,11 @@ public class KolViewModel {
 
     public String getCardType() {
         return cardType;
+    }
+
+    @Override
+    public int type(KolTypeFactory typeFactory) {
+        return typeFactory.type(this);
     }
 }
 

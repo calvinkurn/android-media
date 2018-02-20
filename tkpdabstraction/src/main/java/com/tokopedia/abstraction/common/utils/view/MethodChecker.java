@@ -19,7 +19,10 @@ import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.ValueCallback;
 import android.webkit.WebSettings;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 
 import java.io.File;
@@ -150,5 +153,16 @@ public class MethodChecker {
             smsIntent.putExtra("sms_body", shareText);
         }
         return smsIntent;
+    }
+
+    public static void loadImageFitCenter(ImageView imageView, String url) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            ImageHandler.loadImageFitCenter(imageView.getContext(), imageView, url);
+        } else {
+            Glide.with(imageView.getContext())
+                    .load(url)
+                    .fitCenter()
+                    .into(imageView);
+        }
     }
 }

@@ -2,4 +2,7 @@
     <string name="app_name">TkpdContent</string>
     <string name="action_like">Like</string>
     <string name="action_follow">Follow</string>
+    <string name="read_more_english">Read More</string>
+    <string name="comment">Comment</string>
+    <string name="following">Following</string>
 </resources>
