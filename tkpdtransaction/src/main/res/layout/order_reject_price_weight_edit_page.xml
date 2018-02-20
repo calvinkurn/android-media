@@ -18,10 +18,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="top"
             android:paddingBottom="@dimen/padding_small"
-            android:paddingEnd="16dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingStart="16dp"
+            android:paddingEnd="@dimen/side_padding"
+            android:paddingLeft="@dimen/side_padding"
+            android:paddingRight="@dimen/side_padding"
+            android:paddingStart="@dimen/side_padding"
             android:paddingTop="@dimen/padding_small">
 
             <ImageView
@@ -65,10 +65,10 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingBottom="@dimen/padding_small"
-            android:paddingEnd="16dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingStart="16dp"
+            android:paddingEnd="@dimen/side_padding"
+            android:paddingLeft="@dimen/side_padding"
+            android:paddingRight="@dimen/side_padding"
+            android:paddingStart="@dimen/side_padding"
             android:paddingTop="@dimen/padding_small">
 
             <TextView
@@ -101,10 +101,10 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingBottom="@dimen/padding_small"
-            android:paddingEnd="16dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingStart="16dp"
+            android:paddingEnd="@dimen/side_padding"
+            android:paddingLeft="@dimen/side_padding"
+            android:paddingRight="@dimen/side_padding"
+            android:paddingStart="@dimen/side_padding"
             android:paddingTop="@dimen/padding_small">
 
             <TextView
