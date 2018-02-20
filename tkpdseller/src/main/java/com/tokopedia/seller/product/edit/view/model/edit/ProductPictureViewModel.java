@@ -8,7 +8,7 @@ public class ProductPictureViewModel {
 
     public static final int ACTIVE_STATUS = 1;
 
-    @SerializedName("id")
+    @SerializedName(value="product_pic_id", alternate={"id"})
     @Expose
     private long id;
 
@@ -27,6 +27,14 @@ public class ProductPictureViewModel {
     @SerializedName("file_path")
     @Expose
     private String filePath;
+
+    @SerializedName("url_original")
+    @Expose
+    private String urlOriginal;
+    @SerializedName("url_thumbnail")
+    @Expose
+    private String urlThumbnail;
+
     @SerializedName("description")
     @Expose
     private String description;
@@ -37,8 +45,28 @@ public class ProductPictureViewModel {
     @Expose
     private long y;
 
+    @SerializedName("from_ig")
+    @Expose
+    private int fromIg;
+
+    public int getFromIg() {
+        return fromIg;
+    }
+
+    public void setFromIg(int fromIg) {
+        this.fromIg = fromIg;
+    }
+
     public long getId() {
         return id;
+    }
+
+    public String getUrlThumbnail() {
+        return urlThumbnail;
+    }
+
+    public String getUrlOriginal() {
+        return urlOriginal;
     }
 
     public void setId(long id) {
@@ -84,5 +112,4 @@ public class ProductPictureViewModel {
     public void setY(long y) {
         this.y = y;
     }
-
 }

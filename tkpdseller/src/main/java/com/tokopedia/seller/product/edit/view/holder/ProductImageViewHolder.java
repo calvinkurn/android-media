@@ -11,15 +11,12 @@ import android.util.Pair;
 import android.view.View;
 
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
 import com.tokopedia.seller.product.edit.view.adapter.ImageSelectorAdapter;
 import com.tokopedia.seller.product.edit.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
-import com.tokopedia.seller.product.edit.view.model.upload.ImageProductInputViewModel;
-import com.tokopedia.seller.product.edit.view.model.upload.ProductPhotoListViewModel;
 import com.tokopedia.seller.product.edit.view.widget.ImagesSelectView;
 
 import java.util.ArrayList;
@@ -62,20 +59,20 @@ public class ProductImageViewHolder extends ProductViewHolder {
         imagesSelectView.addImagesString(images);
     }
 
-    public ProductImageViewHolder(View view) {
+    public ProductImageViewHolder(View view, Listener listener) {
         imagesSelectView = (ImagesSelectView) view.findViewById(R.id.image_select_view);
         imagesSelectView.setOnImageSelectionListener(new ImageSelectorAdapter.OnImageSelectionListener() {
             @Override
             public void onAddClick(int position) {
-                if (listener != null) {
-                    listener.onAddImagePickerClicked(position);
+                if (ProductImageViewHolder.this.listener != null) {
+                    ProductImageViewHolder.this.listener.onAddImagePickerClicked(position);
                 }
             }
 
             @Override
             public void onItemClick(int position, final ImageSelectModel imageSelectModel, boolean isPrimary) {
-                if (listener != null) {
-                    listener.onImagePickerItemClicked(position, isPrimary);
+                if (ProductImageViewHolder.this.listener != null) {
+                    ProductImageViewHolder.this.listener.onImagePickerItemClicked(position, isPrimary);
                 }
             }
         });
@@ -87,20 +84,20 @@ public class ProductImageViewHolder extends ProductViewHolder {
 
             @Override
             public void resolutionCheckFailed(String uri) {
-                if (listener != null) {
-                    listener.onResolutionImageCheckFailed(uri);
+                if (ProductImageViewHolder.this.listener != null) {
+                    ProductImageViewHolder.this.listener.onResolutionImageCheckFailed(uri);
                 }
             }
 
             @Override
             public void removePreviousPath(String uri) {
-                listener.onRemovePreviousPath(uri);
+                ProductImageViewHolder.this.listener.onRemovePreviousPath(uri);
             }
         });
         imagesSelectView.setOnImageChanged(new ImagesSelectView.OnImageChanged() {
             @Override
             public void onTotalImageUpdated(int total) {
-                listener.onTotalImageUpdated(total);
+                ProductImageViewHolder.this.listener.onTotalImageUpdated(total);
                 updateImageResolution();
             }
 
@@ -109,10 +106,12 @@ public class ProductImageViewHolder extends ProductViewHolder {
                 int imageCount = productPhotoListViewModel.size();
                 if (imageCount > 0) {
                     ImageSelectModel imageProductInputViewModel = productPhotoListViewModel.get(0);
-                    listener.onImageResolutionChanged(imageProductInputViewModel.getMinResolution());
+                    ProductImageViewHolder.this.listener.onImageResolutionChanged(imageProductInputViewModel.getMinResolution());
                 }
             }
         });
+
+        setListener(listener);
     }
 
     public ImagesSelectView getImagesSelectView() {
@@ -160,14 +159,21 @@ public class ProductImageViewHolder extends ProductViewHolder {
 
         List<ImageSelectModel> selectModelList = imagesSelectView.getImageList();
         for (int i = 0; i < selectModelList.size(); i++) {
-            ProductPictureViewModel imageViewModel = new ProductPictureViewModel();
+            ProductPictureViewModel productPictureViewModel = new ProductPictureViewModel();
             ImageSelectModel selectModel = selectModelList.get(i);
-            imageViewModel.setFilePath(selectModel.getUriOrPath());
-            imageViewModel.setDescription(selectModel.getDescription());
-            imageViewModel.setX(selectModel.getWidth());
-            imageViewModel.setY(selectModel.getHeight());
-            imageViewModel.setId(selectModel.getId());
-            listImageViewModel.add(imageViewModel);
+            productPictureViewModel.setDescription(selectModel.getDescription());
+            productPictureViewModel.setX(selectModel.getWidth());
+            productPictureViewModel.setY(selectModel.getHeight());
+            productPictureViewModel.setId(selectModel.getId());
+
+            if (selectModel.getId() > 0) { // means file still from server, no change from local
+                productPictureViewModel.setFilePath(selectModel.getServerFilePath());
+            } else {
+                productPictureViewModel.setFilePath(selectModel.getUriOrPath());
+            }
+            productPictureViewModel.setFileName(selectModel.getServerFileName());
+
+            listImageViewModel.add(productPictureViewModel);
         }
         return listImageViewModel;
     }
@@ -176,13 +182,15 @@ public class ProductImageViewHolder extends ProductViewHolder {
         ArrayList<ImageSelectModel> images = new ArrayList<>();
         for (int i = 0; i < productPhotos.size(); i++) {
             ProductPictureViewModel productPhoto = productPhotos.get(i);
-            String url = productPhoto.getFilePath();
+            String url = productPhoto.getUrlOriginal();
             ImageSelectModel image = new ImageSelectModel(
                     url,
                     productPhoto.getDescription(),
                     productPhoto.getX(),
                     productPhoto.getY(),
-                    productPhoto.getId()
+                    productPhoto.getId(),
+                    productPhoto.getFilePath(),
+                    productPhoto.getFileName()
             );
             images.add(image);
         }

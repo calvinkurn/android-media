@@ -21,7 +21,7 @@ import com.tokopedia.seller.product.picker.data.repository.GetProductListSelling
 import com.tokopedia.seller.product.picker.data.source.GetProductListSellingDataSource;
 import com.tokopedia.seller.product.picker.domain.GetProductListSellingRepository;
 import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
-import com.tokopedia.seller.product.variant.data.cloud.api.TomeApi;
+import com.tokopedia.seller.product.variant.data.cloud.api.TomeProductApi;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 
 import dagger.Module;
@@ -73,8 +73,8 @@ public class ProductManageModule {
 
     @Provides
     @ProductManageScope
-    public TomeApi provideTomeApi(@TomeQualifier Retrofit retrofit){
-        return retrofit.create(TomeApi.class);
+    public TomeProductApi provideTomeApi(@TomeQualifier Retrofit retrofit){
+        return retrofit.create(TomeProductApi.class);
     }
 
     @Provides

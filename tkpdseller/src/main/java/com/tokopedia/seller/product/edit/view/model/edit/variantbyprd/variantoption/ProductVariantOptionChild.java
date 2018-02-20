@@ -20,14 +20,6 @@ public class ProductVariantOptionChild {
     @Expose
     private int value; //ex: "Ungu"
 
-    @SerializedName("hex")
-    @Expose
-    private String hex; // ex; "#bf00ff"
-
-    @SerializedName("picture")
-    @Expose
-    private ProductVariantOptionChildOriPicture productVariantOptionChildOriPicture;
-
     @SerializedName("t_id")
     @Expose
     private int tId; // temporary ID for submit
@@ -39,5 +31,14 @@ public class ProductVariantOptionChild {
     @SerializedName("image")
     @Expose
     private List<ProductPictureViewModel> productPictureViewModelList;
+
+    // TODO FROM CATALOG
+    @SerializedName("hex")
+    @Expose
+    private String hex; // ex; "#bf00ff"
+
+    @SerializedName("picture")
+    @Expose
+    private ProductVariantOptionChildOriPicture productVariantOptionChildOriPicture;
 
 }

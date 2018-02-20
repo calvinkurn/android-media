@@ -10,12 +10,7 @@ import com.tokopedia.seller.product.edit.constant.FreeReturnTypeDef;
 import com.tokopedia.seller.product.edit.constant.ProductInsuranceValueTypeDef;
 import com.tokopedia.seller.product.edit.data.source.db.model.ImageProductInputDraftModel;
 import com.tokopedia.seller.product.edit.data.source.db.model.ProductDraftDataBase;
-import com.tokopedia.seller.product.edit.data.source.db.model.ProductPhotoListDraftModel;
 import com.tokopedia.seller.product.edit.data.source.db.model.ProductWholesaleDraftModel;
-import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
-import com.tokopedia.seller.product.edit.domain.model.ProductPhotoListDomainModel;
-import com.tokopedia.seller.product.edit.domain.model.ProductWholesaleDomainModel;
-import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductCatalogViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductCategoryViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductEtalaseViewModel;
@@ -69,36 +64,36 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
      * convert the old-version draft to current model
      */
     private ProductViewModel mapDraftToDomain(ProductDraftModel draftModel) {
-        ProductViewModel domainModel = new ProductViewModel();
-        domainModel.setProductPicture(mapPhotosDraftToDomain(draftModel.getProductPhotos().getPhotos()));
-        domainModel.setProductWholesale(mapWholesaleDraftToDomain(draftModel.getProductWholesaleList()));
+        ProductViewModel productViewModel = new ProductViewModel();
+        productViewModel.setProductPictureViewModelList(mapPhotosDraftToProductViewModel(draftModel.getProductPhotos().getPhotos()));
+        productViewModel.setProductWholesale(mapWholesaleDraftToDomain(draftModel.getProductWholesaleList()));
 //        domainModel.setProductChangeCatalog(draftModel.getProductChangeCatalog());
 //        domainModel.setProductChangeWholesale(draftModel.getProductChangeWholesale());
-        domainModel.setProductVideo(mapToProductVideo(draftModel.getProductVideos()));
-        domainModel.setProductName(draftModel.getProductName());
-        domainModel.setProductDescription(draftModel.getProductDescription());
+        productViewModel.setProductVideo(mapToProductVideo(draftModel.getProductVideos()));
+        productViewModel.setProductName(draftModel.getProductName());
+        productViewModel.setProductDescription(draftModel.getProductDescription());
 //        domainModel.setProductChangePhoto(draftModel.getProductChangePhoto());
-        domainModel.setProductCatalog(generateCatalog(draftModel));
-        domainModel.setProductCategory(generateProductCategoryViewModel(draftModel));
-        domainModel.setProductCondition(draftModel.getProductCondition());
-        domainModel.setProductEtalase(mapToEtalase(draftModel));
-        domainModel.setProductMinOrder(draftModel.getProductMinOrder());
-        domainModel.setProductMustInsurance(mapToInsurance(draftModel.getProductMustInsurance()));
-        domainModel.setProductPrice(draftModel.getProductPrice());
-        domainModel.setProductPriceCurrency(draftModel.getProductPriceCurrency());
-        domainModel.setProductFreeReturn(mapToFreeReturn(draftModel.getProductReturnable()));
-        domainModel.setProductStatus(draftModel.getProductUploadTo());
-        domainModel.setProductStock(draftModel.getProductInvenageValue());
-        domainModel.setProductWeight(draftModel.getProductWeight());
-        domainModel.setProductWeightUnit(draftModel.getProductWeightUnit());
-        domainModel.setProductPreorder(generateProductPreorder(draftModel));
+        productViewModel.setProductCatalog(generateCatalog(draftModel));
+        productViewModel.setProductCategory(generateProductCategoryViewModel(draftModel));
+        productViewModel.setProductCondition(draftModel.getProductCondition());
+        productViewModel.setProductEtalase(mapToEtalase(draftModel));
+        productViewModel.setProductMinOrder(draftModel.getProductMinOrder());
+        productViewModel.setProductMustInsurance(mapToInsurance(draftModel.getProductMustInsurance()));
+        productViewModel.setProductPrice(draftModel.getProductPrice());
+        productViewModel.setProductPriceCurrency(draftModel.getProductPriceCurrency());
+        productViewModel.setProductFreeReturn(mapToFreeReturn(draftModel.getProductReturnable()));
+        productViewModel.setProductStatus(draftModel.getProductUploadTo());
+        productViewModel.setProductStock(draftModel.getProductInvenageValue());
+        productViewModel.setProductWeight(draftModel.getProductWeight());
+        productViewModel.setProductWeightUnit(draftModel.getProductWeightUnit());
+        productViewModel.setProductPreorder(generateProductPreorder(draftModel));
 //        domainModel.setServerId(draftModel.getServerId());
-        domainModel.setProductId(Long.parseLong(draftModel.getProductId()));
-        domainModel.setProductNameEditable(draftModel.getProductNameEditable() != 0);
+        productViewModel.setProductId(Long.parseLong(draftModel.getProductId()));
+        productViewModel.setProductNameEditable(draftModel.getProductNameEditable() != 0);
         //todo hendry map old draft model to new draft model variant
 //        domainModel.setProductVariantDataSubmit(draftModel.getProductVariantDataSubmit());
 //        domainModel.setVariantStringSelection(draftModel.getVariantStringSelection());
-        return domainModel;
+        return productViewModel;
     }
 
     private ProductPreorderViewModel generateProductPreorder(ProductDraftModel draftModel) {
@@ -138,8 +133,7 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
     private List<ProductVideoViewModel> mapToProductVideo(List<String> productVideos) {
         List<ProductVideoViewModel> productVideoViewModels = new ArrayList<>();
         for(String url : productVideos){
-            ProductVideoViewModel productVideoViewModel = new ProductVideoViewModel();
-            productVideoViewModel.setUrl(url);
+            ProductVideoViewModel productVideoViewModel = new ProductVideoViewModel(url);
             productVideoViewModels.add(productVideoViewModel);
         }
         return productVideoViewModels;
@@ -156,13 +150,13 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
         return domainModels;
     }
 
-    private List<ProductPictureViewModel> mapPhotosDraftToDomain(List<ImageProductInputDraftModel> photos) {
-        List<ProductPictureViewModel> domainModels = new ArrayList<>();
+    private List<ProductPictureViewModel> mapPhotosDraftToProductViewModel(List<ImageProductInputDraftModel> photos) {
+        List<ProductPictureViewModel> productPictureViewModelList = new ArrayList<>();
         for (ImageProductInputDraftModel draftModel : photos) {
             ProductPictureViewModel productPictureViewModel = generateProductPictureModel(draftModel);
-            domainModels.add(productPictureViewModel);
+            productPictureViewModelList.add(productPictureViewModel);
         }
-        return domainModels;
+        return productPictureViewModelList;
     }
 
     private ProductPictureViewModel generateProductPictureModel(ImageProductInputDraftModel draftModel) {

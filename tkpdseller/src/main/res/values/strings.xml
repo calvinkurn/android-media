@@ -221,5 +221,7 @@
     <string name="opportunity_detail_info_shipping_price_title">Ongkos Kirim</string>
     <string name="opportunity_detail_info_delivery_price_content">Estimasi ongkos kirim telah disesuaikan dengan lokasi Anda.</string>
     <string name="opportunity_detail_info_different_delivery_price_content">Ongkos kirim yang dicoret akan dicantumkan di invoice. Estimasi ongkos kirim baru telah disesuaikan dengan lokasi Anda.</string>
+    <string name="product_label_product_delivery">Pengiriman Produk</string>
+    <string name="product_label_product_manage">Pengelolaan Produk</string>
 
 </resources>

@@ -19,12 +19,14 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.fabric.sdk.android.services.concurrency.DependsOn;
 import rx.functions.Func1;
 
 /**
  * @author sebastianuskh on 4/21/17.
  */
 
+@Deprecated
 public class EditProductFormMapper implements Func1<EditProductFormServiceModel, UploadProductInputDomainModel> {
     @Inject
     public EditProductFormMapper() {

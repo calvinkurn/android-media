@@ -1,11 +1,9 @@
 package com.tokopedia.seller.product.edit.data.source.cloud;
 
 import com.tokopedia.abstraction.common.network.mapper.DataResponseMapper;
-import com.tokopedia.seller.product.edit.data.source.cloud.api.ProductApi;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.ProductUploadResultModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
-
-import java.lang.reflect.Type;
+import com.tokopedia.seller.product.variant.data.cloud.api.TomeProductApi;
 
 import javax.inject.Inject;
 
@@ -16,27 +14,27 @@ import rx.Observable;
  */
 
 public class ProductCloud {
-    private final ProductApi productApi;
+    private final TomeProductApi tomeProductApi;
 
     public static final int SHOW_VARIANT = 1;
 
     @Inject
-    public ProductCloud(ProductApi productApi) {
-        this.productApi = productApi;
+    public ProductCloud(TomeProductApi tomeProductApi) {
+        this.tomeProductApi = tomeProductApi;
     }
 
     public Observable<ProductUploadResultModel> addProductSubmit(ProductViewModel productViewModel) {
-        return productApi.addProductSubmit(productViewModel)
+        return tomeProductApi.addProductSubmit(productViewModel)
                 .map(new DataResponseMapper<ProductUploadResultModel>());
     }
 
     public Observable<ProductUploadResultModel> editProduct(ProductViewModel productViewModel) {
-        return productApi.editProductSubmit(productViewModel, String.valueOf(productViewModel.getProductId()))
+        return tomeProductApi.editProductSubmit(productViewModel, String.valueOf(productViewModel.getProductId()))
                 .map(new DataResponseMapper<ProductUploadResultModel>());
     }
 
     public Observable<ProductViewModel> getProductDetail(String productId) {
-        return productApi.getProductDetail(productId, SHOW_VARIANT)
+        return tomeProductApi.getProductDetail(productId, SHOW_VARIANT)
                 .map(new DataResponseMapper<ProductViewModel>());
     }
 }

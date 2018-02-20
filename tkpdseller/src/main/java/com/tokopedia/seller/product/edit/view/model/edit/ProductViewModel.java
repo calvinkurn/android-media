@@ -22,100 +22,123 @@ public class ProductViewModel implements ItemType {
     @Expose
     private String productAlias;
 
-    @SerializedName("product_price")
+    @SerializedName("product_condition")
     @Expose
-    private double productPrice;
-    @SerializedName("product_price_currency")
+    private long productCondition; // Product Condition (new=1, used=2)
+
+    @SerializedName("product_description")
     @Expose
-    private long productPriceCurrency; // Price Currency ID (IDR=1;USD=2)
-    @SerializedName("product_status")
+    private String productDescription;
+
+    @SerializedName("product_last_update_price")
     @Expose
-    private int productStatus; // Product Status (Active=1, Warehouse=3, Pending=-1)
+    private String productLastUpdatePrice;
+
     @SerializedName("product_min_order")
     @Expose
     private long productMinOrder; // Minimum Order (1-10000)
+
+    @SerializedName("product_max_order")
+    @Expose
+    private long productMaxOrder;
+
+    @SerializedName("product_must_insurance")
+    @Expose
+    private boolean productMustInsurance;
+
+    @SerializedName("product_price")
+    @Expose
+    private double productPrice;
+
+    @SerializedName("product_price_currency")
+    @Expose
+    private long productPriceCurrency; // Price Currency ID (IDR=1;USD=2)
+
+    @SerializedName("product_status")
+    @Expose
+    private int productStatus; // Product Status (Active=1, Warehouse=3, Pending=-1)
+
+    @SerializedName("product_stock")
+    @Expose
+    private long productStock;
+
     @SerializedName("product_weight")
     @Expose
     private long productWeight; // Weight (Gram=1-500000, Kg=1-500)
     @SerializedName("product_weight_unit")
     @Expose
     private long productWeightUnit; // Weight Unit (Gram=1, Kg=2)
-    @SerializedName("product_condition")
-    @Expose
-    private long productCondition; // Product Condition (new=1, used=2)
-    @SerializedName("product_etalase")
-    @Expose
-    private ProductEtalaseViewModel productEtalase;
-    @SerializedName("product_primary_picture")
-    @Expose
-    private ProductPictureViewModel productPrimaryPicture;
-    @SerializedName("product_picture")
-    @Expose
-    private List<ProductPictureViewModel> productPicture = new ArrayList<>();
-    @SerializedName("product_shop")
-    @Expose
-    private ProductShopViewModel productShop;
 
     @SerializedName("product_url")
     @Expose
     private String productUrl;
-    @SerializedName("product_last_update_price")
-    @Expose
-    private String productLastUpdatePrice;
-    @SerializedName("product_position")
-    @Expose
-    private ProductPositionViewModel productPosition;
-    @SerializedName("product_description")
-    @Expose
-    private String productDescription;
-    @SerializedName("product_must_insurance")
-    @Expose
-    private boolean productMustInsurance;
+
     @SerializedName("product_free_return")
     @Expose
     private boolean productFreeReturn;
-    @SerializedName("product_stock")
-    @Expose
-    private long productStock;
+
     @SerializedName("product_sku")
     @Expose
     private String productSku;
-    @SerializedName("product_max_order")
-    @Expose
-    private long productMaxOrder;
-    @SerializedName("product_category")
-    @Expose
-    private ProductCategoryViewModel productCategory;
-    @SerializedName("product_catalog")
-    @Expose
-    private ProductCatalogViewModel productCatalog;
-    @SerializedName("product_wholesale")
-    @Expose
-    private List<ProductWholesaleViewModel> productWholesale = new ArrayList<>();
-    @SerializedName("product_preorder")
-    @Expose
-    private ProductPreorderViewModel productPreorder;
-    @SerializedName("product_brand")
-    @Expose
-    private ProductBrandViewModel productBrand;
-    @SerializedName("product_video")
-    @Expose
-    private List<ProductVideoViewModel> productVideo = new ArrayList<>();
-    @SerializedName("product_variant")
-    @Expose
-    private ProductVariantViewModel productVariant;
 
     @SerializedName("product_gtin")
     @Expose
     private String productGtin;
 
+    @SerializedName("product_brand")
+    @Expose
+    private ProductBrandViewModel productBrand;
+
+    @SerializedName("product_catalog")
+    @Expose
+    private ProductCatalogViewModel productCatalog;
+
+    @SerializedName("product_category")
+    @Expose
+    private ProductCategoryViewModel productCategory;
+
+    @SerializedName("product_etalase")
+    @Expose
+    private ProductEtalaseViewModel productEtalase;
+
+    @SerializedName("product_picture")
+    @Expose
+    private List<ProductPictureViewModel> productPictureViewModelList = new ArrayList<>();
+
+    @SerializedName("product_preorder")
+    @Expose
+    private ProductPreorderViewModel productPreorder;
+
+    @SerializedName("product_position")
+    @Expose
+    private ProductPositionViewModel productPosition;
+
+    @SerializedName("product_shop")
+    @Expose
+    private ProductShopViewModel productShop;
+
+    @SerializedName("product_sizechart")
+    @Expose
+    private ProductPictureViewModel productSizeChart;
+
+    @SerializedName("product_wholesale")
+    @Expose
+    private List<ProductWholesaleViewModel> productWholesale = new ArrayList<>();
+
+    /**
+     * get from GM. set for saubmit add/edit product
+     */
+    @SerializedName("product_video")
+    @Expose
+    private List<ProductVideoViewModel> productVideo = new ArrayList<>();
+
+    @SerializedName("product_variant")
+    @Expose
+    private ProductVariantViewModel productVariant;
+
     @SerializedName("product_name_editable")
     @Expose
     private boolean productNameEditable;
-
-    @SerializedName("product_is_variant")
-    @Expose
-    private boolean productIsVariant;
 
     @Expose
     private long draftId;
@@ -126,14 +149,6 @@ public class ProductViewModel implements ItemType {
 
     public void setDraftId(long draftId) {
         this.draftId = draftId;
-    }
-
-    public void setProductIsVariant(boolean productIsVariant) {
-        this.productIsVariant = productIsVariant;
-    }
-
-    public boolean isProductIsVariant() {
-        return productIsVariant;
     }
 
     public long getProductId() {
@@ -216,12 +231,12 @@ public class ProductViewModel implements ItemType {
         this.productEtalase = productEtalase;
     }
 
-    public List<ProductPictureViewModel> getProductPicture() {
-        return productPicture;
+    public List<ProductPictureViewModel> getProductPictureViewModelList() {
+        return productPictureViewModelList;
     }
 
-    public void setProductPicture(List<ProductPictureViewModel> productPicture) {
-        this.productPicture = productPicture;
+    public void setProductPictureViewModelList(List<ProductPictureViewModel> productPictureViewModelList) {
+        this.productPictureViewModelList = productPictureViewModelList;
     }
 
     public ProductShopViewModel getProductShop() {
@@ -254,14 +269,6 @@ public class ProductViewModel implements ItemType {
 
     public void setProductLastUpdatePrice(String productLastUpdatePrice) {
         this.productLastUpdatePrice = productLastUpdatePrice;
-    }
-
-    public ProductPictureViewModel getProductPrimaryPicture() {
-        return productPrimaryPicture;
-    }
-
-    public void setProductPrimaryPicture(ProductPictureViewModel productPrimaryPicture) {
-        this.productPrimaryPicture = productPrimaryPicture;
     }
 
     public ProductPositionViewModel getProductPosition() {

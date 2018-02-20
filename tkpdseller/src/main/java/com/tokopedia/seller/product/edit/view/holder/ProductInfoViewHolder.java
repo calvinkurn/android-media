@@ -20,6 +20,7 @@ import android.widget.RadioGroup;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.Catalog;
@@ -28,6 +29,8 @@ import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivit
 import com.tokopedia.seller.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductCatalogViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductCategoryViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductEtalaseViewModel;
+import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +51,8 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         void onCategoryChanged(long categoryId);
 
         void fetchCategory(long categoryId);
+
+        void onEtalaseViewClicked(long etalaseId);
     }
 
     private static final String BUNDLE_CATEGORY_ID = "BUNDLE_CATEGORY_ID";
@@ -57,12 +62,17 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
     private static final String BUNDLE_CATALOG_NAME = "BUNDLE_CATALOG_NAME";
     private static final String BUNDLE_CAT_RECOMM = "BUNDLE_CAT_RECOM";
 
+    private static final String BUNDLE_ETALASE_ID = "BUNDLE_ETALASE_ID";
+    private static final String BUNDLE_ETALASE_NAME = "BUNDLE_ETALASE_NAME";
+
     private static final int DEFAULT_CATEGORY_ID = -1;
     private static final int DEFAULT_CATALOG_ID = -1;
+    private static final int DEFAULT_ETALASE_ID = -1;
     public static final int REQUEST_CODE_CATEGORY = 101;
     public static final int REQUEST_CODE_CATALOG = 102;
+    public static final int REQUEST_CODE_ETALASE = 301;
 
-    private TextInputLayout nameTextInputLayout;
+    private TkpdHintTextInputLayout nameTextInputLayout;
     private EditText nameEditText;
     private LabelView categoryLabelView;
     private LabelView catalogLabelView;
@@ -73,34 +83,39 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
     private long categoryId;
     private long catalogId;
 
+    private LabelView etalaseLabelView;
+    private long etalaseId;
+
     ArrayList <ProductCategoryPredictionViewModel> categoryPredictionList;
 
     public void setListener(Listener listener) {
         this.listener = listener;
     }
 
-    public ProductInfoViewHolder(View view) {
+    public ProductInfoViewHolder(View view, Listener listener) {
+        etalaseId = DEFAULT_ETALASE_ID;
         categoryId = DEFAULT_CATEGORY_ID;
         catalogId = DEFAULT_CATALOG_ID;
         categoryRecommView = view.findViewById(R.id.view_group_category_recomm);
         radioGroupCategoryRecomm = (RadioGroup) categoryRecommView.findViewById(R.id.radio_group_category_recomm);
-        nameTextInputLayout = (TextInputLayout) view.findViewById(R.id.text_input_layout_name);
+        nameTextInputLayout = view.findViewById(R.id.text_input_layout_name);
         nameEditText = (EditText) view.findViewById(R.id.edit_text_name);
         categoryLabelView = (LabelView) view.findViewById(R.id.label_view_category);
         catalogLabelView = (LabelView) view.findViewById(R.id.label_view_catalog);
+        etalaseLabelView = (LabelView) view.findViewById(R.id.label_view_etalase);
         categoryLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (listener != null) {
-                    listener.onCategoryPickerClicked(categoryId);
+                if (ProductInfoViewHolder.this.listener != null) {
+                    ProductInfoViewHolder.this.listener.onCategoryPickerClicked(categoryId);
                 }
             }
         });
         catalogLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (listener != null) {
-                    listener.onCatalogPickerClicked(nameEditText.getText().toString(), categoryId, catalogId);
+                if (ProductInfoViewHolder.this.listener != null) {
+                    ProductInfoViewHolder.this.listener.onCatalogPickerClicked(nameEditText.getText().toString(), categoryId, catalogId);
                 }
             }
         });
@@ -120,18 +135,51 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
             @Override
             public void afterTextChanged(Editable s) {
                 if (s != null && s.length() >= 2) {
-                    if (listener != null) {
-                        listener.onProductNameChanged(s.toString());
+                    if (ProductInfoViewHolder.this.listener != null) {
+                        ProductInfoViewHolder.this.listener.onProductNameChanged(s.toString());
                     }
                 }
             }
         };
+        etalaseLabelView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (ProductInfoViewHolder.this.listener != null) {
+                    ProductInfoViewHolder.this.listener.onEtalaseViewClicked(etalaseId);
+                }
+            }
+        });
         nameEditText.addTextChangedListener(nameTextWatcher);
         radioGroupCategoryRecomm.setOnCheckedChangeListener(this);
+
+        setListener(listener);
     }
 
     public boolean isNameEditable(){
         return nameEditText.isEnabled();
+    }
+
+    public long getEtalaseId() {
+        return etalaseId;
+    }
+
+    public void setEtalaseId(long etalaseId) {
+        this.etalaseId = etalaseId;
+    }
+
+    public String getEtalaseName() {
+        return etalaseLabelView.getContent();
+    }
+
+    public ProductEtalaseViewModel getProductEtalase() {
+        ProductEtalaseViewModel productEtalaseViewModel = new ProductEtalaseViewModel();
+        productEtalaseViewModel.setEtalaseId(getEtalaseId());
+        productEtalaseViewModel.setEtalaseName(getEtalaseName());
+        return productEtalaseViewModel;
+    }
+
+    public void setEtalaseName(String name) {
+        this.etalaseLabelView.setContent(MethodChecker.fromHtml(name));
     }
 
     @Override
@@ -328,6 +376,13 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
                     processCatalogFromActivityResult(data);
                 }
                 break;
+            case ProductInfoViewHolder.REQUEST_CODE_ETALASE:
+                if (resultCode == Activity.RESULT_OK) {
+                    etalaseId = data.getIntExtra(EtalasePickerActivity.ETALASE_ID, -1);
+                    String etalaseNameString = data.getStringExtra(EtalasePickerActivity.ETALASE_NAME);
+                    setEtalaseName(etalaseNameString);
+                }
+                break;
         }
     }
 
@@ -350,6 +405,13 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
             categoryLabelView.getParent().requestChildFocus(categoryLabelView,categoryLabelView);
             return new Pair<>(false,AppEventTracking.AddProduct.FIELDS_MANDATORY_CATEGORY);
         }
+        if (getEtalaseId() < 0) {
+            etalaseLabelView.getParent().requestChildFocus(etalaseLabelView, etalaseLabelView);
+            Snackbar.make(etalaseLabelView.getRootView().findViewById(android.R.id.content), R.string.product_error_product_etalase_empty, Snackbar.LENGTH_LONG)
+                    .setActionTextColor(ContextCompat.getColor(etalaseLabelView.getContext(), R.color.green_400))
+                    .show();
+            return new Pair<>(false, AppEventTracking.AddProduct.FIELDS_MANDATORY_SHOWCASE);
+        }
         return new Pair<>(true, "");
     }
 
@@ -363,6 +425,8 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putLong(BUNDLE_ETALASE_ID, etalaseId);
+        savedInstanceState.putString(BUNDLE_ETALASE_NAME, etalaseLabelView.getContent());
         savedInstanceState.putLong(BUNDLE_CATEGORY_ID, categoryId);
         savedInstanceState.putString(BUNDLE_CATEGORY_NAME, categoryLabelView.getContent());
         savedInstanceState.putBoolean(BUNDLE_CATALOG_SHOWN, catalogLabelView.getVisibility() == View.VISIBLE);
@@ -373,6 +437,10 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
 
     @Override
     public void onViewStateRestored(@NonNull Bundle savedInstanceState) {
+        etalaseId = savedInstanceState.getLong(BUNDLE_ETALASE_ID, DEFAULT_ETALASE_ID);
+        if (!TextUtils.isEmpty(savedInstanceState.getString(BUNDLE_ETALASE_NAME))) {
+            etalaseLabelView.setContent(savedInstanceState.getString(BUNDLE_ETALASE_NAME));
+        }
         categoryId = savedInstanceState.getLong(BUNDLE_CATEGORY_ID, DEFAULT_CATEGORY_ID);
         if (!TextUtils.isEmpty(savedInstanceState.getString(BUNDLE_CATEGORY_NAME))) {
             categoryLabelView.setContent(savedInstanceState.getString(BUNDLE_CATEGORY_NAME));

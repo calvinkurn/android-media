@@ -22,27 +22,25 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
+        android:paddingTop="@dimen/activity_vertical_margin"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/linearLayout">
+            android:orientation="vertical">
 
             <include layout="@layout/partial_product_info" />
 
-            <include layout="@layout/partial_product_price" />
+            <include layout="@layout/partial_product_image" />
 
             <include layout="@layout/partial_product_manage" />
 
-            <include layout="@layout/partial_product_description" />
-
-            <include layout="@layout/partial_product_delivery" />
+            <include layout="@layout/partial_product_additional_info" />
 
             <Button
                 android:id="@+id/button_save_and_add"
-                style="@style/Button.Submit.White.Border"
+                style="@style/Button.Submit.White"
                 android:foreground="?attr/selectableItemBackground"
                 android:layout_width="match_parent"
                 android:layout_marginTop="@dimen/margin_med"

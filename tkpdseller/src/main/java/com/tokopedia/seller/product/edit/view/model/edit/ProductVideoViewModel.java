@@ -6,12 +6,25 @@ import com.google.gson.annotations.SerializedName;
 
 public class ProductVideoViewModel {
 
+    //currently only from youtube
+    public static final String YOUTUBE_SOURCE = "youtube";
+
     @SerializedName("url")
     @Expose
     private String url;
     @SerializedName("source")
     @Expose
     private String source;
+
+    public ProductVideoViewModel(String url) {
+        this.url = url;
+        this.source = YOUTUBE_SOURCE;
+    }
+
+    public ProductVideoViewModel(String url, String source) {
+        this.url = url;
+        this.source = source;
+    }
 
     public String getUrl() {
         return url;

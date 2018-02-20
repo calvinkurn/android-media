@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseI
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.network.apiservices.goldmerchant.GoldMerchantService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
@@ -22,11 +23,11 @@ import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
 import com.tokopedia.seller.product.edit.data.repository.GenerateHostRepositoryImpl;
 import com.tokopedia.seller.product.draft.data.repository.ProductDraftRepositoryImpl;
 import com.tokopedia.seller.product.edit.data.repository.ProductRepositoryImpl;
+import com.tokopedia.seller.product.edit.data.source.FetchVideoEditProductDataSource;
 import com.tokopedia.seller.product.edit.data.source.GenerateHostDataSource;
 import com.tokopedia.seller.product.draft.data.source.ProductDraftDataSource;
 import com.tokopedia.seller.product.edit.data.source.ProductDataSource;
 import com.tokopedia.seller.product.edit.data.source.cloud.api.GenerateHostApi;
-import com.tokopedia.seller.product.edit.data.source.cloud.api.ProductApi;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.UploadImageModel;
 import com.tokopedia.seller.product.edit.di.scope.AddProductServiceScope;
 import com.tokopedia.seller.product.edit.domain.GenerateHostRepository;
@@ -36,7 +37,7 @@ import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraft
 import com.tokopedia.seller.product.edit.domain.interactor.uploadproduct.UploadProductUseCase;
 import com.tokopedia.seller.product.edit.view.presenter.AddProductServicePresenter;
 import com.tokopedia.seller.product.edit.view.presenter.AddProductServicePresenterImpl;
-import com.tokopedia.seller.product.variant.data.cloud.api.TomeApi;
+import com.tokopedia.seller.product.variant.data.cloud.api.TomeProductApi;
 import com.tokopedia.seller.product.variant.data.source.ProductVariantDataSource;
 import com.tokopedia.seller.product.variant.repository.ProductVariantRepository;
 import com.tokopedia.seller.product.variant.repository.ProductVariantRepositoryImpl;
@@ -76,8 +77,9 @@ public class AddProductserviceModule {
 
     @AddProductServiceScope
     @Provides
-    ProductRepository provideUploadProductRepository(ProductDataSource productDataSource){
-        return new ProductRepositoryImpl(productDataSource);
+    ProductRepository provideUploadProductRepository(ProductDataSource productDataSource,
+                                                     FetchVideoEditProductDataSource fetchVideoEditProductDataSource){
+        return new ProductRepositoryImpl(productDataSource, fetchVideoEditProductDataSource);
     }
 
     @AddProductServiceScope
@@ -94,14 +96,14 @@ public class AddProductserviceModule {
 
     @AddProductServiceScope
     @Provides
-    TomeApi provideTomeApi(@TomeQualifier Retrofit retrofit){
-        return retrofit.create(TomeApi.class);
+    GoldMerchantService productGoldMerchantService(){
+        return new GoldMerchantService();
     }
 
     @AddProductServiceScope
     @Provides
-    ProductApi provideTomeApiAddProduct(@ProductTomeQualifier Retrofit retrofit){
-        return retrofit.create(ProductApi.class);
+    TomeProductApi provideTomeApi(@TomeQualifier Retrofit retrofit){
+        return retrofit.create(TomeProductApi.class);
     }
 
     @ProductTomeQualifier

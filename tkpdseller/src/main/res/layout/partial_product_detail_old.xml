@@ -91,14 +91,14 @@
     </com.tokopedia.expandable.ExpandableOptionSwitch>
 
     <com.tokopedia.seller.common.widget.LabelView
-        android:id="@+id/label_view_shop_window"
+        android:id="@+id/label_view_etalase"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_med"
         android:focusable="true"
         app:content="@string/product_label_choose"
         app:content_color="@color/tkpd_main_green"
-        app:title="@string/product_label_shop_window" />
+        app:title="@string/product_label_etalase" />
 
     <com.tokopedia.design.text.SpinnerTextView
         android:id="@+id/spinner_text_view_condition"

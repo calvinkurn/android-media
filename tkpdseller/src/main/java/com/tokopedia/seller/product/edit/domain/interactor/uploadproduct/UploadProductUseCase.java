@@ -95,7 +95,7 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
     private class DeleteImageCacheDraftFile implements Action1<AddProductDomainModel> {
         @Override
         public void call(AddProductDomainModel addProductDomainModel) {
-            List<ProductPictureViewModel> productPictureViewModels = productViewModel.getProductPicture();
+            List<ProductPictureViewModel> productPictureViewModels = productViewModel.getProductPictureViewModelList();
             if (productPictureViewModels == null || productPictureViewModels.size() == 0) {
                 return;
             }
