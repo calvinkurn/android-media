@@ -209,7 +209,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     private boolean hasLogisticInsurance;
     private boolean hasPromotion;
-    private final String TOPADS_CART_SRC = "empty_cart";
+    public static final String TOPADS_CART_SRC = "empty_cart";
 
     public static Fragment newInstance() {
         return new CartFragment();

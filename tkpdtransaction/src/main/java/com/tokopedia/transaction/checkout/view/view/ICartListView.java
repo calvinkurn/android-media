@@ -41,4 +41,6 @@ public interface ICartListView extends IBaseView {
     void renderPromoSuggestion(CartPromoSuggestion cartPromoSuggestion);
 
     CartPromoSuggestion getCartPromoSuggestionData();
+
+    void renderSuccessDeleteCart(CartItemData cartItemData, String message);
 }

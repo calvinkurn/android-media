@@ -16,7 +16,7 @@ public interface ICartRepository {
 
     Observable<CartDataListResponse> getCartList(TKPDMapParam<String, String> param);
 
-    Observable<DeleteCartDataResponse> deleteCartData(JsonObject param);
+    Observable<DeleteCartDataResponse> deleteCartData(TKPDMapParam<String, String> param);
 
     Observable<AddToCartDataResponse> addToCartData(TKPDMapParam<String, String> param);
 

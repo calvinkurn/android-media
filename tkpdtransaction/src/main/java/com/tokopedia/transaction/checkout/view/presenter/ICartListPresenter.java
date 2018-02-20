@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.checkout.view.presenter;
 
+import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
 
 import java.util.List;
@@ -11,6 +12,8 @@ import java.util.List;
 public interface ICartListPresenter {
 
     void processGetCartData();
+
+    void processDeleteCart(CartItemData cartItemData, boolean addWishList);
 
     void processToShipmentStep();
 

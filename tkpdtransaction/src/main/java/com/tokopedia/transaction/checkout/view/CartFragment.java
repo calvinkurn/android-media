@@ -9,11 +9,31 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.base.Endpoint;
+import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.view.DisplayMode;
+import com.tokopedia.topads.sdk.view.TopAdsView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.di.component.CartListComponent;
@@ -43,6 +63,7 @@ public class CartFragment extends BasePresenterFragment
         implements CartListAdapter.ActionListener,
         CartRemoveItemDialog.CartItemRemoveCallbackAction,
         ICartListView {
+        ICartListView, TopAdsItemClickListener, RefreshHandler.OnRefreshHandlerListener {
 
     @BindView(R2.id.rv_cart)
     RecyclerView cartRecyclerView;
@@ -60,6 +81,9 @@ public class CartFragment extends BasePresenterFragment
     CartListAdapter cartListAdapter;
     @Inject
     RecyclerView.ItemDecoration cartItemDecoration;
+
+    private RefreshHandler refreshHandler;
+
 
     private OnPassingCartDataListener mDataPasserListener;
     private CartPromoSuggestion cartPromoSuggestionData;
@@ -131,6 +155,7 @@ public class CartFragment extends BasePresenterFragment
 
     @Override
     protected void initView(View view) {
+        refreshHandler = new RefreshHandler(getActivity(), view, this);
         cartRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         cartRecyclerView.setAdapter(cartListAdapter);
         cartRecyclerView.addItemDecoration(cartItemDecoration);
@@ -138,7 +163,6 @@ public class CartFragment extends BasePresenterFragment
 
     @Override
     protected void setViewListener() {
-        dPresenter.processGetCartData();
         btnToShipment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -150,7 +174,7 @@ public class CartFragment extends BasePresenterFragment
 
     @Override
     protected void initialVar() {
-
+        refreshHandler.startRefresh();
     }
 
     @Override
@@ -160,6 +184,9 @@ public class CartFragment extends BasePresenterFragment
 
     @Override
     public void onCartItemDeleteButtonClicked(CartItemHolderData cartItemHolderData, int position) {
+        dPresenter.processDeleteCart(cartItemHolderData.getCartItemData(), true);
+
+        // showDeleteCartItemDialog(cartItemHolderData.getCartItemData(), position);
         ArrayList<CartItemData> cartItemData = new ArrayList<>();
         cartItemData.add(cartItemHolderData.getCartItemData());
         showDeleteCartItemDialog(cartItemData);
@@ -200,6 +227,11 @@ public class CartFragment extends BasePresenterFragment
     @Override
     public void onCartPromoSuggestionButtonCloseClicked(CartPromoSuggestion data, int position) {
 
+    }
+
+    @Override
+    public void onCartItemListIsEmpty() {
+        renderEmptyCartData();
     }
 
     @Override
@@ -260,47 +292,86 @@ public class CartFragment extends BasePresenterFragment
 
     @Override
     public void renderCartListData(List<CartItemData> cartItemDataList) {
+        refreshHandler.finishRefresh();
         cartListAdapter.addDataList(cartItemDataList);
         dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
-
-        // Pass data to its container activity trough PassingCartDataListener interface
         mDataPasserListener.onPassingCartData(cartItemDataList);
     }
 
     @Override
     public void renderErrorGetCartListData(String message) {
-
+        refreshHandler.finishRefresh();
     }
 
     @Override
     public void renderErrorHttpGetCartListData(String message) {
-
+        refreshHandler.finishRefresh();
     }
 
     @Override
     public void renderErrorNoConnectionGetCartListData(String message) {
-
+        refreshHandler.finishRefresh();
     }
 
     @Override
     public void renderErrorTimeoutConnectionGetCartListData(String message) {
-
+        refreshHandler.finishRefresh();
     }
 
     @Override
     public void renderEmptyCartData() {
+        refreshHandler.finishRefresh();
+        CartBadgeNotificationReceiver.resetBadgeCart(getActivity());
 
+        View rootview = getView();
+        try {
+            rootview.findViewById(com.tokopedia.core.R.id.main_retry).setVisibility(View.VISIBLE);
+        } catch (NullPointerException e) {
+            View emptyState = LayoutInflater.from(context).
+                    inflate(R.layout.layout_empty_shopping_cart_new, (ViewGroup) rootview);
+            TextView shop = emptyState.findViewById(R.id.btn_shopping_now);
+            shop.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    navigateToActivity(
+                            BrowseProductRouter.getSearchProductIntent(getActivity())
+                    );
+                    getActivity().finish();
+                }
+            });
+            TopAdsParams params = new TopAdsParams();
+            params.getParam().put(
+                    TopAdsParams.KEY_SRC,
+                    com.tokopedia.transaction.cart.fragment.CartFragment.TOPADS_CART_SRC);
+
+            Config config = new Config.Builder()
+                    .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
+                    .setUserId(SessionHandler.getLoginID(getActivity()))
+                    .withPreferedCategory()
+                    .setEndpoint(Endpoint.PRODUCT)
+                    .displayMode(DisplayMode.FEED)
+                    .topAdsParams(params)
+                    .build();
+
+            TopAdsView topAdsView = emptyState.findViewById(R.id.topads);
+            topAdsView.setConfig(config);
+            topAdsView.setDisplayMode(DisplayMode.FEED);
+            topAdsView.setMaxItems(4);
+            topAdsView.setAdsItemClickListener(this);
+            topAdsView.loadTopAds();
+        }
     }
 
     @Override
     public void disableSwipeRefresh() {
-
+        refreshHandler.setPullEnabled(false);
     }
 
     @Override
     public void enableSwipeRefresh() {
-
+        refreshHandler.setPullEnabled(true);
     }
+
 
     @Override
     public List<CartItemHolderData> getFinalCartList() {
@@ -314,7 +385,7 @@ public class CartFragment extends BasePresenterFragment
 
     @Override
     public void renderDetailInfoSubTotal(String qty, String subtotalPrice) {
-        tvItemCount.setText(MessageFormat.format("Harga Barang ({0} Item): ", qty));
+        tvItemCount.setText(MessageFormat.format("Harga Barang ({0} Item) : ", qty));
         tvTotalPrice.setText(subtotalPrice);
     }
 
@@ -331,6 +402,16 @@ public class CartFragment extends BasePresenterFragment
         return this.cartPromoSuggestionData;
     }
 
+    @Override
+    public void renderSuccessDeleteCart(CartItemData cartItemData, String message) {
+        cartListAdapter.deleteItem(cartItemData);
+    }
+
+    void showDeleteCartItemDialog(CartItemData cartItemData, int position) {
+        String productName = cartItemData.getOriginData().getProductName();
+        String productWeight = cartItemData.getOriginData().getWeightFormatted();
+        String message = String.format("Anda yakin ingin menghapus %s, Berat %s dari keranjang belanja?",
+                productName, productWeight);
     @Override
     public void deleteSingleItem(List<CartItemData> cartItemDataList) {
         cartListAdapter.deleteItem(cartItemDataList);
@@ -354,6 +435,39 @@ public class CartFragment extends BasePresenterFragment
 
     public static CartFragment newInstance() {
         return new CartFragment();
+    }
+
+    @Override
+    public void onProductItemClicked(Product product) {
+        ProductItem data = new ProductItem();
+        data.setId(product.getId());
+        data.setName(product.getName());
+        data.setPrice(product.getPriceFormat());
+        data.setImgUri(product.getImage().getM_url());
+        Bundle bundle = new Bundle();
+        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
+        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
+        intent.putExtras(bundle);
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void onShopItemClicked(Shop shop) {
+        Bundle bundle = ShopInfoActivity.createBundle(shop.getId(), "");
+        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
+        intent.putExtras(bundle);
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void onAddFavorite(int position, Data shopData) {
+        //TODO: this listener not used in this sprint
+    }
+
+    @Override
+    public void onRefresh(View view) {
+        cartListAdapter.resetData();
+        dPresenter.processGetCartData();
     }
 
     public interface OnPassingCartDataListener {
