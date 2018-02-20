@@ -17,7 +17,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:divider="@drawable/bg_line_separator"
+        android:divider="@drawable/bg_list_separator"
         android:orientation="vertical"
         android:showDividers="middle">
 
@@ -25,7 +25,7 @@
             android:id="@+id/label_view_transaction_success"
             style="@style/LabelLayout"
             app:lv_content="@string/shop_info_label_default_content"
-            app:lv_image="@drawable/ic_smiley_neutral"
+            app:lv_image="@drawable/ic_info_transaction"
             app:lv_image_width="@dimen/image_width_xs"
             app:lv_title="@string/shop_info_label_transaction_success" />
 
@@ -33,7 +33,7 @@
             android:id="@+id/label_view_total_transaction"
             style="@style/LabelLayout"
             app:lv_content="@string/shop_info_label_default_content"
-            app:lv_image="@drawable/ic_smiley_neutral"
+            app:lv_image="@drawable/ic_info_cart"
             app:lv_image_width="@dimen/image_width_xs"
             app:lv_title="@string/shop_info_label_total_transaction" />
 
@@ -41,7 +41,7 @@
             android:id="@+id/label_view_product_sold"
             style="@style/LabelLayout"
             app:lv_content="@string/shop_info_label_default_content"
-            app:lv_image="@drawable/ic_smiley_neutral"
+            app:lv_image="@drawable/ic_info_product"
             app:lv_image_width="@dimen/image_width_xs"
             app:lv_title="@string/shop_info_label_product_sold" />
 
@@ -49,7 +49,7 @@
             android:id="@+id/label_view_total_review"
             style="@style/LabelLayout"
             app:lv_content="@string/shop_info_label_default_content"
-            app:lv_image="@drawable/ic_smiley_neutral"
+            app:lv_image="@drawable/ic_info_review"
             app:lv_image_width="@dimen/image_width_xs"
             app:lv_title="@string/shop_info_label_total_review" />
 
@@ -57,7 +57,7 @@
             android:id="@+id/label_view_favorite"
             style="@style/LabelLayout"
             app:lv_content="@string/shop_info_label_default_content"
-            app:lv_image="@drawable/ic_smiley_neutral"
+            app:lv_image="@drawable/ic_info_favourite"
             app:lv_image_width="@dimen/image_width_xs"
             app:lv_title="@string/shop_info_label_favourite" />
 
@@ -65,7 +65,7 @@
             android:id="@+id/label_view_last_online"
             style="@style/LabelLayout"
             app:lv_content="@string/shop_info_label_default_content"
-            app:lv_image="@drawable/ic_smiley_neutral"
+            app:lv_image="@drawable/ic_info_clock"
             app:lv_image_width="@dimen/image_width_xs"
             app:lv_title="@string/shop_info_label_last_online" />
 
@@ -73,7 +73,7 @@
             android:id="@+id/label_view_open_since"
             style="@style/LabelLayout"
             app:lv_content="@string/shop_info_label_default_content"
-            app:lv_image="@drawable/ic_smiley_neutral"
+            app:lv_image="@drawable/ic_info_open_label"
             app:lv_image_width="@dimen/image_width_xs"
             app:lv_title="@string/shop_info_label_open_since" />
 
@@ -81,7 +81,7 @@
             android:id="@+id/label_view_total_product"
             style="@style/LabelLayout"
             app:lv_content="@string/shop_info_label_default_content"
-            app:lv_image="@drawable/ic_smiley_neutral"
+            app:lv_image="@drawable/ic_info_product"
             app:lv_image_width="@dimen/image_width_xs"
             app:lv_title="@string/shop_info_label_total_product" />
 
@@ -89,7 +89,7 @@
             android:id="@+id/label_view_total_etalase"
             style="@style/LabelLayout"
             app:lv_content="@string/shop_info_label_default_content"
-            app:lv_image="@drawable/ic_smiley_neutral"
+            app:lv_image="@drawable/ic_info_etalase"
             app:lv_image_width="@dimen/image_width_xs"
             app:lv_title="@string/shop_info_label_total_etalase" />
     </LinearLayout>

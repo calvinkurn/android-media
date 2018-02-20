@@ -6,9 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
-import com.tokopedia.shop.info.view.activity.ShopInfoActivity;
 import com.tokopedia.shop.note.view.fragment.ShopNoteDetailFragment;
 
 /**

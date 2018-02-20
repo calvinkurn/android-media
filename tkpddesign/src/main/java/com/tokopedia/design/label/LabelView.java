@@ -5,14 +5,13 @@ import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.design.R;
@@ -101,7 +100,9 @@ public class LabelView extends BaseCustomView {
             imageView.setImageDrawable(imageDrawable);
             imageView.setVisibility(View.VISIBLE);
         }
-        ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(imageWidth, imageWidth);
+        ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
+        layoutParams.width = imageWidth;
+        layoutParams.height = imageWidth;
         imageView.setLayoutParams(layoutParams);
         titleTextView.setText(titleText);
         titleTextView.setTypeface(null, titleTextStyleValue);

@@ -58,6 +58,8 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
     private TextView scoreNeutralTextView;
     private TextView scoreBadTextView;
 
+    private TextView taglineTextView;
+
     private RecyclerView recyclerView;
 
     private ShopInfoLogisticAdapter shopInfoLogisticAdapter;
@@ -95,7 +97,10 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
         scoreNeutralTextView = view.findViewById(R.id.text_view_score_neutral);
         scoreBadTextView = view.findViewById(R.id.text_view_score_bad);
 
+        taglineTextView = view.findViewById(R.id.text_view_tagline);
+
         recyclerView = view.findViewById(R.id.recycler_view);
+        recyclerView.setNestedScrollingEnabled(false);
         return view;
     }
 
