@@ -45,7 +45,7 @@ public class ReviewShopInfoFragment extends ReviewShopFragment implements Review
     @Override
     public void renderList(@NonNull List<ReviewShopModelContent> list, boolean b) {
         boolean isSeeMoreEnabled = false;
-        if(!list.isEmpty() && list.size() > 10 && b){
+        if(!list.isEmpty() && list.size() >= 10 && b){
             // add see more
             isSeeMoreEnabled = true;
 

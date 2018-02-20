@@ -11,6 +11,7 @@ import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
 import com.tokopedia.shop.product.view.adapter.ShopProductTypeFactory;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.view.listener.ShopProductListView;
+import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListPresenter;
 
 import javax.inject.Inject;
@@ -19,7 +20,7 @@ import javax.inject.Inject;
  * Created by nathan on 2/15/18.
  */
 
-public class ShopProductListFragment extends BaseListFragment<Visitable, ShopProductTypeFactory> implements ShopProductListView {
+public class ShopProductListFragment extends BaseListFragment<ShopProductViewModel, ShopProductTypeFactory>  {
 
     public static ShopProductListFragment createInstance(String shopId) {
         ShopProductListFragment shopProductListFragment = new ShopProductListFragment();
@@ -46,10 +47,6 @@ public class ShopProductListFragment extends BaseListFragment<Visitable, ShopPro
         shopProductListPresenter.getShopPageList(shopId);
     }
 
-    @Override
-    public void onItemClicked(Visitable visitable) {
-
-    }
 
     @Override
     protected ShopProductTypeFactory getAdapterTypeFactory() {
@@ -77,5 +74,10 @@ public class ShopProductListFragment extends BaseListFragment<Visitable, ShopPro
         if (shopProductListPresenter != null) {
             shopProductListPresenter.detachView();
         }
+    }
+
+    @Override
+    public void onItemClicked(ShopProductViewModel shopProductViewModel) {
+
     }
 }

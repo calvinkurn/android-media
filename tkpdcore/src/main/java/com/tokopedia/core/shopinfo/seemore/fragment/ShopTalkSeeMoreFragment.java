@@ -42,7 +42,7 @@ public class ShopTalkSeeMoreFragment extends com.tokopedia.core.shopinfo.fragmen
 
         List<ShopTalk> list = result.getList();
         boolean isSeeMoreEnabled = false;
-        if(!result.getList().isEmpty() && result.getList().size() > 10 && hasNext){
+        if(!result.getList().isEmpty() && result.getList().size() >= 10 && hasNext){
             // add see more
             isSeeMoreEnabled = true;
 
