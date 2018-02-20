@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_product_list"
+    android:clickable="true"
+    tools:layout_editor_absoluteY="81dp">
+
+    <!-- HAPUS INI KELAS DARI tkpdcore -->
+    <!-- use gridview_hotlist_product from tkpddiscovery -->
+    <!-- DELETE THIS FILE -->
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="364dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif-medium"
+        android:lineSpacingExtra="5sp"
+        android:maxLines="2"
+        android:minHeight="38dp"
+        android:textColor="@color/font_black_primary_70"
+        android:textSize="@dimen/font_micro"
+        android:textStyle="normal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline3"
+        tools:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold" />
+
+    <TextView
+        android:id="@+id/text_original_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#999999"
+        android:textSize="@dimen/font_micro"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center_vertical"
+        android:lineSpacingExtra="5sp"
+        android:textColor="#ff5722"
+        android:textSize="@dimen/font_small"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        tools:text="Rp 3.121.500" />
+
+    <TextView
+        android:id="@+id/text_discount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_rounded_corners_red"
+        android:gravity="center"
+        android:paddingBottom="@dimen/margin_vvvs"
+        android:paddingLeft="@dimen/padding_vvs"
+        android:paddingRight="@dimen/padding_vvs"
+        android:paddingTop="@dimen/margin_vvvs"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_micro"
+        android:visibility="gone"
+        tools:text="10%OFF" />
+
+
+    <ImageView
+        android:id="@+id/rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+    <LinearLayout
+        android:id="@+id/badges_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:gravity="center_vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="266dp">
+
+        <ImageView
+            android:id="@+id/image_view_featured"
+            android:layout_width="@dimen/image_width_xxs"
+            android:layout_height="@dimen/image_width_xxs"
+            android:layout_marginEnd="@dimen/margin_ms"
+            android:layout_marginRight="@dimen/margin_ms"
+            android:src="@drawable/ic_featured_product" />
+
+        <TextView
+            android:id="@+id/text_view_variant"
+            style="@style/TextView.Micro.BlackDisabled"
+            android:layout_marginEnd="@dimen/margin_ms"
+            android:layout_marginRight="@dimen/margin_ms"
+            android:background="@drawable/bg_rect_stroke_lighter_gray"
+            android:padding="@dimen/padding_vvs"
+            android:text="@string/product_label_variant"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/text_view_cashback"
+            style="@style/TextView.Micro.BlackDisabled"
+            android:layout_marginEnd="@dimen/margin_ms"
+            android:layout_marginRight="@dimen/margin_ms"
+            android:background="@drawable/bg_rect_stroke_green"
+            android:padding="@dimen/padding_vvs"
+            android:textColor="@android:color/white"
+            android:visibility="gone"
+            tools:text="@string/product_manage_item_cashback" />
+
+        <TextView
+            android:id="@+id/text_view_wholesale"
+            style="@style/TextView.Micro.BlackDisabled"
+            android:layout_marginEnd="@dimen/margin_ms"
+            android:layout_marginRight="@dimen/margin_ms"
+            android:background="@drawable/bg_rect_stroke_lighter_gray"
+            android:padding="@dimen/padding_vvs"
+            android:text="@string/product_label_wholesale"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/text_view_pre_order"
+            style="@style/TextView.Micro.BlackDisabled"
+            android:layout_width="wrap_content"
+            android:layout_marginEnd="@dimen/margin_ms"
+            android:layout_marginRight="@dimen/margin_ms"
+            android:background="@drawable/bg_rect_stroke_lighter_gray"
+            android:padding="@dimen/padding_vvs"
+            android:text="@string/product_label_po" />
+
+        <ImageView
+            android:id="@+id/image_view_free_return"
+            android:layout_width="@dimen/image_width_xxs"
+            android:layout_height="@dimen/image_width_xxs"
+            android:src="@drawable/ic_free_return" />
+    </LinearLayout>
+
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/image_card"
+        app:cardElevation="0dp"
+        app:cardUseCompatPadding="true"
+        android:layout_width="0dp"
+        android:layout_height="164dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/product_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:gravity="center"
+            android:scaleType="centerCrop"
+            tools:visibility="visible"
+            tools:src="@drawable/ic_kupon" />
+
+    </android.support.v7.widget.CardView>
+
+
+
+    <FrameLayout
+        android:id="@+id/wishlist_button_container"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="1dp"
+        android:background="@drawable/circle_white"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
+
+        <ImageView
+            android:id="@+id/wishlist_button"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:background="@drawable/ic_wishlist" />
+
+    </FrameLayout>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="185dp" />
+
+</android.support.constraint.ConstraintLayout>
