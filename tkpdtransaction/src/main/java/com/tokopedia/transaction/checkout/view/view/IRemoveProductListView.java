@@ -18,4 +18,7 @@ public interface IRemoveProductListView<T> {
     TKPDMapParam<String,String> getGenerateParamAuth(TKPDMapParam<String, String> param);
 
     void renderSuccessDeleteCart(String message);
+
+    void renderOnFailureDeleteCart(String message);
+
 }

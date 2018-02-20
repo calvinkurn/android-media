@@ -74,10 +74,12 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             holderView.tvProductPrice.setText(data.getCartItemData().getOriginData().getPriceFormatted());
             holderView.tvProductWeight.setText(data.getCartItemData().getOriginData().getWeightFormatted());
             holderView.etQty.setText(String.valueOf(data.getCartItemData().getUpdatedData().getQuantity()));
+
             ImageHandler.loadImageRounded2(
                     holderView.itemView.getContext(), holderView.ivProductImage,
                     data.getCartItemData().getOriginData().getProductImage()
             );
+
             holderView.etRemark.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
                 public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
@@ -227,24 +229,26 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public List<CartItemHolderData> getDataList() {
         List<CartItemHolderData> cartItemHolderDataFinalList = new ArrayList<>();
         for (Object object : cartItemHolderDataList) {
-            if (object instanceof CartItemHolderData) cartItemHolderDataFinalList.add(
-                    (CartItemHolderData) object
-            );
+            if (object instanceof CartItemHolderData) {
+                cartItemHolderDataFinalList.add((CartItemHolderData) object);
+            }
         }
         return cartItemHolderDataFinalList;
     }
 
     public void increaseQuantity(int position) {
-        if (getItemViewType(position) == TYPE_VIEW_ITEM_CART)
+        if (getItemViewType(position) == TYPE_VIEW_ITEM_CART) {
             ((CartItemHolderData) cartItemHolderDataList.get(position))
                     .getCartItemData().getUpdatedData().increaseQuantity();
+        }
         notifyItemChanged(position);
     }
 
     public void decreaseQuantity(int position) {
-        if (getItemViewType(position) == TYPE_VIEW_ITEM_CART)
+        if (getItemViewType(position) == TYPE_VIEW_ITEM_CART) {
             ((CartItemHolderData) cartItemHolderDataList.get(position))
                     .getCartItemData().getUpdatedData().decreaseQuantity();
+        }
         notifyItemChanged(position);
     }
 
@@ -264,8 +268,8 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyDataSetChanged();
     }
 
-    public void deleteItem(int position) {
-        cartItemHolderDataList.remove(position);
+    public void deleteItem(List<CartItemData> cartItemDataList) {
+        cartItemHolderDataList.removeAll(cartItemDataList);
         notifyDataSetChanged();
     }
 

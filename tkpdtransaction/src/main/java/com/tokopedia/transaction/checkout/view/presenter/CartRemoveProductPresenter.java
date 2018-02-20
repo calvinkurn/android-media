@@ -67,8 +67,11 @@ public class CartRemoveProductPresenter
 
             @Override
             public void onNext(DeleteCartData deleteCartData) {
-                if(deleteCartData.isSuccess())
+                if (deleteCartData.isSuccess()) {
                     getMvpView().renderSuccessDeleteCart(deleteCartData.getMessage());
+                } else {
+                    getMvpView().renderOnFailureDeleteCart(deleteCartData.getMessage());
+                }
             }
         }, getMvpView().getGenerateParamAuth(param));
     }
