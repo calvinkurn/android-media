@@ -43,6 +43,28 @@ query HomeFeedQuery($userID: Int!, $limit: Int!, $cursor: String) {
                   recommendation_type
                 }
               }
+              topads {
+                  id
+                  ad_ref_key
+                  redirect
+                  sticker_id
+                  sticker_image
+                  product_click_url
+                  shop_click_url
+                  product {
+                     id
+                     name
+                     image {
+                        s_url
+                        s_ecs
+                     }
+                     price_format
+                  }
+                  shop {
+                     id
+                  }
+                  applinks
+              }
             }
           }
           links {

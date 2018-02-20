@@ -26,6 +26,7 @@ import rx.Subscriber;
 public class GetHomeFeedsSubscriber extends Subscriber<FeedResult> {
 
     private static final String TYPE_INSPIRATION = "inspirasi";
+    private static final String TYPE_TOPADS = "topads";
 
     private final HomeFeedListener viewListener;
     private final int page;
@@ -63,8 +64,6 @@ public class GetHomeFeedsSubscriber extends Subscriber<FeedResult> {
 
         ArrayList<Visitable> list = convertToViewModel(feedResult.getFeedDomain());
 
-        list.add(dummyTopAds());
-
         if (feedResult.isHasNext()) {
             viewListener.updateCursor(getCurrentCursor(feedResult));
         }
@@ -74,15 +73,6 @@ public class GetHomeFeedsSubscriber extends Subscriber<FeedResult> {
         if (!feedResult.isHasNext()) {
             viewListener.unsetEndlessScroll();
         }
-    }
-
-    private Visitable dummyTopAds() {
-        List<Data> data = new ArrayList<>();
-        Data d = new Data();
-        d.setProduct(new Product());
-        data.add(d);
-        TopAdsViewModel viewModel = new TopAdsViewModel(data);
-        return viewModel;
     }
 
     private ArrayList<Visitable> convertToViewModel(FeedDomain feedDomain) {
@@ -118,6 +108,10 @@ public class GetHomeFeedsSubscriber extends Subscriber<FeedResult> {
                             cache.putInt(LAST_POSITION_ENHANCE_PRODUCT, positionFeedProductCard);
                             cache.applyEditor();
                         }
+                        break;
+                    case TYPE_TOPADS:
+                        TopAdsViewModel topAdsViewModel = new TopAdsViewModel(domain.getContent().getTopAdsList());
+                        listFeedView.add(topAdsViewModel);
                         break;
                     default:
                         break;

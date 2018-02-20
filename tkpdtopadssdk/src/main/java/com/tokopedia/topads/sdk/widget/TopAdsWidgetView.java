@@ -5,16 +5,20 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.data.ModelConverter;
+import com.tokopedia.topads.sdk.domain.interactor.OpenTopAdsUseCase;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.utils.DividerItemDecoration;
 import com.tokopedia.topads.sdk.view.DisplayMode;
+import com.tokopedia.topads.sdk.view.TopAdsInfoBottomSheet;
 import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
 
 import java.util.ArrayList;
@@ -24,7 +28,7 @@ import java.util.List;
  * Created by errysuprayogi on 2/20/18.
  */
 
-public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListener {
+public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListener, View.OnClickListener {
 
     private static final String TAG = TopAdsWidgetView.class.getSimpleName();
     private RecyclerView recyclerView;
@@ -34,6 +38,7 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
     private DividerItemDecoration itemDecoration;
     private List<Data> data = new ArrayList<>();
     private TopAdsItemClickListener itemClickListener;
+    private OpenTopAdsUseCase openTopAdsUseCase;
 
     public TopAdsWidgetView(Context context) {
         super(context);
@@ -52,9 +57,10 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
 
     private void inflateView(Context context, AttributeSet attrs, int defStyle) {
         inflate(getContext(), R.layout.layout_ads, this);
+        openTopAdsUseCase = new OpenTopAdsUseCase(context);
         adapter = new AdsItemAdapter(getContext());
         adapter.setItemClickListener(this);
-
+        findViewById(R.id.info_topads).setOnClickListener(this);
         recyclerView = (RecyclerView) findViewById(R.id.list);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(true);
@@ -78,15 +84,23 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
         }
         adapter.setList(visitables);
     }
-    
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        openTopAdsUseCase.unsubscribe();
+    }
+
     @Override
     public void onShopItemClicked(int position, Data data) {
         itemClickListener.onShopItemClicked(data.getShop());
+        openTopAdsUseCase.execute(data.getProductClickUrl());
     }
 
     @Override
     public void onProductItemClicked(int position, Data data) {
         itemClickListener.onProductItemClicked(data.getProduct());
+        openTopAdsUseCase.execute(data.getProductClickUrl());
     }
 
     @Override
@@ -96,5 +110,13 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
 
     public void setItemClickListener(TopAdsItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.info_topads) {
+            TopAdsInfoBottomSheet infoBottomSheet = TopAdsInfoBottomSheet.newInstance(getContext());
+            infoBottomSheet.show();
+        }
     }
 }
