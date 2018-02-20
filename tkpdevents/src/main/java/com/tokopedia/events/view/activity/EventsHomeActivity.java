@@ -213,55 +213,12 @@ public class EventsHomeActivity extends TActivity
         int id = item.getItemId();
         return mPresenter.onOptionMenuClick(id);
     }
-//
-//    @Override
-//    protected void initVar() {
-//        unbinder = ButterKnife.bind(this);
-//        initInjector();
-//        executeInjector();
-//        mPresenter.attachView(this);
-//        // mPresenter.initialize();
-//        ButterKnife.bind(this);
-//        mPresenter.getEventsList();
-//    }
-
-//    @Override
-//    protected void setActionVar() {
-//
-//    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
     }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        // invalidateTitleToolBar();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // invalidateTitleToolBar();
-    }
-
-//    private void invalidateTitleToolBar() {
-//        String titleToolbar = getString(R.string.drawer_title_appshare);
-//        if (!TextUtils.isEmpty(titleToolbar)) toolbar.setTitle(titleToolbar);
-//    }
-
-//    @Override
-//    protected void setViewListener() {
-//
-//    }
-//
-//    @Override
-//    protected boolean isLightToolbarThemes() {
-//        return true;
-//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -283,23 +240,16 @@ public class EventsHomeActivity extends TActivity
 
     @Override
     public void renderCategoryList(List<CategoryViewModel> categoryList) {
-        // holderCategoryListLayout.removeAllViews();
         ArrayList<EventCategoryView> eventCategoryViews = new ArrayList<>();
         for (CategoryViewModel categoryViewModel : categoryList) {
             if (categoryViewModel.getItems() == null || categoryViewModel.getItems().size() == 0) {
                 continue;
             }
-            // EventCategoryView eventCategoryView = new EventCategoryView(this);
-            //eventCategoryView.renderData(categoryViewModel.getItems(), categoryViewModel.getTitle());
             if ("carousel".equalsIgnoreCase(categoryViewModel.getName())) {
                 adapter = new SlidingImageAdapter(EventsHomeActivity.this, mPresenter.getCarouselImages(categoryViewModel.getItems()), mPresenter);
                 setViewPagerListener();
                 tabLayout.setViewPager(viewPager);
                 mPresenter.startBannerSlide(viewPager);
-            } else {
-
-                // eventCategoryViews.add(eventCategoryView);
-                // holderCategoryListLayout.addView(eventCategoryView);
             }
         }
 
@@ -310,11 +260,6 @@ public class EventsHomeActivity extends TActivity
         categoryViewPager.setCurrentItem(defaultViewPagerPos);
         categoryViewPager.setSaveFromParentEnabled(false);
         indicatorLayout.setVisibility(View.VISIBLE);
-//        SlidingCategoryAdapter eventCategoryAdapter=new SlidingCategoryAdapter(EventsHomeActivity.this,eventCategoryViews);
-//        categoryViewPager.setAdapter(eventCategoryAdapter);
-//        categoryTabLayout.setupWithViewPager(categoryViewPager, true);
-
-
     }
 
 
@@ -328,9 +273,7 @@ public class EventsHomeActivity extends TActivity
 
             @Override
             public void onPageScrolled(int arg0, float arg1, int arg2) {
-//                if (arg0 != lastPos) {
-//                    lastPos = arg0;
-//                }
+
             }
 
             @Override
@@ -341,7 +284,6 @@ public class EventsHomeActivity extends TActivity
         });
 
         viewPager.setAdapter(adapter);
-        //viewPager.setCurrentItem(0);
     }
 
     @Override
@@ -353,33 +295,4 @@ public class EventsHomeActivity extends TActivity
     protected boolean isLightToolbarThemes() {
         return true;
     }
-
-//    @Override
-//    protected void setupToolbar() {
-//        toolbar = (Toolbar) findViewById(R.id.app_bar);
-//        toolbar.removeAllViews();
-//        View view = getLayoutInflater().inflate(R.layout.custom_actionbar_search_view, null);
-//        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-//                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//        view.setLayoutParams(params);
-//        TextView tvCari = (TextView) view.findViewById(R.id.tv_cari);
-//        final SearchInputView searchInputView = (SearchInputView) view.findViewById(R.id.search_input_view);
-//        searchInputView.setPadding(0,0,0,0);
-//        searchInputView.setListener(this);
-//        searchInputView.setDelayTextChanged(DEFAULT_DELAY_TEXT_CHANGED);
-//        tvCari.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                String searchText = searchInputView.getSearchText();
-//                mPresenter.getEventsListBySearch(searchText);
-//            }
-//        });
-//        toolbar.addView(view);
-//        if (isLightToolbarThemes()) {
-//            setLightToolbarStyle();
-//        }
-//        setSupportActionBar(toolbar);
-//    }
-
-
 }

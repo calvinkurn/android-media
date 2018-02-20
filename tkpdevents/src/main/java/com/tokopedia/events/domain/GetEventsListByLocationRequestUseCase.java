@@ -15,8 +15,9 @@ import rx.Observable;
  */
 
 public class GetEventsListByLocationRequestUseCase extends UseCase<List<EventsCategoryDomain>> {
-    public final String LOCATION="location";
+    public final String LOCATION = "location";
     private final EventRepository eventRepository;
+
     public GetEventsListByLocationRequestUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, EventRepository eventRepository) {
         super(threadExecutor, postExecutionThread);
         this.eventRepository = eventRepository;
@@ -24,7 +25,7 @@ public class GetEventsListByLocationRequestUseCase extends UseCase<List<EventsCa
 
     @Override
     public Observable<List<EventsCategoryDomain>> createObservable(RequestParams requestParams) {
-       return eventRepository.getEventsListByLocation(requestParams.getParameters().get(LOCATION).toString());
+        return eventRepository.getEventsListByLocation(requestParams.getString(LOCATION, ""));
 
     }
 }

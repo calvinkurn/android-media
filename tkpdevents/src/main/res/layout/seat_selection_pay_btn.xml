@@ -13,7 +13,7 @@
         android:layout_marginTop="@dimen/margin_padding_medium"
         android:background="@color/grey_400"
         android:gravity="center"
-        android:text="SCREEN THIS WAY" />
+        android:text="@string/screen_this_way" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -37,7 +37,7 @@
             android:layout_marginBottom="@dimen/margin_padding_medium"
             android:layout_marginLeft="@dimen/margin_padding_medium"
             android:layout_toRightOf="@+id/seats_available_iv"
-            android:text="Tersedia"
+            android:text="@string/tersedia"
             android:textColor="@color/black" />
 
         <ImageView
@@ -56,7 +56,7 @@
             android:layout_marginLeft="@dimen/margin_padding_medium"
             android:layout_marginRight="@dimen/margin_padding_medium"
             android:layout_toRightOf="@+id/seats_not_available_iv"
-            android:text="Terjual"
+            android:text="@string/terjual"
             android:textColor="@color/black" />
 
         <ImageView
@@ -74,7 +74,7 @@
             android:layout_marginLeft="@dimen/margin_padding_medium"
             android:layout_marginRight="@dimen/margin_default"
             android:layout_toRightOf="@+id/seats_booking"
-            android:text="Terpilih"
+            android:text="@string/terpilih"
             android:textColor="@color/black" />
     </RelativeLayout>
 
@@ -99,7 +99,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tiket: "
+                android:text="@string/tiket"
                 android:textColor="@color/black" />
 
             <TextView
@@ -121,7 +121,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Total: "
+                android:text="@string/total"
                 android:textColor="@color/black" />
 
             <TextView

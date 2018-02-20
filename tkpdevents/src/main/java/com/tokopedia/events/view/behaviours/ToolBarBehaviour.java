@@ -54,11 +54,9 @@ public class ToolBarBehaviour extends CoordinatorLayout.Behavior<Toolbar> {
             float ratio = (float) getCurrentScrollValue(child, dependency) / getTotalScrollRange(child, dependency);
             float alpha = 1f - Math.min(1f, Math.max(0f, ratio));
             int drawableAlpha = (int) (alpha * 255);
-            //  Log.i("ToolbarAlphaScrollBehavior", "Alpha: " + alpha);
 
             if(drawableAlpha>=253) {
                 int color = Color.parseColor("#ff000000");
-                //color = Color.argb(drawableAlpha, Color.red(color), Color.green(color), Color.blue(color));
 
                 child.setTitleTextColor(color);
 
@@ -76,15 +74,6 @@ public class ToolBarBehaviour extends CoordinatorLayout.Behavior<Toolbar> {
 
 
             setStatusBarColor(parent, drawableAlpha);
-//            if (mTitleView != null) {
-//                ViewCompat.setAlpha(mTitleView, alpha);
-//                return false;
-//            }
-//            if (!searchedForTitleView) {
-//                mTitleView = ViewHelper.getTitleView(child);
-//                searchedForTitleView = true;
-//            }
-
         }
         return false;
     }

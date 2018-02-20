@@ -52,6 +52,15 @@
     <string name="nomor_kursi">Nomor Kursi:</string>
     <string name="ubah">Ubah</string>
     <string name="email">E-mail</string>
+    <string name="screen_this_way">SCREEN THIS WAY</string>
+    <string name="tersedia">Tersedia</string>
+    <string name="terjual">Terjual</string>
+    <string name="terpilih">Terpilih</string>
+    <string name="tiket">Tiket :</string>
+    <string name="total">Total:</string>
+    <string name="pilihan_kursi">Pilihan Kursi:</string>
+    <string name="detail_tiket">Detail Tiket</string>
+    <string name="promo_section">Gunakan Kode Promo Tokopedia</string>
 
     <!-- need to changed -->
 

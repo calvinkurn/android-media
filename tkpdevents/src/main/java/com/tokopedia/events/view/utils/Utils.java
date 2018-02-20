@@ -163,18 +163,6 @@ public class Utils {
         return false;
     }
 
-
-    public static List<String> getGenres(String genre) {
-        List<String> genreList = new ArrayList<>();
-
-        String[] temp = genre.split("\\|");
-        for (int i = 0; i < temp.length; i++) {
-            genreList.add(temp[i]);
-        }
-
-        return genreList;
-    }
-
     public static List<String> getDisplayTags(String displayTag) {
         List<String> displayTagsList = new ArrayList<>();
 
@@ -184,30 +172,6 @@ public class Utils {
         }
 
         return displayTagsList;
-    }
-
-    public static String convertTime(String time) {
-
-        int totalMinutesInt = Integer.valueOf(time.toString());
-
-        int hours = totalMinutesInt / 60;
-        int hoursToDisplay = hours;
-
-        if (hours > 12) {
-            hoursToDisplay = hoursToDisplay - 12;
-        }
-
-        int minutesToDisplay = totalMinutesInt - (hours * 60);
-
-        String minToDisplay = null;
-        if (minutesToDisplay == 0) minToDisplay = "00";
-        else if (minutesToDisplay < 10) minToDisplay = "0" + minutesToDisplay;
-        else minToDisplay = "" + minutesToDisplay;
-
-        String displayValue = hoursToDisplay + " " + "Jam" + " " + minToDisplay + " " + "Menit";
-
-        return displayValue;
-
     }
 
 
@@ -229,62 +193,12 @@ public class Utils {
         return date;
     }
 
-    public static String[] scheduleDateArray(int time, int pos, int size) {
-        String[] scheduleDates = new String[size];
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy");
-        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
-        Long epochTime = time * 1000L;
-        Date date = new Date(epochTime);
-        String dateString = sdf.format(date);
-        scheduleDates[pos] = dateString;
-        return scheduleDates;
-    }
-
-
-    public static String convertShowTiming(int time) {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
-        Long epochTime = time * 1000L;
-        Date date = new Date(epochTime);
-        String dateString = sdf.format(date);
-        return dateString;
-    }
-
-    public static String currentTime() {
-        SimpleDateFormat dateTimeInGMT = new SimpleDateFormat("HH:mm");
-        //Setting the time zone
-        dateTimeInGMT.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
-        Log.d("Naveen", "Current Time in Jakarta" + dateTimeInGMT.format(new Date()));
-        return dateTimeInGMT.format(new Date());
-    }
-
-
-    public static String movieDimension(String movieName) {
-        if (movieName.contains("5D")) {
-            return "5D";
-        } else if (movieName.contains("4D")) {
-            return "4D";
-        } else if (movieName.contains("3D")) {
-            return "3D";
-        } else {
-            return "2D";
-        }
-    }
-
-    public static String getEmptyStringIfNull(String input) {
-        return input == null ? "" : input;
-    }
-
-    public static boolean isNullOrEmpty(String string) {
+    private static boolean isNullOrEmpty(String string) {
         return string == null || string.length() == 0;
     }
 
     public static boolean isNotNullOrEmpty(String string) {
         return !isNullOrEmpty(string);
-    }
-
-    public static boolean isNullOrEmpty(final Collection<?> c) {
-        return c == null || c.isEmpty();
     }
 
     public static Bitmap getBitmap(Context context, LinearLayout v) {

@@ -76,7 +76,6 @@ public class EventSearchActivity extends TActivity implements
         ButterKnife.bind(this);
         searchInputView.setListener(this);
         mPresenter.attachView(this);
-        //setupToolbar();
         toolbar.setTitle("Events");
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mPresenter.initialize();

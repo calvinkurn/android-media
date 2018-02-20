@@ -9,9 +9,9 @@ import java.util.List;
  */
 
 public class SearchDomainModel {
-    List<EventsItemDomain> events;
-    List<FilterDomainModel> filters;
-    PageDomain page;
+    private List<EventsItemDomain> events;
+    private List<FilterDomainModel> filters;
+    private PageDomain page;
 
     public List<EventsItemDomain> getEvents() {
         return events;

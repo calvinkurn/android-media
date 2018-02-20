@@ -47,17 +47,12 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
 
     private SeatLayoutViewModel seatLayoutViewModel;
     private PostVerifyCartUseCase postVerifyCartUseCase;
-    private String url;
     private PackageViewModel selectedpkgViewModel;
-    private String eventTitle;
-    private int maxTickets;
     private ProfileUseCase profileUseCase;
     private ProfileModel profileModel;
     private String promocode;
     private String email;
     private String number;
-    private List<String> selectedSeats = new ArrayList<>();
-    private List<String> rowIds;
     private SelectedSeatViewModel mSelectedSeatViewModel;
     private int quantity;
 
@@ -109,11 +104,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
         super.attachView(view);
         selectedpkgViewModel = getView().getActivity().getIntent().getParcelableExtra(EventBookTicketPresenter.EXTRA_PACKAGEVIEWMODEL);
         seatLayoutViewModel = getView().getActivity().getIntent().getParcelableExtra(EventBookTicketPresenter.EXTRA_SEATLAYOUTVIEWMODEL);
-        eventTitle = getView().getActivity().getIntent().getStringExtra("EventTitle");
-        maxTickets = selectedpkgViewModel.getSelectedQuantity();
-        url = selectedpkgViewModel.getFetchSectionUrl();
-//           url =      "https://booking-staging.tokopedia.com/v1/api/seat-layout/category/1/product/904/schedule/1487/group/10909/package/84622";
-        getView().setEventTitle(eventTitle);
+        getView().setEventTitle(getView().getActivity().getIntent().getStringExtra("EventTitle"));
     }
 
 
@@ -133,20 +124,16 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
     }
 
     public void setSelectedSeatText(List<String> selectedSeatList, List<String> rowIds) {
-        selectedSeats = selectedSeatList;
-        this.rowIds = rowIds;
         getView().initializeSeatLayoutModel(selectedSeatList, rowIds);
     }
 
     public void setSeatData() {
         getView().setSelectedSeatText();
-//        getView().setSelectedSeatModel();
     }
 
     public void verifySeatSelection(SelectedSeatViewModel selectedSeatViewModel) {
         getView().showProgressBar();
         this.mSelectedSeatViewModel = selectedSeatViewModel;
-//        postVerifyCartUseCase.setCartItems(convertPackageToCartItem(selectedpkgViewModel), true);
         RequestParams params = RequestParams.create();
         params.putObject("checkoutdata", convertPackageToCartItem(selectedpkgViewModel));
         params.putBoolean("ispromocodecase", true);
@@ -265,7 +252,6 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
         cart.setCartItems(cartItems);
         cart.setPromocode(promocode);
 
-//todo tax per quantity
         return cart;
     }
 }

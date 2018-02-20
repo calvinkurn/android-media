@@ -40,7 +40,7 @@
                         android:paddingBottom="@dimen/margin_default"
                         android:paddingLeft="@dimen/margin_default"
                         android:paddingStart="@dimen/margin_default"
-                        android:text="Detail Tiket"
+                        android:text="@string/detail_tiket"
                         android:textColor="@color/black_70"
                         android:textSize="@dimen/textsize_huge"
                         android:textStyle="bold" />
@@ -62,7 +62,7 @@
                         android:layout_height="wrap_content"
                         android:paddingLeft="@dimen/margin_default"
                         android:paddingRight="@dimen/margin_default"
-                        android:text="The 90s Festival"
+                        android:text="@string/rp_5980000"
                         android:textColor="@color/grey_150"
                         android:textSize="@dimen/font_small"
                         android:textStyle="bold" />
@@ -105,7 +105,7 @@
                             android:layout_marginTop="@dimen/margin_default"
                             android:paddingLeft="@dimen/margin_default"
                             android:paddingStart="@dimen/margin_default"
-                            android:text="Tiket:"
+                            android:text="@string/tiket"
                             android:textColor="@color/black_70"
                             android:textSize="@dimen/font_micro"
                             android:textStyle="normal" />
@@ -117,10 +117,11 @@
                             android:layout_alignParentRight="true"
                             android:layout_marginRight="100dp"
                             android:layout_marginTop="@dimen/margin_default"
-                            android:text="4 x Gold"
+                            android:text="@string/rp_5980000"
                             android:textColor="@color/green_nob"
                             android:textSize="12sp"
-                            android:textStyle="normal" />
+                            android:textStyle="normal"
+                            android:layout_marginEnd="100dp" />
 
                     </RelativeLayout>
 
@@ -428,7 +429,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/margin_default"
                             android:layout_marginStart="@dimen/margin_default"
-                            android:text="Gunakan Kode Promo Tokopedia"
+                            android:text="@string/promo_section"
                             android:textColor="@color/black_70"
                             android:textSize="@dimen/font_small"
                             android:textStyle="normal" />

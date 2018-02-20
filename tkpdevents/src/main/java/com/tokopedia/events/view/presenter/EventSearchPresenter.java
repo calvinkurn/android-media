@@ -48,6 +48,7 @@ public class EventSearchPresenter
     private boolean isLoading;
     private boolean isLastPage;
     private final int PAGE_SIZE = 20;
+    RequestParams searchNextParams = RequestParams.create();
 
     @Inject
     public EventSearchPresenter(GetSearchEventsListRequestUseCase getSearchEventsListRequestUseCase,
@@ -61,10 +62,6 @@ public class EventSearchPresenter
         highlight = searchText;
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(getSearchEventsListRequestUseCase.TAG, searchText);
-//        if (!(catgoryFilters == null) && catgoryFilters.length() == 0)
-//            requestParams.putString(getSearchEventsListRequestUseCase.CATEGORY, catgoryFilters);
-//        if (!(timeFilter == null) && timeFilter.length() == 0)
-//            requestParams.putString(getSearchEventsListRequestUseCase.TIME, timeFilter);
 
         getSearchEventsListRequestUseCase.execute(requestParams, new Subscriber<SearchDomainModel>() {
             @Override
@@ -82,7 +79,6 @@ public class EventSearchPresenter
             public void onNext(SearchDomainModel searchDomainModel) {
                 getView().setSuggestions(processSearchResponse(searchDomainModel), highlight);
                 checkIfToLoad(getView().getLayoutManager());
-                //getView().renderFromSearchResults(categoryItemsViewModels);
                 CommonUtils.dumper("enter onNext");
             }
         });
@@ -193,7 +189,7 @@ public class EventSearchPresenter
     private void loadMoreItems() {
         isLoading = true;
 
-        getSearchNextUseCase.execute(RequestParams.EMPTY, new Subscriber<SearchDomainModel>() {
+        getSearchNextUseCase.execute(searchNextParams, new Subscriber<SearchDomainModel>() {
             @Override
             public void onCompleted() {
 
@@ -234,7 +230,7 @@ public class EventSearchPresenter
         mSearchData = searchDomainModel;
         String nexturl = mSearchData.getPage().getUriNext();
         if (nexturl != null && !nexturl.isEmpty() && nexturl.length() > 0) {
-            getSearchNextUseCase.setNextUrl(nexturl);
+            searchNextParams.putString("nexturl",nexturl);
             isLastPage = false;
         } else {
             isLastPage = true;

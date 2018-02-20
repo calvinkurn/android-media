@@ -144,8 +144,6 @@ public class EventReviewTicketPresenter
                 throwable.printStackTrace();
                 Intent intent = ((TkpdCoreRouter) getView().getActivity().getApplication()).
                         getLoginIntent(getView().getActivity());
-//                intent.removeExtra(SessionView.MOVE_TO_CART_KEY);
-//                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.EVENTS_CART);
                 getView().getActivity().startActivity(intent);
                 getView().hideProgressBar();
             }
@@ -271,7 +269,6 @@ public class EventReviewTicketPresenter
         cart.setCartItems(cartItems);
         cart.setPromocode(promocode);
 
-//todo tax per quantity
         return cart;
     }
 
@@ -288,7 +285,6 @@ public class EventReviewTicketPresenter
 
     public void verifyCart() {
         getView().showProgressBar();
-//        postVerifyCartUseCase.setCartItems(convertPackageToCartItem(checkoutData), !isPromoCodeCase);
         final RequestParams params = RequestParams.create();
         params.putObject("checkoutdata",convertPackageToCartItem(checkoutData));
         params.putBoolean("ispromocodecase",!isPromoCodeCase);

@@ -234,7 +234,6 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         eventTotalTickets.setText(String.format(getString(R.string.jumlah_tiket),
                 packageViewModel.getSelectedQuantity()));
 
-//        tvTelephone.setText(SessionHandler.getPhoneNumber());
         int baseFare = packageViewModel.getSelectedQuantity() * packageViewModel.getSalesPrice();
         tvBaseFare.setText("Rp " + CurrencyUtil.convertToCurrencyString(baseFare));
         int convFees = packageViewModel.getConvenienceFee();

@@ -57,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_padding_medium"
                 android:gravity="center"
-                android:text="Day 3 • 30 Des 2018"
+                android:text="@string/rp_5980000"
                 android:textColor="@color/black" />
         </LinearLayout>
 
@@ -72,7 +72,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Pilihan Kursi:"
+                android:text="@string/pilihan_kursi"
                 android:textColor="@color/grey_600"
                 android:textSize="@dimen/font_micro" />
 
@@ -117,12 +117,6 @@
             android:layout_width="@dimen/pager_height"
             android:layout_height="@dimen/pager_height"
             android:padding="@dimen/margin_padding_medium" />
-
-        <!--<include android:id="@+id/small_preview"-->
-        <!--layout="@layout/small_preview_window"-->
-        <!--android:layout_width="200dp"-->
-        <!--android:layout_height="150dp"-->
-        <!--android:visibility="visible" />-->
     </FrameLayout>
 
 

@@ -15,19 +15,15 @@ import rx.Observable;
 public class GetSearchNextUseCase extends UseCase<SearchDomainModel> {
 
     private final EventRepository eventRepository;
-    private String nextUrl;
 
     public GetSearchNextUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, EventRepository eventRepository) {
         super(threadExecutor, postExecutionThread);
         this.eventRepository = eventRepository;
     }
 
-    public void setNextUrl(String Url) {
-        nextUrl = Url;
-    }
-
     @Override
     public Observable<SearchDomainModel> createObservable(RequestParams requestParams) {
+        String nextUrl = requestParams.getString("nexturl", "");
         return eventRepository.getSearchNext(nextUrl);
     }
 }

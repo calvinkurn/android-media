@@ -8,12 +8,12 @@ import java.util.List;
  */
 
 public class FilterDomainModel {
-    String name;
-    String attributeName;
-    String label;
-    String kind;
-    List<ValuesItemDomain> valuesItems;
-    
+    private String name;
+    private String attributeName;
+    private String label;
+    private String kind;
+    private List<ValuesItemDomain> valuesItems;
+
     public String getLabel() {
         return label;
     }
@@ -54,8 +54,6 @@ public class FilterDomainModel {
     public void setValuesItems(List<ValuesItemDomain> valuesItems) {
         this.valuesItems = valuesItems;
     }
-
-
 
 
 }
