@@ -25,6 +25,7 @@ import com.tokopedia.shop.info.view.helper.ShopInfoHeaderViewHelper;
 import com.tokopedia.shop.info.view.listener.ShopPageView;
 import com.tokopedia.shop.info.view.presenter.ShopPagePresenter;
 import com.tokopedia.shop.product.view.fragment.ShopProductListFragment;
+import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment;
 
 import javax.inject.Inject;
 
@@ -35,14 +36,14 @@ import javax.inject.Inject;
 public class ShopPageActivity extends BaseTabActivity  implements HasComponent<ShopComponent>,ShopPageView {
 
     private static final int PAGE_LIMIT = 3;
-    public static final String SHOP_INFO = "shop_id";
+    public static final String SHOP_ID = "shop_id";
     public static final String SHOP_DOMAIN = "SHOP_DOMAIN";
-    private String shopInfo;
+    private String shopId;
     private String shopDomain;
 
     public static Intent createIntent(Context context, String shopInfo, String shopDomain) {
         Intent intent = new Intent(context, ShopPageActivity.class);
-        intent.putExtra(SHOP_INFO, shopInfo);
+        intent.putExtra(SHOP_ID, shopInfo);
         intent.putExtra(SHOP_DOMAIN, shopDomain);
         return intent;
     }
@@ -60,7 +61,7 @@ public class ShopPageActivity extends BaseTabActivity  implements HasComponent<S
     protected void onCreate(Bundle savedInstanceState) {
 
         if(savedInstanceState == null){
-            shopInfo = getIntent().getStringExtra(SHOP_INFO);
+            shopId = getIntent().getStringExtra(SHOP_ID);
             shopDomain = getIntent().getStringExtra(SHOP_DOMAIN);
         }else{
             throw new RuntimeException("please pass shop id");
@@ -68,7 +69,7 @@ public class ShopPageActivity extends BaseTabActivity  implements HasComponent<S
 
         initInjector();
         shopPagePresenter.attachView(this);
-        shopPagePresenter.setShopInfo(shopInfo);
+        shopPagePresenter.setShopInfo(shopId);
         if(getApplication() != null && getApplication() instanceof ShopModuleRouter){
             shopModuleRouter = (ShopModuleRouter) getApplication();
             shopPagePresenter.setGetSpeedReputationUseCase(
@@ -153,10 +154,10 @@ public class ShopPageActivity extends BaseTabActivity  implements HasComponent<S
             public Fragment getItem(int position) {
                 switch (position) {
                     case 0:
-                        return ShopProductListFragment.createInstance(shopInfo);
+                        return ShopProductListLimitedFragment.createInstance(shopId);
                     case 1:
                         if(shopModuleRouter != null){
-                            return shopModuleRouter.getShopReputationFragmentShop(shopInfo, shopDomain);
+                            return shopModuleRouter.getShopReputationFragmentShop(shopId, shopDomain);
                         }
                         return ShopInfoFragment.createInstance("");
                     case 2:

@@ -47,6 +47,7 @@ dependencies {
     compile getTkpdCacheApi()
 
     compile project(':tkpdshop-common')
+    compile project(':tkpdgm-common')
 
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
