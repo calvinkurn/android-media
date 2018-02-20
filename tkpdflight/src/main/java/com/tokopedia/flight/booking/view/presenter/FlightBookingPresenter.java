@@ -627,6 +627,10 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         } else {
             if (getView().getContactName().isEmpty() || getView().getContactName().length() == 0) {
                 getView().showContactNameEmptyError(R.string.flight_booking_checkbox_same_as_contact_name_empty_error);
+            } else if (getView().getContactName().length() > 20) {
+                getView().showContactNameInvalidError(R.string.flight_booking_contact_name_max_length_error);
+            } else if (getView().getContactName().length() > 0 && !isAlphabetAndSpaceOnly(getView().getContactName())) {
+                getView().showContactNameInvalidError(R.string.flight_booking_contact_name_alpha_space_error);
             } else {
                 isChecked = true;
             }
@@ -641,6 +645,8 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
             int lastIndexOfSpace = getView().getContactName().lastIndexOf(" ");
 
             FlightBookingPassengerViewModel flightBookingPassengerViewModel = new FlightBookingPassengerViewModel();
+            flightBookingPassengerViewModel.setFlightBookingLuggageMetaViewModels(new ArrayList<FlightBookingAmenityMetaViewModel>());
+            flightBookingPassengerViewModel.setFlightBookingMealMetaViewModels(new ArrayList<FlightBookingAmenityMetaViewModel>());
             if (lastIndexOfSpace > 0) {
                 flightBookingPassengerViewModel.setPassengerFirstName(getView().getContactName().substring(0, lastIndexOfSpace).trim());
                 flightBookingPassengerViewModel.setPassengerLastName(getView().getContactName().substring(lastIndexOfSpace).trim());
