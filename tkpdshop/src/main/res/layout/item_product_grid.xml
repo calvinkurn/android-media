@@ -4,21 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@drawable/bg_product_list"
     android:clickable="true"
     tools:layout_editor_absoluteY="81dp">
-
-    <!-- HAPUS INI KELAS DARI tkpdcore -->
-    <!-- use gridview_hotlist_product from tkpddiscovery -->
-    <!-- DELETE THIS FILE -->
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.6423611" />
+        app:layout_constraintGuide_begin="199dp" />
 
     <android.support.v7.widget.CardView
         android:id="@+id/image_card"
@@ -41,7 +37,7 @@
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
             android:gravity="center"
-            android:scaleType="fitXY"
+            android:scaleType="centerCrop"
             tools:src="@drawable/ic_kupon"
             tools:visibility="visible" />
 
@@ -78,7 +74,6 @@
         android:fontFamily="sans-serif-medium"
         android:lineSpacingExtra="5sp"
         android:maxLines="2"
-        android:minHeight="38dp"
         android:textColor="@color/font_black_primary_70"
         android:textSize="@dimen/font_micro"
         android:textStyle="normal"

@@ -1,17 +1,22 @@
 package com.tokopedia.shop.product.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.shop.R;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
 import com.tokopedia.shop.product.view.adapter.ShopProductTypeFactory;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
 import com.tokopedia.shop.product.view.listener.ShopProductListView;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListPresenter;
@@ -23,6 +28,8 @@ import javax.inject.Inject;
  */
 
 public class ShopProductListFragment extends BaseListFragment<ShopProductViewModel, ShopProductTypeFactory>  {
+
+    public static final int SPAN_COUNT = 2;
 
     public static ShopProductListFragment createInstance(String shopId) {
         ShopProductListFragment shopProductListFragment = new ShopProductListFragment();
@@ -84,7 +91,21 @@ public class ShopProductListFragment extends BaseListFragment<ShopProductViewMod
     }
 
     @Override
-    protected RecyclerView.LayoutManager getRecyclerViewLayoutManager() {
-        return new GridLayoutManager(getActivity(), 2);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT,  LinearLayoutManager.VERTICAL,
+                false);
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if (getAdapter().getItemViewType(position) == ShopProductViewHolder.LAYOUT){
+                    return ShopProductViewHolder.SPAN_LOOK_UP;
+                }
+                return SPAN_COUNT;
+            }
+        });
+
+        ((RecyclerView)view.findViewById(R.id.recycler_view)).setLayoutManager(gridLayoutManager);
     }
 }

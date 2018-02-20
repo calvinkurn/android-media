@@ -21,6 +21,8 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     @LayoutRes
     public static final int LAYOUT = R.layout.item_product_grid;
 
+    public static final int SPAN_LOOK_UP = 1;
+
 
     private TextView titleTextView;
     private TextView originalPriceTextView;
