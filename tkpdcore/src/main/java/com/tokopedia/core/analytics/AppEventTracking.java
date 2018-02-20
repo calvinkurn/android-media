@@ -491,8 +491,8 @@ public interface AppEventTracking {
     }
 
     interface EventLabel {
-        String HOME = "home";
-        String FAVORITE = "wishlist";
+        String HOME = "homepage";
+        String FAVORITE = "favorite";
         String PRODUCT_FEED = "feed";
         String HOTLIST = "hotlist";
 
