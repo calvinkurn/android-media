@@ -1,6 +1,8 @@
 package com.tokopedia.shop.product.view.fragment;
 
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
@@ -79,5 +81,10 @@ public class ShopProductListFragment extends BaseListFragment<ShopProductViewMod
     @Override
     public void onItemClicked(ShopProductViewModel shopProductViewModel) {
 
+    }
+
+    @Override
+    protected RecyclerView.LayoutManager getRecyclerViewLayoutManager() {
+        return new GridLayoutManager(getActivity(), 2);
     }
 }
