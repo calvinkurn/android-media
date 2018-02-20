@@ -54,7 +54,11 @@ public class CartActivity extends BasePresenterActivity
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            getFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -64,6 +68,7 @@ public class CartActivity extends BasePresenterActivity
             if (fragment == null || !(fragment instanceof CartRemoveProductFragment)) {
                 getFragmentManager().beginTransaction()
                         .replace(R.id.container, CartRemoveProductFragment.newInstance(mCartItemData))
+                        .addToBackStack(null)
                         .commit();
             }
 
