@@ -76,22 +76,4 @@ public class CartRemoveProductPresenter
         }, getMvpView().getGenerateParamAuth(param));
     }
 
-    private final class CartRemoveProductObserver implements Observer<List<CartItemData>> {
-
-        @Override
-        public void onNext(List<CartItemData> cartItemModels) {
-            getMvpView().showList(cartItemModels);
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            getMvpView().showError();
-        }
-
-        @Override
-        public void onCompleted() {
-
-        }
-
-    }
 }
