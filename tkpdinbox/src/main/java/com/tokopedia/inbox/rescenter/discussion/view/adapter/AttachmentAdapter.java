@@ -53,6 +53,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
     private ProductImageListener listener;
     private ArrayList<AttachmentViewModel> data;
     private boolean canDelete;
+    public boolean isClickable = true;
 
     public AttachmentAdapter(Context context, boolean canDelete) {
         this.context = context;
