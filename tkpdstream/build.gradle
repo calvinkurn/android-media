@@ -66,4 +66,10 @@ dependencies {
     apt rootProject.ext.miscDependencies.daggerCompiler
 
     compile 'com.sendbird.sdk:sendbird-android-sdk:3.0.49'
+
+    compile(rootProject.ext.debugToolsDependencies.chuck) {
+        exclude group: 'com.squareup.okhttp3'
+        exclude group: 'com.squareup.okio'
+        exclude group: 'com.android.support'
+    }
 }

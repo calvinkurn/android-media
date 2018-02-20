@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="avatar_size">20dp</dimen>
+    <dimen name="card_channel_elevation">0.5dp</dimen>
+
+    <dimen name="space_tiny">2.5dp</dimen>
+    <dimen name="space_small">8dp</dimen>
+    <dimen name="space_avg">8dp</dimen>
+    <dimen name="space_med">16dp</dimen>
+    <dimen name="space_sm">24dp</dimen>
 </resources>
