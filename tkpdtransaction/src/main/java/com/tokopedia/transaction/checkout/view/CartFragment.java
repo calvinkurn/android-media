@@ -62,12 +62,8 @@ import butterknife.BindView;
  * @author anggaprasetiyo on 18/01/18.
  */
 
-public class CartFragment extends BasePresenterFragment
-        implements CartListAdapter.ActionListener,
-        CartRemoveItemDialog.CartItemRemoveCallbackAction,
-        ICartListView,
-        TopAdsItemClickListener,
-        RefreshHandler.OnRefreshHandlerListener {
+public class CartFragment extends BasePresenterFragment implements CartListAdapter.ActionListener,
+        ICartListView, TopAdsItemClickListener, RefreshHandler.OnRefreshHandlerListener {
 
     @BindView(R2.id.rv_cart)
     RecyclerView cartRecyclerView;
@@ -459,25 +455,29 @@ public class CartFragment extends BasePresenterFragment
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
     }
 
-    @Override
-    public void deleteSingleItem(List<CartItemData> cartItemDataList) {
-        dPresenter.processDeleteCart(cartItemDataList.get(0), true);
-    }
-
-    @Override
-    public void addBulkToWishListOnly(List<CartItemData> cartItemDataList) {
-
-    }
-
-    @Override
-    public void deleteBulkItems(List<CartItemData> cartItemDataList) {
-        for (CartItemData cartItemData : cartItemDataList) {
-            dPresenter.processDeleteCart(cartItemData, false);
-        }
-    }
-
     void showDeleteCartItemDialog(ArrayList<CartItemData> cartItemDataList) {
-        DialogFragment dialog = CartRemoveItemDialog.newInstance(cartItemDataList, this);
+        DialogFragment dialog = CartRemoveItemDialog.newInstance(cartItemDataList,
+                new CartRemoveItemDialog.CartItemRemoveCallbackAction() {
+                    @Override
+                    public void onDeleteSingleItemClicked(CartItemData cartItemData) {
+                        dPresenter.processDeleteCart(cartItemData, false);
+                    }
+
+                    @Override
+                    public void onDeleteSingleItemWithWishListClicked(CartItemData cartItemData) {
+                        dPresenter.processDeleteCart(cartItemData, true);
+                    }
+
+                    @Override
+                    public void onDeleteMultipleItemClicked(List<CartItemData> cartItemDataList) {
+
+                    }
+
+                    @Override
+                    public void onDeleteMultipleItemWithWishListClicked(List<CartItemData> cartItemDataList) {
+
+                    }
+                });
         dialog.show(getFragmentManager(), "dialog");
     }
 

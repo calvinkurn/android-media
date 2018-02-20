@@ -13,12 +13,13 @@ public interface IRemoveProductListView<T> {
 
     void showError();
 
-    T getSelectedCartList();
-
     TKPDMapParam<String,String> getGenerateParamAuth(TKPDMapParam<String, String> param);
 
-    void renderSuccessDeleteCart(String message);
+    void renderSuccessDeletePartialCart(String message);
+
+    void renderSuccessDeleteallCart(String message);
 
     void renderOnFailureDeleteCart(String message);
 
+    T getAllCartItemList();
 }

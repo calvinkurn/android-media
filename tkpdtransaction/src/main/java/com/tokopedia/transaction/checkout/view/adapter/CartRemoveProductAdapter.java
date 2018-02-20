@@ -12,9 +12,9 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.transaction.R;
-
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
+
 import java.util.List;
 
 import butterknife.BindView;
@@ -23,14 +23,13 @@ import butterknife.ButterKnife;
 /**
  * @author Aghny A. Putra on 5/02/18
  */
-public class CartRemoveProductAdapter
-        extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class CartRemoveProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int ITEM_VIEW_REMOVE_ALL_CHECKBOX =
             R.layout.view_item_remove_all_checkbox;
     private static final int ITEM_CART_REMOVE_PRODUCT =
             R.layout.item_cart_remove_product;
-    
+
     private static final int TOP_POSITION = 0;
 
     private CartRemoveProductActionListener mActionListener;
@@ -66,10 +65,10 @@ public class CartRemoveProductAdapter
         int viewType = getItemViewType(position);
 
         if (viewType == ITEM_VIEW_REMOVE_ALL_CHECKBOX) {
-            ((SelectRemoveAllCheckboxViewHolder)viewHolder).bindViewHolder();
+            ((SelectRemoveAllCheckboxViewHolder) viewHolder).bindViewHolder();
         } else {
             int pos = position - 1;
-            ((CartProductDataViewHolder)viewHolder).bindViewHolder(mCartItemModelList.get(pos), pos);
+            ((CartProductDataViewHolder) viewHolder).bindViewHolder(mCartItemModelList.get(pos), pos);
         }
     }
 
@@ -88,7 +87,7 @@ public class CartRemoveProductAdapter
     }
 
     class SelectRemoveAllCheckboxViewHolder extends RecyclerView.ViewHolder
-        implements CheckBoxOverrideActionListener {
+            implements CheckBoxOverrideActionListener {
 
         @BindView(R2.id.checkBox)
         CheckBox mCbRemoveAll;
@@ -136,7 +135,8 @@ public class CartRemoveProductAdapter
 
         /**
          * Executed when state of checkbox is changed
-         * @param checked state of checkbox
+         *
+         * @param checked  state of checkbox
          * @param position index of list where the checkbox state is changed
          */
         void onCheckBoxStateChangedListener(boolean checked, int position);
@@ -150,7 +150,8 @@ public class CartRemoveProductAdapter
 
         /**
          * Executed when checkbox is clicked
-         * @param checked state of checkbox
+         *
+         * @param checked  state of checkbox
          * @param position index of list where the checkbox is clicked
          */
         void onCheckBoxClickedListener(boolean checked, int position);

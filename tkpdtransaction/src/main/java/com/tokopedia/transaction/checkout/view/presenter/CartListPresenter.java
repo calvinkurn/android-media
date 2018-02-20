@@ -79,6 +79,8 @@ public class CartListPresenter implements ICartListPresenter {
                 .build();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("params", new Gson().toJson(removeCartRequest));
+
+
         cartListInteractor.deleteCart(new Subscriber<DeleteCartData>() {
             @Override
             public void onCompleted() {

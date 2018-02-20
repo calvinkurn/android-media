@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Parcelable;
 
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
@@ -22,15 +23,14 @@ public class CartRemoveItemDialog extends DialogFragment {
 
     private CartItemRemoveCallbackAction callbackAction;
 
-    public static CartRemoveItemDialog newInstance(ArrayList<CartItemData> cartItemDataList,
+    public static CartRemoveItemDialog newInstance(List<CartItemData> cartItemDataList,
                                                    CartItemRemoveCallbackAction callbackAction) {
 
         CartRemoveItemDialog frag = new CartRemoveItemDialog();
         Bundle args = new Bundle();
-        args.putParcelableArrayList(DATA, cartItemDataList);
+        args.putParcelableArrayList(DATA, (ArrayList<? extends Parcelable>) cartItemDataList);
         frag.setArguments(args);
         frag.setCallbackAction(callbackAction);
-
         return frag;
     }
 
@@ -40,7 +40,7 @@ public class CartRemoveItemDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        final ArrayList<CartItemData> cartItemDataList = getArguments().getParcelableArrayList(DATA);
+        final List<CartItemData> cartItemDataList = getArguments().getParcelableArrayList(DATA);
         final boolean isListNotNull = cartItemDataList != null;
         final boolean hasSingleElement = isListNotNull && cartItemDataList.size() == 1;
 
@@ -52,28 +52,30 @@ public class CartRemoveItemDialog extends DialogFragment {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if (isListNotNull) {
                             if (hasSingleElement) {
-                                callbackAction.deleteSingleItem(cartItemDataList);
+                                callbackAction.onDeleteSingleItemWithWishListClicked(cartItemDataList.get(0));
                             } else {
-                                callbackAction.addBulkToWishListOnly(cartItemDataList);
+                                callbackAction.onDeleteMultipleItemWithWishListClicked(cartItemDataList);
                             }
-                        }
-                    }
-                })
-                .setNegativeButton(hasSingleElement ? "Batal" : "Hapus Semua",
-                        new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if (hasSingleElement) {
                             dismiss();
-                        } else {
-                            callbackAction.deleteBulkItems(cartItemDataList);
                         }
                     }
                 })
+                .setNegativeButton(hasSingleElement ? "Hapus" : "Hapus Semua",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                if (hasSingleElement) {
+                                    callbackAction.onDeleteSingleItemClicked(cartItemDataList.get(0));
+                                } else {
+                                    callbackAction.onDeleteMultipleItemClicked(cartItemDataList);
+                                }
+                                dismiss();
+                            }
+                        })
                 .create();
     }
 
-    private String getMessage(boolean isRemoveSingle, ArrayList<CartItemData> cartItemDataList) {
+    private String getMessage(boolean isRemoveSingle, List<CartItemData> cartItemDataList) {
         if (isRemoveSingle) {
             CartItemData cartItemData = cartItemDataList.get(0);
             return getString(R.string.delete_single_item_message_dialog,
@@ -86,12 +88,13 @@ public class CartRemoveItemDialog extends DialogFragment {
 
     public interface CartItemRemoveCallbackAction {
 
-        void deleteSingleItem(List<CartItemData> cartItemDataList);
+        void onDeleteSingleItemClicked(CartItemData cartItemData);
 
-        void addBulkToWishListOnly(List<CartItemData> cartItemDataList);
+        void onDeleteSingleItemWithWishListClicked(CartItemData cartItemData);
 
-        void deleteBulkItems(List<CartItemData> cartItemDataList);
+        void onDeleteMultipleItemClicked(List<CartItemData> cartItemDataList);
 
+        void onDeleteMultipleItemWithWishListClicked(List<CartItemData> cartItemDataList);
     }
 
 }
