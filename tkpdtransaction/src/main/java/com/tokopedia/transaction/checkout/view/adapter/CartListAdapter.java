@@ -56,6 +56,10 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(TYPE_VIEW_PROMO_SUGGESTION, parent, false);
             return new CartPromoSuggestionHolder(view);
+        } else if (viewType == TYPE_VIEW_PROMO) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(TYPE_VIEW_PROMO, parent, false);
+            return new CartPromoHolder(view);
         } else {
             return null;
         }
@@ -181,14 +185,38 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (getItemViewType(position) == TYPE_VIEW_PROMO) {
             final CartPromoHolder holderView = (CartPromoHolder) holder;
             final CartItemPromoHolderData data = (CartItemPromoHolderData) cartItemHolderDataList.get(position);
+            holderView.voucherCartHachikoView.setActionListener(new VoucherCartHachikoView.ActionListener() {
+                @Override
+                public void onClickUseVoucher() {
+                    actionListener.onCartPromoUseVoucherPromoClicked(data, position);
+                }
+
+                @Override
+                public void disableVoucherDisount() {
+                    actionListener.onCartPromoCancelVoucherPromoClicked(data, position);
+                }
+
+                @Override
+                public void trackingSuccessVoucher(String voucherName) {
+                    actionListener.onCartPromoTrackingSuccess(data, position);
+                }
+
+                @Override
+                public void trackingCancelledVoucher() {
+                    actionListener.onCartPromoTrackingCancelled(data, position);
+                }
+            });
             if (data.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_COUPON) {
                 holderView.voucherCartHachikoView.setCoupon(
                         data.getCouponTitle(), data.getCouponMessage(), data.getCouponCode()
                 );
-            } else if (data.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_NOT_ACTIVE) {
+            } else if (data.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_VOUCHER) {
                 holderView.voucherCartHachikoView.setVoucher(
                         data.getVoucherCode(), data.getVoucherMessage()
                 );
+            } else {
+                holderView.voucherCartHachikoView.setPromoAndCouponLabel();
+                holderView.voucherCartHachikoView.resetView();
             }
         }
 
@@ -258,6 +286,8 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return TYPE_VIEW_ITEM_CART;
         } else if (cartItemHolderDataList.get(position) instanceof CartPromoSuggestion) {
             return TYPE_VIEW_PROMO_SUGGESTION;
+        } else if (cartItemHolderDataList.get(position) instanceof CartItemPromoHolderData) {
+            return TYPE_VIEW_PROMO;
         } else {
             return super.getItemViewType(position);
         }
@@ -292,6 +322,22 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (getDataList().isEmpty()) actionListener.onCartItemListIsEmpty();
     }
 
+    public void updateItemPromoVoucher(CartItemPromoHolderData cartItemPromoHolderData) {
+        for (int i = 0; i < cartItemHolderDataList.size(); i++) {
+            Object object = cartItemHolderDataList.get(i);
+            if (object instanceof CartItemPromoHolderData) {
+                cartItemHolderDataList.set(i, cartItemPromoHolderData);
+                notifyItemChanged(i);
+                return;
+            }
+        }
+    }
+
+    public void addPromoVoucherData(CartItemPromoHolderData cartItemPromoHolderData) {
+        cartItemHolderDataList.add(cartItemPromoHolderData);
+        notifyDataSetChanged();
+    }
+
     public interface ActionListener {
 
         void onCartItemDeleteButtonClicked(CartItemHolderData cartItemHolderData, int position);
@@ -311,6 +357,16 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onCartPromoSuggestionButtonCloseClicked(CartPromoSuggestion data, int position);
 
         void onCartItemListIsEmpty();
+
+        void onCartPromoUseVoucherPromoClicked(CartItemPromoHolderData cartItemPromoHolderData, int position);
+
+        void onCartPromoCancelVoucherPromoClicked(CartItemPromoHolderData cartItemPromoHolderData, int position);
+
+        void onCartPromoTrackingSuccess(CartItemPromoHolderData cartItemPromoHolderData, int position);
+
+        void onCartPromoTrackingCancelled(CartItemPromoHolderData cartItemPromoHolderData, int position);
+
+
     }
 
     public class CartItemHolder extends RecyclerView.ViewHolder {

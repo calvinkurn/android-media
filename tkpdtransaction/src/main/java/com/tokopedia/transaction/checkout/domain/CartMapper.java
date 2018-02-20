@@ -3,10 +3,12 @@ package com.tokopedia.transaction.checkout.domain;
 import com.tokopedia.transaction.checkout.domain.response.cartlist.CartDataListResponse;
 import com.tokopedia.transaction.checkout.domain.response.cartlist.CartList;
 import com.tokopedia.transaction.checkout.domain.response.deletecart.DeleteCartDataResponse;
+import com.tokopedia.transaction.checkout.domain.response.updatecart.UpdateCartDataResponse;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CartListData;
 import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.view.data.DeleteCartData;
+import com.tokopedia.transaction.checkout.view.data.UpdateCartData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,6 +106,15 @@ public class CartMapper implements ICartMapper {
         return new DeleteCartData.Builder()
                 .message(deleteCartDataResponse.getMessage())
                 .success(deleteCartDataResponse.getSuccess() == 1)
+                .build();
+    }
+
+    @Override
+    public UpdateCartData convertToUpdateCartData(UpdateCartDataResponse updateCartDataResponse) {
+        return new UpdateCartData.Builder()
+                .goTo(updateCartDataResponse.get_goto())
+                .message(updateCartDataResponse.getError())
+                .success(updateCartDataResponse.isStatus())
                 .build();
     }
 }

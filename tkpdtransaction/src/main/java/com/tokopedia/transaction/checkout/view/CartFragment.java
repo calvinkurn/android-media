@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -25,6 +26,7 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -44,6 +46,7 @@ import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.view.dialog.CartRemoveItemDialog;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
+import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.transaction.checkout.view.presenter.ICartListPresenter;
 import com.tokopedia.transaction.checkout.view.view.ICartListView;
 
@@ -168,7 +171,7 @@ public class CartFragment extends BasePresenterFragment
             @Override
             public void onClick(View view) {
                 cartListAdapter.notifyDataSetChanged();
-                dPresenter.processToShipmentStep();
+                dPresenter.processUpdateCart();
             }
         });
     }
@@ -233,6 +236,34 @@ public class CartFragment extends BasePresenterFragment
     @Override
     public void onCartItemListIsEmpty() {
         renderEmptyCartData();
+    }
+
+    @Override
+    public void onCartPromoUseVoucherPromoClicked(CartItemPromoHolderData cartItemPromoHolderData, int position) {
+        Intent intent;
+        if (true) {
+            intent = LoyaltyActivity.newInstanceCouponActive(
+                    getActivity(), "marketplace", "marketplace"
+            );
+        } else intent = LoyaltyActivity.newInstanceCouponNotActive(getActivity(),
+                "marketplace", "marketplace");
+        startActivityForResult(intent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
+    }
+
+    @Override
+    public void onCartPromoCancelVoucherPromoClicked(CartItemPromoHolderData cartItemPromoHolderData, int position) {
+        cartItemPromoHolderData.setPromoNotActive();
+        cartListAdapter.notifyItemChanged(position);
+    }
+
+    @Override
+    public void onCartPromoTrackingSuccess(CartItemPromoHolderData cartItemPromoHolderData, int position) {
+
+    }
+
+    @Override
+    public void onCartPromoTrackingCancelled(CartItemPromoHolderData cartItemPromoHolderData, int position) {
+
     }
 
     @Override
@@ -404,8 +435,30 @@ public class CartFragment extends BasePresenterFragment
     }
 
     @Override
-    public void renderSuccessDeleteCart(CartItemData cartItemData, String message) {
+    public void renderSuccessDeleteCart(CartItemData cartItemData, String message, boolean addWishList) {
         cartListAdapter.deleteItem(cartItemData);
+    }
+
+    @Override
+    public void renderPromoVoucher() {
+        CartItemPromoHolderData cartItemPromoHolderData = new CartItemPromoHolderData();
+        cartItemPromoHolderData.setPromoNotActive();
+        cartListAdapter.addPromoVoucherData(cartItemPromoHolderData);
+    }
+
+    @Override
+    public void showToastMessageRed(String message) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
+    }
+
+    @Override
+    public void renderUpdateDataSuccess(String message) {
+        dPresenter.processToShipmentStep();
+    }
+
+    @Override
+    public void renderUpdateDataFailed(String message) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
     }
 
     @Override
@@ -464,6 +517,40 @@ public class CartFragment extends BasePresenterFragment
     public void onRefresh(View view) {
         cartListAdapter.resetData();
         dPresenter.processGetCartData();
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LoyaltyActivity.LOYALTY_REQUEST_CODE) {
+            if (resultCode == LoyaltyActivity.VOUCHER_RESULT_CODE) {
+                Bundle bundle = data.getExtras();
+                if (bundle != null) {
+                    String voucherCode = bundle.getString(LoyaltyActivity.VOUCHER_CODE, "");
+                    String voucherMessage = bundle.getString(LoyaltyActivity.VOUCHER_MESSAGE, "");
+                    long voucherDiscountAmount = bundle.getLong(LoyaltyActivity.VOUCHER_DISCOUNT_AMOUNT);
+
+                    CartItemPromoHolderData cartItemPromoHolderData = new CartItemPromoHolderData();
+                    cartItemPromoHolderData.setPromoVoucherType(voucherCode, voucherMessage, voucherDiscountAmount);
+
+                    cartListAdapter.updateItemPromoVoucher(cartItemPromoHolderData);
+                }
+            } else if (resultCode == LoyaltyActivity.COUPON_RESULT_CODE) {
+                Bundle bundle = data.getExtras();
+                if (bundle != null) {
+                    String couponTitle = bundle.getString(LoyaltyActivity.COUPON_TITLE, "");
+                    String couponMessage = bundle.getString(LoyaltyActivity.COUPON_MESSAGE, "");
+                    String couponCode = bundle.getString(LoyaltyActivity.COUPON_CODE, "");
+                    long couponDiscountAmount = bundle.getLong(LoyaltyActivity.COUPON_DISCOUNT_AMOUNT);
+
+                    CartItemPromoHolderData cartItemPromoHolderData = new CartItemPromoHolderData();
+                    cartItemPromoHolderData.setPromoCouponType(couponTitle, couponCode, couponMessage, couponDiscountAmount);
+
+                    cartListAdapter.updateItemPromoVoucher(cartItemPromoHolderData);
+                }
+            }
+        }
     }
 
     public interface OnPassingCartDataListener {

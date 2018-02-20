@@ -2,10 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:paddingLeft="@dimen/padding_small"
-             android:paddingRight="@dimen/padding_small"
-             android:paddingTop="@dimen/padding_small">
+             android:layout_height="wrap_content">
 
     <FrameLayout
         android:id="@+id/layout_input_promo"

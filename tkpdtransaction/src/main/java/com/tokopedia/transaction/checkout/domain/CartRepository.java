@@ -6,6 +6,7 @@ import com.tokopedia.transaction.apiservice.CartService;
 import com.tokopedia.transaction.checkout.domain.response.addtocart.AddToCartDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.cartlist.CartDataListResponse;
 import com.tokopedia.transaction.checkout.domain.response.deletecart.DeleteCartDataResponse;
+import com.tokopedia.transaction.checkout.domain.response.updatecart.UpdateCartDataResponse;
 
 import javax.inject.Inject;
 
@@ -58,6 +59,16 @@ public class CartRepository implements ICartRepository {
                     }
                 }
         );
+    }
+
+    @Override
+    public Observable<UpdateCartDataResponse> updateCartData(TKPDMapParam<String, String> param) {
+        return cartService.getApi().postUpdateCart(param).map(new Func1<Response<CartResponse>, UpdateCartDataResponse>() {
+            @Override
+            public UpdateCartDataResponse call(Response<CartResponse> cartResponseResponse) {
+                return cartResponseResponse.body().convertDataObj(UpdateCartDataResponse.class);
+            }
+        });
     }
 
 

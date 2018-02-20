@@ -18,4 +18,6 @@ public interface ICartListPresenter {
     void processToShipmentStep();
 
     void reCalculateSubTotal(List<CartItemHolderData> dataList);
+
+    void processUpdateCart();
 }

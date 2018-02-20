@@ -3,12 +3,13 @@ package com.tokopedia.transaction.checkout.domain;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.checkout.domain.response.cartlist.CartDataListResponse;
 import com.tokopedia.transaction.checkout.domain.response.deletecart.DeleteCartDataResponse;
+import com.tokopedia.transaction.checkout.domain.response.updatecart.UpdateCartDataResponse;
 import com.tokopedia.transaction.checkout.view.data.CartListData;
 import com.tokopedia.transaction.checkout.view.data.DeleteCartData;
+import com.tokopedia.transaction.checkout.view.data.UpdateCartData;
 
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -62,6 +63,22 @@ public class CartListInteractor implements ICartListInteractor {
                             }
                         })
                         .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(subscriber)
+        );
+    }
+
+    @Override
+    public void updateCart(Subscriber<UpdateCartData> subscriber, TKPDMapParam<String, String> param) {
+        compositeSubscription.add(
+                cartRepository.updateCartData(param)
+                        .map(new Func1<UpdateCartDataResponse, UpdateCartData>() {
+                            @Override
+                            public UpdateCartData call(UpdateCartDataResponse updateCartDataResponse) {
+                                return mapper.convertToUpdateCartData(updateCartDataResponse);
+                            }
+                        }).subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.newThread())
                         .subscribe(subscriber)

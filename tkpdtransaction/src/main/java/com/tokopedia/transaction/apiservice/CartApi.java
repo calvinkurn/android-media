@@ -35,9 +35,9 @@ public interface CartApi {
     @POST(TkpdBaseURL.Cart.PATH_REMOVE_FROM_CART)
     Observable<Response<CartResponse>> postDeleteCart(@FieldMap Map<String, String> params);
 
+    @FormUrlEncoded
     @POST(TkpdBaseURL.Cart.PATH_UPDATE_CART)
-    @Headers({"Content-Type: application/json"})
-    Observable<Response<CartResponse>> postUpdateCart(@Body JsonObject requestBody);
+    Observable<Response<CartResponse>> postUpdateCart(@FieldMap Map<String, String> params);
 
 
 //    public static final String PATH_REMOVE_FROM_CART = "api/" + VERSION + "/remove_product_cart";

@@ -6,11 +6,13 @@ import com.google.gson.Gson;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.checkout.domain.ICartListInteractor;
 import com.tokopedia.transaction.checkout.domain.request.RemoveCartRequest;
+import com.tokopedia.transaction.checkout.domain.request.UpdateCartRequest;
 import com.tokopedia.transaction.checkout.view.activity.CartShipmentActivity;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CartListData;
 import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.view.data.DeleteCartData;
+import com.tokopedia.transaction.checkout.view.data.UpdateCartData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.transaction.checkout.view.view.ICartListView;
 
@@ -55,10 +57,10 @@ public class CartListPresenter implements ICartListPresenter {
 
             @Override
             public void onNext(CartListData cartListData) {
-
                 if (cartListData.getCartItemDataList().isEmpty()) {
                     view.renderEmptyCartData();
                 } else {
+                    view.renderPromoVoucher();
                     view.renderPromoSuggestion(cartListData.getCartPromoSuggestion());
                     view.renderCartListData(cartListData.getCartItemDataList());
                 }
@@ -68,7 +70,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processDeleteCart(final CartItemData cartItemData, boolean addWishList) {
+    public void processDeleteCart(final CartItemData cartItemData, final boolean addWishList) {
         List<Integer> ids = new ArrayList<>();
         ids.add(cartItemData.getOriginData().getCartId());
         RemoveCartRequest removeCartRequest = new RemoveCartRequest.Builder()
@@ -90,7 +92,8 @@ public class CartListPresenter implements ICartListPresenter {
 
             @Override
             public void onNext(DeleteCartData deleteCartData) {
-                view.renderSuccessDeleteCart(cartItemData, deleteCartData.getMessage());
+                if (deleteCartData.isSuccess())
+                    view.renderSuccessDeleteCart(cartItemData, deleteCartData.getMessage(), addWishList);
             }
         }, view.getGeneratedAuthParamNetwork(param));
     }
@@ -119,6 +122,41 @@ public class CartListPresenter implements ICartListPresenter {
         }
 
         view.renderDetailInfoSubTotal(String.valueOf(qty), CURRENCY_IDR.format(((int) subtotalPrice)));
+    }
+
+    @Override
+    public void processUpdateCart() {
+        List<CartItemData> cartItemDataList = extractCartItemList(view.getFinalCartList());
+        List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
+        for (CartItemData data : cartItemDataList) {
+            updateCartRequestList.add(new UpdateCartRequest.Builder()
+                    .cartId(data.getOriginData().getCartId())
+                    .notes(data.getUpdatedData().getRemark())
+                    .quantity(data.getUpdatedData().getQuantity())
+                    .build());
+        }
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put("carts", new Gson().toJson(updateCartRequestList));
+        cartListInteractor.updateCart(new Subscriber<UpdateCartData>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(UpdateCartData updateCartData) {
+                if (updateCartData.isSuccess()) {
+                    view.renderUpdateDataSuccess(updateCartData.getMessage());
+                } else {
+                    view.renderUpdateDataFailed(updateCartData.getMessage());
+                }
+            }
+        }, view.getGeneratedAuthParamNetwork(param));
     }
 
     private List<CartItemData> extractCartItemList(List<CartItemHolderData> finalCartList) {
