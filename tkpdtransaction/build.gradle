@@ -150,13 +150,13 @@ dependencies {
 //    compile getTkpdCore()
 //    compile getTopAdsSdk()
 //    compile getTkpdPayment()
-//    compile getTkpdDesign()
+    compile getTkpdDesign()
 //    compile getTkpdLoyalty()
 
     compile getTkpdCoreLocalMaven()
     compile getTopAdsSdkLocalMaven()
     compile getTkpdPaymentLocalMaven()
-    compile getTkpdDesignLocalMaven()
+//    compile getTkpdDesignLocalMaven()
     compile getTkpdLoyaltyLocalMaven()
 
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {

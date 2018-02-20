@@ -3,6 +3,7 @@ package com.tokopedia.tkpdpdp.fragment;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -50,6 +51,7 @@ import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
+import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
@@ -63,6 +65,7 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
+import com.tokopedia.design.dialog.AddToCartConfirmationDialog;
 import com.tokopedia.tkpdpdp.CourierActivity;
 import com.tokopedia.tkpdpdp.DescriptionActivity;
 import com.tokopedia.tkpdpdp.DinkFailedActivity;
@@ -164,7 +167,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     FloatingActionButton fabWishlist;
     LinearLayout rootView;
 
-    private boolean isAppBarCollapsed=false;
+    private boolean isAppBarCollapsed = false;
 
     private TextView tvTickerGTM;
 
@@ -271,7 +274,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         appBarLayout.addOnOffsetChangedListener(new AppBarStateChangeListener() {
             @Override
             public void onStateChanged(AppBarLayout appBarLayout, State state) {
-                switch (state){
+                switch (state) {
                     case COLLAPSED:
                         isAppBarCollapsed = true;
                         collapsedAppBar();
@@ -291,20 +294,20 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             }
         });
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP ) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
             params.setBehavior(new FlingBehavior(R.id.nested_scroll_pdp));
         }
 
     }
 
-    private void collapsedAppBar(){
+    private void collapsedAppBar() {
         initStatusBarLight();
         initToolbarLight();
         fabWishlist.hide();
     }
 
-    private void expandedAppBar(){
+    private void expandedAppBar() {
         initStatusBarDark();
         initToolbarTransparant();
         if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
@@ -422,7 +425,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onProductShareClicked(@NonNull ShareData data) {
-        startActivity(ShareActivity.createIntent(getActivity(),data));
+        startActivity(ShareActivity.createIntent(getActivity(), data));
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -592,7 +595,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void loadVideo(VideoData data) {
-        this.videoDescriptionLayout.renderVideoData(data,youTubeThumbnailLoadInProcessListener);
+        this.videoDescriptionLayout.renderVideoData(data, youTubeThumbnailLoadInProcessListener);
         videoData = data;
     }
 
@@ -651,7 +654,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         } else {
             throw new RuntimeException("Activity must implement DeepLinkWebViewHandleListener");
         }
-        if(context instanceof YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess)
+        if (context instanceof YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess)
             youTubeThumbnailLoadInProcessListener = (YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess) context;
     }
 
@@ -663,7 +666,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         } else {
             throw new RuntimeException("Activity must implement DeepLinkWebViewHandleListener");
         }
-        if(context instanceof YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess)
+        if (context instanceof YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess)
             youTubeThumbnailLoadInProcessListener = (YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess) context;
     }
 
@@ -754,7 +757,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if(!isAppBarCollapsed)
+        if (!isAppBarCollapsed)
             inflater.inflate(R.menu.product_detail, menu);
         else
             inflater.inflate(R.menu.product_detail_dark, menu);
@@ -1084,13 +1087,13 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
 
-                intColor = - verticalOffset;
-                if (intColor>=SCROLL_ELEVATION+toolbar.getHeight() && isAdded() && stateCollapsing==FROM_EXPANDED) {
+                intColor = -verticalOffset;
+                if (intColor >= SCROLL_ELEVATION + toolbar.getHeight() && isAdded() && stateCollapsing == FROM_EXPANDED) {
                     initToolbarLight();
                     initStatusBarLight();
                     fabWishlist.hide();
                     stateCollapsing = FROM_COLLAPSED;
-                } else if (intColor<SCROLL_ELEVATION+toolbar.getHeight() && isAdded() && stateCollapsing==FROM_COLLAPSED) {
+                } else if (intColor < SCROLL_ELEVATION + toolbar.getHeight() && isAdded() && stateCollapsing == FROM_COLLAPSED) {
                     initStatusBarDark();
                     initToolbarTransparant();
                     if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
@@ -1186,7 +1189,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void restoreIsAppBarCollapsed(boolean isAppBarCollapsed) {
         this.isAppBarCollapsed = isAppBarCollapsed;
-        if(isAppBarCollapsed) {
+        if (isAppBarCollapsed) {
             collapsedAppBar();
         } else {
             expandedAppBar();
@@ -1196,6 +1199,32 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public boolean isSellerApp() {
         return GlobalConfig.isSellerApp();
+    }
+
+    @Override
+    public void renderAddToCartSuccess(String message) {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.add(
+                AddToCartConfirmationDialog.newInstance(
+                        message,
+                        new AddToCartConfirmationDialog.ActionListener() {
+                            @Override
+                            public void onButtonAddToCartPayClicked() {
+                                if (getActivity().getApplication() instanceof PdpRouter) {
+                                    Intent intent = ((PdpRouter) getActivity().getApplication())
+                                            .getCartIntent(getActivity());
+                                    startActivity(intent);
+                                }
+                            }
+
+                            @Override
+                            public void onButtonAddToCartContinueShopingClicked() {
+
+                            }
+                        }),
+                AddToCartConfirmationDialog.ADD_TO_CART_DIALOG_FRAGMENT_TAG
+        );
+        ft.commitAllowingStateLoss();
     }
 
 }

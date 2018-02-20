@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/margin_small">
+
+    <TextView
+        android:id="@+id/tv_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:autoLink="web"
+        android:fontFamily="sans-serif"
+        android:gravity="center_horizontal"
+        android:paddingBottom="@dimen/margin_small"
+        android:textSize="12sp"
+        android:textStyle="normal"
+        tools:text="Nikmati penambahan benefit yang Anda bisa dapatkan." />
+
+    <TextView
+        android:id="@+id/btn_go_to_cart"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_button_voucher"
+        android:layout_margin="@dimen/margin_vvvs"
+        android:background="@drawable/bg_button_orange"
+        android:gravity="center"
+        android:text="Bayar"
+        android:textColor="@color/white"
+        android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/btn_dismiss"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_button_voucher"
+        android:layout_margin="@dimen/margin_vvvs"
+        android:background="@drawable/bg_rounded_corners_green"
+        android:gravity="center"
+        android:text="Lanjutkan Belanja"
+        android:textColor="@color/font_black_primary_70"
+        android:textSize="13sp" />
+</LinearLayout>

@@ -181,7 +181,10 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
                         @Override
                         public void onNext(AddToCartResult addToCartResult) {
-                            viewListener.showToastMessage(addToCartResult.getMessage());
+                            if (addToCartResult.isSuccess())
+                                viewListener.renderAddToCartSuccess(addToCartResult.getMessage());
+                            else
+                                viewListener.showToastMessage(addToCartResult.getMessage());
                         }
                     });
         }
