@@ -22,12 +22,13 @@ import com.tokopedia.transaction.checkout.di.module.CartListModule;
 import com.tokopedia.transaction.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
-import com.tokopedia.transaction.checkout.view.dialog.CartItemRemoveSingleDialog;
+import com.tokopedia.transaction.checkout.view.dialog.CartRemoveItemDialog;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.transaction.checkout.view.presenter.ICartListPresenter;
 import com.tokopedia.transaction.checkout.view.view.ICartListView;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -40,9 +41,8 @@ import butterknife.BindView;
 
 public class CartFragment extends BasePresenterFragment
         implements CartListAdapter.ActionListener,
+        CartRemoveItemDialog.CartItemRemoveCallbackAction,
         ICartListView {
-
-    private static final int DIALOG_REQUEST_CODE = 1;
 
     @BindView(R2.id.rv_cart)
     RecyclerView cartRecyclerView;
@@ -160,7 +160,9 @@ public class CartFragment extends BasePresenterFragment
 
     @Override
     public void onCartItemDeleteButtonClicked(CartItemHolderData cartItemHolderData, int position) {
-        showDeleteCartItemDialog(cartItemHolderData.getCartItemData(), position);
+        ArrayList<CartItemData> cartItemData = new ArrayList<>();
+        cartItemData.add(cartItemHolderData.getCartItemData());
+        showDeleteCartItemDialog(cartItemData);
     }
 
     @Override
@@ -319,8 +321,9 @@ public class CartFragment extends BasePresenterFragment
     @Override
     public void renderPromoSuggestion(CartPromoSuggestion cartPromoSuggestion) {
         this.cartPromoSuggestionData = cartPromoSuggestion;
-        if (cartPromoSuggestion.isVisible())
+        if (cartPromoSuggestion.isVisible()) {
             cartListAdapter.addPromoSuggestion(cartPromoSuggestion);
+        }
     }
 
     @Override
@@ -328,20 +331,25 @@ public class CartFragment extends BasePresenterFragment
         return this.cartPromoSuggestionData;
     }
 
-    void showDeleteCartItemDialog(CartItemData cartItemData, int position) {
-        String productName = cartItemData.getOriginData().getProductName();
-        String productWeight = cartItemData.getOriginData().getWeightFormatted();
-        String message = String.format("Anda yakin ingin menghapus %s, Berat %s dari keranjang belanja?",
-                productName, productWeight);
-
-        DialogFragment dialog = CartItemRemoveSingleDialog.newInstance(message, position);
-        dialog.setTargetFragment(this, DIALOG_REQUEST_CODE);
-        dialog.show(getFragmentManager(), "dialog");
+    @Override
+    public void deleteSingleItem(List<CartItemData> cartItemDataList) {
+        cartListAdapter.deleteItem(cartItemDataList);
+        dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
     }
 
-    public void addToWishList(int position) {
-        cartListAdapter.deleteItem(position);
-        dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
+    @Override
+    public void addBulkToWishListOnly(List<CartItemData> cartItemDataList) {
+
+    }
+
+    @Override
+    public void deleteBulkItems(List<CartItemData> cartItemDataList) {
+
+    }
+
+    void showDeleteCartItemDialog(ArrayList<CartItemData> cartItemDataList) {
+        DialogFragment dialog = CartRemoveItemDialog.newInstance(cartItemDataList, this);
+        dialog.show(getFragmentManager(), "dialog");
     }
 
     public static CartFragment newInstance() {

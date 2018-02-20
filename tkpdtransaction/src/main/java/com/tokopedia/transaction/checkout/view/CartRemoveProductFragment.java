@@ -16,14 +16,13 @@ import com.tokopedia.transaction.checkout.di.component.DaggerCartRemoveProductCo
 import com.tokopedia.transaction.checkout.di.module.CartRemoveProductModule;
 import com.tokopedia.transaction.checkout.view.adapter.CartRemoveProductAdapter;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
+import com.tokopedia.transaction.checkout.view.data.CheckedCartItemData;
 import com.tokopedia.transaction.checkout.view.presenter.CartRemoveProductPresenter;
 import com.tokopedia.transaction.checkout.view.view.IRemoveProductListView;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -49,10 +48,10 @@ public class CartRemoveProductFragment extends BasePresenterFragment
     @Inject CartRemoveProductAdapter mCartRemoveProductAdapter;
     @Inject CartRemoveProductPresenter mCartRemoveProductPresenter;
 
-    private List<CartItemData> mCartItemDataList;
-
     private int mCheckedCartItem = 0;
-    private Set<Integer> mSetCheckedCartItemIndex = new HashSet<>();
+
+    private List<CartItemData> mCartItemDataList = new ArrayList<>();
+    private List<CheckedCartItemData> mCheckedCartItemList = new ArrayList<>();
 
     public static CartRemoveProductFragment newInstance(List<CartItemData> cartItemDataList) {
         CartRemoveProductFragment fragment = new CartRemoveProductFragment();
@@ -128,6 +127,11 @@ public class CartRemoveProductFragment extends BasePresenterFragment
     @Override
     protected void setupArguments(Bundle arguments) {
         mCartItemDataList = arguments.getParcelableArrayList(ARG_EXTRA_CART_DATA_LIST);
+        if (mCartItemDataList != null) {
+            for (CartItemData cartItemData : mCartItemDataList) {
+                mCheckedCartItemList.add(new CheckedCartItemData(false, cartItemData));
+            }
+        }
     }
 
     /**
@@ -197,8 +201,10 @@ public class CartRemoveProductFragment extends BasePresenterFragment
 
     @OnClick(R2.id.tv_remove_product)
     public void removeCheckedProducts() {
-        for (Integer index : mSetCheckedCartItemIndex) {
-            mCartItemDataList.remove((int) index);
+        for (CheckedCartItemData checkedCartItemData : mCheckedCartItemList) {
+            if (checkedCartItemData.isChecked()) {
+                mCartItemDataList.remove(checkedCartItemData.getCartItemData());
+            }
         }
 
         mCartRemoveProductAdapter.notifyDataSetChanged();
@@ -212,13 +218,8 @@ public class CartRemoveProductFragment extends BasePresenterFragment
      */
     @Override
     public void onCheckBoxStateChangedListener(boolean checked, int position) {
-        if (checked) {
-            mSetCheckedCartItemIndex.add(position);
-            mCheckedCartItem++;
-        } else {
-            mSetCheckedCartItemIndex.remove(position);
-            mCheckedCartItem--;
-        }
+        mCheckedCartItemList.get(position).setChecked(checked);
+        mCheckedCartItem = checked ? mCheckedCartItem + 1 : mCheckedCartItem - 1;
 
         String btnText = mCheckedCartItem == 0 ? "Hapus" :
                 String.format(LOCALE_ID, "Hapus (%d)", mCheckedCartItem);
