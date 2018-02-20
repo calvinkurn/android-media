@@ -47,7 +47,6 @@ public class GetProfileKolDataSourceCloud {
         this.getProfileKolDataMapper = getProfileKolDataMapper;
     }
 
-    @Inject
     public Observable<List<KolViewModel>> getProfileKolData(RequestParams params) {
         return kolApi.getProfileKolData(getRequestPayload(params))
                 .map(getProfileKolDataMapper);

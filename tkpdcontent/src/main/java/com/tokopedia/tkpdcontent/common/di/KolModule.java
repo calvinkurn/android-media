@@ -15,6 +15,7 @@ import retrofit2.Retrofit;
  * @author by milhamj on 06/02/18.
  */
 
+@KolScope
 @Module
 public class KolModule {
     @KolScope
@@ -31,14 +32,14 @@ public class KolModule {
     @KolScope
     @Provides
     @KolQualifier
-    public Retrofit provideFlightRetrofit(OkHttpClient okHttpClient,
+    public Retrofit provideKolRetrofit(OkHttpClient okHttpClient,
                                           Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(KolUrl.BASE_URL).client(okHttpClient).build();
     }
 
     @KolScope
     @Provides
-    public KolApi provideFlightAirportApi(@KolQualifier Retrofit retrofit) {
+    public KolApi provideKolApi(@KolQualifier Retrofit retrofit) {
         return retrofit.create(KolApi.class);
     }
 }
