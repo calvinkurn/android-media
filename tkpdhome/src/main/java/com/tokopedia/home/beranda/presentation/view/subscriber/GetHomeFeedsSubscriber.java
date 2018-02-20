@@ -4,12 +4,15 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.home.beranda.listener.HomeFeedListener;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationProductViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.InspirationItemDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.DataFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
+import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.topads.sdk.domain.model.Product;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +63,8 @@ public class GetHomeFeedsSubscriber extends Subscriber<FeedResult> {
 
         ArrayList<Visitable> list = convertToViewModel(feedResult.getFeedDomain());
 
+        list.add(dummyTopAds());
+
         if (feedResult.isHasNext()) {
             viewListener.updateCursor(getCurrentCursor(feedResult));
         }
@@ -69,6 +74,15 @@ public class GetHomeFeedsSubscriber extends Subscriber<FeedResult> {
         if (!feedResult.isHasNext()) {
             viewListener.unsetEndlessScroll();
         }
+    }
+
+    private Visitable dummyTopAds() {
+        List<Data> data = new ArrayList<>();
+        Data d = new Data();
+        d.setProduct(new Product());
+        data.add(d);
+        TopAdsViewModel viewModel = new TopAdsViewModel(data);
+        return viewModel;
     }
 
     private ArrayList<Visitable> convertToViewModel(FeedDomain feedDomain) {
