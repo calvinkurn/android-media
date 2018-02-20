@@ -78,6 +78,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static android.app.Activity.RESULT_OK;
+import static java.lang.Math.PI;
 
 public class RideHomeMapFragment extends BaseFragment implements RideHomeMapContract.View, OnMapReadyCallback, TouchableWrapperLayout.OnDragListener {
     private static final String EXTRA_IS_ALREADY_HAVE_LOC = "EXTRA_IS_ALREADY_HAVE_LOC";
@@ -93,6 +94,9 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     private static final float SELECT_SOURCE_MAP_ZOOM = 16;
     private static final String DEFAULT_EMPTY_VALUE = "";
     private static final String DEFAULT_EMPTY_MARKER = "--";
+
+    private final int ETA_RADIUS_RATIO = 150;
+    private final int DEFAULT_ETA = 150;
 
 
     @BindView(R2.id.toolbar)
@@ -367,19 +371,22 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
     public void displayNearByCabs(List<ProductEstimate> productEstimates) {
         if (!productEstimates.isEmpty()) {
-
-            int radius = 400;
-
-            if(productEstimates.size() > 1){
-                showUberCab = true;
-            }
-
+            int radius;
+            showUberCab = false;
+            showUberMoto = false;
+            int min = productEstimates.get(0).getTimesEstimate().getEstimate(), estimate;
             for (ProductEstimate productEstimate : productEstimates) {
                 if (RideUtils.isUberMoto(productEstimate.getProduct().getDisplayName())) {
                     showUberMoto = true;
+                } else {
+                    showUberCab = true;
+                    estimate = productEstimate.getTimesEstimate() != null ? productEstimate.getTimesEstimate().getEstimate() : DEFAULT_ETA;
+                    if (estimate < min) {
+                        min = estimate;
+                    }
                 }
             }
-
+            radius = ETA_RADIUS_RATIO * min / 60;
             if (googleMap != null && getVisibleCabsMarkerCount() < MAX_CABS_COUNT) {
                 double latitude = googleMap.getCameraPosition().target.latitude;
                 double longitude = googleMap.getCameraPosition().target.longitude;
@@ -761,53 +768,95 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
     @Override
     public void renderNearbyCabs(NearbyRoads nearbyRoads) {
-        int cabsToShow = MAX_CABS_COUNT - getVisibleCabsMarkerCount();
-        int motoToShow = MAX_MOTO_COUNT - getVisibleMOTOMarkerCount();
 
-        int i = 0, j = nearbyRoads.getSnappedPointsArrayList().size();
+        if (nearbyRoads != null && !nearbyRoads.getSnappedPointsArrayList().isEmpty()) {
+            int cabsToShow = MAX_CABS_COUNT - getVisibleCabsMarkerCount();
+            int motoToShow = MAX_MOTO_COUNT - getVisibleMOTOMarkerCount();
 
-        Random random = new Random();
+            int snappedPointsCount = nearbyRoads.getSnappedPointsArrayList().size() - 1;
 
-        while (cabsToShow > 0) {
-            Marker marker = googleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLatitude(),
-                            nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLongitude()))
-                    .icon(getMarkerIconForCab(R.drawable.car_map_icon)));
+            int i = 0, j = snappedPointsCount;
 
-            LatLng oldLocation = new LatLng(nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLatitude(),
-                    nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLongitude());
-            LatLng newLocation = new LatLng(random.nextDouble(), random.nextDouble());
+            Random random = new Random();
 
-            float bearing = (float) bearingBetweenLocations(oldLocation, newLocation);
-            rotateMarker(marker, bearing);
-            nearbyCabsMarkerList.add(marker);
-            cabsToShow--;
-            i++;
-        }
+            while (showUberCab &&
+                    cabsToShow > 0 &&
+                    i <= snappedPointsCount) {
 
-        while (showUberMoto && (motoToShow > 0)) {
+                if (!markerExistsForGivenLocation(nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLatitude(),
+                        nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLongitude())) {
 
-            Marker marker = googleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(nearbyRoads.getSnappedPointsArrayList().get(j).getLocation().getLatitude(),
-                            nearbyRoads.getSnappedPointsArrayList().get(j).getLocation().getLongitude()))
-                    .icon(getMarkerIconForCab(R.drawable.moto_map_icon)));
+                    Marker marker = googleMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLatitude(),
+                                    nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLongitude()))
+                            .icon(getMarkerIconForCab(R.drawable.car_map_icon)));
 
-            LatLng oldLocation = new LatLng(nearbyRoads.getSnappedPointsArrayList().get(j).getLocation().getLatitude(),
-                    nearbyRoads.getSnappedPointsArrayList().get(j).getLocation().getLongitude());
-            LatLng newLocation = new LatLng(random.nextDouble(), random.nextDouble());
+                    LatLng oldLocation = new LatLng(nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLatitude(),
+                            nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLongitude());
+                    LatLng newLocation = new LatLng(random.nextDouble(), random.nextDouble());
 
-            float bearing = (float) bearingBetweenLocations(oldLocation, newLocation);
-            marker.setRotation(bearing);
-            rotateMarker(marker, bearing);
-            nearbyMOTOMarkerList.add(marker);
-            motoToShow--;
-            j--;
+                    float bearing = (float) bearingBetweenLocations(oldLocation, newLocation);
+                    rotateMarker(marker, bearing);
+
+                    nearbyCabsMarkerList.add(marker);
+                    cabsToShow--;
+                }
+                i++;
+            }
+
+            while (showUberMoto &&
+                    motoToShow > 0 &&
+                    j >= 0) {
+
+                if (!markerExistsForGivenLocation(nearbyRoads.getSnappedPointsArrayList().get(j).getLocation().getLatitude(),
+                        nearbyRoads.getSnappedPointsArrayList().get(j).getLocation().getLongitude())) {
+
+                    Marker marker = googleMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(nearbyRoads.getSnappedPointsArrayList().get(j).getLocation().getLatitude(),
+                                    nearbyRoads.getSnappedPointsArrayList().get(j).getLocation().getLongitude()))
+                            .icon(getMarkerIconForCab(R.drawable.moto_map_icon)));
+
+                    LatLng oldLocation = new LatLng(nearbyRoads.getSnappedPointsArrayList().get(j).getLocation().getLatitude(),
+                            nearbyRoads.getSnappedPointsArrayList().get(j).getLocation().getLongitude());
+                    LatLng newLocation = new LatLng(random.nextDouble(), random.nextDouble());
+
+                    float bearing = (float) bearingBetweenLocations(oldLocation, newLocation);
+                    marker.setRotation(bearing);
+                    rotateMarker(marker, bearing);
+                    nearbyMOTOMarkerList.add(marker);
+                    motoToShow--;
+                }
+                j--;
+            }
         }
     }
 
+    private boolean markerExistsForGivenLocation(double latitude, double longitude) {
+
+        if (nearbyCabsMarkerList.size() > 0) {
+            for (Marker marker : nearbyCabsMarkerList) {
+                if (marker.getPosition().latitude == latitude &&
+                        marker.getPosition().longitude == longitude) {
+                    return true;
+                }
+            }
+        }
+
+        if (nearbyMOTOMarkerList.size() > 0) {
+            for (Marker marker : nearbyMOTOMarkerList) {
+                if (marker.getPosition().latitude == latitude &&
+                        marker.getPosition().longitude == longitude) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+
     private double bearingBetweenLocations(LatLng latLng1, LatLng latLng2) {
 
-        double PI = 3.14159;
         double lat1 = latLng1.latitude * PI / 180;
         double long1 = latLng1.longitude * PI / 180;
         double lat2 = latLng2.latitude * PI / 180;
@@ -848,7 +897,6 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
                     marker.setRotation(bearing);
 
                     if (t < 1.0) {
-                        // Post again 16ms later.
                         handler.postDelayed(this, 10);
                     } else {
                         isMarkerRotating = false;
@@ -873,9 +921,22 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
     private void getRandomLocations(double x0, double y0, int radius) {
 
+        locationArrayList.clear();
+
+
         double radiusInDegrees = radius / 111000f;
-        for (int i = 0; i < 2; i++) {
-            Random random = new Random();
+        for (int i = 0; i < 10; i++) {
+
+
+            double angle = Math.random() * PI * 2;
+
+            double x = Math.cos(angle) * radiusInDegrees;
+            double y = Math.sin(angle) * radiusInDegrees;
+
+            double foundLatitude = x + x0;
+            double foundLongitude = y + y0;
+
+            /*Random random = new Random();
             double u = random.nextDouble();
             double v = random.nextDouble();
             double w = radiusInDegrees * Math.sqrt(u);
@@ -886,7 +947,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
             // Adjust the x-coordinate for the shrinking of the east-west distances
             double new_x = x / Math.cos(y0);
             double foundLatitude = new_x + x0;
-            double foundLongitude = y + y0;
+            double foundLongitude = y + y0;*/
 
             Location location = new Location();
             location.setLatitude(foundLatitude);
