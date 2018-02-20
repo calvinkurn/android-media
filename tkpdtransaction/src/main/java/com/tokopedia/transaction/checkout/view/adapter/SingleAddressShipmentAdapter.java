@@ -10,7 +10,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -474,7 +473,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             String shippingFee = "-";
 
             if (model.getCourierItemData() != null) {
-                insuranceFee = model.getCourierItemData().getInsurancePrice();
+                insuranceFee = String.valueOf(model.getCourierItemData().getInsurancePrice());
                 shippingFee = model.getCourierItemData().getDeliveryPrice();
             }
 
