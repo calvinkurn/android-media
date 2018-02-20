@@ -653,6 +653,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
             FlightBookingPassengerViewModel flightBookingPassengerViewModel = new FlightBookingPassengerViewModel();
             flightBookingPassengerViewModel.setFlightBookingLuggageMetaViewModels(new ArrayList<FlightBookingAmenityMetaViewModel>());
             flightBookingPassengerViewModel.setFlightBookingMealMetaViewModels(new ArrayList<FlightBookingAmenityMetaViewModel>());
+            flightBookingPassengerViewModel.setPassengerBirthdate(getView().getContactBirthdate());
             if (lastIndexOfSpace > 0) {
                 flightBookingPassengerViewModel.setPassengerFirstName(getView().getContactName().substring(0, lastIndexOfSpace).trim());
                 flightBookingPassengerViewModel.setPassengerLastName(getView().getContactName().substring(lastIndexOfSpace).trim());
