@@ -1,7 +1,6 @@
 package com.tokopedia.transaction.checkout.view.activity;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -21,14 +20,17 @@ import java.util.List;
  */
 
 public class CartActivity extends BasePresenterActivity
-        implements CartFragment.OnPassingCartDataListener {
+        implements CartFragment.OnPassingCartDataListener,
+        CartRemoveProductFragment.OnPassingCartDataListener {
 
     private List<CartItemData> mCartItemData;
+    private List<CartItemData> mCartItemDataAfterRemove;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCartItemData = new ArrayList<>();
+        mCartItemDataAfterRemove = new ArrayList<>();
     }
 
     @Override
@@ -121,4 +123,20 @@ public class CartActivity extends BasePresenterActivity
     public void onPassingCartData(List<CartItemData> cartItemData) {
         mCartItemData = new ArrayList<>(cartItemData);
     }
+
+    /**
+     * Pass data from cart fragment into its container activity
+     *
+     * @param cartItemData List of cart items
+     */
+    @Override
+    public void onAfterRemovePassingCartData(List<CartItemData> cartItemData) {
+        mCartItemDataAfterRemove = new ArrayList<>(cartItemData);
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }
+
 }
