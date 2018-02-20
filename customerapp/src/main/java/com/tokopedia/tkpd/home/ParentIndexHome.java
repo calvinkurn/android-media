@@ -422,7 +422,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
                 if (tab.getPosition() == INIT_STATE_FRAGMENT_HOME ||tab.getPosition() == INIT_STATE_FRAGMENT_FEED) {
-                    Fragment fragment = adapter.getFragments().get(initStateFragment); // scroll to top
+                    Fragment fragment = adapter.getFragments().get(tab.getPosition()); // scroll to top
                     if (fragment != null) {
                         if (fragment instanceof FeedPlusFragment)
                             ((FeedPlusFragment) fragment).scrollToTop();
