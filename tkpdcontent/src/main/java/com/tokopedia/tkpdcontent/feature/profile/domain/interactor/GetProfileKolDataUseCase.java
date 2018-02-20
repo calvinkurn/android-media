@@ -16,6 +16,11 @@ import rx.Observable;
  */
 
 public class GetProfileKolDataUseCase extends UseCase<List<KolViewModel>> {
+    public static final String PARAM_USER_ID = "user_id";
+    public static final String PARAM_CURSOR = "cursor";
+    public static final String PARAM_LIMIT = "limit";
+    public static final String KOL_POST_LIMIT = "5";
+
     private final GetProfileKolDataSourceCloud getProfileKolDataSourceCloud;
 
     @Inject
@@ -26,5 +31,13 @@ public class GetProfileKolDataUseCase extends UseCase<List<KolViewModel>> {
     @Override
     public Observable<List<KolViewModel>> createObservable(RequestParams requestParams) {
         return getProfileKolDataSourceCloud.getProfileKolData(requestParams);
+    }
+
+    public static RequestParams getParams(String userId) {
+        RequestParams param = RequestParams.create();
+        param.putString(PARAM_USER_ID, userId);
+        param.putString(PARAM_CURSOR, "");
+        param.putString(PARAM_LIMIT, KOL_POST_LIMIT);
+        return param;
     }
 }

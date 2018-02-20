@@ -25,28 +25,30 @@ public class KolPostPresenter extends BaseDaggerPresenter<KolPostListener.View>
     }
 
     @Override
-    public void initView() {
-        getKolPost();
+    public void initView(String userId) {
+        getKolPost(userId);
     }
 
     @Override
-    public void getKolPost() {
-        getProfileKolDataUseCase.execute(null, new Subscriber<List<KolViewModel>>() {
-            @Override
-            public void onCompleted() {
+    public void getKolPost(String userId) {
+        getProfileKolDataUseCase.execute(
+                GetProfileKolDataUseCase.getParams(userId),
+                new Subscriber<List<KolViewModel>>() {
+                    @Override
+                    public void onCompleted() {
 
-            }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
+                    @Override
+                    public void onError(Throwable e) {
 
-            }
+                    }
 
-            @Override
-            public void onNext(List<KolViewModel> kolViewModels) {
+                    @Override
+                    public void onNext(List<KolViewModel> kolViewModels) {
 
-            }
-        });
+                    }
+                });
     }
 
     //TODO milhamj do something with these actions

@@ -735,8 +735,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public BaseDaggerFragment getKolPostFragment() {
-        return KolPostFragment.newInstance();
+    public BaseDaggerFragment getKolPostFragment(String userId) {
+        return KolPostFragment.newInstance(userId);
     }
 
     @Override

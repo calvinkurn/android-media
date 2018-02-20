@@ -26,9 +26,9 @@ public interface KolPostListener {
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void initView();
+        void initView(String userId);
 
-        void getKolPost();
+        void getKolPost(String userId);
 
         void followKol(int id, int rowNumber, View kolListener);
 

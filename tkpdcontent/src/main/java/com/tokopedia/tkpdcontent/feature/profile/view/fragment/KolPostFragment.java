@@ -20,13 +20,18 @@ import javax.inject.Inject;
  */
 
 public class KolPostFragment extends BaseDaggerFragment implements KolPostListener.View {
+    private static final String PARAM_USER_ID = "user_id";
+
     @Inject
     KolPostListener.Presenter presenter;
     RecyclerView kolRecyclerView;
 
-    public static KolPostFragment newInstance() {
+    private String userId;
+
+    public static KolPostFragment newInstance(String userId) {
         KolPostFragment fragment = new KolPostFragment();
         Bundle bundle = new Bundle();
+        bundle.putString(PARAM_USER_ID, userId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -44,13 +49,13 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
         initVar();
         initView(parentView);
         setViewListener();
-        presenter.initView();
+        presenter.initView(userId);
 
         return parentView;
     }
 
     private void initVar() {
-
+        userId = getArguments().getString(PARAM_USER_ID);
     }
 
     private void initView(View view) {

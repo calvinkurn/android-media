@@ -36,7 +36,8 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getApplicationContext() instanceof SessionRouter) {
-            kolPostFragment = ((SessionRouter) getApplicationContext()).getKolPostFragment();
+            //TODO milhamj change this userid
+            kolPostFragment = ((SessionRouter) getApplicationContext()).getKolPostFragment("6543110");
         }
     }
 

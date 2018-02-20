@@ -12,5 +12,5 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 public interface SessionRouter {
     Intent getHomeIntent(Context context);
 
-    BaseDaggerFragment getKolPostFragment();
+    BaseDaggerFragment getKolPostFragment(String userId);
 }
