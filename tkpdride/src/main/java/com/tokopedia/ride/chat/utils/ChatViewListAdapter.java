@@ -5,6 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.TextView;
+
+import com.tokopedia.ride.R;
 
 import java.util.ArrayList;
 
@@ -14,19 +17,20 @@ import java.util.ArrayList;
 
 public class ChatViewListAdapter extends BaseAdapter {
 
-    public final int STATUS_SENT = 0;
-    public final int STATUS_RECEIVED = 1;
+    private final int STATUS_SENT = 0;
+    private final int STATUS_RECEIVED = 1;
+    private final int TICKER_MSG = -1;
 
     private int bubbleBackgroundRcv, bubbleBackgroundSend;
     private float bubbleElevation;
     private ViewBuilderInterface viewBuilder = new ViewBuilder();
 
-    ArrayList<ChatMessage> chatMessages;
+    private ArrayList<ChatMessage> chatMessages;
 
-    Context context;
-    LayoutInflater inflater;
+    private Context context;
+    private LayoutInflater inflater;
 
-    public ChatViewListAdapter(Context context, ViewBuilderInterface viewBuilder, int bubbleBackgroundRcv, int bubbleBackgroundSend, float bubbleElevation) {
+    ChatViewListAdapter(Context context, ViewBuilderInterface viewBuilder, int bubbleBackgroundRcv, int bubbleBackgroundSend, float bubbleElevation) {
         this.chatMessages = new ArrayList<>();
         this.context = context;
         this.inflater = LayoutInflater.from(context);
@@ -38,12 +42,13 @@ public class ChatViewListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return chatMessages.size();
+        return chatMessages.size() + 1;
     }
 
     @Override
     public Object getItem(int position) {
-        return chatMessages.get(position);
+        if (position == 0) return new Object();
+        return chatMessages.get(position - 1);
     }
 
     @Override
@@ -53,65 +58,88 @@ public class ChatViewListAdapter extends BaseAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        return chatMessages.get(position).getType().ordinal();
+        if (position == 0) return -1;
+        return chatMessages.get(position - 1).getType().ordinal();
     }
 
     @Override
     public int getViewTypeCount() {
-        return 2;
+        return 3;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        MessageViewHolder holder;
+        MessageViewHolder holder = null;
+        TickerViewHolder tickerViewHolder = null;
         int type = getItemViewType(position);
         if (convertView == null) {
             switch (type) {
                 case STATUS_SENT:
                     convertView = viewBuilder.buildSentView(context);
+                    holder = new MessageViewHolder(convertView, bubbleBackgroundRcv, bubbleBackgroundSend);
+                    convertView.setTag(holder);
                     break;
                 case STATUS_RECEIVED:
                     convertView = viewBuilder.buildRecvView(context);
+                    holder = new MessageViewHolder(convertView, bubbleBackgroundRcv, bubbleBackgroundSend);
+                    convertView.setTag(holder);
+                    break;
+                case TICKER_MSG:
+                    convertView = inflater.inflate(R.layout.ticker_msg_view, null);
+                    tickerViewHolder = new TickerViewHolder(convertView);
+                    convertView.setTag(tickerViewHolder);
                     break;
             }
 
-            holder = new MessageViewHolder(convertView, bubbleBackgroundRcv, bubbleBackgroundSend);
-            convertView.setTag(holder);
+        } else if (position == 0) {
+            tickerViewHolder = (TickerViewHolder) convertView.getTag();
         } else {
             holder = (MessageViewHolder) convertView.getTag();
         }
 
-        holder.setMessage(chatMessages.get(position).getMessage());
-        holder.setTimestamp(chatMessages.get(position).getFormattedTime());
-        holder.setElevation(bubbleElevation);
-        holder.setBackground(type);
-        String sender = chatMessages.get(position).getSender();
-        if (sender != null) {
-            holder.setSender(sender);
+        if (position != 0 && holder != null) {
+            holder.setMessage(chatMessages.get(position - 1).getMessage());
+            holder.setTimestamp(chatMessages.get(position - 1).getFormattedTime());
+            holder.setElevation(bubbleElevation);
+            holder.setBackground(type);
+            String sender = chatMessages.get(position - 1).getSender();
+            if (sender != null) {
+                holder.setSender(sender);
+            }
+        } else if (position == 0 && tickerViewHolder != null) {
+            tickerViewHolder.tickerMsg.setText(R.string.sms_charges_msg);
         }
 
         return convertView;
     }
 
-    public void addMessage(ChatMessage message) {
+    void addMessage(ChatMessage message) {
         chatMessages.add(message);
         notifyDataSetChanged();
     }
 
-    public void addMessages(ArrayList<ChatMessage> chatMessages) {
+    void addMessages(ArrayList<ChatMessage> chatMessages) {
         this.chatMessages.addAll(chatMessages);
         notifyDataSetChanged();
     }
 
-    public void removeMessage(int position) {
+    void removeMessage(int position) {
         if (this.chatMessages.size() > position) {
             this.chatMessages.remove(position);
         }
     }
 
-    public void clearMessages() {
+    void clearMessages() {
         this.chatMessages.clear();
         notifyDataSetChanged();
+    }
+
+    class TickerViewHolder {
+        TextView tickerMsg;
+
+        TickerViewHolder(View view) {
+            tickerMsg = view.findViewById(R.id.ticker_msg);
+        }
     }
 }
 

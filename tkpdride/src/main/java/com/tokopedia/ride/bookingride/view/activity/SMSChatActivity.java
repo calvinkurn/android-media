@@ -330,7 +330,7 @@ public class SMSChatActivity extends BaseActivity {
     private void showRequestPermissionsInfoAlertDialog() {
 
         if (!hasReadSendSmsPermission()) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            /*AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.permission_alert_dialog_title);
             builder.setMessage(R.string.permission_dialog_message);
             builder.setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener() {
@@ -340,9 +340,10 @@ public class SMSChatActivity extends BaseActivity {
                     dialog.dismiss();
                 }
             });
-            builder.show();
+            builder.show();*/
+            requestReadAndSendSmsPermission();
         } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            /*AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.permission_alert_dialog_title);
             builder.setMessage(R.string.permission_dialog_message);
             builder.setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener() {
@@ -351,7 +352,7 @@ public class SMSChatActivity extends BaseActivity {
                     dialog.dismiss();
                 }
             });
-            builder.show();
+            builder.show();*/
             readSentSMS();
             readInboxSMS();
             mergeSMS();

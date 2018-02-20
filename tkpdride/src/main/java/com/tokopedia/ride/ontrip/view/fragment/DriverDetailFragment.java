@@ -207,12 +207,7 @@ public class DriverDetailFragment extends BaseFragment {
     public void actionSMSDriver() {
         RideGATracking.eventClickSMS(status);
 
-        /*Log.e("Driver phone no", driver.getPhoneNumber());
-        if (driver.getSmsNumber() != null && !driver.getSmsNumber().isEmpty())
-            Log.e("Driver sms phone no", driver.getSmsNumber());
-        Log.e("Driver pic url", driver.getPictureUrl());*/
-
-//        driver.setPhoneNumber("+919896386254");
+        driver.setPhoneNumber("+919896386254");
         Intent intent = new Intent(getActivity(), SMSChatActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(SMSChatActivity.DRIVER_INFO, driver);
