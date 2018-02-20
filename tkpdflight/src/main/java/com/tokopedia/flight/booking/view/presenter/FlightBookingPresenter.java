@@ -381,7 +381,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
 
     @Override
     public void onChangePassengerButtonClicked(FlightBookingPassengerViewModel viewModel, String departureDate) {
-        getView().navigateToPassengerInfoDetail(viewModel, isAirAsiaAirline(getView().getCurrentCartPassData()), departureDate);
+        getView().navigateToPassengerInfoDetail(viewModel, isMandatoryDoB(getView().getCurrentCartPassData()), departureDate);
     }
 
     @Override
@@ -667,7 +667,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         }
     }
 
-    private boolean isAirAsiaAirline(FlightBookingCartData flightBookingCartData) {
+    private boolean isMandatoryDoB(FlightBookingCartData flightBookingCartData) {
 
         if (flightBookingCartData.getDepartureTrip() != null)
             for (FlightDetailRouteViewModel data : flightBookingCartData.getDepartureTrip().getRouteList()) {
