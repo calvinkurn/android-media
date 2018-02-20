@@ -250,6 +250,8 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
         if (requestCode == REQUEST_CODE_NOMINAL && resultCode == RESULT_CODE_HOME) {
             finish();
         } else if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_LOGIN) {
+            decoratedBarcodeView.pause();
+            hideAnimation();
             presenter.onScanCompleteAfterLoginQrPayment();
         }
     }

@@ -104,6 +104,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                     if (balanceTokoCash.getAbTags().contains("QR")) {
                         getInfoQrWallet(localCacheHandler.getString(GetInfoQrTokoCashUseCase.IDENTIFIER));
                     } else {
+                        getView().hideProgressDialog();
                         getView().showErrorGetInfo(context.getString(com.tokopedia.tokocash.R.string.no_available_feature));
                     }
                 }
