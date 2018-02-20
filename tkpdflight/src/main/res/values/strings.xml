@@ -111,6 +111,7 @@
     <string name="flight_booking_submit_button_label">Lanjut</string>
     <string name="flight_booking_total_price_label">Pembayaran Anda</string>
     <string name="flight_booking_contact_name_empty_error">Nama kontak tidak boleh kosong</string>
+    <string name="flight_booking_checkbox_same_as_contact_name_empty_error">Harap isi nama kontak terlebih dahulu</string>
     <string name="flight_booking_contact_name_max_length_error">Nama kontak maksimal 20 karakter</string>
     <string name="flight_booking_contact_name_alpha_space_error">Nama harus terdiri alfabet dan space</string>
     <string name="flight_booking_contact_email_empty_error">Email kontak tidak boleh kosong</string>

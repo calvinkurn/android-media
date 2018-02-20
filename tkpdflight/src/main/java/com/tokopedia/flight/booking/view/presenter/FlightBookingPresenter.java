@@ -16,6 +16,7 @@ import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.mapper.FlightBookingCartDataMapper;
@@ -624,9 +625,40 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         if (isChecked) {
             isChecked = false;
         } else {
-            isChecked = true;
+            if (getView().getContactName().isEmpty() || getView().getContactName().length() == 0) {
+                getView().showContactNameEmptyError(R.string.flight_booking_checkbox_same_as_contact_name_empty_error);
+            } else {
+                isChecked = true;
+            }
         }
         getView().setSameAsContactChecked(isChecked);
+    }
+
+    @Override
+    public void onSameAsContactClicked() {
+        if (isChecked && !getView().getContactName().isEmpty() && getView().getContactName().length() > 0) {
+
+            int lastIndexOfSpace = getView().getContactName().lastIndexOf(" ");
+
+            FlightBookingPassengerViewModel flightBookingPassengerViewModel = new FlightBookingPassengerViewModel();
+            if (lastIndexOfSpace > 0) {
+                flightBookingPassengerViewModel.setPassengerFirstName(getView().getContactName().substring(0, lastIndexOfSpace).trim());
+                flightBookingPassengerViewModel.setPassengerLastName(getView().getContactName().substring(lastIndexOfSpace).trim());
+            } else {
+                flightBookingPassengerViewModel.setPassengerFirstName(getView().getContactName().trim());
+                flightBookingPassengerViewModel.setPassengerLastName(getView().getContactName().trim());
+            }
+
+            String departureDate;
+            FlightBookingParamViewModel paramViewModel = getView().getCurrentBookingParamViewModel();
+            if (!paramViewModel.getSearchParam().getReturnDate().equals("") && paramViewModel.getSearchParam().getReturnDate() != null) {
+                departureDate = paramViewModel.getSearchParam().getReturnDate();
+            } else {
+                departureDate = paramViewModel.getSearchParam().getDepartureDate();
+            }
+
+            onChangePassengerButtonClicked(flightBookingPassengerViewModel, departureDate);
+        }
     }
 
     private boolean isAirAsiaAirline(FlightBookingCartData flightBookingCartData) {

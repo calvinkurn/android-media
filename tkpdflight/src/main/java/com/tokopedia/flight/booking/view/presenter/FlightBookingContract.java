@@ -137,5 +137,7 @@ public interface FlightBookingContract {
 
         void toggleSameAsContactCheckbox();
 
+        void onSameAsContactClicked();
+
     }
 }
