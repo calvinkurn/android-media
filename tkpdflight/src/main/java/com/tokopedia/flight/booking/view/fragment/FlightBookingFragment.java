@@ -25,7 +25,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -667,7 +666,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
             @Override
             public void onClick(View v) {
                 presenter.toggleSameAsContactCheckbox();
-                presenter.onSameAsContactClicked();
+                presenter.onSameAsContactClicked(true);
             }
         };
     }

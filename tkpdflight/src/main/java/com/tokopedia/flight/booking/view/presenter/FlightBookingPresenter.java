@@ -381,7 +381,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
 
     @Override
     public void onChangePassengerButtonClicked(FlightBookingPassengerViewModel viewModel, String departureDate) {
-        getView().navigateToPassengerInfoDetail(viewModel, isMandatoryDoB(getView().getCurrentCartPassData()), departureDate);
+        getView().navigateToPassengerInfoDetail(viewModel, isMandatoryDoB(), departureDate);
     }
 
     @Override
@@ -631,50 +631,41 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         if (isChecked) {
             isChecked = false;
         } else {
-            if (getView().getContactName().isEmpty() || getView().getContactName().length() == 0) {
-                getView().showContactNameEmptyError(R.string.flight_booking_checkbox_same_as_contact_name_empty_error);
-            } else if (getView().getContactName().length() > 20) {
-                getView().showContactNameInvalidError(R.string.flight_booking_contact_name_max_length_error);
-            } else if (getView().getContactName().length() > 0 && !isAlphabetAndSpaceOnly(getView().getContactName())) {
-                getView().showContactNameInvalidError(R.string.flight_booking_contact_name_alpha_space_error);
-            } else {
-                isChecked = true;
-            }
+            isChecked = true;
         }
+
         getView().setSameAsContactChecked(isChecked);
+
     }
 
     @Override
-    public void onSameAsContactClicked() {
+    public void onSameAsContactClicked(boolean navigateToPassengerInfo) {
         if (isChecked && !getView().getContactName().isEmpty() && getView().getContactName().length() > 0) {
 
-            int lastIndexOfSpace = getView().getContactName().lastIndexOf(" ");
 
-            FlightBookingPassengerViewModel flightBookingPassengerViewModel = new FlightBookingPassengerViewModel();
-            flightBookingPassengerViewModel.setFlightBookingLuggageMetaViewModels(new ArrayList<FlightBookingAmenityMetaViewModel>());
-            flightBookingPassengerViewModel.setFlightBookingMealMetaViewModels(new ArrayList<FlightBookingAmenityMetaViewModel>());
-            flightBookingPassengerViewModel.setPassengerBirthdate(getView().getContactBirthdate());
-            if (lastIndexOfSpace > 0) {
-                flightBookingPassengerViewModel.setPassengerFirstName(getView().getContactName().substring(0, lastIndexOfSpace).trim());
-                flightBookingPassengerViewModel.setPassengerLastName(getView().getContactName().substring(lastIndexOfSpace).trim());
+            if (validatePassengerData()) {
+                FlightBookingPassengerViewModel flightBookingPassengerViewModel = getPassengerViewModelFromContact();
+                String departureDate;
+                FlightBookingParamViewModel paramViewModel = getView().getCurrentBookingParamViewModel();
+
+                if (!paramViewModel.getSearchParam().getReturnDate().equals("") &&
+                        paramViewModel.getSearchParam().getReturnDate() != null) {
+                    departureDate = paramViewModel.getSearchParam().getReturnDate();
+                } else {
+                    departureDate = paramViewModel.getSearchParam().getDepartureDate();
+                }
+
+                if (navigateToPassengerInfo) {
+                    onChangePassengerButtonClicked(flightBookingPassengerViewModel, departureDate);
+                }
             } else {
-                flightBookingPassengerViewModel.setPassengerFirstName(getView().getContactName().trim());
-                flightBookingPassengerViewModel.setPassengerLastName(getView().getContactName().trim());
+                toggleSameAsContactCheckbox();
             }
-
-            String departureDate;
-            FlightBookingParamViewModel paramViewModel = getView().getCurrentBookingParamViewModel();
-            if (!paramViewModel.getSearchParam().getReturnDate().equals("") && paramViewModel.getSearchParam().getReturnDate() != null) {
-                departureDate = paramViewModel.getSearchParam().getReturnDate();
-            } else {
-                departureDate = paramViewModel.getSearchParam().getDepartureDate();
-            }
-
-            onChangePassengerButtonClicked(flightBookingPassengerViewModel, departureDate);
         }
     }
 
-    private boolean isMandatoryDoB(FlightBookingCartData flightBookingCartData) {
+    private boolean isMandatoryDoB() {
+        FlightBookingCartData flightBookingCartData = getView().getCurrentCartPassData();
 
         if (flightBookingCartData.getDepartureTrip() != null)
             for (FlightDetailRouteViewModel data : flightBookingCartData.getDepartureTrip().getRouteList()) {
@@ -689,5 +680,49 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
             }
 
         return false;
+    }
+
+    private boolean validatePassengerData() {
+        boolean isValid = true;
+
+        Date twelveYearsAgo = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, -12);
+
+        if (getView().getContactName().isEmpty() || getView().getContactName().length() == 0) {
+            isValid = false;
+            getView().showContactNameEmptyError(R.string.flight_booking_checkbox_same_as_contact_name_empty_error);
+        } else if (getView().getContactName().length() > 20) {
+            isValid = false;
+            getView().showContactNameInvalidError(R.string.flight_booking_contact_name_max_length_error);
+        } else if (getView().getContactName().length() > 0 && !isAlphabetAndSpaceOnly(getView().getContactName())) {
+            isValid = false;
+            getView().showContactNameInvalidError(R.string.flight_booking_contact_name_alpha_space_error);
+        } else if (isMandatoryDoB() &&
+                FlightDateUtil.stringToDate(getView().getContactBirthdate()).after(twelveYearsAgo)) {
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    private FlightBookingPassengerViewModel getPassengerViewModelFromContact() {
+        int lastIndexOfSpace = getView().getContactName().lastIndexOf(" ");
+
+        FlightBookingPassengerViewModel flightBookingPassengerViewModel = new FlightBookingPassengerViewModel();
+        flightBookingPassengerViewModel.setFlightBookingLuggageMetaViewModels(new ArrayList<FlightBookingAmenityMetaViewModel>());
+        flightBookingPassengerViewModel.setFlightBookingMealMetaViewModels(new ArrayList<FlightBookingAmenityMetaViewModel>());
+
+        if (lastIndexOfSpace > 0) {
+            flightBookingPassengerViewModel.setPassengerFirstName(getView().getContactName().substring(0, lastIndexOfSpace).trim());
+            flightBookingPassengerViewModel.setPassengerLastName(getView().getContactName().substring(lastIndexOfSpace).trim());
+        } else {
+            flightBookingPassengerViewModel.setPassengerFirstName(getView().getContactName().trim());
+            flightBookingPassengerViewModel.setPassengerLastName(getView().getContactName().trim());
+        }
+
+        if (isMandatoryDoB()) {
+            flightBookingPassengerViewModel.setPassengerBirthdate(getView().getContactBirthdate());
+        }
+
+        return flightBookingPassengerViewModel;
     }
 }
