@@ -405,7 +405,7 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public BaseDaggerFragment getKolPostFragment() {
+    public BaseDaggerFragment getKolPostFragment(String userId) {
         return null;
     }
 
