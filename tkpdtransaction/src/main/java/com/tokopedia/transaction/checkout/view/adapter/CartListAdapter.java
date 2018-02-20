@@ -3,7 +3,9 @@ package com.tokopedia.transaction.checkout.view.adapter;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -154,13 +156,38 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             renderErrorWarning(data, holderView, position);
 
-            if (!data.getCartItemData().getUpdatedData().getRemark()
-                    .equalsIgnoreCase(holderView.etRemark.getText().toString())) {
-                ((CartItemHolderData) cartItemHolderDataList.get(position)).getCartItemData().getUpdatedData().setRemark(
-                        holderView.etRemark.getText().toString()
-                );
-            }
 
+            holderView.etRemark.addTextChangedListener(new RemarkTextWatcher(position));
+            holderView.etQty.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    int qty = 0;
+                    try {
+                        qty = Integer.parseInt(s.toString());
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                    }
+                    data.getCartItemData().getUpdatedData().setQuantity(qty);
+                    actionListener.onCartItemQuantityFormEdited();
+                    renderErrorWarning(data, holderView, position);
+                }
+            });
+
+            if (data.getCartItemData().getOriginData().isFavorite()) {
+                holderView.ivWishlistBadge.setImageResource(R.drawable.ic_wishlist_red);
+            } else {
+                holderView.ivWishlistBadge.setImageResource(R.drawable.ic_wishlist);
+            }
 
         } else if (getItemViewType(position) == TYPE_VIEW_PROMO_SUGGESTION) {
             final CartPromoSuggestionHolder holderView = (CartPromoSuggestionHolder) holder;
@@ -256,7 +283,8 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public List<CartItemHolderData> getDataList() {
         List<CartItemHolderData> cartItemHolderDataFinalList = new ArrayList<>();
-        for (Object object : cartItemHolderDataList) {
+        for (int i = 0; i < cartItemHolderDataList.size(); i++) {
+            Object object = cartItemHolderDataList.get(i);
             if (object instanceof CartItemHolderData) {
                 cartItemHolderDataFinalList.add((CartItemHolderData) object);
             }
@@ -378,7 +406,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         void onCartPromoTrackingCancelled(CartItemPromoHolderData cartItemPromoHolderData, int position);
 
-
+        void onCartItemQuantityFormEdited();
     }
 
     public class CartItemHolder extends RecyclerView.ViewHolder {
@@ -396,6 +424,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         private EditText etRemark;
         private TextView tvLabelRemarkOption;
         private ImageView btnDelete;
+        private ImageView ivWishlistBadge;
 
         private LinearLayout errorContainer;
         private TextView tvError;
@@ -417,7 +446,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             this.tvLabelRemarkOption = itemView.findViewById(R.id.tv_label_remark_option);
             this.etRemark = itemView.findViewById(R.id.et_remark);
             this.btnDelete = itemView.findViewById(R.id.btn_delete_cart);
-
+            this.ivWishlistBadge = itemView.findViewById(R.id.iv_image_wishlist);
             this.errorContainer = itemView.findViewById(R.id.ll_warning_container);
             this.tvError = itemView.findViewById(R.id.tv_warning);
             this.tvErrorDetail = itemView.findViewById(R.id.tv_warning_detail);
@@ -442,11 +471,33 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public class CartPromoHolder extends RecyclerView.ViewHolder {
         private VoucherCartHachikoView voucherCartHachikoView;
 
-        public CartPromoHolder(View itemView) {
+        CartPromoHolder(View itemView) {
             super(itemView);
             this.voucherCartHachikoView = itemView.findViewById(R.id.voucher_cart_holder_view);
         }
     }
 
 
+    private class RemarkTextWatcher implements TextWatcher {
+        private final int position;
+
+        RemarkTextWatcher(int position) {
+            this.position = position;
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            ((CartItemHolderData) cartItemHolderDataList.get(position)).getCartItemData().getUpdatedData().setRemark(s.toString());
+        }
+    }
 }

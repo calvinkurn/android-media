@@ -259,6 +259,11 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     }
 
     @Override
+    public void onCartItemQuantityFormEdited() {
+        dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
+    }
+
+    @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
         startActivityForResult(intent, requestCode);
     }
