@@ -21,6 +21,7 @@ public class KolTypeFactoryImpl extends BaseAdapterTypeFactory implements KolTyp
     public AbstractViewHolder createViewHolder(View view, int viewType) {
         AbstractViewHolder abstractViewHolder;
         if (viewType == KolViewHolder.LAYOUT)
+            //TODO milhamj add viewlistener
             abstractViewHolder = new KolViewHolder(view, null);
         else
             abstractViewHolder = super.createViewHolder(view, viewType);

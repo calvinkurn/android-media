@@ -28,7 +28,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
     public static final int LAYOUT = R.layout.kol_layout;
 
     private static final int MAX_CHAR = 250;
-    private final KolPostListener viewListener;
+    private final KolPostListener.View viewListener;
     private TextView title;
     private TextView name;
     private ImageView avatar;
@@ -47,7 +47,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
     private View commentButton;
     private View likeButton;
 
-    public KolViewHolder(View itemView, KolPostListener viewListener) {
+    public KolViewHolder(View itemView, KolPostListener.View viewListener) {
         super(itemView);
         this.viewListener = viewListener;
         title = (TextView) itemView.findViewById(R.id.title);

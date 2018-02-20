@@ -1,5 +1,7 @@
 package com.tokopedia.tkpdcontent.feature.profile.view.listener;
 
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolViewModel;
 
 /**
@@ -7,35 +9,29 @@ import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolViewModel;
  */
 
 public interface KolPostListener {
-    void onGoToKolProfile(int page, int rowNumber, String url);
+    interface View extends CustomerView {
+        void onGoToKolProfile(int page, int rowNumber, String url);
 
-    void onOpenKolTooltip(int page, int rowNumber, String url);
+        void onOpenKolTooltip(int page, int rowNumber, String url);
 
-    void onFollowKolClicked(int page, int rowNumber, int id);
+        void onFollowKolClicked(int page, int rowNumber, int id);
 
-    void onUnfollowKolClicked(int page, int rowNumber, int id);
+        void onUnfollowKolClicked(int page, int rowNumber, int id);
 
-    void onLikeKolClicked(int page, int rowNumber, int id);
+        void onLikeKolClicked(int page, int rowNumber, int id);
 
-    void onUnlikeKolClicked(int page, int adapterPosition, int id);
+        void onUnlikeKolClicked(int page, int adapterPosition, int id);
 
-    void onGoToKolComment(int page, int rowNumber, KolViewModel kolViewModel);
+        void onGoToKolComment(int page, int rowNumber, KolViewModel kolViewModel);
+    }
 
-    void onGoToListKolRecommendation(int page, int rowNumber, String url);
+    interface Presenter extends CustomerPresenter<View> {
+        void followKol(int id, int rowNumber, View kolListener);
 
-    void onErrorFollowKol(String errorMessage, int id, int status, int rowNumber);
+        void unfollowKol(int id, int rowNumber, View kolListener);
 
-    void onSuccessFollowUnfollowKol(int rowNumber);
+        void likeKol(int id, int rowNumber, View kolListener);
 
-    void onErrorLikeDislikeKolPost(String errorMessage);
-
-    void onSuccessLikeDislikeKolPost(int rowNumber);
-
-    void onFollowKolFromRecommendationClicked(int page, int rowNumber, int id, int position);
-
-    void onUnfollowKolFromRecommendationClicked(int page, int rowNumber, int id, int position);
-
-    void onSuccessFollowKolFromRecommendation(int rowNumber, int position);
-
-    void onSuccessUnfollowKolFromRecommendation(int rowNumber, int position);
+        void unlikeKol(int id, int rowNumber, View kolListener);
+    }
 }
