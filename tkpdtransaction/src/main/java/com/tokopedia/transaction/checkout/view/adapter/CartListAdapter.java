@@ -88,6 +88,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             });
 
+
             holderView.tvLabelRemarkOption.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -96,7 +97,8 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             });
 
-            if (TextUtils.isEmpty(data.getCartItemData().getUpdatedData().getRemark())) {
+            if (TextUtils.isEmpty(data.getCartItemData().getUpdatedData().getRemark())
+                    && !data.isEditableRemark()) {
                 holderView.etRemark.setVisibility(View.GONE);
                 holderView.tvLabelRemarkOption.setVisibility(View.VISIBLE);
             } else {
@@ -252,6 +254,25 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyDataSetChanged();
     }
 
+    public void resetData() {
+        cartItemHolderDataList.clear();
+        notifyDataSetChanged();
+    }
+
+    public void deleteItem(CartItemData cartItemData) {
+        for (int i = 0; i < cartItemHolderDataList.size(); i++) {
+            Object data = cartItemHolderDataList.get(i);
+            if (data instanceof CartItemHolderData) {
+                if (((CartItemHolderData) data).getCartItemData().getOriginData().getCartId() == cartItemData.getOriginData().getCartId()) {
+                    cartItemHolderDataList.remove(i);
+                    notifyItemRemoved(i);
+                }
+            }
+        }
+
+        if (getDataList().isEmpty()) actionListener.onCartItemListIsEmpty();
+    }
+
     public interface ActionListener {
 
         void onCartItemDeleteButtonClicked(CartItemHolderData cartItemHolderData, int position);
@@ -269,6 +290,8 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onCartPromoSuggestionActionClicked(CartPromoSuggestion data, int position);
 
         void onCartPromoSuggestionButtonCloseClicked(CartPromoSuggestion data, int position);
+
+        void onCartItemListIsEmpty();
     }
 
     public class CartItemHolder extends RecyclerView.ViewHolder {

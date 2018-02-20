@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.di.component.CartRemoveProductComponent;
@@ -37,17 +38,21 @@ import static com.tokopedia.transaction.checkout.view.SingleAddressShipmentFragm
  * @author Aghny A. Putra on 05/02/18
  */
 public class CartRemoveProductFragment extends BasePresenterFragment
-    implements IRemoveProductListView<List<CartItemData>>,
+        implements IRemoveProductListView<List<CartItemData>>,
         CartRemoveProductAdapter.CartRemoveProductActionListener {
 
     private static final Locale LOCALE_ID = new Locale("in", "ID");
     private static final String TAG = CartRemoveProductFragment.class.getSimpleName();
 
-    @BindView(R2.id.rv_cart_remove_product) RecyclerView mRvCartRemoveProduct;
-    @BindView(R2.id.tv_remove_product) TextView mTvRemoveProduct;
+    @BindView(R2.id.rv_cart_remove_product)
+    RecyclerView mRvCartRemoveProduct;
+    @BindView(R2.id.tv_remove_product)
+    TextView mTvRemoveProduct;
 
-    @Inject CartRemoveProductAdapter mCartRemoveProductAdapter;
-    @Inject CartRemoveProductPresenter mCartRemoveProductPresenter;
+    @Inject
+    CartRemoveProductAdapter mCartRemoveProductAdapter;
+    @Inject
+    CartRemoveProductPresenter mCartRemoveProductPresenter;
 
     private List<CartItemData> mCartItemDataList;
 
@@ -195,11 +200,35 @@ public class CartRemoveProductFragment extends BasePresenterFragment
 
     }
 
-    @OnClick(R2.id.tv_remove_product)
-    public void removeCheckedProducts() {
+    @Override
+    public List<CartItemData> getSelectedCartList() {
+        List<CartItemData> cartItemDataList = new ArrayList<>();
+        for (Integer index : mSetCheckedCartItemIndex) {
+            cartItemDataList.add(mCartItemDataList.get(index));
+        }
+        return cartItemDataList;
+    }
+
+    @Override
+    public TKPDMapParam<String, String> getGenerateParamAuth(TKPDMapParam<String, String> param) {
+        return param == null ? com.tokopedia.core.network.retrofit.utils.AuthUtil.generateParamsNetwork(getActivity())
+                : com.tokopedia.core.network.retrofit.utils.AuthUtil.generateParamsNetwork(getActivity(), param);
+    }
+
+    @Override
+    public void renderSuccessDeleteCart(String message) {
         for (Integer index : mSetCheckedCartItemIndex) {
             mCartItemDataList.remove((int) index);
         }
+    }
+
+    @OnClick(R2.id.tv_remove_product)
+    public void removeCheckedProducts() {
+//        for (Integer index : mSetCheckedCartItemIndex) {
+//            mCartItemDataList.remove((int) index);
+//        }
+
+        mCartRemoveProductPresenter.processDeleteCart(true);
 
         mCartRemoveProductAdapter.notifyDataSetChanged();
     }

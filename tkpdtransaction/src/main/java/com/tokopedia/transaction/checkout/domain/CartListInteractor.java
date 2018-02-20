@@ -8,6 +8,7 @@ import com.tokopedia.transaction.checkout.view.data.DeleteCartData;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -65,5 +66,12 @@ public class CartListInteractor implements ICartListInteractor {
                         .unsubscribeOn(Schedulers.newThread())
                         .subscribe(subscriber)
         );
+    }
+
+    @Override
+    public void deleteCartWithRefresh(Subscriber<CartListData> subscriber,
+                                      TKPDMapParam<String, String> paramDelete,
+                                      TKPDMapParam<String, String> paramCartList) {
+
     }
 }

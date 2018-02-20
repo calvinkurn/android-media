@@ -2,14 +2,15 @@ package com.tokopedia.transaction.checkout.view.presenter;
 
 import android.content.Intent;
 
+import com.google.gson.Gson;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.transaction.checkout.domain.ICartListInteractor;
+import com.tokopedia.transaction.checkout.domain.request.RemoveCartRequest;
 import com.tokopedia.transaction.checkout.view.activity.CartShipmentActivity;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CartListData;
 import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
-import com.tokopedia.transaction.checkout.view.data.factory.CartDataFactory;
+import com.tokopedia.transaction.checkout.view.data.DeleteCartData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.transaction.checkout.view.view.ICartListView;
 
@@ -39,6 +40,7 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public void processGetCartData() {
+        view.disableSwipeRefresh();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("lang", "id");
         cartListInteractor.getCartList(new Subscriber<CartListData>() {
@@ -53,8 +55,42 @@ public class CartListPresenter implements ICartListPresenter {
 
             @Override
             public void onNext(CartListData cartListData) {
-                view.renderPromoSuggestion(cartListData.getCartPromoSuggestion());
-                view.renderCartListData(cartListData.getCartItemDataList());
+
+                if (cartListData.getCartItemDataList().isEmpty()) {
+                    view.renderEmptyCartData();
+                } else {
+                    view.renderPromoSuggestion(cartListData.getCartPromoSuggestion());
+                    view.renderCartListData(cartListData.getCartItemDataList());
+                }
+
+            }
+        }, view.getGeneratedAuthParamNetwork(param));
+    }
+
+    @Override
+    public void processDeleteCart(final CartItemData cartItemData, boolean addWishList) {
+        List<Integer> ids = new ArrayList<>();
+        ids.add(cartItemData.getOriginData().getCartId());
+        RemoveCartRequest removeCartRequest = new RemoveCartRequest.Builder()
+                .cartIds(ids)
+                .addWishlist(addWishList ? 1 : 0)
+                .build();
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put("params", new Gson().toJson(removeCartRequest));
+        cartListInteractor.deleteCart(new Subscriber<DeleteCartData>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(DeleteCartData deleteCartData) {
+                view.renderSuccessDeleteCart(cartItemData, deleteCartData.getMessage());
             }
         }, view.getGeneratedAuthParamNetwork(param));
     }

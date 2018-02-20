@@ -34,6 +34,7 @@ public class CartMapper implements ICartMapper {
             cartItemDataOrigin.setProductVarianRemark(
                     data.getProduct().getProductNotes()
             );
+            cartItemDataOrigin.setCartId(data.getCartId());
             cartItemDataOrigin.setShopId(String.valueOf(data.getShop().getShopId()));
             cartItemDataOrigin.setShopName(data.getShop().getShopName());
             cartItemDataOrigin.setWeightFormatted(data.getProduct().getProductWeightFmt());
