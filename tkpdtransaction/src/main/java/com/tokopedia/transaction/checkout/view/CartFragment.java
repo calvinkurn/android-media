@@ -403,6 +403,7 @@ public class CartFragment extends BasePresenterFragment
     public void renderSuccessDeleteCart(CartItemData cartItemData, String message) {
         cartListAdapter.deleteItem(cartItemData);
         dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
+        mDataPasserListener.onPassingCartData(cartListAdapter.getCartItemDataList());
     }
 
     @Override
