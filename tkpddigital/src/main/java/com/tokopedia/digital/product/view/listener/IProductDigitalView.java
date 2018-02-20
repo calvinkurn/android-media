@@ -1,10 +1,5 @@
 package com.tokopedia.digital.product.view.listener;
 
-import android.app.Activity;
-import android.app.Application;
-import android.content.ContentResolver;
-
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.digital.cart.listener.IBaseView;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
@@ -68,4 +63,5 @@ public interface IProductDigitalView extends IBaseView {
 
     void removeCheckPulsaCards();
 
+    void showHelpMenu(String url);
 }

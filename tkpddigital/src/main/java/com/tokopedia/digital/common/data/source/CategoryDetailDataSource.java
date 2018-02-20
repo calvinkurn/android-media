@@ -8,6 +8,7 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.common.data.entity.response.ResponseCategoryDetailData;
 import com.tokopedia.digital.common.data.entity.response.ResponseCategoryDetailIncluded;
@@ -96,4 +97,46 @@ public class CategoryDetailDataSource {
         };
     }
 
+    public Observable<String> getHelpUrl(String categoryId) {
+        String result;
+        switch (categoryId) {
+            case "1":
+                result = DigitalUrl.HelpUrl.PULSA;
+                break;
+            case "2":
+                result = DigitalUrl.HelpUrl.PAKET_DATA;
+            case "3":
+                result = DigitalUrl.HelpUrl.PLN;
+            case "4":
+                result = DigitalUrl.HelpUrl.BPJS;
+            case "5":
+                result = DigitalUrl.HelpUrl.PDAM;
+            case "6":
+                result = DigitalUrl.HelpUrl.GAME;
+            case "7":
+                result = DigitalUrl.HelpUrl.CREDIT;
+            case "8":
+                result = DigitalUrl.HelpUrl.TV;
+            case "9":
+                result = DigitalUrl.HelpUrl.POSTPAID;
+            case "10":
+                result = DigitalUrl.HelpUrl.TELKOM;
+            case "13":
+                result = DigitalUrl.HelpUrl.STREAMING;
+            case "14":
+                result = DigitalUrl.HelpUrl.PGN;
+            case "20":
+                result = DigitalUrl.HelpUrl.ROAMING;
+            case "22":
+                result = DigitalUrl.HelpUrl.TAX;
+            case "24":
+                result = DigitalUrl.HelpUrl.GIFT_CARD;
+            case "25":
+                result = DigitalUrl.HelpUrl.RETRIBUTION;
+                break;
+            default:
+                result = "";
+        }
+        return Observable.just(result);
+    }
 }

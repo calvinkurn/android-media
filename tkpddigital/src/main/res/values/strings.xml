@@ -32,6 +32,7 @@
     <string name="title_menu_product_list_digital">Daftar Produk</string>
     <string name="title_menu_transaction_list_digital">Daftar Transaksi</string>
     <string name="title_menu_subsciption_digital">Langganan</string>
+    <string name="title_menu_help_digital">Bantuan</string>
     <string name="message_voucher_code_banner_copied">Kode voucher telah tersalin.</string>
 
     <string name="label_instant_payment_digital">Bayar Instan</string>
