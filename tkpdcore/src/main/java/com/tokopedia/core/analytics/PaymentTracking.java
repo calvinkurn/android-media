@@ -2,7 +2,6 @@ package com.tokopedia.core.analytics;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
@@ -21,7 +20,6 @@ import java.util.Map;
 public class PaymentTracking extends TrackingUtils {
 
     public static void eventTransactionGTM(Purchase purchase) {
-        CommonUtils.dumper("PaymentTracking"+" Revenue" );
         BranchSdkUtils.sendCommerceEvent(purchase, BranchSdkUtils.PRODUCTTYPE_MARKETPLACE);
         getGTMEngine().eventTransaction(purchase);
         getGTMEngine().sendScreen(AppScreen.SCREEN_FINISH_TX);

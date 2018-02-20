@@ -4,9 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -82,7 +80,7 @@ public class BranchSdkUtils {
         String desktopUrl = null;
         if (ShareData.PRODUCT_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(Constants.Applinks.PRODUCT_INFO, data.getId());
-        } else if (isappShowReferralButtonActivated(activity) && ShareData.APP_SHARE_TYPE.equalsIgnoreCase(data.getType())) {
+        } else if (isAppShowReferralButtonActivated(activity) && ShareData.APP_SHARE_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(Constants.Applinks.REFERRAL_WELCOME, data.getId());
             deeplinkPath = deeplinkPath.replaceFirst("\\{.*?\\} ?", SessionHandler.getLoginName(activity) == null ? "" : SessionHandler.getLoginName(activity));
         } else if (ShareData.SHOP_TYPE.equalsIgnoreCase(data.getType())) {
@@ -129,32 +127,6 @@ public class BranchSdkUtils {
         return url;
     }
 
-    public static void sendCommerceEvent(ArrayList<Product> locaProducts, String revenue, String totalShipping) {
-        try {
-            if (Branch.getInstance() != null && revenue != null && locaProducts != null) {
-                List<io.branch.referral.util.Product> branchProductList = new ArrayList<>();
-                for (com.tokopedia.core.analytics.model.Product locaProduct : locaProducts) {
-                    io.branch.referral.util.Product product = new io.branch.referral.util.Product();
-                    product.setSku(locaProduct.getId());
-                    product.setName(locaProduct.getName());
-                    product.setPrice(convertStringToDouble(locaProduct.getPrice()));
-                    branchProductList.add(product);
-                }
-
-                CommerceEvent commerceEvent = new CommerceEvent();
-                commerceEvent.setRevenue(convertStringToDouble(revenue));
-                commerceEvent.setCurrencyType(CurrencyType.IDR);
-                commerceEvent.setShipping(convertStringToDouble("" + totalShipping));
-                commerceEvent.setProducts(branchProductList);
-                CommonUtils.dumper("Revenue" + " old" + revenue + "  "+ totalShipping+ " "+ commerceEvent.toString());
-              //  Branch.getInstance().sendCommerceEvent(commerceEvent, null, null);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-    }
-
     public static void sendCommerceEvent(Purchase purchase, String productType) {
         try {
             if (Branch.getInstance() != null && purchase != null && purchase.getListProduct() != null) {
@@ -184,7 +156,6 @@ public class BranchSdkUtils {
                 metadata.put(USERID_KEY,purchase.getUserId());
 
                 Branch.getInstance().sendCommerceEvent(commerceEvent, metadata, null);
-                CommonUtils.dumper("Revenue"+ purchase.getRevenue()+" n " + purchase.getShipping() +"   " + commerceEvent.toString() );
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -240,7 +211,7 @@ public class BranchSdkUtils {
         return result;
     }
 
-    public static Boolean isappShowReferralButtonActivated(Context context) {
+    public static Boolean isAppShowReferralButtonActivated(Context context) {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON);
     }
