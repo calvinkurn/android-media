@@ -1,10 +1,13 @@
 
 package com.tokopedia.seller.product.edit.view.model.edit;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ProductPreorderViewModel {
+public class ProductPreorderViewModel implements Parcelable {
 
     @SerializedName("preorder_process_time")
     @Expose
@@ -40,4 +43,36 @@ public class ProductPreorderViewModel {
         this.preorderStatus = preorderStatus;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.preorderProcessTime);
+        dest.writeLong(this.preorderTimeUnit);
+        dest.writeLong(this.preorderStatus);
+    }
+
+    public ProductPreorderViewModel() {
+    }
+
+    protected ProductPreorderViewModel(Parcel in) {
+        this.preorderProcessTime = in.readLong();
+        this.preorderTimeUnit = in.readLong();
+        this.preorderStatus = in.readLong();
+    }
+
+    public static final Creator<ProductPreorderViewModel> CREATOR = new Creator<ProductPreorderViewModel>() {
+        @Override
+        public ProductPreorderViewModel createFromParcel(Parcel source) {
+            return new ProductPreorderViewModel(source);
+        }
+
+        @Override
+        public ProductPreorderViewModel[] newArray(int size) {
+            return new ProductPreorderViewModel[size];
+        }
+    };
 }

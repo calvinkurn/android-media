@@ -10,7 +10,7 @@
         android:layout_marginTop="@dimen/margin_med"
         android:orientation="horizontal">
 
-        <android.support.design.widget.TextInputLayout
+        <com.tokopedia.design.text.TkpdHintTextInputLayout
             android:id="@+id/text_input_layout_description"
             style="@style/TextInputLayout"
             android:layout_width="0dp"
@@ -24,9 +24,10 @@
                 style="@style/EditText"
                 android:layout_width="match_parent"
                 android:inputType="textMultiLine"
-                android:maxLength="@integer/product_max_character_description" />
+                android:maxLength="@integer/product_max_character_description"
+                android:hint="@string/product_label_enter_product_description"/>
 
-        </android.support.design.widget.TextInputLayout>
+        </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
         <FrameLayout
             android:layout_width="0dp"

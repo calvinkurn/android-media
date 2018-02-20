@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -30,6 +29,7 @@ import com.tokopedia.seller.product.edit.view.model.categoryrecomm.ProductCatego
 import com.tokopedia.seller.product.edit.view.model.edit.ProductCatalogViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductCategoryViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductEtalaseViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
 
 import java.util.ArrayList;
@@ -55,15 +55,8 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         void onEtalaseViewClicked(long etalaseId);
     }
 
-    private static final String BUNDLE_CATEGORY_ID = "BUNDLE_CATEGORY_ID";
-    private static final String BUNDLE_CATEGORY_NAME = "BUNDLE_CATEGORY_NAME";
     private static final String BUNDLE_CATALOG_SHOWN = "BUNDLE_CATALOG_SHOWN";
-    private static final String BUNDLE_CATALOG_ID = "BUNDLE_CATALOG_ID";
-    private static final String BUNDLE_CATALOG_NAME = "BUNDLE_CATALOG_NAME";
     private static final String BUNDLE_CAT_RECOMM = "BUNDLE_CAT_RECOM";
-
-    private static final String BUNDLE_ETALASE_ID = "BUNDLE_ETALASE_ID";
-    private static final String BUNDLE_ETALASE_NAME = "BUNDLE_ETALASE_NAME";
 
     private static final int DEFAULT_CATEGORY_ID = -1;
     private static final int DEFAULT_CATALOG_ID = -1;
@@ -86,7 +79,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
     private LabelView etalaseLabelView;
     private long etalaseId;
 
-    ArrayList <ProductCategoryPredictionViewModel> categoryPredictionList;
+    private ArrayList <ProductCategoryPredictionViewModel> categoryPredictionList;
 
     public void setListener(Listener listener) {
         this.listener = listener;
@@ -153,6 +146,28 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         radioGroupCategoryRecomm.setOnCheckedChangeListener(this);
 
         setListener(listener);
+    }
+
+    @Override
+    public void renderData(ProductViewModel model) {
+        setName(model.getProductName());
+        setCategoryId(model.getProductCategory().getCategoryId());
+        if (model.getProductCatalog().getCatalogId() > 0) {
+            setCatalog(model.getProductCatalog().getCatalogId(), model.getProductCatalog().getCatalogName());
+        }
+        if (model.getProductEtalase().getEtalaseId() > 0) {
+            setEtalaseId(model.getProductEtalase().getEtalaseId());
+            setEtalaseName(model.getProductEtalase().getEtalaseName());
+        }
+    }
+
+    @Override
+    public void updateModel(ProductViewModel model) {
+        model.setProductName(getName());
+        model.setProductCategory(getProductCategory());
+        model.setProductCatalog(getProductCatalog());
+        model.setProductEtalase(getProductEtalase());
+        model.setProductNameEditable(isNameEditable());
     }
 
     public boolean isNameEditable(){
@@ -425,27 +440,12 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putLong(BUNDLE_ETALASE_ID, etalaseId);
-        savedInstanceState.putString(BUNDLE_ETALASE_NAME, etalaseLabelView.getContent());
-        savedInstanceState.putLong(BUNDLE_CATEGORY_ID, categoryId);
-        savedInstanceState.putString(BUNDLE_CATEGORY_NAME, categoryLabelView.getContent());
         savedInstanceState.putBoolean(BUNDLE_CATALOG_SHOWN, catalogLabelView.getVisibility() == View.VISIBLE);
-        savedInstanceState.putLong(BUNDLE_CATALOG_ID, catalogId);
-        savedInstanceState.putString(BUNDLE_CATALOG_NAME, catalogLabelView.getContent());
         savedInstanceState.putParcelableArrayList(BUNDLE_CAT_RECOMM, categoryPredictionList);
     }
 
     @Override
     public void onViewStateRestored(@NonNull Bundle savedInstanceState) {
-        etalaseId = savedInstanceState.getLong(BUNDLE_ETALASE_ID, DEFAULT_ETALASE_ID);
-        if (!TextUtils.isEmpty(savedInstanceState.getString(BUNDLE_ETALASE_NAME))) {
-            etalaseLabelView.setContent(savedInstanceState.getString(BUNDLE_ETALASE_NAME));
-        }
-        categoryId = savedInstanceState.getLong(BUNDLE_CATEGORY_ID, DEFAULT_CATEGORY_ID);
-        if (!TextUtils.isEmpty(savedInstanceState.getString(BUNDLE_CATEGORY_NAME))) {
-            categoryLabelView.setContent(savedInstanceState.getString(BUNDLE_CATEGORY_NAME));
-        }
-        setCatalog(savedInstanceState.getLong(BUNDLE_CATALOG_ID, DEFAULT_CATALOG_ID), savedInstanceState.getString(BUNDLE_CATALOG_NAME));
         catalogLabelView.setVisibility(savedInstanceState.getBoolean(BUNDLE_CATALOG_SHOWN, false) ? View.VISIBLE : View.GONE);
 
         List<ProductCategoryPredictionViewModel> productCategoryPredictionViewModelList = savedInstanceState.getParcelableArrayList(BUNDLE_CAT_RECOMM);

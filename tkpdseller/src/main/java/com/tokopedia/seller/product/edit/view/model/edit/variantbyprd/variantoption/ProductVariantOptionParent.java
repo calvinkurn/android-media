@@ -1,11 +1,15 @@
 package com.tokopedia.seller.product.edit.view.model.edit.variantbyprd.variantoption;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class ProductVariantOptionParent {
+public class ProductVariantOptionParent implements Parcelable{
     @SerializedName("pv")
     @Expose
     private int pv; // id for this variant
@@ -78,4 +82,42 @@ public class ProductVariantOptionParent {
     public void setProductVariantOptionChild(List<ProductVariantOptionChild> productVariantOptionChild) {
         this.productVariantOptionChild = productVariantOptionChild;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.pv);
+        dest.writeInt(this.v);
+        dest.writeInt(this.vu);
+        dest.writeInt(this.position);
+        dest.writeList(this.productVariantOptionChild);
+    }
+
+    public ProductVariantOptionParent() {
+    }
+
+    protected ProductVariantOptionParent(Parcel in) {
+        this.pv = in.readInt();
+        this.v = in.readInt();
+        this.vu = in.readInt();
+        this.position = in.readInt();
+        this.productVariantOptionChild = new ArrayList<ProductVariantOptionChild>();
+        in.readList(this.productVariantOptionChild, ProductVariantOptionChild.class.getClassLoader());
+    }
+
+    public static final Creator<ProductVariantOptionParent> CREATOR = new Creator<ProductVariantOptionParent>() {
+        @Override
+        public ProductVariantOptionParent createFromParcel(Parcel source) {
+            return new ProductVariantOptionParent(source);
+        }
+
+        @Override
+        public ProductVariantOptionParent[] newArray(int size) {
+            return new ProductVariantOptionParent[size];
+        }
+    };
 }

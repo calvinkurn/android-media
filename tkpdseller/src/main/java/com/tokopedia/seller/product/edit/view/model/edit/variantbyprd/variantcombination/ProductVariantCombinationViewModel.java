@@ -1,11 +1,15 @@
 
 package com.tokopedia.seller.product.edit.view.model.edit.variantbyprd.variantcombination;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ProductVariantCombinationViewModel {
+public class ProductVariantCombinationViewModel implements Parcelable{
 
     @SerializedName("st")
     @Expose
@@ -66,4 +70,42 @@ public class ProductVariantCombinationViewModel {
     public void setSku(String sku) {
         this.sku = sku;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.st);
+        dest.writeLong(this.priceVar);
+        dest.writeLong(this.stock);
+        dest.writeString(this.sku);
+        dest.writeList(this.opt);
+    }
+
+    public ProductVariantCombinationViewModel() {
+    }
+
+    protected ProductVariantCombinationViewModel(Parcel in) {
+        this.st = in.readLong();
+        this.priceVar = in.readLong();
+        this.stock = in.readLong();
+        this.sku = in.readString();
+        this.opt = new ArrayList<Integer>();
+        in.readList(this.opt, Integer.class.getClassLoader());
+    }
+
+    public static final Creator<ProductVariantCombinationViewModel> CREATOR = new Creator<ProductVariantCombinationViewModel>() {
+        @Override
+        public ProductVariantCombinationViewModel createFromParcel(Parcel source) {
+            return new ProductVariantCombinationViewModel(source);
+        }
+
+        @Override
+        public ProductVariantCombinationViewModel[] newArray(int size) {
+            return new ProductVariantCombinationViewModel[size];
+        }
+    };
 }

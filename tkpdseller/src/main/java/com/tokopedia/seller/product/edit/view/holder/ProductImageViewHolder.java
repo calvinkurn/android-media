@@ -17,6 +17,7 @@ import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
 import com.tokopedia.seller.product.edit.view.adapter.ImageSelectorAdapter;
 import com.tokopedia.seller.product.edit.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.edit.view.widget.ImagesSelectView;
 
 import java.util.ArrayList;
@@ -112,6 +113,16 @@ public class ProductImageViewHolder extends ProductViewHolder {
         });
 
         setListener(listener);
+    }
+
+    @Override
+    public void renderData(ProductViewModel model) {
+        setProductPhotos(model.getProductPictureViewModelList());
+    }
+
+    @Override
+    public void updateModel(ProductViewModel model) {
+        model.setProductPictureViewModelList(getProductPhotos());
     }
 
     public ImagesSelectView getImagesSelectView() {

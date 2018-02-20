@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.util.Pair;
 import android.view.View;
 import android.widget.EditText;
@@ -22,6 +23,7 @@ import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.product.edit.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.edit.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductVideoViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,6 +88,32 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
 
         setListener(listener);
 
+    }
+
+    @Override
+    public void renderData(ProductViewModel model) {
+        setCondition((int)model.getProductCondition());
+        if (!TextUtils.isEmpty(model.getProductDescription())) {
+            setDescription(model.getProductDescription());
+        }
+        if (model.getProductVideo() != null) {
+            setVideoIdList(convertToListString(model.getProductVideo()));
+        }
+    }
+
+    @Override
+    public void updateModel(ProductViewModel model) {
+        model.setProductCondition(getCondition());
+        model.setProductDescription(getDescription());
+        model.setProductVideo(getVideoList());
+    }
+
+    private List<String> convertToListString(List<ProductVideoViewModel> productVideo) {
+        List<String> productVideos = new ArrayList<>();
+        for(ProductVideoViewModel productVideoViewModel : productVideo){
+            productVideos.add(productVideoViewModel.getUrl());
+        }
+        return productVideos;
     }
 
     public int getCondition() {
@@ -173,16 +201,12 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putStringArrayList(YoutubeAddVideoView.KEY_VIDEOS_LINK, new ArrayList<>(videoIdList));
-
+        // no need; already on the model
     }
 
     @Override
     public void onViewStateRestored(@NonNull Bundle savedInstanceState) {
-        ArrayList<String> stringArrayList = savedInstanceState.getStringArrayList(YoutubeAddVideoView.KEY_VIDEOS_LINK);
-        if (stringArrayList != null) {
-            setVideoIdList(stringArrayList);
-        }
+        // no need; already on the model
     }
 
     /**

@@ -1,12 +1,15 @@
 
 package com.tokopedia.seller.product.edit.view.model.edit;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ProductCategoryViewModel {
+public class ProductCategoryViewModel implements Parcelable{
 
     @SerializedName("category_id")
     @Expose
@@ -64,4 +67,41 @@ public class ProductCategoryViewModel {
         this.categoryDetail = categoryDetail;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.categoryId);
+        dest.writeString(this.categoryFullName);
+        dest.writeString(this.categoryFullTitile);
+        dest.writeString(this.categoryBreadcrumbUrl);
+        dest.writeList(this.categoryDetail);
+    }
+
+    public ProductCategoryViewModel() {
+    }
+
+    protected ProductCategoryViewModel(Parcel in) {
+        this.categoryId = in.readLong();
+        this.categoryFullName = in.readString();
+        this.categoryFullTitile = in.readString();
+        this.categoryBreadcrumbUrl = in.readString();
+        this.categoryDetail = new ArrayList<ProductCategoryDetailViewModel>();
+        in.readList(this.categoryDetail, ProductCategoryDetailViewModel.class.getClassLoader());
+    }
+
+    public static final Creator<ProductCategoryViewModel> CREATOR = new Creator<ProductCategoryViewModel>() {
+        @Override
+        public ProductCategoryViewModel createFromParcel(Parcel source) {
+            return new ProductCategoryViewModel(source);
+        }
+
+        @Override
+        public ProductCategoryViewModel[] newArray(int size) {
+            return new ProductCategoryViewModel[size];
+        }
+    };
 }

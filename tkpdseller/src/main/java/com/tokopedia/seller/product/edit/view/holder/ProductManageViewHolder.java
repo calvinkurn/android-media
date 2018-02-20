@@ -17,6 +17,8 @@ import com.tokopedia.expandable.BaseExpandableOption;
 import com.tokopedia.expandable.ExpandableOptionSwitch;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.LabelView;
+import com.tokopedia.seller.product.edit.constant.UploadToTypeDef;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.variantbyprd.ProductVariantViewModel;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
@@ -60,7 +62,7 @@ public class ProductManageViewHolder extends ProductViewHolder{
 
     private Listener listener;
 
-    public ProductManageViewHolder(View view) {
+    public ProductManageViewHolder(View view, Listener listener) {
 
         stockStatusSpinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view_stock_status);
         stockTotalExpandableOptionSwitch = (ExpandableOptionSwitch) view.findViewById(R.id.expandable_option_switch_stock_total);
@@ -80,7 +82,7 @@ public class ProductManageViewHolder extends ProductViewHolder{
         stockTotalExpandableOptionSwitch.setExpandableListener(new BaseExpandableOption.ExpandableListener() {
             @Override
             public void onExpandViewChange(boolean isExpand) {
-                listener.onTotalStockUpdated(isExpand ? (int) stockTotalCounterInputView.getDoubleValue() : 0);
+                ProductManageViewHolder.this.listener.onTotalStockUpdated(isExpand ? (int) stockTotalCounterInputView.getDoubleValue() : 0);
             }
         });
         stockTotalCounterInputView.addTextChangedListener(new NumberTextWatcher(stockTotalCounterInputView.getEditText()) {
@@ -89,7 +91,7 @@ public class ProductManageViewHolder extends ProductViewHolder{
                 if (isTotalStockValid()) {
                     stockTotalCounterInputView.setError(null);
                 }
-                listener.onTotalStockUpdated((int) number);
+                ProductManageViewHolder.this.listener.onTotalStockUpdated((int) number);
             }
         });
 
@@ -103,6 +105,8 @@ public class ProductManageViewHolder extends ProductViewHolder{
                         productVariantOptionSubmitList);
             }
         });
+
+        setListener(listener);
     }
 
     public void setListener(Listener listener) {
@@ -169,6 +173,7 @@ public class ProductManageViewHolder extends ProductViewHolder{
             case REQUEST_CODE_VARIANT:
                 if (resultCode == Activity.RESULT_OK) {
                     if (data!= null && data.hasExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION)) {
+                        //TODO hendry, set variant to model in the fragment
                         setProductVariantDataSubmit((ProductVariantDataSubmit) data.getParcelableExtra(
                                 ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION), null);
                     }
@@ -260,24 +265,49 @@ public class ProductManageViewHolder extends ProductViewHolder{
     }
 
     @Override
+    public void renderData(ProductViewModel model) {
+        setStockStatus(model.getProductStatus());
+        setStockManaged(model.getProductStatus() == UploadToTypeDef.TYPE_ACTIVE && model.getProductStock() > 0);
+        setTotalStock((int)model.getProductStock());
+
+        //TODO hendry set variant view
+        /*if (model.getProductVariant()!= null) {
+            productDeliveryInfoViewHolder.setProductVariantDataSubmit(model.getProductVariant(),
+                    model.getVariantStringSelection());
+            productDeliveryInfoViewHolder.setOptionSubmitLv1(model.getProductVariantDataSubmit());
+        }*/
+    }
+
+    @Override
+    public void updateModel(ProductViewModel model) {
+        model.setProductStock(getTotalStock());
+        model.setProductStatus(getStatusStock());
+        //todo hendry map old draft model to new draft model variant
+//        viewModel.setProductVariant(productDeliveryInfoViewHolder.getProductVariant());
+//        viewModel.setVariantStringSelection(productDeliveryInfoViewHolder.getVariantStringSelection());
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
+        //TODO remove unneeded
         savedInstanceState.putBoolean(IS_ACTIVE_STOCK, stockTotalExpandableOptionSwitch.isEnabled());
         savedInstanceState.putBoolean(IS_STOCKTOTAL_VISIBLE, stockTotalExpandableOptionSwitch.getVisibility() == View.VISIBLE);
-        savedInstanceState.putParcelable(SAVED_PRD_VARIANT_SUBMIT, productVariantDataSubmit);
-        savedInstanceState.putParcelableArrayList(SAVED_VARIANT_CAT, productVariantByCatModelList);
-        savedInstanceState.putParcelableArrayList(SAVED_OPTION_SUBMIT_LV_1, productVariantOptionSubmitList);
+//        savedInstanceState.putParcelable(SAVED_PRD_VARIANT_SUBMIT, productVariantDataSubmit);
+//        savedInstanceState.putParcelableArrayList(SAVED_VARIANT_CAT, productVariantByCatModelList);
+//        savedInstanceState.putParcelableArrayList(SAVED_OPTION_SUBMIT_LV_1, productVariantOptionSubmitList);
     }
 
     @Override
     public void onViewStateRestored(@NonNull Bundle savedInstanceState) {
+        //TODO remove unneeded
 
         stockTotalExpandableOptionSwitch.setEnabled(savedInstanceState.getBoolean(IS_ACTIVE_STOCK));
 
         boolean isStockTotalVisible = savedInstanceState.getBoolean(IS_STOCKTOTAL_VISIBLE, false);
         stockTotalExpandableOptionSwitch.setVisibility(isStockTotalVisible ? View.VISIBLE : View.GONE);
-        productVariantDataSubmit = savedInstanceState.getParcelable(SAVED_PRD_VARIANT_SUBMIT);
-        productVariantByCatModelList = savedInstanceState.getParcelableArrayList(SAVED_VARIANT_CAT);
-        productVariantOptionSubmitList = savedInstanceState.getParcelableArrayList(SAVED_OPTION_SUBMIT_LV_1);
+//        productVariantDataSubmit = savedInstanceState.getParcelable(SAVED_PRD_VARIANT_SUBMIT);
+//        productVariantByCatModelList = savedInstanceState.getParcelableArrayList(SAVED_VARIANT_CAT);
+//        productVariantOptionSubmitList = savedInstanceState.getParcelableArrayList(SAVED_OPTION_SUBMIT_LV_1);
     }
 
     public interface Listener {

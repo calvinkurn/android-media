@@ -20,6 +20,7 @@ import com.tokopedia.seller.product.edit.view.fragment.ProductAddFragment;
 import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPreorderViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 
 /**
  * Created by nathan on 4/11/17.
@@ -34,7 +35,6 @@ public class ProductDeliveryInfoViewHolder extends ProductViewHolder {
     private SpinnerCounterInputView preOrderSpinnerCounterInputView;
     private LabelSwitch shareLabelSwitch;
     private Listener listener;
-    private boolean goldMerchant;
 
     private SpinnerCounterInputView weightSpinnerCounterInputView;
     private SpinnerTextView insuranceSpinnerTextView;
@@ -99,6 +99,30 @@ public class ProductDeliveryInfoViewHolder extends ProductViewHolder {
         });
 
         setListener(listener);
+    }
+
+    @Override
+    public void renderData(ProductViewModel model) {
+        setWeightUnit((int)model.getProductWeightUnit());
+        if (model.getProductWeight() > 0) {
+            setWeightValue((int)model.getProductWeight());
+        }
+        setInsurance(model.isProductMustInsurance());
+        setFreeReturn(model.isProductFreeReturn());
+        if (model.getProductPreorder().getPreorderProcessTime() > 0) {
+            expandPreOrder(true);
+            setPreOrderUnit((int)model.getProductPreorder().getPreorderTimeUnit());
+            setPreOrderValue((int)model.getProductPreorder().getPreorderProcessTime());
+        }
+    }
+
+    @Override
+    public void updateModel(ProductViewModel model) {
+        model.setProductWeightUnit(getWeightUnit());
+        model.setProductWeight(getWeightValue());
+        model.setProductMustInsurance(isMustInsurance());
+        model.setProductFreeReturn(isFreeReturns());
+        model.setProductPreorder(getPreOrder());
     }
 
     public void setListener(Listener listener) {

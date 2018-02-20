@@ -1,6 +1,9 @@
 
 package com.tokopedia.seller.product.edit.view.model.edit;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.Expose;
@@ -9,7 +12,7 @@ import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.product.edit.view.model.edit.variantbyprd.ProductVariantViewModel;
 
 //TODO need this: product_sizechart from_ig image_id
-public class ProductViewModel implements ItemType {
+public class ProductViewModel implements ItemType, Parcelable {
 
     public static final int TYPE = 382;
     @SerializedName("product_id")
@@ -403,4 +406,99 @@ public class ProductViewModel implements ItemType {
     public int getType() {
         return TYPE;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.productId);
+        dest.writeString(this.productName);
+        dest.writeString(this.productAlias);
+        dest.writeLong(this.productCondition);
+        dest.writeString(this.productDescription);
+        dest.writeString(this.productLastUpdatePrice);
+        dest.writeLong(this.productMinOrder);
+        dest.writeLong(this.productMaxOrder);
+        dest.writeByte(this.productMustInsurance ? (byte) 1 : (byte) 0);
+        dest.writeDouble(this.productPrice);
+        dest.writeLong(this.productPriceCurrency);
+        dest.writeInt(this.productStatus);
+        dest.writeLong(this.productStock);
+        dest.writeLong(this.productWeight);
+        dest.writeLong(this.productWeightUnit);
+        dest.writeString(this.productUrl);
+        dest.writeByte(this.productFreeReturn ? (byte) 1 : (byte) 0);
+        dest.writeString(this.productSku);
+        dest.writeString(this.productGtin);
+        dest.writeParcelable(this.productBrand, flags);
+        dest.writeParcelable(this.productCatalog, flags);
+        dest.writeParcelable(this.productCategory, flags);
+        dest.writeParcelable(this.productEtalase, flags);
+        dest.writeList(this.productPictureViewModelList);
+        dest.writeParcelable(this.productPreorder, flags);
+        dest.writeParcelable(this.productPosition, flags);
+        dest.writeParcelable(this.productShop, flags);
+        dest.writeParcelable(this.productSizeChart, flags);
+        dest.writeTypedList(this.productWholesale);
+        dest.writeList(this.productVideo);
+        dest.writeParcelable(this.productVariant, flags);
+        dest.writeByte(this.productNameEditable ? (byte) 1 : (byte) 0);
+        dest.writeLong(this.draftId);
+    }
+
+    public ProductViewModel() {
+    }
+
+    protected ProductViewModel(Parcel in) {
+        this.productId = in.readLong();
+        this.productName = in.readString();
+        this.productAlias = in.readString();
+        this.productCondition = in.readLong();
+        this.productDescription = in.readString();
+        this.productLastUpdatePrice = in.readString();
+        this.productMinOrder = in.readLong();
+        this.productMaxOrder = in.readLong();
+        this.productMustInsurance = in.readByte() != 0;
+        this.productPrice = in.readDouble();
+        this.productPriceCurrency = in.readLong();
+        this.productStatus = in.readInt();
+        this.productStock = in.readLong();
+        this.productWeight = in.readLong();
+        this.productWeightUnit = in.readLong();
+        this.productUrl = in.readString();
+        this.productFreeReturn = in.readByte() != 0;
+        this.productSku = in.readString();
+        this.productGtin = in.readString();
+        this.productBrand = in.readParcelable(ProductBrandViewModel.class.getClassLoader());
+        this.productCatalog = in.readParcelable(ProductCatalogViewModel.class.getClassLoader());
+        this.productCategory = in.readParcelable(ProductCategoryViewModel.class.getClassLoader());
+        this.productEtalase = in.readParcelable(ProductEtalaseViewModel.class.getClassLoader());
+        this.productPictureViewModelList = new ArrayList<ProductPictureViewModel>();
+        in.readList(this.productPictureViewModelList, ProductPictureViewModel.class.getClassLoader());
+        this.productPreorder = in.readParcelable(ProductPreorderViewModel.class.getClassLoader());
+        this.productPosition = in.readParcelable(ProductPositionViewModel.class.getClassLoader());
+        this.productShop = in.readParcelable(ProductShopViewModel.class.getClassLoader());
+        this.productSizeChart = in.readParcelable(ProductPictureViewModel.class.getClassLoader());
+        this.productWholesale = in.createTypedArrayList(ProductWholesaleViewModel.CREATOR);
+        this.productVideo = new ArrayList<ProductVideoViewModel>();
+        in.readList(this.productVideo, ProductVideoViewModel.class.getClassLoader());
+        this.productVariant = in.readParcelable(ProductVariantViewModel.class.getClassLoader());
+        this.productNameEditable = in.readByte() != 0;
+        this.draftId = in.readLong();
+    }
+
+    public static final Creator<ProductViewModel> CREATOR = new Creator<ProductViewModel>() {
+        @Override
+        public ProductViewModel createFromParcel(Parcel source) {
+            return new ProductViewModel(source);
+        }
+
+        @Override
+        public ProductViewModel[] newArray(int size) {
+            return new ProductViewModel[size];
+        }
+    };
 }
