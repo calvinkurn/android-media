@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed;
-import com.tokopedia.reputation.speed.SpeedReputation;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity;

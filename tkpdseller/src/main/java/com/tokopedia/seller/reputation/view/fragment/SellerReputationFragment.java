@@ -20,22 +20,15 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
-import com.tokopedia.core.network.apiservices.shop.ShopService;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
@@ -45,15 +38,10 @@ import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.common.datepicker.view.listener.DatePickerResultListener;
 import com.tokopedia.seller.common.utils.DefaultErrorSubscriber;
 import com.tokopedia.seller.common.utils.NetworkStatus;
-import com.tokopedia.seller.reputation.data.mapper.ReputationReviewMapper;
-import com.tokopedia.seller.reputation.data.repository.ReputationReviewRepositoryImpl;
-import com.tokopedia.seller.reputation.data.source.cloud.CloudReputationReviewDataSource;
+import com.tokopedia.seller.reputation.di.DaggerSellerReputationComponent;
 import com.tokopedia.seller.reputation.di.SellerReputationModule;
-import com.tokopedia.seller.reputation.domain.ReputationReviewRepository;
 import com.tokopedia.seller.reputation.domain.interactor.ReviewReputationMergeUseCase;
 import com.tokopedia.seller.reputation.domain.interactor.ReviewReputationUseCase;
-import com.tokopedia.seller.reputation.domain.interactor.ShopInfoUseCase;
-import com.tokopedia.seller.reputation.domain.interactor.SpeedReputationUseCase;
 import com.tokopedia.seller.reputation.view.SellerReputationView;
 import com.tokopedia.seller.reputation.view.activity.SellerReputationInfoActivity;
 import com.tokopedia.seller.reputation.view.adapter.SellerReputationAdapter;
@@ -62,8 +50,6 @@ import com.tokopedia.seller.reputation.view.helper.GMStatHeaderViewHelper;
 import com.tokopedia.seller.reputation.view.helper.ReputationViewHelper;
 import com.tokopedia.seller.reputation.view.model.SetDateHeaderModel;
 import com.tokopedia.seller.reputation.view.presenter.SellerReputationFragmentPresenter;
-import com.tokopedia.seller.util.ShopNetworkController;
-import com.tokopedia.seller.reputation.di.DaggerSellerReputationComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +58,6 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
@@ -105,9 +90,6 @@ public class SellerReputationFragment extends BaseDaggerFragment
     GCMHandler gcmHandler;
     @Inject
     ReviewReputationMergeUseCase reviewReputationMergeUseCase;
-
-    @Inject
-    SpeedReputationUseCase speedReputationUseCase;
 
     SellerReputationFragmentPresenter presenter;
 

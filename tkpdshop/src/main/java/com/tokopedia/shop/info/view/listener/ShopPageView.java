@@ -2,7 +2,6 @@ package com.tokopedia.shop.info.view.listener;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed;
-import com.tokopedia.reputation.speed.SpeedReputation;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 
 /**
