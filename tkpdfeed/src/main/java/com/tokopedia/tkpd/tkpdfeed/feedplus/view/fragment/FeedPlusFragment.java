@@ -848,15 +848,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (firstCursor == null)
             firstCursor = "";
         if (getUserVisibleHint() && presenter != null) {
-            presenter.checkNewFeed(firstCursor);
+            loadData(getUserVisibleHint());
         }
     }
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (firstCursor == null)
-            firstCursor = "";
+    private void loadData(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded()
                 && getActivity()!= null && presenter != null) {
 
@@ -870,6 +866,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
             presenter.checkNewFeed(firstCursor);
             ScreenTracking.screen(getScreenName());
         }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (firstCursor == null)
+            firstCursor = "";
+        loadData(isVisibleToUser);
+
     }
 
     @Override
@@ -1158,13 +1163,5 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onGoToLogin() {
         Intent intent = ((FeedModuleRouter) getActivity().getApplication()).getLoginIntent(getContext());
         startActivity(intent);
-
-        // track
-        ((FeedModuleRouter) getActivity().getApplication()).getAnalyticTracker().sendEventTracking(
-                FeedTrackingEventLabel.USER_INTERACTION_HOMEPAGE,
-                FeedTrackingEventLabel.HOME_BOTTOM_NAV,
-                String.format("click %s", FeedTrackingEventLabel.Click.FEED_BEFORE_LOGIN),
-                FeedTrackingEventLabel.View.FEED_TAB
-        );
     }
 }
