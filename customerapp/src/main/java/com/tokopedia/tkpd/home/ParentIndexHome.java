@@ -70,9 +70,8 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.bottomnavigation.BottomNavigation;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.campaign.configuration.ShakeDetector;
+import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
 import com.tokopedia.tkpd.campaign.view.activity.CapturedAudioCampaignActivity;
-import com.tokopedia.tkpd.campaign.view.activity.ShakeDetectCampaignActivity;
 import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
@@ -95,7 +94,7 @@ import rx.subscriptions.CompositeSubscription;
  * modified by meta on 24/01/2018, implement bottom navigation menu
  */
 public class ParentIndexHome extends TkpdActivity implements NotificationReceivedListener,
-        GetUserInfoListener, HasComponent,ShakeDetector.Listener  {
+        GetUserInfoListener, HasComponent  {
 
     public static final int INIT_STATE_FRAGMENT_HOME = 0;
     public static final int INIT_STATE_FRAGMENT_FEED = 1;
@@ -194,9 +193,10 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         Log.d(TAG, messageTAG + "onCreate");
         super.onCreate(arg0);
 
-        SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        ShakeDetector sd = new ShakeDetector(this);
-        sd.start(sensorManager);
+        ShakeDetectManager.getShakeDetectManager(this).init();
+
+
+
         progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
         if (arg0 != null) {
             //be16268	commit id untuk memperjelas yang bawah
@@ -396,14 +396,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         return intent;
     }
 
-    @Override
-    public void hearShake() {
-        if(true) {
-            startActivityForResult(ShakeDetectCampaignActivity.getShakeDetectCampaignActivity(this),SHAKE_SHAKE_REQUEST);
-        }else {
-            startActivity(CapturedAudioCampaignActivity.getCapturedAudioCampaignActivity(this));
-        }
-    }
+
 
 
     private SparseArray<Fragment> getFragments() {
@@ -547,6 +540,9 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         NotificationModHandler.showDialogNotificationIfNotShowing(this);
 
         registerBroadcastHockeyApp();
+
+
+
     }
 
     @Override
@@ -554,6 +550,10 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         Log.d(TAG, messageTAG + "onStop");
         super.onStop();
         needToRefresh = true;
+       // sd.unregisterListener(this);
+        //sd.stop();
+
+
     }
 
     @Override
@@ -585,8 +585,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == WISHLIST_REQUEST && resultCode == RESULT_OK) {
             mViewPager.setCurrentItem(INIT_STATE_FRAGMENT_HOTLIST);
-        }else if(requestCode == SHAKE_SHAKE_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
-            startActivity(data);
         }
     }
 

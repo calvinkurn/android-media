@@ -13,9 +13,8 @@ public interface ShakeDetectContract {
     public interface View extends CustomerView{
         void finish();
 
-        void startActivity(Intent intent);
+        void sendBroadcast(Intent intent);
 
-        void startActivityForResult(Intent data,int requestCode);
 
         void showProgressDialog();
 

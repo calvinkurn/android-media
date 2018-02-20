@@ -1,9 +1,12 @@
 package com.tokopedia.tkpd.campaign.view.presenter;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Vibrator;
 
@@ -16,6 +19,7 @@ import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
 import com.tokopedia.tkpd.campaign.data.model.CampaignException;
 import com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase;
+import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
 import com.tokopedia.tkpd.campaign.view.activity.ShakeDetectCampaignActivity;
 import com.tokopedia.tokocash.historytokocash.presentation.ServerErrorHandlerUtil;
 import com.tokopedia.usecase.RequestParams;
@@ -23,6 +27,7 @@ import com.tokopedia.usecase.RequestParams;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -55,12 +60,13 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
 
     @Override
     public void onShakeDetect() {
+
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(IS_AUDIO, "false");
         shakeUseCase.execute(requestParams, new Subscriber<CampaignResponseEntity>() {
             @Override
             public void onCompleted() {
-
+                getView().finish();
             }
 
             @Override
@@ -82,21 +88,24 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                 }
                 Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
                 // Vibrate for 500 milliseconds
+                Intent intent = new Intent(ShakeDetectManager.ACTION_SHAKE_SHAKE_SYNCED);
+
+                intent.putExtra("isSuccess",false);
+                getView().sendBroadcast(intent);
                 v.vibrate(500);
-                getView().setResult(Activity.RESULT_CANCELED,null);
                 getView().finish();
             }
 
             @Override
             public void onNext(final CampaignResponseEntity s) {
-                Uri uri = Uri.parse("" + s.getUrl());
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(uri);
-                getView().setResult(Activity.RESULT_OK,intent);
-                getView().finish();
+
+                Intent intent = new Intent(ShakeDetectManager.ACTION_SHAKE_SHAKE_SYNCED);
+                intent.putExtra("isSuccess",true);
+                intent.putExtra("data",s.getUrl());
                 Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
                 // Vibrate for 500 milliseconds
                 v.vibrate(500);
+                getView().sendBroadcast(intent);
 
                 //Open next activity based upon the result from server
             }
@@ -111,7 +120,6 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     @Override
     public void onRetryClick() {
 
-        getView().setResult(Activity.RESULT_CANCELED,null);
         getView().finish();
     }
 

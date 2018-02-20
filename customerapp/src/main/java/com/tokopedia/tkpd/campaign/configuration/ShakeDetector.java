@@ -34,14 +34,20 @@ public class ShakeDetector implements SensorEventListener {
   }
 
   private final SampleQueue queue = new SampleQueue();
-  private final Listener listener;
+  private Listener listener;
 
   private SensorManager sensorManager;
   private Sensor accelerometer;
 
-  public ShakeDetector(Listener listener) {
+
+  public void registerListener(Listener listener) {
     this.listener = listener;
   }
+
+  public void unregisterListener(Listener listener)  {
+    this.listener = null;
+  }
+
 
   /**
    * Starts listening for shakes on devices with appropriate hardware.
@@ -85,7 +91,9 @@ public class ShakeDetector implements SensorEventListener {
     queue.add(timestamp, accelerating);
     if (queue.isShaking()) {
       queue.clear();
-      listener.hearShake();
+      if(listener != null) {
+        listener.hearShake();
+      }
     }
   }
 
