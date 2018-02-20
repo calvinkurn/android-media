@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.reputation.ShopReputationView;
+import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed;
 import com.tokopedia.reputation.speed.SpeedReputation;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
@@ -170,7 +171,7 @@ public class ShopInfoHeaderViewHelper {
         }
     }
 
-    public void renderData(SpeedReputation speedReputation){
-        speedValueDesd.setText(speedReputation.getData().getSpeed().getRecent1Month().getSpeedLevelDescription());
+    public void renderData(ReputationSpeed reputationSpeed){
+        speedValueDesd.setText(reputationSpeed.getRecent1Month().getSpeedLevelDescription());
     }
 }

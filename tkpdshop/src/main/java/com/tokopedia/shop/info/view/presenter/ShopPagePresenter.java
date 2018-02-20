@@ -2,10 +2,11 @@ package com.tokopedia.shop.info.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed;
+import com.tokopedia.reputation.common.domain.interactor.GetReputationSpeedUseCase;
 import com.tokopedia.reputation.speed.SpeedReputation;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.shop.info.domain.interactor.GetSpeedReputationUseCase;
 import com.tokopedia.shop.info.view.listener.ShopPageView;
 import com.tokopedia.usecase.RequestParams;
 
@@ -18,34 +19,24 @@ import rx.Subscriber;
  */
 
 public class ShopPagePresenter extends BaseDaggerPresenter<ShopPageView> {
-    GetShopInfoUseCase getShopInfoUseCase;
 
-    UserSession userSession;
-
-    GetSpeedReputationUseCase getSpeedReputationUseCase;
-
-    private String shopInfo;
+    private final GetShopInfoUseCase getShopInfoUseCase;
+    private final GetReputationSpeedUseCase getReputationSpeedUseCase;
+    private final UserSession userSession;
 
     @Inject
-    public ShopPagePresenter(GetShopInfoUseCase getShopInfoUseCase, UserSession userSession) {
+    public ShopPagePresenter(GetShopInfoUseCase getShopInfoUseCase, GetReputationSpeedUseCase getReputationSpeedUseCase, UserSession userSession) {
         this.getShopInfoUseCase = getShopInfoUseCase;
+        this.getReputationSpeedUseCase = getReputationSpeedUseCase;
         this.userSession = userSession;
-    }
-
-    public void setGetSpeedReputationUseCase(GetSpeedReputationUseCase getSpeedReputationUseCase) {
-        this.getSpeedReputationUseCase = getSpeedReputationUseCase;
-    }
-
-    public void setShopInfo(String shopInfo) {
-        this.shopInfo = shopInfo;
     }
 
     public UserSession getUserSession() {
         return userSession;
     }
 
-    public void fetchData(){
-        getSpeedReputationUseCase.execute(RequestParams.EMPTY, new Subscriber<SpeedReputation>() {
+    public void getShopInfo(String shopId) {
+        getShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(shopId), new Subscriber<ShopInfo>() {
             @Override
             public void onCompleted() {
 
@@ -53,34 +44,39 @@ public class ShopPagePresenter extends BaseDaggerPresenter<ShopPageView> {
 
             @Override
             public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(SpeedReputation speedReputation) {
-                if(isViewAttached()){
-                    getView().renderData(speedReputation);
+                if (isViewAttached()) {
+                    getView().onErrorGetShopInfo(e);
                 }
-            }
-        });
-
-        getShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(shopInfo), new Subscriber<ShopInfo>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
             }
 
             @Override
             public void onNext(ShopInfo shopInfo) {
-                if(isViewAttached()){
-                    getView().renderData(shopInfo);
-                }
+                getView().onSuccessGetShopInfo(shopInfo);
+                getReputationSpeed(shopInfo.getInfo().getShopId());
             }
         });
+    }
+
+    private void getReputationSpeed(String shopId) {
+        getReputationSpeedUseCase.execute(GetReputationSpeedUseCase.createRequestParam(shopId), new Subscriber<ReputationSpeed>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()) {
+                    getView().onErrorGetReputationSpeed(e);
+                }
+            }
+
+            @Override
+            public void onNext(ReputationSpeed reputationSpeed) {
+                getView().onSuccessGetReputationSpeed(reputationSpeed);
+            }
+        });
+
+
     }
 }

@@ -11,7 +11,6 @@ import rx.Observable;
  */
 
 public interface ShopModuleRouter {
-    Observable<SpeedReputation> getSpeedReputationUseCase();
 
     Fragment getShopReputationFragmentShop(String shopId, String shopDomain);
 

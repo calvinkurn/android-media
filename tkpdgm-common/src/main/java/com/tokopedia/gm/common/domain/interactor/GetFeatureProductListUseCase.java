@@ -15,14 +15,13 @@ import rx.Observable;
  * Created by User on 9/8/2017.
  */
 
-public class GetShopInfoUseCase extends UseCase<List<GMFeaturedProduct>> {
+public class GetFeatureProductListUseCase extends UseCase<List<GMFeaturedProduct>> {
 
     private static final String SHOP_ID = "SHOP_ID";
 
     private GMCommonRepository gmCommonRepository;
 
-    @Inject
-    public GetShopInfoUseCase(GMCommonRepository gmCommonRepository) {
+    public GetFeatureProductListUseCase(GMCommonRepository gmCommonRepository) {
         this.gmCommonRepository = gmCommonRepository;
     }
 
