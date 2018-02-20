@@ -36,4 +36,9 @@
     <string name="chat_seller">Chat Penjual</string>
     <string name="favorite">Favoritkan</string>
 
+    <string name="product_label_variant">Varian</string>
+    <string name="product_manage_item_cashback">Cashback %1$d%%</string>
+    <string name="product_label_wholesale">Grosir</string>
+    <string name="product_label_po">PO</string>
+
 </resources>
