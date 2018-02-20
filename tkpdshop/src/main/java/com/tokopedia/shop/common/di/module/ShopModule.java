@@ -59,13 +59,13 @@ public class ShopModule {
 
     @ShopQualifier
     @Provides
-    public OkHttpClient provideOkHttpClient(ShopAuthInterceptor ShopAuthInterceptor,
+    public OkHttpClient provideOkHttpClient(ShopAuthInterceptor shopAuthInterceptor,
                                             @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
                                             HeaderErrorResponseInterceptor errorResponseInterceptor,
                                             CacheApiInterceptor cacheApiInterceptor) {
         return new OkHttpClient.Builder()
                 .addInterceptor(cacheApiInterceptor)
-                .addInterceptor(ShopAuthInterceptor)
+                .addInterceptor(shopAuthInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
                 .build();
