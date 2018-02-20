@@ -131,7 +131,7 @@ public interface FlightBookingContract {
 
         void onPause();
 
-        void onChangePassengerButtonClicked(FlightBookingPassengerViewModel viewModel, FlightBookingCartData cartData, String departureDate);
+        void onChangePassengerButtonClicked(FlightBookingPassengerViewModel viewModel, String departureDate);
 
         void onGetProfileData();
 

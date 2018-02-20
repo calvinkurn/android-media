@@ -252,7 +252,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
             departureDate = paramViewModel.getSearchParam().getDepartureDate();
         }
 
-        presenter.onChangePassengerButtonClicked(viewModel, flightBookingCartData, departureDate);
+        presenter.onChangePassengerButtonClicked(viewModel, departureDate);
     }
 
     @Override

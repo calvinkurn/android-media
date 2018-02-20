@@ -379,8 +379,8 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     }
 
     @Override
-    public void onChangePassengerButtonClicked(FlightBookingPassengerViewModel viewModel, FlightBookingCartData cartData, String departureDate) {
-        getView().navigateToPassengerInfoDetail(viewModel, isAirAsiaAirline(cartData), departureDate);
+    public void onChangePassengerButtonClicked(FlightBookingPassengerViewModel viewModel, String departureDate) {
+        getView().navigateToPassengerInfoDetail(viewModel, isAirAsiaAirline(getView().getCurrentCartPassData()), departureDate);
     }
 
     @Override
