@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -243,10 +244,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
 
     private void onGoToLogin() {
         Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getLoginIntent(getContext());
-        Intent targetIntent = new Intent(getActivity(), ExploreActivity.class);
-        targetIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        getActivity().startActivities(new Intent[]{targetIntent, intent});
-        getActivity().finish();
+        getActivity().startActivityForResult(intent, ExploreActivity.REQUEST_LOGIN);
     }
 
     private void onGoToCreateShop() {
