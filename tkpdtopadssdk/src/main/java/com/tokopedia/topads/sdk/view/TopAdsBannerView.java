@@ -72,7 +72,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
     }
 
     private void createViewCpmShop(Context context, final CpmData.Cpm cpm) {
-        if (activityIsFinishing(context))
+        if (checkActivityIsExist(context))
             return;
         inflate(getContext(), R.layout.layout_ads_banner_shop, this);
         final ImageView iconImg = (ImageView) findViewById(R.id.icon);
@@ -108,7 +108,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         }
     }
 
-    private boolean activityIsFinishing(Context context) {
+    private boolean checkActivityIsExist(Context context) {
         if (context instanceof Activity) {
             Activity activity = (Activity) context;
             return activity.isFinishing();
@@ -125,7 +125,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
     }
 
     private void createViewCpmDigital(Context context, final CpmData.Cpm cpm) {
-        if (activityIsFinishing(context))
+        if (checkActivityIsExist(context))
             return;
         inflate(getContext(), R.layout.layout_ads_banner_digital, this);
         final ImageView iconImg = (ImageView) findViewById(R.id.icon);
