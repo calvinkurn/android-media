@@ -71,8 +71,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     protected Response checkForceLogout(Chain chain, Response response, Request finalRequest) throws
             IOException {
-        if (isNeedRelogin(response)) {
-            refreshTokenWithRelogin();
+        if (isNeedGcmUpdate(response)) {
+            refreshTokenAndGcmUpdate();
             if (finalRequest.header(AUTHORIZATION).contains(BEARER)) {
                 Request newestRequest = recreateRequestWithNewAccessToken(chain);
                 return checkShowForceLogout(chain, newestRequest);
@@ -90,7 +90,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     protected Response checkShowForceLogout(Chain chain, Request newestRequest) throws IOException {
         Response response = chain.proceed(newestRequest);
-        if (isUnauthorized(newestRequest, response) || isNeedRelogin(response)) {
+        if (isUnauthorized(newestRequest, response) || isNeedGcmUpdate(response)) {
             ServerErrorHandler.showForceLogoutDialog();
             ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
         }
@@ -313,7 +313,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         return builder.build();
     }
 
-    protected Boolean isNeedRelogin(Response response) {
+    protected Boolean isNeedGcmUpdate(Response response) {
         try {
             //using peekBody instead of body in order to avoid consume response object, peekBody will automatically return new reponse
             String responseString = response.peekBody(512).string();
@@ -346,7 +346,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     protected void doRelogin(String newAccessToken) {
         SessionRefresh sessionRefresh = new SessionRefresh(newAccessToken);
         try {
-            sessionRefresh.refreshLogin();
+            sessionRefresh.gcmUpdate();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -361,7 +361,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
-    protected void refreshTokenWithRelogin() {
+    protected void refreshTokenAndGcmUpdate() {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
         try {
             String newAccessToken = accessTokenRefresh.refreshToken();

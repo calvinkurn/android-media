@@ -1114,11 +1114,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void refreshLogin() {
+    public void gcmUpdate() {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
         try {
             SessionRefresh sessionRefresh = new SessionRefresh(accessTokenRefresh.refreshToken());
-            sessionRefresh.refreshLogin();
+            sessionRefresh.gcmUpdate();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -1333,5 +1333,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         startActivity(ReactNativeOfficialStoreActivity.createCallingIntent(
                 activity, ReactConst.Screen.OFFICIAL_STORE,
                 getString(R.string.react_native_banner_official_title)));
+    }
+
+    @Override
+    public void showForceHockeyAppDialog() {
+        ServerErrorHandler.showForceHockeyAppDialog();
     }
 }

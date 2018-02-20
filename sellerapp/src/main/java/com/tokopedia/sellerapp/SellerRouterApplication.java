@@ -989,11 +989,11 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void refreshLogin() {
+    public void gcmUpdate() {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
         try {
             SessionRefresh sessionRefresh = new SessionRefresh(accessTokenRefresh.refreshToken());
-            sessionRefresh.refreshLogin();
+            sessionRefresh.gcmUpdate();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -1042,5 +1042,10 @@ public abstract class SellerRouterApplication extends MainApplication
                 });
             }
         };
+    }
+
+    @Override
+    public void showForceHockeyAppDialog() {
+        ServerErrorHandler.showForceHockeyAppDialog();
     }
 }

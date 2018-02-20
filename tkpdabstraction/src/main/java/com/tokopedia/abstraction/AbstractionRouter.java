@@ -24,7 +24,7 @@ public interface AbstractionRouter {
 
     void showServerError(Response response);
 
-    void refreshLogin();
+    void gcmUpdate();
 
     void refreshToken();
 
@@ -33,4 +33,6 @@ public interface AbstractionRouter {
     CacheManager getGlobalCacheManager();
 
     AnalyticTracker getAnalyticTracker();
+
+    void showForceHockeyAppDialog();
 }

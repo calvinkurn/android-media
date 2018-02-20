@@ -278,16 +278,23 @@ public class FCMCacheManager {
 
     public static void checkAndSyncFcmId(final Context context) {
         if (FCMCacheManager.isFcmExpired(context)) {
-            SessionHandler sessionHandler = new SessionHandler(context);
-            if (sessionHandler.isV4Login()) {
-                IFCMTokenReceiver fcmRefreshTokenReceiver = new FCMTokenReceiver(context);
-                FCMTokenUpdate tokenUpdate = new FCMTokenUpdate();
-                tokenUpdate.setNewToken(FCMCacheManager.getRegistrationId(context));
-                tokenUpdate.setOsType(String.valueOf(1));
-                tokenUpdate.setAccessToken(sessionHandler.getAccessToken(context));
-                tokenUpdate.setUserId(sessionHandler.getLoginID());
-                fcmRefreshTokenReceiver.onTokenReceive(Observable.just(tokenUpdate));
-            }
+            updateGcmId(context);
+        }
+    }
+
+    /**
+     * Only call this method when you need to update GCM Id.
+     * Do not change this method**/
+    public static void updateGcmId(Context context) {
+        SessionHandler sessionHandler = new SessionHandler(context);
+        if (sessionHandler.isV4Login()) {
+            IFCMTokenReceiver fcmRefreshTokenReceiver = new FCMTokenReceiver(context);
+            FCMTokenUpdate tokenUpdate = new FCMTokenUpdate();
+            tokenUpdate.setNewToken(FCMCacheManager.getRegistrationId(context));
+            tokenUpdate.setOsType(String.valueOf(1));
+            tokenUpdate.setAccessToken(sessionHandler.getAccessToken(context));
+            tokenUpdate.setUserId(sessionHandler.getLoginID());
+            fcmRefreshTokenReceiver.onTokenReceive(Observable.just(tokenUpdate));
         }
     }
 
