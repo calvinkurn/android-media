@@ -827,6 +827,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
             return true;
         } else if (i == R.id.action_add_to_home_screen) {
             RideUtils.addUberShortcutOnLauncher(this, getString(R.string.label_book_uber_shortcut), getString(R.string.label_book_uber_shortcut));
+            RideGATracking.eventUberCreateShortcut(getScreenName());
             return true;
         } else {
             return super.onOptionsItemSelected(item);

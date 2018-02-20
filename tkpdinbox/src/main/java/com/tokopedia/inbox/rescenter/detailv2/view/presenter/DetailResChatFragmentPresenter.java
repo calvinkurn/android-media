@@ -228,7 +228,6 @@ public class DetailResChatFragmentPresenter
     public void sendIconPressed(String message, List<AttachmentViewModel> attachmentList) {
         if (message.length() >= PARAM_MIN_REPLY_CHAR_COUNT && message.length() <= PARAM_MAX_REPLY_CHAR_COUNT) {
             getView().showDummyText();
-            mainView.showSnackBar(context.getResources().getString(R.string.string_sending_message));
             mainView.disableIvSend();
             postReply(message, attachmentList);
         } else {

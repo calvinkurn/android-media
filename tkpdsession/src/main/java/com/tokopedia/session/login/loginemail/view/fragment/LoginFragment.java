@@ -170,6 +170,15 @@ public class LoginFragment extends BaseDaggerFragment
         ScreenTracking.screen(getScreenName());
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (sessionHandler != null &&
+                sessionHandler.isV4Login()) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        }
+    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -470,7 +479,7 @@ public class LoginFragment extends BaseDaggerFragment
             public void onRetryClicked() {
                 presenter.discoverLogin();
             }
-        });
+        }).showRetrySnackbar();
         loginButton.setEnabled(false);
     }
 
