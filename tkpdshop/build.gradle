@@ -48,6 +48,7 @@ dependencies {
 
     compile project(':tkpdshop-common')
     compile project(':tkpdgm-common')
+    compile project(':tkpdreputation-common')
 
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
