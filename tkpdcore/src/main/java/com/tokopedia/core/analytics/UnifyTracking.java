@@ -33,12 +33,12 @@ public class UnifyTracking extends TrackingUtils {
 
     public static final String EXTRA_LABEL = "label";
 
-    public static void eventHomeTab(String action, String label) {
+    public static void eventHomeTab(String label) {
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
-                AppEventTracking.Category.HOME_BOTTOM_NAV,
-                String.format("click %s", action),
-                label
+                AppEventTracking.Event.HOMEPAGE_UNIFY,
+                AppEventTracking.Category.HOMEPAGE_UNIFY,
+                String.format("click %s", label),
+                ""
         ).getEvent());
     }
 

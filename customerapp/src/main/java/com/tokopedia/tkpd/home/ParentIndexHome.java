@@ -415,7 +415,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 mViewPager.setCurrentItem(tab.getPosition());
-//                sendGTMButtonEvent(tab.getPosition()); // on confirm
+                sendGTMButtonEvent(tab.getPosition());
             }
 
             @Override
@@ -681,7 +681,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     }
 
     private void sendGTMButtonEvent(int position) {
-        String action = "";
         String label = "";
 
         switch (position) {
@@ -699,13 +698,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 break;
         }
 
-        if (SessionHandler.isV4Login(ParentIndexHome.this)) {
-            action = String.format("%s %s %s", action, AppEventTracking.Category.HOME_BOTTOM_NAV, AppEventTracking.EventLabel.AFTER_LOGIN);
-        } else {
-            action = String.format("%s %s %s", action, AppEventTracking.Category.HOME_BOTTOM_NAV, AppEventTracking.EventLabel.BEFORE_LOGIN);
-        }
-
-        UnifyTracking.eventHomeTab(action, label);
+        UnifyTracking.eventHomeTab(label);
     }
 
     @Override
