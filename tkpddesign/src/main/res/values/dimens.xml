@@ -125,4 +125,7 @@
     <dimen name="range_input_margin_input_text">-4dp</dimen>
 
     <dimen name="layout_bav_width_min">80dp</dimen>
+
+    <dimen name="widget_bottom_action_radius">20dp</dimen>
+    <dimen name="widget_bottom_action_elevation">3dp</dimen>
 </resources>
