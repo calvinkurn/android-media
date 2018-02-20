@@ -1,6 +1,5 @@
 package com.tokopedia.tkpdcontent.feature.profile.data.source;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.tkpdcontent.common.data.source.api.KolApi;
 import com.tokopedia.tkpdcontent.feature.profile.data.mapper.GetProfileKolDataMapper;
 import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolViewModel;
@@ -10,9 +9,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import retrofit2.Response;
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * @author by milhamj on 20/02/18.

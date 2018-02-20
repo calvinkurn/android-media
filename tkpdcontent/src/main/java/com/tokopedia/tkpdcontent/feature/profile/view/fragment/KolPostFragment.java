@@ -1,7 +1,5 @@
 package com.tokopedia.tkpdcontent.feature.profile.view.fragment;
 
-import android.support.v4.app.Fragment;
-
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.tkpdcontent.feature.profile.di.KolProfileComponent;
 import com.tokopedia.tkpdcontent.feature.profile.view.listener.KolPostListener;

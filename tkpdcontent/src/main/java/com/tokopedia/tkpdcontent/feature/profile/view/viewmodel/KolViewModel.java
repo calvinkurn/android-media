@@ -2,7 +2,6 @@ package com.tokopedia.tkpdcontent.feature.profile.view.viewmodel;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.tkpdcontent.feature.profile.view.adapter.typefactory.KolTypeFactory;
-import com.tokopedia.tkpdcontent.feature.profile.view.adapter.viewholder.KolViewHolder;
 
 /**
  * @author by nisie on 10/27/17.
