@@ -1,7 +1,6 @@
 package com.tokopedia.tkpdcontent.feature.profile.view.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
-import android.support.v7.widget.RecyclerView;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
@@ -14,9 +13,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpdcontent.R;
 import com.tokopedia.tkpdcontent.feature.profile.view.listener.KolPostListener;
 import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author by nisie on 10/27/17.
@@ -50,20 +46,20 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
     public KolViewHolder(View itemView, KolPostListener.View viewListener) {
         super(itemView);
         this.viewListener = viewListener;
-        title = (TextView) itemView.findViewById(R.id.title);
-        name = (TextView) itemView.findViewById(R.id.name);
-        avatar = (ImageView) itemView.findViewById(R.id.avatar);
-        label = (TextView) itemView.findViewById(R.id.label);
-        followIcon = (ImageView) itemView.findViewById(R.id.follow_icon);
-        followText = (TextView) itemView.findViewById(R.id.follow_text);
+        title = itemView.findViewById(R.id.title);
+        name = itemView.findViewById(R.id.name);
+        avatar = itemView.findViewById(R.id.avatar);
+        label = itemView.findViewById(R.id.label);
+        followIcon = itemView.findViewById(R.id.follow_icon);
+        followText = itemView.findViewById(R.id.follow_text);
         followButton = itemView.findViewById(R.id.follow_button);
-        reviewImage = (ImageView) itemView.findViewById(R.id.image);
-        tooltip = (TextView) itemView.findViewById(R.id.tooltip);
+        reviewImage = itemView.findViewById(R.id.image);
+        tooltip = itemView.findViewById(R.id.tooltip);
         tooltipClickArea = itemView.findViewById(R.id.tooltip_area);
-        kolText = (TextView) itemView.findViewById(R.id.kol_text);
-        likeIcon = (ImageView) itemView.findViewById(R.id.like_icon);
-        likeText = (TextView) itemView.findViewById(R.id.like_text);
-        commentText = (TextView) itemView.findViewById(R.id.comment_text);
+        kolText = itemView.findViewById(R.id.kol_text);
+        likeIcon = itemView.findViewById(R.id.like_icon);
+        likeText = itemView.findViewById(R.id.like_text);
+        commentText = itemView.findViewById(R.id.comment_text);
         topSeparator = itemView.findViewById(R.id.separator);
         commentButton = itemView.findViewById(R.id.comment_button);
         likeButton = itemView.findViewById(R.id.like_button);
