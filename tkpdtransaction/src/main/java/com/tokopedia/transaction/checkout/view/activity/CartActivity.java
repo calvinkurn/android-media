@@ -53,18 +53,17 @@ public class CartActivity extends BasePresenterActivity
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_cart_remove) {
-            Fragment fragment = CartRemoveProductFragment.newInstance(mCartItemData);
-
-            FragmentManager fragmentManager = getFragmentManager();
-            String backStateName = fragment.getClass().getName();
-
-            boolean isFragmentPopped = fragmentManager.popBackStackImmediate(backStateName, 0);
-            if (!isFragmentPopped) {
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, fragment)
-                        .addToBackStack(backStateName)
+            Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
+            if (fragment == null || !(fragment instanceof CartRemoveProductFragment)) {
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.container, CartRemoveProductFragment.newInstance(mCartItemData))
                         .commit();
             }
 
@@ -83,8 +82,9 @@ public class CartActivity extends BasePresenterActivity
     protected void initView() {
         Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
         if (fragment == null || !(fragment instanceof CartFragment)) {
-            getFragmentManager().beginTransaction().replace(R.id.container,
-                    CartFragment.newInstance()).commit();
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.container, CartFragment.newInstance())
+                    .commit();
         }
     }
 

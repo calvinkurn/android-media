@@ -108,12 +108,15 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             holderView.tvInfoRFreeReturn.setVisibility(
                     data.getCartItemData().getOriginData().isFreeReturn() ? View.VISIBLE : View.GONE
             );
+
             holderView.tvInfoPreOrder.setVisibility(
                     data.getCartItemData().getOriginData().isPreOrder() ? View.VISIBLE : View.GONE
             );
+
             holderView.tvInfoCashBack.setVisibility(
                     data.getCartItemData().getOriginData().isCashBack() ? View.VISIBLE : View.GONE
             );
+
             holderView.tvInfoCashBack.setText(data.getCartItemData().getOriginData().getCashBackInfo());
 
 
@@ -130,7 +133,16 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     actionListener.onCartItemQuantityMinusButtonClicked(data, position);
                 }
             });
+
+            holderView.btnDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    actionListener.onCartItemDeleteButtonClicked(data, position);
+                }
+            });
+
             renderErrorWarning(data, holderView, position);
+
             if (!data.getCartItemData().getUpdatedData().getRemark()
                     .equalsIgnoreCase(holderView.etRemark.getText().toString())) {
                 ((CartItemHolderData) cartItemHolderDataList.get(position)).getCartItemData().getUpdatedData().setRemark(
@@ -145,12 +157,14 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             holderView.tvDesc.setText(data.getText());
             holderView.tvAction.setText(data.getCta());
             holderView.tvAction.setTextColor(Color.parseColor(data.getCtaColor()));
+
             holderView.tvAction.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     actionListener.onCartPromoSuggestionActionClicked(data, position);
                 }
             });
+
             holderView.btnClose.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -235,7 +249,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void deleteItem(int position) {
         cartItemHolderDataList.remove(position);
-        notifyItemRemoved(position);
+        notifyDataSetChanged();
     }
 
     public interface ActionListener {
@@ -293,7 +307,6 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             this.tvLabelRemarkOption = itemView.findViewById(R.id.tv_label_remark_option);
             this.etRemark = itemView.findViewById(R.id.et_remark);
             this.btnDelete = itemView.findViewById(R.id.btn_delete_cart);
-
 
             this.errorContainer = itemView.findViewById(R.id.ll_warning_container);
             this.tvError = itemView.findViewById(R.id.tv_warning);

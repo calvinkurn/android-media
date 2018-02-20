@@ -2,6 +2,7 @@ package com.tokopedia.transaction.checkout.view;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
@@ -21,14 +22,13 @@ import com.tokopedia.transaction.checkout.di.module.CartListModule;
 import com.tokopedia.transaction.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
+import com.tokopedia.transaction.checkout.view.dialog.CartItemRemoveSingleDialog;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.transaction.checkout.view.presenter.ICartListPresenter;
 import com.tokopedia.transaction.checkout.view.view.ICartListView;
 
 import java.text.MessageFormat;
-import java.text.NumberFormat;
 import java.util.List;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -38,8 +38,11 @@ import butterknife.BindView;
  * @author anggaprasetiyo on 18/01/18.
  */
 
-public class CartFragment extends BasePresenterFragment implements
-        CartListAdapter.ActionListener, ICartListView {
+public class CartFragment extends BasePresenterFragment
+        implements CartListAdapter.ActionListener,
+        ICartListView {
+
+    private static final int DIALOG_REQUEST_CODE = 1;
 
     @BindView(R2.id.rv_cart)
     RecyclerView cartRecyclerView;
@@ -58,7 +61,7 @@ public class CartFragment extends BasePresenterFragment implements
     @Inject
     RecyclerView.ItemDecoration cartItemDecoration;
 
-    OnPassingCartDataListener mDataPasserListener;
+    private OnPassingCartDataListener mDataPasserListener;
     private CartPromoSuggestion cartPromoSuggestionData;
 
     @Override
@@ -157,7 +160,7 @@ public class CartFragment extends BasePresenterFragment implements
 
     @Override
     public void onCartItemDeleteButtonClicked(CartItemHolderData cartItemHolderData, int position) {
-
+        showDeleteCartItemDialog(cartItemHolderData.getCartItemData(), position);
     }
 
     @Override
@@ -194,7 +197,7 @@ public class CartFragment extends BasePresenterFragment implements
 
     @Override
     public void onCartPromoSuggestionButtonCloseClicked(CartPromoSuggestion data, int position) {
-        cartListAdapter.deleteItem(position);
+
     }
 
     @Override
@@ -323,6 +326,22 @@ public class CartFragment extends BasePresenterFragment implements
     @Override
     public CartPromoSuggestion getCartPromoSuggestionData() {
         return this.cartPromoSuggestionData;
+    }
+
+    void showDeleteCartItemDialog(CartItemData cartItemData, int position) {
+        String productName = cartItemData.getOriginData().getProductName();
+        String productWeight = cartItemData.getOriginData().getWeightFormatted();
+        String message = String.format("Anda yakin ingin menghapus %s, Berat %s dari keranjang belanja?",
+                productName, productWeight);
+
+        DialogFragment dialog = CartItemRemoveSingleDialog.newInstance(message, position);
+        dialog.setTargetFragment(this, DIALOG_REQUEST_CODE);
+        dialog.show(getFragmentManager(), "dialog");
+    }
+
+    public void addToWishList(int position) {
+        cartListAdapter.deleteItem(position);
+        dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
     }
 
     public static CartFragment newInstance() {
