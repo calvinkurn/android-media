@@ -88,7 +88,6 @@ public class CartFragment extends BasePresenterFragment
 
     private RefreshHandler refreshHandler;
 
-
     private OnPassingCartDataListener mDataPasserListener;
     private CartPromoSuggestion cartPromoSuggestionData;
 
@@ -188,9 +187,6 @@ public class CartFragment extends BasePresenterFragment
 
     @Override
     public void onCartItemDeleteButtonClicked(CartItemHolderData cartItemHolderData, int position) {
-        dPresenter.processDeleteCart(cartItemHolderData.getCartItemData(), true);
-
-        // showDeleteCartItemDialog(cartItemHolderData.getCartItemData(), position);
         ArrayList<CartItemData> cartItemData = new ArrayList<>();
         cartItemData.add(cartItemHolderData.getCartItemData());
         showDeleteCartItemDialog(cartItemData);
@@ -437,6 +433,8 @@ public class CartFragment extends BasePresenterFragment
     @Override
     public void renderSuccessDeleteCart(CartItemData cartItemData, String message, boolean addWishList) {
         cartListAdapter.deleteItem(cartItemData);
+        dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
+        mDataPasserListener.onPassingCartData(cartListAdapter.getCartItemDataList());
     }
 
     @Override
@@ -463,8 +461,7 @@ public class CartFragment extends BasePresenterFragment
 
     @Override
     public void deleteSingleItem(List<CartItemData> cartItemDataList) {
-        cartListAdapter.deleteItem(cartItemDataList);
-        dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
+        dPresenter.processDeleteCart(cartItemDataList.get(0), true);
     }
 
     @Override
@@ -474,7 +471,9 @@ public class CartFragment extends BasePresenterFragment
 
     @Override
     public void deleteBulkItems(List<CartItemData> cartItemDataList) {
-
+        for (CartItemData cartItemData : cartItemDataList) {
+            dPresenter.processDeleteCart(cartItemData, false);
+        }
     }
 
     void showDeleteCartItemDialog(ArrayList<CartItemData> cartItemDataList) {
