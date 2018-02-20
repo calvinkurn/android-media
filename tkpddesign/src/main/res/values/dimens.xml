@@ -149,4 +149,7 @@
     <dimen name="seatmap_fixed_height">340dp</dimen>
     <dimen name="height_tablayout">76dp</dimen>
     <dimen name="smallicon_size">24dp</dimen>
+
+    <dimen name="widget_bottom_action_radius">20dp</dimen>
+    <dimen name="widget_bottom_action_elevation">3dp</dimen>
 </resources>
