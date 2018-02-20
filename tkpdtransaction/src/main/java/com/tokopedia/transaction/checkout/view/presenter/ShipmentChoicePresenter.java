@@ -1,7 +1,6 @@
 package com.tokopedia.transaction.checkout.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.transaction.checkout.view.data.CourierItemData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
 import com.tokopedia.transaction.checkout.view.view.IShipmentChoiceView;
@@ -35,18 +34,19 @@ public class ShipmentChoicePresenter extends BaseDaggerPresenter<IShipmentChoice
         getView().showLoading();
         if (shipmentDetailData != null) {
             this.shipmentDetailData = shipmentDetailData;
-        }
-        shipments = shipmentDetailData.getShipmentItemData();
-        if (selectedShipment != null) {
-            this.selectedShipment = selectedShipment;
-            for (int i = 0; i < shipments.size(); i++) {
-                if (shipments.get(i).getId().equals(selectedShipment.getId())) {
-                    shipments.get(i).setSelected(true);
+            shipments = shipmentDetailData.getShipmentItemData();
+            if (selectedShipment != null) {
+                this.selectedShipment = selectedShipment;
+                for (int i = 0; i < shipments.size(); i++) {
+                    if (shipments.get(i).getServiceId() == selectedShipment.getServiceId()) {
+                        shipments.get(i).setSelected(true);
+                    }
                 }
             }
+            getView().showData();
+            getView().hideLoading();
         }
-        getView().showData();
-        getView().hideLoading();
+
     }
 
     @Override

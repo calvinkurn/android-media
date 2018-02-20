@@ -165,6 +165,8 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     LinearLayout llShipmentAddress;
     @BindView(R2.id.tv_insurance_terms)
     TextView tvInsuranceTerms;
+    @BindView(R2.id.tv_insurance_price)
+    TextView tvInsurancePrice;
 
     private ShipmentChoiceBottomSheet shipmentChoiceBottomSheet;
 
@@ -189,7 +191,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
 
     @Override
     protected void onFirstTimeLaunched() {
-        initializeShipmentChoiceHandler();
+
     }
 
     @Override
@@ -232,7 +234,6 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         ButterKnife.bind(view);
         initializeInjector();
         presenter.attachView(this);
-        presenter.setContext(getActivity());
         courierChoiceAdapter.setViewListener(this);
         courierChoiceAdapter.setCouriers(presenter.getCouriers());
         presenter.loadShipmentData();
@@ -287,7 +288,8 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     public void showPinPointMap(ShipmentDetailData shipmentDetailData) {
         setText(tvShipmentAddress, shipmentDetailData.getAddress());
         setupMapView();
-        if (shipmentDetailData.getLatitude() == null || shipmentDetailData.getLongitude() == null) {
+        if (shipmentDetailData.getDestinationLatitude() == null ||
+                shipmentDetailData.getDestinationLongitude() == null) {
             renderNoPinpoint();
         } else {
             renderPinpoint();
@@ -340,6 +342,12 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     public void renderShipmentWithoutMap(ShipmentDetailData shipmentDetailData) {
         llPinpoint.setVisibility(View.GONE);
         renderShipment(shipmentDetailData);
+    }
+
+    @Override
+    public void renderFirstLoadedRatesData(ShipmentDetailData shipmentDetailData) {
+        initializeShipmentChoiceHandler();
+        renderShipmentWithoutMap(shipmentDetailData);
     }
 
     @Override
@@ -410,10 +418,12 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     private void setGoogleMap(GoogleMap googleMap, ShipmentDetailData shipmentDetailData) {
         if (googleMap != null) {
             LatLng latLng;
-            if (shipmentDetailData.getLatitude() == null || shipmentDetailData.getLongitude() == null) {
+            if (shipmentDetailData.getDestinationLatitude() == null ||
+                    shipmentDetailData.getDestinationLongitude() == null) {
                 latLng = new LatLng(-6.1754, 106.8272);
             } else {
-                latLng = new LatLng(shipmentDetailData.getLatitude(), shipmentDetailData.getLongitude());
+                latLng = new LatLng(shipmentDetailData.getDestinationLatitude(),
+                        shipmentDetailData.getDestinationLongitude());
             }
 
             googleMap.getUiSettings().setMapToolbarEnabled(false);
@@ -595,6 +605,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
             if (presenter.getSelectedCourier().getInsuranceType() == InsuranceConstant.InsuranceType.MUST ||
                     presenter.getSelectedCourier().getInsuranceType() == InsuranceConstant.InsuranceType.OPTIONAL) {
                 renderInsuranceTncView(presenter.getSelectedCourier());
+                tvInsurancePrice.setText(String.valueOf(presenter.getSelectedCourier().getInsurancePrice()));
             }
         } else {
             llInsuranceFee.setVisibility(View.GONE);
@@ -621,7 +632,8 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     @Override
     public void onCourierItemClick(CourierItemData courierItemData) {
         if (presenter.getSelectedCourier() == null ||
-                !presenter.getSelectedCourier().getId().equals(courierItemData.getId())) {
+                presenter.getSelectedCourier().getShipperProductId() !=
+                        courierItemData.getShipperProductId()) {
             resetView();
             presenter.setSelectedCourier(courierItemData);
             if (courierItemData.isUsePinPoint()) {
@@ -642,7 +654,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     @Override
     public void onShipmentItemClick(ShipmentItemData shipmentItemData) {
         if (presenter.getSelectedShipment() == null ||
-                !presenter.getSelectedShipment().getId().equals(shipmentItemData.getId())) {
+                presenter.getSelectedShipment().getServiceId() != shipmentItemData.getServiceId()) {
             resetView();
             presenter.setSelectedShipment(shipmentItemData);
             tvShipmentType.setText(shipmentItemData.getType());

@@ -88,7 +88,7 @@ public class CourierChoiceAdapter extends RecyclerView.Adapter<CourierChoiceAdap
             @Override
             public void onClick(View v) {
                 for (CourierItemData viewModel : couriers) {
-                    if (viewModel.getId().equals(courierItemData.getId())) {
+                    if (viewModel.getShipperProductId() == courierItemData.getShipperProductId()) {
                         if (couriers.size() > position && position >= 0) {
                             if (!viewModel.isSelected()) {
                                 viewModel.setSelected(true);

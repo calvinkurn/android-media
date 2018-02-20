@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
-import com.tokopedia.transaction.checkout.view.data.CourierItemData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
 
 import java.util.List;
@@ -48,10 +47,10 @@ public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAd
     public void onBindViewHolder(final ShipmentViewHolder holder, final int position) {
         ShipmentItemData shipmentItemData = shipments.get(position);
         holder.tvShipmentType.setText(shipmentItemData.getType());
-        if (!TextUtils.isEmpty(shipmentItemData.getPriceRange())) {
+        if (!TextUtils.isEmpty(shipmentItemData.getSinglePriceRange())) {
             holder.tvPriceRange.setText(
                     holder.tvShipmentType.getContext().getResources().getString(
-                            R.string.label_shipment_type_format, shipmentItemData.getPriceRange()));
+                            R.string.label_shipment_type_format, shipmentItemData.getSinglePriceRange()));
         }
         holder.tvDeliveryTimeRange.setText(shipmentItemData.getDeliveryTimeRange());
         holder.itemView.setOnClickListener(getItemClickListener(shipmentItemData, position));
@@ -77,7 +76,7 @@ public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAd
             @Override
             public void onClick(View v) {
                 for (ShipmentItemData viewModel : shipments) {
-                    if (viewModel.getId().equals(courierItemData.getId())) {
+                    if (viewModel.getServiceId() == courierItemData.getServiceId()) {
                         if (shipments.size() > position && position >= 0) {
                             if (!viewModel.isSelected()) {
                                 viewModel.setSelected(true);

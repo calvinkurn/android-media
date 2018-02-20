@@ -23,4 +23,9 @@ public interface KeroApi {
     @GET(TkpdBaseURL.Shipment.PATH_PICKUP_STORE)
     Observable<Response<String>> getPickupStores(@QueryMap TKPDMapParam<String, String> params);
 
+    @GET(TkpdBaseURL.Shipment.PATH_RATES)
+    Observable<Response<String>> calculateShippingRate(
+            @QueryMap com.tokopedia.abstraction.common.utils.TKPDMapParam<String, String> stringStringMap
+    );
+
 }

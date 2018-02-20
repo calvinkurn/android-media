@@ -10,9 +10,10 @@ import java.util.List;
  */
 
 public class ShipmentItemData implements Parcelable {
-    private String id;
+    private int serviceId;
     private String type;
-    private String priceRange;
+    private String singlePriceRange;
+    private String multiplePriceRange;
     private String deliveryTimeRange;
     private List<CourierItemData> courierItemData;
     private boolean selected;
@@ -21,10 +22,11 @@ public class ShipmentItemData implements Parcelable {
     }
 
     protected ShipmentItemData(Parcel in) {
-        id = in.readString();
+        serviceId = in.readInt();
         type = in.readString();
-        priceRange = in.readString();
+        singlePriceRange = in.readString();
         deliveryTimeRange = in.readString();
+        multiplePriceRange = in.readString();
         courierItemData = in.createTypedArrayList(CourierItemData.CREATOR);
         selected = in.readByte() != 0;
     }
@@ -41,12 +43,12 @@ public class ShipmentItemData implements Parcelable {
         }
     };
 
-    public String getId() {
-        return id;
+    public int getServiceId() {
+        return serviceId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setServiceId(int id) {
+        this.serviceId = id;
     }
 
     public String getType() {
@@ -57,12 +59,12 @@ public class ShipmentItemData implements Parcelable {
         this.type = type;
     }
 
-    public String getPriceRange() {
-        return priceRange;
+    public String getSinglePriceRange() {
+        return singlePriceRange;
     }
 
-    public void setPriceRange(String priceRange) {
-        this.priceRange = priceRange;
+    public void setSinglePriceRange(String singlePriceRange) {
+        this.singlePriceRange = singlePriceRange;
     }
 
     public String getDeliveryTimeRange() {
@@ -89,6 +91,14 @@ public class ShipmentItemData implements Parcelable {
         this.selected = selected;
     }
 
+    public String getMultiplePriceRange() {
+        return multiplePriceRange;
+    }
+
+    public void setMultiplePriceRange(String multiplePriceRange) {
+        this.multiplePriceRange = multiplePriceRange;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -96,9 +106,10 @@ public class ShipmentItemData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
+        dest.writeInt(serviceId);
         dest.writeString(type);
-        dest.writeString(priceRange);
+        dest.writeString(singlePriceRange);
+        dest.writeString(multiplePriceRange);
         dest.writeString(deliveryTimeRange);
         dest.writeTypedList(courierItemData);
         dest.writeByte((byte) (selected ? 1 : 0));

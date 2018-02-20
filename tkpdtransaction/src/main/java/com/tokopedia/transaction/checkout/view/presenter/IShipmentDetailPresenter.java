@@ -39,8 +39,4 @@ public interface IShipmentDetailPresenter extends CustomerPresenter<IShipmentDet
 
     void updatePinPoint(LocationPass locationPass);
 
-    //Temporary
-
-    void setContext(Context context);
-
 }
