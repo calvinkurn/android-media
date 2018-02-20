@@ -1,6 +1,5 @@
 package com.tokopedia.transaction.checkout.domain;
 
-import com.google.gson.JsonObject;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.apiservice.CartResponse;
 import com.tokopedia.transaction.apiservice.CartService;
@@ -39,12 +38,12 @@ public class CartRepository implements ICartRepository {
     }
 
     @Override
-    public Observable<DeleteCartDataResponse> deleteCartData(JsonObject param) {
+    public Observable<DeleteCartDataResponse> deleteCartData(TKPDMapParam<String, String> param) {
         return cartService.getApi().postDeleteCart(param).map(
                 new Func1<Response<CartResponse>, DeleteCartDataResponse>() {
                     @Override
                     public DeleteCartDataResponse call(Response<CartResponse> cartResponseResponse) {
-                        return null;
+                        return cartResponseResponse.body().convertDataObj(DeleteCartDataResponse.class);
                     }
                 });
     }

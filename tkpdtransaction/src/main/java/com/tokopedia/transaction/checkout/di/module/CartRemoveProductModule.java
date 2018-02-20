@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.checkout.di.module;
 
 import com.tokopedia.transaction.checkout.di.scope.CartRemoveProductScope;
+import com.tokopedia.transaction.checkout.domain.ICartListInteractor;
 import com.tokopedia.transaction.checkout.view.CartRemoveProductFragment;
 import com.tokopedia.transaction.checkout.view.adapter.CartRemoveProductAdapter;
 import com.tokopedia.transaction.checkout.view.presenter.CartRemoveProductPresenter;
@@ -11,7 +12,7 @@ import dagger.Provides;
 /**
  * @author Aghny A. Putra on 31/01/18.
  */
-@Module
+@Module(includes = {DataModule.class, ConverterDataModule.class})
 public class CartRemoveProductModule {
 
     private final CartRemoveProductAdapter.CartRemoveProductActionListener actionListener;
@@ -22,8 +23,8 @@ public class CartRemoveProductModule {
 
     @Provides
     @CartRemoveProductScope
-    CartRemoveProductPresenter provideCartRemoveProductPresenter() {
-        return new CartRemoveProductPresenter();
+    CartRemoveProductPresenter provideCartRemoveProductPresenter(ICartListInteractor cartListInteractor) {
+        return new CartRemoveProductPresenter(cartListInteractor);
     }
 
     @Provides

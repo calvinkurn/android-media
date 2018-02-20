@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.checkout.view.presenter;
 
+import com.tokopedia.transaction.checkout.domain.ICartListInteractor;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.view.IRemoveProductListView;
 
@@ -14,8 +15,10 @@ import rx.Observer;
 public class CartRemoveProductPresenter
         extends CartMvpPresenter<IRemoveProductListView<List<CartItemData>>> {
 
-    public CartRemoveProductPresenter() {
+    private final ICartListInteractor cartListInteractor;
 
+    public CartRemoveProductPresenter(ICartListInteractor cartListInteractor) {
+        this.cartListInteractor = cartListInteractor;
     }
 
     @Override

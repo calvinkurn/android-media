@@ -34,10 +34,10 @@ public class CartRepositoryDataDummy implements ICartRepository {
     }
 
     @Override
-    public Observable<DeleteCartDataResponse> deleteCartData(JsonObject param) {
-        return Observable.just(param).map(new Func1<JsonObject, DeleteCartDataResponse>() {
+    public Observable<DeleteCartDataResponse> deleteCartData(TKPDMapParam<String, String> param) {
+        return Observable.just(param).map(new Func1<TKPDMapParam<String, String>, DeleteCartDataResponse>() {
             @Override
-            public DeleteCartDataResponse call(JsonObject jsonObject) {
+            public DeleteCartDataResponse call(TKPDMapParam<String, String> tkpdMapParam) {
                 return generateDummyDeleteCart();
             }
         });
