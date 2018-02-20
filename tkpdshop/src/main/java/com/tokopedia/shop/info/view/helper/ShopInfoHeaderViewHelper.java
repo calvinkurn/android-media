@@ -49,56 +49,36 @@ public class ShopInfoHeaderViewHelper {
     private Button buttonShopPage;
     private Button button;
 
-    public ShopInfoHeaderViewHelper(View view, UserSession userSession){
+    public ShopInfoHeaderViewHelper(View view, UserSession userSession) {
         this.view = view;
         this.userSession = userSession;
-
         initView();
     }
 
-    private void initView(){
+    private void initView() {
         ratingBarShopInfo = view.findViewById(R.id.rating_bar_shop_info);
-
         productQualityValue = view.findViewById(R.id.product_quality_value);
-
         speedImageView = view.findViewById(R.id.speed_imageview);
-
         speedValueDesd = view.findViewById(R.id.speed_value_desc);
-
         shopbgImageView = view.findViewById(R.id.shop_background_imageview);
-
         shopReputationView = view.findViewById(R.id.shop_reputation_view);
-
         shopIconImageView = view.findViewById(R.id.shop_icon_imageview);
-
         shopStatusImageView = view.findViewById(R.id.gold_merchant_status_imageview);
-
         shopName = view.findViewById(R.id.shop_name);
-
         shopInfoLocation = view.findViewById(R.id.shop_info_location);
-
         containerClickInfo = view.findViewById(R.id.container_click_info);
-
         buttonManageShop = view.findViewById(R.id.button_manage_shop);
-
         buttonAddProduct = view.findViewById(R.id.button_add_product);
-
         buttonChatSeller = view.findViewById(R.id.button_chat_seller);
-
         buttonShopPage = view.findViewById(R.id.button_shop_page);
-
         button = view.findViewById(R.id.button);
     }
 
-    public void renderData(final ShopInfo shopInfo){
+    public void renderData(final ShopInfo shopInfo) {
         this.shopInfo = shopInfo;
-
         ImageHandler.LoadImage(shopbgImageView, shopInfo.getInfo().getShopCover());
-
         shopName.setText(MethodChecker.fromHtml(shopInfo.getInfo().getShopName()).toString());
-
         ImageHandler.loadImageCircle2(view.getContext(), shopIconImageView, shopInfo.getInfo().getShopAvatar());
-
         if (!shopInfo.getInfo().getShopCover().isEmpty()) {
             shopStatusImageView.setVisibility(View.VISIBLE);
             if (shopInfo.getInfo().getShopIsOfficial().trim().equals("1")) {
@@ -109,16 +89,14 @@ public class ShopInfoHeaderViewHelper {
         } else {
 //            holder.infoShop.setBackgroundResource(0);
         }
-
         if (shopInfo.getInfo().getShopIsOfficial().trim().equals(Integer.toString(SHOP_OFFICIAL_VALUE))) {
 //            shopInfoLocation.setText(getResources().getString(R.string.authorized));
         } else {
             shopInfoLocation.setText(shopInfo.getInfo().getShopLocation());
         }
-
         int set = (int) shopInfo.getStats().getShopBadgeLevel().getSet();
         int level = (int) shopInfo.getStats().getShopBadgeLevel().getLevel();
-        shopReputationView.setValue(set,level, shopInfo.getStats().getShopReputationScore());
+        shopReputationView.setValue(set, level, shopInfo.getStats().getShopReputationScore());
 
         productQualityValue.setText(shopInfo.getRatings().getQuality().getAverage());
         long ratingStar = shopInfo.getRatings().getQuality().getRatingStar();
@@ -161,16 +139,16 @@ public class ShopInfoHeaderViewHelper {
         buttonChatSeller.setVisibility(View.GONE);
         buttonShopPage.setVisibility(View.GONE);
 
-        if(userSession.getShopId().equals(shopInfo.getInfo().getShopId())){
+        if (userSession.getShopId().equals(shopInfo.getInfo().getShopId())) {
             buttonManageShop.setVisibility(View.VISIBLE);
             buttonAddProduct.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             buttonChatSeller.setVisibility(View.VISIBLE);
             buttonShopPage.setVisibility(View.VISIBLE);
         }
     }
 
-    public void renderData(ReputationSpeed reputationSpeed){
+    public void renderData(ReputationSpeed reputationSpeed) {
         speedValueDesd.setText(reputationSpeed.getRecent1Month().getSpeedLevelDescription());
     }
 }

@@ -6,8 +6,7 @@
     android:orientation="vertical">
 
     <LinearLayout
-        style="@style/LabelLayout"
-        android:layout_marginTop="@dimen/margin_med">
+        style="@style/LabelLayout">
 
         <android.support.v7.widget.AppCompatTextView
             style="@style/TextView.Title.Bold"

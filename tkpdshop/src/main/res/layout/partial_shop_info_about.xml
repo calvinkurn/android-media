@@ -22,20 +22,21 @@
         android:showDividers="middle">
 
         <LinearLayout
+            style="@style/LabelLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/text_view_tagline"
-                tools:text="@string/app_name"
-                style="@style/TextView.Small.BlackDisabled"/>
+                style="@style/TextView.Small.BlackDisabled"
+                tools:text="@string/app_name" />
 
             <TextView
+                android:id="@+id/text_view_description"
+                style="@style/TextView.Small.BlackDisabled"
                 android:layout_marginTop="@dimen/margin_small"
-                android:id="@+id/text_view_working_hour"
-                tools:text="@string/app_name"
-                style="@style/TextView.Small.BlackDisabled"/>
+                tools:text="@string/app_name" />
         </LinearLayout>
 
         <com.tokopedia.design.label.LabelView
