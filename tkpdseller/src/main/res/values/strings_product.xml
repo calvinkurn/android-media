@@ -8,7 +8,7 @@
     <string name="product_label_name">Nama Produk</string>
     <string name="product_label_catalog">Katalog</string>
     <string name="product_label_category">Kategori</string>
-    <string name="product_label_shop_window">Etalase</string>
+    <string name="product_label_etalase">Etalase</string>
     <string name="product_label_choose">Pilih</string>
     <string name="product_label_product_recommendation">Rekomendasi Kategori</string>
     <string name="product_label_product_about">Tentang Produk</string>

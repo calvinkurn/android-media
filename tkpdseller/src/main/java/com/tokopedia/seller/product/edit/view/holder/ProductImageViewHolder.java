@@ -59,20 +59,20 @@ public class ProductImageViewHolder extends ProductViewHolder {
         imagesSelectView.addImagesString(images);
     }
 
-    public ProductImageViewHolder(View view) {
+    public ProductImageViewHolder(View view, Listener listener) {
         imagesSelectView = (ImagesSelectView) view.findViewById(R.id.image_select_view);
         imagesSelectView.setOnImageSelectionListener(new ImageSelectorAdapter.OnImageSelectionListener() {
             @Override
             public void onAddClick(int position) {
-                if (listener != null) {
-                    listener.onAddImagePickerClicked(position);
+                if (ProductImageViewHolder.this.listener != null) {
+                    ProductImageViewHolder.this.listener.onAddImagePickerClicked(position);
                 }
             }
 
             @Override
             public void onItemClick(int position, final ImageSelectModel imageSelectModel, boolean isPrimary) {
-                if (listener != null) {
-                    listener.onImagePickerItemClicked(position, isPrimary);
+                if (ProductImageViewHolder.this.listener != null) {
+                    ProductImageViewHolder.this.listener.onImagePickerItemClicked(position, isPrimary);
                 }
             }
         });
@@ -84,20 +84,20 @@ public class ProductImageViewHolder extends ProductViewHolder {
 
             @Override
             public void resolutionCheckFailed(String uri) {
-                if (listener != null) {
-                    listener.onResolutionImageCheckFailed(uri);
+                if (ProductImageViewHolder.this.listener != null) {
+                    ProductImageViewHolder.this.listener.onResolutionImageCheckFailed(uri);
                 }
             }
 
             @Override
             public void removePreviousPath(String uri) {
-                listener.onRemovePreviousPath(uri);
+                ProductImageViewHolder.this.listener.onRemovePreviousPath(uri);
             }
         });
         imagesSelectView.setOnImageChanged(new ImagesSelectView.OnImageChanged() {
             @Override
             public void onTotalImageUpdated(int total) {
-                listener.onTotalImageUpdated(total);
+                ProductImageViewHolder.this.listener.onTotalImageUpdated(total);
                 updateImageResolution();
             }
 
@@ -106,10 +106,12 @@ public class ProductImageViewHolder extends ProductViewHolder {
                 int imageCount = productPhotoListViewModel.size();
                 if (imageCount > 0) {
                     ImageSelectModel imageProductInputViewModel = productPhotoListViewModel.get(0);
-                    listener.onImageResolutionChanged(imageProductInputViewModel.getMinResolution());
+                    ProductImageViewHolder.this.listener.onImageResolutionChanged(imageProductInputViewModel.getMinResolution());
                 }
             }
         });
+
+        setListener(listener);
     }
 
     public ImagesSelectView getImagesSelectView() {

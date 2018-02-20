@@ -50,49 +50,49 @@ public abstract class BaseProductEditFragment<T extends ProductAddPresenter>
         }
         productImageViewHolder.setProductPhotos(model.getProductPictureViewModelList());
 
-        productDetailViewHolder.setPriceUnit((int)model.getProductPriceCurrency());
+        productPriceViewHolder.setPriceUnit((int)model.getProductPriceCurrency());
         if (model.getProductPrice()>0) {
-            productDetailViewHolder.setPriceValue(model.getProductPrice());
+            productPriceViewHolder.setPriceValue(model.getProductPrice());
         }
         if (model.getProductWholesale().size() > 0) {
-            productDetailViewHolder.expandWholesale(true);
-            productDetailViewHolder.setWholesalePrice(model.getProductWholesale());
+            productPriceViewHolder.expandWholesale(true);
+            productPriceViewHolder.setWholesalePrice(model.getProductWholesale());
         }
-        productDetailViewHolder.setWeightUnit((int)model.getProductWeightUnit());
+        productDeliveryInfoViewHolder.setWeightUnit((int)model.getProductWeightUnit());
         if (model.getProductWeight() > 0) {
-            productDetailViewHolder.setWeightValue((int)model.getProductWeight());
+            productDeliveryInfoViewHolder.setWeightValue((int)model.getProductWeight());
         }
         if (model.getProductMinOrder() > 0) {
-            productDetailViewHolder.setMinimumOrder((int)model.getProductMinOrder());
+            productPriceViewHolder.setMinimumOrder((int)model.getProductMinOrder());
         }
-        productDetailViewHolder.setStockStatus(model.getProductStatus());
-        productDetailViewHolder.setStockManaged(model.getProductStatus() == UploadToTypeDef.TYPE_ACTIVE && model.getProductStock() > 0);
-        productDetailViewHolder.setTotalStock((int)model.getProductStock());
+        productManageViewHolder.setStockStatus(model.getProductStatus());
+        productManageViewHolder.setStockManaged(model.getProductStatus() == UploadToTypeDef.TYPE_ACTIVE && model.getProductStock() > 0);
+        productManageViewHolder.setTotalStock((int)model.getProductStock());
         if (model.getProductEtalase().getEtalaseId() > 0) {
-            productDetailViewHolder.setEtalaseId(model.getProductEtalase().getEtalaseId());
-            productDetailViewHolder.setEtalaseName(model.getProductEtalase().getEtalaseName());
+            productInfoViewHolder.setEtalaseId(model.getProductEtalase().getEtalaseId());
+            productInfoViewHolder.setEtalaseName(model.getProductEtalase().getEtalaseName());
         }
-        productDetailViewHolder.setCondition((int)model.getProductCondition());
-        productDetailViewHolder.setInsurance(model.isProductMustInsurance());
-        productDetailViewHolder.setFreeReturn(model.isProductFreeReturn());
+        productDescriptionViewHolder.setCondition((int)model.getProductCondition());
+        productDeliveryInfoViewHolder.setInsurance(model.isProductMustInsurance());
+        productDeliveryInfoViewHolder.setFreeReturn(model.isProductFreeReturn());
 
         if (!TextUtils.isEmpty(model.getProductDescription())) {
-            productAdditionalInfoViewHolder.setDescription(model.getProductDescription());
+            productDescriptionViewHolder.setDescription(model.getProductDescription());
         }
         if (model.getProductVideo() != null) {
-            productAdditionalInfoViewHolder.setVideoIdList(convertToListString(model.getProductVideo()));
+            productDescriptionViewHolder.setVideoIdList(convertToListString(model.getProductVideo()));
         }
         if (model.getProductPreorder().getPreorderProcessTime() > 0) {
-            productAdditionalInfoViewHolder.expandPreOrder(true);
-            productAdditionalInfoViewHolder.setPreOrderUnit((int)model.getProductPreorder().getPreorderTimeUnit());
-            productAdditionalInfoViewHolder.setPreOrderValue((int)model.getProductPreorder().getPreorderProcessTime());
+            productDeliveryInfoViewHolder.expandPreOrder(true);
+            productDeliveryInfoViewHolder.setPreOrderUnit((int)model.getProductPreorder().getPreorderTimeUnit());
+            productDeliveryInfoViewHolder.setPreOrderValue((int)model.getProductPreorder().getPreorderProcessTime());
         }
 
         //TODO hendry set variant view
 //        if (model.getProductVariant()!= null) {
-//            productAdditionalInfoViewHolder.setProductVariantDataSubmit(model.getProductVariant(),
+//            productDeliveryInfoViewHolder.setProductVariantDataSubmit(model.getProductVariant(),
 //                    model.getVariantStringSelection());
-//            productAdditionalInfoViewHolder.setOptionSubmitLv1(model.getProductVariantDataSubmit());
+//            productDeliveryInfoViewHolder.setOptionSubmitLv1(model.getProductVariantDataSubmit());
 //        }
     }
 

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:parentTag="LinearLayout"
+    tools:orientation="vertical">
+
+    <LinearLayout
+        style="@style/LabelLayout"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:background="@android:color/transparent"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/TextView.Small.BlackSecondary"
+            android:text="@string/product_label_product_manage" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:divider="@drawable/bg_line_separator"
+        android:showDividers="beginning|middle|end">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <com.tokopedia.design.text.SpinnerTextView
+                android:id="@+id/spinner_text_view_stock_status"
+                style="@style/LabelLayout"
+                app:spinner_entries="@array/product_stock_status_entries"
+                app:spinner_hint="@string/product_label_status"
+                app:spinner_selection_index="1"
+                app:spinner_values="@array/product_stock_status_values" />
+
+            <com.tokopedia.expandable.ExpandableOptionSwitch
+                android:id="@+id/expandable_option_switch_stock_total"
+                style="@style/LabelLayout"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:eo_checked="false"
+                app:eo_theme="@style/ExpandableStyle"
+                app:eo_title="@string/product_label_manage_stock">
+
+                <com.tokopedia.design.text.CounterInputView
+                    android:id="@+id/counter_input_view_stock_total"
+                    style="@style/LabelLayout.InnerExpandable"
+                    app:counter_hint="@string/product_label_stock_total" />
+            </com.tokopedia.expandable.ExpandableOptionSwitch>
+        </LinearLayout>
+
+        <com.tokopedia.seller.common.widget.LabelView
+            android:id="@+id/label_view_variant"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_med"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:content="@string/product_label_choose"
+            app:content_color="@color/tkpd_main_green"
+            app:content_max_lines="5"
+            app:title="@string/product_variant_label_title" />
+
+    </LinearLayout>
+
+</merge>
