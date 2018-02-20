@@ -206,17 +206,20 @@ public class CartRemoveProductFragment extends BasePresenterFragment
 
     @OnClick(R2.id.tv_remove_product)
     public void removeCheckedProducts() {
-        for (CheckedCartItemData checkedCartItemData : mCheckedCartItemList) {
-            if (checkedCartItemData.isChecked()) {
-                mCartItemDataList.remove(checkedCartItemData.getCartItemData());
-            }
+        mCartRemoveProductPresenter.processDeleteCart(true);
+    }
+
     @Override
     public List<CartItemData> getSelectedCartList() {
-        List<CartItemData> cartItemDataList = new ArrayList<>();
-        for (Integer index : mSetCheckedCartItemIndex) {
-            cartItemDataList.add(mCartItemDataList.get(index));
+        List<CartItemData> selectedCartList = new ArrayList<>();
+
+        for (CheckedCartItemData checkedCartItemData : mCheckedCartItemList) {
+            if (checkedCartItemData.isChecked()) {
+                selectedCartList.add(checkedCartItemData.getCartItemData());
+            }
         }
-        return cartItemDataList;
+
+        return selectedCartList;
     }
 
     @Override
@@ -227,20 +230,17 @@ public class CartRemoveProductFragment extends BasePresenterFragment
 
     @Override
     public void renderSuccessDeleteCart(String message) {
-        for (Integer index : mSetCheckedCartItemIndex) {
-            mCartItemDataList.remove((int) index);
+        for (CheckedCartItemData checkedCartItemData : mCheckedCartItemList) {
+            if (checkedCartItemData.isChecked()) {
+                mCartItemDataList.remove(checkedCartItemData.getCartItemData());
+            }
+            mCartRemoveProductAdapter.notifyDataSetChanged();
         }
     }
 
-    @OnClick(R2.id.tv_remove_product)
-    public void removeCheckedProducts() {
-//        for (Integer index : mSetCheckedCartItemIndex) {
-//            mCartItemDataList.remove((int) index);
-//        }
+    @Override
+    public void renderOnFailureDeleteCart(String message) {
 
-        mCartRemoveProductPresenter.processDeleteCart(true);
-
-        mCartRemoveProductAdapter.notifyDataSetChanged();
     }
 
     /**

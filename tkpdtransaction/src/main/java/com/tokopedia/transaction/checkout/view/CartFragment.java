@@ -62,8 +62,9 @@ import butterknife.BindView;
 public class CartFragment extends BasePresenterFragment
         implements CartListAdapter.ActionListener,
         CartRemoveItemDialog.CartItemRemoveCallbackAction,
-        ICartListView {
-        ICartListView, TopAdsItemClickListener, RefreshHandler.OnRefreshHandlerListener {
+        ICartListView,
+        TopAdsItemClickListener,
+        RefreshHandler.OnRefreshHandlerListener {
 
     @BindView(R2.id.rv_cart)
     RecyclerView cartRecyclerView;
@@ -407,11 +408,6 @@ public class CartFragment extends BasePresenterFragment
         cartListAdapter.deleteItem(cartItemData);
     }
 
-    void showDeleteCartItemDialog(CartItemData cartItemData, int position) {
-        String productName = cartItemData.getOriginData().getProductName();
-        String productWeight = cartItemData.getOriginData().getWeightFormatted();
-        String message = String.format("Anda yakin ingin menghapus %s, Berat %s dari keranjang belanja?",
-                productName, productWeight);
     @Override
     public void deleteSingleItem(List<CartItemData> cartItemDataList) {
         cartListAdapter.deleteItem(cartItemDataList);
