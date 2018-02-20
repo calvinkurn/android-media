@@ -178,8 +178,10 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                boolean isReachBottomEnd = mRvCartOrderDetails.canScrollVertically(1);
-                mLlTotalPaymentLayout.setVisibility(isReachBottomEnd ? View.VISIBLE : View.GONE);
+                if (mRvCartOrderDetails != null) {
+                    boolean isReachBottomEnd = mRvCartOrderDetails.canScrollVertically(1);
+                    mLlTotalPaymentLayout.setVisibility(isReachBottomEnd ? View.VISIBLE : View.GONE);
+                }
             }
         });
 
