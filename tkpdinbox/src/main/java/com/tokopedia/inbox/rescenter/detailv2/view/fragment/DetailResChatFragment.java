@@ -475,7 +475,7 @@ public class DetailResChatFragment
         }
 
         chatAdapter.addItem(new ChatRightViewModel(null, null, conversationDomain));
-        chatAdapter.notifyDataSetChanged();
+        chatAdapter.notifyItemInserted(chatAdapter.getItemCount() - 1);
         scrollChatToBottom(false);
     }
 
@@ -917,7 +917,6 @@ public class DetailResChatFragment
         attachmentAdapter.notifyDataSetChanged();
         conversationDomain.setCreateTime(getConversationCreateTime());
         chatAdapter.replaceLastItem(new ChatRightViewModel(null, null, conversationDomain));
-        chatAdapter.notifyItemChanged(chatAdapter.getItemCount() - 1);
         initActionButton(detailResChatDomain.getButton());
         etChat.setText("");
         enableIvSend();
