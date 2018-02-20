@@ -141,7 +141,7 @@
             android:name=".rescenter.detailv2.view.activity.DetailResChatActivity"
             android:label="@string/title_activity_rescenter_discussion"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".rescenter.detailv2.view.activity.NextActionActivity"
             android:label="@string/title_activity_rescenter_discussion"
