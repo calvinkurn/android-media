@@ -514,6 +514,8 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     }
 
     private void renderDropshipperView(CourierItemData courierItemData) {
+        // Temporary
+        courierItemData.setAllowDropshiper(true);
         if (courierItemData.isAllowDropshiper()) {
             llDropshipper.setVisibility(View.VISIBLE);
             separatorPartialOrder.setVisibility(View.VISIBLE);
@@ -607,10 +609,32 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
 
     @OnClick(R2.id.bt_save)
     void onSaveClick() {
-        Intent intentResult = new Intent();
-        intentResult.putExtra(EXTRA_SELECTED_COURIER, presenter.getSelectedCourier());
-        getActivity().setResult(Activity.RESULT_OK, intentResult);
-        getActivity().finish();
+        boolean hasError = false;
+        if (switchDropshipper.isChecked()) {
+            if (TextUtils.isEmpty(etShipperName.getText().toString())) {
+                textInputLayoutShipperName.setError(getString(R.string.message_error_dropshipper_name));
+                showErrorSnackbar(getString(R.string.message_error_dropshipper_data));
+                hasError = true;
+            } else if (TextUtils.isEmpty(etShipperPhone.getText().toString())) {
+                textInputLayoutShipperPhone.setError(getString(R.string.message_error_dropshipper_phone));
+                showErrorSnackbar(getString(R.string.message_error_dropshipper_data));
+                hasError = true;
+            } else {
+                textInputLayoutShipperName.setErrorEnabled(false);
+            }
+        }
+
+        if (presenter.getSelectedCourier() == null) {
+            showErrorSnackbar(getString(R.string.message_error_no_courier_selected));
+            hasError = true;
+        }
+
+        if (!hasError) {
+            Intent intentResult = new Intent();
+            intentResult.putExtra(EXTRA_SELECTED_COURIER, presenter.getSelectedCourier());
+            getActivity().setResult(Activity.RESULT_OK, intentResult);
+            getActivity().finish();
+        }
     }
 
     @OnCheckedChanged(R2.id.switch_insurance)
