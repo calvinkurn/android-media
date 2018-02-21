@@ -11,7 +11,9 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.tkpdcontent.KolComponentInstance;
 import com.tokopedia.tkpdcontent.R;
+import com.tokopedia.tkpdcontent.feature.profile.di.DaggerKolProfileComponent;
 import com.tokopedia.tkpdcontent.feature.profile.di.KolProfileComponent;
 import com.tokopedia.tkpdcontent.feature.profile.view.adapter.KolPostAdapter;
 import com.tokopedia.tkpdcontent.feature.profile.view.listener.KolPostListener;
@@ -86,7 +88,10 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
 
     @Override
     protected void initInjector() {
-        getComponent(KolProfileComponent.class).inject(this);
+        DaggerKolProfileComponent.builder()
+                .kolComponent(KolComponentInstance.getKolComponent(getActivity().getApplication()))
+                .build()
+                .inject(this);
     }
 
     @Override
