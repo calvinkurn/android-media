@@ -14,7 +14,7 @@ import rx.Observable;
  */
 
 public interface KolApi {
-    @POST
+    @POST("./")
     @Headers({"Content-Type: application/json"})
     Observable<Response<GraphqlResponse<ProfileKolData>>> getProfileKolData(@Body String requestBody);
 }
