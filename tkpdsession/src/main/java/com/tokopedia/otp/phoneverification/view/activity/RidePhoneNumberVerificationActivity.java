@@ -23,8 +23,8 @@ public class RidePhoneNumberVerificationActivity extends TActivity implements Ha
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_ride_phone_number_verification);
         initView();
     }
