@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseEmptyActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.profile.view.adapter.ProfileTabPagerAdapter;
 import com.tokopedia.profile.view.fragment.TopProfileFragment;
+import com.tokopedia.profile.view.fragment.TopProfileFragmenta;
 import com.tokopedia.profile.view.viewmodel.ProfileSectionItem;
 import com.tokopedia.session.R;
 
@@ -33,8 +34,6 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    private ProfileTabPagerAdapter profileTabPagerAdapter;
-    private TopProfileFragment fragment = TopProfileFragment.newInstance();
 
     public static Intent newInstance(Context context) {
         return new Intent(context, TopProfileActivity.class);
@@ -109,10 +108,12 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
     private void loadSection(){
         List<ProfileSectionItem> profileSectionItemList = new ArrayList<>();
 
+        TopProfileFragment fragment = TopProfileFragment.newInstance();
+        TopProfileFragmenta fragmenta = TopProfileFragmenta.newInstance();
         profileSectionItemList.add(new ProfileSectionItem("Profil", fragment));
-        profileSectionItemList.add(new ProfileSectionItem("KOL", fragment));
+        profileSectionItemList.add(new ProfileSectionItem("KOL", fragmenta));
 
-        profileTabPagerAdapter = new ProfileTabPagerAdapter(getSupportFragmentManager());
+        ProfileTabPagerAdapter profileTabPagerAdapter = new ProfileTabPagerAdapter(getSupportFragmentManager());
         profileTabPagerAdapter.setItemList(profileSectionItemList);
         viewPager.setAdapter(profileTabPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
