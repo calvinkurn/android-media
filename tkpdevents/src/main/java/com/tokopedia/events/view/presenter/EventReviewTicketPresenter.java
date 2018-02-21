@@ -177,7 +177,7 @@ public class EventReviewTicketPresenter
 
     private CartItems convertPackageToCartItem(PackageViewModel packageViewModel) {
         Configuration config = new Configuration();
-        config.setPrice(packageViewModel.getSalesPrice());
+        config.setPrice(packageViewModel.getSalesPrice() * checkoutData.getSelectedQuantity());
         com.tokopedia.events.domain.model.request.cart.SubConfig sub = new com.tokopedia.events.domain.model.request.cart.SubConfig();
         sub.setName(profileModel.getProfileData().getUserInfo().getUserName());
         config.setSubConfig(sub);
@@ -331,13 +331,13 @@ public class EventReviewTicketPresenter
                                 getView().getActivity().getResources().getColor(R.color.red_a700));
                         promocode = "";
                     } else {
-                        getView().hideProgressBar();
-                        getView().showPromoSuccessMessage(getView().getActivity().getResources().getString(R.string.promo_success_msg),
-                                getView().getActivity().getResources().getColor(R.color.black_54));
-                        String cashBackDiscount = "Total Discount : "
-                                + verifyCartResponse.getCart().getPromocodeDiscount()
-                                + " and Total Cashback : " + verifyCartResponse.getCart().getPromocodeCashback();
-                        getView().showCashbackMessage(cashBackDiscount);
+                        String successMsg = verifyCartResponse.getCart().getPromocodeSuccessMessage();
+                        if (successMsg != null && successMsg.length() > 0) {
+                            getView().hideProgressBar();
+                            getView().showPromoSuccessMessage(getView().getActivity().getResources().getString(R.string.promo_success_msg),
+                                    getView().getActivity().getResources().getColor(R.color.black_54));
+                            getView().showCashbackMessage(successMsg);
+                        }
                     }
                 }
             }
