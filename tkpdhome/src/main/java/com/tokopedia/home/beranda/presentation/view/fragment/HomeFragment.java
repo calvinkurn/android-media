@@ -530,6 +530,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         NetworkErrorHelper.removeEmptyState(root);
         if (messageSnackbar != null && messageSnackbar.isShown()) {
             messageSnackbar.hideRetrySnackbar();
+            messageSnackbar = null;
         }
     }
 
