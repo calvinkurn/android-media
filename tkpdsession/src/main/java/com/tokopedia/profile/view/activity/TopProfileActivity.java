@@ -113,6 +113,7 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
         profileSectionItemList.add(new ProfileSectionItem("KOL", fragment));
 
         profileTabPagerAdapter = new ProfileTabPagerAdapter(getSupportFragmentManager());
+        profileTabPagerAdapter.setItemList(profileSectionItemList);
         viewPager.setAdapter(profileTabPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
