@@ -11,8 +11,8 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.Data;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.Product;
+import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.LocalAdsClickListener;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.ProductFeedTopAdsViewModel;
 

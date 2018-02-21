@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener;
 
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.Data;
+import com.tokopedia.topads.sdk.domain.model.Data;
 
 /**
  * Created by milhamj on 18/01/18.

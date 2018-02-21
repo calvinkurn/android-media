@@ -1,8 +1,8 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads;
 
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.Data;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.topads.AdsTypeFactory;
+import com.tokopedia.topads.sdk.domain.model.Data;
 
 /**
  * @author by errysuprayogi on 3/30/17.

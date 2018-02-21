@@ -52,7 +52,6 @@ import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.Data;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.FeedModuleRouter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FollowKolPostUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.BlogWebViewActivity;
@@ -80,6 +79,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedVi
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromoCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.ShopFeedTopAdsViewModel;
+import com.tokopedia.topads.sdk.domain.model.Data;
 
 import java.util.ArrayList;
 
@@ -506,8 +506,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (item instanceof ShopFeedTopAdsViewModel) {
             ShopFeedTopAdsViewModel castedItem = ((ShopFeedTopAdsViewModel) item);
             Data currentData = castedItem.getData();
-            boolean currentStatus = currentData.isFavorite();
-            currentData.setFavorite(!currentStatus);
+            boolean currentStatus = currentData.isFavorit();
+            currentData.setFavorit(!currentStatus);
             adapter.notifyItemChanged(adapterPosition);
         }
     }
@@ -1028,12 +1028,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onUserNotLogin() {
         finishLoading();
         adapter.clearData();
-        topAdsRecyclerAdapter.shouldLoadAds(true);
-        topAdsRecyclerAdapter.unsetEndlessScrollListener();
-
+        adapter.unsetEndlessScrollListener();
         adapter.showUserNotLogin();
-        adapter.addItem(new EmptyTopAdsProductModel(""));
-        adapter.notifyDataSetChanged();
     }
 
     @Override

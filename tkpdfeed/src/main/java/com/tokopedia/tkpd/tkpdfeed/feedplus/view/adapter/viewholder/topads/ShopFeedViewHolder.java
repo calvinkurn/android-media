@@ -17,9 +17,9 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.Data;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.ImageProduct;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.Shop;
+import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.topads.sdk.domain.model.ImageProduct;
+import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.promo.PromotedShopAdapter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.customview.RoundedCornerImageView;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.LocalAdsClickListener;
@@ -143,7 +143,7 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedTopAdsViewMod
             } else {
                 shopTitle.setText(title);
             }
-            setFavorite(data.isFavorite());
+            setFavorite(data.isFavorit());
         }
 
 

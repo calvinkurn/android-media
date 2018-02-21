@@ -2,7 +2,7 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed;
 
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.TopPicksDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialStoreDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.Data;
+import com.tokopedia.topads.sdk.domain.model.Data;
 
 import java.util.List;
 

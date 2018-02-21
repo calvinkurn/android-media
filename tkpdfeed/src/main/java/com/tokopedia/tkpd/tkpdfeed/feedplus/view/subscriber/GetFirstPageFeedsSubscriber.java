@@ -28,7 +28,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialS
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialStoreProductDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewBadgeDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewProductDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.Data;
+import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.KolTracking;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FavoriteCtaViewModel;
@@ -61,9 +61,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Subscriber;
-
-import static com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.Data.DISPLAY_PRODUCT;
-import static com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.Data.DISPLAY_SHOP;
 
 /**
  * @author by nisie on 5/29/17.
@@ -303,19 +300,20 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                 && !domain.getContent().getTopadsDomains().isEmpty()) {
                             List<Visitable> visitableList = new ArrayList<>();
                             List<Data> topadsDomainList = domain.getContent().getTopadsDomains();
-                            for (Data topadsDomain : topadsDomainList) {
-                                if (topadsDomain.getDisplay().equalsIgnoreCase(
-                                        DISPLAY_SHOP)) {
-                                    visitableList.add(
-                                            new ShopFeedTopAdsViewModel(topadsDomain)
-                                    );
-                                } else if (topadsDomain.getDisplay().equalsIgnoreCase(
-                                        DISPLAY_PRODUCT)) {
-                                    visitableList.add(
-                                            new ProductFeedTopAdsViewModel(topadsDomain)
-                                    );
-                                }
-                            }
+                            //TODO milhamj
+//                            for (Data topadsDomain : topadsDomainList) {
+//                                if (topadsDomain.getDisplay().equalsIgnoreCase(
+//                                        DISPLAY_SHOP)) {
+//                                    visitableList.add(
+//                                            new ShopFeedTopAdsViewModel(topadsDomain)
+//                                    );
+//                                } else if (topadsDomain.getDisplay().equalsIgnoreCase(
+//                                        DISPLAY_PRODUCT)) {
+//                                    visitableList.add(
+//                                            new ProductFeedTopAdsViewModel(topadsDomain)
+//                                    );
+//                                }
+//                            }
                             if (!visitableList.isEmpty()) {
                                 FeedTopAdsViewModel feedTopAdsViewModel =
                                         new FeedTopAdsViewModel(visitableList);

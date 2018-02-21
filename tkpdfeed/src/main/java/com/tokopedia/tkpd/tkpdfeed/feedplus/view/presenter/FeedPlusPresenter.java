@@ -7,7 +7,6 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.Data;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.CheckNewFeedUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FavoriteShopUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FollowKolPostUseCase;
@@ -21,6 +20,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.FollowUnfollowKolSub
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetFeedsSubscriber;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetFirstPageFeedsSubscriber;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.LikeKolPostSubscriber;
+import com.tokopedia.topads.sdk.domain.model.Data;
 
 import javax.inject.Inject;
 
@@ -139,7 +139,7 @@ public class FeedPlusPresenter
                     stringBuilder.append(
                             MethodChecker.fromHtml(promotedShopViewModel.getShop()
                                     .getName()));
-                    if (promotedShopViewModel.isFavorite()) {
+                    if (promotedShopViewModel.isFavorit()) {
                         stringBuilder.append(" dihapus dari toko favorit");
                     } else {
                         stringBuilder.append(" berhasil difavoritkan");
