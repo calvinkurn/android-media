@@ -99,7 +99,7 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
     @Override
     public void onShopItemClicked(int position, Data data) {
         itemClickListener.onShopItemClicked(data.getShop());
-        openTopAdsUseCase.execute(data.getProductClickUrl());
+        openTopAdsUseCase.execute(data.getShopClickUrl());
     }
 
     @Override
