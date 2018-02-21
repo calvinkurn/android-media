@@ -51,6 +51,7 @@ import rx.subscriptions.Subscriptions;
 public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implements HomeContract.Presenter {
 
     private static final String TAG = HomePresenter.class.getSimpleName();
+    private static final String CURSOR_NO_NEXT_PAGE_FEED = "CURSOR_NO_NEXT_PAGE_FEED";
 
     @Inject
     GetLocalHomeDataUseCase localHomeDataUseCase;
@@ -287,6 +288,14 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     public void setCursor(String currentCursor) {
         this.currentCursor = currentCursor;
+    }
+
+    public void setCursorNoNextPageFeed() {
+        this.currentCursor = CURSOR_NO_NEXT_PAGE_FEED;
+    }
+
+    public boolean hasNextPageFeed() {
+        return CURSOR_NO_NEXT_PAGE_FEED.equals(currentCursor);
     }
 
     private class HomeDataSubscriber extends Subscriber<List<Visitable>> {

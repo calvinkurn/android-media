@@ -228,7 +228,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 if (isAllowLoadMore()) {
-                    recyclerView.removeOnScrollListener(feedLoadMoreTriggerListener);
                     adapter.showLoading();
                     presenter.fetchNextPageFeed();
                 }
@@ -242,8 +241,15 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private boolean isAllowLoadMore() {
         return getUserVisibleHint()
+                && presenter.hasNextPageFeed()
                 && !adapter.isLoading()
-                && !refreshLayout.isRefreshing();
+                && !adapter.isRetryShown()
+                && !refreshLayout.isRefreshing()
+                && !isErrorMessageShown();
+    }
+
+    private boolean isErrorMessageShown() {
+        return messageSnackbar != null && messageSnackbar.isShown();
     }
 
     private void initAdapter() {
@@ -441,7 +447,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         presenter.resetPageFeed();
         if (SessionHandler.isV4Login(getContext()) && feedLoadMoreTriggerListener != null) {
             feedLoadMoreTriggerListener.resetState();
-            recyclerView.addOnScrollListener(feedLoadMoreTriggerListener);
         }
     }
 
@@ -471,7 +476,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void showNetworkError(String message) {
         if (isAdded() && getActivity() != null) {
-            recyclerView.removeOnScrollListener(feedLoadMoreTriggerListener);
             if (adapter.getItemCount() > 0) {
                 if (messageSnackbar == null) {
                     messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
@@ -561,7 +565,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         int posStart = adapter.getItemCount();
         adapter.addItems(visitables);
         adapter.notifyItemRangeInserted(posStart, visitables.size());
-        recyclerView.addOnScrollListener(feedLoadMoreTriggerListener);
     }
 
     @Override
@@ -573,14 +576,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onShowRetryGetFeed() {
-        recyclerView.removeOnScrollListener(feedLoadMoreTriggerListener);
         adapter.hideLoading();
         adapter.showRetry();
     }
 
     @Override
-    public void unsetEndlessScroll() {
-        recyclerView.removeOnScrollListener(feedLoadMoreTriggerListener);
+    public void updateCursorNoNextPageFeed() {
+        presenter.setCursorNoNextPageFeed();
     }
 
     private void openWebViewBrandsURL(String url) {
