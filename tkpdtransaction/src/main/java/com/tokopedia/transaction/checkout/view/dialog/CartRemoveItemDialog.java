@@ -19,16 +19,19 @@ import java.util.List;
 
 public class CartRemoveItemDialog extends DialogFragment {
 
-    private static final String DATA = "data";
+    private static final String DATA_UPDATED = "data_updated";
+    private static final String DATA_REMOVED = "data_removed";
 
     private CartItemRemoveCallbackAction callbackAction;
 
-    public static CartRemoveItemDialog newInstance(List<CartItemData> cartItemDataList,
+    public static CartRemoveItemDialog newInstance(List<CartItemData> removedItemDataList,
+                                                   List<CartItemData> updatedItemDataList,
                                                    CartItemRemoveCallbackAction callbackAction) {
 
         CartRemoveItemDialog frag = new CartRemoveItemDialog();
         Bundle args = new Bundle();
-        args.putParcelableArrayList(DATA, (ArrayList<? extends Parcelable>) cartItemDataList);
+        args.putParcelableArrayList(DATA_REMOVED, (ArrayList<? extends Parcelable>) removedItemDataList);
+        args.putParcelableArrayList(DATA_UPDATED, (ArrayList<? extends Parcelable>) updatedItemDataList);
         frag.setArguments(args);
         frag.setCallbackAction(callbackAction);
         return frag;
@@ -40,35 +43,40 @@ public class CartRemoveItemDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        final List<CartItemData> cartItemDataList = getArguments().getParcelableArrayList(DATA);
-        final boolean isListNotNull = cartItemDataList != null;
-        final boolean hasSingleElement = isListNotNull && cartItemDataList.size() == 1;
+        final List<CartItemData> dataRemoved = getArguments().getParcelableArrayList(DATA_REMOVED);
+        final List<CartItemData> dataUpdated = getArguments().getParcelableArrayList(DATA_UPDATED);
+
+        final boolean isListNotNull = dataRemoved != null;
+        final boolean hasSingleElement = isListNotNull && dataRemoved.size() == 1;
 
         return new AlertDialog.Builder(getActivity())
                 .setTitle("Hapus Barang")
-                .setMessage(getMessage(hasSingleElement, cartItemDataList))
-                .setPositiveButton("Tambah Wishlist", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if (isListNotNull) {
-                            if (hasSingleElement) {
-                                callbackAction.onDeleteSingleItemWithWishListClicked(cartItemDataList.get(0));
-                            } else {
-                                callbackAction.onDeleteMultipleItemWithWishListClicked(cartItemDataList);
+                .setMessage(getMessage(hasSingleElement, dataRemoved))
+                .setPositiveButton("Tambah Wishlist",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                if (isListNotNull) {
+                                    if (hasSingleElement) {
+                                        callbackAction.onDeleteSingleItemWithWishListClicked(dataRemoved.get(0), dataUpdated);
+                                    } else {
+                                        callbackAction.onDeleteMultipleItemWithWishListClicked(dataRemoved, dataUpdated);
+                                    }
+
+                                    dismiss();
+                                }
                             }
-                            dismiss();
-                        }
-                    }
                 })
                 .setNegativeButton(hasSingleElement ? "Hapus" : "Hapus Semua",
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 if (hasSingleElement) {
-                                    callbackAction.onDeleteSingleItemClicked(cartItemDataList.get(0));
+                                    callbackAction.onDeleteSingleItemClicked(dataRemoved.get(0), dataUpdated);
                                 } else {
-                                    callbackAction.onDeleteMultipleItemClicked(cartItemDataList);
+                                    callbackAction.onDeleteMultipleItemClicked(dataRemoved, dataUpdated);
                                 }
+
                                 dismiss();
                             }
                         })
@@ -88,13 +96,14 @@ public class CartRemoveItemDialog extends DialogFragment {
 
     public interface CartItemRemoveCallbackAction {
 
-        void onDeleteSingleItemClicked(CartItemData cartItemData);
+        void onDeleteSingleItemClicked(CartItemData removedCartItem, List<CartItemData> updatedCartItems);
 
-        void onDeleteSingleItemWithWishListClicked(CartItemData cartItemData);
+        void onDeleteSingleItemWithWishListClicked(CartItemData removedCartItem, List<CartItemData> updatedCartItems);
 
-        void onDeleteMultipleItemClicked(List<CartItemData> cartItemDataList);
+        void onDeleteMultipleItemClicked(List<CartItemData> removedCartItems, List<CartItemData> updatedCartItems);
 
-        void onDeleteMultipleItemWithWishListClicked(List<CartItemData> cartItemDataList);
+        void onDeleteMultipleItemWithWishListClicked(List<CartItemData> removedCartItems, List<CartItemData> updatedCartItems);
+
     }
 
 }

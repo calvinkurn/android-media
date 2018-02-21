@@ -42,39 +42,36 @@ public class CartRemoveProductPresenter
         getMvpView().showList(cartItemModels);
     }
 
-    public void processDeleteCart(List<CartItemData> cartItemDataListForDelete, boolean addWishList) {
-        List<CartItemData> originItemCartListData = getMvpView().getAllCartItemList();
-        List<CartItemData> cartItemDataListForUpdate = new ArrayList<>();
+    public void processDeleteCart(List<CartItemData> cartItemDataListForDelete, List<CartItemData> cartItemForUpdate, boolean addWishList) {
         List<Integer> ids = new ArrayList<>();
+
         for (CartItemData data : cartItemDataListForDelete) {
             ids.add(data.getOriginData().getCartId());
-            for (CartItemData cartItemData : originItemCartListData) {
-                if (data.getOriginData().getCartId() != cartItemData.getOriginData().getCartId()) {
-                    cartItemDataListForUpdate.add(cartItemData);
-                }
-            }
         }
+
         RemoveCartRequest removeCartRequest = new RemoveCartRequest.Builder()
                 .addWishlist(addWishList ? 1 : 0)
                 .cartIds(ids)
                 .build();
+
         TKPDMapParam<String, String> paramDelete = new TKPDMapParam<>();
         paramDelete.put("params", new Gson().toJson(removeCartRequest));
 
         List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
-        for (CartItemData cartItemData : cartItemDataListForUpdate) {
-            updateCartRequestList.add(
-                    new UpdateCartRequest.Builder()
+
+        for (CartItemData cartItemData : cartItemForUpdate) {
+            updateCartRequestList.add(new UpdateCartRequest.Builder()
                             .cartId(cartItemData.getOriginData().getCartId())
                             .notes(cartItemData.getUpdatedData().getRemark())
                             .quantity(cartItemData.getUpdatedData().getQuantity())
                             .build()
             );
         }
+
         TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
         paramUpdate.put("carts", new Gson().toJson(updateCartRequestList));
 
-        if (!updateCartRequestList.isEmpty())
+        if (!updateCartRequestList.isEmpty()) {
             cartListInteractor.deleteAndUpdateCart(new Subscriber<DeleteUpdateCartData>() {
                 @Override
                 public void onCompleted() {
@@ -95,7 +92,8 @@ public class CartRemoveProductPresenter
                     }
                 }
             }, getMvpView().getGenerateParamAuth(paramDelete), getMvpView().getGenerateParamAuth(paramUpdate));
-        else
+
+        } else {
             cartListInteractor.deleteCart(new Subscriber<DeleteCartData>() {
                 @Override
                 public void onCompleted() {
@@ -116,6 +114,7 @@ public class CartRemoveProductPresenter
                     }
                 }
             }, paramDelete);
+        }
     }
 
 }

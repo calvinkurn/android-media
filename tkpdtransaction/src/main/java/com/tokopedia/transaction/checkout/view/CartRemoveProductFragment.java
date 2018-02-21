@@ -25,6 +25,7 @@ import com.tokopedia.transaction.checkout.view.presenter.CartRemoveProductPresen
 import com.tokopedia.transaction.checkout.view.view.IRemoveProductListView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -234,14 +235,17 @@ public class CartRemoveProductFragment extends BasePresenterFragment
     @OnClick(R2.id.tv_remove_product)
     public void removeCheckedProducts() {
         List<CartItemData> selectedCartList = new ArrayList<>();
+        List<CartItemData> unselectedCartList = new ArrayList<>();
 
         for (CheckedCartItemData checkedCartItemData : mCheckedCartItemList) {
             if (checkedCartItemData.isChecked()) {
                 selectedCartList.add(checkedCartItemData.getCartItemData());
+            } else {
+                unselectedCartList.add(checkedCartItemData.getCartItemData());
             }
         }
 
-        showDeleteCartItemDialog(selectedCartList);
+        showDeleteCartItemDialog(selectedCartList, unselectedCartList);
     }
 
     @Override
@@ -264,7 +268,7 @@ public class CartRemoveProductFragment extends BasePresenterFragment
 
     @Override
     public void renderOnFailureDeleteCart(String message) {
-
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
 
     @Override
@@ -290,34 +294,31 @@ public class CartRemoveProductFragment extends BasePresenterFragment
     }
 
 
-    private void showDeleteCartItemDialog(List<CartItemData> cartItemDataList) {
-        DialogFragment dialog = CartRemoveItemDialog.newInstance(cartItemDataList,
+    private void showDeleteCartItemDialog(final List<CartItemData> removedCartItemList, List<CartItemData> updatedCartItemList) {
+
+        DialogFragment dialog = CartRemoveItemDialog.newInstance(removedCartItemList, updatedCartItemList,
                 new CartRemoveItemDialog.CartItemRemoveCallbackAction() {
-
                     @Override
-                    public void onDeleteSingleItemClicked(CartItemData cartItemData) {
-                        List<CartItemData> cartItemDataList = new ArrayList<>();
-                        cartItemDataList.add(cartItemData);
-                        mCartRemoveProductPresenter.processDeleteCart(cartItemDataList, false);
+                    public void onDeleteSingleItemClicked(CartItemData removedCartItem, List<CartItemData> updatedCartItem) {
+                        List<CartItemData> cartItemDataList = new ArrayList<>(Collections.singletonList(removedCartItem));
+                        mCartRemoveProductPresenter.processDeleteCart(cartItemDataList, updatedCartItem, false);
                     }
 
                     @Override
-                    public void onDeleteSingleItemWithWishListClicked(CartItemData cartItemData) {
-                        List<CartItemData> cartItemDataList = new ArrayList<>();
-                        cartItemDataList.add(cartItemData);
-                        mCartRemoveProductPresenter.processDeleteCart(cartItemDataList, true);
+                    public void onDeleteSingleItemWithWishListClicked(CartItemData removedCartItem, List<CartItemData> updatedCartItem) {
+                        List<CartItemData> cartItemDataList = new ArrayList<>(Collections.singletonList(removedCartItem));
+                        mCartRemoveProductPresenter.processDeleteCart(cartItemDataList, updatedCartItem, true);
                     }
 
                     @Override
-                    public void onDeleteMultipleItemClicked(List<CartItemData> cartItemDataList) {
-                        mCartRemoveProductPresenter.processDeleteCart(cartItemDataList, false);
+                    public void onDeleteMultipleItemClicked(List<CartItemData> removedCartItem, List<CartItemData> updatedCartItem) {
+                        mCartRemoveProductPresenter.processDeleteCart(removedCartItem, updatedCartItem, false);
                     }
 
                     @Override
-                    public void onDeleteMultipleItemWithWishListClicked(List<CartItemData> cartItemDataList) {
-                        mCartRemoveProductPresenter.processDeleteCart(cartItemDataList, true);
+                    public void onDeleteMultipleItemWithWishListClicked(List<CartItemData> removedCartItem, List<CartItemData> updatedCartItem) {
+                        mCartRemoveProductPresenter.processDeleteCart(removedCartItem, updatedCartItem, true);
                     }
-
                 }
         );
 

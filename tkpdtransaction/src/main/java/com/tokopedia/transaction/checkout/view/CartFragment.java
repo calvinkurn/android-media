@@ -53,6 +53,7 @@ import com.tokopedia.transaction.checkout.view.view.ICartListView;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -143,7 +144,6 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-
         menu.findItem(R.id.menu_cart_remove).setVisible(mIsMenuVisible);
     }
 
@@ -200,9 +200,10 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     @Override
     public void onCartItemDeleteButtonClicked(CartItemHolderData cartItemHolderData, int position) {
-        ArrayList<CartItemData> cartItemData = new ArrayList<>();
-        cartItemData.add(cartItemHolderData.getCartItemData());
-        showDeleteCartItemDialog(cartItemData);
+        ArrayList<CartItemData> cartItemData =
+                new ArrayList<>(Collections.singletonList(cartItemHolderData.getCartItemData()));
+        ArrayList<CartItemData> emptyList = new ArrayList<>(Collections.<CartItemData>emptyList());
+        showDeleteCartItemDialog(cartItemData, emptyList);
     }
 
     @Override
@@ -489,26 +490,26 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
     }
 
-    void showDeleteCartItemDialog(ArrayList<CartItemData> cartItemDataList) {
-        DialogFragment dialog = CartRemoveItemDialog.newInstance(cartItemDataList,
+    void showDeleteCartItemDialog(ArrayList<CartItemData> cartItemDataList, ArrayList<CartItemData> emptyData) {
+        DialogFragment dialog = CartRemoveItemDialog.newInstance(cartItemDataList, emptyData,
                 new CartRemoveItemDialog.CartItemRemoveCallbackAction() {
                     @Override
-                    public void onDeleteSingleItemClicked(CartItemData cartItemData) {
-                        dPresenter.processDeleteCart(cartItemData, false);
+                    public void onDeleteSingleItemClicked(CartItemData removedCartItem, List<CartItemData> updatedCartItems) {
+                        dPresenter.processDeleteCart(removedCartItem, false);
                     }
 
                     @Override
-                    public void onDeleteSingleItemWithWishListClicked(CartItemData cartItemData) {
-                        dPresenter.processDeleteCart(cartItemData, true);
+                    public void onDeleteSingleItemWithWishListClicked(CartItemData removedCartItem, List<CartItemData> updatedCartItems) {
+                        dPresenter.processDeleteCart(removedCartItem, true);
                     }
 
                     @Override
-                    public void onDeleteMultipleItemClicked(List<CartItemData> cartItemDataList) {
+                    public void onDeleteMultipleItemClicked(List<CartItemData> removedCartItems, List<CartItemData> updatedCartItems) {
 
                     }
 
                     @Override
-                    public void onDeleteMultipleItemWithWishListClicked(List<CartItemData> cartItemDataList) {
+                    public void onDeleteMultipleItemWithWishListClicked(List<CartItemData> removedCartItems, List<CartItemData> updatedCartItems) {
 
                     }
                 });
