@@ -40,7 +40,6 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private final ActionListener actionListener;
     private List<Object> cartItemHolderDataList;
-    private boolean onBind;
 
     @Inject
     public CartListAdapter(ActionListener actionListener) {
@@ -70,7 +69,6 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder,
                                  @SuppressLint("RecyclerView") final int position) {
-        onBind = true;
         if (getItemViewType(position) == TYPE_VIEW_ITEM_CART) {
             final CartItemHolder holderView = (CartItemHolder) holder;
             final CartItemHolderData data = (CartItemHolderData) cartItemHolderDataList.get(position);
@@ -246,8 +244,6 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 holderView.voucherCartHachikoView.resetView();
             }
         }
-
-        onBind = false;
     }
 
     private void renderErrorWarning(CartItemHolderData data, CartItemHolder holderView, int position) {
@@ -352,7 +348,8 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         for (int i = 0; i < cartItemHolderDataList.size(); i++) {
             Object data = cartItemHolderDataList.get(i);
             if (data instanceof CartItemHolderData) {
-                if (((CartItemHolderData) data).getCartItemData().getOriginData().getCartId() == cartItemData.getOriginData().getCartId()) {
+                if (((CartItemHolderData) data).getCartItemData().getOriginData().getCartId()
+                        == cartItemData.getOriginData().getCartId()) {
                     cartItemHolderDataList.remove(i);
                     notifyItemRemoved(i);
                 }
@@ -497,7 +494,8 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         @Override
         public void afterTextChanged(Editable s) {
-            ((CartItemHolderData) cartItemHolderDataList.get(position)).getCartItemData().getUpdatedData().setRemark(s.toString());
+            ((CartItemHolderData) cartItemHolderDataList.get(position))
+                    .getCartItemData().getUpdatedData().setRemark(s.toString());
         }
     }
 }

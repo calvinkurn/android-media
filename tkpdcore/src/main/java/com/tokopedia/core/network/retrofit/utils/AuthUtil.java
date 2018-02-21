@@ -84,7 +84,7 @@ public class AuthUtil {
                 authKey, DATE_FORMAT
         );
 
-        finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
+        finalHeader.put("X-APP-VERSION", "\"" + GlobalConfig.VERSION_NAME + "\"");
         finalHeader.put("Tkpd-UserId", SessionHandler.getLoginID(MainApplication.getAppContext()));
         finalHeader.put(HEADER_DEVICE, "android");
         finalHeader.put("Tkpd-SessionId", GCMHandler.getRegistrationId(MainApplication.getAppContext()));

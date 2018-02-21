@@ -6,6 +6,7 @@ import com.tokopedia.transaction.apiservice.CartService;
 import com.tokopedia.transaction.checkout.domain.response.addtocart.AddToCartDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.cartlist.CartDataListResponse;
 import com.tokopedia.transaction.checkout.domain.response.deletecart.DeleteCartDataResponse;
+import com.tokopedia.transaction.checkout.domain.response.shippingaddress.ShippingAddressDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.updatecart.UpdateCartDataResponse;
 
 import javax.inject.Inject;
@@ -67,6 +68,26 @@ public class CartRepository implements ICartRepository {
             @Override
             public UpdateCartDataResponse call(Response<CartResponse> cartResponseResponse) {
                 return cartResponseResponse.body().convertDataObj(UpdateCartDataResponse.class);
+            }
+        });
+    }
+
+    @Override
+    public Observable<ShippingAddressDataResponse> shippingAddress(TKPDMapParam<String, String> param) {
+        return cartService.getApi().postSetShippingAddress(param).map(new Func1<Response<CartResponse>, ShippingAddressDataResponse>() {
+            @Override
+            public ShippingAddressDataResponse call(Response<CartResponse> cartResponseResponse) {
+                return cartResponseResponse.body().convertDataObj(ShippingAddressDataResponse.class);
+            }
+        });
+    }
+
+    @Override
+    public Observable<String> getShipmentAddressForm(TKPDMapParam<String, String> param) {
+        return cartService.getApi().getShipmentAddressForm(param).map(new Func1<Response<CartResponse>, String>() {
+            @Override
+            public String call(Response<CartResponse> cartResponseResponse) {
+                return cartResponseResponse.body().getStrResponse();
             }
         });
     }

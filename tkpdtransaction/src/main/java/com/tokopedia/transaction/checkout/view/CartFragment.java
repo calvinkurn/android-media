@@ -74,6 +74,8 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     TextView tvItemCount;
     @BindView(R2.id.tv_total_prices)
     TextView tvTotalPrice;
+    @BindView(R2.id.bottom_layout)
+    View bottomLayout;
 
     @Inject
     ICartListPresenter dPresenter;
@@ -166,7 +168,7 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
             @Override
             public void onClick(View view) {
                 cartListAdapter.notifyDataSetChanged();
-                dPresenter.processUpdateCart();
+                dPresenter.processToShipmentStep();
             }
         });
     }
@@ -458,6 +460,21 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     @Override
     public void renderUpdateDataFailed(String message) {
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
+    }
+
+    @Override
+    public void renderUpdateAndRefreshCartDataSuccess(String message) {
+
+    }
+
+    @Override
+    public void renderLoadGetCartData() {
+        bottomLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void renderLoadGetCartDataFinish() {
+        bottomLayout.setVisibility(View.VISIBLE);
     }
 
     void showDeleteCartItemDialog(ArrayList<CartItemData> cartItemDataList) {

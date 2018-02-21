@@ -8,6 +8,7 @@ import com.tokopedia.transaction.checkout.view.data.CartListData;
 import com.tokopedia.transaction.checkout.view.data.DeleteCartData;
 import com.tokopedia.transaction.checkout.view.data.DeleteUpdateCartData;
 import com.tokopedia.transaction.checkout.view.data.UpdateCartData;
+import com.tokopedia.transaction.checkout.view.data.UpdateCartListData;
 
 import javax.inject.Inject;
 
@@ -140,9 +141,59 @@ public class CartListInteractor implements ICartListInteractor {
     }
 
     @Override
-    public void deleteCartWithRefresh(Subscriber<CartListData> subscriber,
-                                      TKPDMapParam<String, String> paramDelete,
-                                      TKPDMapParam<String, String> paramCartList) {
-
+    public void updateAndRefreshCartList(Subscriber<UpdateCartListData> subscriber,
+                                         final TKPDMapParam<String, String> paramUpdate,
+                                         final TKPDMapParam<String, String> paramGetList,
+                                         final TKPDMapParam<String, String> paramGetShipmentForm) {
+        compositeSubscription.add(
+                Observable.just(new UpdateCartListData())
+                        .flatMap(new Func1<UpdateCartListData, Observable<UpdateCartListData>>() {
+                            @Override
+                            public Observable<UpdateCartListData> call(final UpdateCartListData updateCartListData) {
+                                return cartRepository.updateCartData(paramUpdate)
+                                        .map(new Func1<UpdateCartDataResponse, UpdateCartListData>() {
+                                            @Override
+                                            public UpdateCartListData call(UpdateCartDataResponse updateCartDataResponse) {
+                                                updateCartListData.setUpdateCartData(
+                                                        mapper.convertToUpdateCartData(updateCartDataResponse)
+                                                );
+                                                return updateCartListData;
+                                            }
+                                        });
+                            }
+                        })
+                        .flatMap(new Func1<UpdateCartListData, Observable<UpdateCartListData>>() {
+                            @Override
+                            public Observable<UpdateCartListData> call(final UpdateCartListData updateCartListData) {
+                                return cartRepository.getCartList(paramGetList)
+                                        .map(new Func1<CartDataListResponse, UpdateCartListData>() {
+                                            @Override
+                                            public UpdateCartListData call(CartDataListResponse cartDataListResponse) {
+                                                updateCartListData.setCartListData(
+                                                        mapper.convertToCartItemDataList(cartDataListResponse)
+                                                );
+                                                return updateCartListData;
+                                            }
+                                        });
+                            }
+                        })
+                        .flatMap(new Func1<UpdateCartListData, Observable<UpdateCartListData>>() {
+                            @Override
+                            public Observable<UpdateCartListData> call(final UpdateCartListData updateCartListData) {
+                                return cartRepository.getShipmentAddressForm(paramGetShipmentForm)
+                                        .map(new Func1<String, UpdateCartListData>() {
+                                            @Override
+                                            public UpdateCartListData call(String s) {
+                                                //  updateCartListData.setShipmentFormResponse(s);
+                                                return updateCartListData;
+                                            }
+                                        });
+                            }
+                        })
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(subscriber)
+        );
     }
 }

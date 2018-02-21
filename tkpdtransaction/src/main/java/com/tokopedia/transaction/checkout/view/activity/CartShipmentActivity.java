@@ -9,8 +9,8 @@ import android.os.Parcelable;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.checkout.view.SingleAddressShipmentFragment;
 import com.tokopedia.transaction.checkout.view.MultipleAddressFragment;
+import com.tokopedia.transaction.checkout.view.SingleAddressShipmentFragment;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
 
