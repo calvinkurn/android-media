@@ -15,6 +15,17 @@ public class SortData {
     @SerializedName("value")
     @Expose
     private String value;
+    @SerializedName("is_default")
+    @Expose
+    private boolean isDefault;
+
+    public boolean isDefault() {
+        return isDefault;
+    }
+
+    public void setDefault(boolean aDefault) {
+        isDefault = aDefault;
+    }
 
     public String getName() {
         return name;

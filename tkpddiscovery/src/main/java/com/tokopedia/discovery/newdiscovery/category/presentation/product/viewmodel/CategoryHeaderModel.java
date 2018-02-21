@@ -34,6 +34,7 @@ public class CategoryHeaderModel implements Parcelable , Visitable<CategoryProdu
     private String rootCategoryId;
     private String headerImage;
     private String headerImageHexColor;
+    private boolean doneTrackImpression = false;
 
     public CategoryHeaderModel(){
 
@@ -60,6 +61,7 @@ public class CategoryHeaderModel implements Parcelable , Visitable<CategoryProdu
         rootCategoryId = in.readString();
         headerImage = in.readString();
         headerImageHexColor = in.readString();
+        doneTrackImpression = in.readInt() == 1 ? true : false;
     }
 
     @Override
@@ -89,6 +91,7 @@ public class CategoryHeaderModel implements Parcelable , Visitable<CategoryProdu
         dest.writeString(rootCategoryId);
         dest.writeString(headerImage);
         dest.writeString(headerImageHexColor);
+        dest.writeInt(doneTrackImpression ? 1 : 0);
     }
 
     @SuppressWarnings("unused")
@@ -196,6 +199,7 @@ public class CategoryHeaderModel implements Parcelable , Visitable<CategoryProdu
                 childCategoryModel.setCategoryId(child.getId());
                 childCategoryModel.setCategoryImageUrl(child.getThumbnailImage());
                 childCategoryModel.setCategoryName(child.getName());
+                childCategoryModel.setCategoryUrl(child.getUrl());
                 categoryModelList.add(childCategoryModel);
             }
         }
@@ -226,4 +230,13 @@ public class CategoryHeaderModel implements Parcelable , Visitable<CategoryProdu
     public String getHeaderImageHexColor() {
         return headerImageHexColor;
     }
+
+    public boolean isDoneTrackImpression() {
+        return doneTrackImpression;
+    }
+
+    public void setDoneTrackImpression(boolean doneTrackImpression) {
+        this.doneTrackImpression = doneTrackImpression;
+    }
+
 }

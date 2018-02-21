@@ -8,6 +8,7 @@ import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
@@ -33,6 +34,7 @@ public class FlightSearchReturnFragment extends FlightSearchFragment implements 
     private TextView airlineName;
     private TextView duration;
     private String selectedFlightDeparture;
+
 
     public static FlightSearchReturnFragment newInstance(FlightSearchPassDataViewModel passDataViewModel, String selectedDepartureID) {
         Bundle args = new Bundle();
@@ -72,7 +74,8 @@ public class FlightSearchReturnFragment extends FlightSearchFragment implements 
         return flightSearchPassDataViewModel.getDepartureAirport();
     }
 
-    protected boolean isReturning() {
+    @Override
+    public boolean isReturning() {
         return true;
     }
 
@@ -101,10 +104,13 @@ public class FlightSearchReturnFragment extends FlightSearchFragment implements 
 
     @Override
     public void onItemClicked(FlightSearchViewModel flightSearchViewModel) {
-        flightSearchReturnPresenter.onFlightSearchSelected(flightSearchPassDataViewModel.getDepartureDate(), flightSearchPassDataViewModel.getReturnDate(), selectedFlightDeparture, flightSearchViewModel);
-       /* if (onFlightSearchFragmentListener != null) {
-            onFlightSearchFragmentListener.selectFlight(flightSearchViewModel.getId());
-        }*/
+        flightSearchReturnPresenter.onFlightSearchSelected(selectedFlightDeparture, flightSearchViewModel);
+    }
+
+
+    @Override
+    public void onItemClicked(FlightSearchViewModel flightSearchViewModel, int adapterPosition) {
+        flightSearchReturnPresenter.onFlightSearchSelected(selectedFlightDeparture, flightSearchViewModel, adapterPosition);
     }
 
     @Override
@@ -143,5 +149,27 @@ public class FlightSearchReturnFragment extends FlightSearchFragment implements 
         if (onFlightSearchFragmentListener != null) {
             onFlightSearchFragmentListener.selectFlight(returnFlightSearchViewModel.getId());
         }
+    }
+
+    @Override
+    public void navigateToCart(String selectedFlightReturn) {
+        if (onFlightSearchFragmentListener != null) {
+            onFlightSearchFragmentListener.selectFlight(selectedFlightReturn);
+        }
+    }
+
+    @Override
+    public void showErrorPickJourney() {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(R.string.flight_error_pick_journey));
+    }
+
+    protected void onSelectedFromDetail(String selectedId) {
+        flightSearchReturnPresenter.onFlightSearchSelected(selectedFlightDeparture, selectedId);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        flightSearchReturnPresenter.onDestroy();
     }
 }

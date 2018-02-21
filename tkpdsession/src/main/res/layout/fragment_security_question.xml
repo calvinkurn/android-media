@@ -1,0 +1,173 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/main_view"
+                android:background="@color/white">
+
+    <TextView
+        android:id="@+id/save_but"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/margin_med"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_marginRight="@dimen/margin_small"
+        android:layout_marginTop="@dimen/margin_small"
+        android:background="@drawable/green_button"
+        android:gravity="center"
+        android:text="@string/title_confirm_otp"
+        android:textAllCaps="true"
+        android:textColor="@color/white"
+        android:textSize="@dimen/fontvs"
+        android:textStyle="bold" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/save_but"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_med">
+
+            <ProgressBar
+                android:id="@+id/progress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/view_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_med"
+                android:background="@color/red_200"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_small"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/error_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/title_error_security"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/error_msg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/msg_error_security" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/view_otp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/title_otp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_small"
+                    android:text="@string/title_security_question"
+                    android:textColor="@color/body_text_5_inverse"
+                    android:textSize="@dimen/fontxl"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/title_security"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/content_security_question" />
+
+                <TextView
+                    android:id="@+id/title_change_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_small"
+                    android:text="@string/content_change_number" />
+
+                <TextView
+                    android:id="@+id/send_otp"
+                    android:layout_width="@dimen/button_otp"
+                    android:layout_height="@dimen/margin_vl"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/margin_large"
+                    android:layout_weight="0.3"
+                    android:background="@drawable/btn_share_transaparent"
+                    android:gravity="center"
+                    android:textColor="@color/tkpd_green_onboarding"
+
+                    tools:text="Kirim OTP ke Email" />
+
+                <TextView
+                    android:id="@+id/send_otp_call"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="@dimen/padding_small"
+                    android:text="@string/action_send_otp_with_call"
+                    android:textColor="@color/grey_500" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="@dimen/margin_med"
+                    android:layout_marginTop="@dimen/margin_med"
+                    android:text="@string/title_otp" />
+
+
+                <com.tkpd.library.ui.widget.PinEntryEditText
+                    android:id="@+id/input_otp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_large"
+                    android:layout_marginLeft="@dimen/margin_vl"
+                    android:layout_marginRight="@dimen/margin_vl"
+                    android:background="@null"
+                    android:cursorVisible="false"
+                    android:digits="1234567890"
+                    android:imeOptions="actionDone"
+                    android:inputType="number"
+                    android:maxLength="6"
+                    android:paddingBottom="@dimen/margin_small"
+                    android:textIsSelectable="false"
+                    android:textSize="20sp"
+                    android:visibility="visible"
+                    app:pinLineColors="@color/pin_line_colors" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/verify_button"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/btn_height"
+                android:text="@string/truecaller_verif"
+                android:drawableLeft="@drawable/truecaller"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:padding="@dimen/padding_small"
+                android:background="#127FFF"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:layout_marginTop="@dimen/margin_small"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

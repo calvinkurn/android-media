@@ -11,4 +11,8 @@ public interface FlightSearchReturnView extends FlightSearchView {
     void showReturnTimeShouldGreaterThanArrivalDeparture();
 
     void navigateToCart(FlightSearchViewModel returnFlightSearchViewModel);
+
+    void navigateToCart(String selectedFlightReturn);
+
+    void showErrorPickJourney();
 }

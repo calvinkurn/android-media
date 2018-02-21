@@ -15,16 +15,23 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.apprating.AdvancedAppRatingDialog;
 import com.tokopedia.core.apprating.AppRatingDialog;
-import com.tokopedia.payment.activity.TopPayActivity;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
 import com.tokopedia.tkpd.home.fragment.ReactNativeThankYouPageFragment;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 import com.tokopedia.tkpd.thankyou.view.viewmodel.ThanksTrackerData;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 
 public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
+    private static final String PLATFORM = "platform";
+    private static final String DIGITAL = "digital";
 
     private ReactInstanceManager reactInstanceManager;
 
@@ -52,6 +59,7 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
         super.onCreate(savedInstanceState);
         reactInstanceManager = ((ReactApplication) getApplication())
                 .getReactNativeHost().getReactInstanceManager();
+        PurchaseNotifier.notify(this, getIntent().getExtras());
     }
 
     @Override
@@ -75,7 +83,7 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_react_native_official_stores;
+        return R.layout.activity_react_native;
     }
 
     @Override
@@ -135,12 +143,27 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
 
     @Override
     public void onBackPressed() {
-        AdvancedAppRatingDialog.show(this, new AppRatingDialog.AppRatingListener() {
-            @Override
-            public void onDismiss() {
-                closeThankyouPage();
+        if (isDigital()) {
+            AdvancedAppRatingDialog.show(this, new AppRatingDialog.AppRatingListener() {
+                @Override
+                public void onDismiss() {
+                    closeThankyouPage();
+                }
+            });
+        } else {
+            closeThankyouPage();
+        }
+    }
+
+    private boolean isDigital() {
+        Bundle extra = getIntent().getExtras();
+        if (extra != null) {
+            String platform = extra.getString(PLATFORM);
+            if (platform != null && platform.equals(DIGITAL)) {
+                return true;
             }
-        });
+        }
+        return false;
     }
 
     private void closeThankyouPage() {

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
@@ -50,6 +53,7 @@ import com.tokopedia.seller.selling.model.orderShipping.OrderDetail;
 import com.tokopedia.seller.selling.model.orderShipping.OrderPayment;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShipment;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
+import com.tokopedia.seller.selling.view.fragment.CustomScannerBarcodeActivity;
 
 import org.parceler.Parcels;
 
@@ -415,9 +419,9 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
         editRefDialog.show();
     }
 
-    @NeedsPermission({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     public void onScanBarcodeClicked() {
-        startActivityForResult(CommonUtils.requestBarcodeScanner(getContext()), 0);
+        CommonUtils.requestBarcodeScanner(this, CustomScannerBarcodeActivity.class);
     }
 
     private boolean checkEditRef(EditText ref) {
@@ -532,11 +536,9 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        final EditText Ref = (EditText) editRefDialog.findViewById(R.id.ref_number);
+        Ref.setText(CommonUtils.getBarcode(requestCode, resultCode, data));
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 0 && resultCode == Activity.RESULT_OK) {
-            final EditText Ref = (EditText) editRefDialog.findViewById(R.id.ref_number);
-            Ref.setText(CommonUtils.getBarcode(data));
-        }
     }
 
     @Override

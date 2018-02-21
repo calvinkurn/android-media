@@ -61,7 +61,7 @@ abstract class BaseToolbarActivity extends BaseActivity {
             setToolbarColorWhite();
             toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.ToolbarText_SansSerifMedium);
             toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style.ToolbarSubtitleText_SansSerifMedium);
-        }else{
+        } else {
             toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.ToolbarText);
             toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style.ToolbarSubtitleText);
         }
@@ -70,7 +70,8 @@ abstract class BaseToolbarActivity extends BaseActivity {
         }
     }
 
-    @DrawableRes protected int closeButtonDrawable(){
+    @DrawableRes
+    protected int closeButtonDrawable() {
         return R.drawable.ic_filter_detail_close;
     }
 
@@ -101,11 +102,11 @@ abstract class BaseToolbarActivity extends BaseActivity {
 
     public int dpToPx(int dp) {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        return (int)((dp * displayMetrics.density) + 0.5);
+        return (int) ((dp * displayMetrics.density) + 0.5);
     }
 
     private Drawable resize(Drawable image, int width, int height) {
-        Bitmap b = ((BitmapDrawable)image).getBitmap();
+        Bitmap b = ((BitmapDrawable) image).getBitmap();
         Bitmap bitmapResized = Bitmap.createScaledBitmap(b, 50, 50, false);
         return new BitmapDrawable(getResources(), bitmapResized);
     }
@@ -139,7 +140,7 @@ abstract class BaseToolbarActivity extends BaseActivity {
     public void updateOptionMenuColor(Menu menu) {
         if (isToolbarWhite()) {
             MenuTintUtils.tintAllIcons(menu, TEXT_COLOR_BACKGROUND_WHITE);
-        }else{
+        } else {
             MenuTintUtils.tintAllIcons(menu, R.color.white);
         }
     }
@@ -172,4 +173,5 @@ abstract class BaseToolbarActivity extends BaseActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

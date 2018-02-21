@@ -3,8 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:paddingTop="3dp"
-    android:paddingBottom="3dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingTop="@dimen/small_space"
+    android:paddingBottom="@dimen/small_space"
     android:paddingLeft="@dimen/margin_sm"
     android:paddingRight="@dimen/margin_sm"
     android:orientation="vertical">
@@ -13,10 +14,8 @@
         android:id="@+id/old_message_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_med"
-        android:layout_marginRight="@dimen/margin_med"
-        android:layout_marginTop="@dimen/margin_small"
-        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
         android:background="@drawable/border_button_default"
         android:orientation="horizontal"
         android:padding="@dimen/padding_small">
@@ -25,8 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/margin_vs"
-            android:src="@drawable/ic_info_green"
-            />
+            android:src="@drawable/ic_info_green" />
 
         <TextView
             android:id="@+id/old_message"
@@ -37,8 +35,7 @@
             android:textColor="@color/black_38"
             android:textSize="12sp"
             android:textStyle="italic"
-            tools:text="Pesan ini dikirim menggunakan Chat versi lama, dengan subjek: Wolverine Cap Toe Boot Warna Red Tua Ukurannya 42"
-            />
+            tools:text="Pesan ini dikirim menggunakan Chat versi lama, dengan subjek: Wolverine Cap Toe Boot Warna Red Tua Ukurannya 42" />
     </LinearLayout>
 
     <TextView
@@ -64,24 +61,44 @@
         android:lineSpacingExtra="3sp"
         android:textColor="@color/black_54"
         android:textSize="11sp"
+        android:layout_marginBottom="@dimen/margin_vs"
         android:textStyle="normal"
         tools:text="AHAJA"/>
+
+    <TextView
+        android:id="@+id/dot"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignTop="@id/name"
+        android:layout_alignBottom="@id/name"
+        android:layout_marginLeft="@dimen/small_space"
+        android:layout_marginRight="@dimen/small_space"
+        android:layout_toRightOf="@+id/name"
+        android:layout_toEndOf="@+id/name"
+        android:layout_below="@+id/date"
+        android:fontFamily="sans-serif-medium"
+        android:lineSpacingExtra="3sp"
+        android:text="●"
+        android:gravity="center_vertical"
+        android:textColor="@color/grey_500"
+        android:textSize="5sp"
+        android:textStyle="normal" />
+
 
     <TextView
         android:id="@+id/label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/view_user_box"
-        android:layout_marginLeft="11dp"
-        android:layout_marginStart="11dp"
-        android:layout_toEndOf="@+id/name"
-        android:layout_toRightOf="@+id/name"
+        android:layout_below="@id/date"
+        android:layout_toEndOf="@+id/dot"
+        android:layout_toRightOf="@+id/dot"
         android:fontFamily="sans-serif"
         android:lineSpacingExtra="3sp"
         android:textColor="@color/black_38"
         android:textSize="11sp"
         android:textStyle="normal"
         tools:text="Pengguna"/>
+
 
     <ImageView
         android:id="@+id/user_ava"
@@ -93,18 +110,42 @@
         android:layout_marginRight="@dimen/margin_small"
         android:visibility="gone"/>
 
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_group_chat_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/name"
+        app:cardBackgroundColor="@color/cardview_light_background"
+        app:cardUseCompatPadding="true"
+        app:cardCornerRadius="3dp"
+        app:cardElevation="0dp"
+        app:cardPreventCornerOverlap="false">
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="228dp"
+            android:layout_height="148dp"
+            android:maxHeight="270dp"
+            android:maxWidth="270dp"
+            android:minHeight="40dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitStart"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+    </android.support.v7.widget.CardView>
+
     <RelativeLayout
         android:id="@+id/view_user_box"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_vs"
         android:layout_marginRight="@dimen/margin_small"
-        android:layout_below="@id/name"
+        android:layout_below="@+id/card_group_chat_message"
         android:layout_toRightOf="@id/user_ava"
         android:background="@drawable/left_bubble"
         android:gravity="left"
-        android:orientation="vertical"
-        android:padding="@dimen/padding_small">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/message"
@@ -117,6 +158,7 @@
             android:textColorLink="@color/black_70"
             android:textIsSelectable="true"
             android:textSize="@dimen/fonts"
+            android:padding="@dimen/padding_small"
             tools:text="Gukguk meong meongaksjdkajshdkajhsdkajhsdkajhsdaksdjhaksjhkahsdk"/>
 
     </RelativeLayout>
@@ -127,7 +169,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/view_user_box"
         android:layout_gravity="left"
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/margin_vvs"
         android:layout_toRightOf="@id/user_ava"
         android:gravity="left"
         android:textColor="@color/time_color"

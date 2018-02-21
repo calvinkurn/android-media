@@ -91,6 +91,7 @@ yang ditemukan</string>
     <string name="delete_chat">"Hapus chat?"</string>
     <string name="forever_deleted_chat">"Chat akan terhapus selamanya"</string>
     <string name="search_chat_user">"Cari chat atau pengguna"</string>
+    <string name="resend">"Kirim Ulang"</string>
     <string name="delete">"Hapus"</string>
     <string name="cancel">"Batal"</string>
 
@@ -251,4 +252,52 @@ yang ditemukan</string>
     <string name="string_success_help">Tokopedia akan mempelajari kasus ini terlebih dahulu dan akan memberikan resolusi dalam waktu 3 hari</string>
     <string name="string_success_input_awb">Terima kasih sudah melakukan pengiriman</string>
     <string name="string_success_finish">Komplain ini telah dinyatakan selesai. Terima kasih.</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="add_template_chat_title">Tambah Template Pesan</string>
+    <string name="edit_template_chat_title">Ubah Template Pesan</string>
+    <string name="limited_template_chat_warning">Hapus salah satu template untuk bisa membuat template baru.</string>
+    <string name="minimum_template_chat_warning">Minimal harus memiliki 1 template.</string>
+    <string name="success_add_template_chat">Berhasil menambahkan template pesan</string>
+    <string name="success_edit_template_chat">Berhasil mengubah template pesan</string>
+    <string name="success_delete_template_chat">Template berhasil dihapus</string>
+    <string name="success_rearrange_template_chat">Berhasil mengubah urutan template</string>
+    <string name="success_switch_template_chat">Berhasil mengubah urutan template</string>
+    <string name="hint_template_chat">Silakan tambahkan template untuk membantu Anda melakukan Chat tanpa perlu mengetik pesan yang sama berulang kali.
+        \n\nContoh:\nHalo, barang ini ready ya. Silakan diorder</string>
+    <string name="delete_chat_template">"Hapus template?"</string>
+    <string name="forever_deleted_template">"Template akan terhapus selamanya"</string>
+    <string name="minimal_char_template">"Template pesan minimal 5 karakter"</string>
+    <string name="maximal_char_template">"Template pesan maksimal %1$d karakter"</string>
+
+    <string name="title_info_list_template">"Kelola Template Pesan"</string>
+    <string name="body_info_list_template">"Ubah dengan tekan tombol edit, atau atur urutan dengan tahan dan geser tombol drag."</string>
+    <string name="caption_switch_template">"Buat hingga 5 template untuk membantu Anda melakukan Chat tanpa perlu mengetik pesan yang sama berulang kali"</string>
+
+
+    <!--reso inbox-->
+    <string name="string_buyer">Pembeli:</string>
+    <string name="string_seller">Penjual:</string>
+    <string name="string_auto_execute">Selesai Otomatis Dalam :</string>
+    <string name="string_last_reply">Terakhir Dibalas :</string>
+    <string name="string_free_return">Free Return :</string>
+    <string name="string_title_sort">Urutkan</string>
+    <string name="string_title_filter">Filter</string>
+    <string name="string_see_conv">Lihat Percakapan</string>
+    <string name="string_from_date">Dari Tanggal</string>
+    <string name="string_to_date">Sampai Tanggal</string>
+    <string name="string_choose_date">Pilih Tanggal</string>
+    <string name="string_button_finish">Selesai</string>
+    <string name="string_reset">Reset</string>
+    <string name="string_empty_inbox_1_title">Oops, Komplain Tidak Ditemukan</string>
+    <string name="string_empty_inbox_1_desc">Kami tidak dapat menemukan komplain yang anda cari.</string>
+    <string name="string_empty_inbox_2_title">Oopppsss..</string>
+    <string name="string_empty_inbox_2_desc">Kami tidak dapat menemukan komplain yang anda cari.</string>
+    <string name="string_reset_filter">Reset Filter</string>
+    <string name="string_sort_2">Komplain Terbaru</string>
+    <string name="string_sort_3">Komplain Terlama</string>
+    <string name="string_sort_1">Terakhir Dibalas</string>
+    <string name="string_other_products">Produk Lainnya</string>
 </resources>

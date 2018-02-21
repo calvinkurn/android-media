@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.crashlytics.android.Crashlytics;
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
@@ -80,7 +81,7 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
     private ImageView imagePicker;
     private TextView welcomeText;
     private Button buttonNext;
-    private ProgressDialog progressDialog;
+    private TkpdProgressDialog tkpdProgressDialog;
     private String uriPathImage = "";
     private StepperListener<ShopOpenStepperModel> onShopStepperListener;
 
@@ -120,9 +121,6 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
         buttonNext = (Button) view.findViewById(R.id.button_next);
         welcomeText = view.findViewById(R.id.welcome_shop_label);
 
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage(getString(R.string.title_loading));
-
         if (onShopStepperListener != null) {
             if (onShopStepperListener.getStepperModel().getResponseIsReserveDomain() == null) {
                 presenter.getisReserveDomain();
@@ -133,6 +131,7 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
                 }
             }
         }
+
     }
 
     private void updateView(UserData userData) {
@@ -167,34 +166,42 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
     }
 
     protected void onNextButtonClicked() {
-        if (TextUtils.isEmpty(uriPathImage) && onShopStepperListener.getStepperModel().getResponseIsReserveDomain() != null
-                && onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData() != null) {
-            UserData userData = onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData();
-            presenter.submitShopInfo(uriPathImage, shopSloganEditText.getText().toString(),
-                    shopDescEditText.getText().toString(), userData.getLogo(),
-                    userData.getServerId(), userData.getPhotoObj());
-        } else {
-            presenter.submitShopInfo(uriPathImage, shopSloganEditText.getText().toString(),
-                    shopDescEditText.getText().toString(), "", "", "");
+        if (onShopStepperListener.getStepperModel().getResponseIsReserveDomain()!=null) {
+            if (TextUtils.isEmpty(uriPathImage) && onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData() != null) {
+                UserData userData = onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData();
+                presenter.submitShopInfo(uriPathImage, shopSloganEditText.getText().toString(),
+                        shopDescEditText.getText().toString(), userData.getLogo(),
+                        userData.getServerId(), userData.getPhotoObj());
+            } else {
+                presenter.submitShopInfo(uriPathImage, shopSloganEditText.getText().toString(),
+                        shopDescEditText.getText().toString(), "", "", "");
+            }
+        }
+    }
+
+    @Override
+    public void dismissProgressDialog() {
+        if (tkpdProgressDialog != null) {
+            tkpdProgressDialog.dismiss();
         }
     }
 
     @Override
     public void showProgressDialog() {
-        progressDialog.show();
-    }
-
-    @Override
-    public void dismissProgressDialog() {
-        progressDialog.dismiss();
+        if (tkpdProgressDialog == null) {
+            tkpdProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS,
+                    getString(R.string.title_loading));
+        }
+        tkpdProgressDialog.showDialog();
     }
 
     @Override
     public void onSuccessSaveInfoShop(ShopOpenSaveInfoResponseModel responseModel) {
         if(onShopStepperListener != null && onShopStepperListener.getStepperModel().getResponseIsReserveDomain() != null){
-            onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData().setShortDesc(responseModel.getShopDesc());
-            onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData().setLogo(responseModel.getPicSrc());
-            onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData().setTagLine(responseModel.getShopTagLine());
+            UserData userData = onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData();
+            userData.setShortDesc(responseModel.getShopDesc());
+            userData.setLogo(responseModel.getPicSrc());
+            userData.setTagLine(responseModel.getShopTagLine());
         }
         trackingOpenShop.eventOpenShopFormSuccess();
         if (onShopStepperListener != null) {
@@ -205,14 +212,13 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
     @Override
     public void onFailedSaveInfoShop(Throwable t) {
         Crashlytics.logException(t);
-        String errorMessage = ShopErrorHandler.getErrorMessage(t);
+        String errorMessage = ShopErrorHandler.getErrorMessage(getActivity(), t);
         trackingOpenShop.eventOpenShopFormError(errorMessage);
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, Snackbar.LENGTH_LONG, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                onNextButtonClicked();
-            }
-        }).showRetrySnackbar();
+        onErrorGetReserveDomain(errorMessage);
+    }
+
+    private void onErrorGetReserveDomain(String errorMessage){
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
     @Override
@@ -225,7 +231,7 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
 
     @Override
     public void onErrorGetReserveDomain(Throwable e) {
-        NetworkErrorHelper.showSnackbar(getActivity(), ShopErrorHandler.getErrorMessage(e));
+        NetworkErrorHelper.showSnackbar(getActivity(), ShopErrorHandler.getErrorMessage(getActivity(), e));
     }
 
     private void onClickBrowseImage() {
@@ -259,11 +265,13 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
                     }
                     break;
                 case com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY:
+                    if(data != null) {
                         String imageUrl = data.getStringExtra(GalleryActivity.IMAGE_URL);
                         if (!TextUtils.isEmpty(imageUrl)) {
                             uriPathImage = imageUrl;
                             ImageHandler.loadImageFromFile(getActivity(), imagePicker, new File(uriPathImage));
                         }
+                    }
                     break;
                 default:
                     break;
@@ -326,11 +334,12 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
     }
 
     @TargetApi(16)
-    @OnShowRationale({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
+    @OnShowRationale({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showRationale(final PermissionRequest request) {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
     }
@@ -342,7 +351,7 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
     }
 
     @TargetApi(16)
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void goToCamera() {
         startActivityForResult(com.tokopedia.seller.common.imageeditor.GalleryCropActivity.createIntent(getActivity(), 1, true, 1,true),
                 com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY);

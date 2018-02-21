@@ -34,6 +34,11 @@ public class ShopOpenLocPresenterImpl extends BaseDaggerPresenter<ShopOpenLocVie
     }
 
     public void submitData(RequestParams requestParams) {
+        if(!isViewAttached())
+            return;
+
+        getView().showProgressDialog();
+
         shopOpenSaveLocationUseCase.execute(requestParams, new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
@@ -43,6 +48,7 @@ public class ShopOpenLocPresenterImpl extends BaseDaggerPresenter<ShopOpenLocVie
             @Override
             public void onError(Throwable e) {
                 if (isViewAttached()) {
+                    getView().dismissProgressDialog();
                     getView().updateStepperModel();
                     getView().onFailedSaveInfoShop(e);
                 }
@@ -50,6 +56,7 @@ public class ShopOpenLocPresenterImpl extends BaseDaggerPresenter<ShopOpenLocVie
 
             @Override
             public void onNext(Boolean aBoolean) {
+                getView().dismissProgressDialog();
                 if (aBoolean == null || !isViewAttached())
                     return;
                 getView().updateStepperModel();

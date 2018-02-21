@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <LinearLayout
+        android:id="@+id/loading_search"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.7"
+        tools:visibility="visible"
+        android:background="#000000">
+
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#f1f1f1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/new_margin_sm"
+                android:paddingBottom="@dimen/new_margin_sm"
+                android:paddingRight="@dimen/new_margin_med"
+                android:paddingLeft="@dimen/new_margin_med"
+                android:background="@drawable/shadow_background">
+
+                <TextView
+                    android:id="@+id/title_template"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Template Pesan"
+                    android:textSize="16sp"
+                    android:fontFamily="sans-serif"
+                    android:textStyle="bold"
+                    android:textColor="@color/black_70"/>
+
+                <TextView
+                    android:id="@+id/desc_template"
+                    android:maxWidth="270dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/caption_switch_template"
+                    android:layout_below="@id/title_template"
+                    android:textColor="@color/black_54"
+                    android:textSize="@dimen/text_size_medium"
+                    android:lineSpacingExtra="1sp"
+                    android:layout_marginTop="@dimen/new_margin_small"/>
+
+                <android.support.v7.widget.SwitchCompat
+                    style="@style/SwitchCompatStyle"
+                    android:id="@+id/switch_chat_template"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:checked="false"
+                    android:gravity="right"
+                    tools:checked="true" />
+
+            </RelativeLayout>
+
+            <android.support.v4.widget.Space
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/new_margin_sm" />
+
+        <RelativeLayout
+            android:id="@+id/template_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/shadow_background"
+            android:visibility="gone"
+                tools:visibility="visible"
+                android:paddingTop="@dimen/activity_vertical_margin">
+            <TextView
+                android:id="@+id/template_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Daftar Template"
+                android:textSize="16sp"
+                android:fontFamily="sans-serif"
+                android:textStyle="bold"
+                android:textColor="@color/black_70"
+                android:layout_marginBottom="@dimen/new_margin_small"
+                android:layout_marginTop="@dimen/new_margin_small"
+                android:paddingLeft="@dimen/activity_vertical_margin" />
+
+                <ImageView
+                    android:id="@+id/template_list_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_information"
+                    android:layout_toRightOf="@id/template_list"
+                    android:layout_alignTop="@id/template_list"
+                    android:layout_alignBottom="@id/template_list"
+                    android:paddingLeft="6dp"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:layout_below="@id/template_list"
+                    android:id="@+id/recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                </android.support.v7.widget.RecyclerView>
+
+            </RelativeLayout>
+        </LinearLayout>
+
+    </ScrollView>
+</RelativeLayout>

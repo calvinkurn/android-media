@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FavoriteCtaViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.ContentProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
@@ -60,6 +61,8 @@ public interface FeedPlusTypeFactory {
     int type(FavoriteCtaViewModel favoriteCtaViewModel);
 
     int type(ContentProductViewModel contentProductViewModel);
+
+    int type(EmptyFeedBeforeLoginModel emptyFeedBeforeLoginModel);
 
     AbstractViewHolder createViewHolder(View view, int viewType);
 }

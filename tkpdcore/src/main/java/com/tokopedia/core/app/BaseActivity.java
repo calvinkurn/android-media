@@ -1,7 +1,6 @@
 package com.tokopedia.core.app;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
@@ -11,7 +10,6 @@ import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -25,7 +23,6 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
-import com.tokopedia.core.network.retrofit.utils.DialogHockeyApp;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -37,7 +34,6 @@ import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.core.welcome.WelcomeActivity;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -46,8 +42,12 @@ import rx.schedulers.Schedulers;
 
 /**
  * Created by nisie on 2/7/17.
+ * refer {@link com.tokopedia.abstraction.base.view.activity.BaseActivity}
  */
 
+/**
+ * Extends one of BaseActivity from tkpd abstraction eg:BaseSimpleActivity, BaseStepperActivity, BaseTabActivity, etc
+ */
 @Deprecated
 public class BaseActivity extends AppCompatActivity implements SessionHandler.onLogoutListener,
         ErrorNetworkReceiver.ReceiveListener, ScreenTracking.IOpenScreenAnalytics {
@@ -85,7 +85,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         globalCacheManager = new GlobalCacheManager();
 
         HockeyAppHelper.handleLogin(this);
-        HockeyAppHelper.checkForUpdate(this);
     }
 
     @Override
@@ -106,7 +105,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         unregisterForceLogoutReceiver();
         MainApplication.setActivityState(0);
         MainApplication.setActivityname(null);
-        HockeyAppHelper.unregisterManager();
     }
 
     @Override
@@ -137,8 +135,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        HockeyAppHelper.unregisterManager();
 
         sessionHandler = null;
         gcmHandler = null;
@@ -176,7 +172,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
             finish();
             Intent intent;
             if (GlobalConfig.isSellerApp()) {
-                intent = new Intent(this, WelcomeActivity.class);
+                intent = ((TkpdCoreRouter)MainApplication.getAppContext()).getHomeIntent(this);
             } else {
                 invalidateCategoryCache();
                 intent = HomeRouter.getHomeActivity(this);
@@ -295,22 +291,4 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     protected void setGoldMerchant(ShopModel shopModel) {
         sessionHandler.setGoldMerchant(shopModel.info.shopIsGold);
     }
-
-    @Override
-    public void onForceHockeyApp() {
-        if (!DialogHockeyApp.isDialogShown(this)) showHoeckeyAppDialog();
-    }
-
-    private void showHoeckeyAppDialog() {
-        DialogHockeyApp.createShow(this,
-                new DialogHockeyApp.ActionListener() {
-                    @Override
-                    public void onDialogClicked() {
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setData(Uri.parse(HockeyAppHelper.getHockeyappDownloadUrl()));
-                        startActivity(intent);
-                    }
-                });
-    }
-
 }

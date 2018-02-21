@@ -61,7 +61,16 @@ public class GoogleLocationViewModel implements Parcelable {
     }
 
     public boolean isLatLongEmpty(){
-        return TextUtils.isEmpty(latitude) || TextUtils.isEmpty(longitude);
+        return TextUtils.isEmpty(latitude) || TextUtils.isEmpty(longitude) ||
+                Double.valueOf(latitude) == -999 || Double.valueOf(longitude) == -999;
+    }
+
+    public void clearData(){
+        longitude = null;
+        latitude = null;
+        checkSum = null;
+        generatedAddress = "";
+        manualAddress = "";
     }
 
     @Override

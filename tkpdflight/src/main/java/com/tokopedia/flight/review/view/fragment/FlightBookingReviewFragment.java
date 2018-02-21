@@ -12,6 +12,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -24,7 +25,7 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.voucher.VoucherCartView;
@@ -85,6 +86,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     FlightBookingReviewPresenter flightBookingReviewPresenter;
     FlightBookingReviewModel flightBookingReviewModel;
     private LinearLayout fullPageLoading;
+    private LinearLayout discountAppliedLayout;
     private NestedScrollView containerFullPage;
     private CountdownTimeView reviewTime;
     private TextView reviewDetailDepartureFlight;
@@ -94,12 +96,15 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     private RecyclerView recyclerViewDataPassenger;
     private RecyclerView recyclerViewDetailPrice;
     private TextView reviewTotalPrice;
+    private TextView reviewDiscountPrice;
+    private AppCompatTextView reviewFinalTotalPrice;
     private Button buttonSubmit;
     private VoucherCartView voucherCartView;
     private View containerFlightReturn;
     private ProgressDialog progressDialog;
     private FlightSimpleAdapter flightBookingReviewPriceAdapter;
     private boolean isPassengerInfoPageNeedToRefresh = false;
+
 
     public static FlightBookingReviewFragment createInstance(FlightBookingReviewModel flightBookingReviewModel) {
         FlightBookingReviewFragment flightBookingReviewFragment = new FlightBookingReviewFragment();
@@ -132,6 +137,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_flight_review, container, false);
         fullPageLoading = (LinearLayout) view.findViewById(R.id.full_page_loading);
+        discountAppliedLayout = (LinearLayout) view.findViewById(R.id.voucher_applied_layout);
         containerFullPage = (NestedScrollView) view.findViewById(R.id.container_full_page);
         reviewTime = (CountdownTimeView) view.findViewById(R.id.countdown_finish_transaction);
         reviewDetailDepartureFlight = (TextView) view.findViewById(R.id.review_detail_departure_flight);
@@ -141,6 +147,8 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         recyclerViewDataPassenger = (RecyclerView) view.findViewById(R.id.recycler_view_data_passenger);
         recyclerViewDetailPrice = (RecyclerView) view.findViewById(R.id.recycler_view_detail_price);
         reviewTotalPrice = (TextView) view.findViewById(R.id.total_price);
+        reviewDiscountPrice = (TextView) view.findViewById(R.id.tv_discount_voucher);
+        reviewFinalTotalPrice = (AppCompatTextView) view.findViewById(R.id.tv_total_final_price);
         buttonSubmit = (Button) view.findViewById(R.id.button_submit);
         voucherCartView = (VoucherCartView) view.findViewById(R.id.voucher_check_view);
         containerFlightReturn = view.findViewById(R.id.container_flight_return);
@@ -224,9 +232,13 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         recyclerViewDetailPrice.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewDetailPrice.setAdapter(flightBookingReviewPriceAdapter);
 
-        reviewTotalPrice.setText(flightBookingReviewModel.getTotalPrice());
+        updateFinalTotal(getCurrentBookingReviewModel());
         reviewTime.setExpiredDate(flightBookingReviewModel.getDateFinishTime());
         reviewTime.start();
+    }
+
+    private void updateFinalTotal(FlightBookingReviewModel currentBookingReviewModel) {
+        updateFinalTotal(null, currentBookingReviewModel);
     }
 
     @Override
@@ -249,6 +261,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
                 }
                 break;
             case REQUEST_CODE_TOPPAY:
+                hideCheckoutLoading();
                 reviewTime.start();
                 if (getActivity().getApplication() instanceof FlightModuleRouter) {
                     int paymentSuccess = ((FlightModuleRouter) getActivity().getApplication()).getTopPayPaymentSuccessCode();
@@ -273,7 +286,29 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
 
     @Override
     public void onSuccessCheckVoucherCode(AttributesVoucher attributesVoucher) {
+        KeyboardHandler.hideSoftKeyboard(getActivity());
         voucherCartView.setUsedVoucher(attributesVoucher.getVoucherCode(), attributesVoucher.getMessage());
+    }
+
+    @Override
+    public String getVoucherCode() {
+        return voucherCartView.getVoucherCode();
+    }
+
+    @Override
+    public void updateFinalTotal(AttributesVoucher attributesVoucher, FlightBookingReviewModel currentBookingReviewModel) {
+
+        int totalFinal = 0;
+        if (attributesVoucher != null && Math.round(attributesVoucher.getDiscountAmountPlain()) > 0) {
+            discountAppliedLayout.setVisibility(View.VISIBLE);
+            reviewDiscountPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace((int) Math.round(attributesVoucher.getDiscountAmountPlain())));
+            reviewTotalPrice.setText(flightBookingReviewModel.getTotalPrice());
+            totalFinal = (int) (currentBookingReviewModel.getTotalPriceNumeric() - attributesVoucher.getDiscountAmountPlain());
+        } else {
+            discountAppliedLayout.setVisibility(View.GONE);
+            totalFinal = currentBookingReviewModel.getTotalPriceNumeric();
+        }
+        reviewFinalTotalPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalFinal));
     }
 
     @Override
@@ -303,7 +338,8 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
 
     @Override
     public void disableVoucherDiscount() {
-
+        KeyboardHandler.hideSoftKeyboard(getActivity());
+        updateFinalTotal(getCurrentBookingReviewModel());
     }
 
     @Override
@@ -432,9 +468,10 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     public void setTotalPrice(int totalPrice) {
         flightBookingReviewModel.setTotalPriceNumeric(totalPrice);
         flightBookingReviewModel.setTotalPrice(
-                CurrencyFormatUtil.convertPriceValueToIdrFormat(totalPrice)
+                CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalPrice)
         );
         reviewTotalPrice.setText(flightBookingReviewModel.getTotalPrice());
+        updateFinalTotal(getCurrentBookingReviewModel());
     }
 
     @Override
@@ -530,6 +567,13 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     @Override
     public void navigateToOrderList() {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(getActivity());
+        if (getActivity().getApplication() instanceof FlightModuleRouter
+                && ((FlightModuleRouter) getActivity().getApplication())
+                .getHomeIntent(getActivity()) != null) {
+            Intent intent = ((FlightModuleRouter) getActivity().getApplication())
+                    .getHomeIntent(getActivity());
+            taskStackBuilder.addNextIntent(intent);
+        }
         Intent homepageFlight = FlightDashboardActivity.getCallingIntent(getActivity());
         Intent ordersFlight = FlightOrderListActivity.getCallingIntent(getActivity());
         taskStackBuilder.addNextIntent(homepageFlight);

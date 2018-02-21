@@ -69,6 +69,9 @@ public class GetUserInfoData {
     @SerializedName("completion")
     @Expose
     private int completion;
+    @SerializedName("create_password_list")
+    @Expose
+    private List<String> createPasswordList ;
 
     public int getUserId() {
         return userId;
@@ -222,4 +225,7 @@ public class GetUserInfoData {
         this.completion = completion;
     }
 
+    public List<String> getCreatePasswordList() {
+        return createPasswordList;
+    }
 }

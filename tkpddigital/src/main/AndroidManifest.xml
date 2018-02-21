@@ -12,7 +12,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
-            android:name=".product.activity.DigitalProductActivity"
+            android:name=".product.view.activity.DigitalProductActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
@@ -24,13 +24,13 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".product.activity.DigitalChooserActivity"
+            android:name=".product.view.activity.DigitalChooserActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".product.activity.DigitalWebActivity"
+            android:name=".product.view.activity.DigitalWebActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".widget.activity.DigitalCategoryListActivity"
+            android:name=".categorylist.view.activity.DigitalCategoryListActivity"
             android:label="@string/title_activity_category_list_digital_module"
             android:screenOrientation="portrait"/>
         <activity
@@ -50,7 +50,7 @@
             android:name=".tokocash.activity.DetailTransactionActivity"
             android:screenOrientation="portrait"/>
 
-        <activity android:name=".product.activity.DigitalUssdActivity"/>
+        <activity android:name=".product.view.activity.DigitalUssdActivity"/>
 
         <activity
             android:name=".tokocash.activity.WalletToDepositActivity"
@@ -65,7 +65,7 @@
             android:name=".tokocash.activity.HelpHistoryDetailActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".product.activity.DigitalSearchNumberActivity"
+            android:name=".product.view.activity.DigitalSearchNumberActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".tokocash.activity.WaitingTransactionActivity"
@@ -73,12 +73,7 @@
 
         <receiver
             android:name=".receiver.TokocashPendingDataBroadcastReceiver"
-            android:enabled="true"
-            tools:ignore="ExportedReceiver">
-            <intent-filter>
-                <action android:name="com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver.ACTION_GET_TOKOCASH_PENDING_DATA"/>
-            </intent-filter>
-        </receiver>
+            android:enabled="true"/>
     </application>
 
 </manifest>

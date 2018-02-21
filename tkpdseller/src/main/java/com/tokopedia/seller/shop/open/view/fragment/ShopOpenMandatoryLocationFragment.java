@@ -1,17 +1,16 @@
 package com.tokopedia.seller.shop.open.view.fragment;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.crashlytics.android.Crashlytics;
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
@@ -21,7 +20,6 @@ import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Tok
 import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationContract;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.seller.LogisticRouter;
@@ -31,6 +29,7 @@ import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.shop.common.exception.ShopException;
 import com.tokopedia.seller.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
+import com.tokopedia.seller.shop.open.util.ShopErrorHandler;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.seller.shop.open.view.holder.LocationHeaderViewHolder;
 import com.tokopedia.seller.shop.open.view.holder.LocationMapViewHolder;
@@ -73,9 +72,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
     ShopOpenTracking trackingOpenShop;
 
     RequestParams requestParams;
-    private ProgressDialog progressDialog;
-
-    private SnackbarRetry snackbarRetry;
+    private TkpdProgressDialog tkpdProgressDialog;
 
     public static ShopOpenMandatoryLocationFragment getInstance() {
         return new ShopOpenMandatoryLocationFragment();
@@ -85,15 +82,29 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_shop_open_location, container, false);
-        requestParams = RequestParams.EMPTY;
+        requestParams = RequestParams.create();
         requestParams.putAll((HashMap<String, String>) AuthUtil.generateParams(getActivity()));
         initView(root);
         return root;
     }
 
+    @Override
+    public void dismissProgressDialog() {
+        if (tkpdProgressDialog != null) {
+            tkpdProgressDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void showProgressDialog() {
+        if (tkpdProgressDialog == null) {
+            tkpdProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS,
+                    getString(R.string.title_loading));
+        }
+        tkpdProgressDialog.showDialog();
+    }
+
     private void initView(View root) {
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage(getString(R.string.title_loading));
 
         new LocationHeaderViewHolder(root, new LocationHeaderViewHolder.ViewHolderListener() {
             @Override
@@ -119,7 +130,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
             }
         });
 
-        locationMapViewHolder = new LocationMapViewHolder(root, new LocationMapViewHolder.ViewHolderListener3() {
+        locationMapViewHolder = new LocationMapViewHolder(root, new LocationMapViewHolder.ViewHolderListener() {
             @Override
             public void navigateToGeoLocationActivityRequest(final String generatedMap) {
                 if (logisticRouter == null)
@@ -129,8 +140,13 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
             }
 
             @Override
-            public void sendTrackingData() {
-                trackingOpenShop.eventOpenShopPinPointLocation();
+            public void onPinPointSelected() {
+                trackingOpenShop.eventOpenShopPinPointSelected();
+            }
+
+            @Override
+            public void onPinPointDeleted() {
+                trackingOpenShop.eventOpenShopPinPointDeleted();
             }
         });
 
@@ -140,28 +156,34 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
                 onNextButtonClicked();
             }
         });
+      
+        ShopOpenStepperModel stepperModel = stepperListener.getStepperModel();
+        if (stepperModel != null) {
+            ResponseIsReserveDomain responseIsReserveDomain = stepperModel.getResponseIsReserveDomain();
+            if (responseIsReserveDomain!= null){
+                Shipment shipment = responseIsReserveDomain.getShipment();
+                UserData userData = responseIsReserveDomain.getUserData();
+                locationShippingViewHolder.updateLocationData(userData.getLocComplete(), userData.getLocation());
 
-        if (stepperListener.getStepperModel() != null) {
-            Shipment shipment = stepperListener.getStepperModel().getResponseIsReserveDomain().getShipment();
-            UserData userData = stepperListener.getStepperModel().getResponseIsReserveDomain().getUserData();
-            locationShippingViewHolder.updateLocationData(userData.getLocComplete(), userData.getLocation());
+                if (shipment != null) {
+                    locationShippingViewHolder.updateDistrictId(Integer.toString(shipment.getDistrictId()));
+                  
+                  if(shipment.getPostal() != 0)
+                    locationShippingViewHolder.updateZipCodes(Integer.toString(shipment.getPostal()));
 
-            if (shipment != null) {
-                locationShippingViewHolder.updateDistrictId(Integer.toString(shipment.getDistrictId()));
-                locationShippingViewHolder.updateZipCodes(Integer.toString(shipment.getPostal()));
-
-                GoogleLocationViewModel googleLocationViewModel
-                        = new GoogleLocationViewModel();
-                googleLocationViewModel.setGeneratedAddress(shipment.getAddrStreet());
-                googleLocationViewModel.setManualAddress(shipment.getAddrStreet());
-                googleLocationViewModel.setLongitude(shipment.getLongitude());
-                googleLocationViewModel.setLatitude(shipment.getLatitude());
-                googleLocationViewModel.setCheckSum(shipment.getGeolocationChecksum());
+                    GoogleLocationViewModel googleLocationViewModel
+                            = new GoogleLocationViewModel();
+                    googleLocationViewModel.setGeneratedAddress(shipment.getAddrStreet());
+                    googleLocationViewModel.setManualAddress(shipment.getAddrStreet());
+                    googleLocationViewModel.setLongitude(shipment.getLongitude());
+                    googleLocationViewModel.setLatitude(shipment.getLatitude());
+                    googleLocationViewModel.setCheckSum(shipment.getGeolocationChecksum());
 
 
-                locationMapViewHolder.setFromReserveDomain(true);
+                    locationMapViewHolder.setFromReserveDomain(true);
 
-                locationMapViewHolder.setLocationText(googleLocationViewModel);
+                    locationMapViewHolder.setLocationText(googleLocationViewModel);
+                }
             }
         }
     }
@@ -169,10 +191,10 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
     protected void onNextButtonClicked() {
         GoogleLocationViewModel googleLocationViewModel = locationMapViewHolder.getGoogleLocationViewModel();
 
-        if (!locationShippingViewHolder.isDataInputValid()){
+        if (!locationShippingViewHolder.isDataInputValid()) {
             return;
         }
-        if (!locationMapViewHolder.isDataInputValid()){
+        if (!locationMapViewHolder.isDataInputValid()) {
             return;
         }
         RequestParams requestParams = ShopOpenSaveLocationUseCase.createRequestParams(
@@ -228,7 +250,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
             if (shipment == null) {
                 shipment = new Shipment();
             }
-            if (googleLocationViewModel!= null) {
+            if (googleLocationViewModel != null) {
                 shipment.setAddrStreet(googleLocationViewModel.getGeneratedAddress());
                 shipment.setLongitude(googleLocationViewModel.getLongitude());
                 shipment.setLatitude(googleLocationViewModel.getLatitude());
@@ -330,6 +352,18 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        locationMapViewHolder.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        locationMapViewHolder.onLowMemory();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         shopOpenLocPresenter.detachView();
@@ -345,7 +379,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
         NetworkErrorHelper.showSnackbar(getActivity(), ErrorHandler.getErrorMessage(e, getActivity()));
     }
 
-    private void onErrorGetReserveDomain(String errorMessage){
+    private void onErrorGetReserveDomain(String errorMessage) {
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
@@ -361,30 +395,23 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
         }
 
         // set error message
-        if(errorMessage.split(",").length > 1){
+        if (errorMessage.split(",").length > 1) {
             errorMessage = errorMessage.split(",")[0];
         }
-
-        if(errorMessage.contains(CONST_PINPOINT)){
+        sendErrorTracking(errorMessage);
+        if (errorMessage.contains(CONST_PINPOINT)) {
             onErrorGetReserveDomain(errorMessage);
             return;
         }
+        onErrorGetReserveDomain(errorMessage);
+    }
+
+    private void sendErrorTracking(String errorMessage) {
         trackingOpenShop.eventOpenShopLocationError(errorMessage);
-        (snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                onNextButtonClicked();
-            }
-        })).showRetrySnackbar();
-    }
-
-    @Override
-    public void showProgressDialog() {
-        progressDialog.show();
-    }
-
-    @Override
-    public void dismissProgressDialog() {
-        progressDialog.dismiss();
+        String generatedErrorMessage = ShopErrorHandler.getGeneratedErrorMessage(errorMessage.toCharArray(),
+                locationShippingViewHolder.getLocationComplete(), locationShippingViewHolder.getPostalCode(),
+                locationMapViewHolder.getGoogleLocationViewModel() != null ? locationMapViewHolder.getGoogleLocationViewModel().getManualAddress() : "",
+                locationMapViewHolder.getManualAddress() != null ? locationMapViewHolder.getGoogleLocationViewModel().getManualAddress() : "");
+        trackingOpenShop.eventOpenShopLocationErrorWithData(generatedErrorMessage);
     }
 }

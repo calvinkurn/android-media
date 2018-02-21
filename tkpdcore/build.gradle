@@ -12,6 +12,10 @@ def getArtifactVersionCode() {
     return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
 }
 
+def getTkpdCacheApi() {
+    return project(':tkpdcacheapi')
+}
+
 def getTkpdAbstraction() {
     return project.hasProperty('isArtifact') ?
             rootProject.ext.tkpdDependencies.abstraction : project(':tkpdabstraction');
@@ -100,6 +104,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
+    compile getTkpdCacheApi()
     compile getTkpdAbstraction()
 
     testCompile rootProject.ext.testDependencies.junit
@@ -165,7 +170,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'design'
     }
 
-    compile rootProject.ext.miscDependencies.captureActivity
+    compile rootProject.ext.miscDependencies.scannerZxing
+    compile rootProject.ext.miscDependencies.multiDex
     compile rootProject.ext.miscDependencies.parcelerApi
     apt rootProject.ext.miscDependencies.parceler
     compile rootProject.ext.miscDependencies.gson
@@ -196,6 +202,8 @@ dependencies {
     compile rootProject.ext.playServicesDependencies.firebase
     compile rootProject.ext.playServicesDependencies.remoteConfig
     compile rootProject.ext.debugToolsDependencies.stetho
+
+    compile rootProject.ext.analyticsDependencies.logentries
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -25,20 +26,20 @@ import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.service.DownloadService;
-import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.TkpdWebView;
-import com.tokopedia.core.var.TkpdState;
 
-
+/**
+ * Use webview fragment from tkpd abstraction
+ */
+@Deprecated
 public class FragmentGeneralWebView extends Fragment implements BaseWebViewClient.WebViewCallback,
         View.OnKeyListener {
     public static final String EXTRA_URL = "url";
@@ -47,6 +48,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     private static final String SEAMLESS = "seamless";
     private static final String LOGIN_TYPE = "login_type";
     private static final String QUERY_PARAM_PLUS = "plus";
+    private static final String KOL_URL = "tokopedia.com/content";
     private static final int LOGIN_GPLUS = 123453;
     private static boolean isAlreadyFirstRedirect;
     private TkpdWebView WebViewGeneral;
@@ -111,8 +113,33 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                 }
                 super.onProgressChanged(view, newProgress);
             }
+
+            @Override
+            public void onReceivedTitle(WebView view, String title) {
+                super.onReceivedTitle(view, title);
+                if (getActivity() instanceof AppCompatActivity
+                        && ((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+                    String decodedUrl = Uri.decode(url).toLowerCase();
+
+                    if (!TextUtils.isEmpty(title)
+                            && Uri.parse(title).getScheme() == null
+                            && isKolUrl(decodedUrl)) {
+                        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(
+                                title
+                        );
+                    } else {
+                        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(
+                                getString(R.string.title_activity_deep_link)
+                        );
+                    }
+                }
+            }
         });
         return fragmentView;
+    }
+
+    private boolean isKolUrl(String url) {
+        return url.contains(KOL_URL);
     }
 
     public WebView getWebview() {
@@ -218,9 +245,8 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     public boolean onOverrideUrl(String url) {
         String query = Uri.parse(url).getQueryParameter(LOGIN_TYPE);
         if (query != null && query.equals(QUERY_PARAM_PLUS)) {
-            Intent intent = OldSessionRouter.getLoginActivityIntent(getActivity());
-            intent.putExtra("login", DownloadService.GOOGLE);
-            intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+            Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext())
+                    .getLoginGoogleIntent(getActivity());
             startActivityForResult(intent, LOGIN_GPLUS);
             return true;
         }
@@ -291,6 +317,14 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                     ((TkpdCoreRouter) getActivity().getApplication())
                             .getApplinkUnsupported(getActivity())
                             .showAndCheckApplinkUnsupported();
+                }
+            } else if (getActivity() != null &&
+                    getActivity().getApplication() instanceof TkpdCoreRouter) {
+                String applink = ((TkpdCoreRouter) getActivity().getApplication())
+                        .applink(getActivity(), url);
+                if (!TextUtils.isEmpty(applink)) {
+                    openDigitalPage(applink);
+                    return true;
                 }
             }
             return overrideUrl(url);

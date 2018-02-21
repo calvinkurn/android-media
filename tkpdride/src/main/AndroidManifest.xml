@@ -14,7 +14,8 @@
         android:supportsRtl="true">
         <activity
             android:name=".bookingride.view.activity.RideHomeActivity"
-            android:theme="@style/AppTheme.Ride.NoActionBar" />
+            android:theme="@style/AppTheme.Ride.NoActionBar">
+        </activity>
         <activity
             android:name=".bookingride.view.activity.GooglePlacePickerActivity"
             android:theme="@style/AppTheme.Ride.NoActionBar" />

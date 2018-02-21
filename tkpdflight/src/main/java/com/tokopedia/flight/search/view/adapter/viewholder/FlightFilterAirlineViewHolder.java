@@ -38,7 +38,7 @@ public class FlightFilterAirlineViewHolder extends BaseCheckableViewHolder<Airli
     @Override
     public void bind(AirlineStat airlineStat) {
         super.bind(airlineStat);
-        ImageHandler.loadImageWithoutPlaceholder(ivLogo, airlineStat.getAirlineDB().getLogo(), R.drawable.ic_airline_default);
+        ImageHandler.loadImageWithPlaceholder(ivLogo, airlineStat.getAirlineDB().getLogo(), R.drawable.ic_airline_default);
         tvTitle.setText(airlineStat.getAirlineDB().getName());
         tvDesc.setText(getString(R.string.start_from_x, airlineStat.getMinPriceString()));
         itemView.setOnClickListener(this);

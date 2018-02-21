@@ -14,6 +14,8 @@ import okhttp3.Response;
  */
 public class TkpdBaseInterceptor implements Interceptor {
     private static final String TAG = TkpdBaseInterceptor.class.getSimpleName();
+    public static final int SERVER_ERROR_500 = 500;
+    public static final int SERVER_ERROR_599 = 599;
     protected int maxRetryAttempt = 3;
 
     @Inject
@@ -29,7 +31,8 @@ public class TkpdBaseInterceptor implements Interceptor {
         try {
             Response response = chain.proceed(request);
             int count = 0;
-            while (!response.isSuccessful() && count < maxRetryAttempt) {
+            while (response.code() >= SERVER_ERROR_500 && response.code() <= SERVER_ERROR_599
+                    && count < maxRetryAttempt) {
                 count++;
                 response = chain.proceed(request);
             }

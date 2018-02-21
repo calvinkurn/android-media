@@ -23,21 +23,16 @@ import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.service.DownloadService;
-import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.TkpdWebView;
-import com.tokopedia.core.var.TkpdState;
 
 /**
  * Created by Nisie on 8/25/2015.
@@ -122,10 +117,10 @@ public class FragmentBannerWebView extends Fragment {
     private boolean overrideUrl(String url) {
         if (getActivity() != null && getActivity().getApplication() != null) {
             if (getActivity().getApplication() instanceof IDigitalModuleRouter && (((IDigitalModuleRouter) getActivity().getApplication())
-                        .isSupportedDelegateDeepLink(url))) {
-                    ((IDigitalModuleRouter) getActivity().getApplication())
-                            .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
-                    return true;
+                    .isSupportedDelegateDeepLink(url))) {
+                ((IDigitalModuleRouter) getActivity().getApplication())
+                        .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
+                return true;
             } else if (Uri.parse(url).getScheme().equalsIgnoreCase(Constants.APPLINK_CUSTOMER_SCHEME)) {
                 if (getActivity().getApplication() instanceof TkpdCoreRouter &&
                         (((TkpdCoreRouter) getActivity().getApplication()).getApplinkUnsupported(getActivity()) != null)) {
@@ -138,50 +133,49 @@ public class FragmentBannerWebView extends Fragment {
             }
         }
 
-        if (TrackingUtils.getBoolean(AppEventTracking.GTM.OVERRIDE_BANNER) ||
-                FragmentBannerWebView.this.getArguments().getBoolean(EXTRA_OVERRIDE_URL, false)) {
-            if (((Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.WEB_DOMAIN).getHost()))
-                    || Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.MOBILE_DOMAIN).getHost()))
-                    && !url.endsWith(".pl")) {
-                switch ((DeepLinkChecker.getDeepLinkType(url))) {
-                    case DeepLinkChecker.CATEGORY:
-                        DeepLinkChecker.openCategory(url, getActivity());
-                        return true;
-                    case DeepLinkChecker.BROWSE:
-                        DeepLinkChecker.openBrowse(url, getActivity());
-                        return true;
-                    case DeepLinkChecker.HOT:
-                        DeepLinkChecker.openHot(url, getActivity());
-                        return true;
-                    case DeepLinkChecker.CATALOG:
-                        DeepLinkChecker.openCatalog(url, getActivity());
-                        return true;
-                    case DeepLinkChecker.PRODUCT:
-                        DeepLinkChecker.openProduct(url, getActivity());
-                        return true;
-                    case DeepLinkChecker.SHOP:
-                        ((BannerWebView) getActivity()).openShop(url);
-                        return true;
-                    case DeepLinkChecker.HOME:
-                        DeepLinkChecker.openHomepage(getActivity(), HomeRouter.INIT_STATE_FRAGMENT_HOME);
-                        return true;
-                    default:
-                        return false;
-                }
-            } else {
-                return false;
-            }
-        } else {
+
+        if (((Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.WEB_DOMAIN).getHost()))
+                || Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.MOBILE_DOMAIN).getHost()))
+                && !(Uri.parse(url).getLastPathSegment() != null && Uri.parse(url).getLastPathSegment().endsWith(".pl"))
+                && !url.contains("login")) {
+
             String query = Uri.parse(url).getQueryParameter(LOGIN_TYPE);
             if (query != null && query.equals(QUERY_PARAM_PLUS)) {
-                Intent intent = OldSessionRouter.getLoginActivityIntent(getActivity());
-                intent.putExtra("login", DownloadService.GOOGLE);
-                intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+                Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext())
+                        .getLoginGoogleIntent(getActivity());
                 startActivityForResult(intent, LOGIN_GPLUS);
                 return true;
             }
+
+            switch ((DeepLinkChecker.getDeepLinkType(url))) {
+                case DeepLinkChecker.CATEGORY:
+                    DeepLinkChecker.openCategory(url, getActivity());
+                    return true;
+                case DeepLinkChecker.BROWSE:
+                    DeepLinkChecker.openBrowse(url, getActivity());
+                    return true;
+                case DeepLinkChecker.HOT:
+                    DeepLinkChecker.openHot(url, getActivity());
+                    return true;
+                case DeepLinkChecker.CATALOG:
+                    DeepLinkChecker.openCatalog(url, getActivity());
+                    return true;
+                case DeepLinkChecker.PRODUCT:
+                    DeepLinkChecker.openProduct(url, getActivity());
+                    return true;
+                case DeepLinkChecker.SHOP:
+                    ((BannerWebView) getActivity()).openShop(url);
+                    return true;
+                case DeepLinkChecker.HOME:
+                    DeepLinkChecker.openHomepage(getActivity(), HomeRouter.INIT_STATE_FRAGMENT_HOME);
+                    return true;
+                default:
+                    return false;
+            }
+        } else {
+            return false;
         }
-        return false;
+
     }
 
     @Override

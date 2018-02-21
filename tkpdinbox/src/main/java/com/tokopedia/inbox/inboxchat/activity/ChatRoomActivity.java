@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatDelegate;
@@ -37,6 +38,8 @@ import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageDetailActivity;
 
+import java.util.List;
+
 /**
  * Created by Nisie on 5/19/16.
  */
@@ -46,6 +49,22 @@ public class ChatRoomActivity extends BasePresenterActivity
 
     private static final String TAG = "INBOX_MESSAGE_DETAIL_FRAGMENT";
     public static final String PARAM_SENDER_ROLE = "PARAM_SENDER_ROLE";
+
+
+    public static final String PARAM_OWNER_FULLNAME = "owner_fullname";
+    public static final String PARAM_CUSTOM_SUBJECT = "custom_subject";
+    public static final String PARAM_CUSTOM_MESSAGE = "custom_message";
+    public static final String PARAM_SHOP_ID = "to_shop_id";
+    public static final String PARAM_USER_ID = "to_user_id";
+    public static final String PARAM_SOURCE = "source";
+    public static final String PARAM_ROLE = "role";
+    public static final String ROLE_USER = "Pengguna";
+    public static final String ROLE_SELLER = "Penjual";
+    final static String SELLER = "shop";
+    public static final String IS_HAS_ATTACH_BUTTON = "has_attachment";
+    public static final String PARAM_AVATAR = "avatar";
+
+    public static final String PARAM_WEBSOCKET = "create_websocket";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +124,7 @@ public class ChatRoomActivity extends BasePresenterActivity
 
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         if(remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
+            extras.putBoolean(PARAM_WEBSOCKET, true);
             detailsIntent = new Intent(context, ChatRoomActivity.class).putExtras(extras);
             parentIntent = new Intent(context, InboxChatActivity.class);
         } else {
@@ -149,7 +169,7 @@ public class ChatRoomActivity extends BasePresenterActivity
     protected void initView() {
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.container, ChatRoomFragment.createInstance(getIntent().getExtras()),
-                        TAG)
+                        ChatRoomFragment.TAG)
                 .commit();
     }
 
@@ -189,6 +209,17 @@ public class ChatRoomActivity extends BasePresenterActivity
         something.restackList(data);
     }
 
+    @Override
+    public void onBackPressed() {
+        final ChatRoomFragment fragment = (ChatRoomFragment) getSupportFragmentManager().findFragmentByTag(ChatRoomFragment.TAG);
+
+        if (fragment!=null) {
+            fragment.onBackPressed();
+        }else {
+            super.onBackPressed();
+        }
+    }
+
     public static Intent getCallingIntent(Context context, String nav, String messageId,
                                           int position, String senderName, String senderTag,
                                           String senderId, String role, int mode, String keyword, String image) {
@@ -205,6 +236,8 @@ public class ChatRoomActivity extends BasePresenterActivity
         bundle.putString(PARAM_SENDER_ROLE, role);
         bundle.putInt(PARAM_MODE, mode);
         bundle.putString(PARAM_KEYWORD, keyword);
+        bundle.putBoolean(IS_HAS_ATTACH_BUTTON, true);
+        bundle.putBoolean(PARAM_WEBSOCKET, true);
         intent.putExtras(bundle);
         return intent;
     }
@@ -212,5 +245,67 @@ public class ChatRoomActivity extends BasePresenterActivity
     @Override
     public AppComponent getComponent() {
         return getApplicationComponent();
+    }
+
+
+    public static Intent getAskSellerIntent(Context context, String toShopId,
+                                            String shopName, String source, String avatar) {
+        Intent intent = new Intent(context, ChatRoomActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(PARAM_SENDER_ID, toShopId);
+        bundle.putString(PARAM_SENDER_NAME, shopName);
+        bundle.putString(PARAM_SOURCE, source);
+        bundle.putString(PARAM_SENDER_TAG, ROLE_SELLER);
+        bundle.putString(PARAM_SENDER_ROLE, SELLER);
+        bundle.putBoolean(IS_HAS_ATTACH_BUTTON, true);
+        bundle.putString(PARAM_SENDER_IMAGE, avatar);
+        bundle.putBoolean(PARAM_WEBSOCKET, false);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent getAskSellerIntent(Context context, String toShopId, String shopName,
+                                            String customSubject, String customMessage, String
+                                                    source, String avatar) {
+        Intent intent = getAskSellerIntent(context, toShopId, shopName, source,
+                avatar);
+        Bundle bundle = intent.getExtras();
+        bundle.putString(PARAM_CUSTOM_SUBJECT, customSubject);
+        bundle.putString(PARAM_CUSTOM_MESSAGE, customMessage);
+        bundle.putBoolean(IS_HAS_ATTACH_BUTTON, false);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent getAskUserIntent(Context context, String userId,
+                                          String userName, String source,
+                                          String avatar) {
+        Intent intent = new Intent(context, ChatRoomActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(PARAM_USER_ID, userId);
+        bundle.putString(PARAM_SENDER_NAME, userName);
+        bundle.putString(PARAM_SOURCE, source);
+        bundle.putString(PARAM_SENDER_TAG, ROLE_USER);
+        bundle.putBoolean(IS_HAS_ATTACH_BUTTON, true);
+        bundle.putString(PARAM_SENDER_IMAGE, avatar);
+        bundle.putBoolean(PARAM_WEBSOCKET, false);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent getAskBuyerIntent(Context context, String toUserId, String
+            customerName, String customSubject, String customMessage, String source,
+                                           String avatar) {
+        Intent intent = getAskUserIntent(context, toUserId, customerName, source, avatar);
+        Bundle bundle = intent.getExtras();
+        bundle.putString(PARAM_CUSTOM_SUBJECT, customSubject);
+        bundle.putString(PARAM_CUSTOM_MESSAGE, customMessage);
+        bundle.putBoolean(IS_HAS_ATTACH_BUTTON, false);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public void destroy() {
+        super.onBackPressed();
     }
 }

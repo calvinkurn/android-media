@@ -13,7 +13,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -23,6 +25,7 @@ import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.ChildCategoryLifestyleAdapter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.RevampCategoryAdapter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
+import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ChildCategoryModel;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -30,6 +33,8 @@ import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.view.TopAdsBannerView;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -96,6 +101,25 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
         renderTotalProduct(model);
     }
 
+    private void trackImpression(CategoryHeaderModel model) {
+        if (!model.isDoneTrackImpression()) {
+            List<Object> list = new ArrayList<>();
+            for (int i = 0; i < model.getChildCategoryModelList().size(); i++) {
+                ChildCategoryModel looper = model.getChildCategoryModelList().get(i);
+                list.add(
+                        DataLayer.mapOf(
+                                "id", looper.getCategoryId(),
+                                "name", String.format("category %s - subcategory banner", model.getHeaderModel().getCategoryName().toLowerCase()),
+                                "position", String.valueOf(i+1),
+                                "creative", looper.getCategoryName()
+                                )
+                );
+            }
+            model.setDoneTrackImpression(true);
+            UnifyTracking.eventCategoryLifestyleImpression(list);
+        }
+    }
+
     private void renderBannerCategory(CategoryHeaderModel model) {
         renderSingleBanner(
                 model.getHeaderImage(),
@@ -111,20 +135,31 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
         if (isRootCategory(model) || !isHasChild(model)) {
             layoutChildCategory.setVisibility(View.GONE);
         } else {
+            trackImpression(model);
             layoutChildCategory.setVisibility(View.VISIBLE);
             layoutChildCategory.setBackgroundColor(
-                    TextUtils.isEmpty(model.getHeaderImageHexColor()) ?
-                            ContextCompat.getColor(context, R.color.white) :
-                            Color.parseColor(model.getHeaderImageHexColor())
+                    generateHexLifestyleBackgroundColor(model.getHeaderImageHexColor())
             );
 
-            ChildCategoryLifestyleAdapter adapter = new ChildCategoryLifestyleAdapter(categoryListener);
+            ChildCategoryLifestyleAdapter adapter = new ChildCategoryLifestyleAdapter(categoryListener, model.getHeaderModel().getCategoryName());
             adapter.setListCategory(model.getChildCategoryModelList());
             adapter.notifyDataSetChanged();
             listChildCategory.setHasFixedSize(true);
             listChildCategory.setLayoutManager(generateLayoutManager(model.getChildCategoryModelList().size()));
             listChildCategory.setAdapter(adapter);
         }
+    }
+
+    private int generateHexLifestyleBackgroundColor(String hexColor) {
+        int color = ContextCompat.getColor(context, R.color.white);
+        if (!TextUtils.isEmpty(hexColor)) {
+            try {
+                color = Color.parseColor(hexColor);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return color;
     }
 
     private RecyclerView.LayoutManager generateLayoutManager(int size) {

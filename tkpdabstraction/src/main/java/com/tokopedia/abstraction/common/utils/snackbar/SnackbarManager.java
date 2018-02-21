@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.common.utils.CommonUtils;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 
 /**
  * Created by Tkpd_Eka on 12/23/2015.
@@ -104,6 +104,17 @@ public class SnackbarManager {
             String text,
             @Snackbar.Duration int duration) {
         return makeRed(getContentView(activity), text, duration);
+    }
+
+    public static Snackbar makeGreen(
+            View view,
+            String text,
+            @Snackbar.Duration int duration) {
+        return make(view,
+                text,
+                duration,
+                R.color.font_black_disabled_38, R.color.green_500, R.color.light_green,
+                R.drawable.bg_green_snackbar);
     }
 
 }

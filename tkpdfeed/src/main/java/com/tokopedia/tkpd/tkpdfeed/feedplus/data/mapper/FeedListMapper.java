@@ -311,6 +311,7 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
             KolRecommendationDomain domain = new KolRecommendationDomain(kolrecommendation
                     .headerTitle() == null ? "" : kolrecommendation.headerTitle(),
                     kolrecommendation.exploreLink() == null ? "" : kolrecommendation.exploreLink(),
+                    kolrecommendation.exploreText() == null ? "" : kolrecommendation.exploreText(),
                     convertToListKolRecommendation(kolrecommendation.kols()));
             return domain;
         }

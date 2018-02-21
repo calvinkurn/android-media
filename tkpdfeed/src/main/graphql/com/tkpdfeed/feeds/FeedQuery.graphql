@@ -203,6 +203,7 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String, $source: String) {
               kolrecommendation {
              	       headerTitle
              	       exploreLink
+                       exploreText
              	       kols {
              		        userName
              		        userId

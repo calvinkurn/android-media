@@ -10,6 +10,7 @@
     tools:showIn="@layout/fragment_shop_open_location">
 
     <TextView
+        android:id="@+id/map_info_title"
         style="@style/TextView.Micro.BlackDisabled"
         android:lineSpacingExtra="10sp"
         android:text="@string/shop_open_optional_pinpoint_location_text"
@@ -18,7 +19,8 @@
     <FrameLayout
         android:id="@+id/empty_map_view"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/image_width_xxxl">
+        android:layout_height="@dimen/image_width_xxxl"
+        android:visibility="visible">
 
         <android.support.v7.widget.AppCompatImageView
             android:layout_width="match_parent"
@@ -55,11 +57,10 @@
 
     </FrameLayout>
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/mapview_container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/image_width_xxxl"
-        android:orientation="vertical"
         android:visibility="gone">
 
         <com.google.android.gms.maps.MapView
@@ -70,7 +71,20 @@
             app:liteMode="true"
             app:mapType="normal"
             app:cameraZoom="15" />
-    </LinearLayout>
+        
+        
+         <Button
+            android:id="@+id/delete_pinpoint"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/image_width_s"
+            android:text="@string/action_delete"
+            android:background="@drawable/white_button_rounded"
+            style="@style/TextView.Micro"
+            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginEnd="@dimen/margin_small"
+            android:layout_gravity="top|right"/>
+    </FrameLayout>
 
     <TextView
         android:id="@+id/generated_location_open_shop"

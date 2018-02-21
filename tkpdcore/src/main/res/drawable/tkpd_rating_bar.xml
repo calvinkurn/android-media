@@ -7,6 +7,9 @@
         android:id="@android:id/secondaryProgress"
         android:drawable="@drawable/ic_rating" />
     <item
-        android:id="@android:id/progress"
-        android:drawable="@drawable/ic_rating_gold" />
+        android:id="@android:id/progress">
+        <bitmap
+            android:src="@drawable/ic_rating_gold"
+            android:tileModeX="repeat"/>
+    </item>
 </layer-list>

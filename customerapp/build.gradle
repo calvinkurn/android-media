@@ -85,7 +85,7 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 216001101;
+        defaultVersionCode = 218001101;
         defaultVersionName = "2.20";
     }
 
@@ -273,9 +273,12 @@ dependencies {
     compile project(':tkpdpdp')
     compile project(':tkpdfeed')
     compile project(':tkpdreactnative')
+    compile project(':tkpdevents')
     compile project(':tkpdloyalty')
     compile project(':tkpdreputation')
+    compile project(':tkpdtokocash')
     compile project(':tkpdflight')
+    compile project(':tkpdhome')
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

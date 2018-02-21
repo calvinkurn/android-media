@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <ScrollView
+        android:id="@+id/scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottom_pay_layout"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/layout_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/padding_detail"
+                android:background="@drawable/bg_white_border_shadow"
+                android:padding="@dimen/margin_small">
+
+                <TextView
+                    android:id="@+id/field_merchant"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ke : "
+                    android:textColor="@color/black_70"
+                    android:textSize="@dimen/font_medium"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/merchant_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/field_merchant"
+                    android:textColor="@color/black_70"
+                    android:textSize="@dimen/font_medium"
+                    tools:text="Pohon Terang" />
+
+                <TextView
+                    android:id="@+id/merchant_phone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/merchant_name"
+                    android:layout_below="@+id/merchant_name"
+                    android:layout_marginTop="@dimen/margin_ms"
+                    android:drawableLeft="@drawable/ic_shop_phone"
+                    android:drawablePadding="@dimen/margin_vs"
+                    android:textColor="@color/black_70"
+                    android:textSize="@dimen/fontvs"
+                    tools:text="0872721313718" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_nominal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/layout_header"
+                android:layout_marginBottom="@dimen/padding_detail"
+                android:layout_marginLeft="@dimen/padding_detail"
+                android:layout_marginRight="@dimen/padding_detail">
+
+                <TextView
+                    android:id="@+id/title_nominal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Jumlah Pembayaran"
+                    android:textColor="@color/black_54"
+                    android:textSize="@dimen/fontvs" />
+
+                <TextView
+                    android:id="@+id/field_rupiah"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/value_nominal"
+                    android:layout_alignTop="@+id/value_nominal"
+                    android:layout_below="@+id/title_nominal"
+                    android:gravity="center_vertical"
+                    android:text="Rp "
+                    android:textColor="@color/black_70"
+                    android:textSize="@dimen/font_medium"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/value_nominal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/title_nominal"
+                    android:layout_toRightOf="@+id/field_rupiah"
+                    android:background="@color/transparent"
+                    android:hint="0"
+                    android:inputType="number"
+                    android:textColor="@color/black_70"
+                    android:textSize="@dimen/fontxl" />
+
+                <View
+                    android:id="@+id/separator"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@+id/value_nominal"
+                    android:layout_marginTop="@dimen/margin_ms"
+                    android:background="@color/separator_grey" />
+
+                <TextView
+                    android:id="@+id/tokocash_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@+id/separator"
+                    android:layout_marginTop="@dimen/margin_ms"
+                    android:gravity="center_vertical"
+                    android:text="TokoCash Balance : Rp. 75.000"
+                    android:textColor="@color/grey_text"
+                    android:textSize="@dimen/fontvs"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/title_notes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tokocash_value"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:text="Catatan (opsional)"
+                    android:textColor="@color/black_54"
+                    android:textSize="@dimen/fontvs" />
+
+                <EditText
+                    android:id="@+id/notes_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/title_notes"
+                    android:layout_marginTop="@dimen/margin_vs"
+                    android:background="@color/transparent"
+                    android:hint="Masukkan catatan" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@+id/notes_value"
+                    android:layout_marginTop="@dimen/margin_ms"
+                    android:background="@color/separator_grey" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/bottom_pay_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/pay_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/padding_detail"
+            android:background="@drawable/bg_grey_border_black"
+            android:text="Bayar"
+            android:textAllCaps="false"
+            android:textColor="@color/grey_nonactive_text"
+            android:enabled="false"/>
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+</RelativeLayout>

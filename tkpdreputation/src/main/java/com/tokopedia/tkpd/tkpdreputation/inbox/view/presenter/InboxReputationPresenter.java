@@ -90,8 +90,9 @@ public class InboxReputationPresenter
     }
 
     public void refreshPage(String query, String timeFilter, String scoreFilter, int tab) {
+        pagingHandler.resetPage();
         getInboxReputationUseCase.execute(
-                GetInboxReputationUseCase.getParam(1, query, timeFilter,
+                GetInboxReputationUseCase.getParam(pagingHandler.getPage(), query, timeFilter,
                         scoreFilter, tab),
                 new RefreshInboxReputationSubscriber(viewListener, isUsingFilter(query,
                         timeFilter,scoreFilter)));

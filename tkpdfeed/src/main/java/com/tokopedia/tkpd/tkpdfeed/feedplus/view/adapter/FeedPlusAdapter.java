@@ -12,6 +12,7 @@ import com.tokopedia.core.base.adapter.model.LoadingModel;
 import com.tokopedia.core.base.adapter.model.RetryModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.EndlessScrollRecycleListener;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.AddFeedModel;
 
@@ -27,6 +28,7 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     private List<Visitable> list;
     private final FeedPlusTypeFactory typeFactory;
     private EmptyModel emptyModel;
+    private EmptyFeedBeforeLoginModel emptyFeedBeforeLoginModel;
     private LoadingModel loadingModel;
     private RetryModel retryModel;
     private boolean unsetListener;
@@ -181,5 +183,10 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     public interface OnScrollListener extends OnLoadListener {
         void onScroll(int lastVisiblePosition);
 
+    }
+
+    public void showUserNotLogin() {
+        emptyFeedBeforeLoginModel = new EmptyFeedBeforeLoginModel();
+        this.list.add(emptyFeedBeforeLoginModel);
     }
 }

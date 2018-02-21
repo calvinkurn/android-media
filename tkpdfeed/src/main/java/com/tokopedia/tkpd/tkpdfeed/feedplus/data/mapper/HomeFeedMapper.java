@@ -50,19 +50,21 @@ public class HomeFeedMapper implements Func1<HomeFeedQuery.Data, FeedDomain> {
         if (datumList != null) {
             for (int i = 0; i < datumList.size(); i++) {
                 HomeFeedQuery.Data.Datum datum = datumList.get(i);
+                if (datum.content() != null) {
 
-                List<InspirationDomain> inspirationDomains = convertToInspirationDomain(datum
-                        .content().inspirasi());
+                    List<InspirationDomain> inspirationDomains = convertToInspirationDomain(datum
+                            .content().inspirasi());
 
-                ContentFeedDomain contentFeedDomain = createContentFeedDomain(
-                        datum.content(),
-                        inspirationDomains
-                );
-                SourceFeedDomain sourceFeedDomain =
-                        createSourceFeedDomain(datum.source());
+                    ContentFeedDomain contentFeedDomain = createContentFeedDomain(
+                            datum.content(),
+                            inspirationDomains
+                    );
+                    SourceFeedDomain sourceFeedDomain =
+                            createSourceFeedDomain(datum.source());
 
-                dataFeedDomains.add(createDataFeedDomain(datum,
-                        contentFeedDomain, sourceFeedDomain));
+                    dataFeedDomains.add(createDataFeedDomain(datum,
+                            contentFeedDomain, sourceFeedDomain));
+                }
             }
         }
         return dataFeedDomains;
