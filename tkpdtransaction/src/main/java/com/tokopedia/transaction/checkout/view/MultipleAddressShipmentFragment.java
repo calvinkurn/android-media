@@ -21,6 +21,7 @@ import com.tokopedia.transaction.checkout.view.adapter.MultipleAddressShipmentAd
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressPriceSummaryData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressShipmentAdapterData;
+import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.view.presenter.IMultipleAddressShipmentPresenter;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
@@ -136,7 +137,10 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
 
     @Override
     public void onChooseShipment(MultipleAddressShipmentAdapterData addressAdapterData) {
-        startActivityForResult(ShipmentDetailActivity.createInstance(getActivity()), REQUEST_CODE_SHIPMENT_DETAIL);
+        ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
+        // Todo : add required data to shipmentDetailData for request to kero rates api
+        startActivityForResult(ShipmentDetailActivity.createInstance(getActivity(), shipmentDetailData),
+                REQUEST_CODE_SHIPMENT_DETAIL);
     }
 
     @Override

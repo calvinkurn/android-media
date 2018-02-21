@@ -223,6 +223,9 @@
     <string name="label_add_new_address">Tambah Alamat Baru</string>
     <string name="delete_single_item_message_dialog">Anda yakin ingin menghapus %1$s, Berat %2$s dari keranjang belanja?</string>
     <string name="detele_all_item_message_dialog">Apakah anda yakin ingin menghapus produk ini dari keranjang?</string>
+    <string name="label_partial_order_info">Aktifkan untuk tetap menerima stok yang tersedia jika stok Toko tidak mencukupi total pesanan.</string>
+    <string name="label_dropshipper_info">Penjual, sebagai supplier akan mengirim barang ke pembeli Anda dengan mengatasnamakan toko Anda. Syarat dan Ketentuan toko berlaku.</string>
+    <string name="label_not_yet_pinpoint">Belum Pinpoint</string>
 
     <string-array name="pickup_point">
         <item>Alfamart</item>

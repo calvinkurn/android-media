@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.view.ShipmentDetailFragment;
+import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 
 /**
  * Created by Irfan Khoirul on 26/01/18.
@@ -17,8 +18,12 @@ import com.tokopedia.transaction.checkout.view.ShipmentDetailFragment;
 
 public class ShipmentDetailActivity extends BasePresenterActivity {
 
-    public static Intent createInstance(Activity activity) {
-        return new Intent(activity, ShipmentDetailActivity.class);
+    public static final String EXTRA_SHIPMENT_DETAIL_DATA = "shipmentDetailData";
+
+    public static Intent createInstance(Activity activity, ShipmentDetailData shipmentDetailData) {
+        Intent intent = new Intent(activity, ShipmentDetailActivity.class);
+        intent.putExtra(EXTRA_SHIPMENT_DETAIL_DATA, shipmentDetailData);
+        return intent;
     }
 
     @Override
@@ -43,7 +48,8 @@ public class ShipmentDetailActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
-        ShipmentDetailFragment fragment = ShipmentDetailFragment.newInstance();
+        ShipmentDetailFragment fragment = ShipmentDetailFragment.newInstance(
+                (ShipmentDetailData) getIntent().getParcelableExtra(EXTRA_SHIPMENT_DETAIL_DATA));
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         fragmentTransaction.add(R.id.container, fragment, ShipmentDetailFragment.class.getSimpleName());

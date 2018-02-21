@@ -73,8 +73,12 @@ public class ShipmentRatesDataMapper {
                     }
                 }
 
-                shipmentItemData.setMultiplePriceRange(minPriceProduct.getFormattedPrice() + " - " +
-                        maxPriceProduct.getFormattedPrice());
+                if (minPrice != maxPrice) {
+                    shipmentItemData.setMultiplePriceRange(minPriceProduct.getFormattedPrice() + " - " +
+                            maxPriceProduct.getFormattedPrice());
+                } else {
+                    shipmentItemData.setSinglePriceRange(minPriceProduct.getFormattedPrice());
+                }
             } else {
                 shipmentItemData.setSinglePriceRange(attribute.getProducts().get(0).getFormattedPrice());
             }
@@ -99,11 +103,11 @@ public class ShipmentRatesDataMapper {
         courierItemData.setInsuranceType(product.getInsuranceType());
         courierItemData.setInsuranceUsedDefault(product.getInsuranceUsedDefault());
         courierItemData.setInsuranceUsedType(product.getInsuranceUsedType());
-        courierItemData.setDeliveryPrice(product.getFormattedPrice());
+        courierItemData.setDeliveryPrice(product.getPrice());
         if (product.getMaxHoursId() != null && product.getMaxHoursId().length() > 0) {
-            courierItemData.setEstimatedTimeDelivery(product.getMaxHoursId());
+            courierItemData.setEstimatedHourDelivery(product.getMaxHoursId());
         } else {
-            courierItemData.setEstimatedTimeDelivery(product.getEtd());
+            courierItemData.setEstimatedDayDelivery(product.getEtd());
         }
         courierItemData.setSelected(false);
 
