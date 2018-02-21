@@ -641,6 +641,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     public void toggleSameAsContactCheckbox() {
         if (isChecked) {
             isChecked = false;
+            uncheckSameAsContact();
         } else {
             isChecked = true;
         }
@@ -757,5 +758,25 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         }
 
         return flightBookingPassengerViewModel;
+    }
+
+    private void uncheckSameAsContact() {
+        FlightBookingPassengerViewModel flightBookingPassengerViewModel = getView()
+                .getCurrentBookingParamViewModel()
+                .getPassengerViewModels()
+                .get(0);
+        flightBookingPassengerViewModel.setPassengerFirstName(null);
+        flightBookingPassengerViewModel.setPassengerLastName(null);
+        flightBookingPassengerViewModel.setPassengerTitle(null);
+        flightBookingPassengerViewModel.setPassengerTitleId(0);
+        flightBookingPassengerViewModel.setPassengerBirthdate(null);
+        flightBookingPassengerViewModel.setFlightBookingLuggageMetaViewModels(
+                new ArrayList<FlightBookingAmenityMetaViewModel>()
+        );
+        flightBookingPassengerViewModel.setFlightBookingMealMetaViewModels(
+                new ArrayList<FlightBookingAmenityMetaViewModel>()
+        );
+
+        onPassengerResultReceived(flightBookingPassengerViewModel);
     }
 }
