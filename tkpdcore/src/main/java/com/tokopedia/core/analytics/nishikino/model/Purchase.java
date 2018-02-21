@@ -22,6 +22,8 @@ public class Purchase {
     public static final String ID = "id";
 
     public static final String NAME = "name";
+    public static final String REVENUE_KEY = "revenue";
+    public static final String SHIPPING_KEY = "shipping";
 
     private Map<String, Object> ActionField = new HashMap<>();
     private Map<String, Object> Purchase = new HashMap<>();
@@ -100,19 +102,19 @@ public class Purchase {
     }
 
     public void setRevenue(Object revenue) {
-        ActionField.put("revenue", revenue);
+        ActionField.put(REVENUE_KEY, revenue);
     }
 
     public void setShipping(Object shipping) {
-        ActionField.put("shipping", shipping);
+        ActionField.put(SHIPPING_KEY, shipping);
     }
 
     public Object getRevenue() {
-       return ActionField.get("revenue");
+       return ActionField.get(REVENUE_KEY);
     }
 
     public Object getShipping() {
-       return ActionField.get("shipping");
+       return ActionField.get(SHIPPING_KEY);
     }
 
     public void setVoucherCode(Object voucherCode) { ActionField.put("coupon", voucherCode); }

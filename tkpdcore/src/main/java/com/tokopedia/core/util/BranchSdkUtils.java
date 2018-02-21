@@ -137,17 +137,17 @@ public class BranchSdkUtils {
                     Map<String, Object> product = (Map<String, Object>) objProduct;
                     io.branch.referral.util.Product branchProduct = new io.branch.referral.util.Product();
 
-                    branchProduct.setSku("" + product.get(com.tokopedia.core.analytics.nishikino.model.Product.KEY_ID));
-                    branchProduct.setName("" + product.get(com.tokopedia.core.analytics.nishikino.model.Product.KEY_NAME));
-                    branchProduct.setPrice(convertStringToDouble(""+product.get(com.tokopedia.core.analytics.nishikino.model.Product.KEY_PRICE)));
+                    branchProduct.setSku(String.valueOf(product.get(com.tokopedia.core.analytics.nishikino.model.Product.KEY_ID)));
+                    branchProduct.setName(String.valueOf(product.get(com.tokopedia.core.analytics.nishikino.model.Product.KEY_NAME)));
+                    branchProduct.setPrice(convertStringToDouble(String.valueOf(product.get(com.tokopedia.core.analytics.nishikino.model.Product.KEY_PRICE))));
                     branchProductList.add(branchProduct);
 
                 }
                 CommerceEvent commerceEvent = new CommerceEvent();
-                commerceEvent.setTransactionID("" + purchase.getTransactionID());
-                commerceEvent.setRevenue(convertStringToDouble("" + purchase.getRevenue()));
+                commerceEvent.setTransactionID(String.valueOf(purchase.getTransactionID()));
+                commerceEvent.setRevenue(convertStringToDouble(String.valueOf(purchase.getRevenue())));
                 commerceEvent.setCurrencyType(CurrencyType.IDR);
-                commerceEvent.setShipping(convertStringToDouble("" + purchase.getShipping()));
+                commerceEvent.setShipping(convertStringToDouble(String.valueOf(purchase.getShipping())));
                 commerceEvent.setProducts(branchProductList);
 
                 JSONObject metadata=new JSONObject();

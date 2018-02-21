@@ -103,8 +103,8 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
         } else if (TextUtils.isEmpty(contents)) {
             contents = getAppShareDefaultMessage();
         }
-        if(!contents.contains("Cek -")){
-            contents = contents + " Cek - ";
+        if(!contents.contains(activity.getString(R.string.cek_label))){
+            contents = contents + activity.getString(R.string.cek_label);
         }
 
     }
