@@ -262,6 +262,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         switch (requestCode) {
             case REQUEST_CODE_PASSENGER:
                 if (resultCode == Activity.RESULT_OK) {
+                    hideSameAsContactContainer();
                     FlightBookingPassengerViewModel passengerViewModel = data.getParcelableExtra(FlightBookingPassengerActivity.EXTRA_PASSENGER);
                     presenter.onPassengerResultReceived(passengerViewModel);
                 }
@@ -680,5 +681,9 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                 presenter.onSameAsContactClicked(true);
             }
         };
+    }
+
+    private void hideSameAsContactContainer() {
+        sameAsContactContainer.setVisibility(View.GONE);
     }
 }
