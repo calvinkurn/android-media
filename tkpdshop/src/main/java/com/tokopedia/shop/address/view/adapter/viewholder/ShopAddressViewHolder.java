@@ -32,9 +32,9 @@ public class ShopAddressViewHolder extends AbstractViewHolder<ShopAddressViewMod
     }
 
     private void findViews(View view) {
-        titleTextView = view.findViewById(R.id.text_view_title);
-        contentTextView = view.findViewById(R.id.text_view_content);
-        areaTextView = view.findViewById(R.id.text_view_area);
+        titleTextView = view.findViewById(R.id.text_view_address_title);
+        contentTextView = view.findViewById(R.id.text_view_address_content);
+        areaTextView = view.findViewById(R.id.text_view_address_area);
         emailLabelView = view.findViewById(R.id.label_view_email);
         phoneLabelView = view.findViewById(R.id.label_view_phone);
         faxLabelView = view.findViewById(R.id.label_view_fax);
