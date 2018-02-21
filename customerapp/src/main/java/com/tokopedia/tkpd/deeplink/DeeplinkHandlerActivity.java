@@ -23,6 +23,8 @@ import com.tokopedia.digital.applink.DigitalApplinkModule;
 import com.tokopedia.digital.applink.DigitalApplinkModuleLoader;
 import com.tokopedia.discovery.applink.DiscoveryApplinkModule;
 import com.tokopedia.discovery.applink.DiscoveryApplinkModuleLoader;
+import com.tokopedia.events.deeplink.EventsDeepLinkModule;
+import com.tokopedia.events.deeplink.EventsDeepLinkModuleLoader;
 import com.tokopedia.flight.applink.FlightApplinkModule;
 import com.tokopedia.flight.applink.FlightApplinkModuleLoader;
 import com.tokopedia.home.applink.HomeApplinkModule;
@@ -59,7 +61,8 @@ import io.branch.referral.Branch;
         SessionApplinkModule.class,
         FeedDeeplinkModule.class,
         FlightApplinkModule.class,
-        ReputationApplinkModule.class
+        ReputationApplinkModule.class,
+        EventsDeepLinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
@@ -79,7 +82,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new SessionApplinkModuleLoader(),
                 new FeedDeeplinkModuleLoader(),
                 new FlightApplinkModuleLoader(),
-                new ReputationApplinkModuleLoader()
+                new ReputationApplinkModuleLoader(),
+                new EventsDeepLinkModuleLoader()
         );
     }
 
