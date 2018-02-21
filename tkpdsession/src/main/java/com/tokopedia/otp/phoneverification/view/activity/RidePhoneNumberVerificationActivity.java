@@ -3,9 +3,6 @@ package com.tokopedia.otp.phoneverification.view.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
@@ -43,24 +40,6 @@ public class RidePhoneNumberVerificationActivity extends TActivity implements Ha
             ((PhoneVerificationFragment) getSupportFragmentManager().findFragmentById(R.id.container))
                     .setPhoneVerificationListener(getPhoneVerificationListener());
         }
-        fragmentTransaction.commit();
-
-    }
-
-//    @Override
-//    protected int getLayoutId() {
-//        return R.layout.activity_ride_phone_number_verification;
-//    }
-
-
-//    @Override
-//    protected void setActionVar() {
-//
-//    }
-
-    private void addFragment(int containerViewId, Fragment fragment) {
-        FragmentTransaction fragmentTransaction = this.getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.add(containerViewId, fragment);
         fragmentTransaction.commit();
     }
 

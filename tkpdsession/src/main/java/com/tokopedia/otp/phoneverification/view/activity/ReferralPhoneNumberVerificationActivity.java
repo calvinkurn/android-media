@@ -2,13 +2,11 @@ package com.tokopedia.otp.phoneverification.view.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.otp.phoneverification.view.fragment.PhoneVerificationFragment;
@@ -16,7 +14,7 @@ import com.tokopedia.otp.phoneverification.view.fragment.PhoneVerificationProfil
 import com.tokopedia.otp.phoneverification.view.fragment.ReferralPhoneNumberVerificationFragment;
 import com.tokopedia.session.R;
 
-public class ReferralPhoneNumberVerificationActivity extends TActivity  implements HasComponent {
+public class ReferralPhoneNumberVerificationActivity extends TActivity implements HasComponent {
 
     public static Intent getCallingIntent(Activity activity) {
         return new Intent(activity, ReferralPhoneNumberVerificationActivity.class);
@@ -65,7 +63,6 @@ public class ReferralPhoneNumberVerificationActivity extends TActivity  implemen
 
             @Override
             public void onClickVerification(String phoneNumber) {
-                //addFragment(R.id.container, PhoneVerificationFragment.createInstance(getPhoneVerificationListener(), phoneNumber));
                 PhoneVerificationProfileFragment fragmentHeader = PhoneVerificationProfileFragment.createInstance();
                 PhoneVerificationFragment fragment = PhoneVerificationFragment.createInstance
                         (getPhoneVerificationListener(), false);
