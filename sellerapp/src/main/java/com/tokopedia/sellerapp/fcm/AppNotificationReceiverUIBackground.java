@@ -40,6 +40,8 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
  */
 
 public class AppNotificationReceiverUIBackground extends BaseAppNotificationReceiverUIBackground {
+    public static final String DEFAULT_NOTIF_CODE_VALUE = "0";
+    private static final int DEFAULT_CART_VALUE = 0;
     private RemoteConfig remoteConfig;
 
     public AppNotificationReceiverUIBackground(Application application) {
@@ -169,14 +171,14 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 NotificationReceivedListener listener = (NotificationReceivedListener) currentActivity;
                 listener.onGetNotif();
                 if (isRefreshCart(data)) {
-                    listener.onRefreshCart(data.getInt(Constants.ARG_NOTIFICATION_CART_EXISTS, 0));
+                    listener.onRefreshCart(data.getInt(Constants.ARG_NOTIFICATION_CART_EXISTS, DEFAULT_CART_VALUE));
                 }
             }
         }
     }
 
     private boolean isRefreshCart(Bundle data) {
-        return Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE, "0"))
+        return Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE, DEFAULT_NOTIF_CODE_VALUE))
                 == TkpdState.GCMServiceState.GCM_CART_UPDATE;
     }
 

@@ -63,6 +63,9 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
  */
 
 public class AppNotificationReceiverUIBackground extends BaseAppNotificationReceiverUIBackground {
+    private static final String DEFAULT_NOTIF_CODE_VALUE = "0";
+    private static final int DEFAULT_CART_VALUE = 0;
+    private static final int DEFAULT_RIDE_URL_SIZE = 1;
     private RemoteConfig remoteConfig;
 
     public AppNotificationReceiverUIBackground(Application application) {
@@ -165,7 +168,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                     );
                     break;
                 case Constants.ARG_NOTIFICATION_APPLINK_RIDE:
-                    if (Uri.parse(applinks).getPathSegments().size() == 1) {
+                    if (Uri.parse(applinks).getPathSegments().size() == DEFAULT_RIDE_URL_SIZE) {
                         buildNotifByData(data);
                     } else {
                         CommonUtils.dumper("AppNotificationReceiverUIBackground handleApplinkNotification for Ride");
@@ -227,7 +230,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 NotificationReceivedListener listener = (NotificationReceivedListener) currentActivity;
                 listener.onGetNotif();
                 if (isRefreshCart(data)) {
-                    listener.onRefreshCart(data.getInt(Constants.ARG_NOTIFICATION_CART_EXISTS, 0));
+                    listener.onRefreshCart(data.getInt(Constants.ARG_NOTIFICATION_CART_EXISTS, DEFAULT_CART_VALUE));
                 }
             }
         }
@@ -293,7 +296,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     private boolean isRefreshCart(Bundle data) {
-        return Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE, "0"))
+        return Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE, DEFAULT_NOTIF_CODE_VALUE))
                 == TkpdState.GCMServiceState.GCM_CART_UPDATE;
     }
 
