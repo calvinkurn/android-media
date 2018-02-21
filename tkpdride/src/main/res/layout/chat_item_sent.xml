@@ -1,65 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
     android:paddingEnd="16dp"
     android:paddingLeft="72dp"
     android:paddingRight="16dp"
     android:paddingStart="72dp">
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/bubble"
+    <ImageView
+        android:id="@+id/retry_action"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        app:cardBackgroundColor="@color/default_bubble_color_send"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="4dp"
-        app:cardUseCompatPadding="true">
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/margin_small"
+        android:layout_marginRight="@dimen/margin_small"
+        android:layout_toLeftOf="@+id/main"
+        android:layout_toStartOf="@+id/main"
+        android:contentDescription="@string/tap_retry"
+        android:padding="@dimen/padding_vvs"
+        android:visibility="visible"
+        app:srcCompat="@drawable/ic_error_to_send" />
+
+    <LinearLayout
+        android:id="@+id/main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="center_vertical|start"
+        android:background="@drawable/right_bubble"
+        android:gravity="end"
+        android:maxWidth="@dimen/chat_width"
+        android:minWidth="@dimen/min_chat_width"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/message_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dummy Text To check Data"
+            android:textColor="@color/white"
+            android:textSize="@dimen/fonts" />
+
+        <!--<android.support.v4.widget.Space
+            android:layout_width="match_parent"
+            android:layout_height="4dp" />-->
+
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="end"
-            android:orientation="vertical"
-            android:padding="8dp">
+            android:layout_marginTop="@dimen/margin_vvs"
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/sender_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|start"
-                android:layout_marginBottom="4dp"
-                android:textColor="@color/default_message_color_send"
-                android:textSize="@dimen/default_message_text_size"
-                android:textStyle="bold"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
-            <TextView
-                android:id="@+id/message_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical|start"
-                android:textColor="@color/default_message_color_send"
-                android:textSize="@dimen/default_message_text_size" />
-
-            <android.support.v4.widget.Space
-                android:layout_width="match_parent"
-                android:layout_height="4dp" />
+            <ImageView
+                android:id="@+id/sms_status"
+                android:layout_width="16dp"
+                android:layout_height="7dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="@dimen/margin_vvs"
+                android:visibility="visible"
+                app:srcCompat="@drawable/ic_sms_delivered" />
 
             <TextView
                 android:id="@+id/timestamp_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical|start"
-                android:textColor="@color/default_tstamp_color_send"
-                android:textSize="@dimen/default_timestamp_text_size" />
+                android:text="10:00 am"
+                android:textColor="@color/grey_100"
+                android:textSize="@dimen/fontvvs" />
 
         </LinearLayout>
 
-    </android.support.v7.widget.CardView>
 
-</FrameLayout>
+    </LinearLayout>
+
+    <!--<TextView
+        android:id="@+id/hour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@id/card_group_chat_message"
+        android:layout_alignRight="@id/card_group_chat_message"
+        android:layout_below="@id/main"
+        android:layout_marginTop="@dimen/margin_vvs"
+        android:textColor="@color/time_color"
+        android:textSize="@dimen/fontvvs"
+        tools:text="10:13 pm"
+        tools:visibility="visible" />-->
+
+</RelativeLayout>

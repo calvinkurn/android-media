@@ -21,22 +21,18 @@ public class ChatViewListAdapter extends BaseAdapter {
     private final int STATUS_RECEIVED = 1;
     private final int TICKER_MSG = -1;
 
-    private int bubbleBackgroundRcv, bubbleBackgroundSend;
-    private float bubbleElevation;
     private ViewBuilderInterface viewBuilder = new ViewBuilder();
 
     private ArrayList<ChatMessage> chatMessages;
+    private OnRetryTap onRetryTap;
 
     private Context context;
     private LayoutInflater inflater;
 
-    ChatViewListAdapter(Context context, ViewBuilderInterface viewBuilder, int bubbleBackgroundRcv, int bubbleBackgroundSend, float bubbleElevation) {
+    ChatViewListAdapter(Context context, ViewBuilderInterface viewBuilder) {
         this.chatMessages = new ArrayList<>();
         this.context = context;
         this.inflater = LayoutInflater.from(context);
-        this.bubbleBackgroundRcv = bubbleBackgroundRcv;
-        this.bubbleBackgroundSend = bubbleBackgroundSend;
-        this.bubbleElevation = bubbleElevation;
         this.viewBuilder = viewBuilder;
     }
 
@@ -76,12 +72,13 @@ public class ChatViewListAdapter extends BaseAdapter {
             switch (type) {
                 case STATUS_SENT:
                     convertView = viewBuilder.buildSentView(context);
-                    holder = new MessageViewHolder(convertView, bubbleBackgroundRcv, bubbleBackgroundSend);
+                    holder = new MessageViewHolder(convertView);
+
                     convertView.setTag(holder);
                     break;
                 case STATUS_RECEIVED:
                     convertView = viewBuilder.buildRecvView(context);
-                    holder = new MessageViewHolder(convertView, bubbleBackgroundRcv, bubbleBackgroundSend);
+                    holder = new MessageViewHolder(convertView);
                     convertView.setTag(holder);
                     break;
                 case TICKER_MSG:
@@ -98,14 +95,51 @@ public class ChatViewListAdapter extends BaseAdapter {
         }
 
         if (position != 0 && holder != null) {
-            holder.setMessage(chatMessages.get(position - 1).getMessage());
-            holder.setTimestamp(chatMessages.get(position - 1).getFormattedTime());
-            holder.setElevation(bubbleElevation);
-            holder.setBackground(type);
-            String sender = chatMessages.get(position - 1).getSender();
-            if (sender != null) {
-                holder.setSender(sender);
+
+            ChatMessage chatMessage = chatMessages.get(position - 1);
+            holder.setMessage(chatMessage.getMessage());
+            holder.setTimestamp(chatMessage.getFormattedTime());
+
+            if (holder.getMessageView() instanceof ItemSentView &&
+                    chatMessage.getDeliveryStatus() != null) {
+
+                switch (chatMessage.getDeliveryStatus()) {
+
+                    case SENT_FAILURE:
+                        ((ItemSentView) holder.getMessageView()).setRetryIconTag(chatMessage);
+                        ((ItemSentView) holder.getMessageView()).setRetryIcon(context.getResources().getDrawable(R.drawable.ic_error_to_send), new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                if (onRetryTap != null && view.getTag() != null) {
+                                    onRetryTap.onRetryTap((ChatMessage) view.getTag());
+                                }
+                            }
+                        });
+                        ((ItemSentView) holder.getMessageView()).setDeliveryStatusIcon(null);
+                        break;
+
+                    case SENT_SUCCESS:
+                        ((ItemSentView) holder.getMessageView()).setRetryIcon(null);
+                        ((ItemSentView) holder.getMessageView()).setDeliveryStatusIcon(context.getResources().getDrawable(R.drawable.ic_sms_sent));
+                        break;
+
+                    case DELIVER_SUCCESS:
+                        ((ItemSentView) holder.getMessageView()).setRetryIcon(null);
+                        ((ItemSentView) holder.getMessageView()).setDeliveryStatusIcon(context.getResources().getDrawable(R.drawable.ic_sms_delivered));
+                        break;
+
+                    case DELIVER_FAILURE:
+                        ((ItemSentView) holder.getMessageView()).setRetryIcon(null);
+                        ((ItemSentView) holder.getMessageView()).setDeliveryStatusIcon(context.getResources().getDrawable(R.drawable.ic_sms_sent));
+                        break;
+
+                    default:
+                        ((ItemSentView) holder.getMessageView()).setRetryIcon(null);
+                        ((ItemSentView) holder.getMessageView()).setDeliveryStatusIcon(null);
+                }
+
             }
+
         } else if (position == 0 && tickerViewHolder != null) {
             tickerViewHolder.tickerMsg.setText(R.string.sms_charges_msg);
         }
@@ -134,12 +168,29 @@ public class ChatViewListAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    void setOnRetryTap(OnRetryTap onRetryTap) {
+        this.onRetryTap = onRetryTap;
+    }
+
+    public ArrayList<ChatMessage> getChatMessages() {
+        return chatMessages;
+    }
+
+    public void setChatMessages(ArrayList<ChatMessage> chatMessages) {
+        this.chatMessages = chatMessages;
+        notifyDataSetChanged();
+    }
+
     class TickerViewHolder {
         TextView tickerMsg;
 
         TickerViewHolder(View view) {
             tickerMsg = view.findViewById(R.id.ticker_msg);
         }
+    }
+
+    public interface OnRetryTap {
+        public void onRetryTap(ChatMessage chatMessage);
     }
 }
 

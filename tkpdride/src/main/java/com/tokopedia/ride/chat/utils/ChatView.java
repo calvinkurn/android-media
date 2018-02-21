@@ -22,7 +22,6 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 
 import java.util.ArrayList;
@@ -55,18 +54,18 @@ public class ChatView extends RelativeLayout {
     };
     private TypingListener typingListener;
     private OnSentMessageListener onSentMessageListener;
+    private OnSendSMSRetry onSendSMSRetry;
     private ChatViewListAdapter chatViewListAdapter;
 
     private int inputFrameBackgroundColor, backgroundColor;
     private int inputTextSize, inputTextColor, inputHintColor;
     private int sendButtonBackgroundTint, sendButtonIconTint;
 
-    private float bubbleElevation;
 
-    private int bubbleBackgroundRcv, bubbleBackgroundSend; // Drawables cause cardRadius issues. Better to use background color
     private Drawable sendButtonIcon, buttonDrawable;
     private TypedArray attributes, textAppearanceAttributes;
     private Context context;
+    private int id = 0;
 
 
     ChatView(Context context) {
@@ -122,7 +121,15 @@ public class ChatView extends RelativeLayout {
     }
 
     private void setListAdapter() {
-        chatViewListAdapter = new ChatViewListAdapter(context, new ViewBuilder(), bubbleBackgroundRcv, bubbleBackgroundSend, bubbleElevation);
+        chatViewListAdapter = new ChatViewListAdapter(context, new ViewBuilder());
+        chatViewListAdapter.setOnRetryTap(new ChatViewListAdapter.OnRetryTap() {
+            @Override
+            public void onRetryTap(ChatMessage chatMessage) {
+
+                onSendSMSRetry.onTapRetry(chatMessage);
+
+            }
+        });
         chatListView.setAdapter(chatViewListAdapter);
     }
 
@@ -143,10 +150,7 @@ public class ChatView extends RelativeLayout {
 
         float dip4 = context.getResources().getDisplayMetrics().density * 4.0f;
         int elevation = attributes.getInt(R.styleable.ChatView_bubbleElevation, ELEVATED);
-        bubbleElevation = elevation == ELEVATED ? dip4 : 0;
 
-        bubbleBackgroundRcv = attributes.getColor(R.styleable.ChatView_bubbleBackgroundRcv, ContextCompat.getColor(context, R.color.default_bubble_color_rcv));
-        bubbleBackgroundSend = attributes.getColor(R.styleable.ChatView_bubbleBackgroundSend, ContextCompat.getColor(context, R.color.default_bubble_color_send));
     }
 
 
@@ -368,10 +372,16 @@ public class ChatView extends RelativeLayout {
         this.onSentMessageListener = onSentMessageListener;
     }
 
+    public void setOnSendSMSRetry(OnSendSMSRetry onSendSMSRetry) {
+        this.onSendSMSRetry = onSendSMSRetry;
+    }
+
     private void sendMessage(String message, long stamp) {
 
         ChatMessage chatMessage = new ChatMessage(message, stamp, ChatMessage.Type.SENT);
-        chatMessage.setSender(SessionHandler.getLoginName(context));
+        id++;
+        chatMessage.setId(id);
+        chatMessage.setDeliveryStatus(ChatMessage.DeliveryStatus.PENDING);
         if (onSentMessageListener != null && onSentMessageListener.sendMessage(chatMessage)) {
             chatViewListAdapter.addMessage(chatMessage);
             inputEditText.setText("");
@@ -400,6 +410,20 @@ public class ChatView extends RelativeLayout {
         return inputEditText;
     }
 
+    public void updateMessageSentStatus(ChatMessage.DeliveryStatus deliveryStatus, int id) {
+        ArrayList<ChatMessage> chatMessageArrayList = chatViewListAdapter.getChatMessages();
+
+        if (chatMessageArrayList != null && !chatMessageArrayList.isEmpty()) {
+            for (ChatMessage chatMessage : chatMessageArrayList) {
+                if (chatMessage.getId() == id) {
+                    chatMessage.setDeliveryStatus(deliveryStatus);
+                }
+            }
+        }
+
+        chatViewListAdapter.setChatMessages(chatMessageArrayList);
+    }
+
     /*public FloatingActionsMenu getActionsMenu() {
         return actionsMenu;
     }*/
@@ -415,6 +439,10 @@ public class ChatView extends RelativeLayout {
 
     public interface OnSentMessageListener {
         boolean sendMessage(ChatMessage chatMessage);
+    }
+
+    public interface OnSendSMSRetry {
+        void onTapRetry(ChatMessage chatMessage);
     }
 
 }

@@ -1,9 +1,10 @@
 package com.tokopedia.ride.bookingride.view.activity;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -19,7 +20,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
@@ -35,6 +35,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.chat.utils.ChatMessage;
@@ -53,6 +54,7 @@ public class SMSChatActivity extends BaseActivity {
     private static final String TAG = "SMSChatActivity";
     private static final int SMS_PERMISSION_CODE = 0;
     private static final int CALL_PERMISSION_CODE = 1;
+    private static final String MESSAGE_ID = "Message_id";
     private String phoneNo = "";
 
     private String INBOX_URI = "content://sms/inbox";
@@ -72,6 +74,9 @@ public class SMSChatActivity extends BaseActivity {
     private ArrayList<ChatMessage> receivedMessagesArrayList = new ArrayList<>();
     private ArrayList<ChatMessage> chatArrayList = new ArrayList<>();
     private Vehicle vehicleDetails;
+
+    public static final String SMS_SENT_ACTION = "SMS_SENT_ACTION";
+    public static final String SMS_DELIVERED_ACTION = "SMS_DELIVERED_ACTION";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,8 +164,6 @@ public class SMSChatActivity extends BaseActivity {
                     chatMessage.setMessage(strBody);
                     chatMessage.setTimestamp(longDate);
                     chatMessage.setType(ChatMessage.Type.RECEIVED);
-                    chatMessage.setSender(strAddress);
-
                     receivedMessagesArrayList.add(chatMessage);
 
                 } while (cur.moveToNext());
@@ -225,7 +228,8 @@ public class SMSChatActivity extends BaseActivity {
                     chatMessage.setMessage(strbody);
                     chatMessage.setTimestamp(longDate);
                     chatMessage.setType(ChatMessage.Type.SENT);
-                    chatMessage.setSender(strAddress);
+                    // TODO: 2/21/18 need to check
+                    chatMessage.setDeliveryStatus(ChatMessage.DeliveryStatus.DELIVER_SUCCESS);
 
                     sentMessagesArrayList.add(chatMessage);
 
@@ -271,7 +275,15 @@ public class SMSChatActivity extends BaseActivity {
             @Override
             public boolean sendMessage(ChatMessage chatMessage) {
 
-                return !TextUtils.isEmpty(chatMessage.getMessage()) && sendSMS(phoneNo, chatMessage.getMessage());
+                return !TextUtils.isEmpty(chatMessage.getMessage()) && sendSMS(phoneNo, chatMessage.getMessage(), chatMessage.getId());
+            }
+        });
+
+
+        chatView.setOnSendSMSRetry(new ChatView.OnSendSMSRetry() {
+            @Override
+            public void onTapRetry(ChatMessage chatMessage) {
+                sendSMS(phoneNo, chatMessage.getMessage(), chatMessage.getId());
             }
         });
 
@@ -318,11 +330,65 @@ public class SMSChatActivity extends BaseActivity {
         intentFilter.setPriority(1000);
         registerReceiver(broadcastReceiver, intentFilter);
 
+
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String message = null;
+                switch (getResultCode()) {
+                    case Activity.RESULT_OK:
+                        setMessageSentStatus(ChatMessage.DeliveryStatus.SENT_SUCCESS, intent.getIntExtra(MESSAGE_ID, -1));
+                        message = "Message Sent Successfully !";
+                        break;
+                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+                        message = "Error.";
+                        setMessageSentStatus(ChatMessage.DeliveryStatus.SENT_FAILURE, intent.getIntExtra(MESSAGE_ID, -1));
+                        break;
+                    case SmsManager.RESULT_ERROR_NO_SERVICE:
+                        message = "Error: No service.";
+                        setMessageSentStatus(ChatMessage.DeliveryStatus.SENT_FAILURE, intent.getIntExtra(MESSAGE_ID, -1));
+                        break;
+                    case SmsManager.RESULT_ERROR_NULL_PDU:
+                        message = "Error: Null PDU.";
+                        setMessageSentStatus(ChatMessage.DeliveryStatus.SENT_FAILURE, intent.getIntExtra(MESSAGE_ID, -1));
+                        break;
+                    case SmsManager.RESULT_ERROR_RADIO_OFF:
+                        message = "Error: Radio off.";
+                        setMessageSentStatus(ChatMessage.DeliveryStatus.SENT_FAILURE, intent.getIntExtra(MESSAGE_ID, -1));
+                        break;
+                }
+
+                /*smsStatus.setText(message);*/
+            }
+        }, new IntentFilter(SMS_SENT_ACTION));
+
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (getResultCode()) {
+                    case Activity.RESULT_OK:
+                        setMessageSentStatus(ChatMessage.DeliveryStatus.DELIVER_SUCCESS, intent.getIntExtra(MESSAGE_ID, -1));
+
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        setMessageSentStatus(ChatMessage.DeliveryStatus.DELIVER_FAILURE, intent.getIntExtra(MESSAGE_ID, -1));
+
+                        break;
+                }
+
+            }
+        }, new IntentFilter(SMS_DELIVERED_ACTION));
+
+
+    }
+
+    private void setMessageSentStatus(ChatMessage.DeliveryStatus deliveryStatus, int id) {
+        chatView.updateMessageSentStatus(deliveryStatus, id);
     }
 
 
     private void onSMSReceived(String message, long timestamp) {
-        ChatMessage chatMessage = new ChatMessage(message, timestamp, ChatMessage.Type.RECEIVED, driverDetails.getName());
+        ChatMessage chatMessage = new ChatMessage(message, timestamp, ChatMessage.Type.RECEIVED);
         chatView.addMessage(chatMessage);
     }
 
@@ -360,10 +426,17 @@ public class SMSChatActivity extends BaseActivity {
     }
 
 
-    public boolean sendSMS(String phoneNo, String msg) {
+    public boolean sendSMS(String phoneNo, String msg, int id) {
         try {
             SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage(phoneNo, null, msg, null, null);
+
+            smsManager.sendTextMessage(phoneNo, null, msg, PendingIntent.getBroadcast(
+                    this, 0, new Intent(SMS_SENT_ACTION).putExtra(MESSAGE_ID, id), 0),
+
+                    PendingIntent.getBroadcast(this, 0, new Intent(SMS_DELIVERED_ACTION).putExtra(MESSAGE_ID, id), 0));
+
+
+            /*smsManager.sendTextMessage(phoneNo, null, msg, null, null);*/
 
             return true;
         } catch (Exception ex) {
@@ -445,5 +518,10 @@ public class SMSChatActivity extends BaseActivity {
         super.onDestroy();
         if (broadcastReceiver != null)
             unregisterReceiver(broadcastReceiver);
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_UBER_SMS_CHAT;
     }
 }

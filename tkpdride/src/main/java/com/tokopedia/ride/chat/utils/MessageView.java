@@ -3,17 +3,12 @@ package com.tokopedia.ride.chat.utils;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
-import android.widget.TextView;
-
-import com.tokopedia.ride.R;
 
 /**
  * Created by sachinbansal on 2/13/18.
  */
 
 public abstract class MessageView extends FrameLayout {
-
-    private TextView senderTextView;
 
     /**
      * Method to set the messages text in the view so it can be displayed on the screen.
@@ -30,44 +25,12 @@ public abstract class MessageView extends FrameLayout {
     public abstract void setTimestamp(String timestamp);
 
     /**
-     * Method to set the background color that you want to use in your message.
-     *
-     * @param background The background that you want to be displayed.
-     */
-    public abstract void setBackground(int background);
-
-    /**
-     * Method to set the elevation of the view.
-     *
-     * @param elevation The elevation that you want the view to be displayed at.
-     */
-    public abstract void setElevation(float elevation);
-
-
-    /**
-     * Method to set the message's sender name.
-     *
-     * @param sender The name of the sender to be displayed.
-     *               The view is only visible if the sender is set
-     */
-    public void setSender(String sender) {
-        if (senderTextView == null) {
-            this.senderTextView = (TextView) findViewById(R.id.sender_text_view);
-        }
-
-        senderTextView.setVisibility(VISIBLE);
-        senderTextView.setText(sender);
-    }
-
-    /**
      * Constructs a new message view.
      *
      * @param context
      */
     public MessageView(Context context) {
-
         super(context);
-
     }
 
     /**

@@ -215,4 +215,5 @@
     <string name="action_ok">OK</string>
     <string name="call">Call</string>
     <string name="sms_charges_msg">Standard SMS charges will apply</string>
+    <string name="tap_retry">Tap to resend</string>
 </resources>

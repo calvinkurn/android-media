@@ -12,9 +12,10 @@ public class ChatMessage {
     private String message;
     private long timestamp;
     private Type type;
-    private String sender;
+    private DeliveryStatus deliveryStatus;
+    private int id;
 
-    public ChatMessage(){
+    public ChatMessage() {
 
     }
 
@@ -22,11 +23,6 @@ public class ChatMessage {
         this.message = message;
         this.timestamp = timestamp;
         this.type = type;
-    }
-
-    public ChatMessage(String message, long timestamp, Type type, String sender) {
-        this(message, timestamp, type);
-        this.sender = sender;
     }
 
     public long getTimestamp() {
@@ -53,28 +49,41 @@ public class ChatMessage {
         this.type = type;
     }
 
+    public DeliveryStatus getDeliveryStatus() {
+        return deliveryStatus;
+    }
+
+    public void setDeliveryStatus(DeliveryStatus deliveryStatus) {
+        this.deliveryStatus = deliveryStatus;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getFormattedTime() {
 
-        long oneDayInMillis = TimeUnit.DAYS.toMillis(1); // 24 * 60 * 60 * 1000;
+//        long oneDayInMillis = TimeUnit.DAYS.toMillis(1); // 24 * 60 * 60 * 1000;
+//        long timeDifference = System.currentTimeMillis() - timestamp;
 
-        long timeDifference = System.currentTimeMillis() - timestamp;
+        return DateFormat.format("hh:mm a", timestamp).toString();
 
-        return timeDifference < oneDayInMillis
+
+        /*return timeDifference < oneDayInMillis
                 ? DateFormat.format("hh:mm a", timestamp).toString()
-                : DateFormat.format("dd MMM - hh:mm a", timestamp).toString();
-    }
-
-    public String getSender() {
-        return sender;
-    }
-
-    public void setSender(String sender) {
-        this.sender = sender;
+                : DateFormat.format("dd MMM - hh:mm a", timestamp).toString();*/
     }
 
     public enum Type {
         SENT, RECEIVED
+    }
+
+    public enum DeliveryStatus {
+        SENT_FAILURE, SENT_SUCCESS, DELIVER_SUCCESS, DELIVER_FAILURE, PENDING
     }
 }
 

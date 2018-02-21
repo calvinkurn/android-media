@@ -32,11 +32,5 @@
     <color name="grey_900">#212121</color>
     <color name="grey_dropbox">#7B8994</color>
     <color name="grey_map_background">#F2F2E9</color>
-    <color name="default_message_color_send">@color/black</color>
-    <color name="default_bubble_color_send">@color/white</color>
-    <color name="default_tstamp_color_send" >@color/grey_400</color>
-    <color name="default_bubble_color_rcv" >@color/white</color>
     <color name="main_color_gray" >@color/grey_400</color>
-    <color name="default_message_color_rcv" >@color/white</color>
-    <color name="default_tstamp_color_rcv" >@color/white</color>
 </resources>
