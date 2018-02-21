@@ -388,6 +388,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        ShakeDetectManager.getShakeDetectManager(this).onDestroy();
     }
 
     public static Intent getHomeHotlistIntent(Context context) {

@@ -33,7 +33,9 @@ public class ShakeDetectManager implements ShakeDetector.Listener{
     }
 
     public static ShakeDetectManager getShakeDetectManager(Context context) {
-        shakeDetectManager = new ShakeDetectManager(context);
+        if(shakeDetectManager == null) {
+            shakeDetectManager = new ShakeDetectManager(context);
+        }
         return shakeDetectManager;
     }
 
@@ -42,7 +44,6 @@ public class ShakeDetectManager implements ShakeDetector.Listener{
         sd.registerListener(this);
         SensorManager sensorManager = (SensorManager) mContext.getSystemService(SENSOR_SERVICE);
         sd.start(sensorManager);
-        sd = new ShakeDetector();
     }
 
     @Override
@@ -104,5 +105,10 @@ public class ShakeDetectManager implements ShakeDetector.Listener{
         }
 
         return isInBackground;
+    }
+
+    public void onDestroy() {
+        sd.unregisterListener(this);
+        sd.stop();
     }
 }
