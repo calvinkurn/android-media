@@ -218,31 +218,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getEtalaseIntent(Context context, String shopId, int currentChoosen) {
-        ArrayList<MyEtalaseItemViewModel> myEtalaseItemViewModels = new ArrayList<>();
-        // if it's not her/his shop
-        if(!SessionHandler.getShopID(this).equals(shopId)){
-            myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_SOLD_PRODUK, getString(R.string.product_manage_filter_sold)));
-            myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_FREE_RETURNS, getString(R.string.product_manage_filter_free_returns)));
-            myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_PREORDER, getString(R.string.product_manage_filter_preorder)));
-            myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_ALL_SHOWCASE, getString(R.string.product_manage_filter_all_showcase)));
-            if(currentChoosen == Integer.MAX_VALUE){
-                currentChoosen = ProductManageConstant.FILTER_ALL_SHOWCASE;
-            }
-        }else {
-            myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_ALL_PRODUK, getString(R.string.product_manage_filter_menu_etalase_all)));
-            myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_SOLD_PRODUK, getString(R.string.product_manage_filter_sold)));
-            myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_EMPTY_STOK, getString(R.string.product_manage_filter_empty_stok)));
-            myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_PENDING, getString(R.string.product_manage_filter_pending)));
-            myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_FREE_RETURNS, getString(R.string.product_manage_filter_free_returns)));
-            myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_PREORDER, getString(R.string.product_manage_filter_preorder)));
-            myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_ALL_SHOWCASE, getString(R.string.product_manage_filter_all_showcase)));
-            if(currentChoosen == Integer.MAX_VALUE){
-                currentChoosen = ProductManageConstant.FILTER_ALL_PRODUK;
-            }
-        }
-
-
-        return EtalaseDynamicPickerActivity.createInstance(context, currentChoosen, myEtalaseItemViewModels);
+        return EtalaseDynamicPickerActivity.createInstance(context, currentChoosen);
     }
 
     public GMComponent getGMComponent() {
