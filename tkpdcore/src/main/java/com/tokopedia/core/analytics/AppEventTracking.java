@@ -170,6 +170,7 @@ public interface AppEventTracking {
         String PRODUCT_VIEW = "productView";
         String LONG_CLICK = "longClick";
         String CLICK_PDP = "clickPDP";
+        String ADD_TO_CART_PDP = "addToCart";
     }
 
     interface Category {
@@ -491,8 +492,8 @@ public interface AppEventTracking {
     }
 
     interface EventLabel {
-        String HOME = "home";
-        String FAVORITE = "wishlist";
+        String HOME = "homepage";
+        String FAVORITE = "favorite";
         String PRODUCT_FEED = "feed";
         String HOTLIST = "hotlist";
 

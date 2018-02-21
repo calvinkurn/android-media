@@ -1134,6 +1134,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_index_favorite">FAVORIT</string>
 
     <string name="title_done">Selesai</string>
+    <string name="title_understand">Mengerti</string>
     <string name="msg_new_update">Harap segera perbarui aplikasi anda</string>
     <string name="msg_server_error">Halaman sebelum nya tidak dapat dibuka karena kendala server, silakan coba beberapa saat lagi</string>
     <string name="title_activity_maintenance_page">Server Maintenance</string>
@@ -2055,7 +2056,7 @@ di Tokopedia Sekarang!</string>
 
     <string name="label_new">Baru</string>
 
-    <string name="drawer_title_home">Beranda</string>
+    <string name="drawer_title_home">Home</string>
     <string name="drawer_title_login">Masuk</string>
     <string name="drawer_title_register">Daftar</string>
     <string name="drawer_title_report">Laporkan</string>
@@ -2108,7 +2109,7 @@ di Tokopedia Sekarang!</string>
     <string name="appupdate_update">Update</string>
     <string name="appupdate_later">Nanti</string>
     <string name="appupdate_close">Tutup</string>
-    <string name="webview_home_navigation_text">Beranda</string>
+    <string name="webview_home_navigation_text">Home</string>
     <string name="webview_help_menu_text">Bantuan</string>
     <string name="webview_toolbar_menu_text">Toolbar Menu</string>
     <string name="title_activity_promo">Promo</string>
