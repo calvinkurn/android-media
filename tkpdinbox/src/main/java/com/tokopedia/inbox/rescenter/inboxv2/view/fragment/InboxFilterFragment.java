@@ -152,7 +152,7 @@ public class InboxFilterFragment
                                 updateView();
                             }
                 });
-                dialog.getDatePicker().setMaxDate(Calendar.getInstance().getTimeInMillis());
+                dialog.getDatePicker().setMaxDate(System.currentTimeMillis());
                 if (inboxFilterModel.getDateTo() != null) {
                     dialog.getDatePicker().setMaxDate(inboxFilterModel.getDateTo().getTime());
                 }
@@ -177,7 +177,7 @@ public class InboxFilterFragment
                                 updateView();
                             }
                         });
-                dialog.getDatePicker().setMaxDate(Calendar.getInstance().getTimeInMillis());
+                dialog.getDatePicker().setMaxDate(System.currentTimeMillis());
                 if (inboxFilterModel.getDateFrom() != null) {
                     dialog.getDatePicker().setMinDate(inboxFilterModel.getDateFrom().getTime());
                 }
