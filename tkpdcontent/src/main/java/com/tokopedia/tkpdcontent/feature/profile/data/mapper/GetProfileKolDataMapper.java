@@ -57,7 +57,7 @@ public class GetProfileKolDataMapper
                     postKol.content.get(0).tags.get(0).type,
                     postKol.content.get(0).tags.get(0).link,
                     0,
-                    false,
+                    true,
                     ""
             );
             kolViewModels.add(kolViewModel);
