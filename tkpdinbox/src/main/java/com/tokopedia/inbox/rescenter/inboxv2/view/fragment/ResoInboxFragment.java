@@ -420,7 +420,9 @@ public class ResoInboxFragment
     @Override
     public void showProgressBar() {
         if (progressBar.getVisibility() == View.GONE) {
-            progressBar.setVisibility(View.VISIBLE);
+            if (!swipeToRefresh.isRefreshing()) {
+                progressBar.setVisibility(View.VISIBLE);
+            }
         }
     }
 
