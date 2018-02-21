@@ -6,12 +6,20 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.tokopedia.abstraction.base.view.activity.BaseEmptyActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.profile.view.adapter.ProfileTabPagerAdapter;
+import com.tokopedia.profile.view.fragment.TopProfileFragment;
+import com.tokopedia.profile.view.viewmodel.ProfileSectionItem;
 import com.tokopedia.session.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author by milhamj on 08/02/18.
@@ -23,6 +31,11 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private Toolbar toolbar;
 
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+    private ProfileTabPagerAdapter profileTabPagerAdapter;
+    private TopProfileFragment fragment = TopProfileFragment.newInstance();
+
     public static Intent newInstance(Context context) {
         return new Intent(context, TopProfileActivity.class);
     }
@@ -33,7 +46,10 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
         appBarLayout = findViewById(R.id.app_bar_layout);
         collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
         toolbar = findViewById(R.id.toolbar);
+        tabLayout =findViewById(R.id.tabs);
+        viewPager = findViewById(R.id.pager);
         setupToolbar();
+        loadSection();
     }
 
     @Override
@@ -88,5 +104,17 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_webview_back_button);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
+    }
+
+    private void loadSection(){
+        List<ProfileSectionItem> profileSectionItemList = new ArrayList<>();
+
+        profileSectionItemList.add(new ProfileSectionItem("Profil", fragment));
+        profileSectionItemList.add(new ProfileSectionItem("KOL", fragment));
+
+        profileTabPagerAdapter = new ProfileTabPagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(profileTabPagerAdapter);
+        tabLayout.setupWithViewPager(viewPager);
+
     }
 }
