@@ -44,10 +44,6 @@ public class ProductManageViewHolder extends ProductViewHolder{
     public static final String IS_ACTIVE_STOCK = "IS_ACTIVE_STOCK";
     private static final String IS_STOCKTOTAL_VISIBLE = "IS_STOCKTOTAL_VISIBLE";
 
-    public static final String SAVED_PRD_VARIANT_SUBMIT = "svd_variant";
-    public static final String SAVED_VARIANT_CAT = "svd_var";
-    public static final String SAVED_OPTION_SUBMIT_LV_1 = "svd_opt_sub_lv1";
-
     public static final int DEFAULT_STOCK_VALUE = 0;
 
     private SpinnerTextView stockStatusSpinnerTextView;

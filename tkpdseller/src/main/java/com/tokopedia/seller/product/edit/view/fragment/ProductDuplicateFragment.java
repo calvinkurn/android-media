@@ -2,7 +2,6 @@ package com.tokopedia.seller.product.edit.view.fragment;
 
 import android.os.Bundle;
 
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.di.component.DaggerProductEditComponent;
 import com.tokopedia.seller.product.edit.di.module.ProductEditModule;
@@ -54,12 +53,8 @@ public class ProductDuplicateFragment extends ProductEditFragment implements Pro
 
     @Override
     protected boolean isDataValid() {
-        boolean dataValid = super.isDataValid();
-        if (!productInfoViewHolder.checkWithPreviousNameBeforeCopy(productNameBeforeCopy).first){
-            UnifyTracking.eventAddProductError(productInfoViewHolder.isDataValid().second);
-            return false;
-        }
-        return dataValid;
+        return productInfoViewHolder.checkWithPreviousNameBeforeCopy(productNameBeforeCopy) &&
+                super.isDataValid();
     }
 
 }
