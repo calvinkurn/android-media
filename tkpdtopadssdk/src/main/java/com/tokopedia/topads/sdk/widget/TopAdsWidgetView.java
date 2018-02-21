@@ -3,6 +3,7 @@ package com.tokopedia.topads.sdk.widget;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
@@ -39,6 +40,7 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
     private List<Data> data = new ArrayList<>();
     private TopAdsItemClickListener itemClickListener;
     private OpenTopAdsUseCase openTopAdsUseCase;
+    private GridLayoutManager layoutManager;
 
     public TopAdsWidgetView(Context context) {
         super(context);
@@ -60,12 +62,13 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
         openTopAdsUseCase = new OpenTopAdsUseCase(context);
         adapter = new AdsItemAdapter(getContext());
         adapter.setItemClickListener(this);
+        layoutManager = new GridLayoutManager(getContext(), 2,
+                        GridLayoutManager.VERTICAL, false);
         findViewById(R.id.info_topads).setOnClickListener(this);
         recyclerView = (RecyclerView) findViewById(R.id.list);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2,
-                GridLayoutManager.VERTICAL, false));
+        recyclerView.setLayoutManager(layoutManager);
         itemDecoration = new DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL_LIST);
         recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setAdapter(adapter);
@@ -77,8 +80,10 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
         for (int i = 0; i < data.size(); i++) {
             Data d = data.get(i);
             if (d.getProduct() != null) {
+                layoutManager.setSpanCount(2);
                 visitables.add(ModelConverter.convertToProductFeedViewModel(d));
             } else if (d.getShop() != null) {
+                layoutManager.setSpanCount(1);
                 visitables.add(ModelConverter.convertToShopFeedViewModel(d, DisplayMode.FEED));
             }
         }
