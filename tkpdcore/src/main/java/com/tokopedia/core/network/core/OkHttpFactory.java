@@ -9,6 +9,7 @@ import com.tokopedia.core.network.retrofit.interceptors.CreditCardInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.DigitalHmacAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.DynamicTkpdAuthInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.EventInerceptors;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.MsisdnInterceptor;
@@ -443,6 +444,22 @@ public class OkHttpFactory {
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
                 .build();
+    }
+
+    public OkHttpClient buildDaggerClientBearerEvents(EventInerceptors eventInterceptor,
+                                                      OkHttpRetryPolicy okHttpRetryPolicy,
+                                                      ChuckInterceptor chuckInterceptor,
+                                                      DebugInterceptor debugInterceptor,
+                                                      HttpLoggingInterceptor loggingInterceptor) {
+        TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(builder)
+                .addInterceptor(eventInterceptor)
+                .setOkHttpRetryPolicy(okHttpRetryPolicy);
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            tkpdOkHttpBuilder.addInterceptor(debugInterceptor);
+            tkpdOkHttpBuilder.addInterceptor(chuckInterceptor);
+            tkpdOkHttpBuilder.addInterceptor(loggingInterceptor);
+        }
+        return tkpdOkHttpBuilder.build();
     }
 
     public OkHttpClient buildDaggerClientBearerTopAdsAuth(FingerprintInterceptor fingerprintInterceptor,
