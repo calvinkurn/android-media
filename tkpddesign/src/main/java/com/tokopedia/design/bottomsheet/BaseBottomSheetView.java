@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -30,6 +31,10 @@ public abstract class BaseBottomSheetView extends BottomSheetDialog {
 
     private void init(Context context) {
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Service.LAYOUT_INFLATER_SERVICE);
+        if (layoutInflater == null) {
+            Log.e(this.getClass().getSimpleName(), "LayoutInflater NULL");
+            return;
+        }
         View bottomSheetView = layoutInflater.inflate(getLayoutId(), null);
         setContentView(bottomSheetView);
         initView();
