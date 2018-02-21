@@ -158,6 +158,7 @@ public interface Constants {
         String APPLINKS_SELLER = "sellerapp";
     }
 
+    //NOTE: strings must be same with {@link pref_notification.xml}
     interface Settings {
         String NOTIFICATION_RINGTONE = "notifications_new_message_ringtone";
         String NOTIFICATION_VIBRATE = "notifications_new_message_vibrate";
@@ -169,7 +170,7 @@ public interface Constants {
         String NOTIFICATION_SALES = "notification_sales";
         String NOTIFICATION_PURCHASE = "notification_purchase";
         String NOTIFICATION_RESCENTER = "notification_receive_rescenter";
-        String NOTIFICATION_SELLER_INFO = "notification_receive_seller_info";
+        String NOTIFICATION_SELLER_INFO = "notification_seller_info";
     }
 
     interface AppLinkQueryParameter {

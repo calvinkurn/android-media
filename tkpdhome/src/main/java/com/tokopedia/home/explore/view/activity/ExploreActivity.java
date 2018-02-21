@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -26,6 +27,7 @@ import com.tokopedia.home.explore.di.DaggerExploreComponent;
 import com.tokopedia.home.explore.di.ExploreComponent;
 import com.tokopedia.home.explore.view.adapter.ExploreFragmentAdapter;
 import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel;
+import com.tokopedia.home.explore.view.fragment.ExploreFragment;
 import com.tokopedia.home.explore.view.presentation.ExploreContract;
 import com.tokopedia.home.explore.view.presentation.ExplorePresenter;
 
@@ -41,6 +43,8 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
     private static final String POSTION = "position";
     private static final String DEFAULT_SECTION = "beli";
 
+    public static final int REQUEST_LOGIN = 384;
+    private static final String TAG = ExploreFragment.class.getSimpleName();
     @Inject
     ExplorePresenter presenter;
 
@@ -123,6 +127,14 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
                             presenter.getData();
                         }
                     });
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK && requestCode == REQUEST_LOGIN){
+            presenter.getData();
         }
     }
 
