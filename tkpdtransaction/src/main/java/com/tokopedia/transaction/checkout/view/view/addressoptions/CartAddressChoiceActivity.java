@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.checkout.view.activity;
+package com.tokopedia.transaction.checkout.view.view.addressoptions;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentManager;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.view.CartAddressChoiceFragment;
-import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 
 /**
  * Created by Irfan Khoirul on 05/02/18.

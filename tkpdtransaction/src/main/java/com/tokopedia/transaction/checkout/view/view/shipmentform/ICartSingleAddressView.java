@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.checkout.view.view;
+package com.tokopedia.transaction.checkout.view.view.shipmentform;
 
 /**
  * @author Aghny A. Putra on 26/01/18

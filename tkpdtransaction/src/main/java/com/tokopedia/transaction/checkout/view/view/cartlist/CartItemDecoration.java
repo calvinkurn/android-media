@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.checkout.view.activity;
+package com.tokopedia.transaction.checkout.view.view.cartlist;
 
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;

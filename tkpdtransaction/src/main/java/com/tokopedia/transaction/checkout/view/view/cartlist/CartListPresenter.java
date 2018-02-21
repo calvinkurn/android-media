@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.checkout.view.presenter;
+package com.tokopedia.transaction.checkout.view.view.cartlist;
 
 import android.content.Intent;
 
@@ -7,13 +7,12 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.checkout.domain.ICartListInteractor;
 import com.tokopedia.transaction.checkout.domain.request.RemoveCartRequest;
 import com.tokopedia.transaction.checkout.domain.request.UpdateCartRequest;
-import com.tokopedia.transaction.checkout.view.activity.CartShipmentActivity;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CartListData;
 import com.tokopedia.transaction.checkout.view.data.DeleteCartData;
 import com.tokopedia.transaction.checkout.view.data.UpdateCartListData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
-import com.tokopedia.transaction.checkout.view.view.ICartListView;
+import com.tokopedia.transaction.checkout.view.view.shipmentform.CartShipmentActivity;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;

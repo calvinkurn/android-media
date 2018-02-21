@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.checkout.view;
+package com.tokopedia.transaction.checkout.view.view.cartlist;
 
 import android.app.Activity;
 import android.app.DialogFragment;
@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.R;
@@ -20,9 +21,6 @@ import com.tokopedia.transaction.checkout.di.module.CartRemoveProductModule;
 import com.tokopedia.transaction.checkout.view.adapter.CartRemoveProductAdapter;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CheckedCartItemData;
-import com.tokopedia.transaction.checkout.view.dialog.CartRemoveItemDialog;
-import com.tokopedia.transaction.checkout.view.presenter.CartRemoveProductPresenter;
-import com.tokopedia.transaction.checkout.view.view.IRemoveProductListView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,9 +33,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-
-import static com.tokopedia.transaction.checkout.view.SingleAddressShipmentFragment.ARG_EXTRA_CART_DATA_LIST;
+import static com.tokopedia.transaction.checkout.view.view.shipmentform.SingleAddressShipmentFragment.ARG_EXTRA_CART_DATA_LIST;
 
 /**
  * @author Aghny A. Putra on 05/02/18

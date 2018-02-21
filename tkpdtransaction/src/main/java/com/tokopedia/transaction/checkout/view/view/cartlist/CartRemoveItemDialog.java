@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.checkout.view.dialog;
+package com.tokopedia.transaction.checkout.view.view.cartlist;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

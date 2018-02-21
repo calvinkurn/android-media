@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.checkout.view;
+package com.tokopedia.transaction.checkout.view.view.multipleaddressform;
 
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressAdapterData;
 

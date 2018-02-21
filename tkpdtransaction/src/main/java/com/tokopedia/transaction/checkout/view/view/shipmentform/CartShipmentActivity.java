@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.checkout.view.activity;
+package com.tokopedia.transaction.checkout.view.view.shipmentform;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -9,10 +9,9 @@ import android.os.Parcelable;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.checkout.view.MultipleAddressFragment;
-import com.tokopedia.transaction.checkout.view.SingleAddressShipmentFragment;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
+import com.tokopedia.transaction.checkout.view.view.multipleaddressform.MultipleAddressFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +80,9 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
                 || (fragment instanceof SingleAddressShipmentFragment))) {
             if (typeAddressShipment == TYPE_ADDRESS_SHIPMENT_SINGLE) {
                 getFragmentManager().beginTransaction().replace(R.id.container,
-                        SingleAddressShipmentFragment.newInstance(cartItemDataList, cartPromoSuggestionData)).commit();
+                        SingleAddressShipmentFragment.newInstance(
+                                cartItemDataList, cartPromoSuggestionData
+                        )).commit();
             } else {
                 getFragmentManager().beginTransaction().replace(R.id.container,
                         MultipleAddressFragment.newInstance()).commit();

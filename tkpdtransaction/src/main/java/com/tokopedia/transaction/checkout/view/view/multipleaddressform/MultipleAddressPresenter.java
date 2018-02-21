@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.checkout.view.presenter;
+package com.tokopedia.transaction.checkout.view.view.multipleaddressform;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -19,7 +19,7 @@ import rx.Subscriber;
  * Created by kris on 2/5/18. Tokopedia
  */
 
-public class MultipleAddressPresenter implements IMultipleAddressPresenter{
+public class MultipleAddressPresenter implements IMultipleAddressPresenter {
 
     private IMultipleAddressInteractor interactor;
 

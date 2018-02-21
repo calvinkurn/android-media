@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.checkout.view.activity;
+package com.tokopedia.transaction.checkout.view.view.shipmentform;
 
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 

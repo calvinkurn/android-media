@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.checkout.view;
+package com.tokopedia.transaction.checkout.view.view.cartlist;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -45,11 +45,8 @@ import com.tokopedia.transaction.checkout.di.module.CartListModule;
 import com.tokopedia.transaction.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
-import com.tokopedia.transaction.checkout.view.dialog.CartRemoveItemDialog;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
-import com.tokopedia.transaction.checkout.view.presenter.ICartListPresenter;
-import com.tokopedia.transaction.checkout.view.view.ICartListView;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;

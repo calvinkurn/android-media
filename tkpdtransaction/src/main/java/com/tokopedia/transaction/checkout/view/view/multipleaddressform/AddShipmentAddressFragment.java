@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.checkout.view;
+package com.tokopedia.transaction.checkout.view.view.multipleaddressform;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -19,8 +19,8 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressAdapterData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
 
-import static com.tokopedia.transaction.checkout.view.MultipleAddressFragment.ADD_SHIPMENT_ADDRESS_REQUEST_CODE;
-import static com.tokopedia.transaction.checkout.view.MultipleAddressFragment.EDIT_SHIPMENT_ADDRESS_REQUEST_CODE;
+import static com.tokopedia.transaction.checkout.view.view.multipleaddressform.MultipleAddressFragment.ADD_SHIPMENT_ADDRESS_REQUEST_CODE;
+import static com.tokopedia.transaction.checkout.view.view.multipleaddressform.MultipleAddressFragment.EDIT_SHIPMENT_ADDRESS_REQUEST_CODE;
 
 /**
  * Created by kris on 1/25/18. Tokopedia

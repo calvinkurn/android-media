@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.checkout.view;
+package com.tokopedia.transaction.checkout.view.view.shipmentform;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -19,16 +19,14 @@ import com.tokopedia.transaction.checkout.di.component.DaggerSingleAddressShipme
 import com.tokopedia.transaction.checkout.di.component.SingleAddressShipmentComponent;
 import com.tokopedia.transaction.checkout.di.module.SingleAddressShipmentModule;
 import com.tokopedia.transaction.checkout.domain.SingleAddressShipmentDataConverter;
-import com.tokopedia.transaction.checkout.view.activity.CartAddressChoiceActivity;
-import com.tokopedia.transaction.checkout.view.activity.ShipmentDetailActivity;
 import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
-import com.tokopedia.transaction.checkout.view.presenter.SingleAddressShipmentPresenter;
-import com.tokopedia.transaction.checkout.view.view.ICartSingleAddressView;
+import com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity;
+import com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
 import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;

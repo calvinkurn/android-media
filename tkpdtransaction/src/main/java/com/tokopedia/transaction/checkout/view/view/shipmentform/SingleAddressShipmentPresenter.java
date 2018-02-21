@@ -1,8 +1,7 @@
-package com.tokopedia.transaction.checkout.view.presenter;
+package com.tokopedia.transaction.checkout.view.view.shipmentform;
 
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
-import com.tokopedia.transaction.checkout.view.data.factory.CartSingleAddressDataFactory;
-import com.tokopedia.transaction.checkout.view.view.ICartSingleAddressView;
+import com.tokopedia.transaction.checkout.view.presenter.CartMvpPresenter;
 
 import rx.Observer;
 

@@ -4,8 +4,8 @@ import com.tokopedia.transaction.checkout.di.scope.MultipleAddressScope;
 import com.tokopedia.transaction.checkout.domain.IMultipleAddressInteractor;
 import com.tokopedia.transaction.checkout.domain.IMultipleAddressRepository;
 import com.tokopedia.transaction.checkout.domain.MultipleAddressInteractor;
-import com.tokopedia.transaction.checkout.view.presenter.IMultipleAddressPresenter;
-import com.tokopedia.transaction.checkout.view.presenter.MultipleAddressPresenter;
+import com.tokopedia.transaction.checkout.view.view.multipleaddressform.IMultipleAddressPresenter;
+import com.tokopedia.transaction.checkout.view.view.multipleaddressform.MultipleAddressPresenter;
 
 import dagger.Module;
 import dagger.Provides;

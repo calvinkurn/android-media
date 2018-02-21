@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.checkout.view.activity;
+package com.tokopedia.transaction.checkout.view.view.shippingoptions;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;

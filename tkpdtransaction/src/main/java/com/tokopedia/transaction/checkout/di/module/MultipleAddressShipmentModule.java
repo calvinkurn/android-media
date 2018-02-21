@@ -1,7 +1,7 @@
 package com.tokopedia.transaction.checkout.di.module;
 
 import com.tokopedia.transaction.checkout.di.scope.MultipleAddressShipmentScope;
-import com.tokopedia.transaction.checkout.view.presenter.MultipleAddressShipmentPresenter;
+import com.tokopedia.transaction.checkout.view.view.shipmentform.MultipleAddressShipmentPresenter;
 
 import dagger.Module;
 import dagger.Provides;

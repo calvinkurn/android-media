@@ -178,7 +178,7 @@ import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.checkout.domain.AddToCartUseCase;
 import com.tokopedia.transaction.checkout.domain.CartRepository;
 import com.tokopedia.transaction.checkout.domain.response.addtocart.AddToCartDataResponse;
-import com.tokopedia.transaction.checkout.view.activity.CartActivity;
+import com.tokopedia.transaction.checkout.view.view.cartlist.CartActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
 

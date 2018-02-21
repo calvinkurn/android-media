@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.checkout.view.view;
+package com.tokopedia.transaction.checkout.view.view.cartlist;
 
 import android.content.Context;
 

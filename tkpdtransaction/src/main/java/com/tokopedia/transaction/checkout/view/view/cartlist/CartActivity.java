@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.checkout.view.activity;
+package com.tokopedia.transaction.checkout.view.view.cartlist;
 
 import android.app.Fragment;
 import android.net.Uri;
@@ -8,8 +8,6 @@ import android.view.MenuItem;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.checkout.view.CartFragment;
-import com.tokopedia.transaction.checkout.view.CartRemoveProductFragment;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 
 import java.util.ArrayList;

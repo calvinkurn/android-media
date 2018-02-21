@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.checkout.view;
+package com.tokopedia.transaction.checkout.view.view.multipleaddressform;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,20 +15,19 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.di.component.DaggerMultipleAddressComponent;
 import com.tokopedia.transaction.checkout.di.component.MultipleAddressComponent;
 import com.tokopedia.transaction.checkout.di.module.MultipleAddressModule;
-import com.tokopedia.transaction.checkout.view.activity.ICartShipmentActivity;
 import com.tokopedia.transaction.checkout.view.adapter.MultipleAddressAdapter;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressAdapterData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
-import com.tokopedia.transaction.checkout.view.presenter.IMultipleAddressPresenter;
-import com.tokopedia.transaction.checkout.view.presenter.MultipleAddressPresenter;
+import com.tokopedia.transaction.checkout.view.view.shipmentform.ICartShipmentActivity;
+import com.tokopedia.transaction.checkout.view.view.shipmentform.MultipleAddressShipmentFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.transaction.checkout.view.AddShipmentAddressFragment.ADD_MODE;
-import static com.tokopedia.transaction.checkout.view.AddShipmentAddressFragment.EDIT_MODE;
+import static com.tokopedia.transaction.checkout.view.view.multipleaddressform.AddShipmentAddressFragment.ADD_MODE;
+import static com.tokopedia.transaction.checkout.view.view.multipleaddressform.AddShipmentAddressFragment.EDIT_MODE;
 
 /**
  * Created by kris on 1/24/18. Tokopedia

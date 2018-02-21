@@ -11,7 +11,6 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.cart.fragment.CartFragment;
-import com.tokopedia.transaction.checkout.view.MultipleAddressFragment;
 
 
 /**
