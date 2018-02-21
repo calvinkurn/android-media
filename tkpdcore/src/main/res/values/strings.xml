@@ -1134,6 +1134,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_index_favorite">FAVORIT</string>
 
     <string name="title_done">Selesai</string>
+    <string name="title_understand">Mengerti</string>
     <string name="msg_new_update">Harap segera perbarui aplikasi anda</string>
     <string name="msg_server_error">Halaman sebelum nya tidak dapat dibuka karena kendala server, silakan coba beberapa saat lagi</string>
     <string name="title_activity_maintenance_page">Server Maintenance</string>
