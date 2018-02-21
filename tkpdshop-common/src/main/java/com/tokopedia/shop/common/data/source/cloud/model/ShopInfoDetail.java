@@ -58,7 +58,7 @@ public class ShopInfoDetail {
     private String shopIsFreeReturns;
     @SerializedName("shop_is_gold")
     @Expose
-    private long shopIsGold;
+    private String shopIsGold;
     @SerializedName("shop_is_gold_badge")
     @Expose
     private boolean shopIsGoldBadge;
@@ -254,11 +254,11 @@ public class ShopInfoDetail {
         this.shopIsFreeReturns = shopIsFreeReturns;
     }
 
-    public long getShopIsGold() {
+    public String getShopIsGold() {
         return shopIsGold;
     }
 
-    public void setShopIsGold(long shopIsGold) {
+    public void setShopIsGold(String shopIsGold) {
         this.shopIsGold = shopIsGold;
     }
 

@@ -25,7 +25,7 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <include
-                layout="@layout/include_header_shop_info_detail"
+                layout="@layout/partial_shop_page_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="bottom"

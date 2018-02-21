@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/green_200"
+    android:background="@android:color/white"
     android:fitsSystemWindows="true"
     android:gravity="bottom"
     android:orientation="horizontal"
@@ -17,12 +17,11 @@
         android:layout_height="1dp"
         android:layout_margin="8dp"
         android:background="@color/grey_300"
-        app:layout_constraintTop_toBottomOf="@+id/shop_icon_imageview" />
+        app:layout_constraintTop_toBottomOf="@+id/image_view_shop_icon" />
 
     <TextView
-        android:id="@+id/title_shop_reputation"
-        style="@style/TextView.Small.Bold.BlackSecondary"
-        android:layout_width="wrap_content"
+        android:id="@+id/text_view_reputation_label"
+        style="@style/TextView.Micro.BlackDisabled"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/reputation_label"
@@ -58,9 +57,8 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/product_quality_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/text_view_product_quality_label"
+        style="@style/TextView.Micro.BlackDisabled"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -70,28 +68,27 @@
         app:layout_constraintTop_toTopOf="@+id/guideline" />
 
     <TextView
-        android:id="@+id/product_quality_value"
+        android:id="@+id/text_view_product_quality_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="4.5"
-        app:layout_constraintStart_toStartOf="@+id/product_quality_label"
-        app:layout_constraintTop_toBottomOf="@+id/product_quality_label" />
+        app:layout_constraintStart_toStartOf="@+id/text_view_product_quality_label"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_product_quality_label"
+        tools:text="@string/app_name" />
 
     <RatingBar
-        android:id="@+id/rating_bar_shop_info"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:id="@+id/rating_bar_product_quality"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintStart_toEndOf="@+id/product_quality_value"
-        app:layout_constraintTop_toBottomOf="@+id/product_quality_label" />
+        app:layout_constraintStart_toEndOf="@+id/text_view_product_quality_value"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_product_quality_label" />
 
     <TextView
-        android:id="@+id/speed_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/text_view_speed_label"
+        style="@style/TextView.Micro.BlackDisabled"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/speed_label_value"
@@ -100,32 +97,30 @@
         app:layout_constraintTop_toBottomOf="@+id/separator_1" />
 
     <ImageView
-        android:id="@+id/speed_imageview"
+        android:id="@+id/image_view_speed"
         android:layout_width="21dp"
         android:layout_height="21dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toStartOf="@+id/speed_value_desc"
+        app:layout_constraintEnd_toStartOf="@+id/text_view_speed_value"
         app:layout_constraintStart_toStartOf="@+id/guideline5"
-        app:layout_constraintTop_toBottomOf="@+id/speed_label"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_speed_label"
         app:srcCompat="@drawable/bg_button_orange" />
 
     <TextView
-        android:id="@+id/speed_value_desc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/text_view_speed_value"
+        style="@style/TextView.Micro"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/speed_imageview"
-        app:layout_constraintTop_toBottomOf="@+id/speed_label" />
+        app:layout_constraintStart_toEndOf="@+id/image_view_speed"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_speed_label" />
 
     <ImageView
-        android:id="@+id/shop_background_imageview"
+        android:id="@+id/image_view_shop_background"
         android:layout_width="0dp"
-        android:layout_height="96dp"
+        android:layout_height="@dimen/image_width_xxl"
         android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.863"
@@ -134,63 +129,65 @@
         app:srcCompat="@drawable/bg_button_orange" />
 
     <ImageView
-        android:id="@+id/shop_icon_imageview"
-        android:layout_width="53dp"
-        android:layout_height="49dp"
+        android:id="@+id/image_view_shop_icon"
+        android:layout_width="@dimen/image_width_l"
+        android:layout_height="@dimen/image_width_l"
         android:layout_marginStart="12dp"
         android:layout_marginTop="12dp"
-        app:layout_constraintStart_toStartOf="@+id/shop_background_imageview"
-        app:layout_constraintTop_toBottomOf="@+id/shop_background_imageview"
+        app:layout_constraintStart_toStartOf="@+id/image_view_shop_background"
+        app:layout_constraintTop_toBottomOf="@+id/image_view_shop_background"
         app:srcCompat="@drawable/bg_button_green" />
 
     <ImageView
-        android:id="@+id/gold_merchant_status_imageview"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:id="@+id/image_view_shop_status"
+        android:layout_width="@dimen/image_width_xxs"
+        android:layout_height="@dimen/image_width_xxs"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
-        app:layout_constraintStart_toEndOf="@+id/shop_icon_imageview"
-        app:layout_constraintTop_toTopOf="@+id/shop_icon_imageview"
-        app:srcCompat="@drawable/bg_ticker" />
+        android:src="@drawable/ic_badge_shop_regular"
+        app:layout_constraintStart_toEndOf="@+id/image_view_shop_icon"
+        app:layout_constraintTop_toTopOf="@+id/image_view_shop_icon" />
 
     <ImageView
-        android:id="@+id/location_imageview"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:id="@+id/image_view_location"
+        android:layout_width="@dimen/image_width_xxs"
+        android:layout_height="@dimen/image_width_xxs"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/shop_icon_imageview"
-        app:layout_constraintStart_toEndOf="@+id/shop_icon_imageview"
-        app:srcCompat="@color/default_line_indicator_selected_color" />
+        android:src="@drawable/ic_info_location"
+        app:layout_constraintBottom_toBottomOf="@+id/image_view_shop_icon"
+        app:layout_constraintStart_toEndOf="@+id/image_view_shop_icon" />
 
     <TextView
-        android:id="@+id/shop_name"
+        android:id="@+id/text_view_shop_name"
+        style="@style/TextView.Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
-        android:text="TextView"
-        app:layout_constraintStart_toEndOf="@+id/gold_merchant_status_imageview"
-        app:layout_constraintTop_toTopOf="@+id/gold_merchant_status_imageview" />
+        app:layout_constraintStart_toEndOf="@+id/image_view_shop_status"
+        app:layout_constraintTop_toTopOf="@+id/image_view_shop_status"
+        tools:text="@string/app_name" />
 
     <TextView
-        android:id="@+id/shop_info_location"
+        android:id="@+id/text_view_location"
+        style="@style/TextView.Micro.BlackSecondary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="@+id/location_imageview"
-        app:layout_constraintStart_toEndOf="@+id/location_imageview" />
+        app:layout_constraintBottom_toBottomOf="@+id/image_view_location"
+        app:layout_constraintStart_toEndOf="@+id/image_view_location"
+        tools:text="@string/app_name" />
 
     <ImageView
         android:id="@+id/shop_info"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="@dimen/image_width_xxs"
+        android:layout_height="@dimen/image_width_xxs"
         android:layout_marginEnd="4dp"
         android:layout_marginRight="4dp"
-        app:layout_constraintEnd_toEndOf="@+id/shop_background_imageview"
-        app:layout_constraintTop_toTopOf="@+id/shop_name"
+        app:layout_constraintEnd_toEndOf="@+id/image_view_shop_background"
+        app:layout_constraintTop_toTopOf="@+id/text_view_shop_name"
         app:srcCompat="@color/background_star_review" />
 
     <com.tokopedia.design.reputation.ShopReputationView
@@ -200,8 +197,8 @@
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="@+id/title_shop_reputation"
-        app:layout_constraintTop_toBottomOf="@+id/title_shop_reputation" />
+        app:layout_constraintStart_toStartOf="@+id/text_view_reputation_label"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_reputation_label" />
 
     <LinearLayout
         android:id="@+id/container_click_info"
@@ -211,7 +208,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shop_background_imageview" />
+        app:layout_constraintTop_toBottomOf="@+id/image_view_shop_background" />
 
     <LinearLayout
         android:id="@+id/reputation_click_container"

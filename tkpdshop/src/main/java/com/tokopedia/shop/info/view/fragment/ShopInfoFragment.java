@@ -150,7 +150,7 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
         }
         physicalShopLabelView.setContent(physicalAddressContent);
         shopOwnerLabelView.setTitle(shopInfo.getOwner().getOwnerName());
-        ImageHandler.loadImageRounded2(shopOwnerLabelView.getImageView().getContext(), shopOwnerLabelView.getImageView(), shopInfo.getOwner().getOwnerImage());
+        ImageHandler.loadImageCircle2(shopOwnerLabelView.getImageView().getContext(), shopOwnerLabelView.getImageView(), shopInfo.getOwner().getOwnerImage());
         shopOwnerLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

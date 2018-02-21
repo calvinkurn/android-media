@@ -1,4 +1,7 @@
 <resources>
+
+    <string name="shop_page_label_authorized">Authorized</string>
+
     <string name="shop_info_title">Shop Info</string>
     <string name="shop_info_title_tab_product">Produk</string>
     <string name="shop_info_title_tab_review">Ulasan</string>
