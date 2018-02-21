@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
@@ -27,7 +28,7 @@ import javax.inject.Inject;
  * Created by nathan on 2/15/18.
  */
 
-public class ShopProductListFragment extends BaseListFragment<ShopProductViewModel, ShopProductTypeFactory>  {
+public class ShopProductListFragment extends BaseSearchListFragment<ShopProductViewModel, ShopProductTypeFactory> {
 
     public static final int SPAN_COUNT = 2;
 
@@ -113,5 +114,15 @@ public class ShopProductListFragment extends BaseListFragment<ShopProductViewMod
         });
 
         ((RecyclerView)view.findViewById(R.id.recycler_view)).setLayoutManager(gridLayoutManager);
+    }
+
+    @Override
+    public void onSearchSubmitted(String s) {
+        shopProductListPresenter.getShopPageList(shopId, s, null, 0, 1);
+    }
+
+    @Override
+    public void onSearchTextChanged(String s) {
+        shopProductListPresenter.getShopPageList(shopId, s, null, 0, 1);
     }
 }
