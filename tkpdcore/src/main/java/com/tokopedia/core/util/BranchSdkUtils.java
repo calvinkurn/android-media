@@ -34,8 +34,8 @@ public class BranchSdkUtils {
     private static final String BRANCH_IOS_DEEPLINK_PATH_KEY = "$ios_deeplink_path";
     private static final String BRANCH_DESKTOP_URL_KEY = "$desktop_url";
     private static final String CAMPAIGN_NAME = "Android App";
-    private static final String BRANCH_PROMOCODE_KEY="branch_promo";
-    public static String REFERRAL_ADVOCATE_PROMO_CODE;
+    private static final String BRANCH_PROMOCODE_KEY = "branch_promo";
+    public static String REFERRAL_ADVOCATE_PROMO_CODE = "";
 
     private static BranchUniversalObject createBranchUniversalObject(ShareData data) {
         BranchUniversalObject branchUniversalObject = new BranchUniversalObject()
@@ -188,7 +188,7 @@ public class BranchSdkUtils {
     }
 
     public static void removeCouponCode(Context context) {
-        REFERRAL_ADVOCATE_PROMO_CODE = null;
+        REFERRAL_ADVOCATE_PROMO_CODE = "";
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.CACHE_PROMO_CODE);
         localCacheHandler.clearCache(TkpdCache.Key.KEY_CACHE_PROMO_CODE);
     }
