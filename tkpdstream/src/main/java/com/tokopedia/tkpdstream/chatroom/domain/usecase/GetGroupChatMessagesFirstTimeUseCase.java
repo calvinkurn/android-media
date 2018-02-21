@@ -1,7 +1,9 @@
 package com.tokopedia.tkpdstream.chatroom.domain.usecase;
 
+import android.content.Context;
+
 import com.sendbird.android.OpenChannel;
-import com.sendbird.android.SendBirdException;
+import com.sendbird.android.PreviousMessageListQuery;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.tkpdstream.chatroom.domain.source.GroupChatMessageSource;
 
@@ -20,10 +22,10 @@ public class GetGroupChatMessagesFirstTimeUseCase {
 
     private GroupChatMessageSource source;
 
-    public interface GetGroupChatMessagesListener {
-        void onGetMessages(List<Visitable> map);
+    public interface GetGroupChatMessagesFirstTimeListener {
+        void onGetMessagesFirstTime(List<Visitable> map, PreviousMessageListQuery previousMessageListQuery);
 
-        void onErrorGetMessagesFirstTime(SendBirdException e);
+        void onErrorGetMessagesFirstTime(String errorMessage);
     }
 
     @Inject
@@ -32,10 +34,11 @@ public class GetGroupChatMessagesFirstTimeUseCase {
     }
 
 
-    public void execute(String channelUrl,
+    public void execute(Context context,
+                        String channelUrl,
                         OpenChannel mChannel,
-                        final GetGroupChatMessagesListener listener) {
-        source.getMessagesFirstTime(channelUrl,mChannel, listener);
+                        final GetGroupChatMessagesFirstTimeListener listener) {
+        source.getMessagesFirstTime(context, channelUrl, mChannel, listener);
     }
 
 

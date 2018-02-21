@@ -1,5 +1,7 @@
 package com.tokopedia.tkpdstream.chatroom.domain;
 
+import android.util.Log;
+
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.User;

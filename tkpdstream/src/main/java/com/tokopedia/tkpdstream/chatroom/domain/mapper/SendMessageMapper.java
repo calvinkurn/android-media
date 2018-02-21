@@ -24,6 +24,7 @@ public class SendMessageMapper {
                 userMessage.getSender().getUserId(),
                 userMessage.getSender().getNickname(),
                 userMessage.getSender().getProfileUrl(),
+                false,
                 false);
     }
 }

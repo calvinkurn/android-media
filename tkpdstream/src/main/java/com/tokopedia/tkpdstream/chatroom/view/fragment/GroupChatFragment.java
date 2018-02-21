@@ -1,26 +1,38 @@
 package com.tokopedia.tkpdstream.chatroom.view.fragment;
 
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.sendbird.android.OpenChannel;
+import com.sendbird.android.PreviousMessageListQuery;
 import com.sendbird.android.SendBird;
-import com.sendbird.android.SendBirdException;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.channel.view.activity.ChannelActivity;
 import com.tokopedia.tkpdstream.chatroom.di.DaggerChatroomComponent;
@@ -55,7 +67,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     @Inject
     GroupChatPresenter presenter;
 
-
+    private Toolbar toolbar;
+    private ImageView channelBanner;
     private RecyclerView chatRecyclerView;
     private EditText replyEditText;
     private View sendButton;
@@ -63,6 +76,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     private LinearLayoutManager layoutManager;
 
     private OpenChannel mChannel;
+    private PreviousMessageListQuery mPrevMessageListQuery;
     private GroupChatViewModel viewModel;
     private UserSession userSession;
 
@@ -109,11 +123,64 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_group_chat_room, container, false);
+        toolbar = view.findViewById(R.id.toolbar);
+        channelBanner = view.findViewById(R.id.channel_banner);
         chatRecyclerView = view.findViewById(R.id.chat_list);
         replyEditText = view.findViewById(R.id.reply_edit_text);
         sendButton = view.findViewById(R.id.button_send);
+        setupToolbar();
         prepareView();
         return view;
+    }
+
+    private void setupToolbar() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Window w = getActivity().getWindow(); // in Activity's onCreate() for instance
+            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+            toolbar.setPadding(0, getStatusBarHeight(), 0, 0);
+        }
+
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+
+        if (getActivity() != null
+                && ((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+        setHasOptionsMenu(true);
+
+        toolbar.setTitle("Ngeng 123");
+        toolbar.setSubtitle("Ngeng subtitle");
+
+    }
+
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.group_chat_room_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            getActivity().onBackPressed();
+            return true;
+        } else if (item.getItemId() == R.id.action_share) {
+            presenter.shareChatRoom(viewModel);
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
     }
 
     private void prepareView() {
@@ -130,7 +197,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
 
                 if (layoutManager.findLastVisibleItemPosition() == adapter.getItemCount() - 1) {
-                    presenter.loadPreviousMessages();
+                    presenter.loadPreviousMessages(mChannel, mPrevMessageListQuery);
                 }
             }
         });
@@ -182,20 +249,25 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 userSession.getName(), "https://yt3.ggpht" +
                         ".com/-uwClWniyyFU/AAAAAAAAAAI/AAAAAAAAAAA/nVrBEY3dzuY/s176-c-k-no-mo-rj" +
                         "-c0xffffff/photo.jpg", new
-                LoginGroupChatUseCase
-                        .LoginGroupChatListener() {
-                    @Override
-                    public void onSuccessEnterChannel(OpenChannel openChannel) {
-                        mChannel = openChannel;
-                        presenter.initMessageFirstTime(viewModel.getChannelUrl(), mChannel);
-                    }
+                        LoginGroupChatUseCase
+                                .LoginGroupChatListener() {
+                            @Override
+                            public void onSuccessEnterChannel(OpenChannel openChannel) {
+                                mChannel = openChannel;
+                                presenter.initMessageFirstTime(viewModel.getChannelUrl(), mChannel);
+                            }
 
-                    @Override
-                    public void onErrorEnterChannel(SendBirdException e) {
-                        getActivity().setResult(ChannelActivity.RESULT_ERROR_LOGIN);
-                        getActivity().finish();
-                    }
-                });
+                            @Override
+                            public void onErrorEnterChannel(String errorMessage) {
+                                Intent intent = new Intent();
+                                intent.putExtra(ChannelActivity.RESULT_MESSAGE, errorMessage);
+                                getActivity().setResult(ChannelActivity.RESULT_ERROR_LOGIN, intent);
+                                getActivity().finish();
+                            }
+                        });
+
+        ImageHandler.loadImageBlur(getActivity(), channelBanner, "http://static.tvtropes" +
+                ".org/pmwiki/pub/images/kingdom_hearts_difficulties.jpg");
     }
 
     @Override
@@ -220,6 +292,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 ConnectionManager.ConnectionManagementHandler() {
                     @Override
                     public void onConnected(boolean reconnect) {
+                        Log.d("NISNIS", "onConnected " + reconnect);
+
                         if (reconnect) {
 //                    presenter.refreshData();
                         } else {
@@ -227,7 +301,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                         }
                     }
                 });
-        presenter.setReceiver(viewModel.getChannelUrl(), this);
+        presenter.setHandler(viewModel.getChannelUrl(), this);
     }
 
     @Override
@@ -245,10 +319,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     @Override
     public void onSuccessGetMessage(List<Visitable> listChat) {
+        adapter.addList(listChat);
     }
 
     @Override
-    public void onSuccessGetMessageFirstTime(List<Visitable> listChat) {
+    public void onSuccessGetMessageFirstTime(List<Visitable> listChat, PreviousMessageListQuery previousMessageListQuery) {
+        this.mPrevMessageListQuery = previousMessageListQuery;
         adapter.addList(listChat);
         scrollToBottom();
     }
@@ -259,6 +335,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     @Override
     public void onErrorSendMessage(PendingChatViewModel pendingChatViewModel, String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
         adapter.setRetry(pendingChatViewModel);
     }
 
@@ -269,6 +346,16 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         adapter.notifyDataSetChanged();
         replyEditText.setText("");
         scrollToBottom();
+
+    }
+
+    @Override
+    public void onErrorGetMessage(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onErrorGetMessageFirstTime(String errorMessage) {
 
     }
 

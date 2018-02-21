@@ -58,7 +58,7 @@ public class ImageHandler {
      * @return
      * @throws IOException
      */
-    public static Bitmap RotatedBitmap (Bitmap bitmap, String file) throws IOException {
+    public static Bitmap RotatedBitmap(Bitmap bitmap, String file) throws IOException {
         ExifInterface exif = new ExifInterface(file);
         String orientString = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
         int orientation = orientString != null ? Integer.parseInt(orientString) : ExifInterface.ORIENTATION_NORMAL;
@@ -532,4 +532,13 @@ public class ImageHandler {
                 .into(imageView);
     }
 
+    public static void loadImageBlur(Context context, ImageView imageView, String imageUrl) {
+        if (context != null) {
+            Glide.with(context)
+                    .load(imageUrl)
+                    .thumbnail(0.1f)
+                    .centerCrop()
+                    .into(imageView);
+        }
+    }
 }

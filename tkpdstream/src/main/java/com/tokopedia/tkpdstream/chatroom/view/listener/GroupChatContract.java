@@ -3,11 +3,13 @@ package com.tokopedia.tkpdstream.chatroom.view.listener;
 import android.content.Context;
 
 import com.sendbird.android.OpenChannel;
+import com.sendbird.android.PreviousMessageListQuery;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.LoginGroupChatUseCase;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
 
 import java.util.List;
@@ -24,11 +26,15 @@ public interface GroupChatContract {
 
         void onSuccessGetMessage(List<Visitable> listChat);
 
-        void onSuccessGetMessageFirstTime(List<Visitable> listChat);
+        void onSuccessGetMessageFirstTime(List<Visitable> listChat, PreviousMessageListQuery previousMessageListQuery);
 
         void onErrorSendMessage(PendingChatViewModel pendingChatViewModel, String errorMessage);
 
         void onSuccessSendMessage(PendingChatViewModel pendingChatViewModel, ChatViewModel viewModel);
+
+        void onErrorGetMessage(String errorMessage);
+
+        void onErrorGetMessageFirstTime(String errorMessage);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -42,6 +48,8 @@ public interface GroupChatContract {
 
         void logoutChannel(OpenChannel mChannel);
 
-        void loadPreviousMessages();
+        void loadPreviousMessages(OpenChannel mChannel, PreviousMessageListQuery mPrevMessageListQuery);
+
+        void shareChatRoom(GroupChatViewModel viewModel);
     }
 }

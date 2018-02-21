@@ -4,29 +4,54 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.Toolbar;
 
+import com.tokopedia.abstraction.base.view.activity.BaseEmptyActivity;
+import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
-import com.tokopedia.tkpdstream.common.BaseStreamActivity;
 
 /**
  * @author by nisie on 2/6/18.
  */
 
-public class GroupChatActivity extends BaseStreamActivity {
+public class GroupChatActivity extends BaseEmptyActivity {
 
     public static final String EXTRA_CHANNEL_URL = "CHANNEL_URL";
+    public Toolbar toolbar;
 
     @Override
-    protected Fragment getNewFragment() {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initView();
+
+    }
+
+    private void initView() {
         Bundle bundle = new Bundle();
-        if (getIntent().getExtras() != null)
+        if (getIntent().getExtras() != null) {
             bundle.putAll(getIntent().getExtras());
-        return GroupChatFragment.createInstance(bundle);
+        }
+
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag
+                (GroupChatFragment.class.getSimpleName());
+
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        if (fragment == null) {
+            fragment = GroupChatFragment.createInstance(bundle);
+        }
+        fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
+        fragmentTransaction.commit();
     }
 
     public static Intent getCallingIntent(Context context) {
         Intent intent = new Intent(context, GroupChatActivity.class);
         intent.putExtra(EXTRA_CHANNEL_URL, "pub1");
         return intent;
+    }
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_group_chat;
     }
 }

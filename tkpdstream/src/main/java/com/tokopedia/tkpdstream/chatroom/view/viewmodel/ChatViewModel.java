@@ -13,15 +13,18 @@ public class ChatViewModel extends BaseChatViewModel implements Visitable<GroupC
     String senderName;
     String senderIconUrl;
     boolean isInfluencer;
+    boolean isAdministrator;
+
 
     public ChatViewModel(String message, String createdAt, String updatedAt,
                          String messageId, String senderId, String senderName,
-                         String senderIconUrl, boolean isInfluencer) {
+                         String senderIconUrl, boolean isInfluencer, boolean isAdministrator) {
         super(message, createdAt, updatedAt, messageId);
         this.senderId = senderId;
         this.senderName = senderName;
         this.senderIconUrl = senderIconUrl;
         this.isInfluencer = isInfluencer;
+        this.isAdministrator = isAdministrator;
     }
 
     @Override
@@ -43,5 +46,9 @@ public class ChatViewModel extends BaseChatViewModel implements Visitable<GroupC
 
     public boolean isInfluencer() {
         return isInfluencer;
+    }
+
+    public boolean isAdministrator() {
+        return isAdministrator;
     }
 }

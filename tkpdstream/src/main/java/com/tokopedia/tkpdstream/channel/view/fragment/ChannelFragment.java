@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,7 +94,7 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
         String dummyImage = "http://www.behindthevoiceactors.com/_img/games/banner_11.jpg";
         String dummyProfile = "https://orig00.deviantart.net/80ce/f/2007/349/d/f/__kingdom_hearts___coded___by_mazjojo.jpg";
         for (int i = 0; i < 10; i++) {
-            ChannelViewModel channelViewModel = new ChannelViewModel("id"+i, "name"+i, dummyImage, dummyProfile, "title"+i, "subtitle"+i, i);
+            ChannelViewModel channelViewModel = new ChannelViewModel("id" + i, "name" + i, dummyImage, dummyProfile, "title" + i, "subtitle" + i, i);
             list.add(channelViewModel);
         }
 
@@ -154,10 +155,16 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQUEST_OPEN_GROUPCHAT && resultCode == ChannelActivity
-                .RESULT_ERROR_LOGIN){
-            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string
-                    .error_open_group_chat));
+        if (requestCode == REQUEST_OPEN_GROUPCHAT
+                && resultCode == ChannelActivity.RESULT_ERROR_LOGIN
+                && data != null
+                && data.getExtras() != null) {
+            String errorMessage = data.getExtras().getString(ChannelActivity.RESULT_MESSAGE, "");
+            if (!TextUtils.isEmpty(errorMessage)) {
+                NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+            } else {
+                NetworkErrorHelper.showSnackbar(getActivity());
+            }
         }
     }
 }

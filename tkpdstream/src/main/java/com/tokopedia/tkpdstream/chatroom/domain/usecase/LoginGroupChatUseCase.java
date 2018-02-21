@@ -1,10 +1,12 @@
 package com.tokopedia.tkpdstream.chatroom.domain.usecase;
 
+import android.content.Context;
+
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.User;
-import com.tokopedia.tkpdstream.chatroom.domain.ConnectionManager;
+import com.tokopedia.tkpdstream.common.util.GroupChatErrorHandler;
 
 import javax.inject.Inject;
 
@@ -17,14 +19,14 @@ public class LoginGroupChatUseCase {
     public interface LoginGroupChatListener {
         void onSuccessEnterChannel(OpenChannel openChannel);
 
-        void onErrorEnterChannel(SendBirdException e);
+        void onErrorEnterChannel(String errorMessage);
     }
 
     @Inject
     public LoginGroupChatUseCase() {
     }
 
-    public void execute(final String channelUrl,
+    public void execute(final Context context, final String channelUrl,
                         String userId,
                         final String userName, final String userAvatar, final LoginGroupChatListener listener) {
 
@@ -32,7 +34,8 @@ public class LoginGroupChatUseCase {
             @Override
             public void onConnected(User user, SendBirdException e) {
                 if (e != null) {
-                    listener.onErrorEnterChannel(e);
+                    listener.onErrorEnterChannel(GroupChatErrorHandler
+                            .getSendBirdErrorMessage(context, e, true));
                     return;
                 }
 
@@ -40,7 +43,8 @@ public class LoginGroupChatUseCase {
                     @Override
                     public void onUpdated(SendBirdException e) {
                         if (e != null) {
-                            listener.onErrorEnterChannel(e);
+                            listener.onErrorEnterChannel(GroupChatErrorHandler
+                                    .getSendBirdErrorMessage(context, e, true));
                             return;
                         }
 
@@ -48,7 +52,8 @@ public class LoginGroupChatUseCase {
                             @Override
                             public void onResult(final OpenChannel openChannel, SendBirdException e) {
                                 if (e != null) {
-                                    listener.onErrorEnterChannel(e);
+                                    listener.onErrorEnterChannel(GroupChatErrorHandler
+                                            .getSendBirdErrorMessage(context, e, true));
                                     return;
                                 }
 
@@ -57,7 +62,8 @@ public class LoginGroupChatUseCase {
                                     @Override
                                     public void onResult(SendBirdException e) {
                                         if (e != null) {
-                                            listener.onErrorEnterChannel(e);
+                                            listener.onErrorEnterChannel(GroupChatErrorHandler
+                                                    .getSendBirdErrorMessage(context, e, true));
                                         }
 
                                         listener.onSuccessEnterChannel(openChannel);

@@ -1,11 +1,14 @@
 package com.tokopedia.tkpdstream.chatroom.domain.source;
 
+import android.content.Context;
+
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.PreviousMessageListQuery;
 import com.sendbird.android.SendBirdException;
 import com.tokopedia.tkpdstream.chatroom.domain.mapper.GroupChatMessagesMapper;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.GetGroupChatMessagesFirstTimeUseCase;
+import com.tokopedia.tkpdstream.common.util.GroupChatErrorHandler;
 
 import java.util.List;
 
@@ -27,19 +30,26 @@ public class GroupChatMessageSource {
 
     private GroupChatMessagesMapper mapper;
 
-    public void getMessagesFirstTime(String channelUrl,
+    public void getMessagesFirstTime(final Context context,
+                                     String channelUrl,
                                      OpenChannel mChannel,
-                                     final GetGroupChatMessagesFirstTimeUseCase.GetGroupChatMessagesListener listener) {
+                                     final GetGroupChatMessagesFirstTimeUseCase.GetGroupChatMessagesFirstTimeListener listener) {
 
-        PreviousMessageListQuery previousMessageListQuery = mChannel
+        final PreviousMessageListQuery previousMessageListQuery = mChannel
                 .createPreviousMessageListQuery();
         previousMessageListQuery.load(PARAM_LIMIT_MESSAGE, PARAM_IS_REVERSE, new PreviousMessageListQuery.MessageListQueryResult() {
             @Override
             public void onResult(List<BaseMessage> list, SendBirdException e) {
                 if (e != null) {
-                    listener.onErrorGetMessagesFirstTime(e);
+                    listener.onErrorGetMessagesFirstTime(GroupChatErrorHandler.getSendBirdErrorMessage
+                            (context, e, false));
                 } else {
-                    listener.onGetMessages(mapper.map(list));
+                    try {
+                        listener.onGetMessagesFirstTime(mapper.map(list), previousMessageListQuery);
+                    } catch (NullPointerException npe) {
+                        listener.onErrorGetMessagesFirstTime(
+                                GroupChatErrorHandler.getErrorMessage(context, npe, false));
+                    }
                 }
 
             }

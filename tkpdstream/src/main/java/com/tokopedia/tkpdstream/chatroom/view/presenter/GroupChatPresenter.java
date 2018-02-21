@@ -1,18 +1,18 @@
 package com.tokopedia.tkpdstream.chatroom.view.presenter;
 
-import android.util.Log;
-
 import com.sendbird.android.OpenChannel;
-import com.sendbird.android.SendBirdException;
+import com.sendbird.android.PreviousMessageListQuery;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.ChannelHandlerUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.GetGroupChatMessagesFirstTimeUseCase;
+import com.tokopedia.tkpdstream.chatroom.domain.usecase.GetGroupChatMessagesUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.LoginGroupChatUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.LogoutGroupChatUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.SendGroupChatMessageUseCase;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
 
 import java.util.List;
@@ -27,6 +27,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
         GroupChatContract.Presenter {
 
     private final GetGroupChatMessagesFirstTimeUseCase getGroupChatMessagesFirstTimeUseCase;
+    private final GetGroupChatMessagesUseCase getGroupChatMessagesUseCase;
     private final LoginGroupChatUseCase loginGroupChatUseCase;
     private final SendGroupChatMessageUseCase sendMessageUseCase;
     private final LogoutGroupChatUseCase logoutGroupChatUseCase;
@@ -36,11 +37,13 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     public GroupChatPresenter(LoginGroupChatUseCase loginGroupChatUseCase,
                               GetGroupChatMessagesFirstTimeUseCase
                                       getGroupChatMessagesFirstTimeUseCase,
+                              GetGroupChatMessagesUseCase getGroupChatMessagesUseCase,
                               SendGroupChatMessageUseCase sendMessageUseCase,
                               LogoutGroupChatUseCase logoutGroupChatUseCase,
                               ChannelHandlerUseCase channelHandlerUseCase) {
         this.loginGroupChatUseCase = loginGroupChatUseCase;
         this.getGroupChatMessagesFirstTimeUseCase = getGroupChatMessagesFirstTimeUseCase;
+        this.getGroupChatMessagesUseCase = getGroupChatMessagesUseCase;
         this.sendMessageUseCase = sendMessageUseCase;
         this.logoutGroupChatUseCase = logoutGroupChatUseCase;
         this.channelHandlerUseCase = channelHandlerUseCase;
@@ -49,23 +52,23 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
     @Override
     public void initMessageFirstTime(final String channelUrl, final OpenChannel mChannel) {
-        getGroupChatMessagesFirstTimeUseCase.execute(channelUrl, mChannel,
-                new GetGroupChatMessagesFirstTimeUseCase.GetGroupChatMessagesListener() {
+        getGroupChatMessagesFirstTimeUseCase.execute(getView().getContext(), channelUrl, mChannel,
+                new GetGroupChatMessagesFirstTimeUseCase.GetGroupChatMessagesFirstTimeListener() {
                     @Override
-                    public void onGetMessages(List<Visitable> listChat) {
-                        getView().onSuccessGetMessageFirstTime(listChat);
+                    public void onGetMessagesFirstTime(List<Visitable> listChat, PreviousMessageListQuery previousMessageListQuery) {
+                        getView().onSuccessGetMessageFirstTime(listChat, previousMessageListQuery);
                     }
 
                     @Override
-                    public void onErrorGetMessagesFirstTime(SendBirdException e) {
-                        Log.d("NISNIS", "onErrorGetMessagesFirstTime " + e.getLocalizedMessage());
+                    public void onErrorGetMessagesFirstTime(String errorMessage) {
+                        getView().onErrorGetMessageFirstTime(errorMessage);
                     }
                 });
     }
 
     @Override
     public void sendReply(final PendingChatViewModel pendingChatViewModel, OpenChannel mChannel) {
-        sendMessageUseCase.execute(pendingChatViewModel, mChannel,
+        sendMessageUseCase.execute(getView().getContext(), pendingChatViewModel, mChannel,
                 new SendGroupChatMessageUseCase.SendGroupChatMessageListener() {
 
                     @Override
@@ -74,8 +77,9 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                     }
 
                     @Override
-                    public void onErrorSendMessage(PendingChatViewModel pendingChatViewModel, SendBirdException e) {
-                        getView().onErrorSendMessage(pendingChatViewModel, e.toString());
+                    public void onErrorSendMessage(PendingChatViewModel pendingChatViewModel,
+                                                   String errorMessage) {
+                        getView().onErrorSendMessage(pendingChatViewModel, errorMessage);
                     }
                 });
     }
@@ -83,7 +87,8 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     @Override
     public void enterChannel(String userId, String channelUrl, String userName, String userAvatar,
                              LoginGroupChatUseCase.LoginGroupChatListener loginGroupChatListener) {
-        loginGroupChatUseCase.execute(channelUrl, userId, userName, userAvatar,
+        loginGroupChatUseCase.execute(getView().getContext(), channelUrl, userId, userName,
+                userAvatar,
                 loginGroupChatListener);
     }
 
@@ -93,17 +98,34 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     }
 
     @Override
-    public void loadPreviousMessages() {
+    public void loadPreviousMessages(OpenChannel mChannel, PreviousMessageListQuery mPrevMessageListQuery) {
+        if (mChannel != null && mPrevMessageListQuery != null) {
+            getGroupChatMessagesUseCase.execute(getView().getContext(), mPrevMessageListQuery, new
+                    GetGroupChatMessagesUseCase.GetGroupChatMessagesListener() {
+                        @Override
+                        public void onGetMessages(List<Visitable> listChat) {
+                            getView().onSuccessGetMessage(listChat);
+                        }
+
+                        @Override
+                        public void onErrorGetMessages(String errorMessage) {
+                            getView().onErrorGetMessage(errorMessage);
+                        }
+                    });
+        }
+    }
+
+    @Override
+    public void shareChatRoom(GroupChatViewModel viewModel) {
 
     }
 
     @Override
     public void detachView() {
-
         super.detachView();
     }
 
-    public void setReceiver(String channelUrl, ChannelHandlerUseCase.ChannelHandlerListener listener) {
+    public void setHandler(String channelUrl, ChannelHandlerUseCase.ChannelHandlerListener listener) {
         channelHandlerUseCase.execute(channelUrl, listener);
     }
 }

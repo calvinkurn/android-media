@@ -21,6 +21,7 @@ public class ChatViewHolder extends AbstractViewHolder<ChatViewModel> {
     private TextView nickname;
     private TextView postTime;
     private ImageView avatar;
+    private TextView adminLabel;
 
     @LayoutRes
     public static final int LAYOUT = R.layout.chat_view_holder;
@@ -36,9 +37,13 @@ public class ChatViewHolder extends AbstractViewHolder<ChatViewModel> {
 
     @Override
     public void bind(ChatViewModel element) {
-        ImageHandler.loadImageRounded2(avatar.getContext(), avatar, element.getSenderIconUrl());
+        ImageHandler.loadImageCircle2(avatar.getContext(), avatar, element.getSenderIconUrl());
         nickname.setText(MethodChecker.fromHtml(element.getSenderName()));
         postTime.setText(element.getCreatedAt());
         message.setText(MethodChecker.fromHtml(element.getMessage()));
+
+        if(element.isAdministrator()){
+
+        }
     }
 }

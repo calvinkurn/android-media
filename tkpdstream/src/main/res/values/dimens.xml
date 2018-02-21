@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="avatar_size">20dp</dimen>
+    <dimen name="dot_size">5sp</dimen>
+    <dimen name="channel_banner_height">104dp</dimen>
 </resources>

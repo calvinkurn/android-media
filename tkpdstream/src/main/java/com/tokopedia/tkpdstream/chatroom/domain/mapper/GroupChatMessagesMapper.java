@@ -50,6 +50,7 @@ public class GroupChatMessagesMapper {
                 ((UserMessage) message).getSender().getUserId(),
                 ((UserMessage) message).getSender().getNickname(),
                 ((UserMessage) message).getSender().getProfileUrl(),
+                false,
                 false
         );
     }
