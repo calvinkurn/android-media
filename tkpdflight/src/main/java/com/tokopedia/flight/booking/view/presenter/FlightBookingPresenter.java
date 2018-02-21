@@ -61,6 +61,9 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     private CompositeSubscription compositeSubscription;
     private FlightAnalytics flightAnalytics;
 
+    private static final int GENDER_MAN = 1;
+    private static final int GENDER_WOMAN = 2;
+
     private boolean isChecked = false;
 
     @Inject
@@ -165,6 +168,12 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                 flightBookingCartData.getReturnTrip(),
                 getView().getCurrentBookingParamViewModel().getPassengerViewModels()
         );
+
+
+        if (validatePassengerData()) {
+            toggleSameAsContactCheckbox();
+            onPassengerResultReceived(getPassengerViewModelFromContact());
+        }
 
     }
 
@@ -707,7 +716,9 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     private FlightBookingPassengerViewModel getPassengerViewModelFromContact() {
         int lastIndexOfSpace = getView().getContactName().lastIndexOf(" ");
 
-        FlightBookingPassengerViewModel flightBookingPassengerViewModel = new FlightBookingPassengerViewModel();
+        FlightBookingPassengerViewModel flightBookingPassengerViewModel = getView()
+                .getCurrentBookingParamViewModel()
+                .getPassengerViewModels().get(0);
         flightBookingPassengerViewModel.setFlightBookingLuggageMetaViewModels(new ArrayList<FlightBookingAmenityMetaViewModel>());
         flightBookingPassengerViewModel.setFlightBookingMealMetaViewModels(new ArrayList<FlightBookingAmenityMetaViewModel>());
 

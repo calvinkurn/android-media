@@ -12,15 +12,18 @@ public class ProfileInfo implements Parcelable {
     private String email;
     private String phoneNumber;
     private String bday;
+    private int gender;
 
     public ProfileInfo() {
     }
+
 
     protected ProfileInfo(Parcel in) {
         fullname = in.readString();
         email = in.readString();
         phoneNumber = in.readString();
         bday = in.readString();
+        gender = in.readInt();
     }
 
     public static final Creator<ProfileInfo> CREATOR = new Creator<ProfileInfo>() {
@@ -67,6 +70,14 @@ public class ProfileInfo implements Parcelable {
         this.bday = bday;
     }
 
+    public int getGender() {
+        return gender;
+    }
+
+    public void setGender(int gender) {
+        this.gender = gender;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -78,5 +89,6 @@ public class ProfileInfo implements Parcelable {
         dest.writeString(email);
         dest.writeString(phoneNumber);
         dest.writeString(bday);
+        dest.writeInt(gender);
     }
 }

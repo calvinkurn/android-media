@@ -106,6 +106,10 @@ public interface FlightBookingContract {
 
         String getContactBirthdate();
 
+        void setContactGender(int gender);
+
+        int getContactGender();
+
         void showContactEmailInvalidSymbolError(@StringRes int resId);
 
         void setSameAsContactChecked(boolean isChecked);

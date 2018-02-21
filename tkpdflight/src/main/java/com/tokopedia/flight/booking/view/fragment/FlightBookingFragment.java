@@ -114,6 +114,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private CheckBox sameAsContactCheckbox;
 
     private String contactBirthdate;
+    private int contactGender;
 
     public FlightBookingFragment() {
         // Required empty public constructor
@@ -649,6 +650,16 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     @Override
     public String getContactBirthdate() {
         return contactBirthdate;
+    }
+
+    @Override
+    public void setContactGender(int gender) {
+        contactGender = gender;
+    }
+
+    @Override
+    public int getContactGender() {
+        return contactGender;
     }
 
     @Override
