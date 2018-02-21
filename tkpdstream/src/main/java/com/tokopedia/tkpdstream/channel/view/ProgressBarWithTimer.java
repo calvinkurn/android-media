@@ -1,0 +1,123 @@
+package com.tokopedia.tkpdstream.channel.view;
+
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import android.util.AttributeSet;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import com.tokopedia.tkpdstream.R;
+
+/**
+ * Created by StevenFredian on 14/02/18.
+ */
+
+public class ProgressBarWithTimer extends FrameLayout{
+    private TextView text;
+    private ProgressBar progressBar;
+    private CountDownTimer countDownTimer;
+
+    private long startTime, endTime;
+
+    public ProgressBarWithTimer(@NonNull Context context) {
+        super(context);
+        init();
+    }
+
+    public ProgressBarWithTimer(@NonNull Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        init(attrs);
+    }
+
+    public ProgressBarWithTimer(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init(attrs);
+    }
+
+    private void init(AttributeSet attrs) {
+        init();
+        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.ProgressBarWithTimer);
+        try {
+//            textValue = styledAttributes.getString(R.styleable.ProgressBarWithTimer_text);
+//            time = styledAttributes.getInt(R.styleable.ProgressBarWithTimer_time, 0);
+
+        } finally {
+            styledAttributes.recycle();
+        }
+    }
+
+
+    private String formatMilliSecondsToTime(long milliseconds) {
+
+        int seconds = (int) (milliseconds / 1000) % 60;
+        int minutes = (int) ((milliseconds / (1000 * 60)) % 60);
+        int hours = (int) ((milliseconds / (1000 * 60 * 60)) % 24);
+        return twoDigitString(hours) + " : " + twoDigitString(minutes) + " : "
+                + twoDigitString(seconds);
+    }
+
+    private String twoDigitString(long number) {
+
+        if (number == 0) {
+            return "00";
+        }
+
+        if (number / 10 == 0) {
+            return "0" + number;
+        }
+
+        return String.valueOf(number);
+    }
+
+    private void init() {
+        View view = inflate(getContext(), R.layout.progress_bar_with_timer, this);
+        text = view.findViewById(R.id.text_view);
+        progressBar = view.findViewById(R.id.progress_bar);
+    }
+
+    public void setDate(final long startTime, final long endTime) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        countDownTimer = new CountDownTimer(endTime-startTime,100) {
+            @Override
+            public void onTick(long l) {
+                text.setText(formatMilliSecondsToTime(l));
+                int percent = (int) (l*100/(endTime-startTime));
+                progressBar.setProgress(Math.abs(percent-100));
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        };
+        countDownTimer.start();
+        invalidate();
+        requestLayout();
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        invalidate();
+        requestLayout();
+    }
+
+    public void start(){
+        if(countDownTimer != null){
+            countDownTimer.start();
+        }
+    }
+
+    public void cancel(){
+        if(countDownTimer != null){
+            countDownTimer.cancel();
+        }
+    }
+}

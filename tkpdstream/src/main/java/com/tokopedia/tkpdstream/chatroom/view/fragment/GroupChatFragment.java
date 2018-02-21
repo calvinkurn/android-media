@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.tkpdstream.R;
+import com.tokopedia.tkpdstream.channel.view.ProgressBarWithTimer;
 import com.tokopedia.tkpdstream.channel.view.activity.ChannelActivity;
 import com.tokopedia.tkpdstream.chatroom.di.DaggerChatroomComponent;
 import com.tokopedia.tkpdstream.chatroom.domain.ConnectionManager;
@@ -61,6 +62,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     private View sendButton;
     private GroupChatAdapter adapter;
     private LinearLayoutManager layoutManager;
+    private ProgressBarWithTimer progressBarWithTimer;
 
     private OpenChannel mChannel;
     private GroupChatViewModel viewModel;
@@ -112,6 +114,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         chatRecyclerView = view.findViewById(R.id.chat_list);
         replyEditText = view.findViewById(R.id.reply_edit_text);
         sendButton = view.findViewById(R.id.button_send);
+        progressBarWithTimer = (ProgressBarWithTimer) view.findViewById(R.id.timer);
         prepareView();
         return view;
     }
@@ -169,6 +172,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 presenter.sendReply(pendingChatViewModel, mChannel);
             }
         });
+
+        progressBarWithTimer.setDate(1519120063, 1519170063);
     }
 
     private void setSendButtonEnabled(boolean isEnabled) {

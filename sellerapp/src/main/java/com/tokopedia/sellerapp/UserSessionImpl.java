@@ -60,6 +60,5 @@ public class UserSessionImpl implements UserSession {
     @Override
     public String getName() {
         return sessionHandler.getLoginName();
-        sessionHandler.getu
     }
 }
