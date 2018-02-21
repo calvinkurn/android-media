@@ -5,6 +5,7 @@ import com.tokopedia.transaction.checkout.view.data.CartListData;
 import com.tokopedia.transaction.checkout.view.data.DeleteCartData;
 import com.tokopedia.transaction.checkout.view.data.DeleteUpdateCartData;
 import com.tokopedia.transaction.checkout.view.data.UpdateCartData;
+import com.tokopedia.transaction.checkout.view.data.UpdateCartListData;
 
 import rx.Subscriber;
 
@@ -24,7 +25,9 @@ public interface ICartListInteractor {
 
     void updateCart(Subscriber<UpdateCartData> subscriber, TKPDMapParam<String, String> param);
 
-    void deleteCartWithRefresh(Subscriber<CartListData> subscriber,
-                               TKPDMapParam<String, String> paramDelete,
-                               TKPDMapParam<String, String> paramCartList);
+    void updateAndRefreshCartList(Subscriber<UpdateCartListData> subscriber,
+                                  TKPDMapParam<String, String> paramUpdate,
+                                  TKPDMapParam<String, String> paramGetList,
+                                  TKPDMapParam<String, String> paramGetShipmentForm);
+
 }

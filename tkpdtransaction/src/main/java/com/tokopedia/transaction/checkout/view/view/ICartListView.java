@@ -50,4 +50,11 @@ public interface ICartListView extends IBaseView {
     void renderUpdateDataSuccess(String message);
 
     void renderUpdateDataFailed(String message);
+
+
+    void renderUpdateAndRefreshCartDataSuccess(String message);
+
+    void renderLoadGetCartData();
+
+    void renderLoadGetCartDataFinish();
 }

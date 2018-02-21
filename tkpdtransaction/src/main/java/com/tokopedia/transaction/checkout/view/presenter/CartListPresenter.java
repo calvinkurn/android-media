@@ -10,9 +10,8 @@ import com.tokopedia.transaction.checkout.domain.request.UpdateCartRequest;
 import com.tokopedia.transaction.checkout.view.activity.CartShipmentActivity;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CartListData;
-import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.view.data.DeleteCartData;
-import com.tokopedia.transaction.checkout.view.data.UpdateCartData;
+import com.tokopedia.transaction.checkout.view.data.UpdateCartListData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.transaction.checkout.view.view.ICartListView;
 
@@ -42,12 +41,14 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public void processGetCartData() {
+        view.renderLoadGetCartData();
         view.disableSwipeRefresh();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("lang", "id");
         cartListInteractor.getCartList(new Subscriber<CartListData>() {
             @Override
             public void onCompleted() {
+                view.renderLoadGetCartDataFinish();
             }
 
             @Override
@@ -103,11 +104,53 @@ public class CartListPresenter implements ICartListPresenter {
     @Override
     public void processToShipmentStep() {
         List<CartItemData> cartItemDataList = extractCartItemList(view.getFinalCartList());
-        CartPromoSuggestion cartPromoSuggestion = view.getCartPromoSuggestionData();
-        Intent intent = CartShipmentActivity.createInstanceSingleAddress(
-                view.getActivityContext(), cartItemDataList, cartPromoSuggestion
+        List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
+        for (CartItemData data : cartItemDataList) {
+            updateCartRequestList.add(new UpdateCartRequest.Builder()
+                    .cartId(data.getOriginData().getCartId())
+                    .notes(data.getUpdatedData().getRemark())
+                    .quantity(data.getUpdatedData().getQuantity())
+                    .build());
+        }
+        TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
+        paramUpdate.put("carts", new Gson().toJson(updateCartRequestList));
+
+        TKPDMapParam<String, String> paramGetList = new TKPDMapParam<>();
+        paramGetList.put("lang", "id");
+
+        TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
+        paramGetShipmentForm.put("lang", "id");
+
+        cartListInteractor.updateAndRefreshCartList(
+                new Subscriber<UpdateCartListData>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(UpdateCartListData updateCartListData) {
+                        if (updateCartListData.getUpdateCartData().isSuccess()) {
+                            Intent intent = CartShipmentActivity.createInstanceSingleAddress(
+                                    view.getActivityContext(),
+                                    updateCartListData.getCartListData().getCartItemDataList(),
+                                    updateCartListData.getCartListData().getCartPromoSuggestion()
+                            );
+                            view.navigateToActivity(intent);
+                        } else {
+                            view.renderUpdateDataFailed(updateCartListData.getUpdateCartData().getMessage());
+                        }
+                    }
+                },
+                view.getGeneratedAuthParamNetwork(paramUpdate),
+                view.getGeneratedAuthParamNetwork(paramGetList),
+                view.getGeneratedAuthParamNetwork(paramGetShipmentForm)
         );
-        view.navigateToActivity(intent);
 
     }
 
@@ -120,45 +163,12 @@ public class CartListPresenter implements ICartListPresenter {
         int qty = 0;
         for (CartItemHolderData data : dataList) {
             qty = qty + data.getCartItemData().getUpdatedData().getQuantity();
-            subtotalPrice = subtotalPrice + (data.getCartItemData().getUpdatedData().getQuantity() * data.getCartItemData().getOriginData().getPricePlan());
+            subtotalPrice = subtotalPrice
+                    + (data.getCartItemData().getUpdatedData().getQuantity()
+                    * data.getCartItemData().getOriginData().getPricePlan());
         }
 
         view.renderDetailInfoSubTotal(String.valueOf(qty), CURRENCY_IDR.format(((int) subtotalPrice)));
-    }
-
-    @Override
-    public void processUpdateCart() {
-        List<CartItemData> cartItemDataList = extractCartItemList(view.getFinalCartList());
-        List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
-        for (CartItemData data : cartItemDataList) {
-            updateCartRequestList.add(new UpdateCartRequest.Builder()
-                    .cartId(data.getOriginData().getCartId())
-                    .notes(data.getUpdatedData().getRemark())
-                    .quantity(data.getUpdatedData().getQuantity())
-                    .build());
-        }
-        TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put("carts", new Gson().toJson(updateCartRequestList));
-        cartListInteractor.updateCart(new Subscriber<UpdateCartData>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onNext(UpdateCartData updateCartData) {
-                if (updateCartData.isSuccess()) {
-                    view.renderUpdateDataSuccess(updateCartData.getMessage());
-                } else {
-                    view.renderUpdateDataFailed(updateCartData.getMessage());
-                }
-            }
-        }, view.getGeneratedAuthParamNetwork(param));
     }
 
     private List<CartItemData> extractCartItemList(List<CartItemHolderData> finalCartList) {

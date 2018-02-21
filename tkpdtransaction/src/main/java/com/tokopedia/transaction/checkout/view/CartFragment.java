@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -52,6 +53,7 @@ import com.tokopedia.transaction.checkout.view.view.ICartListView;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -74,6 +76,8 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     TextView tvItemCount;
     @BindView(R2.id.tv_total_prices)
     TextView tvTotalPrice;
+    @BindView(R2.id.bottom_layout)
+    View bottomLayout;
 
     @Inject
     ICartListPresenter dPresenter;
@@ -83,6 +87,8 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     RecyclerView.ItemDecoration cartItemDecoration;
 
     private RefreshHandler refreshHandler;
+
+    private boolean mIsMenuVisible = true;
 
     private OnPassingCartDataListener mDataPasserListener;
     private CartPromoSuggestion cartPromoSuggestionData;
@@ -127,9 +133,20 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     }
 
+    /**
+     * apakah fragment ini support options menu?
+     *
+     * @return iya atau tidak
+     */
     @Override
     protected boolean getOptionsMenuEnable() {
         return false;
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.findItem(R.id.menu_cart_remove).setVisible(mIsMenuVisible);
     }
 
     @Override
@@ -166,13 +183,15 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
             @Override
             public void onClick(View view) {
                 cartListAdapter.notifyDataSetChanged();
-                dPresenter.processUpdateCart();
+                dPresenter.processToShipmentStep();
             }
         });
     }
 
     @Override
     protected void initialVar() {
+        setHasOptionsMenu(true);
+        getActivity().setTitle("Keranjang");
         refreshHandler.startRefresh();
     }
 
@@ -183,9 +202,10 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     @Override
     public void onCartItemDeleteButtonClicked(CartItemHolderData cartItemHolderData, int position) {
-        ArrayList<CartItemData> cartItemData = new ArrayList<>();
-        cartItemData.add(cartItemHolderData.getCartItemData());
-        showDeleteCartItemDialog(cartItemData);
+        ArrayList<CartItemData> cartItemData =
+                new ArrayList<>(Collections.singletonList(cartItemHolderData.getCartItemData()));
+        ArrayList<CartItemData> emptyList = new ArrayList<>(Collections.<CartItemData>emptyList());
+        showDeleteCartItemDialog(cartItemData, emptyList);
     }
 
     @Override
@@ -237,8 +257,10 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
             intent = LoyaltyActivity.newInstanceCouponActive(
                     getActivity(), "marketplace", "marketplace"
             );
-        } else intent = LoyaltyActivity.newInstanceCouponNotActive(getActivity(),
-                "marketplace", "marketplace");
+        } else {
+            intent = LoyaltyActivity.newInstanceCouponNotActive(getActivity(),
+                    "marketplace", "marketplace");
+        }
         startActivityForResult(intent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
     }
 
@@ -322,9 +344,15 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     @Override
     public void renderCartListData(List<CartItemData> cartItemDataList) {
         refreshHandler.finishRefresh();
+
         cartListAdapter.addDataList(cartItemDataList);
         dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
         mDataPasserListener.onPassingCartData(cartItemDataList);
+
+        if (!mIsMenuVisible && !cartItemDataList.isEmpty()) {
+            mIsMenuVisible = true;
+            getActivity().invalidateOptionsMenu();
+        }
     }
 
     @Override
@@ -350,6 +378,10 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     @Override
     public void renderEmptyCartData() {
         refreshHandler.finishRefresh();
+
+        mIsMenuVisible = false;
+        getActivity().invalidateOptionsMenu();
+
         CartBadgeNotificationReceiver.resetBadgeCart(getActivity());
 
         View rootview = getView();
@@ -460,29 +492,45 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
     }
 
-    void showDeleteCartItemDialog(ArrayList<CartItemData> cartItemDataList) {
-        DialogFragment dialog = CartRemoveItemDialog.newInstance(cartItemDataList,
+    @Override
+    public void renderUpdateAndRefreshCartDataSuccess(String message) {
+
+    }
+
+    @Override
+    public void renderLoadGetCartData() {
+        bottomLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void renderLoadGetCartDataFinish() {
+        bottomLayout.setVisibility(View.VISIBLE);
+    }
+
+    void showDeleteCartItemDialog(ArrayList<CartItemData> cartItemDataList, ArrayList<CartItemData> emptyData) {
+        DialogFragment dialog = CartRemoveItemDialog.newInstance(cartItemDataList, emptyData,
                 new CartRemoveItemDialog.CartItemRemoveCallbackAction() {
                     @Override
-                    public void onDeleteSingleItemClicked(CartItemData cartItemData) {
-                        dPresenter.processDeleteCart(cartItemData, false);
+                    public void onDeleteSingleItemClicked(CartItemData removedCartItem, List<CartItemData> updatedCartItems) {
+                        dPresenter.processDeleteCart(removedCartItem, false);
                     }
 
                     @Override
-                    public void onDeleteSingleItemWithWishListClicked(CartItemData cartItemData) {
-                        dPresenter.processDeleteCart(cartItemData, true);
+                    public void onDeleteSingleItemWithWishListClicked(CartItemData removedCartItem, List<CartItemData> updatedCartItems) {
+                        dPresenter.processDeleteCart(removedCartItem, true);
                     }
 
                     @Override
-                    public void onDeleteMultipleItemClicked(List<CartItemData> cartItemDataList) {
+                    public void onDeleteMultipleItemClicked(List<CartItemData> removedCartItems, List<CartItemData> updatedCartItems) {
 
                     }
 
                     @Override
-                    public void onDeleteMultipleItemWithWishListClicked(List<CartItemData> cartItemDataList) {
+                    public void onDeleteMultipleItemWithWishListClicked(List<CartItemData> removedCartItems, List<CartItemData> updatedCartItems) {
 
                     }
                 });
+
         dialog.show(getFragmentManager(), "dialog");
     }
 

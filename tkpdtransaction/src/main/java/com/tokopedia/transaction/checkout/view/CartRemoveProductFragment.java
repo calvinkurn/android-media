@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
 
@@ -24,6 +25,7 @@ import com.tokopedia.transaction.checkout.view.presenter.CartRemoveProductPresen
 import com.tokopedia.transaction.checkout.view.view.IRemoveProductListView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -32,6 +34,8 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 
 import static com.tokopedia.transaction.checkout.view.SingleAddressShipmentFragment.ARG_EXTRA_CART_DATA_LIST;
 
@@ -111,6 +115,12 @@ public class CartRemoveProductFragment extends BasePresenterFragment
 
     }
 
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.findItem(R.id.menu_cart_remove).setVisible(false);
+    }
+
     /**
      * apakah fragment ini support options menu?
      *
@@ -147,6 +157,7 @@ public class CartRemoveProductFragment extends BasePresenterFragment
     @Override
     protected void setupArguments(Bundle arguments) {
         mCartItemDataList = arguments.getParcelableArrayList(ARG_EXTRA_CART_DATA_LIST);
+
         if (mCartItemDataList != null) {
             for (CartItemData cartItemData : mCartItemDataList) {
                 mCheckedCartItemList.add(new CheckedCartItemData(false, cartItemData));
@@ -192,7 +203,9 @@ public class CartRemoveProductFragment extends BasePresenterFragment
      */
     @Override
     protected void initialVar() {
-
+        setHasOptionsMenu(true);
+        getActivity().setTitle("Hapus");
+        getActivity().invalidateOptionsMenu();
     }
 
     /**
@@ -222,12 +235,17 @@ public class CartRemoveProductFragment extends BasePresenterFragment
     @OnClick(R2.id.tv_remove_product)
     public void removeCheckedProducts() {
         List<CartItemData> selectedCartList = new ArrayList<>();
+        List<CartItemData> unselectedCartList = new ArrayList<>();
+
         for (CheckedCartItemData checkedCartItemData : mCheckedCartItemList) {
             if (checkedCartItemData.isChecked()) {
                 selectedCartList.add(checkedCartItemData.getCartItemData());
+            } else {
+                unselectedCartList.add(checkedCartItemData.getCartItemData());
             }
         }
-        showDeleteCartItemDialog(selectedCartList);
+
+        showDeleteCartItemDialog(selectedCartList, unselectedCartList);
     }
 
     @Override
@@ -238,32 +256,19 @@ public class CartRemoveProductFragment extends BasePresenterFragment
 
     @Override
     public void renderSuccessDeletePartialCart(String message) {
-        for (CheckedCartItemData checkedCartItemData : mCheckedCartItemList) {
-            if (checkedCartItemData.isChecked()) {
-                mCartItemDataList.remove(checkedCartItemData.getCartItemData());
-            }
-            mCartRemoveProductAdapter.notifyDataSetChanged();
-        }
-        mDataPasserListener.onAfterRemovePassingCartData(mCartItemDataList);
-        com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper.showSnackbar(getActivity(), message);
+        performDeleteCart(message);
+        getActivity().onBackPressed();
     }
 
     @Override
-    public void renderSuccessDeleteallCart(String message) {
-        for (CheckedCartItemData checkedCartItemData : mCheckedCartItemList) {
-            if (checkedCartItemData.isChecked()) {
-                mCartItemDataList.remove(checkedCartItemData.getCartItemData());
-            }
-            mCartRemoveProductAdapter.notifyDataSetChanged();
-        }
-        mDataPasserListener.onAfterRemovePassingCartData(mCartItemDataList);
-        com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper.showSnackbar(getActivity(), message);
+    public void renderSuccessDeleteAllCart(String message) {
+        performDeleteCart(message);
         getActivity().onBackPressed();
     }
 
     @Override
     public void renderOnFailureDeleteCart(String message) {
-
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
 
     @Override
@@ -288,38 +293,49 @@ public class CartRemoveProductFragment extends BasePresenterFragment
         mTvRemoveProduct.setText(btnText);
     }
 
-    void showDeleteCartItemDialog(List<CartItemData> cartItemDataList) {
-        DialogFragment dialog = CartRemoveItemDialog.newInstance(
-                cartItemDataList,
+
+    private void showDeleteCartItemDialog(final List<CartItemData> removedCartItemList, List<CartItemData> updatedCartItemList) {
+
+        DialogFragment dialog = CartRemoveItemDialog.newInstance(removedCartItemList, updatedCartItemList,
                 new CartRemoveItemDialog.CartItemRemoveCallbackAction() {
-
                     @Override
-                    public void onDeleteSingleItemClicked(CartItemData cartItemData) {
-                        List<CartItemData> cartItemDataList = new ArrayList<>();
-                        cartItemDataList.add(cartItemData);
-                        mCartRemoveProductPresenter.processDeleteCart(cartItemDataList, false);
+                    public void onDeleteSingleItemClicked(CartItemData removedCartItem, List<CartItemData> updatedCartItem) {
+                        List<CartItemData> cartItemDataList = new ArrayList<>(Collections.singletonList(removedCartItem));
+                        mCartRemoveProductPresenter.processDeleteCart(cartItemDataList, updatedCartItem, false);
                     }
 
                     @Override
-                    public void onDeleteSingleItemWithWishListClicked(CartItemData cartItemData) {
-                        List<CartItemData> cartItemDataList = new ArrayList<>();
-                        cartItemDataList.add(cartItemData);
-                        mCartRemoveProductPresenter.processDeleteCart(cartItemDataList, true);
+                    public void onDeleteSingleItemWithWishListClicked(CartItemData removedCartItem, List<CartItemData> updatedCartItem) {
+                        List<CartItemData> cartItemDataList = new ArrayList<>(Collections.singletonList(removedCartItem));
+                        mCartRemoveProductPresenter.processDeleteCart(cartItemDataList, updatedCartItem, true);
                     }
 
                     @Override
-                    public void onDeleteMultipleItemClicked(List<CartItemData> cartItemDataList) {
-                        mCartRemoveProductPresenter.processDeleteCart(cartItemDataList, false);
+                    public void onDeleteMultipleItemClicked(List<CartItemData> removedCartItem, List<CartItemData> updatedCartItem) {
+                        mCartRemoveProductPresenter.processDeleteCart(removedCartItem, updatedCartItem, false);
                     }
 
                     @Override
-                    public void onDeleteMultipleItemWithWishListClicked(List<CartItemData> cartItemDataList) {
-                        mCartRemoveProductPresenter.processDeleteCart(cartItemDataList, true);
+                    public void onDeleteMultipleItemWithWishListClicked(List<CartItemData> removedCartItem, List<CartItemData> updatedCartItem) {
+                        mCartRemoveProductPresenter.processDeleteCart(removedCartItem, updatedCartItem, true);
                     }
-
                 }
         );
+
         dialog.show(getFragmentManager(), "dialog");
+    }
+
+    private void performDeleteCart(String message) {
+        for (CheckedCartItemData checkedCartItemData : mCheckedCartItemList) {
+            if (checkedCartItemData.isChecked()) {
+                mCartItemDataList.remove(checkedCartItemData.getCartItemData());
+            }
+
+            mCartRemoveProductAdapter.notifyDataSetChanged();
+        }
+
+        mDataPasserListener.onAfterRemovePassingCartData(mCartItemDataList);
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
 
     public interface OnPassingCartDataListener {

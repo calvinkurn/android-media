@@ -6,6 +6,8 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.checkout.domain.response.addtocart.AddToCartDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.cartlist.CartDataListResponse;
 import com.tokopedia.transaction.checkout.domain.response.deletecart.DeleteCartDataResponse;
+import com.tokopedia.transaction.checkout.domain.response.shippingaddress.ShippingAddressDataResponse;
+import com.tokopedia.transaction.checkout.domain.response.shippingaddressform.ShipmentAddressFormDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.updatecart.UpdateCartDataResponse;
 
 import javax.inject.Inject;
@@ -51,6 +53,16 @@ public class CartRepositoryDataDummy implements ICartRepository {
 
     @Override
     public Observable<UpdateCartDataResponse> updateCartData(TKPDMapParam<String, String> param) {
+        return null;
+    }
+
+    @Override
+    public Observable<ShippingAddressDataResponse> shippingAddress(TKPDMapParam<String, String> param) {
+        return null;
+    }
+
+    @Override
+    public Observable<ShipmentAddressFormDataResponse> getShipmentAddressForm(TKPDMapParam<String, String> param) {
         return null;
     }
 

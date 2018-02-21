@@ -17,7 +17,7 @@ public interface IRemoveProductListView<T> {
 
     void renderSuccessDeletePartialCart(String message);
 
-    void renderSuccessDeleteallCart(String message);
+    void renderSuccessDeleteAllCart(String message);
 
     void renderOnFailureDeleteCart(String message);
 
