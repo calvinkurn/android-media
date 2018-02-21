@@ -103,6 +103,7 @@ public class DecimalInputView extends BaseCustomView {
 
     public void setText(String textValue) {
         editText.setText(textValue);
+        editText.setSelection(editText.getText().length());
         invalidate();
         requestLayout();
     }

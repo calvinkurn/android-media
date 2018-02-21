@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.common.di.module;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.common.network.exception.HeaderErrorResponse;
+import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
@@ -75,7 +75,6 @@ public class ProductModule {
 
     @ProductScope
     @Provides
-        //TODO use Product qualifier
     TomeProductApi provideTomeApi(@ProductTomeQualifier Retrofit retrofit){
         return retrofit.create(TomeProductApi.class);
     }
@@ -83,7 +82,6 @@ public class ProductModule {
     @ProductTomeQualifier
     @ProductScope
     @Provides
-    //TODO use Product qualifier
     Retrofit provideRetrofit(Retrofit.Builder retrofitBuilder, @ProductTomeQualifier OkHttpClient okHttpClient){
         return retrofitBuilder.baseUrl(TkpdBaseURL.TOME_DOMAIN).client(okHttpClient).build();
     }
@@ -121,6 +119,6 @@ public class ProductModule {
     @Provides
     //todo hendry change this interceptor to HeaderErrorResponseInterceptor, check
     public ErrorResponseInterceptor provideResponseInterceptor() {
-        return new HeaderErrorResponseInterceptor(HeaderErrorResponse.class);
+        return new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class);
     }
 }
