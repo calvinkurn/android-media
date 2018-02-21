@@ -31,4 +31,9 @@ public class GetChannelListUseCase extends UseCase<ChannelListViewModel> {
         RequestParams requestParams = RequestParams.create();
         return requestParams;
     }
+
+    public RequestParams createParam() {
+        RequestParams requestParams = RequestParams.create();
+        return requestParams;
+    }
 }

@@ -42,6 +42,7 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
 
 
     private static final int REQUEST_OPEN_GROUPCHAT = 111;
+
     @Inject
     ChannelPresenter presenter;
 
@@ -141,8 +142,22 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
 
     @Override
     public void onSuccessGetChannelFirstTime(ChannelListViewModel channelListViewModel) {
-        getAdapter().clearAllElements();
-        getAdapter().addElement(channelListViewModel.getChannelViewModelList());
+//        getAdapter().clearAllElements();
+//        getAdapter().addElement(channelListViewModel.getChannelViewModelList());
+        renderList(channelListViewModel.getChannelViewModelList(),true);
+    }
+
+    @Override
+    public void onSuccessGetChannel(ChannelListViewModel channelListViewModel) {
+//        getAdapter().addElement(channelListViewModel.getChannelViewModelList());
+//        getAdapter().clearAllNonDataElement();
+//        getAdapter().addMoreData(channelListViewModel.getChannelViewModelList());
+        renderList(channelListViewModel.getChannelViewModelList(),true);
+    }
+
+    @Override
+    public void onFailedGetChannel(String errorMessage) {
+
     }
 
 
@@ -166,5 +181,10 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
                 NetworkErrorHelper.showSnackbar(getActivity());
             }
         }
+    }
+
+    @Override
+    public void onSwipeRefresh() {
+        super.onSwipeRefresh();
     }
 }
