@@ -3,12 +3,10 @@ package com.tokopedia.transaction.checkout.view;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
@@ -26,7 +24,6 @@ import com.tokopedia.transaction.checkout.view.adapter.ShipmentChoiceAdapter;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
 import com.tokopedia.transaction.checkout.view.presenter.IShipmentChoicePresenter;
-import com.tokopedia.transaction.checkout.view.presenter.ShipmentChoicePresenter;
 import com.tokopedia.transaction.checkout.view.view.IShipmentChoiceView;
 
 import javax.inject.Inject;
@@ -130,8 +127,8 @@ public class ShipmentChoiceBottomSheet extends BottomSheetDialog
 
     @Override
     public void showData() {
-        if (!TextUtils.isEmpty(presenter.getShipmentDetailData().getShipmentInfo())) {
-            tvShipmentInfoTicker.setText(presenter.getShipmentDetailData().getShipmentInfo());
+        if (!TextUtils.isEmpty(presenter.getShipmentDetailData().getShipmentTickerInfo())) {
+            tvShipmentInfoTicker.setText(presenter.getShipmentDetailData().getShipmentTickerInfo());
             llShipmentInfoTicker.setVisibility(View.VISIBLE);
         } else {
             llShipmentInfoTicker.setVisibility(View.GONE);

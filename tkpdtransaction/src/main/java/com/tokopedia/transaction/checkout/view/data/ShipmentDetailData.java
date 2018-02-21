@@ -12,10 +12,8 @@ import java.util.List;
 public class ShipmentDetailData implements Parcelable {
 
     private List<ShipmentItemData> shipmentItemData;
-    private String partialOrderInfo;
-    private String dropshipperInfo;
+    private String shipmentTickerInfo;
     private int deliveryPriceTotal;
-    private String shipmentInfo;
     private String shippingServices;
     private String shippingNames;
     private String originDistrictId;
@@ -41,10 +39,8 @@ public class ShipmentDetailData implements Parcelable {
     protected ShipmentDetailData(Parcel in) {
         shipmentItemData = in.createTypedArrayList(ShipmentItemData.CREATOR);
         destinationAddress = in.readString();
-        partialOrderInfo = in.readString();
-        dropshipperInfo = in.readString();
         deliveryPriceTotal = in.readInt();
-        shipmentInfo = in.readString();
+        shipmentTickerInfo = in.readString();
         shippingServices = in.readString();
         shippingNames = in.readString();
         originDistrictId = in.readString();
@@ -84,10 +80,8 @@ public class ShipmentDetailData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(shipmentItemData);
         dest.writeString(destinationAddress);
-        dest.writeString(partialOrderInfo);
-        dest.writeString(dropshipperInfo);
         dest.writeInt(deliveryPriceTotal);
-        dest.writeString(shipmentInfo);
+        dest.writeString(shipmentTickerInfo);
         dest.writeString(shippingServices);
         dest.writeString(shippingNames);
         dest.writeString(originDistrictId);
@@ -160,22 +154,6 @@ public class ShipmentDetailData implements Parcelable {
         this.destinationAddress = destinationAddress;
     }
 
-    public String getPartialOrderInfo() {
-        return partialOrderInfo;
-    }
-
-    public void setPartialOrderInfo(String partialOrderInfo) {
-        this.partialOrderInfo = partialOrderInfo;
-    }
-
-    public String getDropshipperInfo() {
-        return dropshipperInfo;
-    }
-
-    public void setDropshipperInfo(String dropshipperInfo) {
-        this.dropshipperInfo = dropshipperInfo;
-    }
-
     public int getDeliveryPriceTotal() {
         return deliveryPriceTotal;
     }
@@ -184,12 +162,12 @@ public class ShipmentDetailData implements Parcelable {
         this.deliveryPriceTotal = deliveryPriceTotal;
     }
 
-    public String getShipmentInfo() {
-        return shipmentInfo;
+    public String getShipmentTickerInfo() {
+        return shipmentTickerInfo;
     }
 
-    public void setShipmentInfo(String shipmentInfo) {
-        this.shipmentInfo = shipmentInfo;
+    public void setShipmentTickerInfo(String shipmentTickerInfo) {
+        this.shipmentTickerInfo = shipmentTickerInfo;
     }
 
     public String getShippingServices() {
