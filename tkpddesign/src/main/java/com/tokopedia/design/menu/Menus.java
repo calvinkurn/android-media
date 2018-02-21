@@ -32,7 +32,7 @@ public class Menus extends BaseBottomSheetView {
 
     @Override
     protected void initView() {
-        RecyclerView recyclerView = findViewById(R.id.widget_menu);
+        RecyclerView recyclerView = findViewById(R.id.rv_menu);
 
         // set item view
         // add by menu.xml
