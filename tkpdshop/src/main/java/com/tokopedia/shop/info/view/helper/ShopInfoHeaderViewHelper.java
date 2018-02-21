@@ -17,6 +17,7 @@ import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity;
+import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 
 import java.util.Random;
 
@@ -146,6 +147,13 @@ public class ShopInfoHeaderViewHelper {
             buttonChatSeller.setVisibility(View.VISIBLE);
             buttonShopPage.setVisibility(View.VISIBLE);
         }
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                button.getContext().startActivity(ShopProductListActivity.createIntent(button.getContext(), shopId));
+            }
+        });
     }
 
     public void renderData(ReputationSpeed reputationSpeed) {

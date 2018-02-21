@@ -143,8 +143,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
             public Fragment getItem(int position) {
                 switch (position) {
                     case 0:
-                        return ShopProductListFragment.createInstance(shopId);
-//                        return ShopProductListLimitedFragment.createInstance(shopId);
+                        return ShopProductListLimitedFragment.createInstance(shopId);
                     case 1:
                         if (shopModuleRouter != null) {
                             return shopModuleRouter.getShopReputationFragmentShop(shopId, shopDomain);
