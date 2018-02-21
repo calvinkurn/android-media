@@ -138,7 +138,7 @@ public class OrderDetailActivity extends TActivity
     }
 
     private void setInsuranceNotificationView(OrderDetailData data) {
-        if(data.isShowInsuranceNotification()) {
+        if(data.isShowInsuranceNotification() && getExtraUserMode() == SELLER_MODE) {
             ViewGroup notificationLayout = findViewById(R.id.notification_layout);
             TextView notificationTextView = findViewById(R.id.notification_text_view);
             notificationLayout.setVisibility(View.VISIBLE);
