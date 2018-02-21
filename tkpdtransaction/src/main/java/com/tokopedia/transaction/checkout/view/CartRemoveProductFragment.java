@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
 
@@ -32,6 +33,8 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 
 import static com.tokopedia.transaction.checkout.view.SingleAddressShipmentFragment.ARG_EXTRA_CART_DATA_LIST;
 
@@ -111,6 +114,12 @@ public class CartRemoveProductFragment extends BasePresenterFragment
 
     }
 
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.findItem(R.id.menu_cart_remove).setVisible(false);
+    }
+
     /**
      * apakah fragment ini support options menu?
      *
@@ -147,6 +156,7 @@ public class CartRemoveProductFragment extends BasePresenterFragment
     @Override
     protected void setupArguments(Bundle arguments) {
         mCartItemDataList = arguments.getParcelableArrayList(ARG_EXTRA_CART_DATA_LIST);
+
         if (mCartItemDataList != null) {
             for (CartItemData cartItemData : mCartItemDataList) {
                 mCheckedCartItemList.add(new CheckedCartItemData(false, cartItemData));
@@ -192,7 +202,9 @@ public class CartRemoveProductFragment extends BasePresenterFragment
      */
     @Override
     protected void initialVar() {
-
+        setHasOptionsMenu(true);
+        getActivity().setTitle("Hapus");
+        getActivity().invalidateOptionsMenu();
     }
 
     /**
@@ -222,11 +234,13 @@ public class CartRemoveProductFragment extends BasePresenterFragment
     @OnClick(R2.id.tv_remove_product)
     public void removeCheckedProducts() {
         List<CartItemData> selectedCartList = new ArrayList<>();
+
         for (CheckedCartItemData checkedCartItemData : mCheckedCartItemList) {
             if (checkedCartItemData.isChecked()) {
                 selectedCartList.add(checkedCartItemData.getCartItemData());
             }
         }
+
         showDeleteCartItemDialog(selectedCartList);
     }
 
@@ -238,26 +252,13 @@ public class CartRemoveProductFragment extends BasePresenterFragment
 
     @Override
     public void renderSuccessDeletePartialCart(String message) {
-        for (CheckedCartItemData checkedCartItemData : mCheckedCartItemList) {
-            if (checkedCartItemData.isChecked()) {
-                mCartItemDataList.remove(checkedCartItemData.getCartItemData());
-            }
-            mCartRemoveProductAdapter.notifyDataSetChanged();
-        }
-        mDataPasserListener.onAfterRemovePassingCartData(mCartItemDataList);
-        com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper.showSnackbar(getActivity(), message);
+        performDeleteCart(message);
+        getActivity().onBackPressed();
     }
 
     @Override
-    public void renderSuccessDeleteallCart(String message) {
-        for (CheckedCartItemData checkedCartItemData : mCheckedCartItemList) {
-            if (checkedCartItemData.isChecked()) {
-                mCartItemDataList.remove(checkedCartItemData.getCartItemData());
-            }
-            mCartRemoveProductAdapter.notifyDataSetChanged();
-        }
-        mDataPasserListener.onAfterRemovePassingCartData(mCartItemDataList);
-        com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper.showSnackbar(getActivity(), message);
+    public void renderSuccessDeleteAllCart(String message) {
+        performDeleteCart(message);
         getActivity().onBackPressed();
     }
 
@@ -288,9 +289,9 @@ public class CartRemoveProductFragment extends BasePresenterFragment
         mTvRemoveProduct.setText(btnText);
     }
 
-    void showDeleteCartItemDialog(List<CartItemData> cartItemDataList) {
-        DialogFragment dialog = CartRemoveItemDialog.newInstance(
-                cartItemDataList,
+
+    private void showDeleteCartItemDialog(List<CartItemData> cartItemDataList) {
+        DialogFragment dialog = CartRemoveItemDialog.newInstance(cartItemDataList,
                 new CartRemoveItemDialog.CartItemRemoveCallbackAction() {
 
                     @Override
@@ -319,7 +320,21 @@ public class CartRemoveProductFragment extends BasePresenterFragment
 
                 }
         );
+
         dialog.show(getFragmentManager(), "dialog");
+    }
+
+    private void performDeleteCart(String message) {
+        for (CheckedCartItemData checkedCartItemData : mCheckedCartItemList) {
+            if (checkedCartItemData.isChecked()) {
+                mCartItemDataList.remove(checkedCartItemData.getCartItemData());
+            }
+
+            mCartRemoveProductAdapter.notifyDataSetChanged();
+        }
+
+        mDataPasserListener.onAfterRemovePassingCartData(mCartItemDataList);
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
 
     public interface OnPassingCartDataListener {

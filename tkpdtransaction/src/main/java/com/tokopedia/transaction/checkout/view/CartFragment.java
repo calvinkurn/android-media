@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -84,6 +85,8 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     private RefreshHandler refreshHandler;
 
+    private boolean mIsMenuVisible = true;
+
     private OnPassingCartDataListener mDataPasserListener;
     private CartPromoSuggestion cartPromoSuggestionData;
 
@@ -127,9 +130,21 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     }
 
+    /**
+     * apakah fragment ini support options menu?
+     *
+     * @return iya atau tidak
+     */
     @Override
     protected boolean getOptionsMenuEnable() {
         return false;
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        menu.findItem(R.id.menu_cart_remove).setVisible(mIsMenuVisible);
     }
 
     @Override
@@ -173,6 +188,8 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     @Override
     protected void initialVar() {
+        setHasOptionsMenu(true);
+        getActivity().setTitle("Keranjang");
         refreshHandler.startRefresh();
     }
 
@@ -237,8 +254,10 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
             intent = LoyaltyActivity.newInstanceCouponActive(
                     getActivity(), "marketplace", "marketplace"
             );
-        } else intent = LoyaltyActivity.newInstanceCouponNotActive(getActivity(),
-                "marketplace", "marketplace");
+        } else {
+            intent = LoyaltyActivity.newInstanceCouponNotActive(getActivity(),
+                    "marketplace", "marketplace");
+        }
         startActivityForResult(intent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
     }
 
@@ -322,9 +341,15 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     @Override
     public void renderCartListData(List<CartItemData> cartItemDataList) {
         refreshHandler.finishRefresh();
+
         cartListAdapter.addDataList(cartItemDataList);
         dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
         mDataPasserListener.onPassingCartData(cartItemDataList);
+
+        if (!mIsMenuVisible && !cartItemDataList.isEmpty()) {
+            mIsMenuVisible = true;
+            getActivity().invalidateOptionsMenu();
+        }
     }
 
     @Override
@@ -350,6 +375,10 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     @Override
     public void renderEmptyCartData() {
         refreshHandler.finishRefresh();
+
+        mIsMenuVisible = false;
+        getActivity().invalidateOptionsMenu();
+
         CartBadgeNotificationReceiver.resetBadgeCart(getActivity());
 
         View rootview = getView();
@@ -483,6 +512,7 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
                     }
                 });
+
         dialog.show(getFragmentManager(), "dialog");
     }
 
