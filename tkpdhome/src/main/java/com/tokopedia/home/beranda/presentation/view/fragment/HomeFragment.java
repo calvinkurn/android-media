@@ -438,6 +438,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onRefresh() {
+        removeNetworkError();
         resetFeedState();
         presenter.getHomeData();
         presenter.getHeaderData(false);
