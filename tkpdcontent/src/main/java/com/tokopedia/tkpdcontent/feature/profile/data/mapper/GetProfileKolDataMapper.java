@@ -34,15 +34,16 @@ public class GetProfileKolDataMapper
         ProfileKolData profileKolData = getDataOrError(graphqlResponse);
         ArrayList<KolViewModel> kolViewModels = new ArrayList<>();
         for (PostKol postKol : profileKolData.postKol) {
+            //TODO milhamj fill these field
             KolViewModel kolViewModel = new KolViewModel(
-                    "",
+                    "This is title",
                     postKol.userName,
                     postKol.userPhoto,
-                    "",
+                    "This is label",
                     postKol.isFollow,
                     postKol.content.get(0).imageurl,
                     postKol.content.get(0).tags.get(0).caption,
-                    "",
+                    "This is review",
                     postKol.isLiked,
                     postKol.likeCount,
                     postKol.commentCount,
@@ -51,14 +52,14 @@ public class GetProfileKolDataMapper
                     postKol.content.get(0).tags.get(0).id,
                     0,
                     postKol.createTime,
-                    "",
+                    "This is title content name",
                     postKol.content.get(0).tags.get(0).price,
                     false,
                     postKol.content.get(0).tags.get(0).type,
                     postKol.content.get(0).tags.get(0).link,
                     0,
                     true,
-                    ""
+                    "This is card type"
             );
             kolViewModels.add(kolViewModel);
         }
