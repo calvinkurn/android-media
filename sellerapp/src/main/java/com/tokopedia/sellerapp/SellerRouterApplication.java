@@ -65,6 +65,9 @@ import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
+import com.tokopedia.seller.product.etalase.view.activity.EtalaseDynamicPickerActivity;
+import com.tokopedia.seller.product.etalase.view.model.MyEtalaseItemViewModel;
+import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.core.shopinfo.seemore.fragment.ShopTalkSeeMoreFragment;
 import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
@@ -211,6 +214,35 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Fragment getShopTalkFragment() {
         return ShopTalkSeeMoreFragment.createInstance();
+    }
+
+    @Override
+    public Intent getEtalaseIntent(Context context, String shopId, int currentChoosen) {
+        ArrayList<MyEtalaseItemViewModel> myEtalaseItemViewModels = new ArrayList<>();
+        // if it's not her/his shop
+        if(!SessionHandler.getShopID(this).equals(shopId)){
+            myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_SOLD_PRODUK, getString(R.string.product_manage_filter_sold)));
+            myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_FREE_RETURNS, getString(R.string.product_manage_filter_free_returns)));
+            myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_PREORDER, getString(R.string.product_manage_filter_preorder)));
+            myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_ALL_SHOWCASE, getString(R.string.product_manage_filter_all_showcase)));
+            if(currentChoosen == Integer.MAX_VALUE){
+                currentChoosen = ProductManageConstant.FILTER_ALL_SHOWCASE;
+            }
+        }else {
+            myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_ALL_PRODUK, getString(R.string.product_manage_filter_menu_etalase_all)));
+            myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_SOLD_PRODUK, getString(R.string.product_manage_filter_sold)));
+            myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_EMPTY_STOK, getString(R.string.product_manage_filter_empty_stok)));
+            myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_PENDING, getString(R.string.product_manage_filter_pending)));
+            myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_FREE_RETURNS, getString(R.string.product_manage_filter_free_returns)));
+            myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_PREORDER, getString(R.string.product_manage_filter_preorder)));
+            myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_ALL_SHOWCASE, getString(R.string.product_manage_filter_all_showcase)));
+            if(currentChoosen == Integer.MAX_VALUE){
+                currentChoosen = ProductManageConstant.FILTER_ALL_PRODUK;
+            }
+        }
+
+
+        return EtalaseDynamicPickerActivity.createInstance(context, currentChoosen, myEtalaseItemViewModels);
     }
 
     public GMComponent getGMComponent() {
