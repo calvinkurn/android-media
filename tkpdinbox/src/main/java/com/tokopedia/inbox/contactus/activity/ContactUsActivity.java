@@ -9,12 +9,12 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.inbox.contactus.ContactUsConstant;
 import com.tokopedia.inbox.contactus.fragment.ContactUsFaqFragment;
 import com.tokopedia.inbox.contactus.fragment.ContactUsFaqFragment.ContactUsFaqListener;
@@ -170,13 +170,9 @@ public class ContactUsActivity extends BasePresenterActivity implements
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();
-        } else if (GlobalConfig.isSellerApp()) {
-            Intent intent = new Intent(this, WelcomeActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
         } else {
-            Intent intent = HomeRouter.getHomeActivity(this);
+            Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+                    .getHomeIntent(this);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();

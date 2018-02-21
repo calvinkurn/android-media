@@ -28,10 +28,20 @@ public class ViewUtils {
     }
 
     public static String getKeywordClickBudgetError(Context context, double clickBudget) {
-        if (clickBudget < TopAdsConstant.BUDGET_MULTIPLE_BY) {
-            return context.getString(R.string.error_top_ads_click_budget_minimum, String.valueOf(TopAdsConstant.BUDGET_MULTIPLE_BY));
+        if (clickBudget < TopAdsConstant.BUDGET_KEYWORD_MULTIPLE_BY) {
+            return context.getString(R.string.error_top_ads_click_budget_minimum, String.valueOf(TopAdsConstant.BUDGET_KEYWORD_MULTIPLE_BY));
         }
-        return getDefaultClickBudgetError(context, clickBudget);
+        return getKeywordDefaultClickBudgetError(context, clickBudget);
+    }
+
+    public static String getKeywordDefaultClickBudgetError(Context context, double clickBudget) {
+        if (clickBudget % TopAdsConstant.BUDGET_MULTIPLE_BY != 0) {
+            return context.getString(R.string.error_top_ads_click_budget_multiple_by, String.valueOf(TopAdsConstant.BUDGET_MULTIPLE_BY));
+        }
+        if (clickBudget > TopAdsConstant.BUDGET_KEYWORD_MAX) {
+            return context.getString(R.string.error_top_ads_click_budget_max, CurrencyFormatter.formatRupiah(String.valueOf(TopAdsConstant.BUDGET_KEYWORD_MAX)));
+        }
+        return null;
     }
 
     public static String getDefaultClickBudgetError(Context context, double clickBudget) {

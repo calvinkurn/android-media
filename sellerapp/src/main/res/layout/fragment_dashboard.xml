@@ -39,6 +39,12 @@
 
             </com.tokopedia.design.loading.LoadingStateView>
 
+            <fragment
+                android:id="@+id/fragment_preapprove_label"
+                android:name="com.tokopedia.mitratoppers.preapprove.view.fragment.MitraToppersPreApproveLabelFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

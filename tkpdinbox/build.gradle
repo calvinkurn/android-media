@@ -17,6 +17,11 @@ def getTkpdDesign() {
             rootProject.ext.tkpdDependencies.core : project(':tkpddesign');
 }
 
+def getTkpdUseCase() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.core : project(':tkpdusecase');
+}
+
 publishing {
     publications {
         aar(MavenPublication) {
@@ -95,6 +100,7 @@ dependencies {
 
     compile getTkpdCore()
     compile getTkpdDesign()
+    compile getTkpdUseCase()
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor

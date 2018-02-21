@@ -6,6 +6,7 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.data.source.MakeLoginDataSource;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 
@@ -20,7 +21,9 @@ import rx.Observable;
 public class MakeLoginUseCase extends UseCase<MakeLoginDomain> {
 
     public static final String PARAM_USER_ID = "user_id";
+    private static final String PARAM_UUID = "uuid";
     private final MakeLoginDataSource makeLoginDataSource;
+    private SessionHandler sessionHandler;
 
     @Inject
     public MakeLoginUseCase(ThreadExecutor threadExecutor,

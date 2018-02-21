@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:padding="@dimen/padding_small"
+        tools:ignore="UselessParent">
+
+        <TextView
+            android:id="@+id/notes_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/title_cancel_shipment_notes"
+            android:textSize="@dimen/text_size_large"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/notes_label_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/notes_label"
+            android:text="@string/sub_title_cancel_shipment_notes" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/notes_text_input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/notes_label_subtitle"
+            android:layout_marginTop="@dimen/margin_large"
+            android:hint="@string/label_cancel_shipment_notes">
+
+            <EditText
+                android:id="@+id/reject_shipment_notes_field"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <Button
+            android:id="@+id/reject_shipment_confirm_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/green_button_rounded_unify"
+            android:gravity="center"
+            android:text="@string/button_order_detail_confirm"
+            android:textAllCaps="false"
+            android:textColor="@color/white" />
+
+    </RelativeLayout>
+
+</LinearLayout>

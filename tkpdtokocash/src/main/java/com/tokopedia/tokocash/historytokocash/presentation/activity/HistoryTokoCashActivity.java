@@ -18,9 +18,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
@@ -40,6 +40,7 @@ import com.tokopedia.tokocash.historytokocash.presentation.model.HeaderHistory;
 import com.tokopedia.tokocash.historytokocash.presentation.model.ItemHistory;
 import com.tokopedia.tokocash.historytokocash.presentation.model.TokoCashHistoryData;
 import com.tokopedia.tokocash.historytokocash.presentation.presenter.TokoCashHistoryPresenter;
+import com.tokopedia.usecase.RequestParams;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -459,7 +460,7 @@ public class HistoryTokoCashActivity extends TActivity implements TokoCashHistor
 
     private void initInjector() {
         tokoCashComponent = DaggerTokoCashComponent.builder()
-                .appComponent(getApplicationComponent())
+                .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
                 .build();
         tokoCashComponent.inject(this);
     }

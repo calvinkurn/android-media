@@ -7,10 +7,14 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
@@ -18,11 +22,11 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
-import com.tokopedia.otp.securityquestion.domain.pojo.changephonenumberrequest.CheckStatusData;
+import com.tokopedia.session.changephonenumber.data.model.changephonenumberrequest.CheckStatusData;
 import com.tokopedia.session.R;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberRequestView;
 import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberRequestPresenter;
@@ -50,8 +54,11 @@ public class ChangePhoneNumberRequestFragment
 
     private static final String PARAM_UPLOAD_TYPE = "PARAM_UPLOAD_TYPE";
 
+
     public interface ChangePhoneNumberRequestListener {
         void goToThanksPage();
+
+        void shouldHandleBackPress(boolean isBackPressHandle);
     }
 
     private static final String UPLOAD_ID = "UPLOAD_ID";
@@ -62,11 +69,16 @@ public class ChangePhoneNumberRequestFragment
     ImageView accountBookPhoto;
     View idPhotoView;
     View accountBookPhotoView;
+    View newPhoneNumberView;
+    View photoIdMainView;
+    View accountIdMainView;
     ImageUploadHandler imageUploadHandler;
     Button buttonSubmit;
     View mainView;
     View contentView;
-
+    private EditText newPhoneNumber;
+    private TextWatcher phoneNumberTextWatcher;
+    private TextView nextButton;
     TkpdProgressDialog progressDialog;
 
     String uploadType;
@@ -82,7 +94,7 @@ public class ChangePhoneNumberRequestFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null)
-        uploadType = savedInstanceState.getString(PARAM_UPLOAD_TYPE);
+            uploadType = savedInstanceState.getString(PARAM_UPLOAD_TYPE);
     }
 
     @Override
@@ -115,9 +127,6 @@ public class ChangePhoneNumberRequestFragment
     @Override
     public void onRestoreState(Bundle savedState) {
     }
-
-
-
 
 
     @Override
@@ -157,6 +166,11 @@ public class ChangePhoneNumberRequestFragment
         idPhotoView = view.findViewById(R.id.upload_id_photo_view);
         accountBookPhotoView = view.findViewById(R.id.upload_account_book_photo_view);
         imageUploadHandler = ImageUploadHandler.createInstance(this);
+        newPhoneNumber = view.findViewById(R.id.new_phone_number_value);
+        nextButton = view.findViewById(R.id.next_button);
+        newPhoneNumberView = view.findViewById(R.id.new_phone_number);
+        photoIdMainView = view.findViewById(R.id.photo_id_main_layout);
+        accountIdMainView = view.findViewById(R.id.account_id_main_layout);
     }
 
     @Override
@@ -166,13 +180,38 @@ public class ChangePhoneNumberRequestFragment
         buttonUploadId.setOnClickListener(onUploadImageId());
         idPhotoView.setOnClickListener(onUploadImageId());
         buttonSubmit.setOnClickListener(onSubmit());
+        phoneNumberTextWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                presenter.onNewNumberTextChanged(editable, newPhoneNumber.getSelectionStart());
+            }
+        };
+        newPhoneNumber.addTextChangedListener(phoneNumberTextWatcher);
+
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.shouldHandleBackPress(false);
+                presenter.submitRequest(cleanPhoneNumber(newPhoneNumber));
+            }
+        });
     }
 
     private View.OnClickListener onSubmit() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.submitRequest();
+                presenter.continueToNext();
             }
         };
     }
@@ -333,7 +372,7 @@ public class ChangePhoneNumberRequestFragment
             ImageHandler.loadImageFromFile(getActivity(), idImage, new File(fileLoc));
     }
 
-    @Override
+
     public void onGoToWaitPage() {
         listener.goToThanksPage();
     }
@@ -358,7 +397,7 @@ public class ChangePhoneNumberRequestFragment
         contentView.setVisibility(View.VISIBLE);
         finishLoading();
         if (checkStatusData.isPending()) {
-            onGoToWaitPage();
+            listener.goToThanksPage();
         }
     }
 
@@ -388,10 +427,12 @@ public class ChangePhoneNumberRequestFragment
             NetworkErrorHelper.showSnackbar(getActivity());
         else
             NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+        listener.shouldHandleBackPress(true);
     }
 
     @Override
     public void onSuccessSubmitRequest() {
+        KeyboardHandler.DropKeyboard(getActivity(), getView());
         finishLoading();
         onGoToWaitPage();
     }
@@ -463,5 +504,59 @@ public class ChangePhoneNumberRequestFragment
         listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
+    }
+
+    private String cleanPhoneNumber(EditText newPhoneNumber) {
+        String newPhoneNumberString = newPhoneNumber.getText().toString();
+        return newPhoneNumberString.replace("-", "");
+    }
+
+    @Override
+    public void enableNextButton() {
+        nextButton.setClickable(true);
+        nextButton.setEnabled(true);
+        nextButton.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable
+                .green_button_rounded_unify));
+        nextButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
+    }
+
+    @Override
+    public void disableNextButton() {
+        nextButton.setClickable(false);
+        nextButton.setEnabled(false);
+        nextButton.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable
+                .grey_button_rounded));
+        nextButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_12));
+    }
+
+    @Override
+    public void correctPhoneNumber(String newNumber, int selection) {
+        newPhoneNumber.removeTextChangedListener(phoneNumberTextWatcher);
+        newPhoneNumber.setText(newNumber);
+        newPhoneNumber.setSelection(selection);
+        newPhoneNumber.addTextChangedListener(phoneNumberTextWatcher);
+    }
+
+    @Override
+    public void onSuccessValidRequest() {
+        finishLoading();
+        onGoToNextPage();
+    }
+
+    @Override
+    public void onGoToNextPage() {
+        photoIdMainView.setVisibility(View.GONE);
+        accountIdMainView.setVisibility(View.GONE);
+        buttonSubmit.setVisibility(View.GONE);
+        newPhoneNumberView.setVisibility(View.VISIBLE);
+        listener.shouldHandleBackPress(true);
+    }
+
+    public void handleBackOnView() {
+        photoIdMainView.setVisibility(View.VISIBLE);
+        accountIdMainView.setVisibility(View.VISIBLE);
+        buttonSubmit.setVisibility(View.VISIBLE);
+        newPhoneNumberView.setVisibility(View.GONE);
+        listener.shouldHandleBackPress(false);
     }
 }

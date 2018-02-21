@@ -42,4 +42,9 @@
     <dimen name="footer_height">48dp</dimen>
     <dimen name="kol_avatar">60dp</dimen>
     <dimen name="small_wishlist_kol">20dp</dimen>
+
+    <!-- partial empty feed -->
+    <dimen name="button_width">200dp</dimen>
+    <dimen name="img_width">250dp</dimen>
+    <dimen name="img_height">150dp</dimen>
 </resources>
