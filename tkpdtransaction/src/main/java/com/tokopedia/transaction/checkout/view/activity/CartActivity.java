@@ -49,6 +49,12 @@ public class CartActivity extends BasePresenterActivity
     }
 
     @Override
+    public void setTitle(CharSequence title) {
+        super.setTitle(title);
+        setupToolbar();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_checkout_cart_remove, menu);
         return true;

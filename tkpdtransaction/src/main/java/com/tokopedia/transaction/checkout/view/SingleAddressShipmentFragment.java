@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.transaction.R;
@@ -42,7 +41,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DATA_STORE;
 
@@ -60,6 +58,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     private static final NumberFormat CURRENCY_ID = NumberFormat.getCurrencyInstance(LOCALE_ID);
 
     private static final String TAG = SingleAddressShipmentFragment.class.getSimpleName();
+
     private static final int REQUEST_CODE_SHIPMENT_DETAIL = 11;
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
     private static final int REQUEST_CODE_CHOOSE_ADDRESS = 13;
@@ -226,19 +225,20 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     }
 
     private void showCancelPickupBoothDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.label_dialog_title_cancel_pickup);
-        builder.setMessage(R.string.label_dialog_message_cancel_pickup_booth);
-        builder.setPositiveButton(R.string.title_yes, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                mSingleAddressShipmentAdapter.unSetPickupPoint();
-                mSingleAddressShipmentAdapter.notifyDataSetChanged();
-            }
-        });
-        builder.setNegativeButton(R.string.title_no, null);
-        AlertDialog alert = builder.create();
-        alert.show();
+        AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.label_dialog_title_cancel_pickup)
+                .setMessage(R.string.label_dialog_message_cancel_pickup_booth)
+                .setPositiveButton(R.string.title_yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        mSingleAddressShipmentAdapter.unSetPickupPoint();
+                        mSingleAddressShipmentAdapter.notifyDataSetChanged();
+                    }
+                })
+                .setNegativeButton(R.string.title_no, null)
+                .create();
+
+        alertDialog.show();
     }
 
     @Override
@@ -253,8 +253,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     public void onChoosePickupPoint(ShipmentRecipientModel addressAdapterData) {
-        startActivityForResult(PickupPointActivity.createInstance(
-                getActivity(),
+        startActivityForResult(PickupPointActivity.createInstance(getActivity(),
                 addressAdapterData.getDestinationDistrictName(),
                 GetPickupPointsUseCase.generateParams(addressAdapterData)
         ), REQUEST_CHOOSE_PICKUP_POINT);
@@ -267,8 +266,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     public void onEditPickupPoint(ShipmentRecipientModel addressAdapterData) {
-        startActivityForResult(PickupPointActivity.createInstance(
-                getActivity(),
+        startActivityForResult(PickupPointActivity.createInstance(getActivity(),
                 addressAdapterData.getDestinationDistrictName(),
                 GetPickupPointsUseCase.generateParams(addressAdapterData)
         ), REQUEST_CHOOSE_PICKUP_POINT);
@@ -293,6 +291,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                     mSingleAddressShipmentAdapter.setPickupPoint(pickupBooth);
                     mSingleAddressShipmentAdapter.notifyDataSetChanged();
                     break;
+
                 default:
                     break;
             }
