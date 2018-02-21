@@ -152,7 +152,7 @@
             android:padding="@dimen/margin_padding_medium"
             android:text="@string/lanjutkan"
             android:textColor="@android:color/white"
-            android:textSize="@dimen/textsize_big"
+            android:textSize="@dimen/font_line_spacing_small"
             android:textStyle="bold" />
     </android.support.v7.widget.CardView>
 
