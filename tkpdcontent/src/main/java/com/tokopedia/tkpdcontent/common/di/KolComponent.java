@@ -19,8 +19,5 @@ public interface KolComponent {
     @ApplicationContext
     Context context();
 
-    @KolQualifier
-    Retrofit kolRetrofit();
-
     KolApi kolApi();
 }
