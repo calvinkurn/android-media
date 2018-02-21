@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/coordinator_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        app:elevation="0dp">
+
+        <com.tokopedia.design.text.SearchInputView
+            android:id="@+id/search_input_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|snap|enterAlways" />
+
+        <com.tokopedia.design.label.LabelView
+            android:id="@+id/label_view_choose_etalase"
+            style="@style/LabelLayout"
+            app:lv_content="@string/shop_info_label_default_content"
+            app:lv_title="@string/shop_info_default_etalase_title"
+            app:layout_scrollFlags="scroll|snap|enterAlways"/>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <com.tokopedia.core.customwidget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:paddingTop="@dimen/activity_vertical_margin" />
+
+    </com.tokopedia.core.customwidget.SwipeToRefresh>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/padding_med"
+        app:layout_anchor="@id/recycler_view"
+        app:layout_anchorGravity="bottom|center_horizontal"
+        app:layout_behavior="com.tokopedia.seller.common.widget.QuickReturnFooterBehavior">
+
+        <com.tokopedia.design.button.BottomActionView
+            android:id="@+id/bottom_action_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:bav_icon_1="@drawable/ic_kupon"
+            app:bav_label_1="@string/shop_info_default_etalase_title"
+            app:bav_1_display="true"
+            />
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

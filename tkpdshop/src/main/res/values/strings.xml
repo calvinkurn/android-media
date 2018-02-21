@@ -42,4 +42,7 @@
     <string name="product_label_wholesale">Grosir</string>
     <string name="product_label_po">PO</string>
 
+    <string name="shop_info_default_etalase">Pilih Etalase</string>
+    <string name="shop_info_default_etalase_title">Etalase</string>
+
 </resources>

@@ -22,7 +22,7 @@
             app:expandedTitleMarginEnd="12dp"
             app:expandedTitleMarginStart="12dp"
             app:expandedTitleTextAppearance="@style/TextView.Title"
-            app:layout_scrollFlags="scroll|snap|exitUntilCollapsed">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <include
                 layout="@layout/include_header_shop_info_detail"
