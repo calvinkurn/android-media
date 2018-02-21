@@ -44,10 +44,10 @@
                         android:id="@+id/search_input_view"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/searchview_height"
-                        android:layout_marginBottom="@dimen/margin_default"
-                        android:layout_marginLeft="@dimen/margin_default"
-                        android:layout_marginRight="@dimen/margin_default"
-                        android:layout_marginTop="@dimen/margin_default"
+                        android:layout_marginBottom="@dimen/new_margin_med"
+                        android:layout_marginLeft="@dimen/new_margin_med"
+                        android:layout_marginRight="@dimen/new_margin_med"
+                        android:layout_marginTop="@dimen/new_margin_med"
                         android:background="@color/white" />
 
 
@@ -78,8 +78,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:gravity="center_vertical"
-                android:paddingEnd="@dimen/margin_default"
-                android:paddingStart="@dimen/margin_default"
+                android:paddingEnd="@dimen/new_margin_med"
+                android:paddingStart="@dimen/new_margin_med"
                 android:text="@string/top_events"
                 android:textColor="@color/black_38"
                 android:textSize="@dimen/font_micro"

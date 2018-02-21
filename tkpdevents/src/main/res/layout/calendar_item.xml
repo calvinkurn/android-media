@@ -16,11 +16,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="@dimen/margin_padding_small"
-        android:layout_marginStart="@dimen/margin_padding_small"
-        android:layout_marginEnd="@dimen/margin_padding_small"
-        android:paddingTop="@dimen/margin_padding_small"
-        android:paddingBottom="@dimen/margin_padding_small"
+        android:layout_marginTop="@dimen/new_margin_tiny"
+        android:layout_marginStart="@dimen/new_margin_tiny"
+        android:layout_marginEnd="@dimen/new_margin_tiny"
+        android:paddingTop="@dimen/new_margin_tiny"
+        android:paddingBottom="@dimen/new_margin_tiny"
         android:background="@drawable/rounded_rectangle_white_solid">
         <TextView
             android:id="@+id/tv_date"

@@ -130,9 +130,7 @@
     <!-- Events Dimen. -->
     <dimen name="icon_size_small">16dp</dimen>
     <dimen name="icon_size_large">32dp</dimen>
-    <dimen name="margin_default">16dp</dimen>
     <dimen name="card_corner_default">2dp</dimen>
-    <dimen name="margin_padding_small">4dp</dimen>
     <dimen name="divider_height_thin">2dp</dimen>
     <dimen name="banner_height">180dp</dimen>
     <dimen name="progbar_height">50dp</dimen>
@@ -153,5 +151,4 @@
 
     <dimen name="widget_bottom_action_radius">20dp</dimen>
     <dimen name="widget_bottom_action_elevation">3dp</dimen>
-
 </resources>

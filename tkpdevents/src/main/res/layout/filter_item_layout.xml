@@ -4,8 +4,8 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:paddingBottom="8dp"
-    android:paddingEnd="@dimen/margin_default"
-    android:paddingStart="@dimen/margin_default"
+    android:paddingEnd="@dimen/new_margin_med"
+    android:paddingStart="@dimen/new_margin_med"
     android:paddingTop="@dimen/margin_padding_medium"
     android:id="@+id/filter_item">
 

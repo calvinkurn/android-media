@@ -20,7 +20,7 @@
             android:layout_height="match_parent"
             android:background="?attr/selectableItemBackground"
             android:orientation="horizontal"
-            android:padding="@dimen/margin_default">
+            android:padding="@dimen/new_margin_med">
 
             <ImageView
                 android:id="@+id/iv_arrow_seating"
@@ -35,8 +35,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/margin_default"
-                android:layout_marginStart="@dimen/margin_default"
+                android:layout_marginLeft="@dimen/new_margin_med"
+                android:layout_marginStart="@dimen/new_margin_med"
                 android:text="@string/seating_layout"
                 android:textColor="@color/grey_700"
                 android:textSize="@dimen/font_small"
@@ -48,12 +48,12 @@
             android:id="@+id/imgv_seating_layout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/seatmap_fixed_height"
-            android:layout_marginBottom="@dimen/margin_default"
-            android:layout_marginEnd="@dimen/margin_default"
-            android:layout_marginLeft="@dimen/margin_default"
-            android:layout_marginRight="@dimen/margin_default"
-            android:layout_marginStart="@dimen/margin_default"
-            android:layout_marginTop="@dimen/margin_default"
+            android:layout_marginBottom="@dimen/new_margin_med"
+            android:layout_marginEnd="@dimen/new_margin_med"
+            android:layout_marginLeft="@dimen/new_margin_med"
+            android:layout_marginRight="@dimen/new_margin_med"
+            android:layout_marginStart="@dimen/new_margin_med"
+            android:layout_marginTop="@dimen/new_margin_med"
             android:scaleType="fitXY"
             android:visibility="visible" />
 
