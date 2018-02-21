@@ -22,6 +22,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewMod
 import com.tokopedia.flight.booking.view.viewmodel.mapper.FlightBookingCartDataMapper;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
+import com.tokopedia.flight.common.util.FlightPassengerTitleType;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
@@ -433,6 +434,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                                             FlightDateUtil.DEFAULT_FORMAT
                                     )
                             );
+                            getView().setContactGender(profileInfo.getGender());
                         }
                     }
                 })
@@ -719,12 +721,24 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         FlightBookingPassengerViewModel flightBookingPassengerViewModel = getView()
                 .getCurrentBookingParamViewModel()
                 .getPassengerViewModels().get(0);
-        flightBookingPassengerViewModel.setFlightBookingLuggageMetaViewModels(new ArrayList<FlightBookingAmenityMetaViewModel>());
-        flightBookingPassengerViewModel.setFlightBookingMealMetaViewModels(new ArrayList<FlightBookingAmenityMetaViewModel>());
+        flightBookingPassengerViewModel.setFlightBookingLuggageMetaViewModels(
+                new ArrayList<FlightBookingAmenityMetaViewModel>()
+        );
+        flightBookingPassengerViewModel.setFlightBookingMealMetaViewModels(
+                new ArrayList<FlightBookingAmenityMetaViewModel>()
+        );
 
         if (lastIndexOfSpace > 0) {
-            flightBookingPassengerViewModel.setPassengerFirstName(getView().getContactName().substring(0, lastIndexOfSpace).trim());
-            flightBookingPassengerViewModel.setPassengerLastName(getView().getContactName().substring(lastIndexOfSpace).trim());
+            flightBookingPassengerViewModel.setPassengerFirstName(
+                    getView().getContactName().substring(
+                            0,
+                            lastIndexOfSpace
+                    ).trim()
+            );
+            flightBookingPassengerViewModel.setPassengerLastName(
+                    getView().getContactName().substring(lastIndexOfSpace)
+                            .trim()
+            );
         } else {
             flightBookingPassengerViewModel.setPassengerFirstName(getView().getContactName().trim());
             flightBookingPassengerViewModel.setPassengerLastName(getView().getContactName().trim());
@@ -732,6 +746,14 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
 
         if (isMandatoryDoB()) {
             flightBookingPassengerViewModel.setPassengerBirthdate(getView().getContactBirthdate());
+        }
+
+        if (getView().getContactGender() == GENDER_MAN) {
+            flightBookingPassengerViewModel.setPassengerTitle(getView().getString(R.string.mister));
+            flightBookingPassengerViewModel.setPassengerTitleId(FlightPassengerTitleType.TUAN);
+        } else if (getView().getContactGender() == GENDER_WOMAN) {
+            flightBookingPassengerViewModel.setPassengerTitle(getView().getString(R.string.misiz));
+            flightBookingPassengerViewModel.setPassengerTitleId(FlightPassengerTitleType.NYONYA);
         }
 
         return flightBookingPassengerViewModel;
