@@ -144,7 +144,9 @@ public class ProductScoreDataSourceCache {
             case STOK_INDICATOR:
                 return calculateScoreStok(indicatorScore, valueIndicatorScoreModel.isStockStatus());
             case FREE_RETURN_INDICATOR:
-                return calculateScoreFreeReturns(indicatorScore, valueIndicatorScoreModel.isFreeReturnStatus());
+                return calculateScoreFreeReturns(indicatorScore,
+                        valueIndicatorScoreModel.isFreeReturnStatus() &&
+                        valueIndicatorScoreModel.isFreeReturnActive());
             case PRODUCT_VARIANT:
                 return calculateScoreProductVariant(indicatorScore, valueIndicatorScoreModel.isVariantActive());
             case PRODUCT_VIDEO:

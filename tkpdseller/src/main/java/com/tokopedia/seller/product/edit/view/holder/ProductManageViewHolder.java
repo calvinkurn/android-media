@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.text.CounterInputView;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
@@ -119,6 +120,11 @@ public class ProductManageViewHolder extends ProductViewHolder{
         return Integer.parseInt(stockStatusSpinnerTextView.getSpinnerValue());
     }
 
+    public boolean isStockAvailable(){
+        return getStatusStock() ==
+                Integer.parseInt(stockStatusSpinnerTextView.getContext().getString(R.string.product_stock_available_value));
+    }
+
     public void setStockStatus(int unit) {
         stockStatusSpinnerTextView.setSpinnerValue(String.valueOf(unit));
     }
@@ -160,12 +166,13 @@ public class ProductManageViewHolder extends ProductViewHolder{
     }
 
     @Override
-    public Pair<Boolean, String> isDataValid() {
+    public boolean isDataValid() {
         if (!isTotalStockValid()) {
             stockTotalCounterInputView.requestFocus();
-            return new Pair<>(false, AppEventTracking.AddProduct.FIELDS_MANDATORY_STOCK_STATUS);
+            UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_STOCK_STATUS);
+            return false;
         }
-        return new Pair<>(true, "");
+        return true;
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

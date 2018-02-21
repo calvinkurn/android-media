@@ -195,8 +195,8 @@ public class ProductDescriptionViewHolder extends ProductViewHolder {
     }
 
     @Override
-    public Pair<Boolean, String> isDataValid() {
-        return new Pair<>(true, "");
+    public boolean isDataValid() {
+        return true;
     }
 
     @Override

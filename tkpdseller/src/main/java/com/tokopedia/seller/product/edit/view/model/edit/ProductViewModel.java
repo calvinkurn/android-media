@@ -20,7 +20,7 @@ public class ProductViewModel implements ItemType, Parcelable {
     private long productId;
     @SerializedName("product_name")
     @Expose
-    private String productName;
+    private String productName = "";
     @SerializedName("product_alias")
     @Expose
     private String productAlias;
@@ -31,7 +31,7 @@ public class ProductViewModel implements ItemType, Parcelable {
 
     @SerializedName("product_description")
     @Expose
-    private String productDescription;
+    private String productDescription = "";
 
     @SerializedName("product_last_update_price")
     @Expose
@@ -234,6 +234,25 @@ public class ProductViewModel implements ItemType, Parcelable {
         this.productEtalase = productEtalase;
     }
 
+    public int getImageCount(){
+        return productPictureViewModelList == null? 0: productPictureViewModelList.size();
+    }
+
+    public int getMinimumImageResolution(){
+        if (getImageCount() == 0) {
+            return 0;
+        }
+        int minResolution = Integer.MAX_VALUE;
+        for (int i = 0, sizei = productPictureViewModelList.size() ; i<sizei ; i++) {
+            ProductPictureViewModel productPictureViewModel = productPictureViewModelList.get(i);
+            int resolution = (int) Math.min(productPictureViewModel.getX(), productPictureViewModel.getY());
+            if (minResolution > resolution) {
+                minResolution = resolution;
+            }
+        }
+        return minResolution == Integer.MAX_VALUE? 0: minResolution;
+    }
+
     public List<ProductPictureViewModel> getProductPictureViewModelList() {
         return productPictureViewModelList;
     }
@@ -384,6 +403,11 @@ public class ProductViewModel implements ItemType, Parcelable {
 
     public void setProductVideo(List<ProductVideoViewModel> productVideo) {
         this.productVideo = productVideo;
+    }
+
+    public boolean hasVariant(){
+        return productVariant!= null && productVariant.getProductVariant()!= null &&
+                productVariant.getProductVariant().size() > 0;
     }
 
     public ProductVariantViewModel getProductVariant() {

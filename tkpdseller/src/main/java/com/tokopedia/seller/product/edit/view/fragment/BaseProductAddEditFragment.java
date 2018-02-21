@@ -23,7 +23,6 @@ import android.view.ViewGroup;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.myproduct.utils.FileUtils;
@@ -32,12 +31,10 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
-import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
 import com.tokopedia.seller.common.imageeditor.ImageEditorWatermarkActivity;
 import com.tokopedia.seller.instoped.InstopedSellerCropWatermarkActivity;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
-import com.tokopedia.seller.product.edit.constant.UploadToTypeDef;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.seller.product.edit.view.activity.CatalogPickerActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddInfoActivity;
@@ -58,7 +55,6 @@ import com.tokopedia.seller.product.edit.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.product.edit.view.mapper.AnalyticsMapper;
 import com.tokopedia.seller.product.edit.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
-import com.tokopedia.seller.product.edit.view.model.edit.ProductVideoViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
@@ -212,23 +208,11 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
 
     @CallSuper
     protected boolean isDataValid() {
-        if (!productInfoViewHolder.isDataValid().first) {
-            UnifyTracking.eventAddProductError(productInfoViewHolder.isDataValid().second);
-            return false;
-        }
-        if (!productManageViewHolder.isDataValid().first) {
-            UnifyTracking.eventAddProductError(productManageViewHolder.isDataValid().second);
-            return false;
-        }
-        if (productManageViewHolder.getStatusStock() == Integer.parseInt(getString(R.string.product_stock_available_value)) && !productImageViewHolder.isDataValid().first) {
-            UnifyTracking.eventAddProductError(productImageViewHolder.isDataValid().second);
-            return false;
-        }
-        if (!productDeliveryInfoViewHolder.isDataValid().first) {
-            UnifyTracking.eventAddProductError(productDeliveryInfoViewHolder.isDataValid().second);
-            return false;
-        }
-        return true;
+        return (productInfoViewHolder.isDataValid() &&
+                productPriceViewHolder.isDataValid() &&
+                productManageViewHolder.isDataValid() &&
+                (!productManageViewHolder.isStockAvailable() || productImageViewHolder.isDataValid()) &&
+                productDeliveryInfoViewHolder.isDataValid());
     }
 
     private void getCategoryRecommendation(String productName) {
@@ -243,7 +227,6 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
                                         WholesaleModel previousWholesalePrice, boolean officialStore) {
         listener.startAddWholeSaleDialog(fixedPrice, currencyType, previousWholesalePrice, officialStore);
     }
-
 
 
     // Clicked Part
@@ -467,6 +450,8 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
     public void onSuccessLoadProduct(ProductViewModel model) {
         currentProductViewModel = model;
 
+        productScoreViewHolder.renderData(currentProductViewModel, valueIndicatorScoreModel);
+
         productInfoViewHolder.renderData(currentProductViewModel);
         productImageViewHolder.renderData(currentProductViewModel);
         productPriceViewHolder.renderData(currentProductViewModel);
@@ -556,11 +541,12 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
 
     @Override
     public void onSuccessLoadShopInfo(boolean isGoldMerchant, boolean isFreeReturn, boolean officialStore) {
+        valueIndicatorScoreModel.setFreeReturnActive(isFreeReturn);
+
         productDescriptionViewHolder.updateViewGoldMerchant(isGoldMerchant);
         productPriceViewHolder.setGoldMerchant(isGoldMerchant);
         productPriceViewHolder.setOfficialStore(officialStore);
-        productDeliveryInfoViewHolder.updateViewFreeReturn(isFreeReturn);
-        valueIndicatorScoreModel.setFreeReturnActive(isFreeReturn);
+        productDeliveryInfoViewHolder.showViewFreeReturn(isFreeReturn);
     }
 
     @Override
@@ -826,7 +812,8 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
         }
     }
 
-    private void updateProductScoring() {
+    @Override
+    public void updateProductScoring() {
         presenter.getProductScoring(valueIndicatorScoreModel);
     }
 

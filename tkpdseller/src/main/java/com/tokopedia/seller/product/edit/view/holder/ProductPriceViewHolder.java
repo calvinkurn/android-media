@@ -346,16 +346,18 @@ public class ProductPriceViewHolder extends ProductViewHolder
     }
 
     @Override
-    public Pair<Boolean, String> isDataValid() {
+    public boolean isDataValid() {
         if (!isPriceValid()) {
             priceSpinnerCounterInputView.requestFocus();
-            return new Pair<>(false, AppEventTracking.AddProduct.FIELDS_MANDATORY_PRICE);
+            UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_PRICE);
+            return false;
         }
         if (!isMinOrderValid()) {
             minimumOrderCounterInputView.requestFocus();
-            return new Pair<>(false, AppEventTracking.AddProduct.FIELDS_MANDATORY_MIN_PURCHASE);
+            UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_MIN_PURCHASE);
+            return false;
         }
-        return new Pair<>(true, "");
+        return true;
     }
 
     @Override

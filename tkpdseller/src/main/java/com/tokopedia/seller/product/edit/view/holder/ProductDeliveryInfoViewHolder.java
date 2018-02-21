@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.expandable.BaseExpandableOption;
 import com.tokopedia.expandable.ExpandableOptionSwitch;
@@ -129,7 +130,7 @@ public class ProductDeliveryInfoViewHolder extends ProductViewHolder {
         this.listener = listener;
     }
 
-    public void updateViewFreeReturn(boolean isFreeReturn) {
+    public void showViewFreeReturn(boolean isFreeReturn) {
         if (isFreeReturn) {
             freeReturnsSpinnerTextView.setVisibility(View.VISIBLE);
         } else {
@@ -269,25 +270,27 @@ public class ProductDeliveryInfoViewHolder extends ProductViewHolder {
     }
 
     @Override
-    public Pair<Boolean, String> isDataValid() {
+    public boolean isDataValid() {
         if (!isWeightValid()) {
             weightSpinnerCounterInputView.requestFocus();
-            return new Pair<>(false, AppEventTracking.AddProduct.FIELDS_MANDATORY_WEIGHT);
+            UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_WEIGHT);
+            return false;
         }
         if (!isPreOrderValid()) {
-            return new Pair<>(false, AppEventTracking.AddProduct.FIELDS_OPTIONAL_PREORDER);
+            UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PREORDER);
+            return false;
         }
-        return new Pair<>(true, "");
+        return true;
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-
+        // no need; already on the model
     }
 
     @Override
     public void onViewStateRestored(@NonNull Bundle savedInstanceState) {
-
+        // no need; already on the model
     }
 
     /**

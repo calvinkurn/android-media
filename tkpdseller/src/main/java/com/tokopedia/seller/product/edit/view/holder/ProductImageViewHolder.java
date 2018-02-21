@@ -11,6 +11,7 @@ import android.util.Pair;
 import android.view.View;
 
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
@@ -209,14 +210,15 @@ public class ProductImageViewHolder extends ProductViewHolder {
     }
 
     @Override
-    public Pair<Boolean, String> isDataValid() {
+    public boolean isDataValid() {
         if (getProductPhotos().size() < 1) {
             Snackbar.make(imagesSelectView.getRootView().findViewById(android.R.id.content), R.string.product_error_product_picture_empty, Snackbar.LENGTH_LONG)
                     .setActionTextColor(ContextCompat.getColor(imagesSelectView.getContext(), R.color.green_400))
                     .show();
-            return new Pair<>(false, AppEventTracking.AddProduct.FIELDS_OPTIONAL_PICTURE);
+            UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PICTURE);
+            return false;
         }
-        return new Pair<>(true, "");
+        return true;
     }
 
     @Override

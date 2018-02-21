@@ -15,7 +15,7 @@ public abstract class ProductViewHolder {
      * Check is data valid or not
      * @return
      */
-    public abstract Pair<Boolean, String> isDataValid();
+    public abstract boolean isDataValid();
 
     public abstract void onSaveInstanceState(Bundle savedInstanceState);
 
@@ -24,4 +24,5 @@ public abstract class ProductViewHolder {
     public abstract void renderData(ProductViewModel model);
 
     public abstract void updateModel(ProductViewModel model);
+
 }

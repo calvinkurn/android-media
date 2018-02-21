@@ -18,6 +18,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.seller.R;
@@ -401,41 +402,45 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         }
     }
 
-    public Pair<Boolean, String> checkWithPreviousNameBeforeCopy(String productNameBeforeCopy) {
+    public boolean checkWithPreviousNameBeforeCopy(String productNameBeforeCopy) {
         if (nameEditText.getText().toString().equals(productNameBeforeCopy)) {
-            return setNameError(nameTextInputLayout.getContext().getString(R.string.product_error_product_name_copy_duplicate));
+            setNameError(nameTextInputLayout.getContext().getString(R.string.product_error_product_name_copy_duplicate));
+            return false;
         }
-        return new Pair<>(true, "");
+        return true;
     }
 
     @Override
-    public Pair<Boolean, String> isDataValid() {
+    public boolean isDataValid() {
         if (TextUtils.isEmpty(getName())) {
-            return setNameError(nameTextInputLayout.getContext().getString(R.string.product_error_product_name_empty));
+            setNameError(nameTextInputLayout.getContext().getString(R.string.product_error_product_name_empty));
+            return false;
         }
         if (categoryId < 0) {
             Snackbar.make(categoryLabelView.getRootView().findViewById(android.R.id.content), R.string.product_error_product_category_empty, Snackbar.LENGTH_LONG)
                     .setActionTextColor(ContextCompat.getColor(categoryLabelView.getContext(), R.color.green_400))
                     .show();
             categoryLabelView.getParent().requestChildFocus(categoryLabelView,categoryLabelView);
-            return new Pair<>(false,AppEventTracking.AddProduct.FIELDS_MANDATORY_CATEGORY);
+            UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_CATEGORY);
+            return false;
         }
         if (getEtalaseId() < 0) {
             etalaseLabelView.getParent().requestChildFocus(etalaseLabelView, etalaseLabelView);
             Snackbar.make(etalaseLabelView.getRootView().findViewById(android.R.id.content), R.string.product_error_product_etalase_empty, Snackbar.LENGTH_LONG)
                     .setActionTextColor(ContextCompat.getColor(etalaseLabelView.getContext(), R.color.green_400))
                     .show();
-            return new Pair<>(false, AppEventTracking.AddProduct.FIELDS_MANDATORY_SHOWCASE);
+            UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_SHOWCASE);
+            return false;
         }
-        return new Pair<>(true, "");
+        return true;
     }
 
     @NonNull
-    private Pair<Boolean, String> setNameError(String errorMessage) {
+    private void setNameError(String errorMessage) {
         nameTextInputLayout.setError(errorMessage);
         nameTextInputLayout.clearFocus();
         nameTextInputLayout.requestFocus();
-        return new Pair<>(false, AppEventTracking.AddProduct.FIELDS_MANDATORY_PRODUCT_NAME);
+        UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_PRODUCT_NAME);
     }
 
     @Override
