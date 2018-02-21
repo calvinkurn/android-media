@@ -1,5 +1,7 @@
 package com.tokopedia.shop.product.view.presenter;
 
+import android.support.annotation.NonNull;
+
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
@@ -40,10 +42,33 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<BaseListViewLi
         this.shopProductViewModelMapper = shopProductViewModelMapper;
     }
 
+    public void getShopPageList(String shopId, String keyword, String etalaseId, int wholesale, int page){
+        ShopProductRequestModel shopProductRequestModel = getShopProductRequestModel(shopId, keyword, etalaseId, wholesale, page);
+        getShopProductListUseCase.execute(GetShopProductListUseCase.createRequestParam(shopProductRequestModel), new Subscriber<ShopProductList>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()) {
+                    getView().showGetListError(e);
+                }
+            }
+
+            @Override
+            public void onNext(ShopProductList shopProductList) {
+                if(!isViewAttached())
+                    return;
+
+                getView().renderList(convert(shopProductList.getList()), checkNextPage(shopProductList));
+            }
+        });
+    }
+
     public void getShopPageList(String shopId) {
-        ShopProductRequestModel shopProductRequestModel = new ShopProductRequestModel();
-        shopProductRequestModel.setShopId(shopId);
-        shopProductRequestModel.setPage(1);
+        ShopProductRequestModel shopProductRequestModel = getShopProductRequestModel(shopId);
         getShopProductListUseCase.execute(GetShopProductListUseCase.createRequestParam(shopProductRequestModel), new Subscriber<ShopProductList>() {
             @Override
             public void onCompleted() {
@@ -65,6 +90,29 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<BaseListViewLi
                 getView().renderList(convert(shopProductList.getList()));
             }
         });
+    }
+
+    @NonNull
+    protected ShopProductRequestModel getShopProductRequestModel(String shopId) {
+        return getShopProductRequestModel(shopId, null, null, 0, 1);
+    }
+
+    @NonNull
+    protected ShopProductRequestModel getShopProductRequestModel(String shopId, String keyword, String etalaseId, int wholesale, int page) {
+        ShopProductRequestModel shopProductRequestModel = new ShopProductRequestModel();
+        shopProductRequestModel.setShopId(shopId);
+        shopProductRequestModel.setPage(page);
+
+        if(etalaseId != null)
+            shopProductRequestModel.setEtalaseId(etalaseId);
+
+        if(keyword != null)
+            shopProductRequestModel.setKeyword(keyword);
+
+        if(wholesale > 0)
+            shopProductRequestModel.setWholesale(wholesale);
+
+        return shopProductRequestModel;
     }
 
     @Override
@@ -113,5 +161,16 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<BaseListViewLi
         shopProductViewModels.setShopUrl(shopProducts.getShopUrl());
 
         return shopProductViewModels;
+    }
+
+    private boolean checkNextPage(ShopProductList shopProductList) {
+        if(shopProductList.getPaging()!= null &&
+                shopProductList.getPaging().getUriNext() != null &&
+                !shopProductList.getPaging().getUriNext().isEmpty() &&
+                !shopProductList.getPaging().getUriNext().equals("0")){
+            return true;
+        }else{
+            return true;
+        }
     }
 }
