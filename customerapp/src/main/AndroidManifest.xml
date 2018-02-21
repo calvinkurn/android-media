@@ -195,7 +195,9 @@
 
         <activity
             android:name="com.tokopedia.otp.phoneverification.view.activity.RidePhoneNumberVerificationActivity"
-            android:screenOrientation="portrait" />
+            android:label="@string/title_activity_phone_verification"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
 
         <service
             android:name=".home.feed.data.source.cloud.AddFavoriteShopService"
@@ -246,7 +248,8 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3" />
 
-        <activity android:name=".qrscanner.QrScannerActivity"
+        <activity
+            android:name=".qrscanner.QrScannerActivity"
             android:label="@string/title_scan_qr"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />

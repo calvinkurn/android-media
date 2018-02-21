@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.otp.phoneverification.view.fragment.PhoneVerificationFragment;
+import com.tokopedia.otp.phoneverification.view.fragment.PhoneVerificationProfileFragment;
 import com.tokopedia.session.R;
 
 public class RidePhoneNumberVerificationActivity extends TActivity implements HasComponent {
@@ -25,16 +26,31 @@ public class RidePhoneNumberVerificationActivity extends TActivity implements Ha
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
         inflateView(R.layout.activity_ride_phone_number_verification);
+        initView();
+    }
 
-        addFragment(R.id.container, PhoneVerificationFragment.createInstance
-                (getPhoneVerificationListener(), false));
+    private void initView() {
+        PhoneVerificationProfileFragment fragmentHeader = PhoneVerificationProfileFragment.createInstance();
+        PhoneVerificationFragment fragment = PhoneVerificationFragment.createInstance
+                (getPhoneVerificationListener(), false);
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        if (getFragmentManager().findFragmentById(R.id.container_header) == null) {
+            fragmentTransaction.add(R.id.container_header, fragmentHeader, fragmentHeader.getClass().getSimpleName());
+        }
+        if (getFragmentManager().findFragmentById(R.id.container) == null) {
+            fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
+        } else if (((PhoneVerificationFragment) getSupportFragmentManager().findFragmentById(R.id.container)).getListener() == null) {
+            ((PhoneVerificationFragment) getSupportFragmentManager().findFragmentById(R.id.container))
+                    .setPhoneVerificationListener(getPhoneVerificationListener());
+        }
+        fragmentTransaction.commit();
+
     }
 
 //    @Override
 //    protected int getLayoutId() {
 //        return R.layout.activity_ride_phone_number_verification;
 //    }
-
 
 
 //    @Override
@@ -68,5 +84,10 @@ public class RidePhoneNumberVerificationActivity extends TActivity implements Ha
     @Override
     public AppComponent getComponent() {
         return getApplicationComponent();
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }
