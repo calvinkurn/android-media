@@ -58,6 +58,14 @@ public class EventDetailsViewModelMapper {
                 s.setaDdress(item.getAddressDetail().getAddress());
                 s.setStartDate(item.getSchedule().getStartDate());
                 s.setEndDate(item.getSchedule().getEndDate());
+                String timerange;
+                if (item.getSchedule().getStartDate().equals(item.getSchedule().getEndDate())) {
+                    timerange = Utils.convertEpochToString(item.getSchedule().getStartDate());
+                } else {
+                    timerange = Utils.convertEpochToString(item.getSchedule().getStartDate())
+                            + " - " + Utils.convertEpochToString(item.getSchedule().getEndDate());
+                }
+                s.setTimeRange(timerange);
 
                 if (item.getGroups() != null) {
                     if (item.getGroups().get(0).getPackages() != null) {
@@ -87,7 +95,7 @@ public class EventDetailsViewModelMapper {
                             pVM.setSalesPrice(p.getSalesPrice());
                             pVM.setSold(p.getSold());
                             pVM.setConvenienceFee(p.getConvenienceFee());
-                            pVM.setTimeRange(target.getTimeRange());
+                            pVM.setTimeRange(timerange);
                             pVM.setThumbnailApp(target.getThumbnailApp());
                             pVM.setAddress(s.getaDdress());
                             pVM.setFetchSectionUrl(p.getFetchSectionUrl());
