@@ -27,14 +27,18 @@ public class CartListInteractor implements ICartListInteractor {
 
     private final CompositeSubscription compositeSubscription;
     private final ICartRepository cartRepository;
-    private final ICartMapper mapper;
+    private final ICartMapper cartMapper;
+    private final IShipmentMapper shipmentMapper;
 
     @Inject
     public CartListInteractor(CompositeSubscription compositeSubscription,
-                              ICartRepository cartRepository, ICartMapper mapper) {
+                              ICartRepository cartRepository,
+                              ICartMapper cartMapper,
+                              IShipmentMapper shipmentMapper) {
         this.compositeSubscription = compositeSubscription;
         this.cartRepository = cartRepository;
-        this.mapper = mapper;
+        this.cartMapper = cartMapper;
+        this.shipmentMapper = shipmentMapper;
     }
 
 
@@ -45,7 +49,7 @@ public class CartListInteractor implements ICartListInteractor {
                         .map(new Func1<CartDataListResponse, CartListData>() {
                             @Override
                             public CartListData call(CartDataListResponse cartDataListResponse) {
-                                return mapper.convertToCartItemDataList(cartDataListResponse);
+                                return cartMapper.convertToCartItemDataList(cartDataListResponse);
                             }
                         })
                         .subscribeOn(Schedulers.newThread())
@@ -62,7 +66,7 @@ public class CartListInteractor implements ICartListInteractor {
                         .map(new Func1<DeleteCartDataResponse, DeleteCartData>() {
                             @Override
                             public DeleteCartData call(DeleteCartDataResponse deleteCartDataResponse) {
-                                return mapper.convertToDeleteCartData(deleteCartDataResponse);
+                                return cartMapper.convertToDeleteCartData(deleteCartDataResponse);
                             }
                         })
                         .subscribeOn(Schedulers.newThread())
@@ -81,7 +85,7 @@ public class CartListInteractor implements ICartListInteractor {
                         .map(new Func1<DeleteCartDataResponse, DeleteCartData>() {
                             @Override
                             public DeleteCartData call(DeleteCartDataResponse deleteCartDataResponse) {
-                                return mapper.convertToDeleteCartData(deleteCartDataResponse);
+                                return cartMapper.convertToDeleteCartData(deleteCartDataResponse);
                             }
                         })
                         .flatMap(new Func1<DeleteCartData, Observable<DeleteUpdateCartData>>() {
@@ -92,7 +96,7 @@ public class CartListInteractor implements ICartListInteractor {
                                             .map(new Func1<UpdateCartDataResponse, UpdateCartData>() {
                                                 @Override
                                                 public UpdateCartData call(UpdateCartDataResponse updateCartDataResponse) {
-                                                    return mapper.convertToUpdateCartData(updateCartDataResponse);
+                                                    return cartMapper.convertToUpdateCartData(updateCartDataResponse);
                                                 }
                                             }).map(new Func1<UpdateCartData, DeleteUpdateCartData>() {
                                                 @Override
@@ -131,7 +135,7 @@ public class CartListInteractor implements ICartListInteractor {
                         .map(new Func1<UpdateCartDataResponse, UpdateCartData>() {
                             @Override
                             public UpdateCartData call(UpdateCartDataResponse updateCartDataResponse) {
-                                return mapper.convertToUpdateCartData(updateCartDataResponse);
+                                return cartMapper.convertToUpdateCartData(updateCartDataResponse);
                             }
                         }).subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -155,7 +159,7 @@ public class CartListInteractor implements ICartListInteractor {
                                             @Override
                                             public UpdateCartListData call(UpdateCartDataResponse updateCartDataResponse) {
                                                 updateCartListData.setUpdateCartData(
-                                                        mapper.convertToUpdateCartData(updateCartDataResponse)
+                                                        cartMapper.convertToUpdateCartData(updateCartDataResponse)
                                                 );
                                                 return updateCartListData;
                                             }
@@ -170,7 +174,7 @@ public class CartListInteractor implements ICartListInteractor {
                                             @Override
                                             public UpdateCartListData call(CartDataListResponse cartDataListResponse) {
                                                 updateCartListData.setCartListData(
-                                                        mapper.convertToCartItemDataList(cartDataListResponse)
+                                                        cartMapper.convertToCartItemDataList(cartDataListResponse)
                                                 );
                                                 return updateCartListData;
                                             }
@@ -184,7 +188,9 @@ public class CartListInteractor implements ICartListInteractor {
                                         .map(new Func1<String, UpdateCartListData>() {
                                             @Override
                                             public UpdateCartListData call(String s) {
-                                                //  updateCartListData.setShipmentFormResponse(s);
+                                                updateCartListData.setShipmentAddressFormData(
+                                                        shipmentMapper.convertToShipmentAddressFormData()
+                                                );
                                                 return updateCartListData;
                                             }
                                         });

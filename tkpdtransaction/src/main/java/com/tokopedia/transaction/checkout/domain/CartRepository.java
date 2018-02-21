@@ -7,6 +7,7 @@ import com.tokopedia.transaction.checkout.domain.response.addtocart.AddToCartDat
 import com.tokopedia.transaction.checkout.domain.response.cartlist.CartDataListResponse;
 import com.tokopedia.transaction.checkout.domain.response.deletecart.DeleteCartDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.shippingaddress.ShippingAddressDataResponse;
+import com.tokopedia.transaction.checkout.domain.response.shippingaddressform.ShipmentAddressFormDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.updatecart.UpdateCartDataResponse;
 
 import javax.inject.Inject;
@@ -83,11 +84,11 @@ public class CartRepository implements ICartRepository {
     }
 
     @Override
-    public Observable<String> getShipmentAddressForm(TKPDMapParam<String, String> param) {
-        return cartService.getApi().getShipmentAddressForm(param).map(new Func1<Response<CartResponse>, String>() {
+    public Observable<ShipmentAddressFormDataResponse> getShipmentAddressForm(TKPDMapParam<String, String> param) {
+        return cartService.getApi().getShipmentAddressForm(param).map(new Func1<Response<CartResponse>, ShipmentAddressFormDataResponse>() {
             @Override
-            public String call(Response<CartResponse> cartResponseResponse) {
-                return cartResponseResponse.body().getStrResponse();
+            public ShipmentAddressFormDataResponse call(Response<CartResponse> cartResponseResponse) {
+                return cartResponseResponse.body().convertDataObj(ShipmentAddressFormDataResponse.class);
             }
         });
     }
