@@ -295,7 +295,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     }
 
     public boolean hasNextPageFeed() {
-        return CURSOR_NO_NEXT_PAGE_FEED.equals(currentCursor);
+        return !CURSOR_NO_NEXT_PAGE_FEED.equals(currentCursor);
     }
 
     private class HomeDataSubscriber extends Subscriber<List<Visitable>> {
