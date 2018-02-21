@@ -569,9 +569,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onRetryClicked() {
-        adapter.removeRetry();
-        adapter.showLoading();
-        presenter.fetchCurrentPageFeed();
+        if (!isErrorMessageShown()) {
+            adapter.removeRetry();
+            adapter.showLoading();
+            presenter.fetchCurrentPageFeed();
+        } else {
+            onRefresh();
+        }
     }
 
     @Override
