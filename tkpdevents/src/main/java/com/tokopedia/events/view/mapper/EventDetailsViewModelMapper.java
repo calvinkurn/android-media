@@ -50,59 +50,65 @@ public class EventDetailsViewModelMapper {
                     + " - " + Utils.convertEpochToString(source.getMaxEndDate());
         }
         target.setTimeRange(dateRange);
-        int size = source.getSchedules().size();
-        List<SchedulesViewModel> schedules = new ArrayList<>(size);
-        for (ScheduleDomain item : source.getSchedules()) {
-            SchedulesViewModel s = new SchedulesViewModel();
-            s.setaDdress(item.getAddressDetail().getAddress());
-            s.setStartDate(item.getSchedule().getStartDate());
-            s.setEndDate(item.getSchedule().getEndDate());
+        if (source.getSchedules() != null) {
+            int size = source.getSchedules().size();
+            List<SchedulesViewModel> schedules = new ArrayList<>(size);
+            for (ScheduleDomain item : source.getSchedules()) {
+                SchedulesViewModel s = new SchedulesViewModel();
+                s.setaDdress(item.getAddressDetail().getAddress());
+                s.setStartDate(item.getSchedule().getStartDate());
+                s.setEndDate(item.getSchedule().getEndDate());
 
-            List<PackageViewModel> packageViewModels = new ArrayList<>(item.getGroups().get(0).getPackages().size());
-            List<Package> packages = item.getGroups().get(0).getPackages();
-            for (int j = 0; j < packages.size(); j++) {
-                PackageViewModel pVM = new PackageViewModel();
-                Package p = packages.get(j);
-                pVM.setId(p.getId());
-                pVM.setProductId(p.getProductId());
-                pVM.setProductGroupId(p.getProductGroupId());
-                pVM.setProductScheduleId(p.getProductScheduleId());
-                pVM.setProviderScheduleId(p.getProviderScheduleId());
-                pVM.setDescription(p.getDescription());
-                pVM.setDisplayName(p.getDisplayName());
-                pVM.setAvailable(p.getAvailable());
-                pVM.setBooked(p.getBooked());
-                pVM.setTnc(p.getTnc());
-                pVM.setCommission(p.getCommission());
-                pVM.setCommissionType(p.getCommissionType());
-                pVM.setMaxQty(p.getMaxQty());
-                pVM.setMinQty(p.getMinQty());
-                pVM.setMrp(p.getMrp());
-                pVM.setProviderStatus(p.getProviderStatus());
-                pVM.setDisplayName(p.getDisplayName());
-                pVM.setSalesPrice(p.getSalesPrice());
-                pVM.setSold(p.getSold());
-                pVM.setConvenienceFee(p.getConvenienceFee());
-                pVM.setTimeRange(target.getTimeRange());
-                pVM.setThumbnailApp(target.getThumbnailApp());
-                pVM.setAddress(s.getaDdress());
-                pVM.setFetchSectionUrl(p.getFetchSectionUrl());
-                try {
-                    pVM.setForms(target.getForms());
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if (item.getGroups() != null) {
+                    if (item.getGroups().get(0).getPackages() != null) {
+                        int numOfPkgs = item.getGroups().get(0).getPackages().size();
+                        List<PackageViewModel> packageViewModels = new ArrayList<>(numOfPkgs);
+                        List<Package> packages = item.getGroups().get(0).getPackages();
+                        for (int j = 0; j < packages.size(); j++) {
+                            PackageViewModel pVM = new PackageViewModel();
+                            Package p = packages.get(j);
+                            pVM.setId(p.getId());
+                            pVM.setProductId(p.getProductId());
+                            pVM.setProductGroupId(p.getProductGroupId());
+                            pVM.setProductScheduleId(p.getProductScheduleId());
+                            pVM.setProviderScheduleId(p.getProviderScheduleId());
+                            pVM.setDescription(p.getDescription());
+                            pVM.setDisplayName(p.getDisplayName());
+                            pVM.setAvailable(p.getAvailable());
+                            pVM.setBooked(p.getBooked());
+                            pVM.setTnc(p.getTnc());
+                            pVM.setCommission(p.getCommission());
+                            pVM.setCommissionType(p.getCommissionType());
+                            pVM.setMaxQty(p.getMaxQty());
+                            pVM.setMinQty(p.getMinQty());
+                            pVM.setMrp(p.getMrp());
+                            pVM.setProviderStatus(p.getProviderStatus());
+                            pVM.setDisplayName(p.getDisplayName());
+                            pVM.setSalesPrice(p.getSalesPrice());
+                            pVM.setSold(p.getSold());
+                            pVM.setConvenienceFee(p.getConvenienceFee());
+                            pVM.setTimeRange(target.getTimeRange());
+                            pVM.setThumbnailApp(target.getThumbnailApp());
+                            pVM.setAddress(s.getaDdress());
+                            pVM.setFetchSectionUrl(p.getFetchSectionUrl());
+                            try {
+                                pVM.setForms(target.getForms());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            pVM.setCategoryId(source.getCategoryId());
+                            pVM.setTitle(source.getTitle());
+                            packageViewModels.add(pVM);
+                        }
+
+                        s.setPackages(packageViewModels);
+                    }
                 }
-                pVM.setCategoryId(source.getCategoryId());
-                pVM.setTitle(source.getTitle());
-                packageViewModels.add(pVM);
+                schedules.add(s);
+
             }
-
-            s.setPackages(packageViewModels);
-            schedules.add(s);
-
+            target.setSchedulesViewModels(schedules);
         }
-
-        target.setSchedulesViewModels(schedules);
     }
 
 }
