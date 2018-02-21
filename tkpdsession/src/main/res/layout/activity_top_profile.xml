@@ -30,17 +30,17 @@
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabBackground="@color/white"
-            app:tabGravity="fill"
-            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
-            app:tabIndicatorColor="@color/tkpd_green_header"
-            app:tabMode="fixed"
-            app:tabSelectedTextColor="@color/tkpd_green_header" />
-        <!--<include layout="@layout/layout_tab_indicator_light" />-->
+        <!--<android.support.design.widget.TabLayout-->
+            <!--android:id="@+id/tabs"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--app:tabBackground="@color/white"-->
+            <!--app:tabGravity="fill"-->
+            <!--app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"-->
+            <!--app:tabIndicatorColor="@color/tkpd_green_header"-->
+            <!--app:tabMode="fixed"-->
+            <!--app:tabSelectedTextColor="@color/tkpd_green_header" />-->
+        <include layout="@layout/layout_tab_indicator_light" />
 
     </android.support.design.widget.AppBarLayout>
 

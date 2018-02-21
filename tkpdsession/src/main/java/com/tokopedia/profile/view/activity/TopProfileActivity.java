@@ -45,7 +45,7 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
         appBarLayout = findViewById(R.id.app_bar_layout);
         collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
         toolbar = findViewById(R.id.toolbar);
-        tabLayout =findViewById(R.id.tabs);
+        tabLayout =findViewById(R.id.indicator);
         viewPager = findViewById(R.id.pager);
         setupToolbar();
         loadSection();
