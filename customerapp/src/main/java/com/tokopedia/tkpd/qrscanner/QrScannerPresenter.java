@@ -75,7 +75,9 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
             return;
         }
         if (host.equals(QrScannerTypeDef.PAYMENT_QR_CODE)) {
-            getInfoQrWallet(uri.getPathSegments().get(0));
+            localCacheHandler.putString(GetInfoQrTokoCashUseCase.IDENTIFIER, uri.getPathSegments().get(0));
+            localCacheHandler.applyEditor();
+            onScanCompleteAfterLoginQrPayment();
         } else if (host.equals(QrScannerTypeDef.CAMPAIGN_QR_CODE)) {
             getInfoQrCampaign(uri.getPathSegments().get(0));
         } else {
