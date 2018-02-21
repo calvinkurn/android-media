@@ -39,6 +39,7 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
             //TODO milhamj change this userid
             kolPostFragment = ((SessionRouter) getApplicationContext()).getKolPostFragment("6543110");
         }
+        inflateFragment();
     }
 
     @Override
@@ -48,21 +49,22 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
         collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
         toolbar = findViewById(R.id.toolbar);
         setupToolbar();
-        inflateFragment();
     }
 
     //TODO milhamj remove this func
     private void inflateFragment() {
-        String TAG = "LOL";
-        if (getSupportFragmentManager().findFragmentByTag(TAG) != null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container,
-                            getSupportFragmentManager().findFragmentByTag(TAG))
-                    .commit();
-        } else {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, kolPostFragment, TAG)
-                    .commit();
+        if (kolPostFragment != null) {
+            String TAG = "LOL";
+            if (getSupportFragmentManager().findFragmentByTag(TAG) != null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.container,
+                                getSupportFragmentManager().findFragmentByTag(TAG))
+                        .commit();
+            } else {
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.container, kolPostFragment, TAG)
+                        .commit();
+            }
         }
     }
 

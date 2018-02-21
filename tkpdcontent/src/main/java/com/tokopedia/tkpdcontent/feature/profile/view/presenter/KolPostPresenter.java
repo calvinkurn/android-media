@@ -1,10 +1,13 @@
 package com.tokopedia.tkpdcontent.feature.profile.view.presenter;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.tkpdcontent.feature.profile.domain.interactor.GetProfileKolDataUseCase;
 import com.tokopedia.tkpdcontent.feature.profile.view.listener.KolPostListener;
 import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -41,12 +44,14 @@ public class KolPostPresenter extends BaseDaggerPresenter<KolPostListener.View>
 
                     @Override
                     public void onError(Throwable e) {
-
+                        getView().onErrorGetProfileData(
+                                ErrorHandler.getErrorMessage(getView().getContext(), e)
+                        );
                     }
 
                     @Override
                     public void onNext(List<KolViewModel> kolViewModels) {
-
+                        getView().onSuccessGetProfileData(new ArrayList<Visitable>(kolViewModels));
                     }
                 });
     }

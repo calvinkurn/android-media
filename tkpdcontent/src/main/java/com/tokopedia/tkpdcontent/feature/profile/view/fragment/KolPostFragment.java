@@ -2,16 +2,22 @@ package com.tokopedia.tkpdcontent.feature.profile.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.tkpdcontent.R;
 import com.tokopedia.tkpdcontent.feature.profile.di.KolProfileComponent;
+import com.tokopedia.tkpdcontent.feature.profile.view.adapter.KolPostAdapter;
 import com.tokopedia.tkpdcontent.feature.profile.view.listener.KolPostListener;
 import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolViewModel;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -24,7 +30,10 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
 
     @Inject
     KolPostListener.Presenter presenter;
-    RecyclerView kolRecyclerView;
+    @Inject
+    KolPostAdapter adapter;
+    private RecyclerView kolRecyclerView;
+    private LinearLayoutManager layoutManager;
 
     private String userId;
 
@@ -60,6 +69,10 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
 
     private void initView(View view) {
         kolRecyclerView = view.findViewById(R.id.kol_rv);
+        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+
+        kolRecyclerView.setLayoutManager(layoutManager);
+        kolRecyclerView.setAdapter(adapter);
     }
 
     private void setViewListener() {
@@ -74,6 +87,17 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     @Override
     protected void initInjector() {
         getComponent(KolProfileComponent.class).inject(this);
+    }
+
+    @Override
+    public void onSuccessGetProfileData(List<Visitable> visitableList) {
+        NetworkErrorHelper.showSnackbar(getActivity(), "Success");
+        adapter.addList(visitableList);
+    }
+
+    @Override
+    public void onErrorGetProfileData(String message) {
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
 
     //TODO milhamj do something with these actions

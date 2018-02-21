@@ -15,6 +15,8 @@ import com.tokopedia.tkpdcontent.feature.profile.view.adapter.typefactory.KolTyp
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * @author by milhamj on 19/02/18.
  */
@@ -25,6 +27,7 @@ public class KolPostAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     private EmptyModel emptyModel;
     private LoadingModel loadingModel;
 
+    @Inject
     public KolPostAdapter(KolTypeFactory typeFactory) {
         this.typeFactory = typeFactory;
         this.list = new ArrayList<>();
