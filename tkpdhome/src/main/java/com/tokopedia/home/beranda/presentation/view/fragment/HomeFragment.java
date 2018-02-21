@@ -432,13 +432,17 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onRefresh() {
+        resetFeedState();
+        presenter.getHomeData();
+        presenter.getHeaderData(false);
+    }
+
+    private void resetFeedState() {
         presenter.resetPageFeed();
         if (SessionHandler.isV4Login(getContext()) && feedLoadMoreTriggerListener != null) {
             feedLoadMoreTriggerListener.resetState();
             recyclerView.addOnScrollListener(feedLoadMoreTriggerListener);
         }
-        presenter.getHomeData();
-        presenter.getHeaderData(false);
     }
 
     @Override
@@ -467,13 +471,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void showNetworkError(String message) {
         if (isAdded() && getActivity() != null) {
+            recyclerView.removeOnScrollListener(feedLoadMoreTriggerListener);
             if (adapter.getItemCount() > 0) {
                 if (messageSnackbar == null) {
                     messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
                         @Override
                         public void onRetryClicked() {
-                            presenter.getHomeData();
-                            presenter.getHeaderData(false);
+                            onRefresh();
                         }
                     });
                 }
@@ -483,8 +487,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                         new NetworkErrorHelper.RetryClickedListener() {
                             @Override
                             public void onRetryClicked() {
-                                presenter.getHomeData();
-                                presenter.getHeaderData(false);
+                                onRefresh();
                             }
                         });
             }
