@@ -60,6 +60,7 @@ public class GetProfileKolDataMapper
                     false,
                     ""
             );
+            kolViewModels.add(kolViewModel);
         }
         return kolViewModels;
     }
