@@ -120,7 +120,6 @@ public class Button extends AppCompatButton {
                 initDraw(R.color.grey_500, R.drawable.bg_button_secondary);
                 break;
             default:
-                initDraw(R.color.white, R.drawable.bg_button_primary); // default value
                 break;
 
         }
