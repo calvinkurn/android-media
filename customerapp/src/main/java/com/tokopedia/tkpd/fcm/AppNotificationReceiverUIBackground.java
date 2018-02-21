@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.fcm;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
 import android.net.Uri;
@@ -27,7 +28,6 @@ import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
@@ -114,29 +114,10 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
             if (SessionHandler.isV4Login(mContext)
                     && SessionHandler.getLoginID(mContext).equals(
                     data.getString(Constants.ARG_NOTIFICATION_TARGET_USER_ID))
-                    ) {
-
+            ) {
                 resetNotificationStatus(data);
-
-                if (mActivitiesLifecycleCallbacks.isAppOnBackground()) {
-                    prepareAndExecuteApplinkNotification(data);
-                } else {
-                    NotificationReceivedListener listener =
-                            (NotificationReceivedListener) mActivitiesLifecycleCallbacks.getLiveActivityOrNull();
-                    if (listener != null) {
-                        listener.onGetNotif();
-                        if (Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE, "0"))
-                                == TkpdState.GCMServiceState.GCM_CART_UPDATE) {
-                            listener.onRefreshCart(data.getInt(Constants.ARG_NOTIFICATION_CART_EXISTS, 0));
-                        } else {
-
-                            prepareAndExecuteApplinkNotification(data);
-
-                        }
-                    } else {
-                        prepareAndExecuteApplinkNotification(data);
-                    }
-                }
+                prepareAndExecuteApplinkNotification(data);
+                refreshUI(data);
                 mFCMCacheManager.resetCache(data);
             }
         } else {
@@ -149,14 +130,29 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     private void prepareAndExecuteApplinkNotification(Bundle data) {
-        String applinks = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
-        String category = Uri.parse(applinks).getHost();
-        String customIndex = "";
-        String serverId = "";
-        switch (category) {
-            case Constants.ARG_NOTIFICATION_APPLINK_MESSAGE:
-                if (!remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
-                    customIndex = data.getString(Constants.ARG_NOTIFICATION_APPLINK_MESSAGE_CUSTOM_INDEX);
+        if (!isRefreshCart(data)) {
+            String applinks = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
+            String category = Uri.parse(applinks).getHost();
+            String customIndex = "";
+            String serverId = "";
+            switch (category) {
+                case Constants.ARG_NOTIFICATION_APPLINK_MESSAGE:
+                    if (!remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
+                        customIndex = data.getString(Constants.ARG_NOTIFICATION_APPLINK_MESSAGE_CUSTOM_INDEX);
+                        if (!TextUtils.isEmpty(Uri.parse(applinks).getLastPathSegment())) {
+                            serverId = Uri.parse(applinks).getLastPathSegment();
+                        }
+                        saveApplinkPushNotification(
+                                category,
+                                convertBundleToJsonString(data),
+                                customIndex,
+                                serverId,
+                                new SavePushNotificationCallback()
+                        );
+                    }
+                    break;
+                case Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION:
+                    customIndex = data.getString(Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION_CUSTOM_INDEX);
                     if (!TextUtils.isEmpty(Uri.parse(applinks).getLastPathSegment())) {
                         serverId = Uri.parse(applinks).getLastPathSegment();
                     }
@@ -167,55 +163,42 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                             serverId,
                             new SavePushNotificationCallback()
                     );
-                }
-                break;
-            case Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION:
-                customIndex = data.getString(Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION_CUSTOM_INDEX);
-                if (!TextUtils.isEmpty(Uri.parse(applinks).getLastPathSegment())) {
-                    serverId = Uri.parse(applinks).getLastPathSegment();
-                }
-                saveApplinkPushNotification(
-                        category,
-                        convertBundleToJsonString(data),
-                        customIndex,
-                        serverId,
-                        new SavePushNotificationCallback()
-                );
-                break;
-            case Constants.ARG_NOTIFICATION_APPLINK_RIDE:
-                if (Uri.parse(applinks).getPathSegments().size() == 1) {
-                    buildNotifByData(data);
-                } else {
-                    CommonUtils.dumper("AppNotificationReceiverUIBackground handleApplinkNotification for Ride");
-                    RidePushNotificationBuildAndShow push = new RidePushNotificationBuildAndShow(mContext);
-                    push.processReceivedNotification(data);
-                }
-                break;
-
-            case Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT:
-                if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
-                    if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
-                            && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
-                        NotificationReceivedListener listener = (NotificationReceivedListener) MainApplication.currentActivity();
-                        listener.onGetNotif(data);
+                    break;
+                case Constants.ARG_NOTIFICATION_APPLINK_RIDE:
+                    if (Uri.parse(applinks).getPathSegments().size() == 1) {
+                        buildNotifByData(data);
                     } else {
-                        String applink = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
-                        String fullname = data
-                                .getString("full_name");
-                        applink += "?" + "fullname=" + fullname;
-                        data.putString(Constants.ARG_NOTIFICATION_APPLINK, applink);
+                        CommonUtils.dumper("AppNotificationReceiverUIBackground handleApplinkNotification for Ride");
+                        RidePushNotificationBuildAndShow push = new RidePushNotificationBuildAndShow(mContext);
+                        push.processReceivedNotification(data);
+                    }
+                    break;
+
+                case Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT:
+                    if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
+                        if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
+                                && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof NotificationReceivedListener) {
+                            NotificationReceivedListener listener = (NotificationReceivedListener) MainApplication.currentActivity();
+                            listener.onGetNotif(data);
+                        } else {
+                            String applink = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
+                            String fullname = data
+                                    .getString("full_name");
+                            applink += "?" + "fullname=" + fullname;
+                            data.putString(Constants.ARG_NOTIFICATION_APPLINK, applink);
+                            buildNotifByData(data);
+                        }
+                    }
+                    break;
+                case Constants.ARG_NOTIFICATION_APPLINK_SELLER_INFO:
+                    if (SessionHandler.isUserHasShop(mContext)) {
                         buildNotifByData(data);
                     }
-                }
-                break;
-            case Constants.ARG_NOTIFICATION_APPLINK_SELLER_INFO:
-                if (SessionHandler.isUserHasShop(mContext)) {
+                    break;
+                default:
                     buildNotifByData(data);
-                }
-                break;
-            default:
-                buildNotifByData(data);
-                break;
+                    break;
+            }
         }
     }
 
@@ -231,25 +214,22 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 && SessionHandler.getLoginID(mContext).equals(data.getString(Constants.ARG_NOTIFICATION_TARGET_USER_ID))) {
 
             resetNotificationStatus(data);
+            prepareAndExecuteDedicatedNotification(data);
+            refreshUI(data);
+            mFCMCacheManager.resetCache(data);
+        }
+    }
 
-            if (mActivitiesLifecycleCallbacks.isAppOnBackground()) {
-                prepareAndExecuteDedicatedNotification(data);
-            } else {
-                NotificationReceivedListener listener =
-                        (NotificationReceivedListener) mActivitiesLifecycleCallbacks.getLiveActivityOrNull();
-                if (listener != null) {
-                    listener.onGetNotif();
-                    if (Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE, "0"))
-                            == TkpdState.GCMServiceState.GCM_CART_UPDATE) {
-                        listener.onRefreshCart(data.getInt(Constants.ARG_NOTIFICATION_CART_EXISTS, 0));
-                    } else {
-                        prepareAndExecuteDedicatedNotification(data);
-                    }
-                } else {
-                    prepareAndExecuteDedicatedNotification(data);
+    private void refreshUI(Bundle data) {
+        if (!mActivitiesLifecycleCallbacks.isAppOnBackground()) {
+            Activity currentActivity = mActivitiesLifecycleCallbacks.getLiveActivityOrNull();
+            if(currentActivity != null && currentActivity instanceof NotificationReceivedListener) {
+                NotificationReceivedListener listener = (NotificationReceivedListener) currentActivity;
+                listener.onGetNotif();
+                if (isRefreshCart(data)) {
+                    listener.onRefreshCart(data.getInt(Constants.ARG_NOTIFICATION_CART_EXISTS, 0));
                 }
             }
-            mFCMCacheManager.resetCache(data);
         }
     }
 
@@ -285,29 +265,36 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     private void prepareAndExecuteDedicatedNotification(Bundle data) {
-        Map<Integer, Visitable> visitables = getCommonDedicatedNotification();
-        visitables.put(TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_BUYER, new ReputationSmileyToBuyerNotification(mContext));
-        visitables.put(TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_BUYER, new ReputationSmileyToBuyerEditNotification(mContext));
-        visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_VERIFIED, new PurchaseVerifiedNotification(mContext));
-        visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_ACCEPTED, new PurchaseAcceptedNotification(mContext));
-        visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_PARTIAL_PROCESSED, new PurchasePartialProcessedNotification(mContext));
-        visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_REJECTED, new PurchaseRejectedNotification(mContext));
-        visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_DELIVERED, new PurchaseDeliveredNotification(mContext));
-        visitables.put(TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_AGREE, new ResCenterBuyerAgreeNotification(mContext));
-        visitables.put(TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_BUYER_REPLY, new ResCenterAdminBuyerReplyNotification(mContext));
-        visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_AUTO_CANCEL_2D, new PurchaseAutoCancel2DNotification(mContext));
-        visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_AUTO_CANCEL_4D, new PurchaseAutoCancel4DNotification(mContext));
-        visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_FINISH, new PurchaseFinishedNotification(mContext));
-        visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_FINISH_REMINDER, new PurchaseFinishReminderNotification(mContext));
-        visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_NEW_ORDER, new PurchaseNewOrderNotification(mContext));
-        visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_REJECTED_SHIPPING, new PurchaseRejectedShippingNotification(mContext));
-        visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_CONFIRM_SHIPPING, new PurchaseShippedNotification(mContext));
-        visitables.put(TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_REPLY, new ResCenterBuyerReplyNotification(mContext));
+        if (!isRefreshCart(data)){
+            Map<Integer, Visitable> visitables = getCommonDedicatedNotification();
+            visitables.put(TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_BUYER, new ReputationSmileyToBuyerNotification(mContext));
+            visitables.put(TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_BUYER, new ReputationSmileyToBuyerEditNotification(mContext));
+            visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_VERIFIED, new PurchaseVerifiedNotification(mContext));
+            visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_ACCEPTED, new PurchaseAcceptedNotification(mContext));
+            visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_PARTIAL_PROCESSED, new PurchasePartialProcessedNotification(mContext));
+            visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_REJECTED, new PurchaseRejectedNotification(mContext));
+            visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_DELIVERED, new PurchaseDeliveredNotification(mContext));
+            visitables.put(TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_AGREE, new ResCenterBuyerAgreeNotification(mContext));
+            visitables.put(TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_BUYER_REPLY, new ResCenterAdminBuyerReplyNotification(mContext));
+            visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_AUTO_CANCEL_2D, new PurchaseAutoCancel2DNotification(mContext));
+            visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_AUTO_CANCEL_4D, new PurchaseAutoCancel4DNotification(mContext));
+            visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_FINISH, new PurchaseFinishedNotification(mContext));
+            visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_FINISH_REMINDER, new PurchaseFinishReminderNotification(mContext));
+            visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_NEW_ORDER, new PurchaseNewOrderNotification(mContext));
+            visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_REJECTED_SHIPPING, new PurchaseRejectedShippingNotification(mContext));
+            visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_CONFIRM_SHIPPING, new PurchaseShippedNotification(mContext));
+            visitables.put(TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_REPLY, new ResCenterBuyerReplyNotification(mContext));
 
-        Visitable visitable = visitables.get(getCode(data));
-        if (visitable != null) {
-            visitable.proccessReceivedNotification(data);
+            Visitable visitable = visitables.get(getCode(data));
+            if (visitable != null) {
+                visitable.proccessReceivedNotification(data);
+            }
         }
+    }
+
+    private boolean isRefreshCart(Bundle data) {
+        return Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE, "0"))
+                == TkpdState.GCMServiceState.GCM_CART_UPDATE;
     }
 
     private class SavePushNotificationCallback implements OnSavePushNotificationCallback {
