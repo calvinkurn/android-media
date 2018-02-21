@@ -1,5 +1,8 @@
 package com.tokopedia.home.explore.domain;
 
+import android.content.Context;
+
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.home.explore.data.repository.ExploreRepositoryImpl;
 import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel;
 import com.tokopedia.usecase.RequestParams;
@@ -16,13 +19,15 @@ import rx.Observable;
 public class GetExploreDataUseCase extends UseCase<List<ExploreSectionViewModel>> {
 
     private final ExploreRepositoryImpl repository;
+    private final Context context;
 
-    public GetExploreDataUseCase(ExploreRepositoryImpl repository) {
+    public GetExploreDataUseCase(ExploreRepositoryImpl repository, Context context) {
         this.repository = repository;
+        this.context = context;
     }
 
     @Override
     public Observable<List<ExploreSectionViewModel>> createObservable(RequestParams requestParams) {
-        return repository.getExploreData();
+        return repository.getExploreData(SessionHandler.getLoginID(context));
     }
 }

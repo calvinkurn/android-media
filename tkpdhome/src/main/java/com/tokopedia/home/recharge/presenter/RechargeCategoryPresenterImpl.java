@@ -71,7 +71,7 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
 
     @Override
     public void onDestroy() {
-
+        digitalWidgetUseCase.unsubscribe();
     }
 
 }
