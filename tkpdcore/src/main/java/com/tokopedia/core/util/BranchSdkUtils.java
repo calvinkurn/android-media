@@ -5,16 +5,16 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.var.TkpdCache;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.tokopedia.design.utils.CurrencyFormatHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,10 @@ import java.util.Map;
 import io.branch.indexing.BranchUniversalObject;
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
-import io.branch.referral.util.CommerceEvent;
+import io.branch.referral.util.BRANCH_STANDARD_EVENT;
+import io.branch.referral.util.BranchContentSchema;
+import io.branch.referral.util.BranchEvent;
+import io.branch.referral.util.ContentMetadata;
 import io.branch.referral.util.CurrencyType;
 import io.branch.referral.util.LinkProperties;
 
@@ -129,33 +132,36 @@ public class BranchSdkUtils {
 
     public static void sendCommerceEvent(Purchase purchase, String productType) {
         try {
-            if (Branch.getInstance() != null && purchase != null && purchase.getListProduct() != null) {
-
-                List<io.branch.referral.util.Product> branchProductList = new ArrayList<>();
+            if ( purchase != null && purchase.getListProduct() != null) {
+                List<BranchUniversalObject> branchUniversalObjects =new ArrayList<>();
+                SessionHandler sessionHandler =new SessionHandler(MainApplication.getAppContext());
 
                 for (Object objProduct : purchase.getListProduct()) {
                     Map<String, Object> product = (Map<String, Object>) objProduct;
-                    io.branch.referral.util.Product branchProduct = new io.branch.referral.util.Product();
+                    BranchUniversalObject buo = new BranchUniversalObject()
 
-                    branchProduct.setSku(String.valueOf(product.get(com.tokopedia.core.analytics.nishikino.model.Product.KEY_ID)));
-                    branchProduct.setName(String.valueOf(product.get(com.tokopedia.core.analytics.nishikino.model.Product.KEY_NAME)));
-                    branchProduct.setPrice(convertStringToDouble(String.valueOf(product.get(com.tokopedia.core.analytics.nishikino.model.Product.KEY_PRICE))));
-                    branchProductList.add(branchProduct);
-
+                            .setTitle(String.valueOf(product.get(Product.KEY_NAME)))
+                            .setContentMetadata(
+                                    new ContentMetadata()
+                                            .setPrice(convertIDRtoDouble(String.valueOf(product.get(Product.KEY_PRICE))), CurrencyType.IDR)
+                                            .setProductBrand(String.valueOf(product.get(Product.KEY_BRAND)))
+                                            .setProductName(String.valueOf(product.get(Product.KEY_NAME)))
+                                            .setProductVariant(String.valueOf(product.get(Product.KEY_VARIANT)))
+                                            .setQuantity(convertStringToDouble(String.valueOf(product.get(Product.KEY_QTY))))
+                                            .setSku(String.valueOf(product.get(Product.KEY_ID)))
+                                            .setContentSchema(BranchContentSchema.COMMERCE_PRODUCT));
+                    branchUniversalObjects.add(buo);
                 }
-                CommerceEvent commerceEvent = new CommerceEvent();
-                commerceEvent.setTransactionID(String.valueOf(purchase.getTransactionID()));
-                commerceEvent.setRevenue(convertStringToDouble(String.valueOf(purchase.getRevenue())));
-                commerceEvent.setCurrencyType(CurrencyType.IDR);
-                commerceEvent.setShipping(convertStringToDouble(String.valueOf(purchase.getShipping())));
-                commerceEvent.setProducts(branchProductList);
-
-                JSONObject metadata=new JSONObject();
-                metadata.put(PAYMENT_KEY,purchase.getPaymentId());
-                metadata.put(PRODUCTTYPE_KEY,productType);
-                metadata.put(USERID_KEY,purchase.getUserId());
-
-                Branch.getInstance().sendCommerceEvent(commerceEvent, metadata, null);
+                new BranchEvent(BRANCH_STANDARD_EVENT.PURCHASE)
+                        .setTransactionID(String.valueOf(purchase.getTransactionID()))
+                        .setCurrency(CurrencyType.IDR)
+                        .setShipping(convertIDRtoDouble(String.valueOf(purchase.getShipping())))
+                        .setRevenue(convertIDRtoDouble(String.valueOf(purchase.getRevenue())))
+                        .addCustomDataProperty(PAYMENT_KEY, purchase.getPaymentId())
+                        .addCustomDataProperty(PRODUCTTYPE_KEY, productType)
+                        .addCustomDataProperty(USERID_KEY, sessionHandler.getLoginID())
+                        .addContentItems(branchUniversalObjects)
+                        .logEvent(MainApplication.getAppContext());
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -177,28 +183,32 @@ public class BranchSdkUtils {
     }
 
     public static void sendLoginEvent(Context context) {
-        if (Branch.getInstance() != null) {
-            SessionHandler sessionHandler =new SessionHandler(context);
-            JSONObject metadata = new JSONObject();
-            try {
-                metadata.put(AppEventTracking.Branch.EMAIL, sessionHandler.getEmail());
-                metadata.put(AppEventTracking.Branch.PHONE, normalizePhoneNumber(sessionHandler.getPhoneNumber()));
-            } catch (JSONException e) {
-            }
-            Branch.getInstance().userCompletedAction(AppEventTracking.EventBranch.EVENT_LOGIN, metadata);
-        }
+
+        SessionHandler sessionHandler =new SessionHandler(context);
+        new BranchEvent(AppEventTracking.EventBranch.EVENT_LOGIN)
+                .addCustomDataProperty(AppEventTracking.Branch.EMAIL, sessionHandler.getEmail())
+                .addCustomDataProperty(AppEventTracking.Branch.PHONE, normalizePhoneNumber(sessionHandler.getPhoneNumber()))
+                .logEvent(MainApplication.getAppContext());
+
     }
 
     public static void sendRegisterEvent(String email, String phone) {
-        if (Branch.getInstance() != null) {
-            JSONObject metadata = new JSONObject();
-            try {
-                metadata.put(AppEventTracking.Branch.EMAIL, email);
-                metadata.put(AppEventTracking.Branch.PHONE, normalizePhoneNumber(phone));
-            } catch (JSONException e) {
-            }
-            Branch.getInstance().userCompletedAction(AppEventTracking.EventBranch.EVENT_REGISTER, metadata);
+
+        new BranchEvent(AppEventTracking.EventBranch.EVENT_REGISTER)
+                .addCustomDataProperty(AppEventTracking.Branch.EMAIL, email)
+                .addCustomDataProperty(AppEventTracking.Branch.PHONE, normalizePhoneNumber(phone))
+                .logEvent(MainApplication.getAppContext());
+
+    }
+
+    private static double convertIDRtoDouble(String value) {
+        double result = 0;
+        try {
+            result =  CurrencyFormatHelper.convertRupiahToInt(value);
+        } catch (NumberFormatException ex) {
+            ex.printStackTrace();
         }
+        return result;
     }
 
     private static double convertStringToDouble(String value) {
