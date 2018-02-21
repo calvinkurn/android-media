@@ -12,7 +12,11 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.view.data.CourierItemData;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,8 +27,17 @@ import butterknife.ButterKnife;
 
 public class CourierChoiceAdapter extends RecyclerView.Adapter<CourierChoiceAdapter.CourierViewHolder> {
 
+    private static final String FONT_FAMILY_SANS_SERIF = "sans-serif";
+    private static final String FONT_FAMILY_SANS_SERIF_MEDIUM = "sans-serif-medium";
     private ViewListener viewListener;
     private List<CourierItemData> couriers;
+    private NumberFormat currencyId;
+
+    @Inject
+    public CourierChoiceAdapter() {
+        Locale localeId = new Locale("in", "ID");
+        currencyId = NumberFormat.getCurrencyInstance(localeId);
+    }
 
     public void setViewListener(ViewListener viewListener) {
         this.viewListener = viewListener;
@@ -46,9 +59,10 @@ public class CourierChoiceAdapter extends RecyclerView.Adapter<CourierChoiceAdap
     public void onBindViewHolder(final CourierViewHolder holder, int position) {
         CourierItemData courierItemData = couriers.get(position);
         holder.tvCourierName.setText(courierItemData.getName());
-        holder.tvPrice.setText(
-                holder.tvPrice.getContext().getResources().getString(
-                        R.string.label_shipment_type_format, courierItemData.getDeliveryPrice()));
+        holder.tvPrice.setText(holder.tvPrice.getContext().getResources().getString(
+                R.string.label_shipment_type_format,
+                currencyId.format(courierItemData.getDeliveryPrice())));
+
         if (courierItemData.getDeliverySchedule() != null) {
             holder.tvDeliverySchedule.setText(courierItemData.getDeliverySchedule());
             holder.tvDeliverySchedule.setVisibility(View.VISIBLE);
@@ -56,8 +70,13 @@ public class CourierChoiceAdapter extends RecyclerView.Adapter<CourierChoiceAdap
             holder.tvDeliverySchedule.setVisibility(View.GONE);
         }
 
-        if (courierItemData.getEstimatedTimeDelivery() != null) {
-            holder.tvDeliveryTimeRange.setText(courierItemData.getEstimatedTimeDelivery());
+        if (courierItemData.getEstimatedDayDelivery() != null) {
+            String estimatedDelivery = courierItemData.getEstimatedDayDelivery() + " hari kerja*";
+            holder.tvDeliveryTimeRange.setText(estimatedDelivery);
+            holder.tvDeliveryTimeRange.setVisibility(View.VISIBLE);
+        } else if (courierItemData.getEstimatedHourDelivery() != null) {
+            String estimatedDelivery = courierItemData.getEstimatedHourDelivery() + "*";
+            holder.tvDeliveryTimeRange.setText(estimatedDelivery);
             holder.tvDeliveryTimeRange.setVisibility(View.VISIBLE);
         } else {
             holder.tvDeliveryTimeRange.setVisibility(View.GONE);
@@ -70,16 +89,24 @@ public class CourierChoiceAdapter extends RecyclerView.Adapter<CourierChoiceAdap
     private void renderTypeface(CourierViewHolder holder, CourierItemData courierItemData) {
         if (courierItemData.isSelected()) {
             holder.rbSelected.setChecked(true);
-            holder.tvCourierName.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
-            holder.tvPrice.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
-            holder.tvDeliveryTimeRange.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
-            holder.tvDeliverySchedule.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+            holder.tvCourierName.setTypeface(
+                    Typeface.create(FONT_FAMILY_SANS_SERIF_MEDIUM, Typeface.NORMAL));
+            holder.tvPrice.setTypeface(Typeface.create(
+                    FONT_FAMILY_SANS_SERIF_MEDIUM, Typeface.NORMAL));
+            holder.tvDeliveryTimeRange.setTypeface(
+                    Typeface.create(FONT_FAMILY_SANS_SERIF_MEDIUM, Typeface.NORMAL));
+            holder.tvDeliverySchedule.setTypeface(
+                    Typeface.create(FONT_FAMILY_SANS_SERIF_MEDIUM, Typeface.NORMAL));
         } else {
             holder.rbSelected.setChecked(false);
-            holder.tvCourierName.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
-            holder.tvPrice.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
-            holder.tvDeliveryTimeRange.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
-            holder.tvDeliverySchedule.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+            holder.tvCourierName.setTypeface(
+                    Typeface.create(FONT_FAMILY_SANS_SERIF, Typeface.NORMAL));
+            holder.tvPrice.setTypeface(
+                    Typeface.create(FONT_FAMILY_SANS_SERIF, Typeface.NORMAL));
+            holder.tvDeliveryTimeRange.setTypeface(
+                    Typeface.create(FONT_FAMILY_SANS_SERIF, Typeface.NORMAL));
+            holder.tvDeliverySchedule.setTypeface(
+                    Typeface.create(FONT_FAMILY_SANS_SERIF, Typeface.NORMAL));
         }
     }
 

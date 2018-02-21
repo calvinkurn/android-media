@@ -1,7 +1,6 @@
 package com.tokopedia.transaction.checkout.domain;
 
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.transaction.checkout.domain.response.rates.RatesResponse;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -37,10 +36,10 @@ public class GetRatesUseCase extends UseCase<ShipmentDetailData> {
 
     public RequestParams getParams() {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(Params.SERVICE, "instant,sameday,regular");
-        requestParams.putString(Params.NAMES, "jne,pos,gojek");
-        requestParams.putString(Params.ORIGIN, "5573|11410|-6.222334,108.223112555");
-        requestParams.putString(Params.DESTINATION, "2170|44233|-7.11000231,108.9210222");
+        requestParams.putString(Params.SERVICE, "instant,sameday,nextday,regular,cargo");
+        requestParams.putString(Params.NAMES, "jne,tiki,wahana,first,sicepat,grab,jnt,rex,pos,gojek");
+        requestParams.putString(Params.ORIGIN, "2271|12820|-6.231850160010124,106.84733770787717");
+        requestParams.putString(Params.DESTINATION, "2271|12820|-6.231850160010124,106.84733770787717");
         requestParams.putString(Params.WEIGHT, "1.0");
         requestParams.putString(Params.TYPE, "android");
         requestParams.putString(Params.FROM, "client");
@@ -50,6 +49,31 @@ public class GetRatesUseCase extends UseCase<ShipmentDetailData> {
         requestParams.putString(Params.PRODUCT_INSURANCE, "0");
         requestParams.putString(Params.ORDER_VALUE, "1990000");
         requestParams.putString(Params.CAT_ID, "35,20,60");
+
+/*
+        // Params from previous page
+        requestParams.putString(Params.SERVICE, shipmentDetailData.getShippingServices());
+        requestParams.putString(Params.NAMES, shipmentDetailData.getShippingNames());
+        requestParams.putString(Params.ORIGIN, shipmentDetailData.getOriginDistrictId() +
+                "|" + shipmentDetailData.getOriginPostalCode() +
+                "|" + shipmentDetailData.getOriginLatitude() +
+                "," + shipmentDetailData.getOriginLongitude());
+        requestParams.putString(Params.DESTINATION, shipmentDetailData.getDestinationDistrictId() +
+                "|" + shipmentDetailData.getDestinationPostalCode() +
+                "|" + shipmentDetailData.getDestinationLatitude() +
+                "," + shipmentDetailData.getDestinationLongitude());
+        requestParams.putString(Params.WEIGHT, String.valueOf(shipmentDetailData.getWeight()));
+        requestParams.putString(Params.TYPE, "android");
+        requestParams.putString(Params.FROM, "client");
+        requestParams.putString(Params.TOKEN, shipmentDetailData.getToken());
+        requestParams.putString(Params.UT, shipmentDetailData.getUt());
+        requestParams.putString(Params.INSURANCE, String.valueOf(shipmentDetailData.getInsurance()));
+        requestParams.putString(Params.PRODUCT_INSURANCE,
+                String.valueOf(shipmentDetailData.getProductInsurance()));
+        requestParams.putString(Params.ORDER_VALUE, String.valueOf(shipmentDetailData.getOrderValue()));
+        requestParams.putString(Params.CAT_ID, shipmentDetailData.getCategoryIds());
+*/
+
         return requestParams;
     }
 

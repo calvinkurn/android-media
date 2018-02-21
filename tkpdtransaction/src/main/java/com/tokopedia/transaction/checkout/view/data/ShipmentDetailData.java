@@ -12,12 +12,11 @@ import java.util.List;
 public class ShipmentDetailData implements Parcelable {
 
     private List<ShipmentItemData> shipmentItemData;
-    private String address;
     private String partialOrderInfo;
     private String dropshipperInfo;
-    private String deliveryPriceTotal;
+    private int deliveryPriceTotal;
     private String shipmentInfo;
-    private String shippingService;
+    private String shippingServices;
     private String shippingNames;
     private String originDistrictId;
     private String originPostalCode;
@@ -27,25 +26,26 @@ public class ShipmentDetailData implements Parcelable {
     private String destinationPostalCode;
     private Double destinationLatitude;
     private Double destinationLongitude;
+    private String destinationAddress;
     private float weight;
     private String token;
     private String ut;
     private int insurance;
     private int productInsurance;
     private int orderValue;
-    private String categoryId;
+    private String categoryIds;
 
     public ShipmentDetailData() {
     }
 
     protected ShipmentDetailData(Parcel in) {
         shipmentItemData = in.createTypedArrayList(ShipmentItemData.CREATOR);
-        address = in.readString();
+        destinationAddress = in.readString();
         partialOrderInfo = in.readString();
         dropshipperInfo = in.readString();
-        deliveryPriceTotal = in.readString();
+        deliveryPriceTotal = in.readInt();
         shipmentInfo = in.readString();
-        shippingService = in.readString();
+        shippingServices = in.readString();
         shippingNames = in.readString();
         originDistrictId = in.readString();
         originPostalCode = in.readString();
@@ -77,18 +77,18 @@ public class ShipmentDetailData implements Parcelable {
         insurance = in.readInt();
         productInsurance = in.readInt();
         orderValue = in.readInt();
-        categoryId = in.readString();
+        categoryIds = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(shipmentItemData);
-        dest.writeString(address);
+        dest.writeString(destinationAddress);
         dest.writeString(partialOrderInfo);
         dest.writeString(dropshipperInfo);
-        dest.writeString(deliveryPriceTotal);
+        dest.writeInt(deliveryPriceTotal);
         dest.writeString(shipmentInfo);
-        dest.writeString(shippingService);
+        dest.writeString(shippingServices);
         dest.writeString(shippingNames);
         dest.writeString(originDistrictId);
         dest.writeString(originPostalCode);
@@ -124,7 +124,7 @@ public class ShipmentDetailData implements Parcelable {
         dest.writeInt(insurance);
         dest.writeInt(productInsurance);
         dest.writeInt(orderValue);
-        dest.writeString(categoryId);
+        dest.writeString(categoryIds);
     }
 
     @Override
@@ -152,12 +152,12 @@ public class ShipmentDetailData implements Parcelable {
         this.shipmentItemData = shipmentItemData;
     }
 
-    public String getAddress() {
-        return address;
+    public String getDestinationAddress() {
+        return destinationAddress;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setDestinationAddress(String destinationAddress) {
+        this.destinationAddress = destinationAddress;
     }
 
     public String getPartialOrderInfo() {
@@ -176,11 +176,11 @@ public class ShipmentDetailData implements Parcelable {
         this.dropshipperInfo = dropshipperInfo;
     }
 
-    public String getDeliveryPriceTotal() {
+    public int getDeliveryPriceTotal() {
         return deliveryPriceTotal;
     }
 
-    public void setDeliveryPriceTotal(String deliveryPriceTotal) {
+    public void setDeliveryPriceTotal(int deliveryPriceTotal) {
         this.deliveryPriceTotal = deliveryPriceTotal;
     }
 
@@ -192,12 +192,12 @@ public class ShipmentDetailData implements Parcelable {
         this.shipmentInfo = shipmentInfo;
     }
 
-    public String getShippingService() {
-        return shippingService;
+    public String getShippingServices() {
+        return shippingServices;
     }
 
-    public void setShippingService(String shippingService) {
-        this.shippingService = shippingService;
+    public void setShippingServices(String shippingServices) {
+        this.shippingServices = shippingServices;
     }
 
     public String getShippingNames() {
@@ -320,11 +320,11 @@ public class ShipmentDetailData implements Parcelable {
         this.orderValue = orderValue;
     }
 
-    public String getCategoryId() {
-        return categoryId;
+    public String getCategoryIds() {
+        return categoryIds;
     }
 
-    public void setCategoryId(String categoryId) {
-        this.categoryId = categoryId;
+    public void setCategoryIds(String categoryIds) {
+        this.categoryIds = categoryIds;
     }
 }

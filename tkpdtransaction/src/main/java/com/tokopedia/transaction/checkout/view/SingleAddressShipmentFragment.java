@@ -26,6 +26,7 @@ import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdap
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
+import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 import com.tokopedia.transaction.checkout.view.presenter.SingleAddressShipmentPresenter;
 import com.tokopedia.transaction.checkout.view.view.ICartSingleAddressView;
@@ -248,7 +249,10 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     public void onChooseShipment() {
-        startActivityForResult(ShipmentDetailActivity.createInstance(getActivity()), REQUEST_CODE_SHIPMENT_DETAIL);
+        ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
+        // Todo : add required data to shipmentDetailData for request to kero rates api
+        startActivityForResult(ShipmentDetailActivity.createInstance(getActivity(), shipmentDetailData),
+                REQUEST_CODE_SHIPMENT_DETAIL);
     }
 
     @Override

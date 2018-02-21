@@ -1,22 +1,17 @@
 package com.tokopedia.transaction.checkout.view.presenter;
 
-import android.content.Context;
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.GetRatesUseCase;
-import com.tokopedia.transaction.checkout.domain.response.rates.RatesResponse;
 import com.tokopedia.transaction.checkout.view.data.CourierItemData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
 import com.tokopedia.transaction.checkout.view.view.IShipmentDetailView;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -52,6 +47,7 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
 
     @Override
     public void detachView() {
+        super.detachView();
         getRatesUseCase.unsubscribe();
     }
 
@@ -92,14 +88,14 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
     public void updatePinPoint(LocationPass locationPass) {
         shipmentDetailData.setDestinationLatitude(Double.parseDouble(locationPass.getLatitude()));
         shipmentDetailData.setDestinationLongitude(Double.parseDouble(locationPass.getLongitude()));
-        shipmentDetailData.setAddress(locationPass.getGeneratedAddress());
-        getView().showPinPointMap(shipmentDetailData);
+        shipmentDetailData.setDestinationAddress(locationPass.getGeneratedAddress());
+        getView().renderShipmentWithMap(shipmentDetailData);
     }
 
     @Override
-    public void loadShipmentData() {
+    public void loadShipmentData(ShipmentDetailData shipmentDetailData) {
         getView().showLoading();
-        getRatesUseCase.setShipmentDetailData(new ShipmentDetailData());
+        getRatesUseCase.setShipmentDetailData(shipmentDetailData);
         getRatesUseCase.execute(getRatesUseCase.getParams(), new Subscriber<ShipmentDetailData>() {
             @Override
             public void onCompleted() {

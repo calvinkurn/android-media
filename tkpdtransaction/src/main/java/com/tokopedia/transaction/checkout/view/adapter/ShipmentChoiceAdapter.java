@@ -24,6 +24,8 @@ import butterknife.ButterKnife;
 
 public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAdapter.ShipmentViewHolder> {
 
+    private static final String FONT_FAMILY_SANS_SERIF = "sans-serif";
+    private static final String FONT_FAMILY_SANS_SERIF_MEDIUM = "sans-serif-medium";
     private ViewListener viewListener;
     private List<ShipmentItemData> shipments;
 
@@ -47,11 +49,19 @@ public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAd
     public void onBindViewHolder(final ShipmentViewHolder holder, final int position) {
         ShipmentItemData shipmentItemData = shipments.get(position);
         holder.tvShipmentType.setText(shipmentItemData.getType());
-        if (!TextUtils.isEmpty(shipmentItemData.getSinglePriceRange())) {
-            holder.tvPriceRange.setText(
-                    holder.tvShipmentType.getContext().getResources().getString(
-                            R.string.label_shipment_type_format, shipmentItemData.getSinglePriceRange()));
+
+        if (shipmentItemData.getSinglePriceRange() != null) {
+            holder.tvPriceRange.setText(holder.tvShipmentType.getContext().getResources().getString(
+                    R.string.label_shipment_type_format, shipmentItemData.getSinglePriceRange()));
+            holder.tvPriceRange.setVisibility(View.VISIBLE);
+        } else if (shipmentItemData.getMultiplePriceRange() != null) {
+            holder.tvPriceRange.setText(holder.tvShipmentType.getContext().getResources().getString(
+                    R.string.label_shipment_type_format, shipmentItemData.getMultiplePriceRange()));
+            holder.tvPriceRange.setVisibility(View.VISIBLE);
+        } else {
+            holder.tvPriceRange.setVisibility(View.GONE);
         }
+
         holder.tvDeliveryTimeRange.setText(shipmentItemData.getDeliveryTimeRange());
         holder.itemView.setOnClickListener(getItemClickListener(shipmentItemData, position));
 
@@ -94,13 +104,19 @@ public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAd
 
     private void renderTypeface(ShipmentViewHolder holder, ShipmentItemData shipmentItemData) {
         if (shipmentItemData.isSelected()) {
-            holder.tvShipmentType.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
-            holder.tvPriceRange.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
-            holder.tvDeliveryTimeRange.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+            holder.tvShipmentType.setTypeface(
+                    Typeface.create(FONT_FAMILY_SANS_SERIF_MEDIUM, Typeface.NORMAL));
+            holder.tvPriceRange.setTypeface(
+                    Typeface.create(FONT_FAMILY_SANS_SERIF_MEDIUM, Typeface.NORMAL));
+            holder.tvDeliveryTimeRange.setTypeface(
+                    Typeface.create(FONT_FAMILY_SANS_SERIF_MEDIUM, Typeface.NORMAL));
         } else {
-            holder.tvShipmentType.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
-            holder.tvPriceRange.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
-            holder.tvDeliveryTimeRange.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+            holder.tvShipmentType.setTypeface(
+                    Typeface.create(FONT_FAMILY_SANS_SERIF, Typeface.NORMAL));
+            holder.tvPriceRange.setTypeface(
+                    Typeface.create(FONT_FAMILY_SANS_SERIF, Typeface.NORMAL));
+            holder.tvDeliveryTimeRange.setTypeface(
+                    Typeface.create(FONT_FAMILY_SANS_SERIF, Typeface.NORMAL));
         }
     }
 

@@ -26,7 +26,7 @@ public class ShipmentChoicePresenter extends BaseDaggerPresenter<IShipmentChoice
 
     @Override
     public void detachView() {
-
+        super.detachView();
     }
 
     @Override
