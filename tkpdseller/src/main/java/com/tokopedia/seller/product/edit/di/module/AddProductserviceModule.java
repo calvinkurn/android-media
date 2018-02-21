@@ -37,18 +37,13 @@ import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraft
 import com.tokopedia.seller.product.edit.domain.interactor.uploadproduct.UploadProductUseCase;
 import com.tokopedia.seller.product.edit.view.presenter.AddProductServicePresenter;
 import com.tokopedia.seller.product.edit.view.presenter.AddProductServicePresenterImpl;
-import com.tokopedia.seller.product.variant.data.cloud.api.TomeProductApi;
 import com.tokopedia.seller.product.variant.data.source.ProductVariantDataSource;
 import com.tokopedia.seller.product.variant.repository.ProductVariantRepository;
 import com.tokopedia.seller.product.variant.repository.ProductVariantRepositoryImpl;
 
 import dagger.Module;
 import dagger.Provides;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
-
-import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 
 /**
  * @author sebastianuskh on 4/20/17.
@@ -98,55 +93,6 @@ public class AddProductserviceModule {
     @Provides
     GoldMerchantService productGoldMerchantService(){
         return new GoldMerchantService();
-    }
-
-    @AddProductServiceScope
-    @Provides
-    TomeProductApi provideTomeApi(@TomeQualifier Retrofit retrofit){
-        return retrofit.create(TomeProductApi.class);
-    }
-
-    @ProductTomeQualifier
-    @AddProductServiceScope
-    @Provides
-    Retrofit provideRetrofit(Retrofit.Builder retrofitBuilder, @ProductTomeQualifier OkHttpClient okHttpClient){
-        return retrofitBuilder.baseUrl(TkpdBaseURL.TOME_DOMAIN).client(okHttpClient).build();
-    }
-
-    //TODO add header error interceptor
-    @ProductTomeQualifier
-    @AddProductServiceScope
-    @Provides
-    public OkHttpClient provideOkHttpClientTomeBearerAuth(@ProductTomeQualifier HttpLoggingInterceptor httpLoggingInterceptor,
-                                                          BearerInterceptor bearerInterceptor,
-                                                          @ProductTomeQualifier ErrorResponseInterceptor errorResponseInterceptor
-    ) {
-        return new OkHttpClient.Builder()
-                .addInterceptor(bearerInterceptor)
-                .addInterceptor(errorResponseInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .build();
-    }
-
-    @ProductTomeQualifier
-    @AddProductServiceScope
-    @Provides
-    public HttpLoggingInterceptor provideHttpLoggingInterceptor() {
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        } else {
-            logging.setLevel(HttpLoggingInterceptor.Level.NONE);
-        }
-        return logging;
-    }
-
-    @ProductTomeQualifier
-    @AddProductServiceScope
-    @Provides
-    //todo hendry change this interceptor to HeaderErrorResponseInterceptor, check
-    public ErrorResponseInterceptor provideResponseInterceptor() {
-        return new HeaderErrorResponseInterceptor(HeaderErrorResponse.class);
     }
 
     @AddProductServiceScope

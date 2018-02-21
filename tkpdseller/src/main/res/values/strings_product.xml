@@ -102,7 +102,7 @@
     <string name="product_minimum_order">1</string>
     <string name="product_maximum_order">10,000</string>
     <string name="product_error_product_weight_not_valid">Berat harus diisi antara %1$s &#8212; %2$s</string>
-    <string name="product_error_product_minimum_order_not_valid">Minimum order harus diisi antara %1$s &#8212; %2$s</string>
+    <string name="product_error_product_minimum_order_not_valid">Minimum pemesanan harus diisi antara %1$s &#8212; %2$s</string>
     <string name="product_error_product_etalase_empty">Etalase harus diisi</string>
     <string name="product_error_product_picture_empty">Gambar harus diisi</string>
     <string name="product_minimum_pre_order_day">1</string>

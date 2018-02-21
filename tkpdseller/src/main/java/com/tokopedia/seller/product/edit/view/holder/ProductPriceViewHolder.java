@@ -196,7 +196,9 @@ public class ProductPriceViewHolder extends ProductViewHolder
         if (model.getProductPrice()>0) {
             setPriceValue(model.getProductPrice());
         }
-        if (model.getProductWholesale().size() > 0) {
+        if (model.getProductWholesale() == null || model.getProductWholesale().size() == 0) {
+            expandWholesale(false);
+        } else {
             expandWholesale(true);
             setWholesalePrice(model.getProductWholesale());
         }
@@ -307,7 +309,7 @@ public class ProductPriceViewHolder extends ProductViewHolder
 
     public List<ProductWholesaleViewModel> getProductWholesaleViewModels() {
         if (!wholesaleExpandableOptionSwitch.isExpanded()) {
-            return new ArrayList<>();
+            return null;
         }
         return wholesaleAdapter.getProductWholesaleViewModels();
     }

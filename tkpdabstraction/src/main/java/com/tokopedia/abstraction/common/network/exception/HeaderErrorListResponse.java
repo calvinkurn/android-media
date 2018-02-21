@@ -1,5 +1,7 @@
 package com.tokopedia.abstraction.common.network.exception;
 
+import android.text.TextUtils;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
@@ -8,10 +10,9 @@ import java.io.IOException;
 
 /**
  * Created by zulfikarrahman on 12/29/17.
- * Use HeaderErrorListResponse instead
  */
-@Deprecated
-public class HeaderErrorResponse extends BaseResponseError {
+
+public class HeaderErrorListResponse extends BaseResponseError {
 
     @SerializedName("header")
     @Expose
@@ -24,11 +25,11 @@ public class HeaderErrorResponse extends BaseResponseError {
 
     @Override
     public boolean hasBody() {
-        return (header!= null && header.getMessages() != null && header.getMessages().size() > 0);
+        return (header != null && header.getMessages() != null && header.getMessages().size() > 0);
     }
 
     @Override
     public IOException createException() {
-        return new MessageErrorException(header.getMessages().get(0));
+        return new MessageErrorException(TextUtils.join("\n",header.getMessages()));
     }
 }
