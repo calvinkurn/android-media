@@ -153,6 +153,13 @@ public class InboxFilterFragment
                                 super.onDateUpdated(date);
                                 if (date.getTime() > currentTime + ONE_DAY_IN_MILLIS) {
                                     Toast.makeText(getContext(),
+                                            R.string.date_error_overflow,
+                                            Toast.LENGTH_SHORT)
+                                            .show();
+                                } else if (inboxFilterModel.getDateTo() != null &&
+                                        !isSameDay(date, inboxFilterModel.getDateTo()) &&
+                                        date.after(inboxFilterModel.getDateTo())) {
+                                    Toast.makeText(getContext(),
                                             R.string.date_error,
                                             Toast.LENGTH_SHORT)
                                             .show();
@@ -185,6 +192,13 @@ public class InboxFilterFragment
                             public void onDateUpdated(Date date) {
                                 super.onDateUpdated(date);
                                 if (date.getTime() > currentTime + ONE_DAY_IN_MILLIS) {
+                                    Toast.makeText(getContext(),
+                                            R.string.date_error_overflow,
+                                            Toast.LENGTH_SHORT)
+                                            .show();
+                                } else if (inboxFilterModel.getDateFrom() != null &&
+                                        !isSameDay(date, inboxFilterModel.getDateFrom()) &&
+                                        date.before(inboxFilterModel.getDateFrom())) {
                                     Toast.makeText(getContext(),
                                             R.string.date_error,
                                             Toast.LENGTH_SHORT)
@@ -267,5 +281,14 @@ public class InboxFilterFragment
         button.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
         button.setBackground(MethodChecker.getDrawable(getActivity(),
                 R.drawable.bg_button_enable));
+    }
+
+    private boolean isSameDay(Date firstDate, Date secondDate) {
+        Calendar cal1 = Calendar.getInstance();
+        Calendar cal2 = Calendar.getInstance();
+        cal1.setTime(firstDate);
+        cal2.setTime(secondDate);
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
     }
 }
