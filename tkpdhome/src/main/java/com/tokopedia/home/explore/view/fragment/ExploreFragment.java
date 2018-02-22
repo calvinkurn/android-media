@@ -194,7 +194,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
         String shopId = SessionHandler.getShopID(getContext());
         if (!shopId.equals("0")) {
             HomePageTracking.eventClickEditShop();
-            onGoToShop(shopId);
+            onGoToShopSetting();
         } else {
             HomePageTracking.eventClickOpenShop();
             onGoToCreateShop();
@@ -256,6 +256,12 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     private void onGoToShop(String shopId) {
         Intent intent = new Intent(getContext(), ShopInfoActivity.class);
         intent.putExtras(ShopInfoActivity.createBundle(shopId, ""));
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        getActivity().startActivity(intent);
+    }
+
+    private void onGoToShopSetting() {
+        Intent intent = SellerRouter.getActivityManageShop(getActivity());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         getActivity().startActivity(intent);
     }
