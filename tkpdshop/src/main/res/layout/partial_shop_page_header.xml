@@ -19,15 +19,19 @@
         android:background="@color/grey_300"
         app:layout_constraintTop_toBottomOf="@+id/image_view_shop_icon" />
 
-    <TextView
-        android:id="@+id/text_view_reputation_label"
-        style="@style/TextView.Micro.BlackDisabled"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/reputation_label"
+    <com.tokopedia.shop.page.view.widget.ShopPageSubDetailView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintStart_toStartOf="@+id/separator_1"
-        app:layout_constraintTop_toTopOf="@+id/guideline" />
+        app:layout_constraintTop_toTopOf="@+id/guideline"
+        app:spsd_title="@string/reputation_label">
+
+        <com.tokopedia.design.reputation.ShopReputationView
+            android:id="@+id/shop_reputation_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </com.tokopedia.shop.page.view.widget.ShopPageSubDetailView>
 
     <View
         android:id="@+id/separator_vertical_1"
@@ -56,66 +60,57 @@
         app:layout_constraintTop_toBottomOf="@+id/separator_1"
         app:layout_constraintVertical_bias="0.0" />
 
-    <TextView
-        android:id="@+id/text_view_product_quality_label"
-        style="@style/TextView.Micro.BlackDisabled"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/product_quality_label_value"
+    <com.tokopedia.shop.page.view.widget.ShopPageSubDetailView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
         app:layout_constraintStart_toStartOf="@+id/guideline4"
-        app:layout_constraintTop_toTopOf="@+id/guideline" />
+        app:layout_constraintTop_toTopOf="@+id/guideline"
+        app:spsd_title="@string/product_quality_label_value">
 
-    <TextView
-        android:id="@+id/text_view_product_quality_value"
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/text_view_product_quality_value"
+                style="@style/TextView.Small"
+                tools:text="@string/app_name" />
+
+            <RatingBar
+                android:id="@+id/rating_bar_product_quality"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+    </com.tokopedia.shop.page.view.widget.ShopPageSubDetailView>
+
+    <com.tokopedia.shop.page.view.widget.ShopPageSubDetailView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="@+id/text_view_product_quality_label"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_product_quality_label"
-        tools:text="@string/app_name" />
-
-    <RatingBar
-        android:id="@+id/rating_bar_product_quality"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toEndOf="@+id/text_view_product_quality_value"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_product_quality_label" />
-
-    <TextView
-        android:id="@+id/text_view_speed_label"
-        style="@style/TextView.Micro.BlackDisabled"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/speed_label_value"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/separator_vertical_"
-        app:layout_constraintTop_toBottomOf="@+id/separator_1" />
+        app:layout_constraintTop_toBottomOf="@+id/separator_1"
+        app:spsd_title="@string/speed_label_value">
 
-    <ImageView
-        android:id="@+id/image_view_speed"
-        android:layout_width="21dp"
-        android:layout_height="21dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toStartOf="@+id/text_view_speed_value"
-        app:layout_constraintStart_toStartOf="@+id/guideline5"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_speed_label"
-        app:srcCompat="@drawable/bg_button_orange" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
 
-    <TextView
-        android:id="@+id/text_view_speed_value"
-        style="@style/TextView.Micro"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/image_view_speed"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_speed_label" />
+            <ImageView
+                android:id="@+id/image_view_speed"
+                android:layout_width="@dimen/image_width_xxs"
+                android:layout_height="@dimen/image_width_xs"
+                app:srcCompat="@drawable/bg_button_orange" />
+
+            <TextView
+                android:id="@+id/text_view_speed_value"
+                style="@style/TextView.Micro" />
+        </LinearLayout>
+
+    </com.tokopedia.shop.page.view.widget.ShopPageSubDetailView>
 
     <ImageView
         android:id="@+id/image_view_shop_background"
@@ -189,16 +184,6 @@
         app:layout_constraintEnd_toEndOf="@+id/image_view_shop_background"
         app:layout_constraintTop_toTopOf="@+id/text_view_shop_name"
         app:srcCompat="@color/background_star_review" />
-
-    <com.tokopedia.design.reputation.ShopReputationView
-        android:id="@+id/shop_reputation_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="@+id/text_view_reputation_label"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_reputation_label" />
 
     <LinearLayout
         android:id="@+id/container_click_info"
