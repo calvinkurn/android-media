@@ -127,8 +127,8 @@ public class ItemSentView extends MessageView {
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.chat_item_sent, this);
 
-        this.messageTextView = (TextView) findViewById(R.id.message_text_view);
-        this.timestampTextView = (TextView) findViewById(R.id.timestamp_text_view);
+        this.messageTextView = findViewById(R.id.message_text_view);
+        this.timestampTextView = findViewById(R.id.timestamp_text_view);
         this.deliveryStatusIcon = findViewById(R.id.sms_status);
         this.retryIcon = findViewById(R.id.retry_action);
 

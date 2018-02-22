@@ -45,6 +45,8 @@ import com.tokopedia.ride.common.ride.domain.model.Vehicle;
 
 import java.util.ArrayList;
 
+import permissions.dispatcher.NeedsPermission;
+
 /**
  * Created by sachinbansal on 2/13/18.
  */
@@ -62,7 +64,9 @@ public class SMSChatActivity extends BaseActivity {
     private String ALL_SMS_URI = "content://sms/";
     private String SMS_URI_ALL = "content://mms-sms/conversations?simple=true";
     private ChatView chatView;
-    private BroadcastReceiver broadcastReceiver;
+    private BroadcastReceiver receiveSMSBroadcastReceiver;
+    private BroadcastReceiver sentSMSStatusBroadcastReceiver;
+    private BroadcastReceiver deliveryReportBroadcastReceiver;
     private Driver driverDetails;
 
     public static final String DRIVER_INFO = "DRIVER_INFO";
@@ -287,7 +291,7 @@ public class SMSChatActivity extends BaseActivity {
             }
         });
 
-        broadcastReceiver = new BroadcastReceiver() {
+        receiveSMSBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction() != null && intent.getAction().equals(Telephony.Sms.Intents.SMS_RECEIVED_ACTION)) {
@@ -328,10 +332,10 @@ public class SMSChatActivity extends BaseActivity {
 
         IntentFilter intentFilter = new IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION);
         intentFilter.setPriority(1000);
-        registerReceiver(broadcastReceiver, intentFilter);
+        registerReceiver(receiveSMSBroadcastReceiver, intentFilter);
 
 
-        registerReceiver(new BroadcastReceiver() {
+        sentSMSStatusBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String message = null;
@@ -357,12 +361,12 @@ public class SMSChatActivity extends BaseActivity {
                         setMessageSentStatus(ChatMessage.DeliveryStatus.SENT_FAILURE, intent.getIntExtra(MESSAGE_ID, -1));
                         break;
                 }
-
-                /*smsStatus.setText(message);*/
             }
-        }, new IntentFilter(SMS_SENT_ACTION));
+        };
+        registerReceiver(sentSMSStatusBroadcastReceiver, new IntentFilter(SMS_SENT_ACTION));
 
-        registerReceiver(new BroadcastReceiver() {
+
+        deliveryReportBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 switch (getResultCode()) {
@@ -375,9 +379,9 @@ public class SMSChatActivity extends BaseActivity {
 
                         break;
                 }
-
             }
-        }, new IntentFilter(SMS_DELIVERED_ACTION));
+        };
+        registerReceiver(deliveryReportBroadcastReceiver, new IntentFilter(SMS_DELIVERED_ACTION));
 
 
     }
@@ -510,14 +514,18 @@ public class SMSChatActivity extends BaseActivity {
     private void callDriver() {
         Intent intent = new Intent(Intent.ACTION_CALL);
         intent.setData(Uri.parse("tel:" + phoneNo));
-        SMSChatActivity.this.startActivity(intent);
+        startActivity(intent);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (broadcastReceiver != null)
-            unregisterReceiver(broadcastReceiver);
+        if (receiveSMSBroadcastReceiver != null)
+            unregisterReceiver(receiveSMSBroadcastReceiver);
+        if (sentSMSStatusBroadcastReceiver != null)
+            unregisterReceiver(sentSMSStatusBroadcastReceiver);
+        if (deliveryReportBroadcastReceiver != null)
+            unregisterReceiver(deliveryReportBroadcastReceiver);
     }
 
     @Override
