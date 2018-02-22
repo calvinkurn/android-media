@@ -3,6 +3,7 @@ package com.tokopedia.transaction.checkout.domain;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.checkout.domain.response.cartlist.CartDataListResponse;
 import com.tokopedia.transaction.checkout.domain.response.deletecart.DeleteCartDataResponse;
+import com.tokopedia.transaction.checkout.domain.response.shippingaddressform.ShipmentAddressFormDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.updatecart.UpdateCartDataResponse;
 import com.tokopedia.transaction.checkout.view.data.CartListData;
 import com.tokopedia.transaction.checkout.view.data.DeleteCartData;
@@ -185,11 +186,11 @@ public class CartListInteractor implements ICartListInteractor {
                             @Override
                             public Observable<UpdateCartListData> call(final UpdateCartListData updateCartListData) {
                                 return cartRepository.getShipmentAddressForm(paramGetShipmentForm)
-                                        .map(new Func1<String, UpdateCartListData>() {
+                                        .map(new Func1<ShipmentAddressFormDataResponse, UpdateCartListData>() {
                                             @Override
-                                            public UpdateCartListData call(String s) {
+                                            public UpdateCartListData call(ShipmentAddressFormDataResponse shipmentAddressFormDataResponse) {
                                                 updateCartListData.setShipmentAddressFormData(
-                                                        shipmentMapper.convertToShipmentAddressFormData()
+                                                        shipmentMapper.convertToShipmentAddressFormData(shipmentAddressFormDataResponse)
                                                 );
                                                 return updateCartListData;
                                             }
