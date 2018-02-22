@@ -24,6 +24,7 @@ import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 import com.tokopedia.transaction.checkout.view.presenter.CartAddressChoicePresenter;
 import com.tokopedia.transaction.checkout.view.presenter.ICartAddressChoicePresenter;
 import com.tokopedia.transaction.checkout.view.view.ICartAddressChoiceView;
+import com.tokopedia.transaction.checkout.view.view.multipleaddressform.MultipleAddressFormActivity;
 import com.tokopedia.transaction.checkout.view.view.multipleaddressform.MultipleAddressFragment;
 
 import java.util.ArrayList;
@@ -175,23 +176,12 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
 
     @OnClick(R2.id.ll_send_to_multiple_address)
     void onSendToMultipleAddress() {
-        FragmentManager fragmentManager = getActivity().getFragmentManager();
         List<CartSellerItemModel> cartSellerItemModels = getArguments()
                 .getParcelableArrayList(CART_ITEM_LIST_EXTRA);
-        Fragment fragment = MultipleAddressFragment.newInstance(
-                cartSellerItemModels,
-                presenter.getSelectedRecipientAddress()
+        startActivity(MultipleAddressFormActivity.createInstance(
+                getActivity(),
+                cartSellerItemModels, presenter.getSelectedRecipientAddress())
         );
-
-        String backStateName = fragment.getClass().getName();
-
-        boolean isFragmentPopped = fragmentManager.popBackStackImmediate(backStateName, 0);
-        if (!isFragmentPopped) {
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.container, fragment)
-                    .addToBackStack(backStateName)
-                    .commit();
-        }
     }
 
     @OnClick(R2.id.bt_send_to_current_address)
