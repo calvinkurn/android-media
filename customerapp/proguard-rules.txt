@@ -336,4 +336,4 @@
 -keep class com.tokopedia.events.domain.model.** { *; }
 -keep class com.tokopedia.events.view.viewmodel.** { *; }
 -keep class com.tokopedia.core.network.exception.model.** { *; }
--keep class com.tokopedia.events.data.entity.response.Form
+-keep class com.tokopedia.events.data.entity.response.** { *; }
