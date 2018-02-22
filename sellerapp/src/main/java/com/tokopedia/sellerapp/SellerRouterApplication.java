@@ -65,6 +65,9 @@ import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
+import com.tokopedia.seller.product.etalase.view.activity.EtalaseDynamicPickerActivity;
+import com.tokopedia.seller.product.etalase.view.model.MyEtalaseItemViewModel;
+import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.core.shopinfo.seemore.fragment.ShopTalkSeeMoreFragment;
 import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
@@ -211,6 +214,11 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Fragment getShopTalkFragment() {
         return ShopTalkSeeMoreFragment.createInstance();
+    }
+
+    @Override
+    public Intent getEtalaseIntent(Context context, String shopId, int currentChoosen) {
+        return EtalaseDynamicPickerActivity.createInstance(context, currentChoosen);
     }
 
     public GMComponent getGMComponent() {

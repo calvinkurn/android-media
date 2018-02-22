@@ -1,5 +1,7 @@
 package com.tokopedia.shop;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 /**
@@ -11,4 +13,6 @@ public interface ShopModuleRouter {
     Fragment getShopReputationFragmentShop(String shopId, String shopDomain);
 
     Fragment getShopTalkFragment();
+
+    Intent getEtalaseIntent(Context context, String shopId, int currentChoosen);
 }
