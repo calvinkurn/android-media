@@ -472,7 +472,7 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
         if (topads != null) {
             for (FeedQuery.Data.Topad topad : topads) {
                 try {
-                    list.add(new Data(new JSONObject(new Gson().toJson(topad, HomeFeedQuery.Data
+                    list.add(new Data(new JSONObject(new Gson().toJson(topad, FeedQuery.Data
                             .Topad.class))));
                 } catch (JSONException e) {
                     e.printStackTrace();
