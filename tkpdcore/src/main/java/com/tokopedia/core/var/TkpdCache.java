@@ -255,6 +255,7 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String SELLERAPP_SHOW_ADVANCED_APP_RATING = "sellerapp_show_advanced_app_rating";
 
         public static final String NOTIFICATION_LOGGER = "notification_logger";
+        public static final String MAINAPP_NATIVE_PROMO_LIST ="mainapp_native_promo_list";
     }
 
 }
