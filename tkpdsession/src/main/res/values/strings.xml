@@ -175,4 +175,7 @@
     <string name="verification_code_sent">Kode verifikasi telah dikirim</string>
     <string name="dialog_cancel">BATAL</string>
 
+    <string name="forbidden_title"><![CDATA[<b>Peringatan</b>]]></string>
+    <string name="forbidden_msg"><![CDATA[<p>Kami mendeteksi adanya aktivitas mencurigakan pada perangkat Anda yang melanggar <span style=\"color:#42b549;border-bottom:1px solid #42b549;\">Persyaratan Layanan</span> Tokopedia.</p> <p>Anda bisa kembali menggunakan aplikasi Tokopedia setelah aktivitas tersebut dihentikan.</p>]]></string>
+
 </resources>
