@@ -1,16 +1,13 @@
 package com.tokopedia.transaction.apiservice;
 
-import com.google.gson.JsonObject;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 
 import java.util.Map;
 
 import retrofit2.Response;
-import retrofit2.http.Body;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.QueryMap;
 import rx.Observable;
@@ -39,12 +36,17 @@ public interface CartApi {
     @POST(TkpdBaseURL.Cart.PATH_UPDATE_CART)
     Observable<Response<CartResponse>> postUpdateCart(@FieldMap Map<String, String> params);
 
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Cart.PATH_SHIPPING_ADDRESS)
+    Observable<Response<CartResponse>> postSetShippingAddress(@FieldMap Map<String, String> params);
+
+    @GET(TkpdBaseURL.Cart.PATH_SHIPMENT_ADDRESS_FORM_DIRECT)
+    Observable<Response<CartResponse>> getShipmentAddressForm(@QueryMap Map<String, String> params);
+
 
 //    public static final String PATH_REMOVE_FROM_CART = "api/" + VERSION + "/remove_product_cart";
 //    public static final String PATH_UPDATE_CART = "api/" + VERSION + "/update_cart";
 //    public static final String PATH_CHECK_PROMO_CODE_CART_LIST = "api/" + VERSION + "/check_promo_code";
-//    public static final String PATH_SHIPPING_ADDRESS = "api/" + VERSION + "/shipping_address";
-//    public static final String PATH_SHIPMENT_ADDRESS_FORM_DIRECT = "api/" + VERSION + "/shipment_address_form";
 //    public static final String PATH_CHECK_PROMO_CODE_CART_COURIER = "api/" + VERSION + "/check_promo_code_final";
 //    public static final String PATH_CHECKOUT = "api/" + VERSION + "/checkout";
 //    public static final String PATH_RESET_CART = "api/" + VERSION + "/reset_cart_cache";

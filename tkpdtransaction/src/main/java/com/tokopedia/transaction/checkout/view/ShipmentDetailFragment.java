@@ -57,6 +57,9 @@ import com.tokopedia.transaction.checkout.view.presenter.IShipmentDetailPresente
 import com.tokopedia.transaction.checkout.view.view.IShipmentDetailView;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -76,6 +79,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     private static final int REQUEST_CODE_PINPOINT = 22;
     private static final int DELAY_IN_MILISECOND = 500;
     private static final String EXTRA_SELECTED_COURIER = "selectedCourier";
+    private static final String ARG_SHIPMENT_DETAIL_DATA = "shipmentDetailData";
 
     @BindView(R2.id.scroll_view_content)
     ScrollView scrollViewContent;
@@ -169,6 +173,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     TextView tvInsurancePrice;
 
     private ShipmentChoiceBottomSheet shipmentChoiceBottomSheet;
+    private NumberFormat currencyId;
 
     @Inject
     CourierChoiceAdapter courierChoiceAdapter;
@@ -176,10 +181,10 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     @Inject
     IShipmentDetailPresenter presenter;
 
-    public static ShipmentDetailFragment newInstance() {
+    public static ShipmentDetailFragment newInstance(ShipmentDetailData shipmentDetailData) {
         ShipmentDetailFragment fragment = new ShipmentDetailFragment();
         Bundle bundle = new Bundle();
-        // Todo : Add bundle if any
+        bundle.putParcelable(ARG_SHIPMENT_DETAIL_DATA, shipmentDetailData);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -233,10 +238,13 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     protected void initView(View view) {
         ButterKnife.bind(view);
         initializeInjector();
+        Locale localeId = new Locale("in", "ID");
+        currencyId = NumberFormat.getCurrencyInstance(localeId);
         presenter.attachView(this);
         courierChoiceAdapter.setViewListener(this);
         courierChoiceAdapter.setCouriers(presenter.getCouriers());
-        presenter.loadShipmentData();
+        presenter.loadShipmentData(
+                (ShipmentDetailData) getArguments().getParcelable(ARG_SHIPMENT_DETAIL_DATA));
     }
 
     private void initializeInjector() {
@@ -279,14 +287,15 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        presenter.loadShipmentData();
+                        presenter.loadShipmentData((ShipmentDetailData) getArguments()
+                                .getParcelable(ARG_SHIPMENT_DETAIL_DATA));
                     }
                 });
     }
 
     @Override
     public void showPinPointMap(ShipmentDetailData shipmentDetailData) {
-        setText(tvShipmentAddress, shipmentDetailData.getAddress());
+        setText(tvShipmentAddress, shipmentDetailData.getDestinationAddress());
         setupMapView();
         if (shipmentDetailData.getDestinationLatitude() == null ||
                 shipmentDetailData.getDestinationLongitude() == null) {
@@ -329,13 +338,13 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         tvShipmentType.setText(presenter.getSelectedShipment().getType());
         llDropshipper.setVisibility(View.GONE);
         separatorPartialOrder.setVisibility(View.GONE);
-        setText(tvDeliveryFeeTotal, shipmentDetailData.getDeliveryPriceTotal());
+        setText(tvDeliveryFeeTotal, currencyId.format(shipmentDetailData.getDeliveryPriceTotal()));
     }
 
     @Override
     public void renderShipmentWithMap(ShipmentDetailData shipmentDetailData) {
-        showPinPointMap(shipmentDetailData);
         renderShipment(shipmentDetailData);
+        showPinPointMap(shipmentDetailData);
     }
 
     @Override
@@ -387,9 +396,13 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
                 LinearLayoutManager.VERTICAL, false);
         rvCourierChoice.setLayoutManager(linearLayoutManager);
         rvCourierChoice.setAdapter(courierChoiceAdapter);
+        rvCourierChoice.setNestedScrollingEnabled(false);
     }
 
     private void renderNoPinpoint() {
+        tvInsurancePrice.setText(R.string.label_not_yet_pinpoint);
+        tvDeliveryFee.setText(R.string.label_not_yet_pinpoint);
+        tvDeliveryFeeTotal.setText(R.string.label_not_yet_pinpoint);
         llShipmentAddress.setVisibility(View.GONE);
         btChangePinpoint.setVisibility(View.GONE);
         btChoosePinpoint.setVisibility(View.VISIBLE);
@@ -492,15 +505,17 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     }
 
     private void renderAdditionalPriceView(CourierItemData courierItemData) {
-        if (courierItemData.getAdditionalPrice() != null) {
+        if (courierItemData.getAdditionalPrice() != 0) {
             llAdditionalFee.setVisibility(View.VISIBLE);
-            setText(tvAdditionalFee, courierItemData.getAdditionalPrice());
+            setText(tvAdditionalFee, String.valueOf(courierItemData.getAdditionalPrice()));
         } else {
             llAdditionalFee.setVisibility(View.GONE);
         }
     }
 
     private void renderDropshipperView(CourierItemData courierItemData) {
+        // Temporary
+        courierItemData.setAllowDropshiper(true);
         if (courierItemData.isAllowDropshiper()) {
             llDropshipper.setVisibility(View.VISIBLE);
             separatorPartialOrder.setVisibility(View.VISIBLE);
@@ -512,7 +527,11 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     }
 
     private void renderInsuranceView(CourierItemData courierItemData) {
-        imgBtInsuranceInfo.setVisibility(View.VISIBLE);
+        if (TextUtils.isEmpty(courierItemData.getInsuranceUsedInfo())) {
+            imgBtInsuranceInfo.setVisibility(View.GONE);
+        } else {
+            imgBtInsuranceInfo.setVisibility(View.VISIBLE);
+        }
         if (courierItemData.getInsuranceType() == InsuranceConstant.InsuranceType.NO) {
             tvSpecialInsuranceCondition.setText(R.string.label_insurance_not_available);
             switchInsurance.setVisibility(View.GONE);
@@ -570,14 +589,12 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
 
     @OnClick(R2.id.img_bt_partly_accept_info)
     void onPartlyAcceptInfoClick() {
-        showBottomSheet(getString(R.string.label_accept_partial_order_new),
-                presenter.getShipmentDetailData().getPartialOrderInfo(), R.drawable.ic_partial_order);
+        showBottomSheet(getString(R.string.label_accept_partial_order_new), getString(R.string.label_partial_order_info), R.drawable.ic_partial_order);
     }
 
     @OnClick(R2.id.img_bt_dropshipper_info)
     void onDropshipperInfoClick() {
-        showBottomSheet(getString(R.string.label_dropshipper_new),
-                presenter.getShipmentDetailData().getDropshipperInfo(), R.drawable.ic_dropshipper);
+        showBottomSheet(getString(R.string.label_dropshipper_new), getString(R.string.label_dropshipper_info), R.drawable.ic_dropshipper);
     }
 
     @OnClick(R2.id.img_bt_close_ticker)
@@ -592,26 +609,59 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
 
     @OnClick(R2.id.bt_save)
     void onSaveClick() {
-        Intent intentResult = new Intent();
-        intentResult.putExtra(EXTRA_SELECTED_COURIER, presenter.getSelectedCourier());
-        getActivity().setResult(Activity.RESULT_OK, intentResult);
-        getActivity().finish();
+        boolean hasError = false;
+        if (switchDropshipper.isChecked()) {
+            if (TextUtils.isEmpty(etShipperName.getText().toString())) {
+                textInputLayoutShipperName.setError(getString(R.string.message_error_dropshipper_name));
+                showErrorSnackbar(getString(R.string.message_error_dropshipper_data));
+                hasError = true;
+            } else if (TextUtils.isEmpty(etShipperPhone.getText().toString())) {
+                textInputLayoutShipperPhone.setError(getString(R.string.message_error_dropshipper_phone));
+                showErrorSnackbar(getString(R.string.message_error_dropshipper_data));
+                hasError = true;
+            } else {
+                textInputLayoutShipperName.setErrorEnabled(false);
+            }
+        }
+
+        if (presenter.getSelectedCourier() == null) {
+            showErrorSnackbar(getString(R.string.message_error_no_courier_selected));
+            hasError = true;
+        }
+
+        if (!hasError) {
+            Intent intentResult = new Intent();
+            intentResult.putExtra(EXTRA_SELECTED_COURIER, presenter.getSelectedCourier());
+            getActivity().setResult(Activity.RESULT_OK, intentResult);
+            getActivity().finish();
+        }
     }
 
     @OnCheckedChanged(R2.id.switch_insurance)
     void onSwitchInsuranceChanged(CompoundButton view, boolean checked) {
         if (checked) {
             llInsuranceFee.setVisibility(View.VISIBLE);
-            if (presenter.getSelectedCourier().getInsuranceType() == InsuranceConstant.InsuranceType.MUST ||
-                    presenter.getSelectedCourier().getInsuranceType() == InsuranceConstant.InsuranceType.OPTIONAL) {
+            if (presenter.getSelectedCourier().getInsuranceType() ==
+                    InsuranceConstant.InsuranceType.MUST ||
+                    presenter.getSelectedCourier().getInsuranceType() ==
+                            InsuranceConstant.InsuranceType.OPTIONAL) {
                 renderInsuranceTncView(presenter.getSelectedCourier());
-                tvInsurancePrice.setText(String.valueOf(presenter.getSelectedCourier().getInsurancePrice()));
+                tvInsurancePrice.setText(
+                        currencyId.format(presenter.getSelectedCourier().getInsurancePrice()));
+                presenter.getShipmentDetailData().setDeliveryPriceTotal(
+                        presenter.getShipmentDetailData().getDeliveryPriceTotal() +
+                                presenter.getSelectedCourier().getInsurancePrice());
             }
         } else {
+            presenter.getShipmentDetailData().setDeliveryPriceTotal(
+                    presenter.getShipmentDetailData().getDeliveryPriceTotal() -
+                            presenter.getSelectedCourier().getInsurancePrice());
             llInsuranceFee.setVisibility(View.GONE);
             tvInsuranceTerms.setVisibility(View.GONE);
         }
         updateFeesGroupLayout();
+        setText(tvDeliveryFeeTotal,
+                currencyId.format(presenter.getShipmentDetailData().getDeliveryPriceTotal()));
     }
 
     @OnCheckedChanged(R2.id.switch_partly_accept)
@@ -642,7 +692,9 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
                 renderShipmentWithoutMap(presenter.getShipmentDetailData());
             }
             switchInsurance.setChecked(false);
-            setText(tvDeliveryFee, courierItemData.getDeliveryPrice());
+            presenter.getShipmentDetailData().setDeliveryPriceTotal(
+                    courierItemData.getDeliveryPrice() + courierItemData.getAdditionalPrice());
+            setText(tvDeliveryFee, currencyId.format(courierItemData.getDeliveryPrice()));
             renderTickerView(courierItemData);
             renderInsuranceView(courierItemData);
             renderAdditionalPriceView(courierItemData);

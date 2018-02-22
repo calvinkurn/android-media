@@ -24,6 +24,7 @@ import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 import com.tokopedia.transaction.checkout.view.presenter.CartAddressChoicePresenter;
 import com.tokopedia.transaction.checkout.view.presenter.ICartAddressChoicePresenter;
 import com.tokopedia.transaction.checkout.view.view.ICartAddressChoiceView;
+import com.tokopedia.transaction.checkout.view.view.multipleaddressform.MultipleAddressFragment;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -17,7 +17,7 @@ import java.util.List;
 
 public interface IShipmentDetailPresenter extends CustomerPresenter<IShipmentDetailView> {
 
-    void loadShipmentData();
+    void loadShipmentData(ShipmentDetailData shipmentDetailData);
 
     void loadAllCourier();
 

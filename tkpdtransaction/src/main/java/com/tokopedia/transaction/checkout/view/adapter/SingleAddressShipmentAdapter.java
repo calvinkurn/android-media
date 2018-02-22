@@ -479,7 +479,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
             if (model.getCourierItemData() != null) {
                 insuranceFee = String.valueOf(model.getCourierItemData().getInsurancePrice());
-                shippingFee = model.getCourierItemData().getDeliveryPrice();
+                shippingFee = String.valueOf(model.getCourierItemData().getDeliveryPrice());
             }
 
             mTvShippingFeePrice.setText(shippingFee);
