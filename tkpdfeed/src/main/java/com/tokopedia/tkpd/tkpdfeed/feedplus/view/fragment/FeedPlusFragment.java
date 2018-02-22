@@ -66,8 +66,6 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.productcard.
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedTrackingEventLabel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.LocalAdsClickListener;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.TopAdsInfoClickListener;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
@@ -79,6 +77,10 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedVi
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromoCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 
 import java.util.ArrayList;
 
@@ -93,7 +95,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         FeedPlus.View.Toppicks,
         FeedPlus.View.Kol,
         SwipeRefreshLayout.OnRefreshListener,
-        LocalAdsClickListener, TopAdsInfoClickListener {
+        TopAdsItemClickListener {
 
     private static final int OPEN_DETAIL = 54;
     private static final int OPEN_KOL_COMMENT = 101;
@@ -501,15 +503,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void updateFavorite(int adapterPosition) {
-        Object item = ((FeedTopAdsViewModel) adapter.getlist().get(adapterPosition)).getList().get(0);
-        //TODO milhamj update favorite
-//        if (item instanceof ShopFeedTopAdsViewModel) {
-//            ShopFeedTopAdsViewModel castedItem = ((ShopFeedTopAdsViewModel) item);
-//            Data currentData = castedItem.getData();
-//            boolean currentStatus = currentData.isFavorit();
-//            currentData.setFavorit(!currentStatus);
-//            adapter.notifyItemChanged(adapterPosition);
-//        }
+        Data data = ((FeedTopAdsViewModel) adapter.getlist().get(adapterPosition)).getList().get(0);
+        boolean currentStatus = data.isFavorit();
+        data.setFavorit(!currentStatus);
+        adapter.notifyItemChanged(adapterPosition);
     }
 
     @Override
@@ -707,22 +704,22 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onProductItemClicked(int position, Data data) {
+    public void onProductItemClicked(Product product) {
         Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity(),
-                data.getProduct().getId());
+                product.getId());
         getActivity().startActivity(intent);
-        UnifyTracking.eventFeedClickProduct(data.getProduct().getId(),
+        UnifyTracking.eventFeedClickProduct(product.getId(),
                 FeedTrackingEventLabel.Click.TOP_ADS_PRODUCT);
 
     }
 
     @Override
-    public void onShopItemClicked(int position, Data data) {
-        Bundle bundle = ShopInfoActivity.createBundle(data.getShop().getId(), "");
+    public void onShopItemClicked(Shop shop) {
+        Bundle bundle = ShopInfoActivity.createBundle(shop.getId(), "");
         Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
         intent.putExtras(bundle);
         getActivity().startActivity(intent);
-        UnifyTracking.eventFeedClickShop(data.getShop().getId(), FeedTrackingEventLabel.Click.TOP_ADS_SHOP);
+        UnifyTracking.eventFeedClickShop(shop.getId(), FeedTrackingEventLabel.Click.TOP_ADS_SHOP);
 
     }
 

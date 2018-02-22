@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory;
+import com.tokopedia.topads.sdk.domain.model.Data;
 
 import java.util.List;
 
@@ -11,20 +12,13 @@ import java.util.List;
 
 public class FeedTopAdsViewModel implements Visitable<FeedPlusTypeFactory> {
 
-    public static final int TOP_ADS_POSITION_TYPE = -56;
-    private final List<Visitable> list;
-    private int position;
+    private final List<Data> list;
 
-    public FeedTopAdsViewModel(List<Visitable> list) {
+    public FeedTopAdsViewModel(List<Data> list) {
         this.list = list;
-        setPosition(TOP_ADS_POSITION_TYPE);
     }
 
-    public void setPosition(int position) {
-        this.position = position;
-    }
-
-    public List<Visitable> getList() {
+    public List<Data> getList() {
         return list;
     }
 

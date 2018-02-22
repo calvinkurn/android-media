@@ -29,7 +29,6 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.toppicks.Top
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.LocalAdsClickListener;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FavoriteCtaViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.blog.BlogViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
@@ -46,6 +45,8 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromotedShopVie
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.toppicks.ToppicksViewModel;
+import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 
 /**
  * @author by nisie on 5/15/17.
@@ -54,7 +55,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.toppicks.ToppicksView
 public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements FeedPlusTypeFactory {
 
     private final FeedPlus.View viewListener;
-    private final LocalAdsClickListener topAdsItemClickListener;
+    private final TopAdsItemClickListener topAdsItemClickListener;
     private final FeedPlus.View.Toppicks toppicksListener;
     private final FeedPlus.View.Kol kolViewListener;
 

@@ -296,27 +296,9 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         if (domain.getContent() != null
                                 && domain.getContent().getTopAdsList() != null
                                 && !domain.getContent().getTopAdsList().isEmpty()) {
-                            List<Visitable> visitableList = new ArrayList<>();
-                            List<Data> topadsDomainList = domain.getContent().getTopAdsList();
-                            //TODO milhamj
-//                            for (Data topadsDomain : topadsDomainList) {
-//                                if (topadsDomain.getDisplay().equalsIgnoreCase(
-//                                        DISPLAY_SHOP)) {
-//                                    visitableList.add(
-//                                            new ShopFeedTopAdsViewModel(topadsDomain)
-//                                    );
-//                                } else if (topadsDomain.getDisplay().equalsIgnoreCase(
-//                                        DISPLAY_PRODUCT)) {
-//                                    visitableList.add(
-//                                            new ProductFeedTopAdsViewModel(topadsDomain)
-//                                    );
-//                                }
-//                            }
-                            if (!visitableList.isEmpty()) {
-                                FeedTopAdsViewModel feedTopAdsViewModel =
-                                        new FeedTopAdsViewModel(visitableList);
-                                listFeedView.add(feedTopAdsViewModel);
-                            }
+                            FeedTopAdsViewModel feedTopAdsViewModel =
+                                    new FeedTopAdsViewModel(domain.getContent().getTopAdsList());
+                            listFeedView.add(feedTopAdsViewModel);
                         }
                         break;
                     case TYPE_KOL_FOLLOWED:
