@@ -72,16 +72,15 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
     public void onBarCodeScanComplete(String barcodeData) {
         Uri uri = Uri.parse(barcodeData);
         String host = uri.getHost();
-
-        //NPE Fix if host returned is null
-        if (host == null) {
-            getView().showErrorGetInfo(context.getString(com.tokopedia.tokocash.R.string.msg_dialog_wrong_scan));
-            return;
-        }
-        if (host.equals(QrScannerTypeDef.PAYMENT_QR_CODE)) {
-            onScanCompleteGetInfoQrPayment(uri.getPathSegments().get(0));
-        } else if (host.equals(QrScannerTypeDef.CAMPAIGN_QR_CODE)) {
-            onScanCompleteGetInfoQrCampaign(uri.getPathSegments().get(0));
+        
+        if (host != null && uri.getPathSegments() != null) {
+            if (host.equals(QrScannerTypeDef.PAYMENT_QR_CODE)) {
+                onScanCompleteGetInfoQrPayment(uri.getPathSegments().get(0));
+            } else if (host.equals(QrScannerTypeDef.CAMPAIGN_QR_CODE)) {
+                onScanCompleteGetInfoQrCampaign(uri.getPathSegments().get(0));
+            } else {
+                getView().showErrorGetInfo(context.getString(com.tokopedia.tokocash.R.string.msg_dialog_wrong_scan));
+            }
         } else {
             getView().showErrorGetInfo(context.getString(com.tokopedia.tokocash.R.string.msg_dialog_wrong_scan));
         }
@@ -115,9 +114,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                     getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else if (e instanceof CampaignException) {
                     getView().showErrorGetInfo(context.getString(com.tokopedia.tokocash.R.string.msg_dialog_wrong_scan));
-                } else if (e instanceof ResponseDataNullException) {
-                    getView().showErrorNetwork(e.getMessage());
-                } else if (e instanceof HttpErrorException) {
+                } else if (e instanceof ResponseDataNullException || e instanceof HttpErrorException) {
                     getView().showErrorNetwork(e.getMessage());
                 } else if (e instanceof ServerErrorException) {
                     ServerErrorHandlerUtil.handleError(e);
@@ -132,7 +129,6 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(uri);
                 getView().startActivity(intent);
-                //Open next activity based upon the result from server
             }
         });
     }
