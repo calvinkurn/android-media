@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.tokocash.CacheUtil;
 import com.tokopedia.tokocash.apiservice.WalletService;
 import com.tokopedia.tokocash.qrpayment.data.entity.BalanceTokoCashEntity;
+import com.tokopedia.tokocash.qrpayment.data.entity.TokoCashEntity;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -31,21 +32,23 @@ public class CloudBalanceDataSource implements BalanceDataSource {
     @Override
     public Observable<BalanceTokoCashEntity> getBalanceTokoCash() {
         return walletService.getApi().getBalanceTokoCash()
-                .map(new Func1<Response<DataResponse<BalanceTokoCashEntity>>, BalanceTokoCashEntity>() {
+                .doOnNext(new Action1<Response<TokoCashEntity>>() {
                     @Override
-                    public BalanceTokoCashEntity call(Response<DataResponse<BalanceTokoCashEntity>> dataResponseResponse) {
-                        return dataResponseResponse.body().getData();
-                    }
-                })
-                .doOnNext(new Action1<BalanceTokoCashEntity>() {
-                    @Override
-                    public void call(BalanceTokoCashEntity balanceTokoCashEntity) {
-                        if (balanceTokoCashEntity != null) {
+                    public void call(Response<TokoCashEntity> dataResponseResponse) {
+                        if (dataResponseResponse.body() != null) {
+                            dataResponseResponse.body().setSuccess(true);
                             cacheManager.save(CacheUtil.KEY_TOKOCASH_BALANCE_CACHE,
-                                    CacheUtil.convertModelToString(balanceTokoCashEntity,
-                                            new TypeToken<BalanceTokoCashEntity>() {
+                                    CacheUtil.convertModelToString(dataResponseResponse.body(),
+                                            new TypeToken<TokoCashEntity>() {
                                             }.getType()), 60);
                         }
+                    }
+                })
+                .map(new Func1<Response<TokoCashEntity>, BalanceTokoCashEntity>() {
+                    @Override
+                    public BalanceTokoCashEntity call
+                            (Response<TokoCashEntity> dataResponseResponse) {
+                        return dataResponseResponse.body().getData();
                     }
                 });
     }

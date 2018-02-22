@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.tokocash.qrpayment.data.entity.BalanceTokoCashEntity;
+import com.tokopedia.tokocash.qrpayment.data.entity.TokoCashEntity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,5 +52,5 @@ public interface WalletApi {
     Observable<Response<TkpdDigitalResponse>> postQrPaymentTokoCash(@Body HashMap<String, Object> params);
 
     @GET(TkpdBaseURL.Wallet.GET_BALANCE)
-    Observable<Response<DataResponse<BalanceTokoCashEntity>>> getBalanceTokoCash();
+    Observable<Response<TokoCashEntity>> getBalanceTokoCash();
 }

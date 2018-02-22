@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.qrscanner;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.tkpd.R;
@@ -242,6 +244,11 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     @Override
     public void interruptToLoginPage() {
         startActivityForResult(LoginActivity.getCallingIntent(getApplicationContext()), REQUEST_CODE_LOGIN);
+    }
+
+    @Override
+    public Activity getActivity() {
+        return this;
     }
 
     @Override
