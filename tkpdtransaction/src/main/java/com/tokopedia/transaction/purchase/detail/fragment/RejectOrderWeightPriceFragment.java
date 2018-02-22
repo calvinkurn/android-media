@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.detail.adapter.RejectOrderPriceWeightChangeAdapter;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
@@ -26,7 +27,6 @@ public class RejectOrderWeightPriceFragment extends RejectOrderBaseFragment {
     public static final int FRAGMENT_EDIT_WEIGHT_PRICE_REQUEST_CODE = 24;
 
     private static final int FIXED_KILOGRAM_MODE = 2;
-    private static final String FRAGMENT_TITLE = "Ubah Harga dan Berat Produk";
 
     private RejectOrderChangeWeightPriceListener listener;
 
@@ -49,7 +49,7 @@ public class RejectOrderWeightPriceFragment extends RejectOrderBaseFragment {
 
     @Override
     protected String defineTitle() {
-        return FRAGMENT_TITLE;
+        return getString(R.string.title_reject_order_weight_price_fragment);
     }
 
     @Override
@@ -97,7 +97,6 @@ public class RejectOrderWeightPriceFragment extends RejectOrderBaseFragment {
                             .add(R.id.main_view,
                                     editFragment,
                                     FRAGMENT_REJECT_ORDER_SUB_MENU_TAG)
-                            .addToBackStack(FRAGMENT_REJECT_ORDER_SUB_MENU_TAG)
                             .commit();
                 }
             }
@@ -109,7 +108,11 @@ public class RejectOrderWeightPriceFragment extends RejectOrderBaseFragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onConfirmWeightPrice(adapter.getProductPriceWeightData());
+                if(adapter.isEdited())
+                    listener.onConfirmWeightPrice(adapter.getProductPriceWeightData());
+                else NetworkErrorHelper.showSnackbar(
+                        getActivity(), getString(R.string.error_no_change_price_weight)
+                );
             }
         };
     }

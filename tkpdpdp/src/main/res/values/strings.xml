@@ -40,4 +40,5 @@
     <string name="per_pcs">/pcs</string>
     <string name="change_variant">Ubah Varian</string>
     <string name="error_variant">Terjadi kesalahan dalam memproses permintaan Anda</string>
+    <string name="product_variant_onboarding">Produk ini tersedia dalam beberapa varian (seperti warna dan ukuran)</string>
 </resources>

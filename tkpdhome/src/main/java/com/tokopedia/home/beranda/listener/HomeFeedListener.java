@@ -20,7 +20,7 @@ public interface HomeFeedListener {
     void onShowRetryGetFeed();
     void onSuccessGetFeed(ArrayList<Visitable> visitables);
     void updateCursor(String currentCursor);
-    void unsetEndlessScroll();
+    void updateCursorNoNextPageFeed();
 
     Context getActivity();
 }

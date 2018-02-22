@@ -430,7 +430,7 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
             public void onNext(String s) {
                 mainView.dismissProgressDialog();
                 mainView.showSnackbar(s);
-                mainView.onRefreshActivity();
+                mainView.dismissActivity();
                 //TODO put action to finish activity and refresh
             }
         };
