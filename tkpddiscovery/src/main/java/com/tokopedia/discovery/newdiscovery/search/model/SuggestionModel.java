@@ -56,12 +56,14 @@ public class SuggestionModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.suggestionText);
+        dest.writeString(this.suggestionCurrentKeyword);
         dest.writeString(this.suggestedQuery);
         dest.writeString(this.formattedResultCount);
     }
 
     protected SuggestionModel(Parcel in) {
         this.suggestionText = in.readString();
+        this.suggestionCurrentKeyword = in.readString();
         this.suggestedQuery = in.readString();
         this.formattedResultCount = in.readString();
     }
