@@ -7,7 +7,7 @@ package com.tokopedia.core.drawer2.data.pojo.topcash;
 public class TokoCashModel {
 
     private boolean success;
-    private TokoCashData tokoCashData;
+    private TokoCashData data;
     private String errorMessage;
     private String statusMessage;
     private int responseCode;
@@ -20,12 +20,12 @@ public class TokoCashModel {
         this.success = success;
     }
 
-    public TokoCashData getTokoCashData() {
-        return tokoCashData;
+    public TokoCashData getData() {
+        return data;
     }
 
-    public void setTokoCashData(TokoCashData tokoCashData) {
-        this.tokoCashData = tokoCashData;
+    public void setData(TokoCashData data) {
+        this.data = data;
     }
 
     public String getErrorMessage() {
