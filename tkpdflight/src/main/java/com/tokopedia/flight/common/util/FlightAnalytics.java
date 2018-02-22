@@ -263,7 +263,7 @@ public class FlightAnalytics {
         analyticTracker.sendEventTracking(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.VOUCHER_SUCCESS,
-                String.format("%s- %s", label, message)
+                String.format("%s - %s", label, message)
         );
     }
 
@@ -271,7 +271,7 @@ public class FlightAnalytics {
         analyticTracker.sendEventTracking(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.VOUCHER_ERROR,
-                String.format("%s- %s", label, message)
+                String.format("%s - %s", label, message)
         );
     }
 
@@ -386,7 +386,7 @@ public class FlightAnalytics {
         static String ADD_TO_CART = "add to cart";
         static String BOOKING_DETAIL = "click detail";
         static String BOOKING_NEXT = "click next";
-        static String REVIEW_NEXT = "review next";
+        static String REVIEW_NEXT = "click next";
         static String VOUCHER = "click gunakan voucher code";
         static String VOUCHER_SUCCESS = "voucher success";
         static String VOUCHER_ERROR = "voucher error";
@@ -402,7 +402,7 @@ public class FlightAnalytics {
         static String ADULT = "adult";
         static String CHILD = "child";
         static String INFANT = "baby";
-        static String REVIEW_NEXT = " on order details page";
+        static String REVIEW_NEXT = "on order details page";
         static String REFUNDABLE = "- refundable";
         static String NOT_REFUNDABLE = "- not refundable";
         static String PARTIALLY_REFUNDABLE = "- partially refundable";

@@ -1,5 +1,6 @@
 package com.tokopedia.sellerapp.fcm;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
 import android.net.Uri;
@@ -39,6 +40,8 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
  */
 
 public class AppNotificationReceiverUIBackground extends BaseAppNotificationReceiverUIBackground {
+    public static final String DEFAULT_NOTIF_CODE_VALUE = "0";
+    private static final int DEFAULT_CART_VALUE = 0;
     private RemoteConfig remoteConfig;
 
     public AppNotificationReceiverUIBackground(Application application) {
@@ -47,12 +50,14 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     public void prepareAndExecuteDedicatedNotification(Bundle data) {
-        Map<Integer, Visitable> dedicatedNotification = getCommonDedicatedNotification();
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_TOPADS_BELOW_20K, new TopAdsBelow20kNotification(mContext));
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_TOPADS_TOPUP_SUCCESS, new TopAdsTopupSuccessNotification(mContext));
-        Visitable visitable = dedicatedNotification.get(getCode(data));
-        if (visitable != null) {
-            visitable.proccessReceivedNotification(data);
+        if(!isRefreshCart(data)) {
+            Map<Integer, Visitable> dedicatedNotification = getCommonDedicatedNotification();
+            dedicatedNotification.put(TkpdState.GCMServiceState.GCM_TOPADS_BELOW_20K, new TopAdsBelow20kNotification(mContext));
+            dedicatedNotification.put(TkpdState.GCMServiceState.GCM_TOPADS_TOPUP_SUCCESS, new TopAdsTopupSuccessNotification(mContext));
+            Visitable visitable = dedicatedNotification.get(getCode(data));
+            if (visitable != null) {
+                visitable.proccessReceivedNotification(data);
+            }
         }
     }
 
@@ -87,24 +92,8 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                     && SessionHandler.getLoginID(mContext).equals(data.getString(Constants.ARG_NOTIFICATION_TARGET_USER_ID))) {
 
                 resetNotificationStatus(data);
-
-                if (mActivitiesLifecycleCallbacks.isAppOnBackground()) {
-                    prepareAndExecuteApplinkNotification(data);
-                } else {
-                    NotificationReceivedListener listener =
-                            (NotificationReceivedListener) mActivitiesLifecycleCallbacks.getLiveActivityOrNull();
-                    if (listener != null) {
-                        listener.onGetNotif();
-                        if (Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE, "0"))
-                                == TkpdState.GCMServiceState.GCM_CART_UPDATE) {
-                            listener.onRefreshCart(data.getInt(Constants.ARG_NOTIFICATION_CART_EXISTS, 0));
-                        } else {
-                            prepareAndExecuteApplinkNotification(data);
-                        }
-                    } else {
-                        prepareAndExecuteApplinkNotification(data);
-                    }
-                }
+                prepareAndExecuteApplinkNotification(data);
+                refreshUI(data);
                 mFCMCacheManager.resetCache(data);
             }
         } else {
@@ -120,38 +109,40 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
 
     private void prepareAndExecuteApplinkNotification(Bundle data) {
-        String applinks = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
-        String category = Uri.parse(applinks).getHost();
-        switch (category) {
-            case Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT:
-                if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
-                    if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
-                            && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
-                        NotificationReceivedListener listener = (NotificationReceivedListener) MainApplication.currentActivity();
-                        listener.onGetNotif(data);
-                    } else {
-                        String applink = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
-                        String fullname = data
-                                .getString("full_name");
-                        applink += "?" + "fullname=" + fullname;
-                        data.putString(Constants.ARG_NOTIFICATION_APPLINK, applink);
+        if(!isRefreshCart(data)) {
+            String applinks = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
+            String category = Uri.parse(applinks).getHost();
+            switch (category) {
+                case Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT:
+                    if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
+                        if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
+                                && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof NotificationReceivedListener) {
+                            NotificationReceivedListener listener = (NotificationReceivedListener) MainApplication.currentActivity();
+                            listener.onGetNotif(data);
+                        } else {
+                            String applink = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
+                            String fullname = data
+                                    .getString("full_name");
+                            applink += "?" + "fullname=" + fullname;
+                            data.putString(Constants.ARG_NOTIFICATION_APPLINK, applink);
+                            buildNotifByData(data);
+                        }
+                    }
+                    break;
+                case Constants.ARG_NOTIFICATION_APPLINK_MESSAGE:
+                    if (!remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
                         buildNotifByData(data);
                     }
-                }
-                break;
-            case Constants.ARG_NOTIFICATION_APPLINK_MESSAGE:
-                if (!remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
+                    break;
+                case Constants.ARG_NOTIFICATION_APPLINK_SELLER_INFO:
+                    if (SessionHandler.isUserHasShop(mContext)) {
+                        buildNotifByData(data);
+                    }
+                    break;
+                default:
                     buildNotifByData(data);
-                }
-                break;
-            case Constants.ARG_NOTIFICATION_APPLINK_SELLER_INFO:
-                if (SessionHandler.isUserHasShop(mContext)) {
-                    buildNotifByData(data);
-                }
-                break;
-            default:
-                buildNotifByData(data);
-                break;
+                    break;
+            }
         }
     }
 
@@ -167,26 +158,28 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
             resetNotificationStatus(data);
             CommonUtils.dumper("resetNotificationStatus");
-
-            if (mActivitiesLifecycleCallbacks.isAppOnBackground()) {
-                prepareAndExecuteDedicatedNotification(data);
-            } else {
-                NotificationReceivedListener listener =
-                        (NotificationReceivedListener) mActivitiesLifecycleCallbacks.getLiveActivityOrNull();
-                if (listener != null) {
-                    listener.onGetNotif();
-                    if (Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE, "0"))
-                            == TkpdState.GCMServiceState.GCM_CART_UPDATE) {
-                        listener.onRefreshCart(data.getInt("is_cart_exists", 0));
-                    } else {
-                        prepareAndExecuteDedicatedNotification(data);
-                    }
-                } else {
-                    prepareAndExecuteDedicatedNotification(data);
-                }
-            }
+            prepareAndExecuteDedicatedNotification(data);
+            refreshUI(data);
             mFCMCacheManager.resetCache(data);
         }
+    }
+
+    private void refreshUI(Bundle data) {
+        if (!mActivitiesLifecycleCallbacks.isAppOnBackground()) {
+            Activity currentActivity = mActivitiesLifecycleCallbacks.getLiveActivityOrNull();
+            if(currentActivity != null && currentActivity instanceof NotificationReceivedListener) {
+                NotificationReceivedListener listener = (NotificationReceivedListener) currentActivity;
+                listener.onGetNotif();
+                if (isRefreshCart(data)) {
+                    listener.onRefreshCart(data.getInt(Constants.ARG_NOTIFICATION_CART_EXISTS, DEFAULT_CART_VALUE));
+                }
+            }
+        }
+    }
+
+    private boolean isRefreshCart(Bundle data) {
+        return Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE, DEFAULT_NOTIF_CODE_VALUE))
+                == TkpdState.GCMServiceState.GCM_CART_UPDATE;
     }
 
     @Override

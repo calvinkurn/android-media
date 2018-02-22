@@ -228,7 +228,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 if (isAllowLoadMore()) {
-                    recyclerView.removeOnScrollListener(feedLoadMoreTriggerListener);
                     adapter.showLoading();
                     presenter.fetchNextPageFeed();
                 }
@@ -242,8 +241,15 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private boolean isAllowLoadMore() {
         return getUserVisibleHint()
+                && presenter.hasNextPageFeed()
                 && !adapter.isLoading()
-                && !refreshLayout.isRefreshing();
+                && !adapter.isRetryShown()
+                && !refreshLayout.isRefreshing()
+                && !isErrorMessageShown();
+    }
+
+    private boolean isErrorMessageShown() {
+        return messageSnackbar != null && messageSnackbar.isShown();
     }
 
     private void initAdapter() {
@@ -432,13 +438,17 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onRefresh() {
+        removeNetworkError();
+        resetFeedState();
+        presenter.getHomeData();
+        presenter.getHeaderData(false);
+    }
+
+    private void resetFeedState() {
         presenter.resetPageFeed();
         if (SessionHandler.isV4Login(getContext()) && feedLoadMoreTriggerListener != null) {
             feedLoadMoreTriggerListener.resetState();
-            recyclerView.addOnScrollListener(feedLoadMoreTriggerListener);
         }
-        presenter.getHomeData();
-        presenter.getHeaderData(false);
     }
 
     @Override
@@ -472,8 +482,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
                         @Override
                         public void onRetryClicked() {
-                            presenter.getHomeData();
-                            presenter.getHeaderData(false);
+                            onRefresh();
                         }
                     });
                 }
@@ -483,8 +492,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                         new NetworkErrorHelper.RetryClickedListener() {
                             @Override
                             public void onRetryClicked() {
-                                presenter.getHomeData();
-                                presenter.getHeaderData(false);
+                                onRefresh();
                             }
                         });
             }
@@ -522,6 +530,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         NetworkErrorHelper.removeEmptyState(root);
         if (messageSnackbar != null && messageSnackbar.isShown()) {
             messageSnackbar.hideRetrySnackbar();
+            messageSnackbar = null;
         }
     }
 
@@ -558,26 +567,28 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         int posStart = adapter.getItemCount();
         adapter.addItems(visitables);
         adapter.notifyItemRangeInserted(posStart, visitables.size());
-        recyclerView.addOnScrollListener(feedLoadMoreTriggerListener);
     }
 
     @Override
     public void onRetryClicked() {
-        adapter.removeRetry();
-        adapter.showLoading();
-        presenter.fetchCurrentPageFeed();
+        if (!isErrorMessageShown()) {
+            adapter.removeRetry();
+            adapter.showLoading();
+            presenter.fetchCurrentPageFeed();
+        } else {
+            onRefresh();
+        }
     }
 
     @Override
     public void onShowRetryGetFeed() {
-        recyclerView.removeOnScrollListener(feedLoadMoreTriggerListener);
         adapter.hideLoading();
         adapter.showRetry();
     }
 
     @Override
-    public void unsetEndlessScroll() {
-        recyclerView.removeOnScrollListener(feedLoadMoreTriggerListener);
+    public void updateCursorNoNextPageFeed() {
+        presenter.setCursorNoNextPageFeed();
     }
 
     private void openWebViewBrandsURL(String url) {
