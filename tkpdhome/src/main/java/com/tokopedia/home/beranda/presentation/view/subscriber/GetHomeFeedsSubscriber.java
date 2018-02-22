@@ -62,13 +62,11 @@ public class GetHomeFeedsSubscriber extends Subscriber<FeedResult> {
 
         if (feedResult.isHasNext()) {
             viewListener.updateCursor(getCurrentCursor(feedResult));
+        } else {
+            viewListener.updateCursorNoNextPageFeed();
         }
 
         viewListener.onSuccessGetFeed(list);
-
-        if (!feedResult.isHasNext()) {
-            viewListener.unsetEndlessScroll();
-        }
     }
 
     private ArrayList<Visitable> convertToViewModel(FeedDomain feedDomain) {

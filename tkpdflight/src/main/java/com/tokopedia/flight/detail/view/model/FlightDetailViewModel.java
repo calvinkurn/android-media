@@ -46,6 +46,9 @@ public class FlightDetailViewModel implements Parcelable {
     private int countInfant;
     private List<FlightDetailRouteViewModel> routeList;
 
+    public FlightDetailViewModel() {
+    }
+
     protected FlightDetailViewModel(Parcel in) {
         id = in.readString();
         departureAirport = in.readString();
@@ -65,9 +68,7 @@ public class FlightDetailViewModel implements Parcelable {
         countChild = in.readInt();
         countInfant = in.readInt();
         routeList = in.createTypedArrayList(FlightDetailRouteViewModel.CREATOR);
-    }
-
-    public FlightDetailViewModel() {
+        isRefundable = (RefundableEnum) in.readSerializable();
     }
 
     public FlightDetailViewModel build(FlightSearchViewModel flightSearchViewModel) {
@@ -280,5 +281,6 @@ public class FlightDetailViewModel implements Parcelable {
         parcel.writeInt(countChild);
         parcel.writeInt(countInfant);
         parcel.writeTypedList(routeList);
+        parcel.writeSerializable(isRefundable);
     }
 }

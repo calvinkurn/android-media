@@ -58,7 +58,14 @@ public class PaymentTracking extends TrackingUtils {
         getAFEngine().sendTrackEvent(AFInAppEventType.INITIATED_CHECKOUT, values);
     }
 
-    public static void eventCartCheckout(Checkout checkout) {
+    public static void eventCartCheckoutStep1(Checkout checkout) {
+        getGTMEngine()
+                .eventCheckout(checkout)
+                .sendScreen(AppScreen.SCREEN_CART_PAGE)
+                .clearCheckoutDataLayer();
+    }
+
+    public static void eventCartCheckoutStep2(Checkout checkout) {
         getGTMEngine()
                 .eventCheckout(checkout)
                 .sendScreen(AppScreen.SCREEN_CART_SUMMARY_CHECKOUT)

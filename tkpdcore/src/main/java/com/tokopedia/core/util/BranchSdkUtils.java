@@ -8,6 +8,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.app.MainApplication;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -15,6 +16,8 @@ import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +47,8 @@ public class BranchSdkUtils {
     private static final String USERID_KEY = "userId";
     public static final String PRODUCTTYPE_DIGITAL = "digital";
     public static final String PRODUCTTYPE_MARKETPLACE = "marketplace";
+    private static final String BRANCH_PROMOCODE_KEY = "branch_promo";
+    public static String REFERRAL_ADVOCATE_PROMO_CODE = "";
 
     private static BranchUniversalObject createBranchUniversalObject(ShareData data) {
         BranchUniversalObject branchUniversalObject = new BranchUniversalObject()
@@ -63,7 +68,6 @@ public class BranchSdkUtils {
             branchUniversalObject.generateShortUrl(activity, linkProperties, new Branch.BranchLinkCreateListener() {
                 @Override
                 public void onLinkCreate(String url, BranchError error) {
-
                     if (error == null) {
                         ShareContentsCreateListener.onCreateShareContents(data.getTextContentForBranch(url), url, url);
                     } else {
@@ -231,6 +235,36 @@ public class BranchSdkUtils {
             return phoneNum.replaceFirst("^0(?!$)", "62");
         else
             return "";
+    }
+
+    public static String getAutoApplyCouponIfAvailable(Context context) {
+        if (TextUtils.isEmpty(REFERRAL_ADVOCATE_PROMO_CODE)) {
+            LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.CACHE_PROMO_CODE);
+            return localCacheHandler.getString(TkpdCache.Key.KEY_CACHE_PROMO_CODE);
+        } else {
+            return BranchSdkUtils.REFERRAL_ADVOCATE_PROMO_CODE;
+        }
+    }
+
+    public static void removeCouponCode(Context context) {
+        REFERRAL_ADVOCATE_PROMO_CODE = "";
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.CACHE_PROMO_CODE);
+        localCacheHandler.clearCache(TkpdCache.Key.KEY_CACHE_PROMO_CODE);
+    }
+
+
+    public static void storeWebToAppPromoCodeIfExist(JSONObject referringParams, Context context) {
+        try {
+            String branch_promo = referringParams.optString(BRANCH_PROMOCODE_KEY);
+            if (!TextUtils.isEmpty(branch_promo)) {
+                LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.CACHE_PROMO_CODE);
+                localCacheHandler.putString(TkpdCache.Key.KEY_CACHE_PROMO_CODE, branch_promo);
+                localCacheHandler.applyEditor();
+            }
+
+        } catch (Exception e) {
+
+        }
     }
 
     public interface GenerateShareContents {

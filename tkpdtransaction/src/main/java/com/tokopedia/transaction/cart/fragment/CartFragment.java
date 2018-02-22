@@ -238,7 +238,10 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     protected void initialPresenter() {
-        presenter = new CartPresenter(this);
+        presenter = new CartPresenter(
+                this,
+                new LocalCacheHandler(getActivity(), TkpdCache.NOTIFICATION_DATA)
+        );
     }
 
     @Override
@@ -908,10 +911,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void onGetThanksTopPaySuccess(ThanksTopPayData data) {
-        presenter.processCheckoutAnalytics(
-                new LocalCacheHandler(getActivity(), TkpdCache.NOTIFICATION_DATA),
-                data.getParameter().getGatewayName()
-        );
         presenter.clearNotificationCart();
         try {
             presenter.processPaymentAnalytics(
@@ -930,10 +929,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void onGetThanksTopPayFailed(String message, final String paymentId) {
         hideProgressLoading();
-        presenter.processCheckoutAnalytics(
-                new LocalCacheHandler(getActivity(), TkpdCache.NOTIFICATION_DATA),
-                ANALYTICS_GATEWAY_PAYMENT_FAILED
-        );
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), message,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
@@ -1252,4 +1247,9 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         return kursIndonesia.format(value);
     }
 
+    @Override
+    public void setListnerCancelPromoLayoutOnAutoApplyCode(){
+        cancelPromoLayout.setOnClickListener(onPromoCancelled());
+
+    }
 }

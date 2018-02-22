@@ -48,10 +48,8 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
-import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.share.ShareActivity;
@@ -62,7 +60,6 @@ import com.tokopedia.core.shopinfo.fragment.OfficialShopHomeFragment;
 import com.tokopedia.core.shopinfo.fragment.ProductList;
 import com.tokopedia.core.shopinfo.models.GetShopProductParam;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.Badge;
@@ -72,6 +69,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
 
+import static com.tokopedia.core.gcm.Constants.FROM_APP_SHORTCUTS;
 import static com.tokopedia.core.shopinfo.models.shopmodel.Info.SHOP_OFFICIAL_VALUE;
 
 /**
@@ -267,6 +265,11 @@ public class ShopInfoActivity extends BaseActivity
             } else {
 //                updateView();
             }
+        }
+
+        if (getIntent() != null &&
+                getIntent().getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
+            UnifyTracking.eventJualLongClick();
         }
     }
 
