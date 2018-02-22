@@ -27,6 +27,7 @@ import com.tokopedia.core.invoice.model.InvoiceRenderParam;
 import com.tokopedia.core.invoice.presenter.InvoiceRenderPresenter;
 import com.tokopedia.core.invoice.presenter.InvoiceRenderPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.TkpdWebView;
 
 import butterknife.BindView;
 
@@ -41,7 +42,7 @@ public class InvoiceRendererActivity extends BasePresenterActivity<InvoiceRender
     private static final String EXTRA_INVOICE_RENDER_PARAM = "EXTRA_INVOICE_RENDER_PARAM";
 
     @BindView(R2.id.webview)
-    WebView webViewOauth;
+    TkpdWebView webViewOauth;
     @BindView(R2.id.progress_bar)
     ProgressBar progressBar;
     @BindView(R2.id.layout_parent)

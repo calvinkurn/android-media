@@ -41,14 +41,15 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         return scaledBitmap;
     }
 
-	/**
-	 * rotate bitmap if only jpeg, not for other extension
-	 * @param bitmap
-	 * @param file
-	 * @return
-	 * @throws IOException
-	 */
-    public static Bitmap RotatedBitmap (Bitmap bitmap, String file) throws IOException {
+    /**
+     * rotate bitmap if only jpeg, not for other extension
+     *
+     * @param bitmap
+     * @param file
+     * @return
+     * @throws IOException
+     */
+    public static Bitmap RotatedBitmap(Bitmap bitmap, String file) throws IOException {
         ExifInterface exif = new ExifInterface(file);
         String orientString = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
         int orientation = orientString != null ? Integer.parseInt(orientString) : ExifInterface.ORIENTATION_NORMAL;
@@ -168,7 +169,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
                 .into(imageview);
     }
 
-    public static void loadImage(Context context, ImageView imageview, String url,int placeholder) {
+    public static void loadImage(Context context, ImageView imageview, String url, int placeholder) {
         Glide.with(context)
                 .load(url)
                 .dontAnimate()
@@ -179,7 +180,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
                 .into(imageview);
     }
 
-    public static void loadImage(Context context, ImageView imageview, String url,int placeholder,int error_image) {
+    public static void loadImage(Context context, ImageView imageview, String url, int placeholder, int error_image) {
         Glide.with(context)
                 .load(url)
                 .dontAnimate()
@@ -207,7 +208,23 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
                         .placeholder(R.drawable.loading_page)
                         .error(R.drawable.error_drawable)
                         .into(imageview);
-            }catch (Exception e){}
+            } catch (Exception e) {
+            }
+        }
+    }
+
+    public static void loadImageCenterCrop(ImageView imageview, String url) {
+        if (imageview.getContext() != null) {
+            try {
+                Glide.with(imageview.getContext())
+                        .load(url)
+                        .centerCrop()
+                        .dontAnimate()
+                        .placeholder(R.drawable.loading_page)
+                        .error(R.drawable.error_drawable)
+                        .into(imageview);
+            } catch (Exception e) {
+            }
         }
     }
 
@@ -239,20 +256,25 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         }
     }
 
-    public static void loadImageChat(ImageView imageview, String url, int resId) {
-        if (url != null && !TextUtils.isEmpty(url)) {
+    public static void loadImageChat(ImageView imageview, String url) {
+        if (url != null) {
             Glide.with(imageview.getContext())
                     .load(url)
-                    .placeholder(R.drawable.loading_page)
                     .dontAnimate()
-                    .error(resId)
                     .fitCenter()
+                    .placeholder(R.drawable.loading_page)
                     .into(imageview);
-        } else {
+        }
+    }
+
+    public static void loadImageChatBlurred(ImageView imageview, String url) {
+        if (url != null) {
             Glide.with(imageview.getContext())
                     .load(url)
-                    .placeholder(resId)
-                    .error(resId)
+                    .dontAnimate()
+                    .override(30, 30)
+                    .fitCenter()
+                    .placeholder(R.drawable.loading_page)
                     .into(imageview);
         }
     }

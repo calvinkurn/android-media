@@ -27,12 +27,24 @@ public class Detail {
     @SerializedName("shop")
     @Expose
     private Shop shop;
+    @SerializedName("customer")
+    @Expose
+    private Customer customer;
+    @SerializedName("request_cancel")
+    @Expose
+    private int requestCancel;
+    @SerializedName("request_cancel_reason")
+    @Expose
+    private String requestCancelReason;
     @SerializedName("drop_shipper")
     @Expose
     private DropShipper dropShipper;
     @SerializedName("checkout_date")
     @Expose
     private String checkoutDate;
+    @SerializedName("insurance")
+    @Expose
+    private Insurance insurance;
 
     public String getPaymentVerifiedDate() {
         return paymentVerifiedDate;
@@ -86,6 +98,30 @@ public class Detail {
         this.shop = shop;
     }
 
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public int getRequestCancel() {
+        return requestCancel;
+    }
+
+    public void setRequestCancel(int requestCancel) {
+        this.requestCancel = requestCancel;
+    }
+
+    public String getRequestCancelReason() {
+        return requestCancelReason;
+    }
+
+    public void setRequestCancelReason(String requestCancelReason) {
+        this.requestCancelReason = requestCancelReason;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
     public DropShipper getDropShipper() {
         return dropShipper;
     }
@@ -100,5 +136,13 @@ public class Detail {
 
     public void setCheckoutDate(String checkoutDate) {
         this.checkoutDate = checkoutDate;
+    }
+
+    public Insurance getInsurance() {
+        return insurance;
+    }
+
+    public void setInsurance(Insurance insurance) {
+        this.insurance = insurance;
     }
 }

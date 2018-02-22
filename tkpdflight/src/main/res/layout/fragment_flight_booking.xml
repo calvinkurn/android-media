@@ -104,7 +104,7 @@
                     android:layout_marginTop="@dimen/margin_med"
                     android:background="@color/white"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/margin_large"
+                    android:paddingBottom="@dimen/padding_small"
                     android:paddingEnd="@dimen/padding_16"
                     android:paddingLeft="@dimen/padding_16"
                     android:paddingRight="@dimen/padding_16"

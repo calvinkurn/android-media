@@ -33,11 +33,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.discovery.R;
-
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 import com.tokopedia.discovery.util.AnimationUtil;
 

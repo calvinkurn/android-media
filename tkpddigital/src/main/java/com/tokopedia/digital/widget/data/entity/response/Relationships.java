@@ -1,8 +1,8 @@
 package com.tokopedia.digital.widget.data.entity.response;
 
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.digital.product.data.entity.response.Category;
-import com.tokopedia.digital.product.data.entity.response.RelationData;
+import com.tokopedia.digital.common.data.entity.response.Category;
+import com.tokopedia.digital.common.data.entity.response.RelationData;
 
 /**
  * @author rizkyfadillah on 10/2/2017.
