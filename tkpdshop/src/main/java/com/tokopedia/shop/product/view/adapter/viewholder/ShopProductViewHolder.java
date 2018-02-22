@@ -79,24 +79,6 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         titleTextView.setText(element.getProductName());
         priceTextView.setText(element.getProductPrice());
         ImageHandler.LoadImage(productImageView, element.getProductImage700());
-
-        imageGuideLineGrid = itemView.getResources().getDimensionPixelSize(R.dimen.image_guide_line_grid);
-        imageGuideLineList = itemView.getResources().getDimensionPixelSize(R.dimen.image_guide_line_list);
-
-        if(viewHolderListener != null){
-            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) guideLine.getLayoutParams();
-
-            switch (viewHolderListener.getLayoutManagerType()){
-                case 65:
-                    params.guideBegin = imageGuideLineGrid;
-                    guideLine.setLayoutParams(params);
-                    break;
-                default:
-                    params.guideBegin = imageGuideLineList;
-                    guideLine.setLayoutParams(params);
-                    break;
-            }
-        }
     }
 
     public interface ViewHolderListener{

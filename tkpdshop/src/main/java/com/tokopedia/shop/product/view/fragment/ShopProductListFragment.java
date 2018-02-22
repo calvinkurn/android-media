@@ -26,6 +26,7 @@ import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
 import com.tokopedia.shop.product.view.adapter.ShopProductTypeFactory;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductListViewHolder;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductSingleViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
 import com.tokopedia.shop.product.view.model.ShopProductListViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
@@ -56,11 +57,14 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     private String keyword;
     private BottomActionView bottomActionView;
     private RecyclerView recyclerViews;
-    private Deque<Pair<Integer, Integer>> layoutType = new LinkedList<Pair<Integer, Integer>>(){{
-        add(new Pair<>(ShopProductViewHolder.LAYOUT, 65));
-        add(new Pair<>(ShopProductViewHolder.LAYOUT, 97));
-        add(new Pair<>(ShopProductListViewHolder.LAYOUT, 97));
-    }};
+
+    private Pair<Integer, Integer>[] layoutType = new Pair[]{
+            new Pair<>(ShopProductViewHolder.LAYOUT, 65),
+            new Pair<>(ShopProductSingleViewHolder.LAYOUT, 97),
+            new Pair<>(ShopProductListViewHolder.LAYOUT, 97)
+    };
+
+    private int currentIndex = 0;
 
     public static ShopProductListFragment createInstance(String shopId) {
         ShopProductListFragment shopProductListFragment = new ShopProductListFragment();
@@ -93,12 +97,12 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         return new ShopProductAdapterTypeFactory(new ShopProductViewHolder.ViewHolderListener() {
             @Override
             public int getLayoutManagerType() {
-                return layoutType.peek().second;
+                return layoutType[0].second;
             }
         }, new ShopProductAdapterTypeFactory.TypeFactoryListener() {
             @Override
             public int getType() {
-                return layoutType.peek().first;
+                return layoutType[0].first;
             }
         });
     }
@@ -176,9 +180,8 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         bottomActionView.setButton2OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                layoutType.addLast(layoutType.removeFirst());
 
-                switch (layoutType.peek().second){
+                switch (layoutType[getNextIndex()].second){
                     case 65:
                         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT,  LinearLayoutManager.VERTICAL,
                                 false);
@@ -206,6 +209,10 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
             }
         });
 
+    }
+
+    private int getNextIndex(){
+        return (++currentIndex > layoutType.length) ? (currentIndex = 0) : currentIndex;
     }
 
     @Override

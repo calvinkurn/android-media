@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.shop.address.view.model.ShopAddressViewModel;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductListViewHolder;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductSingleViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
 import com.tokopedia.shop.product.view.model.ShopProductListViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
@@ -42,6 +43,8 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory implem
             viewHolder = new ShopProductViewHolder(view).setViewHolderListener(viewHolderListener);
         } else if(viewType == ShopProductListViewHolder.LAYOUT){
             viewHolder = new ShopProductListViewHolder(view);
+        } else if(viewType == ShopProductSingleViewHolder.LAYOUT){
+            viewHolder = new ShopProductSingleViewHolder(view);
         } else {
             viewHolder = super.createViewHolder(view, viewType);
         }
