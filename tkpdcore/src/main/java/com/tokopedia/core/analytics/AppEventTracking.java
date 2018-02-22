@@ -170,6 +170,7 @@ public interface AppEventTracking {
         String PRODUCT_VIEW = "productView";
         String LONG_CLICK = "longClick";
         String CLICK_PDP = "clickPDP";
+        String ADD_TO_CART_PDP = "addToCart";
     }
 
     interface Category {
@@ -491,8 +492,8 @@ public interface AppEventTracking {
     }
 
     interface EventLabel {
-        String HOME = "home";
-        String FAVORITE = "wishlist";
+        String HOME = "homepage";
+        String FAVORITE = "favorite";
         String PRODUCT_FEED = "feed";
         String HOTLIST = "hotlist";
 
@@ -1052,5 +1053,15 @@ public interface AppEventTracking {
         String PRODUCT_ID = "productId";
         String SHOP_ID = "shopId";
         String PROMO_ID = "promoId";
+    }
+
+    interface EventBranch {
+        String EVENT_LOGIN="login";
+        String EVENT_REGISTER="sign_up";
+    }
+
+    interface Branch {
+        String EMAIL="email";
+        String PHONE="phone";
     }
 }

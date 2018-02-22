@@ -103,7 +103,10 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
         } else if (TextUtils.isEmpty(contents)) {
             contents = getAppShareDefaultMessage();
         }
-        contents = contents + " Cek - ";
+        if(!contents.contains(activity.getString(R.string.cek_label))){
+            contents = contents + activity.getString(R.string.cek_label);
+        }
+
     }
 
     @Override
@@ -120,6 +123,9 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
             @Override
             public void onError(Throwable e) {
+                if(!isViewAttached()){
+                    return;
+                }
                 getView().hideProcessDialog();
                 e.printStackTrace();
                 if (TextUtils.isEmpty(getVoucherCodeFromCache())) {
@@ -140,6 +146,9 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
             @Override
             public void onNext(ReferralCodeEntity referralCodeEntity) {
+                if(!isViewAttached()){
+                    return;
+                }
                 if (referralCodeEntity.getErorMessage() == null) {
                     LocalCacheHandler localCacheHandler = new LocalCacheHandler(activity, TkpdCache.REFERRAL);
                     localCacheHandler.putString(TkpdCache.Key.REFERRAL_CODE, referralCodeEntity.getPromoContent().getCode());
@@ -223,6 +232,9 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
             @Override
             public void onNext(TokoCashModel tokoCashModel) {
+                if(!isViewAttached()){
+                    return;
+                }
                 if (tokoCashModel != null
                         && tokoCashModel.isSuccess()
                         && tokoCashModel.getTokoCashData() != null
