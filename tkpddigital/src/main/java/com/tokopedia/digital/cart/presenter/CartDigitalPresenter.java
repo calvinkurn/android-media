@@ -1,18 +1,19 @@
 package com.tokopedia.digital.cart.presenter;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.GlobalConfig;
@@ -285,6 +286,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                 } else if (e instanceof ResponseErrorException) {
                      /* Ini kalau error dari API kasih message error */
 //                    view.renderErrorCheckVoucher(e.getMessage());
+                    removeBranchPromoIfNeeded();
                 } else if (e instanceof ResponseDataNullException) {
                     /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
 //                    view.renderErrorCheckVoucher(e.getMessage());
@@ -558,4 +560,15 @@ TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
         return requestBodyCheckout;
     }
 
+    @Override
+    public void autoApplyCouponIfAvailable(String digitalCategoryId) {
+        String savedCoupon = BranchSdkUtils.getAutoApplyCouponIfAvailable(view.getActivity());
+        if (!TextUtils.isEmpty(savedCoupon)) {
+            processCheckVoucher(savedCoupon, digitalCategoryId);
+        }
+    }
+
+    private void removeBranchPromoIfNeeded(){
+        BranchSdkUtils.removeCouponCode(view.getActivity());
+    }
 }
