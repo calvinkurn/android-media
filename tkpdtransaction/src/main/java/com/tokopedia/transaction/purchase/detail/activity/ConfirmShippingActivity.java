@@ -135,12 +135,19 @@ public class ConfirmShippingActivity extends TActivity
 
     @Override
     public void receiveShipmentData(ListCourierViewModel model) {
-        CourierSelectionFragment courierSelectionFragment = CourierSelectionFragment.
-                createInstance(model);
-        getFragmentManager().beginTransaction()
-                .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
-                .add(R.id.main_view, courierSelectionFragment, SELECT_COURIER_FRAGMENT_TAG)
-                .commit();
+        if(model.getCourierViewModelList().size() == 0) {
+            NetworkErrorHelper.showSnackbar(
+                    ConfirmShippingActivity.this,
+                    getString(R.string.error_no_courier_available)
+            );
+        } else {
+            CourierSelectionFragment courierSelectionFragment = CourierSelectionFragment.
+                    createInstance(model);
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
+                    .add(R.id.main_view, courierSelectionFragment, SELECT_COURIER_FRAGMENT_TAG)
+                    .commit();
+        }
     }
 
     @Override

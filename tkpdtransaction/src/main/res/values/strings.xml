@@ -191,6 +191,7 @@
     <string name="title_bottomsheet_insurance">Asuransi Pengiriman</string>
     <string name="title_confirm_courier_page">Anda dapat mengganti pengiriman menjadi kurir reguler</string>
     <string name="subtitle_confirm_courier_page">Dengan persetujuan dari Pembeli</string>
+    <string name="error_no_courier_available">Produk in tidak dapat dikirim menggunakan kurir reguler</string>
 
     <string name="request_pickup_step_1">Pastikan pesanan sudah siap untuk di pick up</string>
     <string name="request_pickup_step_2"><![CDATA[Mohon untuk <b>tidak</b> memberikan ongkos kirim pada driver]]></string>
