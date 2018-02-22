@@ -341,7 +341,7 @@ public abstract class MainApplication extends BaseMainApplication{
     private void initBranch() {
         Branch.getAutoInstance(this);
         if (SessionHandler.isV4Login(this)) {
-            BranchSdkUtils.sendLoginEvent(SessionHandler.getLoginID(this));
+            BranchSdkUtils.sendIdentityEvent(SessionHandler.getLoginID(this));
         }
     }
 }

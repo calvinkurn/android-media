@@ -18,7 +18,6 @@ import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.transaction.R;
@@ -575,11 +574,6 @@ public class CartPresenter implements ICartPresenter {
                 thanksTopPayData.getParameter().getPaymentId(),
                 revenue, arrJas, qty, mapResult
         );
-
-        /*
-            Branch.io block
-         */
-        BranchSdkUtils.sendCommerceEvent(locaProducts, revenue, totalShipping);
 
     }
 
