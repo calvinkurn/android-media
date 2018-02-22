@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.checkout.view;
+package com.tokopedia.transaction.checkout.view.view.shippingoptions;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -49,6 +49,7 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.di.component.DaggerShipmentDetailComponent;
 import com.tokopedia.transaction.checkout.di.component.ShipmentDetailComponent;
+import com.tokopedia.transaction.checkout.view.InsuranceConstant;
 import com.tokopedia.transaction.checkout.view.adapter.CourierChoiceAdapter;
 import com.tokopedia.transaction.checkout.view.data.CourierItemData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;

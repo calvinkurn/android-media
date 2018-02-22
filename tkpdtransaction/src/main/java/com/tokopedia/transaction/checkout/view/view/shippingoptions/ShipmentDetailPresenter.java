@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.checkout.view.presenter;
+package com.tokopedia.transaction.checkout.view.view.shippingoptions;
 
 import android.text.TextUtils;
 
@@ -10,6 +10,7 @@ import com.tokopedia.transaction.checkout.domain.GetRatesUseCase;
 import com.tokopedia.transaction.checkout.view.data.CourierItemData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
+import com.tokopedia.transaction.checkout.view.presenter.IShipmentDetailPresenter;
 import com.tokopedia.transaction.checkout.view.view.IShipmentDetailView;
 
 import java.net.ConnectException;
