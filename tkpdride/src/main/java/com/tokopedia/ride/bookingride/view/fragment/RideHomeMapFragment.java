@@ -141,11 +141,12 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     private ArrayList<Marker> nearbyCabsMarkerList = new ArrayList<>();
     private ArrayList<Marker> nearbyMOTOMarkerList = new ArrayList<>();
     private boolean isMarkerRotating;
-    private int MAX_CABS_COUNT = 3;
-    private int MAX_MOTO_COUNT = 2;
+    private int MAX_CABS_COUNT = 2;
+    private int MAX_MOTO_COUNT = 1;
     private boolean showUberMoto = false;
     private boolean showUberCab = true;
     private ArrayList<Location> locationArrayList = new ArrayList<>();
+    private int FIXED_RADIUS = 100;
 
     public interface OnFragmentInteractionListener {
         void onSourceAndDestinationChanged(PlacePassViewModel source, PlacePassViewModel destination);
@@ -386,7 +387,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
                     }
                 }
             }
-            radius = ETA_RADIUS_RATIO * min / 60;
+            radius = FIXED_RADIUS + (ETA_RADIUS_RATIO * min / 60);
             if (googleMap != null && getVisibleCabsMarkerCount() < MAX_CABS_COUNT) {
                 double latitude = googleMap.getCameraPosition().target.latitude;
                 double longitude = googleMap.getCameraPosition().target.longitude;
