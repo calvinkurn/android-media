@@ -13,7 +13,7 @@ import java.util.List;
 public class ShipmentAddressFormDataResponse {
     @SerializedName("errors")
     @Expose
-    private Object errors;
+    private List<String> errors = new ArrayList<>();
     @SerializedName("error_code")
     @Expose
     private int errorCode;
@@ -33,7 +33,7 @@ public class ShipmentAddressFormDataResponse {
     @Expose
     private int keroUnixTime;
 
-    public Object getErrors() {
+    public List<String> getErrors() {
         return errors;
     }
 
