@@ -411,7 +411,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     private void setInsuranceTermsVisibility(CartCourierPrices cartCourierPrices) {
-        if (cartCourierPrices.getCartInsuranceProd() != 0) {
+        if (cartCourierPrices.getUseInsurance() != 0) {
             if (!hasLogisticInsurance &&
                     (cartCourierPrices.getInsuranceMode() == KeroppiConstants.InsuranceType.MUST ||
                             cartCourierPrices.getInsuranceMode() == KeroppiConstants.InsuranceType.OPTIONAL)) {
