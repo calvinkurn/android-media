@@ -48,7 +48,7 @@ import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity;
 import com.tokopedia.shop.info.view.activity.ShopPageActivity;
-import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
+import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 
 import java.util.ArrayList;
 

@@ -3,7 +3,7 @@
 
     <application android:label="@string/app_name">
         <activity
-            android:name=".info.view.activity.ShopPageActivity"
+            android:name=".page.view.activity.ShopPageActivity"
             android:exported="true"
             android:label="@string/shop_info_title"
             android:screenOrientation="portrait"

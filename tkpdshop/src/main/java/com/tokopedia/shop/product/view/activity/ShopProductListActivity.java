@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.shop.ShopComponentInstance;
 import com.tokopedia.shop.common.di.component.ShopComponent;
-import com.tokopedia.shop.info.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.fragment.ShopProductListFragment;
 
 /**

@@ -1,4 +1,4 @@
-package com.tokopedia.shop.info.view.activity;
+package com.tokopedia.shop.page.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -28,6 +28,7 @@ import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.common.util.TextApiUtils;
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent;
 import com.tokopedia.shop.info.di.module.ShopInfoModule;
+import com.tokopedia.shop.info.view.activity.ShopInfoActivity;
 import com.tokopedia.shop.info.view.listener.ShopPageView;
 import com.tokopedia.shop.info.view.presenter.ShopPagePresenter;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
