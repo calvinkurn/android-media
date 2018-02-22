@@ -138,12 +138,12 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                 officialStoreDomains,
                 topPicksDomains,
                 inspirationDomains,
+                topadsData,
                 kolPostDomain,
                 kolRecommendations,
                 favoriteCtaDomain,
                 kolCtaDomain,
-                content.status_activity(),
-                topadsData);
+                content.status_activity());
     }
 
     private SourceFeedDomain createSourceFeedDomain(

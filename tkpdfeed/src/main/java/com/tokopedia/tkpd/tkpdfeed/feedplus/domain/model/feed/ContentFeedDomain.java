@@ -44,6 +44,9 @@ public class ContentFeedDomain {
     private final List<InspirationDomain> inspirationDomains;
 
     @Nullable
+    private final List<Data> topAdsList;
+
+    @Nullable
     private final KolPostDomain kolPostDomain;
 
     @Nullable
@@ -55,8 +58,6 @@ public class ContentFeedDomain {
     @Nullable
     private final KolCtaDomain kolCtaDomain;
 
-    @Nullable
-    private final List<Data> topadsDomains;
 
     public ContentFeedDomain(@Nullable String type, @Nullable int total_product,
                              @Nullable List<ProductFeedDomain> products,
@@ -64,12 +65,12 @@ public class ContentFeedDomain {
                              @Nullable List<OfficialStoreDomain> officialStores,
                              @Nullable List<TopPicksDomain> topPicksDomains,
                              @Nullable List<InspirationDomain> inspirationDomains,
+                             @Nullable List<Data> topAdsList,
                              @Nullable KolPostDomain kolPostDomain,
                              @Nullable KolRecommendationDomain kolRecommendations,
                              @Nullable FavoriteCtaDomain favoriteCtaDomain,
                              @Nullable KolCtaDomain kolCtaDomain,
-                             @Nullable String status_activity,
-                             @Nullable List<Data> topadsDomains) {
+                             @Nullable String status_activity) {
         this.type = type;
         this.totalProduct = total_product;
         this.products = products;
@@ -78,11 +79,11 @@ public class ContentFeedDomain {
         this.topPicksDomains = topPicksDomains;
         this.officialStores = officialStores;
         this.inspirationDomains = inspirationDomains;
+        this.topAdsList = topAdsList;
         this.kolPostDomain = kolPostDomain;
         this.kolRecommendations = kolRecommendations;
         this.favoriteCtaDomain = favoriteCtaDomain;
         this.kolCtaDomain = kolCtaDomain;
-        this.topadsDomains = topadsDomains;
     }
 
     @Nullable
@@ -146,7 +147,7 @@ public class ContentFeedDomain {
     }
 
     @Nullable
-    public List<Data> getTopadsDomains() {
-        return topadsDomains;
+    public List<Data> getTopAdsList() {
+        return topAdsList;
     }
 }

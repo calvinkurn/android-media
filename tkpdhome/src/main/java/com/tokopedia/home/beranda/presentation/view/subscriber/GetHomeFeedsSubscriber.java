@@ -4,12 +4,15 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.home.beranda.listener.HomeFeedListener;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationProductViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.InspirationItemDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.DataFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
+import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.topads.sdk.domain.model.Product;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +26,7 @@ import rx.Subscriber;
 public class GetHomeFeedsSubscriber extends Subscriber<FeedResult> {
 
     private static final String TYPE_INSPIRATION = "inspirasi";
+    private static final String TYPE_TOPADS = "topads";
 
     private final HomeFeedListener viewListener;
     private final int page;
@@ -104,6 +108,10 @@ public class GetHomeFeedsSubscriber extends Subscriber<FeedResult> {
                             cache.putInt(LAST_POSITION_ENHANCE_PRODUCT, positionFeedProductCard);
                             cache.applyEditor();
                         }
+                        break;
+                    case TYPE_TOPADS:
+                        TopAdsViewModel topAdsViewModel = new TopAdsViewModel(domain.getContent().getTopAdsList());
+                        listFeedView.add(topAdsViewModel);
                         break;
                     default:
                         break;
