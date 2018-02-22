@@ -1,6 +1,8 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper;
 
+import com.google.gson.Gson;
 import com.tkpdfeed.feeds.FeedQuery;
+import com.tkpdfeed.feeds.HomeFeedQuery;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.InspirationItemDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.TopPicksDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.ContentFeedDomain;
@@ -23,14 +25,10 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.LabelDoma
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialStoreDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialStoreProductDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.ShopDomain;
-import com.tokopedia.topads.sdk.domain.model.Badge;
-import com.tokopedia.topads.sdk.domain.model.Category;
 import com.tokopedia.topads.sdk.domain.model.Data;
-import com.tokopedia.topads.sdk.domain.model.ImageProduct;
-import com.tokopedia.topads.sdk.domain.model.ImageShop;
-import com.tokopedia.topads.sdk.domain.model.Product;
-import com.tokopedia.topads.sdk.domain.model.ProductImage;
-import com.tokopedia.topads.sdk.domain.model.Shop;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -276,9 +274,7 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                 KolCtaDomain kolCtaDomain = datum.content().kol_cta() != null ?
                         convertToKolCtaDomain(datum.content().kol_cta()) :
                         null;
-                //TODO milhamj
-//                List<Data> topadsData = convertToTopadsDomain(datum.content().display(),
-//                        datum.content().topads());
+                List<Data> topadsData = convertToTopadsDomain(datum.content().topads());
                 ContentFeedDomain contentFeedDomain = createContentFeedDomain(
                         datum.content(),
                         productFeedDomains,
@@ -290,7 +286,7 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                         kolRecommendations,
                         favoriteCta,
                         kolCtaDomain,
-                        null
+                        topadsData
                 );
                 SourceFeedDomain sourceFeedDomain =
                         createSourceFeedDomain(datum.source(), shopFeedDomain);
@@ -468,6 +464,21 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                 kol_cta.button_text(),
                 kol_cta.title(),
                 kol_cta.subtitle());
+    }
+
+    private List<Data> convertToTopadsDomain(List<FeedQuery.Data.Topad> topads) {
+        List<Data> list = new ArrayList<>();
+        if (topads != null) {
+            for (FeedQuery.Data.Topad topad : topads) {
+                try {
+                    list.add(new Data(new JSONObject(new Gson().toJson(topad, HomeFeedQuery.Data
+                            .Topad.class))));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return list;
     }
 
     private DataFeedDomain createDataFeedDomain(FeedQuery.Data.Datum datum,
