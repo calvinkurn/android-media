@@ -187,7 +187,7 @@ public class ListViewShopTxDetailProdListV2 extends BaseAdapter{
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.startActivity(ProductInfoActivity.getIntent(context, modelList.get(pos).ProductIdList));
+                context.startActivity(ProductInfoActivity.createInstance(context, modelList.get(pos).ProductIdList));
             }
         };
     }
