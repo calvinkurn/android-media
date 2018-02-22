@@ -1,16 +1,23 @@
 package com.tokopedia.transaction.checkout.view.presenter;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.transaction.checkout.domain.model.ShipmentAddressModel;
+import com.tokopedia.transaction.checkout.domain.usecase.GetAddressListUseCase;
 import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
-import com.tokopedia.transaction.checkout.view.data.factory.ShipmentRecipientModelFactory;
 import com.tokopedia.transaction.checkout.view.view.ISearchAddressListView;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Observer;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -23,8 +30,11 @@ public class ShipmentAddressListPresenter
 
     private static final String TAG = ShipmentAddressListPresenter.class.getSimpleName();
 
-    public ShipmentAddressListPresenter() {
+    private final GetAddressListUseCase mGetAddressListUseCase;
 
+    @Inject
+    public ShipmentAddressListPresenter(GetAddressListUseCase getAddressListUseCase) {
+        mGetAddressListUseCase = getAddressListUseCase;
     }
 
     @Override
@@ -37,21 +47,28 @@ public class ShipmentAddressListPresenter
         super.checkViewAttached();
     }
 
-    public void initSearch(String keyword) {
-        filter(fetchAddressList(), keyword);
-    }
-
-    public void resetSearch() {
-        filter(fetchAddressList(), "");
-    }
-
     public void getAddressList() {
-        getMvpView().showList(fetchAddressList());
+        mGetAddressListUseCase.execute(getRequestParams(),
+                new Subscriber<List<ShipmentAddressModel>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<ShipmentAddressModel> shipmentAddressModels) {
+                        Log.d(TAG, "size: " + shipmentAddressModels.size());
+                    }
+        });
     }
 
-    private List<ShipmentRecipientModel> fetchAddressList() {
-        // TODO remove this, and invoke use case
-        return ShipmentRecipientModelFactory.getDummyShipmentRecipientModelList();
+    private RequestParams getRequestParams() {
+        return RequestParams.create();
     }
 
     private void filter(List<ShipmentRecipientModel> addressList, final String keyword) {

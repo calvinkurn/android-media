@@ -1,6 +1,10 @@
 package com.tokopedia.transaction.checkout.di.module;
 
+import com.tokopedia.core.network.apiservices.user.PeopleService;
+import com.tokopedia.transaction.checkout.data.repository.PeopleAddressRepositoryImpl;
 import com.tokopedia.transaction.checkout.di.scope.ShipmentAddressListScope;
+import com.tokopedia.transaction.checkout.domain.repository.PeopleAddressRepository;
+import com.tokopedia.transaction.checkout.domain.usecase.GetAddressListUseCase;
 import com.tokopedia.transaction.checkout.view.ShipmentAddressListFragment;
 import com.tokopedia.transaction.checkout.view.adapter.ShipmentAddressListAdapter;
 import com.tokopedia.transaction.checkout.view.presenter.ShipmentAddressListPresenter;
@@ -22,8 +26,8 @@ public class ShipmentAddressListModule {
 
     @Provides
     @ShipmentAddressListScope
-    ShipmentAddressListPresenter provideCartAddressListPresenter() {
-        return new ShipmentAddressListPresenter();
+    ShipmentAddressListPresenter provideCartAddressListPresenter(GetAddressListUseCase getAddressListUseCase) {
+        return new ShipmentAddressListPresenter(getAddressListUseCase);
     }
 
     @Provides
@@ -32,5 +36,28 @@ public class ShipmentAddressListModule {
         return new ShipmentAddressListAdapter(actionListener);
     }
 
+    @Provides
+    @ShipmentAddressListScope
+    PeopleService providePeopleService() {
+        return new PeopleService();
+    }
+
+    @Provides
+    @ShipmentAddressListScope
+    PeopleAddressRepositoryImpl providePeopleAddressRepositoryImpl(PeopleService peopleService) {
+        return new PeopleAddressRepositoryImpl(peopleService);
+    }
+
+    @Provides
+    @ShipmentAddressListScope
+    PeopleAddressRepository providePeopleAddressRepository(PeopleAddressRepositoryImpl peopleAddressRepositoryImpl) {
+        return peopleAddressRepositoryImpl;
+    }
+
+    @Provides
+    @ShipmentAddressListScope
+    GetAddressListUseCase provideGetAddressListUseCase(PeopleAddressRepository peopleAddressRepository) {
+        return new GetAddressListUseCase(peopleAddressRepository);
+    }
 
 }

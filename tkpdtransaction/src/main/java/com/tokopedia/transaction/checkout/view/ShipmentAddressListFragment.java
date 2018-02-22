@@ -39,8 +39,7 @@ import butterknife.OnClick;
  */
 public class ShipmentAddressListFragment extends BasePresenterFragment
         implements ISearchAddressListView<List<ShipmentRecipientModel>>,
-        SearchInputView.Listener,
-        SearchInputView.ResetListener,
+        SearchInputView.Listener, SearchInputView.ResetListener,
         FragmentManager.OnBackStackChangedListener, ShipmentAddressListAdapter.ActionListener {
 
     private static final String TAG = ShipmentAddressListFragment.class.getSimpleName();
@@ -246,7 +245,7 @@ public class ShipmentAddressListFragment extends BasePresenterFragment
 
     @Override
     public void onSearchReset() {
-        mShipmentAddressListPresenter.resetSearch();
+//        mShipmentAddressListPresenter.resetSearch();
         closeSoftKeyboard();
     }
 
@@ -257,7 +256,7 @@ public class ShipmentAddressListFragment extends BasePresenterFragment
 
     private void performSearch(String keyword) {
         if (!keyword.isEmpty()) {
-            mShipmentAddressListPresenter.initSearch(keyword);
+//            mShipmentAddressListPresenter.initSearch(keyword);
         } else {
             onSearchReset();
         }
