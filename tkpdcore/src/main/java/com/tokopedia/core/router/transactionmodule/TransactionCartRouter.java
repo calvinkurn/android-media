@@ -14,7 +14,7 @@ public class TransactionCartRouter {
             = "com.tokopedia.transaction.cart.activity.CartActivity";
 
     private final static String CART_ACTIVITY_NEW
-            = "com.tokopedia.transaction.checkout.view.activity.CartActivity";
+            = "com.tokopedia.transaction.checkout.view.view.cartlist.CartActivity";
 
     public static Intent createInstanceCartActivity(Context context) {
         return RouterUtils.getActivityIntent(context, CART_ACTIVITY_NEW);

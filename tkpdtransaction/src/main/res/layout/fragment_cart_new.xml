@@ -11,7 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        app:cardElevation="@dimen/padding_med">
+        android:visibility="gone"
+        app:cardElevation="@dimen/padding_med"
+        tools:visibility="visible">
 
         <LinearLayout
             android:id="@+id/layout_1"
