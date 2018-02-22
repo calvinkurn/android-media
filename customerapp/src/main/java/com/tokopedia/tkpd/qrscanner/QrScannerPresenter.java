@@ -45,6 +45,8 @@ import static com.tokopedia.tkpd.campaign.domain.barcode.PostBarCodeDataUseCase.
 public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.View>
         implements QrScannerContract.Presenter {
 
+    private static final String TAG_QR_PAYMENT = "QR";
+
     private PostBarCodeDataUseCase postBarCodeDataUseCase;
     private GetInfoQrTokoCashUseCase getInfoQrTokoCashUseCase;
     private GetBalanceTokoCashUseCase getBalanceTokoCashUseCase;
@@ -85,7 +87,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
         }
     }
 
-    private void onScanCompleteGetInfoQrPayment(final String qrcode) {
+    private void onScanCompleteGetInfoQrPayment(String qrcode) {
         if (isUserLogin()) {
             getAbTagsForContinuingPayment(qrcode);
         } else {
@@ -176,7 +178,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
 
     private boolean isContinuingPayment(List<String> abTags) {
         for (String abTag : abTags) {
-            if (abTag.equals("QR")) {
+            if (abTag.equals(TAG_QR_PAYMENT)) {
                 return true;
             }
         }

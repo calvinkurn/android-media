@@ -20,6 +20,7 @@ import rx.functions.Func1;
 public class CloudBalanceDataSource implements BalanceDataSource {
 
     private static final String TAG = CloudBalanceDataSource.class.getName();
+    private static final int DURATION_SAVE_TO_CACHE = 60;
 
     private WalletService walletService;
     private CacheManager cacheManager;
@@ -40,7 +41,7 @@ public class CloudBalanceDataSource implements BalanceDataSource {
                             cacheManager.save(CacheUtil.KEY_TOKOCASH_BALANCE_CACHE,
                                     CacheUtil.convertModelToString(dataResponseResponse.body(),
                                             new TypeToken<TokoCashEntity>() {
-                                            }.getType()), 60);
+                                            }.getType()), DURATION_SAVE_TO_CACHE);
                         }
                     }
                 })

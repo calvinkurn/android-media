@@ -177,8 +177,9 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
 
     @Override
     public void showProgressDialog() {
-        if (progressBar != null)
+        if (progressBar != null) {
             progressBar.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
