@@ -4,14 +4,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.seller.base.view.adapter.ItemPickerType;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.PictureItem;
-
-import java.util.List;
 
 /**
  * Created by nathan on 8/4/17.
  */
 
+@Deprecated
 public class ProductVariantViewModel implements ItemPickerType, Parcelable {
 
     public final static int TYPE = 123;

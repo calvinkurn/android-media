@@ -13,7 +13,7 @@ import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.PictureItem;
+import com.tokopedia.seller.product.variant.data.model.variantbyprdold.PictureItem;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantCombinationSubmit;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantDataSubmit;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantOptionSubmit;
@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * Created by hendry on 4/3/17.
  */
-
+@Deprecated
 public class ProductVariantDashboardFragment extends BaseListFragment<BlankPresenter, ProductVariantDashboardViewModel> implements ProductVariantMainView {
 
     private static final int MULTIPLY_START_TEMP_ID = 10000;
@@ -79,7 +79,7 @@ public class ProductVariantDashboardFragment extends BaseListFragment<BlankPrese
         super.initView(view);
         variantLevelOneLabelView = (LabelView) view.findViewById(R.id.label_view_variant_level_one);
         variantLevelTwoLabelView = (LabelView) view.findViewById(R.id.label_view_variant_level_two);
-        variantListView = view.findViewById(R.id.linear_layout_variant_list);
+        variantListView = view.findViewById(R.id.recycler_view);
     }
 
     @Override

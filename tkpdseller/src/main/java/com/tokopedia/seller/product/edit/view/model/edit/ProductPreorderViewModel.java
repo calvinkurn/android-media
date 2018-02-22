@@ -14,10 +14,10 @@ public class ProductPreorderViewModel implements Parcelable {
     private long preorderProcessTime;
     @SerializedName("preorder_time_unit")
     @Expose
-    private long preorderTimeUnit; //1:day, 2:week
+    private long preorderTimeUnit; //1:day, 2:week, 3:month
     @SerializedName("preorder_status")
     @Expose
-    private long preorderStatus; // 1:active; -1: not active
+    private long preorderStatus; // 1:active; 0: not active
 
     public long getPreorderProcessTime() {
         return preorderProcessTime;

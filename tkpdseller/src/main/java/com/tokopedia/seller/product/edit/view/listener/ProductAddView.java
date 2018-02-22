@@ -45,7 +45,7 @@ public interface ProductAddView extends CustomerView {
 
     long getProductDraftId();
 
-    void onSuccessGetProductVariant(List<ProductVariantByCatModel> productVariantByCatModelList);
+    void onSuccessGetProductVariantCat(List<ProductVariantByCatModel> productVariantByCatModelList);
 
     void onErrorGetProductVariantByCat(Throwable throwable);
 

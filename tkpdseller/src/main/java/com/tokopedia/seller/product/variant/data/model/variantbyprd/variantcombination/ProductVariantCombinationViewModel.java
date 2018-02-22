@@ -1,5 +1,5 @@
 
-package com.tokopedia.seller.product.edit.view.model.edit.variantbyprd.variantcombination;
+package com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -11,9 +11,11 @@ import com.google.gson.annotations.SerializedName;
 
 public class ProductVariantCombinationViewModel implements Parcelable{
 
+    public static final int ACTIVE_STATUS = 1; // from API
+
     @SerializedName("st")
     @Expose
-    private long st;
+    private int st;
 
     @SerializedName("price_var")
     @Expose
@@ -31,11 +33,15 @@ public class ProductVariantCombinationViewModel implements Parcelable{
     @Expose
     private List<Integer> opt = null; // option combination of t_id of selected variants
 
-    public long getSt() {
+    public boolean isActive(){
+        return st == ACTIVE_STATUS;
+    }
+
+    public int getSt() {
         return st;
     }
 
-    public void setSt(long st) {
+    public void setSt(int st) {
         this.st = st;
     }
 
@@ -78,7 +84,7 @@ public class ProductVariantCombinationViewModel implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(this.st);
+        dest.writeInt(this.st);
         dest.writeLong(this.priceVar);
         dest.writeLong(this.stock);
         dest.writeString(this.sku);
@@ -89,7 +95,7 @@ public class ProductVariantCombinationViewModel implements Parcelable{
     }
 
     protected ProductVariantCombinationViewModel(Parcel in) {
-        this.st = in.readLong();
+        this.st = in.readInt();
         this.priceVar = in.readLong();
         this.stock = in.readLong();
         this.sku = in.readString();

@@ -9,9 +9,9 @@ import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.seller.base.view.adapter.ItemType;
-import com.tokopedia.seller.product.edit.view.model.edit.variantbyprd.ProductVariantViewModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
 
-//TODO need this: product_sizechart from_ig image_id
+//TODO need this: from_ig
 public class ProductViewModel implements ItemType, Parcelable {
 
     public static final int TYPE = 382;
@@ -90,19 +90,19 @@ public class ProductViewModel implements ItemType, Parcelable {
 
     @SerializedName("product_brand")
     @Expose
-    private ProductBrandViewModel productBrand;
+    private ProductBrandViewModel productBrand = null;
 
     @SerializedName("product_catalog")
     @Expose
-    private ProductCatalogViewModel productCatalog;
+    private ProductCatalogViewModel productCatalog = null;
 
     @SerializedName("product_category")
     @Expose
-    private ProductCategoryViewModel productCategory;
+    private ProductCategoryViewModel productCategory = null;
 
     @SerializedName("product_etalase")
     @Expose
-    private ProductEtalaseViewModel productEtalase;
+    private ProductEtalaseViewModel productEtalase = null;
 
     @SerializedName("product_picture")
     @Expose
@@ -110,11 +110,11 @@ public class ProductViewModel implements ItemType, Parcelable {
 
     @SerializedName("product_preorder")
     @Expose
-    private ProductPreorderViewModel productPreorder;
+    private ProductPreorderViewModel productPreorder = null;
 
     @SerializedName("product_position")
     @Expose
-    private ProductPositionViewModel productPosition;
+    private ProductPositionViewModel productPosition = null;
 
     @SerializedName("product_shop")
     @Expose
@@ -122,11 +122,11 @@ public class ProductViewModel implements ItemType, Parcelable {
 
     @SerializedName("product_sizechart")
     @Expose
-    private ProductPictureViewModel productSizeChart;
+    private List<ProductPictureViewModel> productSizeChart = null;
 
     @SerializedName("product_wholesale")
     @Expose
-    private List<ProductWholesaleViewModel> productWholesale = new ArrayList<>();
+    private List<ProductWholesaleViewModel> productWholesale = null;
 
     /**
      * get from GM. set for saubmit add/edit product
@@ -137,7 +137,7 @@ public class ProductViewModel implements ItemType, Parcelable {
 
     @SerializedName("product_variant")
     @Expose
-    private ProductVariantViewModel productVariant;
+    private ProductVariantViewModel productVariant = null;
 
     @SerializedName("product_name_editable")
     @Expose
@@ -461,13 +461,13 @@ public class ProductViewModel implements ItemType, Parcelable {
         dest.writeParcelable(this.productCatalog, flags);
         dest.writeParcelable(this.productCategory, flags);
         dest.writeParcelable(this.productEtalase, flags);
-        dest.writeList(this.productPictureViewModelList);
+        dest.writeTypedList(this.productPictureViewModelList);
         dest.writeParcelable(this.productPreorder, flags);
         dest.writeParcelable(this.productPosition, flags);
         dest.writeParcelable(this.productShop, flags);
-        dest.writeParcelable(this.productSizeChart, flags);
+        dest.writeTypedList(this.productSizeChart);
         dest.writeTypedList(this.productWholesale);
-        dest.writeList(this.productVideo);
+        dest.writeTypedList(this.productVideo);
         dest.writeParcelable(this.productVariant, flags);
         dest.writeByte(this.productNameEditable ? (byte) 1 : (byte) 0);
         dest.writeLong(this.draftId);
@@ -500,15 +500,13 @@ public class ProductViewModel implements ItemType, Parcelable {
         this.productCatalog = in.readParcelable(ProductCatalogViewModel.class.getClassLoader());
         this.productCategory = in.readParcelable(ProductCategoryViewModel.class.getClassLoader());
         this.productEtalase = in.readParcelable(ProductEtalaseViewModel.class.getClassLoader());
-        this.productPictureViewModelList = new ArrayList<ProductPictureViewModel>();
-        in.readList(this.productPictureViewModelList, ProductPictureViewModel.class.getClassLoader());
+        this.productPictureViewModelList = in.createTypedArrayList(ProductPictureViewModel.CREATOR);
         this.productPreorder = in.readParcelable(ProductPreorderViewModel.class.getClassLoader());
         this.productPosition = in.readParcelable(ProductPositionViewModel.class.getClassLoader());
         this.productShop = in.readParcelable(ProductShopViewModel.class.getClassLoader());
-        this.productSizeChart = in.readParcelable(ProductPictureViewModel.class.getClassLoader());
+        this.productSizeChart = in.createTypedArrayList(ProductPictureViewModel.CREATOR);
         this.productWholesale = in.createTypedArrayList(ProductWholesaleViewModel.CREATOR);
-        this.productVideo = new ArrayList<ProductVideoViewModel>();
-        in.readList(this.productVideo, ProductVideoViewModel.class.getClassLoader());
+        this.productVideo = in.createTypedArrayList(ProductVideoViewModel.CREATOR);
         this.productVariant = in.readParcelable(ProductVariantViewModel.class.getClassLoader());
         this.productNameEditable = in.readByte() != 0;
         this.draftId = in.readLong();

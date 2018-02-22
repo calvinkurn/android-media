@@ -3,7 +3,7 @@ package com.tokopedia.seller.product.variant.data.source;
 import com.tokopedia.abstraction.common.network.mapper.DataResponseMapper;
 import com.tokopedia.seller.product.variant.data.cloud.ProductVariantCloud;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprdold.ProductVariantByPrdModel;
 
 import java.util.List;
 

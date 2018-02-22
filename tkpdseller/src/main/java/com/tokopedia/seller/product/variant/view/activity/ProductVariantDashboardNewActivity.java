@@ -6,13 +6,13 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantDashboardFragment;
+import com.tokopedia.seller.product.variant.view.fragment.ProductVariantDashboardNewFragment;
 
 /**
  * Created by nathan on 8/2/17.
- * replaced by ProductVariantDashboardNewActivity
  */
-@Deprecated
-public class ProductVariantDashboardActivity extends BaseSimpleActivity {
+
+public class ProductVariantDashboardNewActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
@@ -24,7 +24,7 @@ public class ProductVariantDashboardActivity extends BaseSimpleActivity {
         if (getFragment()!= null && getFragment() instanceof ProductVariantDashboardFragment) {
             Intent intent = new Intent();
             intent.putExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION,
-                    ((ProductVariantDashboardFragment) getFragment()).getProductVariantDataSubmit());
+                    ((ProductVariantDashboardNewFragment) getFragment()).getProductVariantViewModel());
             setResult(RESULT_OK, intent);
             this.finish();
         } else {

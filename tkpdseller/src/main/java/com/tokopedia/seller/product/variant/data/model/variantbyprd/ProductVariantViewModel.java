@@ -1,17 +1,18 @@
 
-package com.tokopedia.seller.product.edit.view.model.edit.variantbyprd;
+package com.tokopedia.seller.product.variant.data.model.variantbyprd;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.seller.product.edit.view.model.edit.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
-import com.tokopedia.seller.product.edit.view.model.edit.variantbyprd.variantoption.ProductVariantOptionParent;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionParent;
 
-public class ProductVariantViewModel implements Parcelable{
+public class ProductVariantViewModel implements Parcelable {
 
     @SerializedName("variant")
     @Expose
@@ -31,6 +32,10 @@ public class ProductVariantViewModel implements Parcelable{
 
     public List<ProductVariantCombinationViewModel> getProductVariant() {
         return productVariant;
+    }
+
+    public boolean hasSelectedVariant() {
+        return productVariant != null && productVariant.size() > 0;
     }
 
     public void setProductVariant(List<ProductVariantCombinationViewModel> productVariant) {

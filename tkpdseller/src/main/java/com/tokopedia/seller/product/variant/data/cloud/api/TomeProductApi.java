@@ -5,7 +5,7 @@ import com.tokopedia.seller.product.edit.constant.ProductUrl;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.ProductUploadResultModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprdold.ProductVariantByPrdModel;
 
 import java.util.List;
 
@@ -25,10 +25,12 @@ import rx.Observable;
 
 public interface TomeProductApi {
 
+    //TODO data response will be changed. ProductUploadResultModel no longer valid
     @Headers({"Content-Type: application/json"})
     @POST(ProductUrl.URL_ADD_PRODUCT)
     Observable<Response<DataResponse<ProductUploadResultModel>>> addProductSubmit(@Body ProductViewModel productViewModel);
 
+    //TODO data response will be changed. ProductUploadResultModel no longer valid
     @Headers({"Content-Type: application/json"})
     @PATCH(ProductUrl.URL_ADD_PRODUCT + "/{" + ProductUrl.PRODUCT_ID + "}")
     Observable<Response<DataResponse<ProductUploadResultModel>>> editProductSubmit(@Body ProductViewModel productViewModel,

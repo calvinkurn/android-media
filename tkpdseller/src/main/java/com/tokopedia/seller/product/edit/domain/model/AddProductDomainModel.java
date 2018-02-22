@@ -4,6 +4,7 @@ package com.tokopedia.seller.product.edit.domain.model;
  * @author sebastianuskh on 4/10/17.
  */
 
+//TODO no need to send have this object
 public class AddProductDomainModel {
     private int productId;
     private String productDesc;

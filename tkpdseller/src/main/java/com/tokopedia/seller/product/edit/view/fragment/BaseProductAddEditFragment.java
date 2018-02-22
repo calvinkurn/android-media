@@ -56,6 +56,7 @@ import com.tokopedia.seller.product.edit.view.mapper.AnalyticsMapper;
 import com.tokopedia.seller.product.edit.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
@@ -65,9 +66,7 @@ import com.tokopedia.seller.product.edit.view.widget.ImagesSelectView;
 import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantDataSubmit;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantOptionSubmit;
-import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity;
+import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardNewActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -408,9 +407,7 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
     }
 
     @Override
-    public final void startProductVariantActivity(ArrayList<ProductVariantByCatModel> productVariantByCatModelList,
-                                                  ProductVariantDataSubmit productVariantDataSubmit,
-                                                  ArrayList<ProductVariantOptionSubmit> productVariantOptionSubmitArrayList) {
+    public final void startProductVariantActivity(ArrayList<ProductVariantByCatModel> productVariantByCatModelList) {
         if (productVariantByCatModelList == null || productVariantByCatModelList.size() == 0) {
             NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
                 @Override
@@ -420,13 +417,8 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
             }).showRetrySnackbar();
             return;
         }
-        Intent intent = new Intent(getActivity(), ProductVariantDashboardActivity.class);
+        Intent intent = new Intent(getActivity(), ProductVariantDashboardNewActivity.class);
         intent.putExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, productVariantByCatModelList);
-        if (productVariantDataSubmit != null && productVariantDataSubmit.getProductVariantUnitSubmitList()!= null &&
-                productVariantByCatModelList.size() > 0) {
-            intent.putExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION, productVariantDataSubmit);
-        }
-        intent.putExtra(ProductVariantConstant.EXTRA_OLD_PRODUCT_OPTION_SUBMIT_LV1_LIST, productVariantOptionSubmitArrayList);
         startActivityForResult(intent, ProductManageViewHolder.REQUEST_CODE_VARIANT);
     }
 
@@ -551,11 +543,11 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
 
     @Override
     public void onErrorGetProductVariantByCat(Throwable throwable) {
-        onSuccessGetProductVariant(null);
+        onSuccessGetProductVariantCat(null);
     }
 
     @Override
-    public void onSuccessGetProductVariant(List<ProductVariantByCatModel> productVariantByCatModelList) {
+    public void onSuccessGetProductVariantCat(List<ProductVariantByCatModel> productVariantByCatModelList) {
         productManageViewHolder.onSuccessGetProductVariantCat(productVariantByCatModelList);
     }
 
@@ -584,7 +576,7 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
     @Override
     public final void onCategoryChanged(long categoryId) {
         // as default, the variant inputted will be deleted (wihtout notice)
-        productManageViewHolder.setProductVariantDataSubmit(null, "");
+        currentProductViewModel.setProductVariant(null);
         productManageViewHolder.onSuccessGetProductVariantCat(null);
         // check catalog by categoryID
         onCategoryLoaded(categoryId);
@@ -815,6 +807,16 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
     @Override
     public void updateProductScoring() {
         presenter.getProductScoring(valueIndicatorScoreModel);
+    }
+
+    @Override
+    public ProductVariantViewModel getCurrentVariantModel() {
+        return currentProductViewModel.getProductVariant();
+    }
+
+    @Override
+    public void updateVariantModel(ProductVariantViewModel productVariantViewModel) {
+        currentProductViewModel.setProductVariant(productVariantViewModel);
     }
 
     @Override

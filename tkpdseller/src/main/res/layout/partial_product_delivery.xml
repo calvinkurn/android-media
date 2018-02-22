@@ -36,20 +36,20 @@
             app:spinner_decimal_values="@array/product_weight_values" />
 
         <com.tokopedia.design.text.SpinnerTextView
-            android:id="@+id/spinner_text_view_free_returns"
-            style="@style/LabelLayout"
-            android:visibility="gone"
-            app:spinner_entries="@array/product_free_returns_entries"
-            app:spinner_hint="@string/product_label_free_returns"
-            app:spinner_values="@array/product_free_returns_values"
-            tools:visibility="visible" />
-
-        <com.tokopedia.design.text.SpinnerTextView
             android:id="@+id/spinner_text_view_insurance"
             style="@style/LabelLayout"
             app:spinner_entries="@array/product_insurance_entries"
             app:spinner_hint="@string/product_label_insurance"
             app:spinner_values="@array/product_insurance_values" />
+
+        <com.tokopedia.seller.common.widget.LabelSwitch
+            android:id="@+id/label_switch_free_return"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/LabelLayout"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:title="@string/product_label_free_returns" />
 
         <com.tokopedia.expandable.ExpandableOptionSwitch
             android:id="@+id/expandable_option_switch_pre_order"

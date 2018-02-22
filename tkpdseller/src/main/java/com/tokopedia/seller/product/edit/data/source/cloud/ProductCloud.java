@@ -23,11 +23,13 @@ public class ProductCloud {
         this.tomeProductApi = tomeProductApi;
     }
 
+    //TODO no need to have mapper
     public Observable<ProductUploadResultModel> addProductSubmit(ProductViewModel productViewModel) {
         return tomeProductApi.addProductSubmit(productViewModel)
                 .map(new DataResponseMapper<ProductUploadResultModel>());
     }
 
+    //TODO no need to have mapper
     public Observable<ProductUploadResultModel> editProduct(ProductViewModel productViewModel) {
         return tomeProductApi.editProductSubmit(productViewModel, String.valueOf(productViewModel.getProductId()))
                 .map(new DataResponseMapper<ProductUploadResultModel>());

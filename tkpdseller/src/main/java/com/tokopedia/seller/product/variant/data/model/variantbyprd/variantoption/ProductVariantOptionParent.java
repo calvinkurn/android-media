@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.edit.view.model.edit.variantbyprd.variantoption;
+package com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ProductVariantOptionParent implements Parcelable{
@@ -31,17 +30,17 @@ public class ProductVariantOptionParent implements Parcelable{
     private List<ProductVariantOptionChild> productVariantOptionChild;
 
     //TODO from catalog
-    //@SerializedName("name")
-    //@Expose
-    //private String name; // ex; warna
+    @SerializedName("name")
+    @Expose
+    private String name; // ex; warna
 
-    //@SerializedName("identifier")
-    //@Expose
-    //private String identifier; // ex: color
+    @SerializedName("identifier")
+    @Expose
+    private String identifier; // ex: color
 
-    //@SerializedName("unit_name")
-    //@Expose
-    //private String unitName; // ex: "" (for no unit),  "International"
+    @SerializedName("unit_name")
+    @Expose
+    private String unitName; // ex: "" (for no unit),  "International"
 
     public int getPv() {
         return pv;
@@ -83,6 +82,30 @@ public class ProductVariantOptionParent implements Parcelable{
         this.productVariantOptionChild = productVariantOptionChild;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
+
+    public String getUnitName() {
+        return unitName;
+    }
+
+    public void setUnitName(String unitName) {
+        this.unitName = unitName;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -94,7 +117,10 @@ public class ProductVariantOptionParent implements Parcelable{
         dest.writeInt(this.v);
         dest.writeInt(this.vu);
         dest.writeInt(this.position);
-        dest.writeList(this.productVariantOptionChild);
+        dest.writeTypedList(this.productVariantOptionChild);
+        dest.writeString(this.name);
+        dest.writeString(this.identifier);
+        dest.writeString(this.unitName);
     }
 
     public ProductVariantOptionParent() {
@@ -105,8 +131,10 @@ public class ProductVariantOptionParent implements Parcelable{
         this.v = in.readInt();
         this.vu = in.readInt();
         this.position = in.readInt();
-        this.productVariantOptionChild = new ArrayList<ProductVariantOptionChild>();
-        in.readList(this.productVariantOptionChild, ProductVariantOptionChild.class.getClassLoader());
+        this.productVariantOptionChild = in.createTypedArrayList(ProductVariantOptionChild.CREATOR);
+        this.name = in.readString();
+        this.identifier = in.readString();
+        this.unitName = in.readString();
     }
 
     public static final Creator<ProductVariantOptionParent> CREATOR = new Creator<ProductVariantOptionParent>() {
