@@ -1,9 +1,10 @@
 package com.tokopedia.ride.completetrip.view;
 
+import android.os.Build;
+
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.ride.BuildConfig;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetPayPendingDataUseCase;
 import com.tokopedia.ride.common.configuration.RideStatus;
@@ -23,8 +24,6 @@ import java.net.UnknownHostException;
 import javax.inject.Inject;
 
 import rx.Subscriber;
-
-import static android.os.Build.VERSION_CODES.M;
 
 /**
  * Created by alvarisi on 3/31/17.
@@ -251,7 +250,7 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
         }
 
         //do not show popup below M
-        if (BuildConfig.VERSION_CODE < M) {
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return;
         }
 
