@@ -10,24 +10,29 @@
     tools:layout_editor_absoluteY="81dp">
 
     <android.support.constraint.Guideline
-        android:id="@+id/guideline3"
+        android:id="@+id/guideline7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="@dimen/image_guide_line_grid" />
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.8463542" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.33" />
 
     <android.support.v7.widget.CardView
         android:id="@+id/image_card"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_width="105dp"
+        android:layout_height="105dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         app:cardElevation="0dp"
         app:cardUseCompatPadding="true"
-        app:layout_constraintBottom_toTopOf="@+id/guideline3"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -47,10 +52,10 @@
         android:id="@+id/wishlist_button_container"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="1dp"
+        android:layout_marginStart="8dp"
         android:background="@drawable/circle_white"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline7"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible">
 
@@ -66,9 +71,8 @@
     <TextView
         android:id="@+id/title"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="36dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ellipsize="end"
         android:fontFamily="sans-serif-medium"
@@ -77,71 +81,35 @@
         android:textColor="@color/font_black_primary_70"
         android:textSize="@dimen/font_micro"
         android:textStyle="normal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline3"
+        app:layout_constraintEnd_toStartOf="@+id/guideline7"
+        app:layout_constraintStart_toEndOf="@+id/guideline6"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold" />
-
-    <TextView
-        android:id="@+id/text_original_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:textColor="#999999"
-        android:textSize="@dimen/font_micro"
-        android:visibility="gone"
-        app:layout_constraintStart_toEndOf="@+id/price"
-        app:layout_constraintTop_toTopOf="@+id/price"
-        tools:text="wkwkwkwkwkw"
-        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="6dp"
         android:fontFamily="sans-serif-medium"
         android:gravity="center_vertical"
         android:lineSpacingExtra="5sp"
         android:textColor="#ff5722"
         android:textSize="@dimen/font_small"
         android:textStyle="normal"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/guideline6"
         app:layout_constraintTop_toBottomOf="@+id/title"
         tools:text="Rp 3.121.500" />
-
-    <TextView
-        android:id="@+id/text_discount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:background="@drawable/bg_rounded_corners_red"
-        android:gravity="center"
-        android:paddingBottom="@dimen/margin_vvvs"
-        android:paddingLeft="@dimen/padding_vvs"
-        android:paddingRight="@dimen/padding_vvs"
-        android:paddingTop="@dimen/margin_vvvs"
-        android:textColor="@color/white"
-        android:textSize="@dimen/font_micro"
-        android:visibility="gone"
-        app:layout_constraintStart_toEndOf="@+id/text_original_price"
-        app:layout_constraintTop_toTopOf="@+id/text_original_price"
-        tools:text="10%OFF"
-        tools:visibility="visible" />
 
 
     <LinearLayout
         android:id="@+id/badges_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:gravity="center_vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/price">
+        app:layout_constraintTop_toBottomOf="@+id/ratingBar"
+        tools:layout_editor_absoluteX="127dp">
 
         <ImageView
             android:id="@+id/image_view_featured"
@@ -199,6 +167,23 @@
             android:layout_height="@dimen/image_width_xxs"
             android:src="@drawable/ic_free_return" />
     </LinearLayout>
+
+    <android.support.v7.widget.AppCompatRatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="78dp"
+        android:layout_height="14dp"
+        android:layout_marginTop="7dp"
+        app:layout_constraintStart_toEndOf="@+id/guideline6"
+        app:layout_constraintTop_toBottomOf="@+id/price" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="TextView"
+        app:layout_constraintStart_toEndOf="@+id/ratingBar"
+        app:layout_constraintTop_toTopOf="@+id/ratingBar" />
 
 
 </android.support.constraint.ConstraintLayout>

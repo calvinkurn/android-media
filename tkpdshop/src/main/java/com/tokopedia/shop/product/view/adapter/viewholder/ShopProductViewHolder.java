@@ -1,6 +1,8 @@
 package com.tokopedia.shop.product.view.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.Guideline;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -36,10 +38,20 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     private ImageView featuredProductImageView, freeReturnImageView, productImageView;
     private FrameLayout wishlistContainer;
 
+    private ViewHolderListener viewHolderListener;
+    private Guideline guideLine;
+    private int imageGuideLineGrid;
+    private int imageGuideLineList;
+
 
     public ShopProductViewHolder(View itemView) {
         super(itemView);
         findViews(itemView);
+    }
+
+    public ShopProductViewHolder setViewHolderListener(ViewHolderListener viewHolderListener) {
+        this.viewHolderListener = viewHolderListener;
+        return this;
     }
 
     private void findViews(View view) {
@@ -58,6 +70,8 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
 
         wishlistContainer = view.findViewById(R.id.wishlist_button_container);
 
+        guideLine = view.findViewById(R.id.guideline3);
+
     }
 
     @Override
@@ -65,5 +79,27 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         titleTextView.setText(element.getProductName());
         priceTextView.setText(element.getProductPrice());
         ImageHandler.LoadImage(productImageView, element.getProductImage700());
+
+        imageGuideLineGrid = itemView.getResources().getDimensionPixelSize(R.dimen.image_guide_line_grid);
+        imageGuideLineList = itemView.getResources().getDimensionPixelSize(R.dimen.image_guide_line_list);
+
+        if(viewHolderListener != null){
+            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) guideLine.getLayoutParams();
+
+            switch (viewHolderListener.getLayoutManagerType()){
+                case 65:
+                    params.guideBegin = imageGuideLineGrid;
+                    guideLine.setLayoutParams(params);
+                    break;
+                default:
+                    params.guideBegin = imageGuideLineList;
+                    guideLine.setLayoutParams(params);
+                    break;
+            }
+        }
+    }
+
+    public interface ViewHolderListener{
+        int getLayoutManagerType();
     }
 }

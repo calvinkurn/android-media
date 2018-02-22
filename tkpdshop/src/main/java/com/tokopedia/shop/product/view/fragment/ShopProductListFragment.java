@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
+import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
@@ -22,9 +25,16 @@ import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
 import com.tokopedia.shop.product.view.adapter.ShopProductTypeFactory;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductListViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
+import com.tokopedia.shop.product.view.model.ShopProductListViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListPresenter;
+
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -44,6 +54,13 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     private String etalaseName;
     private int etalaseId;
     private String keyword;
+    private BottomActionView bottomActionView;
+    private RecyclerView recyclerViews;
+    private Deque<Pair<Integer, Integer>> layoutType = new LinkedList<Pair<Integer, Integer>>(){{
+        add(new Pair<>(ShopProductViewHolder.LAYOUT, 65));
+        add(new Pair<>(ShopProductViewHolder.LAYOUT, 97));
+        add(new Pair<>(ShopProductListViewHolder.LAYOUT, 97));
+    }};
 
     public static ShopProductListFragment createInstance(String shopId) {
         ShopProductListFragment shopProductListFragment = new ShopProductListFragment();
@@ -73,7 +90,17 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     @Override
     protected ShopProductTypeFactory getAdapterTypeFactory() {
-        return new ShopProductAdapterTypeFactory();
+        return new ShopProductAdapterTypeFactory(new ShopProductViewHolder.ViewHolderListener() {
+            @Override
+            public int getLayoutManagerType() {
+                return layoutType.peek().second;
+            }
+        }, new ShopProductAdapterTypeFactory.TypeFactoryListener() {
+            @Override
+            public int getType() {
+                return layoutType.peek().first;
+            }
+        });
     }
 
     @Override
@@ -103,7 +130,6 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     public void onItemClicked(ShopProductViewModel shopProductViewModel) {
 
     }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -126,7 +152,8 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
             }
         });
 
-        ((RecyclerView)view.findViewById(R.id.recycler_view)).setLayoutManager(gridLayoutManager);
+        recyclerViews = view.findViewById(R.id.recycler_view);
+        recyclerViews.setLayoutManager(gridLayoutManager);
 
         chooseEtalaseLabelView = view.findViewById(R.id.label_view_choose_etalase);
         chooseEtalaseLabelView.setOnClickListener(new View.OnClickListener() {
@@ -142,6 +169,40 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                     ShopProductListFragment.this.
                             startActivityForResult(etalaseIntent, REQUEST_CODE_ETALASE);
                 }
+            }
+        });
+
+        bottomActionView = view.findViewById(R.id.bottom_action_view);
+        bottomActionView.setButton2OnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                layoutType.addLast(layoutType.removeFirst());
+
+                switch (layoutType.peek().second){
+                    case 65:
+                        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT,  LinearLayoutManager.VERTICAL,
+                                false);
+                        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                            @Override
+                            public int getSpanSize(int position) {
+                                if (getAdapter().getItemViewType(position) == ShopProductViewHolder.LAYOUT){
+                                    return ShopProductViewHolder.SPAN_LOOK_UP;
+                                }
+                                return SPAN_COUNT;
+                            }
+                        });
+                        recyclerViews.setLayoutManager(gridLayoutManager);
+                        break;
+                    default:
+                        recyclerViews.setLayoutManager(new LinearLayoutManager(
+                                view.getContext(),
+                                LinearLayoutManager.VERTICAL,
+                                false
+                        ));
+                        break;
+                }
+
+                getAdapter().notifyDataSetChanged();
             }
         });
 

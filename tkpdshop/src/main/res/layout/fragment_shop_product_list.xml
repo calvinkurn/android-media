@@ -58,8 +58,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:bav_icon_1="@drawable/ic_kupon"
-            app:bav_label_1="@string/shop_info_default_etalase_title"
+            app:bav_icon_2="@drawable/ic_kupon"
             app:bav_1_display="true"
+            app:bav_label_1="@string/shop_info_default_etalase_title"
+            app:bav_label_2="@string/shop_info_default_etalase_title"
+            app:bav_2_display="true"
             />
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>
