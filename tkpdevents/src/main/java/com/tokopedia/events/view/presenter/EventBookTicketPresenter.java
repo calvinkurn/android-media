@@ -58,7 +58,7 @@ public class EventBookTicketPresenter
     private int hasSeatLayout;
     private FragmentAddTickets mChildFragment;
     private int px;
-
+    private EventsDetailsViewModel dataModel;
 
     public static String EXTRA_PACKAGEVIEWMODEL = "packageviewmodel";
     public static String EXTRA_SEATLAYOUTVIEWMODEL = "seatlayoutviewmodel";
@@ -83,7 +83,7 @@ public class EventBookTicketPresenter
 
     @Override
     public void getTicketDetails() {
-        EventsDetailsViewModel dataModel = getView().
+        dataModel = getView().
                 getActivity().
                 getIntent().
                 getParcelableExtra(EventsDetailsPresenter.EXTRA_EVENT_VIEWMODEL);
@@ -247,14 +247,14 @@ public class EventBookTicketPresenter
         mSelectedPackage = -1;
     }
 
-    public String getDateArray() {
-        return dateRange;
+    public String getDateArray(int pos) {
+        return dataModel.getSchedulesViewModels().get(pos).getTimeRange();
     }
 
 
     private void getSeatSelectionDetails() {
         RequestParams params = RequestParams.create();
-        params.putString("seatlayouturl",selectedPackageViewModel.getFetchSectionUrl());
+        params.putString("seatlayouturl", selectedPackageViewModel.getFetchSectionUrl());
         getView().showProgressBar();
         getSeatLayoutUseCase.execute(params, new Subscriber<List<SeatLayoutItem>>() {
             @Override

@@ -182,7 +182,7 @@ public class EventBookTicketActivity
                 View tV = tab.getCustomView();
                 if (tV != null) {
                     CalendarItemHolder holder = (CalendarItemHolder) tV.getTag();
-                    String[] date = Utils.getDateArray(mPresenter.getDateArray());
+                    String[] date = Utils.getDateArray(mPresenter.getDateArray(tab.getPosition()));
                     holder.setTvMonth(date[2]);
                     holder.setTvDate(date[1]);
                     holder.setTvDay(date[0]);
@@ -193,7 +193,7 @@ public class EventBookTicketActivity
                     CalendarItemHolder holder = new CalendarItemHolder();
                     ButterKnife.bind(holder, tV);
                     tV.setTag(holder);
-                    String[] date = Utils.getDateArray(mPresenter.getDateArray());
+                    String[] date = Utils.getDateArray(mPresenter.getDateArray(tab.getPosition()));
                     holder.setTvMonth(date[2]);
                     holder.setTvDate(date[1]);
                     holder.setTvDay(date[0]);
@@ -212,7 +212,7 @@ public class EventBookTicketActivity
             public void onTabReselected(TabLayout.Tab tab) {
                 View tV = tab.getCustomView();
                 CalendarItemHolder holder = (CalendarItemHolder) tV.getTag();
-                String[] date = Utils.getDateArray(mPresenter.getDateArray());
+                String[] date = Utils.getDateArray(mPresenter.getDateArray(tab.getPosition()));
                 holder.setTvMonth(date[2]);
                 holder.setTvDate(date[1]);
                 holder.setTvDay(date[0]);
@@ -228,6 +228,10 @@ public class EventBookTicketActivity
             View customView = tab.setCustomView(R.layout.calendar_item).getCustomView();
             CalendarItemHolder holder = new CalendarItemHolder();
             ButterKnife.bind(holder, customView);
+            String[] date = Utils.getDateArray(mPresenter.getDateArray(i));
+            holder.setTvMonth(date[2]);
+            holder.setTvDate(date[1]);
+            holder.setTvDay(date[0]);
             customView.setTag(holder);
         }
 

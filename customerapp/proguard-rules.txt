@@ -331,3 +331,8 @@
 -dontwarn org.apache.http.impl.auth.NegotiateScheme
 -dontwarn com.android.internal.http.multipart.MultipartEntity
 -dontwarn org.xbill.DNS.spi.DNSJavaNameServiceDescriptor
+
+#events
+-keep class com.tokopedia.events.domain.model.** { *; }
+-keep class com.tokopedia.events.view.viewmodel.** { *; }
+-keep class com.tokopedia.core.network.exception.model.** { *; }
