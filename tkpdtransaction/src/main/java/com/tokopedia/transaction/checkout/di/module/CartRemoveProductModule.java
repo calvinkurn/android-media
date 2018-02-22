@@ -8,9 +8,9 @@ import com.tokopedia.transaction.checkout.domain.ICartMapper;
 import com.tokopedia.transaction.checkout.domain.ICartRepository;
 import com.tokopedia.transaction.checkout.domain.IShipmentMapper;
 import com.tokopedia.transaction.checkout.domain.ShipmentMapper;
-import com.tokopedia.transaction.checkout.view.CartRemoveProductFragment;
 import com.tokopedia.transaction.checkout.view.adapter.CartRemoveProductAdapter;
-import com.tokopedia.transaction.checkout.view.presenter.CartRemoveProductPresenter;
+import com.tokopedia.transaction.checkout.view.view.cartlist.CartRemoveProductFragment;
+import com.tokopedia.transaction.checkout.view.view.cartlist.CartRemoveProductPresenter;
 
 import dagger.Module;
 import dagger.Provides;

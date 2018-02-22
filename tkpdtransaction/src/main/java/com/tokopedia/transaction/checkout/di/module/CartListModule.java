@@ -10,12 +10,12 @@ import com.tokopedia.transaction.checkout.domain.ICartMapper;
 import com.tokopedia.transaction.checkout.domain.ICartRepository;
 import com.tokopedia.transaction.checkout.domain.IShipmentMapper;
 import com.tokopedia.transaction.checkout.domain.ShipmentMapper;
-import com.tokopedia.transaction.checkout.view.CartFragment;
-import com.tokopedia.transaction.checkout.view.activity.CartItemDecoration;
 import com.tokopedia.transaction.checkout.view.adapter.CartListAdapter;
-import com.tokopedia.transaction.checkout.view.presenter.CartListPresenter;
-import com.tokopedia.transaction.checkout.view.presenter.ICartListPresenter;
-import com.tokopedia.transaction.checkout.view.view.ICartListView;
+import com.tokopedia.transaction.checkout.view.view.cartlist.CartFragment;
+import com.tokopedia.transaction.checkout.view.view.cartlist.CartItemDecoration;
+import com.tokopedia.transaction.checkout.view.view.cartlist.CartListPresenter;
+import com.tokopedia.transaction.checkout.view.view.cartlist.ICartListPresenter;
+import com.tokopedia.transaction.checkout.view.view.cartlist.ICartListView;
 
 import dagger.Module;
 import dagger.Provides;

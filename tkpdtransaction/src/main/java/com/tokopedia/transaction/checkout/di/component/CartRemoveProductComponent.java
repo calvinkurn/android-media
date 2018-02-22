@@ -2,7 +2,7 @@ package com.tokopedia.transaction.checkout.di.component;
 
 import com.tokopedia.transaction.checkout.di.module.CartRemoveProductModule;
 import com.tokopedia.transaction.checkout.di.scope.CartRemoveProductScope;
-import com.tokopedia.transaction.checkout.view.CartRemoveProductFragment;
+import com.tokopedia.transaction.checkout.view.view.cartlist.CartRemoveProductFragment;
 
 import dagger.Component;
 

@@ -19,7 +19,7 @@ public class CartMvpPresenter<T> {
         return mMvpView != null;
     }
 
-    T getMvpView() {
+    public T getMvpView() {
         return mMvpView;
     }
 

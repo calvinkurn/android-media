@@ -38,23 +38,23 @@
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".checkout.view.activity.CartActivity"
+            android:name=".checkout.view.view.cartlist.CartActivity"
             android:label="@string/title_activity_cart"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".checkout.view.activity.CartShipmentActivity"
+            android:name=".checkout.view.view.shipmentform.CartShipmentActivity"
             android:label="@string/title_activity_cart"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".checkout.view.activity.ShipmentDetailActivity"
+            android:name=".checkout.view.view.shippingoptions.ShipmentDetailActivity"
             android:label="@string/title_activity_shipment_detail"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".checkout.view.activity.CartAddressChoiceActivity"
+            android:name=".checkout.view.view.addressoptions.CartAddressChoiceActivity"
             android:label="@string/title_shipping_dest"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>

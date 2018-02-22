@@ -2,7 +2,7 @@ package com.tokopedia.transaction.checkout.di.module;
 
 import com.tokopedia.transaction.checkout.di.scope.SingleAddressShipmentScope;
 import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter;
-import com.tokopedia.transaction.checkout.view.presenter.SingleAddressShipmentPresenter;
+import com.tokopedia.transaction.checkout.view.view.shipmentform.SingleAddressShipmentPresenter;
 
 import dagger.Module;
 import dagger.Provides;
