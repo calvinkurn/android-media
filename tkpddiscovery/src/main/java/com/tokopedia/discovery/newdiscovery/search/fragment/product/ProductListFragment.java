@@ -441,8 +441,12 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     private void getGuidedSearch() {
-        if (!TextUtils.isEmpty(productViewModel.getQuery())) {
-            presenter.loadGuidedSearch(productViewModel.getQuery());
+        String query = productViewModel.getQuery();
+        if (!TextUtils.isEmpty(productViewModel.getSuggestionModel().getSuggestionCurrentKeyword())) {
+            query = productViewModel.getSuggestionModel().getSuggestionCurrentKeyword();
+        }
+        if (!TextUtils.isEmpty(query)) {
+            presenter.loadGuidedSearch(query);
         }
     }
 
