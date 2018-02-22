@@ -78,7 +78,6 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.Officia
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromoCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.ShopFeedTopAdsViewModel;
 import com.tokopedia.topads.sdk.domain.model.Data;
 
 import java.util.ArrayList;
@@ -503,13 +502,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void updateFavorite(int adapterPosition) {
         Object item = ((FeedTopAdsViewModel) adapter.getlist().get(adapterPosition)).getList().get(0);
-        if (item instanceof ShopFeedTopAdsViewModel) {
-            ShopFeedTopAdsViewModel castedItem = ((ShopFeedTopAdsViewModel) item);
-            Data currentData = castedItem.getData();
-            boolean currentStatus = currentData.isFavorit();
-            currentData.setFavorit(!currentStatus);
-            adapter.notifyItemChanged(adapterPosition);
-        }
+        //TODO milhamj update favorite
+//        if (item instanceof ShopFeedTopAdsViewModel) {
+//            ShopFeedTopAdsViewModel castedItem = ((ShopFeedTopAdsViewModel) item);
+//            Data currentData = castedItem.getData();
+//            boolean currentStatus = currentData.isFavorit();
+//            currentData.setFavorit(!currentStatus);
+//            adapter.notifyItemChanged(adapterPosition);
+//        }
     }
 
     @Override

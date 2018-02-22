@@ -6,7 +6,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +16,9 @@ import android.widget.TextView;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.AdsItemAdapter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.TopAdsInfoBottomSheet;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.LocalAdsClickListener;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.ShopFeedTopAdsViewModel;
 
 import java.util.List;
 
@@ -37,7 +34,6 @@ public class FeedTopadsViewHolder extends AbstractViewHolder<FeedTopAdsViewModel
     private LinearLayout container;
     private static final String TAG = FeedTopadsViewHolder.class.getSimpleName();
     private RecyclerView recyclerView;
-    private AdsItemAdapter adapter;
     private LinearLayout adsHeader;
     private Context context;
     private static final int DEFAULT_SPAN_COUNT = 2;
@@ -57,10 +53,6 @@ public class FeedTopadsViewHolder extends AbstractViewHolder<FeedTopAdsViewModel
         linearLayoutManager = new LinearLayoutManager(context);
         itemView.findViewById(R.id.info_topads).setOnClickListener(this);
         container = (LinearLayout) itemView.findViewById(R.id.root);
-        adapter = new AdsItemAdapter(context);
-        adapter.setItemClickListener(itemClickListener);
-        recyclerView.setLayoutManager(gridLayoutManager);
-        recyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -70,9 +62,6 @@ public class FeedTopadsViewHolder extends AbstractViewHolder<FeedTopAdsViewModel
             adsHeader.setVisibility(View.VISIBLE);
             switchDisplay(list.get(0));
         }
-        adapter.setList(list);
-        adapter.setAdapterPosition(getAdapterPosition());
-        adapter.setPosition(getAdapterPosition());
     }
 
     @Override
@@ -88,11 +77,12 @@ public class FeedTopadsViewHolder extends AbstractViewHolder<FeedTopAdsViewModel
     }
 
     private void switchDisplay(Visitable item) {
-        if (item instanceof ShopFeedTopAdsViewModel) {
-            recyclerView.setLayoutManager(linearLayoutManager);
-        } else {
-            recyclerView.setLayoutManager(gridLayoutManager);
-        }
+        //TODO milhamj
+//        if (item instanceof ShopFeedTopAdsViewModel) {
+//            recyclerView.setLayoutManager(linearLayoutManager);
+//        } else {
+//            recyclerView.setLayoutManager(gridLayoutManager);
+//        }
         TextView textView = (TextView) adsHeader.findViewById(R.id.title_promote);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textView.getContext().getResources().getDimension(R.dimen.font_small));
         ImageView imageView = (ImageView) adsHeader.findViewById(R.id.info_topads);
