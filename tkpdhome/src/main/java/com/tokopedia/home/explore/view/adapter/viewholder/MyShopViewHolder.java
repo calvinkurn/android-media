@@ -28,6 +28,7 @@ public class MyShopViewHolder extends AbstractViewHolder<MyShopViewModel> {
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_my_shop;
 
+    View container;
     TextView titleTxt;
     ImageView imageView;
     TextView button;
@@ -42,6 +43,7 @@ public class MyShopViewHolder extends AbstractViewHolder<MyShopViewModel> {
         super(itemView);
         this.listener = listener;
         this.context = itemView.getContext();
+        container = itemView.findViewById(R.id.container);
         titleTxt = itemView.findViewById(R.id.title);
         imageView = itemView.findViewById(R.id.image_shop);
         badgeImage = itemView.findViewById(R.id.badge);
@@ -52,6 +54,24 @@ public class MyShopViewHolder extends AbstractViewHolder<MyShopViewModel> {
             @Override
             public void onClick(View view) {
                 listener.openShopSetting();
+            }
+        });
+        container.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.openShop();
+            }
+        });
+        titleTxt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.openShop();
+            }
+        });
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.openShop();
             }
         });
     }
