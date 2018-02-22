@@ -37,6 +37,7 @@ import com.tokopedia.ride.deeplink.RideDeeplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
+import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.deeplink.FeedDeeplinkModule;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.deeplink.FeedDeeplinkModuleLoader;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModule;
@@ -149,7 +150,14 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
             Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL_CONSTS,
             Constants.Applinks.SellerApp.BROWSER})
     public static Intent getIntentSellerApp(Context context, Bundle extras) {
-        return ApplinkUtils.getSellerAppApplinkIntent(context, extras);
+        Intent launchIntent = context.getPackageManager()
+                .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
+
+        if (launchIntent == null) {
+            return RedirectCreateShopActivity.getCallingIntent(context);
+        } else {
+            return ApplinkUtils.getSellerAppApplinkIntent(context, extras);
+        }
     }
 
     @DeepLink(Constants.Applinks.BROWSER)
