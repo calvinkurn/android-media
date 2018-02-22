@@ -236,10 +236,6 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="Small.RatingBar" parent="style/Base.Widget.AppCompat.RatingBar.Small">
-        <item name="android:progressDrawable">@drawable/tkpd_rating_bar</item>
-    </style>
-
     <style name="Medium.RatingBar" parent="@android:style/Widget.RatingBar">
         <item name="android:progressDrawable">@drawable/app_rating_bar</item>
     </style>

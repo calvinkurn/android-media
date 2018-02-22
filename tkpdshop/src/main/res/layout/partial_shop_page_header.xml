@@ -80,6 +80,7 @@
 
             <RatingBar
                 android:id="@+id/rating_bar_product_quality"
+                style="@style/Small.RatingBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
