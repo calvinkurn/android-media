@@ -294,10 +294,10 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         break;
                     case TYPE_TOPADS:
                         if (domain.getContent() != null
-                                && domain.getContent().getTopadsDomains() != null
-                                && !domain.getContent().getTopadsDomains().isEmpty()) {
+                                && domain.getContent().getTopAdsList() != null
+                                && !domain.getContent().getTopAdsList().isEmpty()) {
                             List<Visitable> visitableList = new ArrayList<>();
-                            List<Data> topadsDomainList = domain.getContent().getTopadsDomains();
+                            List<Data> topadsDomainList = domain.getContent().getTopAdsList();
                             //TODO milhamj
 //                            for (Data topadsDomain : topadsDomainList) {
 //                                if (topadsDomain.getDisplay().equalsIgnoreCase(
