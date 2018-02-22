@@ -274,7 +274,8 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                 KolCtaDomain kolCtaDomain = datum.content().kol_cta() != null ?
                         convertToKolCtaDomain(datum.content().kol_cta()) :
                         null;
-                List<Data> topadsData = convertToTopadsDomain(datum.content().topads());
+                List<Data> topadsData = datum.content().topads() != null ?
+                        convertToTopadsDomain(datum.content().topads()) : null;
                 ContentFeedDomain contentFeedDomain = createContentFeedDomain(
                         datum.content(),
                         productFeedDomains,
