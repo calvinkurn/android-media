@@ -3,6 +3,7 @@ package com.tokopedia.transaction.checkout.view;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,8 +18,11 @@ import com.tokopedia.transaction.checkout.di.component.MultipleAddressComponent;
 import com.tokopedia.transaction.checkout.di.module.MultipleAddressModule;
 import com.tokopedia.transaction.checkout.view.activity.ICartShipmentActivity;
 import com.tokopedia.transaction.checkout.view.adapter.MultipleAddressAdapter;
+import com.tokopedia.transaction.checkout.view.data.CartItemModel;
+import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressAdapterData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
+import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 import com.tokopedia.transaction.checkout.view.presenter.IMultipleAddressPresenter;
 import com.tokopedia.transaction.checkout.view.presenter.MultipleAddressPresenter;
 
@@ -46,11 +50,24 @@ public class MultipleAddressFragment extends TkpdFragment
     public static final int ADD_SHIPMENT_ADDRESS_REQUEST_CODE = 21;
     public static final int EDIT_SHIPMENT_ADDRESS_REQUEST_CODE = 22;
     private static final String ADD_SHIPMENT_FRAGMENT_TAG = "ADD_SHIPMENT_FRAGMENT_TAG";
+    private static final String CART_ITEM_LIST_EXTRA = "CART_ITEM_LIST_EXTRA";
+    private static final String ADDRESS_EXTRA = "ADDRESS_EXTRA";
 
     private MultipleAddressAdapter multipleAddressAdapter;
 
-    public static MultipleAddressFragment newInstance() {
-        return new MultipleAddressFragment();
+    public static MultipleAddressFragment newInstance(
+            List<CartSellerItemModel> cartSellerItemModels,
+            ShipmentRecipientModel recipientModel
+    ) {
+        MultipleAddressFragment fragment = new MultipleAddressFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(
+                CART_ITEM_LIST_EXTRA,
+                (ArrayList<? extends Parcelable>) cartSellerItemModels
+        );
+        bundle.putParcelable(ADDRESS_EXTRA, recipientModel);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
@@ -65,7 +82,7 @@ public class MultipleAddressFragment extends TkpdFragment
         initInjector();
         RecyclerView orderAddressList = view.findViewById(R.id.order_address_list);
         orderAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        multipleAddressAdapter = new MultipleAddressAdapter(dummyDataList(), this);
+        multipleAddressAdapter = new MultipleAddressAdapter(initiateAdapterData(), this);
         orderAddressList.setAdapter(multipleAddressAdapter);
         return view;
     }
@@ -111,6 +128,44 @@ public class MultipleAddressFragment extends TkpdFragment
         list.add(dummyAdapterData());
         list.add(dummyAdapterData());
         return list;
+    }
+
+    private List<MultipleAddressAdapterData> initiateAdapterData() {
+        List<CartSellerItemModel> cartSellerItemModels = getArguments()
+                .getParcelableArrayList(CART_ITEM_LIST_EXTRA);
+        List<MultipleAddressAdapterData> adapterModels = new ArrayList<>();
+        for (int i = 0; i < cartSellerItemModels.size(); i++) {
+            List<CartItemModel> cartItemModels = cartSellerItemModels.get(i).getCartItemModels();
+            for (int j = 0; j < cartItemModels.size(); j++) {
+                MultipleAddressAdapterData addressAdapterData = new MultipleAddressAdapterData();
+                addressAdapterData.setProductPrice(
+                        String.valueOf(cartItemModels.get(j).getPrice())
+                );
+                addressAdapterData.setProductName(cartItemModels.get(j).getName());
+                addressAdapterData.setProductImageUrl(cartItemModels.get(j).getImageUrl());
+                addressAdapterData
+                        .setItemListData(generateinitiatialItemData(cartItemModels.get(j)));
+                adapterModels.add(addressAdapterData);
+            }
+        }
+        return adapterModels;
+    }
+
+    private List<MultipleAddressItemData> generateinitiatialItemData(CartItemModel itemModel) {
+        List<MultipleAddressItemData> initialItemData = new ArrayList<>();
+        MultipleAddressItemData addressData = new MultipleAddressItemData();
+        ShipmentRecipientModel shipmentRecipientModel = getArguments().getParcelable(ADDRESS_EXTRA);
+        addressData.setCartId("1");
+        addressData.setProductId(itemModel.getId());
+        addressData.setProductQty(String.valueOf(itemModel.getQuantity()));
+        addressData.setProductWeight(String.valueOf(itemModel.getWeight()));
+        addressData.setProductNotes(itemModel.getNoteToSeller());
+        addressData.setAddressId(shipmentRecipientModel.getId());
+        addressData.setAddressTitle(shipmentRecipientModel.getAddressIdentifier());
+        addressData.setAddressReceiverName(shipmentRecipientModel.getRecipientName());
+        addressData.setAddress(shipmentRecipientModel.getRecipientAddress());
+        initialItemData.add(addressData);
+        return initialItemData;
     }
 
     @Override

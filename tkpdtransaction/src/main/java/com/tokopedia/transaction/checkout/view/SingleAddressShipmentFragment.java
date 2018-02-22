@@ -25,6 +25,7 @@ import com.tokopedia.transaction.checkout.view.activity.ShipmentDetailActivity;
 import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
+import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 import com.tokopedia.transaction.checkout.view.presenter.SingleAddressShipmentPresenter;
@@ -242,8 +243,9 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     }
 
     @Override
-    public void onAddOrChangeAddress() {
-        startActivityForResult(CartAddressChoiceActivity.createInstance(getActivity()), REQUEST_CODE_CHOOSE_ADDRESS);
+    public void onAddOrChangeAddress(List<CartSellerItemModel> sellerItemModels) {
+        startActivityForResult(CartAddressChoiceActivity
+                .createInstance(getActivity(), sellerItemModels), REQUEST_CODE_CHOOSE_ADDRESS);
     }
 
     @Override

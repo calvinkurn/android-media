@@ -107,7 +107,10 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
                     .bindViewHolder(mCartSingleAddressData.getShipmentFeeBannerModel());
         } else if (viewType == ITEM_VIEW_SHIPMENT_RECIPIENT_ADDRESS) {
             ((ShippingRecipientViewHolder) viewHolder)
-                    .bindViewHolder(mCartSingleAddressData.getShipmentRecipientModel());
+                    .bindViewHolder(
+                            mCartSingleAddressData.getCartSellerItemModelList(),
+                            mCartSingleAddressData.getShipmentRecipientModel()
+                    );
         } else if (viewType == ITEM_VIEW_SHIPMENT_COST_DETAIL) {
             ((ShipmentCostDetailViewHolder) viewHolder)
                     .bindViewHolder(mCartSingleAddressData.getCartPayableDetailModel());
@@ -138,7 +141,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
     public interface SingleAddressShipmentAdapterListener {
 
-        void onAddOrChangeAddress();
+        void onAddOrChangeAddress(List<CartSellerItemModel> cartSellerItemModels);
 
         void onChooseShipment();
 
@@ -237,7 +240,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             ButterKnife.bind(this, itemView);
         }
 
-        void bindViewHolder(ShipmentRecipientModel model) {
+        void bindViewHolder(List<CartSellerItemModel> itemModelList, ShipmentRecipientModel model) {
             mTvAddressDescription.setText(model.getRecipientAddressDescription());
             mTvRecipientName.setText(model.getRecipientName());
             mTvRecipientAddress.setText(model.getRecipientAddress());
@@ -245,7 +248,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
             renderPickupPoint(pickupPointLayout, mCartSingleAddressData.getShipmentRecipientModel());
             mTvAddOrChangeAddress.setOnClickListener(
-                    addOrChangeAddressListener(mCartSingleAddressData.getShipmentRecipientModel()));
+                    addOrChangeAddressListener(itemModelList, mCartSingleAddressData.getShipmentRecipientModel()));
         }
 
         private void renderPickupPoint(PickupPointLayout pickupPointLayout,
@@ -277,11 +280,13 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
         }
 
-        private View.OnClickListener addOrChangeAddressListener(final ShipmentRecipientModel model) {
+        private View.OnClickListener addOrChangeAddressListener(
+                final List<CartSellerItemModel> cartSellerItemModels,
+                final ShipmentRecipientModel model) {
             return new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mAdapterViewListener.onAddOrChangeAddress();
+                    mAdapterViewListener.onAddOrChangeAddress(cartSellerItemModels);
                 }
             };
         }

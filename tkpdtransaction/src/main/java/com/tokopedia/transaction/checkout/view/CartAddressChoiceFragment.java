@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -18,10 +19,14 @@ import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.view.adapter.ShipmentAddressListAdapter;
+import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 import com.tokopedia.transaction.checkout.view.presenter.CartAddressChoicePresenter;
 import com.tokopedia.transaction.checkout.view.presenter.ICartAddressChoicePresenter;
 import com.tokopedia.transaction.checkout.view.view.ICartAddressChoiceView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,6 +40,7 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
         implements ICartAddressChoiceView, ShipmentAddressListAdapter.ActionListener {
 
     public static String INTENT_EXTRA_SELECTED_RECIPIENT_ADDRESS = "selectedAddress";
+    private static String CART_ITEM_LIST_EXTRA = "CART_ITEM_LIST_EXTRA";
 
     @BindView(R2.id.tv_choose_other_address)
     TextView tvChooseOtherAddress;
@@ -49,8 +55,16 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
 
     private ShipmentAddressListAdapter recipientAdapter;
 
-    public static CartAddressChoiceFragment newInstance() {
+    public static CartAddressChoiceFragment newInstance(
+            List<CartSellerItemModel> cartSellerItemModelList
+    ) {
         CartAddressChoiceFragment fragment = new CartAddressChoiceFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(
+                CART_ITEM_LIST_EXTRA,
+                (ArrayList<? extends Parcelable>) cartSellerItemModelList
+        );
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -161,7 +175,12 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     @OnClick(R2.id.ll_send_to_multiple_address)
     void onSendToMultipleAddress() {
         FragmentManager fragmentManager = getActivity().getFragmentManager();
-        Fragment fragment = MultipleAddressFragment.newInstance();
+        List<CartSellerItemModel> cartSellerItemModels = getArguments()
+                .getParcelableArrayList(CART_ITEM_LIST_EXTRA);
+        Fragment fragment = MultipleAddressFragment.newInstance(
+                cartSellerItemModels,
+                presenter.getSelectedRecipientAddress()
+        );
 
         String backStateName = fragment.getClass().getName();
 
