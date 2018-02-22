@@ -15,4 +15,8 @@ public interface UserSession {
     String getDeviceId();
 
     boolean isLoggedIn();
+
+    String getShopId();
+
+    boolean hasShop();
 }

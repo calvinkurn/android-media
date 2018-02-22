@@ -1,11 +1,9 @@
 package com.tokopedia.tokocash.historytokocash.domain;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.tokocash.historytokocash.data.repository.WalletRepository;
 import com.tokopedia.tokocash.historytokocash.presentation.model.TokoCashHistoryData;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
 
@@ -22,10 +20,7 @@ public class GetHistoryDataUseCase extends UseCase<TokoCashHistoryData> {
 
     private WalletRepository walletRepository;
 
-    public GetHistoryDataUseCase(ThreadExecutor threadExecutor,
-                                 PostExecutionThread postExecutionThread,
-                                 WalletRepository walletRepository) {
-        super(threadExecutor, postExecutionThread);
+    public GetHistoryDataUseCase(WalletRepository walletRepository) {
         this.walletRepository = walletRepository;
     }
 

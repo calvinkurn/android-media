@@ -21,6 +21,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.applink.TransactionAppLink;
 import com.tokopedia.transaction.purchase.adapter.PurchaseTabAdapter;
 import com.tokopedia.transaction.purchase.dialog.CancelTransactionDialog;
 import com.tokopedia.transaction.purchase.fragment.TxListFragment;
@@ -58,7 +59,7 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
 
     private PurchaseTabAdapter adapter;
 
-    @DeepLink(Constants.Applinks.PURCHASE_VERIFICATION)
+    @DeepLink(TransactionAppLink.PURCHASE_VERIFICATION)
     public static Intent getCallingIntentPurchaseVerification(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, PurchaseActivity.class)
@@ -67,7 +68,7 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
                 .putExtras(extras);
     }
 
-    @DeepLink(Constants.Applinks.PURCHASE_ORDER)
+    @DeepLink(TransactionAppLink.PURCHASE_ORDER)
     public static Intent getCallingIntentPurchaseStatus(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, PurchaseActivity.class)
@@ -76,7 +77,7 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
                 .putExtras(extras);
     }
 
-    @DeepLink(Constants.Applinks.PURCHASE_SHIPPING_CONFIRM)
+    @DeepLink(TransactionAppLink.PURCHASE_SHIPPING_CONFIRM)
     public static Intent getCallingIntentPurchaseShipping(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, PurchaseActivity.class)
@@ -85,7 +86,7 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
                 .putExtras(extras);
     }
 
-    @DeepLink(Constants.Applinks.PURCHASE_HISTORY)
+    @DeepLink(TransactionAppLink.PURCHASE_HISTORY)
     public static Intent getCallingIntentPurchaseHistory(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, PurchaseActivity.class)

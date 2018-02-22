@@ -1,13 +1,9 @@
 package com.tokopedia.otp.phoneverification.view.subscriber;
 
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.ErrorListener;
-import com.tokopedia.otp.phoneverification.data.ChangePhoneNumberModel;
-import com.tokopedia.otp.phoneverification.view.listener.ChangePhoneNumberView;
-import com.tokopedia.session.R;
-
-import java.net.UnknownHostException;
+import com.tokopedia.network.ErrorCode;
+import com.tokopedia.network.ErrorHandler;
+import com.tokopedia.otp.phoneverification.data.model.ChangePhoneNumberViewModel;
+import com.tokopedia.otp.phoneverification.view.listener.ChangePhoneNumber;
 
 import rx.Subscriber;
 
@@ -15,11 +11,11 @@ import rx.Subscriber;
  * Created by nisie on 5/10/17.
  */
 
-public class ChangePhoneNumberSubscriber extends Subscriber<ChangePhoneNumberModel> {
+public class ChangePhoneNumberSubscriber extends Subscriber<ChangePhoneNumberViewModel> {
 
-    private final ChangePhoneNumberView viewListener;
+    private final ChangePhoneNumber.View viewListener;
 
-    public ChangePhoneNumberSubscriber(ChangePhoneNumberView viewListener) {
+    public ChangePhoneNumberSubscriber(ChangePhoneNumber.View viewListener) {
         this.viewListener = viewListener;
     }
 
@@ -30,57 +26,15 @@ public class ChangePhoneNumberSubscriber extends Subscriber<ChangePhoneNumberMod
 
     @Override
     public void onError(Throwable e) {
-        if (e instanceof UnknownHostException) {
-            viewListener.onErrorChangePhoneNumber(
-                    viewListener.getString(R.string.msg_no_connection));
-        } else if (e instanceof RuntimeException &&
-                e.getLocalizedMessage() != null &&
-                e.getLocalizedMessage().length() <= 3) {
-            new ErrorHandler(new ErrorListener() {
-                @Override
-                public void onUnknown() {
-                    viewListener.onErrorChangePhoneNumber(
-                            viewListener.getString(R.string.default_request_error_unknown));
-                }
-
-                @Override
-                public void onTimeout() {
-                    viewListener.onErrorChangePhoneNumber(
-                            viewListener.getString(R.string.default_request_error_timeout));
-                }
-
-                @Override
-                public void onServerError() {
-                    viewListener.onErrorChangePhoneNumber(
-                            viewListener.getString(R.string.default_request_error_internal_server));
-                }
-
-                @Override
-                public void onBadRequest() {
-                    viewListener.onErrorChangePhoneNumber(
-                            viewListener.getString(R.string.default_request_error_bad_request));
-                }
-
-                @Override
-                public void onForbidden() {
-                    viewListener.onErrorChangePhoneNumber(
-                            viewListener.getString(R.string.default_request_error_forbidden_auth));
-                }
-            }, Integer.parseInt(e.getLocalizedMessage()));
-        } else if (e instanceof ErrorMessageException
-                && e.getLocalizedMessage() != null) {
-            viewListener.onErrorChangePhoneNumber(e.getLocalizedMessage());
-        } else {
-            viewListener.onErrorChangePhoneNumber(
-                    viewListener.getString(R.string.default_request_error_unknown));
-        }
+        viewListener.onErrorChangePhoneNumber(ErrorHandler.getErrorMessageWithErrorCode(viewListener.getActivity(), e));
     }
 
     @Override
-    public void onNext(ChangePhoneNumberModel changePhoneNumberModel) {
-        if(changePhoneNumberModel.isSuccess())
+    public void onNext(ChangePhoneNumberViewModel changePhoneNumberViewModel) {
+        if (changePhoneNumberViewModel.isSuccess())
             viewListener.onSuccessChangePhoneNumber();
         else
-            viewListener.onErrorChangePhoneNumber(changePhoneNumberModel.getErrorMessage());
+            viewListener.onErrorChangePhoneNumber(ErrorHandler.getDefaultErrorCodeMessage
+                    (ErrorCode.UNSUPPORTED_FLOW));
     }
 }

@@ -27,21 +27,32 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
-import com.tokopedia.tkpd.tkpdreputation.R;
-import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.ImageUpload;
-import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.ActReviewPass;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.product.ReviewActService;
 import com.tokopedia.core.network.apiservices.shop.ReputationActService;
 import com.tokopedia.core.network.apiservices.shop.ShopService;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
+import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.util.LabelUtils;
+import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.SelectableSpannedMovementMethod;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.util.StarGenerator;
+import com.tokopedia.core.util.ToolTipUtils;
+import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
+import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.factory.ReputationProductDataFactory;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.mapper.ActResultMapper;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.mapper.LikeDislikeDomainMapper;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.pojo.ViewHolderComment;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.pojo.ViewHolderMain;
+import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.product_review.ReviewProductDetailModel;
+import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.product_review.ReviewProductModel;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.repository.DeleteCommentRepository;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.repository.DeleteCommentRepositoryImpl;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.repository.GetLikeDislikeRepository;
@@ -50,6 +61,7 @@ import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.repository.LikeD
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.repository.LikeDislikeRepositoryImpl;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.repository.PostReportRepository;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.repository.PostReportRepositoryImpl;
+import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.ActReviewPass;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.model.ActResultDomain;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.model.LikeDislikeDomain;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.usecase.DeleteCommentUseCase;
@@ -60,19 +72,6 @@ import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.adapter.ImageUpl
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.listener.ReputationProductFragmentView;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.presenter.ReputationProductViewFragmentPresenter;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.presenter.ReputationProductViewFragmentPresenterImpl;
-import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
-import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.product_review.ReviewProductDetailModel;
-import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.product_review.ReviewProductModel;
-import com.tokopedia.core.router.OldSessionRouter;
-import com.tokopedia.core.session.presenter.SessionView;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.util.LabelUtils;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.SelectableSpannedMovementMethod;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.util.StarGenerator;
-import com.tokopedia.core.util.ToolTipUtils;
-import com.tokopedia.core.var.TkpdState;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -86,6 +85,7 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
     public static final int SMILEY_DEFAULT = 0;
     public static final int SMILEY_NETRAL = 1;
     public static final int SMILEY_SMILE = 2;
+    private static final int REQUEST_LOGIN = 101;
 
     private String productID;
     private String shopID;
@@ -607,11 +607,9 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
         return new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent = OldSessionRouter.getLoginActivityIntent(getActivity());
-                intent.putExtra("product_id", productID);
-                intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
-                getActivity().startActivity(intent);
+                Intent intent = ((ReputationRouter) MainApplication.getAppContext()).getLoginIntent
+                        (getActivity());
+                getActivity().startActivityForResult(intent, REQUEST_LOGIN);
             }
         };
     }

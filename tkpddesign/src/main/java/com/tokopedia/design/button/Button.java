@@ -7,8 +7,6 @@ import android.support.annotation.DrawableRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
-import android.util.TypedValue;
-import android.widget.RelativeLayout;
 
 import com.tokopedia.design.R;
 
@@ -91,6 +89,7 @@ public class Button extends AppCompatButton {
 
     private void initSize(float textSize, int height) {
         this.setTextSize(textSize);
+        this.setHeight(height);
     }
 
     public int getType() {

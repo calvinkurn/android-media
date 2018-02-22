@@ -2,6 +2,7 @@ package com.tokopedia.transaction.cart.presenter;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.google.gson.Gson;
@@ -17,7 +18,6 @@ import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.transaction.R;
@@ -62,12 +62,18 @@ public class CartPresenter implements ICartPresenter {
     public static final int OPTIONAL_INSURANCE_MODE = 2;
     public static final String VOUCHER_CODE = "voucher_code";
     public static final String IS_SUGGESTED = "suggested";
+    private static final String PARAM_CART_PAGE_LOADED = "cart page loaded";
+    private static final String PARAM_CLICK_PAYMENT_OPTION_BUTTON = "click payment option button";
     private final ICartView view;
     private final ICartDataInteractor cartDataInteractor;
+    private Gson gson;
+    private LocalCacheHandler cartCache;
 
-    public CartPresenter(ICartView iCartView) {
+    public CartPresenter(ICartView iCartView, LocalCacheHandler cartCache) {
         this.view = iCartView;
         this.cartDataInteractor = new CartDataInteractor();
+        this.gson = new Gson();
+        this.cartCache = cartCache;
     }
 
     @Override
@@ -91,11 +97,16 @@ public class CartPresenter implements ICartPresenter {
                 CartData cartData = responseTransform.getData();
                 try {
                     processCartAnalytics(cartData);
+                    trackStep1CheckoutEE(getCheckoutTrackingData());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 processRenderViewCartData(cartData);
                 view.renderVisibleMainCartContainer();
+                if(!cartData.getCartItemList().isEmpty()){
+                    autoApplyCouponIfAvailable(1);
+
+                }
             }
         });
     }
@@ -125,8 +136,8 @@ public class CartPresenter implements ICartPresenter {
                 afQty = afQty + cartProduct.getProductQuantity();
                 Product product = new Product();
                 product.setProductID(cartProduct.getProductId());
-                product.setPrice(cartProduct.getProductPriceIdr());
-                product.setQty(cartProduct.getProductQuantity());
+                product.setPrice(cartProduct.getProductPrice());
+                product.setQty(String.valueOf(cartProduct.getProductQuantity()));
                 product.setProductName(MethodChecker.fromHtml(cartProduct.getProductName()).toString());
 
                 com.tokopedia.core.analytics.model.Product locaProduct
@@ -154,7 +165,6 @@ public class CartPresenter implements ICartPresenter {
             }
         }
         checkoutAnalytics.setCurrency("IDR");
-        checkoutAnalytics.setStep(2);
 
         Map[] afAllItemsPurchased = new Map[afProducts.size()];
         int ctr = 0;
@@ -395,7 +405,7 @@ public class CartPresenter implements ICartPresenter {
     public void processCheckVoucherCode(final String voucherCode, final int instantCheckVoucher) {
         view.showProgressLoading();
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
-        params.put(VOUCHER_CODE, view.getVoucherCodeCheckoutData());
+        params.put(VOUCHER_CODE, voucherCode);
         params.put(IS_SUGGESTED, String.valueOf(instantCheckVoucher));
         cartDataInteractor.checkVoucherCode(view.getGeneratedAuthParamNetwork(params),
                 new Subscriber<ResponseTransform<VoucherData>>() {
@@ -410,6 +420,7 @@ public class CartPresenter implements ICartPresenter {
                             view.renderErrorCheckVoucher(e.getCause().getMessage());
                             view.renderErrorFromInstantVoucher(instantCheckVoucher);
                             view.hideProgressLoading();
+                            removeBranchPromo();
                         } else {
                             handleThrowableVoucherCode(e);
                         }
@@ -505,14 +516,17 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void processCheckoutAnalytics(LocalCacheHandler localCacheHandler, String gateway) {
-        Gson afGSON = new Gson();
-        Checkout checkoutData = afGSON.fromJson(
-                localCacheHandler.getString(Jordan.CACHE_KEY_DATA_CHECKOUT),
-                new TypeToken<Checkout>() {
-                }.getType());
-        checkoutData.setCheckoutOption(gateway);
-        PaymentTracking.eventCartCheckout(checkoutData);
+    public void trackStep1CheckoutEE(Checkout checkoutData) {
+        checkoutData.setStep("1");
+        checkoutData.setCheckoutOption(PARAM_CART_PAGE_LOADED);
+        PaymentTracking.eventCartCheckoutStep1(checkoutData);
+    }
+
+    @Override
+    public void trackStep2CheckoutEE(Checkout checkoutData) {
+        checkoutData.setStep("2");
+        checkoutData.setCheckoutOption(PARAM_CLICK_PAYMENT_OPTION_BUTTON);
+        PaymentTracking.eventCartCheckoutStep2(checkoutData);
     }
 
     @Override
@@ -560,11 +574,6 @@ public class CartPresenter implements ICartPresenter {
                 thanksTopPayData.getParameter().getPaymentId(),
                 revenue, arrJas, qty, mapResult
         );
-
-        /*
-            Branch.io block
-         */
-        BranchSdkUtils.sendCommerceEvent(locaProducts, revenue, totalShipping);
 
     }
 
@@ -701,6 +710,7 @@ public class CartPresenter implements ICartPresenter {
             bundle.putInt(TopPayIntentService.EXTRA_ACTION,
                     TopPayIntentService.SERVICE_ACTION_GET_PARAMETER_DATA);
             view.executeIntentService(bundle, TopPayIntentService.class);
+            trackStep2CheckoutEE(getCheckoutTrackingData());
         }
     }
 
@@ -878,5 +888,23 @@ public class CartPresenter implements ICartPresenter {
                 && !cartItem.getCartErrorMessage2().equals("0"))
                 || (cartItem.getCartErrorMessage1() != null
                 && !cartItem.getCartErrorMessage1().equals("0"));
+    }
+
+
+    public void autoApplyCouponIfAvailable(Integer selectedProduct) {
+        String savedCoupon = BranchSdkUtils.getAutoApplyCouponIfAvailable(view.getActivity());
+        if (!TextUtils.isEmpty(savedCoupon)) {
+            processCheckVoucherCode(savedCoupon, selectedProduct);
+            view.setListnerCancelPromoLayoutOnAutoApplyCode();
+        }
+    }
+
+    private void removeBranchPromo() {
+        BranchSdkUtils.removeCouponCode(view.getActivity());
+    }
+    private Checkout getCheckoutTrackingData() {
+        return gson.fromJson(
+                cartCache.getString(Jordan.CACHE_KEY_DATA_CHECKOUT),
+                new TypeToken<Checkout>() {}.getType());
     }
 }

@@ -12,7 +12,6 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.support.multidex.MultiDex;
 import android.support.v7.app.AppCompatDelegate;
-import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
@@ -28,11 +27,7 @@ import com.tokopedia.core.analytics.fingerprint.LocationUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.cache.domain.interactor.CacheApiWhiteListUseCase;
-import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
-import com.tokopedia.core.network.di.module.NetModule;
 import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.GlobalConfig;
@@ -41,11 +36,8 @@ import com.tokopedia.core.util.toolargetool.TooLargeTool;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import io.branch.referral.Branch;
 import io.fabric.sdk.android.Fabric;
-import rx.Subscriber;
 
 public abstract class MainApplication extends BaseMainApplication{
 
@@ -65,18 +57,9 @@ public abstract class MainApplication extends BaseMainApplication{
 	private static int currActivityState;
 	private static String currActivityName;
     private static IntentService RunningService;
-    @Inject
-    CacheApiWhiteListUseCase cacheApiWhiteListUseCase;
     private LocationUtils locationUtils;
     private DaggerAppComponent.Builder daggerBuilder;
     private AppComponent appComponent;
-
-    /**
-     * Get list of white list
-     *
-     * @return
-     */
-    protected abstract List<CacheApiWhiteListDomain> getWhiteList();
 
     public static MainApplication getInstance() {
         return instance;
@@ -275,7 +258,6 @@ public abstract class MainApplication extends BaseMainApplication{
         isResetTickerState = true;
 
         //[START] this is for dev process
-        initDB();
 
         initDbFlow();
 
@@ -287,7 +269,6 @@ public abstract class MainApplication extends BaseMainApplication{
         locationUtils.initLocationBackground();
         TooLargeTool.startLogging(this);
 
-        addToWhiteList();
         // initialize the Branch object
         initBranch();
         NotificationUtils.setNotificationChannel(this);
@@ -295,28 +276,6 @@ public abstract class MainApplication extends BaseMainApplication{
     }
 
 
-
-    public void addToWhiteList() {
-        List<CacheApiWhiteListDomain> cacheApiWhiteListDomains = getWhiteList();
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(CacheApiWhiteListUseCase.ADD_WHITELIST_COLLECTIONS, cacheApiWhiteListDomains);
-        cacheApiWhiteListUseCase.executeSync(requestParams, new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.e(TAG, e.toString());
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                Log.i(TAG, aBoolean.toString());
-            }
-        });
-    }
 
     @Override
     public void onTerminate() {
@@ -351,17 +310,13 @@ public abstract class MainApplication extends BaseMainApplication{
         Crashlytics.setUserIdentifier("");
     }
 
-    public void initDB() {
-    }
-
-	private void initDbFlow() {
+	protected void initDbFlow() {
 		if(BuildConfig.DEBUG) {
 			FlowLog.setMinimumLoggingLevel(FlowLog.Level.V);
 		}
 		FlowManager.init(new FlowConfig.Builder(this)
                 .addDatabaseHolder(TkpdCoreGeneratedDatabaseHolder.class)
                 .build());
-        //FlowManager.initModule(TkpdCoreGeneratedDatabaseHolder.class);
 	}
 
     public AppComponent getApplicationComponent() {
@@ -386,7 +341,7 @@ public abstract class MainApplication extends BaseMainApplication{
     private void initBranch() {
         Branch.getAutoInstance(this);
         if (SessionHandler.isV4Login(this)) {
-            BranchSdkUtils.sendLoginEvent(SessionHandler.getLoginID(this));
+            BranchSdkUtils.sendIdentityEvent(SessionHandler.getLoginID(this));
         }
     }
 }

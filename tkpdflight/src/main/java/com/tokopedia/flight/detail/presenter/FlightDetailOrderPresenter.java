@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
+import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.common.constant.FlightErrorConstant;
@@ -37,6 +38,9 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by zulfikarrahman on 12/13/17.
@@ -44,14 +48,18 @@ import rx.Subscriber;
 
 public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetailOrderContract.View> implements FlightDetailOrderContract.Presenter {
 
+    private static final String NEW_LINE = "\n";
     private final FlightGetOrderUseCase flightGetOrderUseCase;
     private UserSession userSession;
+    private CompositeSubscription compositeSubscription;
     private int totalPrice = 0;
+    private String userResendEmail = "";
 
     @Inject
     public FlightDetailOrderPresenter(UserSession userSession, FlightGetOrderUseCase flightGetOrderUseCase) {
         this.userSession = userSession;
         this.flightGetOrderUseCase = flightGetOrderUseCase;
+        compositeSubscription = new CompositeSubscription();
     }
 
     public void getDetail(String orderId, FlightOrderDetailPassData flightOrderDetailPassData) {
@@ -72,6 +80,11 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     @Override
     public void actionReorderButtonClicked() {
         getView().navigateToFlightHomePage();
+    }
+
+    @Override
+    public void onDownloadETicketButtonClicked() {
+        getView().navigateToInputEmailForm(userSession.getUserId(), userResendEmail);
     }
 
     private Subscriber<FlightOrder> getSubscriberGetDetailOrder(final FlightOrderDetailPassData flightOrderDetailPassData) {
@@ -103,22 +116,61 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
             public void onNext(FlightOrder flightOrder) {
                 getView().hideProgressDialog();
                 getView().renderFlightOrder(flightOrder);
-                List<FlightOrderJourney> flightOrderJourneyList = filterFlightJourneys(flightOrder.getStatus(), flightOrder.getJourneys(), flightOrderDetailPassData);
+                List<FlightOrderJourney> flightOrderJourneyList = filterFlightJourneys(
+                        flightOrder.getStatus(),
+                        flightOrder.getJourneys(),
+                        flightOrderDetailPassData
+                );
                 getView().updateFlightList(flightOrderJourneyList);
                 getView().updatePassengerList(transformToListPassenger(flightOrder.getPassengerViewModels()));
                 getView().updatePrice(transformToSimpleModelPrice(flightOrder), CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalPrice));
-                getView().updateOrderData(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API_DETAIL,
-                        FlightDateUtil.FORMAT_DATE_LOCAL_DETAIL_ORDER, flightOrder.getCreateTime()),
-                        generateTicketLink(flightOrder.getId(), flightOrder.getPdf(), userSession.getUserId()), generateInvoiceLink(flightOrder.getId()),
-                        generateCancelMessage(flightOrderJourneyList, flightOrder.getPassengerViewModels()));
+                getView().setTransactionDate(
+                        FlightDateUtil.formatDateByUsersTimezone(FlightDateUtil.FORMAT_DATE_API_DETAIL,
+                                FlightDateUtil.FORMAT_DATE_LOCAL_DETAIL_ORDER, flightOrder.getCreateTime())
+                );
+                getView().updateOrderData(
+                        generateTicketLink(flightOrder.getId(), flightOrder.getPdf(), userSession.getUserId()),
+                        generateInvoiceLink(flightOrder.getId()),
+                        generateCancelMessage(flightOrderJourneyList, flightOrder.getPassengerViewModels())
+                );
                 generateStatus(flightOrder.getStatus(), flightOrder.getStatusString());
                 renderPaymentInfo(flightOrder);
             }
         };
     }
 
+    @Override
+    public void onGetProfileData() {
+        compositeSubscription.add(getView().getProfileObservable()
+                .onBackpressureDrop()
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<ProfileInfo>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(ProfileInfo profileInfo) {
+                        if (profileInfo != null && isViewAttached()) {
+                            userResendEmail = profileInfo.getEmail();
+                        }
+                    }
+                })
+        );
+    }
+
     private void renderPaymentInfo(FlightOrder flightOrder) {
-        if (flightOrder.getPayment() != null && flightOrder.getPayment().getGatewayName().length() > 0) {
+        if (flightOrder.getPayment() != null
+                && flightOrder.getPayment().getGatewayName().length() > 0) {
+
             getView().showPaymentInfoLayout();
             if (flightOrder.getPayment().getManualTransfer() != null && flightOrder.getPayment().getManualTransfer().getAccountBankName().length() > 0) {
                 getView().setPaymentLabel(R.string.flight_order_payment_manual_label);
@@ -130,8 +182,17 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 getView().hideTotalTransfer();
             }
 
-            getView().setPaymentDueDate(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API, FlightDateUtil.DEFAULT_VIEW_TIME_FORMAT, flightOrder.getPayment().getExpireOn()));
-
+            if (flightOrder.getStatus() == FlightStatusOrderType.WAITING_FOR_THIRD_PARTY
+                    || flightOrder.getStatus() == FlightStatusOrderType.WAITING_FOR_TRANSFER) {
+                getView().setPaymentDueDate(
+                        FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API,
+                                FlightDateUtil.DEFAULT_VIEW_TIME_FORMAT,
+                                flightOrder.getPayment().getExpireOn()
+                        )
+                );
+            } else {
+                getView().hidePaymentDueDate();
+            }
         } else {
             getView().hidePaymentInfoLayout();
         }
@@ -139,13 +200,15 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
 
     private CharSequence renderPaymentDescriptionText(PaymentInfoEntity payment) {
         SpannableStringBuilder text = new SpannableStringBuilder();
-        text.append(payment.getGatewayName());
+        text.append(payment.getGatewayName().trim());
         makeBold(text);
-        SpannableStringBuilder desc = new SpannableStringBuilder();
-        desc.append(payment.getTransactionCode());
-        makeSmall(desc);
-        text.append("\n");
-        text.append(desc);
+        if (payment.getTransactionCode() != null && payment.getTransactionCode().length() > 0) {
+            SpannableStringBuilder desc = new SpannableStringBuilder();
+            desc.append(payment.getTransactionCode());
+            makeSmall(desc);
+            text.append(NEW_LINE);
+            text.append(desc);
+        }
         return text;
     }
 
@@ -412,6 +475,9 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     @Override
     public void detachView() {
         flightGetOrderUseCase.unsubscribe();
+        if (compositeSubscription.hasSubscriptions()) {
+            compositeSubscription.unsubscribe();
+        }
         super.detachView();
     }
 }
