@@ -226,6 +226,10 @@
     <string name="label_partial_order_info">Aktifkan untuk tetap menerima stok yang tersedia jika stok Toko tidak mencukupi total pesanan.</string>
     <string name="label_dropshipper_info">Penjual, sebagai supplier akan mengirim barang ke pembeli Anda dengan mengatasnamakan toko Anda. Syarat dan Ketentuan toko berlaku.</string>
     <string name="label_not_yet_pinpoint">Belum Pinpoint</string>
+    <string name="message_error_no_courier_selected">Pastikan Anda telah memilih kurir pengiriman</string>
+    <string name="message_error_dropshipper_data">Lengkapi informasi dropshipper Anda</string>
+    <string name="message_error_dropshipper_name">Nama terlalu pendek</string>
+    <string name="message_error_dropshipper_phone">Nomor telepon yang dimasukkan tidak sesuai</string>
 
     <string-array name="pickup_point">
         <item>Alfamart</item>
