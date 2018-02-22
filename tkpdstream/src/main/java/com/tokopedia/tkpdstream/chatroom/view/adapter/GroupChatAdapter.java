@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tkpdstream.chatroom.view.adapter.typefactory.GroupChatTypeFactory;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.UserActionViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +77,7 @@ public class GroupChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public void addDummyReply(PendingChatViewModel pendingChatViewModel) {
-        list.add(0,pendingChatViewModel);
+        list.add(0, pendingChatViewModel);
     }
 
     public void removeDummy(PendingChatViewModel pendingChatViewModel) {
@@ -93,5 +94,9 @@ public class GroupChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     public void addIncomingMessage(Visitable messageItem) {
         this.list.add(0, messageItem);
 
+    }
+
+    public void addAction(UserActionViewModel userActionViewModel) {
+        this.list.add(0, userActionViewModel);
     }
 }

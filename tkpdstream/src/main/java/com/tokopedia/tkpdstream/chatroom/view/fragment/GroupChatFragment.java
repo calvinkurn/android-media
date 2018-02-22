@@ -49,6 +49,7 @@ import com.tokopedia.tkpdstream.chatroom.view.presenter.GroupChatPresenter;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.UserActionViewModel;
 import com.tokopedia.tkpdstream.common.analytics.ChannelAnalytics;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
@@ -65,6 +66,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         ChannelHandlerUseCase.ChannelHandlerListener {
 
     public static final String ARGS_VIEW_MODEL = "GC_VIEW_MODEL";
+    private static final int SCROLL_TO_BOTTOM_TRESHOLD_POSITION = 10;
     @Inject
     GroupChatPresenter presenter;
 
@@ -82,6 +84,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     private GroupChatViewModel viewModel;
     private UserSession userSession;
 
+    int newMessageCounter;
 
     @Override
     protected String getScreenName() {
@@ -250,6 +253,13 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initData();
+
+        ImageHandler.loadImageBlur(getActivity(), channelBanner, "http://static.tvtropes" +
+                ".org/pmwiki/pub/images/kingdom_hearts_difficulties.jpg");
+    }
+
+    private void initData() {
         presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUrl(),
                 userSession.getName(), "https://yt3.ggpht" +
                         ".com/-uwClWniyyFU/AAAAAAAAAAI/AAAAAAAAAAA/nVrBEY3dzuY/s176-c-k-no-mo-rj" +
@@ -270,9 +280,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                                 getActivity().finish();
                             }
                         });
-
-        ImageHandler.loadImageBlur(getActivity(), channelBanner, "http://static.tvtropes" +
-                ".org/pmwiki/pub/images/kingdom_hearts_difficulties.jpg");
     }
 
     @Override
@@ -335,7 +342,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     private void scrollToBottom() {
+        resetNewMessageCounter();
         layoutManager.scrollToPosition(0);
+    }
+
+    private void resetNewMessageCounter() {
+        newMessageCounter = 0;
     }
 
     @Override
@@ -361,14 +373,29 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     @Override
     public void onErrorGetMessageFirstTime(String errorMessage) {
-
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                initData();
+            }
+        });
     }
 
     @Override
     public void onMessageReceived(Visitable messageItem) {
         adapter.addIncomingMessage(messageItem);
         adapter.notifyItemInserted(0);
-        scrollToBottom();
+
+        if (layoutManager.findFirstVisibleItemPosition() == 0) {
+            scrollToBottom();
+        } else {
+            newMessageCounter += 1;
+            showNewMessageReceived(newMessageCounter);
+        }
+    }
+
+    private void showNewMessageReceived(int newMessageCounter) {
+        Log.d("NISNIS", "showNewMessageReceived " + newMessageCounter);
     }
 
     @Override
@@ -379,5 +406,11 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     @Override
     public void onMessageUpdated(Visitable map) {
 //TODO : Implement this later
+    }
+
+    @Override
+    public void onUserEntered(UserActionViewModel userActionViewModel) {
+        adapter.addAction(userActionViewModel);
+        adapter.notifyItemInserted(0);
     }
 }

@@ -7,10 +7,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tkpdstream.chatroom.view.adapter.viewholder.AdminAnnouncementViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.viewholder.ChatViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.viewholder.PendingChatViewHolder;
+import com.tokopedia.tkpdstream.chatroom.view.adapter.viewholder.UserActionViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.AdminAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.UserActionViewModel;
 
 /**
  * @author by nisie on 2/7/18.
@@ -38,6 +40,11 @@ public class GroupChatTypeFactoryImpl extends BaseAdapterTypeFactory implements 
     }
 
     @Override
+    public int type(UserActionViewModel userActionViewModel) {
+        return UserActionViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         AbstractViewHolder viewHolder;
 
@@ -47,6 +54,8 @@ public class GroupChatTypeFactoryImpl extends BaseAdapterTypeFactory implements 
             viewHolder = new AdminAnnouncementViewHolder(parent);
         } else if (type == PendingChatViewHolder.LAYOUT) {
             viewHolder = new PendingChatViewHolder(parent);
+        } else if (type == UserActionViewHolder.LAYOUT) {
+            viewHolder = new UserActionViewHolder(parent);
         } else {
             viewHolder = super.createViewHolder(parent, type);
         }
