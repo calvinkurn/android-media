@@ -47,7 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Kurir" />
+                android:text="@string/title_courier" />
 
             <TextView
                 android:id="@+id/courier_name"
@@ -56,6 +56,7 @@
                 android:layout_weight="1"
                 android:gravity="end"
                 android:textColor="@color/medium_green"
+                android:text="@string/title_choose"
                 tools:text="Jne Reguler" />
 
         </LinearLayout>
