@@ -40,6 +40,7 @@
             android:layout_height="66dp"
             android:layout_below="@+id/tv_subtitle_user_data"
             android:layout_marginBottom="21dp"
+            android:visibility="gone"
             android:background="@color/background_yellow_incomplete">
 
             <ImageView
@@ -75,13 +76,13 @@
                 android:id="@+id/ll_title_phone_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:gravity="center_vertical">
 
                 <TextView
                     android:id="@+id/tv_title_phone_number"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
+                    android:layout_height="match_parent"
                     android:lineSpacingExtra="2sp"
                     android:text="@string/phone_number"
                     android:textColor="@color/font_black_disabled_38"
@@ -137,14 +138,14 @@
             <LinearLayout
                 android:id="@+id/ll_title_email"
                 android:layout_width="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical">
 
                 <TextView
                     android:id="@+id/tv_title_email"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
+                    android:layout_height="match_parent"
                     android:lineSpacingExtra="2sp"
                     android:text="@string/title_email"
                     android:textColor="@color/font_black_disabled_38"
@@ -258,6 +259,14 @@
                 android:textSize="@dimen/text_size_16"
                 android:textStyle="normal"
                 tools:text="7 Sep 1991" />
+
+            <View
+                android:id="@+id/separator_data"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_below="@id/tv_birth_date"
+                android:layout_marginTop="13dp"
+                android:background="@color/separator_color" />
 
         </RelativeLayout>
 

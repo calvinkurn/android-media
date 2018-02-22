@@ -65,7 +65,7 @@ public class PartialUserDataView extends BaseCustomView {
         init();
     }
 
-    private void init(){
+    private void init() {
         View view = inflate(getContext(), R.layout.partial_profile_user_data, this);
         bannerIncompleteProfile = view.findViewById(R.id.rl_incomplete_profile);
         partialPhoneNumber = view.findViewById(R.id.rl_phone_number);
@@ -78,13 +78,46 @@ public class PartialUserDataView extends BaseCustomView {
         dataEmail = view.findViewById(R.id.tv_email);
         dataGender = view.findViewById(R.id.tv_gender);
         dataBirthDate = view.findViewById(R.id.tv_birth_date);
+
+        bannerIncompleteProfile.setVisibility(GONE);
+        partialPhoneNumber.setVisibility(GONE);
+        partialEmail.setVisibility(GONE);
+        partialGender.setVisibility(GONE);
+        partialBirthDate.setVisibility(GONE);
     }
 
-    public void renderData(TopProfileViewModel model){
-        bannerIncompleteProfile.setVisibility(GONE);
-        dataPhoneNumber.setText(model.getPhoneNumber());
-        dataEmail.setText(model.getEmail());
-        dataGender.setText(model.getGender());
-        dataBirthDate.setText(model.getBirthDate());
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+    }
+
+    public void renderData(TopProfileViewModel model) {
+        init();
+        if (model.getCompletion() < 100) {
+            bannerIncompleteProfile.setVisibility(VISIBLE);
+        }
+        if (!model.getPhoneNumber().equals("")) {
+            partialPhoneNumber.setVisibility(VISIBLE);
+            dataPhoneNumber.setText(model.getPhoneNumber());
+            if (model.isPhoneVerified()) {
+                verifiedPhoneNumber.setVisibility(VISIBLE);
+            }
+        }
+        if (!model.getEmail().equals("")) {
+            partialEmail.setVisibility(VISIBLE);
+            dataEmail.setText(model.getEmail());
+            if (model.isEmailVerified()) {
+                verifiedEmail.setVisibility(VISIBLE);
+            }
+        }
+        if (!model.getBirthDate().equals("")) {
+            partialBirthDate.setVisibility(VISIBLE);
+            dataBirthDate.setText(model.getGender());
+        }
+
+        if (!model.getGender().equals("")) {
+            partialGender.setVisibility(VISIBLE);
+            dataGender.setText(model.getGender());
+        }
     }
 }

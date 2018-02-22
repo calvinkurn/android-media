@@ -80,7 +80,7 @@ public class PartialUserInfoView extends BaseCustomView {
     }
 
     public void renderData(TopProfileViewModel model){
-        partialUserStatus.setVisibility(model.isVerified() ? VISIBLE : GONE);
+        partialUserStatus.setVisibility(model.isPhoneVerified() && model.isEmailVerified() ? VISIBLE : GONE);
         tvReputationSummaryScore.setText(model.getSummaryScore());
         tvReputationPositiveScore.setText(model.getPositiveScore());
         tvReputationNetralScore.setText(model.getNetralScore());
