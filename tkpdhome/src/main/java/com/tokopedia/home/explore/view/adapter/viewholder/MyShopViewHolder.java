@@ -62,6 +62,18 @@ public class MyShopViewHolder extends AbstractViewHolder<MyShopViewModel> {
                 listener.openShop();
             }
         });
+        titleTxt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.openShop();
+            }
+        });
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.openShop();
+            }
+        });
     }
 
     @Override
