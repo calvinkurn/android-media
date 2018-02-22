@@ -7,6 +7,7 @@ import com.tokopedia.flight.airline.data.cloud.model.AirlineData;
 import com.tokopedia.flight.airport.data.source.cloud.model.FlightAirportCountry;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
+import com.tokopedia.flight.booking.data.cloud.entity.SavedPassengerEntity;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
@@ -87,4 +88,7 @@ public interface FlightApi {
 
     @GET(FlightUrl.FLIGHT_EMAIL)
     Observable<Response<SendEmailEntity>> sendEmail(@QueryMap Map<String, Object> param);
+
+    @GET(FlightUrl.FLIGHT_PASSENGER_SAVED)
+    Observable<Response<FlightDataResponse<List<SavedPassengerEntity>>>> getSavedPassengerData();
 }
