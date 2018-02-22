@@ -1,12 +1,15 @@
 package com.tokopedia.transaction.checkout.view.data.cartshipmentform;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
  * @author anggaprasetiyo on 22/02/18.
  */
-public class Shop {
+public class Shop implements Parcelable {
     private int shopId;
     private int userId;
     private String shopName;
@@ -196,4 +199,73 @@ public class Shop {
     public void setCityName(String cityName) {
         this.cityName = cityName;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.shopId);
+        dest.writeInt(this.userId);
+        dest.writeString(this.shopName);
+        dest.writeString(this.shopImage);
+        dest.writeString(this.shopUrl);
+        dest.writeInt(this.shopStatus);
+        dest.writeByte(this.isGold ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isGoldBadge ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isOfficial ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isFreeReturns ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.addressId);
+        dest.writeString(this.postalCode);
+        dest.writeString(this.latitude);
+        dest.writeString(this.longitude);
+        dest.writeInt(this.districtId);
+        dest.writeString(this.districtName);
+        dest.writeInt(this.origin);
+        dest.writeString(this.addressStreet);
+        dest.writeInt(this.provinceId);
+        dest.writeInt(this.cityId);
+        dest.writeString(this.cityName);
+    }
+
+    public Shop() {
+    }
+
+    protected Shop(Parcel in) {
+        this.shopId = in.readInt();
+        this.userId = in.readInt();
+        this.shopName = in.readString();
+        this.shopImage = in.readString();
+        this.shopUrl = in.readString();
+        this.shopStatus = in.readInt();
+        this.isGold = in.readByte() != 0;
+        this.isGoldBadge = in.readByte() != 0;
+        this.isOfficial = in.readByte() != 0;
+        this.isFreeReturns = in.readByte() != 0;
+        this.addressId = in.readInt();
+        this.postalCode = in.readString();
+        this.latitude = in.readString();
+        this.longitude = in.readString();
+        this.districtId = in.readInt();
+        this.districtName = in.readString();
+        this.origin = in.readInt();
+        this.addressStreet = in.readString();
+        this.provinceId = in.readInt();
+        this.cityId = in.readInt();
+        this.cityName = in.readString();
+    }
+
+    public static final Parcelable.Creator<Shop> CREATOR = new Parcelable.Creator<Shop>() {
+        @Override
+        public Shop createFromParcel(Parcel source) {
+            return new Shop(source);
+        }
+
+        @Override
+        public Shop[] newArray(int size) {
+            return new Shop[size];
+        }
+    };
 }

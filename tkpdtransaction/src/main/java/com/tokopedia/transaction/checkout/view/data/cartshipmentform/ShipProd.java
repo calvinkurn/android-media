@@ -1,9 +1,12 @@
 package com.tokopedia.transaction.checkout.view.data.cartshipmentform;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * @author anggaprasetiyo on 22/02/18.
  */
-public class ShipProd {
+public class ShipProd implements Parcelable {
     private int shipProdId;
     private String shipProdName;
     private String shipGroupName;
@@ -58,4 +61,43 @@ public class ShipProd {
     public int getMinimumWeight() {
         return minimumWeight;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.shipProdId);
+        dest.writeString(this.shipProdName);
+        dest.writeString(this.shipGroupName);
+        dest.writeInt(this.shipGroupId);
+        dest.writeInt(this.additionalFee);
+        dest.writeInt(this.minimumWeight);
+    }
+
+    public ShipProd() {
+    }
+
+    protected ShipProd(Parcel in) {
+        this.shipProdId = in.readInt();
+        this.shipProdName = in.readString();
+        this.shipGroupName = in.readString();
+        this.shipGroupId = in.readInt();
+        this.additionalFee = in.readInt();
+        this.minimumWeight = in.readInt();
+    }
+
+    public static final Parcelable.Creator<ShipProd> CREATOR = new Parcelable.Creator<ShipProd>() {
+        @Override
+        public ShipProd createFromParcel(Parcel source) {
+            return new ShipProd(source);
+        }
+
+        @Override
+        public ShipProd[] newArray(int size) {
+            return new ShipProd[size];
+        }
+    };
 }

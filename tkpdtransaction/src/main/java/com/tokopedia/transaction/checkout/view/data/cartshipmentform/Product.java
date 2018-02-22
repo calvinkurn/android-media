@@ -1,12 +1,15 @@
 package com.tokopedia.transaction.checkout.view.data.cartshipmentform;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author anggaprasetiyo on 22/02/18.
  */
-public class Product {
+public class Product implements Parcelable {
 
     private List<String> errors = new ArrayList<>();
     private int productId;
@@ -270,4 +273,89 @@ public class Product {
     public void setProductCatalogId(int productCatalogId) {
         this.productCatalogId = productCatalogId;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeStringList(this.errors);
+        dest.writeInt(this.productId);
+        dest.writeString(this.productName);
+        dest.writeString(this.productPriceFmt);
+        dest.writeInt(this.productPrice);
+        dest.writeInt(this.productWholesalePrice);
+        dest.writeString(this.productWholesalePriceFmt);
+        dest.writeString(this.productWeightFmt);
+        dest.writeInt(this.productWeight);
+        dest.writeInt(this.productCondition);
+        dest.writeString(this.productUrl);
+        dest.writeByte(this.productReturnable ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.productIsFreeReturns ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.productIsPreorder ? (byte) 1 : (byte) 0);
+        dest.writeString(this.productCashback);
+        dest.writeInt(this.productMinOrder);
+        dest.writeInt(this.productInvenageValue);
+        dest.writeInt(this.productSwitchInvenage);
+        dest.writeInt(this.productPriceCurrency);
+        dest.writeString(this.productImageSrc200Square);
+        dest.writeString(this.productNotes);
+        dest.writeInt(this.productQuantity);
+        dest.writeInt(this.productMenuId);
+        dest.writeByte(this.productFinsurance ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.productFcancelPartial ? (byte) 1 : (byte) 0);
+        dest.writeTypedList(this.productShipment);
+        dest.writeTypedList(this.productShipmentMapping);
+        dest.writeInt(this.productCatId);
+        dest.writeInt(this.productCatalogId);
+    }
+
+    public Product() {
+    }
+
+    protected Product(Parcel in) {
+        this.errors = in.createStringArrayList();
+        this.productId = in.readInt();
+        this.productName = in.readString();
+        this.productPriceFmt = in.readString();
+        this.productPrice = in.readInt();
+        this.productWholesalePrice = in.readInt();
+        this.productWholesalePriceFmt = in.readString();
+        this.productWeightFmt = in.readString();
+        this.productWeight = in.readInt();
+        this.productCondition = in.readInt();
+        this.productUrl = in.readString();
+        this.productReturnable = in.readByte() != 0;
+        this.productIsFreeReturns = in.readByte() != 0;
+        this.productIsPreorder = in.readByte() != 0;
+        this.productCashback = in.readString();
+        this.productMinOrder = in.readInt();
+        this.productInvenageValue = in.readInt();
+        this.productSwitchInvenage = in.readInt();
+        this.productPriceCurrency = in.readInt();
+        this.productImageSrc200Square = in.readString();
+        this.productNotes = in.readString();
+        this.productQuantity = in.readInt();
+        this.productMenuId = in.readInt();
+        this.productFinsurance = in.readByte() != 0;
+        this.productFcancelPartial = in.readByte() != 0;
+        this.productShipment = in.createTypedArrayList(ProductShipment.CREATOR);
+        this.productShipmentMapping = in.createTypedArrayList(ProductShipmentMapping.CREATOR);
+        this.productCatId = in.readInt();
+        this.productCatalogId = in.readInt();
+    }
+
+    public static final Parcelable.Creator<Product> CREATOR = new Parcelable.Creator<Product>() {
+        @Override
+        public Product createFromParcel(Parcel source) {
+            return new Product(source);
+        }
+
+        @Override
+        public Product[] newArray(int size) {
+            return new Product[size];
+        }
+    };
 }

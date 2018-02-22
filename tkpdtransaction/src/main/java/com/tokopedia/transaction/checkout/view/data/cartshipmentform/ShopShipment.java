@@ -1,12 +1,15 @@
 package com.tokopedia.transaction.checkout.view.data.cartshipmentform;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author anggaprasetiyo on 22/02/18.
  */
-public class ShopShipment {
+public class ShopShipment implements Parcelable {
 
     private int shipId;
     private String shipName;
@@ -62,4 +65,44 @@ public class ShopShipment {
     public void setDropshipEnabled(boolean dropshipEnabled) {
         isDropshipEnabled = dropshipEnabled;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.shipId);
+        dest.writeString(this.shipName);
+        dest.writeString(this.shipCode);
+        dest.writeString(this.shipLogo);
+        dest.writeList(this.shipProds);
+        dest.writeByte(this.isDropshipEnabled ? (byte) 1 : (byte) 0);
+    }
+
+    public ShopShipment() {
+    }
+
+    protected ShopShipment(Parcel in) {
+        this.shipId = in.readInt();
+        this.shipName = in.readString();
+        this.shipCode = in.readString();
+        this.shipLogo = in.readString();
+        this.shipProds = new ArrayList<ShipProd>();
+        in.readList(this.shipProds, ShipProd.class.getClassLoader());
+        this.isDropshipEnabled = in.readByte() != 0;
+    }
+
+    public static final Parcelable.Creator<ShopShipment> CREATOR = new Parcelable.Creator<ShopShipment>() {
+        @Override
+        public ShopShipment createFromParcel(Parcel source) {
+            return new ShopShipment(source);
+        }
+
+        @Override
+        public ShopShipment[] newArray(int size) {
+            return new ShopShipment[size];
+        }
+    };
 }

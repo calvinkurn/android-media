@@ -1,9 +1,12 @@
 package com.tokopedia.transaction.checkout.view.data.cartshipmentform;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * @author anggaprasetiyo on 22/02/18.
  */
-public class UserAddress {
+public class UserAddress implements Parcelable {
     private int addressId;
     private String addressName;
     private String address;
@@ -157,4 +160,65 @@ public class UserAddress {
     public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.addressId);
+        dest.writeString(this.addressName);
+        dest.writeString(this.address);
+        dest.writeString(this.postalCode);
+        dest.writeString(this.phone);
+        dest.writeString(this.receiverName);
+        dest.writeInt(this.status);
+        dest.writeString(this.country);
+        dest.writeInt(this.provinceId);
+        dest.writeString(this.provinceName);
+        dest.writeInt(this.cityId);
+        dest.writeString(this.cityName);
+        dest.writeInt(this.districtId);
+        dest.writeString(this.districtName);
+        dest.writeString(this.address2);
+        dest.writeString(this.latitude);
+        dest.writeString(this.longitude);
+    }
+
+    public UserAddress() {
+    }
+
+    protected UserAddress(Parcel in) {
+        this.addressId = in.readInt();
+        this.addressName = in.readString();
+        this.address = in.readString();
+        this.postalCode = in.readString();
+        this.phone = in.readString();
+        this.receiverName = in.readString();
+        this.status = in.readInt();
+        this.country = in.readString();
+        this.provinceId = in.readInt();
+        this.provinceName = in.readString();
+        this.cityId = in.readInt();
+        this.cityName = in.readString();
+        this.districtId = in.readInt();
+        this.districtName = in.readString();
+        this.address2 = in.readString();
+        this.latitude = in.readString();
+        this.longitude = in.readString();
+    }
+
+    public static final Parcelable.Creator<UserAddress> CREATOR = new Parcelable.Creator<UserAddress>() {
+        @Override
+        public UserAddress createFromParcel(Parcel source) {
+            return new UserAddress(source);
+        }
+
+        @Override
+        public UserAddress[] newArray(int size) {
+            return new UserAddress[size];
+        }
+    };
 }
