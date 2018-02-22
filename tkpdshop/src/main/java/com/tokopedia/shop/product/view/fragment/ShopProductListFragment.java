@@ -65,6 +65,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     };
 
     private int currentIndex = 0;
+    private Pair<Integer, Integer> currentLayoutType = new Pair<>(ShopProductViewHolder.LAYOUT, 65);
 
     public static ShopProductListFragment createInstance(String shopId) {
         ShopProductListFragment shopProductListFragment = new ShopProductListFragment();
@@ -97,12 +98,12 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         return new ShopProductAdapterTypeFactory(new ShopProductViewHolder.ViewHolderListener() {
             @Override
             public int getLayoutManagerType() {
-                return layoutType[0].second;
+                return currentLayoutType.second;
             }
         }, new ShopProductAdapterTypeFactory.TypeFactoryListener() {
             @Override
             public int getType() {
-                return layoutType[0].first;
+                return currentLayoutType.first;
             }
         });
     }
@@ -181,7 +182,12 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
             @Override
             public void onClick(View view) {
 
-                switch (layoutType[getNextIndex()].second){
+                if(getNextIndex(currentIndex, layoutType.length) < 0 ){
+                    currentLayoutType = layoutType[currentIndex = 0 ];
+                }else{
+                    currentLayoutType = layoutType[currentIndex];
+                }
+                switch (currentLayoutType.second){
                     case 65:
                         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT,  LinearLayoutManager.VERTICAL,
                                 false);
@@ -206,13 +212,18 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                 }
 
                 getAdapter().notifyDataSetChanged();
+                currentIndex++;
             }
         });
 
     }
 
-    private int getNextIndex(){
-        return (++currentIndex > layoutType.length) ? (currentIndex = 0) : currentIndex;
+    private int getNextIndex(int currentIndex, int max){
+        if(currentIndex >=  0 && currentIndex < max){
+            return currentIndex;
+        }else{
+            return -1;
+        }
     }
 
     @Override
