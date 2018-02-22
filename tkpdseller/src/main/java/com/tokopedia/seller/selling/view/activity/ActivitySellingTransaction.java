@@ -292,8 +292,8 @@ public class ActivitySellingTransaction extends TkpdActivity
         };
         for (String aCONTENT : CONTENT) indicator.addTab(indicator.newTab().setText(aCONTENT));
         fragmentList = new ArrayList<>();
-//        fragmentList.add(FragmentPeopleTxCenter.createInstance(FragmentPeopleTxCenter.SHOP));
-//        fragmentList.add(FragmentShopNewOrderV2.createInstance()); //TODO UNCOMMENT
+//        fragmentList.add(FragmentPeopleTxCenter.getIntent(FragmentPeopleTxCenter.SHOP));
+//        fragmentList.add(FragmentShopNewOrderV2.getIntent()); //TODO UNCOMMENT
         fragmentList.add(FragmentSellingTxCenter.createInstance(FragmentSellingTxCenter.SHOP));
         fragmentList.add(OpportunityListFragment.newInstance());
         fragmentList.add(FragmentSellingNewOrder.createInstance());

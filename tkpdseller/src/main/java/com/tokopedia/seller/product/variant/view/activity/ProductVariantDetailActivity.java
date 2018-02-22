@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Created by hendry on 8/2/17.
  */
-
+@Deprecated
 public class ProductVariantDetailActivity extends BaseSimpleActivity implements
         ProductVariantDetailFragment.OnProductVariantDataManageFragmentListener {
 

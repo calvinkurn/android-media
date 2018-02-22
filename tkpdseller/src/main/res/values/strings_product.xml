@@ -164,6 +164,7 @@
 
     <!-- Variant -->
     <string name="product_variant_label_title">Varian</string>
+    <string name="product_variant_detail_label_title">Detail Varian</string>
     <string name="product_variant_item_picker_selected_title">%1$s %2$s terpilih</string>
     <string name="product_variant_item_picker_add_image">Tambah Gambar</string>
     <string name="product_variant_item_picker_add_variant_title_dialog">Tambah %1$s</string>

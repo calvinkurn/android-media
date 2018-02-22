@@ -356,7 +356,7 @@ public abstract class BaseProductAddEditFragmentOld<T extends ProductAddPresente
 //
 //    @Override
 //    public final void onEtalaseViewClicked(long etalaseId) {
-//        Intent intent = EtalasePickerActivity.createInstance(getActivity(), etalaseId);
+//        Intent intent = EtalasePickerActivity.getIntent(getActivity(), etalaseId);
 //        startActivityForResult(intent, ProductManageViewHolder.REQUEST_CODE_ETALASE);
 //    }
 //

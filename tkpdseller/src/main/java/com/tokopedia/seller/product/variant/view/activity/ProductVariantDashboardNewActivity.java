@@ -16,12 +16,12 @@ public class ProductVariantDashboardNewActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return ProductVariantDashboardFragment.newInstance();
+        return ProductVariantDashboardNewFragment.newInstance();
     }
 
     @Override
     public void onBackPressed() {
-        if (getFragment()!= null && getFragment() instanceof ProductVariantDashboardFragment) {
+        if (getFragment()!= null && getFragment() instanceof ProductVariantDashboardNewFragment) {
             Intent intent = new Intent();
             intent.putExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION,
                     ((ProductVariantDashboardNewFragment) getFragment()).getProductVariantViewModel());

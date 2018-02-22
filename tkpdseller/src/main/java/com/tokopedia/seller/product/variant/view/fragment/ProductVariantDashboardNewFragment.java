@@ -18,12 +18,15 @@ import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVaria
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantUnitSubmit;
 import com.tokopedia.seller.product.variant.util.ProductVariantViewConverter;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDetailActivity;
+import com.tokopedia.seller.product.variant.view.activity.ProductVariantDetailLevel1Activity;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantPickerActivity;
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantDashboardAdapter;
 import com.tokopedia.seller.product.variant.view.listener.ProductVariantMainView;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardViewModel;
 
 import java.util.ArrayList;
+
+import static com.tokopedia.seller.product.variant.view.activity.ProductVariantDetailLevel1Activity.EXTRA_PRODUCT_VARIANT_DATA;
 
 /**
  * Created by hendry on 4/3/17.
@@ -169,7 +172,7 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
             case ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE:
                 onActivityResultFromItemPicker(requestCode, data);
                 break;
-            case ProductVariantDetailActivity.REQUEST_CODE:
+            case ProductVariantDetailLevel1Activity.VARIANT_EDIT_LEVEL1_REQUEST_CODE:
                 onActivityResultFromDetail(data);
             default:
                 super.onActivityResult(requestCode, resultCode, data);
@@ -251,10 +254,13 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
 
     @SuppressWarnings("unchecked")
     private void onActivityResultFromDetail(Intent data) {
-        if (data.getAction().equals(ProductVariantDetailActivity.EXTRA_ACTION_DELETE)) {
-            onActivityResultFromDetailDeleteOption(data);
-        } else if (data.getAction().equals(ProductVariantDetailActivity.EXTRA_ACTION_SUBMIT)) {
-            onActivityResultFromDetailUpdateList(data);
+        //TODO level 1 can delete?
+//        if (data.getAction().equals(ProductVariantDetailActivity.EXTRA_ACTION_DELETE)) {
+//            onActivityResultFromDetailDeleteOption(data);
+//        } else
+        if (ProductVariantDetailLevel1Activity.EXTRA_ACTION_SUBMIT.equals(data.getAction())) {
+            onActivityResultFromDetailUpdateList((ProductVariantViewModel)
+                    data.getParcelableExtra(EXTRA_PRODUCT_VARIANT_DATA));
         }
     }
 
@@ -268,7 +274,9 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
 //        updateVariantItemListView();
     }
 
-    private void onActivityResultFromDetailUpdateList(Intent intent) {
+    private void onActivityResultFromDetailUpdateList(ProductVariantViewModel productVariantViewModel) {
+        this.productVariantViewModel = productVariantViewModel;
+        //TODO reset UI
 //        long optionIdToUpdated = intent.getLongExtra(ProductVariantDetailActivity.EXTRA_VARIANT_OPTION_ID, ProductVariantConstant.NOT_AVAILABLE_OPTION_ID);
 //        if (optionIdToUpdated == ProductVariantConstant.NOT_AVAILABLE_OPTION_ID) {
 //            return;

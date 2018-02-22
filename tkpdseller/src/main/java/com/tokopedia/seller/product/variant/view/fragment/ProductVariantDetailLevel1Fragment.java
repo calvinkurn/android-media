@@ -28,8 +28,8 @@ import java.util.List;
 /**
  * Created by hendry on 4/3/17.
  */
-@Deprecated
-public class ProductVariantDetailFragment extends Fragment implements ProductVariantDetailAdapter.OnProductVariantDataAdapterListener {
+
+public class ProductVariantDetailLevel1Fragment extends Fragment implements ProductVariantDetailAdapter.OnProductVariantDataAdapterListener {
 
     public static final String SAVED_HAS_STOCK = "has_stk";
 
@@ -43,8 +43,8 @@ public class ProductVariantDetailFragment extends Fragment implements ProductVar
         void onSubmitVariant(boolean isVariantHasStock, List<Long> selectedVariantValueIds);
     }
 
-    public static ProductVariantDetailFragment newInstance() {
-        return new ProductVariantDetailFragment();
+    public static ProductVariantDetailLevel1Fragment newInstance() {
+        return new ProductVariantDetailLevel1Fragment();
     }
 
     @SuppressWarnings("unchecked")

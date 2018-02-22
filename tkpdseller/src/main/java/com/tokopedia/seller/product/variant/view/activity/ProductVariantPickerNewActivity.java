@@ -31,8 +31,8 @@ import java.util.List;
 /**
  * Created by nathan on 8/2/17.
  */
-@Deprecated
-public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity<ProductVariantViewModel>
+
+public class ProductVariantPickerNewActivity extends BasePickerMultipleItemActivity<ProductVariantViewModel>
         implements ProductVariantPickerMultipleItem<ProductVariantViewModel>, ProductVariantItemPickerAddDialogFragment.Listener {
 
     private static final String DIALOG_ADD_VARIANT_TAG = "DIALOG_ADD_VARIANT_TAG";
