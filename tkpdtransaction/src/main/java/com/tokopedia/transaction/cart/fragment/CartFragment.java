@@ -402,6 +402,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderCartListData(String keroToken, String ut, final List<CartItem> cartList) {
+        hasLogisticInsurance = false;
         cartItemAdapter = new CartItemAdapter(this, this);
         totalPaymentLoading.setVisibility(View.VISIBLE);
         cartItemAdapter.fillDataList(keroToken, cartList);
@@ -1248,7 +1249,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void setListnerCancelPromoLayoutOnAutoApplyCode(){
+    public void setListnerCancelPromoLayoutOnAutoApplyCode() {
         cancelPromoLayout.setOnClickListener(onPromoCancelled());
 
     }
