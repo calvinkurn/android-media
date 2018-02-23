@@ -1054,4 +1054,14 @@ public interface AppEventTracking {
         String SHOP_ID = "shopId";
         String PROMO_ID = "promoId";
     }
+
+    interface EventBranch {
+        String EVENT_LOGIN="login";
+        String EVENT_REGISTER="sign_up";
+    }
+
+    interface Branch {
+        String EMAIL="email";
+        String PHONE="phone";
+    }
 }

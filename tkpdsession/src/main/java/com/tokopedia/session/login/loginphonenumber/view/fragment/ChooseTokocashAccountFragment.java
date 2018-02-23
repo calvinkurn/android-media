@@ -30,7 +30,9 @@ import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.cotp.view.viewmodel.InterruptVerificationViewModel;
@@ -188,7 +190,7 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
     @Override
     public void onSuccessLogin() {
         UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getSuccessLoginTracking());
-
+        BranchSdkUtils.sendLoginEvent(getActivity());
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
