@@ -9,7 +9,9 @@ import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.banner.data.source.BannerDataSource;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
+import com.tokopedia.flight.booking.data.cloud.FlightSavedPassengerDataSource;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
+import com.tokopedia.flight.booking.data.cloud.entity.SavedPassengerEntity;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
@@ -41,7 +43,6 @@ import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -57,6 +58,7 @@ public class FlightRepositoryImpl implements FlightRepository {
     private FlightSearchSingleDataSource flightSearchSingleDataListSource;
     private FlightSearchReturnDataSource flightSearchReturnDataListSource;
     private FlightCartDataSource flightCartDataSource;
+    private FlightSavedPassengerDataSource flightSavedPassengerDataSource;
     private FlightMetaDataDBSource flightMetaDataDBSource;
     private FlightAirportDataListBackgroundSource flightAirportDataListBackgroundSource;
     private FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource;
@@ -72,6 +74,7 @@ public class FlightRepositoryImpl implements FlightRepository {
                                 FlightSearchReturnDataSource flightSearchReturnDataListSource,
                                 FlightClassesDataSource flightClassesDataSource,
                                 FlightCartDataSource flightCartDataSource,
+                                FlightSavedPassengerDataSource flightSavedPassengerDataSource,
                                 FlightMetaDataDBSource flightMetaDataDBSource,
                                 FlightAirportDataListBackgroundSource flightAirportDataListBackgroundSource,
                                 FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource,
@@ -86,6 +89,7 @@ public class FlightRepositoryImpl implements FlightRepository {
         this.flightSearchReturnDataListSource = flightSearchReturnDataListSource;
         this.flightClassesDataSource = flightClassesDataSource;
         this.flightCartDataSource = flightCartDataSource;
+        this.flightSavedPassengerDataSource = flightSavedPassengerDataSource;
         this.flightMetaDataDBSource = flightMetaDataDBSource;
         this.flightAirportDataListBackgroundSource = flightAirportDataListBackgroundSource;
         this.flightCheckVoucheCodeDataSource = flightCheckVoucheCodeDataSource;
@@ -325,5 +329,10 @@ public class FlightRepositoryImpl implements FlightRepository {
     @Override
     public Observable<List<BannerDetail>> getBanners(Map<String, String> params) {
         return bannerDataSource.getBannerData(params);
+    }
+
+    @Override
+    public Observable<List<SavedPassengerEntity>> getSavedPassenger() {
+        return flightSavedPassengerDataSource.getSavedPassenger();
     }
 }
