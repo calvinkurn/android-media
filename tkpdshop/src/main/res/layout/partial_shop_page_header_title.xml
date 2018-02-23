@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
     android:fitsSystemWindows="true"
     android:gravity="bottom"
     android:orientation="horizontal"
@@ -38,6 +37,7 @@
         android:layout_height="@dimen/image_width_xxs"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
+        android:visibility="gone"
         app:layout_constraintStart_toEndOf="@+id/image_view_shop_icon"
         app:layout_constraintTop_toTopOf="@+id/image_view_shop_icon" />
 
