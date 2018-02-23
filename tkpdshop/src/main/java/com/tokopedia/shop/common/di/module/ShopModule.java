@@ -1,5 +1,6 @@
 package com.tokopedia.shop.common.di.module;
 
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
@@ -73,8 +74,8 @@ public class ShopModule {
 
     @ShopScope
     @Provides
-    public ShopCommonCloudDataSource provideShopCommonCloudDataSource(ShopCommonApi shopCommonApi) {
-        return new ShopCommonCloudDataSource(shopCommonApi);
+    public ShopCommonCloudDataSource provideShopCommonCloudDataSource(ShopCommonApi shopCommonApi, UserSession userSession) {
+        return new ShopCommonCloudDataSource(shopCommonApi, userSession);
     }
 
     @ShopScope

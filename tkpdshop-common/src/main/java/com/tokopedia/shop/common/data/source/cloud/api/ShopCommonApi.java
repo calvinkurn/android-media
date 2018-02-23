@@ -17,9 +17,15 @@ import rx.Observable;
 public interface ShopCommonApi {
 
     @GET(ShopCommonUrl.SHOP_INFO_PATH)
-    Observable<Response<DataResponse<ShopInfo>>> getShopInfo(@Query(ShopCommonParamApiConstant.SHOP_ID) String shopId);
+    Observable<Response<DataResponse<ShopInfo>>> getShopInfo(@Query(ShopCommonParamApiConstant.SHOP_ID) String shopId,
+                                                             @Query(ShopCommonParamApiConstant.USER_ID) String userId,
+                                                             @Query(ShopCommonParamApiConstant.OS_TYPE) String osType,
+                                                             @Query(ShopCommonParamApiConstant.DEVICE_ID) String deviceId);
 
     @GET(ShopCommonUrl.SHOP_INFO_PATH)
-    Observable<Response<DataResponse<ShopInfo>>> getShopInfoByDomain(@Query(ShopCommonParamApiConstant.SHOP_DOMAIN) String shopDomain);
+    Observable<Response<DataResponse<ShopInfo>>> getShopInfoByDomain(@Query(ShopCommonParamApiConstant.SHOP_DOMAIN) String shopDomain,
+                                                                     @Query(ShopCommonParamApiConstant.USER_ID) String userId,
+                                                                     @Query(ShopCommonParamApiConstant.OS_TYPE) String osType,
+                                                                     @Query(ShopCommonParamApiConstant.DEVICE_ID) String deviceId);
 
 }
