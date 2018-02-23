@@ -139,10 +139,10 @@ public class RejectOrderWeightPriceFragment extends RejectOrderBaseFragment {
             productWeightPriceModel.setWeightMode(FIXED_GRAM_MODE);
             productWeightPriceModel
                     .setProductPriceUnformatted(itemDataList.get(i).getPriceUnformatted());
-            double convertedWeightFormat = Double
-                    .parseDouble(itemDataList.get(i).getWeightUnformatted()) * 1000;
+            int convertedWeightFormat = (int) Math.round(Double
+                    .parseDouble(itemDataList.get(i).getWeightUnformatted()) * 1000);
             productWeightPriceModel
-                    .setProductWeightUnformatted(String.valueOf(Math.round(convertedWeightFormat)));
+                    .setProductWeightUnformatted(String.valueOf(convertedWeightFormat));
             productWeightPriceModels.add(productWeightPriceModel);
         }
         return productWeightPriceModels;

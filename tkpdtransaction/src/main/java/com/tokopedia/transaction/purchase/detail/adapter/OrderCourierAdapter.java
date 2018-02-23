@@ -42,7 +42,7 @@ public class OrderCourierAdapter extends RecyclerView.Adapter<OrderCourierAdapte
     public void onBindViewHolder(OrderCourierViewHolder holder, int position) {
         final CourierViewModel currentViewModel = modelList.get(position);
         if(currentViewModel.getCourierImageUrl() == null
-                || currentViewModel.getCourierImageUrl().equals(""))
+                || currentViewModel.getCourierImageUrl().isEmpty())
             holder.courierLogo.setVisibility(View.GONE);
         else {
             holder.courierLogo.setVisibility(View.VISIBLE);
