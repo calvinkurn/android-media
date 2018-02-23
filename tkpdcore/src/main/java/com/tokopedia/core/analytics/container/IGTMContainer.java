@@ -97,10 +97,6 @@ public interface IGTMContainer {
 
     void eventTransaction(Purchase purchase);
 
-    GTMContainer eventBannerImpression(Promotion promotion);
-
-    GTMContainer eventBannerClick(Promotion promotion);
-
     void clearTransactionDataLayer(Purchase purchase);
 
     GTMContainer sendEvent(Map<String, Object> events);
@@ -140,7 +136,7 @@ public interface IGTMContainer {
 
     void eventClickCategoryLifestyle(String categoryUrl, List<Object> list);
 
-    void enhanceClickSearchResultProduct(Map<String, Object> objects,
+    void enhanceClickSearchResultProduct(Object object,
                                          String keyword,
                                          String actionField);
 

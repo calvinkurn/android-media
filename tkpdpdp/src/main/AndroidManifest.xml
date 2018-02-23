@@ -31,7 +31,7 @@
         <activity
             android:name=".DescriptionActivity"
             android:screenOrientation="portrait" />
-
+        <activity android:name=".VariantActivity"></activity>
         <activity
             android:name=".DinkFailedActivity"
             android:screenOrientation="portrait" />

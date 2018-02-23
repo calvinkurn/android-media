@@ -26,18 +26,15 @@ import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.service.DownloadService;
-import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.TkpdWebView;
-import com.tokopedia.core.var.TkpdState;
 
 /**
  * Use webview fragment from tkpd abstraction
@@ -248,9 +245,8 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     public boolean onOverrideUrl(String url) {
         String query = Uri.parse(url).getQueryParameter(LOGIN_TYPE);
         if (query != null && query.equals(QUERY_PARAM_PLUS)) {
-            Intent intent = OldSessionRouter.getLoginActivityIntent(getActivity());
-            intent.putExtra("login", DownloadService.GOOGLE);
-            intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+            Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext())
+                    .getLoginGoogleIntent(getActivity());
             startActivityForResult(intent, LOGIN_GPLUS);
             return true;
         }

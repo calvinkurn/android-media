@@ -1,16 +1,25 @@
 package com.tokopedia.digital.cart.presenter;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.util.BranchSdkUtils;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.digital.R;
+import com.tokopedia.digital.analytics.NOTPTracking;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.Attributes;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.Field;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital;
@@ -25,6 +34,7 @@ import com.tokopedia.digital.cart.model.CartDigitalInfoData;
 import com.tokopedia.digital.cart.model.CheckoutDataParameter;
 import com.tokopedia.digital.cart.model.CheckoutDigitalData;
 import com.tokopedia.digital.cart.model.InstantCheckoutData;
+import com.tokopedia.digital.cart.model.NOTPExotelVerification;
 import com.tokopedia.digital.cart.model.VoucherDigital;
 import com.tokopedia.digital.utils.DeviceUtil;
 
@@ -33,8 +43,12 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 import rx.Subscriber;
+
+import static com.tokopedia.digital.cart.model.NOTPExotelVerification.FIREBASE_NOTP_REMOTE_CONFIG_KEY;
+import static com.tokopedia.digital.cart.model.NOTPExotelVerification.FIREBASE_NOTP_TEST_REMOTE_CONFIG_KEY;
 
 /**
  * @author anggaprasetiyo on 2/24/17.
@@ -49,6 +63,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                                 ICartDigitalInteractor iCartDigitalInteractor) {
         this.view = view;
         this.cartDigitalInteractor = iCartDigitalInteractor;
+        initRemoteConfig();
     }
 
     @Override
@@ -96,7 +111,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
     public void processToCheckout() {
         CheckoutDataParameter checkoutData = view.getCheckoutData();
         if (checkoutData.isNeedOtp()) {
-            view.interruptRequestTokenVerification();
+            startOTPProcess();
             return;
         }
         view.showProgressLoading();
@@ -110,7 +125,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
     public void processToInstantCheckout() {
         CheckoutDataParameter checkoutData = view.getCheckoutData();
         if (checkoutData.isNeedOtp()) {
-            view.interruptRequestTokenVerification();
+            startOTPProcess();
             return;
         }
         cartDigitalInteractor.instantCheckout(
@@ -140,6 +155,16 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                 view.getGeneratedAuthParamNetwork(paramGetCart),
                 getSubscriberCartInfo()
         );
+    }
+
+    @Override
+    public void callPermissionCheckSuccess() {
+        needToVerifyOTP();
+    }
+
+    @Override
+    public void callPermissionCheckFail() {
+        view.interruptRequestTokenVerification();
     }
 
     @NonNull
@@ -261,6 +286,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                 } else if (e instanceof ResponseErrorException) {
                      /* Ini kalau error dari API kasih message error */
 //                    view.renderErrorCheckVoucher(e.getMessage());
+                    removeBranchPromoIfNeeded();
                 } else if (e instanceof ResponseDataNullException) {
                     /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
 //                    view.renderErrorCheckVoucher(e.getMessage());
@@ -324,12 +350,70 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
             public void onNext(CartDigitalInfoData cartDigitalInfoData) {
                 if (cartDigitalInfoData.getAttributes().isNeedOtp()) {
                     view.clearContentRendered();
-                    view.interruptRequestTokenVerification(cartDigitalInfoData);
+                    view.setCartDigitalInfo(cartDigitalInfoData);
+                    startOTPProcess();
                 } else {
                     view.renderAddToCartData(cartDigitalInfoData);
                 }
             }
         };
+    }
+
+
+    private void startOTPProcess() {
+        if(GlobalConfig.isSellerApp() && isNOTPEnabled()) {
+            Log.e(TAG,"nOTP Enabled");
+            view.checkCallPermissionForNOTP();
+        }else {
+
+            if(GlobalConfig.isSellerApp()) {
+                Log.e(TAG, "nOTP Disabled");
+                NOTPTracking.eventNOTPConfiguration(true, false, false);
+            }
+            view.interruptRequestTokenVerification();
+        }
+    }
+    private RemoteConfig remoteConfig;
+    private void initRemoteConfig() {
+        remoteConfig = new FirebaseRemoteConfigImpl(view.getActivity());
+    }
+
+
+
+/*
+TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
+ */
+    private boolean isNOTPEnabled() {
+        // add here different conditions
+             return remoteConfig.getBoolean(FIREBASE_NOTP_REMOTE_CONFIG_KEY,true);
+
+    }
+/*
+TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
+ */
+
+    private void needToVerifyOTP() {
+
+        view.showProgressLoading("",view.getApplicationContext().getResources().getString(R.string.msg_verification));
+        NOTPExotelVerification.getmInstance().verifyNo(SessionHandler.getPhoneNumber(), view.getActivity(), new NOTPExotelVerification.NOTPVerificationListener() {
+            @Override
+            public void onVerificationSuccess() {
+                view.hideProgressLoading();
+                NOTPTracking.eventSuccessNOTPVerification(SessionHandler.getPhoneNumber());
+                if(view.getActivity() != null) {
+                    processPatchOtpCart(view.getPassData().getCategoryId());
+                }
+            }
+
+            @Override
+            public void onVerificationFail() {
+                view.hideProgressLoading();
+                NOTPTracking.eventFailNOTPVerification(SessionHandler.getPhoneNumber());
+                if(view.getActivity() != null) {
+                    view.interruptRequestTokenVerification();
+                }
+            }
+        });
     }
 
     @NonNull
@@ -476,4 +560,15 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         return requestBodyCheckout;
     }
 
+    @Override
+    public void autoApplyCouponIfAvailable(String digitalCategoryId) {
+        String savedCoupon = BranchSdkUtils.getAutoApplyCouponIfAvailable(view.getActivity());
+        if (!TextUtils.isEmpty(savedCoupon)) {
+            processCheckVoucher(savedCoupon, digitalCategoryId);
+        }
+    }
+
+    private void removeBranchPromoIfNeeded(){
+        BranchSdkUtils.removeCouponCode(view.getActivity());
+    }
 }

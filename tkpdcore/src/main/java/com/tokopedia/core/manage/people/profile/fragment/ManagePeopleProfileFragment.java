@@ -20,6 +20,8 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.manage.people.profile.customdialog.UploadImageDialog;
 import com.tokopedia.core.manage.people.profile.customview.AvatarView;
@@ -33,7 +35,6 @@ import com.tokopedia.core.manage.people.profile.presenter.ManagePeopleProfileFra
 import com.tokopedia.core.manage.people.profile.presenter.ManagePeopleProfileFragmentPresenter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.NetworkErrorHelper.RetryClickedListener;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
@@ -297,8 +298,12 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
     @Override
     public void showPhoneVerificationDialog(String userPhone) {
         SessionHandler.setPhoneNumber(userPhone);
-        startActivityForResult(OldSessionRouter.getPhoneVerificationProfileActivityIntent(getActivity()),
-                REQUEST_VERIFY_PHONE);
+        if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
+            Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext())
+                    .getPhoneVerificationProfileIntent(getActivity());
+            startActivityForResult(intent, REQUEST_VERIFY_PHONE);
+        }
+
     }
 
     @Override

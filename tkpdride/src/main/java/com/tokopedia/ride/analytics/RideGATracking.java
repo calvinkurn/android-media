@@ -18,6 +18,15 @@ public class RideGATracking extends UnifyTracking {
         ).getEvent());
     }
 
+    public static void eventUberOpenViaShortcut(String screenName) {
+        sendGTMEvent(new EventTracking(
+                RideAppEventTracking.Event.GenericUberEvent,
+                RideAppEventTracking.Category.EventCategory,
+                RideAppEventTracking.Action.EventOpenUberUsingShortcut,
+                String.format(RideAppEventTracking.Label.ScreenName, toLowerCase(screenName))
+        ).getEvent());
+    }
+
     public static void eventClickOnTrip(String screenName) {
         sendGTMEvent(new EventTracking(
                 RideAppEventTracking.Event.GenericUberEvent,
@@ -300,6 +309,15 @@ public class RideGATracking extends UnifyTracking {
                 RideAppEventTracking.Category.EventCategory,
                 RideAppEventTracking.Action.EventOpenInterrupt,
                 url
+        ).getEvent());
+    }
+
+    public static void eventUberCreateShortcut(String screenName) {
+        sendGTMEvent(new EventTracking(
+                RideAppEventTracking.Event.GenericUberEvent,
+                RideAppEventTracking.Category.EventCategory,
+                RideAppEventTracking.Action.EventCreateShortcut,
+                String.format(RideAppEventTracking.Label.ScreenName, toLowerCase(screenName))
         ).getEvent());
     }
 

@@ -189,7 +189,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             public void onClick(View v) {
                 UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_TRANSACTION,
                         AppEventTracking.EventLabel.DASHBOARD_ITEM_PELUANG);
-                Intent intent = SellerRouter.getActivitySellingTransactionOpportunity(getActivity());
+                Intent intent = SellerRouter.getActivitySellingTransactionOpportunity(getActivity(),"");
                 startActivity(intent);
             }
         });

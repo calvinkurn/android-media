@@ -20,4 +20,10 @@ public interface ICartDigitalPresenter {
 
     void processPatchOtpCart(String digitalCategoryId);
 
+    void autoApplyCouponIfAvailable(String digitalCategoryId);
+
+    void callPermissionCheckSuccess();
+
+    void callPermissionCheckFail();
+
 }

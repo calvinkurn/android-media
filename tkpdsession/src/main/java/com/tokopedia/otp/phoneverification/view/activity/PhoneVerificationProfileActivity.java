@@ -1,12 +1,15 @@
 package com.tokopedia.otp.phoneverification.view.activity;
 
 import android.app.Activity;
-import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 
-import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.otp.phoneverification.view.fragment.PhoneVerificationFragment;
 import com.tokopedia.otp.phoneverification.view.fragment.PhoneVerificationProfileFragment;
@@ -16,51 +19,29 @@ import com.tokopedia.session.R;
  * Created by nisie on 2/23/17.
  */
 
-public class PhoneVerificationProfileActivity extends BasePresenterActivity {
-    @Override
-    protected void setupURIPass(Uri data) {
-
-    }
+public class PhoneVerificationProfileActivity extends TActivity implements HasComponent {
 
     @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        inflateView(R.layout.activity_phone_verification_profile);
+        initView();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_phone_verification_profile;
-    }
-
-    @Override
-    protected void initView() {
+    private void initView() {
 
 
         PhoneVerificationProfileFragment fragmentHeader = PhoneVerificationProfileFragment.createInstance();
-        PhoneVerificationFragment fragment = PhoneVerificationFragment.createInstance(getPhoneVerificationListener());
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        PhoneVerificationFragment fragment = PhoneVerificationFragment.createInstance
+                (getPhoneVerificationListener(), false);
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if (getFragmentManager().findFragmentById(R.id.container_header) == null) {
             fragmentTransaction.add(R.id.container_header, fragmentHeader, fragmentHeader.getClass().getSimpleName());
         }
         if (getFragmentManager().findFragmentById(R.id.container) == null) {
             fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
-        } else if (((PhoneVerificationFragment) getFragmentManager().findFragmentById(R.id.container)).getListener() == null) {
-            ((PhoneVerificationFragment) getFragmentManager().findFragmentById(R.id.container))
+        } else if (((PhoneVerificationFragment) getSupportFragmentManager().findFragmentById(R.id.container)).getListener() == null) {
+            ((PhoneVerificationFragment) getSupportFragmentManager().findFragmentById(R.id.container))
                     .setPhoneVerificationListener(getPhoneVerificationListener());
         }
         fragmentTransaction.commit();
@@ -98,22 +79,16 @@ public class PhoneVerificationProfileActivity extends BasePresenterActivity {
     }
 
     @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
+    public AppComponent getComponent() {
+        return getApplicationComponent();
     }
 
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+    public static Intent getCallingIntent(Context context) {
+        return new Intent(context, PhoneVerificationProfileActivity.class);
     }
 }
