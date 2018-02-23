@@ -15,4 +15,6 @@ public interface ShopModuleRouter {
     Fragment getShopTalkFragment();
 
     Intent getEtalaseIntent(Context context, String shopId, int currentChoosen);
+
+    boolean isMyOwnShop(String shopId);
 }

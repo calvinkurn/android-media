@@ -2,8 +2,10 @@ package com.tokopedia.seller.product.etalase.view.fragment;
 
 import android.os.Bundle;
 
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.etalase.view.model.MyEtalaseItemViewModel;
 import com.tokopedia.seller.product.etalase.view.model.MyEtalaseViewModel;
+import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +18,9 @@ public class EtalaseDynamicPickerFragment extends EtalasePickerFragment {
 
     public static final String ADDITIONAL_OPTION = "additional_optional";
 
-    private ArrayList<MyEtalaseItemViewModel> myEtalaseItemViewModels;
+    protected ArrayList<MyEtalaseItemViewModel> myEtalaseItemViewModels = new ArrayList<>();
 
+    @Deprecated
     public static EtalaseDynamicPickerFragment createInstance(long etalaseId, ArrayList<MyEtalaseItemViewModel> myEtalaseItemViewModelList) {
         EtalaseDynamicPickerFragment fragment = new EtalaseDynamicPickerFragment();
         Bundle args = new Bundle();
@@ -29,8 +32,12 @@ public class EtalaseDynamicPickerFragment extends EtalasePickerFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        myEtalaseItemViewModels = getArguments().getParcelableArrayList(ADDITIONAL_OPTION);
+        myEtalaseItemViewModels.addAll(populateEtalaseViewModels());
         super.onCreate(savedInstanceState);
+    }
+
+    protected ArrayList<MyEtalaseItemViewModel> populateEtalaseViewModels() {
+        return null;
     }
 
     @Override

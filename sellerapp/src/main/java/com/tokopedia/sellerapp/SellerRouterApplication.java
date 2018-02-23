@@ -66,6 +66,8 @@ import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivit
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
 import com.tokopedia.seller.product.etalase.view.activity.EtalaseDynamicPickerActivity;
+import com.tokopedia.seller.product.etalase.view.activity.EtalaseDynamicPickerGeneralActivity;
+import com.tokopedia.seller.product.etalase.view.activity.EtalaseDynamicPickerSellerActivity;
 import com.tokopedia.seller.product.etalase.view.model.MyEtalaseItemViewModel;
 import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
@@ -218,7 +220,12 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getEtalaseIntent(Context context, String shopId, int currentChoosen) {
-        return EtalaseDynamicPickerActivity.createInstance(context, currentChoosen);
+
+        if(isMyOwnShop(shopId)){
+            return EtalaseDynamicPickerSellerActivity.createSellerInstance(context, currentChoosen);
+        }else{
+            return EtalaseDynamicPickerGeneralActivity.createGeneralInstance(context, currentChoosen);
+        }
     }
 
     public GMComponent getGMComponent() {
@@ -992,6 +999,12 @@ public abstract class SellerRouterApplication extends MainApplication
     public UserSession getSession() {
         return new UserSessionImpl(this);
     }
+
+    @Override
+    public boolean isMyOwnShop(String shopId){
+        return getSession().getShopId().equals(shopId);
+    }
+
 
     @Override
     public AnalyticTracker getAnalyticTracker() {
