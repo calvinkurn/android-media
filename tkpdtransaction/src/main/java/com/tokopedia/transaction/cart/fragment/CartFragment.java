@@ -402,6 +402,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderCartListData(String keroToken, String ut, final List<CartItem> cartList) {
+        hasLogisticInsurance = false;
         cartItemAdapter = new CartItemAdapter(this, this);
         totalPaymentLoading.setVisibility(View.VISIBLE);
         cartItemAdapter.fillDataList(keroToken, cartList);
@@ -411,7 +412,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     private void setInsuranceTermsVisibility(CartCourierPrices cartCourierPrices) {
-        if (cartCourierPrices.getCartInsuranceProd() != 0) {
+        if (cartCourierPrices.getUseInsurance() != 0) {
             if (!hasLogisticInsurance &&
                     (cartCourierPrices.getInsuranceMode() == KeroppiConstants.InsuranceType.MUST ||
                             cartCourierPrices.getInsuranceMode() == KeroppiConstants.InsuranceType.OPTIONAL)) {
@@ -1248,7 +1249,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void setListnerCancelPromoLayoutOnAutoApplyCode(){
+    public void setListnerCancelPromoLayoutOnAutoApplyCode() {
         cancelPromoLayout.setOnClickListener(onPromoCancelled());
 
     }
