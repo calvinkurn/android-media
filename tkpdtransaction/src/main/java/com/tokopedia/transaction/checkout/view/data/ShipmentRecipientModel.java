@@ -9,6 +9,7 @@ import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 /**
  * @author Aghny A. Putra on 25/01/18
  */
+
 public class ShipmentRecipientModel implements Parcelable {
 
     private String id;

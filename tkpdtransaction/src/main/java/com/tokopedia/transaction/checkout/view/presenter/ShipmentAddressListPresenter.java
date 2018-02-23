@@ -58,6 +58,12 @@ public class ShipmentAddressListPresenter
         super.checkViewAttached();
     }
 
+    /**
+     *
+     * @param context
+     * @param order
+     * @param query
+     */
     public void getAddressList(Context context, int order, String query) {
         mGetAddressListUseCase.execute(getPeopleAddressRequestParams(context, order, query),
                 new Subscriber<List<ShipmentAddressModel>>() {
@@ -68,7 +74,7 @@ public class ShipmentAddressListPresenter
 
                     @Override
                     public void onError(Throwable throwable) {
-
+                        Log.d(TAG, throwable.getMessage());
                     }
 
                     @Override
@@ -78,25 +84,36 @@ public class ShipmentAddressListPresenter
         });
     }
 
+    /**
+     *
+     * @param context
+     * @param order
+     * @param query
+     * @return
+     */
     private RequestParams getPeopleAddressRequestParams(final Context context, final int order, final String query) {
-        Map<String, Object> networkParams = new HashMap<String, Object>() {{
-            putAll(generatePeopleAddressParams(context, order, query));
-        }};
-
         RequestParams requestParams = RequestParams.create();
-        requestParams.putAll(networkParams);
+
+        requestParams.putAll(new HashMap<String, Object>() {{
+            putAll(generatePeopleAddressParams(context, order, query));
+        }});
 
         return requestParams;
     }
 
-    private Map<String, String> generatePeopleAddressParams(Context context, int order, String query) {
-        Map<String, String> params = new HashMap<>();
-
-        params.put(PARAM_ORDER_BY, String.valueOf(order));
-        params.put(PARAM_QUERY, query);
-        params.put(PARAM_PAGE, String.valueOf(mPagingHandler.getPage()));
-
-        return AuthUtil.generateParams(context, params);
+    /**
+     *
+     * @param context
+     * @param order
+     * @param query
+     * @return
+     */
+    private Map<String, String> generatePeopleAddressParams(Context context, final int order, final String query) {
+        return AuthUtil.generateParams(context, new HashMap<String, String>() {{
+            put(PARAM_ORDER_BY, String.valueOf(order));
+            put(PARAM_QUERY, query);
+            put(PARAM_PAGE, String.valueOf(mPagingHandler.getPage()));
+        }});
     }
 
     private void filter(List<ShipmentRecipientModel> addressList, final String keyword) {
