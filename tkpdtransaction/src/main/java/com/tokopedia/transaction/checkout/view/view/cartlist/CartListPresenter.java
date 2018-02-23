@@ -142,7 +142,9 @@ public class CartListPresenter implements ICartListPresenter {
                             );
                             view.navigateToActivity(intent);
                         } else {
-                            view.renderUpdateDataFailed(updateCartListData.getUpdateCartData().getMessage());
+                            view.renderUpdateDataFailed(
+                                    updateCartListData.getUpdateCartData().getMessage()
+                            );
                         }
                     }
                 },
