@@ -273,7 +273,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     private void displayOfficialStoreView(ShopInfo shopInfo) {
         shopStatusImageView.setVisibility(View.VISIBLE);
         shopStatusImageView.setImageResource(R.drawable.ic_badge_shop_official);
-        locationImageView.setImageResource(R.drawable.ic_info_authorized);
+        locationImageView.setImageResource(R.drawable.ic_info_checked_grey);
         shopInfoLocationTextView.setText(getString(R.string.shop_page_label_authorized));
     }
 
@@ -289,7 +289,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     }
 
     private void displayGeneralShop(ShopInfo shopInfo) {
-        locationImageView.setImageResource(R.drawable.ic_info_location);
+        locationImageView.setImageResource(R.drawable.ic_info_location_grey);
         shopInfoLocationTextView.setText(shopInfo.getInfo().getShopLocation());
 
         int set = (int) shopInfo.getStats().getShopBadgeLevel().getSet();

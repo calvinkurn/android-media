@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_small"
             android:layout_marginTop="@dimen/margin_small"
-            app:lv_image="@drawable/ic_info_email"
+            app:lv_image="@drawable/ic_info_email_grey"
             app:lv_image_width="@dimen/image_width_xxs" />
 
         <com.tokopedia.design.label.LabelView
@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_small"
             android:layout_marginTop="@dimen/margin_small"
-            app:lv_image="@drawable/ic_info_phone"
+            app:lv_image="@drawable/ic_info_phone_grey"
             app:lv_image_width="@dimen/image_width_xxs" />
 
         <com.tokopedia.design.label.LabelView
@@ -65,7 +65,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_small"
-            app:lv_image="@drawable/ic_info_fax"
+            app:lv_image="@drawable/ic_info_fax_grey"
             app:lv_image_width="@dimen/image_width_xxs" />
 
     </LinearLayout>

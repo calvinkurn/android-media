@@ -11,6 +11,58 @@
     app:layout_collapseMode="parallax"
     app:layout_collapseParallaxMultiplier="0.6">
 
+    <com.tokopedia.shop.page.view.widget.ShopPageSubDetailView
+        android:id="@+id/sub_detail_view_total_favourite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+        app:layout_constraintStart_toStartOf="@+id/guideline4"
+        app:layout_constraintTop_toTopOf="@+id/guideline"
+        app:spsd_title="@string/shop_info_label_favourite">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="@dimen/image_width_xxs"
+                android:layout_height="@dimen/image_width_xs"
+                app:srcCompat="@drawable/ic_info_favourite_green" />
+
+            <TextView
+                android:id="@+id/text_view_total_favourite"
+                style="@style/TextView.Small" />
+        </LinearLayout>
+
+    </com.tokopedia.shop.page.view.widget.ShopPageSubDetailView>
+
+    <com.tokopedia.shop.page.view.widget.ShopPageSubDetailView
+        android:id="@+id/sub_detail_view_total_product"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+        app:layout_constraintStart_toStartOf="@+id/guideline4"
+        app:layout_constraintTop_toTopOf="@+id/guideline"
+        app:spsd_title="@string/shop_info_label_total_product">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="@dimen/image_width_xxs"
+                android:layout_height="@dimen/image_width_xs"
+                app:srcCompat="@drawable/ic_info_product_green" />
+
+            <TextView
+                android:id="@+id/text_view_total_product"
+                style="@style/TextView.Small" />
+        </LinearLayout>
+
+    </com.tokopedia.shop.page.view.widget.ShopPageSubDetailView>
+
     <View
         android:id="@+id/separator_1"
         android:layout_width="0dp"
@@ -20,6 +72,7 @@
         app:layout_constraintTop_toBottomOf="@+id/image_view_shop_icon" />
 
     <com.tokopedia.shop.page.view.widget.ShopPageSubDetailView
+        android:id="@+id/sub_detail_view_reputation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
@@ -61,6 +114,7 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <com.tokopedia.shop.page.view.widget.ShopPageSubDetailView
+        android:id="@+id/sub_detail_view_product_quality"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
@@ -88,6 +142,7 @@
     </com.tokopedia.shop.page.view.widget.ShopPageSubDetailView>
 
     <com.tokopedia.shop.page.view.widget.ShopPageSubDetailView
+        android:id="@+id/sub_detail_view_speed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -104,7 +159,7 @@
                 android:id="@+id/image_view_speed"
                 android:layout_width="@dimen/image_width_xxs"
                 android:layout_height="@dimen/image_width_xs"
-                app:srcCompat="@drawable/bg_button_orange" />
+                app:srcCompat="@drawable/ic_reputation_speed_very_fast" />
 
             <TextView
                 android:id="@+id/text_view_speed_value"
@@ -149,7 +204,7 @@
         android:layout_height="@dimen/image_width_xxs"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
-        android:src="@drawable/ic_info_location"
+        android:src="@drawable/ic_info_location_grey"
         app:layout_constraintBottom_toBottomOf="@+id/image_view_shop_icon"
         app:layout_constraintStart_toEndOf="@+id/image_view_shop_icon" />
 
