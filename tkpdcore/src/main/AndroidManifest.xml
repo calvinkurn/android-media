@@ -86,9 +86,6 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        <meta-data
-            android:name="net.hockeyapp.android.appIdentifier"
-            android:value="528b17702bf941a581f15e188677306b " />
         <!-- Branch init -->
         <meta-data
             android:name="io.branch.sdk.BranchKey"

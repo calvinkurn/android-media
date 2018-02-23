@@ -6,12 +6,12 @@
     android:background="@color/white"
     android:baselineAligned="false"
     android:orientation="horizontal"
-    android:paddingTop="@dimen/padding_small"
     android:paddingBottom="@dimen/padding_small"
+    android:paddingEnd="@dimen/padding_med"
     android:paddingLeft="@dimen/activity_vertical_margin"
-    android:paddingStart="@dimen/activity_vertical_margin"
     android:paddingRight="@dimen/padding_med"
-    android:paddingEnd="@dimen/padding_med">
+    android:paddingStart="@dimen/activity_vertical_margin"
+    android:paddingTop="@dimen/padding_small">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -121,9 +121,9 @@
             android:id="@+id/time_limit_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_vvs"
             android:layout_marginLeft="@dimen/margin_med"
             android:layout_marginStart="@dimen/margin_med"
+            android:layout_marginBottom="@dimen/margin_small"
             android:orientation="vertical">
 
             <TextView
@@ -149,7 +149,6 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_med"
             android:layout_marginStart="@dimen/margin_med"
-            android:layout_marginTop="@dimen/margin_small"
             android:orientation="vertical">
 
             <TextView
@@ -257,7 +256,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black_70"
-                tools:text="Tidak" />
+                android:textIsSelectable="true"
+                tools:text="Obama" />
 
         </LinearLayout>
 
@@ -281,7 +281,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black_70"
-                tools:text="Tidak" />
+                android:textIsSelectable="true"
+                tools:text="081269696969" />
 
         </LinearLayout>
 

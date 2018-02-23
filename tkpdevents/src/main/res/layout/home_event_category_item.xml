@@ -126,9 +126,9 @@
                     android:id="@+id/img_small_location"
                     android:layout_width="@dimen/margin_default"
                     android:layout_height="@dimen/margin_default"
-                    android:background="@drawable/ic_placeholder"
+                    app:srcCompat="@drawable/ic_placeholder"
                     android:scaleType="centerCrop"
-                    android:tint="@color/grey" />
+                    android:tint="@color/grey_500" />
 
                 <TextView
                     android:id="@+id/tv_location"
@@ -156,9 +156,9 @@
                     android:id="@+id/img_small_time"
                     android:layout_width="@dimen/margin_default"
                     android:layout_height="@dimen/margin_default"
-                    android:background="@drawable/ic_time"
+                    app:srcCompat="@drawable/ic_time"
                     android:scaleType="centerCrop"
-                    android:tint="@color/grey" />
+                    android:tint="@color/grey_500" />
 
                 <TextView
                     android:id="@+id/tv_time"
