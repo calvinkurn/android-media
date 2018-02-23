@@ -1,10 +1,10 @@
-package com.tokopedia.posapp.domain.model;
+package com.tokopedia.posapp.auth.validatepassword.domain.model;
 
 /**
  * Created by okasurya on 9/27/17.
  */
 
-public class CheckPasswordDomain {
+public class ValidatePasswordDomain {
     private boolean status;
     private String message;
     private String state;

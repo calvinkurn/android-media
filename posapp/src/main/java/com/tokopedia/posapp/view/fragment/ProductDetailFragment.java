@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +17,11 @@ import android.widget.Button;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.core.network.entity.variant.Child;
+import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
-import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.product.model.productdetail.ProductImage;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
@@ -26,6 +29,7 @@ import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.di.component.DaggerProductComponent;
 import com.tokopedia.posapp.view.AddToCart;
@@ -43,7 +47,10 @@ import com.tokopedia.tkpdpdp.customview.PictureView;
 import com.tokopedia.tkpdpdp.customview.VideoDescriptionLayout;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -63,6 +70,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
     private Button buttonAddToCart;
 
     private ProductPass productPass;
+    private ProductDetailData productData;
 
     private ProductDetailFragmentListener listener;
 
@@ -134,16 +142,11 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessGetProduct(ProductDetailData data) {
+        this.productData = data;
         pictureView.renderData(data);
         headerInfoView.renderData(data);
         priceSimulationView.renderData(data);
         videoDescriptionLayout.renderData(data);
-        productPresenter.getProductCampaign(data.getInfo().getProductId());
-    }
-
-    @Override
-    public void onSuccessGetProductCampaign(ProductCampaign productCampaign) {
-        showProductCampaign(productCampaign);
     }
 
     @Override
@@ -245,13 +248,28 @@ public class ProductDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onProductReviewClicked(@NonNull Bundle bundle) {
+    public void onProductReviewClicked(String productId, String shopId, String productName) {
 
     }
 
     @Override
     public void onProductManagePromoteClicked(ProductDetailData productData) {
 
+    }
+
+    @Override
+    public void onBuyClick(String source) {
+
+    }
+
+    @Override
+    public void onImageZoomClick(int position) {
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList(PreviewProductImageDetail.FILELOC, getImageURIPaths());
+        bundle.putString("product_name", MethodChecker.fromHtml(productData.getInfo().getProductName()).toString());
+        bundle.putString("product_price", MethodChecker.fromHtml(productData.getInfo().getProductPrice()).toString());
+        bundle.putInt(PreviewProductImageDetail.IMG_POSITION, position);
+        productPresenter.processToPicturePreview(context, bundle);
     }
 
     @Override
@@ -290,7 +308,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onProductRatingClicked(@NonNull Bundle bundle) {
+    public void onProductRatingClicked(String productId, String shopId, String productName) {
 
     }
 
@@ -301,6 +319,11 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onWholesaleClicked(@NonNull Bundle bundle) {
+
+    }
+
+    @Override
+    public void onVariantClicked(@NonNull Bundle bundle) {
 
     }
 
@@ -353,13 +376,6 @@ public class ProductDetailFragment extends BaseDaggerFragment
     @Override
     public void onProductDetailLoaded(@NonNull ProductDetailData successResult) {
 
-    }
-
-    @Override
-    public void onProductPictureClicked(@NonNull Bundle bundle) {
-        Intent intent = new Intent(context, PreviewProductImageDetail.class);
-        intent.putExtras(bundle);
-        startActivity(intent);
     }
 
     @Override
@@ -424,6 +440,11 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     @Override
     public void showProductDetailRetry() {
+
+    }
+
+    @Override
+    public void showErrorVariant() {
 
     }
 
@@ -498,8 +519,8 @@ public class ProductDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void showProductCampaign(ProductCampaign productCampaign) {
-        headerInfoView.renderProductCampaign(productCampaign);
+    public void showProductCampaign() {
+        headerInfoView.renderProductCampaign(productData.getCampaign());
     }
 
     @Override
@@ -509,6 +530,11 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     @Override
     public void showLatestTalkView(LatestTalkViewModel discussion) {
+
+    }
+
+    @Override
+    public void addProductVariant(ProductVariant productVariant) {
 
     }
 
@@ -552,6 +578,11 @@ public class ProductDetailFragment extends BaseDaggerFragment
         return false;
     }
 
+    @Override
+    public void updateButtonBuyListener() {
+
+    }
+
     private void initView(View view) {
         pictureView = view.findViewById(R.id.view_picture);
         headerInfoView = view.findViewById(R.id.view_header);
@@ -561,7 +592,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
         buttonAddToCart = view.findViewById(R.id.button_add_to_cart);
     }
 
-    void initListener() {
+    private void initListener() {
         pictureView.setListener(this);
         headerInfoView.setListener(this);
         priceSimulationView.setListener(this);
@@ -584,5 +615,24 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     public interface ProductDetailFragmentListener {
         void onAddToCart();
+    }
+
+    public ArrayList<String> getImageURIPaths() {
+        ArrayList<String> imageSources = new ArrayList<>();
+        for (ProductImage productImage : productData.getProductImages()) {
+            imageSources.add(productImage.getImageSrc());
+        }
+//        if (productData.getInfo().getHasVariant() && productVariant!=null && productVariant.getChildren()!=null) {
+//            for (Child child: productVariant.getChildren()) {
+//                if (!TextUtils.isEmpty(child.getPicture().getOriginal()) && child.getProductId()!=productData.getInfo().getProductId()) {
+//                    arrayList.add(child.getPicture().getOriginal());
+//                }
+//            }
+//            Set<String> imagesSet = new LinkedHashSet<>(arrayList);
+//            ArrayList<String> finalImage = new ArrayList<>();
+//            finalImage.addAll(imagesSet);
+//            return finalImage;
+//        }
+        return imageSources;
     }
 }

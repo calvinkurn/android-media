@@ -16,7 +16,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
@@ -33,15 +32,12 @@ import com.tokopedia.posapp.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.posapp.di.component.DaggerReactNativeComponent;
 import com.tokopedia.posapp.di.component.ReactNativeComponent;
 import com.tokopedia.posapp.di.module.PosReactNativeModule;
-import com.tokopedia.posapp.view.activity.LoginActivity;
+import com.tokopedia.posapp.view.activity.PosLoginActivity;
 import com.tokopedia.posapp.view.activity.OutletActivity;
 import com.tokopedia.posapp.view.activity.ProductListActivity;
 import com.tokopedia.posapp.view.drawer.DrawerPosHelper;
 import com.tokopedia.posapp.view.service.SchedulerService;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -62,12 +58,6 @@ public class PosRouterApplication extends MainApplication implements
     @Override
     public String getOutletName() {
         return PosSessionHandler.getOutletName(this);
-    }
-
-    @Override
-    protected List<CacheApiWhiteListDomain> getWhiteList() {
-        List<CacheApiWhiteListDomain> cacheApiWhiteList = new ArrayList<>();
-        return cacheApiWhiteList;
     }
 
     @Override
@@ -162,6 +152,11 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
+    public Fragment getShopReputationFragment(String shopId, String shopDomain) {
+        return null;
+    }
+
+    @Override
     public Intent getHomeIntent(Context context) {
         startService(SchedulerService.getDefaultServiceIntent(this));
         Intent intent;
@@ -175,11 +170,6 @@ public class PosRouterApplication extends MainApplication implements
 
     @Override
     public Intent getOnBoardingActivityIntent(Context context) {
-        return null;
-    }
-
-    @Override
-    public Intent getTrueCallerActivityIntent(Context context) {
         return null;
     }
 
@@ -220,7 +210,7 @@ public class PosRouterApplication extends MainApplication implements
 
     @Override
     public Intent getLoginIntent(Context context) {
-        return LoginActivity.getPosLoginIntent(context);
+        return PosLoginActivity.getPosLoginIntent(context);
     }
 
     @Override
@@ -369,7 +359,7 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
-    public Intent getActivitySellingTransactionOpportunity(Context context) {
+    public Intent getActivitySellingTransactionOpportunity(Context context, String query) {
         return null;
     }
 
@@ -384,17 +374,22 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
-    public android.app.Fragment getShopReputationFragment() {
-        return null;
-    }
-
-    @Override
     public Intent getInboxReputationIntent(Context context) {
         return null;
     }
 
     @Override
     public Intent getResolutionCenterIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getResolutionCenterIntentBuyer(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getResolutionCenterIntentSeller(Context context) {
         return null;
     }
 
@@ -410,6 +405,36 @@ public class PosRouterApplication extends MainApplication implements
 
     @Override
     public Intent getChangePhoneNumberIntent(Context context, String email, String phoneNumber) {
+        return null;
+    }
+
+    @Override
+    public Intent getPhoneVerificationProfileIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getPhoneVerificationActivationIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getSellerHomeIntent(Activity activity) {
+        return null;
+    }
+
+    @Override
+    public Intent getLoginGoogleIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getLoginFacebookIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getLoginWebviewIntent(Context context, String name, String url) {
         return null;
     }
 

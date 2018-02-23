@@ -7,7 +7,7 @@ import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.router.posapp.PosAppRouter;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.posapp.view.activity.LoginActivity;
+import com.tokopedia.posapp.view.activity.PosLoginActivity;
 
 /**
  * Created by okasurya on 7/28/17.
@@ -27,7 +27,7 @@ public class PosAppSplashScreen extends SplashScreen {
     public void finishSplashScreen() {
         Intent intent;
         if (!SessionHandler.isV4Login(this)) {
-            intent = LoginActivity.getPosLoginIntent(this);
+            intent = PosLoginActivity.getPosLoginIntent(this);
         } else {
             intent = ((TkpdCoreRouter) getApplication()).getHomeIntent(this);
         }

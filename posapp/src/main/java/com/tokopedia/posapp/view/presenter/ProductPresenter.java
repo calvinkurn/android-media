@@ -1,18 +1,18 @@
 package com.tokopedia.posapp.view.presenter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.posapp.domain.usecase.AddToCartUseCase;
-import com.tokopedia.posapp.domain.usecase.GetProductCampaignUseCase;
 import com.tokopedia.posapp.domain.usecase.GetProductUseCase;
 import com.tokopedia.posapp.view.Product;
-import com.tokopedia.posapp.view.subscriber.GetProductCampaignSubscriber;
 import com.tokopedia.posapp.view.subscriber.GetProductSubscriber;
+import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 
 import javax.inject.Inject;
 
@@ -25,20 +25,15 @@ public class ProductPresenter extends BaseDaggerPresenter<Product.View>
     private static final String PARAM_PRODUCT_ID = "product_id";
     private static final String PARAM_PRODUCT_KEY = "product_key";
     private static final String PARAM_SHOP_DOMAIN = "shop_domain";
-    public static final String PRODUCT_ID = "PRODUCT_ID";
 
     private Context context;
     private GetProductUseCase getProductUseCase;
-    private GetProductCampaignUseCase getProductCampaignUseCase;
 
     @Inject
     public ProductPresenter(@ApplicationContext Context context,
-                            GetProductUseCase getProductUseCase,
-                            GetProductCampaignUseCase getProductCampaignUseCase,
-                            AddToCartUseCase addToCartUseCase) {
+                            GetProductUseCase getProductUseCase) {
         this.context = context;
         this.getProductUseCase = getProductUseCase;
-        this.getProductCampaignUseCase = getProductCampaignUseCase;
     }
 
     @Override
@@ -51,10 +46,10 @@ public class ProductPresenter extends BaseDaggerPresenter<Product.View>
     }
 
     @Override
-    public void getProductCampaign(int productId) {
-        RequestParams params = RequestParams.create();
-        params.putString(PRODUCT_ID, productId+"");
-        getProductCampaignUseCase.execute(params, new GetProductCampaignSubscriber(getView()));
+    public void processToPicturePreview(Context context, Bundle bundle) {
+        Intent intent = new Intent(context, PreviewProductImageDetail.class);
+        intent.putExtras(bundle);
+        getView().navigateToActivity(intent);
     }
 
     @Override

@@ -1,10 +1,10 @@
-package com.tokopedia.posapp.view;
+package com.tokopedia.posapp.auth.validatepassword.view;
 
 /**
  * Created by okasurya on 9/27/17.
  */
 
-public interface DialogPassword {
+public interface ValidatePassword {
     interface Presenter {
         void checkPassword(String password);
     }

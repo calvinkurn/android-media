@@ -49,7 +49,7 @@
             android:name=".deeplink.DeeplinkHandlerActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".view.activity.LoginActivity"
+            android:name=".view.activity.PosLoginActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.OutletActivity"

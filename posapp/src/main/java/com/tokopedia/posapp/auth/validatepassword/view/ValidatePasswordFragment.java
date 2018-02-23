@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.view.widget;
+package com.tokopedia.posapp.auth.validatepassword.view;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -17,9 +17,9 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.posapp.R;
-import com.tokopedia.posapp.di.component.DaggerValidatePasswordComponent;
-import com.tokopedia.posapp.view.DialogPassword;
-import com.tokopedia.posapp.view.presenter.DialogPasswordPresenter;
+import com.tokopedia.posapp.auth.di.DaggerAuthComponent;
+import com.tokopedia.posapp.auth.validatepassword.di.DaggerValidatePasswordComponent;
+import com.tokopedia.posapp.auth.validatepassword.view.presenter.ValidatePasswordPresenter;
 
 import javax.inject.Inject;
 
@@ -27,10 +27,10 @@ import javax.inject.Inject;
  * Created by okasurya on 9/27/17.
  */
 
-public class DialogPasswordFragment extends DialogFragment implements DialogPassword.View {
+public class ValidatePasswordFragment extends DialogFragment implements ValidatePassword.View {
 
     private  static final String TITLE = "TITLE";
-    public static final String FRAGMENT_TAG = "DialogPasswordFragment";
+    public static final String FRAGMENT_TAG = "ValidatePasswordFragment";
 
     private TkpdProgressDialog progressDialog;
     private TextView title;
@@ -41,15 +41,15 @@ public class DialogPasswordFragment extends DialogFragment implements DialogPass
     private PasswordListener listener;
 
     @Inject
-    DialogPasswordPresenter presenter;
+    ValidatePasswordPresenter presenter;
 
-    public static DialogPasswordFragment newInstance(String title) {
+    public static ValidatePasswordFragment newInstance(String title) {
         Bundle bundle = new Bundle();
         bundle.putString(TITLE, title);
-        DialogPasswordFragment dialogPasswordFragment = new DialogPasswordFragment();
-        dialogPasswordFragment.setArguments(bundle);
+        ValidatePasswordFragment validatePasswordFragment = new ValidatePasswordFragment();
+        validatePasswordFragment.setArguments(bundle);
 
-        return dialogPasswordFragment;
+        return validatePasswordFragment;
     }
 
     public void setListener(PasswordListener listener) {
@@ -72,7 +72,7 @@ public class DialogPasswordFragment extends DialogFragment implements DialogPass
         AppComponent appComponent = ((MainApplication) getContext().getApplicationContext()).getApplicationComponent();
         DaggerValidatePasswordComponent daggerValidatePasswordComponent =
                 (DaggerValidatePasswordComponent) DaggerValidatePasswordComponent.builder()
-                        .appComponent(appComponent)
+                        .authComponent(DaggerAuthComponent.builder().appComponent(appComponent).build())
                         .build();
 
         daggerValidatePasswordComponent.inject(this);
@@ -135,7 +135,7 @@ public class DialogPasswordFragment extends DialogFragment implements DialogPass
     }
 
     public interface PasswordListener {
-        void onSuccess(DialogPasswordFragment dialogPasswordFragment);
+        void onSuccess(ValidatePasswordFragment validatePasswordFragment);
 
         void onError(String message);
     }

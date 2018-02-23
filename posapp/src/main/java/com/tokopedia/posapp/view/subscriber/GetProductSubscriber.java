@@ -30,5 +30,8 @@ public class GetProductSubscriber extends Subscriber<ProductDetailData> {
     @Override
     public void onNext(ProductDetailData productDetailData) {
         viewListener.onSuccessGetProduct(productDetailData);
+        if(productDetailData.getCampaign() != null) {
+            viewListener.showProductCampaign();
+        }
     }
 }

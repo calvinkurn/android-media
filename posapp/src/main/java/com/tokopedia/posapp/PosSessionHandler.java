@@ -6,7 +6,7 @@ import android.content.SharedPreferences.Editor;
 import android.support.v7.app.AppCompatActivity;
 
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.posapp.view.widget.DialogPasswordFragment;
+import com.tokopedia.posapp.auth.validatepassword.view.ValidatePasswordFragment;
 
 /**
  * Created by okasurya on 9/26/17.
@@ -49,12 +49,12 @@ public class PosSessionHandler extends SessionHandler {
         return sharedPrefs.getString(OUTLET_NAME, "");
     }
 
-    public void showPasswordDialog(String title, DialogPasswordFragment.PasswordListener listener) {
+    public void showPasswordDialog(String title, ValidatePasswordFragment.PasswordListener listener) {
         if (getContext() != null && getContext() instanceof AppCompatActivity && getContext() instanceof onLogoutListener) {
-            if (((AppCompatActivity) getContext()).getFragmentManager().findFragmentByTag(DialogPasswordFragment.FRAGMENT_TAG) == null) {
-                DialogPasswordFragment dialogPasswordFragment = DialogPasswordFragment.newInstance(title);
-                dialogPasswordFragment.setListener(listener);
-                dialogPasswordFragment.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), DialogPasswordFragment.FRAGMENT_TAG);
+            if (((AppCompatActivity) getContext()).getFragmentManager().findFragmentByTag(ValidatePasswordFragment.FRAGMENT_TAG) == null) {
+                ValidatePasswordFragment validatePasswordFragment = ValidatePasswordFragment.newInstance(title);
+                validatePasswordFragment.setListener(listener);
+                validatePasswordFragment.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), ValidatePasswordFragment.FRAGMENT_TAG);
             }
         }
     }

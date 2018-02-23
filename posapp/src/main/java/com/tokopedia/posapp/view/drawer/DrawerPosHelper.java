@@ -20,7 +20,7 @@ import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.view.activity.OutletActivity;
 import com.tokopedia.posapp.view.activity.ProductListActivity;
 import com.tokopedia.posapp.view.activity.TransactionHistoryActivity;
-import com.tokopedia.posapp.view.widget.DialogPasswordFragment;
+import com.tokopedia.posapp.auth.validatepassword.view.ValidatePasswordFragment;
 
 import java.util.ArrayList;
 
@@ -138,9 +138,9 @@ public class DrawerPosHelper extends DrawerHelper
                 case TkpdState.DrawerPosition.POS_TRANSACTION_HISTORY:
                     posSessionHandler.showPasswordDialog(
                             context.getString(R.string.drawer_title_pos_riwayat_tx),
-                            new DialogPasswordFragment.PasswordListener() {
+                            new ValidatePasswordFragment.PasswordListener() {
                                 @Override
-                                public void onSuccess(DialogPasswordFragment dialog) {
+                                public void onSuccess(ValidatePasswordFragment dialog) {
                                     dialog.dismiss();
                                     startIntent(context, TransactionHistoryActivity.class);
                                 }
@@ -155,9 +155,9 @@ public class DrawerPosHelper extends DrawerHelper
                 case TkpdState.DrawerPosition.POS_OUTLET:
                     posSessionHandler.showPasswordDialog(
                             context.getString(R.string.drawer_title_pos_choose_outlet),
-                            new DialogPasswordFragment.PasswordListener() {
+                            new ValidatePasswordFragment.PasswordListener() {
                                 @Override
-                                public void onSuccess(DialogPasswordFragment dialog) {
+                                public void onSuccess(ValidatePasswordFragment dialog) {
                                     dialog.dismiss();
                                     startIntent(context, OutletActivity.class);
                                     context.finish();

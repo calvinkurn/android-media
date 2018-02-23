@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.di.scope;
+package com.tokopedia.posapp.auth.validatepassword.di;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

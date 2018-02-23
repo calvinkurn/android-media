@@ -75,7 +75,6 @@ public class SessionHandler {
     private static final String CACHE_PHONE_VERIF_TIMER = "CACHE_PHONE_VERIF_TIMER";
     private static final String USER_DATA = "USER_DATA";
     private static final String KEY_IV = "tokopedia1234567";
-    private static final String SHOP_NAME = "SHOP_NAME";
     private static final String TOKOCASH_SESSION = "TOKOCASH_SESSION";
     private static final String ACCESS_TOKEN_TOKOCASH = "ACCESS_TOKEN_TOKOCASH";
     private static final String SHOP_NAME = "SHOP_NAME";

@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.data.source.cloud.api;
+package com.tokopedia.posapp.auth;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;

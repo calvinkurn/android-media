@@ -8,8 +8,8 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.network.entity.variant.Campaign;
 import com.tokopedia.core.product.customview.BaseView;
-import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
@@ -107,16 +107,16 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         setVisibility(VISIBLE);
     }
 
-    public void renderProductCampaign(ProductCampaign data) {
-        if(data != null && data.getOriginalPrice() != null) {
-            textOriginalPrice.setText(data.getOriginalPriceIdr());
+    public void renderProductCampaign(Campaign data) {
+        if(data != null && data.getOriginalPriceFmt() != null) {
+            textOriginalPrice.setText(data.getOriginalPriceFmt());
             textOriginalPrice.setPaintFlags(
                     textOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
             );
 
             textDiscount.setText(String.format(
                     getContext().getString(com.tokopedia.tkpdpdp.R.string.label_discount_percentage),
-                    data.getPercentageAmount()
+                    data.getDiscountedPercentage()
             ));
 
             textDiscount.setVisibility(VISIBLE);
@@ -126,7 +126,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         }
     }
 
-    private void showCountdownTimer(final ProductCampaign data) {
+    private void showCountdownTimer(final Campaign data) {
         try {
             SimpleDateFormat sf = new SimpleDateFormat(DATE_TIME_FORMAT);
             Calendar now = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
@@ -154,11 +154,11 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         }
     }
 
-    private void hideProductCampaign(ProductCampaign data) {
+    private void hideProductCampaign(Campaign data) {
         linearDiscountTimerHolder.setVisibility(GONE);
         textDiscount.setVisibility(GONE);
         textOriginalPrice.setVisibility(GONE);
-        tvPrice.setText(data.getOriginalPriceIdr());
+        tvPrice.setText(data.getOriginalPriceFmt());
     }
 
     private String getCountdownText(long millisUntilFinished) {

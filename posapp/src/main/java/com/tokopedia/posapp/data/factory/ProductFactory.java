@@ -18,30 +18,21 @@ import com.tokopedia.posapp.data.source.local.ProductLocalSource;
 public class ProductFactory {
     private GatewayProductApi gatewayProductApi;
     private ProductApi productApi;
-    private MojitoApi mojitoApi;
-    private AceApi aceApi;
     private GetProductMapper getProductMapper;
-    private GetProductListMapper getProductListMapper;
     private GetGatewayProductListMapper getGatewayProductListMapper;
 
     public ProductFactory(GatewayProductApi gatewayProductApi,
                           ProductApi productApi,
-                          MojitoApi mojitoApi,
-                          AceApi aceApi,
                           GetProductMapper getProductMapper,
-                          GetProductListMapper getProductListMapper,
                           GetGatewayProductListMapper getGatewayProductListMapper) {
         this.gatewayProductApi = gatewayProductApi;
         this.productApi = productApi;
-        this.mojitoApi = mojitoApi;
-        this.aceApi = aceApi;
         this.getProductMapper = getProductMapper;
-        this.getProductListMapper = getProductListMapper;
         this.getGatewayProductListMapper = getGatewayProductListMapper;
     }
 
     public ProductCloudSource cloud() {
-        return new ProductCloudSource(productApi, mojitoApi, aceApi, getProductMapper, getProductListMapper);
+        return new ProductCloudSource(productApi, getProductMapper);
     }
 
     public GatewayProductCloudSource cloudGateway() {
