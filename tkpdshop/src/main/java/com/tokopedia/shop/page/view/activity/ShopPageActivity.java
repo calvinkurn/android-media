@@ -229,25 +229,25 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
             }
         });
 
-        findViewById(R.id.reputation_click_container).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(view.getContext(), "Reputation Click", Toast.LENGTH_LONG).show();
-            }
-        });
-        findViewById(R.id.product_quality_container).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(view.getContext(), "Product Quality Click", Toast.LENGTH_LONG).show();
-            }
-        });
-        findViewById(R.id.speed_container).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(view.getContext(), "Speed Click", Toast.LENGTH_LONG).show();
-                button.setVisibility(new Random().nextBoolean() ? View.VISIBLE : View.GONE);
-            }
-        });
+//        findViewById(R.id.reputation_click_container).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Toast.makeText(view.getContext(), "Reputation Click", Toast.LENGTH_LONG).show();
+//            }
+//        });
+//        findViewById(R.id.product_quality_container).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Toast.makeText(view.getContext(), "Product Quality Click", Toast.LENGTH_LONG).show();
+//            }
+//        });
+//        findViewById(R.id.speed_container).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Toast.makeText(view.getContext(), "Speed Click", Toast.LENGTH_LONG).show();
+//                button.setVisibility(new Random().nextBoolean() ? View.VISIBLE : View.GONE);
+//            }
+//        });
 
         buttonManageShop.setVisibility(View.GONE);
         buttonAddProduct.setVisibility(View.GONE);
