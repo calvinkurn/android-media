@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:divider="@drawable/bg_line_separator_shop_page_sub_info"
-    android:minHeight="@dimen/shop_page_Header_sub_info_min_height"
+    android:minHeight="@dimen/shop_page_header_sub_info_min_height"
     android:orientation="horizontal"
     android:showDividers="middle">
 

@@ -4,54 +4,41 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:divider="@drawable/bg_line_separator_shop_page_button"
     android:gravity="center"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:padding="@dimen/margin_ms"
+    android:showDividers="middle">
 
     <Button
         android:id="@+id/button_manage_shop"
-        style="@style/Button.Submit.White.Border"
+        style="@style/Button.Shop.Page.Header"
         android:layout_width="0dp"
-        android:layout_margin="8dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
         android:layout_weight="1"
-        android:foreground="?attr/selectableItemBackground"
         android:text="@string/manage_shop"
         android:visibility="gone" />
 
     <Button
         android:id="@+id/button_add_product"
-        style="@style/Button.Submit.White.Border"
+        style="@style/Button.Shop.Page.Header"
         android:layout_width="0dp"
-        android:layout_margin="8dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
         android:layout_weight="1"
-        android:foreground="?attr/selectableItemBackground"
         android:text="@string/add_product"
         android:visibility="gone" />
 
     <Button
         android:id="@+id/button_chat_seller"
-        style="@style/Button.Submit.White.Border"
+        style="@style/Button.Shop.Page.Header"
         android:layout_width="0dp"
-        android:layout_margin="8dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
         android:layout_weight="1"
-        android:foreground="?attr/selectableItemBackground"
         android:text="@string/chat_seller"
         android:visibility="gone" />
 
     <Button
         android:id="@+id/button_shop_page"
-        style="@style/Button.Submit.White.Border"
+        style="@style/Button.Shop.Page.Header"
         android:layout_width="0dp"
-        android:layout_margin="8dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
         android:layout_weight="1"
-        android:foreground="?attr/selectableItemBackground"
         android:text="@string/favorite"
         android:visibility="gone" />
 </LinearLayout>

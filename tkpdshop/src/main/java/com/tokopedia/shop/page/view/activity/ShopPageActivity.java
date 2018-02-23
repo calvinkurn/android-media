@@ -32,10 +32,9 @@ import com.tokopedia.shop.info.di.module.ShopInfoModule;
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity;
 import com.tokopedia.shop.info.view.listener.ShopPageView;
 import com.tokopedia.shop.info.view.presenter.ShopPagePresenter;
+import com.tokopedia.shop.page.view.widget.ShopPageSubDetailView;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment;
-
-import java.util.Random;
 
 import javax.inject.Inject;
 
@@ -78,6 +77,12 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     private TextView shopInfoLocationTextView;
     private LinearLayout containerClickInfo;
 
+    private ShopPageSubDetailView totalFavouriteDetailView;
+    private ShopPageSubDetailView totalProductDetailView;
+    private ShopPageSubDetailView reputationDetailView;
+    private ShopPageSubDetailView productQualityDetailView;
+    private ShopPageSubDetailView reputationSpeedDetailView;
+
     private ShopReputationView shopReputationView;
 
     private RatingBar qualityRatingBar;
@@ -90,7 +95,6 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     private Button buttonAddProduct;
     private Button buttonChatSeller;
     private Button buttonShopPage;
-    private Button button;
 
     private String shopId;
     private String shopDomain;
@@ -141,6 +145,12 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         locationImageView = findViewById(R.id.image_view_location);
         shopInfoLocationTextView = findViewById(R.id.text_view_location);
 
+        totalFavouriteDetailView = findViewById(R.id.sub_detail_view_total_favourite);
+        totalProductDetailView = findViewById(R.id.sub_detail_view_total_product);
+        reputationDetailView = findViewById(R.id.sub_detail_view_reputation);
+        productQualityDetailView = findViewById(R.id.sub_detail_view_product_quality);
+        reputationSpeedDetailView = findViewById(R.id.sub_detail_view_reputation_speed);
+
         qualityRatingBar = findViewById(R.id.rating_bar_product_quality);
         qualityValueTextView = findViewById(R.id.text_view_product_quality_value);
         speedImageView = findViewById(R.id.image_view_speed);
@@ -153,7 +163,33 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         buttonAddProduct = findViewById(R.id.button_add_product);
         buttonChatSeller = findViewById(R.id.button_chat_seller);
         buttonShopPage = findViewById(R.id.button_shop_page);
-        button = findViewById(R.id.button);
+
+        containerClickInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = ShopInfoActivity.createIntent(view.getContext(), shopId);
+                view.getContext().startActivity(intent);
+            }
+        });
+
+        reputationDetailView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(view.getContext(), "Reputation Click", Toast.LENGTH_LONG).show();
+            }
+        });
+        productQualityDetailView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(view.getContext(), "Product Quality Click", Toast.LENGTH_LONG).show();
+            }
+        });
+        reputationSpeedDetailView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(ShopProductListActivity.createIntent(ShopPageActivity.this, shopId));
+            }
+        });
         tabLayout.setupWithViewPager(viewPager);
     }
 
@@ -209,86 +245,44 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
 
     @Override
     public void onSuccessGetShopInfo(final ShopInfo shopInfo) {
+        shopId = shopInfo.getInfo().getShopId();
+
         ImageHandler.LoadImage(backgroundImageView, shopInfo.getInfo().getShopCover());
         shopNameTextView.setText(MethodChecker.fromHtml(shopInfo.getInfo().getShopName()).toString());
         ImageHandler.loadImageCircle2(shopIconImageView.getContext(), shopIconImageView, shopInfo.getInfo().getShopAvatar());
 
         if (TextApiUtils.isValueTrue(shopInfo.getInfo().getShopIsOfficial())) {
-            displayOfficialStoreView(shopInfo);
+            displayAsOfficialStoreView(shopInfo);
         } else if (shopInfo.getInfo().isShopIsGoldBadge()) {
-            displayGoldMerchantView(shopInfo);
+            displayAsGoldMerchantView(shopInfo);
+            displayAsGeneralShop(shopInfo);
         } else {
-            displayRegularMerchantView(shopInfo);
+            displayAsGeneralShop(shopInfo);
         }
-
-        containerClickInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = ShopInfoActivity.createIntent(view.getContext(), shopInfo.getInfo().getShopId());
-                view.getContext().startActivity(intent);
-            }
-        });
-
-//        findViewById(R.id.reputation_click_container).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Toast.makeText(view.getContext(), "Reputation Click", Toast.LENGTH_LONG).show();
-//            }
-//        });
-//        findViewById(R.id.product_quality_container).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Toast.makeText(view.getContext(), "Product Quality Click", Toast.LENGTH_LONG).show();
-//            }
-//        });
-//        findViewById(R.id.speed_container).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Toast.makeText(view.getContext(), "Speed Click", Toast.LENGTH_LONG).show();
-//                button.setVisibility(new Random().nextBoolean() ? View.VISIBLE : View.GONE);
-//            }
-//        });
-
-        buttonManageShop.setVisibility(View.GONE);
-        buttonAddProduct.setVisibility(View.GONE);
-        buttonChatSeller.setVisibility(View.GONE);
-        buttonShopPage.setVisibility(View.GONE);
-
-        if (shopPagePresenter.getUserSession().getShopId().equals(shopInfo.getInfo().getShopId())) {
-            buttonManageShop.setVisibility(View.VISIBLE);
-            buttonAddProduct.setVisibility(View.VISIBLE);
+        if (shopPagePresenter.getUserSession().getShopId().equals(shopId)) {
+            displayAsBuyerShop();
         } else {
-            buttonChatSeller.setVisibility(View.VISIBLE);
-            buttonShopPage.setVisibility(View.VISIBLE);
+            displayAsSellerShop();
         }
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                button.getContext().startActivity(ShopProductListActivity.createIntent(button.getContext(), shopId));
-            }
-        });
     }
 
-    private void displayOfficialStoreView(ShopInfo shopInfo) {
+    private void displayAsOfficialStoreView(ShopInfo shopInfo) {
+        totalFavouriteDetailView.setVisibility(View.VISIBLE);
+        totalProductDetailView.setVisibility(View.VISIBLE);
         shopStatusImageView.setVisibility(View.VISIBLE);
         shopStatusImageView.setImageResource(R.drawable.ic_badge_shop_official);
         locationImageView.setImageResource(R.drawable.ic_info_checked_grey);
         shopInfoLocationTextView.setText(getString(R.string.shop_page_label_authorized));
     }
 
-    private void displayGoldMerchantView(ShopInfo shopInfo) {
+    private void displayAsGoldMerchantView(ShopInfo shopInfo) {
         shopStatusImageView.setVisibility(View.VISIBLE);
         shopStatusImageView.setImageResource(R.drawable.ic_badge_shop_gm);
-        displayGeneralShop(shopInfo);
     }
 
-    private void displayRegularMerchantView(ShopInfo shopInfo) {
-        shopStatusImageView.setVisibility(View.GONE);
-        displayGeneralShop(shopInfo);
-    }
-
-    private void displayGeneralShop(ShopInfo shopInfo) {
+    private void displayAsGeneralShop(ShopInfo shopInfo) {
+        reputationDetailView.setVisibility(View.VISIBLE);
+        productQualityDetailView.setVisibility(View.VISIBLE);
         locationImageView.setImageResource(R.drawable.ic_info_location_grey);
         shopInfoLocationTextView.setText(shopInfo.getInfo().getShopLocation());
 
@@ -299,6 +293,16 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         qualityValueTextView.setText(shopInfo.getRatings().getQuality().getAverage());
         qualityRatingBar.setRating(shopInfo.getRatings().getQuality().getRatingStar());
         qualityRatingBar.setMax(MAX_RATING_STAR);
+    }
+
+    private void displayAsBuyerShop() {
+        buttonManageShop.setVisibility(View.VISIBLE);
+        buttonAddProduct.setVisibility(View.VISIBLE);
+    }
+
+    private void displayAsSellerShop() {
+        buttonChatSeller.setVisibility(View.VISIBLE);
+        buttonShopPage.setVisibility(View.VISIBLE);
     }
 
     @Override
