@@ -16,8 +16,8 @@ public class EntityAddress implements Parcelable {
 	@SerializedName("latitude")
 	private String latitude;
 
-	@SerializedName("mobile")
-	private String mobile;
+	@SerializedName("mobile_number")
+	private String mobileNumber;
 
 	@SerializedName("email")
 	private String email;
@@ -52,12 +52,12 @@ public class EntityAddress implements Parcelable {
 		return latitude;
 	}
 
-	public void setMobile(String mobile){
-		this.mobile = mobile;
+	public void setMobileNumber(String mobileNumber){
+		this.mobileNumber = mobileNumber;
 	}
 
-	public String getMobile(){
-		return mobile;
+	public String getMobileNumber(){
+		return mobileNumber;
 	}
 
 	public void setEmail(String email){
@@ -91,7 +91,7 @@ public class EntityAddress implements Parcelable {
 			"address = '" + address + '\'' + 
 			",city = '" + city + '\'' + 
 			",latitude = '" + latitude + '\'' + 
-			",mobile_number = '" + mobile + '\'' +
+			",mobile_number = '" + mobileNumber + '\'' +
 			",email = '" + email + '\'' + 
 			",name = '" + name + '\'' + 
 			",longitude = '" + longitude + '\'' + 
@@ -108,7 +108,7 @@ public class EntityAddress implements Parcelable {
 		dest.writeString(this.address);
 		dest.writeString(this.city);
 		dest.writeString(this.latitude);
-		dest.writeString(this.mobile);
+		dest.writeString(this.mobileNumber);
 		dest.writeString(this.email);
 		dest.writeString(this.name);
 		dest.writeString(this.longitude);
@@ -121,7 +121,7 @@ public class EntityAddress implements Parcelable {
 		this.address = in.readString();
 		this.city = in.readString();
 		this.latitude = in.readString();
-		this.mobile = in.readString();
+		this.mobileNumber = in.readString();
 		this.email = in.readString();
 		this.name = in.readString();
 		this.longitude = in.readString();

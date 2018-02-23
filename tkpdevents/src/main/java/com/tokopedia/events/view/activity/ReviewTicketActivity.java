@@ -410,7 +410,9 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
             tvEmailID.setInputType(InputType.TYPE_CLASS_TEXT);
             tvEmailID.requestFocus();
             if (imm != null) {
-                imm.showSoftInputFromInputMethod(tvEmailID.getWindowToken(), 0);
+                imm.showSoftInputFromInputMethod(tvEmailID.getWindowToken(), InputMethodManager.SHOW_FORCED);
+                imm.showSoftInput(tvTelephone, InputMethodManager.SHOW_FORCED);
+
             }
         } else {
             if (imm != null) {
@@ -436,7 +438,8 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
             tvTelephone.setInputType(InputType.TYPE_CLASS_TEXT);
             tvTelephone.requestFocus();
             if (imm != null) {
-                imm.showSoftInputFromInputMethod(tvTelephone.getWindowToken(), 0);
+                imm.showSoftInputFromInputMethod(tvTelephone.getWindowToken(), InputMethodManager.SHOW_FORCED);
+                imm.showSoftInput(tvTelephone, InputMethodManager.SHOW_FORCED);
             }
         } else {
             if (imm != null) {
@@ -447,7 +450,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
             tvTelephone.setFocusable(false);
             tvTelephone.setInputType(InputType.TYPE_NULL);
             mainContent.requestFocus();
-            mPresenter.updateEmail(tvTelephone.getText().toString());
+            mPresenter.updateNumber(tvTelephone.getText().toString());
         }
     }
 

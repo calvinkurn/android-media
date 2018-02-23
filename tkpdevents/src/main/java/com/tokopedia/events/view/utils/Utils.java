@@ -21,9 +21,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.TimeZone;
 
@@ -176,7 +176,7 @@ public class Utils {
 
 
     public static String convertEpochToString(int time) {
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("EEEE, d MMM yyyy", new Locale("in", "ID", ""));
         sdf.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
         Long epochTime = time * 1000L;
         Date date = new Date(epochTime);

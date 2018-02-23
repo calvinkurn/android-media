@@ -228,7 +228,7 @@ public class EventReviewTicketPresenter
         address.setName("");
         address.setCity("");
         address.setEmail(this.email);
-        address.setMobile(this.number);
+        address.setMobileNumber(this.number);
         address.setLatitude("");
         address.setLongitude("");
         meta.setEntityAddress(address);
