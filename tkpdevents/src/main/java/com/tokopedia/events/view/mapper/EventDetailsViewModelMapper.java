@@ -59,7 +59,9 @@ public class EventDetailsViewModelMapper {
                 s.setStartDate(item.getSchedule().getStartDate());
                 s.setEndDate(item.getSchedule().getEndDate());
                 String timerange;
-                if (item.getSchedule().getStartDate().equals(item.getSchedule().getEndDate())) {
+                if (source.getMinStartDate() == 0) {
+                    timerange = "";
+                } else if (item.getSchedule().getStartDate().equals(item.getSchedule().getEndDate())) {
                     timerange = Utils.convertEpochToString(item.getSchedule().getStartDate());
                 } else {
                     timerange = Utils.convertEpochToString(item.getSchedule().getStartDate())
