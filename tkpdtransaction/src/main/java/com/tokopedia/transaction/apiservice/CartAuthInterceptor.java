@@ -50,9 +50,14 @@ public class CartAuthInterceptor extends TkpdAuthInterceptor {
         Log.d("CARTAPI METHOD = ", method);
         Log.d("CARTAPI AUTH KEY = ", authKey);
         Log.d("CARTAPI CONTENT TYPE = ", contentTypeHeader);
-        Map<String, String> mapHeader = AuthUtil.getDefaultHeaderMapNew(
-                path, strParam, method, authKey, contentTypeHeader, "EEE, dd MMM yyyy HH:mm:ss ZZZ"
-        );
+        Map<String, String> mapHeader = AuthUtil.getDefaultHeaderMap(
+                path,
+                strParam,
+                method,
+                contentTypeHeader != null ? contentTypeHeader : "application/x-www-form-urlencoded",
+                authKey,
+                "EEE, dd MMM yyyy HH:mm:ss ZZZ");
+
         mapHeader.put("X-APP-VERSION", GlobalConfig.VERSION_NAME);
         mapHeader.put("Tkpd-UserId", SessionHandler.getLoginID(MainApplication.getAppContext()));
         mapHeader.put("X-Device", "android");
