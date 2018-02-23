@@ -15,6 +15,20 @@ import rx.Subscriber;
 
 public interface OrderDetailInteractor {
 
+    String SHOP_ID_KEY = "shop_id";
+
+    String PRODUCT_ID_KEY = "product_id";
+
+    String PRODUCT_PRICE_KEY = "product_price";
+
+    String PRODUCT_WEIGHT_VALUE_KEY = "product_weight_value";
+
+    String PRODUCT_PRICE_CURRENCY_KEY = "product_price_currency";
+
+    String PRODUCT_WEIGHT_UNIT_KEY = "product_weight_unit";
+
+    String PRODUCT_DESCRIPTION_KEY = "product_id_description_key";
+
     void requestDetailData(Subscriber<OrderDetailData> subscriber,
                            TKPDMapParam<String, Object> params);
 
