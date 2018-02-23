@@ -11,8 +11,9 @@ import java.util.List;
  */
 
 public class CartShipmentAddressFormData implements Parcelable {
+    private boolean isError;
+    private String errorMessage;
 
-    private List<String> errors = new ArrayList<>();
     private int errorCode;
     private boolean isMultiple;
     private List<GroupAddress> groupAddress = new ArrayList<>();
@@ -20,12 +21,20 @@ public class CartShipmentAddressFormData implements Parcelable {
     private String keroDiscomToken;
     private int keroUnixTime;
 
-    public List<String> getErrors() {
-        return errors;
+    public boolean isError() {
+        return isError;
     }
 
-    public void setErrors(List<String> errors) {
-        this.errors = errors;
+    public void setError(boolean error) {
+        isError = error;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
     public int getErrorCode() {
@@ -76,6 +85,9 @@ public class CartShipmentAddressFormData implements Parcelable {
         this.keroUnixTime = keroUnixTime;
     }
 
+    public CartShipmentAddressFormData() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -83,7 +95,8 @@ public class CartShipmentAddressFormData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeStringList(this.errors);
+        dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
+        dest.writeString(this.errorMessage);
         dest.writeInt(this.errorCode);
         dest.writeByte(this.isMultiple ? (byte) 1 : (byte) 0);
         dest.writeTypedList(this.groupAddress);
@@ -92,11 +105,9 @@ public class CartShipmentAddressFormData implements Parcelable {
         dest.writeInt(this.keroUnixTime);
     }
 
-    public CartShipmentAddressFormData() {
-    }
-
     protected CartShipmentAddressFormData(Parcel in) {
-        this.errors = in.createStringArrayList();
+        this.isError = in.readByte() != 0;
+        this.errorMessage = in.readString();
         this.errorCode = in.readInt();
         this.isMultiple = in.readByte() != 0;
         this.groupAddress = in.createTypedArrayList(GroupAddress.CREATOR);
@@ -105,7 +116,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         this.keroUnixTime = in.readInt();
     }
 
-    public static final Parcelable.Creator<CartShipmentAddressFormData> CREATOR = new Parcelable.Creator<CartShipmentAddressFormData>() {
+    public static final Creator<CartShipmentAddressFormData> CREATOR = new Creator<CartShipmentAddressFormData>() {
         @Override
         public CartShipmentAddressFormData createFromParcel(Parcel source) {
             return new CartShipmentAddressFormData(source);

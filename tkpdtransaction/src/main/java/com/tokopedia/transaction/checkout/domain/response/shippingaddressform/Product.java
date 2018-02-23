@@ -13,7 +13,7 @@ public class Product {
 
     @SerializedName("errors")
     @Expose
-    private Object errors;
+    private List<String> errors = new ArrayList<>();
     @SerializedName("product_id")
     @Expose
     private int productId;
@@ -99,7 +99,7 @@ public class Product {
     @Expose
     private int productCatalogId;
 
-    public Object getErrors() {
+    public List<String> getErrors() {
         return errors;
     }
 

@@ -87,7 +87,6 @@ public class CartDataFactory {
     public static CartItemData.MessageErrorData createMessageErrorData() {
 
         CartItemData.MessageErrorData messageErrorData = new CartItemData.MessageErrorData();
-        messageErrorData.setErrorAdditional(new ArrayList<String>());
 
         return messageErrorData;
     }

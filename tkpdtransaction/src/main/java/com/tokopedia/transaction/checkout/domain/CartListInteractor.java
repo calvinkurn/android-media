@@ -1,6 +1,8 @@
 package com.tokopedia.transaction.checkout.domain;
 
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.transaction.checkout.domain.exception.ResponseCartApiErrorException;
 import com.tokopedia.transaction.checkout.domain.response.cartlist.CartDataListResponse;
 import com.tokopedia.transaction.checkout.domain.response.deletecart.DeleteCartDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.shippingaddressform.ShipmentAddressFormDataResponse;
@@ -10,6 +12,7 @@ import com.tokopedia.transaction.checkout.view.data.DeleteCartData;
 import com.tokopedia.transaction.checkout.view.data.DeleteUpdateCartData;
 import com.tokopedia.transaction.checkout.view.data.UpdateCartData;
 import com.tokopedia.transaction.checkout.view.data.UpdateCartListData;
+import com.tokopedia.transaction.checkout.view.data.cartshipmentform.CartShipmentAddressFormData;
 
 import javax.inject.Inject;
 
@@ -159,9 +162,17 @@ public class CartListInteractor implements ICartListInteractor {
                                         .map(new Func1<UpdateCartDataResponse, UpdateCartListData>() {
                                             @Override
                                             public UpdateCartListData call(UpdateCartDataResponse updateCartDataResponse) {
-                                                updateCartListData.setUpdateCartData(
-                                                        cartMapper.convertToUpdateCartData(updateCartDataResponse)
-                                                );
+                                                UpdateCartData updateCartData =
+                                                        cartMapper.convertToUpdateCartData(updateCartDataResponse);
+                                                updateCartListData.setUpdateCartData(updateCartData);
+                                                if (!updateCartData.isSuccess()) {
+                                                    throw new ResponseCartApiErrorException(
+                                                            TkpdBaseURL.Cart.PATH_UPDATE_CART,
+                                                            0,
+                                                            updateCartData.getMessage()
+
+                                                    );
+                                                }
                                                 return updateCartListData;
                                             }
                                         });
@@ -174,9 +185,16 @@ public class CartListInteractor implements ICartListInteractor {
                                         .map(new Func1<CartDataListResponse, UpdateCartListData>() {
                                             @Override
                                             public UpdateCartListData call(CartDataListResponse cartDataListResponse) {
-                                                updateCartListData.setCartListData(
-                                                        cartMapper.convertToCartItemDataList(cartDataListResponse)
-                                                );
+                                                CartListData cartListData = cartMapper.convertToCartItemDataList(cartDataListResponse);
+                                                updateCartListData.setCartListData(cartListData);
+                                                if (cartListData.isError()) {
+                                                    throw new ResponseCartApiErrorException(
+                                                            TkpdBaseURL.Cart.PATH_UPDATE_CART,
+                                                            0,
+                                                            cartListData.getErrorMessage()
+
+                                                    );
+                                                }
                                                 return updateCartListData;
                                             }
                                         });
@@ -189,9 +207,18 @@ public class CartListInteractor implements ICartListInteractor {
                                         .map(new Func1<ShipmentAddressFormDataResponse, UpdateCartListData>() {
                                             @Override
                                             public UpdateCartListData call(ShipmentAddressFormDataResponse shipmentAddressFormDataResponse) {
+                                                CartShipmentAddressFormData cartShipmentAddressFormData =
+                                                        shipmentMapper.convertToShipmentAddressFormData(shipmentAddressFormDataResponse);
                                                 updateCartListData.setShipmentAddressFormData(
-                                                        shipmentMapper.convertToShipmentAddressFormData(shipmentAddressFormDataResponse)
+                                                        cartShipmentAddressFormData
                                                 );
+                                                if (cartShipmentAddressFormData.isError()) {
+                                                    throw new ResponseCartApiErrorException(
+                                                            TkpdBaseURL.Cart.PATH_SHIPMENT_ADDRESS_FORM_DIRECT,
+                                                            cartShipmentAddressFormData.getErrorCode(),
+                                                            cartShipmentAddressFormData.getErrorMessage()
+                                                    );
+                                                }
                                                 return updateCartListData;
                                             }
                                         });

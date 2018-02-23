@@ -17,6 +17,8 @@ public interface ICartListView extends IBaseView {
 
     void renderCartListData(List<CartItemData> cartItemDataList);
 
+    void renderPromoSuggestion(CartPromoSuggestion cartPromoSuggestion);
+
     void renderErrorGetCartListData(String message);
 
     void renderErrorHttpGetCartListData(String message);
@@ -24,6 +26,9 @@ public interface ICartListView extends IBaseView {
     void renderErrorNoConnectionGetCartListData(String message);
 
     void renderErrorTimeoutConnectionGetCartListData(String message);
+
+
+
 
     void renderEmptyCartData();
 
@@ -36,10 +41,6 @@ public interface ICartListView extends IBaseView {
     Context getActivityContext();
 
     void renderDetailInfoSubTotal(String qty, String subtotalPrice);
-
-    void renderPromoSuggestion(CartPromoSuggestion cartPromoSuggestion);
-
-    CartPromoSuggestion getCartPromoSuggestionData();
 
     void renderSuccessDeleteCart(CartItemData cartItemData, String message, boolean addWishList);
 

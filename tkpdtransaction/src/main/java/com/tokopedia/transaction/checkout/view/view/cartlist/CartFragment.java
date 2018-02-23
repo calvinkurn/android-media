@@ -456,11 +456,6 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     }
 
     @Override
-    public CartPromoSuggestion getCartPromoSuggestionData() {
-        return this.cartPromoSuggestionData;
-    }
-
-    @Override
     public void renderSuccessDeleteCart(CartItemData cartItemData, String message, boolean addWishList) {
         cartListAdapter.deleteItem(cartItemData);
         dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());

@@ -10,6 +10,7 @@ import com.tokopedia.transaction.checkout.view.data.cartshipmentform.CartShipmen
  */
 
 public class UpdateCartListData implements Parcelable {
+
     private UpdateCartData updateCartData;
     private CartListData cartListData;
     private CartShipmentAddressFormData shipmentAddressFormData;

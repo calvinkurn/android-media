@@ -16,13 +16,11 @@ public class CartItemHolderData implements Parcelable {
     public static final int ERROR_FIELD_AVAILABLE_STOCK = 4;
     public static final int ERROR_PRODUCT_MAX_QUANTITY = 5;
     public static final int ERROR_PRODUCT_MIN_QUANTITY = 6;
-    public static final int ERROR_ADDITIONAL = 7;
     public static final int ERROR_EMPTY = 0;
 
     private CartItemData cartItemData;
-    private boolean isErrorItem;
-    private int errorType;
-    private String messageError;
+    private int errorFormItemValidationType;
+    private String errorFormItemValidationMessage;
     private boolean editableRemark;
 
     public CartItemData getCartItemData() {
@@ -33,47 +31,37 @@ public class CartItemHolderData implements Parcelable {
         this.cartItemData = cartItemData;
     }
 
-    public boolean isErrorItem() {
-        return isErrorItem;
-    }
 
-    public void setErrorItem(boolean errorItem) {
-        isErrorItem = errorItem;
-    }
-
-    public int getErrorType() {
+    public int getErrorFormItemValidationType() {
         if (cartItemData.getUpdatedData().getRemark().length() > 140) {
-            this.messageError = cartItemData.getErrorData().getErrorFieldMaxChar()
+            this.errorFormItemValidationMessage = cartItemData.getErrorData().getErrorFieldMaxChar()
                     .replace("{{value}}", String.valueOf(cartItemData.getUpdatedData().getMaxCharRemark()));
             return ERROR_FIELD_MAX_CHAR;
         } else if (cartItemData.getUpdatedData().getQuantity() > cartItemData.getUpdatedData().getMaxQuantity()) {
-            this.messageError = cartItemData.getErrorData().getErrorProductMaxQuantity()
+            this.errorFormItemValidationMessage = cartItemData.getErrorData().getErrorProductMaxQuantity()
                     .replace("{{value}}", String.valueOf(cartItemData.getUpdatedData().getMaxQuantity()));
             return ERROR_PRODUCT_MAX_QUANTITY;
         } else if (cartItemData.getUpdatedData().getQuantity() < cartItemData.getOriginData().getMinimalQtyOrder()) {
-            this.messageError = cartItemData.getErrorData().getErrorProductMinQuantity()
+            this.errorFormItemValidationMessage = cartItemData.getErrorData().getErrorProductMinQuantity()
                     .replace("{{value}}", String.valueOf(cartItemData.getOriginData().getMinimalQtyOrder()));
             return ERROR_PRODUCT_MIN_QUANTITY;
-        } else if (!cartItemData.getErrorData().getErrorAdditional().isEmpty()) {
-            this.messageError = cartItemData.getErrorData().getErrorAdditional().get(0);
-            return ERROR_ADDITIONAL;
         } else {
-            this.messageError = "";
+            this.errorFormItemValidationMessage = "";
             return ERROR_EMPTY;
         }
 
     }
 
-    public void setErrorType(int errorType) {
-        this.errorType = errorType;
+    public void setErrorFormItemValidationType(int errorFormItemValidationType) {
+        this.errorFormItemValidationType = errorFormItemValidationType;
     }
 
-    public String getMessageError() {
-        return messageError;
+    public String getErrorFormItemValidationMessage() {
+        return errorFormItemValidationMessage;
     }
 
-    public void setMessageError(String messageError) {
-        this.messageError = messageError;
+    public void setErrorFormItemValidationMessage(String errorFormItemValidationMessage) {
+        this.errorFormItemValidationMessage = errorFormItemValidationMessage;
     }
 
     public boolean isEditableRemark() {
@@ -88,6 +76,7 @@ public class CartItemHolderData implements Parcelable {
     public CartItemHolderData() {
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -96,17 +85,15 @@ public class CartItemHolderData implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(this.cartItemData, flags);
-        dest.writeByte(this.isErrorItem ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.errorType);
-        dest.writeString(this.messageError);
+        dest.writeInt(this.errorFormItemValidationType);
+        dest.writeString(this.errorFormItemValidationMessage);
         dest.writeByte(this.editableRemark ? (byte) 1 : (byte) 0);
     }
 
     protected CartItemHolderData(Parcel in) {
         this.cartItemData = in.readParcelable(CartItemData.class.getClassLoader());
-        this.isErrorItem = in.readByte() != 0;
-        this.errorType = in.readInt();
-        this.messageError = in.readString();
+        this.errorFormItemValidationType = in.readInt();
+        this.errorFormItemValidationMessage = in.readString();
         this.editableRemark = in.readByte() != 0;
     }
 
