@@ -3,6 +3,8 @@ package com.tokopedia.transaction.checkout.view.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.transaction.checkout.view.data.cartshipmentform.CartShipmentAddressFormData;
+
 /**
  * @author anggaprasetiyo on 21/02/18.
  */
@@ -10,7 +12,7 @@ import android.os.Parcelable;
 public class UpdateCartListData implements Parcelable {
     private UpdateCartData updateCartData;
     private CartListData cartListData;
-    private ShipmentAddressFormData shipmentAddressFormData;
+    private CartShipmentAddressFormData shipmentAddressFormData;
 
     public UpdateCartData getUpdateCartData() {
         return updateCartData;
@@ -20,11 +22,11 @@ public class UpdateCartListData implements Parcelable {
         this.updateCartData = updateCartData;
     }
 
-    public ShipmentAddressFormData getShipmentAddressFormData() {
+    public CartShipmentAddressFormData getShipmentAddressFormData() {
         return shipmentAddressFormData;
     }
 
-    public void setShipmentAddressFormData(ShipmentAddressFormData shipmentAddressFormData) {
+    public void setShipmentAddressFormData(CartShipmentAddressFormData shipmentAddressFormData) {
         this.shipmentAddressFormData = shipmentAddressFormData;
     }
 
@@ -55,7 +57,7 @@ public class UpdateCartListData implements Parcelable {
     protected UpdateCartListData(Parcel in) {
         this.updateCartData = in.readParcelable(UpdateCartData.class.getClassLoader());
         this.cartListData = in.readParcelable(CartListData.class.getClassLoader());
-        this.shipmentAddressFormData = in.readParcelable(ShipmentAddressFormData.class.getClassLoader());
+        this.shipmentAddressFormData = in.readParcelable(CartShipmentAddressFormData.class.getClassLoader());
     }
 
     public static final Creator<UpdateCartListData> CREATOR = new Creator<UpdateCartListData>() {

@@ -375,7 +375,7 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     @Override
     public void renderEmptyCartData() {
         refreshHandler.finishRefresh();
-
+        bottomLayout.setVisibility(View.GONE);
         mIsMenuVisible = false;
         getActivity().invalidateOptionsMenu();
 

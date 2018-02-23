@@ -1,7 +1,7 @@
 package com.tokopedia.transaction.checkout.domain;
 
 import com.tokopedia.transaction.checkout.domain.response.shippingaddressform.ShipmentAddressFormDataResponse;
-import com.tokopedia.transaction.checkout.view.data.ShipmentAddressFormData;
+import com.tokopedia.transaction.checkout.view.data.cartshipmentform.CartShipmentAddressFormData;
 
 /**
  * @author anggaprasetiyo on 21/02/18.
@@ -9,10 +9,10 @@ import com.tokopedia.transaction.checkout.view.data.ShipmentAddressFormData;
 
 public class ShipmentMapper implements IShipmentMapper {
     @Override
-    public ShipmentAddressFormData convertToShipmentAddressFormData(
+    public CartShipmentAddressFormData convertToShipmentAddressFormData(
             ShipmentAddressFormDataResponse shipmentAddressFormDataResponse
     ) {
-        ShipmentAddressFormData data = new ShipmentAddressFormData();
+        CartShipmentAddressFormData data = new CartShipmentAddressFormData();
         return data;
     }
 }
