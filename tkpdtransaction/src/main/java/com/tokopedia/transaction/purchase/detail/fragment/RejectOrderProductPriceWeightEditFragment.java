@@ -68,7 +68,9 @@ public class RejectOrderProductPriceWeightEditFragment extends TkpdFragment {
         orderDetailProductName.setText(editable.getProductName());
         orderDetailProductPrice.setText(editable.getProductPrice());
         priceEditText.setText(editable.getProductPriceUnformatted());
-        weightEditText.setText(editable.getProductWeightUnformatted());
+        weightEditText.setText(convertWeightToGram(
+                editable.getProductWeightUnformatted(), editable.getWeightMode())
+        );
         rejectOrderConfirmButton.setOnClickListener(onConfirmButtonClickedListener(
                 editable,
                 originalEditable,
@@ -82,7 +84,7 @@ public class RejectOrderProductPriceWeightEditFragment extends TkpdFragment {
         currencySpinner.setOnItemSelectedListener(onCurrencyChoosen(editable));
         weightSpinner.setOnItemSelectedListener(onWeightChoosen(editable));
         currencySpinner.setSelection(editable.getCurrencyMode() - SPINNER_MODE_OFFSET);
-        weightSpinner.setSelection(editable.getWeightMode() - SPINNER_MODE_OFFSET );
+        weightSpinner.setSelection(0);
         return view;
     }
 
@@ -189,6 +191,14 @@ public class RejectOrderProductPriceWeightEditFragment extends TkpdFragment {
 
             }
         };
+    }
+
+    private String convertWeightToGram(String productWeightUnformatted, int currencyMode) {
+        if(currencyMode == 2) {
+            double productWeightInGram = Double.parseDouble(productWeightUnformatted) * 1000;
+            return String.valueOf(productWeightInGram);
+        }
+        return productWeightUnformatted;
     }
 
 }

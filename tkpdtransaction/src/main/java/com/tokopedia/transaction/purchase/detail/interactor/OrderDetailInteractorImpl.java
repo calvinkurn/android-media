@@ -12,6 +12,7 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -112,9 +113,17 @@ public class OrderDetailInteractorImpl implements OrderDetailInteractor {
             Subscriber<String> subscriber,
             List<WrongProductPriceWeightEditable> editables,
             TKPDMapParam<String, String> productParam,
-            TKPDMapParam<String, String> rejectParam) {
+            final TKPDMapParam<String, String> rejectParam) {
         compositeSubscription.add(Observable
                 .concat(changedProductObservable(subscriber, editables, productParam, rejectParam))
+                .last()
+                .flatMap(new Func1<String, Observable<String>>() {
+
+                    @Override
+                    public Observable<String> call(String s) {
+                        return orderDetailRepository.processOrder(rejectParam);
+                    }
+                })
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())
@@ -151,11 +160,9 @@ public class OrderDetailInteractorImpl implements OrderDetailInteractor {
             Observable<String> productObservable = orderDetailRepository.changeProduct(params);
             productObservable.subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .unsubscribeOn(Schedulers.newThread())
-                    .subscribe(productSubscriber);
+                    .unsubscribeOn(Schedulers.newThread());
             cartVarianObservableList.add(productObservable);
         }
-        cartVarianObservableList.add(orderDetailRepository.processOrder(rejectParam));
         return cartVarianObservableList;
     }
 
