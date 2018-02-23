@@ -124,4 +124,8 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
     public void notifyDataChange() {
         adapter.notifyDataSetChanged();
     }
+
+    public void setAdapterPosition(int adapterPosition) {
+        adapter.setAdapterPosition(adapterPosition);
+    }
 }

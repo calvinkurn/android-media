@@ -43,6 +43,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
 
     @Override
     public void bind(TopAdsViewModel element) {
+        topAdsWidgetView.setAdapterPosition(getAdapterPosition());
         topAdsWidgetView.setData(element.getDataList());
     }
 
