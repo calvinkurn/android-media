@@ -5,13 +5,16 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.transaction.checkout.domain.model.ShipmentAddressModel;
 import com.tokopedia.transaction.checkout.domain.usecase.GetAddressListUseCase;
 import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 import com.tokopedia.transaction.checkout.view.view.ISearchAddressListView;
 import com.tokopedia.usecase.RequestParams;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -30,11 +33,19 @@ public class ShipmentAddressListPresenter
 
     private static final String TAG = ShipmentAddressListPresenter.class.getSimpleName();
 
+    private static final String PARAM_ORDER_BY = "order_by";
+    private static final String PARAM_PAGE = "page";
+    private static final String PARAM_QUERY = "query";
+
     private final GetAddressListUseCase mGetAddressListUseCase;
+    private final PagingHandler mPagingHandler;
 
     @Inject
-    public ShipmentAddressListPresenter(GetAddressListUseCase getAddressListUseCase) {
+    public ShipmentAddressListPresenter(GetAddressListUseCase getAddressListUseCase,
+                                        PagingHandler pagingHandler) {
+
         mGetAddressListUseCase = getAddressListUseCase;
+        mPagingHandler = pagingHandler;
     }
 
     @Override
@@ -47,8 +58,8 @@ public class ShipmentAddressListPresenter
         super.checkViewAttached();
     }
 
-    public void getAddressList() {
-        mGetAddressListUseCase.execute(getRequestParams(),
+    public void getAddressList(Context context, int order, String query) {
+        mGetAddressListUseCase.execute(getPeopleAddressRequestParams(context, order, query),
                 new Subscriber<List<ShipmentAddressModel>>() {
                     @Override
                     public void onCompleted() {
@@ -67,8 +78,25 @@ public class ShipmentAddressListPresenter
         });
     }
 
-    private RequestParams getRequestParams() {
-        return RequestParams.create();
+    private RequestParams getPeopleAddressRequestParams(final Context context, final int order, final String query) {
+        Map<String, Object> networkParams = new HashMap<String, Object>() {{
+            putAll(generatePeopleAddressParams(context, order, query));
+        }};
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putAll(networkParams);
+
+        return requestParams;
+    }
+
+    private Map<String, String> generatePeopleAddressParams(Context context, int order, String query) {
+        Map<String, String> params = new HashMap<>();
+
+        params.put(PARAM_ORDER_BY, String.valueOf(order));
+        params.put(PARAM_QUERY, query);
+        params.put(PARAM_PAGE, String.valueOf(mPagingHandler.getPage()));
+
+        return AuthUtil.generateParams(context, params);
     }
 
     private void filter(List<ShipmentRecipientModel> addressList, final String keyword) {
@@ -102,7 +130,6 @@ public class ShipmentAddressListPresenter
 
         @Override
         public void onNext(List<ShipmentRecipientModel> addressList) {
-            Log.d(TAG, "size: " + addressList.size());
             if (addressList.isEmpty()) {
                 getMvpView().showListEmpty();
             } else {

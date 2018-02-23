@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.checkout.di.module;
 
 import com.tokopedia.core.network.apiservices.user.PeopleService;
+import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.transaction.checkout.data.repository.PeopleAddressRepositoryImpl;
 import com.tokopedia.transaction.checkout.di.scope.ShipmentAddressListScope;
 import com.tokopedia.transaction.checkout.domain.repository.PeopleAddressRepository;
@@ -26,8 +27,14 @@ public class ShipmentAddressListModule {
 
     @Provides
     @ShipmentAddressListScope
-    ShipmentAddressListPresenter provideCartAddressListPresenter(GetAddressListUseCase getAddressListUseCase) {
-        return new ShipmentAddressListPresenter(getAddressListUseCase);
+    PagingHandler providePagingHandler() {
+        return new PagingHandler();
+    }
+
+    @Provides
+    @ShipmentAddressListScope
+    ShipmentAddressListPresenter provideCartAddressListPresenter(GetAddressListUseCase getAddressListUseCase, PagingHandler pagingHandler) {
+        return new ShipmentAddressListPresenter(getAddressListUseCase, pagingHandler);
     }
 
     @Provides

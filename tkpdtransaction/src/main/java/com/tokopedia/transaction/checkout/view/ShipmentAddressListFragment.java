@@ -1,7 +1,6 @@
 package com.tokopedia.transaction.checkout.view;
 
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -37,10 +36,11 @@ import butterknife.OnClick;
 /**
  * @author Aghny A. Putra on 25/01/18
  */
-public class ShipmentAddressListFragment extends BasePresenterFragment
-        implements ISearchAddressListView<List<ShipmentRecipientModel>>,
-        SearchInputView.Listener, SearchInputView.ResetListener,
-        FragmentManager.OnBackStackChangedListener, ShipmentAddressListAdapter.ActionListener {
+public class ShipmentAddressListFragment extends BasePresenterFragment implements
+        ISearchAddressListView<List<ShipmentRecipientModel>>,
+        SearchInputView.Listener,
+        SearchInputView.ResetListener,
+        ShipmentAddressListAdapter.ActionListener {
 
     private static final String TAG = ShipmentAddressListFragment.class.getSimpleName();
 
@@ -160,7 +160,7 @@ public class ShipmentAddressListFragment extends BasePresenterFragment
      */
     @Override
     protected void setViewListener() {
-        mShipmentAddressListPresenter.getAddressList();
+        mShipmentAddressListPresenter.getAddressList(getActivity(), 1, "");
     }
 
     /**
@@ -249,11 +249,6 @@ public class ShipmentAddressListFragment extends BasePresenterFragment
         closeSoftKeyboard();
     }
 
-    @Override
-    public void onBackStackChanged() {
-
-    }
-
     private void performSearch(String keyword) {
         if (!keyword.isEmpty()) {
 //            mShipmentAddressListPresenter.initSearch(keyword);
@@ -287,4 +282,5 @@ public class ShipmentAddressListFragment extends BasePresenterFragment
                 model.convertToAddressModel()), ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
 
     }
+
 }
