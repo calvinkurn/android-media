@@ -53,6 +53,15 @@ public class HomePageTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventClickTabExplorer(String title) {
+        sendGTMEvent(new EventTracking(
+                STATIC_VALUE_CLICK_HOMEPAGE,
+                STATIC_VALUE_HOMEPAGE,
+                "click explorer tab",
+                title
+        ).getEvent());
+    }
+
     public static void eventClickDynamicIcons(String title) {
         sendGTMEvent(new EventTracking(
                 STATIC_VALUE_CLICK_HOMEPAGE,
