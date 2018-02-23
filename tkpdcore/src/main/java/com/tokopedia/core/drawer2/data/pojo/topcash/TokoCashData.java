@@ -38,7 +38,27 @@ public class TokoCashData implements Parcelable {
     @SerializedName("ab_tags")
     @Expose
     private List<String> abTags;
-
+    @SerializedName("raw_balance")
+    @Expose
+    private int raw_balance;
+    @SerializedName("total_balance")
+    @Expose
+    private String totalBalance;
+    @SerializedName("raw_total_balance")
+    @Expose
+    private long rawTotalBalance;
+    @SerializedName("hold_balance")
+    @Expose
+    private String holdBalance;
+    @SerializedName("raw_hold_balance")
+    @Expose
+    private long rawHoldBalance;
+    @SerializedName("raw_threshold")
+    @Expose
+    private long rawThreshold;
+    @SerializedName("threshold")
+    @Expose
+    private String threshold;
 
     protected TokoCashData(Parcel in) {
         mAction = in.readParcelable(Action.class.getClassLoader());
@@ -53,28 +73,13 @@ public class TokoCashData implements Parcelable {
         }
         link = in.readInt();
         abTags = in.createStringArrayList();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(mAction, flags);
-        dest.writeString(mBalance);
-        dest.writeString(mRedirectUrl);
-        dest.writeString(mAppLinks);
-        dest.writeString(mText);
-        if (mWalletId == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeLong(mWalletId);
-        }
-        dest.writeInt(link);
-        dest.writeStringList(abTags);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
+        raw_balance = in.readInt();
+        totalBalance = in.readString();
+        rawTotalBalance = in.readLong();
+        holdBalance = in.readString();
+        rawHoldBalance = in.readLong();
+        rawThreshold = in.readLong();
+        threshold = in.readString();
     }
 
     public static final Creator<TokoCashData> CREATOR = new Creator<TokoCashData>() {
@@ -88,6 +93,35 @@ public class TokoCashData implements Parcelable {
             return new TokoCashData[size];
         }
     };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeParcelable(mAction, i);
+        parcel.writeString(mBalance);
+        parcel.writeString(mRedirectUrl);
+        parcel.writeString(mAppLinks);
+        parcel.writeString(mText);
+        if (mWalletId == null) {
+            parcel.writeByte((byte) 0);
+        } else {
+            parcel.writeByte((byte) 1);
+            parcel.writeLong(mWalletId);
+        }
+        parcel.writeInt(link);
+        parcel.writeStringList(abTags);
+        parcel.writeInt(raw_balance);
+        parcel.writeString(totalBalance);
+        parcel.writeLong(rawTotalBalance);
+        parcel.writeString(holdBalance);
+        parcel.writeLong(rawHoldBalance);
+        parcel.writeLong(rawThreshold);
+        parcel.writeString(threshold);
+    }
 
     public Action getAction() {
         return mAction;
@@ -147,6 +181,62 @@ public class TokoCashData implements Parcelable {
 
     public void setAbTags(List<String> abTags) {
         this.abTags = abTags;
+    }
+
+    public int getRaw_balance() {
+        return raw_balance;
+    }
+
+    public void setRaw_balance(int raw_balance) {
+        this.raw_balance = raw_balance;
+    }
+
+    public String getTotalBalance() {
+        return totalBalance;
+    }
+
+    public void setTotalBalance(String totalBalance) {
+        this.totalBalance = totalBalance;
+    }
+
+    public long getRawTotalBalance() {
+        return rawTotalBalance;
+    }
+
+    public void setRawTotalBalance(long rawTotalBalance) {
+        this.rawTotalBalance = rawTotalBalance;
+    }
+
+    public String getHoldBalance() {
+        return holdBalance;
+    }
+
+    public void setHoldBalance(String holdBalance) {
+        this.holdBalance = holdBalance;
+    }
+
+    public long getRawHoldBalance() {
+        return rawHoldBalance;
+    }
+
+    public void setRawHoldBalance(long rawHoldBalance) {
+        this.rawHoldBalance = rawHoldBalance;
+    }
+
+    public long getRawThreshold() {
+        return rawThreshold;
+    }
+
+    public void setRawThreshold(long rawThreshold) {
+        this.rawThreshold = rawThreshold;
+    }
+
+    public String getThreshold() {
+        return threshold;
+    }
+
+    public void setThreshold(String threshold) {
+        this.threshold = threshold;
     }
 
     public TokoCashData() {
