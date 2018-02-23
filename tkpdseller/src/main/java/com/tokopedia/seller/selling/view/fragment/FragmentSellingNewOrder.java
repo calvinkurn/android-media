@@ -152,7 +152,7 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
             switch (requestCode) {
                 case PROCESS_ORDER:
                     AppWidgetUtil.sendBroadcastToAppWidget(getActivity());
-                    shouldRefreshList = true;
+                    presenter.onRefreshView();
                     break;
             }
         }

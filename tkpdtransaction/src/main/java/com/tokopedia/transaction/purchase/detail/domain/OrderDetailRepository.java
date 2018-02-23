@@ -177,7 +177,8 @@ public class OrderDetailRepository implements IOrderDetailRepository {
             params.putAll(productParam);
             params.put(SHOP_ID_KEY, emptyVarianProductEditables.get(i).getShopId());
             params.put(PRODUCT_ID_KEY, emptyVarianProductEditables.get(i).getProductId());
-            params.put(PRODUCT_DESCRIPTION_KEY, emptyVarianProductEditables.get(i).getProductDescription());
+            params.put(PRODUCT_DESCRIPTION_KEY, emptyVarianProductEditables.get(i)
+                    .getProductDescription());
             cartVarianObservableList.add(productActService.getApi().editDescription(params));
         }
         cartVarianObservableList.add(processOrder(rejectParam));
