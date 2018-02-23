@@ -14,6 +14,9 @@ import com.tokopedia.seller.product.variant.view.fragment.ProductVariantDashboar
 
 public class ProductVariantDashboardNewActivity extends BaseSimpleActivity {
 
+    public static final String EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST = "EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST";
+    public static final String EXTRA_PRODUCT_VARIANT_SELECTION = "EXTRA_PRODUCT_VARIANT_SELECTION";
+
     @Override
     protected Fragment getNewFragment() {
         return ProductVariantDashboardNewFragment.newInstance();
@@ -23,7 +26,7 @@ public class ProductVariantDashboardNewActivity extends BaseSimpleActivity {
     public void onBackPressed() {
         if (getFragment()!= null && getFragment() instanceof ProductVariantDashboardNewFragment) {
             Intent intent = new Intent();
-            intent.putExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION,
+            intent.putExtra(EXTRA_PRODUCT_VARIANT_SELECTION,
                     ((ProductVariantDashboardNewFragment) getFragment()).getProductVariantViewModel());
             setResult(RESULT_OK, intent);
             this.finish();

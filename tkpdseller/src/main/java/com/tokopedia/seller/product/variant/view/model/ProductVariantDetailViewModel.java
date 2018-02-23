@@ -8,7 +8,7 @@ import com.tokopedia.seller.base.view.adapter.ItemIdType;
 /**
  * Created by nathan on 8/4/17.
  */
-
+@Deprecated
 public class ProductVariantDetailViewModel implements ItemIdType, Parcelable {
 
     public static final int TYPE = 199249;

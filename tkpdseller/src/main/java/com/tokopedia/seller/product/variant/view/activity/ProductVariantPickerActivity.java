@@ -58,7 +58,7 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
 
     @Override
     protected Fragment getInitialCacheListFragment() {
-        return ProductVariantPickerCacheFragment.newInstance(productVariantByCatModel.getVariantId());
+        return ProductVariantPickerCacheFragment.newInstance(productVariantByCatModel.getVariantId() == ProductVariantConstant.COLOR_ID);
     }
 
     @Override

@@ -14,7 +14,7 @@ import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardVi
 /**
  * @author normansyahputa on 5/26/17.
  */
-
+@Deprecated
 public class ProductVariantDashboardViewHolder extends BaseViewHolder<ProductVariantDashboardViewModel> {
 
     private ImageView imageView;

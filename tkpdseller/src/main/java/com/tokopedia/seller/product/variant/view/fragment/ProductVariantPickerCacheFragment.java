@@ -18,10 +18,10 @@ import java.util.List;
 /**
  * Created by nathan on 8/4/17.
  */
-
+@Deprecated
 public class ProductVariantPickerCacheFragment extends BaseCacheListFragment<ProductVariantViewModel> implements ProductVariantPickerCacheListAdapter.RemoveCallback<ProductVariantViewModel>, ProductVariantPickerItemCacheList<ProductVariantViewModel> {
 
-    public static final String ARGS_IDENTIFIER = "id";
+    public static final String ARGS_IS_COLOR = "arg_is_color";
     private int startTempId;
     private long currentTempId;
 
@@ -29,12 +29,12 @@ public class ProductVariantPickerCacheFragment extends BaseCacheListFragment<Pro
      * Use temporary id to avoid lost value if regenerate (check and uncheck) temporary id
      */
     private HashMap<String, Long> temporaryIdMap;
-    private int identifier;
+    private boolean isColorType;
 
-    public static ProductVariantPickerCacheFragment newInstance(int identifier) {
+    public static ProductVariantPickerCacheFragment newInstance(boolean isColorType) {
 
         Bundle args = new Bundle();
-        args.putInt(ARGS_IDENTIFIER, identifier);
+        args.putBoolean(ARGS_IS_COLOR, isColorType);
         ProductVariantPickerCacheFragment fragment = new ProductVariantPickerCacheFragment();
         fragment.setArguments(args);
         return fragment;
@@ -43,14 +43,14 @@ public class ProductVariantPickerCacheFragment extends BaseCacheListFragment<Pro
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         startTempId = getActivity().getIntent().getIntExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_START_TEMP_ID, 0);
-        identifier = getArguments().getInt(ARGS_IDENTIFIER);
+        isColorType = getArguments().getBoolean(ARGS_IS_COLOR);
         currentTempId = startTempId;
         temporaryIdMap = new HashMap<>();
     }
 
     @Override
     protected BaseListAdapter<ProductVariantViewModel> getNewAdapter() {
-        ProductVariantPickerCacheListAdapter productVariantPickerCacheListAdapter = new ProductVariantPickerCacheListAdapter(identifier);
+        ProductVariantPickerCacheListAdapter productVariantPickerCacheListAdapter = new ProductVariantPickerCacheListAdapter(isColorType);
         productVariantPickerCacheListAdapter.setRemoveCallback(this);
         return productVariantPickerCacheListAdapter;
     }

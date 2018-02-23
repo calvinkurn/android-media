@@ -11,7 +11,7 @@ import com.tokopedia.seller.product.variant.view.model.ProductVariantDetailViewM
 /**
  * @author normansyahputa on 5/26/17.
  */
-
+@Deprecated
 public class ProductVariantDetailViewHolder extends BaseMultipleCheckViewHolder<ProductVariantDetailViewModel> {
 
     private TextView titleTextView;

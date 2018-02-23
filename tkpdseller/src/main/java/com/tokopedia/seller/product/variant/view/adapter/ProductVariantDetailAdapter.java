@@ -16,7 +16,7 @@ import java.util.ArrayList;
 /**
  * Created by hendry on 8/22/2017.
  */
-
+@Deprecated
 public class ProductVariantDetailAdapter extends RecyclerView.Adapter<ProductVariantDetailViewHolder> {
 
     public interface OnProductVariantDataAdapterListener {

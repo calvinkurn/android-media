@@ -12,8 +12,8 @@ import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
 /**
  * @author normansyahputa on 5/26/17.
  */
-@Deprecated
-public class ProductVariantDashboardAdapter extends BaseListAdapter<ProductVariantDashboardViewModel> {
+
+public class ProductVariantDashboardNewAdapter extends BaseListAdapter<ProductVariantDashboardViewModel> {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

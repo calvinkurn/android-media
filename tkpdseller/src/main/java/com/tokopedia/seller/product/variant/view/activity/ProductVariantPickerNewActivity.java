@@ -15,13 +15,16 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BasePickerMultipleItemActivity;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionParent;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantOptionSubmit;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantUnitSubmit;
 import com.tokopedia.seller.product.variant.util.ProductVariantUtils;
 import com.tokopedia.seller.product.variant.util.ProductVariantViewConverter;
 import com.tokopedia.seller.product.variant.view.dialog.ProductVariantItemPickerAddDialogFragment;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantPickerCacheFragment;
+import com.tokopedia.seller.product.variant.view.fragment.ProductVariantPickerCacheNewFragment;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantPickerSearchFragment;
+import com.tokopedia.seller.product.variant.view.fragment.ProductVariantPickerSearchNewFragment;
 import com.tokopedia.seller.product.variant.view.listener.ProductVariantPickerMultipleItem;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
 
@@ -33,15 +36,22 @@ import java.util.List;
  */
 
 public class ProductVariantPickerNewActivity extends BasePickerMultipleItemActivity<ProductVariantViewModel>
-        implements ProductVariantPickerMultipleItem<ProductVariantViewModel>, ProductVariantItemPickerAddDialogFragment.Listener {
+        implements ProductVariantPickerMultipleItem<ProductVariantViewModel>,
+        ProductVariantItemPickerAddDialogFragment.Listener,
+        ProductVariantPickerCacheNewFragment.OnProductVariantPickerCacheNewFragmentListener {
 
     private static final String DIALOG_ADD_VARIANT_TAG = "DIALOG_ADD_VARIANT_TAG";
+    public static final String EXTRA_PRODUCT_VARIANT_CATEGORY_LEVEL = "extra_product_variant_cat_level";
+    public static final String EXTRA_PRODUCT_VARIANT_SUBMIT_LEVEL = "extra_product_variant_smt_level";
 
     private ProductVariantByCatModel productVariantByCatModel;
+    private ProductVariantOptionParent productVariantOptionParent;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        productVariantByCatModel = getIntent().getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_CATEGORY);
+        productVariantByCatModel = getIntent().getParcelableExtra(EXTRA_PRODUCT_VARIANT_CATEGORY_LEVEL);
+        productVariantOptionParent = getIntent().getParcelableExtra(EXTRA_PRODUCT_VARIANT_SUBMIT_LEVEL);
+
         super.onCreate(savedInstanceState);
         toolbar.setTitle(getString(R.string.product_variant_option_x, productVariantByCatModel.getName()));
         updateBottomSheetInfo();
@@ -53,12 +63,17 @@ public class ProductVariantPickerNewActivity extends BasePickerMultipleItemActiv
 
     @Override
     protected Fragment getInitialSearchListFragment() {
-        return new ProductVariantPickerSearchFragment();
+        return new ProductVariantPickerSearchNewFragment();
     }
 
     @Override
     protected Fragment getInitialCacheListFragment() {
-        return ProductVariantPickerCacheFragment.newInstance(productVariantByCatModel.getVariantId());
+        return ProductVariantPickerCacheNewFragment.newInstance();
+    }
+
+    @Override
+    public boolean isDataColorType() {
+        return productVariantByCatModel.isDataColorType();
     }
 
     @Override
@@ -69,7 +84,7 @@ public class ProductVariantPickerNewActivity extends BasePickerMultipleItemActiv
 
     @Override
     public void removeAllItemFromSearch() {
-        ((ProductVariantPickerCacheFragment) getCacheListFragment()).removeAllItem();
+        ((ProductVariantPickerCacheNewFragment) getCacheListFragment()).removeAllItem();
         updateBottomSheetInfo();
     }
 
@@ -96,13 +111,14 @@ public class ProductVariantPickerNewActivity extends BasePickerMultipleItemActiv
 
     @Override
     protected Intent getDefaultIntentResult() {
-        ProductVariantUnitSubmit productVariantUnitSubmit = new ProductVariantUnitSubmit();
-        productVariantUnitSubmit.setVariantId(productVariantByCatModel.getVariantId());
-        productVariantUnitSubmit.setVariantUnitId(((ProductVariantPickerSearchFragment) getSearchListFragment()).getSelectedUnitId());
-        productVariantUnitSubmit.setPosition(ProductVariantViewConverter.getVariantPositionByStatus(productVariantByCatModel.getStatus()));
-        productVariantUnitSubmit.setProductVariantOptionSubmitList(((ProductVariantPickerCacheFragment) getCacheListFragment()).getVariantSubmitOptionList());
+        //TODO
+//        ProductVariantUnitSubmit productVariantUnitSubmit = new ProductVariantUnitSubmit();
+//        productVariantUnitSubmit.setVariantId(productVariantByCatModel.getVariantId());
+//        productVariantUnitSubmit.setVariantUnitId(((ProductVariantPickerSearchNewFragment) getSearchListFragment()).getSelectedUnitId());
+//        productVariantUnitSubmit.setPosition(ProductVariantViewConverter.getVariantPositionByStatus(productVariantByCatModel.getStatus()));
+//        productVariantUnitSubmit.setProductVariantOptionSubmitList(((ProductVariantPickerCacheNewFragment) getCacheListFragment()).getVariantSubmitOptionList());
         Intent intent = new Intent();
-        intent.putExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_UNIT_SUBMIT, productVariantUnitSubmit);
+//        intent.putExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_UNIT_SUBMIT, productVariantUnitSubmit);
         return intent;
     }
 
@@ -131,7 +147,7 @@ public class ProductVariantPickerNewActivity extends BasePickerMultipleItemActiv
         Fragment fragment = getSearchListFragment();
         int selectedItemSize = 0;
         if ((fragment) != null) {
-            selectedItemSize = ((ProductVariantPickerSearchFragment) fragment).getItemList().size();
+            selectedItemSize = ((ProductVariantPickerSearchNewFragment) fragment).getItemList().size();
         }
         return selectedItemSize;
     }
@@ -140,7 +156,7 @@ public class ProductVariantPickerNewActivity extends BasePickerMultipleItemActiv
         Fragment fragment = getCacheListFragment();
         int selectedItemSize = 0;
         if ((fragment) != null) {
-            selectedItemSize = ((ProductVariantPickerCacheFragment) fragment).getItemList().size();
+            selectedItemSize = ((ProductVariantPickerCacheNewFragment) fragment).getItemList().size();
         }
         return selectedItemSize;
     }
@@ -182,7 +198,7 @@ public class ProductVariantPickerNewActivity extends BasePickerMultipleItemActiv
     }
 
     private boolean isMaxVariantReached() {
-        return ((ProductVariantPickerCacheFragment) getCacheListFragment()).getItemList().size()
+        return ((ProductVariantPickerCacheNewFragment) getCacheListFragment()).getItemList().size()
                 >= ProductVariantConstant.MAX_LIMIT_VARIANT;
     }
 
@@ -212,13 +228,11 @@ public class ProductVariantPickerNewActivity extends BasePickerMultipleItemActiv
         showAddDialog("");
     }
 
-    @Override
-    protected boolean isShowCloseButton() {
-        return true;
-    }
 
     @Override
     protected boolean isToolbarWhite() {
         return true;
     }
+
+
 }

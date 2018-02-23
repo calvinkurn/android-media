@@ -418,7 +418,8 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
             return;
         }
         Intent intent = new Intent(getActivity(), ProductVariantDashboardNewActivity.class);
-        intent.putExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, productVariantByCatModelList);
+        intent.putExtra(ProductVariantDashboardNewActivity.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, productVariantByCatModelList);
+        intent.putExtra(ProductVariantDashboardNewActivity.EXTRA_PRODUCT_VARIANT_SELECTION, currentProductViewModel.getProductVariant());
         startActivityForResult(intent, ProductManageViewHolder.REQUEST_CODE_VARIANT);
     }
 

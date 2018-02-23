@@ -9,27 +9,28 @@ import com.bumptech.glide.Glide;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.viewholder.BaseItemPickerCacheViewHolder;
 import com.tokopedia.seller.common.utils.CircleTransform;
+import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantOption;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
 
 /**
  * @author normansyahputa on 5/26/17.
  */
-@Deprecated
-public class ProductVariantItemPickerCacheViewHolder extends BaseItemPickerCacheViewHolder<ProductVariantViewModel> {
+
+public class ProductVariantItemPickerCacheNewViewHolder extends BaseItemPickerCacheViewHolder<ProductVariantOption> {
 
     private boolean isColorType;
 
-    public ProductVariantItemPickerCacheViewHolder(boolean isColorType, View itemView) {
+    public ProductVariantItemPickerCacheNewViewHolder(boolean isColorType, View itemView) {
         super(itemView);
         this.isColorType = isColorType;
     }
 
     @Override
-    public void bindObject(final ProductVariantViewModel productVariantViewModel) {
-        super.bindObject(productVariantViewModel);
+    public void bindObject(final ProductVariantOption productVariantOption) {
+        super.bindObject(productVariantOption);
         if (isColorType) {
-            if (!TextUtils.isEmpty(productVariantViewModel.getHexCode())) {
-                imageView.setColorFilter(Color.parseColor(productVariantViewModel.getHexCode()), PorterDuff.Mode.SRC_ATOP);
+            if (!TextUtils.isEmpty(productVariantOption.getHexCode())) {
+                imageView.setColorFilter(Color.parseColor(productVariantOption.getHexCode()), PorterDuff.Mode.SRC_ATOP);
                 imageView.setImageResource(R.drawable.circle_white);
                 imageView.setVisibility(View.VISIBLE);
             } else { // no hex
@@ -38,9 +39,9 @@ public class ProductVariantItemPickerCacheViewHolder extends BaseItemPickerCache
                 imageView.setVisibility(View.VISIBLE);
             }
         } else {
-            if (!TextUtils.isEmpty(productVariantViewModel.getIcon())) {
+            if (!TextUtils.isEmpty(productVariantOption.getIcon())) {
                 imageView.clearColorFilter();
-                Glide.with(imageView.getContext()).load(productVariantViewModel.getIcon())
+                Glide.with(imageView.getContext()).load(productVariantOption.getIcon())
                         .transform(new CircleTransform(imageView.getContext())).into(imageView);
                 imageView.setVisibility(View.VISIBLE);
             } else { // no url

@@ -26,6 +26,12 @@ public class ProductVariantViewModel implements Parcelable {
         return variantOptionParent;
     }
 
+    public ProductVariantOptionParent getVariantOptionParent(int position) {
+        return (variantOptionParent == null || variantOptionParent.size() == 0) ?
+                null :
+                variantOptionParent.get(0);
+    }
+
     public void setVariantOptionParent(List<ProductVariantOptionParent> variant) {
         this.variantOptionParent = variant;
     }
