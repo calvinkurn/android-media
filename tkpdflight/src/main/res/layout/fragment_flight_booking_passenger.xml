@@ -48,6 +48,35 @@
                 android:layout_marginBottom="@dimen/margin_sm"
                 tools:text="Usia diatas 12 tahun" />
 
+            <com.tokopedia.design.text.TkpdHintTextInputLayout
+                android:id="@+id/til_saved_passenger"
+                style="@style/HintTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/padding_16"
+                android:paddingLeft="@dimen/padding_16"
+                android:paddingRight="@dimen/padding_16"
+                android:paddingStart="@dimen/padding_16"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/margin_vs"
+                android:hint="@string/flight_booking_passenger_saved_hint">
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/et_saved_passenger"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:drawableEnd="@drawable/ic_arrow_down_grey"
+                    android:drawableRight="@drawable/ic_arrow_down_grey"
+                    android:focusable="false"
+                    android:text="@string/flight_booking_passenger_saved_secondary_hint"
+                    android:paddingEnd="10dp"
+                    android:paddingRight="10dp"
+                    android:singleLine="true"
+                    android:textColor="@color/font_black_primary_70" />
+            </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+
             <com.tokopedia.design.text.SpinnerTextView
                 android:id="@+id/sp_title"
                 android:layout_width="match_parent"
