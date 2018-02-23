@@ -19,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
@@ -125,7 +124,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
             selectedSortOption = savedInstanceState.getInt(SAVED_SORT_OPTION);
             airportCombineModelList = savedInstanceState.getParcelable(SAVED_AIRPORT_COMBINE);
             progress = savedInstanceState.getInt(SAVED_PROGRESS, 0);
-            needRefreshFromCache = true;
+            setNeedRefreshFromCache(true);
         }
     }
 
@@ -270,6 +269,16 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         getActivity().finish();
     }
 
+    @Override
+    public boolean isNeedRefreshFromCache() {
+        return needRefreshFromCache;
+    }
+
+    @Override
+    public void setNeedRefreshFromCache(boolean needRefreshFromCache) {
+        this.needRefreshFromCache = needRefreshFromCache;
+    }
+
     @CallSuper
     @Override
     public void onResume() {
@@ -277,11 +286,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         flightSearchPresenter.attachView(this);
 
         flightSearchPresenter.checkCacheExpired();
-        if (needRefreshFromCache) {
-            reloadDataFromCache();
-            setUIMarkFilter();
-            needRefreshFromCache = false;
-        }
         loadInitialData();
     }
 
@@ -377,6 +381,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     /**
      * load all data from cache
      */
+    @Override
     public void reloadDataFromCache() {
         flightSearchPresenter.searchAndSortFlight(null,
                 isReturning(), true, flightFilterModel, selectedSortOption);
@@ -432,7 +437,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         filterAndSortBottomAction.setVisibility(View.GONE);
     }
 
-    private void setUIMarkFilter() {
+    @Override
+    public void setUIMarkFilter() {
         if (flightFilterModel.hasFilter()) {
             filterAndSortBottomAction.setMarkLeft(true);
             inFilterMode = true;
@@ -458,7 +464,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
                 case REQUEST_CODE_SEARCH_FILTER:
                     if (data != null && data.hasExtra(FlightSearchFilterActivity.EXTRA_FILTER_MODEL)) {
                         flightFilterModel = (FlightFilterModel) data.getExtras().get(FlightSearchFilterActivity.EXTRA_FILTER_MODEL);
-                        needRefreshFromCache = true;
+                        setNeedRefreshFromCache(true);
                     }
                     break;
                 case REQUEST_CODE_SEE_DETAIL_FLIGHT:

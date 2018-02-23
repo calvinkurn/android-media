@@ -131,8 +131,8 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
-    public Observable<Boolean> isSearchCacheExpired(RequestParams requestParams, String key) {
-        if (requestParams.getBoolean(key, false)) {
+    public Observable<Boolean> isSearchCacheExpired(boolean isReturn) {
+        if (isReturn) {
             return flightSearchReturnDataListSource.isCacheExpired()
                     .zipWith(flightSearchReturnDataListSource.isDataAvailable(),
                             new Func2<Boolean, Boolean, Boolean>() {

@@ -42,8 +42,6 @@ import rx.subscriptions.CompositeSubscription;
 public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView> {
 
     public static final int DELAY_HORIZONTAL_PROGRESS = 500;
-    private static final String FLIGHT_SEARCH_CACHE_TIME_KEY = "FLIGHT_SEARCH_CACHE_TIME";
-    private static final int MINUTES_CACHE_EXPIRED = 5;
 
     private FlightSearchWithSortUseCase flightSearchWithSortUseCase;
     private FlightSortUseCase flightSortUseCase;
@@ -175,6 +173,12 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                     public void onNext(Boolean aBoolean) {
                         if (aBoolean) {
                             getView().finishFragment();
+                        } else {
+                            if (getView().isNeedRefreshFromCache()) {
+                                getView().reloadDataFromCache();
+                                getView().setUIMarkFilter();
+                                getView().setNeedRefreshFromCache(false);
+                            }
                         }
                     }
                 });

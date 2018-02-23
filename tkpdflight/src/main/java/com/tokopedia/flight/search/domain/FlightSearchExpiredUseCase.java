@@ -24,7 +24,7 @@ public class FlightSearchExpiredUseCase extends UseCase<Boolean> {
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
-        return flightRepository.isSearchCacheExpired(requestParams, PARAM_IS_RETURNING);
+        return flightRepository.isSearchCacheExpired(requestParams.getBoolean(PARAM_IS_RETURNING, false));
     }
 
     public RequestParams createRequestParams(boolean isReturning) {

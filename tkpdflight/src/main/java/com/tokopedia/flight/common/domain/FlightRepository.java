@@ -82,5 +82,5 @@ public interface FlightRepository {
 
     Observable<SendEmailEntity> sendEmail(Map<String, Object> params);
 
-    Observable<Boolean> isSearchCacheExpired(RequestParams requestParams, String key);
+    Observable<Boolean> isSearchCacheExpired(boolean isReturn);
 }
