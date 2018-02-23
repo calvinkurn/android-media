@@ -117,8 +117,8 @@ public class WalletAuthInterceptor extends TkpdAuthInterceptor {
     private boolean isUnauthorizeWalletToken(Request request, Response response) {
         try {
             String responseString = response.peekBody(512).string();
-            return responseString.toLowerCase().contains("invalid token") ||
-                    responseString.toLowerCase().contains("Invalid token")
+            return (responseString.toLowerCase().contains("invalid token") ||
+                    responseString.toLowerCase().contains("Invalid token"))
                     && request.header(AUTHORIZATION).contains(BEARER);
         } catch (IOException e) {
             e.printStackTrace();
