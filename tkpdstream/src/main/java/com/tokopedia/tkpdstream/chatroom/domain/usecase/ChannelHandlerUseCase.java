@@ -37,6 +37,8 @@ public class ChannelHandlerUseCase {
         void onMessageUpdated(Visitable map);
 
         void onUserEntered(UserActionViewModel userActionViewModel);
+
+        void onUserExited(UserActionViewModel userActionViewModel);
     }
 
     public void execute(final String mChannelUrl, final ChannelHandlerListener listener) {
@@ -69,6 +71,13 @@ public class ChannelHandlerUseCase {
             public void onUserEntered(OpenChannel channel, User user) {
                 if (channel.getUrl().equals(mChannelUrl)) {
                     listener.onUserEntered(userMapper.mapUserEnter(user));
+                }
+            }
+
+            @Override
+            public void onUserExited(OpenChannel channel, User user) {
+                if (channel.getUrl().equals(mChannelUrl)) {
+                    listener.onUserExited(userMapper.mapUserExit(user));
                 }
             }
         });

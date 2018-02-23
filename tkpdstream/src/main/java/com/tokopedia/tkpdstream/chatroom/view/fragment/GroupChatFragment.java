@@ -1,7 +1,6 @@
 package com.tokopedia.tkpdstream.chatroom.view.fragment;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,8 +17,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -34,6 +31,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.tkpdstream.R;
+import com.tokopedia.tkpdstream.channel.data.analytics.ChannelAnalytics;
 import com.tokopedia.tkpdstream.channel.view.activity.ChannelActivity;
 import com.tokopedia.tkpdstream.chatroom.di.DaggerChatroomComponent;
 import com.tokopedia.tkpdstream.chatroom.domain.ConnectionManager;
@@ -50,7 +48,6 @@ import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.UserActionViewModel;
-import com.tokopedia.tkpdstream.channel.data.analytics.ChannelAnalytics;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
 
@@ -146,11 +143,17 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     private void setupToolbar() {
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Window w = getActivity().getWindow(); // in Activity's onCreate() for instance
-            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-            toolbar.setPadding(0, getStatusBarHeight(), 0, 0);
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            Window window = getActivity().getWindow();
+//            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//            window.setStatusBarColor(getResources()
+//                    .getColor(R.color.grey_transparent_background));
+//        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            Window w = getActivity().getWindow(); // in Activity's onCreate() for instance
+//            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+//            toolbar.setPadding(0, getStatusBarHeight(), 0, 0);
+//        }
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
@@ -401,6 +404,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         adapter.addIncomingMessage(messageItem);
         adapter.notifyItemInserted(0);
 
+        scrollToBottomWhenPossible();
+    }
+
+    private void scrollToBottomWhenPossible() {
         if (layoutManager.findFirstVisibleItemPosition() == 0) {
             scrollToBottom();
         } else {
@@ -425,17 +432,36 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     @Override
     public void onUserEntered(UserActionViewModel userActionViewModel) {
-        viewModel.setTotalParticipant(viewModel.getTotalParticipant() + 1);
+
+        if (!userActionViewModel.getUserId().equals(userSession.getUserId())) {
+            viewModel.setTotalParticipant(viewModel.getTotalParticipant() + 1);
+            setToolbarParticipantCount();
+        }
         adapter.addAction(userActionViewModel);
         adapter.notifyItemInserted(0);
+        scrollToBottomWhenPossible();
+    }
+
+    @Override
+    public void onUserExited(UserActionViewModel userActionViewModel) {
+        viewModel.setTotalParticipant(viewModel.getTotalParticipant() - 1);
+        setToolbarParticipantCount();
+//        adapter.addAction(userActionViewModel);
+//        adapter.notifyItemInserted(0);
     }
 
     @Override
     public void onSuccessEnterChannel(OpenChannel openChannel) {
         mChannel = openChannel;
         viewModel.setTotalParticipant(openChannel.getParticipantCount());
+        viewModel.setChannelName(mChannel.getName());
         setToolbarParticipantCount();
+        setChannelName();
         presenter.initMessageFirstTime(viewModel.getChannelUuid(), mChannel);
+    }
+
+    private void setChannelName() {
+        toolbar.setTitle(viewModel.getChannelName());
     }
 
     @Override
