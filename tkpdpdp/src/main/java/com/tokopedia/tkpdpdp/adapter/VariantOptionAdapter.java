@@ -100,8 +100,8 @@ public class VariantOptionAdapter extends RecyclerView.Adapter<VariantOptionAdap
             Drawable background = container.getBackground();
             if (!variantOption.isEnabled()) {
                 if (background instanceof GradientDrawable) {
-                    ((GradientDrawable)background).setColor(ContextCompat.getColor(context,R.color.white));
-                    ((GradientDrawable)background).setStroke(1,ContextCompat.getColor(context,R.color.grey_hint),5,5);
+                    ((GradientDrawable)background).setColor(ContextCompat.getColor(context,R.color.grey_hint));
+                    ((GradientDrawable)background).setStroke(1,ContextCompat.getColor(context,R.color.grey_hint));
                 }
                 textOption.setTextColor(ContextCompat.getColor(context,R.color.black_38));
             } else {
