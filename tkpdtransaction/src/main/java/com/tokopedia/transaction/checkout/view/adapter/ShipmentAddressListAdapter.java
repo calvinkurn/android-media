@@ -35,6 +35,7 @@ public class ShipmentAddressListAdapter
 
     public ShipmentAddressListAdapter(ActionListener actionListener) {
         this.mActionListener = actionListener;
+        mAddressModelList = new ArrayList<>();
     }
 
     public void setAddressList(List<ShipmentRecipientModel> addressModelList) {
