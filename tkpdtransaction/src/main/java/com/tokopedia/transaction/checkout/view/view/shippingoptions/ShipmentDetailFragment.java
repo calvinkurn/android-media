@@ -297,13 +297,17 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
 
     @Override
     public void showPinPointMap(ShipmentDetailData shipmentDetailData) {
-        setText(tvShipmentAddress, shipmentDetailData.getShipmentCartData().getDestinationAddress());
         setupMapView();
-        if (shipmentDetailData.getShipmentCartData().getDestinationLatitude() == null ||
-                shipmentDetailData.getShipmentCartData().getDestinationLongitude() == null) {
-            renderNoPinpoint();
+        if (shipmentDetailData.getShipmentCartData() != null) {
+            setText(tvShipmentAddress, shipmentDetailData.getShipmentCartData().getDestinationAddress());
+            if (shipmentDetailData.getShipmentCartData().getDestinationLatitude() == null ||
+                    shipmentDetailData.getShipmentCartData().getDestinationLongitude() == null) {
+                renderNoPinpoint();
+            } else {
+                renderPinpoint();
+            }
         } else {
-            renderPinpoint();
+            renderNoPinpoint();
         }
         llPinpoint.setVisibility(View.VISIBLE);
     }
@@ -334,14 +338,21 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     }
 
     private void renderShipment(ShipmentDetailData shipmentDetailData) {
-        if (presenter.getSelectedShipment() == null) {
-            presenter.setSelectedShipment(shipmentDetailData.getShipmentItemData().get(0));
+        ShipmentItemData selectedShipment;
+        if (shipmentDetailData.getSelectedShipment() != null) {
+            selectedShipment = shipmentDetailData.getSelectedShipment();
+        } else {
+            selectedShipment = shipmentDetailData.getShipmentItemData().get(0);
         }
-        tvShipmentType.setText(presenter.getSelectedShipment().getType());
+        resetView();
+        presenter.setSelectedShipment(selectedShipment);
+        tvShipmentType.setText(selectedShipment.getType());
         llDropshipper.setVisibility(View.GONE);
         separatorPartialOrder.setVisibility(View.GONE);
-        setText(tvDeliveryFeeTotal,
-                currencyId.format(shipmentDetailData.getShipmentCartData().getDeliveryPriceTotal()));
+        if (shipmentDetailData.getShipmentCartData() != null) {
+            setText(tvDeliveryFeeTotal, currencyId.format(
+                    shipmentDetailData.getShipmentCartData().getDeliveryPriceTotal()));
+        }
     }
 
     @Override
@@ -434,12 +445,16 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     private void setGoogleMap(GoogleMap googleMap, ShipmentDetailData shipmentDetailData) {
         if (googleMap != null) {
             LatLng latLng;
-            if (shipmentDetailData.getShipmentCartData().getDestinationLatitude() == null ||
-                    shipmentDetailData.getShipmentCartData().getDestinationLongitude() == null) {
-                latLng = new LatLng(-6.1754, 106.8272);
+            if (shipmentDetailData.getShipmentCartData() != null) {
+                if (shipmentDetailData.getShipmentCartData().getDestinationLatitude() == null ||
+                        shipmentDetailData.getShipmentCartData().getDestinationLongitude() == null) {
+                    latLng = new LatLng(-6.1754, 106.8272);
+                } else {
+                    latLng = new LatLng(shipmentDetailData.getShipmentCartData().getDestinationLatitude(),
+                            shipmentDetailData.getShipmentCartData().getDestinationLongitude());
+                }
             } else {
-                latLng = new LatLng(shipmentDetailData.getShipmentCartData().getDestinationLatitude(),
-                        shipmentDetailData.getShipmentCartData().getDestinationLongitude());
+                latLng = new LatLng(-6.1754, 106.8272);
             }
 
             googleMap.getUiSettings().setMapToolbarEnabled(false);
@@ -564,6 +579,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     }
 
     private void resetView() {
+        llShipmentInfoTicker.setVisibility(View.GONE);
         switchInsurance.setChecked(false);
         switchDropshipper.setChecked(false);
         switchPartlyAccept.setChecked(false);
@@ -649,22 +665,28 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
                     presenter.getSelectedCourier().getInsuranceType() ==
                             InsuranceConstant.InsuranceType.OPTIONAL) {
                 renderInsuranceTncView(presenter.getSelectedCourier());
-                tvInsurancePrice.setText(
-                        currencyId.format(presenter.getSelectedCourier().getInsurancePrice()));
-                presenter.getShipmentDetailData().getShipmentCartData().setDeliveryPriceTotal(
-                        presenter.getShipmentDetailData().getShipmentCartData().getDeliveryPriceTotal() +
-                                presenter.getSelectedCourier().getInsurancePrice());
+                if (presenter.getShipmentDetailData().getShipmentCartData() != null) {
+                    tvInsurancePrice.setText(
+                            currencyId.format(presenter.getSelectedCourier().getInsurancePrice()));
+                    presenter.getShipmentDetailData().getShipmentCartData().setDeliveryPriceTotal(
+                            presenter.getShipmentDetailData().getShipmentCartData().getDeliveryPriceTotal() +
+                                    presenter.getSelectedCourier().getInsurancePrice());
+                }
             }
         } else {
-            presenter.getShipmentDetailData().getShipmentCartData().setDeliveryPriceTotal(
-                    presenter.getShipmentDetailData().getShipmentCartData().getDeliveryPriceTotal() -
-                            presenter.getSelectedCourier().getInsurancePrice());
+            if (presenter.getShipmentDetailData().getShipmentCartData() != null) {
+                presenter.getShipmentDetailData().getShipmentCartData().setDeliveryPriceTotal(
+                        presenter.getShipmentDetailData().getShipmentCartData().getDeliveryPriceTotal() -
+                                presenter.getSelectedCourier().getInsurancePrice());
+            }
             llInsuranceFee.setVisibility(View.GONE);
             tvInsuranceTerms.setVisibility(View.GONE);
         }
         updateFeesGroupLayout();
-        setText(tvDeliveryFeeTotal,
-                currencyId.format(presenter.getShipmentDetailData().getShipmentCartData().getDeliveryPriceTotal()));
+        if (presenter.getShipmentDetailData().getShipmentCartData() != null) {
+            setText(tvDeliveryFeeTotal, currencyId.format(
+                    presenter.getShipmentDetailData().getShipmentCartData().getDeliveryPriceTotal()));
+        }
     }
 
     @OnCheckedChanged(R2.id.switch_partly_accept)
@@ -695,8 +717,10 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
                 renderShipmentWithoutMap(presenter.getShipmentDetailData());
             }
             switchInsurance.setChecked(false);
-            presenter.getShipmentDetailData().getShipmentCartData().setDeliveryPriceTotal(
-                    courierItemData.getDeliveryPrice() + courierItemData.getAdditionalPrice());
+            if (presenter.getShipmentDetailData().getShipmentCartData() != null) {
+                presenter.getShipmentDetailData().getShipmentCartData().setDeliveryPriceTotal(
+                        courierItemData.getDeliveryPrice() + courierItemData.getAdditionalPrice());
+            }
             setText(tvDeliveryFee, currencyId.format(courierItemData.getDeliveryPrice()));
             renderTickerView(courierItemData);
             renderInsuranceView(courierItemData);
@@ -711,6 +735,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         if (presenter.getSelectedShipment() == null ||
                 presenter.getSelectedShipment().getServiceId() != shipmentItemData.getServiceId()) {
             resetView();
+            presenter.setSelectedCourier(null);
             presenter.setSelectedShipment(shipmentItemData);
             tvShipmentType.setText(shipmentItemData.getType());
         }
@@ -732,9 +757,6 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
                                 bundle.getParcelable(GeolocationActivity.EXTRA_EXISTING_LOCATION);
                         presenter.updatePinPoint(locationPass);
                     }
-                    break;
-
-                case REQUEST_CODE_SHIPMENT_CHOICE:
                     break;
             }
         }

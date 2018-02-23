@@ -80,13 +80,13 @@ public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAd
         renderTypeface(holder, shipmentItemData);
     }
 
-    private View.OnClickListener getItemClickListener(final ShipmentItemData courierItemData,
+    private View.OnClickListener getItemClickListener(final ShipmentItemData shipmentItemData,
                                                       final int position) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 for (ShipmentItemData viewModel : shipments) {
-                    if (viewModel.getServiceId() == courierItemData.getServiceId()) {
+                    if (viewModel.getServiceId() == shipmentItemData.getServiceId()) {
                         if (shipments.size() > position && position >= 0) {
                             if (!viewModel.isSelected()) {
                                 viewModel.setSelected(true);

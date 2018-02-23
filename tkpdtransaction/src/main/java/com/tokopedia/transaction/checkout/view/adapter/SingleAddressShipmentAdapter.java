@@ -479,7 +479,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
             mRlDetailShipmentFeeContainer.setVisibility(mIsExpandCostDetail ? View.VISIBLE : View.GONE);
 
-            String insuranceFee ="-";
+            String insuranceFee = "-";
             String shippingFee = "-";
 
             if (model.getCourierItemData() != null) {
@@ -527,6 +527,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             mTvExpandOtherProduct.setOnClickListener(showAllProductListener(cartItemModels));
 
             mChooseCourierButton.setOnClickListener(selectShippingOptionListener());
+            mTvSelectedShipment.setOnClickListener(selectShippingOptionListener());
             mIvChevronShipmentOption.setOnClickListener(selectShippingOptionListener());
 
             mIvDetailOptionChevron.setOnClickListener(costDetailOptionListener());
@@ -545,6 +546,17 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             mLlNoteToSellerLayout.setVisibility(isEmptyNotes ? View.GONE : View.VISIBLE);
             mTvOptionalNote.setText(firstItem.getNoteToSeller());
 
+            if (shipmentDetailData != null &&
+                    shipmentDetailData.getSelectedCourier() != null) {
+                mChooseCourierButton.setVisibility(View.GONE);
+                mTvSelectedShipment.setText(shipmentDetailData.getSelectedCourier().getName());
+                mTvSelectedShipment.setVisibility(View.VISIBLE);
+                mIvChevronShipmentOption.setVisibility(View.VISIBLE);
+            } else {
+                mTvSelectedShipment.setVisibility(View.GONE);
+                mIvChevronShipmentOption.setVisibility(View.GONE);
+                mChooseCourierButton.setVisibility(View.VISIBLE);
+            }
         }
 
         private void initInnerRecyclerView(List<CartItemModel> cartItemModels) {
@@ -636,7 +648,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             llWarningContainer.setVisibility(View.VISIBLE);
         }
 
-//        private void showGreyWarning(String message) {
+        //        private void showGreyWarning(String message) {
 //            llWarningContainer.setBackgroundColor(ContextCompat.getColor(
 //                    llWarningContainer.getContext(), R.color.bg_warning_grey));
 //            imgWarning.setImageResource(R.drawable.ic_warning_grey);

@@ -304,6 +304,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                 case REQUEST_CODE_SHIPMENT_DETAIL:
                     ShipmentDetailData shipmentDetailData = data.getParcelableExtra(EXTRA_SHIPMENT_DETAIL_DATA);
                     mSingleAddressShipmentAdapter.setShipmentDetailData(shipmentDetailData);
+                    mSingleAddressShipmentAdapter.notifyDataSetChanged();
                 default:
                     break;
             }

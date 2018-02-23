@@ -67,6 +67,7 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
 
     @Override
     public void setSelectedShipment(ShipmentItemData selectedShipment) {
+        selectedShipment.setSelected(true);
         shipmentDetailData.setSelectedShipment(selectedShipment);
         setCourierList(selectedShipment.getCourierItemData());
     }
@@ -85,15 +86,18 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
 
     @Override
     public void updatePinPoint(LocationPass locationPass) {
-        shipmentDetailData.getShipmentCartData().setDestinationLatitude(Double.parseDouble(locationPass.getLatitude()));
-        shipmentDetailData.getShipmentCartData().setDestinationLongitude(Double.parseDouble(locationPass.getLongitude()));
-        shipmentDetailData.getShipmentCartData().setDestinationAddress(locationPass.getGeneratedAddress());
-        getView().renderShipmentWithMap(shipmentDetailData);
+        if (shipmentDetailData.getShipmentCartData() != null) {
+            shipmentDetailData.getShipmentCartData().setDestinationLatitude(Double.parseDouble(locationPass.getLatitude()));
+            shipmentDetailData.getShipmentCartData().setDestinationLongitude(Double.parseDouble(locationPass.getLongitude()));
+            shipmentDetailData.getShipmentCartData().setDestinationAddress(locationPass.getGeneratedAddress());
+            getView().renderShipmentWithMap(shipmentDetailData);
+        }
     }
 
     @Override
     public void loadShipmentData(ShipmentDetailData shipmentDetailData) {
         getView().showLoading();
+        this.shipmentDetailData = shipmentDetailData;
         getRatesUseCase.setShipmentDetailData(shipmentDetailData);
         getRatesUseCase.execute(getRatesUseCase.getParams(), new Subscriber<ShipmentDetailData>() {
             @Override

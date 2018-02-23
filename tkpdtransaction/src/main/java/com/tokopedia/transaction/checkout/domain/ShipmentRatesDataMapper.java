@@ -5,6 +5,7 @@ import com.tokopedia.transaction.checkout.domain.response.rates.Product;
 import com.tokopedia.transaction.checkout.domain.response.rates.RatesResponse;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.view.data.CourierItemData;
+import com.tokopedia.transaction.checkout.view.data.MultipleAddressShipmentAdapterData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
 
@@ -22,6 +23,13 @@ public class ShipmentRatesDataMapper {
     public ShipmentDetailData getShipmentDetailData(CartSingleAddressData cartSingleAddressData) {
         ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
         shipmentDetailData.setShipmentCartData(cartSingleAddressData.getShipmentCartData());
+        return shipmentDetailData;
+    }
+
+    public ShipmentDetailData getShipmentDetailData(
+            MultipleAddressShipmentAdapterData multipleAddressShipmentAdapterData) {
+        ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
+        shipmentDetailData.setShipmentCartData(multipleAddressShipmentAdapterData.getShipmentCartData());
         return shipmentDetailData;
     }
 
