@@ -27,6 +27,7 @@ import com.tokopedia.transaction.checkout.view.data.CartPayableDetailModel;
 import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.view.data.CourierItemData;
+import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentFeeBannerModel;
 import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
@@ -69,9 +70,18 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
     private Context mContext;
     private CartSingleAddressData mCartSingleAddressData;
     private SingleAddressShipmentAdapterListener mAdapterViewListener;
+    private ShipmentDetailData shipmentDetailData;
 
     public SingleAddressShipmentAdapter() {
 
+    }
+
+    public ShipmentDetailData getShipmentDetailData() {
+        return shipmentDetailData;
+    }
+
+    public void setShipmentDetailData(ShipmentDetailData shipmentDetailData) {
+        this.shipmentDetailData = shipmentDetailData;
     }
 
     public void setViewListener(SingleAddressShipmentAdapterListener shipmentAdapterListener) {

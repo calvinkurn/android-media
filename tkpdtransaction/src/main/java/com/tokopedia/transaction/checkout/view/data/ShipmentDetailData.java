@@ -14,6 +14,8 @@ public class ShipmentDetailData implements Parcelable {
     private List<ShipmentItemData> shipmentItemData;
     private String shipmentTickerInfo;
     private ShipmentCartData shipmentCartData;
+    private ShipmentItemData selectedShipment;
+    private CourierItemData selectedCourier;
 
     public ShipmentDetailData() {
     }
@@ -22,6 +24,8 @@ public class ShipmentDetailData implements Parcelable {
         shipmentItemData = in.createTypedArrayList(ShipmentItemData.CREATOR);
         shipmentTickerInfo = in.readString();
         shipmentCartData = in.readParcelable(ShipmentCartData.class.getClassLoader());
+        selectedShipment = in.readParcelable(ShipmentItemData.class.getClassLoader());
+        selectedCourier = in.readParcelable(CourierItemData.class.getClassLoader());
     }
 
     @Override
@@ -29,6 +33,8 @@ public class ShipmentDetailData implements Parcelable {
         dest.writeTypedList(shipmentItemData);
         dest.writeString(shipmentTickerInfo);
         dest.writeParcelable(shipmentCartData, flags);
+        dest.writeParcelable(selectedShipment, flags);
+        dest.writeParcelable(selectedCourier, flags);
     }
 
     @Override
@@ -72,4 +78,19 @@ public class ShipmentDetailData implements Parcelable {
         this.shipmentCartData = shipmentCartData;
     }
 
+    public ShipmentItemData getSelectedShipment() {
+        return selectedShipment;
+    }
+
+    public void setSelectedShipment(ShipmentItemData selectedShipment) {
+        this.selectedShipment = selectedShipment;
+    }
+
+    public CourierItemData getSelectedCourier() {
+        return selectedCourier;
+    }
+
+    public void setSelectedCourier(CourierItemData selectedCourier) {
+        this.selectedCourier = selectedCourier;
+    }
 }

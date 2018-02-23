@@ -21,8 +21,7 @@ public class ShipmentRatesDataMapper {
 
     public ShipmentDetailData getShipmentDetailData(CartSingleAddressData cartSingleAddressData) {
         ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
-
-
+        shipmentDetailData.setShipmentCartData(cartSingleAddressData.getShipmentCartData());
         return shipmentDetailData;
     }
 
