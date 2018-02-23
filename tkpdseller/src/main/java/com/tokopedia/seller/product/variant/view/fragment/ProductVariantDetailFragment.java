@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * Created by hendry on 4/3/17.
  */
-
+@Deprecated
 public class ProductVariantDetailFragment extends Fragment implements ProductVariantDetailAdapter.OnProductVariantDataAdapterListener {
 
     public static final String SAVED_HAS_STOCK = "has_stk";

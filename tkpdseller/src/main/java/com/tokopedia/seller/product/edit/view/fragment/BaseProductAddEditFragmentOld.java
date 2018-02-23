@@ -356,7 +356,7 @@ public abstract class BaseProductAddEditFragmentOld<T extends ProductAddPresente
 //
 //    @Override
 //    public final void onEtalaseViewClicked(long etalaseId) {
-//        Intent intent = EtalasePickerActivity.createInstance(getActivity(), etalaseId);
+//        Intent intent = EtalasePickerActivity.getIntent(getActivity(), etalaseId);
 //        startActivityForResult(intent, ProductManageViewHolder.REQUEST_CODE_ETALASE);
 //    }
 //
@@ -450,11 +450,11 @@ public abstract class BaseProductAddEditFragmentOld<T extends ProductAddPresente
 //
 //    @Override
 //    public void onErrorGetProductVariantByCat(Throwable throwable) {
-//        onSuccessGetProductVariant(null);
+//        onSuccessGetProductVariantCat(null);
 //    }
 //
 //    @Override
-//    public void onSuccessGetProductVariant(List<ProductVariantByCatModel> productVariantByCatModelList) {
+//    public void onSuccessGetProductVariantCat(List<ProductVariantByCatModel> productVariantByCatModelList) {
 //        productDeliveryInfoViewHolder.onSuccessGetProductVariantCat(productVariantByCatModelList);
 //    }
 //
@@ -568,7 +568,7 @@ public abstract class BaseProductAddEditFragmentOld<T extends ProductAddPresente
 //        viewModel.setProductFreeReturn(productManageViewHolder.isFreeReturns());
 //        viewModel.setProductVideo(productDeliveryInfoViewHolder.getVideoList());
 //        viewModel.setProductPreorder(productDeliveryInfoViewHolder.getPreOrder());
-//        //todo hendry map old draft model to new draft model variant
+//        //to do hendry map old draft model to new draft model variant
 ////        viewModel.setProductVariant(productDeliveryInfoViewHolder.getProductVariant());
 //        viewModel.setProductNameEditable(productInfoViewHolder.isNameEditable());
 //

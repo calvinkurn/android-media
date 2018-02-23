@@ -48,8 +48,8 @@
 
     <ImageView
         android:id="@+id/info_button"
-        android:layout_width="@dimen/image_width_xs"
-        android:layout_height="@dimen/image_width_xs"
+        android:layout_width="@dimen/image_medal_size"
+        android:layout_height="@dimen/image_medal_size"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"

@@ -13,6 +13,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.crashlytics.android.Crashlytics;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseService;
 import com.tokopedia.core.gcm.utils.NotificationChannelId;
@@ -21,11 +22,9 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageActivity;
-import com.tokopedia.seller.product.manage.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.seller.product.edit.di.component.DaggerAddProductServiceComponent;
 import com.tokopedia.seller.product.edit.di.module.AddProductserviceModule;
 import com.tokopedia.seller.product.edit.domain.model.AddProductDomainModel;
-import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.seller.product.edit.view.activity.ProductDraftAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductDraftEditActivity;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
@@ -101,7 +100,7 @@ public class UploadProductService extends BaseService implements AddProductServi
 
     @Override
     public void notificationFailed(Throwable error, String productDraftId, @ProductStatus int productStatus) {
-        String errorMessage = ViewUtils.getGeneralErrorMessage(getApplicationContext(), error);
+        String errorMessage = ErrorHandler.getErrorMessage (getApplicationContext(), error);
         Notification notification = buildFailedNotification(errorMessage, productDraftId, productStatus);
         notificationManager.notify(TAG, getNotifIdByDraft(productDraftId), notification);
         removeNotifFromList(productDraftId);
@@ -154,7 +153,7 @@ public class UploadProductService extends BaseService implements AddProductServi
     @Override
     public void sendFailedBroadcast(Throwable error) {
         Crashlytics.logException(error);
-        String errorMessage = ViewUtils.getGeneralErrorMessage(getApplicationContext(), error);
+        String errorMessage = ErrorHandler.getErrorMessage(getApplicationContext(), error);
         UnifyTracking.eventAddProductErrorServer(errorMessage);
         Intent result = new Intent(TkpdState.ProductService.BROADCAST_ADD_PRODUCT);
         Bundle bundle = new Bundle();
@@ -167,6 +166,7 @@ public class UploadProductService extends BaseService implements AddProductServi
         lbm.sendBroadcast(new Intent(ACTION_DRAFT_CHANGED));
     }
 
+    //TODO no need to send bundle, only need the String action to refresh page
     @Override
     public void sendSuccessBroadcast(AddProductDomainModel domainModel) {
         Intent result = new Intent(TkpdState.ProductService.BROADCAST_ADD_PRODUCT);
@@ -191,14 +191,6 @@ public class UploadProductService extends BaseService implements AddProductServi
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), getDrawableIcon()))
                 .setContentIntent(pIntent)
                 .setGroup(getString(R.string.product_group_notification));
-    }
-
-    private int getDrawableLargeIcon() {
-        if (GlobalConfig.isSellerApp()) {
-            return com.tokopedia.core.R.drawable.qc_launcher2;
-        } else {
-            return com.tokopedia.core.R.drawable.qc_launcher;
-        }
     }
 
     private int getDrawableIcon() {

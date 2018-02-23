@@ -3,48 +3,33 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:divider="@drawable/bg_line_separator"
+    android:showDividers="middle">
 
     <com.tokopedia.seller.common.widget.LabelView
         android:id="@+id/label_view_variant_level_one"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        tools:visibility="visible"
         app:content_color="@color/tkpd_main_green"
         app:content="@string/product_label_choose"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@drawable/bg_line_separator"/>
 
     <com.tokopedia.seller.common.widget.LabelView
         android:id="@+id/label_view_variant_level_two"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        tools:visibility="visible"
         app:content_color="@color/tkpd_main_green"
         app:content="@string/product_label_choose"/>
 
-    <LinearLayout
-        android:id="@+id/linear_layout_variant_list"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="@dimen/activity_horizontal_margin">
-
-        <TextView
-            style="@style/TextView.Small.BlackSecondary"
-            android:text="@string/product_variant_manage_variant"
-            android:layout_marginTop="@dimen/activity_horizontal_margin"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:layout_marginBottom="@dimen/margin_small"/>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false" />
-    </LinearLayout>
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:clipToPadding="false" />
 </LinearLayout>

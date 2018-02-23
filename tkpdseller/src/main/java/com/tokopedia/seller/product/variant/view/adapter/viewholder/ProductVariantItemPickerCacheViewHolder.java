@@ -14,20 +14,20 @@ import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
 /**
  * @author normansyahputa on 5/26/17.
  */
-
+@Deprecated
 public class ProductVariantItemPickerCacheViewHolder extends BaseItemPickerCacheViewHolder<ProductVariantViewModel> {
 
-    private boolean hasColor;
+    private boolean isColorType;
 
-    public ProductVariantItemPickerCacheViewHolder(boolean hasColor, View itemView) {
+    public ProductVariantItemPickerCacheViewHolder(boolean isColorType, View itemView) {
         super(itemView);
-        this.hasColor = hasColor;
+        this.isColorType = isColorType;
     }
 
     @Override
     public void bindObject(final ProductVariantViewModel productVariantViewModel) {
         super.bindObject(productVariantViewModel);
-        if (hasColor) {
+        if (isColorType) {
             if (!TextUtils.isEmpty(productVariantViewModel.getHexCode())) {
                 imageView.setColorFilter(Color.parseColor(productVariantViewModel.getHexCode()), PorterDuff.Mode.SRC_ATOP);
                 imageView.setImageResource(R.drawable.circle_white);

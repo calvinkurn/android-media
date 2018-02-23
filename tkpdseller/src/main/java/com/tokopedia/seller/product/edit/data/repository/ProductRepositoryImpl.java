@@ -29,6 +29,7 @@ public class ProductRepositoryImpl implements ProductRepository {
         this.fetchVideoEditProductDataSource = fetchVideoEditProductDataSource;
     }
 
+    //TODO no need to have mapper
     @Override
     public Observable<AddProductDomainModel> addProductSubmit(ProductViewModel productViewModel) {
         return productDataSource.addProductSubmit(productViewModel)

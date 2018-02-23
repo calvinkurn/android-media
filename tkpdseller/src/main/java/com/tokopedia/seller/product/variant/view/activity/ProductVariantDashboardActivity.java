@@ -9,8 +9,9 @@ import com.tokopedia.seller.product.variant.view.fragment.ProductVariantDashboar
 
 /**
  * Created by nathan on 8/2/17.
+ * replaced by ProductVariantDashboardNewActivity
  */
-
+@Deprecated
 public class ProductVariantDashboardActivity extends BaseSimpleActivity {
 
     @Override

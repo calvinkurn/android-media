@@ -23,7 +23,6 @@ import android.view.ViewGroup;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.myproduct.utils.FileUtils;
@@ -32,7 +31,6 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
-import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
 import com.tokopedia.seller.common.imageeditor.ImageEditorWatermarkActivity;
 import com.tokopedia.seller.instoped.InstopedSellerCropWatermarkActivity;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
@@ -58,6 +56,7 @@ import com.tokopedia.seller.product.edit.view.mapper.AnalyticsMapper;
 import com.tokopedia.seller.product.edit.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
@@ -67,9 +66,7 @@ import com.tokopedia.seller.product.edit.view.widget.ImagesSelectView;
 import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantDataSubmit;
-import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantOptionSubmit;
-import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity;
+import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardNewActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,6 +93,8 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
     @Inject
     protected T presenter;
 
+    public static final String SAVED_PRODUCT_VIEW_MODEL = "svd_prd_model";
+
     protected ProductScoreViewHolder productScoreViewHolder;
 
     protected ProductInfoViewHolder productInfoViewHolder;
@@ -109,6 +108,8 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
 
     // view model to be compare later when we want to save as draft
     protected ProductViewModel firstTimeViewModel;
+
+    protected ProductViewModel currentProductViewModel;
 
     private Listener listener;
 
@@ -138,7 +139,6 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
         valueIndicatorScoreModel = new ValueIndicatorScoreModel();
     }
 
@@ -150,10 +150,7 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
         productInfoViewHolder = new ProductInfoViewHolder(view.findViewById(R.id.view_group_product_info), this);
         productImageViewHolder = new ProductImageViewHolder(view.findViewById(R.id.view_group_product_image), this);
         productPriceViewHolder = new ProductPriceViewHolder(view.findViewById(R.id.view_group_product_price), this);
-
-        productManageViewHolder = new ProductManageViewHolder(view);
-        productManageViewHolder.setListener(this);
-
+        productManageViewHolder = new ProductManageViewHolder(view.findViewById(R.id.view_group_product_manage), this);
         productDescriptionViewHolder = new ProductDescriptionViewHolder(view.findViewById(R.id.view_group_product_description), this);
         productDeliveryInfoViewHolder = new ProductDeliveryInfoViewHolder(view.findViewById(R.id.view_group_product_delivery), this);
 
@@ -161,6 +158,19 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
 
         presenter.attachView(this);
         presenter.getShopInfo();
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(SAVED_PRODUCT_VIEW_MODEL)) {
+                currentProductViewModel = savedInstanceState.getParcelable(SAVED_PRODUCT_VIEW_MODEL);
+                onSuccessLoadProduct(currentProductViewModel);
+            }
+            productInfoViewHolder.onViewStateRestored(savedInstanceState);
+            productImageViewHolder.onViewStateRestored(savedInstanceState);
+            productPriceViewHolder.onViewStateRestored(savedInstanceState);
+            productManageViewHolder.onViewStateRestored(savedInstanceState);
+            productDescriptionViewHolder.onViewStateRestored(savedInstanceState);
+            productDeliveryInfoViewHolder.onViewStateRestored(savedInstanceState);
+        }
 
         View btnSave = view.findViewById(R.id.button_save);
         btnSave.setOnClickListener(new View.OnClickListener() {
@@ -197,23 +207,11 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
 
     @CallSuper
     protected boolean isDataValid() {
-        if (!productInfoViewHolder.isDataValid().first) {
-            UnifyTracking.eventAddProductError(productInfoViewHolder.isDataValid().second);
-            return false;
-        }
-        if (!productManageViewHolder.isDataValid().first) {
-            UnifyTracking.eventAddProductError(productManageViewHolder.isDataValid().second);
-            return false;
-        }
-        if (productManageViewHolder.getStatusStock() == Integer.parseInt(getString(R.string.product_stock_available_value)) && !productImageViewHolder.isDataValid().first) {
-            UnifyTracking.eventAddProductError(productImageViewHolder.isDataValid().second);
-            return false;
-        }
-        if (!productDeliveryInfoViewHolder.isDataValid().first) {
-            UnifyTracking.eventAddProductError(productDeliveryInfoViewHolder.isDataValid().second);
-            return false;
-        }
-        return true;
+        return (productInfoViewHolder.isDataValid() &&
+                productPriceViewHolder.isDataValid() &&
+                productManageViewHolder.isDataValid() &&
+                (!productManageViewHolder.isStockAvailable() || productImageViewHolder.isDataValid()) &&
+                productDeliveryInfoViewHolder.isDataValid());
     }
 
     private void getCategoryRecommendation(String productName) {
@@ -228,7 +226,6 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
                                         WholesaleModel previousWholesalePrice, boolean officialStore) {
         listener.startAddWholeSaleDialog(fixedPrice, currencyType, previousWholesalePrice, officialStore);
     }
-
 
 
     // Clicked Part
@@ -410,9 +407,7 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
     }
 
     @Override
-    public final void startProductVariantActivity(ArrayList<ProductVariantByCatModel> productVariantByCatModelList,
-                                                  ProductVariantDataSubmit productVariantDataSubmit,
-                                                  ArrayList<ProductVariantOptionSubmit> productVariantOptionSubmitArrayList) {
+    public final void startProductVariantActivity(ArrayList<ProductVariantByCatModel> productVariantByCatModelList) {
         if (productVariantByCatModelList == null || productVariantByCatModelList.size() == 0) {
             NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
                 @Override
@@ -422,13 +417,9 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
             }).showRetrySnackbar();
             return;
         }
-        Intent intent = new Intent(getActivity(), ProductVariantDashboardActivity.class);
-        intent.putExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, productVariantByCatModelList);
-        if (productVariantDataSubmit != null && productVariantDataSubmit.getProductVariantUnitSubmitList()!= null &&
-                productVariantByCatModelList.size() > 0) {
-            intent.putExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION, productVariantDataSubmit);
-        }
-        intent.putExtra(ProductVariantConstant.EXTRA_OLD_PRODUCT_OPTION_SUBMIT_LV1_LIST, productVariantOptionSubmitArrayList);
+        Intent intent = new Intent(getActivity(), ProductVariantDashboardNewActivity.class);
+        intent.putExtra(ProductVariantDashboardNewActivity.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, productVariantByCatModelList);
+        intent.putExtra(ProductVariantDashboardNewActivity.EXTRA_PRODUCT_VARIANT_SELECTION, currentProductViewModel.getProductVariant());
         startActivityForResult(intent, ProductManageViewHolder.REQUEST_CODE_VARIANT);
     }
 
@@ -446,6 +437,22 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
     public final void onEtalaseViewClicked(long etalaseId) {
         Intent intent = EtalasePickerActivity.createInstance(getContext(), etalaseId);
         startActivityForResult(intent, ProductInfoViewHolder.REQUEST_CODE_ETALASE);
+    }
+
+    @CallSuper
+    public void onSuccessLoadProduct(ProductViewModel model) {
+        currentProductViewModel = model;
+
+        productScoreViewHolder.renderData(currentProductViewModel, valueIndicatorScoreModel);
+
+        productInfoViewHolder.renderData(currentProductViewModel);
+        productImageViewHolder.renderData(currentProductViewModel);
+        productPriceViewHolder.renderData(currentProductViewModel);
+        productManageViewHolder.renderData(currentProductViewModel);
+        productDescriptionViewHolder.renderData(currentProductViewModel);
+        productDeliveryInfoViewHolder.renderData(currentProductViewModel);
+
+        onCategoryLoaded(model.getProductCategory().getCategoryId());
     }
 
     // Presenter listener part
@@ -527,20 +534,21 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
 
     @Override
     public void onSuccessLoadShopInfo(boolean isGoldMerchant, boolean isFreeReturn, boolean officialStore) {
+        valueIndicatorScoreModel.setFreeReturnActive(isFreeReturn);
+
         productDescriptionViewHolder.updateViewGoldMerchant(isGoldMerchant);
         productPriceViewHolder.setGoldMerchant(isGoldMerchant);
         productPriceViewHolder.setOfficialStore(officialStore);
-        productDeliveryInfoViewHolder.updateViewFreeReturn(isFreeReturn);
-        valueIndicatorScoreModel.setFreeReturnActive(isFreeReturn);
+        productDeliveryInfoViewHolder.showViewFreeReturn(isFreeReturn);
     }
 
     @Override
     public void onErrorGetProductVariantByCat(Throwable throwable) {
-        onSuccessGetProductVariant(null);
+        onSuccessGetProductVariantCat(null);
     }
 
     @Override
-    public void onSuccessGetProductVariant(List<ProductVariantByCatModel> productVariantByCatModelList) {
+    public void onSuccessGetProductVariantCat(List<ProductVariantByCatModel> productVariantByCatModelList) {
         productManageViewHolder.onSuccessGetProductVariantCat(productVariantByCatModelList);
     }
 
@@ -569,7 +577,7 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
     @Override
     public final void onCategoryChanged(long categoryId) {
         // as default, the variant inputted will be deleted (wihtout notice)
-        productManageViewHolder.setProductVariantDataSubmit(null, "");
+        currentProductViewModel.setProductVariant(null);
         productManageViewHolder.onSuccessGetProductVariantCat(null);
         // check catalog by categoryID
         onCategoryLoaded(categoryId);
@@ -630,36 +638,17 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
 
     @CallSuper
     protected ProductViewModel collectDataFromView() {
-        ProductViewModel viewModel = new ProductViewModel();
-        viewModel.setProductName(productInfoViewHolder.getName());
-        viewModel.setProductCategory(productInfoViewHolder.getProductCategory());
-        viewModel.setProductCatalog(productInfoViewHolder.getProductCatalog());
-        viewModel.setProductPictureViewModelList(productImageViewHolder.getProductPhotos());
+        if (currentProductViewModel == null) {
+            currentProductViewModel = new ProductViewModel();
+        }
+        productInfoViewHolder.updateModel(currentProductViewModel);
+        productImageViewHolder.updateModel(currentProductViewModel);
+        productPriceViewHolder.updateModel(currentProductViewModel);
+        productManageViewHolder.updateModel(currentProductViewModel);
+        productDescriptionViewHolder.updateModel(currentProductViewModel);
+        productDeliveryInfoViewHolder.updateModel(currentProductViewModel);
 
-        viewModel.setProductPriceCurrency(productPriceViewHolder.getPriceUnit());
-        viewModel.setProductPrice(productPriceViewHolder.getPriceValue());
-        viewModel.setProductWeightUnit(productDeliveryInfoViewHolder.getWeightUnit());
-        viewModel.setProductWeight(productDeliveryInfoViewHolder.getWeightValue());
-        viewModel.setProductMinOrder(productPriceViewHolder.getMinimumOrder());
-
-        viewModel.setProductWholesale(productPriceViewHolder.getProductWholesaleViewModels());
-
-        viewModel.setProductStock(productManageViewHolder.getTotalStock());
-        viewModel.setProductStatus(productManageViewHolder.getStatusStock());
-        viewModel.setProductEtalase(productInfoViewHolder.getProductEtalase());
-        viewModel.setProductCondition(productDescriptionViewHolder.getCondition());
-        viewModel.setProductMustInsurance(productDeliveryInfoViewHolder.isMustInsurance());
-        viewModel.setProductDescription(productDescriptionViewHolder.getDescription());
-
-        viewModel.setProductFreeReturn(productDeliveryInfoViewHolder.isFreeReturns());
-        viewModel.setProductVideo(productDescriptionViewHolder.getVideoList());
-        viewModel.setProductPreorder(productDeliveryInfoViewHolder.getPreOrder());
-        //todo hendry map old draft model to new draft model variant
-//        viewModel.setProductVariant(productDeliveryInfoViewHolder.getProductVariant());
-        viewModel.setProductNameEditable(productInfoViewHolder.isNameEditable());
-
-//        viewModel.setVariantStringSelection(productDeliveryInfoViewHolder.getVariantStringSelection());
-        return viewModel;
+        return currentProductViewModel;
     }
 
     private void sendAnalyticsAdd(ProductViewModel viewModel) {
@@ -690,34 +679,11 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case ProductInfoViewHolder.REQUEST_CODE_CATEGORY:
-                productInfoViewHolder.onActivityResult(requestCode, resultCode, data);
-                break;
-            case ProductInfoViewHolder.REQUEST_CODE_CATALOG:
-                productInfoViewHolder.onActivityResult(requestCode, resultCode, data);
-                break;
-            case ImageGallery.TOKOPEDIA_GALLERY:
-                productImageViewHolder.onActivityResult(requestCode, resultCode, data);
-                break;
-            case INSTAGRAM_SELECT_REQUEST_CODE:
-                productImageViewHolder.onActivityResult(requestCode, resultCode, data);
-                break;
-            case ImageEditorActivity.REQUEST_CODE:
-                productImageViewHolder.onActivityResult(requestCode, resultCode, data);
-                break;
-            case ProductInfoViewHolder.REQUEST_CODE_ETALASE:
-                productInfoViewHolder.onActivityResult(requestCode, resultCode, data);
-                break;
-            case ProductDescriptionViewHolder.REQUEST_CODE_GET_VIDEO:
-                productDescriptionViewHolder.onActivityResult(requestCode, resultCode, data);
-                break;
-            case ProductManageViewHolder.REQUEST_CODE_VARIANT:
-                productManageViewHolder.onActivityResult(requestCode, resultCode, data);
-                break;
-            default:
-                super.onActivityResult(requestCode, resultCode, data);
-        }
+        productInfoViewHolder.onActivityResult(requestCode, resultCode, data);
+        productImageViewHolder.onActivityResult(requestCode, resultCode, data);
+        productManageViewHolder.onActivityResult(requestCode, resultCode, data);
+        productDescriptionViewHolder.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     // Permission part
@@ -839,8 +805,19 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
         }
     }
 
-    private void updateProductScoring() {
+    @Override
+    public void updateProductScoring() {
         presenter.getProductScoring(valueIndicatorScoreModel);
+    }
+
+    @Override
+    public ProductVariantViewModel getCurrentVariantModel() {
+        return currentProductViewModel.getProductVariant();
+    }
+
+    @Override
+    public void updateVariantModel(ProductVariantViewModel productVariantViewModel) {
+        currentProductViewModel.setProductVariant(productVariantViewModel);
     }
 
     @Override
@@ -852,22 +829,8 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        productInfoViewHolder.onSaveInstanceState(outState);
-        productImageViewHolder.onSaveInstanceState(outState);
-        productManageViewHolder.onSaveInstanceState(outState);
-        productDeliveryInfoViewHolder.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-        if (savedInstanceState == null) {
-            return;
-        }
-        productInfoViewHolder.onViewStateRestored(savedInstanceState);
-        productImageViewHolder.onViewStateRestored(savedInstanceState);
-        productManageViewHolder.onViewStateRestored(savedInstanceState);
-        productDeliveryInfoViewHolder.onViewStateRestored(savedInstanceState);
+        currentProductViewModel = collectDataFromView();
+        outState.putParcelable(SAVED_PRODUCT_VIEW_MODEL, currentProductViewModel);
     }
 
     @TargetApi(23)

@@ -1,10 +1,13 @@
 
 package com.tokopedia.seller.product.edit.view.model.edit;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ProductVideoViewModel {
+public class ProductVideoViewModel implements Parcelable{
 
     //currently only from youtube
     public static final String YOUTUBE_SOURCE = "youtube";
@@ -42,4 +45,31 @@ public class ProductVideoViewModel {
         this.source = source;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.url);
+        dest.writeString(this.source);
+    }
+
+    protected ProductVideoViewModel(Parcel in) {
+        this.url = in.readString();
+        this.source = in.readString();
+    }
+
+    public static final Creator<ProductVideoViewModel> CREATOR = new Creator<ProductVideoViewModel>() {
+        @Override
+        public ProductVideoViewModel createFromParcel(Parcel source) {
+            return new ProductVideoViewModel(source);
+        }
+
+        @Override
+        public ProductVideoViewModel[] newArray(int size) {
+            return new ProductVideoViewModel[size];
+        }
+    };
 }

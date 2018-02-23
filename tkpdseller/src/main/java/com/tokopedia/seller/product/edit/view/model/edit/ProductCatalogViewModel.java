@@ -1,10 +1,13 @@
 
 package com.tokopedia.seller.product.edit.view.model.edit;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ProductCatalogViewModel {
+public class ProductCatalogViewModel implements Parcelable {
 
     @SerializedName("catalog_id")
     @Expose
@@ -51,4 +54,38 @@ public class ProductCatalogViewModel {
         this.catalogStatus = catalogStatus;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.catalogId);
+        dest.writeString(this.catalogName);
+        dest.writeString(this.catalogUrl);
+        dest.writeLong(this.catalogStatus);
+    }
+
+    public ProductCatalogViewModel() {
+    }
+
+    protected ProductCatalogViewModel(Parcel in) {
+        this.catalogId = in.readLong();
+        this.catalogName = in.readString();
+        this.catalogUrl = in.readString();
+        this.catalogStatus = in.readLong();
+    }
+
+    public static final Creator<ProductCatalogViewModel> CREATOR = new Creator<ProductCatalogViewModel>() {
+        @Override
+        public ProductCatalogViewModel createFromParcel(Parcel source) {
+            return new ProductCatalogViewModel(source);
+        }
+
+        @Override
+        public ProductCatalogViewModel[] newArray(int size) {
+            return new ProductCatalogViewModel[size];
+        }
+    };
 }

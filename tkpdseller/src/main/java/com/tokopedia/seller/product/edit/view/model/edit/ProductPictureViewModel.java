@@ -1,10 +1,13 @@
 
 package com.tokopedia.seller.product.edit.view.model.edit;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ProductPictureViewModel {
+public class ProductPictureViewModel implements Parcelable{
 
     public static final int ACTIVE_STATUS = 1;
 
@@ -112,4 +115,51 @@ public class ProductPictureViewModel {
     public void setY(long y) {
         this.y = y;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeLong(this.status);
+        dest.writeString(this.fileName);
+        dest.writeString(this.filePath);
+        dest.writeString(this.urlOriginal);
+        dest.writeString(this.urlThumbnail);
+        dest.writeString(this.description);
+        dest.writeLong(this.x);
+        dest.writeLong(this.y);
+        dest.writeInt(this.fromIg);
+    }
+
+    public ProductPictureViewModel() {
+    }
+
+    protected ProductPictureViewModel(Parcel in) {
+        this.id = in.readLong();
+        this.status = in.readLong();
+        this.fileName = in.readString();
+        this.filePath = in.readString();
+        this.urlOriginal = in.readString();
+        this.urlThumbnail = in.readString();
+        this.description = in.readString();
+        this.x = in.readLong();
+        this.y = in.readLong();
+        this.fromIg = in.readInt();
+    }
+
+    public static final Creator<ProductPictureViewModel> CREATOR = new Creator<ProductPictureViewModel>() {
+        @Override
+        public ProductPictureViewModel createFromParcel(Parcel source) {
+            return new ProductPictureViewModel(source);
+        }
+
+        @Override
+        public ProductPictureViewModel[] newArray(int size) {
+            return new ProductPictureViewModel[size];
+        }
+    };
 }

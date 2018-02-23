@@ -8,7 +8,6 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
-import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.seller.product.edit.data.repository.CatalogRepositoryImpl;
@@ -43,7 +42,6 @@ import com.tokopedia.core.common.category.domain.interactor.FetchCategoryDisplay
 import com.tokopedia.seller.product.draft.domain.interactor.SaveDraftProductUseCase;
 import com.tokopedia.seller.product.edit.view.presenter.ProductAddPresenter;
 import com.tokopedia.seller.product.edit.view.presenter.ProductAddPresenterImpl;
-import com.tokopedia.seller.product.variant.data.cloud.api.TomeProductApi;
 import com.tokopedia.seller.product.variant.data.source.ProductVariantDataSource;
 import com.tokopedia.seller.product.variant.domain.interactor.FetchProductVariantByCatUseCase;
 import com.tokopedia.seller.product.variant.repository.ProductVariantRepository;
@@ -83,8 +81,6 @@ public class ProductAddModule {
                                                  FetchCategoryDataSource fetchCategoryDataSource){
         return new CategoryRepositoryImpl(categoryVersionDataSource, categoryDataSource, fetchCategoryDataSource);
     }
-
-
 
     @ProductAddScope
     @Provides
@@ -166,12 +162,6 @@ public class ProductAddModule {
     @Provides
     ProductVariantRepository productVariantRepository(ProductVariantDataSource productVariantDataSource){
         return new ProductVariantRepositoryImpl(productVariantDataSource);
-    }
-
-    @ProductAddScope
-    @Provides
-    TomeProductApi provideTomeApi(@TomeQualifier Retrofit retrofit){
-        return retrofit.create(TomeProductApi.class);
     }
 
 }

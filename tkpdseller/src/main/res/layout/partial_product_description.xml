@@ -39,12 +39,12 @@
                 app:spinner_values="@array/product_condition_values" />
             <LinearLayout
                 style="@style/LabelLayout"
-                android:baselineAligned="false"
+                android:baselineAligned="true"
                 android:orientation="horizontal">
 
-                <android.support.design.widget.TextInputLayout
+                <com.tokopedia.design.text.TkpdHintTextInputLayout
                     android:id="@+id/text_input_layout_description"
-                    style="@style/TextInputLayout"
+                    style="@style/HintTextInputLayout"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     app:counterEnabled="true"
@@ -54,34 +54,32 @@
                     <EditText
                         android:id="@+id/edit_text_description"
                         style="@style/EditText"
+                        android:hint="@string/product_label_enter_product_description"
                         android:layout_width="match_parent"
                         android:inputType="textMultiLine"
                         android:maxLength="@integer/product_max_character_description" />
 
-                </android.support.design.widget.TextInputLayout>
+                </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
                 <FrameLayout
+                    android:id="@+id/info_icon_add_product_container"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent">
-
-                    <FrameLayout
-                        android:id="@+id/info_icon_add_product_container"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/image_width_xxl"
-                        android:layout_gravity="center"
-                        android:foregroundGravity="center">
-                        <android.support.v7.widget.AppCompatImageView
-                            android:id="@+id/info_icon_add_product"
-                            android:layout_width="@dimen/image_width_xs"
-                            android:layout_height="@dimen/image_width_xs"
-                            android:scaleType="fitXY"
-                            android:layout_gravity="center_vertical|end"
-                            android:foregroundGravity="center_vertical|right"
-                            android:src="@drawable/ic_info"/>
-                    </FrameLayout>
-
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:layout_marginTop="@dimen/margin_med"
+                    android:paddingLeft="@dimen/padding_vs"
+                    android:paddingStart="@dimen/padding_vs"
+                    android:foreground="?attr/selectableItemBackgroundBorderless"
+                    android:foregroundGravity="center">
+                    <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/info_icon_add_product"
+                        android:layout_width="@dimen/image_medal_size"
+                        android:layout_height="@dimen/image_medal_size"
+                        android:scaleType="fitXY"
+                        android:layout_gravity="end"
+                        android:foregroundGravity="center_vertical|right"
+                        android:src="@drawable/ic_info"/>
                 </FrameLayout>
-
             </LinearLayout>
         </LinearLayout>
 

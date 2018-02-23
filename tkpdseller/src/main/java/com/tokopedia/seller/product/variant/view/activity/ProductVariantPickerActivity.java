@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * Created by nathan on 8/2/17.
  */
-
+@Deprecated
 public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity<ProductVariantViewModel>
         implements ProductVariantPickerMultipleItem<ProductVariantViewModel>, ProductVariantItemPickerAddDialogFragment.Listener {
 
@@ -58,7 +58,7 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
 
     @Override
     protected Fragment getInitialCacheListFragment() {
-        return ProductVariantPickerCacheFragment.newInstance(productVariantByCatModel.getVariantId());
+        return ProductVariantPickerCacheFragment.newInstance(productVariantByCatModel.getVariantId() == ProductVariantConstant.COLOR_ID);
     }
 
     @Override

@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * Created by nathan on 8/4/17.
  */
-
+@Deprecated
 public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<BlankPresenter, ProductVariantOption>
         implements BasePickerItemSearchList<ProductVariantViewModel>,
         BaseMultipleCheckListAdapter.CheckedCallback<ProductVariantOption>,

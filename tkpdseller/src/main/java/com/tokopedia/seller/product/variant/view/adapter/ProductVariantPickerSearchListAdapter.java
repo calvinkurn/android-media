@@ -11,7 +11,7 @@ import com.tokopedia.seller.product.variant.view.adapter.viewholder.ProductVaria
 /**
  * @author normansyahputa on 5/26/17.
  */
-
+@Deprecated
 public class ProductVariantPickerSearchListAdapter extends BaseMultipleCheckListAdapter<ProductVariantOption> {
 
     @Override

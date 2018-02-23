@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.PictureItem;
 
 import java.util.ArrayList;
 import java.util.List;

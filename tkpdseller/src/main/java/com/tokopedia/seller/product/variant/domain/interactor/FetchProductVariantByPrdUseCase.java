@@ -2,14 +2,10 @@ package com.tokopedia.seller.product.variant.domain.interactor;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.UseCaseWithParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprdold.ProductVariantByPrdModel;
 import com.tokopedia.seller.product.variant.repository.ProductVariantRepository;
-
-import java.util.List;
 
 import javax.inject.Inject;
 

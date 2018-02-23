@@ -1,8 +1,7 @@
-package com.tokopedia.seller.product.variant.data.model.variantbyprd;
+package com.tokopedia.seller.product.variant.data.model.variantbyprdold;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.TextUtils;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

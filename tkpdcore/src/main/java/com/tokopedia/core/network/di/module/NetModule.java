@@ -108,9 +108,8 @@ public class NetModule {
     @YoutubeQualifier
     @ApplicationScope
     @Provides
-    public Retrofit provideYoutubeRetrofit(@NoAuth OkHttpClient okHttpClient,
-                                           Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.GOOGLE_APIS).client(okHttpClient).build();
+    public Retrofit provideYoutubeRetrofit(Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder.baseUrl(TkpdBaseURL.GOOGLE_APIS).client(new OkHttpClient.Builder().build()).build();
     }
 
     @MerlinQualifier

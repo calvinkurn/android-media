@@ -48,7 +48,7 @@
                 android:id="@+id/text_input_layout_name"
                 style="@style/HintTextInputLayout"
                 android:hint="@string/product_label_name"
-                android:layout_marginTop="@dimen/margin_ms"
+                android:layout_marginTop="@dimen/margin_small"
                 app:counterEnabled="true"
                 app:counterMaxLength="@integer/product_max_character_name">
 
@@ -58,7 +58,8 @@
                     android:layout_width="match_parent"
                     android:imeOptions="actionDone"
                     android:inputType="text"
-                    android:maxLength="@integer/product_max_character_name" />
+                    android:maxLength="@integer/product_max_character_name"
+                    android:hint="@string/product_enter_label_name"/>
 
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
         </LinearLayout>

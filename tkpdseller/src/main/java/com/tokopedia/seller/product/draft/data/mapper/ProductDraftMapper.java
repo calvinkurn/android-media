@@ -147,7 +147,7 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
             domainModel.setMinQty(draftModel.getQtyMin());
             domainModels.add(domainModel);
         }
-        return domainModels;
+        return domainModels.size() == 0? null: domainModels;
     }
 
     private List<ProductPictureViewModel> mapPhotosDraftToProductViewModel(List<ImageProductInputDraftModel> photos) {

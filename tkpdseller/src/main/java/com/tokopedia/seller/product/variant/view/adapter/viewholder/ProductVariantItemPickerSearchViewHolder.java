@@ -17,7 +17,7 @@ import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVaria
 /**
  * @author normansyahputa on 5/26/17.
  */
-
+@Deprecated
 public class ProductVariantItemPickerSearchViewHolder extends BaseMultipleCheckViewHolder<ProductVariantOption> {
 
     private ImageView imageView;

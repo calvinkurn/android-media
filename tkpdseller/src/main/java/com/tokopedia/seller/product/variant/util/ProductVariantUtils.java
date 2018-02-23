@@ -7,10 +7,10 @@ import android.util.SparseIntArray;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantOption;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantUnit;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.Option;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.VariantDatum;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.VariantOption;
+import com.tokopedia.seller.product.variant.data.model.variantbyprdold.Option;
+import com.tokopedia.seller.product.variant.data.model.variantbyprdold.ProductVariantByPrdModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprdold.VariantDatum;
+import com.tokopedia.seller.product.variant.data.model.variantbyprdold.VariantOption;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantCombinationSubmit;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantDataSubmit;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantOptionSubmit;
@@ -98,7 +98,6 @@ public class ProductVariantUtils {
             List<Long> optList = new ArrayList<>();
 
             List<Long> sourceOptionList = variantSourceDatum.getOptionIdList();
-            // TODO to remove the vcode, split by ":" will no longer used.
             if (sourceOptionList == null || sourceOptionList.size() == 0) {
                 String vSourceCode = variantSourceDatum.getvCode();
                 String[] vCodeSplit = vSourceCode.split(SPLIT_DELIMITER);

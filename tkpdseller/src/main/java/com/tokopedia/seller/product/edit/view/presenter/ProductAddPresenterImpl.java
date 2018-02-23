@@ -13,15 +13,12 @@ import com.tokopedia.core.common.category.domain.interactor.FetchCategoryDisplay
 import com.tokopedia.seller.product.draft.domain.interactor.SaveDraftProductUseCase;
 import com.tokopedia.seller.product.edit.domain.model.AddProductShopInfoDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.CategoryRecommDomainModel;
-import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.seller.product.edit.view.listener.ProductAddView;
 import com.tokopedia.seller.product.edit.view.mapper.CategoryRecommDomainToViewMapper;
-import com.tokopedia.seller.product.edit.view.mapper.UploadProductMapper;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
-import com.tokopedia.seller.product.edit.view.model.upload.UploadProductInputViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.domain.interactor.FetchProductVariantByCatUseCase;
 
@@ -100,7 +97,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
 
             @Override
             public void onNext(List<ProductVariantByCatModel> s) {
-                getView().onSuccessGetProductVariant(s);
+                getView().onSuccessGetProductVariantCat(s);
             }
         };
     }

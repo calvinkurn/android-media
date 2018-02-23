@@ -20,6 +20,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/view_group_product_manage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -57,7 +58,6 @@
             android:id="@+id/label_view_variant"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_med"
             android:visibility="gone"
             tools:visibility="visible"
             app:content="@string/product_label_choose"

@@ -6,9 +6,11 @@ import android.support.annotation.NonNull;
 import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CompoundButton;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.expandable.BaseExpandableOption;
 import com.tokopedia.expandable.ExpandableOptionSwitch;
@@ -20,6 +22,7 @@ import com.tokopedia.seller.product.edit.view.fragment.ProductAddFragment;
 import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPreorderViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 
 /**
  * Created by nathan on 4/11/17.
@@ -27,18 +30,18 @@ import com.tokopedia.seller.product.edit.view.model.edit.ProductPreorderViewMode
 
 public class ProductDeliveryInfoViewHolder extends ProductViewHolder {
 
-    public static final int INACTIVE_PREORDER = -1;
+    public static final int INACTIVE_PREORDER = 0;
     public static final int PREORDER_STATUS_ACTIVE = 1;
 
     private ExpandableOptionSwitch preOrderExpandableOptionSwitch;
     private SpinnerCounterInputView preOrderSpinnerCounterInputView;
     private LabelSwitch shareLabelSwitch;
     private Listener listener;
-    private boolean goldMerchant;
 
     private SpinnerCounterInputView weightSpinnerCounterInputView;
     private SpinnerTextView insuranceSpinnerTextView;
-    private SpinnerTextView freeReturnsSpinnerTextView;
+
+    private LabelSwitch freeReturnsSwitch;
 
     public ProductDeliveryInfoViewHolder(View view, Listener listener) {
         preOrderExpandableOptionSwitch = (ExpandableOptionSwitch) view.findViewById(R.id.expandable_option_switch_pre_order);
@@ -73,7 +76,7 @@ public class ProductDeliveryInfoViewHolder extends ProductViewHolder {
         weightSpinnerCounterInputView = (SpinnerCounterInputView) view.findViewById(R.id.spinner_counter_input_view_weight);
 
         insuranceSpinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view_insurance);
-        freeReturnsSpinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view_free_returns);
+        freeReturnsSwitch = (LabelSwitch) view.findViewById(R.id.label_switch_free_return);
 
         weightSpinnerCounterInputView.addTextChangedListener(new NumberTextWatcher(weightSpinnerCounterInputView.getCounterEditText(), weightSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)) {
             @Override
@@ -91,27 +94,53 @@ public class ProductDeliveryInfoViewHolder extends ProductViewHolder {
             }
         });
 
-        freeReturnsSpinnerTextView.setOnItemChangeListener(new SpinnerTextView.OnItemChangeListener() {
+        freeReturnsSwitch.setListenerValue(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onItemChanged(int position, String entry, String value) {
-                ProductDeliveryInfoViewHolder.this.listener.onFreeReturnChecked(value.equals(freeReturnsSpinnerTextView.getContext().getString(R.string.product_free_return_values_active)));
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                ProductDeliveryInfoViewHolder.this.listener.onFreeReturnChecked(isChecked);
             }
         });
 
         setListener(listener);
     }
 
+    @Override
+    public void renderData(ProductViewModel model) {
+        setWeightUnit((int)model.getProductWeightUnit());
+        if (model.getProductWeight() > 0) {
+            setWeightValue((int)model.getProductWeight());
+        }
+        setInsurance(model.isProductMustInsurance());
+        setFreeReturn(model.isProductFreeReturn());
+        if (model.getProductPreorder().getPreorderProcessTime() > 0) {
+            expandPreOrder(true);
+            setPreOrderUnit((int)model.getProductPreorder().getPreorderTimeUnit());
+            setPreOrderValue((int)model.getProductPreorder().getPreorderProcessTime());
+        } else {
+            expandPreOrder(false);
+        }
+    }
+
+    @Override
+    public void updateModel(ProductViewModel model) {
+        model.setProductWeightUnit(getWeightUnit());
+        model.setProductWeight(getWeightValue());
+        model.setProductMustInsurance(isMustInsurance());
+        model.setProductFreeReturn(isFreeReturns());
+        model.setProductPreorder(getPreOrder());
+    }
+
     public void setListener(Listener listener) {
         this.listener = listener;
     }
 
-    public void updateViewFreeReturn(boolean isFreeReturn) {
+    public void showViewFreeReturn(boolean isFreeReturn) {
         if (isFreeReturn) {
-            freeReturnsSpinnerTextView.setVisibility(View.VISIBLE);
+            freeReturnsSwitch.setVisibility(View.VISIBLE);
         } else {
-            freeReturnsSpinnerTextView.setVisibility(View.GONE);
+            freeReturnsSwitch.setVisibility(View.GONE);
         }
-        listener.onFreeReturnChecked(getFreeReturns() == Integer.parseInt(freeReturnsSpinnerTextView.getContext().getString(R.string.product_free_return_values_active)));
+        listener.onFreeReturnChecked(freeReturnsSwitch.isChecked());
     }
 
     public int getWeightUnit() {
@@ -201,9 +230,9 @@ public class ProductDeliveryInfoViewHolder extends ProductViewHolder {
 
     public void setFreeReturn(boolean isFreeReturn) {
         if(isFreeReturn) {
-            freeReturnsSpinnerTextView.setSpinnerValue(String.valueOf(FreeReturnTypeDef.TYPE_ACTIVE));
+            freeReturnsSwitch.setChecked(true);
         }else{
-            freeReturnsSpinnerTextView.setSpinnerValue(String.valueOf(FreeReturnTypeDef.TYPE_INACTIVE));
+            freeReturnsSwitch.setChecked(false);
         }
     }
 
@@ -220,13 +249,12 @@ public class ProductDeliveryInfoViewHolder extends ProductViewHolder {
     }
 
     public int getFreeReturns() {
-        if (freeReturnsSpinnerTextView.getVisibility() != View.VISIBLE || freeReturnsSpinnerTextView.getSpinnerValue() == null) {
-            return Integer.parseInt(freeReturnsSpinnerTextView.getContext().getString(R.string.product_free_return_values_inactive));
+        if (freeReturnsSwitch.getVisibility() != View.VISIBLE || !freeReturnsSwitch.isChecked()) {
+            return Integer.parseInt(freeReturnsSwitch.getContext().getString(R.string.product_free_return_values_inactive));
         } else {
-            return Integer.parseInt(freeReturnsSpinnerTextView.getSpinnerValue());
+            return Integer.parseInt(freeReturnsSwitch.getContext().getString(R.string.product_free_return_values_active));
         }
     }
-
 
     private boolean isWeightValid() {
         String minWeightString = CurrencyFormatHelper.removeCurrencyPrefix(weightSpinnerCounterInputView.getContext().getString(R.string.product_minimum_weight_gram));
@@ -245,25 +273,27 @@ public class ProductDeliveryInfoViewHolder extends ProductViewHolder {
     }
 
     @Override
-    public Pair<Boolean, String> isDataValid() {
+    public boolean isDataValid() {
         if (!isWeightValid()) {
             weightSpinnerCounterInputView.requestFocus();
-            return new Pair<>(false, AppEventTracking.AddProduct.FIELDS_MANDATORY_WEIGHT);
+            UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_WEIGHT);
+            return false;
         }
         if (!isPreOrderValid()) {
-            return new Pair<>(false, AppEventTracking.AddProduct.FIELDS_OPTIONAL_PREORDER);
+            UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PREORDER);
+            return false;
         }
-        return new Pair<>(true, "");
+        return true;
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-
+        // no need; already on the model
     }
 
     @Override
     public void onViewStateRestored(@NonNull Bundle savedInstanceState) {
-
+        // no need; already on the model
     }
 
     /**

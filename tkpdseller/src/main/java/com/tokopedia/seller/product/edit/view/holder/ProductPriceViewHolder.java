@@ -33,6 +33,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.seller.product.edit.view.adapter.WholesaleAdapter;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductWholesaleViewModel;
 import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
@@ -47,10 +48,6 @@ public class ProductPriceViewHolder extends ProductViewHolder
         implements WholesaleAdapter.Listener {
 
     public static final String IS_ENABLE_WHOLESALE = "IS_ENABLE_WHOLESALE";
-    public static final String IS_ON_WHOLESALE = "IS_ON_WHOLESALE";
-    private static final String KEY_WHOLESALE = "KEY_WHOLESALE";
-    private static final String BUNDLE_SPINNER_POSITION = "BUNDLE_SPINNER_POSITION";
-    private static final String BUNDLE_COUNTER_PRICE = "BUNDLE_COUNTER_PRICE";
     private static final String IS_WHOLESALE_VISIBLE = "IS_WHOLE_VISIBLE";
 
     private static final int MAX_WHOLESALE = 5;
@@ -193,6 +190,23 @@ public class ProductPriceViewHolder extends ProductViewHolder
         setListener(listener);
     }
 
+    @Override
+    public void renderData(ProductViewModel model) {
+        setPriceUnit((int)model.getProductPriceCurrency());
+        if (model.getProductPrice()>0) {
+            setPriceValue(model.getProductPrice());
+        }
+        if (model.getProductWholesale() == null || model.getProductWholesale().size() == 0) {
+            expandWholesale(false);
+        } else {
+            expandWholesale(true);
+            setWholesalePrice(model.getProductWholesale());
+        }
+        if (model.getProductMinOrder() > 0) {
+            setMinimumOrder((int)model.getProductMinOrder());
+        }
+    }
+
     private void showEditPriceDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(editPriceImageButton.getContext(),
                 R.style.AppCompatAlertDialogStyle);
@@ -295,7 +309,7 @@ public class ProductPriceViewHolder extends ProductViewHolder
 
     public List<ProductWholesaleViewModel> getProductWholesaleViewModels() {
         if (!wholesaleExpandableOptionSwitch.isExpanded()) {
-            return new ArrayList<>();
+            return null;
         }
         return wholesaleAdapter.getProductWholesaleViewModels();
     }
@@ -334,51 +348,40 @@ public class ProductPriceViewHolder extends ProductViewHolder
     }
 
     @Override
-    public Pair<Boolean, String> isDataValid() {
+    public boolean isDataValid() {
         if (!isPriceValid()) {
             priceSpinnerCounterInputView.requestFocus();
-            return new Pair<>(false, AppEventTracking.AddProduct.FIELDS_MANDATORY_PRICE);
+            UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_PRICE);
+            return false;
         }
         if (!isMinOrderValid()) {
             minimumOrderCounterInputView.requestFocus();
-            return new Pair<>(false, AppEventTracking.AddProduct.FIELDS_MANDATORY_MIN_PURCHASE);
+            UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_MIN_PURCHASE);
+            return false;
         }
-        return new Pair<>(true, "");
+        return true;
+    }
+
+    @Override
+    public void updateModel(ProductViewModel model) {
+        model.setProductPriceCurrency(getPriceUnit());
+        model.setProductPrice(getPriceValue());
+        model.setProductMinOrder(getMinimumOrder());
+        model.setProductWholesale(getProductWholesaleViewModels());
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putBoolean(IS_ENABLE_WHOLESALE, wholesaleExpandableOptionSwitch.isEnabled());
-        savedInstanceState.putBoolean(IS_ON_WHOLESALE, editPriceImageButton.getVisibility() == View.VISIBLE);
-        savedInstanceState.putParcelableArrayList(KEY_WHOLESALE,
-                new ArrayList<Parcelable>(wholesaleAdapter.getProductWholesaleViewModels()));
-        savedInstanceState.putInt(BUNDLE_SPINNER_POSITION, priceSpinnerCounterInputView.getSpinnerPosition());
-        savedInstanceState.putDouble(BUNDLE_COUNTER_PRICE, priceSpinnerCounterInputView.getCounterValue());
         savedInstanceState.putBoolean(IS_WHOLESALE_VISIBLE, wholesaleExpandableOptionSwitch.getVisibility() == View.VISIBLE);
     }
 
     @Override
     public void onViewStateRestored(@NonNull Bundle savedInstanceState) {
         wholesaleExpandableOptionSwitch.setEnabled(savedInstanceState.getBoolean(IS_ENABLE_WHOLESALE));
-        wholesaleExpandableOptionSwitch.setExpand(savedInstanceState.getBoolean(IS_ON_WHOLESALE));
-
-        int spinnerPricePosition = savedInstanceState.getInt(BUNDLE_SPINNER_POSITION, 0);
-        priceSpinnerCounterInputView.setSpinnerPosition(spinnerPricePosition);
-
-        double counterPriceValue = savedInstanceState.getDouble(BUNDLE_COUNTER_PRICE, 0f);
-        priceSpinnerCounterInputView.setCounterValue(counterPriceValue);
 
         boolean isWholeSaleVisible = savedInstanceState.getBoolean(IS_WHOLESALE_VISIBLE, false);
         wholesaleExpandableOptionSwitch.setVisibility(isWholeSaleVisible ? View.VISIBLE : View.GONE);
-
-        // wholesale must be executed at the last, because the wholesale will be cleared on when the price changes.
-        ArrayList<ProductWholesaleViewModel> wholesaleModels = savedInstanceState.getParcelableArrayList(KEY_WHOLESALE);
-        if (wholesaleModels == null) {
-            wholesaleModels = new ArrayList<>();
-        }
-        wholesaleAdapter.addAllWholeSalePrice(wholesaleModels);
-        wholesaleAdapter.notifyDataSetChanged();
-
     }
 
     public boolean isMinOrderValid() {

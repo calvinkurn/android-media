@@ -6,12 +6,13 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.seller.base.view.adapter.ItemIdType;
+import com.tokopedia.seller.base.view.adapter.ItemPickerType;
 
 /**
  * Created by hendry on 8/14/2017.
  */
 
-public class ProductVariantOption implements Parcelable, ItemIdType {
+public class ProductVariantOption implements Parcelable, ItemIdType, ItemPickerType {
 
     public static final int TYPE = 199349;
 
@@ -42,6 +43,12 @@ public class ProductVariantOption implements Parcelable, ItemIdType {
 
     public String getHexCode() {
         return hexCode;
+    }
+
+    // this is for alias for picker type
+    @Override
+    public String getTitle() {
+        return value;
     }
 
     public String getIcon() {

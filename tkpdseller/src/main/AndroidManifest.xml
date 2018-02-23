@@ -216,8 +216,27 @@
 
         <activity
             android:name=".product.variant.view.activity.ProductVariantDetailActivity"
-            android:exported="true"
             android:label="@string/product_variant_label_title"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".product.variant.view.activity.ProductVariantDashboardNewActivity"
+            android:label="@string/product_variant_label_title"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".product.variant.view.activity.ProductVariantPickerNewActivity"
+            android:label="@string/product_variant_label_title"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".product.variant.view.activity.ProductVariantDetailLevel1Activity"
+            android:label="@string/product_variant_detail_label_title"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".product.variant.view.activity.ProductVariantDetailLevel2Activity"
+            android:label="@string/product_variant_detail_label_title"
             android:screenOrientation="portrait" />
 
         <activity
