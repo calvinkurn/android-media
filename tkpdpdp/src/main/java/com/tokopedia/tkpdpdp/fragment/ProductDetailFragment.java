@@ -968,7 +968,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void onRestoreState(Bundle savedInstanceState) {
         Log.d(TAG, "onRestoreState");
-        presenter.processStateData(savedInstanceState);
+        presenter.processStateData(savedInstanceState,getActivity());
     }
 
     @Override
