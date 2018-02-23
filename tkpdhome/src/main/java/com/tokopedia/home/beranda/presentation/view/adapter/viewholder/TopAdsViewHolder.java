@@ -76,6 +76,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
 
     @Override
     public void onAddFavorite(int position, Data data) {
-
+        data.setFavorit(true);
+        topAdsWidgetView.notifyDataChange();
     }
 }

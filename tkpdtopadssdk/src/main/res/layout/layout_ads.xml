@@ -3,8 +3,6 @@
     android:id="@id/root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/margin_sm"
-    android:layout_marginTop="@dimen/margin_sm"
     android:orientation="vertical">
 
     <include layout="@layout/layout_ads_header" />

@@ -12,10 +12,10 @@
         android:id="@+id/image_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardElevation="0dp"
-        android:layout_marginTop="@dimen/margin_3"
         android:layout_marginLeft="@dimen/margin_3"
         android:layout_marginRight="@dimen/margin_3"
+        android:layout_marginTop="@dimen/margin_3"
+        app:cardElevation="0dp"
         app:cardUseCompatPadding="true">
 
         <com.tokopedia.topads.sdk.view.SquareImageView
@@ -24,6 +24,7 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:gravity="center"
+            android:src="@drawable/loading_page"
             android:scaleType="centerCrop" />
     </android.support.v7.widget.CardView>
 
@@ -37,26 +38,46 @@
         android:layout_marginTop="@dimen/margin_vs"
         android:ellipsize="end"
         android:fontFamily="sans-serif-medium"
-        android:textStyle="normal"
         android:maxLines="2"
-        tools:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold"
-        android:textColor="@color/black_70"/>
+        android:textColor="@color/black_70"
+        android:textStyle="normal"
+        tools:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold" />
 
-    <TextView
-        android:id="@+id/price"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_below="@id/title"
         android:gravity="bottom"
+        android:orientation="horizontal"
         android:paddingBottom="@dimen/padding_small"
         android:paddingLeft="@dimen/padding_vs"
         android:paddingRight="@dimen/padding_vs"
-        android:paddingTop="@dimen/padding_vs"
-        android:fontFamily="sans-serif-medium"
-        android:textStyle="normal"
-        android:textColor="@color/orange_red"
-        android:textSize="12sp"
-        tools:text="Rp 3.121.500" />
+        android:paddingTop="@dimen/padding_vs">
 
+        <TextView
+            android:id="@+id/price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="bottom"
+            android:textColor="@color/orange_red"
+            android:textSize="12sp"
+            android:textStyle="normal"
+            tools:text="Rp 3.121.500" />
+
+        <RelativeLayout
+            android:layout_width="18dp"
+            android:layout_height="18dp">
+
+            <ImageView
+                android:id="@id/info_topads"
+                android:layout_width="17dp"
+                android:layout_height="14dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_toa" />
+
+        </RelativeLayout>
+    </LinearLayout>
 </RelativeLayout>

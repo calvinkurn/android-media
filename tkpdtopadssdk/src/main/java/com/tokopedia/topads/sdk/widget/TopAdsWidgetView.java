@@ -34,9 +34,7 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
     private static final String TAG = TopAdsWidgetView.class.getSimpleName();
     private RecyclerView recyclerView;
     private AdsItemAdapter adapter;
-    private LinearLayout adsHeader;
     private static final int DEFAULT_SPAN_COUNT = 2;
-    private DividerItemDecoration itemDecoration;
     private List<Data> data = new ArrayList<>();
     private TopAdsItemClickListener itemClickListener;
     private OpenTopAdsUseCase openTopAdsUseCase;
@@ -62,15 +60,13 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
         openTopAdsUseCase = new OpenTopAdsUseCase(context);
         adapter = new AdsItemAdapter(getContext());
         adapter.setItemClickListener(this);
-        layoutManager = new GridLayoutManager(getContext(), 2,
+        layoutManager = new GridLayoutManager(getContext(), DEFAULT_SPAN_COUNT,
                         GridLayoutManager.VERTICAL, false);
         findViewById(R.id.info_topads).setOnClickListener(this);
         recyclerView = (RecyclerView) findViewById(R.id.list);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
-        itemDecoration = new DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL_LIST);
-        recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setAdapter(adapter);
     }
 
@@ -123,5 +119,9 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
             TopAdsInfoBottomSheet infoBottomSheet = TopAdsInfoBottomSheet.newInstance(getContext());
             infoBottomSheet.show();
         }
+    }
+
+    public void notifyDataChange() {
+        adapter.notifyDataSetChanged();
     }
 }
