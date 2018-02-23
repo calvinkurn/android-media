@@ -4,5 +4,7 @@ package com.tokopedia.tkpdstream.channel.data;
  * @author by nisie on 2/3/18.
  */
 
-public class ChannelListPojo {
+class ChannelUrl {
+
+    static final String GET_ALL_CHANNEL = "/api/v1/channels";
 }

@@ -1,48 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     android:padding="@dimen/space_small">
 
     <ImageView
         android:layout_width="133dp"
-        android:layout_height="133dp"
-        android:id="@+id/imageView2"
+        android:layout_height="match_parent"
+        android:id="@+id/imageView"
         tools:src="@drawable/ic_calendar_grey"/>
 
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/imageView2"
-        android:layout_alignEnd="@+id/imageView2"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/imageView2"
-        android:layout_alignTop="@+id/text_view"
-        android:indeterminate="false"
-        android:progress="80"
-        android:progressDrawable="@drawable/vote_option_bar_selected"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="273dp" />
-
-    <TextView
-        android:id="@+id/text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/imageView2"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:padding="@dimen/space_small"
-        android:textSize="@dimen/font_micro"
-        android:fontFamily="sans-serif-medium"
-        android:textStyle="normal"
-        android:textColor="#ffffff"
-        android:letterSpacing="0.03"
-        android:lineSpacingExtra="0sp"
-        tools:text="Donald Duck" />
 
     <LinearLayout
         android:id="@+id/percent_layout"
@@ -51,7 +19,7 @@
         android:orientation="horizontal"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_above="@id/text_view">
+        android:layout_above="@id/layout_progress">
 
         <TextView
             android:id="@+id/percent"
@@ -62,6 +30,7 @@
             android:textColor="@color/white"
             android:textSize="@dimen/font_headline"
             android:textStyle="bold"
+            android:paddingLeft="@dimen/space_small"
             tools:text="90" />
         <TextView
             android:layout_width="wrap_content"
@@ -72,7 +41,54 @@
             android:textColor="@color/white"
             android:lineSpacingExtra="0sp"
             android:gravity="center_horizontal"
-            tools:text="%"
+            android:text="%"
             />
     </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@id/imageView"
+        android:layout_alignBottom="@id/imageView">
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignTop="@+id/text_view"
+            android:layout_alignBottom="@id/text_view"
+            android:indeterminate="false"
+            android:progress="10"
+            android:progressDrawable="@drawable/vote_option_image_selected" />
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="fitCenter"
+            android:layout_centerVertical="true"
+            android:background="@drawable/ic_checked_inverse"
+            android:layout_toRightOf="@id/text_view"
+            android:padding="@dimen/space_small" />
+        <TextView
+            android:id="@+id/text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/space_small"
+            android:textSize="@dimen/font_micro"
+            android:fontFamily="sans-serif-medium"
+            android:textStyle="normal"
+            android:textColor="@color/white"
+            android:letterSpacing="0.03"
+            android:lineSpacingExtra="0sp"
+            android:ellipsize="end"
+            android:maxLength="18"
+            tools:text="Donald Duck" />
+
+
+    </RelativeLayout>
 </RelativeLayout>

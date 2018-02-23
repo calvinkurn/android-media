@@ -1,7 +1,6 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@android:id/background">
         <shape>
-            <corners android:radius="25dip" />
             <gradient android:startColor="@color/black_dimmed" android:centerColor="@color/black_dimmed"
                 android:centerY="0.75" android:endColor="@color/black_dimmed" android:angle="90" />
         </shape>
@@ -9,7 +8,7 @@
     <item android:id="@android:id/progress">
         <clip>
             <shape>
-                <corners android:radius="25dip" />
+                <corners android:topRightRadius="8dp" android:bottomRightRadius="8dp" />
                 <gradient android:startColor="@color/first_green"
                     android:endColor="@color/second_green" />
             </shape>

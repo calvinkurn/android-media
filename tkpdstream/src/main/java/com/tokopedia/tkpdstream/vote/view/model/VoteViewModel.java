@@ -19,19 +19,29 @@ public class VoteViewModel implements Parcelable, Visitable<VoteTypeFactory> {
     public static final int BAR_TYPE = 1;
     public static final int IMAGE_TYPE = 2;
 
-    String option;
-
-    int percentage;
-
-    int selected;
-
-    int type;
+    String option, url;
+    int percentage, selected, type;
 
     public VoteViewModel(String option, int percentage, int selected) {
         this.option = option;
         this.percentage = percentage;
         this.selected = selected;
         type = BAR_TYPE;
+    }
+
+    public VoteViewModel(String option, int percentage, int selected, int type) {
+        this.option = option;
+        this.percentage = percentage;
+        this.selected = selected;
+        this.type = type;
+    }
+
+    public VoteViewModel(String option, String url, int percentage, int selected, int type) {
+        this.option = option;
+        this.url = url;
+        this.percentage = percentage;
+        this.selected = selected;
+        this.type = type;
     }
 
     public String getOption() {
@@ -66,6 +76,14 @@ public class VoteViewModel implements Parcelable, Visitable<VoteTypeFactory> {
         this.type = type;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     @Override
     public int type(VoteTypeFactory typeFactory) {
         return typeFactory.type(this);
@@ -83,6 +101,7 @@ public class VoteViewModel implements Parcelable, Visitable<VoteTypeFactory> {
         dest.writeInt(this.percentage);
         dest.writeInt(this.selected);
         dest.writeInt(this.type);
+        dest.writeString(this.url);
     }
 
     protected VoteViewModel(Parcel in) {
@@ -90,6 +109,7 @@ public class VoteViewModel implements Parcelable, Visitable<VoteTypeFactory> {
         this.percentage = in.readInt();
         this.selected = in.readInt();
         this.type = in.readInt();
+        this.url = in.readString();
     }
 
     public static final Creator<VoteViewModel> CREATOR = new Creator<VoteViewModel>() {

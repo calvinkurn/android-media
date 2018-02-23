@@ -33,7 +33,6 @@ public class GetGroupChatMessagesFirstTimeUseCase {
         this.source = source;
     }
 
-
     public void execute(Context context,
                         String channelUrl,
                         OpenChannel mChannel,

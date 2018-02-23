@@ -300,4 +300,7 @@ yang ditemukan</string>
     <string name="string_sort_3">Komplain Terlama</string>
     <string name="string_sort_1">Terakhir Dibalas</string>
     <string name="string_other_products">Produk Lainnya</string>
+
+    <string name="title_personal">Personal</string>
+    <string name="title_community">Komunitas</string>
 </resources>

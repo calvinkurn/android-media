@@ -173,6 +173,8 @@ import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tkpdstream.channel.view.activity.ChannelActivity;
+import com.tokopedia.tkpdstream.channel.view.fragment.ChannelFragment;
+import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
 import com.tokopedia.tokocash.historytokocash.presentation.activity.HistoryTokoCashActivity;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.CustomScannerTokoCashActivity;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
@@ -872,8 +874,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             return ChatRoomActivity.getAskUserIntent(context, userId, userName, source, avatar);
         else
             return SendMessageActivityOld.getAskUserIntent(context, userId, userName, source);
-
-
     }
 
     @Override
@@ -1331,5 +1331,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getGroupChatIntent(Context context) {
         return new Intent(context, ChannelActivity.class);
+    }
+
+    @Override
+    public Fragment getChannelFragment(Bundle bundle) {
+        return ChannelFragment.createInstance(bundle);
+    }
+
+    @Override
+    public String getChannelFragmentTag() {
+        return ChannelFragment.class.getSimpleName();
     }
 }

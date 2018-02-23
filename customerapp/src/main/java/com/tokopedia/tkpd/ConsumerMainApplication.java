@@ -32,7 +32,7 @@ import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
-import com.tokopedia.tkpdstream.SendbirdKey;
+import com.tokopedia.tkpdstream.common.data.SendbirdKey;
 
 /**
  * Created by ricoharisin on 11/11/16.

@@ -17,7 +17,7 @@ import rx.Observable;
 
 public interface VoteApi {
 
-    @GET(GroupChatUrl.GET_ALL_CHANNEL)
+    @GET(VoteUrl.GET_ALL_CHANNEL)
     Observable<Response<DataResponse>> getVoteInfo(@QueryMap Map<String,
                 Object> keyword);
 }

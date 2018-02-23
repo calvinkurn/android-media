@@ -536,7 +536,7 @@ public class ImageHandler {
         if (context != null) {
             Glide.with(context)
                     .load(imageUrl)
-                    .thumbnail(0.1f)
+                    .override(30,30)
                     .centerCrop()
                     .into(imageView);
         }

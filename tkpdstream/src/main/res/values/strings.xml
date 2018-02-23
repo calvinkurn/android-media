@@ -11,5 +11,8 @@
     <string name="sendbird_error_retry">Terjadi kesalahan. Mohon coba kembali</string>
     <string name="sendbird_error_network">Terjadi kesalahan koneksi. Mohon periksa jaringan internet anda.</string>
     <string name="sendbird_error_server">Terjadi kesalahan pada server. Mohon coba beberapa saat lagi.</string>
+    <string name="groupchat_action_enter">bergabung</string>
+    <string name="label_admin">Admin</string>
+    <string name="participant">partisipan</string>
 
 </resources>

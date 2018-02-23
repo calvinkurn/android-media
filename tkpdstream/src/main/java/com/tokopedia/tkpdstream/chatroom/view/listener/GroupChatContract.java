@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.LoginGroupChatUseCase;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
@@ -38,6 +39,10 @@ public interface GroupChatContract {
         void onErrorGetMessageFirstTime(String errorMessage);
 
         void onSuccessGetVoteInfo(VoteInfoViewModel voteInfoViewModel);
+
+        void onErrorGetChannelInfo(String errorMessage);
+
+        void onSuccessGetChannelInfo(ChannelInfoViewModel channelInfoViewModel);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -56,5 +61,7 @@ public interface GroupChatContract {
         void shareChatRoom(GroupChatViewModel viewModel);
 
         void getVoteInfo(Context context);
+
+        void getChannelInfo(String channelUuid);
     }
 }

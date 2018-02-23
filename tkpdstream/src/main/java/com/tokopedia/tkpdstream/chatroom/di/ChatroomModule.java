@@ -1,8 +1,7 @@
 package com.tokopedia.tkpdstream.chatroom.di;
 
 import com.tokopedia.tkpdstream.channel.di.ChannelScope;
-import com.tokopedia.tkpdstream.common.data.GroupChatApi;
-import com.tokopedia.tkpdstream.common.data.GroupChatUrl;
+import com.tokopedia.tkpdstream.chatroom.data.ChatroomApi;
 import com.tokopedia.tkpdstream.common.data.VoteApi;
 import com.tokopedia.tkpdstream.common.data.VoteUrl;
 import com.tokopedia.tkpdstream.common.di.qualifier.GroupChatQualifier;
@@ -11,11 +10,18 @@ import com.tokopedia.tkpdstream.vote.domain.mapper.GetVoteMapper;
 import com.tokopedia.tkpdstream.vote.domain.source.GetVoteSource;
 import com.tokopedia.tkpdstream.vote.domain.usecase.GetVoteUseCase;
 
+import com.tokopedia.tkpdstream.chatroom.data.ChatroomApi;
+import com.tokopedia.tkpdstream.common.data.BaseUrl;
+import com.tokopedia.tkpdstream.common.di.qualifier.GroupChatQualifier;
+
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import dagger.Provides;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
 
 /**
  * @author by nisie on 2/15/18.
@@ -28,8 +34,8 @@ public class ChatroomModule {
     @ChatroomScope
     @Provides
     @VoteQualifier
-    public Retrofit provideGroupChatRetrofit(OkHttpClient okHttpClient) {
-        return new Retrofit.Builder().baseUrl(VoteUrl.BASE_URL).client(okHttpClient).addCallAdapterFactory(RxJavaCallAdapterFactory.create()).build();
+    public Retrofit provideGroupChatRetrofit(Retrofit.Builder retrofitBuilder, OkHttpClient okHttpClient) {
+        return retrofitBuilder.baseUrl(VoteUrl.BASE_URL).client(okHttpClient).addCallAdapterFactory(RxJavaCallAdapterFactory.create()).build();
     }
 
     @ChatroomScope
@@ -51,4 +57,18 @@ public class ChatroomModule {
         return new GetVoteUseCase(getVoteSource);
     }
 
+
+    @ChatroomScope
+    @Provides
+    @GroupChatQualifier
+    public Retrofit provideChatroomRetrofit(Retrofit.Builder retrofitBuilder,
+                                            OkHttpClient okHttpClient) {
+        return retrofitBuilder.baseUrl(BaseUrl.BASE_URL).client(okHttpClient).build();
+    }
+
+    @ChatroomScope
+    @Provides
+    public ChatroomApi provideChatroomApi(@GroupChatQualifier Retrofit retrofit) {
+        return retrofit.create(ChatroomApi.class);
+    }
 }

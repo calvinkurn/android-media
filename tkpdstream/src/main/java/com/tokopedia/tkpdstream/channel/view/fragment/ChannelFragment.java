@@ -24,7 +24,7 @@ import com.tokopedia.tkpdstream.channel.view.listener.ChannelContract;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelListViewModel;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
 import com.tokopedia.tkpdstream.channel.view.presenter.ChannelPresenter;
-import com.tokopedia.tkpdstream.common.analytics.ChannelAnalytics;
+import com.tokopedia.tkpdstream.channel.data.analytics.ChannelAnalytics;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
 
@@ -46,7 +46,7 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     @Inject
     ChannelPresenter presenter;
 
-    public static Fragment createInstance() {
+    public static Fragment createInstance(Bundle bundle) {
         return new ChannelFragment();
     }
 
@@ -163,6 +163,7 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
 
     @Override
     public void onItemClicked(ChannelViewModel channelViewModel) {
+
         startActivityForResult(GroupChatActivity.getCallingIntent(getActivity()),
                 REQUEST_OPEN_GROUPCHAT);
     }

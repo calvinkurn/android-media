@@ -10,6 +10,8 @@ import java.util.List;
 
 public class VoteInfoViewModel {
 
+    int voteType;
+
     String voteStatus;
 
     String title;
@@ -18,10 +20,19 @@ public class VoteInfoViewModel {
 
     int participant;
 
-    public VoteInfoViewModel(String title, List<Visitable> list, int participant) {
+    public VoteInfoViewModel(String title, List<Visitable> list, int participant, int voteType) {
         this.title = title;
         this.list = list;
         this.participant = participant;
+        this.voteType = voteType;
+    }
+
+    public int getVoteType() {
+        return voteType;
+    }
+
+    public void setVoteType(int voteType) {
+        this.voteType = voteType;
     }
 
     public String getTitle() {

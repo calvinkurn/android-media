@@ -1,4 +1,4 @@
-package com.tokopedia.tkpdstream;
+package com.tokopedia.tkpdstream.common.data;
 
 /**
  * @author by nisie on 2/6/18.

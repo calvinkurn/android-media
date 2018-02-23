@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.AdminAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.UserActionViewModel;
 
 /**
  * @author by nisie on 2/7/18.
@@ -20,6 +21,8 @@ public interface GroupChatTypeFactory {
     int type(ChatViewModel myChatViewModel);
 
     int type(PendingChatViewModel pendingChatViewModel);
+
+    int type(UserActionViewModel userActionViewModel);
 
 
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.tkpdstream.channel.data;
+package com.tokopedia.tkpdstream.channel.domain.pojo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

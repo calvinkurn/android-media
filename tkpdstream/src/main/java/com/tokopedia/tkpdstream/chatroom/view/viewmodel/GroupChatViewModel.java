@@ -9,18 +9,19 @@ import android.os.Parcelable;
 
 public class GroupChatViewModel implements Parcelable {
 
+    private String channelUuid;
+    private int totalParticipant;
+    private String channelName;
     private String channelUrl;
 
-    public GroupChatViewModel(String channelUrl) {
-        this.channelUrl = channelUrl;
-    }
-
-    public GroupChatViewModel() {
-        this.channelUrl = "pub1";
+    public GroupChatViewModel(String channelUuid) {
+        this.channelUuid = channelUuid;
+        this.channelName = "";
+        this.totalParticipant = 0;
     }
 
     protected GroupChatViewModel(Parcel in) {
-        channelUrl = in.readString();
+        channelUuid = in.readString();
     }
 
     public static final Creator<GroupChatViewModel> CREATOR = new Creator<GroupChatViewModel>() {
@@ -35,8 +36,8 @@ public class GroupChatViewModel implements Parcelable {
         }
     };
 
-    public String getChannelUrl() {
-        return channelUrl;
+    public String getChannelUuid() {
+        return channelUuid;
     }
 
     @Override
@@ -46,6 +47,30 @@ public class GroupChatViewModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(channelUrl);
+        dest.writeString(channelUuid);
+    }
+
+    public void setTotalParticipant(int totalParticipant) {
+        this.totalParticipant = totalParticipant;
+    }
+
+    public int getTotalParticipant() {
+        return totalParticipant;
+    }
+
+    public String getChannelName() {
+        return channelName;
+    }
+
+    public void setChannelName(String channelName) {
+        this.channelName = channelName;
+    }
+
+    public void setChannelUrl(String channelUrl) {
+        this.channelUrl = channelUrl;
+    }
+
+    public String getChannelUrl() {
+        return channelUrl;
     }
 }

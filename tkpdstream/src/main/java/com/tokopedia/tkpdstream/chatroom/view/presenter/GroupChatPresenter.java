@@ -7,18 +7,22 @@ import com.sendbird.android.PreviousMessageListQuery;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.tkpdstream.chatroom.domain.pojo.ChannelInfoPojo;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.ChannelHandlerUseCase;
+import com.tokopedia.tkpdstream.chatroom.domain.usecase.GetChannelInfoUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.GetGroupChatMessagesFirstTimeUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.GetGroupChatMessagesUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.LoginGroupChatUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.LogoutGroupChatUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.SendGroupChatMessageUseCase;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
 import com.tokopedia.tkpdstream.vote.domain.usecase.GetVoteUseCase;
 import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
+import com.tokopedia.tkpdstream.common.util.GroupChatErrorHandler;
 
 import java.util.List;
 
@@ -33,6 +37,7 @@ import rx.Subscriber;
 public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.View> implements
         GroupChatContract.Presenter {
 
+    private final GetChannelInfoUseCase getChannelInfoUseCase;
     private final GetGroupChatMessagesFirstTimeUseCase getGroupChatMessagesFirstTimeUseCase;
     private final GetGroupChatMessagesUseCase getGroupChatMessagesUseCase;
     private final LoginGroupChatUseCase loginGroupChatUseCase;
@@ -43,6 +48,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
     @Inject
     public GroupChatPresenter(LoginGroupChatUseCase loginGroupChatUseCase,
+                              GetChannelInfoUseCase getChannelInfoUseCase,
                               GetGroupChatMessagesFirstTimeUseCase
                                       getGroupChatMessagesFirstTimeUseCase,
                               GetGroupChatMessagesUseCase getGroupChatMessagesUseCase,
@@ -50,6 +56,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                               LogoutGroupChatUseCase logoutGroupChatUseCase,
                               ChannelHandlerUseCase channelHandlerUseCase,
                               GetVoteUseCase getVoteUseCase) {
+        this.getChannelInfoUseCase = getChannelInfoUseCase;
         this.loginGroupChatUseCase = loginGroupChatUseCase;
         this.getGroupChatMessagesFirstTimeUseCase = getGroupChatMessagesFirstTimeUseCase;
         this.getGroupChatMessagesUseCase = getGroupChatMessagesUseCase;
@@ -128,6 +135,29 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     @Override
     public void shareChatRoom(GroupChatViewModel viewModel) {
 
+    }
+
+    @Override
+    public void getChannelInfo(String channelUuid) {
+        getChannelInfoUseCase.execute(GetChannelInfoUseCase.createParams(channelUuid),
+                new Subscriber<ChannelInfoViewModel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        getView().onErrorGetChannelInfo(GroupChatErrorHandler.getErrorMessage(
+                                getView().getContext(), e, false
+                        ));
+                    }
+
+                    @Override
+                    public void onNext(ChannelInfoViewModel channelInfoViewModel) {
+                        getView().onSuccessGetChannelInfo(channelInfoViewModel);
+                    }
+                });
     }
 
     @Override

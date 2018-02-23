@@ -46,6 +46,7 @@ import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.sellerapp.R;
+import com.tokopedia.sellerapp.SellerRouterApplication;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 
@@ -85,7 +86,7 @@ public class DrawerSellerHelper extends DrawerHelper
         shopLayout = activity.findViewById(R.id.drawer_shop);
         footerShadow = activity.findViewById(R.id.drawer_footer_shadow);
 
-        if(activity.getApplicationContext() instanceof SellerModuleRouter){
+        if (activity.getApplicationContext() instanceof SellerModuleRouter) {
             SellerModuleRouter sellerModuleRouter = (SellerModuleRouter) activity.getApplicationContext();
             getShopInfoUseCase = sellerModuleRouter.getShopInfo();
         }
@@ -290,7 +291,7 @@ public class DrawerSellerHelper extends DrawerHelper
         return gmMenu;
     }
 
-    private void isGoldMerchantAsync(){
+    private void isGoldMerchantAsync() {
         getShopInfoUseCase.execute(RequestParams.EMPTY, new Subscriber<ShopModel>() {
             @Override
             public void onCompleted() {
@@ -313,7 +314,7 @@ public class DrawerSellerHelper extends DrawerHelper
                 // find gold merchant index based on drawerposition
                 int goldMerchantIndex = -1;
                 for (int i = 0; i < adapter.getData().size(); i++) {
-                    if(adapter.getData().get(i).getId() == TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE){
+                    if (adapter.getData().get(i).getId() == TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE) {
                         goldMerchantIndex = i;
                     }
                 }
@@ -324,8 +325,8 @@ public class DrawerSellerHelper extends DrawerHelper
 
                 adapter.getData().add(goldMerchantIndex, goldMerchantMenu);
 
-                if(drawerGroup.isExpanded()){
-                    adapter.getData().addAll(goldMerchantIndex+1, goldMerchantMenu.getList());
+                if (drawerGroup.isExpanded()) {
+                    adapter.getData().addAll(goldMerchantIndex + 1, goldMerchantMenu.getList());
                     goldMerchantMenu.setExpanded(true);
                 }
 
@@ -394,6 +395,12 @@ public class DrawerSellerHelper extends DrawerHelper
                     UnifyTracking.eventDrawerSellerHome();
                     context.startActivity(DashboardActivity.createInstance(context));
                     break;
+                case TkpdState.DrawerPosition.INBOX_MESSAGE:
+                    intent = ((SellerRouterApplication) context.getApplication())
+                            .getInboxMessageIntent(context);
+                    context.startActivity(intent);
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.MESSAGE);
+                    break;
                 case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND:
                     UnifyTracking.eventClickGoldMerchantViaDrawer();
                     context.startActivity(GmSubscribeHomeActivity.getCallingIntent(context));
@@ -419,7 +426,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.SALES_LIST);
                     break;
                 case TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST:
-                    intent = SellerRouter.getActivitySellingTransactionOpportunity(context,"");
+                    intent = SellerRouter.getActivitySellingTransactionOpportunity(context, "");
                     context.startActivity(intent);
                     break;
                 case TkpdState.DrawerPosition.ADD_PRODUCT:
@@ -466,11 +473,11 @@ public class DrawerSellerHelper extends DrawerHelper
                     context.startActivity(intent);
                     break;
                 case TkpdState.DrawerPosition.FEATURED_PRODUCT:
-                    if(isGoldMerchant) {
+                    if (isGoldMerchant) {
                         UnifyTracking.eventClickMenuFeaturedProduct();
                         intent = new Intent(context, GMFeaturedProductActivity.class);
                         context.startActivity(intent);
-                    }else{
+                    } else {
                         showDialogActionGoToGMSubscribe();
                         isNeedToCloseActivity = false;
                     }

@@ -1,0 +1,34 @@
+package com.tokopedia.tkpdstream.chatroom.domain.source;
+
+import com.tokopedia.tkpdstream.chatroom.data.ChatroomApi;
+import com.tokopedia.tkpdstream.chatroom.domain.mapper.ChannelInfoMapper;
+import com.tokopedia.tkpdstream.chatroom.domain.usecase.GetChannelInfoUseCase;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
+import com.tokopedia.usecase.RequestParams;
+
+import javax.inject.Inject;
+
+import rx.Observable;
+
+/**
+ * @author by nisie on 2/22/18.
+ */
+
+public class ChannelInfoSource {
+
+    ChatroomApi chatroomApi;
+    ChannelInfoMapper mapper;
+
+    @Inject
+    public ChannelInfoSource(ChatroomApi chatroomApi, ChannelInfoMapper mapper) {
+        this.chatroomApi = chatroomApi;
+        this.mapper = mapper;
+    }
+
+    public Observable<ChannelInfoViewModel> getChannelInfo(RequestParams requestParams) {
+        return chatroomApi.getChannelInfo(requestParams.getString(
+                GetChannelInfoUseCase.PARAM_CHANNEL_UUID, ""),
+                requestParams.getParameters())
+                .map(mapper);
+    }
+}
