@@ -166,12 +166,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Child childSelected = getProductDatumSelected();
-                        if (childSelected!=null) {
-                            setResult(VariantActivity.SELECTED_VARIANT_RESULT, generateExtraSelectedIntent());
-                            finish();
-                            VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
-                        }
+                        onBackPressed();
                     }
                 });
     }
@@ -398,8 +393,8 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         Child childSelected = getProductDatumSelected();
         if (childSelected!=null && childSelected.isIsBuyable() && productDetailData.getShopInfo().getShopStatus()==1) {
             setResult(VariantActivity.SELECTED_VARIANT_RESULT, generateExtraSelectedIntent());
-            finish();
-            VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
         }
+        finish();
+        VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
     }
 }

@@ -103,7 +103,7 @@ public class VariantOptionAdapter extends RecyclerView.Adapter<VariantOptionAdap
                     ((GradientDrawable)background).setColor(ContextCompat.getColor(context,R.color.grey_hint));
                     ((GradientDrawable)background).setStroke(1,ContextCompat.getColor(context,R.color.grey_hint));
                 }
-                textOption.setTextColor(ContextCompat.getColor(context,R.color.black_38));
+                textOption.setTextColor(ContextCompat.getColor(context,R.color.black_12));
             } else {
                 textOption.setTextColor(ContextCompat.getColor(context,R.color.black_70));
                 if (isSelected) {
