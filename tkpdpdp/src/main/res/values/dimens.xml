@@ -173,6 +173,7 @@
     <dimen name="new_text_size_input">14sp</dimen>
 
     <dimen name="floating_label">12sp</dimen>
+    <dimen name="size_text_variant">13sp</dimen>
     <dimen name="view_pager_instoped_height">1600dp</dimen>
 
     <dimen name="margin_small_header">1.5dp</dimen>

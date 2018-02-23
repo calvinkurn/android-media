@@ -219,11 +219,6 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
-    public void goToRegister(Context context) {
-
-    }
-
-    @Override
     public Intent getLoginIntent(Context context) {
         return LoginActivity.getPosLoginIntent(context);
     }

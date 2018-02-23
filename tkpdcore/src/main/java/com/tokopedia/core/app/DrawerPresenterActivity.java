@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -61,7 +62,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sessionHandler = new SessionHandler(this);
+        sessionHandler = new SessionHandler(MainApplication.getAppContext());
         drawerCache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
         setupDrawer();
         if (!GlobalConfig.isSellerApp()) {
@@ -216,6 +217,8 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     protected void updateDrawerData() {
         if (sessionHandler.isV4Login()) {
+            setDataDrawer();
+
             getDrawerProfile();
             getDrawerDeposit();
             getDrawerNotification();
@@ -512,6 +515,14 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
                 default:
                     break;
             }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == DrawerHelper.REQUEST_LOGIN && resultCode == Activity.RESULT_OK){
+            setDataDrawer();
         }
     }
 }

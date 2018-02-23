@@ -168,11 +168,15 @@ public interface AppEventTracking {
         String EVENT_ONBOARDING = "onBoardingEvent";
         String EVENT_RESOLUTION = "clickResolution";
         String PRODUCT_VIEW = "productView";
+        String LONG_CLICK = "longClick";
+        String CLICK_PDP = "clickPDP";
     }
 
     interface Category {
         String HOMEPAGE = "Homepage";
         String HOMEPAGE_DIGITAL_WIDGET = "homepage digital widget";
+        String HOMEPAGE_DIGITAL = "homepage digital";
+        String DIGITAL = "digital - ";
         String HOMEPAGE_TOKOCASH_WIDGET = "homepage tokocash widget";
         String HOMEPAGE_OFFICIAL_STORE_WIDGET = "homepage official store widget";
         String HOMEPAGE_BANNER = "homepage banner";
@@ -285,6 +289,9 @@ public interface AppEventTracking {
         String PROMO_MICROSITE_PROMO_TOOLTIP ="promo microsite - promo tooltip";
         String SORT_BY = "sort by";
         String FILTER_PRODUCT = "filter product";
+        String LONG_PRESS = "Long Press";
+
+        String HOME_BOTTOM_NAV = "bottom nav";
     }
 
     interface Action {
@@ -341,10 +348,12 @@ public interface AppEventTracking {
         String OPEN = "Open";
         String OTP_SUCCESS = "OTP Success";
         String RECEIVED = "received";
-        String SELECT_PRODUCT = "Select Product";
-        String SELECT_OPERATOR = "Select Operator";
+        String SELECT_CATEGORY = "select category";
+        String SELECT_PRODUCT = "select product";
+        String SELECT_OPERATOR = "select operator";
         String CLICK_SEARCH_BAR = "Click Search Bar";
         String CLICK_BELI_LOWER = "click beli ";
+        String CLICK_LIHAT_SEMUA_PRODUK = "click lihat semua produk";
 
         String CLICK_LANJUT_CHECKOUT = "Click Lanjut - Checkout Page";
         String CLICK_PHONEBOOK_ICON = "Click Phonebook Icon";
@@ -378,8 +387,6 @@ public interface AppEventTracking {
         String CLICK_WIDGET_BAR = "click widget";
         String CLICK_BELI = "Click Beli";
         String CLICK_BELI_INSTANT_SALDO = CLICK_BELI + " with Instant Saldo";
-        String CHECK_INSTANT_SALDO_WIDGET = "Check Instant Saldo from Widget";
-        String UNCHECK_INSTANT_SALDO_WIDGET = "Uncheck Instant Saldo from Widget";
         String CHECK_INSTANT_SALDO = "Check Instant Saldo";
         String UNCHECK_INSTANT_SALDO = "Uncheck Instant Saldo";
         String SELECT_NUMBER_ON_USER_PROFILE = "select number on user profile";
@@ -462,6 +469,18 @@ public interface AppEventTracking {
         String CLICK_SHOP = "click - shop";
         String CLICK_WISHLIST = "click - wishlist";
         String SORT_BY = "sort by";
+        String CLICK_REFERRAL = "Click Share";
+        String CLICK_JUAL = "Click Jual";
+        String CLICK_BAYAR = "Click Bayar";
+
+        String CLICK_VARIANTS = "click - variants";
+        String CLICK_BUY_VARIANT_PDP = "click - buy";
+        String CLICK_CART_BUTTON_VARIANT = "click - cart button on sticky header";
+        String SELECT_COLOR_VARIANT = "select color on variants page";
+        String SELECT_SIZE_VARIANT = "select size on variants page";
+        String CLICK_BUY_VARIANT_PAGE = "click - buy on variants page";
+
+        String LOGIN_NOW = "masuk sekarang";
     }
 
     interface ImageEditor{
@@ -472,10 +491,16 @@ public interface AppEventTracking {
     }
 
     interface EventLabel {
-        String HOME = "homepage";
-        String FAVORITE = "favorite";
+        String HOME = "home";
+        String FAVORITE = "wishlist";
         String PRODUCT_FEED = "feed";
         String HOTLIST = "hotlist";
+
+        String TAB = "tab";
+
+        String BEFORE_LOGIN = "before login";
+        String AFTER_LOGIN = "after login";
+
         String VIEW_ALL_WISHLIST = "View All Wishlist";
         String VIEW_ALL_RECENT = "View All Wishlist";
         String ADD_TO_WISHLIST_LABEL = "Add To Wishlist - ";
@@ -812,6 +837,10 @@ public interface AppEventTracking {
         String RESO_CREATE_COMPLAINT_CONFIRM  = "confirm - create complain";
         String RESO_CREATE_COMPLAINT_UNCONFIRM  = "unconfirmed - create complain";
         String RESO_CREATE_ABANDON = "abandon";
+        String REFERRAL = "Share";
+        String PRODUCT_SEARCH = "Product Search";
+        String TAKE_TO_SHOP = "Take to Shop";
+        String DIGITAL = "Digital";
     }
 
     interface SOCIAL_MEDIA {

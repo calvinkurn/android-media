@@ -1,6 +1,5 @@
 package com.tkpd.library.utils;
 
-import android.util.Log;
 import android.widget.EditText;
 
 import java.text.DecimalFormat;
@@ -12,9 +11,11 @@ import java.util.Currency;
 import java.util.Locale;
 
 /**
+ * User {@link com.tokopedia.design.utils.CurrencyFormatHelper} or {@link com.tokopedia.design.utils.CurrencyFormatUtil}
  * modified by m.normansyah & steven.f
  * changed "," to "." for rupiah
  */
+@Deprecated
 public final class CurrencyFormatHelper {
 	private static final NumberFormat RupiahFormat = NumberFormat.getCurrencyInstance(Locale.US);
 	private static final NumberFormat DollarFormat = NumberFormat.getCurrencyInstance(new Locale("en", "US"));
@@ -51,7 +52,6 @@ public final class CurrencyFormatHelper {
 	/**
 	 * see setToRupiahCheckPrefix to check prefix in edit text
 	 */
-	@Deprecated
 	public static void SetToRupiah(EditText et){
 		try {
 			if(et.length()>0 && !LockTextWatcher){

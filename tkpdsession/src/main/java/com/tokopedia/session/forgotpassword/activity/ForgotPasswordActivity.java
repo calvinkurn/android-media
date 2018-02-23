@@ -1,19 +1,20 @@
 package com.tokopedia.session.forgotpassword.activity;
 
 import android.app.Activity;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.session.forgotpassword.fragment.ForgotPasswordFragment;
+import com.tokopedia.session.forgotpassword.listener.ForgotPasswordFragmentView;
 import com.tokopedia.session.forgotpassword.presenter.ForgotPasswordFragmentPresenterImpl;
 
 /**
@@ -52,18 +53,18 @@ public class ForgotPasswordActivity extends BasePresenterActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_forgotpassword;
+        return R.layout.activity_simple_fragment;
     }
 
     @Override
     protected void initView() {
 
-        if (getFragmentManager().findFragmentById(R.id.container) == null) {
+        if (getSupportFragmentManager().findFragmentById(R.id.container) == null) {
             ForgotPasswordFragment fragment = ForgotPasswordFragment.createInstance(
                     getIntent().getExtras().getString(INTENT_EXTRA_PARAM_EMAIL, ""),
-                    getIntent().getExtras().getBoolean(INTENT_EXTRA_AUTO_RESET,false),
-                    getIntent().getExtras().getBoolean(INTENT_EXTRA_REMOVE_FOOTER,false));
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                    getIntent().getExtras().getBoolean(INTENT_EXTRA_AUTO_RESET, false),
+                    getIntent().getExtras().getBoolean(INTENT_EXTRA_REMOVE_FOOTER, false));
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             fragmentTransaction.add(R.id.container, fragment, TAG);
             fragmentTransaction.commit();
@@ -99,7 +100,7 @@ public class ForgotPasswordActivity extends BasePresenterActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ForgotPasswordFragmentPresenterImpl.REQUEST_FORGOT_PASSWORD_CODE && resultCode == Activity.RESULT_OK) {
-            ((ForgotPasswordFragment) getFragmentManager().findFragmentByTag(TAG)).refresh();
+            ((ForgotPasswordFragmentView) getFragmentManager().findFragmentByTag(TAG)).refresh();
         }
     }
 
@@ -124,7 +125,7 @@ public class ForgotPasswordActivity extends BasePresenterActivity {
         Intent intent = new Intent(context, ForgotPasswordActivity.class);
         intent.putExtra(INTENT_EXTRA_PARAM_EMAIL, email);
         intent.putExtra(INTENT_EXTRA_AUTO_RESET, true);
-        intent.putExtra(INTENT_EXTRA_REMOVE_FOOTER,true);
+        intent.putExtra(INTENT_EXTRA_REMOVE_FOOTER, true);
         return intent;
     }
 
