@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
+import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.home.R;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
@@ -220,29 +221,32 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
         View view = LayoutInflater.from(this).inflate(R.layout.explore_tab_item, null, false);
         TextView labelTxt = view.findViewById(R.id.label);
         ImageView iconView = view.findViewById(R.id.icon);
+        String title = "";
         switch (i) {
             case 0:
+                title = getString(R.string.beli);
                 iconView.setImageResource(R.drawable.ic_beli);
-                labelTxt.setText(getString(R.string.beli));
                 break;
             case 1:
+                title = getString(R.string.bayar);
                 iconView.setImageResource(R.drawable.ic_bayar);
-                labelTxt.setText(getString(R.string.bayar));
                 break;
             case 2:
+                title = getString(R.string.pesan);
                 iconView.setImageResource(R.drawable.ic_pesan);
-                labelTxt.setText(getString(R.string.pesan));
                 break;
             case 3:
+                title = getString(R.string.ajukan);
                 iconView.setImageResource(R.drawable.ic_ajukan);
-                labelTxt.setText(getString(R.string.ajukan));
                 break;
             case 4:
+                title = getString(R.string.jual);
                 iconView.setImageResource(R.drawable.ic_jual);
-                labelTxt.setText(getString(R.string.jual));
                 break;
         }
         TabLayout.Tab tab = tabLayout.getTabAt(i);
+        labelTxt.setText(title);
+        view.setOnClickListener(new OnTabExplorerClickListener(title, tabLayout, i));
         tab.setCustomView(view);
     }
 
@@ -265,5 +269,26 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
     @Override
     protected int getPageLimit() {
         return 3;
+    }
+
+    private class OnTabExplorerClickListener implements View.OnClickListener {
+        private final String title;
+        private final TabLayout tab;
+        private final int positionTab;
+
+        OnTabExplorerClickListener(String title, TabLayout tab, int positionTab) {
+            this.title = title;
+            this.tab = tab;
+            this.positionTab = positionTab;
+        }
+
+        @Override
+        public void onClick(View v) {
+            TabLayout.Tab currentTab = tab.getTabAt(positionTab);
+            if (positionTab != tab.getSelectedTabPosition() && currentTab != null) {
+                HomePageTracking.eventClickTabExplorer(title);
+                currentTab.select();
+            }
+        }
     }
 }
