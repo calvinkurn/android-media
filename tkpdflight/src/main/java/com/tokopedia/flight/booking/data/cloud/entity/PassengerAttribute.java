@@ -34,7 +34,7 @@ public class PassengerAttribute {
     private String dob;
     @SerializedName("title")
     @Expose
-    private String title;
+    private int title;
 
     public String getFirstName() {
         return firstName;
@@ -100,11 +100,11 @@ public class PassengerAttribute {
         this.dob = dob;
     }
 
-    public String getTitle() {
+    public int getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void setTitle(int title) {
         this.title = title;
     }
 }
