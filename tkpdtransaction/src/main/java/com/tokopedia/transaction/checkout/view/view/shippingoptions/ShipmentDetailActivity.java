@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentManager;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.checkout.view.ShipmentDetailFragment;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 
 /**

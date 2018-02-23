@@ -18,6 +18,7 @@ import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.di.component.DaggerSingleAddressShipmentComponent;
 import com.tokopedia.transaction.checkout.di.component.SingleAddressShipmentComponent;
 import com.tokopedia.transaction.checkout.di.module.SingleAddressShipmentModule;
+import com.tokopedia.transaction.checkout.domain.ShipmentRatesDataMapper;
 import com.tokopedia.transaction.checkout.domain.SingleAddressShipmentDataConverter;
 import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
@@ -41,6 +42,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_SHIPMENT_DETAIL_DATA;
 import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DATA_STORE;
 
 /**
@@ -242,13 +244,19 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     public void onAddOrChangeAddress() {
-        startActivityForResult(CartAddressChoiceActivity.createInstance(getActivity()), REQUEST_CODE_CHOOSE_ADDRESS);
+        startActivityForResult(CartAddressChoiceActivity.createInstance(getActivity()),
+                REQUEST_CODE_CHOOSE_ADDRESS);
     }
 
     @Override
     public void onChooseShipment() {
-        ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
-        // Todo : add required data to shipmentDetailData for request to kero rates api
+        ShipmentDetailData shipmentDetailData;
+        if (mSingleAddressShipmentAdapter.getShipmentDetailData() != null) {
+            shipmentDetailData = mSingleAddressShipmentAdapter.getShipmentDetailData();
+        } else {
+            ShipmentRatesDataMapper shipmentRatesDataMapper = new ShipmentRatesDataMapper();
+            shipmentDetailData = shipmentRatesDataMapper.getShipmentDetailData(mCartSingleAddressData);
+        }
         startActivityForResult(ShipmentDetailActivity.createInstance(getActivity(), shipmentDetailData),
                 REQUEST_CODE_SHIPMENT_DETAIL);
     }
@@ -293,7 +301,10 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                     mSingleAddressShipmentAdapter.setPickupPoint(pickupBooth);
                     mSingleAddressShipmentAdapter.notifyDataSetChanged();
                     break;
-
+                case REQUEST_CODE_SHIPMENT_DETAIL:
+                    ShipmentDetailData shipmentDetailData = data.getParcelableExtra(EXTRA_SHIPMENT_DETAIL_DATA);
+                    mSingleAddressShipmentAdapter.setShipmentDetailData(shipmentDetailData);
+                    mSingleAddressShipmentAdapter.notifyDataSetChanged();
                 default:
                     break;
             }

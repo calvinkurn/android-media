@@ -27,6 +27,7 @@ import com.tokopedia.transaction.checkout.view.data.CartPayableDetailModel;
 import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.view.data.CourierItemData;
+import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentFeeBannerModel;
 import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
@@ -69,9 +70,18 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
     private Context mContext;
     private CartSingleAddressData mCartSingleAddressData;
     private SingleAddressShipmentAdapterListener mAdapterViewListener;
+    private ShipmentDetailData shipmentDetailData;
 
     public SingleAddressShipmentAdapter() {
 
+    }
+
+    public ShipmentDetailData getShipmentDetailData() {
+        return shipmentDetailData;
+    }
+
+    public void setShipmentDetailData(ShipmentDetailData shipmentDetailData) {
+        this.shipmentDetailData = shipmentDetailData;
     }
 
     public void setViewListener(SingleAddressShipmentAdapterListener shipmentAdapterListener) {
@@ -469,7 +479,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
             mRlDetailShipmentFeeContainer.setVisibility(mIsExpandCostDetail ? View.VISIBLE : View.GONE);
 
-            String insuranceFee ="-";
+            String insuranceFee = "-";
             String shippingFee = "-";
 
             if (model.getCourierItemData() != null) {
@@ -517,6 +527,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             mTvExpandOtherProduct.setOnClickListener(showAllProductListener(cartItemModels));
 
             mChooseCourierButton.setOnClickListener(selectShippingOptionListener());
+            mTvSelectedShipment.setOnClickListener(selectShippingOptionListener());
             mIvChevronShipmentOption.setOnClickListener(selectShippingOptionListener());
 
             mIvDetailOptionChevron.setOnClickListener(costDetailOptionListener());
@@ -535,6 +546,17 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             mLlNoteToSellerLayout.setVisibility(isEmptyNotes ? View.GONE : View.VISIBLE);
             mTvOptionalNote.setText(firstItem.getNoteToSeller());
 
+            if (shipmentDetailData != null &&
+                    shipmentDetailData.getSelectedCourier() != null) {
+                mChooseCourierButton.setVisibility(View.GONE);
+                mTvSelectedShipment.setText(shipmentDetailData.getSelectedCourier().getName());
+                mTvSelectedShipment.setVisibility(View.VISIBLE);
+                mIvChevronShipmentOption.setVisibility(View.VISIBLE);
+            } else {
+                mTvSelectedShipment.setVisibility(View.GONE);
+                mIvChevronShipmentOption.setVisibility(View.GONE);
+                mChooseCourierButton.setVisibility(View.VISIBLE);
+            }
         }
 
         private void initInnerRecyclerView(List<CartItemModel> cartItemModels) {
@@ -626,7 +648,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             llWarningContainer.setVisibility(View.VISIBLE);
         }
 
-//        private void showGreyWarning(String message) {
+        //        private void showGreyWarning(String message) {
 //            llWarningContainer.setBackgroundColor(ContextCompat.getColor(
 //                    llWarningContainer.getContext(), R.color.bg_warning_grey));
 //            imgWarning.setImageResource(R.drawable.ic_warning_grey);

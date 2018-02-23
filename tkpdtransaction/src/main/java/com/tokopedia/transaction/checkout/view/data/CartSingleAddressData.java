@@ -16,6 +16,7 @@ public class CartSingleAddressData implements Parcelable {
     private ShipmentRecipientModel shipmentRecipientModel;
     private List<CartSellerItemModel> cartSellerItemModelList;
     private CartPayableDetailModel cartPayableDetailModel;
+    private ShipmentCartData shipmentCartData;
 
     public ShipmentFeeBannerModel getShipmentFeeBannerModel() {
         return shipmentFeeBannerModel;
@@ -47,6 +48,14 @@ public class CartSingleAddressData implements Parcelable {
 
     public void setCartPayableDetailModel(CartPayableDetailModel cartPayableDetailModel) {
         this.cartPayableDetailModel = cartPayableDetailModel;
+    }
+
+    public ShipmentCartData getShipmentCartData() {
+        return shipmentCartData;
+    }
+
+    public void setShipmentCartData(ShipmentCartData shipmentCartData) {
+        this.shipmentCartData = shipmentCartData;
     }
 
     @Override
