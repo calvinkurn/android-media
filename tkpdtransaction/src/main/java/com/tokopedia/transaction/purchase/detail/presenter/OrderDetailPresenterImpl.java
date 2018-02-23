@@ -482,25 +482,6 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
         };
     }
 
-    private Subscriber<String> changeProductSubscriber() {
-        return new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(String s) {
-
-            }
-        };
-    }
-
     private Subscriber<String> rejectOrderActionSubscriber() {
         return new Subscriber<String>() {
             @Override

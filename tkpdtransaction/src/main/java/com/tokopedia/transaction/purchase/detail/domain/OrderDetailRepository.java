@@ -215,23 +215,4 @@ public class OrderDetailRepository implements IOrderDetailRepository {
         }
     }
 
-    private Subscriber<String> changeProductSubscriber() {
-        return new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                CommonUtils.dumper("PORING ERROR");
-            }
-
-            @Override
-            public void onNext(String s) {
-
-            }
-        };
-    }
-
 }
