@@ -4,7 +4,6 @@ import com.sendbird.android.OpenChannel;
 import com.sendbird.android.PreviousMessageListQuery;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.tkpdstream.chatroom.domain.pojo.ChannelInfoPojo;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.ChannelHandlerUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.GetChannelInfoUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.GetGroupChatMessagesFirstTimeUseCase;
@@ -108,16 +107,19 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
     @Override
     public void loadPreviousMessages(OpenChannel mChannel, PreviousMessageListQuery mPrevMessageListQuery) {
-        if (mChannel != null && mPrevMessageListQuery != null) {
+        if (mChannel != null && mPrevMessageListQuery != null && mPrevMessageListQuery.hasMore()) {
+            getView().showLoadingList();
             getGroupChatMessagesUseCase.execute(getView().getContext(), mPrevMessageListQuery, new
                     GetGroupChatMessagesUseCase.GetGroupChatMessagesListener() {
                         @Override
                         public void onGetMessages(List<Visitable> listChat) {
+                            getView().dismissLoadingList();
                             getView().onSuccessGetMessage(listChat);
                         }
 
                         @Override
                         public void onErrorGetMessages(String errorMessage) {
+                            getView().dismissLoadingList();
                             getView().onErrorGetMessage(errorMessage);
                         }
                     });

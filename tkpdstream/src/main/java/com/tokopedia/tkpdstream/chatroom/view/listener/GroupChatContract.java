@@ -40,6 +40,10 @@ public interface GroupChatContract {
         void onErrorGetChannelInfo(String errorMessage);
 
         void onSuccessGetChannelInfo(ChannelInfoViewModel channelInfoViewModel);
+
+        void showLoadingList();
+
+        void dismissLoadingList();
     }
 
     interface Presenter extends CustomerPresenter<View> {

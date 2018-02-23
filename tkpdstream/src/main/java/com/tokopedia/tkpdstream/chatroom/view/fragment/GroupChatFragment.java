@@ -209,7 +209,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
                 if (layoutManager.findLastVisibleItemPosition() == adapter.getItemCount() - 1
                         && !adapter.isLoading()) {
-                    adapter.showLoading();
                     presenter.loadPreviousMessages(mChannel, mPrevMessageListQuery);
                 }
             }
@@ -329,7 +328,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     @Override
     public void onSuccessGetMessage(List<Visitable> listChat) {
-        adapter.dismissLoading();
         adapter.addList(listChat);
     }
 
@@ -397,6 +395,16 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 userSession.getName(), "https://yt3.ggpht" +
                         ".com/-uwClWniyyFU/AAAAAAAAAAI/AAAAAAAAAAA/nVrBEY3dzuY/s176-c-k-no-mo-rj" +
                         "-c0xffffff/photo.jpg", this);
+    }
+
+    @Override
+    public void showLoadingList() {
+        adapter.showLoading();
+    }
+
+    @Override
+    public void dismissLoadingList() {
+        adapter.dismissLoading();
     }
 
     @Override
