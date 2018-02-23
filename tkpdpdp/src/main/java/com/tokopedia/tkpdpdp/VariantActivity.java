@@ -254,14 +254,15 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
                 }
             }
         }
+        for (int i=0; i<variantOptionAdapterLevel1.getVariantOptions().size(); i++) {
+            combinations = productVariant.getCombinationFromSelectedVariant(variantOptionAdapterLevel1.getVariantOptions().get(i).getId());
+            if (combinations.size()<=1 ) {
+                variantOptionAdapterLevel1.getVariantOptions().get(i).setEnabled(false);
+            }
+        }
+        variantOptionAdapterLevel2.notifyItemSelectedChange();
 
         if (productVariant.getVariant().size()>1) {
-            for (int i=0; i<variantOptionAdapterLevel1.getVariantOptions().size(); i++) {
-                combinations = productVariant.getCombinationFromSelectedVariant(variantOptionAdapterLevel1.getVariantOptions().get(i).getId());
-                if (combinations.size()<=1 ) {
-                    variantOptionAdapterLevel1.getVariantOptions().get(i).setEnabled(false);
-                }
-            }
             Variant variantLevel2 = productVariant.getVariant().get(1 - productVariant.getLevel1Variant());
             variantOptionAdapterLevel2
                     = new VariantOptionAdapter(VariantActivity.this,variantLevel2.getOption(),
@@ -295,6 +296,13 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             optionNameLevel2.setVisibility(VISIBLE);
             optionRecyclerViewLevel2.setVisibility(VISIBLE);
             separator2.setVisibility(VISIBLE);
+            for (int i=0; i<variantOptionAdapterLevel2.getVariantOptions().size(); i++) {
+                combinations = productVariant.getCombinationFromSelectedVariant(variantOptionAdapterLevel2.getVariantOptions().get(i).getId());
+                if (combinations.size()<=1 ) {
+                    variantOptionAdapterLevel2.getVariantOptions().get(i).setEnabled(false);
+                }
+            }
+            variantOptionAdapterLevel2.notifyItemSelectedChange();
             variantOptionAdapterLevel2.notifyItemSelectedChange();
         } else {
             variantOptionAdapterLevel1.notifyItemSelectedChange();
