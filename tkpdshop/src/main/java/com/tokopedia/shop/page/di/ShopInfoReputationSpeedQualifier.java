@@ -1,4 +1,4 @@
-package com.tokopedia.shop.info.di;
+package com.tokopedia.shop.page.di;
 
 import javax.inject.Qualifier;
 

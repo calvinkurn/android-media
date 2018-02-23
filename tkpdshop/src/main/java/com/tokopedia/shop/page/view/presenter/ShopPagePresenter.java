@@ -7,6 +7,7 @@ import com.tokopedia.reputation.common.domain.interactor.GetReputationSpeedUseCa
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
+import com.tokopedia.shop.page.domain.interactor.ToggleFavouriteShopAndDeleteCacheUseCase;
 import com.tokopedia.shop.page.view.listener.ShopPageView;
 
 import javax.inject.Inject;
@@ -21,14 +22,17 @@ public class ShopPagePresenter extends BaseDaggerPresenter<ShopPageView> {
 
     private final GetShopInfoUseCase getShopInfoUseCase;
     private final GetReputationSpeedUseCase getReputationSpeedUseCase;
-    private final ToggleFavouriteShopUseCase toggleFavouriteShopUseCase;
+    private final ToggleFavouriteShopAndDeleteCacheUseCase toggleFavouriteShopAndDeleteCacheUseCase;
     private final UserSession userSession;
 
     @Inject
-    public ShopPagePresenter(GetShopInfoUseCase getShopInfoUseCase, GetReputationSpeedUseCase getReputationSpeedUseCase, ToggleFavouriteShopUseCase toggleFavouriteShopUseCase, UserSession userSession) {
+    public ShopPagePresenter(GetShopInfoUseCase getShopInfoUseCase,
+                             GetReputationSpeedUseCase getReputationSpeedUseCase,
+                             ToggleFavouriteShopAndDeleteCacheUseCase toggleFavouriteShopAndDeleteCacheUseCase,
+                             UserSession userSession) {
         this.getShopInfoUseCase = getShopInfoUseCase;
         this.getReputationSpeedUseCase = getReputationSpeedUseCase;
-        this.toggleFavouriteShopUseCase = toggleFavouriteShopUseCase;
+        this.toggleFavouriteShopAndDeleteCacheUseCase = toggleFavouriteShopAndDeleteCacheUseCase;
         this.userSession = userSession;
     }
 
@@ -80,7 +84,7 @@ public class ShopPagePresenter extends BaseDaggerPresenter<ShopPageView> {
     }
 
     public void toggleFavouriteShop(String shopId) {
-        toggleFavouriteShopUseCase.execute(ToggleFavouriteShopUseCase.createRequestParam(shopId), new Subscriber<Boolean>() {
+        toggleFavouriteShopAndDeleteCacheUseCase.execute(ToggleFavouriteShopUseCase.createRequestParam(shopId), new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
 
@@ -109,8 +113,8 @@ public class ShopPagePresenter extends BaseDaggerPresenter<ShopPageView> {
         if (getReputationSpeedUseCase != null) {
             getReputationSpeedUseCase.unsubscribe();
         }
-        if (toggleFavouriteShopUseCase != null) {
-            toggleFavouriteShopUseCase.unsubscribe();
+        if (toggleFavouriteShopAndDeleteCacheUseCase != null) {
+            toggleFavouriteShopAndDeleteCacheUseCase.unsubscribe();
         }
     }
 }

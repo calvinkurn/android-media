@@ -27,9 +27,9 @@ import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.common.util.TextApiUtils;
-import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent;
-import com.tokopedia.shop.info.di.module.ShopInfoModule;
+import com.tokopedia.shop.page.di.component.DaggerShopPageComponent;
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity;
+import com.tokopedia.shop.page.di.module.ShopPageModule;
 import com.tokopedia.shop.page.view.listener.ShopPageView;
 import com.tokopedia.shop.page.view.presenter.ShopPagePresenter;
 import com.tokopedia.shop.page.view.widget.ShopPageSubDetailView;
@@ -120,9 +120,9 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     }
 
     private void initInjector() {
-        DaggerShopInfoComponent
+        DaggerShopPageComponent
                 .builder()
-                .shopInfoModule(new ShopInfoModule())
+                .shopPageModule(new ShopPageModule())
                 .shopComponent(getComponent())
                 .build()
                 .inject(this);
