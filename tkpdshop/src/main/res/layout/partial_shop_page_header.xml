@@ -140,7 +140,6 @@
         android:layout_height="@dimen/image_width_xxs"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
-        android:src="@drawable/ic_badge_shop_regular"
         app:layout_constraintStart_toEndOf="@+id/image_view_shop_icon"
         app:layout_constraintTop_toTopOf="@+id/image_view_shop_icon" />
 

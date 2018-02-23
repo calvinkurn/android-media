@@ -8,16 +8,16 @@ public class ReputationRecentMonth {
 
     @SerializedName("speed_level")
     @Expose
-    private long speedLevel;
+    private int speedLevel;
     @SerializedName("speed_level_description")
     @Expose
     private String speedLevelDescription;
 
-    public long getSpeedLevel() {
+    public int getSpeedLevel() {
         return speedLevel;
     }
 
-    public void setSpeedLevel(long speedLevel) {
+    public void setSpeedLevel(int speedLevel) {
         this.speedLevel = speedLevel;
     }
 

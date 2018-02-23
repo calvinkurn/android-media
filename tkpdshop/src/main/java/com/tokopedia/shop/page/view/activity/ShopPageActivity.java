@@ -3,6 +3,7 @@ package com.tokopedia.shop.page.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
@@ -56,7 +57,14 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         return intent;
     }
 
-    private static final int SHOP_OFFICIAL_VALUE = 1;
+    private static final int REPUTATION_SPEED_LEVEL_VERY_FAST = 5;
+    private static final int REPUTATION_SPEED_LEVEL_FAST = 4;
+    private static final int REPUTATION_SPEED_LEVEL_NORMAL = 3;
+    private static final int REPUTATION_SPEED_LEVEL_SLOW = 2;
+    private static final int REPUTATION_SPEED_LEVEL_VERY_SLOW = 1;
+    private static final int REPUTATION_SPEED_LEVEL_DEFAULT = 0;
+
+    private static final int MAX_RATING_STAR = 5;
     private static final int PAGE_LIMIT = 3;
     public static final String SHOP_ID = "shop_id";
     public static final String SHOP_DOMAIN = "SHOP_DOMAIN";
@@ -140,8 +148,6 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
 
         shopReputationView = findViewById(R.id.shop_reputation_view);
 
-
-
         containerClickInfo = findViewById(R.id.container_click_info);
         buttonManageShop = findViewById(R.id.button_manage_shop);
         buttonAddProduct = findViewById(R.id.button_add_product);
@@ -209,7 +215,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
 
         if (TextApiUtils.isValueTrue(shopInfo.getInfo().getShopIsOfficial())) {
             displayOfficialStoreView(shopInfo);
-        } else if (TextApiUtils.isValueTrue(shopInfo.getInfo().getShopIsGold())) {
+        } else if (shopInfo.getInfo().isShopIsGoldBadge()) {
             displayGoldMerchantView(shopInfo);
         } else {
             displayRegularMerchantView(shopInfo);
@@ -265,32 +271,34 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     }
 
     private void displayOfficialStoreView(ShopInfo shopInfo) {
-        shopStatusImageView.setImageResource(R.drawable.ic_badge_shop_gm);
+        shopStatusImageView.setVisibility(View.VISIBLE);
+        shopStatusImageView.setImageResource(R.drawable.ic_badge_shop_official);
         locationImageView.setImageResource(R.drawable.ic_info_authorized);
         shopInfoLocationTextView.setText(getString(R.string.shop_page_label_authorized));
     }
 
     private void displayGoldMerchantView(ShopInfo shopInfo) {
+        shopStatusImageView.setVisibility(View.VISIBLE);
         shopStatusImageView.setImageResource(R.drawable.ic_badge_shop_gm);
-        displaygeneralShop(shopInfo);
+        displayGeneralShop(shopInfo);
     }
 
     private void displayRegularMerchantView(ShopInfo shopInfo) {
-        shopStatusImageView.setImageResource(R.drawable.ic_badge_shop_regular);
-        displaygeneralShop(shopInfo);
+        shopStatusImageView.setVisibility(View.GONE);
+        displayGeneralShop(shopInfo);
     }
 
-    private void displaygeneralShop(ShopInfo shopInfo) {
+    private void displayGeneralShop(ShopInfo shopInfo) {
         locationImageView.setImageResource(R.drawable.ic_info_location);
         shopInfoLocationTextView.setText(shopInfo.getInfo().getShopLocation());
+
         int set = (int) shopInfo.getStats().getShopBadgeLevel().getSet();
         int level = (int) shopInfo.getStats().getShopBadgeLevel().getLevel();
         shopReputationView.setValue(set, level, shopInfo.getStats().getShopReputationScore());
 
         qualityValueTextView.setText(shopInfo.getRatings().getQuality().getAverage());
-        long ratingStar = shopInfo.getRatings().getQuality().getRatingStar();
-        qualityRatingBar.setMax(5);
-        qualityRatingBar.setRating(ratingStar);
+        qualityRatingBar.setRating(shopInfo.getRatings().getQuality().getRatingStar());
+        qualityRatingBar.setMax(MAX_RATING_STAR);
     }
 
     @Override
@@ -300,12 +308,31 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
 
     @Override
     public void onSuccessGetReputationSpeed(ReputationSpeed reputationSpeed) {
+        speedImageView.setImageResource(getReputationSpeedIcon(reputationSpeed.getRecent1Month().getSpeedLevel()));
         speedValueTextView.setText(reputationSpeed.getRecent1Month().getSpeedLevelDescription());
     }
 
     @Override
     public void onErrorGetReputationSpeed(Throwable e) {
 
+    }
+
+    @DrawableRes
+    private int getReputationSpeedIcon(int level) {
+        switch (level) {
+            case REPUTATION_SPEED_LEVEL_VERY_FAST:
+                return R.drawable.ic_reputation_speed_very_fast;
+            case REPUTATION_SPEED_LEVEL_FAST:
+                return R.drawable.ic_reputation_speed_very_fast;
+            case REPUTATION_SPEED_LEVEL_NORMAL:
+                return R.drawable.ic_reputation_speed_very_fast;
+            case REPUTATION_SPEED_LEVEL_SLOW:
+                return R.drawable.ic_reputation_speed_very_fast;
+            case REPUTATION_SPEED_LEVEL_VERY_SLOW:
+                return R.drawable.ic_reputation_speed_very_fast;
+            default:
+                return R.drawable.ic_reputation_speed_very_fast;
+        }
     }
 
     @Override
