@@ -1,15 +1,28 @@
 package com.tokopedia.core.drawer2.data.pojo.topcash;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by nisie on 5/5/17.
  */
 
 public class TokoCashModel {
 
+    @SerializedName("success")
+    @Expose
     private boolean success;
+    @SerializedName("data")
+    @Expose
     private TokoCashData data;
+    @SerializedName("error")
+    @Expose
     private String errorMessage;
+    @SerializedName("status")
+    @Expose
     private String statusMessage;
+    @SerializedName("code")
+    @Expose
     private int responseCode;
 
     public boolean isSuccess() {
