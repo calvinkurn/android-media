@@ -15,6 +15,7 @@ import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi;
 import com.tokopedia.shop.common.di.module.ShopModule;
 import com.tokopedia.shop.common.di.scope.ShopScope;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 
 import dagger.Component;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -49,4 +50,6 @@ public interface ShopComponent {
     HttpLoggingInterceptor httpLoggingInterceptor();
 
     GetShopInfoUseCase getShopInfoUseCase();
+
+    ToggleFavouriteShopUseCase toggleFavouriteShopUseCase();
 }

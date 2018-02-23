@@ -19,7 +19,7 @@ public class ShopInfoDetail {
     private long epochShopCreated;
     @SerializedName("shop_already_favorited")
     @Expose
-    private long shopAlreadyFavorited;
+    private String shopAlreadyFavorited;
     @SerializedName("shop_avatar")
     @Expose
     private String shopAvatar;
@@ -150,11 +150,11 @@ public class ShopInfoDetail {
         this.epochShopCreated = epochShopCreated;
     }
 
-    public long getShopAlreadyFavorited() {
+    public String getShopAlreadyFavorited() {
         return shopAlreadyFavorited;
     }
 
-    public void setShopAlreadyFavorited(long shopAlreadyFavorited) {
+    public void setShopAlreadyFavorited(String shopAlreadyFavorited) {
         this.shopAlreadyFavorited = shopAlreadyFavorited;
     }
 

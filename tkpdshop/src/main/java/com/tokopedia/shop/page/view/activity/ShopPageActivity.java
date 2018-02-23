@@ -30,8 +30,8 @@ import com.tokopedia.shop.common.util.TextApiUtils;
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent;
 import com.tokopedia.shop.info.di.module.ShopInfoModule;
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity;
-import com.tokopedia.shop.info.view.listener.ShopPageView;
-import com.tokopedia.shop.info.view.presenter.ShopPagePresenter;
+import com.tokopedia.shop.page.view.listener.ShopPageView;
+import com.tokopedia.shop.page.view.presenter.ShopPagePresenter;
 import com.tokopedia.shop.page.view.widget.ShopPageSubDetailView;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment;
@@ -94,10 +94,11 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     private Button buttonManageShop;
     private Button buttonAddProduct;
     private Button buttonChatSeller;
-    private Button buttonShopPage;
+    private Button buttonFavouriteShop;
 
     private String shopId;
     private String shopDomain;
+    private boolean favouriteShop;
 
     private ShopComponent component;
     private ShopModuleRouter shopModuleRouter;
@@ -162,7 +163,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         buttonManageShop = findViewById(R.id.button_manage_shop);
         buttonAddProduct = findViewById(R.id.button_add_product);
         buttonChatSeller = findViewById(R.id.button_chat_seller);
-        buttonShopPage = findViewById(R.id.button_shop_page);
+        buttonFavouriteShop = findViewById(R.id.button_favourite_shop);
 
         containerClickInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -188,6 +189,13 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
             @Override
             public void onClick(View view) {
                 startActivity(ShopProductListActivity.createIntent(ShopPageActivity.this, shopId));
+            }
+        });
+        buttonFavouriteShop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                buttonFavouriteShop.setEnabled(false);
+                shopPagePresenter.toggleFavouriteShop(shopId);
             }
         });
         tabLayout.setupWithViewPager(viewPager);
@@ -246,6 +254,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     @Override
     public void onSuccessGetShopInfo(final ShopInfo shopInfo) {
         shopId = shopInfo.getInfo().getShopId();
+        favouriteShop = TextApiUtils.isValueTrue(shopInfo.getInfo().getShopAlreadyFavorited());
 
         ImageHandler.LoadImage(backgroundImageView, shopInfo.getInfo().getShopCover());
         shopNameTextView.setText(MethodChecker.fromHtml(shopInfo.getInfo().getShopName()).toString());
@@ -293,6 +302,8 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         qualityValueTextView.setText(shopInfo.getRatings().getQuality().getAverage());
         qualityRatingBar.setRating(shopInfo.getRatings().getQuality().getRatingStar());
         qualityRatingBar.setMax(MAX_RATING_STAR);
+
+        updateToggleFavouriteButton();
     }
 
     private void displayAsBuyerShop() {
@@ -302,7 +313,11 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
 
     private void displayAsSellerShop() {
         buttonChatSeller.setVisibility(View.VISIBLE);
-        buttonShopPage.setVisibility(View.VISIBLE);
+        buttonFavouriteShop.setVisibility(View.VISIBLE);
+    }
+
+    private void updateToggleFavouriteButton() {
+        buttonFavouriteShop.setText(favouriteShop ? getString(R.string.shop_page_label_already_favorite) : getString(R.string.shop_page_label_favorite));
     }
 
     @Override
@@ -319,6 +334,20 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     @Override
     public void onErrorGetReputationSpeed(Throwable e) {
 
+    }
+
+    @Override
+    public void onSuccessToggleFavourite(boolean successValue) {
+        if (successValue) {
+            favouriteShop = !favouriteShop;
+            updateToggleFavouriteButton();
+        }
+        buttonFavouriteShop.setEnabled(true);
+    }
+
+    @Override
+    public void onErrorToggleFavourite(Throwable e) {
+        buttonFavouriteShop.setEnabled(true);
     }
 
     @DrawableRes

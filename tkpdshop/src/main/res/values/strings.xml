@@ -2,6 +2,16 @@
 
     <string name="shop_page_label_authorized">Authorized</string>
 
+    <string name="shop_page_label_reputation">Reputasi</string>
+    <string name="shop_page_label_product_quality">Kualitas Produk</string>
+    <string name="shop_page_label_speed">Kecepatan</string>
+    <string name="shop_page_label_manage_shop">Atur Toko</string>
+    <string name="shop_page_label_add_product">Tambah Produk</string>
+    <string name="shop_page_label_chat_to_seller">Chat Penjual</string>
+    <string name="shop_page_label_favorite">Favoritkan</string>
+    <string name="shop_page_label_already_favorite">Sudah Favorit</string>
+
+
     <string name="shop_info_title">Shop Info</string>
     <string name="shop_info_title_tab_product">Produk</string>
     <string name="shop_info_title_tab_review">Ulasan</string>
@@ -30,15 +40,7 @@
     <string name="shop_info_physical_shop_location_count">%1d Lokasi</string>
     <string name="shop_info_physical_shop_location_only_online">Hanya Online</string>
     <string name="shop_info_success_percentage">%1$s%%</string>
-
     <string name="shop_info_label_default_content">-</string>
-    <string name="reputation_label">Reputasi</string>
-    <string name="product_quality_label_value">Kualitas Produk</string>
-    <string name="speed_label_value">Kecepatan</string>
-    <string name="manage_shop">Atur Toko</string>
-    <string name="add_product">Tambah Produk</string>
-    <string name="chat_seller">Chat Penjual</string>
-    <string name="favorite">Favoritkan</string>
 
     <string name="product_label_variant">Varian</string>
     <string name="product_manage_item_cashback">Cashback %1$d%%</string>

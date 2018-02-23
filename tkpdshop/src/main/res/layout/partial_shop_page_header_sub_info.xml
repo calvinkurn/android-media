@@ -72,7 +72,7 @@
         android:layout_gravity="center"
         android:layout_weight="1"
         android:visibility="gone"
-        app:spsd_title="@string/reputation_label">
+        app:spsd_title="@string/shop_page_label_reputation">
 
         <com.tokopedia.design.reputation.ShopReputationView
             android:id="@+id/shop_reputation_view"
@@ -87,7 +87,7 @@
         android:layout_gravity="center"
         android:layout_weight="1"
         android:visibility="gone"
-        app:spsd_title="@string/product_quality_label_value">
+        app:spsd_title="@string/shop_page_label_product_quality">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -116,7 +116,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_weight="1"
-        app:spsd_title="@string/speed_label_value">
+        app:spsd_title="@string/shop_page_label_speed">
 
         <LinearLayout
             android:layout_width="wrap_content"

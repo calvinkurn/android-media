@@ -1,4 +1,4 @@
-package com.tokopedia.shop.info.view.presenter;
+package com.tokopedia.shop.page.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -6,7 +6,8 @@ import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed;
 import com.tokopedia.reputation.common.domain.interactor.GetReputationSpeedUseCase;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.shop.info.view.listener.ShopPageView;
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
+import com.tokopedia.shop.page.view.listener.ShopPageView;
 
 import javax.inject.Inject;
 
@@ -20,12 +21,14 @@ public class ShopPagePresenter extends BaseDaggerPresenter<ShopPageView> {
 
     private final GetShopInfoUseCase getShopInfoUseCase;
     private final GetReputationSpeedUseCase getReputationSpeedUseCase;
+    private final ToggleFavouriteShopUseCase toggleFavouriteShopUseCase;
     private final UserSession userSession;
 
     @Inject
-    public ShopPagePresenter(GetShopInfoUseCase getShopInfoUseCase, GetReputationSpeedUseCase getReputationSpeedUseCase, UserSession userSession) {
+    public ShopPagePresenter(GetShopInfoUseCase getShopInfoUseCase, GetReputationSpeedUseCase getReputationSpeedUseCase, ToggleFavouriteShopUseCase toggleFavouriteShopUseCase, UserSession userSession) {
         this.getShopInfoUseCase = getShopInfoUseCase;
         this.getReputationSpeedUseCase = getReputationSpeedUseCase;
+        this.toggleFavouriteShopUseCase = toggleFavouriteShopUseCase;
         this.userSession = userSession;
     }
 
@@ -74,7 +77,40 @@ public class ShopPagePresenter extends BaseDaggerPresenter<ShopPageView> {
                 getView().onSuccessGetReputationSpeed(reputationSpeed);
             }
         });
+    }
 
+    public void toggleFavouriteShop(String shopId) {
+        toggleFavouriteShopUseCase.execute(ToggleFavouriteShopUseCase.createRequestParam(shopId), new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
 
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()) {
+                    getView().onErrorToggleFavourite(e);
+                }
+            }
+
+            @Override
+            public void onNext(Boolean success) {
+                getView().onSuccessToggleFavourite(success);
+            }
+        });
+    }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        if (getShopInfoUseCase != null) {
+            getShopInfoUseCase.unsubscribe();
+        }
+        if (getReputationSpeedUseCase != null) {
+            getReputationSpeedUseCase.unsubscribe();
+        }
+        if (toggleFavouriteShopUseCase != null) {
+            toggleFavouriteShopUseCase.unsubscribe();
+        }
     }
 }

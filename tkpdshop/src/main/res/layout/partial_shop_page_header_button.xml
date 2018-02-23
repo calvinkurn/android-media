@@ -15,7 +15,7 @@
         style="@style/Button.Shop.Page.Header"
         android:layout_width="0dp"
         android:layout_weight="1"
-        android:text="@string/manage_shop"
+        android:text="@string/shop_page_label_manage_shop"
         android:visibility="gone" />
 
     <Button
@@ -23,7 +23,7 @@
         style="@style/Button.Shop.Page.Header"
         android:layout_width="0dp"
         android:layout_weight="1"
-        android:text="@string/add_product"
+        android:text="@string/shop_page_label_add_product"
         android:visibility="gone" />
 
     <Button
@@ -31,14 +31,14 @@
         style="@style/Button.Shop.Page.Header"
         android:layout_width="0dp"
         android:layout_weight="1"
-        android:text="@string/chat_seller"
+        android:text="@string/shop_page_label_chat_to_seller"
         android:visibility="gone" />
 
     <Button
-        android:id="@+id/button_shop_page"
+        android:id="@+id/button_favourite_shop"
         style="@style/Button.Shop.Page.Header"
         android:layout_width="0dp"
         android:layout_weight="1"
-        android:text="@string/favorite"
+        android:text="@string/shop_page_label_favorite"
         android:visibility="gone" />
 </LinearLayout>

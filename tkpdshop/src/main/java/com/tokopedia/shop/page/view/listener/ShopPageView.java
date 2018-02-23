@@ -1,4 +1,4 @@
-package com.tokopedia.shop.info.view.listener;
+package com.tokopedia.shop.page.view.listener;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed;
@@ -17,4 +17,8 @@ public interface ShopPageView extends CustomerView {
     void onSuccessGetReputationSpeed(ReputationSpeed reputationSpeed);
 
     void onErrorGetReputationSpeed(Throwable e);
+
+    void onSuccessToggleFavourite(boolean successValue);
+
+    void onErrorToggleFavourite(Throwable e);
 }

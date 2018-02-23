@@ -1,6 +1,5 @@
 package com.tokopedia.shop.common.domain.interactor;
 
-import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.repository.ShopCommonRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -13,20 +12,20 @@ import rx.Observable;
  * Created by User on 9/8/2017.
  */
 
-public class GetShopInfoUseCase extends UseCase<ShopInfo> {
+public class ToggleFavouriteShopUseCase extends UseCase<Boolean> {
 
     private static final String SHOP_ID = "SHOP_ID";
 
     private ShopCommonRepository shopRepository;
 
-    public GetShopInfoUseCase(ShopCommonRepository shopRepository) {
+    public ToggleFavouriteShopUseCase(ShopCommonRepository shopRepository) {
         this.shopRepository = shopRepository;
     }
 
     @Override
-    public Observable<ShopInfo> createObservable(RequestParams requestParams) {
+    public Observable<Boolean> createObservable(RequestParams requestParams) {
         String shopId = requestParams.getString(SHOP_ID, null);
-        return shopRepository.getShopInfo(shopId);
+        return shopRepository.toggleFavouriteShop(shopId);
     }
 
     public static RequestParams createRequestParam(String shopId) {

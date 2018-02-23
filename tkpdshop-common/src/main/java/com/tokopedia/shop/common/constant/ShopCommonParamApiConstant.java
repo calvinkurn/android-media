@@ -13,7 +13,9 @@ public class ShopCommonParamApiConstant {
     public static final String OS_TYPE = "os_type";
     public static final String DEVICE_ID = "device_id";
 
-    public static final String OS_TYPE_VALUE = "1";
+    public static final String VALUE_OS_TYPE = "1";
+
+    public static final String VALUE_TRUE_FAVOURITE = "1";
 
 
 }

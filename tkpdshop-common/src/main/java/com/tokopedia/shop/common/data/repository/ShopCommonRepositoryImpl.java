@@ -26,4 +26,11 @@ public class ShopCommonRepositoryImpl implements ShopCommonRepository {
     public Observable<ShopInfo> getShopInfoByDomain(String shopDomain) {
         return shopInfoDataSource.getShopInfoByDomain(shopDomain);
     }
+
+    @Override
+    public Observable<Boolean> toggleFavouriteShop(String shopId) {
+        return shopInfoDataSource.toggleFavouriteShop(shopId);
+    }
+
+
 }
