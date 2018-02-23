@@ -35,7 +35,7 @@ public class LoginGroupChatUseCase {
             public void onConnected(User user, SendBirdException e) {
                 if (e != null) {
                     listener.onErrorEnterChannel(GroupChatErrorHandler
-                            .getSendBirdErrorMessage(context, e, true));
+                            .getSendBirdErrorMessage(context, e, false));
                     return;
                 }
 
@@ -44,7 +44,7 @@ public class LoginGroupChatUseCase {
                     public void onUpdated(SendBirdException e) {
                         if (e != null) {
                             listener.onErrorEnterChannel(GroupChatErrorHandler
-                                    .getSendBirdErrorMessage(context, e, true));
+                                    .getSendBirdErrorMessage(context, e, false));
                             return;
                         }
 
@@ -53,7 +53,7 @@ public class LoginGroupChatUseCase {
                             public void onResult(final OpenChannel openChannel, SendBirdException e) {
                                 if (e != null) {
                                     listener.onErrorEnterChannel(GroupChatErrorHandler
-                                            .getSendBirdErrorMessage(context, e, true));
+                                            .getSendBirdErrorMessage(context, e, false));
                                     return;
                                 }
 
@@ -63,7 +63,7 @@ public class LoginGroupChatUseCase {
                                     public void onResult(SendBirdException e) {
                                         if (e != null) {
                                             listener.onErrorEnterChannel(GroupChatErrorHandler
-                                                    .getSendBirdErrorMessage(context, e, true));
+                                                    .getSendBirdErrorMessage(context, e, false));
                                         }
 
                                         listener.onSuccessEnterChannel(openChannel);

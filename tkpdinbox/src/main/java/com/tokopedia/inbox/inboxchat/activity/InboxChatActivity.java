@@ -4,17 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.TaskStackBuilder;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.MainApplication;
@@ -23,7 +19,6 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
-import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.SellerAppRouter;
@@ -33,52 +28,23 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
-import com.tokopedia.inbox.inboxchat.adapter.ChatPagerAdapter;
+import com.tokopedia.inbox.inboxchat.adapter.IndicatorAdapter;
 import com.tokopedia.inbox.inboxchat.fragment.InboxChatFragment;
+import com.tokopedia.inbox.inboxchat.viewmodel.IndicatorItem;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-
 public class InboxChatActivity extends DrawerPresenterActivity
-        implements InboxMessageConstant, NotificationReceivedListener, HasComponent, ChatNotifInterface {
+        implements InboxMessageConstant, NotificationReceivedListener, HasComponent,
+        ChatNotifInterface, IndicatorAdapter.OnIndicatorClickListener {
 
-    @BindView(R2.id.pager)
-    ViewPager viewPager;
-    @BindView(R2.id.indicator)
-    TabLayout indicator;
-    private ArrayList<Fragment> fragmentList;
-
-//    @DeepLink(Constants.Applinks.MESSAGE)
-//    public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
-//        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-//        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-//
-//        Intent homeIntent = null;
-//        if (GlobalConfig.isSellerApp()) {
-//            homeIntent = SellerAppRouter.getSellerHomeActivity(context);
-//        } else {
-//            homeIntent = HomeRouter.getHomeActivity(context);
-//        }
-//        Intent destination;
-//        if(MainApplication.getInstance() instanceof RemoteConfigRouter
-//                && ((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig(TkpdInboxRouter.ENABLE_TOPCHAT)) {
-//            destination = new Intent(context, InboxChatActivity.class)
-//                    .setData(uri.build())
-//                    .putExtras(extras);
-//        } else {
-//            destination = new Intent(context, InboxMessageActivity.class)
-//                    .setData(uri.build())
-//                    .putExtras(extras);
-//        }
-//
-//        taskStackBuilder.addNextIntent(homeIntent);
-//        taskStackBuilder.addNextIntent(destination);
-//        return taskStackBuilder;
-//    }
+    private static final int POSITION_TOP_CHAT = 0;
+    private static final int POSITION_GROUP_CHAT = 1;
+    IndicatorAdapter indicatorAdapter;
+    RecyclerView indicator;
 
     @DeepLink(Constants.Applinks.TOPCHAT_IDLESS)
     public static Intent getCallingIntentTopchatWithoutId(Context context, Bundle extras) {
@@ -93,7 +59,7 @@ public class InboxChatActivity extends DrawerPresenterActivity
 
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         Intent destination;
-        if(remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
+        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
             destination = new Intent(context, InboxChatActivity.class)
                     .setData(uri.build())
                     .putExtras(extras);
@@ -146,25 +112,29 @@ public class InboxChatActivity extends DrawerPresenterActivity
 
     @Override
     protected int getLayoutId() {
-        return com.tokopedia.core.R.layout.activity_inbox_message;
+        return R.layout.activity_inbox_chat;
     }
 
     @Override
     protected void initView() {
         super.initView();
-//        drawer.setDrawerPosition(TkpdState.DrawerPosition.INBOX_MESSAGE);
-        viewPager.setAdapter(getViewPagerAdapter());
-        viewPager.setOffscreenPageLimit(OFFSCREEN_PAGE_LIMIT);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
-        indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
 
-//        indicator.addTab(indicator.newTab().setText(getString(R.string.title_inbox_message_all)));
-        indicator.addTab(indicator.newTab().setCustomView(R.layout.circle_text));
-        ((TextView) indicator.getTabAt(indicator.getTabCount() - 1).getCustomView().findViewById(R.id.tab_title)).setText(getString(R.string.title_inbox_chat_all));
-        indicator.addTab(indicator.newTab().setText(getString(R.string.title_inbox_archive)));
+        indicator = findViewById(R.id.indicator);
+        indicatorAdapter = IndicatorAdapter.createInstance(getIndicatorList(), this);
+        indicator.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager
+                .HORIZONTAL, false));
+        indicator.setAdapter(indicatorAdapter);
 
-        if (getIntent().getExtras() != null && getIntent().getExtras().getInt(BUNDLE_POSITION, -1) != -1)
-            viewPager.setCurrentItem(getIntent().getExtras().getInt(BUNDLE_POSITION, -1));
+        initTopChatFragment();
+    }
+
+    private List<IndicatorItem> getIndicatorList() {
+        List<IndicatorItem> list = new ArrayList<>();
+        list.add(new IndicatorItem(getString(R.string.title_personal), R.drawable
+                .ic_google_share, true));
+        list.add(new IndicatorItem(getString(R.string.title_community), R.drawable
+                .ic_google_share, false));
+        return list;
     }
 
     @Override
@@ -187,17 +157,6 @@ public class InboxChatActivity extends DrawerPresenterActivity
 
     }
 
-    public ChatPagerAdapter getViewPagerAdapter() {
-        return new ChatPagerAdapter(getSupportFragmentManager(), initFragmentList());
-    }
-
-    public List<Fragment> initFragmentList() {
-        fragmentList = new ArrayList<>();
-        fragmentList.add(InboxChatFragment.createInstance(MESSAGE_ALL));
-//        fragmentList.add(InboxChatFragment.createInstance(MESSAGE_ARCHIVE));
-        return fragmentList;
-    }
-
     @Override
     public void onBackPressed() {
         if (isTaskRoot() && GlobalConfig.isSellerApp()) {
@@ -214,28 +173,17 @@ public class InboxChatActivity extends DrawerPresenterActivity
     @Override
     public void onGetNotif(Bundle data) {
         super.onGetNotif(data);
-        InboxChatFragment something = (InboxChatFragment) fragmentList.get(viewPager.getCurrentItem());
-//        something.restackList(data);
-    }
-
-    public void showTabLayout(boolean b) {
-        b = false;
-        toolbar = (Toolbar) findViewById(com.tokopedia.core.R.id.app_bar);
-        if (b) {
-            toolbar.setTitleTextColor(getResources().getColor(R.color.white));
-            indicator.setVisibility(View.VISIBLE);
-        } else {
-            toolbar.setTitleTextColor(getResources().getColor(R.color.black));
-            indicator.setVisibility(View.GONE);
-        }
     }
 
     @Override
     public void onSuccessGetTopChatNotification(int notifUnreads) {
+
         if (notifUnreads > 0) {
             TextView titleTextView = (TextView) toolbar.findViewById(R.id.actionbar_title);
             titleTextView.setText("Chat (" + notifUnreads + ")");
         }
+
+        indicatorAdapter.setNotification(POSITION_TOP_CHAT, notifUnreads);
     }
 
     public static Intent getCallingIntent(Context context) {
@@ -245,5 +193,55 @@ public class InboxChatActivity extends DrawerPresenterActivity
     @Override
     public AppComponent getComponent() {
         return getApplicationComponent();
+    }
+
+    @Override
+    public void onIndicatorClicked(int position) {
+        indicatorAdapter.setActiveIndicator(position);
+        switch (position) {
+            case POSITION_TOP_CHAT:
+                initTopChatFragment();
+                break;
+            case POSITION_GROUP_CHAT:
+                initGroupChatFragment();
+                break;
+            default:
+        }
+    }
+
+    private void initGroupChatFragment() {
+        Bundle bundle = new Bundle();
+        if (getIntent().getExtras() != null) {
+            bundle.putAll(getIntent().getExtras());
+        }
+
+        TkpdInboxRouter inboxRouter = (TkpdInboxRouter) getApplicationContext();
+
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag
+                (inboxRouter.getChannelFragmentTag());
+
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        if (fragment == null) {
+            fragment = inboxRouter.getChannelFragment(bundle);
+        }
+        fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
+        fragmentTransaction.commit();
+    }
+
+    private void initTopChatFragment() {
+        Bundle bundle = new Bundle();
+        if (getIntent().getExtras() != null) {
+            bundle.putAll(getIntent().getExtras());
+        }
+
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag
+                (InboxChatFragment.class.getSimpleName());
+
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        if (fragment == null) {
+            fragment = InboxChatFragment.createInstance(MESSAGE_ALL);
+        }
+        fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
+        fragmentTransaction.commit();
     }
 }

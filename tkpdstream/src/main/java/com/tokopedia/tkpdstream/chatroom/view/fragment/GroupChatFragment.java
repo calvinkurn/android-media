@@ -34,7 +34,6 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.tkpdstream.R;
-import com.tokopedia.tkpdstream.channel.view.ProgressBarWithTimer;
 import com.tokopedia.tkpdstream.channel.view.activity.ChannelActivity;
 import com.tokopedia.tkpdstream.chatroom.di.DaggerChatroomComponent;
 import com.tokopedia.tkpdstream.chatroom.domain.ConnectionManager;
@@ -46,11 +45,12 @@ import com.tokopedia.tkpdstream.chatroom.view.adapter.typefactory.GroupChatTypeF
 import com.tokopedia.tkpdstream.chatroom.view.adapter.typefactory.GroupChatTypeFactoryImpl;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.chatroom.view.presenter.GroupChatPresenter;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.UserActionViewModel;
-import com.tokopedia.tkpdstream.common.analytics.ChannelAnalytics;
+import com.tokopedia.tkpdstream.channel.data.analytics.ChannelAnalytics;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
 
@@ -63,10 +63,10 @@ import javax.inject.Inject;
  */
 
 public class GroupChatFragment extends BaseDaggerFragment implements GroupChatContract.View,
-        ChannelHandlerUseCase.ChannelHandlerListener {
+        ChannelHandlerUseCase.ChannelHandlerListener, LoginGroupChatUseCase.LoginGroupChatListener {
 
     public static final String ARGS_VIEW_MODEL = "GC_VIEW_MODEL";
-    private static final int SCROLL_TO_BOTTOM_TRESHOLD_POSITION = 10;
+
     @Inject
     GroupChatPresenter presenter;
 
@@ -117,7 +117,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
             viewModel = savedInstanceState.getParcelable(ARGS_VIEW_MODEL);
         } else if (getArguments() != null) {
             viewModel = new GroupChatViewModel(getArguments().getString(GroupChatActivity
-                    .EXTRA_CHANNEL_URL, ""));
+                    .EXTRA_CHANNEL_UUID, ""));
+        } else {
+            Intent intent = new Intent();
+            intent.putExtra(ChannelActivity.RESULT_MESSAGE, getString(R.string.default_request_error_unknown));
+            getActivity().setResult(ChannelActivity.RESULT_ERROR_LOGIN, intent);
+            getActivity().finish();
         }
 
         userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
@@ -155,9 +160,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         }
 
         setHasOptionsMenu(true);
-
-        toolbar.setTitle("Ngeng 123");
-        toolbar.setSubtitle("Ngeng subtitle");
 
     }
 
@@ -202,7 +204,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
 
-                if (layoutManager.findLastVisibleItemPosition() == adapter.getItemCount() - 1) {
+                if (layoutManager.findLastVisibleItemPosition() == adapter.getItemCount() - 1
+                        && !adapter.isLoading()) {
+                    adapter.showLoading();
                     presenter.loadPreviousMessages(mChannel, mPrevMessageListQuery);
                 }
             }
@@ -255,31 +259,22 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         super.onViewCreated(view, savedInstanceState);
         initData();
 
+
+        toolbar.setTitle(viewModel.getChannelName());
+        setToolbarParticipantCount();
+
         ImageHandler.loadImageBlur(getActivity(), channelBanner, "http://static.tvtropes" +
                 ".org/pmwiki/pub/images/kingdom_hearts_difficulties.jpg");
     }
 
-    private void initData() {
-        presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUrl(),
-                userSession.getName(), "https://yt3.ggpht" +
-                        ".com/-uwClWniyyFU/AAAAAAAAAAI/AAAAAAAAAAA/nVrBEY3dzuY/s176-c-k-no-mo-rj" +
-                        "-c0xffffff/photo.jpg", new
-                        LoginGroupChatUseCase
-                                .LoginGroupChatListener() {
-                            @Override
-                            public void onSuccessEnterChannel(OpenChannel openChannel) {
-                                mChannel = openChannel;
-                                presenter.initMessageFirstTime(viewModel.getChannelUrl(), mChannel);
-                            }
+    private void setToolbarParticipantCount() {
+        String textParticipant = viewModel.getTotalParticipant() + " " + getString(R.string
+                .participant);
+        toolbar.setSubtitle(textParticipant);
+    }
 
-                            @Override
-                            public void onErrorEnterChannel(String errorMessage) {
-                                Intent intent = new Intent();
-                                intent.putExtra(ChannelActivity.RESULT_MESSAGE, errorMessage);
-                                getActivity().setResult(ChannelActivity.RESULT_ERROR_LOGIN, intent);
-                                getActivity().finish();
-                            }
-                        });
+    private void initData() {
+        presenter.getChannelInfo(viewModel.getChannelUuid());
     }
 
     @Override
@@ -313,7 +308,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                         }
                     }
                 });
-        presenter.setHandler(viewModel.getChannelUrl(), this);
+        presenter.setHandler(viewModel.getChannelUuid(), this);
     }
 
     @Override
@@ -331,6 +326,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     @Override
     public void onSuccessGetMessage(List<Visitable> listChat) {
+        adapter.dismissLoading();
         adapter.addList(listChat);
     }
 
@@ -382,6 +378,25 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     @Override
+    public void onErrorGetChannelInfo(String errorMessage) {
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                initData();
+            }
+        });
+    }
+
+    @Override
+    public void onSuccessGetChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
+        this.viewModel.setChannelUrl(channelInfoViewModel.getChannelUrl());
+        presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUrl(),
+                userSession.getName(), "https://yt3.ggpht" +
+                        ".com/-uwClWniyyFU/AAAAAAAAAAI/AAAAAAAAAAA/nVrBEY3dzuY/s176-c-k-no-mo-rj" +
+                        "-c0xffffff/photo.jpg", this);
+    }
+
+    @Override
     public void onMessageReceived(Visitable messageItem) {
         adapter.addIncomingMessage(messageItem);
         adapter.notifyItemInserted(0);
@@ -410,7 +425,29 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     @Override
     public void onUserEntered(UserActionViewModel userActionViewModel) {
+        viewModel.setTotalParticipant(viewModel.getTotalParticipant() + 1);
         adapter.addAction(userActionViewModel);
         adapter.notifyItemInserted(0);
+    }
+
+    @Override
+    public void onSuccessEnterChannel(OpenChannel openChannel) {
+        mChannel = openChannel;
+        viewModel.setTotalParticipant(openChannel.getParticipantCount());
+        setToolbarParticipantCount();
+        presenter.initMessageFirstTime(viewModel.getChannelUuid(), mChannel);
+    }
+
+    @Override
+    public void onErrorEnterChannel(String errorMessage) {
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUuid(),
+                        userSession.getName(), "https://yt3.ggpht" +
+                                ".com/-uwClWniyyFU/AAAAAAAAAAI/AAAAAAAAAAA/nVrBEY3dzuY/s176-c-k-no-mo-rj" +
+                                "-c0xffffff/photo.jpg", GroupChatFragment.this);
+            }
+        });
     }
 }

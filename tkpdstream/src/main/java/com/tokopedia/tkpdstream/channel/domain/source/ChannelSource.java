@@ -2,7 +2,7 @@ package com.tokopedia.tkpdstream.channel.domain.source;
 
 import com.tokopedia.tkpdstream.channel.domain.mapper.ChannelMapper;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelListViewModel;
-import com.tokopedia.tkpdstream.common.data.GroupChatApi;
+import com.tokopedia.tkpdstream.channel.data.ChannelApi;
 import com.tokopedia.tkpdstream.common.di.scope.StreamScope;
 
 import java.util.HashMap;
@@ -17,11 +17,11 @@ import rx.Observable;
 
 public class ChannelSource {
 
-    GroupChatApi chatApi;
+    ChannelApi chatApi;
     ChannelMapper channelMapper;
 
     @Inject
-    public ChannelSource(@StreamScope GroupChatApi chatApi,
+    public ChannelSource(@StreamScope ChannelApi chatApi,
                          ChannelMapper channelMapper) {
         this.chatApi = chatApi;
         this.channelMapper = channelMapper;

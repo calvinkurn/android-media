@@ -20,12 +20,10 @@ import retrofit2.Retrofit;
 @StreamScope
 @Component(modules = StreamModule.class, dependencies = BaseAppComponent.class)
 public interface StreamComponent {
-    @ApplicationContext
-    Context context();
 
     OkHttpClient provideOkHttpClient();
 
-//    Retrofit.Builder retrofitBuilder();
+    Retrofit.Builder retrofitBuilder();
 
     void inject(BaseStreamActivity baseChatActivity);
 

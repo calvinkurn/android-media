@@ -52,4 +52,6 @@ public interface SellerModuleRouter {
     Intent getLoginIntent(Context context);
 
     Intent getPhoneVerificationActivityIntent(Context context);
+
+    Intent getInboxMessageIntent(Context context);
 }

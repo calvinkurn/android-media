@@ -17,7 +17,7 @@ import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
 
 public class GroupChatActivity extends BaseEmptyActivity {
 
-    public static final String EXTRA_CHANNEL_URL = "CHANNEL_URL";
+    public static final String EXTRA_CHANNEL_UUID = "CHANNEL_URL";
     public Toolbar toolbar;
 
     @Override
@@ -46,7 +46,7 @@ public class GroupChatActivity extends BaseEmptyActivity {
 
     public static Intent getCallingIntent(Context context) {
         Intent intent = new Intent(context, GroupChatActivity.class);
-        intent.putExtra(EXTRA_CHANNEL_URL, "pub1");
+        intent.putExtra(EXTRA_CHANNEL_UUID, "pub1");
         return intent;
     }
 

@@ -1,7 +1,7 @@
 package com.tokopedia.tkpdstream.channel.domain.mapper;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.tkpdstream.channel.data.ChannelListPojo;
+import com.tokopedia.tkpdstream.channel.domain.pojo.ChannelListPojo;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelListViewModel;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
 

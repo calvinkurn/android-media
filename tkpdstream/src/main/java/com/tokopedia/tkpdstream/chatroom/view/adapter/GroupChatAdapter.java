@@ -99,4 +99,20 @@ public class GroupChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     public void addAction(UserActionViewModel userActionViewModel) {
         this.list.add(0, userActionViewModel);
     }
+
+    public void showLoading() {
+        if (!this.list.contains(loadingModel)) {
+            this.list.add(list.size() - 1, loadingModel);
+            notifyItemInserted(list.size() - 1);
+        }
+    }
+
+    public void dismissLoading() {
+        this.list.remove(loadingModel);
+        notifyItemRemoved(list.size() - 1);
+    }
+
+    public boolean isLoading() {
+        return this.list.contains(loadingModel);
+    }
 }

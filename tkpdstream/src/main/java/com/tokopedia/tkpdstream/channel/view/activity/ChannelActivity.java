@@ -18,7 +18,11 @@ public class ChannelActivity extends BaseStreamActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return ChannelFragment.createInstance();
+        Bundle bundle = new Bundle();
+        if (getIntent().getExtras() != null) {
+            bundle.putAll(getIntent().getExtras());
+        }
+        return ChannelFragment.createInstance(bundle);
     }
 
 }

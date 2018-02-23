@@ -24,7 +24,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 
 @StreamScope
 @Module
-public class NetModule {
+public class StreamNetModule {
 
     @StreamScope
     @Provides

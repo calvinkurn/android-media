@@ -6,6 +6,7 @@ import com.sendbird.android.UserMessage;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.AdminAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
+import com.tokopedia.tkpdstream.common.util.TimeConverter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,8 +45,8 @@ public class GroupChatMessagesMapper {
     private Visitable mapToUserMessage(BaseMessage message) {
         return new ChatViewModel(
                 ((UserMessage) message).getMessage(),
-                String.valueOf(message.getCreatedAt()),
-                String.valueOf(message.getUpdatedAt()),
+                String.valueOf(TimeConverter.convertToHourFormat(message.getCreatedAt())),
+                String.valueOf(TimeConverter.convertToHourFormat(message.getUpdatedAt())),
                 String.valueOf(message.getMessageId()),
                 ((UserMessage) message).getSender().getUserId(),
                 ((UserMessage) message).getSender().getNickname(),
@@ -58,8 +59,8 @@ public class GroupChatMessagesMapper {
     private AdminAnnouncementViewModel mapToAdminMessage(BaseMessage message) {
         return new AdminAnnouncementViewModel(
                 ((AdminMessage) message).getMessage(),
-                String.valueOf(message.getCreatedAt()),
-                String.valueOf(message.getUpdatedAt()),
+                String.valueOf(TimeConverter.convertToHourFormat(message.getCreatedAt())),
+                String.valueOf(TimeConverter.convertToHourFormat(message.getUpdatedAt())),
                 String.valueOf(message.getMessageId())
         );
     }

@@ -1,4 +1,4 @@
-package com.tokopedia.tkpdstream.common.analytics;
+package com.tokopedia.tkpdstream.channel.data.analytics;
 
 /**
  * @author by nisie on 2/1/18.

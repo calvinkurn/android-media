@@ -36,7 +36,7 @@ public class UserActionViewHolder extends AbstractViewHolder<UserActionViewModel
     public void bind(UserActionViewModel element) {
 
         ImageHandler.loadImageCircle2(avatar.getContext(), avatar, element.getAvatarUrl());
-        String name = MethodChecker.fromHtml(element.getUserName();
+        String name = MethodChecker.fromHtml(element.getUserName()).toString();
         String action = getActionString(context, element.getActionType());
 
         String actionString = name + " " + action;
