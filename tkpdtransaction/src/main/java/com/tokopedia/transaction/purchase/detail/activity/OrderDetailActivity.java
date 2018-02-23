@@ -138,7 +138,7 @@ public class OrderDetailActivity extends TActivity
     }
 
     private void setInsuranceNotificationView(OrderDetailData data) {
-        if(data.isShowInsuranceNotification()) {
+        if(data.isShowInsuranceNotification() && getExtraUserMode() == SELLER_MODE) {
             ViewGroup notificationLayout = findViewById(R.id.notification_layout);
             TextView notificationTextView = findViewById(R.id.notification_text_view);
             notificationLayout.setVisibility(View.VISIBLE);
@@ -437,8 +437,8 @@ public class OrderDetailActivity extends TActivity
         String logoUrl;
         if(getExtraUserMode() == SELLER_MODE) {
             id = orderData.getBuyerId();
-            name = orderData.getBuyerName();
-            logoUrl = orderData.getShopLogo();
+            name = orderData.getBuyerUserName();
+            logoUrl = orderData.getBuyerLogo();
         } else {
             id = orderData.getShopId();
             name = orderData.getShopName();
@@ -777,9 +777,6 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onAcceptPartialOrderCreated(String orderId, String remark, String param) {
         presenter.partialOrder(this, orderId, remark, param);
-        presenter.acceptOrder(this, orderId);
-        setResult(Activity.RESULT_OK);
-        finish();
     }
 
     @Override

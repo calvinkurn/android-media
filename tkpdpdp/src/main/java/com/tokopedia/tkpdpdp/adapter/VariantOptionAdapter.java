@@ -96,9 +96,6 @@ public class VariantOptionAdapter extends RecyclerView.Adapter<VariantOptionAdap
                     ((GradientDrawable)background).setColor(Color.parseColor(variantOption.getHex()));
                 }
                 imageColor.setVisibility(View.VISIBLE);
-            } else if (isColor){
-                imageColor.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.group_3));
-                imageColor.setVisibility(View.VISIBLE);
             }
             Drawable background = container.getBackground();
             if (!variantOption.isEnabled()) {
