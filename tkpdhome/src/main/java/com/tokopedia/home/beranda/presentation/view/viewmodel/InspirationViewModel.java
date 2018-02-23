@@ -104,7 +104,7 @@ public class InspirationViewModel implements Visitable<HomeTypeFactory> {
                             "brand", "none / other",
                             "category", "none / other",
                             "variant", "none / other",
-                            "list", String.format("/ - p%d - %s", getPositionFeedCard(), getEventLabel()),
+                            "list", String.format("/ - p%d - %s - %s", getPositionFeedCard(), "rekomendasi untuk anda", viewModel.getRecommedationType()),
                             "position", i + 1
                     )
             );
@@ -132,7 +132,7 @@ public class InspirationViewModel implements Visitable<HomeTypeFactory> {
         return DataLayer.mapOf(EVENT_NAME, STATIC_VALUE_PRODUCT_CLICK,
                 EVENT_CATEGORY, STATIC_VALUE_HOMEPAGE,
                 EVENT_ACTION, STATIC_VALUE_HOMEPAGE_PRODUCT_CLICK,
-                EVENT_LABEL, String.format("/ - p%d - %s", getPositionFeedCard(), getEventLabel()),
+                EVENT_LABEL, String.format("/ - p%d - %s - %s", getPositionFeedCard(), "rekomendasi untuk anda", getListProduct().get(adapterPosition).getRecommedationType()),
                 EVENT_ECOMMERCE, DataLayer.mapOf(
                         "currencyCode", "IDR",
                         "click", DataLayer.mapOf(
@@ -145,7 +145,7 @@ public class InspirationViewModel implements Visitable<HomeTypeFactory> {
                                                 "brand", "none / other",
                                                 "category", "none / other",
                                                 "variant", "none / other",
-                                                "list", String.format("/ - p%d - %s", getPositionFeedCard(), getEventLabel()),
+                                                "list", String.format("/ - p%d - %s - %s", getPositionFeedCard(), "rekomendasi untuk anda", getListProduct().get(adapterPosition).getRecommedationType()),
                                                 "position", adapterPosition + 1
                                         )
                                 )
