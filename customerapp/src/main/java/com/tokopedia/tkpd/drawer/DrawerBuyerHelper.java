@@ -580,6 +580,8 @@ public class DrawerBuyerHelper extends DrawerHelper
                     if (context.getApplication() instanceof TkpdCoreRouter) {
                         intent = ((TkpdCoreRouter) context.getApplication()).getGroupChatIntent
                                 (context);
+//                        intent = ((TkpdInboxRouter) context.getApplication()).getInboxMessageIntent
+//                                (context);
                         context.startActivity(intent);
                         sendGTMNavigationEvent(AppEventTracking.EventLabel.MESSAGE);
                     }

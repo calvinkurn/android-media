@@ -3,4 +3,20 @@
 
     <color name="green_transparent">#e1f8e2</color>
     <color name="medium_green">#42b549</color>
+
+
+    <!--vote-->
+
+    <color name="grey_hint">#e0e0e0</color>
+
+    <color name="base">#f1f1f1</color>
+    <color name="first_green">@color/medium_green</color>
+    <color name="second_green">#aee2b1</color>
+    <color name="first_white">#cecece</color>
+    <color name="second_white">#e0e0e0</color>
+
+    <color name="black_54">#8a000000</color>
+    <color name="black_70">#b3000000</color>
+    <color name="black_dimmed">#66000000</color>
+
 </resources>

@@ -114,18 +114,19 @@ public class UploadImageUseCase extends UseCase<UploadImageDomain> {
     }
 
     private RequestBody generateImage(RequestParams requestParams) {
-        File file = null;
-        try {
-            byte[] temp = ImageUploadHandlerChat.compressImage(requestParams.getString(PARAM_FILE_TO_UPLOAD, ""));
-            if(ImageUploadHandlerChat.checkSizeOverLimit(temp.length, 5)){
-                throw new ErrorMessageException("Gambar melebihi 5MB");
-            }
-
-            file = ImageUploadHandlerChat.writeImageToTkpdPath(temp);
-
-        } catch (IOException e) {
-            throw new RuntimeException(MainApplication.getAppContext().getString(R.string.error_upload_image));
-        }
+        File file = new File(requestParams.getString(PARAM_FILE_TO_UPLOAD, ""));
+//        File file = null;
+//        try {
+//            byte[] temp = ImageUploadHandlerChat.compressImage(requestParams.getString(PARAM_FILE_TO_UPLOAD, ""));
+//            if(ImageUploadHandlerChat.checkSizeOverLimit(temp.length, 5)){
+//                throw new ErrorMessageException("Gambar melebihi 5MB");
+//            }
+//
+//            file = ImageUploadHandlerChat.writeImageToTkpdPath(temp);
+//
+//        } catch (IOException e) {
+//            throw new RuntimeException(MainApplication.getAppContext().getString(R.string.error_upload_image));
+//        }
         return RequestBody.create(MediaType.parse("image/*"),
                 file);
     }

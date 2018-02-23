@@ -11,6 +11,7 @@ import com.tokopedia.tkpdstream.chatroom.domain.usecase.LoginGroupChatUseCase;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
+import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 
 import java.util.List;
 
@@ -35,6 +36,8 @@ public interface GroupChatContract {
         void onErrorGetMessage(String errorMessage);
 
         void onErrorGetMessageFirstTime(String errorMessage);
+
+        void onSuccessGetVoteInfo(VoteInfoViewModel voteInfoViewModel);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -51,5 +54,7 @@ public interface GroupChatContract {
         void loadPreviousMessages(OpenChannel mChannel, PreviousMessageListQuery mPrevMessageListQuery);
 
         void shareChatRoom(GroupChatViewModel viewModel);
+
+        void getVoteInfo(Context context);
     }
 }

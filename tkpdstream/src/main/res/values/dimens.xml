@@ -3,11 +3,17 @@
     <dimen name="avatar_size">20dp</dimen>
     <dimen name="card_channel_elevation">0.5dp</dimen>
 
+    <dimen name="space_atomic">0.5dp</dimen>
     <dimen name="space_tiny">2.5dp</dimen>
+    <dimen name="space_mini">5dp</dimen>
     <dimen name="space_small">8dp</dimen>
-    <dimen name="space_avg">8dp</dimen>
+    <dimen name="space_average">12dp</dimen>
     <dimen name="space_med">16dp</dimen>
     <dimen name="space_sm">24dp</dimen>
+    <dimen name="space_large">40dp</dimen>
+
+
+    <dimen name="size_icon_vote">15dp</dimen>
 
     <dimen name="dot_size">5sp</dimen>
     <dimen name="channel_banner_height">104dp</dimen>

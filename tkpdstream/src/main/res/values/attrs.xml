@@ -5,4 +5,5 @@
         <attr name="progress" format="integer" />
         <attr name="time" format="integer" />
     </declare-styleable>
+
 </resources>

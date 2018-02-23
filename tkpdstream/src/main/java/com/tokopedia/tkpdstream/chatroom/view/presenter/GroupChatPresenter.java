@@ -1,9 +1,12 @@
 package com.tokopedia.tkpdstream.chatroom.view.presenter;
 
+import android.content.Context;
+
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.PreviousMessageListQuery;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.ChannelHandlerUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.GetGroupChatMessagesFirstTimeUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.GetGroupChatMessagesUseCase;
@@ -14,10 +17,14 @@ import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
+import com.tokopedia.tkpdstream.vote.domain.usecase.GetVoteUseCase;
+import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Subscriber;
 
 /**
  * @author by nisie on 2/6/18.
@@ -32,6 +39,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     private final SendGroupChatMessageUseCase sendMessageUseCase;
     private final LogoutGroupChatUseCase logoutGroupChatUseCase;
     private final ChannelHandlerUseCase channelHandlerUseCase;
+    private final GetVoteUseCase getVoteUseCase;
 
     @Inject
     public GroupChatPresenter(LoginGroupChatUseCase loginGroupChatUseCase,
@@ -40,13 +48,15 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                               GetGroupChatMessagesUseCase getGroupChatMessagesUseCase,
                               SendGroupChatMessageUseCase sendMessageUseCase,
                               LogoutGroupChatUseCase logoutGroupChatUseCase,
-                              ChannelHandlerUseCase channelHandlerUseCase) {
+                              ChannelHandlerUseCase channelHandlerUseCase,
+                              GetVoteUseCase getVoteUseCase) {
         this.loginGroupChatUseCase = loginGroupChatUseCase;
         this.getGroupChatMessagesFirstTimeUseCase = getGroupChatMessagesFirstTimeUseCase;
         this.getGroupChatMessagesUseCase = getGroupChatMessagesUseCase;
         this.sendMessageUseCase = sendMessageUseCase;
         this.logoutGroupChatUseCase = logoutGroupChatUseCase;
         this.channelHandlerUseCase = channelHandlerUseCase;
+        this.getVoteUseCase = getVoteUseCase;
 
     }
 
@@ -118,6 +128,26 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     @Override
     public void shareChatRoom(GroupChatViewModel viewModel) {
 
+    }
+
+    @Override
+    public void getVoteInfo(final Context context) {
+        getVoteUseCase.execute(getVoteUseCase.createParams(), new Subscriber<VoteInfoViewModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                ErrorHandler.getErrorMessage(context, throwable);
+            }
+
+            @Override
+            public void onNext(VoteInfoViewModel voteInfoViewModel) {
+                getView().onSuccessGetVoteInfo(voteInfoViewModel);
+            }
+        });
     }
 
     @Override

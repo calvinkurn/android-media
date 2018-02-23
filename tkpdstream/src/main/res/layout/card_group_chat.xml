@@ -55,12 +55,15 @@
 
         <TextView
             android:id="@+id/subtitle"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
+            android:textSize="14sp"
             android:fontFamily="sans-serif"
-            android:maxLines="1"
-            tools:text="Who are you supporting" />
+            android:textStyle="normal"
+            android:textColor="@color/black_55"
+            android:lineSpacingExtra="6sp"
+            tools:text="Hai para pecinta sepak bola, Ramaikan piala dunia 2018 bersama Tokopedia!…"
+            />
 
         <RelativeLayout
             android:id="@+id/information"
@@ -90,7 +93,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_toLeftOf="@+id/participant"
                 android:layout_toStartOf="@+id/participant"
-                android:background="@color/colorRed" />
+                android:src="@drawable/ic_group" />
 
             <TextView
                 android:id="@+id/participant"
