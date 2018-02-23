@@ -241,12 +241,6 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         optionRecyclerViewLevel1.setAdapter(variantOptionAdapterLevel1);
         optionNameLevel1.setText(variantLevel1.getName()+" :");
         List<Integer> combinations = new ArrayList<>();
-        for (int i=0; i<variantOptionAdapterLevel1.getVariantOptions().size(); i++) {
-            combinations = productVariant.getCombinationFromSelectedVariant(variantOptionAdapterLevel1.getVariantOptions().get(i).getId());
-            if (combinations.size()<=1 ) {
-                variantOptionAdapterLevel1.getVariantOptions().get(i).setEnabled(false);
-            }
-        }
         Option optionLevel1 = getIntent().getParcelableExtra(KEY_LEVEL1_SELECTED);
         Child defaultChild = productVariant.getChildFromProductId(productDetailData.getInfo().getProductId());
         if (defaultChild==null) defaultChild = productVariant.getChildFromProductId(productVariant.getDefaultChild());
@@ -267,6 +261,12 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         }
 
         if (productVariant.getVariant().size()>1) {
+            for (int i=0; i<variantOptionAdapterLevel1.getVariantOptions().size(); i++) {
+                combinations = productVariant.getCombinationFromSelectedVariant(variantOptionAdapterLevel1.getVariantOptions().get(i).getId());
+                if (combinations.size()<=1 ) {
+                    variantOptionAdapterLevel1.getVariantOptions().get(i).setEnabled(false);
+                }
+            }
             Variant variantLevel2 = productVariant.getVariant().get(1 - productVariant.getLevel1Variant());
             variantOptionAdapterLevel2
                     = new VariantOptionAdapter(VariantActivity.this,variantLevel2.getOption(),
