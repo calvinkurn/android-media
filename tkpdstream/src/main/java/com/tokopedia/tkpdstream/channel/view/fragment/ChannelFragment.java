@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
@@ -16,15 +17,16 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.tkpdstream.R;
+import com.tokopedia.tkpdstream.channel.data.analytics.ChannelAnalytics;
 import com.tokopedia.tkpdstream.channel.di.DaggerChannelComponent;
 import com.tokopedia.tkpdstream.channel.view.activity.ChannelActivity;
-import com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.tkpdstream.channel.view.adapter.typefactory.ChannelTypeFactory;
 import com.tokopedia.tkpdstream.channel.view.listener.ChannelContract;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelListViewModel;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
 import com.tokopedia.tkpdstream.channel.view.presenter.ChannelPresenter;
-import com.tokopedia.tkpdstream.channel.data.analytics.ChannelAnalytics;
+import com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity;
+import com.tokopedia.tkpdstream.common.design.CloseableBottomSheetDialog;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
 
@@ -45,6 +47,8 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
 
     @Inject
     ChannelPresenter presenter;
+
+    private CloseableBottomSheetDialog channelInfoDialog;
 
     public static Fragment createInstance(Bundle bundle) {
         return new ChannelFragment();
@@ -77,6 +81,7 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     }
 
     private void init(View view) {
+        channelInfoDialog = CloseableBottomSheetDialog.createInstance(getActivity());
     }
 
     @Override
@@ -144,7 +149,7 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     public void onSuccessGetChannelFirstTime(ChannelListViewModel channelListViewModel) {
 //        getAdapter().clearAllElements();
 //        getAdapter().addElement(channelListViewModel.getChannelViewModelList());
-        renderList(channelListViewModel.getChannelViewModelList(),true);
+        renderList(channelListViewModel.getChannelViewModelList(), true);
     }
 
     @Override
@@ -152,7 +157,7 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
 //        getAdapter().addElement(channelListViewModel.getChannelViewModelList());
 //        getAdapter().clearAllNonDataElement();
 //        getAdapter().addMoreData(channelListViewModel.getChannelViewModelList());
-        renderList(channelListViewModel.getChannelViewModelList(),true);
+        renderList(channelListViewModel.getChannelViewModelList(), true);
     }
 
     @Override
@@ -164,9 +169,29 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     @Override
     public void onItemClicked(ChannelViewModel channelViewModel) {
 
+        channelInfoDialog.setContentView(createBottomSheetView(channelViewModel));
+        channelInfoDialog.show();
+
+    }
+
+    private View createBottomSheetView(final ChannelViewModel channelViewModel) {
+        View view = getLayoutInflater().inflate(R.layout.channel_info_bottom_sheet_dialog, null);
+        Button actionButton = view.findViewById(R.id.action_button);
+        actionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToChannel(channelViewModel);
+            }
+        });
+        actionButton.setText("Ikutan Vote Yuk!");
+        return view;
+    }
+
+    private void goToChannel(ChannelViewModel channelViewModel) {
         startActivityForResult(GroupChatActivity.getCallingIntent(getActivity()),
                 REQUEST_OPEN_GROUPCHAT);
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -187,5 +212,6 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     @Override
     public void onSwipeRefresh() {
         super.onSwipeRefresh();
+        hideLoading();
     }
 }

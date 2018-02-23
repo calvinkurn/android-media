@@ -6,6 +6,7 @@ package com.tokopedia.tkpdstream.chatroom.view.viewmodel;
 
 public class BaseChatViewModel {
 
+    boolean showHeaderTime;
     String message;
     String createdAt;
     String updatedAt;

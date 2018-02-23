@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.design.button.Button
+        android:id="@+id/action_button"
+        style="@style/Button.Submit.Green"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/new_margin_med"
+        android:layout_marginEnd="@dimen/new_margin_med"
+        android:layout_marginLeft="@dimen/new_margin_med"
+        android:layout_marginRight="@dimen/new_margin_med"
+        android:layout_marginStart="@dimen/new_margin_med"
+        android:layout_marginTop="@dimen/new_margin_med"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Ikutan Vote"/>
+
+</android.support.constraint.ConstraintLayout>
