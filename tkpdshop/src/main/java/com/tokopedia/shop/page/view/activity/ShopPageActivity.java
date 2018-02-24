@@ -287,6 +287,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         } else {
             displayAsSellerShop();
         }
+        updateFavouriteButtonView();
     }
 
     private void displayAsOfficialStoreView(ShopInfo shopInfo) {
@@ -319,8 +320,6 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         qualityValueTextView.setText(shopInfo.getRatings().getQuality().getAverage());
         qualityRatingBar.setRating(shopInfo.getRatings().getQuality().getRatingStar());
         qualityRatingBar.setMax(MAX_RATING_STAR);
-
-        updateToggleFavouriteButton();
     }
 
     private void displayAsBuyerShop() {
@@ -333,7 +332,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         buttonFavouriteShop.setVisibility(View.VISIBLE);
     }
 
-    private void updateToggleFavouriteButton() {
+    private void updateFavouriteButtonView() {
         buttonFavouriteShop.setText(favouriteShop ? getString(R.string.shop_page_label_already_favorite) : getString(R.string.shop_page_label_favorite));
     }
 
@@ -351,7 +350,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     public void onSuccessToggleFavourite(boolean successValue) {
         if (successValue) {
             favouriteShop = !favouriteShop;
-            updateToggleFavouriteButton();
+            updateFavouriteButtonView();
         }
         buttonFavouriteShop.setEnabled(true);
     }
