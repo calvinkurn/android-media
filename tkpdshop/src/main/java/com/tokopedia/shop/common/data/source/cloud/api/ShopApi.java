@@ -5,6 +5,7 @@ import com.tokopedia.shop.common.constant.ShopParamApiConstant;
 import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.shop.note.data.source.cloud.model.ShopNoteDetail;
 import com.tokopedia.shop.note.data.source.cloud.model.ShopNoteList;
+import com.tokopedia.shop.product.data.source.cloud.model.DynamicFilterModel;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductList;
 
 import java.util.Map;
@@ -33,4 +34,7 @@ public interface ShopApi {
 
     @GET
     Observable<Response<DataResponse<ShopProductList>>> getShopProductList(@Url String url, @QueryMap Map<String, String> params);
+
+    @GET
+    Observable<Response<DynamicFilterModel>> getDynamicFilter(@Url String url, @QueryMap Map<String, String> params);
 }

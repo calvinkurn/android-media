@@ -15,7 +15,6 @@ import com.tokopedia.shop.product.data.source.cloud.model.ShopProductList;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductListUseCase;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.view.listener.ShopProductListView;
-import com.tokopedia.shop.product.view.mapper.ShopProductViewModelMapper;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
 import java.util.ArrayList;
@@ -31,15 +30,11 @@ import rx.Subscriber;
 
 public class ShopProductListPresenter extends BaseDaggerPresenter<BaseListViewListener<ShopProductViewModel>> {
 
-    private final GetShopInfoUseCase getShopInfoUseCase;
     private final GetShopProductListUseCase getShopProductListUseCase;
-    private final ShopProductViewModelMapper shopProductViewModelMapper;
 
     @Inject
-    public ShopProductListPresenter(GetShopInfoUseCase getShopInfoUseCase, GetShopProductListUseCase getShopProductListUseCase, ShopProductViewModelMapper shopProductViewModelMapper) {
-        this.getShopInfoUseCase = getShopInfoUseCase;
+    public ShopProductListPresenter(GetShopProductListUseCase getShopProductListUseCase) {
         this.getShopProductListUseCase = getShopProductListUseCase;
-        this.shopProductViewModelMapper = shopProductViewModelMapper;
     }
 
     public void getShopPageList(String shopId, String keyword, String etalaseId, int wholesale, int page){
@@ -67,6 +62,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<BaseListViewLi
         });
     }
 
+    @Deprecated
     public void getShopPageList(String shopId) {
         ShopProductRequestModel shopProductRequestModel = getShopProductRequestModel(shopId);
         getShopProductListUseCase.execute(GetShopProductListUseCase.createRequestParam(shopProductRequestModel), new Subscriber<ShopProductList>() {

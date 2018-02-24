@@ -98,10 +98,10 @@ public class ShopProductRequestModel {
         if (!TextUtils.isEmpty(etalaseId)) {
             hashMap.put(ShopParamApiConstant.ETALASE_ID, etalaseId);
         }
-//        hashMap.put(ShopParamApiContant.PAGE, String.valueOf(page));
-//        hashMap.put(ShopParamApiContant.ORDER_BY, String.valueOf(orderBy));
-//        hashMap.put(ShopParamApiContant.PER_PAGE, String.valueOf(perPage));
-//        hashMap.put(ShopParamApiContant.WHOLESALE, String.valueOf(wholesale));
+        hashMap.put(ShopParamApiConstant.PAGE, String.valueOf(page));
+        hashMap.put(ShopParamApiConstant.ORDER_BY, String.valueOf(orderBy));
+        hashMap.put(ShopParamApiConstant.PER_PAGE, String.valueOf(perPage));
+        hashMap.put(ShopParamApiConstant.WHOLESALE, String.valueOf(wholesale));
         return hashMap;
     }
 }

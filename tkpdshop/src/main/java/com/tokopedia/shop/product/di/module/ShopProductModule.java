@@ -18,6 +18,7 @@ import com.tokopedia.gm.common.domain.interactor.GetFeatureProductListUseCase;
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository;
 import com.tokopedia.shop.common.data.interceptor.ShopAuthInterceptor;
 import com.tokopedia.shop.product.data.repository.ShopProductRepositoryImpl;
+import com.tokopedia.shop.product.data.source.cloud.ShopFilterCloudDataSource;
 import com.tokopedia.shop.product.data.source.cloud.ShopProductCloudDataSource;
 import com.tokopedia.shop.product.di.ShopProductGMFeaturedQualifier;
 import com.tokopedia.shop.product.di.scope.ShopProductScope;
@@ -95,8 +96,10 @@ public class ShopProductModule {
 
     @ShopProductScope
     @Provides
-    public ShopProductRepository provideShopProductRepository(ShopProductCloudDataSource shopProductDataSource) {
-        return new ShopProductRepositoryImpl(shopProductDataSource);
+    public ShopProductRepository provideShopProductRepository(
+            ShopProductCloudDataSource shopProductDataSource,
+            ShopFilterCloudDataSource shopFilterCloudDataSource) {
+        return new ShopProductRepositoryImpl(shopProductDataSource, shopFilterCloudDataSource);
     }
 
     @ShopProductScope

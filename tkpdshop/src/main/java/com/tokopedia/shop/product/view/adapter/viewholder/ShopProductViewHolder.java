@@ -37,8 +37,6 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
 
     private ImageView featuredProductImageView, freeReturnImageView, productImageView;
     private FrameLayout wishlistContainer;
-
-    private ViewHolderListener viewHolderListener;
     private Guideline guideLine;
     private int imageGuideLineGrid;
     private int imageGuideLineList;
@@ -47,11 +45,6 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     public ShopProductViewHolder(View itemView) {
         super(itemView);
         findViews(itemView);
-    }
-
-    public ShopProductViewHolder setViewHolderListener(ViewHolderListener viewHolderListener) {
-        this.viewHolderListener = viewHolderListener;
-        return this;
     }
 
     private void findViews(View view) {
@@ -79,9 +72,5 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         titleTextView.setText(element.getProductName());
         priceTextView.setText(element.getProductPrice());
         ImageHandler.LoadImage(productImageView, element.getProductImage700());
-    }
-
-    public interface ViewHolderListener{
-        int getLayoutManagerType();
     }
 }
