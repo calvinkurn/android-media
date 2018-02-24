@@ -30,7 +30,7 @@ import rx.Subscriber;
 
 public class ShopProductListPresenter extends BaseDaggerPresenter<BaseListViewListener<ShopProductViewModel>> {
 
-    private final GetShopProductListUseCase getShopProductListUseCase;
+    protected final GetShopProductListUseCase getShopProductListUseCase;
 
     @Inject
     public ShopProductListPresenter(GetShopProductListUseCase getShopProductListUseCase) {
