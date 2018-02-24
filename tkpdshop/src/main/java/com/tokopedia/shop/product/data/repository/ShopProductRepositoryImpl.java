@@ -1,7 +1,9 @@
 package com.tokopedia.shop.product.data.repository;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.shop.product.data.source.cloud.ShopFilterCloudDataSource;
 import com.tokopedia.shop.product.data.source.cloud.ShopProductCloudDataSource;
+import com.tokopedia.shop.product.data.source.cloud.model.DynamicFilterModel;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductList;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.domain.repository.ShopProductRepository;
@@ -19,10 +21,13 @@ import rx.functions.Func1;
 public class ShopProductRepositoryImpl implements ShopProductRepository {
 
     private final ShopProductCloudDataSource shopProductCloudDataSource;
+    private ShopFilterCloudDataSource shopFilterCloudDataSource;
 
     @Inject
-    public ShopProductRepositoryImpl(ShopProductCloudDataSource shopProductCloudDataSource) {
+    public ShopProductRepositoryImpl(ShopProductCloudDataSource shopProductCloudDataSource,
+                                     ShopFilterCloudDataSource shopFilterCloudDataSource) {
         this.shopProductCloudDataSource = shopProductCloudDataSource;
+        this.shopFilterCloudDataSource = shopFilterCloudDataSource;
     }
 
     @Override
@@ -41,6 +46,16 @@ public class ShopProductRepositoryImpl implements ShopProductRepository {
             @Override
             public Observable<ShopProductList> call(Response<DataResponse<ShopProductList>> dataResponseResponse) {
                 return Observable.just(dataResponseResponse.body().getData());
+            }
+        });
+    }
+
+    @Override
+    public Observable<DynamicFilterModel.DataValue> getShopProductFilter(){
+        return shopFilterCloudDataSource.getDynamicFilter().flatMap(new Func1<Response<DynamicFilterModel>, Observable<DynamicFilterModel.DataValue>>() {
+            @Override
+            public Observable<DynamicFilterModel.DataValue> call(Response<DynamicFilterModel> response) {
+                return Observable.just(response.body().getData());
             }
         });
     }

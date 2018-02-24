@@ -10,5 +10,6 @@ public class ShopUrl extends ShopCommonUrl {
 
     public static final String SHOP_NOTE_PATH = "v1/shop/shop_note";
     public static final String SHOP_PRODUCT_PATH = "v1/web-service/shop/get_shop_product";
+    public static final String SHOP_DYNAMIC_FILTER = "v1/dynamic_attributes";
 
 }

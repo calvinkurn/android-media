@@ -9,7 +9,6 @@ import com.tokopedia.shop.product.domain.interactor.GetShopProductListUseCase;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.view.listener.ShopProductListLimitedView;
 import com.tokopedia.shop.product.view.listener.ShopProductListView;
-import com.tokopedia.shop.product.view.mapper.ShopProductViewModelMapper;
 
 import java.util.List;
 
@@ -23,20 +22,14 @@ import rx.Subscriber;
 
 public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopProductListLimitedView> {
 
-    private final GetShopInfoUseCase getShopInfoUseCase;
     private final GetShopProductListUseCase getShopProductListUseCase;
     private final GetFeatureProductListUseCase getFeatureProductListUseCase;
-    private final ShopProductViewModelMapper shopProductViewModelMapper;
 
     @Inject
-    public ShopProductListLimitedPresenter(GetShopInfoUseCase getShopInfoUseCase,
-                                           GetShopProductListUseCase getShopProductListUseCase,
-                                           GetFeatureProductListUseCase getFeatureProductListUseCase,
-                                           ShopProductViewModelMapper shopProductViewModelMapper) {
-        this.getShopInfoUseCase = getShopInfoUseCase;
+    public ShopProductListLimitedPresenter(GetShopProductListUseCase getShopProductListUseCase,
+                                           GetFeatureProductListUseCase getFeatureProductListUseCase) {
         this.getShopProductListUseCase = getShopProductListUseCase;
         this.getFeatureProductListUseCase = getFeatureProductListUseCase;
-        this.shopProductViewModelMapper = shopProductViewModelMapper;
     }
 
     public void getShopPageList(String shopId) {

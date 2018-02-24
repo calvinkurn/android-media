@@ -22,6 +22,7 @@ import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
+import com.tokopedia.shop.product.view.activity.ShopProductFilterActivity;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
 import com.tokopedia.shop.product.view.adapter.ShopProductTypeFactory;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
@@ -47,6 +48,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     public static final int SPAN_COUNT = 2;
     public static final int REQUEST_CODE_ETALASE = 12912;
+    public static final int REQUEST_CODE_SORT = 12913;
     private LabelView chooseEtalaseLabelView;
     private ShopModuleRouter shopModuleRouter;
 
@@ -95,14 +97,9 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     @Override
     protected ShopProductTypeFactory getAdapterTypeFactory() {
-        return new ShopProductAdapterTypeFactory(new ShopProductViewHolder.ViewHolderListener() {
+        return new ShopProductAdapterTypeFactory( new ShopProductAdapterTypeFactory.TypeFactoryListener() {
             @Override
-            public int getLayoutManagerType() {
-                return currentLayoutType.second;
-            }
-        }, new ShopProductAdapterTypeFactory.TypeFactoryListener() {
-            @Override
-            public int getType() {
+            public int getType(Object object) {
                 return currentLayoutType.first;
             }
         });
@@ -213,6 +210,18 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
                 getAdapter().notifyDataSetChanged();
                 currentIndex++;
+            }
+        });
+
+        bottomActionView.setButton1OnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                ShopProductListFragment.this.
+                        startActivityForResult(
+                                new Intent(getActivity(), ShopProductFilterActivity.class),
+                                REQUEST_CODE_SORT
+                        );
             }
         });
 
