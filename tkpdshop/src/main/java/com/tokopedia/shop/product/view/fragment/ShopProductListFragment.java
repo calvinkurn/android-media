@@ -54,20 +54,24 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     public static final String ETALASE_ID = "ETALASE_ID";
     public static final String ETALASE_NAME = "ETALASE_NAME";
+
     private String etalaseName;
     private int etalaseId;
+    private String shopId;
     private String keyword;
-    private BottomActionView bottomActionView;
-    private RecyclerView recyclerViews;
-
-    private Pair<Integer, Integer>[] layoutType = new Pair[]{
+    private String sortName = Integer.toString(Integer.MIN_VALUE);
+    private Pair<Integer, Integer> currentLayoutType = new Pair<>(ShopProductViewHolder.LAYOUT, 65);
+    private int currentIndex = 0;
+    private String sortId;
+    private static final Pair<Integer, Integer>[] layoutType = new Pair[]{
             new Pair<>(ShopProductViewHolder.LAYOUT, 65),
             new Pair<>(ShopProductSingleViewHolder.LAYOUT, 97),
             new Pair<>(ShopProductListViewHolder.LAYOUT, 97)
     };
 
-    private int currentIndex = 0;
-    private Pair<Integer, Integer> currentLayoutType = new Pair<>(ShopProductViewHolder.LAYOUT, 65);
+    private RecyclerView recyclerViews;
+    private BottomActionView bottomActionView;
+
 
     public static ShopProductListFragment createInstance(String shopId) {
         ShopProductListFragment shopProductListFragment = new ShopProductListFragment();
@@ -76,11 +80,8 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         shopProductListFragment.setArguments(bundle);
         return shopProductListFragment;
     }
-
-
     @Inject
     ShopProductListPresenter shopProductListPresenter;
-    private String shopId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -219,7 +220,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
                 ShopProductListFragment.this.
                         startActivityForResult(
-                                new Intent(getActivity(), ShopProductFilterActivity.class),
+                                ShopProductFilterActivity.createIntent(getActivity(), sortName),
                                 REQUEST_CODE_SORT
                         );
             }
@@ -249,7 +250,23 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                             shopId,
                             keyword,
                             Integer.toString(etalaseId),
-                            0,
+                            Integer.valueOf(sortName),
+                            1
+                    );
+                }
+                break;
+
+            case REQUEST_CODE_SORT:
+                if(resultCode == Activity.RESULT_OK){
+                    sortId = data.getStringExtra(ShopProductFilterActivity.SORT_ID);
+                    sortName = data.getStringExtra(ShopProductFilterActivity.SORT_NAME);
+
+                    this.isLoadingInitialData = true;
+                    shopProductListPresenter.getShopPageList(
+                            shopId,
+                            keyword,
+                            Integer.toString(etalaseId),
+                            Integer.valueOf(sortName),
                             1
                     );
                 }
@@ -272,12 +289,12 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     @Override
     public void onSearchSubmitted(String s) {
         keyword = s;
-        shopProductListPresenter.getShopPageList(shopId, s, null, 0, 1);
+        shopProductListPresenter.getShopPageList(shopId, s, Integer.toString(etalaseId), 0, 1);
     }
 
     @Override
     public void onSearchTextChanged(String s) {
         keyword = s;
-        shopProductListPresenter.getShopPageList(shopId, s, null, 0, 1);
+        shopProductListPresenter.getShopPageList(shopId, s, Integer.toString(etalaseId), 0, 1);
     }
 }
