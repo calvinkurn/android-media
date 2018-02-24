@@ -70,8 +70,9 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     public static final String SHOP_ID = "SHOP_ID";
     public static final String SHOP_DOMAIN = "SHOP_DOMAIN";
 
-    private ImageView backgroundImageView;
+    private ShopProductListLimitedFragment shopProductListLimitedFragment;
 
+    private ImageView backgroundImageView;
     private ImageView shopIconImageView;
     private ImageView shopStatusImageView;
     private ImageView locationImageView;
@@ -215,6 +216,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
             }
         });
         tabLayout.setupWithViewPager(viewPager);
+        shopProductListLimitedFragment = ShopProductListLimitedFragment.createInstance();
     }
 
     @Override
@@ -239,7 +241,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
             public Fragment getItem(int position) {
                 switch (position) {
                     case 0:
-                        return ShopProductListLimitedFragment.createInstance(shopId);
+                        return shopProductListLimitedFragment;
                     case 1:
                         if (shopModuleRouter != null) {
                             return shopModuleRouter.getShopReputationFragmentShop(shopId, shopDomain);
@@ -251,7 +253,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
                         }
                         break;
                 }
-                return ShopProductListLimitedFragment.createInstance(shopId);
+                return shopProductListLimitedFragment;
             }
 
             @Override
@@ -275,6 +277,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     private void updateShopInfo(ShopInfo shopInfo) {
         shopId = shopInfo.getInfo().getShopId();
         favouriteShop = TextApiUtils.isValueTrue(shopInfo.getInfo().getShopAlreadyFavorited());
+        shopProductListLimitedFragment.displayProduct(shopId);
 
         ImageHandler.LoadImage(backgroundImageView, shopInfo.getInfo().getShopCover());
         shopNameTextView.setText(MethodChecker.fromHtml(shopInfo.getInfo().getShopName()).toString());

@@ -30,9 +30,9 @@ public class GetWishListUseCase extends UseCase<List<String>> {
         return wishListCommonRepository.getWishList(userId, productIdList);
     }
 
-    public static RequestParams createRequestParam(String shopId, List<String> productIdList) {
+    public static RequestParams createRequestParam(String userId, List<String> productIdList) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(USER_ID, shopId);
+        requestParams.putString(USER_ID, userId);
         requestParams.putObject(PRODUCT_ID_LIST, productIdList);
         return requestParams;
     }

@@ -10,7 +10,7 @@ public class GMFeaturedProduct {
 
     @SerializedName("product_id")
     @Expose
-    private long productId;
+    private String productId;
     @SerializedName("name")
     @Expose
     private String name;
@@ -51,11 +51,11 @@ public class GMFeaturedProduct {
     @Expose
     private String totalReview;
 
-    public long getProductId() {
+    public String getProductId() {
         return productId;
     }
 
-    public void setProductId(long productId) {
+    public void setProductId(String productId) {
         this.productId = productId;
     }
 
