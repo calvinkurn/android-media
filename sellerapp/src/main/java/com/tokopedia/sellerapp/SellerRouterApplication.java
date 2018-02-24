@@ -71,7 +71,7 @@ import com.tokopedia.seller.product.etalase.view.activity.EtalaseDynamicPickerSe
 import com.tokopedia.seller.product.etalase.view.model.MyEtalaseItemViewModel;
 import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.core.shopinfo.seemore.fragment.ShopTalkSeeMoreFragment;
+import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;;
 import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
 import com.tokopedia.sellerapp.truecaller.TruecallerActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
@@ -215,7 +215,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Fragment getShopTalkFragment() {
-        return ShopTalkSeeMoreFragment.createInstance();
+        return ShopTalkLimitedFragment.createInstance();
     }
 
     @Override

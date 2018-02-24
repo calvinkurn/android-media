@@ -67,7 +67,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
 
     private static final int MAX_RATING_STAR = 5;
     private static final int PAGE_LIMIT = 3;
-    public static final String SHOP_ID = "shop_id";
+    public static final String SHOP_ID = "SHOP_ID";
     public static final String SHOP_DOMAIN = "SHOP_DOMAIN";
 
     private ImageView backgroundImageView;
@@ -124,6 +124,17 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         if (getApplication() != null && getApplication() instanceof ShopModuleRouter) {
             shopModuleRouter = (ShopModuleRouter) getApplication();
         }
+        updateShopDiscussionIntent();
+    }
+
+    /**
+     * Old Discussion fragment need this intent, need updated code
+     * com.tokopedia.core.shopinfo.presenter.ShopTalkPresenterImpl
+     */
+    @Deprecated
+    private void updateShopDiscussionIntent() {
+        getIntent().putExtra("shop_id", shopId);
+        getIntent().putExtra("shop_domain", shopDomain);
     }
 
     private void initInjector() {
@@ -144,14 +155,12 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     protected void setupLayout(Bundle savedInstanceState) {
         super.setupLayout(savedInstanceState);
         backgroundImageView = findViewById(R.id.image_view_shop_background);
-
         shopIconImageView = findViewById(R.id.image_view_shop_icon);
-
         shopStatusImageView = findViewById(R.id.image_view_shop_status);
         shopNameTextView = findViewById(R.id.text_view_shop_name);
-
         locationImageView = findViewById(R.id.image_view_location);
         shopInfoLocationTextView = findViewById(R.id.text_view_location);
+        containerClickInfo = findViewById(R.id.container_click_info);
 
         totalFavouriteDetailView = findViewById(R.id.sub_detail_view_total_favourite);
         totalProductDetailView = findViewById(R.id.sub_detail_view_total_product);
@@ -165,10 +174,8 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         qualityValueTextView = findViewById(R.id.text_view_product_quality_value);
         speedImageView = findViewById(R.id.image_view_speed);
         speedValueTextView = findViewById(R.id.text_view_speed_value);
-
         shopReputationView = findViewById(R.id.shop_reputation_view);
 
-        containerClickInfo = findViewById(R.id.container_click_info);
         buttonManageShop = findViewById(R.id.button_manage_shop);
         buttonAddProduct = findViewById(R.id.button_add_product);
         buttonChatSeller = findViewById(R.id.button_chat_seller);
@@ -237,15 +244,14 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
                         if (shopModuleRouter != null) {
                             return shopModuleRouter.getShopReputationFragmentShop(shopId, shopDomain);
                         }
-                        return ShopProductListLimitedFragment.createInstance(shopId);
+                        break;
                     case 2:
                         if (shopModuleRouter != null) {
                             return shopModuleRouter.getShopTalkFragment();
                         }
-                        return ShopProductListLimitedFragment.createInstance(shopId);
-                    default:
-                        return ShopProductListLimitedFragment.createInstance(shopId);
+                        break;
                 }
+                return ShopProductListLimitedFragment.createInstance(shopId);
             }
 
             @Override

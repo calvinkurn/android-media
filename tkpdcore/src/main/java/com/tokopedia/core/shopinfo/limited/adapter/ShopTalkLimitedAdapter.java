@@ -1,4 +1,4 @@
-package com.tokopedia.core.shopinfo.seemore.adapter;
+package com.tokopedia.core.shopinfo.limited.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,26 +7,27 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.shopinfo.seemore.model.ShopTalkSeeMore;
+import com.tokopedia.core.shopinfo.adapter.ShopTalkAdapter;
+import com.tokopedia.core.shopinfo.limited.model.ShopTalkLimited;
 
 /**
  * Created by normansyahputa on 2/14/18.
  */
 
-public class ShopTalkSeeMoreAdapter extends com.tokopedia.core.shopinfo.adapter.ShopTalkAdapter {
+public class ShopTalkLimitedAdapter extends ShopTalkAdapter {
 
-    public static ShopTalkSeeMoreAdapter createInstance(Context context, com.tokopedia.core.shopinfo.adapter.ShopTalkAdapter.ActionShopTalkListener listener) {
-        return new ShopTalkSeeMoreAdapter(context, listener);
+    public static ShopTalkLimitedAdapter createInstance(Context context, ShopTalkAdapter.ActionShopTalkListener listener) {
+        return new ShopTalkLimitedAdapter(context, listener);
     }
 
-    public ShopTalkSeeMoreAdapter(Context context, ActionShopTalkListener listener) {
+    public ShopTalkLimitedAdapter(Context context, ActionShopTalkListener listener) {
         super(context, listener);
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         switch (viewType) {
-            case ShopTalkSeeMore.TYPE:
+            case ShopTalkLimited.TYPE:
                 return new ViewHolder2(LayoutInflater.from(viewGroup.getContext())
                         .inflate(R.layout.item_shop_talk_see_more, viewGroup, false));
             default:
@@ -37,7 +38,7 @@ public class ShopTalkSeeMoreAdapter extends com.tokopedia.core.shopinfo.adapter.
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
-            case ShopTalkSeeMore.TYPE:
+            case ShopTalkLimited.TYPE:
                 // do nothing
                 break;
             default:
@@ -51,8 +52,8 @@ public class ShopTalkSeeMoreAdapter extends com.tokopedia.core.shopinfo.adapter.
         if (isLastItemPosition(position) && (list.isEmpty() || isLoading() || isRetry())) {
             return super.getItemViewType(position);
         } else {
-            if(position >= 0 && position < list.size() && list.get(position) instanceof ShopTalkSeeMore){
-                return ShopTalkSeeMore.TYPE;
+            if(position >= 0 && position < list.size() && list.get(position) instanceof ShopTalkLimited){
+                return ShopTalkLimited.TYPE;
             }else{
                 return VIEW_TALK;
             }

@@ -1,15 +1,16 @@
-package com.tokopedia.core.shopinfo.seemore.fragment;
+package com.tokopedia.core.shopinfo.limited.fragment;
 
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.core.shopinfo.fragment.ShopTalkFragment;
+import com.tokopedia.core.shopinfo.limited.adapter.ShopTalkLimitedAdapter;
+import com.tokopedia.core.shopinfo.limited.model.ShopTalkLimited;
 import com.tokopedia.core.shopinfo.models.talkmodel.ShopTalk;
 import com.tokopedia.core.shopinfo.models.talkmodel.ShopTalkResult;
 import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.core.shopinfo.seemore.adapter.ShopTalkSeeMoreAdapter;
-import com.tokopedia.core.shopinfo.seemore.model.ShopTalkSeeMore;
-import android.support.v7.widget.LinearLayoutManager;
 
 import java.util.List;
 
@@ -17,15 +18,15 @@ import java.util.List;
  * Created by normansyahputa on 2/14/18.
  */
 
-public class ShopTalkSeeMoreFragment extends com.tokopedia.core.shopinfo.fragment.ShopTalkFragment {
+public class ShopTalkLimitedFragment extends ShopTalkFragment {
 
     public static Fragment createInstance() {
-        return new ShopTalkSeeMoreFragment();
+        return new ShopTalkLimitedFragment();
     }
 
     @Override
     protected void initView(View view) {
-        adapter = ShopTalkSeeMoreAdapter.createInstance(getActivity(), getShopTalkListener());
+        adapter = ShopTalkLimitedAdapter.createInstance(getActivity(), getShopTalkListener());
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         list.setLayoutManager(layoutManager);
         list.setAdapter(adapter);
@@ -55,7 +56,7 @@ public class ShopTalkSeeMoreFragment extends com.tokopedia.core.shopinfo.fragmen
             adapter.showEmptyFull(false);
         }
         if(isSeeMoreEnabled) {
-            adapter.addItem(new ShopTalkSeeMore());
+            adapter.addItem(new ShopTalkLimited());
         }
         adapter.setHaveNext(false);
     }

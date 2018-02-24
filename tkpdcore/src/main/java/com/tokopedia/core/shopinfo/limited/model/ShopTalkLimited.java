@@ -1,4 +1,4 @@
-package com.tokopedia.core.shopinfo.seemore.model;
+package com.tokopedia.core.shopinfo.limited.model;
 
 import com.tokopedia.core.shopinfo.models.talkmodel.ShopTalk;
 
@@ -6,9 +6,9 @@ import com.tokopedia.core.shopinfo.models.talkmodel.ShopTalk;
  * Created by normansyahputa on 2/14/18.
  */
 
-public class ShopTalkSeeMore extends ShopTalk {
+public class ShopTalkLimited extends ShopTalk {
     public static final int TYPE = 2912912;
 
-    public ShopTalkSeeMore(){}
+    public ShopTalkLimited(){}
 
 }
