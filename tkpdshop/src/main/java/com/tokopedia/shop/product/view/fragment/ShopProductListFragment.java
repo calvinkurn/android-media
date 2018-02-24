@@ -143,20 +143,10 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT,  LinearLayoutManager.VERTICAL,
-                false);
-        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                if (getAdapter().getItemViewType(position) == ShopProductViewHolder.LAYOUT){
-                    return ShopProductViewHolder.SPAN_LOOK_UP;
-                }
-                return SPAN_COUNT;
-            }
-        });
-
         recyclerViews = view.findViewById(R.id.recycler_view);
-        recyclerViews.setLayoutManager(gridLayoutManager);
+        RecyclerView.LayoutManager layoutManager = iterate(recyclerViews);
+        recyclerViews.setLayoutManager(layoutManager);
+
 
         chooseEtalaseLabelView = view.findViewById(R.id.label_view_choose_etalase);
         chooseEtalaseLabelView.setOnClickListener(new View.OnClickListener() {
@@ -179,38 +169,9 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         bottomActionView.setButton2OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                if(getNextIndex(currentIndex, layoutType.length) < 0 ){
-                    currentLayoutType = layoutType[currentIndex = 0 ];
-                }else{
-                    currentLayoutType = layoutType[currentIndex];
-                }
-                switch (currentLayoutType.second){
-                    case 65:
-                        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT,  LinearLayoutManager.VERTICAL,
-                                false);
-                        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-                            @Override
-                            public int getSpanSize(int position) {
-                                if (getAdapter().getItemViewType(position) == ShopProductViewHolder.LAYOUT){
-                                    return ShopProductViewHolder.SPAN_LOOK_UP;
-                                }
-                                return SPAN_COUNT;
-                            }
-                        });
-                        recyclerViews.setLayoutManager(gridLayoutManager);
-                        break;
-                    default:
-                        recyclerViews.setLayoutManager(new LinearLayoutManager(
-                                view.getContext(),
-                                LinearLayoutManager.VERTICAL,
-                                false
-                        ));
-                        break;
-                }
-
+                RecyclerView.LayoutManager layoutManager = iterate(recyclerViews);
+                recyclerViews.setLayoutManager(layoutManager);
                 getAdapter().notifyDataSetChanged();
-                currentIndex++;
             }
         });
 
@@ -226,6 +187,40 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
             }
         });
 
+    }
+
+    private RecyclerView.LayoutManager iterate(final RecyclerView recyclerView){
+        RecyclerView.LayoutManager layoutManager = null;
+        if(getNextIndex(currentIndex, layoutType.length) < 0 ){
+            currentLayoutType = layoutType[currentIndex = 0 ];
+        }else{
+            currentLayoutType = layoutType[currentIndex];
+        }
+        switch (currentLayoutType.second){
+            case 65:
+                layoutManager = new GridLayoutManager(recyclerView.getContext(), SPAN_COUNT,  LinearLayoutManager.VERTICAL,
+                        false);
+                ((GridLayoutManager)layoutManager).setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                    @Override
+                    public int getSpanSize(int position) {
+                        if (recyclerView.getAdapter().getItemViewType(position) == ShopProductViewHolder.LAYOUT){
+                            return ShopProductViewHolder.SPAN_LOOK_UP;
+                        }
+                        return SPAN_COUNT;
+                    }
+                });
+                break;
+            default:
+                layoutManager = new LinearLayoutManager(
+                        recyclerView.getContext(),
+                        LinearLayoutManager.VERTICAL,
+                        false
+                );
+                break;
+        }
+        currentIndex++;
+
+        return layoutManager;
     }
 
     private int getNextIndex(int currentIndex, int max){
@@ -288,13 +283,27 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     @Override
     public void onSearchSubmitted(String s) {
+        this.isLoadingInitialData = true;
+
         keyword = s;
-        shopProductListPresenter.getShopPageList(shopId, s, Integer.toString(etalaseId), 0, 1);
+        shopProductListPresenter.getShopPageList(
+                shopId,
+                s,
+                etalaseId < 0 || etalaseId == Integer.MIN_VALUE ? null : Integer.toString(etalaseId),
+                Integer.valueOf(sortName),
+                1);
     }
 
     @Override
     public void onSearchTextChanged(String s) {
+        this.isLoadingInitialData = true;
+
         keyword = s;
-        shopProductListPresenter.getShopPageList(shopId, s, Integer.toString(etalaseId), 0, 1);
+        shopProductListPresenter.getShopPageList(
+                shopId,
+                s,
+                etalaseId < 0 || etalaseId == Integer.MIN_VALUE ? null : Integer.toString(etalaseId),
+                Integer.valueOf(sortName),
+                1);
     }
 }
