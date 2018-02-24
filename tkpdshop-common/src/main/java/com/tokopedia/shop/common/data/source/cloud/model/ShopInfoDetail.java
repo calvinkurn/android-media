@@ -19,7 +19,7 @@ public class ShopInfoDetail {
     private long epochShopCreated;
     @SerializedName("shop_already_favorited")
     @Expose
-    private long shopAlreadyFavorited;
+    private String shopAlreadyFavorited;
     @SerializedName("shop_avatar")
     @Expose
     private String shopAvatar;
@@ -58,7 +58,7 @@ public class ShopInfoDetail {
     private String shopIsFreeReturns;
     @SerializedName("shop_is_gold")
     @Expose
-    private long shopIsGold;
+    private String shopIsGold;
     @SerializedName("shop_is_gold_badge")
     @Expose
     private boolean shopIsGoldBadge;
@@ -150,11 +150,11 @@ public class ShopInfoDetail {
         this.epochShopCreated = epochShopCreated;
     }
 
-    public long getShopAlreadyFavorited() {
+    public String getShopAlreadyFavorited() {
         return shopAlreadyFavorited;
     }
 
-    public void setShopAlreadyFavorited(long shopAlreadyFavorited) {
+    public void setShopAlreadyFavorited(String shopAlreadyFavorited) {
         this.shopAlreadyFavorited = shopAlreadyFavorited;
     }
 
@@ -254,11 +254,11 @@ public class ShopInfoDetail {
         this.shopIsFreeReturns = shopIsFreeReturns;
     }
 
-    public long getShopIsGold() {
+    public String getShopIsGold() {
         return shopIsGold;
     }
 
-    public void setShopIsGold(long shopIsGold) {
+    public void setShopIsGold(String shopIsGold) {
         this.shopIsGold = shopIsGold;
     }
 

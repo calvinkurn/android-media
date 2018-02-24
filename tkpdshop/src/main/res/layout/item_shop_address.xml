@@ -15,59 +15,58 @@
         android:layout_height="wrap_content"
         android:divider="@drawable/bg_line_separator"
         android:orientation="vertical"
+        android:padding="@dimen/margin_sm"
         android:showDividers="middle">
 
-        <android.support.constraint.ConstraintLayout
-            style="@style/LabelLayout"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/text_view_address_title"
-                style="@style/TextView.Title"
-                android:layout_marginTop="@dimen/margin_med"
+                style="@style/TextView.Title.Bold"
                 tools:text="@string/app_name" />
 
             <TextView
                 android:id="@+id/text_view_address_content"
-                style="@style/TextView.Title"
-                android:layout_marginTop="@dimen/margin_med"
-                app:layout_constraintTop_toBottomOf="@id/text_view_address_title"
+                style="@style/TextView.Small.BlackDisabled"
+                android:layout_marginTop="@dimen/margin_sm"
                 tools:text="@string/app_name" />
 
             <TextView
-                android:id="@+id/text_view_area"
-                style="@style/TextView.Title"
-                android:layout_marginTop="@dimen/margin_med"
-                app:layout_constraintTop_toBottomOf="@id/text_view_address_content"
+                android:id="@+id/text_view_address_area"
+                style="@style/TextView.Small.BlackDisabled"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_vvvs"
                 tools:text="@string/app_name" />
+        </LinearLayout>
 
-            <com.tokopedia.design.label.LabelView
-                android:id="@+id/label_view_email"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_med"
-                app:layout_constraintTop_toBottomOf="@id/text_view_area"
-                app:lv_image="@drawable/ic_smiley_neutral"
-                app:lv_image_width="@dimen/image_width_xs" />
+        <com.tokopedia.design.label.LabelView
+            android:id="@+id/label_view_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginTop="@dimen/margin_small"
+            app:lv_image="@drawable/ic_info_email_grey"
+            app:lv_image_width="@dimen/image_width_xxs" />
 
-            <com.tokopedia.design.label.LabelView
-                android:id="@+id/label_view_phone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_med"
-                app:layout_constraintTop_toBottomOf="@id/label_view_email"
-                app:lv_image="@drawable/ic_smiley_neutral"
-                app:lv_image_width="@dimen/image_width_xs" />
+        <com.tokopedia.design.label.LabelView
+            android:id="@+id/label_view_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginTop="@dimen/margin_small"
+            app:lv_image="@drawable/ic_info_phone_grey"
+            app:lv_image_width="@dimen/image_width_xxs" />
 
-            <com.tokopedia.design.label.LabelView
-                android:id="@+id/label_view_fax"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_med"
-                app:layout_constraintTop_toBottomOf="@id/label_view_phone"
-                app:lv_image="@drawable/ic_smiley_neutral"
-                app:lv_image_width="@dimen/image_width_xs" />
-        </android.support.constraint.ConstraintLayout>
+        <com.tokopedia.design.label.LabelView
+            android:id="@+id/label_view_fax"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            app:lv_image="@drawable/ic_info_fax_grey"
+            app:lv_image_width="@dimen/image_width_xxs" />
+
     </LinearLayout>
 </android.support.v7.widget.CardView>

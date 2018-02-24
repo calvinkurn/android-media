@@ -19,7 +19,6 @@ public class GetShopInfoUseCase extends UseCase<ShopInfo> {
 
     private ShopCommonRepository shopRepository;
 
-    @Inject
     public GetShopInfoUseCase(ShopCommonRepository shopRepository) {
         this.shopRepository = shopRepository;
     }

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="shop_page_header_sub_info_min_height">58dp</dimen>
+    <dimen name="shop_page_header_sub_button_height">32dp</dimen>
+
     <dimen name="image_guide_line_grid">186dp</dimen>
     <dimen name="image_guide_line_list">350dp</dimen>
 </resources>

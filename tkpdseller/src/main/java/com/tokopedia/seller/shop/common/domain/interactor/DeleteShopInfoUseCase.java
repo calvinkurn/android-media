@@ -10,6 +10,7 @@ import rx.Observable;
  * Created by zulfikarrahman on 7/7/17.
  */
 
+@Deprecated
 public class DeleteShopInfoUseCase extends CacheApiDataDeleteUseCase {
 
     public Observable<Boolean> createObservable() {

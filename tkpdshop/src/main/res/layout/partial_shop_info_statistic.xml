@@ -25,72 +25,72 @@
             android:id="@+id/label_view_transaction_success"
             style="@style/LabelLayout"
             app:lv_content="@string/shop_info_label_default_content"
-            app:lv_image="@drawable/ic_info_transaction"
-            app:lv_image_width="@dimen/image_width_xs"
+            app:lv_image="@drawable/ic_info_checked_grey"
+            app:lv_image_width="@dimen/image_width_xxs"
             app:lv_title="@string/shop_info_label_transaction_success" />
 
         <com.tokopedia.design.label.LabelView
             android:id="@+id/label_view_total_transaction"
             style="@style/LabelLayout"
             app:lv_content="@string/shop_info_label_default_content"
-            app:lv_image="@drawable/ic_info_cart"
-            app:lv_image_width="@dimen/image_width_xs"
+            app:lv_image="@drawable/ic_info_cart_grey"
+            app:lv_image_width="@dimen/image_width_xxs"
             app:lv_title="@string/shop_info_label_total_transaction" />
 
         <com.tokopedia.design.label.LabelView
             android:id="@+id/label_view_product_sold"
             style="@style/LabelLayout"
             app:lv_content="@string/shop_info_label_default_content"
-            app:lv_image="@drawable/ic_info_product"
-            app:lv_image_width="@dimen/image_width_xs"
+            app:lv_image="@drawable/ic_info_product_grey"
+            app:lv_image_width="@dimen/image_width_xxs"
             app:lv_title="@string/shop_info_label_product_sold" />
 
         <com.tokopedia.design.label.LabelView
             android:id="@+id/label_view_total_review"
             style="@style/LabelLayout"
             app:lv_content="@string/shop_info_label_default_content"
-            app:lv_image="@drawable/ic_info_review"
-            app:lv_image_width="@dimen/image_width_xs"
+            app:lv_image="@drawable/ic_info_review_grey"
+            app:lv_image_width="@dimen/image_width_xxs"
             app:lv_title="@string/shop_info_label_total_review" />
 
         <com.tokopedia.design.label.LabelView
             android:id="@+id/label_view_favorite"
             style="@style/LabelLayout"
             app:lv_content="@string/shop_info_label_default_content"
-            app:lv_image="@drawable/ic_info_favourite"
-            app:lv_image_width="@dimen/image_width_xs"
+            app:lv_image="@drawable/ic_info_favourite_grey"
+            app:lv_image_width="@dimen/image_width_xxs"
             app:lv_title="@string/shop_info_label_favourite" />
 
         <com.tokopedia.design.label.LabelView
             android:id="@+id/label_view_last_online"
             style="@style/LabelLayout"
             app:lv_content="@string/shop_info_label_default_content"
-            app:lv_image="@drawable/ic_info_clock"
-            app:lv_image_width="@dimen/image_width_xs"
+            app:lv_image="@drawable/ic_info_clock_grey"
+            app:lv_image_width="@dimen/image_width_xxs"
             app:lv_title="@string/shop_info_label_last_online" />
 
         <com.tokopedia.design.label.LabelView
             android:id="@+id/label_view_open_since"
             style="@style/LabelLayout"
             app:lv_content="@string/shop_info_label_default_content"
-            app:lv_image="@drawable/ic_info_open_label"
-            app:lv_image_width="@dimen/image_width_xs"
+            app:lv_image="@drawable/ic_info_open_label_grey"
+            app:lv_image_width="@dimen/image_width_xxs"
             app:lv_title="@string/shop_info_label_open_since" />
 
         <com.tokopedia.design.label.LabelView
             android:id="@+id/label_view_total_product"
             style="@style/LabelLayout"
             app:lv_content="@string/shop_info_label_default_content"
-            app:lv_image="@drawable/ic_info_product"
-            app:lv_image_width="@dimen/image_width_xs"
+            app:lv_image="@drawable/ic_info_product_grey"
+            app:lv_image_width="@dimen/image_width_xxs"
             app:lv_title="@string/shop_info_label_total_product" />
 
         <com.tokopedia.design.label.LabelView
             android:id="@+id/label_view_total_etalase"
             style="@style/LabelLayout"
             app:lv_content="@string/shop_info_label_default_content"
-            app:lv_image="@drawable/ic_info_etalase"
-            app:lv_image_width="@dimen/image_width_xs"
+            app:lv_image="@drawable/ic_info_etalase_grey"
+            app:lv_image_width="@dimen/image_width_xxs"
             app:lv_title="@string/shop_info_label_total_etalase" />
     </LinearLayout>
 

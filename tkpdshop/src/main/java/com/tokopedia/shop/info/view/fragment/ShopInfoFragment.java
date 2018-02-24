@@ -123,7 +123,7 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
         transactionSuccessLabelView.setContent(getString(R.string.shop_info_success_percentage, shopInfo.getShopTxStats().getShopTxSuccessRate1Year()));
         totalTransactionLabelView.setContent(shopInfo.getStats().getShopTotalTransaction());
         productSoldLabelView.setContent(shopInfo.getStats().getShopItemSold());
-//        totalReviewLabelView.setContent(shopInfo.getStats().rev);
+        totalReviewLabelView.setContent(shopInfo.getRatings().getQuality().getCountTotal());
         favoriteLabelView.setContent(String.valueOf(shopInfo.getStats().getFavoriteCount()));
         lastOnlineLabelView.setContent(shopInfo.getInfo().getShopOwnerLastLogin());
         openSinceLabelView.setContent(shopInfo.getInfo().getShopOpenSince());
@@ -150,7 +150,7 @@ public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView
         }
         physicalShopLabelView.setContent(physicalAddressContent);
         shopOwnerLabelView.setTitle(shopInfo.getOwner().getOwnerName());
-        ImageHandler.loadImageRounded2(shopOwnerLabelView.getImageView().getContext(), shopOwnerLabelView.getImageView(), shopInfo.getOwner().getOwnerImage());
+        ImageHandler.loadImageCircle2(shopOwnerLabelView.getImageView().getContext(), shopOwnerLabelView.getImageView(), shopInfo.getOwner().getOwnerImage());
         shopOwnerLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

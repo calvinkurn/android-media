@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="ShopPageSubDetailView">
+        <attr name="spsd_title" format="string" />
+        <attr name="spsd_content_layout" format="reference" />
+    </declare-styleable>
+
+</resources>
