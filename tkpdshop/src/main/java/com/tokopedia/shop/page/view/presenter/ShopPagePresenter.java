@@ -65,7 +65,7 @@ public class ShopPagePresenter extends BaseDaggerPresenter<ShopPageView> {
         });
     }
 
-    private void getShopInfoByDomain(String shopDomain) {
+    public void getShopInfoByDomain(String shopDomain) {
         getShopPageDataByDomainUseCase.execute(GetShopPageDataByDomainUseCase.createRequestParam(shopDomain), new Subscriber<ShopPageViewModel>() {
             @Override
             public void onCompleted() {

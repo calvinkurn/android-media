@@ -129,7 +129,7 @@
                 android:layout_height="@dimen/image_width_xs"
                 android:layout_marginEnd="@dimen/margin_vs"
                 android:layout_marginRight="@dimen/margin_vs"
-                android:src="@drawable/ic_reputation_speed_very_fast" />
+                android:src="@drawable/ic_shop_reputation_speed_very_fast" />
 
             <TextView
                 android:id="@+id/text_view_speed_value"

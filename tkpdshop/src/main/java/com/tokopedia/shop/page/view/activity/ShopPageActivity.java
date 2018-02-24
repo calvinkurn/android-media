@@ -7,6 +7,7 @@ import android.support.annotation.DrawableRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -86,9 +87,10 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
 
     private ShopReputationView shopReputationView;
 
+    private TextView totalFavouriteTextView;
+    private TextView totalProductTextView;
     private RatingBar qualityRatingBar;
     private TextView qualityValueTextView;
-
     private ImageView speedImageView;
     private TextView speedValueTextView;
 
@@ -114,7 +116,11 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         shopPagePresenter.attachView(this);
         shopId = getIntent().getStringExtra(SHOP_ID);
         shopDomain = getIntent().getStringExtra(SHOP_DOMAIN);
-        shopPagePresenter.getShopInfo(shopId);
+        if (!TextUtils.isEmpty(shopId)) {
+            shopPagePresenter.getShopInfo(shopId);
+        } else {
+            shopPagePresenter.getShopInfoByDomain(shopDomain);
+        }
         if (getApplication() != null && getApplication() instanceof ShopModuleRouter) {
             shopModuleRouter = (ShopModuleRouter) getApplication();
         }
@@ -153,6 +159,8 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         productQualityDetailView = findViewById(R.id.sub_detail_view_product_quality);
         reputationSpeedDetailView = findViewById(R.id.sub_detail_view_reputation_speed);
 
+        totalFavouriteTextView = findViewById(R.id.text_view_total_favourite);
+        totalProductTextView = findViewById(R.id.text_view_total_product);
         qualityRatingBar = findViewById(R.id.rating_bar_product_quality);
         qualityValueTextView = findViewById(R.id.text_view_product_quality_value);
         speedImageView = findViewById(R.id.image_view_speed);
@@ -282,12 +290,15 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     }
 
     private void displayAsOfficialStoreView(ShopInfo shopInfo) {
-        totalFavouriteDetailView.setVisibility(View.VISIBLE);
-        totalProductDetailView.setVisibility(View.VISIBLE);
         shopStatusImageView.setVisibility(View.VISIBLE);
         shopStatusImageView.setImageResource(R.drawable.ic_badge_shop_official);
         locationImageView.setImageResource(R.drawable.ic_info_checked_grey);
         shopInfoLocationTextView.setText(getString(R.string.shop_page_label_authorized));
+
+        totalFavouriteDetailView.setVisibility(View.VISIBLE);
+        totalProductDetailView.setVisibility(View.VISIBLE);
+        totalFavouriteTextView.setText(String.valueOf(shopInfo.getInfo().getShopTotalFavorit()));
+        totalProductTextView.setText(String.valueOf(shopInfo.getInfo().getTotalActiveProduct()));
     }
 
     private void displayAsGoldMerchantView(ShopInfo shopInfo) {
@@ -354,17 +365,17 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     private int getReputationSpeedIcon(int level) {
         switch (level) {
             case REPUTATION_SPEED_LEVEL_VERY_FAST:
-                return R.drawable.ic_reputation_speed_very_fast;
+                return R.drawable.ic_shop_reputation_speed_very_fast;
             case REPUTATION_SPEED_LEVEL_FAST:
-                return R.drawable.ic_reputation_speed_very_fast;
+                return R.drawable.ic_shop_reputation_speed_fast;
             case REPUTATION_SPEED_LEVEL_NORMAL:
-                return R.drawable.ic_reputation_speed_very_fast;
+                return R.drawable.ic_shop_reputation_speed_normal;
             case REPUTATION_SPEED_LEVEL_SLOW:
-                return R.drawable.ic_reputation_speed_very_fast;
+                return R.drawable.ic_shop_reputation_speed_slow;
             case REPUTATION_SPEED_LEVEL_VERY_SLOW:
-                return R.drawable.ic_reputation_speed_very_fast;
+                return R.drawable.ic_shop_reputation_speed_very_slow;
             default:
-                return R.drawable.ic_reputation_speed_very_fast;
+                return R.drawable.ic_shop_reputation_speed_default;
         }
     }
 
