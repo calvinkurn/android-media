@@ -56,7 +56,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     public static final String ETALASE_NAME = "ETALASE_NAME";
 
     private String etalaseName;
-    private int etalaseId;
+    private int etalaseId = Integer.MIN_VALUE;
     private String shopId;
     private String keyword;
     private String sortName = Integer.toString(Integer.MIN_VALUE);
@@ -249,7 +249,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                     shopProductListPresenter.getShopPageList(
                             shopId,
                             keyword,
-                            Integer.toString(etalaseId),
+                            etalaseId < 0 || etalaseId == Integer.MIN_VALUE ? null : Integer.toString(etalaseId),
                             Integer.valueOf(sortName),
                             1
                     );
@@ -265,7 +265,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                     shopProductListPresenter.getShopPageList(
                             shopId,
                             keyword,
-                            Integer.toString(etalaseId),
+                            etalaseId < 0 || etalaseId == Integer.MIN_VALUE ? null : Integer.toString(etalaseId),
                             Integer.valueOf(sortName),
                             1
                     );

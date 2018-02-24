@@ -62,6 +62,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<BaseListViewLi
         });
     }
 
+    @Deprecated
     public void getShopPageList(String shopId) {
         ShopProductRequestModel shopProductRequestModel = getShopProductRequestModel(shopId);
         getShopProductListUseCase.execute(GetShopProductListUseCase.createRequestParam(shopProductRequestModel), new Subscriber<ShopProductList>() {
