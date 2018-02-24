@@ -4,6 +4,8 @@ package com.tokopedia.gm.common.data.source.cloud.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class GMFeaturedProduct {
 
     @SerializedName("product_id")
@@ -35,7 +37,19 @@ public class GMFeaturedProduct {
     private boolean cashback;
     @SerializedName("cashback_detail")
     @Expose
-    private GMCashBackDetail cashbackDetail;
+    private GMFeaturedCashBackDetail cashbackDetail;
+    @SerializedName("labels")
+    @Expose
+    private List<GMFeaturedLabel> labels = null;
+    @SerializedName("is_rated")
+    @Expose
+    private boolean isRated;
+    @SerializedName("rating")
+    @Expose
+    private String rating;
+    @SerializedName("total_review")
+    @Expose
+    private String totalReview;
 
     public long getProductId() {
         return productId;
@@ -109,12 +123,43 @@ public class GMFeaturedProduct {
         this.cashback = cashback;
     }
 
-    public GMCashBackDetail getCashbackDetail() {
+    public GMFeaturedCashBackDetail getCashbackDetail() {
         return cashbackDetail;
     }
 
-    public void setCashbackDetail(GMCashBackDetail cashbackDetail) {
+    public void setCashbackDetail(GMFeaturedCashBackDetail cashbackDetail) {
         this.cashbackDetail = cashbackDetail;
     }
 
+    public List<GMFeaturedLabel> getLabels() {
+        return labels;
+    }
+
+    public void setLabels(List<GMFeaturedLabel> labels) {
+        this.labels = labels;
+    }
+
+    public boolean isRated() {
+        return isRated;
+    }
+
+    public void setRated(boolean rated) {
+        isRated = rated;
+    }
+
+    public String getRating() {
+        return rating;
+    }
+
+    public void setRating(String rating) {
+        this.rating = rating;
+    }
+
+    public String getTotalReview() {
+        return totalReview;
+    }
+
+    public void setTotalReview(String totalReview) {
+        this.totalReview = totalReview;
+    }
 }

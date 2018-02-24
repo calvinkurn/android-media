@@ -4,7 +4,7 @@ package com.tokopedia.gm.common.data.source.cloud.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class GMCashBackDetail {
+public class GMFeaturedCashBackDetail {
 
     @SerializedName("cashback_status")
     @Expose
