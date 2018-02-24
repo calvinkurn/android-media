@@ -27,10 +27,11 @@ import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.common.util.TextApiUtils;
-import com.tokopedia.shop.page.di.component.DaggerShopPageComponent;
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity;
+import com.tokopedia.shop.page.di.component.DaggerShopPageComponent;
 import com.tokopedia.shop.page.di.module.ShopPageModule;
 import com.tokopedia.shop.page.view.listener.ShopPageView;
+import com.tokopedia.shop.page.view.model.ShopPageViewModel;
 import com.tokopedia.shop.page.view.presenter.ShopPagePresenter;
 import com.tokopedia.shop.page.view.widget.ShopPageSubDetailView;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
@@ -252,7 +253,12 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     }
 
     @Override
-    public void onSuccessGetShopInfo(final ShopInfo shopInfo) {
+    public void onSuccessGetShopPageInfo(final ShopPageViewModel shopPageViewModel) {
+        updateShopInfo(shopPageViewModel.getShopInfo());
+        updateReputationSpeed(shopPageViewModel.getReputationSpeed());
+    }
+
+    private void updateShopInfo(ShopInfo shopInfo) {
         shopId = shopInfo.getInfo().getShopId();
         favouriteShop = TextApiUtils.isValueTrue(shopInfo.getInfo().getShopAlreadyFavorited());
 
@@ -321,19 +327,13 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     }
 
     @Override
-    public void onErrorGetShopInfo(Throwable e) {
+    public void onErrorGetShopPageInfo(Throwable e) {
 
     }
 
-    @Override
-    public void onSuccessGetReputationSpeed(ReputationSpeed reputationSpeed) {
+    public void updateReputationSpeed(ReputationSpeed reputationSpeed) {
         speedImageView.setImageResource(getReputationSpeedIcon(reputationSpeed.getRecent1Month().getSpeedLevel()));
         speedValueTextView.setText(reputationSpeed.getRecent1Month().getSpeedLevelDescription());
-    }
-
-    @Override
-    public void onErrorGetReputationSpeed(Throwable e) {
-
     }
 
     @Override

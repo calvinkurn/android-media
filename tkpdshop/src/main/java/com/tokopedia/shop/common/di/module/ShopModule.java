@@ -15,6 +15,7 @@ import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonWS4Api;
 import com.tokopedia.shop.common.di.ShopQualifier;
 import com.tokopedia.shop.common.di.ShopWS4Qualifier;
 import com.tokopedia.shop.common.di.scope.ShopScope;
+import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.shop.common.domain.repository.ShopCommonRepository;
@@ -38,6 +39,7 @@ public class ShopModule {
         return new CacheApiInterceptor();
 
     }
+
     @ShopQualifier
     @Provides
     public OkHttpClient provideOkHttpClient(ShopAuthInterceptor shopAuthInterceptor,
@@ -71,7 +73,7 @@ public class ShopModule {
     @ShopScope
     @Provides
     public Retrofit provideWS4Retrofit(@ShopQualifier OkHttpClient okHttpClient,
-                                    Retrofit.Builder retrofitBuilder) {
+                                       Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(ShopCommonUrl.BASE_URL_WS).client(okHttpClient).build();
     }
 
@@ -109,6 +111,12 @@ public class ShopModule {
     @Provides
     public GetShopInfoUseCase provideGetShopInfoUseCase(ShopCommonRepository shopCommonRepository) {
         return new GetShopInfoUseCase(shopCommonRepository);
+    }
+
+    @ShopScope
+    @Provides
+    public GetShopInfoByDomainUseCase provideGetShopInfoByDomainUseCase(ShopCommonRepository shopCommonRepository) {
+        return new GetShopInfoByDomainUseCase(shopCommonRepository);
     }
 
     @ShopScope

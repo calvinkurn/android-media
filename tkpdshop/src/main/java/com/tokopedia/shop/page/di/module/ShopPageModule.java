@@ -17,9 +17,13 @@ import com.tokopedia.reputation.common.data.source.cloud.api.ReputationCommonApi
 import com.tokopedia.reputation.common.domain.interactor.GetReputationSpeedUseCase;
 import com.tokopedia.reputation.common.domain.repository.ReputationCommonRepository;
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoUseCase;
+import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
+import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.shop.page.di.ShopInfoReputationSpeedQualifier;
 import com.tokopedia.shop.page.di.scope.ShopPageScope;
+import com.tokopedia.shop.page.domain.interactor.GetShopPageDataByDomainUseCase;
+import com.tokopedia.shop.page.domain.interactor.GetShopPageDataUseCase;
 import com.tokopedia.shop.page.domain.interactor.ToggleFavouriteShopAndDeleteCacheUseCase;
 
 import dagger.Module;
@@ -99,10 +103,25 @@ public class ShopPageModule {
 
     @ShopPageScope
     @Provides
+    public GetShopPageDataUseCase provideGetShopPageDataUseCase(
+            GetShopInfoUseCase getShopInfoUseCase,
+            GetReputationSpeedUseCase deleteShopInfoUseCase) {
+        return new GetShopPageDataUseCase(getShopInfoUseCase, deleteShopInfoUseCase);
+    }
+
+    @ShopPageScope
+    @Provides
+    public GetShopPageDataByDomainUseCase provideGetShopPageDataByDomainUseCase(
+            GetShopInfoByDomainUseCase getShopInfoByDomainUseCase,
+            GetReputationSpeedUseCase deleteShopInfoUseCase) {
+        return new GetShopPageDataByDomainUseCase(getShopInfoByDomainUseCase, deleteShopInfoUseCase);
+    }
+
+    @ShopPageScope
+    @Provides
     public ToggleFavouriteShopAndDeleteCacheUseCase provideToggleFavouriteShopAndDeleteCacheUseCase(
             ToggleFavouriteShopUseCase toggleFavouriteShopUseCase,
             DeleteShopInfoUseCase deleteShopInfoUseCase) {
         return new ToggleFavouriteShopAndDeleteCacheUseCase(toggleFavouriteShopUseCase, deleteShopInfoUseCase);
     }
 }
-
