@@ -18,11 +18,8 @@ import javax.inject.Inject;
 
 public class ShopProductListLimitedFragment extends BaseDaggerFragment implements ShopProductListLimitedView {
 
-    public static ShopProductListLimitedFragment createInstance(String shopId) {
+    public static ShopProductListLimitedFragment createInstance() {
         ShopProductListLimitedFragment fragment = new ShopProductListLimitedFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(ShopParamConstant.SHOP_ID, shopId);
-        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -33,10 +30,7 @@ public class ShopProductListLimitedFragment extends BaseDaggerFragment implement
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        shopId = getArguments().getString(ShopParamConstant.SHOP_ID);
         shopProductListLimitedPresenter.attachView(this);
-        shopProductListLimitedPresenter.getShopPageList(shopId);
-        shopProductListLimitedPresenter.getFeatureProductList(shopId);
     }
 
     @Override
@@ -47,6 +41,12 @@ public class ShopProductListLimitedFragment extends BaseDaggerFragment implement
                 .shopComponent(getComponent(ShopComponent.class))
                 .build()
                 .inject(this);
+    }
+
+    public void displayProduct(String shopId) {
+        this.shopId = shopId;
+        shopProductListLimitedPresenter.getShopPageList(shopId);
+        shopProductListLimitedPresenter.getFeatureProductList(shopId);
     }
 
     @Override

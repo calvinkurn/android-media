@@ -21,9 +21,19 @@ import com.tokopedia.shop.product.data.repository.ShopProductRepositoryImpl;
 import com.tokopedia.shop.product.data.source.cloud.ShopFilterCloudDataSource;
 import com.tokopedia.shop.product.data.source.cloud.ShopProductCloudDataSource;
 import com.tokopedia.shop.product.di.ShopProductGMFeaturedQualifier;
+import com.tokopedia.shop.product.di.ShopProductWishListFeaturedQualifier;
 import com.tokopedia.shop.product.di.scope.ShopProductScope;
 import com.tokopedia.shop.product.domain.repository.ShopProductRepository;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
+import com.tokopedia.wishlist.common.constant.WishListCommonUrl;
+import com.tokopedia.wishlist.common.data.interceptor.WishListAuthInterceptor;
+import com.tokopedia.wishlist.common.data.repository.WishListCommonRepositoryImpl;
+import com.tokopedia.wishlist.common.data.source.WishListCommonDataSource;
+import com.tokopedia.wishlist.common.data.source.cloud.WishListCommonCloudDataSource;
+import com.tokopedia.wishlist.common.data.source.cloud.api.WishListCommonApi;
+import com.tokopedia.wishlist.common.data.source.cloud.mapper.WishListProductListMapper;
+import com.tokopedia.wishlist.common.domain.interactor.GetWishListUseCase;
+import com.tokopedia.wishlist.common.domain.repository.WishListCommonRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -37,14 +47,14 @@ public class ShopProductModule {
 
     @Provides
     public GMAuthInterceptor provideGMAuthInterceptor(@ApplicationContext Context context,
-                                             AbstractionRouter abstractionRouter,
-                                             UserSession userSession) {
+                                                      AbstractionRouter abstractionRouter,
+                                                      UserSession userSession) {
         return new GMAuthInterceptor(context, abstractionRouter, userSession);
     }
 
     @ShopProductGMFeaturedQualifier
     @Provides
-    public OkHttpClient provideOkHttpClient(GMAuthInterceptor gmAuthInterceptor,
+    public OkHttpClient provideGMOkHttpClient(GMAuthInterceptor gmAuthInterceptor,
                                             @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
                                             HeaderErrorResponseInterceptor errorResponseInterceptor,
                                             CacheApiInterceptor cacheApiInterceptor) {
@@ -59,7 +69,7 @@ public class ShopProductModule {
     @ShopProductGMFeaturedQualifier
     @ShopProductScope
     @Provides
-    public Retrofit provideRetrofit(@ShopProductGMFeaturedQualifier OkHttpClient okHttpClient,
+    public Retrofit provideGMRetrofit(@ShopProductGMFeaturedQualifier OkHttpClient okHttpClient,
                                     Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(GMCommonUrl.BASE_URL).client(okHttpClient).build();
     }
@@ -94,6 +104,75 @@ public class ShopProductModule {
         return new GetFeatureProductListUseCase(gmCommonRepository);
     }
 
+    // WishList
+    @Provides
+    public WishListAuthInterceptor provideWishListAuthInterceptor(@ApplicationContext Context context,
+                                                                  AbstractionRouter abstractionRouter,
+                                                                  UserSession userSession) {
+        return new WishListAuthInterceptor(context, abstractionRouter, userSession);
+    }
+
+    @ShopProductWishListFeaturedQualifier
+    @Provides
+    public OkHttpClient provideWishListOkHttpClient(WishListAuthInterceptor wishListAuthInterceptor,
+                                            @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
+                                            HeaderErrorResponseInterceptor errorResponseInterceptor,
+                                            CacheApiInterceptor cacheApiInterceptor) {
+        return new OkHttpClient.Builder()
+                .addInterceptor(cacheApiInterceptor)
+                .addInterceptor(wishListAuthInterceptor)
+                .addInterceptor(errorResponseInterceptor)
+                .addInterceptor(httpLoggingInterceptor)
+                .build();
+    }
+
+    @ShopProductWishListFeaturedQualifier
+    @ShopProductScope
+    @Provides
+    public Retrofit provideWishListRetrofit(@ShopProductWishListFeaturedQualifier OkHttpClient okHttpClient,
+                                            Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder.baseUrl(WishListCommonUrl.BASE_URL).client(okHttpClient).build();
+    }
+
+    @ShopProductScope
+    @Provides
+    public WishListCommonApi provideWishListCommonApi(@ShopProductWishListFeaturedQualifier Retrofit retrofit) {
+        return retrofit.create(WishListCommonApi.class);
+    }
+
+    @ShopProductScope
+    @Provides
+    public WishListProductListMapper provideWishListProductListMapper() {
+        return new WishListProductListMapper();
+    }
+
+    @ShopProductScope
+    @Provides
+    public WishListCommonCloudDataSource provideWishListCommonCloudDataSource(
+            WishListCommonApi wishListCommonApi,
+            WishListProductListMapper wishListProductListMapper) {
+        return new WishListCommonCloudDataSource(wishListCommonApi, wishListProductListMapper);
+    }
+
+    @ShopProductScope
+    @Provides
+    public WishListCommonDataSource provideWishListCommonDataSource(WishListCommonCloudDataSource wishListCommonCloudDataSource) {
+        return new WishListCommonDataSource(wishListCommonCloudDataSource);
+    }
+
+    @ShopProductScope
+    @Provides
+    public WishListCommonRepository provideWishListCommonRepository(WishListCommonDataSource wishListCommonDataSource) {
+        return new WishListCommonRepositoryImpl(wishListCommonDataSource);
+    }
+
+    @ShopProductScope
+    @Provides
+    public GetWishListUseCase provideGetWishListUseCase(WishListCommonRepository wishListCommonRepository) {
+        return new GetWishListUseCase(wishListCommonRepository);
+    }
+
+    // Filter
     @ShopProductScope
     @Provides
     public ShopProductRepository provideShopProductRepository(

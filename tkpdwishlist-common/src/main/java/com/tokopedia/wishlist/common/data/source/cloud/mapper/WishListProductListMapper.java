@@ -13,7 +13,7 @@ public class WishListProductListMapper {
         for (int i = 0; i < productIdList.size(); i++) {
             stringBuilder.append(productIdList.get(i));
             if (i != productIdList.size() - 1) {
-                stringBuilder.append(", ");
+                stringBuilder.append(",");
             }
         }
         return stringBuilder.toString();

@@ -4,7 +4,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.shop.product.view.model.ShopProductViewModel;
+import com.tokopedia.shop.product.view.model.ShopFeaturedProductViewModel;
 
 /**
  * Created by alvarisi on 12/7/17.
@@ -12,7 +12,7 @@ import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
 public interface ShopProductLimitedTypeFactory extends AdapterTypeFactory {
 
-    int type(ShopProductViewModel shopProductViewModel);
+    int type(ShopFeaturedProductViewModel shopProductViewModel);
 
     AbstractViewHolder createViewHolder(View view, int viewType);
 }
