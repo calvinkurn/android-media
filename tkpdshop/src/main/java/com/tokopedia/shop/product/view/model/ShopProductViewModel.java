@@ -19,6 +19,7 @@ public class ShopProductViewModel implements Visitable<ShopProductTypeFactory> {
     private boolean wholesale;
     private boolean po;
     private boolean freeReturn;
+    private boolean wishList;
 
     public String getId() {
         return id;
@@ -98,6 +99,14 @@ public class ShopProductViewModel implements Visitable<ShopProductTypeFactory> {
 
     public void setFreeReturn(boolean freeReturn) {
         this.freeReturn = freeReturn;
+    }
+
+    public boolean isWishList() {
+        return wishList;
+    }
+
+    public void setWishList(boolean wishList) {
+        this.wishList = wishList;
     }
 
     @Override

@@ -5,15 +5,10 @@ import android.support.annotation.NonNull;
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
-import com.tokopedia.shop.common.util.TextApiUtils;
-import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
-import com.tokopedia.shop.product.data.source.cloud.model.ShopProductBadge;
-import com.tokopedia.shop.product.domain.interactor.GetShopProductListUseCase;
+import com.tokopedia.shop.common.util.PagingListUtils;
+import com.tokopedia.shop.product.domain.interactor.GetShopProductWithWishListUseCase;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -25,24 +20,16 @@ import rx.Subscriber;
 
 public class ShopProductListPresenter extends BaseDaggerPresenter<BaseListViewListener<ShopProductViewModel>> {
 
-    private static final String BADGGE_FREE_RETURN = "Free Return";
-
-    private final GetShopProductListUseCase getShopProductListUseCase;
+    private final GetShopProductWithWishListUseCase getShopProductWithWishListUseCase;
 
     @Inject
-    public ShopProductListPresenter(GetShopProductListUseCase getShopProductListUseCase) {
-        this.getShopProductListUseCase = getShopProductListUseCase;
+    public ShopProductListPresenter(GetShopProductWithWishListUseCase getShopProductWithWishListUseCase) {
+        this.getShopProductWithWishListUseCase = getShopProductWithWishListUseCase;
     }
 
-    public void getShopPageList(
-            String shopId,
-            String keyword,
-            String etalaseId,
-            int wholesale,
-            int page,
-            int orderBy) {
+    public void getShopPageList(String shopId, String keyword, String etalaseId, int wholesale, int page, int orderBy) {
         ShopProductRequestModel shopProductRequestModel = getShopProductRequestModel(shopId, keyword, etalaseId, wholesale, page, orderBy);
-        getShopProductListUseCase.execute(GetShopProductListUseCase.createRequestParam(shopProductRequestModel), new Subscriber<PagingList<ShopProduct>>() {
+        getShopProductWithWishListUseCase.execute(GetShopProductWithWishListUseCase.createRequestParam(shopProductRequestModel), new Subscriber<PagingList<ShopProductViewModel>>() {
             @Override
             public void onCompleted() {
 
@@ -56,58 +43,22 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<BaseListViewLi
             }
 
             @Override
-            public void onNext(PagingList<ShopProduct> shopProductList) {
-                if (!isViewAttached())
-                    return;
-
-                getView().renderList(convert(shopProductList.getList()), checkNextPage(shopProductList));
+            public void onNext(PagingList<ShopProductViewModel> shopProductList) {
+                getView().renderList(shopProductList.getList(), PagingListUtils.checkNextPage(shopProductList));
             }
         });
     }
 
-    @Deprecated
-    public void getShopPageList(String shopId) {
-        ShopProductRequestModel shopProductRequestModel = getShopProductRequestModel(shopId);
-        getShopProductListUseCase.execute(GetShopProductListUseCase.createRequestParam(shopProductRequestModel), new Subscriber<PagingList<ShopProduct>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    getView().showGetListError(e);
-                }
-            }
-
-            @Override
-            public void onNext(PagingList<ShopProduct> shopProductList) {
-                if (!isViewAttached())
-                    return;
-
-                getView().renderList(convert(shopProductList.getList()));
-            }
-        });
-    }
-
-    @NonNull
     protected ShopProductRequestModel getShopProductRequestModel(String shopId) {
         return getShopProductRequestModel(shopId, null, null, 0, 1, -1);
     }
 
     @NonNull
-    public static ShopProductRequestModel getShopProductRequestModel(
-            String shopId,
-            String keyword,
-            String etalaseId,
-            int wholesale,
-            int page,
-            int orderBy) {
+    private static ShopProductRequestModel getShopProductRequestModel(
+            String shopId, String keyword, String etalaseId, int wholesale, int page, int orderBy) {
         ShopProductRequestModel shopProductRequestModel = new ShopProductRequestModel();
         shopProductRequestModel.setShopId(shopId);
         shopProductRequestModel.setPage(page);
-
         if (etalaseId != null)
             shopProductRequestModel.setEtalaseId(etalaseId);
 
@@ -126,46 +77,6 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<BaseListViewLi
     @Override
     public void detachView() {
         super.detachView();
-        getShopProductListUseCase.unsubscribe();
-    }
-
-    public static List<ShopProductViewModel> convert(List<ShopProduct> shopProducts) {
-        List<ShopProductViewModel> shopProductViewModels = new ArrayList<>();
-        for (ShopProduct shopProduct : shopProducts) {
-            shopProductViewModels.add(convert(shopProduct));
-        }
-        return shopProductViewModels;
-    }
-
-    public static ShopProductViewModel convert(ShopProduct shopProduct) {
-        ShopProductViewModel shopProductViewModel = new ShopProductViewModel();
-
-        shopProductViewModel.setId(shopProduct.getProductId());
-        shopProductViewModel.setName(shopProduct.getProductName());
-        shopProductViewModel.setPrice(shopProduct.getProductPrice());
-        shopProductViewModel.setImageUrl(shopProduct.getProductImage());
-
-        shopProductViewModel.setWholesale(TextApiUtils.isValueTrue(shopProduct.getProductWholesale()));
-        shopProductViewModel.setPo(TextApiUtils.isValueTrue(shopProduct.getProductPreorder()));
-        if (shopProduct.getBadges() != null && shopProduct.getBadges().size() > 0) {
-            for (ShopProductBadge badge : shopProduct.getBadges()) {
-                if (badge.getTitle().equalsIgnoreCase(BADGGE_FREE_RETURN)){
-                    shopProductViewModel.setFreeReturn(true);
-                    break;
-                }
-            }
-        }
-        return shopProductViewModel;
-    }
-
-    private boolean checkNextPage(PagingList<ShopProduct> shopProductList) {
-        if (shopProductList.getPaging() != null &&
-                shopProductList.getPaging().getUriNext() != null &&
-                !shopProductList.getPaging().getUriNext().isEmpty() &&
-                !shopProductList.getPaging().getUriNext().equals("0")) {
-            return true;
-        } else {
-            return true;
-        }
+        getShopProductWithWishListUseCase.unsubscribe();
     }
 }

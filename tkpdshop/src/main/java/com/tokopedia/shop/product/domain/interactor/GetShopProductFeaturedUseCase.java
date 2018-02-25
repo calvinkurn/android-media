@@ -3,6 +3,7 @@ package com.tokopedia.shop.product.domain.interactor;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct;
 import com.tokopedia.gm.common.domain.interactor.GetFeatureProductListUseCase;
+import com.tokopedia.shop.common.util.WishListUtils;
 import com.tokopedia.shop.product.view.model.ShopProductFeaturedViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -54,19 +55,10 @@ public class GetShopProductFeaturedUseCase extends UseCase<List<ShopProductFeatu
                         for (GMFeaturedProduct gmFeaturedProduct : gmFeaturedProductList) {
                             ShopProductFeaturedViewModel shopPageFeaturedProduct = new ShopProductFeaturedViewModel();
                             shopPageFeaturedProduct.setGmFeaturedProduct(gmFeaturedProduct);
-                            shopPageFeaturedProduct.setWhisList(isWishList(gmFeaturedProduct.getProductId(), productWishList));
+                            shopPageFeaturedProduct.setWhisList(WishListUtils.isWishList(gmFeaturedProduct.getProductId(), productWishList));
                             shopPageFeaturedProductList.add(shopPageFeaturedProduct);
                         }
                         return Observable.just(shopPageFeaturedProductList);
-                    }
-
-                    private boolean isWishList(String productId, List<String> productWishList) {
-                        for (String productWishListId : productWishList) {
-                            if (productId.equalsIgnoreCase(productWishListId)) {
-                                return true;
-                            }
-                        }
-                        return false;
                     }
                 });
             }

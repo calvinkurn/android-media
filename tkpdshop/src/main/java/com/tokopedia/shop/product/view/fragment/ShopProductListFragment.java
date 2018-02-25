@@ -85,7 +85,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     @Override
     public void loadData(int page) {
-        shopProductListPresenter.getShopPageList(shopId);
+        getShopList();
     }
 
 
@@ -234,14 +234,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
                     this.isLoadingInitialData = true;
 
-                    shopProductListPresenter.getShopPageList(
-                            shopId,
-                            keyword,
-                            etalaseId < 0 || etalaseId == Integer.MIN_VALUE ? null : Integer.toString(etalaseId),
-                            0,
-                            1,
-                            Integer.valueOf(sortName)
-                    );
+                    getShopList();
                 }
                 break;
 
@@ -251,14 +244,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                     sortName = data.getStringExtra(ShopProductFilterActivity.SORT_NAME);
 
                     this.isLoadingInitialData = true;
-                    shopProductListPresenter.getShopPageList(
-                            shopId,
-                            keyword,
-                            etalaseId < 0 || etalaseId == Integer.MIN_VALUE ? null : Integer.toString(etalaseId),
-                            0,
-                            1,
-                            Integer.valueOf(sortName)
-                    );
+                    getShopList();
                 }
                 break;
             default:
@@ -279,23 +265,17 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     @Override
     public void onSearchSubmitted(String s) {
         this.isLoadingInitialData = true;
-
         keyword = s;
-        shopProductListPresenter.getShopPageList(
-                shopId,
-                keyword,
-                etalaseId < 0 || etalaseId == Integer.MIN_VALUE ? null : Integer.toString(etalaseId),
-                0,
-                1,
-                Integer.valueOf(sortName)
-        );
     }
 
     @Override
     public void onSearchTextChanged(String s) {
         this.isLoadingInitialData = true;
-
         keyword = s;
+
+    }
+
+    private void getShopList() {
         shopProductListPresenter.getShopPageList(
                 shopId,
                 keyword,

@@ -1,8 +1,9 @@
 package com.tokopedia.shop.product.view.presenter;
 
+import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.shop.product.data.source.cloud.model.DynamicFilterModel;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductFilterUseCase;
-import com.tokopedia.shop.product.domain.interactor.GetShopProductListUseCase;
 import com.tokopedia.shop.product.view.model.ShopProductFilterModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.usecase.RequestParams;
@@ -18,19 +19,17 @@ import rx.Subscriber;
  * Created by normansyahputa on 2/23/18.
  */
 
-public class ShopProductFilterPresenter extends ShopProductListPresenter {
+public class ShopProductFilterPresenter extends BaseDaggerPresenter<BaseListViewListener<ShopProductViewModel>> {
 
     private GetShopProductFilterUseCase getShopProductFilterUseCase;
 
     @Inject
-    public ShopProductFilterPresenter(GetShopProductFilterUseCase getShopProductFilterUseCase,
-                                      GetShopProductListUseCase getShopProductListUseCase) {
-        super(getShopProductListUseCase);
+    public ShopProductFilterPresenter(GetShopProductFilterUseCase getShopProductFilterUseCase) {
         this.getShopProductFilterUseCase = getShopProductFilterUseCase;
     }
 
     public void getShopFilterList(){
-        getShopProductFilterUseCase.execute(RequestParams.EMPTY, new Subscriber<DynamicFilterModel.DataValue>() {
+        getShopProductFilterUseCase.execute(new Subscriber<DynamicFilterModel.DataValue>() {
             @Override
             public void onCompleted() {
 
