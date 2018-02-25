@@ -1,6 +1,7 @@
 package com.tokopedia.shop.product.view.fragment;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.shop.common.di.component.ShopComponent;
@@ -8,6 +9,8 @@ import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
 import com.tokopedia.shop.product.view.adapter.ShopProductTypeFactory;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductSingleViewHolder;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListLimitedPresenter;
 
@@ -42,7 +45,21 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
 
     @Override
     protected ShopProductTypeFactory getAdapterTypeFactory() {
-        return new ShopProductAdapterTypeFactory(null);
+        return new ShopProductAdapterTypeFactory(new ShopProductAdapterTypeFactory.TypeFactoryListener() {
+            @Override
+            public int getType(Object type) {
+                return ShopProductSingleViewHolder.LAYOUT;
+            }
+        }, new ShopProductViewHolder.ShopProductVHListener() {
+            @Override
+            public void onWishlist(ShopProductViewModel model) {
+                Toast.makeText(
+                        getActivity(),
+                        "toggle favorite product",
+                        Toast.LENGTH_LONG
+                ).show();
+            }
+        });
     }
 
     @Override

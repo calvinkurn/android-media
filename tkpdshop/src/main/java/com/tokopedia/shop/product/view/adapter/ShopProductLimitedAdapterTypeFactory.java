@@ -16,43 +16,11 @@ import com.tokopedia.shop.product.view.model.ShopProductViewModel;
  * Created by alvarisi on 12/7/17.
  */
 
-public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory implements ShopProductTypeFactory {
-
-    private ShopProductAdapterTypeFactory.TypeFactoryListener typeFactoryListener;
-
-
-    public ShopProductLimitedAdapterTypeFactory(@Nullable ShopProductAdapterTypeFactory.TypeFactoryListener typeFactoryListener) {
-        this.typeFactoryListener = typeFactoryListener;
+public class ShopProductLimitedAdapterTypeFactory extends ShopProductAdapterTypeFactory{
+    public ShopProductLimitedAdapterTypeFactory() {
     }
 
-    @Override
-    public int type(ShopProductViewModel shopProductViewModel) {
-        if (typeFactoryListener != null) {
-            return typeFactoryListener.getType(shopProductViewModel);
-        }
-        return ShopProductViewHolder.LAYOUT;
-    }
-
-    @Override
-    public AbstractViewHolder createViewHolder(View view, int viewType) {
-        AbstractViewHolder viewHolder;
-        if (viewType == ShopProductViewHolder.LAYOUT) {
-            viewHolder = new ShopProductViewHolder(view);
-        } else if (viewType == ShopProductListViewHolder.LAYOUT) {
-            viewHolder = new ShopProductListViewHolder(view);
-        } else if (viewType == ShopProductSingleViewHolder.LAYOUT) {
-            viewHolder = new ShopProductSingleViewHolder(view);
-        } else if (viewType == ShopProductEtalaseUnselectedViewHolder.LAYOUT) {
-            viewHolder = new ShopProductEtalaseUnselectedViewHolder(view);
-        } else if (viewType == ShopProductEtalaseSelectedViewHolder.LAYOUT) {
-            viewHolder = new ShopProductEtalaseSelectedViewHolder(view);
-        } else {
-            viewHolder = super.createViewHolder(view, viewType);
-        }
-        return viewHolder;
-    }
-
-    public interface TypeFactoryListener<E> {
-        int getType(E type);
+    public ShopProductLimitedAdapterTypeFactory(@Nullable TypeFactoryListener typeFactoryListener, @Nullable ShopProductViewHolder.ShopProductVHListener shopProductVHListener) {
+        super(typeFactoryListener, shopProductVHListener);
     }
 }

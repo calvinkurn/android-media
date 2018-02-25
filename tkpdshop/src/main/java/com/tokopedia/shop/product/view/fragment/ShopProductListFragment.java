@@ -98,10 +98,15 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     @Override
     protected ShopProductTypeFactory getAdapterTypeFactory() {
-        return new ShopProductAdapterTypeFactory( new ShopProductAdapterTypeFactory.TypeFactoryListener() {
+        return new ShopProductAdapterTypeFactory(new ShopProductAdapterTypeFactory.TypeFactoryListener() {
             @Override
             public int getType(Object object) {
                 return currentLayoutType.first;
+            }
+        }, new ShopProductViewHolder.ShopProductVHListener() {
+            @Override
+            public void onWishlist(ShopProductViewModel model) {
+
             }
         });
     }
