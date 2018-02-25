@@ -29,7 +29,7 @@ public class ShopProduct {
     private String productPrice;
     @SerializedName("product_wholesale")
     @Expose
-    private long productWholesale;
+    private String productWholesale;
     @SerializedName("product_image_300")
     @Expose
     private String productImage300;
@@ -44,13 +44,13 @@ public class ShopProduct {
     private String shopUrl;
     @SerializedName("product_id")
     @Expose
-    private long productId;
+    private String productId;
     @SerializedName("product_image")
     @Expose
     private String productImage;
     @SerializedName("product_preorder")
     @Expose
-    private long productPreorder;
+    private String productPreorder;
     @SerializedName("shop_location")
     @Expose
     private String shopLocation;
@@ -120,11 +120,11 @@ public class ShopProduct {
         this.productPrice = productPrice;
     }
 
-    public long getProductWholesale() {
+    public String getProductWholesale() {
         return productWholesale;
     }
 
-    public void setProductWholesale(long productWholesale) {
+    public void setProductWholesale(String productWholesale) {
         this.productWholesale = productWholesale;
     }
 
@@ -160,11 +160,11 @@ public class ShopProduct {
         this.shopUrl = shopUrl;
     }
 
-    public long getProductId() {
+    public String getProductId() {
         return productId;
     }
 
-    public void setProductId(long productId) {
+    public void setProductId(String productId) {
         this.productId = productId;
     }
 
@@ -176,11 +176,11 @@ public class ShopProduct {
         this.productImage = productImage;
     }
 
-    public long getProductPreorder() {
+    public String getProductPreorder() {
         return productPreorder;
     }
 
-    public void setProductPreorder(long productPreorder) {
+    public void setProductPreorder(String productPreorder) {
         this.productPreorder = productPreorder;
     }
 

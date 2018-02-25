@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant;
 import com.tokopedia.shop.common.constant.ShopParamApiConstant;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.shop.common.util.TextApiUtils;
 import com.tokopedia.shop.note.data.source.cloud.model.ShopNote;
 import com.tokopedia.shop.note.domain.interactor.GetShopNoteListUseCase;
 import com.tokopedia.shop.note.view.listener.ShopNoteListView;
@@ -34,6 +35,8 @@ import rx.Subscriber;
 
 public class ShopProductListPresenter extends BaseDaggerPresenter<BaseListViewListener<ShopProductViewModel>> {
 
+    private static final String BADGGE_FREE_RETURN = "Free Return";
+
     private final GetShopProductListUseCase getShopProductListUseCase;
 
     @Inject
@@ -47,7 +50,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<BaseListViewLi
             String etalaseId,
             int wholesale,
             int page,
-            int orderBy){
+            int orderBy) {
         ShopProductRequestModel shopProductRequestModel = getShopProductRequestModel(shopId, keyword, etalaseId, wholesale, page, orderBy);
         getShopProductListUseCase.execute(GetShopProductListUseCase.createRequestParam(shopProductRequestModel), new Subscriber<ShopProductList>() {
             @Override
@@ -64,7 +67,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<BaseListViewLi
 
             @Override
             public void onNext(ShopProductList shopProductList) {
-                if(!isViewAttached())
+                if (!isViewAttached())
                     return;
 
                 getView().renderList(convert(shopProductList.getList()), checkNextPage(shopProductList));
@@ -90,7 +93,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<BaseListViewLi
 
             @Override
             public void onNext(ShopProductList shopProductList) {
-                if(!isViewAttached())
+                if (!isViewAttached())
                     return;
 
                 getView().renderList(convert(shopProductList.getList()));
@@ -115,16 +118,16 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<BaseListViewLi
         shopProductRequestModel.setShopId(shopId);
         shopProductRequestModel.setPage(page);
 
-        if(etalaseId != null)
+        if (etalaseId != null)
             shopProductRequestModel.setEtalaseId(etalaseId);
 
-        if(keyword != null)
+        if (keyword != null)
             shopProductRequestModel.setKeyword(keyword);
 
-        if(wholesale > 0)
+        if (wholesale > 0)
             shopProductRequestModel.setWholesale(wholesale);
 
-        if(orderBy > 0)
+        if (orderBy > 0)
             shopProductRequestModel.setOrderBy(orderBy);
 
         return shopProductRequestModel;
@@ -136,7 +139,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<BaseListViewLi
         getShopProductListUseCase.unsubscribe();
     }
 
-    public static List<ShopProductViewModel> convert(List<ShopProduct> shopProducts){
+    public static List<ShopProductViewModel> convert(List<ShopProduct> shopProducts) {
         List<ShopProductViewModel> shopProductViewModels = new ArrayList<>();
         for (ShopProduct shopProduct : shopProducts) {
             shopProductViewModels.add(convert(shopProduct));
@@ -144,47 +147,34 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<BaseListViewLi
         return shopProductViewModels;
     }
 
-    public static ShopProductViewModel convert(ShopProduct shopProducts){
-        ShopProductViewModel shopProductViewModels = new ShopProductViewModel();
-        List<ShopProductViewModel.Badge> badges = new ArrayList<>();
-        for (Badge badge : shopProducts.getBadges()) {
-            ShopProductViewModel.Badge badgeModel = new ShopProductViewModel.Badge();
-            badgeModel.setImageUrl(badge.getImageUrl());
-            badgeModel.setTitle(badge.getTitle());
+    public static ShopProductViewModel convert(ShopProduct shopProduct) {
+        ShopProductViewModel shopProductViewModel = new ShopProductViewModel();
 
-            badges.add(badgeModel);
+        shopProductViewModel.setId(shopProduct.getProductId());
+        shopProductViewModel.setName(shopProduct.getProductName());
+        shopProductViewModel.setPrice(shopProduct.getProductPrice());
+        shopProductViewModel.setImageUrl(shopProduct.getProductImage());
+
+        shopProductViewModel.setWholesale(TextApiUtils.isValueTrue(shopProduct.getProductWholesale()));
+        shopProductViewModel.setPo(TextApiUtils.isValueTrue(shopProduct.getProductPreorder()));
+        if (shopProduct.getBadges() != null && shopProduct.getBadges().size() > 0) {
+            for (Badge badge : shopProduct.getBadges()) {
+                if (badge.getTitle().equalsIgnoreCase(BADGGE_FREE_RETURN)){
+                    shopProductViewModel.setFreeReturn(true);
+                    break;
+                }
+            }
         }
-
-        shopProductViewModels.setBadges(badges);
-        shopProductViewModels.setLabels(shopProducts.getLabels());
-        shopProductViewModels.setProductId(shopProducts.getProductId());
-        shopProductViewModels.setShopId(shopProducts.getShopId());
-        shopProductViewModels.setProductImage(shopProducts.getProductImage());
-        shopProductViewModels.setProductImage300(shopProducts.getProductImage300());
-        shopProductViewModels.setProductImage700(shopProducts.getProductImage700());
-        shopProductViewModels.setProductName(shopProducts.getProductName());
-        shopProductViewModels.setProductPreorder(shopProducts.getProductPreorder());
-        shopProductViewModels.setProductPrice(shopProducts.getProductPrice());
-        shopProductViewModels.setProductReviewCount(shopProducts.getProductReviewCount());
-        shopProductViewModels.setProductTalkCount(shopProducts.getProductTalkCount());
-        shopProductViewModels.setProductUrl(shopProducts.getProductUrl());
-        shopProductViewModels.setProductWholesale(shopProducts.getProductWholesale());
-        shopProductViewModels.setShopGoldStatus(shopProducts.getShopGoldStatus());
-        shopProductViewModels.setShopLocation(shopProducts.getShopLocation());
-        shopProductViewModels.setShopLucky(shopProducts.getShopLucky());
-        shopProductViewModels.setShopName(shopProducts.getShopName());
-        shopProductViewModels.setShopUrl(shopProducts.getShopUrl());
-
-        return shopProductViewModels;
+        return shopProductViewModel;
     }
 
     private boolean checkNextPage(ShopProductList shopProductList) {
-        if(shopProductList.getPaging()!= null &&
+        if (shopProductList.getPaging() != null &&
                 shopProductList.getPaging().getUriNext() != null &&
                 !shopProductList.getPaging().getUriNext().isEmpty() &&
-                !shopProductList.getPaging().getUriNext().equals("0")){
+                !shopProductList.getPaging().getUriNext().equals("0")) {
             return true;
-        }else{
+        } else {
             return true;
         }
     }

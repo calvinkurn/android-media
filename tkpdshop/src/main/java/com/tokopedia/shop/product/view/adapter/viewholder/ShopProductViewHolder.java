@@ -69,8 +69,8 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
 
     @Override
     public void bind(ShopProductViewModel element) {
-        titleTextView.setText(element.getProductName());
-        priceTextView.setText(element.getProductPrice());
-        ImageHandler.LoadImage(productImageView, element.getProductImage700());
+        titleTextView.setText(element.getName());
+        priceTextView.setText(element.getPrice());
+        ImageHandler.LoadImage(productImageView, element.getImageUrl());
     }
 }

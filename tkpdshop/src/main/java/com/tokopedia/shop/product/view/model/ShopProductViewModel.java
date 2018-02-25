@@ -1,10 +1,7 @@
 package com.tokopedia.shop.product.view.model;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.shop.address.view.adapter.ShopAddressTypeFactory;
 import com.tokopedia.shop.product.view.adapter.ShopProductTypeFactory;
-
-import java.util.List;
 
 /**
  * Created by nathan on 2/6/18.
@@ -12,203 +9,99 @@ import java.util.List;
 
 public class ShopProductViewModel implements Visitable<ShopProductTypeFactory> {
 
-    private long shopLucky;
-    private long shopGoldStatus;
-    private long shopId;
-    private List<Badge> badges = null;
-    private List<Object> labels = null;
-    private String productTalkCount;
-    private String productPrice;
-    private long productWholesale;
-    private String productImage300;
-    private String productImage700;
-    private String productUrl;
-    private String shopUrl;
-    private long productId;
-    private String productImage;
-    private long productPreorder;
-    private String shopLocation;
-    private String productReviewCount;
-    private String shopName;
-    private String productName;
+    private String id;
+    private String name;
+    private String price;
+    private String imageUrl;
+    private long totalReview;
+    private double rating;
+    private double cashback;
+    private boolean wholesale;
+    private boolean po;
+    private boolean freeReturn;
 
-    public long getShopLucky() {
-        return shopLucky;
+    public String getId() {
+        return id;
     }
 
-    public void setShopLucky(long shopLucky) {
-        this.shopLucky = shopLucky;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public long getShopGoldStatus() {
-        return shopGoldStatus;
+    public String getName() {
+        return name;
     }
 
-    public void setShopGoldStatus(long shopGoldStatus) {
-        this.shopGoldStatus = shopGoldStatus;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public long getShopId() {
-        return shopId;
+    public String getPrice() {
+        return price;
     }
 
-    public void setShopId(long shopId) {
-        this.shopId = shopId;
+    public void setPrice(String price) {
+        this.price = price;
     }
 
-    public List<Badge> getBadges() {
-        return badges;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setBadges(List<Badge> badges) {
-        this.badges = badges;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
-    public List<Object> getLabels() {
-        return labels;
+    public long getTotalReview() {
+        return totalReview;
     }
 
-    public void setLabels(List<Object> labels) {
-        this.labels = labels;
+    public void setTotalReview(long totalReview) {
+        this.totalReview = totalReview;
     }
 
-    public String getProductTalkCount() {
-        return productTalkCount;
+    public double getRating() {
+        return rating;
     }
 
-    public void setProductTalkCount(String productTalkCount) {
-        this.productTalkCount = productTalkCount;
+    public void setRating(double rating) {
+        this.rating = rating;
     }
 
-    public String getProductPrice() {
-        return productPrice;
+    public double getCashback() {
+        return cashback;
     }
 
-    public void setProductPrice(String productPrice) {
-        this.productPrice = productPrice;
+    public void setCashback(double cashback) {
+        this.cashback = cashback;
     }
 
-    public long getProductWholesale() {
-        return productWholesale;
+    public boolean isWholesale() {
+        return wholesale;
     }
 
-    public void setProductWholesale(long productWholesale) {
-        this.productWholesale = productWholesale;
+    public void setWholesale(boolean wholesale) {
+        this.wholesale = wholesale;
     }
 
-    public String getProductImage300() {
-        return productImage300;
+    public boolean isPo() {
+        return po;
     }
 
-    public void setProductImage300(String productImage300) {
-        this.productImage300 = productImage300;
+    public void setPo(boolean po) {
+        this.po = po;
     }
 
-    public String getProductImage700() {
-        return productImage700;
+    public boolean isFreeReturn() {
+        return freeReturn;
     }
 
-    public void setProductImage700(String productImage700) {
-        this.productImage700 = productImage700;
-    }
-
-    public String getProductUrl() {
-        return productUrl;
-    }
-
-    public void setProductUrl(String productUrl) {
-        this.productUrl = productUrl;
-    }
-
-    public String getShopUrl() {
-        return shopUrl;
-    }
-
-    public void setShopUrl(String shopUrl) {
-        this.shopUrl = shopUrl;
-    }
-
-    public long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(long productId) {
-        this.productId = productId;
-    }
-
-    public String getProductImage() {
-        return productImage;
-    }
-
-    public void setProductImage(String productImage) {
-        this.productImage = productImage;
-    }
-
-    public long getProductPreorder() {
-        return productPreorder;
-    }
-
-    public void setProductPreorder(long productPreorder) {
-        this.productPreorder = productPreorder;
-    }
-
-    public String getShopLocation() {
-        return shopLocation;
-    }
-
-    public void setShopLocation(String shopLocation) {
-        this.shopLocation = shopLocation;
-    }
-
-    public String getProductReviewCount() {
-        return productReviewCount;
-    }
-
-    public void setProductReviewCount(String productReviewCount) {
-        this.productReviewCount = productReviewCount;
-    }
-
-    public String getShopName() {
-        return shopName;
-    }
-
-    public void setShopName(String shopName) {
-        this.shopName = shopName;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
+    public void setFreeReturn(boolean freeReturn) {
+        this.freeReturn = freeReturn;
     }
 
     @Override
     public int type(ShopProductTypeFactory typeFactory) {
         return typeFactory.type(this);
-    }
-
-    public static class Badge {
-
-        private String title;
-        private String imageUrl;
-
-        public String getTitle() {
-            return title;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
-        }
-
-        public String getImageUrl() {
-            return imageUrl;
-        }
-
-        public void setImageUrl(String imageUrl) {
-            this.imageUrl = imageUrl;
-        }
-
     }
 }
