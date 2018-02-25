@@ -245,8 +245,9 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                             shopId,
                             keyword,
                             etalaseId < 0 || etalaseId == Integer.MIN_VALUE ? null : Integer.toString(etalaseId),
-                            Integer.valueOf(sortName),
-                            1
+                            0,
+                            1,
+                            Integer.valueOf(sortName)
                     );
                 }
                 break;
@@ -261,8 +262,9 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                             shopId,
                             keyword,
                             etalaseId < 0 || etalaseId == Integer.MIN_VALUE ? null : Integer.toString(etalaseId),
-                            Integer.valueOf(sortName),
-                            1
+                            0,
+                            1,
+                            Integer.valueOf(sortName)
                     );
                 }
                 break;
@@ -288,10 +290,12 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         keyword = s;
         shopProductListPresenter.getShopPageList(
                 shopId,
-                s,
+                keyword,
                 etalaseId < 0 || etalaseId == Integer.MIN_VALUE ? null : Integer.toString(etalaseId),
-                Integer.valueOf(sortName),
-                1);
+                0,
+                1,
+                Integer.valueOf(sortName)
+        );
     }
 
     @Override
@@ -301,9 +305,11 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         keyword = s;
         shopProductListPresenter.getShopPageList(
                 shopId,
-                s,
+                keyword,
                 etalaseId < 0 || etalaseId == Integer.MIN_VALUE ? null : Integer.toString(etalaseId),
-                Integer.valueOf(sortName),
-                1);
+                0,
+                1,
+                Integer.valueOf(sortName)
+        );
     }
 }
