@@ -277,7 +277,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     private void updateShopInfo(ShopInfo shopInfo) {
         shopId = shopInfo.getInfo().getShopId();
         favouriteShop = TextApiUtils.isValueTrue(shopInfo.getInfo().getShopAlreadyFavorited());
-        shopProductListLimitedFragment.displayProduct(shopId);
+        shopProductListLimitedFragment.displayProduct(shopId, shopInfo.getInfo().getShopOfficialTop());
 
         ImageHandler.LoadImage(backgroundImageView, shopInfo.getInfo().getShopCover());
         shopNameTextView.setText(MethodChecker.fromHtml(shopInfo.getInfo().getShopName()).toString());

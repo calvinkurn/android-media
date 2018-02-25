@@ -25,7 +25,6 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
 
     public static final int SPAN_LOOK_UP = 1;
 
-
     private TextView titleTextView;
     private TextView originalPriceTextView;
     private TextView priceTextView;
@@ -36,7 +35,9 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     private TextView preOrderTextView;
 
     private ImageView featuredProductImageView, freeReturnImageView, productImageView;
+    private ImageView wishlistImageView;
     private FrameLayout wishlistContainer;
+
     private Guideline guideLine;
     private int imageGuideLineGrid;
     private int imageGuideLineList;
@@ -60,7 +61,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         featuredProductImageView = view.findViewById(R.id.image_view_featured);
         freeReturnImageView = view.findViewById(R.id.image_view_free_return);
         productImageView = view.findViewById(R.id.product_image);
-
+        wishlistImageView = view.findViewById(R.id.image_view_wishlist);
         wishlistContainer = view.findViewById(R.id.wishlist_button_container);
 
         guideLine = view.findViewById(R.id.guideline3);
@@ -68,9 +69,14 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     }
 
     @Override
-    public void bind(ShopProductViewModel element) {
-        titleTextView.setText(element.getProductName());
-        priceTextView.setText(element.getProductPrice());
-        ImageHandler.LoadImage(productImageView, element.getProductImage700());
+    public void bind(ShopProductViewModel shopProductViewModel) {
+        titleTextView.setText(shopProductViewModel.getName());
+        priceTextView.setText(shopProductViewModel.getPrice());
+        ImageHandler.LoadImage(productImageView, shopProductViewModel.getImageUrl());
+        if (shopProductViewModel.isWishList()) {
+            wishlistImageView.setImageResource(R.drawable.ic_wishlist_red);
+        } else {
+            wishlistImageView.setImageResource(R.drawable.ic_wishlist);
+        }
     }
 }

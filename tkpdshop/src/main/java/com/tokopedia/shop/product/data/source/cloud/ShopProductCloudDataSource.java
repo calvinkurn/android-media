@@ -1,9 +1,10 @@
 package com.tokopedia.shop.product.data.source.cloud;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.abstraction.common.data.model.response.PagingList;
 import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopApi;
-import com.tokopedia.shop.product.data.source.cloud.model.ShopProductList;
+import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 
 import javax.inject.Inject;
@@ -24,11 +25,7 @@ public class ShopProductCloudDataSource {
         this.shopApi = shopApi;
     }
 
-    public Observable<Response<DataResponse<ShopProductList>>> getShopProductList(ShopProductRequestModel shopProductRequestModel) {
-        return shopApi.getShopProductList(shopProductRequestModel.getHashMap());
-    }
-
-    public Observable<Response<DataResponse<ShopProductList>>> getShopProductList(String baseUrl, ShopProductRequestModel shopProductRequestModel) {
+    public Observable<Response<DataResponse<PagingList<ShopProduct>>>> getShopProductList(String baseUrl, ShopProductRequestModel shopProductRequestModel) {
         return shopApi.getShopProductList(baseUrl+ ShopUrl.SHOP_PRODUCT_PATH, shopProductRequestModel.getHashMap());
     }
 }
