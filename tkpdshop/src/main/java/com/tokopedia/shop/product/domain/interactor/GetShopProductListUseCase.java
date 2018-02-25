@@ -1,10 +1,11 @@
 package com.tokopedia.shop.product.domain.interactor;
 
+import com.tokopedia.abstraction.common.data.model.response.PagingList;
 import com.tokopedia.shop.common.constant.ShopStatusDef;
 import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.shop.product.data.source.cloud.model.ShopProductList;
+import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.domain.repository.ShopProductRepository;
 import com.tokopedia.usecase.RequestParams;
@@ -19,7 +20,7 @@ import rx.functions.Func1;
  * Created by normansyahputa on 2/8/18.
  */
 
-public class GetShopProductListUseCase extends UseCase<ShopProductList> {
+public class GetShopProductListUseCase extends UseCase<PagingList<ShopProduct>> {
 
     private final static String SHOP_REQUEST = "SHOP_REQUEST";
 
@@ -33,11 +34,11 @@ public class GetShopProductListUseCase extends UseCase<ShopProductList> {
     }
 
     @Override
-    public Observable<ShopProductList> createObservable(RequestParams requestParams) {
+    public Observable<PagingList<ShopProduct>> createObservable(RequestParams requestParams) {
         final ShopProductRequestModel shopProductRequestModel = (ShopProductRequestModel) requestParams.getObject(SHOP_REQUEST);
-        return getShopInfoUseCase.createObservable(GetShopInfoUseCase.createRequestParam(shopProductRequestModel.getShopId())).flatMap(new Func1<ShopInfo, Observable<ShopProductList>>() {
+        return getShopInfoUseCase.createObservable(GetShopInfoUseCase.createRequestParam(shopProductRequestModel.getShopId())).flatMap(new Func1<ShopInfo, Observable<PagingList<ShopProduct>>>() {
             @Override
-            public Observable<ShopProductList> call(ShopInfo shopInfo) {
+            public Observable<PagingList<ShopProduct>> call(ShopInfo shopInfo) {
                 String baseUrl = ShopUrl.BASE_ACE_URL + "/";
                 switch ((int) shopInfo.getInfo().getShopStatus()) {
                     case ShopStatusDef.CLOSED:

@@ -4,6 +4,8 @@ package com.tokopedia.shop.product.data.source.cloud.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class ShopProduct {
 
     @SerializedName("shop_lucky")
@@ -17,10 +19,10 @@ public class ShopProduct {
     private long shopId;
     @SerializedName("badges")
     @Expose
-    private java.util.List<Badge> badges = null;
+    private List<ShopProductBadge> badges = null;
     @SerializedName("labels")
     @Expose
-    private java.util.List<Object> labels = null;
+    private List<ShopProductLabel> labels = null;
     @SerializedName("product_talk_count")
     @Expose
     private String productTalkCount;
@@ -88,19 +90,19 @@ public class ShopProduct {
         this.shopId = shopId;
     }
 
-    public java.util.List<Badge> getBadges() {
+    public List<ShopProductBadge> getBadges() {
         return badges;
     }
 
-    public void setBadges(java.util.List<Badge> badges) {
+    public void setBadges(List<ShopProductBadge> badges) {
         this.badges = badges;
     }
 
-    public java.util.List<Object> getLabels() {
+    public List<ShopProductLabel> getLabels() {
         return labels;
     }
 
-    public void setLabels(java.util.List<Object> labels) {
+    public void setLabels(List<ShopProductLabel> labels) {
         this.labels = labels;
     }
 

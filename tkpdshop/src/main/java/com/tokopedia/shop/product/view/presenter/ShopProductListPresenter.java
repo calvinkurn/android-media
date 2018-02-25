@@ -1,28 +1,18 @@
 package com.tokopedia.shop.product.view.presenter;
 
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant;
-import com.tokopedia.shop.common.constant.ShopParamApiConstant;
-import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.abstraction.common.data.model.response.PagingList;
 import com.tokopedia.shop.common.util.TextApiUtils;
-import com.tokopedia.shop.note.data.source.cloud.model.ShopNote;
-import com.tokopedia.shop.note.domain.interactor.GetShopNoteListUseCase;
-import com.tokopedia.shop.note.view.listener.ShopNoteListView;
-import com.tokopedia.shop.note.view.mapper.ShopNoteViewModelMapper;
-import com.tokopedia.shop.product.data.source.cloud.model.Badge;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
-import com.tokopedia.shop.product.data.source.cloud.model.ShopProductList;
+import com.tokopedia.shop.product.data.source.cloud.model.ShopProductBadge;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductListUseCase;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
-import com.tokopedia.shop.product.view.listener.ShopProductListView;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -52,7 +42,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<BaseListViewLi
             int page,
             int orderBy) {
         ShopProductRequestModel shopProductRequestModel = getShopProductRequestModel(shopId, keyword, etalaseId, wholesale, page, orderBy);
-        getShopProductListUseCase.execute(GetShopProductListUseCase.createRequestParam(shopProductRequestModel), new Subscriber<ShopProductList>() {
+        getShopProductListUseCase.execute(GetShopProductListUseCase.createRequestParam(shopProductRequestModel), new Subscriber<PagingList<ShopProduct>>() {
             @Override
             public void onCompleted() {
 
@@ -66,7 +56,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<BaseListViewLi
             }
 
             @Override
-            public void onNext(ShopProductList shopProductList) {
+            public void onNext(PagingList<ShopProduct> shopProductList) {
                 if (!isViewAttached())
                     return;
 
@@ -78,7 +68,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<BaseListViewLi
     @Deprecated
     public void getShopPageList(String shopId) {
         ShopProductRequestModel shopProductRequestModel = getShopProductRequestModel(shopId);
-        getShopProductListUseCase.execute(GetShopProductListUseCase.createRequestParam(shopProductRequestModel), new Subscriber<ShopProductList>() {
+        getShopProductListUseCase.execute(GetShopProductListUseCase.createRequestParam(shopProductRequestModel), new Subscriber<PagingList<ShopProduct>>() {
             @Override
             public void onCompleted() {
 
@@ -92,7 +82,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<BaseListViewLi
             }
 
             @Override
-            public void onNext(ShopProductList shopProductList) {
+            public void onNext(PagingList<ShopProduct> shopProductList) {
                 if (!isViewAttached())
                     return;
 
@@ -158,7 +148,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<BaseListViewLi
         shopProductViewModel.setWholesale(TextApiUtils.isValueTrue(shopProduct.getProductWholesale()));
         shopProductViewModel.setPo(TextApiUtils.isValueTrue(shopProduct.getProductPreorder()));
         if (shopProduct.getBadges() != null && shopProduct.getBadges().size() > 0) {
-            for (Badge badge : shopProduct.getBadges()) {
+            for (ShopProductBadge badge : shopProduct.getBadges()) {
                 if (badge.getTitle().equalsIgnoreCase(BADGGE_FREE_RETURN)){
                     shopProductViewModel.setFreeReturn(true);
                     break;
@@ -168,7 +158,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<BaseListViewLi
         return shopProductViewModel;
     }
 
-    private boolean checkNextPage(ShopProductList shopProductList) {
+    private boolean checkNextPage(PagingList<ShopProduct> shopProductList) {
         if (shopProductList.getPaging() != null &&
                 shopProductList.getPaging().getUriNext() != null &&
                 !shopProductList.getPaging().getUriNext().isEmpty() &&

@@ -1,10 +1,8 @@
 package com.tokopedia.shop.product.view.presenter;
 
 import com.tokopedia.shop.product.data.source.cloud.model.DynamicFilterModel;
-import com.tokopedia.shop.product.data.source.cloud.model.ShopProductList;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductFilterUseCase;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductListUseCase;
-import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.view.model.ShopProductFilterModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.usecase.RequestParams;

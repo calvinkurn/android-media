@@ -1,15 +1,12 @@
 package com.tokopedia.shop.product.domain.interactor;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct;
-import com.tokopedia.gm.common.domain.interactor.GetFeatureProductListUseCase;
-import com.tokopedia.shop.product.data.source.cloud.model.ShopProductList;
+import com.tokopedia.abstraction.common.data.model.response.PagingList;
+import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductFeaturedViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
-import com.tokopedia.wishlist.common.domain.interactor.GetWishListUseCase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +14,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
@@ -47,9 +43,9 @@ public class GetShopProductLimitedUseCase extends UseCase<List<ShopProductBaseVi
         return Observable.zip(
                 getShopProductFeaturedUseCase.createObservable(GetShopProductFeaturedUseCase.createRequestParam(shopId)).subscribeOn(Schedulers.io()),
                 getShopProductListUseCase.createObservable(GetShopProductListUseCase.createRequestParam(shopProductRequestModel)).subscribeOn(Schedulers.io()),
-                new Func2<List<ShopProductFeaturedViewModel>, ShopProductList, List<ShopProductBaseViewModel>>() {
+                new Func2<List<ShopProductFeaturedViewModel>, PagingList<ShopProduct>, List<ShopProductBaseViewModel>>() {
                     @Override
-                    public List<ShopProductBaseViewModel> call(List<ShopProductFeaturedViewModel> shopProductFeaturedViewModelList, ShopProductList shopProductList) {
+                    public List<ShopProductBaseViewModel> call(List<ShopProductFeaturedViewModel> shopProductFeaturedViewModelList, PagingList<ShopProduct> shopProductList) {
                         List<ShopProductBaseViewModel> shopProductBaseViewModelList = new ArrayList<>();
                         shopProductBaseViewModelList.addAll(shopProductFeaturedViewModelList);
                         return shopProductBaseViewModelList;

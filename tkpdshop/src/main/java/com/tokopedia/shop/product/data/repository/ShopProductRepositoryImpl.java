@@ -1,10 +1,11 @@
 package com.tokopedia.shop.product.data.repository;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.abstraction.common.data.model.response.PagingList;
 import com.tokopedia.shop.product.data.source.cloud.ShopFilterCloudDataSource;
 import com.tokopedia.shop.product.data.source.cloud.ShopProductCloudDataSource;
 import com.tokopedia.shop.product.data.source.cloud.model.DynamicFilterModel;
-import com.tokopedia.shop.product.data.source.cloud.model.ShopProductList;
+import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.domain.repository.ShopProductRepository;
 
@@ -31,20 +32,10 @@ public class ShopProductRepositoryImpl implements ShopProductRepository {
     }
 
     @Override
-    public Observable<ShopProductList> getShopProductList(ShopProductRequestModel shopProductRequestModel) {
-        return shopProductCloudDataSource.getShopProductList(shopProductRequestModel).flatMap(new Func1<Response<DataResponse<ShopProductList>>, Observable<ShopProductList>>() {
+    public Observable<PagingList<ShopProduct>> getShopProductList(String baseUrl, ShopProductRequestModel shopProductRequestModel) {
+        return shopProductCloudDataSource.getShopProductList(baseUrl, shopProductRequestModel).flatMap(new Func1<Response<DataResponse<PagingList<ShopProduct>>>, Observable<PagingList<ShopProduct>>>() {
             @Override
-            public Observable<ShopProductList> call(Response<DataResponse<ShopProductList>> dataResponseResponse) {
-                return Observable.just(dataResponseResponse.body().getData());
-            }
-        });
-    }
-
-    @Override
-    public Observable<ShopProductList> getShopProductList(String baseUrl, ShopProductRequestModel shopProductRequestModel) {
-        return shopProductCloudDataSource.getShopProductList(baseUrl, shopProductRequestModel).flatMap(new Func1<Response<DataResponse<ShopProductList>>, Observable<ShopProductList>>() {
-            @Override
-            public Observable<ShopProductList> call(Response<DataResponse<ShopProductList>> dataResponseResponse) {
+            public Observable<PagingList<ShopProduct>> call(Response<DataResponse<PagingList<ShopProduct>>> dataResponseResponse) {
                 return Observable.just(dataResponseResponse.body().getData());
             }
         });
