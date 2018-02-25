@@ -1,9 +1,12 @@
 package com.tokopedia.shop.product.view.presenter;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant;
+import com.tokopedia.shop.common.constant.ShopParamApiConstant;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.note.data.source.cloud.model.ShopNote;
 import com.tokopedia.shop.note.domain.interactor.GetShopNoteListUseCase;
@@ -18,6 +21,7 @@ import com.tokopedia.shop.product.view.listener.ShopProductListView;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -37,8 +41,14 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<BaseListViewLi
         this.getShopProductListUseCase = getShopProductListUseCase;
     }
 
-    public void getShopPageList(String shopId, String keyword, String etalaseId, int wholesale, int page){
-        ShopProductRequestModel shopProductRequestModel = getShopProductRequestModel(shopId, keyword, etalaseId, wholesale, page);
+    public void getShopPageList(
+            String shopId,
+            String keyword,
+            String etalaseId,
+            int wholesale,
+            int page,
+            int orderBy){
+        ShopProductRequestModel shopProductRequestModel = getShopProductRequestModel(shopId, keyword, etalaseId, wholesale, page, orderBy);
         getShopProductListUseCase.execute(GetShopProductListUseCase.createRequestParam(shopProductRequestModel), new Subscriber<ShopProductList>() {
             @Override
             public void onCompleted() {
@@ -90,11 +100,17 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<BaseListViewLi
 
     @NonNull
     protected ShopProductRequestModel getShopProductRequestModel(String shopId) {
-        return getShopProductRequestModel(shopId, null, null, 0, 1);
+        return getShopProductRequestModel(shopId, null, null, 0, 1, -1);
     }
 
     @NonNull
-    protected ShopProductRequestModel getShopProductRequestModel(String shopId, String keyword, String etalaseId, int wholesale, int page) {
+    public static ShopProductRequestModel getShopProductRequestModel(
+            String shopId,
+            String keyword,
+            String etalaseId,
+            int wholesale,
+            int page,
+            int orderBy) {
         ShopProductRequestModel shopProductRequestModel = new ShopProductRequestModel();
         shopProductRequestModel.setShopId(shopId);
         shopProductRequestModel.setPage(page);
@@ -107,6 +123,9 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<BaseListViewLi
 
         if(wholesale > 0)
             shopProductRequestModel.setWholesale(wholesale);
+
+        if(orderBy > 0)
+            shopProductRequestModel.setOrderBy(orderBy);
 
         return shopProductRequestModel;
     }
