@@ -1,9 +1,10 @@
 package com.tokopedia.shop.product.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.shop.product.domain.interactor.GetShopPageFeaturedProductUseCase;
-import com.tokopedia.shop.product.domain.interactor.GetShopProductListUseCase;
+import com.tokopedia.shop.product.domain.interactor.GetShopProductFeaturedUseCase;
+import com.tokopedia.shop.product.domain.interactor.GetShopProductLimitedUseCase;
 import com.tokopedia.shop.product.view.listener.ShopProductListLimitedView;
+import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductFeaturedViewModel;
 
 import java.util.List;
@@ -18,19 +19,15 @@ import rx.Subscriber;
 
 public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopProductListLimitedView> {
 
-    private final GetShopPageFeaturedProductUseCase getShopPageFeaturedProductUseCase;
-    private final GetShopProductListUseCase getShopProductListUseCase;
+    private final GetShopProductLimitedUseCase getShopProductLimitedUseCase;
 
     @Inject
-    public ShopProductListLimitedPresenter(
-            GetShopPageFeaturedProductUseCase getShopPageFeaturedProductUseCase,
-            GetShopProductListUseCase getShopProductListUseCase) {
-        this.getShopPageFeaturedProductUseCase = getShopPageFeaturedProductUseCase;
-        this.getShopProductListUseCase = getShopProductListUseCase;
+    public ShopProductListLimitedPresenter(GetShopProductLimitedUseCase getShopProductLimitedUseCase) {
+        this.getShopProductLimitedUseCase = getShopProductLimitedUseCase;
     }
 
-    public void getFeatureProductList(String shopId) {
-        getShopPageFeaturedProductUseCase.execute(GetShopPageFeaturedProductUseCase.createRequestParam(shopId), new Subscriber<List<ShopProductFeaturedViewModel>>() {
+    public void getProductLimitedList(String shopId) {
+        getShopProductLimitedUseCase.execute(GetShopProductLimitedUseCase.createRequestParam(shopId), new Subscriber<List<ShopProductBaseViewModel>>() {
             @Override
             public void onCompleted() {
 
@@ -39,13 +36,13 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
             @Override
             public void onError(Throwable e) {
                 if (isViewAttached()) {
-//                    getView().showGetListError(e);
+                    getView().showGetListError(e);
                 }
             }
 
             @Override
-            public void onNext(List<ShopProductFeaturedViewModel> shopPageFeaturedProductList) {
-//                getView().renderList();shopProductList.getList();
+            public void onNext(List<ShopProductBaseViewModel> shopProductBaseViewModelList) {
+                getView().renderList(shopProductBaseViewModelList);
             }
         });
     }
@@ -53,11 +50,8 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
     @Override
     public void detachView() {
         super.detachView();
-        if (getShopProductListUseCase != null) {
-            getShopProductListUseCase.unsubscribe();
-        }
-        if (getShopProductListUseCase != null) {
-            getShopProductListUseCase.unsubscribe();
+        if (getShopProductLimitedUseCase != null) {
+            getShopProductLimitedUseCase.unsubscribe();
         }
     }
 }

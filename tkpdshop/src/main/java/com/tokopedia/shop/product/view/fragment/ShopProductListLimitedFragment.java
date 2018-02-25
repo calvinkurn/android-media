@@ -67,7 +67,7 @@ public class ShopProductListLimitedFragment extends
     public void displayProduct(String shopId, String promotionWebViewUrl) {
         this.shopId = shopId;
 //        shopProductListLimitedPresenter.getShopPageList(shopId);
-        shopProductListLimitedPresenter.getFeatureProductList(shopId);
+        shopProductListLimitedPresenter.getProductLimitedList(shopId);
     }
 
     @Override

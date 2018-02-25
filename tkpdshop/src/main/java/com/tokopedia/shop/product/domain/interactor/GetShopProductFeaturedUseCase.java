@@ -20,7 +20,7 @@ import rx.functions.Func1;
  * Created by normansyahputa on 2/23/18.
  */
 
-public class GetShopPageFeaturedProductUseCase extends UseCase<List<ShopProductFeaturedViewModel>> {
+public class GetShopProductFeaturedUseCase extends UseCase<List<ShopProductFeaturedViewModel>> {
 
     private static final String SHOP_ID = "SHOP_ID";
 
@@ -29,9 +29,9 @@ public class GetShopPageFeaturedProductUseCase extends UseCase<List<ShopProductF
     private final UserSession userSession;
 
     @Inject
-    public GetShopPageFeaturedProductUseCase(GetFeatureProductListUseCase getFeatureProductListUseCase,
-                                             GetWishListUseCase getWishListUseCase,
-                                             UserSession userSession) {
+    public GetShopProductFeaturedUseCase(GetFeatureProductListUseCase getFeatureProductListUseCase,
+                                         GetWishListUseCase getWishListUseCase,
+                                         UserSession userSession) {
         this.getFeatureProductListUseCase = getFeatureProductListUseCase;
         this.getWishListUseCase = getWishListUseCase;
         this.userSession = userSession;
@@ -55,6 +55,7 @@ public class GetShopPageFeaturedProductUseCase extends UseCase<List<ShopProductF
                             ShopProductFeaturedViewModel shopPageFeaturedProduct = new ShopProductFeaturedViewModel();
                             shopPageFeaturedProduct.setGmFeaturedProduct(gmFeaturedProduct);
                             shopPageFeaturedProduct.setWhisList(isWishList(gmFeaturedProduct.getProductId(), productWishList));
+                            shopPageFeaturedProductList.add(shopPageFeaturedProduct);
                         }
                         return Observable.just(shopPageFeaturedProductList);
                     }
