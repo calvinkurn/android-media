@@ -11,9 +11,8 @@ import com.tokopedia.shop.note.view.model.ShopNoteViewModel;
  * Created by alvarisi on 12/7/17.
  */
 
-public class ShopNoteAdapterTypeFactory extends BaseAdapterTypeFactory implements ShopNoteTypeFactory {
+public class ShopNoteAdapterTypeFactory extends BaseAdapterTypeFactory {
 
-    @Override
     public int type(ShopNoteViewModel shopNoteViewModel) {
         return ShopNoteViewHolder.LAYOUT;
     }

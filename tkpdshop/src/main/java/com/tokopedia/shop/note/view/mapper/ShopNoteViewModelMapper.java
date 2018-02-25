@@ -19,8 +19,8 @@ public class ShopNoteViewModelMapper {
     public ShopNoteViewModelMapper() {
     }
 
-    public List<Visitable> transform(List<ShopNote> shopNoteList) {
-        List<Visitable> visitableList = new ArrayList<>();
+    public List<ShopNoteViewModel> transform(List<ShopNote> shopNoteList) {
+        List<ShopNoteViewModel> visitableList = new ArrayList<>();
         for (ShopNote shopNote : shopNoteList) {
             ShopNoteViewModel shopNoteViewModel = new ShopNoteViewModel();
             shopNoteViewModel.setShopNoteId(shopNote.getShopNoteId());
