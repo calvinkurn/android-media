@@ -35,7 +35,9 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     private TextView preOrderTextView;
 
     private ImageView featuredProductImageView, freeReturnImageView, productImageView;
+    private ImageView wishlistImageView;
     private FrameLayout wishlistContainer;
+
     private Guideline guideLine;
     private int imageGuideLineGrid;
     private int imageGuideLineList;
@@ -74,7 +76,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         featuredProductImageView = view.findViewById(R.id.image_view_featured);
         freeReturnImageView = view.findViewById(R.id.image_view_free_return);
         productImageView = view.findViewById(R.id.product_image);
-
+        wishlistImageView = view.findViewById(R.id.image_view_wishlist);
         wishlistContainer = view.findViewById(R.id.wishlist_button_container);
 
         guideLine = view.findViewById(R.id.guideline3);
@@ -88,6 +90,11 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         titleTextView.setText(getModel().getProductName());
         priceTextView.setText(getModel().getProductPrice());
         ImageHandler.LoadImage(productImageView, getModel().getProductImage700());
+        if (shopProductViewModel.isWishList()) {
+            wishlistImageView.setImageResource(R.drawable.ic_wishlist_red);
+        } else {
+            wishlistImageView.setImageResource(R.drawable.ic_wishlist);
+        }
 
         wishlistContainer.setOnClickListener(new View.OnClickListener() {
             @Override

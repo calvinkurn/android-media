@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.GridLayoutManager;
@@ -21,22 +20,16 @@ import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
+import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.view.activity.ShopProductFilterActivity;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
 import com.tokopedia.shop.product.view.adapter.ShopProductTypeFactory;
-import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductListViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductSingleViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
-import com.tokopedia.shop.product.view.model.ShopProductListViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListPresenter;
-
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -92,7 +85,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     @Override
     public void loadData(int page) {
-        shopProductListPresenter.getShopPageList(shopId);
+        getShopList();
     }
 
 
@@ -246,14 +239,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
                     this.isLoadingInitialData = true;
 
-                    shopProductListPresenter.getShopPageList(
-                            shopId,
-                            keyword,
-                            etalaseId < 0 || etalaseId == Integer.MIN_VALUE ? null : Integer.toString(etalaseId),
-                            0,
-                            1,
-                            Integer.valueOf(sortName)
-                    );
+                    getShopList();
                 }
                 break;
 
@@ -263,14 +249,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                     sortName = data.getStringExtra(ShopProductFilterActivity.SORT_NAME);
 
                     this.isLoadingInitialData = true;
-                    shopProductListPresenter.getShopPageList(
-                            shopId,
-                            keyword,
-                            etalaseId < 0 || etalaseId == Integer.MIN_VALUE ? null : Integer.toString(etalaseId),
-                            0,
-                            1,
-                            Integer.valueOf(sortName)
-                    );
+                    getShopList();
                 }
                 break;
             default:
@@ -291,23 +270,17 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     @Override
     public void onSearchSubmitted(String s) {
         this.isLoadingInitialData = true;
-
         keyword = s;
-        shopProductListPresenter.getShopPageList(
-                shopId,
-                keyword,
-                etalaseId < 0 || etalaseId == Integer.MIN_VALUE ? null : Integer.toString(etalaseId),
-                0,
-                1,
-                Integer.valueOf(sortName)
-        );
     }
 
     @Override
     public void onSearchTextChanged(String s) {
         this.isLoadingInitialData = true;
-
         keyword = s;
+
+    }
+
+    private void getShopList() {
         shopProductListPresenter.getShopPageList(
                 shopId,
                 keyword,

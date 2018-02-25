@@ -5,13 +5,11 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.shop.address.view.model.ShopAddressViewModel;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseSelectedViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseUnselectedViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductListViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductSingleViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
-import com.tokopedia.shop.product.view.model.ShopProductListViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
 /**

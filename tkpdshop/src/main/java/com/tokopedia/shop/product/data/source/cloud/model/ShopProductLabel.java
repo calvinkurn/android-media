@@ -4,14 +4,14 @@ package com.tokopedia.shop.product.data.source.cloud.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Badge {
+public class ShopProductLabel {
 
     @SerializedName("title")
     @Expose
     private String title;
-    @SerializedName("image_url")
+    @SerializedName("color")
     @Expose
-    private String imageUrl;
+    private String color;
 
     public String getTitle() {
         return title;
@@ -21,12 +21,12 @@ public class Badge {
         this.title = title;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getColor() {
+        return color;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setColor(String color) {
+        this.color = color;
     }
 
 }

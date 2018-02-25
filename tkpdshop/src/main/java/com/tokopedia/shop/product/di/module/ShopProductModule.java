@@ -24,6 +24,7 @@ import com.tokopedia.shop.product.di.ShopProductGMFeaturedQualifier;
 import com.tokopedia.shop.product.di.ShopProductWishListFeaturedQualifier;
 import com.tokopedia.shop.product.di.scope.ShopProductScope;
 import com.tokopedia.shop.product.domain.repository.ShopProductRepository;
+import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.wishlist.common.constant.WishListCommonUrl;
 import com.tokopedia.wishlist.common.data.interceptor.WishListAuthInterceptor;
@@ -183,7 +184,7 @@ public class ShopProductModule {
 
     @ShopProductScope
     @Provides
-    public ShopProductViewModel provideShopProductViewModel() {
-        return new ShopProductViewModel();
+    public ShopProductMapper provideShopProductMapper() {
+        return new ShopProductMapper();
     }
 }

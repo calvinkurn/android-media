@@ -1,12 +1,13 @@
 package com.tokopedia.shop.common.data.source.cloud.api;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.abstraction.common.data.model.response.PagingList;
 import com.tokopedia.shop.common.constant.ShopParamApiConstant;
 import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.shop.note.data.source.cloud.model.ShopNoteDetail;
 import com.tokopedia.shop.note.data.source.cloud.model.ShopNoteList;
 import com.tokopedia.shop.product.data.source.cloud.model.DynamicFilterModel;
-import com.tokopedia.shop.product.data.source.cloud.model.ShopProductList;
+import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
 
 import java.util.Map;
 
@@ -29,11 +30,8 @@ public interface ShopApi {
     @GET(ShopUrl.SHOP_NOTE_PATH)
     Observable<Response<DataResponse<ShopNoteDetail>>> getShopNoteDetail(@Query(ShopParamApiConstant.SHOP_NOTE_ID) String shopNoteId);
 
-    @GET(ShopUrl.SHOP_PRODUCT_PATH)
-    Observable<Response<DataResponse<ShopProductList>>> getShopProductList(@QueryMap Map<String, String> params);
-
     @GET
-    Observable<Response<DataResponse<ShopProductList>>> getShopProductList(@Url String url, @QueryMap Map<String, String> params);
+    Observable<Response<DataResponse<PagingList<ShopProduct>>>> getShopProductList(@Url String url, @QueryMap Map<String, String> params);
 
     @GET
     Observable<Response<DynamicFilterModel>> getDynamicFilter(@Url String url, @QueryMap Map<String, String> params);
