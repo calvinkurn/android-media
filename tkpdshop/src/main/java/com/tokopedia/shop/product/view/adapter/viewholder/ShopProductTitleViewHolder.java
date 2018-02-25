@@ -15,13 +15,12 @@ import com.tokopedia.shop.product.view.model.ShopProductFeaturedViewModel;
  * @author by alvarisi on 12/12/17.
  */
 
-public class ShopProductFeaturedViewHolder extends AbstractViewHolder<ShopProductFeaturedViewModel> {
+public class ShopProductTitleViewHolder extends AbstractViewHolder<ShopProductFeaturedViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_product_grid;
 
     public static final int SPAN_LOOK_UP = 1;
-
 
     private TextView titleTextView;
     private TextView originalPriceTextView;
@@ -41,12 +40,12 @@ public class ShopProductFeaturedViewHolder extends AbstractViewHolder<ShopProduc
     private int imageGuideLineList;
 
 
-    public ShopProductFeaturedViewHolder(View itemView) {
+    public ShopProductTitleViewHolder(View itemView) {
         super(itemView);
         findViews(itemView);
     }
 
-    public ShopProductFeaturedViewHolder setViewHolderListener(ViewHolderListener viewHolderListener) {
+    public ShopProductTitleViewHolder setViewHolderListener(ViewHolderListener viewHolderListener) {
         this.viewHolderListener = viewHolderListener;
         return this;
     }

@@ -1,12 +1,5 @@
 package com.tokopedia.shop.product.view.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-import com.tokopedia.shop.product.data.source.cloud.model.DynamicFilterModel;
-
 /**
  * Created by normansyahputa on 2/24/18.
  */

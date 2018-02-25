@@ -1,12 +1,10 @@
 package com.tokopedia.shop.product.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.gm.common.domain.interactor.GetFeatureProductListUseCase;
-import com.tokopedia.shop.product.data.source.cloud.model.ShopProductList;
 import com.tokopedia.shop.product.domain.interactor.GetShopPageFeaturedProductUseCase;
-import com.tokopedia.shop.product.domain.interactor.GetShopProductFilterUseCase;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductListUseCase;
-import com.tokopedia.shop.product.view.model.ShopPageFeaturedProduct;
+import com.tokopedia.shop.product.view.listener.ShopProductListLimitedView;
+import com.tokopedia.shop.product.view.model.ShopProductFeaturedViewModel;
 
 import java.util.List;
 
@@ -18,20 +16,21 @@ import rx.Subscriber;
  * Created by nathan on 2/6/18.
  */
 
-public class ShopProductListLimitedPresenter extends ShopProductFilterPresenter {
+public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopProductListLimitedView> {
 
     private final GetShopPageFeaturedProductUseCase getShopPageFeaturedProductUseCase;
+    private final GetShopProductListUseCase getShopProductListUseCase;
 
     @Inject
-    public ShopProductListLimitedPresenter(GetShopProductFilterUseCase getShopProductFilterUseCase,
-                                           GetShopProductListUseCase getShopProductListUseCase,
-                                          GetShopPageFeaturedProductUseCase getShopPageFeaturedProductUseCase) {
-        super(getShopProductFilterUseCase, getShopProductListUseCase);
+    public ShopProductListLimitedPresenter(
+            GetShopPageFeaturedProductUseCase getShopPageFeaturedProductUseCase,
+            GetShopProductListUseCase getShopProductListUseCase) {
         this.getShopPageFeaturedProductUseCase = getShopPageFeaturedProductUseCase;
+        this.getShopProductListUseCase = getShopProductListUseCase;
     }
 
     public void getFeatureProductList(String shopId) {
-        getShopPageFeaturedProductUseCase.execute(GetShopPageFeaturedProductUseCase.createRequestParam(shopId), new Subscriber<List<ShopPageFeaturedProduct>>() {
+        getShopPageFeaturedProductUseCase.execute(GetShopPageFeaturedProductUseCase.createRequestParam(shopId), new Subscriber<List<ShopProductFeaturedViewModel>>() {
             @Override
             public void onCompleted() {
 
@@ -45,7 +44,7 @@ public class ShopProductListLimitedPresenter extends ShopProductFilterPresenter 
             }
 
             @Override
-            public void onNext(List<ShopPageFeaturedProduct> shopPageFeaturedProductList) {
+            public void onNext(List<ShopProductFeaturedViewModel> shopPageFeaturedProductList) {
 //                getView().renderList();shopProductList.getList();
             }
         });
@@ -54,6 +53,9 @@ public class ShopProductListLimitedPresenter extends ShopProductFilterPresenter 
     @Override
     public void detachView() {
         super.detachView();
+        if (getShopProductListUseCase != null) {
+            getShopProductListUseCase.unsubscribe();
+        }
         if (getShopProductListUseCase != null) {
             getShopProductListUseCase.unsubscribe();
         }

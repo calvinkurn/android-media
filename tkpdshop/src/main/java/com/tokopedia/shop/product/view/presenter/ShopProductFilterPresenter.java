@@ -47,9 +47,6 @@ public class ShopProductFilterPresenter extends ShopProductListPresenter {
 
             @Override
             public void onNext(DynamicFilterModel.DataValue dataValue) {
-                if(!isViewAttached())
-                    return;
-
                 getView().renderList(convertSort(dataValue.getSort()));
             }
         });
