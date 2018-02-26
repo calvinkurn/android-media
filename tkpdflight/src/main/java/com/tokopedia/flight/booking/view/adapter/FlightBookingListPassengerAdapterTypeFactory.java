@@ -4,29 +4,29 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.flight.booking.view.adapter.viewholder.FlightBookingSavedPassengerViewHolder;
+import com.tokopedia.flight.booking.view.adapter.viewholder.FlightBookingListPassengerViewHolder;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 
 /**
  * @author by furqan on 23/02/18.
  */
 
-public class FlightBookingSavedPassengerAdapterTypeFactory extends BaseAdapterTypeFactory{
+public class FlightBookingListPassengerAdapterTypeFactory extends BaseAdapterTypeFactory{
 
-    private FlightBookingSavedPassengerViewHolder.ListenerCheckedSavedPassenger listenerCheckedSavedPassenger;
+    private FlightBookingListPassengerViewHolder.ListenerCheckedSavedPassenger listenerCheckedSavedPassenger;
 
-    public FlightBookingSavedPassengerAdapterTypeFactory(FlightBookingSavedPassengerViewHolder.ListenerCheckedSavedPassenger listenerCheckedSavedPassenger) {
+    public FlightBookingListPassengerAdapterTypeFactory(FlightBookingListPassengerViewHolder.ListenerCheckedSavedPassenger listenerCheckedSavedPassenger) {
         this.listenerCheckedSavedPassenger = listenerCheckedSavedPassenger;
     }
 
     public int type(FlightPassengerViewModel viewModel) {
-        return FlightBookingSavedPassengerViewHolder.LAYOUT;
+        return FlightBookingListPassengerViewHolder.LAYOUT;
     }
 
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
-        if (type == FlightBookingSavedPassengerViewHolder.LAYOUT) {
-            return new FlightBookingSavedPassengerViewHolder(parent, listenerCheckedSavedPassenger);
+        if (type == FlightBookingListPassengerViewHolder.LAYOUT) {
+            return new FlightBookingListPassengerViewHolder(parent, listenerCheckedSavedPassenger);
         } else {
             return super.createViewHolder(parent, type);
         }
