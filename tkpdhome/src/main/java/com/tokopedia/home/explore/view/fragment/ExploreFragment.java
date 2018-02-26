@@ -240,9 +240,11 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
             if (!shopId.equals("0")) {
                 onGoToShop(shopId);
             } else {
+                HomePageTracking.eventClickOpenShop();
                 onGoToCreateShop();
             }
         } else {
+            HomePageTracking.eventClickOpenShop();
             onGoToLogin();
         }
     }
