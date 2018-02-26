@@ -204,6 +204,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TokoCashRouter, IWalletRouter, ILoyaltyRouter, ReputationRouter, SessionRouter,
         AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter {
 
+    private static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
+
     @Inject
     ReactNativeHost reactNativeHost;
     @Inject
@@ -1305,5 +1307,17 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     public GetShopInfoUseCase getShopInfo(){
         return getShopComponent().getShopInfoUseCase();
+    }
+
+    @Override
+    public void goToCreateTopadsPromo(String productId) {
+        Intent topadsIntent = getPackageManager()
+                .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
+
+        if (topadsIntent != null) {
+            startActivity(topadsIntent);
+        } else {
+            goToMerchantRedirect(this);
+        }
     }
 }
