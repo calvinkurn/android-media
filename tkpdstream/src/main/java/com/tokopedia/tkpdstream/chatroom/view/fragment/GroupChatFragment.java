@@ -17,10 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
 import android.view.animation.Transformation;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -282,9 +279,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         voteBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(voteBody.getVisibility() == View.VISIBLE){
+                if (voteBody.getVisibility() == View.VISIBLE) {
                     collapse(voteBody);
-                }else {
+                } else {
                     expand(voteBody);
                 }
                 arrow.animate().rotationBy(180f).start();
@@ -347,9 +344,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                         Log.d("NISNIS", "onConnected " + reconnect);
 
                         if (reconnect) {
-//                    presenter.refreshData();
-                        } else {
-
+                            presenter.refreshDataAfterReconnect(mChannel);
                         }
                     }
                 });
@@ -370,14 +365,17 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     @Override
-    public void onSuccessGetMessage(List<Visitable> listChat) {
-        adapter.addList(listChat);
+    public void onSuccessGetPreviousMessage(List<Visitable> listChat) {
+        adapter.addListPrevious(listChat);
+        adapter.setCanLoadMore(mPrevMessageListQuery.hasMore());
     }
 
     @Override
     public void onSuccessGetMessageFirstTime(List<Visitable> listChat, PreviousMessageListQuery previousMessageListQuery) {
         this.mPrevMessageListQuery = previousMessageListQuery;
-        adapter.addList(listChat);
+        adapter.addListPrevious(listChat);
+        adapter.setCursor(listChat.get(0));
+        adapter.setCanLoadMore(mPrevMessageListQuery.hasMore());
         scrollToBottom();
     }
 
@@ -419,6 +417,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 initData();
             }
         });
+        voteBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -429,6 +428,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 initData();
             }
         });
+        voteBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -438,16 +438,37 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 userSession.getName(), "https://yt3.ggpht" +
                         ".com/-uwClWniyyFU/AAAAAAAAAAI/AAAAAAAAAAA/nVrBEY3dzuY/s176-c-k-no-mo-rj" +
                         "-c0xffffff/photo.jpg", this);
+        voteBar.setVisibility(View.VISIBLE);
+
     }
 
     @Override
-    public void showLoadingList() {
-        adapter.showLoading();
+    public void showLoadingPreviousList() {
+        adapter.showLoadingPrevious();
     }
 
     @Override
-    public void dismissLoadingList() {
-        adapter.dismissLoading();
+    public void dismissLoadingPreviousList() {
+        adapter.dismissLoadingPrevious();
+    }
+
+    @Override
+    public void showReconnectingMessage() {
+//        NetworkErrorHelper.showSnackbar(getActivity(), "Reconnecting...");
+    }
+
+    @Override
+    public void dismissReconnectingMessage() {
+//        NetworkErrorHelper.showSnackbar(getActivity(), "Connected!");
+
+    }
+
+    @Override
+    public void onSuccessRefreshReconnect(List<Visitable> listChat, PreviousMessageListQuery previousMessageListQuery) {
+        adapter.replaceData(listChat);
+        this.mPrevMessageListQuery = previousMessageListQuery;
+        adapter.setCanLoadMore(mPrevMessageListQuery.hasMore());
+        scrollToBottom();
     }
 
     @Override
@@ -488,13 +509,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         // Older versions of android (pre API 21) cancel animations for views with a height of 0.
         v.getLayoutParams().height = 1;
         v.setVisibility(View.VISIBLE);
-        Animation a = new Animation()
-        {
+        Animation a = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
                 v.getLayoutParams().height = interpolatedTime == 1
                         ? ViewGroup.LayoutParams.WRAP_CONTENT
-                        : (int)(targetHeight * interpolatedTime);
+                        : (int) (targetHeight * interpolatedTime);
                 v.requestLayout();
             }
 
@@ -505,21 +525,20 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         };
 
         // 1dp/ms
-        a.setDuration((int)(targetHeight / v.getContext().getResources().getDisplayMetrics().density));
+        a.setDuration((int) (targetHeight / v.getContext().getResources().getDisplayMetrics().density));
         v.startAnimation(a);
     }
 
     public static void collapse(final View v) {
         final int initialHeight = v.getMeasuredHeight();
 
-        Animation a = new Animation()
-        {
+        Animation a = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
-                if(interpolatedTime == 1){
+                if (interpolatedTime == 1) {
                     v.setVisibility(View.GONE);
-                }else{
-                    v.getLayoutParams().height = initialHeight - (int)(initialHeight * interpolatedTime);
+                } else {
+                    v.getLayoutParams().height = initialHeight - (int) (initialHeight * interpolatedTime);
                     v.requestLayout();
                 }
             }
@@ -531,16 +550,16 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         };
 
         // 1dp/ms
-        a.setDuration((int)(initialHeight / v.getContext().getResources().getDisplayMetrics().density));
+        a.setDuration((int) (initialHeight / v.getContext().getResources().getDisplayMetrics().density));
         v.startAnimation(a);
     }
 
 
     @Override
     public void onSuccessGetVoteInfo(VoteInfoViewModel voteInfoViewModel) {
-        if(voteInfoViewModel.getVoteType() == VoteViewModel.IMAGE_TYPE){
+        if (voteInfoViewModel.getVoteType() == VoteViewModel.IMAGE_TYPE) {
 
-        }else {
+        } else {
 
         }
         voteAdapter.addList(voteInfoViewModel.getList());

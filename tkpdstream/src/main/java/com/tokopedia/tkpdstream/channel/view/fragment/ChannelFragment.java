@@ -92,7 +92,7 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     @Override
     protected void loadInitialData() {
 //        if(getAdapter().getItemCount() == 0){
-//            showLoading();
+//            showLoadingPrevious();
 //        }
 //        presenter.getChannelListFirstTime();
 

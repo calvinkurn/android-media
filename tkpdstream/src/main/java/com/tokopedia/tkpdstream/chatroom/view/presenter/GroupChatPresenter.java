@@ -7,22 +7,22 @@ import com.sendbird.android.PreviousMessageListQuery;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.tkpdstream.chatroom.domain.pojo.ChannelInfoPojo;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.ChannelHandlerUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.GetChannelInfoUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.GetGroupChatMessagesFirstTimeUseCase;
-import com.tokopedia.tkpdstream.chatroom.domain.usecase.GetGroupChatMessagesUseCase;
+import com.tokopedia.tkpdstream.chatroom.domain.usecase.LoadPreviousChatMessagesUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.LoginGroupChatUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.LogoutGroupChatUseCase;
+import com.tokopedia.tkpdstream.chatroom.domain.usecase.RefreshMessageUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.SendGroupChatMessageUseCase;
 import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
+import com.tokopedia.tkpdstream.common.util.GroupChatErrorHandler;
 import com.tokopedia.tkpdstream.vote.domain.usecase.GetVoteUseCase;
 import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
-import com.tokopedia.tkpdstream.common.util.GroupChatErrorHandler;
 
 import java.util.List;
 
@@ -39,7 +39,8 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
     private final GetChannelInfoUseCase getChannelInfoUseCase;
     private final GetGroupChatMessagesFirstTimeUseCase getGroupChatMessagesFirstTimeUseCase;
-    private final GetGroupChatMessagesUseCase getGroupChatMessagesUseCase;
+    private final RefreshMessageUseCase refreshMessageUseCase;
+    private final LoadPreviousChatMessagesUseCase loadPreviousChatMessagesUseCase;
     private final LoginGroupChatUseCase loginGroupChatUseCase;
     private final SendGroupChatMessageUseCase sendMessageUseCase;
     private final LogoutGroupChatUseCase logoutGroupChatUseCase;
@@ -51,7 +52,8 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                               GetChannelInfoUseCase getChannelInfoUseCase,
                               GetGroupChatMessagesFirstTimeUseCase
                                       getGroupChatMessagesFirstTimeUseCase,
-                              GetGroupChatMessagesUseCase getGroupChatMessagesUseCase,
+                              RefreshMessageUseCase refreshMessageUseCase,
+                              LoadPreviousChatMessagesUseCase loadPreviousChatMessagesUseCase,
                               SendGroupChatMessageUseCase sendMessageUseCase,
                               LogoutGroupChatUseCase logoutGroupChatUseCase,
                               ChannelHandlerUseCase channelHandlerUseCase,
@@ -59,7 +61,8 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
         this.getChannelInfoUseCase = getChannelInfoUseCase;
         this.loginGroupChatUseCase = loginGroupChatUseCase;
         this.getGroupChatMessagesFirstTimeUseCase = getGroupChatMessagesFirstTimeUseCase;
-        this.getGroupChatMessagesUseCase = getGroupChatMessagesUseCase;
+        this.refreshMessageUseCase = refreshMessageUseCase;
+        this.loadPreviousChatMessagesUseCase = loadPreviousChatMessagesUseCase;
         this.sendMessageUseCase = sendMessageUseCase;
         this.logoutGroupChatUseCase = logoutGroupChatUseCase;
         this.channelHandlerUseCase = channelHandlerUseCase;
@@ -117,22 +120,44 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     @Override
     public void loadPreviousMessages(OpenChannel mChannel, PreviousMessageListQuery mPrevMessageListQuery) {
         if (mChannel != null && mPrevMessageListQuery != null && mPrevMessageListQuery.hasMore()) {
-            getView().showLoadingList();
-            getGroupChatMessagesUseCase.execute(getView().getContext(), mPrevMessageListQuery, new
-                    GetGroupChatMessagesUseCase.GetGroupChatMessagesListener() {
+            getView().showLoadingPreviousList();
+            loadPreviousChatMessagesUseCase.execute(getView().getContext(), mPrevMessageListQuery, new
+                    LoadPreviousChatMessagesUseCase.LoadPreviousChatMessagesListener() {
                         @Override
-                        public void onGetMessages(List<Visitable> listChat) {
-                            getView().dismissLoadingList();
-                            getView().onSuccessGetMessage(listChat);
+                        public void onGetPreviousMessages(List<Visitable> listChat) {
+                            getView().dismissLoadingPreviousList();
+                            getView().onSuccessGetPreviousMessage(listChat);
                         }
 
                         @Override
-                        public void onErrorGetMessages(String errorMessage) {
-                            getView().dismissLoadingList();
+                        public void onErrorGetPreviousMessages(String errorMessage) {
+                            getView().dismissLoadingPreviousList();
                             getView().onErrorGetMessage(errorMessage);
                         }
                     });
         }
+    }
+
+    @Override
+    public void refreshDataAfterReconnect(OpenChannel mChannel) {
+        if(mChannel != null){
+            getView().showReconnectingMessage();
+            refreshMessageUseCase.execute(getView().getContext(), mChannel, new RefreshMessageUseCase.RefreshMessagesListener() {
+                @Override
+                public void onSuccessRefreshMessage(List<Visitable> listChat, PreviousMessageListQuery previousMessageListQuery) {
+                    getView().dismissReconnectingMessage();
+                    getView().onSuccessRefreshReconnect(listChat, previousMessageListQuery);
+                }
+
+                @Override
+                public void onErrorRefreshMessage(String errorMessage) {
+                    getView().dismissReconnectingMessage();
+                    getView().onErrorGetMessage(errorMessage);
+                }
+            });
+        }
+
+
     }
 
     @Override
