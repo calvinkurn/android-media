@@ -3,12 +3,12 @@ apply plugin: 'android-apt'
 
 def getTkpdAbstraction() {
     return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.abstraction : project(':tkpdabstraction');
+            rootProject.ext.tkpdDependencies.abstraction : project(':tkpdabstraction')
 }
 
 def getTkpdUseCase() {
     return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.usecase : project(':tkpdusecase');
+            rootProject.ext.tkpdDependencies.usecase : project(':tkpdusecase')
 }
 
 android {
@@ -24,7 +24,6 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         vectorDrawables.useSupportLibrary = true
-
     }
     buildTypes {
         release {
@@ -52,6 +51,11 @@ dependencies {
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
     provided rootProject.ext.miscDependencies.javaxAnnotation
+
+    testCompile rootProject.ext.testDependencies.junit
+    testCompile rootProject.ext.testDependencies.mockitorCore
+    testCompile 'org.powermock:powermock-module-junit4:1.7.3'
+    testCompile 'org.powermock:powermock-api-mockito2:1.7.0'
 
     compile rootProject.ext.debugToolsDependencies.stetho
 }

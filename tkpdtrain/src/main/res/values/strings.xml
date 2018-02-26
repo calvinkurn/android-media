@@ -3,4 +3,13 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="kai_homepage_return_should_greater_equal_error">Tanggal keberangkatan pulang harus lebih besar sama dengan tanggal keberangkatan</string>
+    <string name="kai_homepage_return_max_100_days_from_today_error">Tanggal keberangkatan pulang maksimal 100 hari dari hari ini</string>
+
+    <string name="kai_homepage_departure_max_100_days_from_today_error">Tanggal keberangkatan maksimal 100 hari dari hari ini</string>
+    <string name="kai_homepage_departure_should_atleast_today_error">Tanggal keberangkatan harus lebih besar sama dengan hari ini</string>
+
+    <string name="kai_homepage_adult_passenger">Dewasa</string>
+    <string name="kai_homepage_adult_infant">Bayi</string>
 </resources>
