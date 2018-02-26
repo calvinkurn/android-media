@@ -156,7 +156,7 @@ public class LayoutRows implements Parcelable {
                         "promoClick", DataLayer.mapOf(
                                 "promotions", DataLayer.listOf(
                                         DataLayer.mapOf(
-                                                "id", getId(),
+                                                "id", String.valueOf(getId()),
                                                 "name", customName,
                                                 "creative", getName(),
                                                 "position", String.valueOf(position)
