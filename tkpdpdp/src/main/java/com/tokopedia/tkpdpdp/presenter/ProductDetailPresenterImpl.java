@@ -649,7 +649,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
-    public void processStateData(Bundle savedInstanceState) {
+    public void processStateData(Bundle savedInstanceState, Context context) {
         ProductDetailData productData = savedInstanceState
                 .getParcelable(ProductDetailFragment.STATE_DETAIL_PRODUCT);
         List<ProductOther> productOthers = savedInstanceState
@@ -669,6 +669,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
         if (productVariant != null) {
             viewListener.addProductVariant(productVariant);
+        } else if (productData.getInfo().getHasVariant() && productVariant==null) {
+            getProductVariant(context,Integer.toString(productData.getInfo().getProductId()));
         }
 
         if (productData.getCampaign() != null) {

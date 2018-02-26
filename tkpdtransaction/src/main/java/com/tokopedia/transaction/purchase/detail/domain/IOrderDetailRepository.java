@@ -8,6 +8,7 @@ import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianPr
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
 
 import java.util.List;
+import java.util.Map;
 
 import rx.Observable;
 
@@ -45,6 +46,8 @@ public interface IOrderDetailRepository {
 
     Observable<String> processShipping(TKPDMapParam<String, String> param);
 
+    Observable<String> changeProduct(Map<String, String> productParam);
+
     Observable<String> retryPickup(TKPDMapParam<String, String> param);
 
     Observable<String> changeAwb(TKPDMapParam<String, String> param);
@@ -52,10 +55,5 @@ public interface IOrderDetailRepository {
     Observable<String> rejectOrderChangeProductVarian(List<EmptyVarianProductEditable> emptyVarianProductEditables,
                                                       TKPDMapParam<String, String> productParam,
                                                       TKPDMapParam<String, String> rejectParam);
-
-    Observable<String> rejectOrderWeightPrice(List<WrongProductPriceWeightEditable> editables,
-                                                      TKPDMapParam<String, String> productParam,
-                                                      TKPDMapParam<String, String> rejectParam);
-
 
 }

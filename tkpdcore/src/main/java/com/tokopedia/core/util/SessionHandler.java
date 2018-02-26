@@ -544,7 +544,7 @@ public class SessionHandler {
         TrackingUtils.eventPushUserID();
         Crashlytics.setUserIdentifier(u_id);
 
-        BranchSdkUtils.sendLoginEvent(u_id);
+        BranchSdkUtils.sendIdentityEvent(u_id);
 
         //return status;
     }

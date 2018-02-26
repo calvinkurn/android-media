@@ -12,6 +12,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.referral.listener.FriendsWelcomeView;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 
@@ -43,7 +44,7 @@ public class ReferralFriendsWelcomePresenter implements IReferralFriendsWelcomeP
             if (code == null || code.equalsIgnoreCase(localCacheHandler.getString(TkpdCache.Key.REFERRAL_CODE, ""))) {
                 view.closeView();
             }
-
+            BranchSdkUtils.REFERRAL_ADVOCATE_PROMO_CODE = code;
             view.renderReferralCode(code);
         }
     }
