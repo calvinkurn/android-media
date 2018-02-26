@@ -39,7 +39,7 @@
     <string name="price_holder">Rp %1$s</string>
     <string name="promo_button_text">Lihat Semua Promo</string>
     <string name="top_events">TOP EVENTS</string>
-    <string name="max_ticket_warning">Maks. 4 tiket</string>
+    <string name="max_ticket_warning">Maks. %1$d tiket</string>
     <string name="zero">0</string>
     <string name="habis_terjual">HABIS TERJUAL</string>
     <string name="ticket_desc">Anak kecil di bawah umur 12 tahun harus didampingi orang dewasa berusia 18 tahun ke atas. Harga tiket sudah termasuk biaya layanan.</string>
@@ -61,6 +61,9 @@
     <string name="pilihan_kursi">Pilihan Kursi:</string>
     <string name="detail_tiket">Detail Tiket</string>
     <string name="promo_section">Gunakan Kode Promo Tokopedia</string>
+    <string name="jadwal">Jadwal</string>
+    <string name="ubah_jadwal">Ubah Jadwal</string>
+    <string name="ubah_lokasi">Ubah Lokasi</string>
 
     <!-- need to changed -->
 

@@ -26,11 +26,14 @@ import com.tokopedia.events.view.adapter.AddTicketAdapter;
 import com.tokopedia.events.view.contractor.EventBookTicketContract;
 import com.tokopedia.events.view.fragment.FragmentAddTickets;
 import com.tokopedia.events.view.mapper.SeatLayoutResponseToSeatLayoutViewModelMapper;
+import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
+import com.tokopedia.events.view.viewmodel.LocationDateModel;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SchedulesViewModel;
 import com.tokopedia.events.view.viewmodel.SeatLayoutViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -53,12 +56,12 @@ public class EventBookTicketPresenter
     private AddTicketAdapter.TicketViewHolder selectedViewHolder;
     private List<SchedulesViewModel> schedulesList;
     private PostValidateShowUseCase postValidateShowUseCase;
-    private String dateRange;
     private String eventTitle;
     private int hasSeatLayout;
     private FragmentAddTickets mChildFragment;
     private int px;
     private EventsDetailsViewModel dataModel;
+    private List<LocationDateModel> locationDateModels;
 
     public static String EXTRA_PACKAGEVIEWMODEL = "packageviewmodel";
     public static String EXTRA_SEATLAYOUTVIEWMODEL = "seatlayoutviewmodel";
@@ -88,14 +91,12 @@ public class EventBookTicketPresenter
                 getIntent().
                 getParcelableExtra(EventsDetailsPresenter.EXTRA_EVENT_VIEWMODEL);
         hasSeatLayout = getView().getActivity().getIntent().getIntExtra(EventsDetailsPresenter.EXTRA_SEATING_PARAMETER, 0);
-        this.dateRange = dataModel.getTimeRange();
+        generateLocationDateModels();
         getView().renderFromDetails(dataModel);
         if (dataModel.getSeatMapImage() != null && !dataModel.getSeatMapImage().isEmpty())
             getView().renderSeatmap(dataModel.getSeatMapImage());
         else
             getView().hideSeatmap();
-        if (!dataModel.getTimeRange().contains("1970"))
-            getView().initTablayout();
         schedulesList = dataModel.getSchedulesViewModels();
     }
 
@@ -220,7 +221,7 @@ public class EventBookTicketPresenter
             selectedViewHolder.setTvTicketCnt(selectedCount);
             selectedViewHolder.setTicketViewColor(getView().getActivity().getResources().getColor(R.color.light_green));
         } else {
-            selectedViewHolder.toggleMaxTicketWarning(View.VISIBLE);
+            selectedViewHolder.toggleMaxTicketWarning(View.VISIBLE, selectedPackageViewModel.getSelectedQuantity());
         }
         getView().showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(), selectedPackageViewModel.getDisplayName());
     }
@@ -230,7 +231,7 @@ public class EventBookTicketPresenter
         if (selectedCount != 0) {
             selectedPackageViewModel.setSelectedQuantity(--selectedCount);
             selectedViewHolder.setTvTicketCnt(selectedCount);
-            selectedViewHolder.toggleMaxTicketWarning(View.INVISIBLE);
+            selectedViewHolder.toggleMaxTicketWarning(View.INVISIBLE, 4);
             getView().showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(), selectedPackageViewModel.getDisplayName());
         }
         if (selectedCount == 0) {
@@ -241,16 +242,6 @@ public class EventBookTicketPresenter
             getView().hidePayButton();
         }
     }
-
-    public void onPageChange(int scheduleIndex) {
-        mSelectedSchedule = scheduleIndex;
-        mSelectedPackage = -1;
-    }
-
-    public String getDateArray(int pos) {
-        return dataModel.getSchedulesViewModels().get(pos).getTimeRange();
-    }
-
 
     private void getSeatSelectionDetails() {
         RequestParams params = RequestParams.create();
@@ -272,7 +263,6 @@ public class EventBookTicketPresenter
                                 getSeatSelectionDetails();
                             }
                         });
-//                Log.d("Naveen", " on Error" + throwable.getMessage());
             }
 
             @Override
@@ -310,6 +300,38 @@ public class EventBookTicketPresenter
         mChildFragment.setDecorationHeight(getView().getButtonLayoutHeight() + px);
         if (mSelectedPackage == schedulesList.get(mSelectedSchedule).getPackages().size() - 1)
             mChildFragment.scrollToLast();
+    }
+
+    public void onClickLocationDate(LocationDateModel model, int index) {
+        getView().setLocationDate(model.getmLocation(), model.getDate(), dataModel.getSchedulesViewModels().get(index));
+        mSelectedSchedule = index;
+    }
+
+    private void generateLocationDateModels() {
+        locationDateModels = new ArrayList<>();
+        for (SchedulesViewModel viewModel : dataModel.getSchedulesViewModels()) {
+            LocationDateModel model = new LocationDateModel();
+            model.setmLocation(viewModel.getCityName());
+            model.setDate(Utils.convertEpochToString(viewModel.getStartDate()));
+            locationDateModels.add(model);
+        }
+    }
+
+    public List<LocationDateModel> getLocationDateModels() {
+        return locationDateModels;
+    }
+
+    public void resetViewHolders() {
+        if (selectedPackageViewModel != null) {
+            selectedPackageViewModel.setSelectedQuantity(0);
+            selectedPackageViewModel = null;
+        }
+        if (selectedViewHolder != null) {
+            selectedViewHolder.setTicketViewColor(getView().getActivity().getResources().getColor(R.color.white));
+            selectedViewHolder = null;
+        }
+        mSelectedPackage = -1;
+        getView().hidePayButton();
     }
 
 }

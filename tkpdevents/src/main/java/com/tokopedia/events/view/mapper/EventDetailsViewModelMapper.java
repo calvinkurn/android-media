@@ -58,6 +58,7 @@ public class EventDetailsViewModelMapper {
                 s.setaDdress(item.getAddressDetail().getAddress());
                 s.setStartDate(item.getSchedule().getStartDate());
                 s.setEndDate(item.getSchedule().getEndDate());
+                s.setCityName(item.getSchedule().getTitle());
                 String timerange;
                 if (source.getMinStartDate() == 0) {
                     timerange = "";

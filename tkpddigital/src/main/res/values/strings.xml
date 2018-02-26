@@ -42,7 +42,7 @@
     <string name="label_title_price_info_digital">Harga</string>
     <string name="error_message_product_inactive_digital_module">Product tidak aktif</string>
     <string name="error_message_product_out_of_stock_digital_module">Stok product kosong</string>
-    <string name="config_usd_service_description">This service records pop ups sent by your mobile operator, and saves them in Tokopedia. It is absolutely safe to use.</string>
+    <string name="config_usd_service_description">This service records pop ups sent by your mobileNumber operator, and saves them in Tokopedia. It is absolutely safe to use.</string>
     <string name="not_applicable">NA</string>
     <string name="error_message_ussd_msg_not_parsed">Mohon maaf, pengecekan sisa pulsa anda tidak dapat dilakukan</string>
     <string name="error_message_ussd_operator_not_matched">Maaf, nomor yang dimasukan tidak sesuai dengan operator SIM anda</string>

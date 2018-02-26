@@ -11,6 +11,7 @@ public class SchedulesViewModel implements Parcelable {
     private int endDate;
     private String timeRange;
     private String aDdress;
+    private String cityName;
     private List<PackageViewModel> packages = null;
 
     public int getStartDate() {
@@ -55,6 +56,14 @@ public class SchedulesViewModel implements Parcelable {
         this.packages = packages;
     }
 
+    public String getCityName() {
+        return cityName;
+    }
+
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
+    }
+
     public SchedulesViewModel() {
     }
 
@@ -69,6 +78,7 @@ public class SchedulesViewModel implements Parcelable {
         dest.writeInt(this.endDate);
         dest.writeString(this.timeRange);
         dest.writeString(this.aDdress);
+        dest.writeString(this.cityName);
         dest.writeTypedList(this.packages);
     }
 
@@ -77,6 +87,7 @@ public class SchedulesViewModel implements Parcelable {
         this.endDate = in.readInt();
         this.timeRange = in.readString();
         this.aDdress = in.readString();
+        this.cityName = in.readString();
         this.packages = in.createTypedArrayList(PackageViewModel.CREATOR);
     }
 
