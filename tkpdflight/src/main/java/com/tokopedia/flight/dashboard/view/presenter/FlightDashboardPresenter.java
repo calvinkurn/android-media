@@ -518,7 +518,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                 });
         if (flightDashboardPassDataViewModel.getDepartureAirportId() != null && flightDashboardPassDataViewModel.getDepartureAirportId().length() > 0
                 && flightDashboardPassDataViewModel.getArrivalAirportId() != null && flightDashboardPassDataViewModel.getArrivalAirportId().length() > 0) {
-            cacheObservable.zipWith(getFlightAirportWithParamUseCase
+            cacheObservable = cacheObservable.zipWith(getFlightAirportWithParamUseCase
                     .createObservable(getFlightAirportWithParamUseCase.createRequestParams(flightDashboardPassDataViewModel.getDepartureAirportId())
                     ), new Func2<FlightDashboardAirportAndClassWrapper, FlightAirportDB, FlightDashboardAirportAndClassWrapper>() {
                 @Override
