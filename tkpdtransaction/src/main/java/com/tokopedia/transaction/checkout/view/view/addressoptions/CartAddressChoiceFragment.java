@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -45,7 +46,8 @@ import butterknife.OnClick;
  */
 
 public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddressChoicePresenter>
-        implements ICartAddressChoiceView, ShipmentAddressListAdapter.ActionListener {
+        implements ICartAddressChoiceView, ShipmentAddressListAdapter.ActionListener,
+        ShipmentAddressListFragment.FragmentListener {
 
     public static String INTENT_EXTRA_SELECTED_RECIPIENT_ADDRESS = "selectedAddress";
     private static String CART_ITEM_LIST_EXTRA = "CART_ITEM_LIST_EXTRA";
@@ -163,7 +165,8 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     @OnClick(R2.id.tv_choose_other_address)
     void onChooseOtherAddressClick() {
         FragmentManager fragmentManager = getActivity().getFragmentManager();
-        Fragment fragment = ShipmentAddressListFragment.newInstance();
+        ShipmentAddressListFragment fragment = ShipmentAddressListFragment.newInstance();
+        fragment.setFragmentListener(this);
 
         String backStateName = fragment.getClass().getName();
 
@@ -178,7 +181,8 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
 
     @OnClick(R2.id.ll_add_new_address)
     void onAddNewAddress() {
-        startActivityForResult(AddAddressActivity.createInstance(getActivity()), ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
+        startActivityForResult(AddAddressActivity.createInstance(getActivity()),
+                ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
     }
 
     @OnClick(R2.id.ll_send_to_multiple_address)
@@ -211,6 +215,27 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
         startActivityForResult(AddAddressActivity.createInstance(getActivity(),
                 mapper.transform(model)), ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
     }
+
+    @Override
+    public void onAddressClick(RecipientAddressModel mode) {
+        // Update View
+        Log.e("Update View", "Recipient Address Model");
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case ManageAddressConstant.REQUEST_CODE_PARAM_CREATE:
+                    // Reload list address
+                    break;
+                case ManageAddressConstant.REQUEST_CODE_PARAM_EDIT:
+                    // Reload list address
+                    break;
+            }
+        }
+    }
+
 
     private void setShowCase() {
         ShowCaseObject showCase = new ShowCaseObject(

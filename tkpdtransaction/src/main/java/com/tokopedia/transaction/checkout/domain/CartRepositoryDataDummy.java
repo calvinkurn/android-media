@@ -5,7 +5,9 @@ import com.google.gson.JsonObject;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.checkout.domain.response.addtocart.AddToCartDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.cartlist.CartDataListResponse;
+import com.tokopedia.transaction.checkout.domain.response.checkout.CheckoutDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.deletecart.DeleteCartDataResponse;
+import com.tokopedia.transaction.checkout.domain.response.resetcart.ResetCartDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.shippingaddress.ShippingAddressDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.shippingaddressform.ShipmentAddressFormDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.updatecart.UpdateCartDataResponse;
@@ -63,6 +65,16 @@ public class CartRepositoryDataDummy implements ICartRepository {
 
     @Override
     public Observable<ShipmentAddressFormDataResponse> getShipmentAddressForm(TKPDMapParam<String, String> param) {
+        return null;
+    }
+
+    @Override
+    public Observable<ResetCartDataResponse> resetCart(TKPDMapParam<String, String> param) {
+        return null;
+    }
+
+    @Override
+    public Observable<CheckoutDataResponse> checkout(TKPDMapParam<String, String> param) {
         return null;
     }
 

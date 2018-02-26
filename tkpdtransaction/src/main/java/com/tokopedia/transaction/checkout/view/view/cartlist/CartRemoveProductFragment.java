@@ -329,8 +329,6 @@ public class CartRemoveProductFragment extends BasePresenterFragment
 
             mCartRemoveProductAdapter.notifyDataSetChanged();
         }
-
-        mDataPasserListener.onAfterRemovePassingCartData(mCartItemDataList);
         NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
 

@@ -43,9 +43,14 @@ public interface CartApi {
     @GET(TkpdBaseURL.Cart.PATH_SHIPMENT_ADDRESS_FORM_DIRECT)
     Observable<Response<CartResponse>> getShipmentAddressForm(@QueryMap Map<String, String> params);
 
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Cart.PATH_CHECKOUT)
+    Observable<Response<CartResponse>> checkout(@FieldMap Map<String, String> params);
 
-//    public static final String PATH_REMOVE_FROM_CART = "api/" + VERSION + "/remove_product_cart";
-//    public static final String PATH_UPDATE_CART = "api/" + VERSION + "/update_cart";
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Cart.PATH_RESET_CART)
+    Observable<Response<CartResponse>> resetCart(@FieldMap Map<String, String> params);
+
 //    public static final String PATH_CHECK_PROMO_CODE_CART_LIST = "api/" + VERSION + "/check_promo_code";
 //    public static final String PATH_CHECK_PROMO_CODE_CART_COURIER = "api/" + VERSION + "/check_promo_code_final";
 //    public static final String PATH_CHECKOUT = "api/" + VERSION + "/checkout";

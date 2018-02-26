@@ -31,6 +31,7 @@ public class ShipmentMapper implements IShipmentMapper {
     public CartShipmentAddressFormData convertToShipmentAddressFormData(
             ShipmentAddressFormDataResponse shipmentAddressFormDataResponse
     ) {
+
         CartShipmentAddressFormData dataResult = new CartShipmentAddressFormData();
         dataResult.setKeroDiscomToken(shipmentAddressFormDataResponse.getKeroDiscomToken());
         dataResult.setKeroToken(shipmentAddressFormDataResponse.getKeroToken());
@@ -40,7 +41,7 @@ public class ShipmentMapper implements IShipmentMapper {
         dataResult.setError(!mapperUtil.isEmpty(shipmentAddressFormDataResponse.getErrors()));
         dataResult.setErrorMessage(mapperUtil.convertToString(shipmentAddressFormDataResponse.getErrors()));
 
-        if (mapperUtil.isEmpty(shipmentAddressFormDataResponse.getGroupAddress())) {
+        if (!mapperUtil.isEmpty(shipmentAddressFormDataResponse.getGroupAddress())) {
             List<GroupAddress> groupAddressListResult = new ArrayList<>();
             for (com.tokopedia.transaction.checkout.domain.response.shippingaddressform.GroupAddress
                     groupAddress : shipmentAddressFormDataResponse.getGroupAddress()) {
@@ -191,6 +192,7 @@ public class ShipmentMapper implements IShipmentMapper {
             }
             dataResult.setGroupAddress(groupAddressListResult);
         }
+
         return dataResult;
     }
 }

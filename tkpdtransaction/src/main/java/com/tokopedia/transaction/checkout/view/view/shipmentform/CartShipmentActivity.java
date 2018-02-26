@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
@@ -17,6 +18,9 @@ import com.tokopedia.transaction.checkout.view.view.multipleaddressform.Multiple
  */
 
 public class CartShipmentActivity extends BasePresenterActivity implements ICartShipmentActivity {
+    public static final int REQUEST_CODE = CartShipmentActivity.class.hashCode();
+    public static final int RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM = 1;
+
     public static final String EXTRA_SHIPMENT_FORM_DATA = "EXTRA_SHIPMENT_FORM_DATA";
     public static final String EXTRA_CART_PROMO_SUGGESTION = "EXTRA_CART_PROMO_SUGGESTION";
     public static final String EXTRA_ADDRESS_SHIPMENT_TYPE = "EXTRA_ADDRESS_SHIPMENT_TYPE";
@@ -107,5 +111,12 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+    @Override
+    public void closeWithResult(int resultCode, @Nullable Intent intent) {
+        if (intent == null) setResult(resultCode);
+        else setResult(resultCode, intent);
+        finish();
     }
 }

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,7 +20,6 @@ import com.tokopedia.transaction.checkout.di.module.SingleAddressShipmentModule;
 import com.tokopedia.transaction.checkout.domain.ShipmentRatesDataMapper;
 import com.tokopedia.transaction.checkout.domain.SingleAddressShipmentDataConverter;
 import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter;
-import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
@@ -34,8 +32,6 @@ import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCa
 import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -64,7 +60,6 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     private static final int REQUEST_CODE_SHIPMENT_DETAIL = 11;
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
-    private static final int REQUEST_CODE_CHOOSE_ADDRESS = 13;
 
     @BindView(R2.id.rv_cart_order_details)
     RecyclerView mRvCartOrderDetails;
@@ -81,6 +76,8 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     SingleAddressShipmentPresenter mSingleAddressShipmentPresenter;
     @Inject
     SingleAddressShipmentDataConverter mSingleAddressShipmentDataConverter;
+
+    ICartShipmentActivity cartShipmentActivityListener;
 
     private CartSingleAddressData mCartSingleAddressData;
 
@@ -247,10 +244,13 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     public void onAddOrChangeAddress() {
-        startActivityForResult(CartAddressChoiceActivity.createInstance(
-                getActivity(),
-                mCartSingleAddressData.getCartSellerItemModelList()
-                ), REQUEST_CODE_CHOOSE_ADDRESS);
+        startActivityForResult(
+                CartAddressChoiceActivity.createInstance(
+                        getActivity(),
+                        CartAddressChoiceActivity.TYPE_REQUEST_FULL_SELECTION,
+                        mCartSingleAddressData.getCartSellerItemModelList()
+                ),
+                CartAddressChoiceActivity.REQUEST_CODE);
     }
 
     @Override
@@ -298,7 +298,30 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        this.cartShipmentActivityListener = (ICartShipmentActivity) activity;
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == CartAddressChoiceActivity.REQUEST_CODE) {
+            switch (resultCode) {
+                case CartAddressChoiceActivity.RESULT_CODE_ACTION_SELECT_ADDRESS:
+                    Object thisSelectedAddressData = data.getParcelableExtra(
+                            CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA
+                    );
+                    //TODO render selectedAddressData
+                    break;
+                case CartAddressChoiceActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM:
+                    cartShipmentActivityListener.closeWithResult(
+                            CartShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM, null);
+                    break;
+            }
+        }
+
+
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_CHOOSE_PICKUP_POINT:

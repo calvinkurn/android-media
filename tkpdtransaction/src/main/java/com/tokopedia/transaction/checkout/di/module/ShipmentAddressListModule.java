@@ -1,7 +1,9 @@
 package com.tokopedia.transaction.checkout.di.module;
 
 import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.transaction.checkout.di.qualifier.PaginatedAddressQualifier;
 import com.tokopedia.transaction.checkout.di.scope.ShipmentAddressListScope;
+import com.tokopedia.transaction.checkout.domain.repository.PeopleAddressRepository;
 import com.tokopedia.transaction.checkout.domain.usecase.GetAllAddressUseCase;
 import com.tokopedia.transaction.checkout.view.view.addressoptions.ShipmentAddressListFragment;
 import com.tokopedia.transaction.checkout.view.adapter.ShipmentAddressListAdapter;
@@ -33,6 +35,12 @@ public class ShipmentAddressListModule {
     @ShipmentAddressListScope
     ShipmentAddressListAdapter provideCartAddressListAdapter() {
         return new ShipmentAddressListAdapter(actionListener);
+    }
+
+    @Provides
+    @ShipmentAddressListScope
+    GetAllAddressUseCase provideGetAddressListUseCase(@PaginatedAddressQualifier PeopleAddressRepository peopleAddressRepository) {
+        return new GetAllAddressUseCase(peopleAddressRepository);
     }
 
 }
