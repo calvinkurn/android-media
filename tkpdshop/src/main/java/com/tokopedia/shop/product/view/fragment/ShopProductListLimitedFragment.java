@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;

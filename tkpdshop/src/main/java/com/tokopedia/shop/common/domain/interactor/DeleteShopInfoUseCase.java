@@ -14,7 +14,12 @@ import rx.Observable;
 public class DeleteShopInfoUseCase extends CacheApiDataDeleteUseCase {
 
     public Observable<Boolean> createObservable() {
+        return createObservable(RequestParams.create());
+    }
+
+    @Override
+    public Observable<Boolean> createObservable(RequestParams requestParams) {
         RequestParams newRequestParams = CacheApiDataDeleteUseCase.createParams(ShopUrl.BASE_URL, ShopCommonUrl.SHOP_INFO_PATH);
-        return createObservable(newRequestParams);
+        return super.createObservable(newRequestParams);
     }
 }

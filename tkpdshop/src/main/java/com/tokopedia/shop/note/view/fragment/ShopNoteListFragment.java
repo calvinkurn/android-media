@@ -2,7 +2,6 @@ package com.tokopedia.shop.note.view.fragment;
 
 import android.os.Bundle;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
@@ -10,7 +9,6 @@ import com.tokopedia.shop.note.di.component.DaggerShopNoteComponent;
 import com.tokopedia.shop.note.di.module.ShopNoteModule;
 import com.tokopedia.shop.note.view.activity.ShopNoteDetailActivity;
 import com.tokopedia.shop.note.view.adapter.ShopNoteAdapterTypeFactory;
-import com.tokopedia.shop.note.view.adapter.ShopNoteTypeFactory;
 import com.tokopedia.shop.note.view.listener.ShopNoteListView;
 import com.tokopedia.shop.note.view.model.ShopNoteViewModel;
 import com.tokopedia.shop.note.view.presenter.ShopNoteListPresenter;
@@ -21,7 +19,7 @@ import javax.inject.Inject;
  * Created by nathan on 2/5/18.
  */
 
-public class ShopNoteListFragment extends BaseListFragment<Visitable, ShopNoteTypeFactory> implements ShopNoteListView {
+public class ShopNoteListFragment extends BaseListFragment<ShopNoteViewModel, ShopNoteAdapterTypeFactory> implements ShopNoteListView {
 
     public static ShopNoteListFragment createInstance(String shopId) {
         ShopNoteListFragment shopNoteListFragment = new ShopNoteListFragment();
@@ -43,23 +41,18 @@ public class ShopNoteListFragment extends BaseListFragment<Visitable, ShopNoteTy
     }
 
     @Override
+    protected ShopNoteAdapterTypeFactory getAdapterTypeFactory() {
+        return new ShopNoteAdapterTypeFactory();
+    }
+
+    @Override
     public void loadData(int page) {
         shopNoteListPresenter.getShopNoteList(shopId);
     }
 
     @Override
-    protected ShopNoteTypeFactory getAdapterTypeFactory() {
-        return new ShopNoteAdapterTypeFactory();
-    }
-
-    @Override
-    public void onItemClicked(Visitable visitable) {
-        if(visitable != null){
-            if(visitable instanceof ShopNoteViewModel){
-                ShopNoteViewModel shopNoteViewModel = (ShopNoteViewModel) visitable;
-                startActivity(ShopNoteDetailActivity.createIntent(getActivity(), Long.toString(shopNoteViewModel.getShopNoteId())));
-            }
-        }
+    public void onItemClicked(ShopNoteViewModel shopNoteViewModel) {
+        startActivity(ShopNoteDetailActivity.createIntent(getActivity(), Long.toString(shopNoteViewModel.getShopNoteId())));
     }
 
     @Override

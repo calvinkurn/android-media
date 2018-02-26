@@ -1,15 +1,13 @@
 package com.tokopedia.shop.note.view.model;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.shop.note.view.adapter.ShopNoteTypeFactory;
+import com.tokopedia.shop.note.view.adapter.ShopNoteAdapterTypeFactory;
 
 /**
  * Created by nathan on 2/6/18.
  */
 
-public class ShopNoteViewModel implements Visitable<ShopNoteTypeFactory> {
+public class ShopNoteViewModel implements Visitable<ShopNoteAdapterTypeFactory> {
 
     private long shopNoteId;
     private String title;
@@ -58,7 +56,7 @@ public class ShopNoteViewModel implements Visitable<ShopNoteTypeFactory> {
     }
 
     @Override
-    public int type(ShopNoteTypeFactory typeFactory) {
+    public int type(ShopNoteAdapterTypeFactory typeFactory) {
         return typeFactory.type(this);
     }
 }

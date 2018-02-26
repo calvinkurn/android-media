@@ -1,13 +1,13 @@
 package com.tokopedia.shop.address.view.model;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.shop.address.view.adapter.ShopAddressTypeFactory;
+import com.tokopedia.shop.address.view.adapter.ShopAddressAdapterTypeFactory;
 
 /**
  * Created by nathan on 2/6/18.
  */
 
-public class ShopAddressViewModel implements Visitable<ShopAddressTypeFactory> {
+public class ShopAddressViewModel implements Visitable<ShopAddressAdapterTypeFactory> {
 
     private String id;
     private String name;
@@ -74,7 +74,7 @@ public class ShopAddressViewModel implements Visitable<ShopAddressTypeFactory> {
     }
 
     @Override
-    public int type(ShopAddressTypeFactory typeFactory) {
+    public int type(ShopAddressAdapterTypeFactory typeFactory) {
         return typeFactory.type(this);
     }
 }
