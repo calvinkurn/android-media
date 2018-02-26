@@ -1,8 +1,5 @@
 package com.tokopedia.transaction.checkout.view.adapter;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
@@ -20,16 +17,14 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.R2;
-import com.tokopedia.transaction.checkout.view.ShipmentAddressListFragment;
 import com.tokopedia.transaction.checkout.view.data.CartItemModel;
 import com.tokopedia.transaction.checkout.view.data.CartPayableDetailModel;
 import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.view.data.CourierItemData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
+import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.view.data.ShipmentFeeBannerModel;
-import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 import com.tokopedia.transaction.pickuppoint.view.customview.PickupPointLayout;
 
@@ -38,12 +33,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * @author Aghny A. Putra on 25/01/18
  */
+
 public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final String TAG = SingleAddressShipmentAdapter.class.getSimpleName();
@@ -113,11 +106,11 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         int viewType = getItemViewType(position);
 
         if (viewType == ITEM_VIEW_FREE_SHIPPING_FEE) {
-            ((FreeShippingFeeViewHolder) viewHolder)
-                    .bindViewHolder(mCartSingleAddressData.getShipmentFeeBannerModel());
+//            ((FreeShippingFeeViewHolder) viewHolder)
+//                    .bindViewHolder(mCartSingleAddressData.getShipmentFeeBannerModel());
         } else if (viewType == ITEM_VIEW_SHIPMENT_RECIPIENT_ADDRESS) {
             ((ShippingRecipientViewHolder) viewHolder)
-                    .bindViewHolder(mCartSingleAddressData.getShipmentRecipientModel());
+                    .bindViewHolder(mCartSingleAddressData.getRecipientAddressModel());
         } else if (viewType == ITEM_VIEW_SHIPMENT_COST_DETAIL) {
             ((ShipmentCostDetailViewHolder) viewHolder)
                     .bindViewHolder(mCartSingleAddressData.getCartPayableDetailModel());
@@ -152,11 +145,11 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
         void onChooseShipment();
 
-        void onChoosePickupPoint(ShipmentRecipientModel addressAdapterData);
+        void onChoosePickupPoint(RecipientAddressModel addressAdapterData);
 
-        void onClearPickupPoint(ShipmentRecipientModel addressAdapterData);
+        void onClearPickupPoint(RecipientAddressModel addressAdapterData);
 
-        void onEditPickupPoint(ShipmentRecipientModel addressAdapterData);
+        void onEditPickupPoint(RecipientAddressModel addressAdapterData);
 
         void onTotalPaymentUpdate(String priceFormat);
 
@@ -165,11 +158,11 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
     }
 
     public void setPickupPoint(Store store) {
-        mCartSingleAddressData.getShipmentRecipientModel().setStore(store);
+        mCartSingleAddressData.getRecipientAddressModel().setStore(store);
     }
 
     public void unSetPickupPoint() {
-        mCartSingleAddressData.getShipmentRecipientModel().setStore(null);
+        mCartSingleAddressData.getRecipientAddressModel().setStore(null);
     }
 
     private int getCartItemSize() {
@@ -199,14 +192,14 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
     class FreeShippingFeeViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.rl_free_shipment_fee_header)
         RelativeLayout mRlFreeShipmentFeeHeader;
-        @BindView(R2.id.tv_shpping_fee)
         TextView mTvShippingFee;
 
         FreeShippingFeeViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+
+            mRlFreeShipmentFeeHeader = itemView.findViewById(R.id.rl_free_shipment_fee_header);
+            mTvShippingFee = itemView.findViewById(R.id.tv_shipping_fee);
         }
 
         void bindViewHolder(ShipmentFeeBannerModel model) {
@@ -229,37 +222,49 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
     class ShippingRecipientViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.tv_text_address_description)
-        TextView mTvAddressDescription;
-        @BindView(R2.id.tv_recipient_name)
+        TextView mTvAddressStatus;
+        TextView mTvAddressName;
         TextView mTvRecipientName;
-        @BindView(R2.id.tv_recipient_address)
         TextView mTvRecipientAddress;
-        @BindView(R2.id.tv_recipient_phone)
         TextView mTvRecipientPhone;
-        @BindView(R2.id.tv_add_or_change_address)
         TextView mTvAddOrChangeAddress;
-        @BindView(R2.id.pickup_point_layout)
         PickupPointLayout pickupPointLayout;
 
         ShippingRecipientViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+
+            mTvAddressStatus = itemView.findViewById(R.id.tv_address_status);
+            mTvAddressName = itemView.findViewById(R.id.tv_address_name);
+            mTvRecipientName = itemView.findViewById(R.id.tv_recipient_name);
+            mTvRecipientAddress = itemView.findViewById(R.id.tv_recipient_address);
+            mTvRecipientPhone = itemView.findViewById(R.id.tv_recipient_phone);
+            mTvAddOrChangeAddress = itemView.findViewById(R.id.tv_add_or_change_address);
+            pickupPointLayout = itemView.findViewById(R.id.pickup_point_layout);
         }
 
-        void bindViewHolder(ShipmentRecipientModel model) {
-            mTvAddressDescription.setText(model.getRecipientAddressDescription());
-            mTvRecipientName.setText(model.getRecipientName());
-            mTvRecipientAddress.setText(model.getRecipientAddress());
-            mTvRecipientPhone.setText(model.getRecipientPhoneNumber());
+        void bindViewHolder(RecipientAddressModel model) {
+            if (model != null) {
+                mTvAddressStatus.setVisibility(model.getAddressStatus() == 1 ?
+                        View.VISIBLE : View.GONE);
+                mTvAddressName.setText(model.getAddressName());
+                mTvRecipientName.setText(model.getRecipientName());
+                mTvRecipientAddress.setText(getFullAddress(model.getAddressStreet(),
+                        model.getDestinationDistrictId(), model.getAddressCityName(),
+                        model.getAddressProvinceName()));
+                mTvRecipientPhone.setText(model.getRecipientPhoneNumber());
 
-            renderPickupPoint(pickupPointLayout, mCartSingleAddressData.getShipmentRecipientModel());
-            mTvAddOrChangeAddress.setOnClickListener(
-                    addOrChangeAddressListener(mCartSingleAddressData.getShipmentRecipientModel()));
+                renderPickupPoint(pickupPointLayout, mCartSingleAddressData.getRecipientAddressModel());
+            }
+
+            mTvAddOrChangeAddress.setOnClickListener(addOrChangeAddressListener());
+        }
+
+        private String getFullAddress(String street, String district, String city, String province) {
+            return street + ", " + district + ", " + city + ", " + province;
         }
 
         private void renderPickupPoint(PickupPointLayout pickupPointLayout,
-                                       final ShipmentRecipientModel data) {
+                                       final RecipientAddressModel data) {
 
             pickupPointLayout.setListener(new PickupPointLayout.ViewListener() {
                 @Override
@@ -287,7 +292,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
         }
 
-        private View.OnClickListener addOrChangeAddressListener(final ShipmentRecipientModel model) {
+        private View.OnClickListener addOrChangeAddressListener() {
             return new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -296,72 +301,59 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             };
         }
 
-        private void fragmentTransaction() {
-            FragmentManager fragmentManager = ((Activity) mContext).getFragmentManager();
-            Fragment fragment = ShipmentAddressListFragment.newInstance();
-
-            String backStateName = fragment.getClass().getName();
-
-            boolean isFragmentPopped = fragmentManager.popBackStackImmediate(backStateName, 0);
-            if (!isFragmentPopped) {
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, fragment)
-                        .addToBackStack(backStateName)
-                        .commit();
-            }
-        }
-
     }
 
     class ShipmentCostDetailViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.rl_detail_shipment_fee_view_layout)
-        RelativeLayout mRlDetailFee;
-        @BindView(R2.id.tv_total_item)
+        RelativeLayout mRlDetailShipmentFee;
+        TextView mTvTotalItemLabel;
         TextView mTvTotalItem;
-        @BindView(R2.id.tv_total_item_price)
-        TextView mTvTotalItemPrice;
-        @BindView(R2.id.tv_shipping_fee)
+        TextView mTvShippingFeeLabel;
         TextView mTvShippingFee;
-        @BindView(R2.id.tv_shipping_fee_price)
-        TextView mTvShippingFeePrice;
-        @BindView(R2.id.tv_insurance_fee_price)
-        TextView mTvInsuranceFeePrice;
-        @BindView(R2.id.tv_promo_price)
-        TextView mTvPromoPrice;
-        @BindView(R2.id.tv_payable_price)
-        TextView mTvPayablePrice;
-        @BindView(R2.id.tv_promo_free_shipping)
+        TextView mTvInsuranceFee;
+        TextView mTvPromo;
+        TextView mTvPayable;
         TextView mTvPromoFreeShipping;
-
-        private boolean mIsExpanded;
+        TextView mTvPromoTextViewRemove;
 
         ShipmentCostDetailViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+
+            mRlDetailShipmentFee = itemView.findViewById(R.id.rl_detail_shipment_fee);
+            mTvTotalItemLabel = itemView.findViewById(R.id.tv_total_item_label);
+            mTvTotalItem = itemView.findViewById(R.id.tv_total_item_price);
+            mTvShippingFeeLabel = itemView.findViewById(R.id.tv_shipping_fee_label);
+            mTvShippingFee = itemView.findViewById(R.id.tv_shipping_fee);
+            mTvInsuranceFee = itemView.findViewById(R.id.tv_insurance_fee);
+            mTvPromo = itemView.findViewById(R.id.tv_promo);
+            mTvPayable = itemView.findViewById(R.id.tv_payable);
+            mTvPromoFreeShipping = itemView.findViewById(R.id.tv_promo_free_shipping);
+            mTvPromoTextViewRemove = itemView.findViewById(R.id.tv_promo_text_view_remove);
         }
 
         void bindViewHolder(CartPayableDetailModel model) {
-            mIsExpanded = false;
+            mRlDetailShipmentFee.setVisibility(View.VISIBLE);
 
-            mTvTotalItem.setText(getTotalItemFormat(model.getTotalItem()));
-            mTvTotalItemPrice.setText(getPriceFormat(model.getTotalPrice()));
-            mTvShippingFee.setText(getLabelShipmentFeeWeight(model.getTotalWeight(), 0));
-            mTvShippingFeePrice.setText(getPriceFormat(model.getShippingFee()));
-            mTvInsuranceFeePrice.setText(getPriceFormat(model.getInsuranceFee()));
-            mTvPromoPrice.setText(getPriceFormat(model.getPromoPrice()));
-            mTvPayablePrice.setText(getPriceFormat(model.getTotalPrice()));
+            mTvTotalItemLabel.setText(getTotalItemFormat(model.getTotalItem()));
+            mTvTotalItem.setText(getPriceFormat(model.getTotalPrice()));
+            mTvShippingFeeLabel.setText(getLabelShipmentFeeWeight(model.getTotalWeight(), 0));
+            mTvShippingFee.setText(getPriceFormat(model.getShippingFee()));
+            mTvInsuranceFee.setText(getPriceFormat(model.getInsuranceFee()));
+            mTvPromo.setText(getPriceFormat(model.getPromoPrice()));
+            mTvPayable.setText(getPriceFormat(model.getTotalPrice()));
+
+            mTvPromoFreeShipping.setVisibility(View.VISIBLE);
+            mTvPromoTextViewRemove.setOnClickListener(togglePromoTextListener);
         }
 
-        private void toggleDetail() {
-            mIsExpanded = !mIsExpanded;
-            mRlDetailFee.setVisibility(mIsExpanded ? View.VISIBLE : View.GONE);
+        private void togglePromoText() {
+            mTvPromoFreeShipping.setVisibility(View.GONE);
         }
 
-        View.OnClickListener expandDetailListener = new View.OnClickListener() {
+        View.OnClickListener togglePromoTextListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                toggleDetail();
+                togglePromoText();
             }
         };
 
@@ -372,87 +364,50 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         private static final int IMAGE_ALPHA_DISABLED = 128;
         private static final int IMAGE_ALPHA_ENABLED = 255;
 
-        @BindView(R2.id.tv_sender_name)
         TextView mTvSenderName;
-        @BindView(R2.id.iv_product_image_container)
         ImageView mIvProductImage;
-        @BindView(R2.id.tv_shipping_product_name)
         TextView mTvProductName;
-        @BindView(R2.id.tv_shipped_product_price)
         TextView mTvProductPrice;
-        @BindView(R2.id.tv_product_weight)
         TextView mTvProductWeight;
-        @BindView(R2.id.tv_total_product_item)
         TextView mTvTotalProductItem;
-        @BindView(R2.id.tv_optional_note_to_seller)
         TextView mTvOptionalNote;
 
-        @BindView(R2.id.rl_product_policies_layout)
         RelativeLayout mRlProductPoliciesContainer;
-        @BindView(R2.id.iv_free_return_icon)
         ImageView mIvFreeReturnIcon;
-        @BindView(R2.id.tv_free_return_text)
         TextView mTvFreeReturnText;
-        @BindView(R2.id.tv_po_sign)
         TextView mTvPoSign;
-        @BindView(R2.id.tv_cashback_text)
-        TextView mTvCashback;
+        TextView mTvCashBack;
 
-        @BindView(R2.id.rv_product_list)
         RecyclerView mRvProductList;
 
-        @BindView(R2.id.rl_expand_other_product)
         RelativeLayout mRlExpandOtherProductContainer;
-        @BindView(R2.id.tv_expand_other_product)
         TextView mTvExpandOtherProduct;
 
-        @BindView(R2.id.choose_courier_button)
         TextView mChooseCourierButton;
-        @BindView(R2.id.iv_chevron_shipment_option)
         ImageView mIvChevronShipmentOption;
-        @BindView(R2.id.tv_selected_shipment)
         TextView mTvSelectedShipment;
 
-        @BindView(R2.id.rl_detail_shipment_fee)
         RelativeLayout mRlDetailShipmentFeeContainer;
-        @BindView(R2.id.tv_total_item)
         TextView mTvTotalItem;
-        @BindView(R2.id.tv_total_item_price)
         TextView mTvTotalItemPrice;
-        @BindView(R2.id.tv_shipping_fee)
         TextView mTvShippingFee;
-        @BindView(R2.id.tv_shipping_fee_price)
         TextView mTvShippingFeePrice;
-        @BindView(R2.id.tv_insurance_fee_price)
         TextView mTvInsuranceFeePrice;
-        @BindView(R2.id.tv_promo_price)
         TextView mTvPromoPrice;
 
-        @BindView(R2.id.rl_cart_sub_total)
         RelativeLayout mRlCartSubTotal;
-        @BindView(R2.id.iv_detail_option_chevron)
         ImageView mIvDetailOptionChevron;
-        @BindView(R2.id.tv_sub_total_price)
         TextView mTvSubTotalPrice;
 
-        @BindView(R2.id.ll_warning_container)
         LinearLayout llWarningContainer;
-        @BindView(R2.id.tv_warning)
         TextView tvWarning;
 
-        @BindView(R2.id.ll_shipping_warning_container)
         LinearLayout llShippingWarningContainer;
-        @BindView(R2.id.img_shipping_warning)
         ImageView imgShippingWarning;
-        @BindView(R2.id.tv_shipping_warning)
         TextView tvShippingWarning;
-        @BindView(R2.id.tv_text_product_weight)
         TextView tvTextProductWeight;
-        @BindView(R2.id.tv_label_item_count)
         TextView tvLabelItemCount;
-        @BindView(R2.id.tv_label_note_to_seller)
         TextView tvLabelNoteToSeller;
-        @BindView(R2.id.ll_note_to_seller)
         LinearLayout mLlNoteToSellerLayout;
 
         private boolean mIsExpandAllProduct;
@@ -460,7 +415,52 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
         ShippedProductDetailsViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+
+            mTvSenderName = itemView.findViewById(R.id.tv_sender_name);
+            mIvProductImage = itemView.findViewById(R.id.iv_product_image_container);
+            mTvProductName = itemView.findViewById(R.id.tv_shipping_product_name);
+            mTvProductPrice = itemView.findViewById(R.id.tv_shipped_product_price);
+            mTvProductWeight = itemView.findViewById(R.id.tv_product_weight);
+            mTvTotalProductItem = itemView.findViewById(R.id.tv_total_product_item);
+            mTvOptionalNote = itemView.findViewById(R.id.tv_optional_note_to_seller);
+
+            mRlProductPoliciesContainer = itemView.findViewById(R.id.rl_product_policies_layout);
+            mIvFreeReturnIcon = itemView.findViewById(R.id.iv_free_return_icon);
+            mTvFreeReturnText = itemView.findViewById(R.id.tv_free_return_text);
+            mTvPoSign = itemView.findViewById(R.id.tv_po_sign);
+            mTvCashBack = itemView.findViewById(R.id.tv_cashback_text);
+
+            mRvProductList = itemView.findViewById(R.id.rv_product_list);
+
+            mRlExpandOtherProductContainer = itemView.findViewById(R.id.rl_expand_other_product);
+            mTvExpandOtherProduct = itemView.findViewById(R.id.tv_expand_other_product);
+
+            mChooseCourierButton = itemView.findViewById(R.id.choose_courier_button);
+            mIvChevronShipmentOption = itemView.findViewById(R.id.iv_chevron_shipment_option);
+            mTvSelectedShipment = itemView.findViewById(R.id.tv_selected_shipment);
+
+            mRlDetailShipmentFeeContainer = itemView.findViewById(R.id.rl_detail_shipment_fee);
+            mTvTotalItem = itemView.findViewById(R.id.tv_total_item);
+            mTvTotalItemPrice = itemView.findViewById(R.id.tv_total_item_price);
+            mTvShippingFee = itemView.findViewById(R.id.tv_shipping_fee);
+            mTvShippingFeePrice = itemView.findViewById(R.id.tv_shipping_fee_price);
+            mTvInsuranceFeePrice = itemView.findViewById(R.id.tv_insurance_fee_price);
+            mTvPromoPrice = itemView.findViewById(R.id.tv_promo_price);
+
+            mRlCartSubTotal = itemView.findViewById(R.id.rl_cart_sub_total);
+            mIvDetailOptionChevron = itemView.findViewById(R.id.iv_detail_option_chevron);
+            mTvSubTotalPrice = itemView.findViewById(R.id.tv_sub_total_price);
+
+            llWarningContainer = itemView.findViewById(R.id.ll_warning_container);
+            tvWarning = itemView.findViewById(R.id.tv_warning);
+
+            llShippingWarningContainer = itemView.findViewById(R.id.ll_shipping_warning_container);
+            imgShippingWarning = itemView.findViewById(R.id.img_shipping_warning);
+            tvShippingWarning = itemView.findViewById(R.id.tv_shipping_warning);
+            tvTextProductWeight = itemView.findViewById(R.id.tv_text_product_weight);
+            tvLabelItemCount = itemView.findViewById(R.id.tv_label_item_count);
+            tvLabelNoteToSeller = itemView.findViewById(R.id.tv_label_note_to_seller);
+            mLlNoteToSellerLayout = itemView.findViewById(R.id.ll_note_to_seller);
         }
 
         void bindViewHolder(CartSellerItemModel model) {
@@ -514,8 +514,8 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             mIvFreeReturnIcon.setVisibility(firstItem.isFreeReturn() ? View.VISIBLE : View.GONE);
             mTvFreeReturnText.setVisibility(firstItem.isFreeReturn() ? View.VISIBLE : View.GONE);
             mTvPoSign.setVisibility(firstItem.isPreOrder() ? View.VISIBLE : View.GONE);
-            mTvCashback.setVisibility(firstItem.isCashback() ? View.VISIBLE : View.GONE);
-            mTvCashback.setText(firstItem.getCashback());
+            mTvCashBack.setVisibility(firstItem.isCashback() ? View.VISIBLE : View.GONE);
+            mTvCashBack.setText(firstItem.getCashback());
 
             mIvDetailOptionChevron.setImageResource(getResourceDrawerChevron(mIsExpandCostDetail));
 
@@ -648,7 +648,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             llWarningContainer.setVisibility(View.VISIBLE);
         }
 
-        //        private void showGreyWarning(String message) {
+//        private void showGreyWarning(String message) {
 //            llWarningContainer.setBackgroundColor(ContextCompat.getColor(
 //                    llWarningContainer.getContext(), R.color.bg_warning_grey));
 //            imgWarning.setImageResource(R.drawable.ic_warning_grey);
@@ -685,7 +685,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             mTvTotalProductItem.setTextColor(ContextCompat.getColor(mContext, R.color.grey_nonactive_text));
             tvLabelNoteToSeller.setTextColor(ContextCompat.getColor(mContext, R.color.grey_nonactive_text));
             mTvOptionalNote.setTextColor(ContextCompat.getColor(mContext, R.color.grey_nonactive_text));
-            mTvCashback.setBackgroundColor(ContextCompat.getColor(mContext, R.color.grey_nonactive_text));
+            mTvCashBack.setBackgroundColor(ContextCompat.getColor(mContext, R.color.grey_nonactive_text));
             setImageFilterGrayscale();
         }
 
@@ -708,7 +708,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             mTvTotalProductItem.setTextColor(ContextCompat.getColor(mContext, R.color.font_black_secondary_54));
             tvLabelNoteToSeller.setTextColor(ContextCompat.getColor(mContext, R.color.black_38));
             mTvOptionalNote.setTextColor(ContextCompat.getColor(mContext, R.color.black_70));
-            mTvCashback.setBackground(ContextCompat.getDrawable(mContext, R.drawable.layout_bg_cashback));
+            mTvCashBack.setBackground(ContextCompat.getDrawable(mContext, R.drawable.layout_bg_cashback));
             setImageFilterNormal();
         }
 

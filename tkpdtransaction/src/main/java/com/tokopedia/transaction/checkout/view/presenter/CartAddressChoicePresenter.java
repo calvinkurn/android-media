@@ -1,7 +1,7 @@
 package com.tokopedia.transaction.checkout.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
+import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.view.view.ICartAddressChoiceView;
 
 import java.util.ArrayList;
@@ -14,8 +14,8 @@ import java.util.List;
 public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddressChoiceView>
         implements ICartAddressChoicePresenter {
 
-    private List<ShipmentRecipientModel> recipientAddresses = new ArrayList<>();
-    private ShipmentRecipientModel selectedRecipientAddress;
+    private List<RecipientAddressModel> recipientAddresses = new ArrayList<>();
+    private RecipientAddressModel selectedRecipientAddress;
 
     @Override
     public void attachView(ICartAddressChoiceView view) {
@@ -29,38 +29,39 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
 
     @Override
     public void loadAddresses() {
-        List<ShipmentRecipientModel> models = DummyCreator.createDummyShipmentRecipients();
+        List<RecipientAddressModel> models = DummyCreator.createDummyShipmentRecipients();
         recipientAddresses.clear();
         recipientAddresses.addAll(models);
         getView().renderRecipientData();
     }
 
     @Override
-    public List<ShipmentRecipientModel> getRecipientAddresses() {
+    public List<RecipientAddressModel> getRecipientAddresses() {
         return recipientAddresses;
     }
 
     @Override
-    public void setSelectedRecipientAddress(ShipmentRecipientModel model) {
+    public void setSelectedRecipientAddress(RecipientAddressModel model) {
         this.selectedRecipientAddress = model;
     }
 
     @Override
-    public ShipmentRecipientModel getSelectedRecipientAddress() {
+    public RecipientAddressModel getSelectedRecipientAddress() {
         return selectedRecipientAddress;
     }
 
     private static class DummyCreator {
 
-        private static List<ShipmentRecipientModel> createDummyShipmentRecipients() {
-            List<ShipmentRecipientModel> models = new ArrayList<>();
-            ShipmentRecipientModel addressOne = new ShipmentRecipientModel();
-            addressOne.setPrimerAddress(true);
+        private static List<RecipientAddressModel> createDummyShipmentRecipients() {
+            List<RecipientAddressModel> models = new ArrayList<>();
+            RecipientAddressModel addressOne = new RecipientAddressModel();
+            addressOne.setAddressStatus(1);
             addressOne.setId("1");
-            addressOne.setAddressIdentifier("Utama");
             addressOne.setRecipientName("John Doe");
-            addressOne.setRecipientAddressDescription("Alamat Kantor");
-            addressOne.setRecipientAddress("Jl. Prof. Dr. Satrio Kav. 11 No. 111, Setiabudi, Jakarta Selatan");
+            addressOne.setAddressName("Alamat Kantor");
+            addressOne.setAddressStreet("Jl. Prof. Dr. Satrio Kav. 11 No. 111");
+            addressOne.setDestinationDistrictName("Setiabudi");
+            addressOne.setAddressCityName("Jakarta Selatan");
             addressOne.setRecipientPhoneNumber("080989999");
             addressOne.setDestinationDistrictId("2283");
             addressOne.setDestinationDistrictName("Setiabudi");
@@ -68,13 +69,14 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
             addressOne.setUnixTime("1515753331");
             models.add(addressOne);
 
-            ShipmentRecipientModel addressTwo = new ShipmentRecipientModel();
+            RecipientAddressModel addressTwo = new RecipientAddressModel();
             addressTwo.setId("2");
-            addressTwo.setPrimerAddress(false);
-            addressTwo.setAddressIdentifier("");
+            addressTwo.setAddressStatus(2);
             addressTwo.setRecipientName("John Doe");
-            addressTwo.setRecipientAddressDescription("Alamat Rumah");
-            addressTwo.setRecipientAddress("Jl. Ir. Sukarno No. 21, Tebet, Jakarta Selatan");
+            addressTwo.setAddressName("Alamat Rumah");
+            addressTwo.setAddressStreet("Jl. Ir. Sukarno No. 21");
+            addressTwo.setDestinationDistrictName("Tebet");
+            addressTwo.setAddressCityName("Jakarta Selatan");
             addressTwo.setRecipientPhoneNumber("080989999");
             addressTwo.setDestinationDistrictId("2283");
             addressTwo.setDestinationDistrictName("tebet");

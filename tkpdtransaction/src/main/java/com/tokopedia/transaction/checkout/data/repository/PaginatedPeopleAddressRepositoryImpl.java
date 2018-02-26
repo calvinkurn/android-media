@@ -4,9 +4,9 @@ import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.core.manage.people.address.model.GetPeopleAddress;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.transaction.checkout.data.mapper.PeopleAddressMapper;
-import com.tokopedia.transaction.checkout.domain.model.ShipmentAddressModel;
+import com.tokopedia.transaction.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.transaction.checkout.domain.repository.PeopleAddressRepository;
+import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
 
 import java.util.List;
 import java.util.Map;
@@ -19,16 +19,16 @@ import rx.functions.Func1;
  * @author Aghny A. Putra on 21/02/18
  */
 
-public class PeopleAddressRepositoryImpl implements PeopleAddressRepository {
+public class PaginatedPeopleAddressRepositoryImpl implements PeopleAddressRepository {
 
     private static final int FIRST_ELEMENT = 0;
 
     private final PeopleService mPeopleService;
-    private final PeopleAddressMapper mPeopleAddressMapper;
+    private final AddressModelMapper mAddressModelMapper;
 
-    public PeopleAddressRepositoryImpl(PeopleService peopleService, PeopleAddressMapper peopleAddressMapper) {
+    public PaginatedPeopleAddressRepositoryImpl(PeopleService peopleService, AddressModelMapper addressModelMapper) {
         mPeopleService = peopleService;
-        mPeopleAddressMapper = peopleAddressMapper;
+        mAddressModelMapper = addressModelMapper;
     }
 
     /**
@@ -38,7 +38,7 @@ public class PeopleAddressRepositoryImpl implements PeopleAddressRepository {
      * @return List of address
      */
     @Override
-    public Observable<List<ShipmentAddressModel>> getAddress(Map<String, String> params) {
+    public Observable<List<RecipientAddressModel>> getAllAddress(Map<String, String> params) {
         return mPeopleService.getApi()
                 .getAddress(params)
                 .map(new Func1<Response<TkpdResponse>, List<AddressModel>>() {
@@ -49,7 +49,7 @@ public class PeopleAddressRepositoryImpl implements PeopleAddressRepository {
                                 GetPeopleAddress peopleAddress = response.body()
                                         .convertDataObj(GetPeopleAddress.class);
 
-                                if (peopleAddress.getList().isEmpty()) {
+                                if (!peopleAddress.getList().isEmpty()) {
                                     // Successfully obtaining user's list of address
                                     return peopleAddress.getList();
                                 } else {
@@ -68,11 +68,12 @@ public class PeopleAddressRepositoryImpl implements PeopleAddressRepository {
                         return null;
                     }
                 })
-                .map(new Func1<List<AddressModel>, List<ShipmentAddressModel>>() {
+                .map(new Func1<List<AddressModel>, List<RecipientAddressModel>>() {
                     @Override
-                    public List<ShipmentAddressModel> call(List<AddressModel> addressModels) {
-                        return mPeopleAddressMapper.transform(addressModels);
+                    public List<RecipientAddressModel> call(List<AddressModel> addressModels) {
+                        return mAddressModelMapper.transform(addressModels);
                     }
                 });
     }
+
 }

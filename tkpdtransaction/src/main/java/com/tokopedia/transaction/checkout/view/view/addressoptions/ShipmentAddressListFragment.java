@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.checkout.view;
+package com.tokopedia.transaction.checkout.view.view.addressoptions;
 
 import android.app.Activity;
 import android.content.Context;
@@ -8,56 +8,66 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.transaction.checkout.di.component.DaggerShipmentAddressListComponent;
 import com.tokopedia.transaction.checkout.di.component.ShipmentAddressListComponent;
 import com.tokopedia.transaction.checkout.di.module.ShipmentAddressListModule;
 import com.tokopedia.transaction.checkout.view.adapter.ShipmentAddressListAdapter;
-import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
+import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.view.presenter.ShipmentAddressListPresenter;
 import com.tokopedia.transaction.checkout.view.view.ISearchAddressListView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * @author Aghny A. Putra on 25/01/18
  */
+
 public class ShipmentAddressListFragment extends BasePresenterFragment implements
-        ISearchAddressListView<List<ShipmentRecipientModel>>,
+        ISearchAddressListView<List<RecipientAddressModel>>,
         SearchInputView.Listener,
         SearchInputView.ResetListener,
         ShipmentAddressListAdapter.ActionListener {
 
     private static final String TAG = ShipmentAddressListFragment.class.getSimpleName();
 
-    @BindView(R2.id.rv_address_list) RecyclerView mRvRecipientAddressList;
-    @BindView(R2.id.sv_address_search_box) SearchInputView mSvAddressSearchBox;
+    private static final int ORDER_ASC = 1;
+    private static final String PARAMS = "params";
 
-    @Inject ShipmentAddressListAdapter mShipmentAddressListAdapter;
-    @Inject ShipmentAddressListPresenter mShipmentAddressListPresenter;
+    RecyclerView mRvRecipientAddressList;
+    SearchInputView mSvAddressSearchBox;
+    TextView mTvAddNewAddress;
+
+    InputMethodManager mInputMethodManager;
+
+    @Inject
+    ShipmentAddressListAdapter mShipmentAddressListAdapter;
+
+    @Inject
+    ShipmentAddressListPresenter mShipmentAddressListPresenter;
 
     public static ShipmentAddressListFragment newInstance() {
         return new ShipmentAddressListFragment();
     }
 
-    public static ShipmentAddressListFragment newInstance(Map<String, String> params) {
-        ShipmentAddressListFragment fragment = new ShipmentAddressListFragment();
+    public static ShipmentAddressListFragment newInstance(HashMap<String, String> params) {
         Bundle bundle = new Bundle();
+        bundle.putSerializable(PARAMS, params);
+
+        ShipmentAddressListFragment fragment = new ShipmentAddressListFragment();
         fragment.setArguments(bundle);
+
         return fragment;
     }
 
@@ -145,14 +155,9 @@ public class ShipmentAddressListFragment extends BasePresenterFragment implement
      */
     @Override
     protected void initView(View view) {
-        ButterKnife.bind(this, view);
-
-        mRvRecipientAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRvRecipientAddressList.setAdapter(mShipmentAddressListAdapter);
-
-        mShipmentAddressListPresenter.attachView(this);
-
-        initSearchView();
+        mRvRecipientAddressList = view.findViewById(R.id.rv_address_list);
+        mSvAddressSearchBox = view.findViewById(R.id.sv_address_search_box);
+        mTvAddNewAddress = view.findViewById(R.id.tv_add_new_address);
     }
 
     /**
@@ -160,7 +165,9 @@ public class ShipmentAddressListFragment extends BasePresenterFragment implement
      */
     @Override
     protected void setViewListener() {
-        mShipmentAddressListPresenter.getAddressList(getActivity(), 1, "");
+        mShipmentAddressListPresenter.attachView(this);
+        mInputMethodManager = (InputMethodManager) getActivity()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
     /**
@@ -168,7 +175,8 @@ public class ShipmentAddressListFragment extends BasePresenterFragment implement
      */
     @Override
     protected void initialVar() {
-
+        mRvRecipientAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRvRecipientAddressList.setAdapter(mShipmentAddressListAdapter);
     }
 
     /**
@@ -176,23 +184,19 @@ public class ShipmentAddressListFragment extends BasePresenterFragment implement
      */
     @Override
     protected void setActionVar() {
-
-    }
-
-    @OnClick(R2.id.tv_add_new_address)
-    protected void addNewAddress() {
-
+        initSearchView();
+        onSearchReset();
     }
 
     @Override
-    public void showList(List<ShipmentRecipientModel> shipmentRecipientModels) {
-        mShipmentAddressListAdapter.setAddressList(shipmentRecipientModels);
+    public void showList(List<RecipientAddressModel> recipientAddressModels) {
+        mShipmentAddressListAdapter.setAddressList(recipientAddressModels);
         mShipmentAddressListAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void showListEmpty() {
-        mShipmentAddressListAdapter.setAddressList(new ArrayList<ShipmentRecipientModel>());
+        mShipmentAddressListAdapter.setAddressList(new ArrayList<RecipientAddressModel>());
         mShipmentAddressListAdapter.notifyDataSetChanged();
     }
 
@@ -240,46 +244,48 @@ public class ShipmentAddressListFragment extends BasePresenterFragment implement
     @Override
     public void onSearchTextChanged(String text) {
         openSoftKeyboard();
-        performSearch(text);
+//        performSearch(text);
     }
 
     @Override
     public void onSearchReset() {
-//        mShipmentAddressListPresenter.resetSearch();
+        mShipmentAddressListPresenter.resetAddressList(getActivity(), ORDER_ASC);
         closeSoftKeyboard();
     }
 
-    private void performSearch(String keyword) {
-        if (!keyword.isEmpty()) {
-//            mShipmentAddressListPresenter.initSearch(keyword);
+    private void performSearch(String query) {
+        if (!query.isEmpty()) {
+            mShipmentAddressListPresenter.getAddressList(getActivity(), ORDER_ASC, query);
         } else {
             onSearchReset();
         }
     }
 
     private void openSoftKeyboard() {
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) {
-            imm.showSoftInput(mSvAddressSearchBox.getSearchTextView(), InputMethodManager.SHOW_IMPLICIT);
+        if (mInputMethodManager != null) {
+            mInputMethodManager.showSoftInput(
+                    mSvAddressSearchBox.getSearchTextView(), InputMethodManager.SHOW_IMPLICIT);
         }
     }
 
     private void closeSoftKeyboard() {
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) {
-            imm.hideSoftInputFromWindow(mSvAddressSearchBox.getSearchTextView().getWindowToken(), 0);
+        if (mInputMethodManager != null) {
+            mInputMethodManager.hideSoftInputFromWindow(
+                    mSvAddressSearchBox.getSearchTextView().getWindowToken(), 0);
         }
     }
 
     @Override
-    public void onAddressContainerClicked(ShipmentRecipientModel model) {
+    public void onAddressContainerClicked(RecipientAddressModel model) {
 
     }
 
     @Override
-    public void onEditClick(ShipmentRecipientModel model) {
+    public void onEditClick(RecipientAddressModel model) {
+        AddressModelMapper mapper = new AddressModelMapper();
+
         startActivityForResult(AddAddressActivity.createInstance(getActivity(),
-                model.convertToAddressModel()), ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
+                mapper.transform(model)), ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
 
     }
 

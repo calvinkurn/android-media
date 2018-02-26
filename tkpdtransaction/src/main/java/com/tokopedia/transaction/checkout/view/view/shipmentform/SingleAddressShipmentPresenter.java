@@ -1,18 +1,45 @@
 package com.tokopedia.transaction.checkout.view.view.shipmentform;
 
+import android.content.Context;
+
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.transaction.checkout.domain.usecase.GetAllAddressUseCase;
+import com.tokopedia.transaction.checkout.util.PeopleAddressAuthUtil;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
+import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.view.presenter.CartMvpPresenter;
+import com.tokopedia.usecase.RequestParams;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
 
 import rx.Observer;
+import rx.Subscriber;
 
 /**
  * @author Aghny A. Putra on 26/01/18
  */
+
 public class SingleAddressShipmentPresenter
         extends CartMvpPresenter<ICartSingleAddressView<CartSingleAddressData>> {
 
-    public SingleAddressShipmentPresenter() {
+    private static final String TAG = SingleAddressShipmentPresenter.class.getSimpleName();
 
+    private static final String DEFAULT_KEYWORD = "";
+    private static final int DEFAULT_ORDER = 1;
+
+    private final GetAllAddressUseCase mGetAllAddressUseCase;
+    private final PagingHandler mPagingHandler;
+
+    @Inject
+    public SingleAddressShipmentPresenter(GetAllAddressUseCase getAllAddressUseCase,
+                                          PagingHandler pagingHandler) {
+        mGetAllAddressUseCase = getAllAddressUseCase;
+        mPagingHandler = pagingHandler;
     }
 
     @Override
@@ -25,30 +52,31 @@ public class SingleAddressShipmentPresenter
         super.checkViewAttached();
     }
 
-    public void getCartSingleAddressItemView(CartSingleAddressData cartSingleAddressData) {
-        // TODO remove this, and invoke use case
-        getMvpView().show(cartSingleAddressData);
-    }
-
-
-
-    private final class CartSingleAddressObserver implements Observer<CartSingleAddressData> {
-
-        @Override
-        public void onNext(CartSingleAddressData cartSingleAddressData) {
-            getMvpView().show(cartSingleAddressData);
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            getMvpView().showError();
-        }
-
-        @Override
-        public void onCompleted() {
-
-        }
-
+    /**
+     *
+     * @param context
+     * @param cartSingleAddressData
+     */
+    public void getCartShipmentData(Context context, final CartSingleAddressData cartSingleAddressData) {
+//        mGetAllAddressUseCase.execute(
+//                PeopleAddressAuthUtil.getPeopleAddressRequestParams(context, DEFAULT_ORDER, DEFAULT_KEYWORD, mPagingHandler.getPage()),
+//                new Subscriber<List<RecipientAddressModel>>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable throwable) {
+//                        getMvpView().showError();
+//                    }
+//
+//                    @Override
+//                    public void onNext(List<RecipientAddressModel> recipientAddressModels) {
+//                        cartSingleAddressData.setRecipientAddressModel(recipientAddressModels.get(0));
+                        getMvpView().show(cartSingleAddressData);
+//                    }
+//                });
     }
 
 }
