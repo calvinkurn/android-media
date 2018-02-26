@@ -2,12 +2,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.tokopedia.tkpdtrain.homepage.presentation.TrainHomepageFragment">
+    tools:context="com.tokopedia.tkpdtrain.homepage.presentation.view.TrainHomepageFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content">
+
+        <include layout="@layout/view_kai_homepage_form" />
+
+        <!--Banner disini-->
+
+    </android.support.v4.widget.NestedScrollView>
 
 </FrameLayout>
