@@ -18,9 +18,9 @@ import com.tokopedia.flight.dashboard.domain.GetFlightAirportWithParamUseCase;
 import com.tokopedia.flight.dashboard.domain.GetFlightClassByIdUseCase;
 import com.tokopedia.flight.dashboard.view.fragment.cache.FlightDashboardCache;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardAirportsWrapper;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardPassDataViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardAirportsWrapper;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.mapper.FlightClassViewModelMapper;
 import com.tokopedia.flight.dashboard.view.validator.FlightDashboardValidator;
@@ -35,6 +35,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
@@ -423,7 +424,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
             flightDashboardPassDataViewModel.setRoundTrip(false);
             flightDashboardPassDataViewModel.setDepartureDate(extrasTripDeparture[INDEX_DATE_TRIP]);
             flightDashboardPassDataViewModel.setReturnDate("");
-            
+
             if (tempExtras.length > 1) {
                 String[] extrasTripReturn = tempExtras[INDEX_RETURN_TRIP].split("_");
                 flightDashboardPassDataViewModel.setRoundTrip(true);
@@ -497,41 +498,45 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                 )
         );
 
-        Observable<FlightDashboardAirportsWrapper> airportObservable = getFlightAirportWithParamUseCase
-                .createObservable(getFlightAirportWithParamUseCase.createRequestParams(flightDashboardPassDataViewModel.getDepartureAirportId()))
-                .flatMap(new Func1<FlightAirportDB, Observable<FlightDashboardAirportsWrapper>>() {
+        Observable<FlightDashboardAirportsWrapper> cacheObservable = getFlightClassByIdUseCase
+                .createObservable(getFlightClassByIdUseCase.createRequestParams(flightDashboardPassDataViewModel.getFlightClass())).doOnNext(new Action1<FlightClassEntity>() {
                     @Override
-                    public Observable<FlightDashboardAirportsWrapper> call(FlightAirportDB airportDB) {
-                        FlightDashboardAirportsWrapper wrapper = new FlightDashboardAirportsWrapper();
-                        wrapper.setDepartureAirport(airportDB);
-                        return Observable.zip(
-                                getFlightAirportWithParamUseCase
-                                        .createObservable(getFlightAirportWithParamUseCase
-                                                .createRequestParams(flightDashboardPassDataViewModel.getArrivalAirportId())
-                                        ),
-                                Observable.just(wrapper),
-                                new Func2<FlightAirportDB, FlightDashboardAirportsWrapper, FlightDashboardAirportsWrapper>() {
-                                    @Override
-                                    public FlightDashboardAirportsWrapper call(FlightAirportDB airportDB, FlightDashboardAirportsWrapper wrapper1) {
-                                        wrapper1.setArrivalAirport(airportDB);
-                                        return wrapper1;
-                                    }
-                                });
+                    public void call(FlightClassEntity flightClassEntity) {
+                        if (flightClassEntity != null && getView().getCurrentDashboardViewModel().getFlightClass() == null)
+                            onFlightClassesChange(
+                                    flightClassViewModelMapper.transform(flightClassEntity)
+                            );
                     }
-                }).zipWith(getFlightClassByIdUseCase
-                                .createObservable(getFlightClassByIdUseCase.createRequestParams(flightDashboardPassDataViewModel.getFlightClass())),
-                        new Func2<FlightDashboardAirportsWrapper, FlightClassEntity, FlightDashboardAirportsWrapper>() {
-                            @Override
-                            public FlightDashboardAirportsWrapper call(FlightDashboardAirportsWrapper flightDashbordAirportsWrapper, FlightClassEntity flightClassEntity) {
-                                if (flightClassEntity != null) {
-                                    flightDashbordAirportsWrapper.setFlightClassEntity(flightClassEntity);
-                                }
-                                return flightDashbordAirportsWrapper;
-                            }
-                        });
+                }).map(new Func1<FlightClassEntity, FlightDashboardAirportsWrapper>() {
+                    @Override
+                    public FlightDashboardAirportsWrapper call(FlightClassEntity flightClassEntity) {
+                        FlightDashboardAirportsWrapper wrapper = new FlightDashboardAirportsWrapper();
+                        if (flightClassEntity != null) {
+                            wrapper.setFlightClassEntity(flightClassEntity);
+                        }
+                        return wrapper;
+                    }
+                }).zipWith(getFlightAirportWithParamUseCase
+                        .createObservable(getFlightAirportWithParamUseCase.createRequestParams(flightDashboardPassDataViewModel.getDepartureAirportId())
+                        ), new Func2<FlightDashboardAirportsWrapper, FlightAirportDB, FlightDashboardAirportsWrapper>() {
+                    @Override
+                    public FlightDashboardAirportsWrapper call(FlightDashboardAirportsWrapper flightDashboardAirportsWrapper, FlightAirportDB airportDB) {
+                        flightDashboardAirportsWrapper.setDepartureAirport(airportDB);
+                        return flightDashboardAirportsWrapper;
+                    }
+                }).zipWith(getFlightAirportWithParamUseCase
+                        .createObservable(getFlightAirportWithParamUseCase
+                                .createRequestParams(flightDashboardPassDataViewModel.getArrivalAirportId())
+                        ), new Func2<FlightDashboardAirportsWrapper, FlightAirportDB, FlightDashboardAirportsWrapper>() {
+                    @Override
+                    public FlightDashboardAirportsWrapper call(FlightDashboardAirportsWrapper flightDashboardAirportsWrapper, FlightAirportDB airportDB) {
+                        flightDashboardAirportsWrapper.setArrivalAirport(airportDB);
+                        return flightDashboardAirportsWrapper;
+                    }
+                });
 
         compositeSubscription.add(
-                airportObservable
+                cacheObservable
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.io())
