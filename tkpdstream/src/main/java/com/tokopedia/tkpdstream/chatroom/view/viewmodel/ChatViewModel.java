@@ -16,7 +16,7 @@ public class ChatViewModel extends BaseChatViewModel implements Visitable<GroupC
     boolean isAdministrator;
 
 
-    public ChatViewModel(String message, String createdAt, String updatedAt,
+    public ChatViewModel(String message, long createdAt, long updatedAt,
                          String messageId, String senderId, String senderName,
                          String senderIconUrl, boolean isInfluencer, boolean isAdministrator) {
         super(message, createdAt, updatedAt, messageId);

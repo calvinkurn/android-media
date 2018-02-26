@@ -11,11 +11,13 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.typefactory.GroupChatTypeFactory;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.BaseChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.UserActionViewModel;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -49,8 +51,33 @@ public class GroupChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
+
+        if (list.get(position) instanceof BaseChatViewModel
+                && position == list.size() - 1) {
+            ((BaseChatViewModel) list.get(position)).setShowHeaderTime(true);
+            ((BaseChatViewModel) list.get(position)).setHeaderTime(
+                    ((BaseChatViewModel) list.get(position)).getUpdatedAt());
+        } else if (list.get(position) instanceof BaseChatViewModel
+                && headerTimeIsDifferent(
+                ((BaseChatViewModel) list.get(position)).getUpdatedAt(),
+                ((BaseChatViewModel) list.get(position + 1)).getUpdatedAt())) {
+            ((BaseChatViewModel) list.get(position)).setShowHeaderTime(true);
+            ((BaseChatViewModel) list.get(position)).setHeaderTime(
+                    ((BaseChatViewModel) list.get(position)).getUpdatedAt());
+        } else if (list.get(position) instanceof BaseChatViewModel) {
+            ((BaseChatViewModel) list.get(position)).setShowHeaderTime(false);
+        }
+
         holder.bind(list.get(position));
 
+    }
+
+    private boolean headerTimeIsDifferent(long headerTimeNow, long headerTimeAbovePost) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(headerTimeNow);
+        Calendar newCalendar = Calendar.getInstance();
+        newCalendar.setTimeInMillis(headerTimeAbovePost);
+        return newCalendar.get(Calendar.DAY_OF_YEAR) - calendar.get(Calendar.DAY_OF_YEAR) != 0;
     }
 
     @Override
@@ -68,8 +95,13 @@ public class GroupChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public void addList(List<Visitable> listChat) {
+        int positionStart = this.list.size();
         this.list.addAll(listChat);
-        notifyDataSetChanged();
+        notifyItemRangeInserted(positionStart, listChat.size());
+
+        if (positionStart != 0) {
+            notifyItemChanged(positionStart - 1);
+        }
     }
 
     public void addReply(ChatViewModel chatItem) {

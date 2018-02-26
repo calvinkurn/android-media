@@ -2,7 +2,6 @@ package com.tokopedia.tkpdstream.chatroom.domain.mapper;
 
 import com.sendbird.android.UserMessage;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
-import com.tokopedia.tkpdstream.common.util.TimeConverter;
 
 import javax.inject.Inject;
 
@@ -19,8 +18,8 @@ public class SendMessageMapper {
     public ChatViewModel map(UserMessage userMessage) {
 
         return new ChatViewModel(userMessage.getMessage(),
-                String.valueOf(TimeConverter.convertToHourFormat(userMessage.getCreatedAt())),
-                String.valueOf(TimeConverter.convertToHourFormat(userMessage.getUpdatedAt())),
+                userMessage.getCreatedAt(),
+                userMessage.getUpdatedAt(),
                 String.valueOf(userMessage.getMessageId()),
                 userMessage.getSender().getUserId(),
                 userMessage.getSender().getNickname(),

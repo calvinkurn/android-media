@@ -6,6 +6,19 @@
                                              android:layout_height="wrap_content"
                                              tools:layout_editor_absoluteY="81dp">
 
+    <include
+        android:id="@+id/header_time"
+        layout="@layout/layout_header_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_sm"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible"/>
+
     <ImageView
         android:id="@+id/avatar"
         android:layout_width="@dimen/avatar_size"
@@ -14,21 +27,22 @@
         android:layout_marginLeft="@dimen/new_margin_med"
         android:layout_marginRight="@dimen/new_margin_small"
         android:layout_marginStart="@dimen/new_margin_med"
-        android:layout_marginTop="@dimen/margin_med"
+        android:layout_marginTop="@dimen/margin_sm"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header_time"
         tools:src="@color/background_notification"/>
 
     <ImageView
         android:id="@+id/influencer_badge"
         android:layout_width="@dimen/badge_size"
         android:layout_height="@dimen/badge_size"
-        android:layout_marginTop="@dimen/margin_med"
         android:layout_marginLeft="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/margin_sm"
+
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/message"
         app:layout_constraintStart_toEndOf="@+id/avatar"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header_time"
         tools:src="@drawable/ic_badge_bronze"
         tools:visibility="visible"/>
 
@@ -36,19 +50,19 @@
         android:id="@+id/nickname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_vs"
         android:layout_marginTop="@dimen/margin_sm"
         android:layout_toEndOf="@id/avatar"
         android:layout_toRightOf="@id/avatar"
-        android:layout_marginLeft="@dimen/margin_vs"
         android:fontFamily="sans-serif"
+
         android:padding="@dimen/padding_vvvs"
         android:textColor="@color/font_black_disabled_38"
         android:textSize="@dimen/font_micro"
         android:textStyle="normal"
         app:layout_constraintStart_toEndOf="@+id/influencer_badge"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header_time"
         tools:text="Atalarikzyah"/>
-
 
 
     <TextView
@@ -59,6 +73,7 @@
         android:background="@drawable/bg_rounded_green_label"
         android:fontFamily="sans-serif"
         android:lineSpacingExtra="3sp"
+
         android:padding="@dimen/padding_vvs"
         android:paddingLeft="@dimen/padding_vs"
         android:paddingRight="@dimen/padding_vs"
@@ -67,7 +82,7 @@
         android:textSize="@dimen/font_label"
         android:textStyle="normal"
         app:layout_constraintStart_toEndOf="@+id/nickname"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/header_time"/>
 
     <TextView
         android:id="@+id/dot"
@@ -77,6 +92,7 @@
         android:layout_marginRight="@dimen/margin_vvs"
         android:layout_marginTop="@dimen/margin_sm"
         android:fontFamily="sans-serif-medium"
+
         android:gravity="center_vertical"
         android:lineSpacingExtra="3sp"
         android:text="@string/dot"
@@ -85,7 +101,7 @@
         android:textStyle="normal"
         app:layout_constraintBottom_toTopOf="@+id/message"
         app:layout_constraintStart_toEndOf="@+id/label"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/header_time"/>
 
     <TextView
         android:id="@+id/post_time"
@@ -96,11 +112,12 @@
         android:layout_toRightOf="@id/nickname"
         android:fontFamily="sans-serif"
         android:padding="@dimen/padding_vvvs"
+
         android:textColor="@color/font_black_disabled_38"
         android:textSize="@dimen/font_micro"
         android:textStyle="normal"
         app:layout_constraintStart_toEndOf="@+id/dot"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header_time"
         tools:text="12.00"/>
 
     <TextView
@@ -108,8 +125,8 @@
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:layout_below="@id/nickname"
-        android:layout_marginBottom="@dimen/new_margin_small"
-        android:layout_marginStart="8dp"
+        android:layout_marginLeft="@dimen/margin_vs"
+        android:layout_marginStart="@dimen/margin_vs"
         android:layout_toEndOf="@id/avatar"
         android:layout_toRightOf="@id/avatar"
         android:fontFamily="sans-serif"

@@ -24,6 +24,7 @@ public class ChatViewHolder extends AbstractViewHolder<ChatViewModel> {
     private ImageView avatar;
     private TextView adminLabel;
     private ImageView influencerBadge;
+    private TextView headerTime;
 
     @LayoutRes
     public static final int LAYOUT = R.layout.chat_view_holder;
@@ -36,14 +37,14 @@ public class ChatViewHolder extends AbstractViewHolder<ChatViewModel> {
         avatar = itemView.findViewById(R.id.avatar);
         adminLabel = itemView.findViewById(R.id.label);
         influencerBadge = itemView.findViewById(R.id.influencer_badge);
-
+        headerTime = itemView.findViewById(R.id.header_time);
     }
 
     @Override
     public void bind(ChatViewModel element) {
         ImageHandler.loadImageCircle2(avatar.getContext(), avatar, element.getSenderIconUrl());
         nickname.setText(MethodChecker.fromHtml(element.getSenderName()));
-        postTime.setText(element.getCreatedAt());
+        postTime.setText(element.getFormattedUpdatedAt());
         message.setText(MethodChecker.fromHtml(element.getMessage()));
 
         if (element.isAdministrator()) {
@@ -60,6 +61,13 @@ public class ChatViewHolder extends AbstractViewHolder<ChatViewModel> {
             influencerBadge.setVisibility(View.VISIBLE);
         } else {
             influencerBadge.setVisibility(View.GONE);
+        }
+
+        if (element.isShowHeaderTime()) {
+            headerTime.setVisibility(View.VISIBLE);
+            headerTime.setText(element.getFormattedHeaderTime());
+        } else {
+            headerTime.setVisibility(View.GONE);
         }
     }
 }

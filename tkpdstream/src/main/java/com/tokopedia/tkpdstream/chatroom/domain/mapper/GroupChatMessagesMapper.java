@@ -45,8 +45,8 @@ public class GroupChatMessagesMapper {
     private Visitable mapToUserMessage(BaseMessage message) {
         return new ChatViewModel(
                 ((UserMessage) message).getMessage(),
-                String.valueOf(TimeConverter.convertToHourFormat(message.getCreatedAt())),
-                String.valueOf(TimeConverter.convertToHourFormat(message.getUpdatedAt())),
+                message.getCreatedAt(),
+                message.getUpdatedAt(),
                 String.valueOf(message.getMessageId()),
                 ((UserMessage) message).getSender().getUserId(),
                 ((UserMessage) message).getSender().getNickname(),
@@ -59,8 +59,8 @@ public class GroupChatMessagesMapper {
     private AdminAnnouncementViewModel mapToAdminMessage(BaseMessage message) {
         return new AdminAnnouncementViewModel(
                 ((AdminMessage) message).getMessage(),
-                String.valueOf(TimeConverter.convertToHourFormat(message.getCreatedAt())),
-                String.valueOf(TimeConverter.convertToHourFormat(message.getUpdatedAt())),
+                message.getCreatedAt(),
+                message.getUpdatedAt(),
                 String.valueOf(message.getMessageId())
         );
     }

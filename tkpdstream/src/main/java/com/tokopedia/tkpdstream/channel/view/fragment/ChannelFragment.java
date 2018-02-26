@@ -181,6 +181,7 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
             @Override
             public void onClick(View v) {
                 goToChannel(channelViewModel);
+                channelInfoDialog.dismiss();
             }
         });
         actionButton.setText("Ikutan Vote Yuk!");
