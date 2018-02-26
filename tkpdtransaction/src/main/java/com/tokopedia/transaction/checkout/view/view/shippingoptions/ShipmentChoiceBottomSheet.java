@@ -23,7 +23,6 @@ import com.tokopedia.transaction.checkout.di.component.ShipmentChoiceComponent;
 import com.tokopedia.transaction.checkout.view.adapter.ShipmentChoiceAdapter;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
-import com.tokopedia.transaction.checkout.view.presenter.IShipmentChoicePresenter;
 import com.tokopedia.transaction.checkout.view.view.IShipmentChoiceView;
 
 import javax.inject.Inject;

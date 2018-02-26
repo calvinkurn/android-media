@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.checkout.view.presenter;
+package com.tokopedia.transaction.checkout.view.view.shippingoptions;
 
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;

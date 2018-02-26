@@ -21,7 +21,6 @@ import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.transaction.checkout.view.adapter.ShipmentAddressListAdapter;
 import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
-import com.tokopedia.transaction.checkout.view.presenter.CartAddressChoicePresenter;
 import com.tokopedia.transaction.checkout.view.presenter.ICartAddressChoicePresenter;
 import com.tokopedia.transaction.checkout.view.view.ICartAddressChoiceView;
 import com.tokopedia.transaction.checkout.view.view.multipleaddressform.MultipleAddressFragment;

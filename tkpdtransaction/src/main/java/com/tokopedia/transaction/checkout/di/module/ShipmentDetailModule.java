@@ -7,7 +7,7 @@ import com.tokopedia.transaction.checkout.domain.RatesDataStore;
 import com.tokopedia.transaction.checkout.domain.RatesRepository;
 import com.tokopedia.transaction.checkout.domain.ShipmentRatesDataMapper;
 import com.tokopedia.transaction.checkout.view.adapter.CourierChoiceAdapter;
-import com.tokopedia.transaction.checkout.view.presenter.IShipmentDetailPresenter;
+import com.tokopedia.transaction.checkout.view.view.shippingoptions.IShipmentDetailPresenter;
 import com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailPresenter;
 
 import dagger.Module;

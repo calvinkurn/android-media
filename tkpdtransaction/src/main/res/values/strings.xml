@@ -230,6 +230,7 @@
     <string name="message_error_dropshipper_data">Lengkapi informasi dropshipper Anda</string>
     <string name="message_error_dropshipper_name">Nama terlalu pendek</string>
     <string name="message_error_dropshipper_phone">Nomor telepon yang dimasukkan tidak sesuai</string>
+    <string name="message_error_no_pinpoint">Anda belum menandai lokasi tujuan dalam peta</string>
 
     <string-array name="pickup_point">
         <item>Alfamart</item>
