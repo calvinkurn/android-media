@@ -196,7 +196,7 @@ public class ProductVariantPickerSearchNewFragment extends BaseSearchListFragmen
 //            if (TextUtils.isEmpty(productVariantOptionSubmit.getCustomText())) {
 //                ProductVariantOption productVariantOption = ProductVariantUtils.getProductVariantValue(productVariantOptionSubmit.getVariantUnitValueId(), productVariantOptionList);
 //                if (productVariantOption != null) {
-//                    ((BaseMultipleCheckListAdapter<ProductVariantOption>) adapter).setChecked(productVariantOption.getId(), true);
+//                    ((BaseMultipleCheckListAdapter<ProductVariantOption>) adapter).setChecked(productVariantOption.getPvo(), true);
 //                    title = productVariantOption.getValue();
 //                    productVariantViewModel.setHexCode(productVariantOption.getHexCode());
 //                }
@@ -253,7 +253,7 @@ public class ProductVariantPickerSearchNewFragment extends BaseSearchListFragmen
 
 //    private ProductVariantViewModel generateProductVariantViewModel(ProductVariantOption productVariantOption){
 //        ProductVariantViewModel productVariantViewModel = new ProductVariantViewModel();
-//        productVariantViewModel.setUnitValueId(Long.parseLong(productVariantOption.getId()));
+//        productVariantViewModel.setUnitValueId(Long.parseLong(productVariantOption.getPvo()));
 //        productVariantViewModel.setHexCode(productVariantOption.getHexCode());
 //        productVariantViewModel.setTitle(productVariantOption.getValue());
 //        productVariantViewModel.setIcon(productVariantOption.getIcon());

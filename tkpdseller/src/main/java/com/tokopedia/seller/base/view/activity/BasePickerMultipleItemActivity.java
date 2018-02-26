@@ -81,6 +81,7 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
         bottomSheetContentTextView = (TextView) findViewById(R.id.text_view_bottom_sheet_content);
         arrowImageView = (ImageView) findViewById(R.id.image_view_arrow);
         submitButton = (Button) findViewById(R.id.button_submit);
+        submitButton.setText(getSubmitTextRes());
         bottomSheetHeaderView = findViewById(R.id.layout_bottom_sheet_header);
         bottomSheetHeaderView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,6 +127,10 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
                 submitButtonClicked();
             }
         });
+    }
+
+    protected int getSubmitTextRes(){
+        return R.string.next;
     }
 
     protected void expandBottomSheet() {

@@ -78,7 +78,7 @@ public class ProductVariantDetailFragment extends Fragment implements ProductVar
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_product_variant_data, container, false);
+        View view = inflater.inflate(R.layout.fragment_product_variant_detail_leaf, container, false);
         labelSwitchStatus = (LabelSwitch) view.findViewById(R.id.label_switch_product_status);
         buttonSave = view.findViewById(R.id.button_save);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);

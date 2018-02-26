@@ -205,6 +205,10 @@ public class ProductVariantPickerNewActivity extends BasePickerMultipleItemActiv
         return true;
     }
 
+    protected int getSubmitTextRes(){
+        return R.string.title_save;
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();

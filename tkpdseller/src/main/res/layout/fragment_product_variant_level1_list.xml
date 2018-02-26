@@ -9,11 +9,11 @@
         android:id="@+id/label_switch_product_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:title="@string/product_variant_status"
-        app:title_text_size="@dimen/font_micro"
-        app:lv_title_color="@color/font_black_secondary_54"
-        app:content_text_size="@dimen/font_title"
-        app:content_color="@color/font_black_primary_70"
+        app:ls_title="@string/product_variant_status"
+        app:ls_title_text_size="@dimen/font_micro"
+        app:ls_title_color="@color/font_black_secondary_54"
+        app:ls_content_text_size="@dimen/font_title"
+        app:ls_content_color="@color/font_black_primary_70"
         style="@style/LabelLayout"/>
 
     <View
@@ -36,5 +36,5 @@
         android:id="@+id/button_save"
         style="@style/Button.Submit.Green"
         android:text="@string/label_variant_save"
-        android:layout_marginBottom="@dimen/margin_small"/>
+        android:layout_marginBottom="@dimen/activity_vertical_margin"/>
 </LinearLayout>
