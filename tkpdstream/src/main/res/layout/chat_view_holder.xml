@@ -24,6 +24,7 @@
         android:layout_width="@dimen/badge_size"
         android:layout_height="@dimen/badge_size"
         android:layout_marginTop="@dimen/margin_med"
+        android:layout_marginLeft="@dimen/margin_vs"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/message"
         app:layout_constraintStart_toEndOf="@+id/avatar"
@@ -35,10 +36,10 @@
         android:id="@+id/nickname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_med"
+        android:layout_marginTop="@dimen/margin_sm"
         android:layout_toEndOf="@id/avatar"
         android:layout_toRightOf="@id/avatar"
-
+        android:layout_marginLeft="@dimen/margin_vs"
         android:fontFamily="sans-serif"
         android:padding="@dimen/padding_vvvs"
         android:textColor="@color/font_black_disabled_38"
@@ -49,11 +50,12 @@
         tools:text="Atalarikzyah"/>
 
 
+
     <TextView
         android:id="@+id/label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_med"
+        android:layout_marginTop="@dimen/margin_sm"
         android:background="@drawable/bg_rounded_green_label"
         android:fontFamily="sans-serif"
         android:lineSpacingExtra="3sp"
@@ -73,7 +75,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin_vvs"
         android:layout_marginRight="@dimen/margin_vvs"
-        android:layout_marginTop="@dimen/margin_med"
+        android:layout_marginTop="@dimen/margin_sm"
         android:fontFamily="sans-serif-medium"
         android:gravity="center_vertical"
         android:lineSpacingExtra="3sp"
@@ -89,7 +91,7 @@
         android:id="@+id/post_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_med"
+        android:layout_marginTop="@dimen/margin_sm"
         android:layout_toEndOf="@id/nickname"
         android:layout_toRightOf="@id/nickname"
         android:fontFamily="sans-serif"
@@ -104,10 +106,9 @@
     <TextView
         android:id="@+id/message"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="20dp"
         android:layout_below="@id/nickname"
         android:layout_marginBottom="@dimen/new_margin_small"
-        android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:layout_toEndOf="@id/avatar"
         android:layout_toRightOf="@id/avatar"

@@ -14,7 +14,7 @@ public class TimeConverter {
     private static final String FORMAT_HOUR = "HH.mm";
 
     public static String convertToHourFormat(long unixSeconds) {
-        Date date = new Date(unixSeconds * 1000L);
+        Date date = new Date(unixSeconds);
         SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_HOUR, Locale.getDefault());
         sdf.setTimeZone(TimeZone.getDefault());
         return sdf.format(date);

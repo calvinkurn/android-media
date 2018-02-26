@@ -48,6 +48,8 @@ public class UserActionViewHolder extends AbstractViewHolder<UserActionViewModel
         switch (actionType) {
             case UserActionViewModel.ACTION_ENTER:
                 return context.getString(R.string.groupchat_action_enter);
+            case UserActionViewModel.ACTION_EXIT:
+                return context.getString(R.string.groupchat_action_exit);
             default:
                 return "";
         }

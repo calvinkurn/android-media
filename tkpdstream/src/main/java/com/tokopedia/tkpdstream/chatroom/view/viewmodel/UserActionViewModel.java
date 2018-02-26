@@ -9,6 +9,7 @@ import com.tokopedia.tkpdstream.chatroom.view.adapter.typefactory.GroupChatTypeF
 
 public class UserActionViewModel implements Visitable<GroupChatTypeFactory> {
     public static final int ACTION_ENTER = 1;
+    public static final int ACTION_EXIT = 2;
 
     private final String userId;
     private final String userName;

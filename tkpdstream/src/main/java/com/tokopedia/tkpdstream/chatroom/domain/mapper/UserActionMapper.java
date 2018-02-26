@@ -21,4 +21,8 @@ public class UserActionMapper {
     }
 
 
+    public UserActionViewModel mapUserExit(User user) {
+        return new UserActionViewModel(user.getUserId(),
+                user.getNickname(), user.getProfileUrl(), UserActionViewModel.ACTION_EXIT);
+    }
 }

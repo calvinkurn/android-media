@@ -116,16 +116,19 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
     @Override
     public void loadPreviousMessages(OpenChannel mChannel, PreviousMessageListQuery mPrevMessageListQuery) {
-        if (mChannel != null && mPrevMessageListQuery != null) {
+        if (mChannel != null && mPrevMessageListQuery != null && mPrevMessageListQuery.hasMore()) {
+            getView().showLoadingList();
             getGroupChatMessagesUseCase.execute(getView().getContext(), mPrevMessageListQuery, new
                     GetGroupChatMessagesUseCase.GetGroupChatMessagesListener() {
                         @Override
                         public void onGetMessages(List<Visitable> listChat) {
+                            getView().dismissLoadingList();
                             getView().onSuccessGetMessage(listChat);
                         }
 
                         @Override
                         public void onErrorGetMessages(String errorMessage) {
+                            getView().dismissLoadingList();
                             getView().onErrorGetMessage(errorMessage);
                         }
                     });
