@@ -422,14 +422,12 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
             flightDashboardPassDataViewModel.setArrivalAirportId(extrasTripDeparture[INDEX_ID_AIRPORT_ARRIVAL_TRIP]);
             flightDashboardPassDataViewModel.setRoundTrip(false);
             flightDashboardPassDataViewModel.setDepartureDate(extrasTripDeparture[INDEX_DATE_TRIP]);
-
+            flightDashboardPassDataViewModel.setReturnDate("");
+            
             if (tempExtras.length > 1) {
                 String[] extrasTripReturn = tempExtras[INDEX_RETURN_TRIP].split("_");
                 flightDashboardPassDataViewModel.setRoundTrip(true);
                 flightDashboardPassDataViewModel.setReturnDate(extrasTripReturn[INDEX_DATE_TRIP]);
-            } else {
-                flightDashboardPassDataViewModel.setRoundTrip(false);
-                flightDashboardPassDataViewModel.setReturnDate("");
             }
 
             // transform passenger count

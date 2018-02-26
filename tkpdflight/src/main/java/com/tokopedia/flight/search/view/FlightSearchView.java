@@ -59,4 +59,14 @@ public interface FlightSearchView extends BaseListViewListener<FlightSearchViewM
     void showDepartureDateShouldAtLeastToday(@StringRes int resID);
 
     void showReturnDateShouldGreaterOrEqual(@StringRes int resID);
+
+    void finishFragment();
+
+    boolean isNeedRefreshFromCache();
+
+    void setNeedRefreshFromCache(boolean needRefreshFromCache);
+
+    void reloadDataFromCache();
+
+    void setUIMarkFilter();
 }
