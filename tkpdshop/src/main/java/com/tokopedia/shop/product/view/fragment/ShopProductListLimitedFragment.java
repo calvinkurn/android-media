@@ -1,14 +1,11 @@
 package com.tokopedia.shop.product.view.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
-import com.tokopedia.shop.product.view.adapter.ShopProductLimitedAdapter;
 import com.tokopedia.shop.product.view.adapter.ShopProductLimitedAdapterTypeFactory;
 import com.tokopedia.shop.product.view.listener.ShopProductListLimitedView;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
@@ -41,12 +38,6 @@ public class ShopProductListLimitedFragment extends
     @Override
     protected ShopProductLimitedAdapterTypeFactory getAdapterTypeFactory() {
         return new ShopProductLimitedAdapterTypeFactory();
-    }
-
-    @NonNull
-    @Override
-    protected BaseListAdapter<ShopProductBaseViewModel, ShopProductLimitedAdapterTypeFactory> createAdapterInstance() {
-        return new ShopProductLimitedAdapter(getAdapterTypeFactory());
     }
 
     @Override
