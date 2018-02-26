@@ -8,6 +8,8 @@
     <dimen name="font_title_big">20sp</dimen>
     <dimen name="font_title">16sp</dimen>
     <dimen name="font_small">14sp</dimen>
+    <dimen name="font_medium">13sp</dimen>
+    <dimen name="font_tiny">11sp</dimen>
     <dimen name="font_micro">12sp</dimen>
     <dimen name="font_nano">8sp</dimen>
 
@@ -56,6 +58,8 @@
     <dimen name="new_margin_med">16dp</dimen>
     <dimen name="new_margin_sm">24dp</dimen>
     <dimen name="new_margin_big">32dp</dimen>
+    <dimen name="new_margin_lilbig">40dp</dimen>
+    <dimen name="new_margin_huge">48dp</dimen>
 
     <dimen name="margin_vs">5dp</dimen>
     <dimen name="margin_ms">8dp</dimen>

@@ -41,12 +41,11 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/new_margin_tiny"/>
 
-    <com.tokopedia.design.button.Button
+    <Button
         android:id="@+id/login_button"
         android:layout_width="@dimen/button_width"
         android:layout_height="wrap_content"
-        app:type="primary"
-        app:size="medium"
+        style="@style/Button.Primary.Medium"
         android:textAllCaps="false"
         android:text="@string/empty_button"
         android:layout_gravity="center_horizontal"

@@ -2,9 +2,9 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
 import android.view.View;
+import android.widget.Button;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.design.button.Button;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel;

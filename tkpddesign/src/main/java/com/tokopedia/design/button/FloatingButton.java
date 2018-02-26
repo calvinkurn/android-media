@@ -1,5 +1,6 @@
 package com.tokopedia.design.button;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -9,6 +10,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.view.ContextThemeWrapper;
 import android.util.AttributeSet;
 
 import com.tokopedia.design.R;
@@ -19,11 +21,11 @@ import com.tokopedia.design.base.BaseCustomView;
  *
  * How to use?
  * xml :
- * app:buttonSizeType, app:buttonType, app:buttonTextAllCaps, app:text
+ * app:style, app:buttonTextAllCaps, app:text
  * app:shadow, app:shadowLeft, app:shadowTop, app:shadowRight, app:shadowBottom
  *
  * java :
- * button setButtonSize(int), setButtonType(int), setTextAllCaps(boolean), setText(string)
+ * button setStyle(R.style.Button_Primary), setTextAllCaps(boolean), setText(string)
  * setShadowEffect(left, top, right, bottom)
  *
  * for more http://product.tkp.me/components/button/design
@@ -31,11 +33,10 @@ import com.tokopedia.design.base.BaseCustomView;
 
 public class FloatingButton extends BaseCustomView {
 
-    private Button button;
+    private android.widget.Button button;
 
     private String mText;
-    private int mType;
-    private int mSize;
+    private int mStyle;
     private boolean mTextAllCaps;
 
     private boolean isShadow;
@@ -60,8 +61,7 @@ public class FloatingButton extends BaseCustomView {
         TypedArray a = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.FloatingButton, 0, 0);
         try {
             mText = a.getString(R.styleable.FloatingButton_text);
-            mType = a.getInteger(R.styleable.FloatingButton_buttonType, 0);
-            mSize = a.getInteger(R.styleable.FloatingButton_buttonSizeType, 0);
+            mStyle = a.getResourceId(R.styleable.FloatingButton_style, 0);
             mTextAllCaps = a.getBoolean(R.styleable.FloatingButton_buttonTextAllCaps, false);
             isShadow = a.getBoolean(R.styleable.FloatingButton_shadow, false);
             isShadowLeft = a.getBoolean(R.styleable.FloatingButton_shadowLeft, false);
@@ -75,12 +75,11 @@ public class FloatingButton extends BaseCustomView {
         init();
     }
 
+    @SuppressLint("RestrictedApi")
     private void init() {
         if (button == null)
-            button = new Button(getContext());
+            button = new android.widget.Button(new ContextThemeWrapper(this.getContext(), mStyle), null, 0);
 
-        button.setType(mType);
-        button.setSize(mSize);
         button.setText(mText);
         button.setAllCaps(mTextAllCaps);
 
@@ -107,17 +106,7 @@ public class FloatingButton extends BaseCustomView {
             this.button.setText(text);
     }
 
-    public void setButtonType(int mType) {
-        if (button != null)
-            this.button.setType(mType);
-    }
-
-    public void setButtonSize(int mSize) {
-        if (button != null)
-            this.button.setSize(mSize);
-    }
-
-    public Button getButton() {
+    public android.widget.Button getButton() {
         return button;
     }
 

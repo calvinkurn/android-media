@@ -30,7 +30,7 @@
             android:text="testbdmndsn dsjkdsds sbfssfn fvfsn,mdjk"
             android:gravity="center"/>
 
-        <com.tokopedia.design.button.Button
+        <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
