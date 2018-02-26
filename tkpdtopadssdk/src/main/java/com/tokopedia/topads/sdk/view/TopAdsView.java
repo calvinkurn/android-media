@@ -71,7 +71,6 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
         inflate(getContext(), R.layout.layout_ads, this);
         adapter = new AdsItemAdapter(getContext());
         adapter.setItemClickListener(this);
-        contentLayout = (RelativeLayout) findViewById(R.id.container);
         recyclerView = (RecyclerView) findViewById(R.id.list);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(true);
