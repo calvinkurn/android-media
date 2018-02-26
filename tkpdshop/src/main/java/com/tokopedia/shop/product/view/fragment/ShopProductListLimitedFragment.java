@@ -9,12 +9,15 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
+import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
 import com.tokopedia.shop.product.view.adapter.ShopProductLimitedAdapter;
 import com.tokopedia.shop.product.view.adapter.ShopProductLimitedAdapterTypeFactory;
+import com.tokopedia.shop.product.view.adapter.ShopProductTypeFactory;
 import com.tokopedia.shop.product.view.listener.ShopProductListLimitedView;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductSingleViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListLimitedPresenter;
 
 import javax.inject.Inject;
@@ -42,14 +45,21 @@ public class ShopProductListLimitedFragment extends
     }
 
     @Override
-    protected ShopProductLimitedAdapterTypeFactory getAdapterTypeFactory() {
-        return new ShopProductLimitedAdapterTypeFactory();
+    public void loadData(int i) {
+        displayProduct(shopId, null);
+
+
+    }
+
+    @Override
+    public BaseListAdapter<ShopProductBaseViewModel, ShopProductLimitedAdapterTypeFactory> getAdapter() {
+        return new ShopProductLimitedAdapter(getAdapterTypeFactory());
     }
 
     @NonNull
     @Override
-    protected ShopProductTypeFactory getAdapterTypeFactory() {
-        return new ShopProductLimitedAdapter(new ShopProductAdapterTypeFactory.TypeFactoryListener() {
+    protected ShopProductLimitedAdapterTypeFactory getAdapterTypeFactory() {
+        return new ShopProductLimitedAdapterTypeFactory(new ShopProductAdapterTypeFactory.TypeFactoryListener() {
             @Override
             public int getType(Object type) {
                 return ShopProductSingleViewHolder.LAYOUT;
@@ -57,11 +67,10 @@ public class ShopProductListLimitedFragment extends
         }, new ShopProductViewHolder.ShopProductVHListener() {
             @Override
             public void onWishlist(ShopProductViewModel model) {
-                Toast.makeText(
-                        getActivity(),
-                        "toggle favorite product",
-                        Toast.LENGTH_LONG
-                ).show();
+                shopProductListLimitedPresenter.addToWishList(
+                        shopId,
+                        model.getId()
+                );
             }
         });
     }

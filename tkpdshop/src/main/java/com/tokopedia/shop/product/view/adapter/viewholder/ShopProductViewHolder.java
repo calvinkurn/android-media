@@ -87,10 +87,10 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     public void bind(ShopProductViewModel model) {
         this.model = model;
 
-        titleTextView.setText(getModel().getProductName());
-        priceTextView.setText(getModel().getProductPrice());
-        ImageHandler.LoadImage(productImageView, getModel().getProductImage700());
-        if (shopProductViewModel.isWishList()) {
+        titleTextView.setText(getModel().getName());
+        priceTextView.setText(getModel().getPrice());
+        ImageHandler.LoadImage(productImageView, getModel().getImageUrl());
+        if (model.isWishList()) {
             wishlistImageView.setImageResource(R.drawable.ic_wishlist_red);
         } else {
             wishlistImageView.setImageResource(R.drawable.ic_wishlist);

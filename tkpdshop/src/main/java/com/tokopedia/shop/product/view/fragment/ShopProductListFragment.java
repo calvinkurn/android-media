@@ -99,7 +99,10 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         }, new ShopProductViewHolder.ShopProductVHListener() {
             @Override
             public void onWishlist(ShopProductViewModel model) {
-
+                shopProductListPresenter.addToWishList(
+                        shopId,
+                        model.getId()
+                );
             }
         });
     }

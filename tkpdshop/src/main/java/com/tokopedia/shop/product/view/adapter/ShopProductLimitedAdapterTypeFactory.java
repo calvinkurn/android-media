@@ -1,11 +1,13 @@
 package com.tokopedia.shop.product.view.adapter;
 
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductFeaturedViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductTitleViewHolder;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
 import com.tokopedia.shop.product.view.model.ShopProductFeaturedViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductTitleHeaderModel;
 
@@ -17,7 +19,8 @@ public class ShopProductLimitedAdapterTypeFactory extends ShopProductAdapterType
     public ShopProductLimitedAdapterTypeFactory() {
     }
 
-    public ShopProductLimitedAdapterTypeFactory(@Nullable TypeFactoryListener typeFactoryListener, @Nullable ShopProductViewHolder.ShopProductVHListener shopProductVHListener) {
+    public ShopProductLimitedAdapterTypeFactory(@Nullable TypeFactoryListener typeFactoryListener,
+                                                @Nullable ShopProductViewHolder.ShopProductVHListener shopProductVHListener) {
         super(typeFactoryListener, shopProductVHListener);
     }
 
