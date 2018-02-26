@@ -754,11 +754,9 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         setText(tvDeliveryFeeTotal, currencyId.format(
                 presenter.getShipmentDetailData().getShipmentCartData().getDeliveryPriceTotal()));
         setText(tvDeliveryFee, currencyId.format(courierItemData.getDeliveryPrice()));
-//        if (courierItemData.isUsePinPoint()) {
-//            renderShipmentWithMap(presenter.getShipmentDetailData());
-//        } else {
-//            renderShipmentWithoutMap(presenter.getShipmentDetailData());
-//        }
+        if (courierItemData.isUsePinPoint()) {
+            showPinPointMap(presenter.getShipmentDetailData());
+        }
         renderTickerView(courierItemData);
         renderInsuranceView(courierItemData);
         renderAdditionalPriceView(courierItemData);
