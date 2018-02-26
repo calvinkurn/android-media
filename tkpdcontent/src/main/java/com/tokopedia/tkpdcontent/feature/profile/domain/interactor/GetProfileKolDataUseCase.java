@@ -31,10 +31,10 @@ public class GetProfileKolDataUseCase extends UseCase<KolProfileModel> {
         return getProfileKolDataSourceCloud.getProfileKolData(requestParams);
     }
 
-    public static RequestParams getParams(String userId) {
+    public static RequestParams getParams(String userId, String lastCursor) {
         RequestParams param = RequestParams.create();
         param.putInt(PARAM_USER_ID, Integer.valueOf(userId));
-        param.putString(PARAM_CURSOR, "");
+        param.putString(PARAM_CURSOR, lastCursor);
         param.putInt(PARAM_LIMIT, KOL_POST_LIMIT);
         return param;
     }

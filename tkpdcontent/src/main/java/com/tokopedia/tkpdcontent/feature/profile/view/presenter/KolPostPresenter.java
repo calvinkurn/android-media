@@ -36,7 +36,7 @@ public class KolPostPresenter extends BaseDaggerPresenter<KolPostListener.View>
     @Override
     public void getKolPost(String userId) {
         getProfileKolDataUseCase.execute(
-                GetProfileKolDataUseCase.getParams(userId),
+                GetProfileKolDataUseCase.getParams(userId, lastCursor),
                 new Subscriber<KolProfileModel>() {
                     @Override
                     public void onCompleted() {
