@@ -13,7 +13,7 @@ import com.tokopedia.session.login.loginemail.view.fragment.ForbiddenFragment;
 
 public class ForbiddenActivity extends BaseSimpleActivity {
 
-    public static void createInstance(Context context) {
+    public static void startActivity(Context context) {
         Intent intent = new Intent(context, ForbiddenActivity.class);
         context.startActivity(intent);
     }

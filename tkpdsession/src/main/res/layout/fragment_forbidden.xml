@@ -19,7 +19,6 @@
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="dfdf dkjsn "
             android:gravity="center"/>
 
         <TextView
@@ -27,12 +26,15 @@
             android:id="@+id/tv_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="testbdmndsn dsjkdsds sbfssfn fvfsn,mdjk"
             android:gravity="center"/>
 
         <Button
+            android:id="@+id/btn_retry"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:text="Coba Lagi"
+            style="@style/Button.Primary.Big"/>
 
     </LinearLayout>
 
