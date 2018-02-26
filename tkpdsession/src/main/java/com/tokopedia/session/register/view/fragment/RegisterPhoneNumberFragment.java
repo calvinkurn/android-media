@@ -15,9 +15,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.analytics.LoginPhoneNumberAnalytics;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity;
@@ -105,7 +103,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_NEXT) {
-                    UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getLoginWithPhoneTracking());
+//                    UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getLoginWithPhoneTracking());
 //                    presenter.loginWithPhoneNumber(phoneNumber.getText().toString());
                     handled = true;
                 }
@@ -117,7 +115,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
             @Override
             public void onClick(View v) {
                 errorText.setText("");
-                UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getLoginWithPhoneTracking());
+//                UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getLoginWithPhoneTracking());
 //                presenter.loginWithPhoneNumber(phoneNumber.getText().toString());
             }
         });
@@ -135,7 +133,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
 
     @Override
     public void goToVerifyAccountPage(String phoneNumber) {
-        startActivityForResult(VerificationActivity.getLoginTokoCashVerificationIntent(
+        startActivityForResult(VerificationActivity.getRegisterTokoCashVerificationIntent(
                 getActivity(),
                 phoneNumber,
                 getListVerificationMethod()),

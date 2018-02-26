@@ -26,5 +26,6 @@ public interface RegisterPhoneNumber {
 
     interface Presenter extends CustomerPresenter<View> {
 
+        void registerWithPhoneNumber(String phoneNumber);
     }
 }

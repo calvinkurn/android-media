@@ -133,6 +133,7 @@
     <string name="limit_otp_reached">Anda sudah 3 kali melakukan pengiriman ulang, silakan coba lagi dalam 60 menit.</string>
     <string name="limit_otp_email_reached">Anda Sudah Melakukan 3 Kali Validasi. Silakan Mencoba Kembali 1 Jam Kemudian.</string>
     <string name="phone_number_not_registered">Nomor ponsel belum terdaftar</string>
+    <string name="phone_number_already_registered">Nomor ponsel sudah terdaftar, silahkan login</string>
     <string name="phone_number_invalid">Nomor ponsel tidak benar</string>
     <string name="error_wrong_otp">Kode yang Anda masukkan salah</string>
     <string name="login">Masuk</string>
