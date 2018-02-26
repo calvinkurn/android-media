@@ -8,6 +8,7 @@ import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.ResolutionCenterActionMapper;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.AcceptSolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.EditAddressUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.FinishResolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.InputAddressUseCase;
@@ -62,8 +63,9 @@ public class CloudActionResCenterDataStore {
                 .map(resolutionCenterActionMapper);
     }
 
-    public Observable<ResolutionActionDomainData> acceptSolution(TKPDMapParam<String, Object> parameters) {
-        return resolutionApi.acceptResolution(AuthUtil.generateParamsNetwork2(context, parameters))
+    public Observable<ResolutionActionDomainData> acceptSolution(com.tokopedia.usecase.RequestParams params) {
+        return resolutionApi.acceptResolution(params.getString(AcceptSolutionUseCase.PARAM_RESOLUTION_ID, ""),
+                params.getParameters())
                 .map(resolutionCenterActionMapper);
     }
 

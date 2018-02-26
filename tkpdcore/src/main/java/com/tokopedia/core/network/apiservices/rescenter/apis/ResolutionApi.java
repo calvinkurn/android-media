@@ -194,6 +194,6 @@ public interface ResolutionApi {
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.ResCenterV2.ACTION_ACCEPT_SOLUTION)
-    Observable<Response<TkpdResponse>> acceptResolution(@FieldMap Map<String, Object> params);
+    Observable<Response<TkpdResponse>> acceptResolution(@Path(PATH_RESOLUTION_ID) String resolutionID, @FieldMap Map<String, Object> params);
 
 }
