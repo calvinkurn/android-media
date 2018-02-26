@@ -1,6 +1,6 @@
 package com.tokopedia.shop.product.view.mapper;
 
-import com.tokopedia.abstraction.common.data.model.response.PagingList;
+import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct;
 import com.tokopedia.shop.common.util.TextApiUtils;
 import com.tokopedia.shop.common.util.WishListUtils;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
@@ -46,6 +46,36 @@ public class ShopProductMapper {
                 }
             }
         }
+        return shopProductViewModel;
+    }
+
+
+    public List<ShopProductViewModel> convertProductFeatured(List<GMFeaturedProduct> gmFeaturedProductList, List<String> productWishList) {
+        List<ShopProductViewModel> shopProductViewModelList = new ArrayList<>();
+        for (GMFeaturedProduct shopProduct: gmFeaturedProductList) {
+            ShopProductViewModel shopProductViewModel = convertProductFeatured(shopProduct);
+            shopProductViewModel.setWishList(WishListUtils.isWishList(shopProduct.getProductId(), productWishList));
+            shopProductViewModelList.add(shopProductViewModel);
+        }
+        return shopProductViewModelList;
+    }
+
+    private ShopProductViewModel convertProductFeatured(GMFeaturedProduct gmFeaturedProduct) {
+        ShopProductViewModel shopProductViewModel = new ShopProductViewModel();
+
+        shopProductViewModel.setId(gmFeaturedProduct.getProductId());
+        shopProductViewModel.setName(gmFeaturedProduct.getName());
+        shopProductViewModel.setPrice(gmFeaturedProduct.getPrice());
+        shopProductViewModel.setImageUrl(gmFeaturedProduct.getImageUri());
+
+        shopProductViewModel.setTotalReview(gmFeaturedProduct.getTotalReview());
+        shopProductViewModel.setRating(gmFeaturedProduct.getRating());
+        if (gmFeaturedProduct.getCashbackDetail() != null) {
+            shopProductViewModel.setCashback(gmFeaturedProduct.getCashbackDetail().getCashbackPercent());
+        }
+        shopProductViewModel.setWholesale(gmFeaturedProduct.isWholesale());
+        shopProductViewModel.setPo(gmFeaturedProduct.isPreorder());
+        shopProductViewModel.setFreeReturn(gmFeaturedProduct.isReturnable());
         return shopProductViewModel;
     }
 }

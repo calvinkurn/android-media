@@ -1,11 +1,9 @@
 package com.tokopedia.shop.product.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.shop.product.domain.interactor.GetShopProductFeaturedUseCase;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductLimitedUseCase;
 import com.tokopedia.shop.product.view.listener.ShopProductListLimitedView;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
-import com.tokopedia.shop.product.view.model.ShopProductFeaturedViewModel;
 
 import java.util.List;
 

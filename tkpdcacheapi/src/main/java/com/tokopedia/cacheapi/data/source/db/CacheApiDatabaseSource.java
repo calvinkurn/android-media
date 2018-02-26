@@ -135,13 +135,13 @@ public class CacheApiDatabaseSource {
                         .where(CacheApiData_Table.host.eq(host))
                         .and(CacheApiData_Table.path.eq(path))
                         .and(CacheApiData_Table.request_param.eq(getEncrypted(param)));
-                CacheApiLoggingUtils.dumper("CachedData : " + selection.toString());
                 CacheApiData cacheApiData = selection.querySingle();
                 String cachedResponseBody = null;
                 if (cacheApiData != null) {
                     cachedResponseBody = cacheApiData.getResponseBody();
                     cachedResponseBody = getDecrypted(cachedResponseBody);
                 }
+                CacheApiLoggingUtils.dumper("CachedData : " + cachedResponseBody);
                 subscriber.onNext(cachedResponseBody);
             }
         });

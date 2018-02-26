@@ -3,16 +3,12 @@ package com.tokopedia.shop.page.domain.interactor;
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed;
 import com.tokopedia.reputation.common.domain.interactor.GetReputationSpeedUseCase;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
-import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoUseCase;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.shop.page.view.model.ShopPageViewModel;
-import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
-import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 

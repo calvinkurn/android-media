@@ -1,7 +1,6 @@
 package com.tokopedia.shop.product.view.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
-import android.support.constraint.ConstraintLayout;
 import android.support.constraint.Guideline;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -11,7 +10,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.shop.R;
-import com.tokopedia.shop.address.view.model.ShopAddressViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
 /**

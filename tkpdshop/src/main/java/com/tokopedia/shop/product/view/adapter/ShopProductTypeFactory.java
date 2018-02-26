@@ -4,7 +4,6 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.shop.address.view.model.ShopAddressViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
 /**

@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.data.model.response.PagingList;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
-import com.tokopedia.shop.product.view.model.ShopProductFeaturedViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -43,11 +43,11 @@ public class GetShopProductLimitedUseCase extends UseCase<List<ShopProductBaseVi
         return Observable.zip(
                 getShopProductFeaturedUseCase.createObservable(GetShopProductFeaturedUseCase.createRequestParam(shopId)).subscribeOn(Schedulers.io()),
                 getShopProductListUseCase.createObservable(GetShopProductListUseCase.createRequestParam(shopProductRequestModel)).subscribeOn(Schedulers.io()),
-                new Func2<List<ShopProductFeaturedViewModel>, PagingList<ShopProduct>, List<ShopProductBaseViewModel>>() {
+                new Func2<List<ShopProductViewModel>, PagingList<ShopProduct>, List<ShopProductBaseViewModel>>() {
                     @Override
-                    public List<ShopProductBaseViewModel> call(List<ShopProductFeaturedViewModel> shopProductFeaturedViewModelList, PagingList<ShopProduct> shopProductList) {
+                    public List<ShopProductBaseViewModel> call(List<ShopProductViewModel> shopProductFeaturedViewModelList, PagingList<ShopProduct> shopProductList) {
                         List<ShopProductBaseViewModel> shopProductBaseViewModelList = new ArrayList<>();
-                        shopProductBaseViewModelList.addAll(shopProductFeaturedViewModelList);
+//                        shopProductBaseViewModelList.addAll(shopProductFeaturedViewModelList);
                         return shopProductBaseViewModelList;
                     }
                 }

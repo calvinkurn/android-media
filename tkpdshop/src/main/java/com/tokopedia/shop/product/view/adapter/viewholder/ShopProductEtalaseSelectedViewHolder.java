@@ -2,7 +2,6 @@ package com.tokopedia.shop.product.view.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;

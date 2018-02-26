@@ -46,10 +46,10 @@ public class GMFeaturedProduct {
     private boolean isRated;
     @SerializedName("rating")
     @Expose
-    private String rating;
+    private double rating;
     @SerializedName("total_review")
     @Expose
-    private String totalReview;
+    private int totalReview;
 
     public String getProductId() {
         return productId;
@@ -147,19 +147,19 @@ public class GMFeaturedProduct {
         isRated = rated;
     }
 
-    public String getRating() {
+    public double getRating() {
         return rating;
     }
 
-    public void setRating(String rating) {
+    public void setRating(double rating) {
         this.rating = rating;
     }
 
-    public String getTotalReview() {
+    public int getTotalReview() {
         return totalReview;
     }
 
-    public void setTotalReview(String totalReview) {
+    public void setTotalReview(int totalReview) {
         this.totalReview = totalReview;
     }
 }

@@ -13,7 +13,7 @@ public class ShopProductViewModel implements Visitable<ShopProductTypeFactory> {
     private String name;
     private String price;
     private String imageUrl;
-    private long totalReview;
+    private int totalReview;
     private double rating;
     private double cashback;
     private boolean wholesale;
@@ -53,11 +53,11 @@ public class ShopProductViewModel implements Visitable<ShopProductTypeFactory> {
         this.imageUrl = imageUrl;
     }
 
-    public long getTotalReview() {
+    public int getTotalReview() {
         return totalReview;
     }
 
-    public void setTotalReview(long totalReview) {
+    public void setTotalReview(int totalReview) {
         this.totalReview = totalReview;
     }
 
