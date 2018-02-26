@@ -1,8 +1,12 @@
 package com.tokopedia.transaction.checkout.di.module;
 
 import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.transaction.checkout.di.qualifier.NonPaginatedAddressQualifier;
+import com.tokopedia.transaction.checkout.di.qualifier.PaginatedAddressQualifier;
 import com.tokopedia.transaction.checkout.di.scope.SingleAddressShipmentScope;
+import com.tokopedia.transaction.checkout.domain.repository.PeopleAddressRepository;
 import com.tokopedia.transaction.checkout.domain.usecase.GetAllAddressUseCase;
+import com.tokopedia.transaction.checkout.domain.usecase.GetDefaultAddressUseCase;
 import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter;
 import com.tokopedia.transaction.checkout.view.view.shipmentform.SingleAddressShipmentFragment;
 import com.tokopedia.transaction.checkout.view.view.shipmentform.SingleAddressShipmentPresenter;
@@ -23,14 +27,20 @@ public class SingleAddressShipmentModule {
 
     @Provides
     @SingleAddressShipmentScope
-    SingleAddressShipmentPresenter provideCartSingleAddressPresenter(GetAllAddressUseCase getAllAddressUseCase, PagingHandler pagingHandler) {
-        return new SingleAddressShipmentPresenter(getAllAddressUseCase, pagingHandler);
+    SingleAddressShipmentPresenter provideCartSingleAddressPresenter(GetDefaultAddressUseCase getDefaultAddressUseCase, PagingHandler pagingHandler) {
+        return new SingleAddressShipmentPresenter(getDefaultAddressUseCase, pagingHandler);
     }
 
     @Provides
     @SingleAddressShipmentScope
     SingleAddressShipmentAdapter provideCartSingleAddressAdapter() {
         return new SingleAddressShipmentAdapter();
+    }
+
+    @Provides
+    @SingleAddressShipmentScope
+    GetDefaultAddressUseCase provideGetAddressListUseCase(@NonPaginatedAddressQualifier PeopleAddressRepository peopleAddressRepository) {
+        return new GetDefaultAddressUseCase(peopleAddressRepository);
     }
 
 }

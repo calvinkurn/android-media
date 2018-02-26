@@ -61,9 +61,4 @@ public class PeopleAddressModule {
         return nonPaginatedPeopleAddressRepository;
     }
 
-    @Provides
-    GetAllAddressUseCase provideGetAddressListUseCase(@PaginatedAddressQualifier PeopleAddressRepository peopleAddressRepository) {
-        return new GetAllAddressUseCase(peopleAddressRepository);
-    }
-
 }
