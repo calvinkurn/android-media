@@ -6,10 +6,10 @@ import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.tkpdcontent.feature.profile.data.pojo.GetProfileKolResponse;
 import com.tokopedia.tkpdcontent.feature.profile.data.pojo.PostKol;
 import com.tokopedia.tkpdcontent.feature.profile.data.pojo.ProfileKolData;
+import com.tokopedia.tkpdcontent.feature.profile.domain.model.KolProfileModel;
 import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolPostViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -21,14 +21,14 @@ import rx.functions.Func1;
  */
 
 public class GetProfileKolDataMapper
-        implements Func1<Response<GraphqlResponse<GetProfileKolResponse>>, List<KolPostViewModel>> {
+        implements Func1<Response<GraphqlResponse<GetProfileKolResponse>>, KolProfileModel> {
 
     @Inject
     public GetProfileKolDataMapper() {
     }
 
     @Override
-    public List<KolPostViewModel> call(Response<GraphqlResponse<GetProfileKolResponse>>
+    public KolProfileModel call(Response<GraphqlResponse<GetProfileKolResponse>>
                                                graphqlResponse) {
         ProfileKolData profileKolData = getDataOrError(graphqlResponse);
         ArrayList<KolPostViewModel> kolPostViewModels = new ArrayList<>();
@@ -61,7 +61,7 @@ public class GetProfileKolDataMapper
             );
             kolPostViewModels.add(kolPostViewModel);
         }
-        return kolPostViewModels;
+        return new KolProfileModel(kolPostViewModels, profileKolData.lastCursor);
     }
 
     private ProfileKolData getDataOrError(Response<GraphqlResponse<GetProfileKolResponse>>

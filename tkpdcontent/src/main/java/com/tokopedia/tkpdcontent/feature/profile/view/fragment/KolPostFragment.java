@@ -106,6 +106,11 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
         NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
 
+    @Override
+    public void updateCursor(String lastCursor) {
+        presenter.updateCursor(lastCursor);
+    }
+
     //TODO milhamj do something with these actions
     @Override
     public void onGoToKolProfile(int page, int rowNumber, String url) {

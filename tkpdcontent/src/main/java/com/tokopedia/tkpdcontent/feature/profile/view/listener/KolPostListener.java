@@ -21,6 +21,8 @@ public interface KolPostListener {
 
         void onErrorGetProfileData(String message);
 
+        void updateCursor(String lastCursor);
+
         void onGoToKolProfile(int page, int rowNumber, String url);
 
         void onOpenKolTooltip(int page, int rowNumber, String url);
@@ -40,6 +42,8 @@ public interface KolPostListener {
         void initView(String userId);
 
         void getKolPost(String userId);
+
+        void updateCursor(String lastCursor);
 
         void followKol(int id, int rowNumber, View kolListener);
 
