@@ -5,7 +5,9 @@ import com.tokopedia.transaction.apiservice.CartResponse;
 import com.tokopedia.transaction.apiservice.CartService;
 import com.tokopedia.transaction.checkout.domain.response.addtocart.AddToCartDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.cartlist.CartDataListResponse;
+import com.tokopedia.transaction.checkout.domain.response.checkout.CheckoutDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.deletecart.DeleteCartDataResponse;
+import com.tokopedia.transaction.checkout.domain.response.resetcart.ResetCartDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.shippingaddress.ShippingAddressDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.shippingaddressform.ShipmentAddressFormDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.updatecart.UpdateCartDataResponse;
@@ -89,6 +91,26 @@ public class CartRepository implements ICartRepository {
             @Override
             public ShipmentAddressFormDataResponse call(Response<CartResponse> cartResponseResponse) {
                 return cartResponseResponse.body().convertDataObj(ShipmentAddressFormDataResponse.class);
+            }
+        });
+    }
+
+    @Override
+    public Observable<ResetCartDataResponse> resetCart(TKPDMapParam<String, String> param) {
+        return cartService.getApi().resetCart(param).map(new Func1<Response<CartResponse>, ResetCartDataResponse>() {
+            @Override
+            public ResetCartDataResponse call(Response<CartResponse> cartResponseResponse) {
+                return cartResponseResponse.body().convertDataObj(ResetCartDataResponse.class);
+            }
+        });
+    }
+
+    @Override
+    public Observable<CheckoutDataResponse> checkout(TKPDMapParam<String, String> param) {
+        return cartService.getApi().checkout(param).map(new Func1<Response<CartResponse>, CheckoutDataResponse>() {
+            @Override
+            public CheckoutDataResponse call(Response<CartResponse> cartResponseResponse) {
+                return cartResponseResponse.body().convertDataObj(CheckoutDataResponse.class);
             }
         });
     }
