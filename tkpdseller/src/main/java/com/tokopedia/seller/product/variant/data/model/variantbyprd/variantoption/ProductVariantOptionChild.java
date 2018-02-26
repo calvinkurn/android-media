@@ -19,17 +19,13 @@ public class ProductVariantOptionChild implements Parcelable{
     @Expose
     private int vuv; //variant option id, ex: 19: Ungu
 
-    @SerializedName("value")
-    @Expose
-    private int value; //ex: "Ungu"
-
     @SerializedName("t_id")
     @Expose
     private int tId; // temporary ID for submit
 
     @SerializedName("cstm")
     @Expose
-    private String customName; // for submit only. custom name for variant Option. ex; merah delima
+    private String value; // custom name for variant Option. ex; merah delima, also for original value, if vuv is 0
 
     @SerializedName("image")
     @Expose
@@ -44,6 +40,54 @@ public class ProductVariantOptionChild implements Parcelable{
     @Expose
     private ProductVariantOptionChildOriPicture productVariantOptionChildOriPicture;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getVuv() {
+        return vuv;
+    }
+
+    public void setVuv(int vuv) {
+        this.vuv = vuv;
+    }
+
+    public int gettId() {
+        return tId;
+    }
+
+    public void settId(int tId) {
+        this.tId = tId;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public List<ProductPictureViewModel> getProductPictureViewModelList() {
+        return productPictureViewModelList;
+    }
+
+    public void setProductPictureViewModelList(List<ProductPictureViewModel> productPictureViewModelList) {
+        this.productPictureViewModelList = productPictureViewModelList;
+    }
+
+    public String getHex() {
+        return hex;
+    }
+
+    public void setHex(String hex) {
+        this.hex = hex;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -53,9 +97,8 @@ public class ProductVariantOptionChild implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.id);
         dest.writeInt(this.vuv);
-        dest.writeInt(this.value);
         dest.writeInt(this.tId);
-        dest.writeString(this.customName);
+        dest.writeString(this.value);
         dest.writeTypedList(this.productPictureViewModelList);
         dest.writeString(this.hex);
         dest.writeParcelable(this.productVariantOptionChildOriPicture, flags);
@@ -67,9 +110,8 @@ public class ProductVariantOptionChild implements Parcelable{
     protected ProductVariantOptionChild(Parcel in) {
         this.id = in.readInt();
         this.vuv = in.readInt();
-        this.value = in.readInt();
         this.tId = in.readInt();
-        this.customName = in.readString();
+        this.value = in.readString();
         this.productPictureViewModelList = in.createTypedArrayList(ProductPictureViewModel.CREATOR);
         this.hex = in.readString();
         this.productVariantOptionChildOriPicture = in.readParcelable(ProductVariantOptionChildOriPicture.class.getClassLoader());

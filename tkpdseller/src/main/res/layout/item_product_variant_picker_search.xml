@@ -26,8 +26,8 @@
                 android:id="@+id/image_view"
                 android:layout_width="@dimen/base_picker_multiple_item_search_image_height"
                 android:layout_height="@dimen/base_picker_multiple_item_search_image_height"
-                android:scaleType="centerCrop"
-                tools:src="@drawable/circle_white"
+                android:scaleType="fitXY"
+                tools:src="@drawable/circle_white_nopad"
                 tools:visibility="visible" />
             <View
                 android:id="@+id/view_stroke"

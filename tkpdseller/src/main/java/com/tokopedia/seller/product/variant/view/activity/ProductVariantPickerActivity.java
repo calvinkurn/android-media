@@ -199,11 +199,11 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
         Bundle bundle = new Bundle();
         bundle.putString(ProductVariantItemPickerAddDialogFragment.EXTRA_VARIANT_TITLE, productVariantByCatModel.getName());
         bundle.putString(ProductVariantItemPickerAddDialogFragment.EXTRA_STRING_TO_INPUT, stringToAdd);
-        long selectedUnitId = ((ProductVariantPickerSearchFragment) getSearchListFragment()).getSelectedUnitId();
-        List<ProductVariantOptionSubmit> productVariantOptionSubmitList = ((ProductVariantPickerCacheFragment) getCacheListFragment()).getVariantSubmitOptionList();
-        ArrayList<String> titleList = new ArrayList<>();
-        titleList.addAll(ProductVariantUtils.getAllVariantOptionNameList(selectedUnitId, productVariantOptionSubmitList, productVariantByCatModel.getUnitList()));
-        bundle.putStringArrayList(ProductVariantItemPickerAddDialogFragment.EXTRA_VARIANT_RESERVED_TITLE_LIST, titleList);
+//        long selectedUnitId = ((ProductVariantPickerSearchFragment) getSearchListFragment()).getSelectedUnitId();
+//        List<ProductVariantOptionSubmit> productVariantOptionSubmitList = ((ProductVariantPickerCacheFragment) getCacheListFragment()).getVariantSubmitOptionList();
+//        ArrayList<String> titleList = new ArrayList<>();
+//        titleList.addAll(ProductVariantUtils.getAllVariantOptionNameList(selectedUnitId, productVariantOptionSubmitList, productVariantByCatModel.getUnitList()));
+//        bundle.putStringArrayList(ProductVariantItemPickerAddDialogFragment.EXTRA_VARIANT_RESERVED_TITLE_LIST, titleList);
         dialogFragment.setArguments(bundle);
         dialogFragment.show(getSupportFragmentManager(), DIALOG_ADD_VARIANT_TAG);
     }

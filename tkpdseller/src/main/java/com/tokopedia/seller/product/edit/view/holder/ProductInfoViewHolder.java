@@ -153,12 +153,17 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
     public void renderData(ProductViewModel model) {
         setName(model.getProductName());
         setCategoryId(model.getProductCategory().getCategoryId());
-        if (model.getProductCatalog().getCatalogId() > 0) {
+        if (model.getProductCatalog() == null || model.getProductCatalog().getCatalogId() <= 0) {
+            setCatalog(-1, null);
+        } else {
             setCatalog(model.getProductCatalog().getCatalogId(), model.getProductCatalog().getCatalogName());
         }
         if (model.getProductEtalase().getEtalaseId() > 0) {
             setEtalaseId(model.getProductEtalase().getEtalaseId());
             setEtalaseName(model.getProductEtalase().getEtalaseName());
+        } else {
+            setEtalaseId(DEFAULT_ETALASE_ID);
+            setEtalaseName(null);
         }
     }
 
@@ -195,7 +200,11 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
     }
 
     public void setEtalaseName(String name) {
-        this.etalaseLabelView.setContent(MethodChecker.fromHtml(name));
+        if (TextUtils.isEmpty(name)) {
+            this.etalaseLabelView.resetContentText();
+        } else {
+            this.etalaseLabelView.setContent(MethodChecker.fromHtml(name));
+        }
     }
 
     @Override

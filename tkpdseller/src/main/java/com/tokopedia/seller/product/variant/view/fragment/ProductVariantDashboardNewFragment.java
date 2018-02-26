@@ -183,26 +183,28 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
     }
 
     private void onActivityResultFromItemPicker(int requestCode, Intent data) {
-        ProductVariantUnitSubmit productVariantUnitSubmit = data.getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_UNIT_SUBMIT);
-        int level = ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE;
-        switch (requestCode) {
-            case ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE:
-                level = ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE;
-                break;
-            case ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE:
-                level = ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE;
-                break;
-        }
+        //TODO get variant from item picker
 
-        addVariantCombination(level, productVariantUnitSubmit);
-        updateVariantUnitList(productVariantUnitSubmit);
-        checkVariantValidation(level, productVariantUnitSubmit);
+//        ProductVariantUnitSubmit productVariantUnitSubmit = data.getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_UNIT_SUBMIT);
+//        int level = ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE;
+//        switch (requestCode) {
+//            case ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE:
+//                level = ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE;
+//                break;
+//            case ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE:
+//                level = ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE;
+//                break;
+//        }
+//
+//        addVariantCombination(level, productVariantUnitSubmit);
+//        updateVariantUnitList(productVariantUnitSubmit);
+//        checkVariantValidation(level, productVariantUnitSubmit);
 
         //TODO remap image need?
         remapImageToVariant();
-
-        updateVariantUnitView();
-        updateVariantItemListView();
+//TODO
+//        updateVariantUnitView();
+//        updateVariantItemListView();
     }
 
     /**

@@ -164,7 +164,7 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
         return null;
     }
 
-    @CallSuper
+    //TODO @CallSuper
     @Override
     @java.lang.SuppressWarnings("unchecked")
     public void addItemFromSearch(T t) {
@@ -173,7 +173,7 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
     }
 
 
-    @CallSuper
+    // TODO enable call super
     @Override
     @java.lang.SuppressWarnings("unchecked")
     public void removeItemFromSearch(T t) {
@@ -181,7 +181,7 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
         ((BasePickerItemCacheList<T>) fragment).removeItem(t);
     }
 
-    @CallSuper
+    //TODO @CallSuper
     @Override
     @java.lang.SuppressWarnings("unchecked")
     public void removeItemFromCache(T t) {
