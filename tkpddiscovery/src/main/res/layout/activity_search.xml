@@ -80,4 +80,6 @@
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom" />
 
+    <include layout="@layout/filter_bottom_sheet" />
+
 </android.support.design.widget.CoordinatorLayout>
