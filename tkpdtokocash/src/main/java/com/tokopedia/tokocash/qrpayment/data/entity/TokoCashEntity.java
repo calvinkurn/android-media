@@ -1,20 +1,20 @@
-package com.tokopedia.core.drawer2.data.pojo.topcash;
+package com.tokopedia.tokocash.qrpayment.data.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by nisie on 5/5/17.
+ * Created by nabillasabbaha on 2/22/18.
  */
 
-public class TokoCashModel {
+public class TokoCashEntity {
 
     @SerializedName("success")
     @Expose
     private boolean success;
     @SerializedName("data")
     @Expose
-    private TokoCashData data;
+    private BalanceTokoCashEntity data;
     @SerializedName("error")
     @Expose
     private String errorMessage;
@@ -33,11 +33,11 @@ public class TokoCashModel {
         this.success = success;
     }
 
-    public TokoCashData getData() {
+    public BalanceTokoCashEntity getData() {
         return data;
     }
 
-    public void setData(TokoCashData data) {
+    public void setData(BalanceTokoCashEntity data) {
         this.data = data;
     }
 

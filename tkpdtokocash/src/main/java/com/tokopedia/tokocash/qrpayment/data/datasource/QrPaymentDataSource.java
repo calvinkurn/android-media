@@ -1,6 +1,5 @@
 package com.tokopedia.tokocash.qrpayment.data.datasource;
 
-import com.tokopedia.tokocash.qrpayment.data.entity.BalanceTokoCashEntity;
 import com.tokopedia.tokocash.qrpayment.data.entity.InfoQrEntity;
 import com.tokopedia.tokocash.qrpayment.data.entity.QrPaymentEntity;
 
@@ -17,6 +16,4 @@ public interface QrPaymentDataSource {
     Observable<InfoQrEntity> getInfoQrTokoCash(HashMap<String, Object> mapParams);
 
     Observable<QrPaymentEntity> postQrPaymentTokoCash(HashMap<String, Object> mapParams);
-
-    Observable<BalanceTokoCashEntity> getBalanceTokoCash(HashMap<String, Object> mapParams);
 }

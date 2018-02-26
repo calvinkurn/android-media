@@ -82,7 +82,7 @@ public class RejectOrderProductPriceWeightEditFragment extends TkpdFragment {
         currencySpinner.setOnItemSelectedListener(onCurrencyChoosen(editable));
         weightSpinner.setOnItemSelectedListener(onWeightChoosen(editable));
         currencySpinner.setSelection(editable.getCurrencyMode() - SPINNER_MODE_OFFSET);
-        weightSpinner.setSelection(editable.getWeightMode() - SPINNER_MODE_OFFSET );
+        weightSpinner.setSelection(0);
         return view;
     }
 
@@ -119,9 +119,9 @@ public class RejectOrderProductPriceWeightEditFragment extends TkpdFragment {
                 );
 
                 editable.setProductWeight(
-                        weightSpinner.getSelectedItem()
+                        weightEditText.getText().toString()
                                 + " "
-                                + weightEditText.getText().toString());
+                                + weightSpinner.getSelectedItem());
                 editable.setProductPriceUnformatted(priceEditText.getText().toString());
                 editable.setProductWeightUnformatted(weightEditText.getText().toString());
                 editable.setWeightMode(

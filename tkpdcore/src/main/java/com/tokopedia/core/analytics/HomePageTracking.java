@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class HomePageTracking extends TrackingUtils {
 
-    private static String STATIC_VALUE_CLICK_HOMEPAGE = "clickHomepage";
+    private static String STATIC_VALUE_CLICK_HOMEPAGE = "clickHomePage";
     private static String STATIC_VALUE_HOMEPAGE = "homepage";
     public static final String BELI_INI_ITU_CLICK = "beli ini itu click";
     public static final String BAYAR_INI_ITU_CLICK = "bayar ini itu click";
@@ -30,7 +30,6 @@ public class HomePageTracking extends TrackingUtils {
     }
 
     public static void eventClickViewAllPromo() {
-        flushEventTracker();
         sendGTMEvent(new EventTracking(
                 STATIC_VALUE_CLICK_HOMEPAGE,
                 STATIC_VALUE_HOMEPAGE,
@@ -46,7 +45,6 @@ public class HomePageTracking extends TrackingUtils {
     }
 
     public static void eventClickHomeUseCase(String title) {
-        flushEventTracker();
         sendGTMEvent(new EventTracking(
                 STATIC_VALUE_CLICK_HOMEPAGE,
                 STATIC_VALUE_HOMEPAGE,
@@ -55,8 +53,16 @@ public class HomePageTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventClickTabExplorer(String title) {
+        sendGTMEvent(new EventTracking(
+                STATIC_VALUE_CLICK_HOMEPAGE,
+                STATIC_VALUE_HOMEPAGE,
+                "click explorer tab",
+                title
+        ).getEvent());
+    }
+
     public static void eventClickDynamicIcons(String title) {
-        flushEventTracker();
         sendGTMEvent(new EventTracking(
                 STATIC_VALUE_CLICK_HOMEPAGE,
                 STATIC_VALUE_HOMEPAGE,
@@ -66,7 +72,6 @@ public class HomePageTracking extends TrackingUtils {
     }
 
     public static void eventClickSeeAllProductSprint() {
-        flushEventTracker();
         sendGTMEvent(new EventTracking(
                 STATIC_VALUE_CLICK_HOMEPAGE,
                 STATIC_VALUE_HOMEPAGE,
@@ -92,7 +97,6 @@ public class HomePageTracking extends TrackingUtils {
     }
 
     public static void eventClickSeeAllDynamicChannel(String applink) {
-        flushEventTracker();
         sendGTMEvent(new EventTracking(
                 STATIC_VALUE_CLICK_HOMEPAGE,
                 STATIC_VALUE_HOMEPAGE,
@@ -102,7 +106,6 @@ public class HomePageTracking extends TrackingUtils {
     }
 
     public static void eventClickExplorerItem(String action, String label) {
-        flushEventTracker();
         sendGTMEvent(new EventTracking(
                 STATIC_VALUE_CLICK_HOMEPAGE,
                 STATIC_VALUE_HOMEPAGE,
@@ -128,7 +131,6 @@ public class HomePageTracking extends TrackingUtils {
     }
 
     public static void eventClickOpenShop() {
-        flushEventTracker();
         sendGTMEvent(new EventTracking(
                 STATIC_VALUE_CLICK_HOMEPAGE,
                 STATIC_VALUE_HOMEPAGE,
@@ -138,7 +140,6 @@ public class HomePageTracking extends TrackingUtils {
     }
 
     public static void eventClickEditShop() {
-        flushEventTracker();
         sendGTMEvent(new EventTracking(
                 STATIC_VALUE_CLICK_HOMEPAGE,
                 STATIC_VALUE_HOMEPAGE,

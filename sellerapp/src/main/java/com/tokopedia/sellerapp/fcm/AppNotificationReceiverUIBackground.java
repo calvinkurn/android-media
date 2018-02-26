@@ -116,9 +116,8 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 case Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT:
                     if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
                         if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
-                                && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof NotificationReceivedListener) {
-                            NotificationReceivedListener listener = (NotificationReceivedListener) MainApplication.currentActivity();
-                            listener.onGetNotif(data);
+                                && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
+                            ((ChatNotifInterface) mActivitiesLifecycleCallbacks.getLiveActivityOrNull()).onGetNotif(data);
                         } else {
                             String applink = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
                             String fullname = data
