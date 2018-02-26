@@ -26,6 +26,8 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
     private final GetShopProductLimitedUseCase getShopProductLimitedUseCase;
     private AddToWishListUseCase addToWishListUseCase;
 
+    private static final String TAG = "ShopProductListLimitedP";
+
     @Inject
     public ShopProductListLimitedPresenter(GetShopProductLimitedUseCase getShopProductLimitedUseCase,
                                            AddToWishListUseCase addToWishListUseCase) {
@@ -42,7 +44,7 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
             }
 
             @Override
-            public void onError(Throwable throwable) {
+            public void onError(Throwable e) {
                 if (isViewAttached()) {
                     getView().showGetListError(e);
                 }

@@ -65,7 +65,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<BaseListViewLi
             }
 
             @Override
-            public void onError(Throwable throwable) {
+            public void onError(Throwable e) {
                 if (isViewAttached()) {
                     getView().showGetListError(e);
                 }

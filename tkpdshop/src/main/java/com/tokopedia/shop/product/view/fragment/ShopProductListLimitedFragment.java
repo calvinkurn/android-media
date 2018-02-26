@@ -4,12 +4,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
-import com.tokopedia.shop.product.view.adapter.ShopProductLimitedAdapter;
 import com.tokopedia.shop.product.view.adapter.ShopProductLimitedAdapterTypeFactory;
 import com.tokopedia.shop.product.view.adapter.ShopProductTypeFactory;
 import com.tokopedia.shop.product.view.listener.ShopProductListLimitedView;
@@ -48,11 +48,6 @@ public class ShopProductListLimitedFragment extends
         displayProduct(shopId, null);
 
 
-    }
-
-    @Override
-    public BaseListAdapter<ShopProductBaseViewModel, ShopProductLimitedAdapterTypeFactory> getAdapter() {
-        return new ShopProductLimitedAdapter(getAdapterTypeFactory());
     }
 
     @NonNull
