@@ -28,7 +28,7 @@ public class WalletRepository implements IWalletRepository {
     }
 
     @Override
-    public Observable<TokoCashHistoryData> getTokoCashHistoryData(HashMap<String, Object> mapParams) {
+    public Observable<TokoCashHistoryData> getTokoCashHistoryData(HashMap<String, String> mapParams) {
         return walletDataSourceFactory.create()
                 .getTokoCashHistoryData(mapParams)
                 .map(new TokoCashHistoryMapper());
@@ -38,5 +38,10 @@ public class WalletRepository implements IWalletRepository {
     public Observable<List<HelpHistoryTokoCash>> getHelpHistoryData() {
         return walletDataSourceFactory.create().getHelpHistoryData()
                 .map(new HelpHistoryDataMapper());
+    }
+
+    @Override
+    public Observable<Boolean> submitHelpHistory(HashMap<String, String> mapParams) {
+        return walletDataSourceFactory.create().submitHelpTokoCash(mapParams);
     }
 }

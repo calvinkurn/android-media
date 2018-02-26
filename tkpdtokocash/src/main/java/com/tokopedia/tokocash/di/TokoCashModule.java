@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.data.model.storage.GlobalCacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.activation.data.ActivateRepository;
+import com.tokopedia.tokocash.historytokocash.domain.PostHelpHistoryDetailUseCase;
 import com.tokopedia.tokocash.network.model.ActivateTokoCashErrorResponse;
 import com.tokopedia.tokocash.pendingcashback.data.PendingCashbackRepository;
 import com.tokopedia.tokocash.pendingcashback.domain.GetPendingCasbackUseCase;
@@ -175,5 +176,11 @@ public class TokoCashModule {
     @TokoCashScope
     GetPendingCasbackUseCase provideGetPendingCasbackUseCase(PendingCashbackRepository pendingCashbackRepository) {
         return new GetPendingCasbackUseCase(pendingCashbackRepository);
+    }
+
+    @Provides
+    @TokoCashScope
+    PostHelpHistoryDetailUseCase providePostHelpHistoryDetailUseCase(WalletRepository walletRepository) {
+        return new PostHelpHistoryDetailUseCase(walletRepository);
     }
 }

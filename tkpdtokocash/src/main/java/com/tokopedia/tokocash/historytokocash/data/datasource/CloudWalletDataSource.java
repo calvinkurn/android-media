@@ -30,7 +30,7 @@ public class CloudWalletDataSource implements WalletDataSource {
     }
 
     @Override
-    public Observable<TokoCashHistoryEntity> getTokoCashHistoryData(HashMap<String, Object> mapParams) {
+    public Observable<TokoCashHistoryEntity> getTokoCashHistoryData(HashMap<String, String> mapParams) {
         return walletApi.getHistoryTokocash(mapParams)
                 .map(new Func1<Response<DataResponse<TokoCashHistoryEntity>>, TokoCashHistoryEntity>() {
                     @Override
@@ -45,5 +45,16 @@ public class CloudWalletDataSource implements WalletDataSource {
         String helpHistoryList = Util.loadJSONFromAsset("help_history_tokocash.json");
         return Observable.just(Arrays.asList((HelpHistoryTokoCashEntity[]) gson.fromJson(helpHistoryList,
                 HelpHistoryTokoCashEntity[].class)));
+    }
+
+    @Override
+    public Observable<Boolean> submitHelpTokoCash(HashMap<String, String> mapParams) {
+        return walletApi.postHelpHistory(mapParams)
+                .map(new Func1<Response<DataResponse<HelpHistoryTokoCashEntity>>, Boolean>() {
+                    @Override
+                    public Boolean call(Response<DataResponse<HelpHistoryTokoCashEntity>> dataResponseResponse) {
+                        return dataResponseResponse.body().getData() != null;
+                    }
+                });
     }
 }

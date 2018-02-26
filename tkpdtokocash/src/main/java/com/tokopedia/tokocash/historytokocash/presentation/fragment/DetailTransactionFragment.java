@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.tokocash.R;
+import com.tokopedia.tokocash.historytokocash.presentation.activity.HelpHistoryDetailActivity;
 import com.tokopedia.tokocash.historytokocash.presentation.model.ActionHistory;
 import com.tokopedia.tokocash.historytokocash.presentation.model.ItemHistory;
 
@@ -69,14 +70,15 @@ public class DetailTransactionFragment extends BaseDaggerFragment {
         itemHistory = getArguments().getParcelable(ITEM_HISTORY_KEY);
 
         if (itemHistory.getActionHistoryList() != null) {
+            removeView(buttonOpsiContainer);
             for (ActionHistory actionHistory : itemHistory.getActionHistoryList()) {
                 if (actionHistory.getType().equals("button")) {
-                    View viewItem = LayoutInflater.from(getContext())
-                            .inflate(R.layout.item_button_opsi, buttonOpsiContainer, false);
+                    LinearLayout viewItem = (LinearLayout) LayoutInflater.from(getActivity())
+                            .inflate(R.layout.item_button_opsi, null);
                     Button buttonOpsi = viewItem.findViewById(R.id.opsi_btn);
                     buttonOpsi.setText(actionHistory.getTitle());
                     buttonOpsi.setOnClickListener(getOpsiListener(actionHistory));
-                    buttonOpsiContainer.addView(view);
+                    buttonOpsiContainer.addView(viewItem);
                 }
             }
         }
@@ -158,18 +160,22 @@ public class DetailTransactionFragment extends BaseDaggerFragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent intent = new Intent(getApplicationContext(), HelpHistoryDetailActivity.class);
-//                intent.putExtra(HelpHistoryDetailActivity.TRANSACTION_ID, String.valueOf(itemHistory.getTransactionId()));
-//                startActivityForResult(intent, 201);
+                Intent helpIntent = HelpHistoryDetailActivity.newInstance(getActivity());
+                helpIntent.putExtra(HelpHistoryDetailActivity.TRANSACTION_ID, String.valueOf(itemHistory.getTransactionId()));
+                startActivityForResult(helpIntent, 201);
             }
         };
     }
 
     @Override
     public void onDestroy() {
-        if (buttonOpsiContainer.getChildCount() > 0) {
-            buttonOpsiContainer.removeAllViews();
-        }
+        removeView(buttonOpsiContainer);
         super.onDestroy();
+    }
+
+    private void removeView(LinearLayout linearLayout) {
+        if (linearLayout.getChildCount() > 0) {
+            linearLayout.removeAllViews();
+        }
     }
 }

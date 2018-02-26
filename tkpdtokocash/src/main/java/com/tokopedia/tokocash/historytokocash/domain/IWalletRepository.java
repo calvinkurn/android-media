@@ -14,7 +14,9 @@ import rx.Observable;
 
 public interface IWalletRepository {
 
-    Observable<TokoCashHistoryData> getTokoCashHistoryData(HashMap<String, Object> mapParams);
+    Observable<TokoCashHistoryData> getTokoCashHistoryData(HashMap<String, String> mapParams);
 
     Observable<List<HelpHistoryTokoCash>> getHelpHistoryData();
+
+    Observable<Boolean> submitHelpHistory(HashMap<String, String> mapParams);
 }

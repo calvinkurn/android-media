@@ -14,7 +14,9 @@ import rx.Observable;
 
 public interface WalletDataSource {
 
-    Observable<TokoCashHistoryEntity> getTokoCashHistoryData(HashMap<String, Object> mapParams);
+    Observable<TokoCashHistoryEntity> getTokoCashHistoryData(HashMap<String, String> mapParams);
 
     Observable<List<HelpHistoryTokoCashEntity>> getHelpHistoryData();
+
+    Observable<Boolean> submitHelpTokoCash(HashMap<String, String> mapParams);
 }
