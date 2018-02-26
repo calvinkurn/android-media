@@ -97,7 +97,11 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
     private final int ETA_RADIUS_RATIO = 150;
     private final int DEFAULT_ETA = 150;
-
+    private int MAX_CABS_COUNT = 2;
+    private int MAX_MOTO_COUNT = 1;
+    private boolean showUberMoto = false;
+    private boolean showUberCab = true;
+    private int FIXED_RADIUS = 100;
 
     @BindView(R2.id.toolbar)
     Toolbar toolbar;
@@ -141,12 +145,8 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     private ArrayList<Marker> nearbyCabsMarkerList = new ArrayList<>();
     private ArrayList<Marker> nearbyMOTOMarkerList = new ArrayList<>();
     private boolean isMarkerRotating;
-    private int MAX_CABS_COUNT = 2;
-    private int MAX_MOTO_COUNT = 1;
-    private boolean showUberMoto = false;
-    private boolean showUberCab = true;
     private ArrayList<Location> locationArrayList = new ArrayList<>();
-    private int FIXED_RADIUS = 100;
+
 
     public interface OnFragmentInteractionListener {
         void onSourceAndDestinationChanged(PlacePassViewModel source, PlacePassViewModel destination);
