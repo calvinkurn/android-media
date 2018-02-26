@@ -50,6 +50,7 @@ public class ShipmentAddressListFragment extends BasePresenterFragment implement
     TextView mTvAddNewAddress;
 
     InputMethodManager mInputMethodManager;
+    FragmentListener fragmentListener;
 
     @Inject
     ShipmentAddressListAdapter mShipmentAddressListAdapter;
@@ -69,6 +70,10 @@ public class ShipmentAddressListFragment extends BasePresenterFragment implement
         fragment.setArguments(bundle);
 
         return fragment;
+    }
+
+    public void setFragmentListener(FragmentListener fragmentListener) {
+        this.fragmentListener = fragmentListener;
     }
 
     @Override
@@ -277,7 +282,10 @@ public class ShipmentAddressListFragment extends BasePresenterFragment implement
 
     @Override
     public void onAddressContainerClicked(RecipientAddressModel model) {
-
+        if(fragmentListener != null){
+            fragmentListener.onAddressClick(model);
+            getActivity().getFragmentManager().popBackStack();
+        }
     }
 
     @Override
@@ -289,4 +297,7 @@ public class ShipmentAddressListFragment extends BasePresenterFragment implement
 
     }
 
+    interface FragmentListener{
+        void onAddressClick(RecipientAddressModel mode);
+    }
 }
