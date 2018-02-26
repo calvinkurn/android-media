@@ -98,10 +98,18 @@ public class ShopProductRequestModel {
         if (!TextUtils.isEmpty(etalaseId)) {
             hashMap.put(ShopParamApiConstant.ETALASE_ID, etalaseId);
         }
+
         hashMap.put(ShopParamApiConstant.PAGE, String.valueOf(page));
-        hashMap.put(ShopParamApiConstant.ORDER_BY, String.valueOf(orderBy));
-        hashMap.put(ShopParamApiConstant.PER_PAGE, String.valueOf(perPage));
-        hashMap.put(ShopParamApiConstant.WHOLESALE, String.valueOf(wholesale));
+
+        if(orderBy > 0)
+            hashMap.put(ShopParamApiConstant.ORDER_BY, String.valueOf(orderBy));
+
+        if(perPage > 0)
+            hashMap.put(ShopParamApiConstant.PER_PAGE, String.valueOf(perPage));
+
+        if(wholesale > 0)
+            hashMap.put(ShopParamApiConstant.WHOLESALE, String.valueOf(wholesale));
+
         return hashMap;
     }
 }

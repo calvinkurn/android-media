@@ -40,6 +40,21 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     private int imageGuideLineGrid;
     private int imageGuideLineList;
 
+    private ShopProductVHListener shopProductVHListener;
+    private ShopProductViewModel model;
+
+    protected ShopProductVHListener getShopProductVHListener() {
+        return shopProductVHListener;
+    }
+
+    public ShopProductViewModel getModel() {
+        return model;
+    }
+
+    public ShopProductViewHolder setShopProductVHListener(ShopProductVHListener shopProductVHListener) {
+        this.shopProductVHListener = shopProductVHListener;
+        return this;
+    }
 
     public ShopProductViewHolder(View itemView) {
         super(itemView);
@@ -67,14 +82,31 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     }
 
     @Override
-    public void bind(ShopProductViewModel shopProductViewModel) {
-        titleTextView.setText(shopProductViewModel.getName());
-        priceTextView.setText(shopProductViewModel.getPrice());
-        ImageHandler.LoadImage(productImageView, shopProductViewModel.getImageUrl());
-        if (shopProductViewModel.isWishList()) {
+    public void bind(ShopProductViewModel model) {
+        this.model = model;
+
+        titleTextView.setText(getModel().getName());
+        priceTextView.setText(getModel().getPrice());
+        ImageHandler.LoadImage(productImageView, getModel().getImageUrl());
+        if (model.isWishList()) {
             wishlistImageView.setImageResource(R.drawable.ic_wishlist_red);
         } else {
             wishlistImageView.setImageResource(R.drawable.ic_wishlist);
         }
+
+        wishlistContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(getShopProductVHListener()!= null){
+                    getShopProductVHListener().onWishlist(
+                            ShopProductViewHolder.this.model
+                    );
+                }
+            }
+        });
+    }
+
+    public interface ShopProductVHListener{
+        void onWishlist(ShopProductViewModel model);
     }
 }

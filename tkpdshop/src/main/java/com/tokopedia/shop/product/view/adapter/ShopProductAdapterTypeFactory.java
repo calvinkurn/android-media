@@ -19,13 +19,17 @@ import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory implements ShopProductTypeFactory {
 
     private TypeFactoryListener typeFactoryListener;
+    private ShopProductViewHolder.ShopProductVHListener shopProductVHListener;
 
     public ShopProductAdapterTypeFactory() {}
 
     public ShopProductAdapterTypeFactory(
-            @Nullable TypeFactoryListener typeFactoryListener
+            @Nullable TypeFactoryListener typeFactoryListener,
+            @Nullable ShopProductViewHolder.ShopProductVHListener shopProductVHListener
+
     ) {
         this.typeFactoryListener = typeFactoryListener;
+        this.shopProductVHListener = shopProductVHListener;
     }
 
     @Override
@@ -40,11 +44,14 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory implem
     public AbstractViewHolder createViewHolder(View view, int viewType) {
         AbstractViewHolder viewHolder;
         if (viewType == ShopProductViewHolder.LAYOUT) {
-            viewHolder = new ShopProductViewHolder(view);
+            viewHolder = new ShopProductViewHolder(view)
+                    .setShopProductVHListener(shopProductVHListener);
         } else if(viewType == ShopProductListViewHolder.LAYOUT){
-            viewHolder = new ShopProductListViewHolder(view);
+            viewHolder = new ShopProductListViewHolder(view)
+                    .setShopProductVHListener(shopProductVHListener);
         } else if(viewType == ShopProductSingleViewHolder.LAYOUT){
-            viewHolder = new ShopProductSingleViewHolder(view);
+            viewHolder = new ShopProductSingleViewHolder(view)
+                    .setShopProductVHListener(shopProductVHListener);
         } else if(viewType == ShopProductEtalaseUnselectedViewHolder.LAYOUT){
             viewHolder = new ShopProductEtalaseUnselectedViewHolder(view);
         } else if(viewType == ShopProductEtalaseSelectedViewHolder.LAYOUT){

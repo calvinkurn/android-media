@@ -16,6 +16,7 @@ import com.tokopedia.shop.product.view.adapter.ShopProductTypeFactory;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseSelectedViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseUnselectedViewHolder;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
 import com.tokopedia.shop.product.view.listener.ShopProductFilterFragmentListener;
 import com.tokopedia.shop.product.view.model.ShopProductFilterModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
@@ -81,18 +82,23 @@ public class ShopProductFilterFragment extends BaseListFragment<ShopProductViewM
 
     @Override
     protected ShopProductTypeFactory getAdapterTypeFactory() {
-        return new ShopProductAdapterTypeFactory( new ShopProductAdapterTypeFactory.TypeFactoryListener<ShopProductViewModel>() {
+        return new ShopProductAdapterTypeFactory(new ShopProductAdapterTypeFactory.TypeFactoryListener<ShopProductViewModel>() {
             @Override
             public int getType(ShopProductViewModel type) {
-                if(type instanceof ShopProductFilterModel){
+                if (type instanceof ShopProductFilterModel) {
                     ShopProductFilterModel filterModel = (ShopProductFilterModel) type;
-                    if(sortName.contains(filterModel.getValue())){
+                    if (sortName.contains(filterModel.getValue())) {
                         return ShopProductEtalaseSelectedViewHolder.LAYOUT;
-                    }else{
+                    } else {
                         return ShopProductEtalaseUnselectedViewHolder.LAYOUT;
                     }
                 }
                 return 0;
+            }
+        }, new ShopProductViewHolder.ShopProductVHListener() {
+            @Override
+            public void onWishlist(ShopProductViewModel model) {
+
             }
         });
     }

@@ -31,6 +31,7 @@ import com.tokopedia.wishlist.common.data.source.WishListCommonDataSource;
 import com.tokopedia.wishlist.common.data.source.cloud.WishListCommonCloudDataSource;
 import com.tokopedia.wishlist.common.data.source.cloud.api.WishListCommonApi;
 import com.tokopedia.wishlist.common.data.source.cloud.mapper.WishListProductListMapper;
+import com.tokopedia.wishlist.common.domain.interactor.AddToWishListUseCase;
 import com.tokopedia.wishlist.common.domain.interactor.GetWishListUseCase;
 import com.tokopedia.wishlist.common.domain.repository.WishListCommonRepository;
 
@@ -169,6 +170,12 @@ public class ShopProductModule {
     @Provides
     public GetWishListUseCase provideGetWishListUseCase(WishListCommonRepository wishListCommonRepository) {
         return new GetWishListUseCase(wishListCommonRepository);
+    }
+
+    @ShopProductScope
+    @Provides
+    public AddToWishListUseCase provideAddToWishListUseCase(WishListCommonRepository wishListCommonRepository){
+        return new AddToWishListUseCase(wishListCommonRepository);
     }
 
     // Filter
