@@ -187,7 +187,7 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
             payButton.setTextColor(getColorNominal(R.color.grey_nonactive_text));
             payButton.setEnabled(false);
         } else {
-            if (nominal > Double.parseDouble(balanceTokoCash.getRaw_balance())) {
+            if (nominal > (double) balanceTokoCash.getRawBalance()) {
                 separatorNominal.setBackgroundColor(getColorNominal(R.color.separator_red));
                 tokocashValue.setTextColor(getColorNominal(R.color.separator_red));
                 payButton.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bg_grey_border_black));

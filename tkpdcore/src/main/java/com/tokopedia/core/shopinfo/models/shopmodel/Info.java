@@ -160,6 +160,10 @@ public class Info {
         return shopIsGold == SHOP_GOLD_MERCHANT_VALUE;
     }
 
+    public boolean isShopOfficialStore() {
+        return shopIsOfficial == SHOP_OFFICIAL_VALUE;
+    }
+
     public boolean isShopIsGoldBadge() {
         return shopIsGoldBadge;
     }
