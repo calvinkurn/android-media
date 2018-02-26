@@ -9,6 +9,8 @@ import com.tokopedia.usecase.UseCase;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -21,6 +23,7 @@ public class FlightBookingGetSavedPassengerUseCase extends UseCase<List<FlightBo
     private final FlightRepository flightRepository;
     private final SavedPassengerViewModelMapper savedPassengerViewModelMapper;
 
+    @Inject
     public FlightBookingGetSavedPassengerUseCase(FlightRepository flightRepository, SavedPassengerViewModelMapper savedPassengerViewModelMapper) {
         this.flightRepository = flightRepository;
         this.savedPassengerViewModelMapper = savedPassengerViewModelMapper;

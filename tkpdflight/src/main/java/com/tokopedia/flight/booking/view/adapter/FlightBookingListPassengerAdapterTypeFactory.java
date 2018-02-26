@@ -5,13 +5,13 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.booking.view.adapter.viewholder.FlightBookingListPassengerViewHolder;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 
 /**
  * @author by furqan on 23/02/18.
  */
 
-public class FlightBookingListPassengerAdapterTypeFactory extends BaseAdapterTypeFactory{
+public class FlightBookingListPassengerAdapterTypeFactory extends BaseAdapterTypeFactory implements FlightBookingPassengerTypeFactory {
 
     private FlightBookingListPassengerViewHolder.ListenerCheckedSavedPassenger listenerCheckedSavedPassenger;
 
@@ -19,16 +19,19 @@ public class FlightBookingListPassengerAdapterTypeFactory extends BaseAdapterTyp
         this.listenerCheckedSavedPassenger = listenerCheckedSavedPassenger;
     }
 
-    public int type(FlightPassengerViewModel viewModel) {
+    @Override
+    public int type(FlightBookingPassengerViewModel viewModel) {
         return FlightBookingListPassengerViewHolder.LAYOUT;
     }
 
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
+        AbstractViewHolder viewHolder = null;
         if (type == FlightBookingListPassengerViewHolder.LAYOUT) {
-            return new FlightBookingListPassengerViewHolder(parent, listenerCheckedSavedPassenger);
+            viewHolder = new FlightBookingListPassengerViewHolder(parent, listenerCheckedSavedPassenger);
         } else {
-            return super.createViewHolder(parent, type);
+            viewHolder = super.createViewHolder(parent, type);
         }
+        return viewHolder;
     }
 }

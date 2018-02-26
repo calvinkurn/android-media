@@ -7,11 +7,15 @@ import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.booking.view.adapter.viewholder.FlightBookingSavedPassengerViewHolder;
-import com.tokopedia.flight.booking.view.fragment.FlightBookingSavedPassengerFragment;
+import com.tokopedia.flight.booking.di.DaggerFlightBookingComponent;
+import com.tokopedia.flight.booking.di.FlightBookingComponent;
+import com.tokopedia.flight.booking.view.adapter.viewholder.FlightBookingListPassengerViewHolder;
+import com.tokopedia.flight.booking.view.fragment.FlightBookingListPassengerFragment;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.common.view.BaseFlightActivity;
 
 import java.util.List;
 
@@ -19,18 +23,18 @@ import java.util.List;
  * @author by furqan on 23/02/18.
  */
 
-public class FlightBookingSavedPassengerActivity extends BaseSimpleActivity {
+public class FlightBookingListPassengerActivity extends BaseFlightActivity implements HasComponent<FlightBookingComponent> {
 
     public static Intent createIntent(Context context, FlightBookingPassengerViewModel selected) {
-        Intent intent = new Intent(context, FlightBookingSavedPassengerActivity.class);
-        intent.putExtra(FlightBookingSavedPassengerFragment.EXTRA_SELECTED_PASSENGER, selected);
+        Intent intent = new Intent(context, FlightBookingListPassengerActivity.class);
+        intent.putExtra(FlightBookingListPassengerFragment.EXTRA_SELECTED_PASSENGER, selected);
         return intent;
     }
     @Override
     protected Fragment getNewFragment() {
         FlightBookingPassengerViewModel flightBookingPassengerViewModel = getIntent()
-                .getParcelableExtra(FlightBookingSavedPassengerFragment.EXTRA_SELECTED_PASSENGER);
-        return FlightBookingSavedPassengerFragment.createInstance(flightBookingPassengerViewModel);
+                .getParcelableExtra(FlightBookingListPassengerFragment.EXTRA_SELECTED_PASSENGER);
+        return FlightBookingListPassengerFragment.createInstance(flightBookingPassengerViewModel);
     }
 
     @Override
@@ -58,8 +62,8 @@ public class FlightBookingSavedPassengerActivity extends BaseSimpleActivity {
 
     private void onResetClicked() {
         Fragment f = getCurrentFragment();
-        if (f != null && f instanceof FlightBookingSavedPassengerViewHolder.ListenerCheckedSavedPassenger) {
-            ((FlightBookingSavedPassengerViewHolder.ListenerCheckedSavedPassenger) f).resetItemCheck();
+        if (f != null && f instanceof FlightBookingListPassengerViewHolder.ListenerCheckedSavedPassenger) {
+            ((FlightBookingListPassengerViewHolder.ListenerCheckedSavedPassenger) f).resetItemCheck();
         }
     }
 
@@ -72,5 +76,15 @@ public class FlightBookingSavedPassengerActivity extends BaseSimpleActivity {
             }
         }
         return null;
+    }
+
+    @Override
+    public FlightBookingComponent getComponent() {
+        if (getApplication() instanceof FlightModuleRouter) {
+            return DaggerFlightBookingComponent.builder()
+                    .flightComponent(getFlightComponent())
+                    .build();
+        }
+        throw new RuntimeException("Application must implement FlightModuleRouter");
     }
 }

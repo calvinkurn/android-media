@@ -14,10 +14,11 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingListPassengerAdapterTypeFactory;
 import com.tokopedia.flight.booking.view.adapter.viewholder.FlightBookingListPassengerViewHolder;
-import com.tokopedia.flight.booking.view.presenter.FlightBookingSavedPassengerContract;
-import com.tokopedia.flight.booking.view.presenter.FlightBookingSavedPassengerPresenter;
+import com.tokopedia.flight.booking.view.presenter.FlightBookingListPassengerContract;
+import com.tokopedia.flight.booking.view.presenter.FlightBookingListPassengerPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -27,13 +28,13 @@ import javax.inject.Inject;
  */
 
 public class FlightBookingListPassengerFragment extends BaseListFragment<FlightBookingPassengerViewModel, FlightBookingListPassengerAdapterTypeFactory>
-        implements FlightBookingListPassengerViewHolder.ListenerCheckedSavedPassenger, FlightBookingSavedPassengerContract.View {
+        implements FlightBookingListPassengerViewHolder.ListenerCheckedSavedPassenger, FlightBookingListPassengerContract.View {
 
     public static final String EXTRA_SELECTED_PASSENGER = "EXTRA_SELECTED_PASSENGER";
 
     private FlightBookingPassengerViewModel selectedPassenger;
     @Inject
-    FlightBookingSavedPassengerPresenter presenter;
+    FlightBookingListPassengerPresenter presenter;
     List<FlightBookingPassengerViewModel> flightBookingPassengerViewModelList;
 
     public static FlightBookingListPassengerFragment createInstance(FlightBookingPassengerViewModel selectedPassenger) {
@@ -52,6 +53,7 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
         selectedPassenger = getArguments().getParcelable(EXTRA_SELECTED_PASSENGER);
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        flightBookingPassengerViewModelList = new ArrayList<>();
     }
 
     @Nullable
@@ -106,7 +108,9 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
 
     @Override
     public void loadData(int page) {
-
+        if (page == -1) {
+            renderList(flightBookingPassengerViewModelList);
+        }
     }
 
     @Override
@@ -122,5 +126,10 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
     @Override
     public void setPassengerViewModelList(List<FlightBookingPassengerViewModel> passengerViewModelList) {
         this.flightBookingPassengerViewModelList = passengerViewModelList;
+    }
+
+    @Override
+    public void renderPassengerList() {
+        loadData(-1);
     }
 }

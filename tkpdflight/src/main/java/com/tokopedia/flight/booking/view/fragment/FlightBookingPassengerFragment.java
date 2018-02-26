@@ -29,7 +29,7 @@ import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.activity.FlightBookingAmenityActivity;
-import com.tokopedia.flight.booking.view.activity.FlightBookingSavedPassengerActivity;
+import com.tokopedia.flight.booking.view.activity.FlightBookingListPassengerActivity;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPassengerContract;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPassengerPresenter;
@@ -540,7 +540,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     @Override
     public void navigateToSavedPassengerPicker(FlightBookingPassengerViewModel selected) {
-        Intent intent = FlightBookingSavedPassengerActivity.createIntent(getActivity(), selected);
+        Intent intent = FlightBookingListPassengerActivity.createIntent(getActivity(), selected);
         startActivityForResult(intent, REQUEST_CODE_PICK_SAVED_PASSENGER);
     }
 

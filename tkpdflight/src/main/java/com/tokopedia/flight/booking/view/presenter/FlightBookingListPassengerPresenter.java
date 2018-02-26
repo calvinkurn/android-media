@@ -46,6 +46,7 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
                     @Override
                     public void onNext(List<FlightBookingPassengerViewModel> flightBookingPassengerViewModels) {
                         getView().setPassengerViewModelList(flightBookingPassengerViewModels);
+                        getView().renderPassengerList();
                     }
                 }
         );

@@ -14,6 +14,8 @@ public interface FlightBookingListPassengerContract {
         List<FlightBookingPassengerViewModel> getPassengerViewModelList();
 
         void setPassengerViewModelList(List<FlightBookingPassengerViewModel> passengerViewModelList);
+
+        void renderPassengerList();
     }
 
     interface Presenter {
