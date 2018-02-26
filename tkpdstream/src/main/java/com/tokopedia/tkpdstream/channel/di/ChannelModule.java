@@ -1,8 +1,17 @@
 package com.tokopedia.tkpdstream.channel.di;
 
+import com.tokopedia.tkpdstream.channel.domain.mapper.ChannelMapper;
+import com.tokopedia.tkpdstream.channel.domain.source.ChannelSource;
+import com.tokopedia.tkpdstream.channel.domain.usecase.GetChannelListUseCase;
+import com.tokopedia.tkpdstream.chatroom.di.ChatroomScope;
+import com.tokopedia.tkpdstream.common.data.VoteApi;
 import com.tokopedia.tkpdstream.channel.data.ChannelApi;
 import com.tokopedia.tkpdstream.common.data.BaseUrl;
 import com.tokopedia.tkpdstream.common.di.qualifier.GroupChatQualifier;
+import com.tokopedia.tkpdstream.common.di.qualifier.VoteQualifier;
+import com.tokopedia.tkpdstream.vote.domain.mapper.GetVoteMapper;
+import com.tokopedia.tkpdstream.vote.domain.source.GetVoteSource;
+import com.tokopedia.tkpdstream.vote.domain.usecase.GetVoteUseCase;
 
 import dagger.Module;
 import dagger.Provides;

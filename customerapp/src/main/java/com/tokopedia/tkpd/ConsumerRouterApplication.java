@@ -122,6 +122,7 @@ import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
+import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
@@ -1031,7 +1032,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getGalleryIntent(Context context, boolean forceOpenCamera, int maxImageSelection, boolean compressToTkpd) {
-        return GalleryCropActivity.createIntent(context,1, forceOpenCamera, maxImageSelection, compressToTkpd);
+        return GalleryCropWatermarkActivity.createIntent(context,1, forceOpenCamera, maxImageSelection, compressToTkpd);
     }
 
     @Override

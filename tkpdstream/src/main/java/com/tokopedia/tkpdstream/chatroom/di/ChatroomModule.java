@@ -1,10 +1,24 @@
 package com.tokopedia.tkpdstream.chatroom.di;
 
+import com.tokopedia.tkpdstream.channel.di.ChannelScope;
+import com.tokopedia.tkpdstream.chatroom.data.ChatroomApi;
+import com.tokopedia.tkpdstream.common.data.VoteApi;
+import com.tokopedia.tkpdstream.common.data.VoteUrl;
+import com.tokopedia.tkpdstream.common.di.qualifier.GroupChatQualifier;
+import com.tokopedia.tkpdstream.common.di.qualifier.VoteQualifier;
+import com.tokopedia.tkpdstream.vote.domain.mapper.GetVoteMapper;
+import com.tokopedia.tkpdstream.vote.domain.source.GetVoteSource;
+import com.tokopedia.tkpdstream.vote.domain.usecase.GetVoteUseCase;
+
 import com.tokopedia.tkpdstream.chatroom.data.ChatroomApi;
 import com.tokopedia.tkpdstream.common.data.BaseUrl;
 import com.tokopedia.tkpdstream.common.di.qualifier.GroupChatQualifier;
 
 import dagger.Module;
+import dagger.Provides;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -16,6 +30,33 @@ import retrofit2.Retrofit;
 @ChatroomScope
 @Module
 public class ChatroomModule {
+
+    @ChatroomScope
+    @Provides
+    @VoteQualifier
+    public Retrofit provideGroupChatRetrofit(Retrofit.Builder retrofitBuilder, OkHttpClient okHttpClient) {
+        return retrofitBuilder.baseUrl(VoteUrl.BASE_URL).client(okHttpClient).addCallAdapterFactory(RxJavaCallAdapterFactory.create()).build();
+    }
+
+    @ChatroomScope
+    @Provides
+    public VoteApi provideVoteApi(@VoteQualifier Retrofit retrofit) {
+        return retrofit.create(VoteApi.class);
+    }
+
+    @ChatroomScope
+    @Provides
+    public GetVoteSource provideGetVoteSource(VoteApi voteApi, GetVoteMapper getVoteMapper){
+        return new GetVoteSource(voteApi, getVoteMapper);
+    }
+
+
+    @ChatroomScope
+    @Provides
+    public GetVoteUseCase provideGetVoteUseCase(GetVoteSource getVoteSource) {
+        return new GetVoteUseCase(getVoteSource);
+    }
+
 
     @ChatroomScope
     @Provides

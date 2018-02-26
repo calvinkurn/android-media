@@ -17,6 +17,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
+import android.view.animation.Transformation;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -50,6 +55,11 @@ import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.UserActionViewModel;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
+import com.tokopedia.tkpdstream.vote.view.adapter.VoteAdapter;
+import com.tokopedia.tkpdstream.vote.view.adapter.typefactory.VoteTypeFactory;
+import com.tokopedia.tkpdstream.vote.view.adapter.typefactory.VoteTypeFactoryImpl;
+import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
+import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
 import java.util.List;
 
@@ -70,10 +80,16 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     private Toolbar toolbar;
     private ImageView channelBanner;
     private RecyclerView chatRecyclerView;
+    private RecyclerView voteRecyclerView;
     private EditText replyEditText;
     private View sendButton;
+    private View voteBar;
+    private View voteBody;
+    private ImageView arrow;
     private GroupChatAdapter adapter;
+    private VoteAdapter voteAdapter;
     private LinearLayoutManager layoutManager;
+    private LinearLayoutManager voteLayoutManager;
 //    private ProgressBarWithTimer progressBarWithTimer;
 
     private OpenChannel mChannel;
@@ -133,8 +149,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         toolbar = view.findViewById(R.id.toolbar);
         channelBanner = view.findViewById(R.id.channel_banner);
         chatRecyclerView = view.findViewById(R.id.chat_list);
+        voteRecyclerView = view.findViewById(R.id.vote_list);
         replyEditText = view.findViewById(R.id.reply_edit_text);
         sendButton = view.findViewById(R.id.button_send);
+        voteBar = view.findViewById(R.id.vote_header);
+        voteBody = view.findViewById(R.id.vote_body);
+        arrow = view.findViewById(R.id.arrow);
 //        progressBarWithTimer = (ProgressBarWithTimer) view.findViewById(R.id.timer);
         setupToolbar();
         prepareView();
@@ -195,6 +215,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     private void prepareView() {
+//        final Animation an = new RotateAnimation(0.0f, 360.0f, 0, 0);
+//        an.setRepeatMode(Animation.REVERSE);
+//        an.setFillAfter(true);
+//        arrow.setAnimation(an);
         GroupChatTypeFactory groupChatTypeFactory = new GroupChatTypeFactoryImpl(this);
         adapter = GroupChatAdapter.createInstance(groupChatTypeFactory);
         layoutManager = new LinearLayoutManager(getActivity());
@@ -202,6 +226,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         layoutManager.setStackFromEnd(true);
         chatRecyclerView.setLayoutManager(layoutManager);
         chatRecyclerView.setAdapter(adapter);
+
+        VoteTypeFactory voteTypeFactory = new VoteTypeFactoryImpl(this);
+        voteAdapter = VoteAdapter.createInstance(voteTypeFactory);
+        voteLayoutManager = new LinearLayoutManager(getActivity());
+        voteRecyclerView.setLayoutManager(voteLayoutManager);
+        voteRecyclerView.setAdapter(voteAdapter);
 
         chatRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -249,6 +279,17 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
             }
         });
 
+        voteBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(voteBody.getVisibility() == View.VISIBLE){
+                    collapse(voteBody);
+                }else {
+                    expand(voteBody);
+                }
+                arrow.animate().rotationBy(180f).start();
+            }
+        });
 //        progressBarWithTimer.setDate(1519120063, 1519170063);
     }
 
@@ -264,6 +305,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
         toolbar.setTitle(viewModel.getChannelName());
         setToolbarParticipantCount();
+
+        presenter.getVoteInfo(getActivity());
 
         ImageHandler.loadImageBlur(getActivity(), channelBanner, "http://static.tvtropes" +
                 ".org/pmwiki/pub/images/kingdom_hearts_difficulties.jpg");
@@ -437,6 +480,72 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     public void onMessageUpdated(Visitable map) {
 //TODO : Implement this later
     }
+
+    public static void expand(final View v) {
+        v.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        final int targetHeight = v.getMeasuredHeight();
+
+        // Older versions of android (pre API 21) cancel animations for views with a height of 0.
+        v.getLayoutParams().height = 1;
+        v.setVisibility(View.VISIBLE);
+        Animation a = new Animation()
+        {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                v.getLayoutParams().height = interpolatedTime == 1
+                        ? ViewGroup.LayoutParams.WRAP_CONTENT
+                        : (int)(targetHeight * interpolatedTime);
+                v.requestLayout();
+            }
+
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };
+
+        // 1dp/ms
+        a.setDuration((int)(targetHeight / v.getContext().getResources().getDisplayMetrics().density));
+        v.startAnimation(a);
+    }
+
+    public static void collapse(final View v) {
+        final int initialHeight = v.getMeasuredHeight();
+
+        Animation a = new Animation()
+        {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                if(interpolatedTime == 1){
+                    v.setVisibility(View.GONE);
+                }else{
+                    v.getLayoutParams().height = initialHeight - (int)(initialHeight * interpolatedTime);
+                    v.requestLayout();
+                }
+            }
+
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };
+
+        // 1dp/ms
+        a.setDuration((int)(initialHeight / v.getContext().getResources().getDisplayMetrics().density));
+        v.startAnimation(a);
+    }
+
+
+    @Override
+    public void onSuccessGetVoteInfo(VoteInfoViewModel voteInfoViewModel) {
+        if(voteInfoViewModel.getVoteType() == VoteViewModel.IMAGE_TYPE){
+
+        }else {
+
+        }
+        voteAdapter.addList(voteInfoViewModel.getList());
+    }
+
 
     @Override
     public void onUserEntered(UserActionViewModel userActionViewModel) {
