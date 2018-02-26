@@ -4,13 +4,13 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.flight.booking.view.adapter.FlightBookingSavedPassengerAdapterTypeFactory;
+import com.tokopedia.flight.booking.view.adapter.FlightBookingListPassengerAdapterTypeFactory;
 
 /**
  * Created by alvarisi on 10/25/17.
  */
 
-public class FlightPassengerViewModel implements Parcelable, Cloneable, Visitable<FlightBookingSavedPassengerAdapterTypeFactory> {
+public class FlightPassengerViewModel implements Parcelable, Cloneable {
     private int adult;
     private int children;
     private int infant;
@@ -77,11 +77,6 @@ public class FlightPassengerViewModel implements Parcelable, Cloneable, Visitabl
         dest.writeInt(adult);
         dest.writeInt(children);
         dest.writeInt(infant);
-    }
-
-    @Override
-    public int type(FlightBookingSavedPassengerAdapterTypeFactory typeFactory) {
-        return typeFactory.type(this);
     }
 
     public static class Builder {
