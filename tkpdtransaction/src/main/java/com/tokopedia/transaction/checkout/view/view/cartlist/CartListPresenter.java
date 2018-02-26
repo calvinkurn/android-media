@@ -138,14 +138,16 @@ public class CartListPresenter implements ICartListPresenter {
                                         updateCartListData.getShipmentAddressFormData(),
                                         view.getCartPromoSuggestion()
                                 );
-                                view.navigateToActivity(intent);
+                                view.navigateToActivityRequest(intent,
+                                        CartShipmentActivity.REQUEST_CODE);
                             } else {
                                 Intent intent = CartShipmentActivity.createInstanceSingleAddress(
                                         view.getActivityContext(),
                                         updateCartListData.getShipmentAddressFormData(),
                                         view.getCartPromoSuggestion()
                                 );
-                                view.navigateToActivity(intent);
+                                view.navigateToActivityRequest(intent,
+                                        CartShipmentActivity.REQUEST_CODE);
                             }
 
                         } else {
@@ -159,6 +161,29 @@ public class CartListPresenter implements ICartListPresenter {
                 view.getGeneratedAuthParamNetwork(paramGetShipmentForm)
         );
 
+    }
+
+    @Override
+    public void processToShipmentMultipleAddress() {
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put("lang", "id");
+        param.put("isReset", "false");
+        cartListInteractor.getCartList(new Subscriber<CartListData>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(CartListData cartListData) {
+                view.renderToShipmentMultipleAddressSuccess(cartListData);
+            }
+        }, view.getGeneratedAuthParamNetwork(param));
     }
 
     @Override

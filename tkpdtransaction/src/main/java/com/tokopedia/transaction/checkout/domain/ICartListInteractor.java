@@ -28,5 +28,4 @@ public interface ICartListInteractor {
     void updateCartToSingleAddressShipment(Subscriber<UpdateToSingleAddressShipmentData> subscriber,
                                            TKPDMapParam<String, String> paramUpdate,
                                            TKPDMapParam<String, String> paramGetShipmentForm);
-
 }

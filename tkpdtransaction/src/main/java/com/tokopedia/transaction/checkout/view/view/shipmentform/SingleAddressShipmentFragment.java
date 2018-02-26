@@ -77,6 +77,8 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     @Inject
     SingleAddressShipmentDataConverter mSingleAddressShipmentDataConverter;
 
+    ICartShipmentActivity cartShipmentActivityListener;
+
     private CartSingleAddressData mCartSingleAddressData;
 
     public static SingleAddressShipmentFragment newInstance(CartShipmentAddressFormData cartShipmentAddressFormData,
@@ -294,6 +296,12 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        this.cartShipmentActivityListener = (ICartShipmentActivity) activity;
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == CartAddressChoiceActivity.REQUEST_CODE) {
@@ -305,7 +313,8 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                     //TODO render selectedAddressData
                     break;
                 case CartAddressChoiceActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM:
-                    //TODO biar gue yg proses (Angga)
+                    cartShipmentActivityListener.closeWithResult(
+                            CartShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM, null);
                     break;
             }
         }

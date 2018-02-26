@@ -17,5 +17,7 @@ public interface ICartListPresenter {
 
     void processToShipmentStep();
 
+    void processToShipmentMultipleAddress();
+
     void reCalculateSubTotal(List<CartItemHolderData> dataList);
 }

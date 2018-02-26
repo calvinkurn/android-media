@@ -44,9 +44,11 @@ import com.tokopedia.transaction.checkout.di.component.DaggerCartListComponent;
 import com.tokopedia.transaction.checkout.di.module.CartListModule;
 import com.tokopedia.transaction.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
+import com.tokopedia.transaction.checkout.view.data.CartListData;
 import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
+import com.tokopedia.transaction.checkout.view.view.shipmentform.CartShipmentActivity;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -501,7 +503,12 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     @Override
     public CartPromoSuggestion getCartPromoSuggestion() {
-     return   this.cartPromoSuggestionData;
+        return this.cartPromoSuggestionData;
+    }
+
+    @Override
+    public void renderToShipmentMultipleAddressSuccess(CartListData cartListData) {
+
     }
 
     void showDeleteCartItemDialog(ArrayList<CartItemData> cartItemDataList, ArrayList<CartItemData> emptyData) {
@@ -598,6 +605,10 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
                     cartListAdapter.updateItemPromoVoucher(cartItemPromoHolderData);
                 }
+            }
+        } else if (requestCode == CartShipmentActivity.REQUEST_CODE) {
+            if (resultCode == CartShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM) {
+                dPresenter.processToShipmentMultipleAddress();
             }
         }
     }

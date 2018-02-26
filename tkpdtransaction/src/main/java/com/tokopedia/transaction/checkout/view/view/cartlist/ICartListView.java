@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.transaction.base.IBaseView;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
+import com.tokopedia.transaction.checkout.view.data.CartListData;
 import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
 
@@ -60,4 +61,6 @@ public interface ICartListView extends IBaseView {
     void renderLoadGetCartDataFinish();
 
     CartPromoSuggestion getCartPromoSuggestion();
+
+    void renderToShipmentMultipleAddressSuccess(CartListData cartListData);
 }
