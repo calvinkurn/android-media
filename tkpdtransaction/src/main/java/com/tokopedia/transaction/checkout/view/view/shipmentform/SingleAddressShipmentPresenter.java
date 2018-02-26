@@ -52,28 +52,8 @@ public class SingleAddressShipmentPresenter
      * @param context
      * @param cartSingleAddressData
      */
-    public void getCartShipmentData(Context context, final CartSingleAddressData cartSingleAddressData) {
+    public void getCartShipmentData(final CartSingleAddressData cartSingleAddressData) {
         getMvpView().show(cartSingleAddressData);
-        mGetDefaultAddressUseCase.execute(
-                PeopleAddressAuthUtil.getRequestParams(context, DEFAULT_ORDER, DEFAULT_KEYWORD, mPagingHandler.getPage()),
-                new Subscriber<List<RecipientAddressModel>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable throwable) {
-                        getMvpView().showError();
-                    }
-
-                    @Override
-                    public void onNext(List<RecipientAddressModel> recipientAddressModels) {
-                        cartSingleAddressData.setRecipientAddressModelList(recipientAddressModels);
-                        cartSingleAddressData.setRecipientAddressModel(recipientAddressModels.get(0));
-                        getMvpView().show(cartSingleAddressData);
-                    }
-                });
     }
 
 }

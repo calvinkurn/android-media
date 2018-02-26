@@ -197,7 +197,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     @Override
     protected void setViewListener() {
         mSingleAddressShipmentAdapter.setViewListener(this);
-        mSingleAddressShipmentPresenter.getCartShipmentData(getActivity(), mCartSingleAddressData);
+        mSingleAddressShipmentPresenter.getCartShipmentData(mCartSingleAddressData);
     }
 
     /**
