@@ -1,6 +1,5 @@
 package com.tokopedia.shop.address.view.mapper;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.shop.address.view.model.ShopAddressViewModel;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoAddress;
@@ -20,8 +19,8 @@ public class ShopAddressViewModelMapper {
     public ShopAddressViewModelMapper() {
     }
 
-    public List<Visitable> transform(ShopInfo shopInfo) {
-        List<Visitable> visitableList = new ArrayList<>();
+    public List<ShopAddressViewModel> transform(ShopInfo shopInfo) {
+        List<ShopAddressViewModel> visitableList = new ArrayList<>();
         for (ShopInfoAddress shopInfoAddress : shopInfo.getAddress()) {
             ShopAddressViewModel shopAddressViewModel = new ShopAddressViewModel();
             shopAddressViewModel.setId(shopInfoAddress.getLocationAddressId());

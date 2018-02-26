@@ -4,13 +4,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.address.view.adapter.ShopAddressAdapterTypeFactory;
-import com.tokopedia.shop.address.view.adapter.ShopAddressTypeFactory;
 import com.tokopedia.shop.address.view.listener.ShopAddressListView;
+import com.tokopedia.shop.address.view.model.ShopAddressViewModel;
 import com.tokopedia.shop.address.view.presenter.ShopAddressListPresenter;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
@@ -23,7 +22,7 @@ import javax.inject.Inject;
  * Created by nathan on 2/5/18.
  */
 
-public class ShopAddressListFragment extends BaseListFragment<Visitable, ShopAddressTypeFactory> implements ShopAddressListView {
+public class ShopAddressListFragment extends BaseListFragment<ShopAddressViewModel, ShopAddressAdapterTypeFactory> implements ShopAddressListView {
 
     public static ShopAddressListFragment createInstance(String shopId) {
         ShopAddressListFragment shopAddressListFragment = new ShopAddressListFragment();
@@ -57,12 +56,12 @@ public class ShopAddressListFragment extends BaseListFragment<Visitable, ShopAdd
     }
 
     @Override
-    protected ShopAddressTypeFactory getAdapterTypeFactory() {
+    protected ShopAddressAdapterTypeFactory getAdapterTypeFactory() {
         return new ShopAddressAdapterTypeFactory();
     }
 
     @Override
-    public void onItemClicked(Visitable visitable) {
+    public void onItemClicked(ShopAddressViewModel shopAddressViewModel) {
 
     }
 

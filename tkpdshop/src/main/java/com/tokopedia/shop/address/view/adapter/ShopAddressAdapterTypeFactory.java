@@ -11,9 +11,8 @@ import com.tokopedia.shop.address.view.model.ShopAddressViewModel;
  * Created by alvarisi on 12/7/17.
  */
 
-public class ShopAddressAdapterTypeFactory extends BaseAdapterTypeFactory implements ShopAddressTypeFactory {
+public class ShopAddressAdapterTypeFactory extends BaseAdapterTypeFactory {
 
-    @Override
     public int type(ShopAddressViewModel shopNoteViewModel) {
         return ShopAddressViewHolder.LAYOUT;
     }
