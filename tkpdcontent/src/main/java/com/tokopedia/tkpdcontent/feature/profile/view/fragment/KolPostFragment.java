@@ -14,11 +14,10 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.tkpdcontent.KolComponentInstance;
 import com.tokopedia.tkpdcontent.R;
 import com.tokopedia.tkpdcontent.feature.profile.di.DaggerKolProfileComponent;
-import com.tokopedia.tkpdcontent.feature.profile.di.KolProfileComponent;
 import com.tokopedia.tkpdcontent.feature.profile.di.KolProfileModule;
 import com.tokopedia.tkpdcontent.feature.profile.view.adapter.KolPostAdapter;
 import com.tokopedia.tkpdcontent.feature.profile.view.listener.KolPostListener;
-import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolViewModel;
+import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolPostViewModel;
 
 import java.util.List;
 
@@ -141,7 +140,7 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     }
 
     @Override
-    public void onGoToKolComment(int page, int rowNumber, KolViewModel kolViewModel) {
+    public void onGoToKolComment(int page, int rowNumber, KolPostViewModel kolPostViewModel) {
 
     }
 }

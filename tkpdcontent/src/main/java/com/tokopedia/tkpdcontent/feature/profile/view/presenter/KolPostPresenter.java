@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.tkpdcontent.feature.profile.domain.interactor.GetProfileKolDataUseCase;
 import com.tokopedia.tkpdcontent.feature.profile.view.listener.KolPostListener;
-import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolViewModel;
+import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolPostViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ public class KolPostPresenter extends BaseDaggerPresenter<KolPostListener.View>
     public void getKolPost(String userId) {
         getProfileKolDataUseCase.execute(
                 GetProfileKolDataUseCase.getParams(userId),
-                new Subscriber<List<KolViewModel>>() {
+                new Subscriber<List<KolPostViewModel>>() {
                     @Override
                     public void onCompleted() {
 
@@ -50,8 +50,8 @@ public class KolPostPresenter extends BaseDaggerPresenter<KolPostListener.View>
                     }
 
                     @Override
-                    public void onNext(List<KolViewModel> kolViewModels) {
-                        getView().onSuccessGetProfileData(new ArrayList<Visitable>(kolViewModels));
+                    public void onNext(List<KolPostViewModel> kolPostViewModels) {
+                        getView().onSuccessGetProfileData(new ArrayList<Visitable>(kolPostViewModels));
                     }
                 });
     }

@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.tkpdcontent.feature.profile.data.pojo.GetProfileKolResponse;
 import com.tokopedia.tkpdcontent.feature.profile.data.pojo.PostKol;
 import com.tokopedia.tkpdcontent.feature.profile.data.pojo.ProfileKolData;
-import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolViewModel;
+import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolPostViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,19 +21,19 @@ import rx.functions.Func1;
  */
 
 public class GetProfileKolDataMapper
-        implements Func1<Response<GraphqlResponse<GetProfileKolResponse>>, List<KolViewModel>> {
+        implements Func1<Response<GraphqlResponse<GetProfileKolResponse>>, List<KolPostViewModel>> {
 
     @Inject
     public GetProfileKolDataMapper() {
     }
 
     @Override
-    public List<KolViewModel> call(Response<GraphqlResponse<GetProfileKolResponse>>
+    public List<KolPostViewModel> call(Response<GraphqlResponse<GetProfileKolResponse>>
                                                graphqlResponse) {
         ProfileKolData profileKolData = getDataOrError(graphqlResponse);
-        ArrayList<KolViewModel> kolViewModels = new ArrayList<>();
+        ArrayList<KolPostViewModel> kolPostViewModels = new ArrayList<>();
         for (PostKol postKol : profileKolData.postKol) {
-            KolViewModel kolViewModel = new KolViewModel(
+            KolPostViewModel kolPostViewModel = new KolPostViewModel(
                     "",
                     postKol.userName != null ? postKol.userName  : "",
                     postKol.userPhoto != null ? postKol.userPhoto  : "",
@@ -59,9 +59,9 @@ public class GetProfileKolDataMapper
                     true,
                     ""
             );
-            kolViewModels.add(kolViewModel);
+            kolPostViewModels.add(kolPostViewModel);
         }
-        return kolViewModels;
+        return kolPostViewModels;
     }
 
     private ProfileKolData getDataOrError(Response<GraphqlResponse<GetProfileKolResponse>>

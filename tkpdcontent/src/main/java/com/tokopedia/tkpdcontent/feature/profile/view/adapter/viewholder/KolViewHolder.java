@@ -12,13 +12,13 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpdcontent.R;
 import com.tokopedia.tkpdcontent.feature.profile.view.listener.KolPostListener;
-import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolViewModel;
+import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolPostViewModel;
 
 /**
  * @author by nisie on 10/27/17.
  */
 
-public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
+public class KolViewHolder extends AbstractViewHolder<KolPostViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.kol_layout;
@@ -66,7 +66,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
     }
 
     @Override
-    public void bind(KolViewModel element) {
+    public void bind(KolPostViewModel element) {
         if (TextUtils.isEmpty(element.getTitle())) {
             title.setVisibility(View.GONE);
         } else {
@@ -140,7 +140,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
         setListener(element);
     }
 
-    private void setListener(final KolViewModel element) {
+    private void setListener(final KolPostViewModel element) {
         avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -226,7 +226,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
 
     }
 
-    private Spanned getKolText(KolViewModel element) {
+    private Spanned getKolText(KolPostViewModel element) {
         if (!element.isReviewExpanded() && MethodChecker.fromHtml(element.getReview()).length() >
                 MAX_CHAR) {
             String subDescription = MethodChecker.fromHtml(element.getReview()).toString().substring(0,
@@ -241,7 +241,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
         }
     }
 
-    private void tooltipAreaClicked(KolViewModel element) {
+    private void tooltipAreaClicked(KolPostViewModel element) {
 //        UnifyTracking.eventKolContentCtaClick(element.isFollowed(), element.getTagsType());
 //        List<KolTracking.Promotion> list = new ArrayList<>();
 //        list.add(new KolTracking.Promotion(

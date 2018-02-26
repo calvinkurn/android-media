@@ -8,7 +8,7 @@ import com.tokopedia.tkpdcontent.R;
 import com.tokopedia.tkpdcontent.common.data.source.api.KolApi;
 import com.tokopedia.tkpdcontent.feature.profile.data.mapper.GetProfileKolDataMapper;
 import com.tokopedia.tkpdcontent.feature.profile.data.pojo.GetProfileKolRequest;
-import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolViewModel;
+import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolPostViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.io.BufferedReader;
@@ -49,7 +49,7 @@ public class GetProfileKolDataSourceCloud {
         this.getProfileKolDataMapper = getProfileKolDataMapper;
     }
 
-    public Observable<List<KolViewModel>> getProfileKolData(RequestParams params) {
+    public Observable<List<KolPostViewModel>> getProfileKolData(RequestParams params) {
         return kolApi.getProfileKolData(getRequestPayload(params))
                 .map(getProfileKolDataMapper);
     }
