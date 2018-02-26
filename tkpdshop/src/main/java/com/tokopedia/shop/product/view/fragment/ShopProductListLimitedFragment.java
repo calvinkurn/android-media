@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
@@ -25,8 +26,8 @@ import javax.inject.Inject;
  * Created by nathan on 2/15/18.
  */
 
-public class ShopProductListLimitedFragment extends
-        BaseListFragment<ShopProductBaseViewModel, ShopProductLimitedAdapterTypeFactory> implements ShopProductListLimitedView {
+public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopProductBaseViewModel, ShopProductLimitedAdapterTypeFactory>
+        implements ShopProductListLimitedView {
 
     public static ShopProductListLimitedFragment createInstance() {
         ShopProductListLimitedFragment fragment = new ShopProductListLimitedFragment();
@@ -82,7 +83,7 @@ public class ShopProductListLimitedFragment extends
     public void displayProduct(String shopId, String promotionWebViewUrl) {
         this.shopId = shopId;
 //        shopProductListLimitedPresenter.getShopPageList(shopId);
-        shopProductListLimitedPresenter.getProductLimitedList(shopId);
+        shopProductListLimitedPresenter.getProductLimitedList(shopId, promotionWebViewUrl);
     }
 
     @Override
@@ -100,6 +101,16 @@ public class ShopProductListLimitedFragment extends
 
     @Override
     public void onItemClicked(ShopProductBaseViewModel shopProductBaseViewModel) {
+
+    }
+
+    @Override
+    public void onSearchSubmitted(String text) {
+
+    }
+
+    @Override
+    public void onSearchTextChanged(String text) {
 
     }
 }
