@@ -24,7 +24,7 @@
         <item
             android:title="@string/product_manage_menu_promo_topads"
             android:id="@+id/set_topads_promo"
-            android:icon="@drawable/ic_top_ads"/>
+            android:icon="@drawable/ic_toa_topads"/>
         <item
             android:id="@+id/change_price_product_menu"
             android:icon="@drawable/ic_menu_set_price"
