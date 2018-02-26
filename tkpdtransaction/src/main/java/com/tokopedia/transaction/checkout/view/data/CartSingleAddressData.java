@@ -10,9 +10,11 @@ import java.util.List;
  *
  * @author Aghny A. Putra on 25/01/18
  */
+
 public class CartSingleAddressData implements Parcelable {
 
     private ShipmentFeeBannerModel shipmentFeeBannerModel;
+    private List<RecipientAddressModel> recipientAddressModelList;
     private RecipientAddressModel recipientAddressModel;
     private List<CartSellerItemModel> cartSellerItemModelList;
     private CartPayableDetailModel cartPayableDetailModel;
@@ -23,6 +25,14 @@ public class CartSingleAddressData implements Parcelable {
 
     public void setShipmentFeeBannerModel(ShipmentFeeBannerModel shipmentFeeBannerModel) {
         this.shipmentFeeBannerModel = shipmentFeeBannerModel;
+    }
+
+    public List<RecipientAddressModel> getRecipientAddressModelList() {
+        return recipientAddressModelList;
+    }
+
+    public void setRecipientAddressModelList(List<RecipientAddressModel> recipientAddressModelList) {
+        this.recipientAddressModelList = recipientAddressModelList;
     }
 
     public RecipientAddressModel getRecipientAddressModel() {
@@ -57,6 +67,7 @@ public class CartSingleAddressData implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(this.shipmentFeeBannerModel, flags);
+        dest.writeTypedList(this.recipientAddressModelList);
         dest.writeParcelable(this.recipientAddressModel, flags);
         dest.writeTypedList(this.cartSellerItemModelList);
         dest.writeParcelable(this.cartPayableDetailModel, flags);
@@ -67,6 +78,7 @@ public class CartSingleAddressData implements Parcelable {
 
     protected CartSingleAddressData(Parcel in) {
         this.shipmentFeeBannerModel = in.readParcelable(ShipmentFeeBannerModel.class.getClassLoader());
+        this.recipientAddressModelList = in.createTypedArrayList(RecipientAddressModel.CREATOR);
         this.recipientAddressModel = in.readParcelable(RecipientAddressModel.class.getClassLoader());
         this.cartSellerItemModelList = in.createTypedArrayList(CartSellerItemModel.CREATOR);
         this.cartPayableDetailModel = in.readParcelable(CartPayableDetailModel.class.getClassLoader());
@@ -83,4 +95,5 @@ public class CartSingleAddressData implements Parcelable {
             return new CartSingleAddressData[size];
         }
     };
+
 }

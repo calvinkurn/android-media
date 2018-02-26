@@ -75,6 +75,7 @@ public class SingleAddressShipmentPresenter
 
                     @Override
                     public void onNext(List<RecipientAddressModel> recipientAddressModels) {
+                        cartSingleAddressData.setRecipientAddressModelList(recipientAddressModels);
                         cartSingleAddressData.setRecipientAddressModel(recipientAddressModels.get(0));
                         getMvpView().show(cartSingleAddressData);
                     }
