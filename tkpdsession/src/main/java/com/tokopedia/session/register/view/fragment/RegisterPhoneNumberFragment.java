@@ -1,6 +1,8 @@
 package com.tokopedia.session.register.view.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -104,7 +106,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_NEXT) {
 //                    UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getLoginWithPhoneTracking());
-//                    presenter.loginWithPhoneNumber(phoneNumber.getText().toString());
+                    presenter.registerWithPhoneNumber(phoneNumber.getText().toString());
                     handled = true;
                 }
                 return handled;
@@ -116,7 +118,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
             public void onClick(View v) {
                 errorText.setText("");
 //                UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getLoginWithPhoneTracking());
-//                presenter.loginWithPhoneNumber(phoneNumber.getText().toString());
+                presenter.registerWithPhoneNumber(phoneNumber.getText().toString());
             }
         });
     }
@@ -133,7 +135,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
 
     @Override
     public void goToVerifyAccountPage(String phoneNumber) {
-        startActivityForResult(VerificationActivity.getRegisterTokoCashVerificationIntent(
+        startActivityForResult(VerificationActivity.getRegisterPhoneNumberVerificationIntent(
                 getActivity(),
                 phoneNumber,
                 getListVerificationMethod()),
@@ -181,6 +183,26 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
     @Override
     public void showErrorPhoneNumber(String errorMessage) {
         errorText.setText(errorMessage);
+    }
+
+    @Override
+    public void showAlreadyRegisteredDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(String.valueOf(phoneNumber));
+        builder.setMessage(getResources().getString(R.string.phone_number_already_registered));
+        builder.setPositiveButton(getResources().getString(R.string.login), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+            //go to login
+            }
+        });
+        builder.setNegativeButton(getResources().getString(R.string.change), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
     }
 
     @Override

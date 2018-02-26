@@ -142,6 +142,7 @@
     <string name="second">detik</string>
     <string name="not_received_code">Tidak menerima kode?</string>
     <string name="register">Daftar</string>
+    <string name="change">Ganti</string>
 
     <!-- Change Phone Number strings -->
     <string name="you_have">Anda memiliki:</string>

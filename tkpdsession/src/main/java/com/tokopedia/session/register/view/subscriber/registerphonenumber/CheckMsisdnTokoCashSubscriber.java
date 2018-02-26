@@ -1,7 +1,6 @@
 package com.tokopedia.session.register.view.subscriber.registerphonenumber;
 
 import com.tokopedia.network.ErrorHandler;
-import com.tokopedia.session.R;
 import com.tokopedia.session.login.loginphonenumber.view.viewmodel.CheckMsisdnTokoCashViewModel;
 import com.tokopedia.session.register.view.viewlistener.RegisterPhoneNumber;
 
@@ -38,7 +37,7 @@ public class CheckMsisdnTokoCashSubscriber extends Subscriber<CheckMsisdnTokoCas
         if (!checkMsisdnTokoCashViewModel.isTokopediaAccountExist()) {
             view.goToVerifyAccountPage(phoneNumber);
         } else {
-            view.showErrorPhoneNumber(R.string.phone_number_already_registered);
+            view.showAlreadyRegisteredDialog();
         }
     }
 }

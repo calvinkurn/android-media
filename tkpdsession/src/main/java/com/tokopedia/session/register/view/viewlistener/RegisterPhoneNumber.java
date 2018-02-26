@@ -22,6 +22,8 @@ public interface RegisterPhoneNumber {
 
         void showLoading();
 
+        void showAlreadyRegisteredDialog();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
