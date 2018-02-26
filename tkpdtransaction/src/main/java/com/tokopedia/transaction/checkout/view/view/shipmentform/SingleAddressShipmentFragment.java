@@ -26,6 +26,7 @@ import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
+import com.tokopedia.transaction.checkout.view.data.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity;
 import com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
@@ -53,7 +54,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         implements ICartSingleAddressView<CartSingleAddressData>,
         SingleAddressShipmentAdapter.SingleAddressShipmentAdapterListener {
 
-    public static final String ARG_EXTRA_CART_DATA_LIST = "ARG_EXTRA_CART_DATA_LIST";
+    public static final String ARG_EXTRA_SHIPMENT_FORM_DATA = "ARG_EXTRA_SHIPMENT_FORM_DATA";
     public static final String ARG_EXTRA_CART_PROMO_SUGGESTION = "ARG_EXTRA_CART_PROMO_SUGGESTION";
 
     private static final Locale LOCALE_ID = new Locale("in", "ID");
@@ -83,12 +84,11 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     private CartSingleAddressData mCartSingleAddressData;
 
-    public static SingleAddressShipmentFragment newInstance(List<CartItemData> cartItemDataList,
+    public static SingleAddressShipmentFragment newInstance(CartShipmentAddressFormData cartShipmentAddressFormData,
                                                             CartPromoSuggestion cartPromoSuggestionData) {
         SingleAddressShipmentFragment fragment = new SingleAddressShipmentFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(ARG_EXTRA_CART_DATA_LIST,
-                (ArrayList<? extends Parcelable>) cartItemDataList);
+        bundle.putParcelable(ARG_EXTRA_SHIPMENT_FORM_DATA, cartShipmentAddressFormData);
         bundle.putParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION, cartPromoSuggestionData);
         fragment.setArguments(bundle);
         return fragment;
@@ -158,8 +158,10 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
      */
     @Override
     protected void setupArguments(Bundle arguments) {
-        List<CartItemData> cartDataList = arguments.getParcelableArrayList(ARG_EXTRA_CART_DATA_LIST);
-        mCartSingleAddressData = mSingleAddressShipmentDataConverter.convert(cartDataList);
+        CartShipmentAddressFormData cartShipmentAddressFormData = arguments.getParcelable(
+                ARG_EXTRA_SHIPMENT_FORM_DATA
+        );
+        mCartSingleAddressData = mSingleAddressShipmentDataConverter.convert(cartShipmentAddressFormData);
         CartPromoSuggestion cartPromoSuggestion = arguments.getParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION);
 
     }

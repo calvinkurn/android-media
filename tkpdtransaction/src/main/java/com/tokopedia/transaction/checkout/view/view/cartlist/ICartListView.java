@@ -58,4 +58,6 @@ public interface ICartListView extends IBaseView {
     void renderLoadGetCartData();
 
     void renderLoadGetCartDataFinish();
+
+    CartPromoSuggestion getCartPromoSuggestion();
 }

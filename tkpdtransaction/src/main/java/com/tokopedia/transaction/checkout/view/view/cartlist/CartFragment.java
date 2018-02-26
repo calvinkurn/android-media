@@ -499,6 +499,11 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
         bottomLayout.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public CartPromoSuggestion getCartPromoSuggestion() {
+     return   this.cartPromoSuggestionData;
+    }
+
     void showDeleteCartItemDialog(ArrayList<CartItemData> cartItemDataList, ArrayList<CartItemData> emptyData) {
         DialogFragment dialog = CartRemoveItemDialog.newInstance(cartItemDataList, emptyData,
                 new CartRemoveItemDialog.CartItemRemoveCallbackAction() {

@@ -18,10 +18,12 @@ import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.ShipmentRatesDataMapper;
 import com.tokopedia.transaction.checkout.view.adapter.MultipleAddressShipmentAdapter;
+import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressPriceSummaryData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressShipmentAdapterData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
+import com.tokopedia.transaction.checkout.view.data.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
@@ -42,6 +44,8 @@ import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointCon
 
 public class MultipleAddressShipmentFragment extends TkpdFragment
         implements MultipleAddressShipmentAdapter.MultipleAddressShipmentAdapterListener {
+    public static final String ARG_EXTRA_SHIPMENT_FORM_DATA = "ARG_EXTRA_SHIPMENT_FORM_DATA";
+    public static final String ARG_EXTRA_CART_PROMO_SUGGESTION = "ARG_EXTRA_CART_PROMO_SUGGESTION";
 
     private static final int REQUEST_CODE_SHIPMENT_DETAIL = 11;
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
@@ -53,7 +57,17 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
 
     private MultipleAddressShipmentAdapter shipmentAdapter;
 
-    public static MultipleAddressShipmentFragment newInstance() {
+    public static MultipleAddressShipmentFragment newInstance(CartShipmentAddressFormData cartShipmentAddressFormData,
+                                                              CartPromoSuggestion cartPromoSuggestionData) {
+        MultipleAddressShipmentFragment fragment = new MultipleAddressShipmentFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ARG_EXTRA_SHIPMENT_FORM_DATA, cartShipmentAddressFormData);
+        bundle.putParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION, cartPromoSuggestionData);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    public static MultipleAddressShipmentFragment newInstance(){
         return new MultipleAddressShipmentFragment();
     }
 
