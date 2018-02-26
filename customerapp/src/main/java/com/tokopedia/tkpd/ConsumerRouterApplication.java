@@ -160,6 +160,7 @@ import com.tokopedia.tkpd.flight.di.DaggerFlightConsumerComponent;
 import com.tokopedia.tkpd.flight.di.FlightConsumerComponent;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
+import com.tokopedia.tkpd.drawer.DrawerBuyerHelper;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
@@ -203,8 +204,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter,
         TokoCashRouter, IWalletRouter, ILoyaltyRouter, ReputationRouter, SessionRouter,
         AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter {
-
-    private static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -1311,13 +1310,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToCreateTopadsPromo(String productId) {
-        Intent topadsIntent = getPackageManager()
-                .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
-
-        if (topadsIntent != null) {
-            startActivity(topadsIntent);
-        } else {
-            goToMerchantRedirect(this);
-        }
+        DrawerBuyerHelper.goToTopadsPage(this);
     }
 }
