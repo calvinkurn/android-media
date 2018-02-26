@@ -24,8 +24,8 @@ import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdap
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
+import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
-import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 import com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity;
 import com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
@@ -48,6 +48,7 @@ import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointCon
 /**
  * @author Aghny A. Putra on 24/1/18
  */
+
 public class SingleAddressShipmentFragment extends BasePresenterFragment
         implements ICartSingleAddressView<CartSingleAddressData>,
         SingleAddressShipmentAdapter.SingleAddressShipmentAdapterListener {
@@ -97,7 +98,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     protected void initInjector() {
         super.initInjector();
         SingleAddressShipmentComponent component = DaggerSingleAddressShipmentComponent.builder()
-                .singleAddressShipmentModule(new SingleAddressShipmentModule())
+                .singleAddressShipmentModule(new SingleAddressShipmentModule(this))
                 .build();
         component.inject(this);
     }
@@ -197,7 +198,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     @Override
     protected void setViewListener() {
         mSingleAddressShipmentAdapter.setViewListener(this);
-        mSingleAddressShipmentPresenter.getCartSingleAddressItemView(mCartSingleAddressData);
+        mSingleAddressShipmentPresenter.getCartShipmentData(getActivity(), mCartSingleAddressData);
     }
 
     /**
@@ -262,7 +263,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     }
 
     @Override
-    public void onChoosePickupPoint(ShipmentRecipientModel addressAdapterData) {
+    public void onChoosePickupPoint(RecipientAddressModel addressAdapterData) {
         startActivityForResult(PickupPointActivity.createInstance(getActivity(),
                 addressAdapterData.getDestinationDistrictName(),
                 GetPickupPointsUseCase.generateParams(addressAdapterData)
@@ -270,12 +271,12 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     }
 
     @Override
-    public void onClearPickupPoint(ShipmentRecipientModel addressAdapterData) {
+    public void onClearPickupPoint(RecipientAddressModel addressAdapterData) {
         showCancelPickupBoothDialog();
     }
 
     @Override
-    public void onEditPickupPoint(ShipmentRecipientModel addressAdapterData) {
+    public void onEditPickupPoint(RecipientAddressModel addressAdapterData) {
         startActivityForResult(PickupPointActivity.createInstance(getActivity(),
                 addressAdapterData.getDestinationDistrictName(),
                 GetPickupPointsUseCase.generateParams(addressAdapterData)

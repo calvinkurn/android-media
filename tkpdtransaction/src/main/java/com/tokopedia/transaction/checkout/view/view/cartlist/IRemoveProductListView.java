@@ -5,6 +5,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 /**
  * @author Aghny A. Putra on 05/02/18
  */
+
 public interface IRemoveProductListView<T> {
 
     void showList(T t);
