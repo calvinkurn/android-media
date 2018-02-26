@@ -577,10 +577,14 @@ public class DrawerBuyerHelper extends DrawerHelper
                     }
                     break;
                 case TkpdState.DrawerPosition.INBOX_MESSAGE:
-                    intent = ((ConsumerRouterApplication) context.getApplication())
-                            .getInboxMessageIntent(context);
-                    context.startActivity(intent);
-                    sendGTMNavigationEvent(AppEventTracking.EventLabel.MESSAGE);
+
+                        intent = ((ConsumerRouterApplication) context.getApplication())
+                                .getGroupChatIntent(context);
+    //                        intent = ((TkpdInboxRouter) context.getApplication()).getInboxMessageIntent
+//                                (context);
+                        context.startActivity(intent);
+                        sendGTMNavigationEvent(AppEventTracking.EventLabel.MESSAGE);
+
                     break;
                 default:
                     super.onItemClicked(item);

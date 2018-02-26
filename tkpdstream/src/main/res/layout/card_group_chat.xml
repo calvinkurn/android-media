@@ -1,78 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="@dimen/space_med"
     android:elevation="@dimen/card_channel_elevation"
-    android:paddingTop="@dimen/padding_small"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    app:cardBackgroundColor="@color/cardview_light_background"
+    app:cardCornerRadius="3dp"
+    app:cardElevation="@dimen/card_channel_elevation"
+    app:cardPreventCornerOverlap="false">>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/margin_small"
-        android:paddingRight="@dimen/margin_small"
-        android:layout_margin="@dimen/margin_vvs"
         android:orientation="vertical">
 
-        <RelativeLayout
+
+        <ImageView
+            android:id="@+id/product_image"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="155dp"
+            android:gravity="center"
+            android:scaleType="centerCrop" />
 
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
 
-                <ImageView
-                    android:id="@+id/product_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="155dp"
-                    android:gravity="center"
-                    android:scaleType="centerCrop" />
-
-            </android.support.v7.widget.CardView>
-
-            <!--<include-->
-                <!--layout="@layout/round_corner_layout_with_image"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_alignParentBottom="true"-->
-                <!--android:layout_alignParentRight="true"-->
-                <!--/>-->
-
-        </RelativeLayout>
-
+        <android.support.v4.widget.Space
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/space_med" />
 
         <TextView
             android:id="@id/title"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:fontFamily="sans-serif"
+            android:fontFamily="sans-serif-medium"
+            android:lineSpacingExtra="4sp"
             android:maxLines="2"
-            tools:text="2018 World Cup" />
+            android:paddingLeft="@dimen/space_avg_small"
+            android:paddingRight="@dimen/space_med"
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/font_title"
+            android:textStyle="normal"
+            tools:text="2018 FIFA World Cup" />
+
+        <android.support.v4.widget.Space
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/space_mini" />
 
         <TextView
             android:id="@+id/subtitle"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
             android:fontFamily="sans-serif"
-            android:maxLines="1"
-            tools:text="Who are you supporting" />
+            android:lineSpacingExtra="6sp"
+            android:paddingLeft="@dimen/space_avg_small"
+            android:paddingRight="@dimen/space_med"
+            android:textColor="@color/black_55"
+            android:textSize="@dimen/font_small"
+            android:textStyle="normal"
+            tools:text="Hai para pecinta sepak bola, Ramaikan piala dunia 2018 bersama Tokopedia!…" />
+
+        <android.support.v4.widget.Space
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/space_med" />
 
         <RelativeLayout
             android:id="@+id/information"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:orientation="vertical"
-            android:layout_gravity="center">
+            android:paddingLeft="@dimen/space_avg_small"
+            android:paddingRight="@dimen/space_med">
 
             <ImageView
                 android:id="@+id/prof_pict"
                 android:layout_width="30dp"
-                android:layout_height="30dp" />
+                android:layout_height="30dp"
+                android:layout_marginRight="@dimen/space_small"
+                tools:src="@drawable/ic_badge_diamond" />
 
             <TextView
                 android:id="@+id/name"
@@ -81,26 +89,41 @@
                 android:layout_centerVertical="true"
                 android:layout_toEndOf="@+id/prof_pict"
                 android:layout_toRightOf="@+id/prof_pict"
-                tools:text="Florinel Coman" />
+                android:fontFamily="sans-serif"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/font_micro"
+                android:textStyle="normal"
+                tools:text="Darius Sinathrya" />
 
             <ImageView
                 android:id="@+id/logo_participant"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
+                android:layout_centerVertical="true"
                 android:layout_toLeftOf="@+id/participant"
                 android:layout_toStartOf="@+id/participant"
-                android:background="@color/colorRed" />
+                android:background="@drawable/ic_group_chat_participant" />
+
 
             <TextView
                 android:id="@+id/participant"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="12032"
-                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true" />
+                android:layout_centerVertical="true"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/black_38"
+                android:textSize="12sp"
+                android:textStyle="normal"
+                tools:text="2.546.000" />
 
         </RelativeLayout>
+
+        <android.support.v4.widget.Space
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/space_med" />
+
     </LinearLayout>
 </android.support.v7.widget.CardView>
