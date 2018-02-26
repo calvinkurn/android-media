@@ -6,7 +6,6 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Aghny A. Putra on 26/02/18
@@ -19,41 +18,37 @@ public class PeopleAddressAuthUtil {
     private static final String PARAM_QUERY = "query";
 
     /**
-     *
      * @param context
      * @param order
      * @param query
+     * @param page
      * @return
      */
-    public static RequestParams getPeopleAddressRequestParams(final Context context,
-                                                              final int order,
-                                                              final String query,
-                                                              final int page) {
-        RequestParams requestParams = RequestParams.create();
+    public static RequestParams getRequestParams(final Context context,
+                                                 final int order,
+                                                 final String query,
+                                                 final int page) {
 
-        requestParams.putAll(new HashMap<String, Object>() {{
-            putAll(generatePeopleAddressParams(context, order, query, page));
-        }});
-
-        return requestParams;
-    }
-
-    /**
-     *
-     * @param context
-     * @param order
-     * @param query
-     * @return
-     */
-    public static Map<String, String> generatePeopleAddressParams(Context context,
-                                                                  final int order,
-                                                                  final String query,
-                                                                  final int page) {
-        return AuthUtil.generateParams(context, new HashMap<String, String>() {{
+        // Get people address list from api requires parameter of order, keyword, and page
+        // Create a map from those parameters
+        final HashMap<String, String> params = new HashMap<String, String>() {{
             put(PARAM_ORDER_BY, String.valueOf(order));
             put(PARAM_QUERY, query);
             put(PARAM_PAGE, String.valueOf(page));
-        }});
+        }};
+
+        // Create network auth params from plain params using auth util generator,
+        // which will retrieve another params such as device id, os type and timestamp
+        // and generate a hash based on those particular params
+        final HashMap<String, Object> authParams = new HashMap<String, Object>() {{
+            putAll(AuthUtil.generateParams(context, params));
+        }};
+
+        // Create request params which contains the auth params
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putAll(authParams);
+
+        return requestParams;
     }
 
 }
