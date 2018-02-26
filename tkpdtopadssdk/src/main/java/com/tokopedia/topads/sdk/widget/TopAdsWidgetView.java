@@ -29,7 +29,7 @@ import java.util.List;
  * Created by errysuprayogi on 2/20/18.
  */
 
-public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListener, View.OnClickListener {
+public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListener {
 
     private static final String TAG = TopAdsWidgetView.class.getSimpleName();
     private RecyclerView recyclerView;
@@ -62,7 +62,6 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
         adapter.setItemClickListener(this);
         layoutManager = new GridLayoutManager(getContext(), DEFAULT_SPAN_COUNT,
                         GridLayoutManager.VERTICAL, false);
-        findViewById(R.id.info_topads).setOnClickListener(this);
         recyclerView = (RecyclerView) findViewById(R.id.list);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(true);
@@ -111,14 +110,6 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
 
     public void setItemClickListener(TopAdsItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.info_topads) {
-            TopAdsInfoBottomSheet infoBottomSheet = TopAdsInfoBottomSheet.newInstance(getContext());
-            infoBottomSheet.show();
-        }
     }
 
     public void notifyDataChange() {

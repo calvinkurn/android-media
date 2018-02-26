@@ -34,14 +34,12 @@ import java.util.List;
  * @author by errysuprayogi on 3/27/17.
  */
 
-public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickListener,
-        View.OnClickListener {
+public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickListener {
 
     private static final String TAG = TopAdsView.class.getSimpleName();
     private TopAdsPresenter presenter;
     private RecyclerView recyclerView;
     private AdsItemAdapter adapter;
-    private LinearLayout adsHeader;
     private TypedArray styledAttributes;
     private DisplayMode displayMode = DisplayMode.GRID; // Default Display Mode
     private TopAdsItemClickListener adsItemClickListener;
@@ -71,11 +69,8 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
     private void inflateView(Context context, AttributeSet attrs, int defStyle) {
         styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.TopAdsView, defStyle, 0);
         inflate(getContext(), R.layout.layout_ads, this);
-        adsHeader = (LinearLayout) findViewById(R.id.ads_header);
         adapter = new AdsItemAdapter(getContext());
         adapter.setItemClickListener(this);
-        ImageView infoView = (ImageView) findViewById(R.id.info_topads);
-        infoView.setOnClickListener(this);
         contentLayout = (RelativeLayout) findViewById(R.id.container);
         recyclerView = (RecyclerView) findViewById(R.id.list);
         recyclerView.setNestedScrollingEnabled(false);
@@ -85,14 +80,6 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
         itemDecoration = new DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL_LIST);
         recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setAdapter(adapter);
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.info_topads) {
-            TopAdsInfoBottomSheet infoBottomSheet = TopAdsInfoBottomSheet.newInstance(getContext());
-            infoBottomSheet.show();
-        }
     }
 
     public void setConfig(Config config) {
@@ -137,7 +124,6 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
 
     @Override
     public void loadTopAds() {
-        adsHeader.setVisibility(GONE);
         presenter.loadTopAds();
     }
 
@@ -173,9 +159,6 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
 
     @Override
     public void displayAds(List<Item> list, int position) {
-        if (list.size() > 0) {
-            adsHeader.setVisibility(VISIBLE);
-        }
         adapter.setList(list);
         if (adsListener != null) {
             adsListener.onTopAdsLoaded();
