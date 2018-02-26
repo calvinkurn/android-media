@@ -16,7 +16,6 @@ public class CartSingleAddressDataFactory {
         CartSingleAddressData cartSingleAddressData = new CartSingleAddressData();
 
         cartSingleAddressData.setShipmentFeeBannerModel(ShipmentFeeBannerModelFactory.getDummyShippingFeeBannerModel());
-        cartSingleAddressData.setShipmentRecipientModel(ShipmentRecipientModelFactory.getDummyShipmentRecipientModel());
 
         return cartSingleAddressData;
     }

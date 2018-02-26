@@ -21,7 +21,7 @@ import com.tokopedia.transaction.checkout.view.data.CartItemModel;
 import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressAdapterData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
-import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
+import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.view.view.shipmentform.ICartShipmentActivity;
 import com.tokopedia.transaction.checkout.view.view.shipmentform.MultipleAddressShipmentFragment;
 
@@ -56,7 +56,7 @@ public class MultipleAddressFragment extends TkpdFragment
 
     public static MultipleAddressFragment newInstance(
             List<CartSellerItemModel> cartSellerItemModels,
-            ShipmentRecipientModel recipientModel
+            RecipientAddressModel recipientModel
     ) {
         MultipleAddressFragment fragment = new MultipleAddressFragment();
         Bundle bundle = new Bundle();
@@ -153,16 +153,20 @@ public class MultipleAddressFragment extends TkpdFragment
     private List<MultipleAddressItemData> generateinitiatialItemData(CartItemModel itemModel) {
         List<MultipleAddressItemData> initialItemData = new ArrayList<>();
         MultipleAddressItemData addressData = new MultipleAddressItemData();
-        ShipmentRecipientModel shipmentRecipientModel = getArguments().getParcelable(ADDRESS_EXTRA);
+        RecipientAddressModel shipmentRecipientModel = getArguments().getParcelable(ADDRESS_EXTRA);
         addressData.setCartId("1");
         addressData.setProductId(itemModel.getId());
         addressData.setProductQty(String.valueOf(itemModel.getQuantity()));
         addressData.setProductWeight(String.valueOf(itemModel.getWeight()));
         addressData.setProductNotes(itemModel.getNoteToSeller());
         addressData.setAddressId(shipmentRecipientModel.getId());
-        addressData.setAddressTitle(shipmentRecipientModel.getAddressIdentifier());
+        addressData.setAddressTitle(shipmentRecipientModel.getRecipientName());
         addressData.setAddressReceiverName(shipmentRecipientModel.getRecipientName());
-        addressData.setAddress(shipmentRecipientModel.getRecipientAddress());
+        addressData.setAddress(shipmentRecipientModel.getAddressStreet()
+                + ", "
+                + shipmentRecipientModel.getAddressCityName()
+                + ", "
+                + shipmentRecipientModel.getRecipientPhoneNumber());
         initialItemData.add(addressData);
         return initialItemData;
     }

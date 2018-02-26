@@ -8,6 +8,7 @@ import com.tokopedia.transaction.checkout.domain.CartMapper;
 import com.tokopedia.transaction.checkout.domain.ICartListInteractor;
 import com.tokopedia.transaction.checkout.domain.ICartMapper;
 import com.tokopedia.transaction.checkout.domain.ICartRepository;
+import com.tokopedia.transaction.checkout.domain.IMapperUtil;
 import com.tokopedia.transaction.checkout.domain.IShipmentMapper;
 import com.tokopedia.transaction.checkout.domain.ShipmentMapper;
 import com.tokopedia.transaction.checkout.view.adapter.CartListAdapter;
@@ -25,7 +26,7 @@ import rx.subscriptions.CompositeSubscription;
  * @author anggaprasetiyo on 18/01/18.
  */
 
-@Module(includes = {DataModule.class, ConverterDataModule.class})
+@Module(includes = {DataModule.class, ConverterDataModule.class, UtilModule.class})
 public class CartListModule {
 
     private final ICartListView cartListView;
@@ -44,14 +45,14 @@ public class CartListModule {
 
     @Provides
     @CartListScope
-    ICartMapper provideICartMapper() {
-        return new CartMapper();
+    ICartMapper provideICartMapper(IMapperUtil mapperUtil) {
+        return new CartMapper(mapperUtil);
     }
 
     @Provides
     @CartListScope
-    IShipmentMapper provideIShipmentMapper() {
-        return new ShipmentMapper();
+    IShipmentMapper provideIShipmentMapper(IMapperUtil mapperUtil) {
+        return new ShipmentMapper(mapperUtil);
     }
 
     @Provides

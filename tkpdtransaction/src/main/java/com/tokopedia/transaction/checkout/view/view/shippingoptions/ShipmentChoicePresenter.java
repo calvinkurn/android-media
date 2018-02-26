@@ -1,8 +1,9 @@
-package com.tokopedia.transaction.checkout.view.presenter;
+package com.tokopedia.transaction.checkout.view.view.shippingoptions;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
+import com.tokopedia.transaction.checkout.view.presenter.IShipmentChoicePresenter;
 import com.tokopedia.transaction.checkout.view.view.IShipmentChoiceView;
 
 import java.util.ArrayList;

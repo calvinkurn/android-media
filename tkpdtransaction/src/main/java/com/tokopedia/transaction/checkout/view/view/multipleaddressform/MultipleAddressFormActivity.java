@@ -11,7 +11,7 @@ import android.os.Parcelable;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
-import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
+import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public class MultipleAddressFormActivity extends BasePresenterActivity{
 
     public static Intent createInstance(Context context,
                                              List<CartSellerItemModel> cartSellerItemModels,
-                                             ShipmentRecipientModel recipientModel) {
+                                             RecipientAddressModel recipientModel) {
         Intent intent = new Intent(context, MultipleAddressFormActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(
@@ -65,7 +65,7 @@ public class MultipleAddressFormActivity extends BasePresenterActivity{
         List<CartSellerItemModel> cartSellerItemModels = getIntent()
                 .getExtras()
                 .getParcelableArrayList(CART_ITEM_LIST_EXTRA);
-        ShipmentRecipientModel addressModel = getIntent().getExtras().getParcelable(ADDRESS_MODEL);
+        RecipientAddressModel addressModel = getIntent().getExtras().getParcelable(ADDRESS_MODEL);
         Fragment fragment = MultipleAddressFragment.newInstance(
                 cartSellerItemModels,
                 addressModel

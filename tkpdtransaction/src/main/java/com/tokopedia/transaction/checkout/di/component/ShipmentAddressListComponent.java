@@ -2,7 +2,7 @@ package com.tokopedia.transaction.checkout.di.component;
 
 import com.tokopedia.transaction.checkout.di.module.ShipmentAddressListModule;
 import com.tokopedia.transaction.checkout.di.scope.ShipmentAddressListScope;
-import com.tokopedia.transaction.checkout.view.ShipmentAddressListFragment;
+import com.tokopedia.transaction.checkout.view.view.addressoptions.ShipmentAddressListFragment;
 
 import dagger.Component;
 

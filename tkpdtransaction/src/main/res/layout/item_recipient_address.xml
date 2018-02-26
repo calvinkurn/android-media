@@ -8,13 +8,13 @@
     android:background="@color/white">
 
     <LinearLayout
-        android:id="@+id/ll_name"
+        android:id="@+id/ll_address_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/tv_text_address_description"
+            android:id="@+id/tv_address_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="3dp"
@@ -26,7 +26,7 @@
             tools:text="Alamat Kantor" />
 
         <TextView
-            android:id="@+id/tv_address_identifier"
+            android:id="@+id/tv_address_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_outline_address_identifier"
@@ -39,7 +39,8 @@
             android:textSize="10sp"
             android:textStyle="normal"
             android:visibility="gone"
-            tools:text="Utama" />
+            android:text="Utama"
+            tools:ignore="SmallSp" />
 
     </LinearLayout>
 
@@ -47,7 +48,7 @@
         android:id="@+id/tv_recipient_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/ll_name"
+        android:layout_below="@id/ll_address_name"
         android:layout_marginBottom="3dp"
         android:textColor="@color/black_54"
         android:textSize="12sp"

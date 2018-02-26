@@ -3,7 +3,9 @@ package com.tokopedia.transaction.checkout.domain;
 import com.tokopedia.transaction.checkout.domain.response.rates.Attribute;
 import com.tokopedia.transaction.checkout.domain.response.rates.Product;
 import com.tokopedia.transaction.checkout.domain.response.rates.RatesResponse;
+import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.view.data.CourierItemData;
+import com.tokopedia.transaction.checkout.view.data.MultipleAddressShipmentAdapterData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
 
@@ -17,6 +19,19 @@ import java.util.List;
  */
 
 public class ShipmentRatesDataMapper {
+
+    public ShipmentDetailData getShipmentDetailData(CartSingleAddressData cartSingleAddressData) {
+        ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
+        shipmentDetailData.setShipmentCartData(cartSingleAddressData.getShipmentCartData());
+        return shipmentDetailData;
+    }
+
+    public ShipmentDetailData getShipmentDetailData(
+            MultipleAddressShipmentAdapterData multipleAddressShipmentAdapterData) {
+        ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
+        shipmentDetailData.setShipmentCartData(multipleAddressShipmentAdapterData.getShipmentCartData());
+        return shipmentDetailData;
+    }
 
     public ShipmentDetailData getShipmentDetailData(ShipmentDetailData shipmentDetailData,
                                                     RatesResponse ratesResponse) {
@@ -102,6 +117,7 @@ public class ShipmentRatesDataMapper {
         courierItemData.setInsurancePrice(product.getInsurancePrice());
         courierItemData.setInsuranceType(product.getInsuranceType());
         courierItemData.setInsuranceUsedDefault(product.getInsuranceUsedDefault());
+        courierItemData.setCourierInfo(product.getShipperProductDesc());
         courierItemData.setInsuranceUsedType(product.getInsuranceUsedType());
         courierItemData.setDeliveryPrice(product.getPrice());
         if (product.getMaxHoursId() != null && product.getMaxHoursId().length() > 0) {

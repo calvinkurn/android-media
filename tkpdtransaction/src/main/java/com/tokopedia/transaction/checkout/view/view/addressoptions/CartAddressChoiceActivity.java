@@ -10,9 +10,7 @@ import android.support.v4.app.FragmentManager;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.checkout.view.CartAddressChoiceFragment;
 import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
-import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 
 import java.util.ArrayList;
 import java.util.List;

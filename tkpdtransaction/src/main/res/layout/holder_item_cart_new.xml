@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:orientation="vertical">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/white"
+              android:orientation="vertical">
 
-    <include layout="@layout/layout_item_warning" />
+    <include layout="@layout/layout_item_warning"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -25,7 +25,7 @@
             android:text="Dikirim oleh : "
             android:textColor="@color/black_38"
             android:textSize="12sp"
-            android:textStyle="normal" />
+            android:textStyle="normal"/>
 
         <TextView
             android:id="@+id/tv_shop_name"
@@ -39,7 +39,7 @@
             android:textSize="12sp"
             android:textStyle="normal"
             tools:ignore="RelativeOverlap"
-            tools:text="Loaa Store" />
+            tools:text="Loaa Store"/>
 
         <ImageView
             android:id="@+id/btn_delete_cart"
@@ -49,13 +49,13 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:src="@drawable/ic_delete_cart"
-            tools:ignore="ContentDescription" />
+            tools:ignore="ContentDescription"/>
     </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="#e0e0e0" />
+        android:background="#e0e0e0"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -73,7 +73,7 @@
                 android:layout_height="52dp"
                 android:layout_marginTop="4dp"
                 tools:ignore="ContentDescription"
-                tools:src="@drawable/ic_tokocash_icon" />
+                tools:src="@drawable/ic_tokocash_icon"/>
 
             <ImageView
                 android:id="@+id/iv_image_wishlist"
@@ -87,7 +87,7 @@
                 android:layout_marginTop="-5dp"
                 android:background="@drawable/circle"
                 android:padding="5dp"
-                android:src="@drawable/ic_wishlist" />
+                android:src="@drawable/ic_wishlist"/>
 
             <RelativeLayout
                 android:layout_width="wrap_content"
@@ -104,7 +104,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     android:textSize="14sp"
-                    tools:text="Tas organizer sepeda double container" />
+                    tools:text="Tas organizer sepeda double container"/>
 
                 <TextView
                     android:id="@+id/tv_product_price"
@@ -114,7 +114,7 @@
                     android:layout_marginTop="4dp"
                     android:textColor="@color/orange_red"
                     android:textSize="14sp"
-                    tools:text="Rp 200.000" />
+                    tools:text="Rp 200.000"/>
 
                 <LinearLayout
                     android:id="@+id/product_properties"
@@ -137,7 +137,7 @@
                         android:paddingStart="0dp"
                         android:text="Free Returns"
                         android:textSize="12sp"
-                        android:textStyle="normal" />
+                        android:textStyle="normal"/>
 
                     <TextView
                         android:id="@+id/tv_info_preorder"
@@ -150,7 +150,7 @@
                         android:padding="2dp"
                         android:text="PO"
                         android:textSize="10sp"
-                        android:textStyle="normal" />
+                        android:textStyle="normal"/>
 
                     <TextView
                         android:id="@+id/tv_info_cashback"
@@ -166,7 +166,7 @@
                         android:text="Cashback 5%"
                         android:textColor="@color/white"
                         android:textSize="10sp"
-                        android:textStyle="normal" />
+                        android:textStyle="normal"/>
 
                 </LinearLayout>
 
@@ -184,7 +184,7 @@
                         android:text="Berat : "
                         android:textColor="@color/black_38"
                         android:textSize="12sp"
-                        android:textStyle="normal" />
+                        android:textStyle="normal"/>
 
                     <TextView
                         android:id="@+id/tv_product_weight"
@@ -194,7 +194,7 @@
                         android:textColor="@color/black_70"
                         android:textSize="12sp"
                         android:textStyle="normal"
-                        tools:text="3kg" />
+                        tools:text="3kg"/>
                 </LinearLayout>
 
             </RelativeLayout>
@@ -217,7 +217,7 @@
                 android:gravity="center_vertical"
                 android:text="Jumlah"
                 android:textColor="@color/black_38"
-                android:textSize="12sp" />
+                android:textSize="12sp"/>
 
             <ImageView
                 android:id="@+id/btn_qty_plus"
@@ -226,7 +226,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/bg_button_counter_plus" />
+                android:src="@drawable/bg_button_counter_plus"/>
 
             <EditText
                 android:id="@+id/et_qty"
@@ -244,7 +244,7 @@
                 android:paddingStart="16dp"
                 android:textColor="@color/black_70"
                 android:textSize="16sp"
-                tools:text="1" />
+                tools:text="1"/>
 
             <ImageView
                 android:id="@+id/btn_qty_min"
@@ -253,7 +253,22 @@
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@id/et_qty"
                 android:layout_toStartOf="@id/et_qty"
-                android:src="@drawable/bg_button_counter_minus" />
+                android:src="@drawable/bg_button_counter_minus"/>
+
+            <TextView
+                android:id="@+id/tv_error_form_validation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/et_qty"
+                android:fontFamily="sans-serif"
+                android:maxLines="2"
+                android:textSize="11sp"
+                android:textStyle="normal"
+                android:visibility="gone"
+                tools:ignore="SmallSp"
+                tools:text="Maksimal 2 broh"
+                tools:textColor="#d30b16"
+                tools:visibility="visible"/>
         </RelativeLayout>
 
         <RelativeLayout
@@ -269,7 +284,7 @@
                 android:text="Catatan untuk penjual (Opsional)"
                 android:textColor="@color/black_38"
                 android:textSize="12sp"
-                android:textStyle="normal" />
+                android:textStyle="normal"/>
 
             <TextView
                 android:id="@+id/tv_label_remark_option"
@@ -283,7 +298,7 @@
                 android:text="Tulis Catatan"
                 android:textColor="@color/medium_green"
                 android:textSize="12sp"
-                android:textStyle="normal" />
+                android:textStyle="normal"/>
 
 
             <EditText
@@ -295,18 +310,19 @@
                 android:fontFamily="sans-serif"
                 android:imeActionLabel="Selesai"
                 android:imeOptions="actionDone"
+                android:maxLength="144"
                 android:maxLines="3"
                 android:paddingBottom="10dp"
                 android:textSize="12sp"
                 android:textStyle="normal"
                 tools:ignore="TextFields"
                 tools:text="Saya pesan warna merah yah min.. jangan sampai salah kirim
-barangnya gan!" />
+barangnya gan!"/>
         </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="#e0e0e0" />
+            android:background="#e0e0e0"/>
     </LinearLayout>
 </LinearLayout>

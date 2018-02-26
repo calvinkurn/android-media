@@ -33,7 +33,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.tokopedia.transaction.checkout.view.view.shipmentform.SingleAddressShipmentFragment.ARG_EXTRA_CART_DATA_LIST;
 
 /**
  * @author Aghny A. Putra on 05/02/18
@@ -44,6 +43,7 @@ public class CartRemoveProductFragment extends BasePresenterFragment
 
     private static final Locale LOCALE_ID = new Locale("in", "ID");
     private static final String TAG = CartRemoveProductFragment.class.getSimpleName();
+    private static final String ARG_EXTRA_CART_DATA_LIST = "ARG_EXTRA_CART_DATA_LIST";
 
     @BindView(R2.id.rv_cart_remove_product)
     RecyclerView mRvCartRemoveProduct;

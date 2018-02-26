@@ -375,7 +375,7 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     @Override
     public void renderEmptyCartData() {
         refreshHandler.finishRefresh();
-
+        bottomLayout.setVisibility(View.GONE);
         mIsMenuVisible = false;
         getActivity().invalidateOptionsMenu();
 
@@ -456,11 +456,6 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     }
 
     @Override
-    public CartPromoSuggestion getCartPromoSuggestionData() {
-        return this.cartPromoSuggestionData;
-    }
-
-    @Override
     public void renderSuccessDeleteCart(CartItemData cartItemData, String message, boolean addWishList) {
         cartListAdapter.deleteItem(cartItemData);
         dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
@@ -502,6 +497,11 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     @Override
     public void renderLoadGetCartDataFinish() {
         bottomLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public CartPromoSuggestion getCartPromoSuggestion() {
+     return   this.cartPromoSuggestionData;
     }
 
     void showDeleteCartItemDialog(ArrayList<CartItemData> cartItemDataList, ArrayList<CartItemData> emptyData) {

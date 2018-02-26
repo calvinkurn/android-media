@@ -11,6 +11,9 @@ import java.util.List;
  */
 
 public class CartListData implements Parcelable {
+    private boolean isError;
+    private String errorMessage;
+
     private List<CartItemData> cartItemDataList = new ArrayList<>();
     private CartPromoSuggestion cartPromoSuggestion;
 
@@ -30,6 +33,24 @@ public class CartListData implements Parcelable {
         this.cartPromoSuggestion = cartPromoSuggestion;
     }
 
+    public boolean isError() {
+        return isError;
+    }
+
+    public void setError(boolean error) {
+        isError = error;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
+    public CartListData() {
+    }
 
     @Override
     public int describeContents() {
@@ -38,19 +59,20 @@ public class CartListData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
+        dest.writeString(this.errorMessage);
         dest.writeTypedList(this.cartItemDataList);
         dest.writeParcelable(this.cartPromoSuggestion, flags);
     }
 
-    public CartListData() {
-    }
-
     protected CartListData(Parcel in) {
+        this.isError = in.readByte() != 0;
+        this.errorMessage = in.readString();
         this.cartItemDataList = in.createTypedArrayList(CartItemData.CREATOR);
         this.cartPromoSuggestion = in.readParcelable(CartPromoSuggestion.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<CartListData> CREATOR = new Parcelable.Creator<CartListData>() {
+    public static final Creator<CartListData> CREATOR = new Creator<CartListData>() {
         @Override
         public CartListData createFromParcel(Parcel source) {
             return new CartListData(source);

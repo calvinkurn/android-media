@@ -42,6 +42,7 @@ public class AddShipmentAddressFragment extends TkpdFragment {
     private TextView addressReceiverName;
     private TextView address;
     private TextView saveChangesButton;
+    private TextView addAddressErrorTextView;
 
     public static AddShipmentAddressFragment newInstance(MultipleAddressAdapterData data,
                                                          MultipleAddressItemData addressData,
@@ -75,6 +76,7 @@ public class AddShipmentAddressFragment extends TkpdFragment {
         setProductQuantityView(view, itemData);
         setNotesView(view, itemData);
         setAddressView(view, itemData);
+        addAddressErrorTextView = view.findViewById(R.id.add_address_error_warning);
         saveChangesButton = view.findViewById(R.id.save_changes_button);
         saveChangesButton.setOnClickListener(onSaveChangesClickedListener(itemData));
         if (getArguments().getInt(MODE_EXTRA) == ADD_MODE) showChooseAddressButton(view);
@@ -222,6 +224,7 @@ public class AddShipmentAddressFragment extends TkpdFragment {
             public void onClick(View view) {
                 //TODO ALTER DATA HERE, ALSO MAKE SOME VIEWS GLOBAL VARIABLE
                 if (addressLayout.isShown()) {
+                    addAddressErrorTextView.setVisibility(View.GONE);
                     if(getArguments().getInt(MODE_EXTRA) == ADD_MODE) {
                         addNewAddressItem(itemData);
                     } else {
@@ -234,6 +237,7 @@ public class AddShipmentAddressFragment extends TkpdFragment {
                     }
                 } else {
                     //TODO Show error here
+                    addAddressErrorTextView.setVisibility(View.VISIBLE);
                 }
             }
         };

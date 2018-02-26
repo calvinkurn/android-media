@@ -14,7 +14,7 @@ public class CartDataListResponse {
 
     @SerializedName("errors")
     @Expose
-    private List<Object> errors = new ArrayList<>();
+    private List<String> errors = new ArrayList<>();
     @SerializedName("max_quantity")
     @Expose
     private int maxQuantity;
@@ -31,7 +31,7 @@ public class CartDataListResponse {
     @Expose
     private List<CartList> cartList = new ArrayList<>();
 
-    public List<Object> getErrors() {
+    public List<String> getErrors() {
         return errors;
     }
 
