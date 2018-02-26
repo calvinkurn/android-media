@@ -12,6 +12,10 @@
     <string name="shop_page_label_already_favorite">Sudah Favorit</string>
     <string name="shop_page_label_featured_product">Produk Unggulan</string>
 
+    <string name="shop_page_button_show_more_product">Lihat Produk Selengkapnya</string>
+
+
+    <!-- Shop Info -->
     <string name="shop_info_title">Shop Info</string>
     <string name="shop_info_title_tab_product">Produk</string>
     <string name="shop_info_title_tab_review">Ulasan</string>
