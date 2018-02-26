@@ -504,34 +504,46 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     }
 
     @Override
-    public void onSuccessGetDataFromCache(List<FlightSearchViewModel> flightSearchViewModelList) {
-        hideLoading();
-        addToolbarElevation();
+    public void clearAdapterData() {
         getAdapter().clearAllElements();
-        if (flightSearchViewModelList.size() == 0) {
-            if (progress < MAX_PROGRESS) {
-                getAdapter().showLoading();
-            } else {
-                RecyclerView recyclerView = getRecyclerView(getView());
-                recyclerView.setPadding(
-                        EMPTY_MARGIN,
-                        EMPTY_MARGIN,
-                        EMPTY_MARGIN,
-                        EMPTY_MARGIN
-                );
-                getAdapter().addElement(getEmptyDataViewModel());
-            }
-        } else {
-            float scale = getResources().getDisplayMetrics().density;
-            RecyclerView recyclerView = getRecyclerView(getView());
-            recyclerView.setPadding(
-                    EMPTY_MARGIN,
-                    EMPTY_MARGIN,
-                    EMPTY_MARGIN,
-                    (int) (scale * PADDING_SEARCH_LIST + DEFAULT_DIMENS_MULTIPLIER)
-            );
-            getAdapter().addElement(flightSearchViewModelList);
-        }
+    }
+
+    @Override
+    public void renderFlightSearchFromCache(List<FlightSearchViewModel> flightSearchViewModels) {
+        getAdapter().addElement(flightSearchViewModels);
+    }
+
+    @Override
+    public void addBottomPaddingForSortAndFilterActionButton() {
+        float scale = getResources().getDisplayMetrics().density;
+        RecyclerView recyclerView = getRecyclerView(getView());
+        recyclerView.setPadding(
+                EMPTY_MARGIN,
+                EMPTY_MARGIN,
+                EMPTY_MARGIN,
+                (int) (scale * PADDING_SEARCH_LIST + DEFAULT_DIMENS_MULTIPLIER)
+        );
+    }
+
+    @Override
+    public boolean isAlreadyFullLoadData() {
+        return progress >= MAX_PROGRESS;
+    }
+
+    @Override
+    public void showEmptyFlightStateView() {
+        getAdapter().addElement(getEmptyDataViewModel());
+    }
+
+    @Override
+    public void removeBottomPaddingForSortAndFilterActionButton() {
+        RecyclerView recyclerView = getRecyclerView(getView());
+        recyclerView.setPadding(
+                EMPTY_MARGIN,
+                EMPTY_MARGIN,
+                EMPTY_MARGIN,
+                EMPTY_MARGIN
+        );
     }
 
     @Override

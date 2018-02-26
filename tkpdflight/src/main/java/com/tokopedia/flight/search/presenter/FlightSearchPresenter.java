@@ -87,7 +87,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                             true,
                             flightFilterModel,
                             sortOptionId),
-                    getSubscriberSearchFlightCache(sortOptionId));
+                    getSubscriberSortFlight(sortOptionId));
         } else {
             flightSearchMetaUseCase.execute(
                     FlightSearchUseCase.generateRequestParams(
@@ -269,33 +269,6 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
         };
     }
 
-    private Subscriber<List<FlightSearchViewModel>> getSubscriberSearchFlightCache(final int sortOptionId) {
-        return new Subscriber<List<FlightSearchViewModel>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                getView().hideSortRouteLoading();
-                getView().showGetListError(e);
-            }
-
-            @Override
-            public void onNext(List<FlightSearchViewModel> flightSearchViewModels) {
-                getView().hideSortRouteLoading();
-                getView().onSuccessGetDataFromCache(flightSearchViewModels);
-                if (flightSearchViewModels.size() > 0) {
-                    getView().showFilterAndSortView();
-                } else {
-                    getView().hideFilterAndSortView();
-                }
-                getView().setSelectedSortItem(sortOptionId);
-            }
-        };
-    }
-
     private Subscriber<FlightSearchWithMetaViewModel> getSubscriberSearchFlightCloud() {
         return new Subscriber<FlightSearchWithMetaViewModel>() {
             @Override
@@ -334,12 +307,22 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
 
             @Override
             public void onNext(List<FlightSearchViewModel> flightSearchViewModels) {
-                getView().hideSortRouteLoading();
-                getView().onSuccessGetDataFromCache(flightSearchViewModels);
                 if (flightSearchViewModels.size() > 0) {
                     getView().showFilterAndSortView();
-                } else {
-                    getView().hideFilterAndSortView();
+                    getView().hideSortRouteLoading();
+                    getView().clearAdapterData();
+                    getView().renderFlightSearchFromCache(flightSearchViewModels);
+                    getView().addBottomPaddingForSortAndFilterActionButton();
+                    getView().addToolbarElevation();
+                } else if (flightSearchViewModels.size() == 0) {
+                    getView().removeBottomPaddingForSortAndFilterActionButton();
+                    if (getView().isAlreadyFullLoadData()) {
+                        getView().clearAdapterData();
+                        getView().showEmptyFlightStateView();
+                    } else {
+                        getView().showSortRouteLoading();
+                        getView().hideFilterAndSortView();
+                    }
                 }
                 getView().setSelectedSortItem(sortOptionId);
             }
