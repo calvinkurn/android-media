@@ -77,6 +77,8 @@ public interface FlightBookingPassengerContract {
 
         void navigateToMealPicker(List<FlightBookingAmenityViewModel> viewModel, FlightBookingAmenityMetaViewModel selected);
 
+        void navigateToSavedPassengerPicker(FlightBookingPassengerViewModel selected);
+
         int getPassengerTitleId();
 
         void showPassengerFirstNameShouldNoMoreThanMaxError(@StringRes int resId);
@@ -123,6 +125,8 @@ public interface FlightBookingPassengerContract {
         void onOptionMeal(FlightBookingAmenityMetaViewModel viewModel);
 
         void onMealDataChange(FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel);
+
+        void onSavedPassengerClicked(FlightBookingPassengerViewModel viewModel);
 
     }
 }

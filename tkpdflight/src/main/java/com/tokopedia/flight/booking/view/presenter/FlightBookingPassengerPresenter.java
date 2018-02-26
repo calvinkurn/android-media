@@ -7,6 +7,7 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 
 import java.util.ArrayList;
@@ -224,6 +225,15 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         }
 
         getView().renderPassengerMeals(getView().getMealViewModels(), viewModels);
+    }
+
+    @Override
+    public void onSavedPassengerClicked(FlightBookingPassengerViewModel viewModel) {
+        FlightBookingPassengerViewModel existingSelected = null;
+        if (existingSelected == null) {
+            existingSelected = new FlightBookingPassengerViewModel();
+        }
+        getView().navigateToSavedPassengerPicker(existingSelected);
     }
 
     @Override

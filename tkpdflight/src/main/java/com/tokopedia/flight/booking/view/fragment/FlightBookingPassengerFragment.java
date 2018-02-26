@@ -29,6 +29,7 @@ import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.activity.FlightBookingAmenityActivity;
+import com.tokopedia.flight.booking.view.activity.FlightBookingSavedPassengerActivity;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPassengerContract;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPassengerPresenter;
@@ -58,6 +59,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     public static final String EXTRA_DEPARTURE_DATE = "EXTRA_DEPARTURE_DATE";
     private static final int REQUEST_CODE_PICK_LUGGAGE = 1;
     private static final int REQUEST_CODE_PICK_MEAL = 2;
+    private static final int REQUEST_CODE_PICK_SAVED_PASSENGER = 3;
     @Inject
     FlightBookingPassengerPresenter presenter;
     private AppCompatTextView tvHeader;
@@ -73,6 +75,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     private RecyclerView rvLuggages;
     private LinearLayout mealsContainer;
     private RecyclerView rvMeals;
+    private AppCompatEditText etSavedPassenger;
 
     private AppCompatButton buttonSubmit;
     private FlightBookingPassengerViewModel viewModel;
@@ -155,6 +158,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         rvLuggages = (RecyclerView) view.findViewById(R.id.rv_luggages);
         mealsContainer = (LinearLayout) view.findViewById(R.id.meals_container);
         rvMeals = (RecyclerView) view.findViewById(R.id.rv_meals);
+        etSavedPassenger = view.findViewById(R.id.et_saved_passenger);
         buttonSubmit = (AppCompatButton) view.findViewById(R.id.button_submit);
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,6 +170,12 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
             @Override
             public void onClick(View v) {
                 presenter.onBirthdateClicked();
+            }
+        });
+        etSavedPassenger.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onSavedPassengerClicked(new FlightBookingPassengerViewModel());
             }
         });
         return view;
@@ -526,6 +536,12 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         String title = String.format("%s %s", getString(R.string.flight_booking_meal_toolbar_title), selected.getDescription());
         Intent intent = FlightBookingAmenityActivity.createIntent(getActivity(), title, viewModel, selected);
         startActivityForResult(intent, REQUEST_CODE_PICK_MEAL);
+    }
+
+    @Override
+    public void navigateToSavedPassengerPicker(FlightBookingPassengerViewModel selected) {
+        Intent intent = FlightBookingSavedPassengerActivity.createIntent(getActivity(), selected);
+        startActivityForResult(intent, REQUEST_CODE_PICK_SAVED_PASSENGER);
     }
 
     @Override
