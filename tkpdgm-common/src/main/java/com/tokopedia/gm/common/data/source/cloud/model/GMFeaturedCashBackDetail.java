@@ -11,7 +11,7 @@ public class GMFeaturedCashBackDetail {
     private long cashbackStatus;
     @SerializedName("cashback_percent")
     @Expose
-    private long cashbackPercent;
+    private double cashbackPercent;
     @SerializedName("is_cashback_expired")
     @Expose
     private long isCashbackExpired;
@@ -27,11 +27,11 @@ public class GMFeaturedCashBackDetail {
         this.cashbackStatus = cashbackStatus;
     }
 
-    public long getCashbackPercent() {
+    public double getCashbackPercent() {
         return cashbackPercent;
     }
 
-    public void setCashbackPercent(long cashbackPercent) {
+    public void setCashbackPercent(double cashbackPercent) {
         this.cashbackPercent = cashbackPercent;
     }
 

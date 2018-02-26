@@ -6,7 +6,6 @@ import com.tokopedia.shop.product.data.source.cloud.model.DynamicFilterModel;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductFilterUseCase;
 import com.tokopedia.shop.product.view.model.ShopProductFilterModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
-import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.List;

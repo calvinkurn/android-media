@@ -2,12 +2,9 @@ package com.tokopedia.shop.product.domain.interactor;
 
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct;
-import com.tokopedia.gm.common.domain.interactor.GetFeatureProductListUseCase;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
-import com.tokopedia.shop.product.view.model.ShopProductFeaturedViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -60,7 +57,7 @@ public class GetShopProductWithWishListUseCase extends UseCase<PagingList<ShopPr
                     public Observable<PagingList<ShopProductViewModel>> call(List<String> productWishList) {
                         PagingList<ShopProductViewModel> pagingList = new PagingList<>();
                         pagingList.setTotalData(shopProductPagingList.getTotalData());
-                        pagingList.setList(shopProductMapper.convert(shopProductPagingList.getList(), productWishList));
+                        pagingList.setList(shopProductMapper.convertFromShopProduct(shopProductPagingList.getList(), productWishList));
                         return Observable.just(pagingList);
                     }
                 });

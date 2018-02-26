@@ -10,6 +10,12 @@ import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductTitleViewHo
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
 import com.tokopedia.shop.product.view.model.ShopProductFeaturedViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductTitleHeaderModel;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedFeaturedViewHolder;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedProductViewHolder;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedPromoViewHolder;
+import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductLimitedProductViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
 
 /**
  * Created by alvarisi on 12/7/17.
@@ -24,20 +30,26 @@ public class ShopProductLimitedAdapterTypeFactory extends ShopProductAdapterType
         super(typeFactoryListener, shopProductVHListener);
     }
 
-    public int type(ShopProductTitleHeaderModel shopProductTitleHeaderModel) {
-        return ShopProductTitleViewHolder.LAYOUT;
+    public int type(ShopProductLimitedPromoViewModel shopProductLimitedPromoViewModel) {
+        return ShopProductLimitedPromoViewHolder.LAYOUT;
     }
 
-    public int type(ShopProductFeaturedViewModel shopProductFeaturedViewModel) {
-        return ShopProductFeaturedViewHolder.LAYOUT;
+    public int type(ShopProductLimitedFeaturedViewModel shopProductLimitedFeaturedViewModel) {
+        return ShopProductLimitedFeaturedViewHolder.LAYOUT;
+    }
+
+    public int type(ShopProductLimitedProductViewModel shopProductLimitedProductViewModel) {
+        return ShopProductLimitedProductViewHolder.LAYOUT;
     }
 
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
-        if (type == ShopProductTitleViewHolder.LAYOUT) {
-            return new ShopProductTitleViewHolder(parent);
-        } else if (type == ShopProductFeaturedViewHolder.LAYOUT) {
-            return new ShopProductFeaturedViewHolder(parent);
+        if (type == ShopProductLimitedPromoViewHolder.LAYOUT) {
+            return new ShopProductLimitedPromoViewHolder(parent);
+        } else if (type == ShopProductLimitedFeaturedViewHolder.LAYOUT) {
+            return new ShopProductLimitedFeaturedViewHolder(parent);
+        } else if (type == ShopProductLimitedProductViewHolder.LAYOUT) {
+            return new ShopProductLimitedProductViewHolder(parent);
         } else {
             return super.createViewHolder(parent, type);
         }

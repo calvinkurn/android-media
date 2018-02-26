@@ -1,6 +1,6 @@
 package com.tokopedia.shop.product.view.mapper;
 
-import com.tokopedia.abstraction.common.data.model.response.PagingList;
+import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct;
 import com.tokopedia.shop.common.util.TextApiUtils;
 import com.tokopedia.shop.common.util.WishListUtils;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
@@ -18,17 +18,17 @@ public class ShopProductMapper {
 
     private static final String BADGGE_FREE_RETURN = "Free Return";
 
-    public List<ShopProductViewModel> convert(List<ShopProduct> shopProductList, List<String> productWishList) {
+    public List<ShopProductViewModel> convertFromShopProduct(List<ShopProduct> shopProductList, List<String> productWishList) {
         List<ShopProductViewModel> shopProductViewModelList = new ArrayList<>();
         for (ShopProduct shopProduct: shopProductList) {
-            ShopProductViewModel shopProductViewModel = convert(shopProduct);
+            ShopProductViewModel shopProductViewModel = convertFromShopProduct(shopProduct);
             shopProductViewModel.setWishList(WishListUtils.isWishList(shopProduct.getProductId(), productWishList));
             shopProductViewModelList.add(shopProductViewModel);
         }
         return shopProductViewModelList;
     }
 
-    private ShopProductViewModel convert(ShopProduct shopProduct) {
+    private ShopProductViewModel convertFromShopProduct(ShopProduct shopProduct) {
         ShopProductViewModel shopProductViewModel = new ShopProductViewModel();
 
         shopProductViewModel.setId(shopProduct.getProductId());
@@ -46,6 +46,36 @@ public class ShopProductMapper {
                 }
             }
         }
+        return shopProductViewModel;
+    }
+
+
+    public List<ShopProductViewModel> convertFromProductFeatured(List<GMFeaturedProduct> gmFeaturedProductList, List<String> productWishList) {
+        List<ShopProductViewModel> shopProductViewModelList = new ArrayList<>();
+        for (GMFeaturedProduct shopProduct: gmFeaturedProductList) {
+            ShopProductViewModel shopProductViewModel = convertFromProductFeatured(shopProduct);
+            shopProductViewModel.setWishList(WishListUtils.isWishList(shopProduct.getProductId(), productWishList));
+            shopProductViewModelList.add(shopProductViewModel);
+        }
+        return shopProductViewModelList;
+    }
+
+    private ShopProductViewModel convertFromProductFeatured(GMFeaturedProduct gmFeaturedProduct) {
+        ShopProductViewModel shopProductViewModel = new ShopProductViewModel();
+
+        shopProductViewModel.setId(gmFeaturedProduct.getProductId());
+        shopProductViewModel.setName(gmFeaturedProduct.getName());
+        shopProductViewModel.setPrice(gmFeaturedProduct.getPrice());
+        shopProductViewModel.setImageUrl(gmFeaturedProduct.getImageUri());
+
+        shopProductViewModel.setTotalReview(gmFeaturedProduct.getTotalReview());
+        shopProductViewModel.setRating(gmFeaturedProduct.getRating());
+        if (gmFeaturedProduct.getCashbackDetail() != null) {
+            shopProductViewModel.setCashback(gmFeaturedProduct.getCashbackDetail().getCashbackPercent());
+        }
+        shopProductViewModel.setWholesale(gmFeaturedProduct.isWholesale());
+        shopProductViewModel.setPo(gmFeaturedProduct.isPreorder());
+        shopProductViewModel.setFreeReturn(gmFeaturedProduct.isReturnable());
         return shopProductViewModel;
     }
 }

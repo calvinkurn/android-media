@@ -1,10 +1,11 @@
 package com.tokopedia.shop.product.domain.interactor;
 
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
-import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
-import com.tokopedia.shop.product.view.model.ShopProductFeaturedViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductLimitedProductViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -26,13 +27,13 @@ public class GetShopProductLimitedUseCase extends UseCase<List<ShopProductBaseVi
     private static final String SHOP_ID = "SHOP_ID";
 
     private final GetShopProductFeaturedUseCase getShopProductFeaturedUseCase;
-    private final GetShopProductListUseCase getShopProductListUseCase;
+    private final GetShopProductWithWishListUseCase getShopProductWithWishListUseCase;
 
     @Inject
     public GetShopProductLimitedUseCase(GetShopProductFeaturedUseCase getShopProductFeaturedUseCase,
-                                        GetShopProductListUseCase getShopProductListUseCase) {
+                                        GetShopProductWithWishListUseCase getShopProductWithWishListUseCase) {
         this.getShopProductFeaturedUseCase = getShopProductFeaturedUseCase;
-        this.getShopProductListUseCase = getShopProductListUseCase;
+        this.getShopProductWithWishListUseCase = getShopProductWithWishListUseCase;
     }
 
     @Override
@@ -42,12 +43,21 @@ public class GetShopProductLimitedUseCase extends UseCase<List<ShopProductBaseVi
         shopProductRequestModel.setShopId(shopId);
         return Observable.zip(
                 getShopProductFeaturedUseCase.createObservable(GetShopProductFeaturedUseCase.createRequestParam(shopId)).subscribeOn(Schedulers.io()),
-                getShopProductListUseCase.createObservable(GetShopProductListUseCase.createRequestParam(shopProductRequestModel)).subscribeOn(Schedulers.io()),
-                new Func2<List<ShopProductFeaturedViewModel>, PagingList<ShopProduct>, List<ShopProductBaseViewModel>>() {
+                getShopProductWithWishListUseCase.createObservable(GetShopProductListUseCase.createRequestParam(shopProductRequestModel)).subscribeOn(Schedulers.io()),
+                new Func2<List<ShopProductViewModel>, PagingList<ShopProductViewModel>, List<ShopProductBaseViewModel>>() {
                     @Override
-                    public List<ShopProductBaseViewModel> call(List<ShopProductFeaturedViewModel> shopProductFeaturedViewModelList, PagingList<ShopProduct> shopProductList) {
+                    public List<ShopProductBaseViewModel> call(List<ShopProductViewModel> shopProductViewModelList, PagingList<ShopProductViewModel> shopProductList) {
                         List<ShopProductBaseViewModel> shopProductBaseViewModelList = new ArrayList<>();
-                        shopProductBaseViewModelList.addAll(shopProductFeaturedViewModelList);
+                        if (shopProductViewModelList.size() > 0) {
+                            ShopProductLimitedFeaturedViewModel shopProductLimitedFeaturedViewModel = new ShopProductLimitedFeaturedViewModel();
+                            shopProductLimitedFeaturedViewModel.setShopProductViewModelList(shopProductViewModelList);
+                            shopProductBaseViewModelList.add(shopProductLimitedFeaturedViewModel);
+                        }
+                        if (shopProductList.getList().size() > 0) {
+                            ShopProductLimitedProductViewModel shopProductLimitedProductViewModel = new ShopProductLimitedProductViewModel();
+                            shopProductLimitedProductViewModel.setShopProductViewModelList(shopProductList.getList());
+                            shopProductBaseViewModelList.add(shopProductLimitedProductViewModel);
+                        }
                         return shopProductBaseViewModelList;
                     }
                 }
