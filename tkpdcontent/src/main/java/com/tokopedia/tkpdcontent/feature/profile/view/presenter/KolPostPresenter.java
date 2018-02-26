@@ -1,17 +1,11 @@
 package com.tokopedia.tkpdcontent.feature.profile.view.presenter;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.tkpdcontent.feature.profile.domain.interactor.GetProfileKolDataUseCase;
-import com.tokopedia.tkpdcontent.feature.profile.domain.model.KolProfileModel;
 import com.tokopedia.tkpdcontent.feature.profile.view.listener.KolPostListener;
-
-import java.util.ArrayList;
+import com.tokopedia.tkpdcontent.feature.profile.view.subscriber.GetProfileKolDataSubscriber;
 
 import javax.inject.Inject;
-
-import rx.Subscriber;
 
 /**
  * @author by milhamj on 20/02/18.
@@ -37,27 +31,9 @@ public class KolPostPresenter extends BaseDaggerPresenter<KolPostListener.View>
     public void getKolPost(String userId) {
         getProfileKolDataUseCase.execute(
                 GetProfileKolDataUseCase.getParams(userId, lastCursor),
-                new Subscriber<KolProfileModel>() {
-                    @Override
-                    public void onCompleted() {
+                new GetProfileKolDataSubscriber(getView())
+        );
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        getView().onErrorGetProfileData(
-                                ErrorHandler.getErrorMessage(getView().getContext(), e)
-                        );
-                    }
-
-                    @Override
-                    public void onNext(KolProfileModel kolProfileModel) {
-                        getView().onSuccessGetProfileData(
-                                new ArrayList<Visitable>(kolProfileModel.getKolPostViewModels())
-                        );
-                        getView().updateCursor(kolProfileModel.getLastCursor());
-                    }
-                });
     }
 
     @Override
