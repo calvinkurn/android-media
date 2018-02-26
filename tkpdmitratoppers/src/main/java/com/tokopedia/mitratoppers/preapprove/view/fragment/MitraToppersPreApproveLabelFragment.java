@@ -115,7 +115,7 @@ public class MitraToppersPreApproveLabelFragment extends BaseDaggerFragment impl
                 @Override
                 public void onClick(View v) {
                     ((MitraToppersRouter) getActivity().getApplication()).sendEventTrackingWithShopInfo(EVENT_FINTECH,
-                            CATEGORY_PREAPPROVED, ACTION_PREAPPROVED, amountIntegerString,
+                            CATEGORY_PREAPPROVED, ACTION_PREAPPROVED_CLICK, LABEL_CLICK + " - " + amountIntegerString,
                             userSession.getShopId(), isGoldMerchant, isOfficialStore);
                     Intent intent = MitraToppersPreApproveWebViewActivity.getIntent(getContext(),
                             preApproveUrl);
@@ -124,7 +124,7 @@ public class MitraToppersPreApproveLabelFragment extends BaseDaggerFragment impl
             });
         }
         ((MitraToppersRouter) getActivity().getApplication()).sendEventTrackingWithShopInfo(EVENT_FINTECH,
-                CATEGORY_PREAPPROVED, ACTION_PREAPPROVED_CLICK, LABEL_CLICK + " - " + amountIntegerString,
+                CATEGORY_PREAPPROVED, ACTION_PREAPPROVED, amountIntegerString,
                 userSession.getShopId(), isGoldMerchant, isOfficialStore);
         rootView.setVisibility(View.VISIBLE);
     }
