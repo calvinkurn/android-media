@@ -15,6 +15,7 @@ import com.tokopedia.tkpdcontent.KolComponentInstance;
 import com.tokopedia.tkpdcontent.R;
 import com.tokopedia.tkpdcontent.feature.profile.di.DaggerKolProfileComponent;
 import com.tokopedia.tkpdcontent.feature.profile.di.KolProfileComponent;
+import com.tokopedia.tkpdcontent.feature.profile.di.KolProfileModule;
 import com.tokopedia.tkpdcontent.feature.profile.view.adapter.KolPostAdapter;
 import com.tokopedia.tkpdcontent.feature.profile.view.listener.KolPostListener;
 import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolViewModel;
@@ -90,6 +91,7 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     protected void initInjector() {
         DaggerKolProfileComponent.builder()
                 .kolComponent(KolComponentInstance.getKolComponent(getActivity().getApplication()))
+                .kolProfileModule(new KolProfileModule(this))
                 .build()
                 .inject(this);
     }

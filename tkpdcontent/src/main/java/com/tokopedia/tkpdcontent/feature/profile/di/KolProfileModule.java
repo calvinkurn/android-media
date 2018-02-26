@@ -15,6 +15,12 @@ import dagger.Provides;
 
 @Module
 public class KolProfileModule {
+    private final KolPostListener.View viewListener;
+
+    public KolProfileModule(KolPostListener.View viewListener) {
+        this.viewListener = viewListener;
+    }
+
     @KolProfileScope
     @Provides
     KolPostListener.Presenter providesPresenter(GetProfileKolDataUseCase getProfileKolDataUseCase) {
@@ -24,6 +30,6 @@ public class KolProfileModule {
     @KolProfileScope
     @Provides
     KolTypeFactory provideKolTypeFactory() {
-        return new KolTypeFactoryImpl();
+        return new KolTypeFactoryImpl(viewListener);
     }
 }
