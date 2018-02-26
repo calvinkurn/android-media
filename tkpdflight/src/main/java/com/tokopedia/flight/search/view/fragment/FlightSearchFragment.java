@@ -630,6 +630,13 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     public void showGetListError(Throwable t) {
         this.addToolbarElevation();
         progressBar.setVisibility(View.GONE);
+        RecyclerView recyclerView = getRecyclerView(getView());
+        recyclerView.setPadding(
+                EMPTY_MARGIN,
+                EMPTY_MARGIN,
+                EMPTY_MARGIN,
+                EMPTY_MARGIN
+        );
         super.showGetListError(t);
     }
 

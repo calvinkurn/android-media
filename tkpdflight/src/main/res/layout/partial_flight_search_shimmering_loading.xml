@@ -26,7 +26,6 @@
             android:layout_alignParentStart="true"
             android:layout_marginEnd="@dimen/margin_small"
             android:layout_marginRight="@dimen/margin_small"
-            android:textStyle="bold"
             app:corners="20"
             app:use_gradient="true" />
 
@@ -117,19 +116,24 @@
                 app:corners="20"
                 app:use_gradient="true" />
 
-            <com.elyeproj.loaderviewlibrary.LoaderTextView
-                android:layout_width="65dp"
-                android:layout_height="16dp"
-                android:layout_marginBottom="@dimen/margin_vs"
-                android:layout_marginEnd="@dimen/margin_vs"
-                android:layout_marginRight="@dimen/margin_vs" />
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:layout_width="65dp"
                 android:layout_height="16dp"
                 android:layout_marginBottom="@dimen/margin_vs"
                 android:layout_marginEnd="@dimen/margin_vs"
-                android:layout_marginRight="@dimen/margin_vs" />
+                android:layout_marginRight="@dimen/margin_vs"
+                app:corners="20"
+                app:use_gradient="true" />
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:layout_width="65dp"
+                android:layout_height="16dp"
+                android:layout_marginBottom="@dimen/margin_vs"
+                android:layout_marginEnd="@dimen/margin_vs"
+                android:layout_marginRight="@dimen/margin_vs"
+                app:corners="20"
+                app:use_gradient="true" />
 
         </LinearLayout>
 
@@ -144,18 +148,23 @@
             android:gravity="end"
             android:orientation="vertical">
 
-            <View
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:layout_width="94dp"
                 android:layout_height="20dp"
                 android:layout_marginBottom="@dimen/margin_vs"
-                android:background="@drawable/bg_shimmering_grey_rounded" />
+                android:background="@drawable/bg_shimmering_grey_rounded"
+                app:corners="20"
+                app:use_gradient="true" />
 
-            <View
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:layout_width="65dp"
                 android:layout_height="16dp"
                 android:layout_marginBottom="@dimen/margin_vs"
-                android:background="@drawable/bg_shimmering_grey_rounded" />
+                android:background="@drawable/bg_shimmering_grey_rounded"
+                app:corners="20"
+                app:use_gradient="true" />
 
         </LinearLayout>
     </LinearLayout>
+
 </LinearLayout>
