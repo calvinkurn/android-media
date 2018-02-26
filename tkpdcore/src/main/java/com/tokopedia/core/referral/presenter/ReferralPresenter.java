@@ -237,9 +237,9 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                 }
                 if (tokoCashModel != null
                         && tokoCashModel.isSuccess()
-                        && tokoCashModel.getTokoCashData() != null
-                        && tokoCashModel.getTokoCashData().getAction() != null) {
-                    if (tokoCashModel.getTokoCashData().getLink() == TokoCashTypeDef.TOKOCASH_ACTIVE) {
+                        && tokoCashModel.getData() != null
+                        && tokoCashModel.getData().getAction() != null) {
+                    if (tokoCashModel.getData().getLink() == TokoCashTypeDef.TOKOCASH_ACTIVE) {
                         getReferralVoucherCode();
                     } else {
 
@@ -247,8 +247,8 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                                 getView().getActivity().getApplication(),
                                 getView().getActivity(),
                                 IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
-                                tokoCashModel.getTokoCashData().getAction().getmAppLinks() == null ? "" : tokoCashModel.getTokoCashData().getAction().getmAppLinks(),
-                                tokoCashModel.getTokoCashData().getAction().getRedirectUrl() == null ? "" : tokoCashModel.getTokoCashData().getAction().getRedirectUrl(),
+                                tokoCashModel.getData().getAction().getmAppLinks() == null ? "" : tokoCashModel.getData().getAction().getmAppLinks(),
+                                tokoCashModel.getData().getAction().getRedirectUrl() == null ? "" : tokoCashModel.getData().getAction().getRedirectUrl(),
                                 new Bundle()
                         );
                     }

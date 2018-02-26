@@ -28,6 +28,10 @@ public class RejectOrderWeightPriceFragment extends RejectOrderBaseFragment {
 
     private static final int FIXED_KILOGRAM_MODE = 2;
 
+    private static final int FIXED_GRAM_MODE = 1;
+
+    private static final int FIXED_RUPIAH_MODE = 1;
+
     private RejectOrderChangeWeightPriceListener listener;
 
     private ToolbarChangeListener toolbarListener;
@@ -133,12 +137,14 @@ public class RejectOrderWeightPriceFragment extends RejectOrderBaseFragment {
             productWeightPriceModel.setProductName(itemDataList.get(i).getItemName());
             productWeightPriceModel.setProductPrice(itemDataList.get(i).getPrice());
             productWeightPriceModel.setProductWeight(itemDataList.get(i).getWeight());
-            productWeightPriceModel.setCurrencyMode(itemDataList.get(i).getCurrencyType());
-            productWeightPriceModel.setWeightMode(FIXED_KILOGRAM_MODE);
+            productWeightPriceModel.setCurrencyMode(FIXED_RUPIAH_MODE);
+            productWeightPriceModel.setWeightMode(FIXED_GRAM_MODE);
             productWeightPriceModel
                     .setProductPriceUnformatted(itemDataList.get(i).getPriceUnformatted());
+            int convertedWeightFormat = (int) Math.round(Double
+                    .parseDouble(itemDataList.get(i).getWeightUnformatted()) * 1000);
             productWeightPriceModel
-                    .setProductWeightUnformatted(itemDataList.get(i).getWeightUnformatted());
+                    .setProductWeightUnformatted(String.valueOf(convertedWeightFormat));
             productWeightPriceModels.add(productWeightPriceModel);
         }
         return productWeightPriceModels;

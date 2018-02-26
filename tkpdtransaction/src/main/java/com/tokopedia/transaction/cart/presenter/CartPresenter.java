@@ -876,7 +876,7 @@ public class CartPresenter implements ICartPresenter {
                     courierPrices.setCartSubtotal(false);
                 }
                 courierPrices.setKeroValue(keroShipmentServices.get(i));
-                courierPrices.setCartInsuranceProd(cartRatesData.isInsuranced() ? 1 : 0);
+                courierPrices.setUseInsurance(cartRatesData.isInsuranced() ? 1 : 0);
                 courierPrices.setInsuranceUsedInfo(keroShipmentServices.get(i).getInsuranceUsedInfo());
                 courierPrices.setInsuranceUsedType(keroShipmentServices.get(i).getInsuranceUsedType());
             }
