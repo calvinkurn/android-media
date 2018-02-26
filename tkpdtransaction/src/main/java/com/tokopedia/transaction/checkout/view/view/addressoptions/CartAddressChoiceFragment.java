@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.checkout.view;
+package com.tokopedia.transaction.checkout.view.view.addressoptions;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -17,8 +17,9 @@ import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.transaction.checkout.view.adapter.ShipmentAddressListAdapter;
-import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
+import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.view.presenter.CartAddressChoicePresenter;
 import com.tokopedia.transaction.checkout.view.presenter.ICartAddressChoicePresenter;
 import com.tokopedia.transaction.checkout.view.view.ICartAddressChoiceView;
@@ -184,13 +185,15 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     }
 
     @Override
-    public void onAddressContainerClicked(ShipmentRecipientModel model) {
+    public void onAddressContainerClicked(RecipientAddressModel model) {
         presenter.setSelectedRecipientAddress(model);
     }
 
     @Override
-    public void onEditClick(ShipmentRecipientModel model) {
+    public void onEditClick(RecipientAddressModel model) {
+        AddressModelMapper mapper = new AddressModelMapper();
+
         startActivityForResult(AddAddressActivity.createInstance(getActivity(),
-                model.convertToAddressModel()), ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
+                mapper.transform(model)), ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
     }
 }

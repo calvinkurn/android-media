@@ -4,17 +4,13 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.transaction.checkout.domain.model.ShipmentAddressModel;
-import com.tokopedia.transaction.checkout.domain.usecase.GetAddressListUseCase;
-import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
+import com.tokopedia.transaction.checkout.domain.usecase.GetAllAddressUseCase;
+import com.tokopedia.transaction.checkout.util.PeopleAddressAuthUtil;
+import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.view.view.ISearchAddressListView;
-import com.tokopedia.usecase.RequestParams;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -28,28 +24,26 @@ import rx.schedulers.Schedulers;
 /**
  * @author Aghny A. Putra on 26/01/18
  */
+
 public class ShipmentAddressListPresenter
-        extends CartMvpPresenter<ISearchAddressListView<List<ShipmentRecipientModel>>> {
+        extends CartMvpPresenter<ISearchAddressListView<List<RecipientAddressModel>>> {
 
     private static final String TAG = ShipmentAddressListPresenter.class.getSimpleName();
 
-    private static final String PARAM_ORDER_BY = "order_by";
-    private static final String PARAM_PAGE = "page";
-    private static final String PARAM_QUERY = "query";
+    private static final String DEFAULT_KEYWORD = "";
 
-    private final GetAddressListUseCase mGetAddressListUseCase;
+    private final GetAllAddressUseCase mGetAllAddressUseCase;
     private final PagingHandler mPagingHandler;
 
     @Inject
-    public ShipmentAddressListPresenter(GetAddressListUseCase getAddressListUseCase,
+    public ShipmentAddressListPresenter(GetAllAddressUseCase getAllAddressUseCase,
                                         PagingHandler pagingHandler) {
-
-        mGetAddressListUseCase = getAddressListUseCase;
+        mGetAllAddressUseCase = getAllAddressUseCase;
         mPagingHandler = pagingHandler;
     }
 
     @Override
-    public void attachView(ISearchAddressListView<List<ShipmentRecipientModel>> mvpView) {
+    public void attachView(ISearchAddressListView<List<RecipientAddressModel>> mvpView) {
         super.attachView(mvpView);
     }
 
@@ -62,11 +56,21 @@ public class ShipmentAddressListPresenter
      *
      * @param context
      * @param order
+     */
+    public void resetAddressList(Context context, int order) {
+        getAddressList(context, order, DEFAULT_KEYWORD);
+    }
+
+    /**
+     *
+     * @param context
+     * @param order
      * @param query
      */
     public void getAddressList(Context context, int order, String query) {
-        mGetAddressListUseCase.execute(getPeopleAddressRequestParams(context, order, query),
-                new Subscriber<List<ShipmentAddressModel>>() {
+        mGetAllAddressUseCase.execute(
+                PeopleAddressAuthUtil.getPeopleAddressRequestParams(context, order, query, mPagingHandler.getPage()),
+                new Subscriber<List<RecipientAddressModel>>() {
                     @Override
                     public void onCompleted() {
 
@@ -74,65 +78,69 @@ public class ShipmentAddressListPresenter
 
                     @Override
                     public void onError(Throwable throwable) {
+                        getMvpView().showError();
                         Log.d(TAG, throwable.getMessage());
                     }
 
                     @Override
-                    public void onNext(List<ShipmentAddressModel> shipmentAddressModels) {
-                        Log.d(TAG, "size: " + shipmentAddressModels.size());
+                    public void onNext(List<RecipientAddressModel> shipmentAddressModels) {
+                        if (shipmentAddressModels.isEmpty()) {
+                            getMvpView().showListEmpty();
+                        } else {
+                            getMvpView().showList(shipmentAddressModels);
+                        }
+
+                        Log.d(TAG, "Size: " + shipmentAddressModels.size());
                     }
         });
     }
 
-    /**
-     *
-     * @param context
-     * @param order
-     * @param query
-     * @return
-     */
-    private RequestParams getPeopleAddressRequestParams(final Context context, final int order, final String query) {
-        RequestParams requestParams = RequestParams.create();
-
-        requestParams.putAll(new HashMap<String, Object>() {{
-            putAll(generatePeopleAddressParams(context, order, query));
-        }});
-
-        return requestParams;
-    }
-
-    /**
-     *
-     * @param context
-     * @param order
-     * @param query
-     * @return
-     */
-    private Map<String, String> generatePeopleAddressParams(Context context, final int order, final String query) {
-        return AuthUtil.generateParams(context, new HashMap<String, String>() {{
-            put(PARAM_ORDER_BY, String.valueOf(order));
-            put(PARAM_QUERY, query);
-            put(PARAM_PAGE, String.valueOf(mPagingHandler.getPage()));
-        }});
-    }
-
-    private void filter(List<ShipmentRecipientModel> addressList, final String keyword) {
+    private void filter(List<RecipientAddressModel> addressList, final String keyword) {
         Observable.from(addressList)
-                .filter(new Func1<ShipmentRecipientModel, Boolean>() {
+                .filter(new Func1<RecipientAddressModel, Boolean>() {
                     @Override
-                    public Boolean call(ShipmentRecipientModel shippingRecipientMode) {
-                        if (TextUtils.isEmpty(keyword)) return true;
+                    public Boolean call(RecipientAddressModel shippingRecipientMode) {
+                        if (TextUtils.isEmpty(keyword)) {
+                            return true;
+                        }
 
                         String lowCaseKeyword = keyword.toLowerCase();
 
-                        boolean isNameContainsKeyword = shippingRecipientMode.getRecipientName().toLowerCase()
-                                .contains(lowCaseKeyword);
-                        boolean isAddressContainsKeyword = shippingRecipientMode.getRecipientAddress().toLowerCase()
-                                .contains(lowCaseKeyword);
-                        boolean isIdentifierContainsKeyword = shippingRecipientMode.getAddressIdentifier().toLowerCase()
+                        boolean isNameContainsKeyword = shippingRecipientMode
+                                .getRecipientName()
+                                .toLowerCase()
                                 .contains(lowCaseKeyword);
 
-                        return isNameContainsKeyword || isAddressContainsKeyword
+                        boolean isProvinceContainsKeyword = shippingRecipientMode
+                                .getAddressProvinceName()
+                                .toLowerCase()
+                                .contains(lowCaseKeyword);
+
+                        boolean isCityContainsKeyword = shippingRecipientMode
+                                .getAddressCityName()
+                                .toLowerCase()
+                                .contains(lowCaseKeyword);
+
+                        boolean isDistrictContainsKeyword = shippingRecipientMode
+                                .getDestinationDistrictName()
+                                .toLowerCase()
+                                .contains(lowCaseKeyword);
+
+                        boolean isStreetContainsKeyword = shippingRecipientMode
+                                .getAddressStreet()
+                                .toLowerCase()
+                                .contains(lowCaseKeyword);
+
+                        boolean isIdentifierContainsKeyword = shippingRecipientMode
+                                .getAddressName()
+                                .toLowerCase()
+                                .contains(lowCaseKeyword);
+
+                        return isNameContainsKeyword
+                                || isProvinceContainsKeyword
+                                || isCityContainsKeyword
+                                || isDistrictContainsKeyword
+                                || isStreetContainsKeyword
                                 || isIdentifierContainsKeyword;
                     }
                 })
@@ -143,10 +151,10 @@ public class ShipmentAddressListPresenter
         // TODO make sure to put proper scheduler
     }
 
-    private final class AddressListObserver implements Observer<List<ShipmentRecipientModel>> {
+    private final class AddressListObserver implements Observer<List<RecipientAddressModel>> {
 
         @Override
-        public void onNext(List<ShipmentRecipientModel> addressList) {
+        public void onNext(List<RecipientAddressModel> addressList) {
             if (addressList.isEmpty()) {
                 getMvpView().showListEmpty();
             } else {

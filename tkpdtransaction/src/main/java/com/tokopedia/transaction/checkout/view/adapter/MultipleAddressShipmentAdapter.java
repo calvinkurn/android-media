@@ -262,7 +262,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
             addressLayout = itemView.findViewById(R.id.address_layout);
 
-            addressTitle = itemView.findViewById(R.id.tv_text_address_description);
+            addressTitle = itemView.findViewById(R.id.tv_address_name);
 
             addressReceiverName = itemView.findViewById(R.id.tv_recipient_name);
 

@@ -1,7 +1,7 @@
 package com.tokopedia.transaction.checkout.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
+import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.view.view.ICartAddressChoiceView;
 
 import java.util.List;
@@ -14,9 +14,9 @@ public interface ICartAddressChoicePresenter extends CustomerPresenter<ICartAddr
 
     void loadAddresses();
 
-    List<ShipmentRecipientModel> getRecipientAddresses();
+    List<RecipientAddressModel> getRecipientAddresses();
 
-    void setSelectedRecipientAddress(ShipmentRecipientModel model);
+    void setSelectedRecipientAddress(RecipientAddressModel model);
 
-    ShipmentRecipientModel getSelectedRecipientAddress();
+    RecipientAddressModel getSelectedRecipientAddress();
 }
