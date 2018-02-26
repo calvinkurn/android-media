@@ -57,7 +57,7 @@ public class GetShopProductWithWishListUseCase extends UseCase<PagingList<ShopPr
                     public Observable<PagingList<ShopProductViewModel>> call(List<String> productWishList) {
                         PagingList<ShopProductViewModel> pagingList = new PagingList<>();
                         pagingList.setTotalData(shopProductPagingList.getTotalData());
-                        pagingList.setList(shopProductMapper.convert(shopProductPagingList.getList(), productWishList));
+                        pagingList.setList(shopProductMapper.convertFromShopProduct(shopProductPagingList.getList(), productWishList));
                         return Observable.just(pagingList);
                     }
                 });

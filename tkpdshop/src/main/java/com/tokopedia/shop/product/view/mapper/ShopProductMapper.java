@@ -18,17 +18,17 @@ public class ShopProductMapper {
 
     private static final String BADGGE_FREE_RETURN = "Free Return";
 
-    public List<ShopProductViewModel> convert(List<ShopProduct> shopProductList, List<String> productWishList) {
+    public List<ShopProductViewModel> convertFromShopProduct(List<ShopProduct> shopProductList, List<String> productWishList) {
         List<ShopProductViewModel> shopProductViewModelList = new ArrayList<>();
         for (ShopProduct shopProduct: shopProductList) {
-            ShopProductViewModel shopProductViewModel = convert(shopProduct);
+            ShopProductViewModel shopProductViewModel = convertFromShopProduct(shopProduct);
             shopProductViewModel.setWishList(WishListUtils.isWishList(shopProduct.getProductId(), productWishList));
             shopProductViewModelList.add(shopProductViewModel);
         }
         return shopProductViewModelList;
     }
 
-    private ShopProductViewModel convert(ShopProduct shopProduct) {
+    private ShopProductViewModel convertFromShopProduct(ShopProduct shopProduct) {
         ShopProductViewModel shopProductViewModel = new ShopProductViewModel();
 
         shopProductViewModel.setId(shopProduct.getProductId());
@@ -50,17 +50,17 @@ public class ShopProductMapper {
     }
 
 
-    public List<ShopProductViewModel> convertProductFeatured(List<GMFeaturedProduct> gmFeaturedProductList, List<String> productWishList) {
+    public List<ShopProductViewModel> convertFromProductFeatured(List<GMFeaturedProduct> gmFeaturedProductList, List<String> productWishList) {
         List<ShopProductViewModel> shopProductViewModelList = new ArrayList<>();
         for (GMFeaturedProduct shopProduct: gmFeaturedProductList) {
-            ShopProductViewModel shopProductViewModel = convertProductFeatured(shopProduct);
+            ShopProductViewModel shopProductViewModel = convertFromProductFeatured(shopProduct);
             shopProductViewModel.setWishList(WishListUtils.isWishList(shopProduct.getProductId(), productWishList));
             shopProductViewModelList.add(shopProductViewModel);
         }
         return shopProductViewModelList;
     }
 
-    private ShopProductViewModel convertProductFeatured(GMFeaturedProduct gmFeaturedProduct) {
+    private ShopProductViewModel convertFromProductFeatured(GMFeaturedProduct gmFeaturedProduct) {
         ShopProductViewModel shopProductViewModel = new ShopProductViewModel();
 
         shopProductViewModel.setId(gmFeaturedProduct.getProductId());
