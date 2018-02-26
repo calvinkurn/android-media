@@ -175,4 +175,7 @@
     <string name="verification_code_sent">Kode verifikasi telah dikirim</string>
     <string name="dialog_cancel">BATAL</string>
 
+    <!--REGISTER PHONE NUMBER-->
+    <string name="register_with_phone_number">Daftar dengan Nomor Ponsel</string>
+
 </resources>

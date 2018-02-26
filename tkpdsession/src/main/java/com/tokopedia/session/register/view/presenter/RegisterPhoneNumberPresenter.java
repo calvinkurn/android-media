@@ -1,0 +1,48 @@
+package com.tokopedia.session.register.view.presenter;
+
+import android.text.TextUtils;
+
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.session.R;
+import com.tokopedia.session.login.loginphonenumber.domain.interactor.CheckMsisdnTokoCashUseCase;
+import com.tokopedia.session.register.view.viewlistener.RegisterPhoneNumber;
+
+import javax.inject.Inject;
+
+/**
+ * @author by yfsx on 26/2/18.
+ */
+
+public class RegisterPhoneNumberPresenter extends BaseDaggerPresenter<RegisterPhoneNumber.View>
+        implements RegisterPhoneNumber.Presenter {
+
+    private final CheckMsisdnTokoCashUseCase checkMsisdnTokoCashUseCase;
+
+    @Inject
+    public RegisterPhoneNumberPresenter(CheckMsisdnTokoCashUseCase checkMsisdnTokoCashUseCase) {
+        this.checkMsisdnTokoCashUseCase = checkMsisdnTokoCashUseCase;
+    }
+
+    @Override
+    public void attachView(RegisterPhoneNumber.View view) {
+        super.attachView(view);
+    }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        checkMsisdnTokoCashUseCase.unsubscribe();
+    }
+
+    private boolean isValid(String phoneNumber) {
+        boolean isValid = true;
+        if (TextUtils.isEmpty(phoneNumber)) {
+            getView().showErrorPhoneNumber(R.string.error_field_required);
+            isValid = false;
+        }else if(phoneNumber.length() < 7 || phoneNumber.length() > 15) {
+            getView().showErrorPhoneNumber(R.string.phone_number_invalid);
+            isValid = false;
+        }
+        return isValid;
+    }
+}
