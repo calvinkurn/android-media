@@ -72,7 +72,7 @@ public class GetProfileKolDataMapper
                 && graphqlResponse.body() != null
                 && graphqlResponse.body().getData() != null) {
             if (graphqlResponse.isSuccessful()) {
-                if (!TextUtils.isEmpty(graphqlResponse.body().getData().error)) {
+                if (TextUtils.isEmpty(graphqlResponse.body().getData().error)) {
                     return graphqlResponse.body().getData();
                 } else {
                     throw new RuntimeException("Server error");
