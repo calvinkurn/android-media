@@ -20,7 +20,7 @@ public class ResponseCartApiErrorException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return super.getMessage();
+        return errorMessage;
     }
 
     public String getSourcePathApi() {

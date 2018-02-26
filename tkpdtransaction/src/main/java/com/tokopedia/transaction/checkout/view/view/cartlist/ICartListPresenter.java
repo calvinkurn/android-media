@@ -11,11 +11,11 @@ import java.util.List;
 
 public interface ICartListPresenter {
 
-    void processGetCartData();
+    void processInitialGetCartData();
 
     void processDeleteCart(CartItemData cartItemData, boolean addWishList);
 
-    void processToShipmentStep();
+    void processToShipmentSingleAddress();
 
     void processToShipmentMultipleAddress();
 

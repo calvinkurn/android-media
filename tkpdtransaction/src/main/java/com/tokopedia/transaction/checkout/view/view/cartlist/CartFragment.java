@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.IntentService;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
@@ -46,6 +46,7 @@ import com.tokopedia.transaction.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CartListData;
 import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
+import com.tokopedia.transaction.checkout.view.data.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.transaction.checkout.view.view.shipmentform.CartShipmentActivity;
@@ -77,6 +78,7 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     TextView tvTotalPrice;
     @BindView(R2.id.bottom_layout)
     View bottomLayout;
+    private TkpdProgressDialog progressDialogNormal;
 
     @Inject
     ICartListPresenter dPresenter;
@@ -90,7 +92,7 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     private boolean mIsMenuVisible = true;
 
     private OnPassingCartDataListener mDataPasserListener;
-    private CartPromoSuggestion cartPromoSuggestionData;
+    private CartListData cartListData;
 
     @Override
     public void onAttach(Activity activity) {
@@ -170,6 +172,7 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     @Override
     protected void initView(View view) {
+        progressDialogNormal = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
         refreshHandler = new RefreshHandler(getActivity(), view, this);
         cartRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         cartRecyclerView.setAdapter(cartListAdapter);
@@ -182,7 +185,7 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
             @Override
             public void onClick(View view) {
                 cartListAdapter.notifyDataSetChanged();
-                dPresenter.processToShipmentStep();
+                dPresenter.processToShipmentSingleAddress();
             }
         });
     }
@@ -296,12 +299,12 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     @Override
     public void showProgressLoading() {
-
+        progressDialogNormal.showDialog();
     }
 
     @Override
     public void hideProgressLoading() {
-
+        progressDialogNormal.dismiss();
     }
 
     @Override
@@ -341,37 +344,122 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     }
 
     @Override
-    public void renderCartListData(List<CartItemData> cartItemDataList) {
+    public void renderInitialGetCartListDataSuccess(CartListData cartListData) {
         refreshHandler.finishRefresh();
-
-        cartListAdapter.addDataList(cartItemDataList);
+        this.cartListData = cartListData;
+        if (cartListData.getCartPromoSuggestion().isVisible()) {
+            cartListAdapter.addPromoSuggestion(cartListData.getCartPromoSuggestion());
+        }
+        cartListAdapter.addDataList(cartListData.getCartItemDataList());
         dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
-        mDataPasserListener.onPassingCartData(cartItemDataList);
+        mDataPasserListener.onPassingCartData(cartListData.getCartItemDataList());
 
-        if (!mIsMenuVisible && !cartItemDataList.isEmpty()) {
+        if (!mIsMenuVisible && !cartListData.getCartItemDataList().isEmpty()) {
             mIsMenuVisible = true;
             getActivity().invalidateOptionsMenu();
         }
     }
 
     @Override
-    public void renderErrorGetCartListData(String message) {
+    public void renderErrorInitialGetCartListData(String message) {
         refreshHandler.finishRefresh();
     }
 
     @Override
-    public void renderErrorHttpGetCartListData(String message) {
+    public void renderErrorHttpInitialGetCartListData(String message) {
         refreshHandler.finishRefresh();
     }
 
     @Override
-    public void renderErrorNoConnectionGetCartListData(String message) {
+    public void renderErrorNoConnectionInitialGetCartListData(String message) {
         refreshHandler.finishRefresh();
     }
 
     @Override
-    public void renderErrorTimeoutConnectionGetCartListData(String message) {
+    public void renderErrorTimeoutConnectionInitialGetCartListData(String message) {
         refreshHandler.finishRefresh();
+    }
+
+    @Override
+    public void renderActionDeleteCartDataSuccess(CartItemData cartItemData, String message, boolean addWishList) {
+        cartListAdapter.deleteItem(cartItemData);
+        dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
+        mDataPasserListener.onPassingCartData(cartListAdapter.getCartItemDataList());
+    }
+
+    @Override
+    public void renderErrorActionDeleteCartData(String message) {
+
+    }
+
+    @Override
+    public void renderErrorHttpActionDeleteCartData(String message) {
+
+    }
+
+    @Override
+    public void renderErrorNoConnectionActionDeleteCartData(String message) {
+
+    }
+
+    @Override
+    public void renderErrorTimeoutConnectionActionDeleteCartData(String message) {
+
+    }
+
+    @Override
+    public void renderToShipmentSingleAddressSuccess(CartShipmentAddressFormData shipmentAddressFormData) {
+        Intent intent = CartShipmentActivity.createInstanceSingleAddress(
+                getActivity(),
+                shipmentAddressFormData,
+                this.cartListData.getCartPromoSuggestion()
+        );
+        startActivityForResult(intent, CartShipmentActivity.REQUEST_CODE);
+    }
+
+    @Override
+    public void renderErrorToShipmentSingleAddress(String message) {
+
+    }
+
+    @Override
+    public void renderErrorHttpToShipmentSingleAddress(String message) {
+
+    }
+
+    @Override
+    public void renderErrorNoConnectionToShipmentSingleAddress(String message) {
+
+    }
+
+    @Override
+    public void renderErrorTimeoutConnectionToShipmentSingleAddress(String message) {
+
+    }
+
+    @Override
+    public void renderToShipmentMultipleAddressSuccess(CartListData cartListData) {
+
+    }
+
+    @Override
+    public void renderErrorToShipmentMultipleAddress(String message) {
+
+    }
+
+    @Override
+    public void renderErrorHttpToShipmentMultipleAddress(String message) {
+
+    }
+
+    @Override
+    public void renderErrorNoConnectionToShipmentMultipleAddress(String message) {
+
+    }
+
+    @Override
+    public void renderErrorTimeoutConnectionToShipmentMultipleAddress(String message) {
+
     }
 
     @Override
@@ -434,13 +522,8 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
 
     @Override
-    public List<CartItemHolderData> getFinalCartList() {
-        return cartListAdapter.getDataList();
-    }
-
-    @Override
-    public Context getActivityContext() {
-        return getActivity();
+    public List<CartItemData> getCartDataList() {
+        return cartListAdapter.getCartItemDataList();
     }
 
     @Override
@@ -449,20 +532,6 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
         tvTotalPrice.setText(subtotalPrice);
     }
 
-    @Override
-    public void renderPromoSuggestion(CartPromoSuggestion cartPromoSuggestion) {
-        this.cartPromoSuggestionData = cartPromoSuggestion;
-        if (cartPromoSuggestion.isVisible()) {
-            cartListAdapter.addPromoSuggestion(cartPromoSuggestion);
-        }
-    }
-
-    @Override
-    public void renderSuccessDeleteCart(CartItemData cartItemData, String message, boolean addWishList) {
-        cartListAdapter.deleteItem(cartItemData);
-        dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
-        mDataPasserListener.onPassingCartData(cartListAdapter.getCartItemDataList());
-    }
 
     @Override
     public void renderPromoVoucher() {
@@ -477,21 +546,6 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     }
 
     @Override
-    public void renderUpdateDataSuccess(String message) {
-        dPresenter.processToShipmentStep();
-    }
-
-    @Override
-    public void renderUpdateDataFailed(String message) {
-        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
-    }
-
-    @Override
-    public void renderUpdateAndRefreshCartDataSuccess(String message) {
-
-    }
-
-    @Override
     public void renderLoadGetCartData() {
         bottomLayout.setVisibility(View.GONE);
     }
@@ -499,16 +553,6 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     @Override
     public void renderLoadGetCartDataFinish() {
         bottomLayout.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public CartPromoSuggestion getCartPromoSuggestion() {
-        return this.cartPromoSuggestionData;
-    }
-
-    @Override
-    public void renderToShipmentMultipleAddressSuccess(CartListData cartListData) {
-
     }
 
     void showDeleteCartItemDialog(ArrayList<CartItemData> cartItemDataList, ArrayList<CartItemData> emptyData) {
@@ -572,7 +616,7 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     @Override
     public void onRefresh(View view) {
         cartListAdapter.resetData();
-        dPresenter.processGetCartData();
+        dPresenter.processInitialGetCartData();
     }
 
 
