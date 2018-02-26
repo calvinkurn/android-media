@@ -32,6 +32,8 @@ import com.tokopedia.home.applink.HomeApplinkModule;
 import com.tokopedia.home.applink.HomeApplinkModuleLoader;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
+import com.tokopedia.loyalty.applink.LoyaltyAppLinkModule;
+import com.tokopedia.loyalty.applink.LoyaltyAppLinkModuleLoader;
 import com.tokopedia.ride.deeplink.RideDeeplinkModule;
 import com.tokopedia.ride.deeplink.RideDeeplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
@@ -67,7 +69,8 @@ import io.branch.referral.BranchError;
         FeedDeeplinkModule.class,
         FlightApplinkModule.class,
         ReputationApplinkModule.class,
-        EventsDeepLinkModule.class
+        EventsDeepLinkModule.class,
+        LoyaltyAppLinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
@@ -88,7 +91,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new FeedDeeplinkModuleLoader(),
                 new FlightApplinkModuleLoader(),
                 new ReputationApplinkModuleLoader(),
-                new EventsDeepLinkModuleLoader()
+                new EventsDeepLinkModuleLoader(),
+                new LoyaltyAppLinkModuleLoader()
         );
     }
 
