@@ -71,9 +71,6 @@ public class ShipmentAddressListAdapter
             }
         });
 
-        holder.mRlAddressContainer.setOnClickListener(new OnItemClickListener(position));
-        holder.mLlRadioButtonContainer.setOnClickListener(new OnItemClickListener(position));
-
         holder.itemView.setOnClickListener(getItemClickListener(address, position));
     }
 
@@ -86,23 +83,25 @@ public class ShipmentAddressListAdapter
         return street + ", " + district + ", " + city + ", " + province;
     }
 
-    private View.OnClickListener getItemClickListener(final RecipientAddressModel courierItemData,
+    private View.OnClickListener getItemClickListener(final RecipientAddressModel recipientAddressModel,
                                                       final int position) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (RecipientAddressModel viewModel : mAddressModelList) {
-                    if (viewModel.getId().equals(courierItemData.getId())) {
-                        if (mAddressModelList.size() > position && position >= 0) {
-                            viewModel.setSelected(!viewModel.isSelected());
-                            mActionListener.onAddressContainerClicked(mAddressModelList.get(position));
+                if(!recipientAddressModel.isSelected()) {
+                    for (RecipientAddressModel viewModel : mAddressModelList) {
+                        if (viewModel.getId().equals(recipientAddressModel.getId())) {
+                            if (mAddressModelList.size() > position && position >= 0) {
+                                viewModel.setSelected(!viewModel.isSelected());
+                                mActionListener.onAddressContainerClicked(mAddressModelList.get(position));
+                            }
+                        } else {
+                            viewModel.setSelected(false);
                         }
-                    } else {
-                        viewModel.setSelected(false);
                     }
-                }
 
-                notifyDataSetChanged();
+                    notifyDataSetChanged();
+                }
             }
         };
     }
@@ -139,35 +138,20 @@ public class ShipmentAddressListAdapter
 
     }
 
-    private class OnItemClickListener implements View.OnClickListener {
-
-        private int mPosition;
-
-        OnItemClickListener(int position) {
-            mPosition = position;
-        }
-
-        @Override
-        public void onClick(View v) {
-            String msg = String.format("Address list was clicked at %s position", mPosition);
-            Log.d(TAG, msg);
-            // TODO add an implementation on own host fragment mActionListener
-        }
-
-    }
-
     /**
      * Implemented by adapter host fragment
      */
     public interface ActionListener {
         /**
          * Executed when address container is clicked
+         *
          * @param model RecipientAddressModel
          */
         void onAddressContainerClicked(RecipientAddressModel model);
 
         /**
          * Executed when edit address button is clicked
+         *
          * @param model RecipientAddressModel
          */
         void onEditClick(RecipientAddressModel model);

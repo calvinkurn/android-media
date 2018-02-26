@@ -14,6 +14,7 @@ import java.util.List;
 public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddressChoiceView>
         implements ICartAddressChoicePresenter {
 
+    private static final int ADDRESS_STATUS_DEFAULT = 2;
     private List<RecipientAddressModel> recipientAddresses = new ArrayList<>();
     private RecipientAddressModel selectedRecipientAddress;
 
@@ -30,6 +31,12 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
     @Override
     public void loadAddresses() {
         List<RecipientAddressModel> models = DummyCreator.createDummyShipmentRecipients();
+        for (RecipientAddressModel model : models) {
+            if (model.getAddressStatus() == ADDRESS_STATUS_DEFAULT) {
+                model.setSelected(true);
+                selectedRecipientAddress = model;
+            }
+        }
         recipientAddresses.clear();
         recipientAddresses.addAll(models);
         getView().renderRecipientData();

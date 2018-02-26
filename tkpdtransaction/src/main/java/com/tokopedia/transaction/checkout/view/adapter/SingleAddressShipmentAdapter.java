@@ -648,7 +648,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             llWarningContainer.setVisibility(View.VISIBLE);
         }
 
-        //        private void showGreyWarning(String message) {
+//        private void showGreyWarning(String message) {
 //            llWarningContainer.setBackgroundColor(ContextCompat.getColor(
 //                    llWarningContainer.getContext(), R.color.bg_warning_grey));
 //            imgWarning.setImageResource(R.drawable.ic_warning_grey);
