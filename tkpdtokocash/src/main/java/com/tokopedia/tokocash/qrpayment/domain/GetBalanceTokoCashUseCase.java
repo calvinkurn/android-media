@@ -1,13 +1,12 @@
 package com.tokopedia.tokocash.qrpayment.domain;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.tokocash.qrpayment.data.repository.QrPaymentRepository;
+import com.tokopedia.tokocash.qrpayment.data.repository.BalanceRepository;
 import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Created by nabillasabbaha on 1/4/18.
@@ -15,17 +14,20 @@ import rx.Observable;
 
 public class GetBalanceTokoCashUseCase extends UseCase<BalanceTokoCash> {
 
-    private QrPaymentRepository repository;
+    private BalanceRepository repository;
 
-    public GetBalanceTokoCashUseCase(ThreadExecutor threadExecutor,
-                                     PostExecutionThread postExecutionThread,
-                                     QrPaymentRepository repository) {
-        super(threadExecutor, postExecutionThread);
+    public GetBalanceTokoCashUseCase(BalanceRepository repository) {
         this.repository = repository;
     }
 
     @Override
     public Observable<BalanceTokoCash> createObservable(RequestParams requestParams) {
-        return repository.getBalanceTokoCash(requestParams.getParameters());
+        return repository.getLocalBalanceTokoCash()
+                .onErrorResumeNext(new Func1<Throwable, Observable<BalanceTokoCash>>() {
+                    @Override
+                    public Observable<BalanceTokoCash> call(Throwable throwable) {
+                        return repository.getBalanceTokoCash();
+                    }
+                });
     }
 }

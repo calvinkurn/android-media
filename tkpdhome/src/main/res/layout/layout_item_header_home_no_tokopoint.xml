@@ -75,22 +75,6 @@
                 android:textStyle="bold"
                 tools:visibility="visible" />
 
-            <TextView
-                android:id="@+id/scanner_qr"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_med"
-                android:drawablePadding="8dp"
-                android:gravity="center_vertical"
-                android:lineSpacingExtra="4sp"
-                android:text="Scan"
-                app:srcCompat="@drawable/ic_qr_scanner"
-                android:textColor="@color/tkpd_main_green"
-                android:textSize="@dimen/fontvs"
-                android:textStyle="bold"
-                android:visibility="gone"
-                tools:visibility="gone"/>
-
         </LinearLayout>
 
     </RelativeLayout>

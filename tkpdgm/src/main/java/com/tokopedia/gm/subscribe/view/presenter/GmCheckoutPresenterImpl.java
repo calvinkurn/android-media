@@ -1,8 +1,11 @@
 package com.tokopedia.gm.subscribe.view.presenter;
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException;
+import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.gm.subscribe.domain.cart.exception.GmVoucherCheckException;
 import com.tokopedia.gm.subscribe.domain.cart.interactor.CheckGmSubscribeVoucherUseCase;
 import com.tokopedia.gm.subscribe.domain.cart.interactor.CheckoutGmSubscribeUseCase;
@@ -184,6 +187,7 @@ public class GmCheckoutPresenterImpl extends BaseDaggerPresenter<GmCheckoutView>
             getView().dismissProgressDialog();
             if (e instanceof GmVoucherCheckException) {
                 getView().renderVoucherView(GmVoucherViewModel.generateClassWithError(e.getMessage()));
+                removeBranchPromo();
             } else {
                 getView().showGenericError();
             }
@@ -247,6 +251,18 @@ public class GmCheckoutPresenterImpl extends BaseDaggerPresenter<GmCheckoutView>
             getView().dismissProgressDialog();
             getView().goToDynamicPayment(GmCheckoutViewModel.mapFromDomain(gmCheckoutDomainModel));
         }
+    }
+
+    @Override
+    public void autoApplyCouponIfAvailable(Integer selectedProduct) {
+        String savedCoupon = BranchSdkUtils.getAutoApplyCouponIfAvailable(getView().getContext());
+        if (!TextUtils.isEmpty(savedCoupon)) {
+            checkVoucherCode(savedCoupon, selectedProduct);
+        }
+    }
+
+    private void removeBranchPromo(){
+        BranchSdkUtils.removeCouponCode(getView().getContext());
     }
 }
 
