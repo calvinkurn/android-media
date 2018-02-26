@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
-import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 
 /**
  * @author by alvarisi on 11/15/17.
@@ -23,6 +22,7 @@ public class FlightDashboardCache {
     private static final String CLASS ="CLASS";
     private static final String DEFAULT_DEPARTURE_AIRPORT_ID = "CGK";
     private static final String DEFAULT_ARRIVAL_AIRPORT_ID = "DPS";
+    private static final String DEFAULT_EMPTY_VALUE = "";
     private static final int DEFAULT_PASSENGER_ADULT = 1;
     private static final int DEFAULT_PASSENGER_CHILD = 0;
     private static final int DEFAULT_PASSENGER_INFANT = 0;
@@ -43,7 +43,7 @@ public class FlightDashboardCache {
     }
 
     public String getDepartureAirport() {
-        return sharedPrefs.getString(DEPARTURE, DEFAULT_DEPARTURE_AIRPORT_ID);
+        return sharedPrefs.getString(DEPARTURE, DEFAULT_EMPTY_VALUE);
     }
 
     public void putArrivalAirport(String airportId) {
@@ -53,7 +53,7 @@ public class FlightDashboardCache {
     }
 
     public String getArrivalAirport() {
-        return sharedPrefs.getString(ARRIVAL, DEFAULT_ARRIVAL_AIRPORT_ID);
+        return sharedPrefs.getString(ARRIVAL, DEFAULT_EMPTY_VALUE);
     }
 
     public void putDepartureDate(String departureDate) {
@@ -63,7 +63,7 @@ public class FlightDashboardCache {
     }
 
     public String getDepartureDate() {
-        return sharedPrefs.getString(DEPARTURE_DATE, "");
+        return sharedPrefs.getString(DEPARTURE_DATE, DEFAULT_EMPTY_VALUE);
     }
 
     public void putReturnDate(String returnDate) {
@@ -73,7 +73,7 @@ public class FlightDashboardCache {
     }
 
     public String getReturnDate() {
-        return sharedPrefs.getString(RETURN_DATE, "");
+        return sharedPrefs.getString(RETURN_DATE, DEFAULT_EMPTY_VALUE);
     }
 
     public void putPassengerCount(int adult, int child, int infant) {

@@ -7,12 +7,12 @@ import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassE
  * Created by alvarisi on 2/7/18.
  */
 
-public class FlightDashboardAirportsWrapper {
+public class FlightDashboardAirportAndClassWrapper {
     private FlightAirportDB departureAirport;
     private FlightAirportDB arrivalAirport;
     private FlightClassEntity flightClassEntity;
 
-    public FlightDashboardAirportsWrapper() {
+    public FlightDashboardAirportAndClassWrapper() {
     }
 
     public FlightAirportDB getDepartureAirport() {
