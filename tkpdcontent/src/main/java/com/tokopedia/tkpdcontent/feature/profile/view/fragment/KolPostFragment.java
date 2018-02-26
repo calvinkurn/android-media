@@ -78,7 +78,18 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     }
 
     private void setViewListener() {
+        kolRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
 
+                int topVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
+                if (topVisibleItemPosition <= adapter.getItemCount() - 1 &&
+                        !adapter.isLoading()) {
+                    presenter.getKolPost(userId);
+                }
+            }
+        });
     }
 
     @Override
@@ -96,8 +107,17 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     }
 
     @Override
+    public void showLoading() {
+        adapter.showLoading();
+    }
+
+    @Override
+    public void hideLoading() {
+        adapter.removeLoading();
+    }
+
+    @Override
     public void onSuccessGetProfileData(List<Visitable> visitableList) {
-        NetworkErrorHelper.showSnackbar(getActivity(), "Success");
         adapter.addList(visitableList);
     }
 

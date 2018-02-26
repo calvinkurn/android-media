@@ -27,6 +27,7 @@ public class GetProfileKolDataSubscriber extends Subscriber<KolProfileModel> {
 
     @Override
     public void onError(Throwable e) {
+        view.hideLoading();
         view.onErrorGetProfileData(
                 ErrorHandler.getErrorMessage(view.getContext(), e)
         );
@@ -34,6 +35,7 @@ public class GetProfileKolDataSubscriber extends Subscriber<KolProfileModel> {
 
     @Override
     public void onNext(KolProfileModel kolProfileModel) {
+        view.hideLoading();
         view.onSuccessGetProfileData(
                 new ArrayList<Visitable>(kolProfileModel.getKolPostViewModels())
         );

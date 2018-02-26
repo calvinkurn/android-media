@@ -17,6 +17,10 @@ public interface KolPostListener {
     interface View extends CustomerView {
         Context getContext();
 
+        void showLoading();
+
+        void hideLoading();
+
         void onSuccessGetProfileData(List<Visitable> visitableList);
 
         void onErrorGetProfileData(String message);

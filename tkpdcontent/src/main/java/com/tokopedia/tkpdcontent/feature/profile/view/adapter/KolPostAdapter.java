@@ -65,13 +65,12 @@ public class KolPostAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public void addList(List<Visitable> list) {
+        int originalSize = this.list.size();
         this.list.addAll(list);
-        notifyDataSetChanged();
-    }
-
-    public void addItem(Visitable item) {
-        this.list.add(item);
-        notifyDataSetChanged();
+        notifyItemRangeInserted(
+                originalSize,
+                Math.abs(originalSize - list.size())
+        );
     }
 
     public void clearData() {
