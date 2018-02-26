@@ -63,7 +63,7 @@ public class CloudActionResCenterDataStore {
                 .map(resolutionCenterActionMapper);
     }
 
-    public Observable<ResolutionActionDomainData> acceptSolution(com.tokopedia.usecase.RequestParams params) {
+    public Observable<ResolutionActionDomainData> acceptSolution(RequestParams params) {
         return resolutionApi.acceptResolution(params.getString(AcceptSolutionUseCase.PARAM_RESOLUTION_ID, ""),
                 params.getParameters())
                 .map(resolutionCenterActionMapper);
