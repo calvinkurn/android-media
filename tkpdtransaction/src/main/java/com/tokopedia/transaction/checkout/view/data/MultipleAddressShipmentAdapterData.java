@@ -32,6 +32,8 @@ public class MultipleAddressShipmentAdapterData {
 
     private Store store;
 
+    private ShipmentCartData shipmentCartData;
+
 
     public String getSenderName() {
         return senderName;
@@ -127,5 +129,13 @@ public class MultipleAddressShipmentAdapterData {
 
     public void setStore(Store store) {
         this.store = store;
+    }
+
+    public ShipmentCartData getShipmentCartData() {
+        return shipmentCartData;
+    }
+
+    public void setShipmentCartData(ShipmentCartData shipmentCartData) {
+        this.shipmentCartData = shipmentCartData;
     }
 }

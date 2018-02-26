@@ -20,13 +20,18 @@ import javax.inject.Inject;
  */
 
 public class CartMapper implements ICartMapper {
+    private final IMapperUtil mapperUtil;
 
     @Inject
-    public CartMapper() {
+    public CartMapper(IMapperUtil mapperUtil) {
+        this.mapperUtil = mapperUtil;
     }
 
     @Override
     public CartListData convertToCartItemDataList(CartDataListResponse cartDataListResponse) {
+        CartListData cartListData = new CartListData();
+        cartListData.setError(!mapperUtil.isEmpty(cartDataListResponse.getErrors()));
+        cartListData.setErrorMessage(mapperUtil.convertToString(cartDataListResponse.getErrors()));
 
         List<CartItemData> cartItemDataList = new ArrayList<>();
         for (CartList data : cartDataListResponse.getCartList()) {
@@ -62,7 +67,6 @@ public class CartMapper implements ICartMapper {
 
             CartItemData.MessageErrorData cartItemMessageErrorData = new CartItemData.MessageErrorData();
             cartItemMessageErrorData.setErrorCheckoutPriceLimit(cartDataListResponse.getMessages().getErrorCheckoutPriceLimit());
-            cartItemMessageErrorData.setErrorAdditional(data.getErrors());
             cartItemMessageErrorData.setErrorFieldBetween(cartDataListResponse.getMessages().getErrorFieldBetween());
             cartItemMessageErrorData.setErrorFieldMaxChar(cartDataListResponse.getMessages().getErrorFieldMaxChar());
             cartItemMessageErrorData.setErrorFieldRequired(cartDataListResponse.getMessages().getErrorFieldRequired());
@@ -76,25 +80,27 @@ public class CartMapper implements ICartMapper {
             cartItemData.setUpdatedData(cartItemDataUpdated);
             cartItemData.setErrorData(cartItemMessageErrorData);
 
+            cartItemData.setError(!mapperUtil.isEmpty(data.getErrors()));
+            cartItemData.setErrorMessage(mapperUtil.convertToString(data.getErrors()));
+
             cartItemDataList.add(cartItemData);
         }
 
         CartPromoSuggestion cartPromoSuggestion = new CartPromoSuggestion();
-//        cartPromoSuggestion.setCta(cartDataListResponse.getPromoSuggestion().getCta());
-//        cartPromoSuggestion.setCtaColor(cartDataListResponse.getPromoSuggestion().getCtaColor());
-//        cartPromoSuggestion.setPromoCode(cartDataListResponse.getPromoSuggestion().getPromoCode());
-//        cartPromoSuggestion.setText(cartDataListResponse.getPromoSuggestion().getText());
-//        cartPromoSuggestion.setVisible(cartDataListResponse.getPromoSuggestion().getIsVisible() == 1);
+        cartPromoSuggestion.setCta(cartDataListResponse.getPromoSuggestion().getCta());
+        cartPromoSuggestion.setCtaColor(cartDataListResponse.getPromoSuggestion().getCtaColor());
+        cartPromoSuggestion.setPromoCode(cartDataListResponse.getPromoSuggestion().getPromoCode());
+        cartPromoSuggestion.setText(cartDataListResponse.getPromoSuggestion().getText());
+        cartPromoSuggestion.setVisible(cartDataListResponse.getPromoSuggestion().getIsVisible() == 1);
 
 
-        cartPromoSuggestion.setCta("Gunakan Sekarang!");
-        cartPromoSuggestion.setCtaColor("#42b549");
-        cartPromoSuggestion.setPromoCode("TOKOCASH");
-        cartPromoSuggestion.setText("[iOS] Cashback hingga 25% menggunakan Promo <b>TOKOCASH</b> !");
-        cartPromoSuggestion.setVisible(true);
+//        cartPromoSuggestion.setCta("Gunakan Sekarang!");
+//        cartPromoSuggestion.setCtaColor("#42b549");
+//        cartPromoSuggestion.setPromoCode("TOKOCASH");
+//        cartPromoSuggestion.setText("[iOS] Cashback hingga 25% menggunakan Promo <b>TOKOCASH</b> !");
+//        cartPromoSuggestion.setVisible(true);
 
 
-        CartListData cartListData = new CartListData();
         cartListData.setCartItemDataList(cartItemDataList);
         cartListData.setCartPromoSuggestion(cartPromoSuggestion);
 

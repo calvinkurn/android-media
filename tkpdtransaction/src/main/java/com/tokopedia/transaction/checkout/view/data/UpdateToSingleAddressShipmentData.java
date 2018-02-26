@@ -9,9 +9,9 @@ import com.tokopedia.transaction.checkout.view.data.cartshipmentform.CartShipmen
  * @author anggaprasetiyo on 21/02/18.
  */
 
-public class UpdateCartListData implements Parcelable {
+public class UpdateToSingleAddressShipmentData implements Parcelable {
+
     private UpdateCartData updateCartData;
-    private CartListData cartListData;
     private CartShipmentAddressFormData shipmentAddressFormData;
 
     public UpdateCartData getUpdateCartData() {
@@ -30,16 +30,8 @@ public class UpdateCartListData implements Parcelable {
         this.shipmentAddressFormData = shipmentAddressFormData;
     }
 
-    public CartListData getCartListData() {
-        return cartListData;
-    }
 
-    public void setCartListData(CartListData cartListData) {
-        this.cartListData = cartListData;
-    }
-
-
-    public UpdateCartListData() {
+    public UpdateToSingleAddressShipmentData() {
     }
 
     @Override
@@ -50,25 +42,23 @@ public class UpdateCartListData implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(this.updateCartData, flags);
-        dest.writeParcelable(this.cartListData, flags);
         dest.writeParcelable(this.shipmentAddressFormData, flags);
     }
 
-    protected UpdateCartListData(Parcel in) {
+    protected UpdateToSingleAddressShipmentData(Parcel in) {
         this.updateCartData = in.readParcelable(UpdateCartData.class.getClassLoader());
-        this.cartListData = in.readParcelable(CartListData.class.getClassLoader());
         this.shipmentAddressFormData = in.readParcelable(CartShipmentAddressFormData.class.getClassLoader());
     }
 
-    public static final Creator<UpdateCartListData> CREATOR = new Creator<UpdateCartListData>() {
+    public static final Creator<UpdateToSingleAddressShipmentData> CREATOR = new Creator<UpdateToSingleAddressShipmentData>() {
         @Override
-        public UpdateCartListData createFromParcel(Parcel source) {
-            return new UpdateCartListData(source);
+        public UpdateToSingleAddressShipmentData createFromParcel(Parcel source) {
+            return new UpdateToSingleAddressShipmentData(source);
         }
 
         @Override
-        public UpdateCartListData[] newArray(int size) {
-            return new UpdateCartListData[size];
+        public UpdateToSingleAddressShipmentData[] newArray(int size) {
+            return new UpdateToSingleAddressShipmentData[size];
         }
     };
 }

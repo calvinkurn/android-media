@@ -3,9 +3,6 @@ package com.tokopedia.transaction.checkout.view.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author anggaprasetiyo on 18/01/18.
  */
@@ -15,6 +12,24 @@ public class CartItemData implements Parcelable {
     private OriginData originData;
     private UpdatedData updatedData;
     private MessageErrorData errorData;
+    private boolean isError;
+    private String errorMessage;
+
+    public boolean isError() {
+        return isError;
+    }
+
+    public void setError(boolean error) {
+        isError = error;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
 
     public OriginData getOriginData() {
         return originData;
@@ -328,7 +343,8 @@ public class CartItemData implements Parcelable {
         }
 
         public void decreaseQuantity() {
-            this.quantity--;
+            if (quantity > 0)
+                this.quantity--;
         }
 
         public void increaseQuantity() {
@@ -368,8 +384,7 @@ public class CartItemData implements Parcelable {
         };
     }
 
-
-    public static class MessageErrorData implements Parcelable{
+    public static class MessageErrorData implements Parcelable {
         private String errorCheckoutPriceLimit;
         private String errorFieldBetween;
         private String errorFieldMaxChar;
@@ -378,15 +393,6 @@ public class CartItemData implements Parcelable {
         private String errorProductAvailableStockDetail;
         private String errorProductMaxQuantity;
         private String errorProductMinQuantity;
-        private List<String> errorAdditional = new ArrayList<>();
-
-        public List<String> getErrorAdditional() {
-            return errorAdditional;
-        }
-
-        public void setErrorAdditional(List<String> errorAdditional) {
-            this.errorAdditional = errorAdditional;
-        }
 
         public String getErrorCheckoutPriceLimit() {
             return errorCheckoutPriceLimit;
@@ -470,7 +476,6 @@ public class CartItemData implements Parcelable {
             dest.writeString(this.errorProductAvailableStockDetail);
             dest.writeString(this.errorProductMaxQuantity);
             dest.writeString(this.errorProductMinQuantity);
-            dest.writeStringList(this.errorAdditional);
         }
 
         protected MessageErrorData(Parcel in) {
@@ -482,7 +487,6 @@ public class CartItemData implements Parcelable {
             this.errorProductAvailableStockDetail = in.readString();
             this.errorProductMaxQuantity = in.readString();
             this.errorProductMinQuantity = in.readString();
-            this.errorAdditional = in.createStringArrayList();
         }
 
         public static final Creator<MessageErrorData> CREATOR = new Creator<MessageErrorData>() {
@@ -511,12 +515,16 @@ public class CartItemData implements Parcelable {
         dest.writeParcelable(this.originData, flags);
         dest.writeParcelable(this.updatedData, flags);
         dest.writeParcelable(this.errorData, flags);
+        dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
+        dest.writeString(this.errorMessage);
     }
 
     protected CartItemData(Parcel in) {
         this.originData = in.readParcelable(OriginData.class.getClassLoader());
         this.updatedData = in.readParcelable(UpdatedData.class.getClassLoader());
         this.errorData = in.readParcelable(MessageErrorData.class.getClassLoader());
+        this.isError = in.readByte() != 0;
+        this.errorMessage = in.readString();
     }
 
     public static final Creator<CartItemData> CREATOR = new Creator<CartItemData>() {

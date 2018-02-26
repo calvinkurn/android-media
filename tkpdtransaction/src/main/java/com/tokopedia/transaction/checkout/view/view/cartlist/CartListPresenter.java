@@ -10,7 +10,7 @@ import com.tokopedia.transaction.checkout.domain.request.UpdateCartRequest;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CartListData;
 import com.tokopedia.transaction.checkout.view.data.DeleteCartData;
-import com.tokopedia.transaction.checkout.view.data.UpdateCartListData;
+import com.tokopedia.transaction.checkout.view.data.UpdateToSingleAddressShipmentData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.transaction.checkout.view.view.shipmentform.CartShipmentActivity;
 
@@ -114,14 +114,11 @@ public class CartListPresenter implements ICartListPresenter {
         TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
         paramUpdate.put("carts", new Gson().toJson(updateCartRequestList));
 
-        TKPDMapParam<String, String> paramGetList = new TKPDMapParam<>();
-        paramGetList.put("lang", "id");
-
         TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
         paramGetShipmentForm.put("lang", "id");
 
-        cartListInteractor.updateAndRefreshCartList(
-                new Subscriber<UpdateCartListData>() {
+        cartListInteractor.updateCartToSingleAddressShipment(
+                new Subscriber<UpdateToSingleAddressShipmentData>() {
                     @Override
                     public void onCompleted() {
 
@@ -133,14 +130,24 @@ public class CartListPresenter implements ICartListPresenter {
                     }
 
                     @Override
-                    public void onNext(UpdateCartListData updateCartListData) {
+                    public void onNext(UpdateToSingleAddressShipmentData updateCartListData) {
                         if (updateCartListData.getUpdateCartData().isSuccess()) {
-                            Intent intent = CartShipmentActivity.createInstanceSingleAddress(
-                                    view.getActivityContext(),
-                                    updateCartListData.getCartListData().getCartItemDataList(),
-                                    updateCartListData.getCartListData().getCartPromoSuggestion()
-                            );
-                            view.navigateToActivity(intent);
+                            if (updateCartListData.getShipmentAddressFormData().isMultiple()) {
+                                Intent intent = CartShipmentActivity.createInstanceMultipleAddress(
+                                        view.getActivityContext(),
+                                        updateCartListData.getShipmentAddressFormData(),
+                                        view.getCartPromoSuggestion()
+                                );
+                                view.navigateToActivity(intent);
+                            } else {
+                                Intent intent = CartShipmentActivity.createInstanceSingleAddress(
+                                        view.getActivityContext(),
+                                        updateCartListData.getShipmentAddressFormData(),
+                                        view.getCartPromoSuggestion()
+                                );
+                                view.navigateToActivity(intent);
+                            }
+
                         } else {
                             view.renderUpdateDataFailed(
                                     updateCartListData.getUpdateCartData().getMessage()
@@ -149,7 +156,6 @@ public class CartListPresenter implements ICartListPresenter {
                     }
                 },
                 view.getGeneratedAuthParamNetwork(paramUpdate),
-                view.getGeneratedAuthParamNetwork(paramGetList),
                 view.getGeneratedAuthParamNetwork(paramGetShipmentForm)
         );
 

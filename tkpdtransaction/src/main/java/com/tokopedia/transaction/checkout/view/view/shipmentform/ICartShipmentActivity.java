@@ -10,9 +10,4 @@ import java.util.List;
 
 public interface ICartShipmentActivity {
 
-    List<CartItemData> getCartItemDataList();
-
-    void goToSingleAddressCart(Object data);
-
-    void goToMultipleAddressCart(Object data);
 }

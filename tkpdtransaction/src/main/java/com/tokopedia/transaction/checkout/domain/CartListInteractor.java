@@ -1,6 +1,8 @@
 package com.tokopedia.transaction.checkout.domain;
 
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.transaction.checkout.domain.exception.ResponseCartApiErrorException;
 import com.tokopedia.transaction.checkout.domain.response.cartlist.CartDataListResponse;
 import com.tokopedia.transaction.checkout.domain.response.deletecart.DeleteCartDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.shippingaddressform.ShipmentAddressFormDataResponse;
@@ -9,7 +11,8 @@ import com.tokopedia.transaction.checkout.view.data.CartListData;
 import com.tokopedia.transaction.checkout.view.data.DeleteCartData;
 import com.tokopedia.transaction.checkout.view.data.DeleteUpdateCartData;
 import com.tokopedia.transaction.checkout.view.data.UpdateCartData;
-import com.tokopedia.transaction.checkout.view.data.UpdateCartListData;
+import com.tokopedia.transaction.checkout.view.data.UpdateToSingleAddressShipmentData;
+import com.tokopedia.transaction.checkout.view.data.cartshipmentform.CartShipmentAddressFormData;
 
 import javax.inject.Inject;
 
@@ -146,52 +149,53 @@ public class CartListInteractor implements ICartListInteractor {
     }
 
     @Override
-    public void updateAndRefreshCartList(Subscriber<UpdateCartListData> subscriber,
-                                         final TKPDMapParam<String, String> paramUpdate,
-                                         final TKPDMapParam<String, String> paramGetList,
-                                         final TKPDMapParam<String, String> paramGetShipmentForm) {
+    public void updateCartToSingleAddressShipment(Subscriber<UpdateToSingleAddressShipmentData> subscriber,
+                                                  final TKPDMapParam<String, String> paramUpdate,
+                                                  final TKPDMapParam<String, String> paramGetShipmentForm) {
         compositeSubscription.add(
-                Observable.just(new UpdateCartListData())
-                        .flatMap(new Func1<UpdateCartListData, Observable<UpdateCartListData>>() {
+                Observable.just(new UpdateToSingleAddressShipmentData())
+                        .flatMap(new Func1<UpdateToSingleAddressShipmentData, Observable<UpdateToSingleAddressShipmentData>>() {
                             @Override
-                            public Observable<UpdateCartListData> call(final UpdateCartListData updateCartListData) {
+                            public Observable<UpdateToSingleAddressShipmentData> call(final UpdateToSingleAddressShipmentData updateCartListData) {
                                 return cartRepository.updateCartData(paramUpdate)
-                                        .map(new Func1<UpdateCartDataResponse, UpdateCartListData>() {
+                                        .map(new Func1<UpdateCartDataResponse, UpdateToSingleAddressShipmentData>() {
                                             @Override
-                                            public UpdateCartListData call(UpdateCartDataResponse updateCartDataResponse) {
-                                                updateCartListData.setUpdateCartData(
-                                                        cartMapper.convertToUpdateCartData(updateCartDataResponse)
-                                                );
+                                            public UpdateToSingleAddressShipmentData call(UpdateCartDataResponse updateCartDataResponse) {
+                                                UpdateCartData updateCartData =
+                                                        cartMapper.convertToUpdateCartData(updateCartDataResponse);
+                                                updateCartListData.setUpdateCartData(updateCartData);
+                                                if (!updateCartData.isSuccess()) {
+                                                    throw new ResponseCartApiErrorException(
+                                                            TkpdBaseURL.Cart.PATH_UPDATE_CART,
+                                                            0,
+                                                            updateCartData.getMessage()
+
+                                                    );
+                                                }
                                                 return updateCartListData;
                                             }
                                         });
                             }
                         })
-                        .flatMap(new Func1<UpdateCartListData, Observable<UpdateCartListData>>() {
+                        .flatMap(new Func1<UpdateToSingleAddressShipmentData, Observable<UpdateToSingleAddressShipmentData>>() {
                             @Override
-                            public Observable<UpdateCartListData> call(final UpdateCartListData updateCartListData) {
-                                return cartRepository.getCartList(paramGetList)
-                                        .map(new Func1<CartDataListResponse, UpdateCartListData>() {
-                                            @Override
-                                            public UpdateCartListData call(CartDataListResponse cartDataListResponse) {
-                                                updateCartListData.setCartListData(
-                                                        cartMapper.convertToCartItemDataList(cartDataListResponse)
-                                                );
-                                                return updateCartListData;
-                                            }
-                                        });
-                            }
-                        })
-                        .flatMap(new Func1<UpdateCartListData, Observable<UpdateCartListData>>() {
-                            @Override
-                            public Observable<UpdateCartListData> call(final UpdateCartListData updateCartListData) {
+                            public Observable<UpdateToSingleAddressShipmentData> call(final UpdateToSingleAddressShipmentData updateCartListData) {
                                 return cartRepository.getShipmentAddressForm(paramGetShipmentForm)
-                                        .map(new Func1<ShipmentAddressFormDataResponse, UpdateCartListData>() {
+                                        .map(new Func1<ShipmentAddressFormDataResponse, UpdateToSingleAddressShipmentData>() {
                                             @Override
-                                            public UpdateCartListData call(ShipmentAddressFormDataResponse shipmentAddressFormDataResponse) {
+                                            public UpdateToSingleAddressShipmentData call(ShipmentAddressFormDataResponse shipmentAddressFormDataResponse) {
+                                                CartShipmentAddressFormData cartShipmentAddressFormData =
+                                                        shipmentMapper.convertToShipmentAddressFormData(shipmentAddressFormDataResponse);
                                                 updateCartListData.setShipmentAddressFormData(
-                                                        shipmentMapper.convertToShipmentAddressFormData(shipmentAddressFormDataResponse)
+                                                        cartShipmentAddressFormData
                                                 );
+                                                if (cartShipmentAddressFormData.isError()) {
+                                                    throw new ResponseCartApiErrorException(
+                                                            TkpdBaseURL.Cart.PATH_SHIPMENT_ADDRESS_FORM_DIRECT,
+                                                            cartShipmentAddressFormData.getErrorCode(),
+                                                            cartShipmentAddressFormData.getErrorMessage()
+                                                    );
+                                                }
                                                 return updateCartListData;
                                             }
                                         });

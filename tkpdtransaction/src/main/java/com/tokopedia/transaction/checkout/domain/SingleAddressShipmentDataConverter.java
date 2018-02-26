@@ -5,6 +5,7 @@ import com.tokopedia.transaction.checkout.view.data.CartItemModel;
 import com.tokopedia.transaction.checkout.view.data.CartPayableDetailModel;
 import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
+import com.tokopedia.transaction.checkout.view.data.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.transaction.checkout.view.data.factory.CartSingleAddressDataFactory;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import javax.inject.Inject;
  * @author anggaprasetiyo on 08/02/18,
  *         Aghny A. Putra on 08/02/18.
  */
-public class SingleAddressShipmentDataConverter extends ConverterData<List<CartItemData>,
+public class SingleAddressShipmentDataConverter extends ConverterData<CartShipmentAddressFormData,
         CartSingleAddressData> {
 
     @Inject
@@ -26,17 +27,9 @@ public class SingleAddressShipmentDataConverter extends ConverterData<List<CartI
     }
 
     @Override
-    public CartSingleAddressData convert(List<CartItemData> cartItemDataList) {
-        CartSingleAddressData cartSingleAddressData =
-                CartSingleAddressDataFactory.getDummyCartSingleAddressData();
+    public CartSingleAddressData convert(CartShipmentAddressFormData cartItemDataList) {
 
-        List<CartItemModel> cartItemModels = convertCartItemList(cartItemDataList);
-        List<CartSellerItemModel> cartSellerItemModels = groupItemBySeller(cartItemModels);
-        cartSingleAddressData.setCartSellerItemModelList(cartSellerItemModels);
-
-        cartSingleAddressData.setCartPayableDetailModel(getTotalPayableDetail(cartSellerItemModels));
-
-        return cartSingleAddressData;
+        return null;
     }
 
     private CartPayableDetailModel getTotalPayableDetail(List<CartSellerItemModel> cartSellerItemModels) {

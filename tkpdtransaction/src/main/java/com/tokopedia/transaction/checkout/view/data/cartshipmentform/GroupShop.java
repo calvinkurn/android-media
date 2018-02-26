@@ -13,19 +13,12 @@ import java.util.List;
  * @author anggaprasetiyo on 22/02/18.
  */
 public class GroupShop implements Parcelable {
+    private boolean isError;
+    private String errorMessage;
 
-    private List<String> errors = new ArrayList<>();
     private Shop shop;
     private List<ShopShipment> shopShipments = new ArrayList<>();
     private List<Product> products = new ArrayList<>();
-
-    public List<String> getErrors() {
-        return errors;
-    }
-
-    public void setErrors(List<String> errors) {
-        this.errors = errors;
-    }
 
     public Shop getShop() {
         return shop;
@@ -51,6 +44,9 @@ public class GroupShop implements Parcelable {
         this.products = products;
     }
 
+    public GroupShop() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -58,23 +54,22 @@ public class GroupShop implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeStringList(this.errors);
+        dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
+        dest.writeString(this.errorMessage);
         dest.writeParcelable(this.shop, flags);
         dest.writeTypedList(this.shopShipments);
         dest.writeTypedList(this.products);
     }
 
-    public GroupShop() {
-    }
-
     protected GroupShop(Parcel in) {
-        this.errors = in.createStringArrayList();
+        this.isError = in.readByte() != 0;
+        this.errorMessage = in.readString();
         this.shop = in.readParcelable(Shop.class.getClassLoader());
         this.shopShipments = in.createTypedArrayList(ShopShipment.CREATOR);
         this.products = in.createTypedArrayList(Product.CREATOR);
     }
 
-    public static final Parcelable.Creator<GroupShop> CREATOR = new Parcelable.Creator<GroupShop>() {
+    public static final Creator<GroupShop> CREATOR = new Creator<GroupShop>() {
         @Override
         public GroupShop createFromParcel(Parcel source) {
             return new GroupShop(source);

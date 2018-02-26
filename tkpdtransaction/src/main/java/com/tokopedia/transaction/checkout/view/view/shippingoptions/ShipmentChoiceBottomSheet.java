@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.checkout.view;
+package com.tokopedia.transaction.checkout.view.view.shippingoptions;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

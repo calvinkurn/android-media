@@ -14,6 +14,7 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressPriceSummaryData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressShipmentAdapterData;
+import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 import com.tokopedia.transaction.pickuppoint.view.customview.PickupPointLayout;
 
@@ -39,6 +40,8 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
     private List<MultipleAddressShipmentAdapterData> addressDataList;
 
+    private ShipmentDetailData shipmentDetailData;
+
     private MultipleAddressPriceSummaryData priceSummaryData;
 
     private MultipleAddressShipmentAdapterListener listener;
@@ -49,6 +52,14 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         this.addressDataList = addressDataList;
         this.priceSummaryData = priceSummaryData;
         this.listener = listener;
+    }
+
+    public ShipmentDetailData getShipmentDetailData() {
+        return shipmentDetailData;
+    }
+
+    public void setShipmentDetailData(ShipmentDetailData shipmentDetailData) {
+        this.shipmentDetailData = shipmentDetailData;
     }
 
     @Override
@@ -136,7 +147,21 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         itemViewHolder.address.setText(itemData.getAddress());
         itemViewHolder.subTotalAmount.setText(data.getSubTotalAmount());
         itemViewHolder.chooseCourierButton.setOnClickListener(onChooseCourierClicked(data));
+        itemViewHolder.tvSelectedShipment.setOnClickListener(onChooseCourierClicked(data));
+        itemViewHolder.ivChevronShipmentOption.setOnClickListener(onChooseCourierClicked(data));
         itemViewHolder.chooseCourierButton.setOnClickListener(getChooseCourierClickListener(data));
+        if (shipmentDetailData != null &&
+                shipmentDetailData.getSelectedCourier() != null) {
+            itemViewHolder.chooseCourierButton.setVisibility(View.GONE);
+            itemViewHolder.tvSelectedShipment.setText(shipmentDetailData.getSelectedCourier().getName());
+            itemViewHolder.tvSelectedShipment.setVisibility(View.VISIBLE);
+            itemViewHolder.ivChevronShipmentOption.setVisibility(View.VISIBLE);
+        } else {
+            itemViewHolder.tvSelectedShipment.setVisibility(View.GONE);
+            itemViewHolder.ivChevronShipmentOption.setVisibility(View.GONE);
+            itemViewHolder.chooseCourierButton.setVisibility(View.VISIBLE);
+        }
+
 //        renderPickupPoint(itemViewHolder, data);
     }
 
@@ -225,6 +250,10 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
         private TextView chooseCourierButton;
 
+        private TextView tvSelectedShipment;
+
+        private ImageView ivChevronShipmentOption;
+
         private ViewGroup subTotalLayout;
 
         private TextView subTotalAmount;
@@ -289,6 +318,10 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
             tvPoSign = itemView.findViewById(R.id.tv_po_sign);
 
             tvCashbackText = itemView.findViewById(R.id.tv_cashback_text);
+
+            tvSelectedShipment = itemView.findViewById(R.id.tv_selected_shipment);
+
+            ivChevronShipmentOption = itemView.findViewById(R.id.iv_chevron_shipment_option);
         }
     }
 

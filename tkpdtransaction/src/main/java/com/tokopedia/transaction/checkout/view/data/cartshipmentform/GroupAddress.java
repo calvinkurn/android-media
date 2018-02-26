@@ -3,9 +3,6 @@ package com.tokopedia.transaction.checkout.view.data.cartshipmentform;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,14 +10,28 @@ import java.util.List;
  * @author anggaprasetiyo on 22/02/18.
  */
 public class GroupAddress implements Parcelable {
-    private List<String> errors = new ArrayList<>();
+    private boolean isError;
+    private String errorMessage;
     private UserAddress userAddress;
-
     private List<GroupShop> groupShop = new ArrayList<>();
 
-    public List<String> getErrors() {
-        return errors;
+
+    public boolean isError() {
+        return isError;
     }
+
+    public void setError(boolean error) {
+        isError = error;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
 
     public UserAddress getUserAddress() {
         return userAddress;
@@ -30,6 +41,18 @@ public class GroupAddress implements Parcelable {
         return groupShop;
     }
 
+
+    public void setUserAddress(UserAddress userAddress) {
+        this.userAddress = userAddress;
+    }
+
+    public void setGroupShop(List<GroupShop> groupShop) {
+        this.groupShop = groupShop;
+    }
+
+    public GroupAddress() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -37,21 +60,20 @@ public class GroupAddress implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeStringList(this.errors);
+        dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
+        dest.writeString(this.errorMessage);
         dest.writeParcelable(this.userAddress, flags);
         dest.writeTypedList(this.groupShop);
     }
 
-    public GroupAddress() {
-    }
-
     protected GroupAddress(Parcel in) {
-        this.errors = in.createStringArrayList();
+        this.isError = in.readByte() != 0;
+        this.errorMessage = in.readString();
         this.userAddress = in.readParcelable(UserAddress.class.getClassLoader());
         this.groupShop = in.createTypedArrayList(GroupShop.CREATOR);
     }
 
-    public static final Parcelable.Creator<GroupAddress> CREATOR = new Parcelable.Creator<GroupAddress>() {
+    public static final Creator<GroupAddress> CREATOR = new Creator<GroupAddress>() {
         @Override
         public GroupAddress createFromParcel(Parcel source) {
             return new GroupAddress(source);

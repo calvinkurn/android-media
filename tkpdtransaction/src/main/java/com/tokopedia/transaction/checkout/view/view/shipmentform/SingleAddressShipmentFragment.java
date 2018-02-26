@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,13 +17,14 @@ import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.di.component.DaggerSingleAddressShipmentComponent;
 import com.tokopedia.transaction.checkout.di.component.SingleAddressShipmentComponent;
 import com.tokopedia.transaction.checkout.di.module.SingleAddressShipmentModule;
+import com.tokopedia.transaction.checkout.domain.ShipmentRatesDataMapper;
 import com.tokopedia.transaction.checkout.domain.SingleAddressShipmentDataConverter;
 import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter;
-import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
+import com.tokopedia.transaction.checkout.view.data.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity;
 import com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
@@ -32,8 +32,6 @@ import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCa
 import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -41,6 +39,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_SHIPMENT_DETAIL_DATA;
 import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DATA_STORE;
 
 /**
@@ -51,7 +50,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         implements ICartSingleAddressView<CartSingleAddressData>,
         SingleAddressShipmentAdapter.SingleAddressShipmentAdapterListener {
 
-    public static final String ARG_EXTRA_CART_DATA_LIST = "ARG_EXTRA_CART_DATA_LIST";
+    public static final String ARG_EXTRA_SHIPMENT_FORM_DATA = "ARG_EXTRA_SHIPMENT_FORM_DATA";
     public static final String ARG_EXTRA_CART_PROMO_SUGGESTION = "ARG_EXTRA_CART_PROMO_SUGGESTION";
 
     private static final Locale LOCALE_ID = new Locale("in", "ID");
@@ -61,7 +60,6 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     private static final int REQUEST_CODE_SHIPMENT_DETAIL = 11;
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
-    private static final int REQUEST_CODE_CHOOSE_ADDRESS = 13;
 
     @BindView(R2.id.rv_cart_order_details)
     RecyclerView mRvCartOrderDetails;
@@ -81,12 +79,11 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     private CartSingleAddressData mCartSingleAddressData;
 
-    public static SingleAddressShipmentFragment newInstance(List<CartItemData> cartItemDataList,
+    public static SingleAddressShipmentFragment newInstance(CartShipmentAddressFormData cartShipmentAddressFormData,
                                                             CartPromoSuggestion cartPromoSuggestionData) {
         SingleAddressShipmentFragment fragment = new SingleAddressShipmentFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(ARG_EXTRA_CART_DATA_LIST,
-                (ArrayList<? extends Parcelable>) cartItemDataList);
+        bundle.putParcelable(ARG_EXTRA_SHIPMENT_FORM_DATA, cartShipmentAddressFormData);
         bundle.putParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION, cartPromoSuggestionData);
         fragment.setArguments(bundle);
         return fragment;
@@ -156,8 +153,10 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
      */
     @Override
     protected void setupArguments(Bundle arguments) {
-        List<CartItemData> cartDataList = arguments.getParcelableArrayList(ARG_EXTRA_CART_DATA_LIST);
-        mCartSingleAddressData = mSingleAddressShipmentDataConverter.convert(cartDataList);
+        CartShipmentAddressFormData cartShipmentAddressFormData = arguments.getParcelable(
+                ARG_EXTRA_SHIPMENT_FORM_DATA
+        );
+        mCartSingleAddressData = mSingleAddressShipmentDataConverter.convert(cartShipmentAddressFormData);
         CartPromoSuggestion cartPromoSuggestion = arguments.getParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION);
 
     }
@@ -243,13 +242,22 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     public void onAddOrChangeAddress() {
-        startActivityForResult(CartAddressChoiceActivity.createInstance(getActivity()), REQUEST_CODE_CHOOSE_ADDRESS);
+        startActivityForResult(
+                CartAddressChoiceActivity.createInstance(
+                        getActivity(), CartAddressChoiceActivity.TYPE_REQUEST_FULL_SELECTION
+                ),
+                CartAddressChoiceActivity.REQUEST_CODE);
     }
 
     @Override
     public void onChooseShipment() {
-        ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
-        // Todo : add required data to shipmentDetailData for request to kero rates api
+        ShipmentDetailData shipmentDetailData;
+        if (mSingleAddressShipmentAdapter.getShipmentDetailData() != null) {
+            shipmentDetailData = mSingleAddressShipmentAdapter.getShipmentDetailData();
+        } else {
+            ShipmentRatesDataMapper shipmentRatesDataMapper = new ShipmentRatesDataMapper();
+            shipmentDetailData = shipmentRatesDataMapper.getShipmentDetailData(mCartSingleAddressData);
+        }
         startActivityForResult(ShipmentDetailActivity.createInstance(getActivity(), shipmentDetailData),
                 REQUEST_CODE_SHIPMENT_DETAIL);
     }
@@ -287,6 +295,22 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == CartAddressChoiceActivity.REQUEST_CODE) {
+            switch (resultCode) {
+                case CartAddressChoiceActivity.RESULT_CODE_ACTION_SELECT_ADDRESS:
+                    Object thisSelectedAddressData = data.getParcelableExtra(
+                            CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA
+                    );
+                    //TODO render selectedAddressData
+                    break;
+                case CartAddressChoiceActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM:
+                    //TODO biar gue yg proses (Angga)
+                    break;
+            }
+        }
+
+
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_CHOOSE_PICKUP_POINT:
@@ -294,7 +318,10 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                     mSingleAddressShipmentAdapter.setPickupPoint(pickupBooth);
                     mSingleAddressShipmentAdapter.notifyDataSetChanged();
                     break;
-
+                case REQUEST_CODE_SHIPMENT_DETAIL:
+                    ShipmentDetailData shipmentDetailData = data.getParcelableExtra(EXTRA_SHIPMENT_DETAIL_DATA);
+                    mSingleAddressShipmentAdapter.setShipmentDetailData(shipmentDetailData);
+                    mSingleAddressShipmentAdapter.notifyDataSetChanged();
                 default:
                     break;
             }
