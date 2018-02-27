@@ -416,7 +416,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             requestParams.putString(GetOverviewPolylineUseCase.PARAM_TRAFFIC_MODEL, "best_guess");
             requestParams.putString(GetOverviewPolylineUseCase.PARAM_MODE, "driving");
             requestParams.putString(GetOverviewPolylineUseCase.PARAM_DEPARTURE_TIME, (int) (System.currentTimeMillis() / 1000) + "");
-            requestParams.putString(GetOverviewPolylineUseCase.PARAM_KEY, getString(R.string.google_api_key));
+            requestParams.putString(GetOverviewPolylineUseCase.PARAM_KEY, getString(R.string.GOOGLE_API_KEY));
 
             if (driverlat != 0 && driverLon != 0) {
                 requestParams.putString(GetOverviewPolylineUseCase.PARAM_WAYPOINTS, String.format("%s,%s",
@@ -445,7 +445,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         requestParams.putString(GetOverviewPolylineUseCase.PARAM_TRAFFIC_MODEL, "best_guess");
         requestParams.putString(GetOverviewPolylineUseCase.PARAM_MODE, "driving");
         requestParams.putString(GetOverviewPolylineUseCase.PARAM_DEPARTURE_TIME, (int) (System.currentTimeMillis() / 1000) + "");
-        requestParams.putString(GetOverviewPolylineUseCase.PARAM_KEY, getString(R.string.google_api_key));
+        requestParams.putString(GetOverviewPolylineUseCase.PARAM_KEY, getString(R.string.GOOGLE_API_KEY));
 
         return requestParams;
     }

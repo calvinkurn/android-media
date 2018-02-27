@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'android-apt'
+
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -26,5 +26,5 @@ android {
 
 dependencies {
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }

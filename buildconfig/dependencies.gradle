@@ -6,7 +6,7 @@ ext {
     retrofitVersion = '2.1.0'
     okHttpVersion = '3.8.0'
     glideVersion = '3.7.0'
-    permissionDispatcherVersion = '2.2.0'
+    permissionDispatcherVersion = '2.4.0'
     deeplinkDispatchVersion = '3.0.0-rc1'
     tkpdUseCaseVersion = '1.+'
     tkpdAbstractionVersion = '1.+'

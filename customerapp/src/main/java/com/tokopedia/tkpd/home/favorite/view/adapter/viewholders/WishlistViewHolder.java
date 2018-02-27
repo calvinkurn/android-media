@@ -22,6 +22,8 @@ import com.tokopedia.tkpd.home.favorite.view.viewmodel.WishlistViewModel;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import com.tokopedia.tkpd.R2;
+
 import static com.tokopedia.tkpd.home.adapter.ProductFeedAdapter.HOTLIST_TAB;
 
 /**
@@ -35,22 +37,22 @@ public class WishlistViewHolder extends AbstractViewHolder<WishlistViewModel> {
     private final WishlistAdapter wishlistAdapter;
     private Context context;
     @SuppressWarnings("WeakerAccess")
-    @BindView(R.id.title)
+    @BindView(R2.id.title)
     TextView titleTextView;
     @SuppressWarnings("WeakerAccess")
-    @BindView(R.id.textview_see_all)
+    @BindView(R2.id.textview_see_all)
     TextView seeAllTextView;
     @SuppressWarnings("WeakerAccess")
-    @BindView(R.id.empty_wishlist)
+    @BindView(R2.id.empty_wishlist)
     RelativeLayout emptyWishlistLayout;
     @SuppressWarnings("WeakerAccess")
-    @BindView(R.id.main_content)
+    @BindView(R2.id.main_content)
     LinearLayout mainContentLayout;
     @SuppressWarnings("WeakerAccess")
-    @BindView(R.id.wishlist_recycler_view)
+    @BindView(R2.id.wishlist_recycler_view)
     RecyclerView wishlistRecyclerView;
     @SuppressWarnings("WeakerAccess")
-    @BindView(R.id.find_now)
+    @BindView(R2.id.find_now)
     TextView findNowTextview;
 
     public WishlistViewHolder(View itemView) {
@@ -81,7 +83,7 @@ public class WishlistViewHolder extends AbstractViewHolder<WishlistViewModel> {
         }
     }
 
-    @OnClick(R.id.textview_see_all)
+    @OnClick(R2.id.textview_see_all)
     public void onClick() {
         UnifyTracking.eventWishlistAll();
         Intent intent = new Intent(context, SimpleHomeActivity.class);
@@ -93,7 +95,7 @@ public class WishlistViewHolder extends AbstractViewHolder<WishlistViewModel> {
         }
     }
 
-    @OnClick(R.id.find_now)
+    @OnClick(R2.id.find_now)
     public void onFindNowClicked() {
         ParentIndexHome.ChangeTabListener listener = ((ParentIndexHome) context).changeTabListener();
         listener.onChangeTab(HOTLIST_TAB);

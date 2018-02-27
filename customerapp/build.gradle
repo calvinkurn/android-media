@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'android-apt'
 apply plugin: 'io.fabric'
+apply plugin: 'com.jakewharton.butterknife'
 apply from: "../buildconfig/reactnative/react.gradle"
 apply from: "../buildconfig/reactnative/codepush.gradle"
 
@@ -75,9 +76,12 @@ def archiveAPK(variant, output) {
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
+        mavenCentral()
+        jcenter()
     }
     dependencies {
         classpath 'io.fabric.tools:gradle:1.+'
+        classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
     }
 }
 
@@ -125,17 +129,19 @@ android {
 
     buildTypes {
         debug {
+            signingConfig signingConfigs.debug
             minifyEnabled false
             zipAlignEnabled false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            proguardFiles  'proguard-rules.txt'
         }
         release {
+            signingConfig signingConfigs.debug
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            proguardFiles  'proguard-rules.txt'
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
             if (allowSplit()) {
@@ -208,6 +214,7 @@ android {
 
     configurations.all {
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
+        resolutionStrategy.force 'com.squareup.okio:okio:1.11.0'
     }
 
     productFlavors {
@@ -262,7 +269,7 @@ dependencies {
 //        exclude group: 'com.tokopedia.core'
 //    }
 //    compile (rootProject.ext.tkpdDependencies.core)
-    //compile project(':tkpdcore')
+    compile project(':tkpdcore')
     compile project(':tkpddiscovery')
     compile project(':tkpdtransaction')
     compile project(':tkpdseller')

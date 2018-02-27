@@ -52,6 +52,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.tokopedia.tkpd.R2;
 
 /**
  * Created by Nisie on 16/06/15.
@@ -183,9 +184,9 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
 
     public static class EmptyViewHolder extends RecyclerView.ViewHolder implements
             TopAdsItemClickListener {
-        @BindView(R.id.topads)
+        @BindView(R2.id.topads)
         TopAdsView topAdsView;
-        @BindView(R.id.action_btn)
+        @BindView(R2.id.action_btn)
         Button actionBtn;
         private Context context;
         private final String WISHLISH_SRC = "wishlist";

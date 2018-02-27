@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'android-apt'
+apply plugin: 'com.neenbedankt.android-apt'
 
 def getTkpdUseCase() {
     return project.hasProperty('isArtifact') ?
@@ -44,7 +44,7 @@ dependencies {
     compile rootProject.ext.miscDependencies.rxJava
     compile rootProject.ext.testDependencies.androidAnnotation
 
-    apt rootProject.ext.dbDependencies.dbFlowProcessor
+    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
     compile rootProject.ext.dbDependencies.dbFlowCore
     compile rootProject.ext.dbDependencies.dbFlow
 

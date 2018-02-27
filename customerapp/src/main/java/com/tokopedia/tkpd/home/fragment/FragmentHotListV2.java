@@ -45,6 +45,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import com.tokopedia.tkpd.R2;
+
 /**
  * Created by m.normansyah on 28/10/2015.
  * FragmentHotList is very suck class
@@ -59,9 +61,9 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
     
     private HotListAdapter adapter;
     private HotList hotList;
-    @BindView(R.id.hot_product)
+    @BindView(R2.id.hot_product)
     RecyclerView recyclerView;
-    @BindView(R.id.swipe_refresh_layout)
+    @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
     private RecyclerView.LayoutManager layoutManager;
 

@@ -49,6 +49,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+import com.tokopedia.tkpd.R2;
+
 /**
  * @author Kulomady on 1/20/17.
  */
@@ -59,16 +61,16 @@ public class FragmentFavorite extends BaseDaggerFragment
 
     private static final long DURATION_ANIMATOR = 1000;
 
-    @BindView(R.id.index_favorite_recycler_view)
+    @BindView(R2.id.index_favorite_recycler_view)
     RecyclerView recyclerView;
-    @BindView(R.id.swipe_refresh_layout)
+    @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
-    @BindView(R.id.include_loading)
+    @BindView(R2.id.include_loading)
     ProgressBar progressBar;
-    @BindView(R.id.main_content)
+    @BindView(R2.id.main_content)
     RelativeLayout mainContent;
 
-    @BindView(R.id.partial_empty_wishlist)
+    @BindView(R2.id.partial_empty_wishlist)
     View wishlistNotLoggedIn;
 
     @Inject
@@ -388,7 +390,7 @@ public class FragmentFavorite extends BaseDaggerFragment
         }
     }
 
-    @OnClick(R.id.login_button)
+    @OnClick(R2.id.login_button)
     public void onLoginButtonClick() {
         Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getLoginIntent(getContext());
         startActivity(intent);

@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'android-apt'
+
 
 def getTkpdAbstraction() {
     return project.hasProperty('isArtifact') ?
@@ -22,6 +22,11 @@ android {
         versionName "1.0"
 
         vectorDrawables.useSupportLibrary = true
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ['targetModuleName': 'TkpdMitraToppers']
+            }
+        }
 
     }
     buildTypes {
@@ -39,12 +44,6 @@ android {
     }
 }
 
-apt {
-    arguments {
-        targetModuleName 'TkpdMitraToppers'
-    }
-}
-
 dependencies {
     compile getTkpdAbstraction()
     compile getTkpdUseCase()
@@ -53,7 +52,7 @@ dependencies {
 
     provided rootProject.ext.miscDependencies.javaxAnnotation
     compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     compile rootProject.ext.debugToolsDependencies.stetho
 }

@@ -109,19 +109,22 @@ android {
         }
     }
 
+
     buildTypes {
         debug {
+            signingConfig signingConfigs.debug
             minifyEnabled false
             zipAlignEnabled false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            proguardFiles  'proguard-rules.txt'
         }
         release {
+            signingConfig signingConfigs.debug
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            proguardFiles  'proguard-rules.txt'
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
             if (allowSplit()) {
@@ -284,11 +287,9 @@ dependencies {
     androidTestCompile rootProject.ext.testDependencies.retrofitMock
     androidTestCompile rootProject.ext.testDependencies.retrofitMockWebser
 
-    androidTestApt rootProject.ext.miscDependencies.daggerCompiler
     androidTestCompile rootProject.ext.miscDependencies.dagger
     androidTestCompile rootProject.ext.miscDependencies.gson
     androidTestCompile rootProject.ext.miscDependencies.parcelerApi
-    androidTestApt rootProject.ext.miscDependencies.parceler
 
     androidTestCompile rootProject.ext.testDependencies.dexMaker
     androidTestCompile(rootProject.ext.testDependencies.dexMakerMockito) {

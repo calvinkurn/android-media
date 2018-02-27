@@ -54,6 +54,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import com.tokopedia.tkpd.R2;
+
 /**
  * Created by m.normansyah on 01/12/2015.
  */
@@ -71,14 +73,14 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         return new WishListFragment();
     }
 
-    @BindView(R.id.swipe_refresh_layout)
+    @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
 
-    @BindView(R.id.recycler_view)
+    @BindView(R2.id.recycler_view)
     RecyclerView recyclerView;
-    @BindView(R.id.progress_bar)
+    @BindView(R2.id.progress_bar)
     ProgressBar progressBar;
-    @BindView(R.id.wishlist_search_edittext)
+    @BindView(R2.id.wishlist_search_edittext)
     SearchView searchEditText;
 
     GridLayoutManager layoutManager;

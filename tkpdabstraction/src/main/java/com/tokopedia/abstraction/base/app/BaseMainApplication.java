@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.common.di.module.AppModule;
  * Created by User on 10/24/2017.
  */
 
-public class BaseMainApplication extends MultiDexApplication{
+public class BaseMainApplication extends MultiDexApplication {
 
     private BaseAppComponent baseAppComponent;
 

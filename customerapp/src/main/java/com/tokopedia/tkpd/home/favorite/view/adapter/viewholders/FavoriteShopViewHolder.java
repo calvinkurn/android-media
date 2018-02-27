@@ -15,6 +15,7 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.FavoriteShopViewModel;
 
 import butterknife.BindView;
@@ -30,15 +31,15 @@ public class FavoriteShopViewHolder extends AbstractViewHolder<FavoriteShopViewM
 
     private FavoriteShopViewModel favoriteShop;
     private Context context;
-    @BindView(R.id.shop_avatar)
+    @BindView(R2.id.shop_avatar)
     ImageView avatarImageView;
-    @BindView(R.id.shop_name)
+    @BindView(R2.id.shop_name)
     TextView nameTextView;
-    @BindView(R.id.location)
+    @BindView(R2.id.location)
     TextView locationTextview;
-    @BindView(R.id.fav_button)
+    @BindView(R2.id.fav_button)
     ImageView favoriteImageView;
-    @BindView(R.id.image_badge)
+    @BindView(R2.id.image_badge)
     ImageView badgeIcon;
 
     public FavoriteShopViewHolder(View itemView) {
@@ -69,7 +70,7 @@ public class FavoriteShopViewHolder extends AbstractViewHolder<FavoriteShopViewM
         }
     }
 
-    @OnClick(R.id.shop_layout)
+    @OnClick(R2.id.shop_layout)
     void onShopLayoutClicked() {
         UnifyTracking.eventFavoriteShop();
         Intent intent = new Intent(context, ShopInfoActivity.class);

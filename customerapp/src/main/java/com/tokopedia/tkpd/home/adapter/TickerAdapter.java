@@ -22,6 +22,7 @@ import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.R2;
 
 import java.util.ArrayList;
 
@@ -57,13 +58,13 @@ public class TickerAdapter extends RecyclerView.Adapter<TickerAdapter.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.announcement_ticker_container)
+        @BindView(R2.id.announcement_ticker_container)
         RelativeLayout announcementContainer;
 
-        @BindView(R.id.ticker_message)
+        @BindView(R2.id.ticker_message)
         TextView message;
 
-        @BindView(R.id.btn_close)
+        @BindView(R2.id.btn_close)
         ImageView btnClose;
 
         public ViewHolder(View itemView) {

@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'io.fabric'
 apply plugin: 'com.neenbedankt.android-apt'
-apply plugin: 'android-apt'
 apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
@@ -79,6 +78,12 @@ artifactory {
     }
 }
 
+android {
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+    }
+}
 
 
 repositories {
@@ -198,6 +203,8 @@ dependencies {
     compile rootProject.ext.apolloDependencies.apolloRxSupport
     compile rootProject.ext.apolloDependencies.apolloRuntime
     compile rootProject.ext.apolloDependencies.apolloAndroidSupport
+    compile rootProject.ext.apolloDependencies.apolloRxSupport
+    compile rootProject.ext.apolloDependencies.apolloRx2Support
 
     compile rootProject.ext.playServicesDependencies.firebase
     compile rootProject.ext.playServicesDependencies.remoteConfig
