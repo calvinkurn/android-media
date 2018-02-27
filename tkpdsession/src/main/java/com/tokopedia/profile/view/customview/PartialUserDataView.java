@@ -104,37 +104,70 @@ public class PartialUserDataView extends BaseCustomView {
     }
 
     public void renderData(TopProfileViewModel model) {
+        renderIncompleteBanner(model);
+        renderPhoneNumber(model);
+        renderEmail(model);
+        renderBirthDate(model);
+        renderGender(model);
+    }
+
+    private void renderIncompleteBanner(TopProfileViewModel model) {
         if (model.getCompletion() < 100) {
             bannerIncompleteProfile.setVisibility(VISIBLE);
             tvIncompleteProfile.setText(Html.fromHtml(this.getContext().getString(R.string.incomplete_profile_html)));
             ObjectAnimator animation = ObjectAnimator.ofInt(progressBar, "progress", 0, model.getCompletion());
-            animation.setDuration(1000);
+            animation.setDuration(2000);
             animation.setInterpolator(new DecelerateInterpolator());
             animation.start();
             progressText.setText(model.getCompletion().toString() + "%");
+        } else {
+            bannerIncompleteProfile.setVisibility(GONE);
         }
+    }
+
+    private void renderPhoneNumber(TopProfileViewModel model) {
         if (!model.getPhoneNumber().equals("")) {
             partialPhoneNumber.setVisibility(VISIBLE);
             dataPhoneNumber.setText(model.getPhoneNumber());
             if (model.isPhoneVerified()) {
                 verifiedPhoneNumber.setVisibility(VISIBLE);
+            } else {
+                verifiedPhoneNumber.setVisibility(GONE);
             }
+        } else {
+            partialPhoneNumber.setVisibility(GONE);
         }
+    }
+
+    private void renderEmail(TopProfileViewModel model) {
         if (!model.getEmail().equals("")) {
             partialEmail.setVisibility(VISIBLE);
             dataEmail.setText(model.getEmail());
             if (model.isEmailVerified()) {
                 verifiedEmail.setVisibility(VISIBLE);
+            } else {
+                verifiedEmail.setVisibility(GONE);
             }
+        } else {
+            partialEmail.setVisibility(GONE);
         }
+    }
+
+    private void renderBirthDate(TopProfileViewModel model) {
         if (!model.getBirthDate().equals("")) {
             partialBirthDate.setVisibility(VISIBLE);
             dataBirthDate.setText(model.getBirthDate());
+        } else {
+            partialBirthDate.setVisibility(GONE);
         }
+    }
 
+    private void renderGender(TopProfileViewModel model) {
         if (!model.getGender().equals("")) {
             partialGender.setVisibility(VISIBLE);
             dataGender.setText(model.getGender());
+        } else {
+            partialGender.setVisibility(GONE);
         }
     }
 }

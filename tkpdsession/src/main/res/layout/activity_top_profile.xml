@@ -48,8 +48,9 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/tab_profile"
                 app:tabType="secondary"
+                android:elevation="4dp"
                 app:tabTextAppearance="@style/Tabs.Secondary"/>
-            <include layout="@layout/layout_tab_indicator_light" />
+            <!--<include layout="@layout/layout_tab_indicator_light" />-->
 
         </android.support.design.widget.AppBarLayout>
 
@@ -60,7 +61,7 @@
     <!--android:visibility="visible"-->
     <!--app:layout_behavior="@string/appbar_scrolling_view_behavior" />-->
 
-    <android.support.v4.view.ViewPager
+    <com.tokopedia.abstraction.base.view.widget.TouchViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

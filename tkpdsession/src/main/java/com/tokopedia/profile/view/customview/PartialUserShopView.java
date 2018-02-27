@@ -69,7 +69,7 @@ public class PartialUserShopView extends BaseCustomView {
         init();
     }
 
-    private void init(){
+    private void init() {
         View view = inflate(getContext(), R.layout.partial_profile_shop_info, this);
         ivShopProfile = view.findViewById(R.id.iv_shop_profile);
         ivGoldShop = view.findViewById(R.id.iv_gold_shop);
@@ -82,7 +82,7 @@ public class PartialUserShopView extends BaseCustomView {
         llReputationMedal = view.findViewById(R.id.ll_medal);
     }
 
-    public void renderData(TopProfileViewModel model){
+    public void renderData(TopProfileViewModel model) {
         ImageHandler.loadImage2(ivShopProfile, model.getShopLogo(), R.drawable.ic_default_shop_ava);
         ivGoldShop.setVisibility(model.isGoldShop() ? VISIBLE : GONE);
         switchOfficialStoreBadge(model.isOfficialShop());
@@ -100,6 +100,8 @@ public class PartialUserShopView extends BaseCustomView {
         if (isOfficialStore) {
             ivGoldShop.setVisibility(GONE);
             ivOfficialStore.setVisibility(VISIBLE);
+        } else {
+            ivOfficialStore.setVisibility(GONE);
         }
     }
 

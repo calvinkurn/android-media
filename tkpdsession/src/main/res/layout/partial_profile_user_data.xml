@@ -57,9 +57,11 @@
                     android:id="@+id/rv_progress"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_marginLeft="16dp">
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp">
 
-                    <ProgressBar
+                    <ProgressBar xmlns:android="http://schemas.android.com/apk/res/android"
+                        xmlns:tools="http://schemas.android.com/tools"
                         android:id="@+id/circular_progress_bar"
                         style="@style/ProgressBar.Tokopedia"
                         android:layout_width="match_parent"
@@ -67,16 +69,15 @@
                         android:layout_centerVertical="true"
                         android:max="100"
                         android:progress="0"
+                        android:progressDrawable="@drawable/circular_progress_bar"
                         android:rotation="-90"
-                        tools:progress="55"
-                        android:progressDrawable="@drawable/circular_progress_bar" />
+                        tools:progress="55"/>
 
                     <TextView
                         android:id="@+id/tv_progress"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:lineSpacingExtra="@dimen/text_size_11"
                         android:textColor="@color/font_black_secondary_54"
                         android:textSize="13sp"
                         android:textStyle="normal"
@@ -88,8 +89,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
                     android:layout_marginRight="36dp"
-                    android:layout_toRightOf="@+id/rv_progress"
+                    android:layout_marginEnd="36dp"
                     android:gravity="center_vertical"
                     android:lineSpacingExtra="7sp"
                     android:textColor="@color/font_black_secondary_54"
@@ -130,9 +132,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
-                    android:layout_toRightOf="@+id/tv_title_phone_number"
+                    android:layout_marginStart="4dp"
                     android:background="@drawable/prof_comp_bg_textview_rounded_light_green"
                     android:drawableLeft="@drawable/ic_check_green_12dp"
+                    android:drawableStart="@drawable/ic_check_green_12dp"
                     android:drawablePadding="4dp"
                     android:paddingLeft="8.5dp"
                     android:paddingRight="8.5dp"
@@ -193,9 +196,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
-                    android:layout_toRightOf="@+id/tv_title_email"
+                    android:layout_marginStart="4dp"
                     android:background="@drawable/prof_comp_bg_textview_rounded_light_green"
                     android:drawableLeft="@drawable/ic_check_green_12dp"
+                    android:drawableStart="@drawable/ic_check_green_12dp"
                     android:drawablePadding="4dp"
                     android:paddingLeft="8.5dp"
                     android:paddingRight="8.5dp"

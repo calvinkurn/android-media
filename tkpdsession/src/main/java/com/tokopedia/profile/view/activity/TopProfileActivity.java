@@ -32,6 +32,9 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private Toolbar toolbar;
 
+    private static final String TITLE_PROFILE = "Info Akun";
+    private static final String TITLE_POST = "Post";
+
     private Tabs tabLayout;
     private ViewPager viewPager;
 
@@ -108,8 +111,9 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
     private void loadSection(){
         List<ProfileSectionItem> profileSectionItemList = new ArrayList<>();
 
-        TopProfileFragment fragment = TopProfileFragment.newInstance();
-        profileSectionItemList.add(new ProfileSectionItem("Profil", fragment));
+        //TODO add content fragment
+        TopProfileFragment profileFragment = TopProfileFragment.newInstance();
+        profileSectionItemList.add(new ProfileSectionItem(TITLE_PROFILE, profileFragment));
 
         ProfileTabPagerAdapter profileTabPagerAdapter = new ProfileTabPagerAdapter(getSupportFragmentManager());
         profileTabPagerAdapter.setItemList(profileSectionItemList);
