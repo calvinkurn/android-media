@@ -33,6 +33,7 @@ public class ChannelPresenter extends BaseDaggerPresenter<ChannelContract.View> 
     }
 
     public void getChannelListFirstTime() {
+        getView().showLoadingFull();
         getChannelListUseCase.execute(getChannelListUseCase.createParamFirstTime(),
                 new GetChannelFirstTimeSubscriber(getView()));
     }

@@ -6,5 +6,5 @@ package com.tokopedia.tkpdstream.channel.data;
 
 class ChannelUrl {
 
-    static final String GET_ALL_CHANNEL = "/api/v1/channels";
+    static final String GET_ALL_CHANNEL = "/gcn/api/v1/channels";
 }

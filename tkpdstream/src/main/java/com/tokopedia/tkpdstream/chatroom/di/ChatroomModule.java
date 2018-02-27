@@ -1,6 +1,5 @@
 package com.tokopedia.tkpdstream.chatroom.di;
 
-import com.tokopedia.tkpdstream.channel.di.ChannelScope;
 import com.tokopedia.tkpdstream.chatroom.data.ChatroomApi;
 import com.tokopedia.tkpdstream.common.data.VoteApi;
 import com.tokopedia.tkpdstream.common.data.VoteUrl;
@@ -10,18 +9,13 @@ import com.tokopedia.tkpdstream.vote.domain.mapper.GetVoteMapper;
 import com.tokopedia.tkpdstream.vote.domain.source.GetVoteSource;
 import com.tokopedia.tkpdstream.vote.domain.usecase.GetVoteUseCase;
 
-import com.tokopedia.tkpdstream.chatroom.data.ChatroomApi;
-import com.tokopedia.tkpdstream.common.data.BaseUrl;
-import com.tokopedia.tkpdstream.common.di.qualifier.GroupChatQualifier;
+import com.tokopedia.tkpdstream.common.data.StreamUrl;
 
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import dagger.Provides;
-import okhttp3.OkHttpClient;
-import retrofit2.Retrofit;
 
 /**
  * @author by nisie on 2/15/18.
@@ -63,7 +57,7 @@ public class ChatroomModule {
     @GroupChatQualifier
     public Retrofit provideChatroomRetrofit(Retrofit.Builder retrofitBuilder,
                                             OkHttpClient okHttpClient) {
-        return retrofitBuilder.baseUrl(BaseUrl.BASE_URL).client(okHttpClient).build();
+        return retrofitBuilder.baseUrl(StreamUrl.BASE_URL).client(okHttpClient).build();
     }
 
     @ChatroomScope

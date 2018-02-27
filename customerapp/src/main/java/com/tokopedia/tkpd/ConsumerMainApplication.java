@@ -33,6 +33,7 @@ import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpdstream.common.data.SendbirdKey;
+import com.tokopedia.tkpdstream.common.data.StreamUrl;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -115,6 +116,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         FlightUrl.CONTACT_US_FLIGHT_PREFIX_GLOBAL = FlightUrl.CONTACT_US + FlightUrl.CONTACT_US_FLIGHT_PREFIX;
         SessionUrl.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         SessionUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
+        StreamUrl.BASE_URL = ConsumerAppBaseUrl.CHAT_DOMAIN;
     }
 
     private void generateConsumerAppNetworkKeys() {

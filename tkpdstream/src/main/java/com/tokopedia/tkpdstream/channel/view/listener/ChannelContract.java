@@ -23,6 +23,10 @@ public interface ChannelContract {
         void onSuccessGetChannel(ChannelListViewModel channelListViewModel);
 
         void onFailedGetChannel(String errorMessage);
+
+        void showLoadingFull();
+
+        void dismissLoadingFull();
     }
 
     interface Presenter extends CustomerPresenter<View> {

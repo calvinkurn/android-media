@@ -24,11 +24,13 @@ public class GetChannelFirstTimeSubscriber extends Subscriber<ChannelListViewMod
 
     @Override
     public void onError(Throwable e) {
+        view.dismissLoadingFull();
         view.onFailedGetChannelFirstTime(ErrorHandler.getErrorMessage(view.getContext(), e));
     }
 
     @Override
     public void onNext(ChannelListViewModel channelListViewModel) {
+        view.dismissLoadingFull();
         view.onSuccessGetChannelFirstTime(channelListViewModel);
     }
 }
