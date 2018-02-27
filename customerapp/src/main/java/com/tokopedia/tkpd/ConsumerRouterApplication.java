@@ -1309,7 +1309,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToCreateTopadsPromo(String productId) {
-        DrawerBuyerHelper.goToTopadsPage(this);
+    public void goToCreateTopadsPromo(Activity activity,String productId) {
+        DrawerBuyerHelper.goToTopadsPage(activity);
     }
 }

@@ -927,8 +927,8 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void goToCreateTopadsPromo(String productId) {
-        Intent intent = TopAdsGroupNewPromoActivity.getCallingIntent(this);
+    public void goToCreateTopadsPromo(Activity activity, String productId) {
+        Intent intent = TopAdsGroupNewPromoActivity.getCallingIntent(activity);
         intent.putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, productId);
         startActivity(intent);
     }

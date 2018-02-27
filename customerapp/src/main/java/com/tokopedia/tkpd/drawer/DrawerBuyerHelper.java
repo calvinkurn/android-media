@@ -580,7 +580,7 @@ public class DrawerBuyerHelper extends DrawerHelper
         }
     }
 
-    public static void goToTopadsPage(Context context) {
+    public static void goToTopadsPage(Activity context) {
         Intent topadsIntent = context.getPackageManager()
                 .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
 
