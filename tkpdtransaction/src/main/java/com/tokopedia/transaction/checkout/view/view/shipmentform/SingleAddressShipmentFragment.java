@@ -246,7 +246,9 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     public void onAddOrChangeAddress() {
         startActivityForResult(
                 CartAddressChoiceActivity.createInstance(
-                        getActivity(), CartAddressChoiceActivity.TYPE_REQUEST_FULL_SELECTION
+                        getActivity(),
+                        CartAddressChoiceActivity.TYPE_REQUEST_FULL_SELECTION,
+                        mCartSingleAddressData.getCartSellerItemModelList()
                 ),
                 CartAddressChoiceActivity.REQUEST_CODE);
     }
