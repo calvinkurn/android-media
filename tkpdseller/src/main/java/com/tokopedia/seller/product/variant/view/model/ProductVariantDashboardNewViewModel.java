@@ -73,6 +73,31 @@ public class ProductVariantDashboardNewViewModel implements ItemType, Parcelable
         return productVariantOptionChildLv1;
     }
 
+    public int removeSelectedVariantFor(String lv1Value, String lvl2Value) {
+        if (productVariantCombinationViewModelList == null || productVariantCombinationViewModelList.size() == 0) {
+            return -1;
+        }
+        for (int i = productVariantCombinationViewModelList.size() - 1; i >= 0; i--) {
+            if (productVariantCombinationViewModelList.get(i).getLevel1String().equalsIgnoreCase(lv1Value) &&
+                    productVariantCombinationViewModelList.get(i).getLevel2String().equalsIgnoreCase(lvl2Value)) {
+                productVariantCombinationViewModelList.remove(i);
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public void replaceSelectedVariantFor(ProductVariantCombinationViewModel productVariantCombinationViewModel) {
+        String lvl1String = productVariantCombinationViewModel.getLevel1String();
+        String lvl2String = productVariantCombinationViewModel.getLevel2String();
+        int removedIndex = removeSelectedVariantFor(lvl1String, lvl2String);
+        if (removedIndex > - 1) {
+            productVariantCombinationViewModelList.add(removedIndex, productVariantCombinationViewModel);
+        } else {
+            productVariantCombinationViewModelList.add(productVariantCombinationViewModel);
+        }
+    }
+
     @Override
     public int getType() {
         return TYPE;

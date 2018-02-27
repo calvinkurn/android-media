@@ -144,7 +144,11 @@ public class DecimalInputView extends BaseCustomView {
     public double getDoubleValue() {
         String valueString = CurrencyFormatHelper.removeCurrencyPrefix(getText());
         try {
-            return StringUtils.convertToNumeric(valueString, true);
+            valueString = StringUtils.removeComma(valueString);
+            if (TextUtils.isEmpty(valueString)) {
+                return 0;
+            }
+            return Double.parseDouble(valueString);
         } catch (Exception e) {
             try {
                 return StringUtils.convertToNumeric(valueString, false);

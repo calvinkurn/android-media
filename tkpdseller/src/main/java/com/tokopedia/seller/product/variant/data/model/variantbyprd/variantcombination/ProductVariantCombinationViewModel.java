@@ -91,7 +91,7 @@ public class ProductVariantCombinationViewModel implements Parcelable{
     }
 
     public String getLevel1String() {
-        return level1String;
+        return level1String == null ? "" : level1String;
     }
 
     public void setLevel1String(String level1String) {
@@ -99,7 +99,7 @@ public class ProductVariantCombinationViewModel implements Parcelable{
     }
 
     public String getLevel2String() {
-        return level2String;
+        return level2String == null ? "" : level2String;
     }
 
     public String getLeafString() {

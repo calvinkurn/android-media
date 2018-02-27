@@ -124,7 +124,7 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
     public String loadJSONFromAsset2() {
         String json = null;
         try {
-            InputStream is = getContext().getAssets().open("test_variant_by_prd_1level.json");
+            InputStream is = getContext().getAssets().open("test_variant_by_prd.json");
             int size = is.available();
             byte[] buffer = new byte[size];
             is.read(buffer);
@@ -291,8 +291,10 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
                 break;
             case ProductVariantDetailLevel1ListActivity.VARIANT_EDIT_LEVEL1_LIST_REQUEST_CODE:
                 onActivityResultFromDetail(data);
+                break;
             case ProductVariantDetailLevelLeafActivity.VARIANT_EDIT_LEAF_REQUEST_CODE:
                 onActivityResultFromLeaf(data);
+                break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
         }

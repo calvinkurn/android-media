@@ -9,7 +9,6 @@ import java.util.List;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionParent;
@@ -59,41 +58,55 @@ public class ProductVariantViewModel implements Parcelable {
         this.productVariant = productVariant;
     }
 
-    public void removeSelectedVariantForLv1Value(String lv1Value) {
+    public int removeSelectedVariantFor(String lv1Value) {
         if (productVariant == null || productVariant.size() == 0) {
-            return;
+            return - 1;
         }
+        int firstIndex = -1;
         for (int i = productVariant.size() - 1; i >= 0; i--) {
             if (productVariant.get(i).getLevel1String().equalsIgnoreCase(lv1Value)) {
+                if (firstIndex == -1) {
+                    firstIndex = i;
+                }
                 productVariant.remove(i);
             }
         }
+        return firstIndex;
     }
 
-    public void removeSelectedVariantForLv1Value(String lv1Value, String lvl2Value) {
+    public void replaceSelectedVariantFor(String lv1Value,
+                                          List<ProductVariantCombinationViewModel> productVariantCombinationViewModelList) {
+        int index = removeSelectedVariantFor(lv1Value);
+        if (index > -1) {
+            productVariant.addAll(index, productVariantCombinationViewModelList);
+        } else {
+            productVariant.addAll(productVariantCombinationViewModelList);
+        }
+    }
+
+    public int removeSelectedVariantFor(String lv1Value, String lvl2Value) {
         if (productVariant == null || productVariant.size() == 0) {
-            return;
+            return -1;
         }
         for (int i = productVariant.size() - 1; i >= 0; i--) {
             if (productVariant.get(i).getLevel1String().equalsIgnoreCase(lv1Value) &&
                     productVariant.get(i).getLevel2String().equalsIgnoreCase(lvl2Value)) {
                 productVariant.remove(i);
-                break;
+                return i;
             }
         }
-    }
-
-    public void replaceSelectedVariantFor(String lv1Value,
-                                          List<ProductVariantCombinationViewModel> productVariantCombinationViewModelList) {
-        removeSelectedVariantForLv1Value(lv1Value);
-        productVariant.addAll(productVariantCombinationViewModelList);
+        return -1;
     }
 
     public void replaceSelectedVariantFor(ProductVariantCombinationViewModel productVariantCombinationViewModel) {
         String lvl1String = productVariantCombinationViewModel.getLevel1String();
         String lvl2String = productVariantCombinationViewModel.getLevel2String();
-        removeSelectedVariantForLv1Value(lvl1String, lvl2String);
-        productVariant.add(productVariantCombinationViewModel);
+        int removedIndex = removeSelectedVariantFor(lvl1String, lvl2String);
+        if (removedIndex > - 1) {
+            productVariant.add(removedIndex, productVariantCombinationViewModel);
+        } else {
+            productVariant.add(productVariantCombinationViewModel);
+        }
     }
 
     @Override

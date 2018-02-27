@@ -43,6 +43,13 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
         fragment.startActivityForResult(intent, VARIANT_EDIT_LEAF_REQUEST_CODE);
     }
 
+    public static void start(Activity activity,
+                             ProductVariantCombinationViewModel productVariantCombinationViewModel,
+                             String variantName, @CurrencyTypeDef int currencyType){
+        Intent intent = getIntent(activity, productVariantCombinationViewModel, variantName, currencyType);
+        activity.startActivityForResult(intent, VARIANT_EDIT_LEAF_REQUEST_CODE);
+    }
+
     public static Intent getIntent(Context context,
                                    ProductVariantCombinationViewModel productVariantCombinationViewModel,
                                    String variantName, @CurrencyTypeDef int currencyType){
