@@ -240,6 +240,14 @@ public class ProductListFragment extends SearchSectionFragment
     private void setupListener() {
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
         topAdsRecyclerAdapter.setTopAdsListener(this);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    ((SearchActivity) getActivity()).closeFilterBottomSheet();
+                }
+            }
+        });
     }
 
     @Override

@@ -483,11 +483,14 @@ public class SearchActivity extends DiscoveryActivity
         });
         bottomSheetLayout = findViewById(R.id.bottomSheet);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
 
-    private void closeFilterBottomSheet() {
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-        showBottomNavigation();
+    public void closeFilterBottomSheet() {
+        if (bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_HIDDEN) {
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+            showBottomNavigation();
+        }
     }
 
     @Override
@@ -595,7 +598,7 @@ public class SearchActivity extends DiscoveryActivity
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+                closeFilterBottomSheet();
             }
 
             @Override
