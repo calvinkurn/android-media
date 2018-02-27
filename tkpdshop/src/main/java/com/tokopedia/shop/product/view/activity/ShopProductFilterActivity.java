@@ -18,10 +18,10 @@ import com.tokopedia.shop.product.view.listener.ShopProductFilterFragmentListene
  */
 
 public class ShopProductFilterActivity extends BaseSimpleActivity implements HasComponent<ShopComponent>, ShopProductFilterFragmentListener {
-    private ShopComponent component;
-    private String sortName;
     public static final String SORT_NAME = "SORT_NAME";
     public static final String SORT_ID = "SORT_ID";
+    private ShopComponent component;
+    private String sortName;
 
     public static Intent createIntent(Context context, String sortName){
            Intent intent = new Intent(context, ShopProductFilterActivity.class);
@@ -39,6 +39,10 @@ public class ShopProductFilterActivity extends BaseSimpleActivity implements Has
     protected void onCreate(Bundle savedInstanceState) {
         if(getIntent() != null && savedInstanceState == null){
             sortName = getIntent().getStringExtra(SORT_NAME);
+
+            if (sortName.equalsIgnoreCase(Integer.toString(Integer.MIN_VALUE))) {
+                sortName = null;
+            }
         }
         super.onCreate(savedInstanceState);
     }

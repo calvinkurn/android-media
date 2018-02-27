@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.seller.product.etalase.view.fragment.EtalaseDynamicPickerGeneralFragment;
-import com.tokopedia.seller.product.etalase.view.fragment.EtalaseDynamicPickerSellerFragment;
 import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
 
 /**
@@ -14,7 +13,7 @@ import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
 
 public class EtalaseDynamicPickerGeneralActivity extends EtalaseDynamicPickerActivity {
     public static Intent createGeneralInstance(Context context, long etalaseId) {
-        if(etalaseId == Integer.MAX_VALUE){
+        if (etalaseId == Integer.MIN_VALUE) {
             etalaseId = ProductManageConstant.FILTER_ALL_SHOWCASE;
         }
 

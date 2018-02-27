@@ -53,5 +53,10 @@
 
     <string name="shop_info_default_etalase">Pilih Etalase</string>
     <string name="shop_info_default_etalase_title">Etalase</string>
+    <string name="shop_info_see_label">Tampilan</string>
+    <string name="shop_info_sort_label">Urutkan</string>
+    <string name="shop_info_filter_all_showcase">Semua Etalase</string>
+    <string name="shop_info_filter_menu_etalase_all">Semua Produk</string>
+
 
 </resources>

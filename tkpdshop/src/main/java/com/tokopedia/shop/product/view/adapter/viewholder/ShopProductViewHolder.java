@@ -1,7 +1,7 @@
 package com.tokopedia.shop.product.view.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
-import android.support.constraint.Guideline;
+import android.support.v7.widget.AppCompatRatingBar;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.shop.R;
+import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
 /**
@@ -35,20 +36,21 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     private ImageView featuredProductImageView, freeReturnImageView, productImageView;
     private ImageView wishlistImageView;
     private FrameLayout wishlistContainer;
-
-    private Guideline guideLine;
     private int imageGuideLineGrid;
     private int imageGuideLineList;
 
     private ShopProductVHListener shopProductVHListener;
     private ShopProductViewModel model;
+    private AppCompatRatingBar qualityRatingBar;
+    private TextView totalReview;
+
+    public ShopProductViewHolder(View itemView) {
+        super(itemView);
+        findViews(itemView);
+    }
 
     protected ShopProductVHListener getShopProductVHListener() {
         return shopProductVHListener;
-    }
-
-    public ShopProductViewModel getModel() {
-        return model;
     }
 
     public ShopProductViewHolder setShopProductVHListener(ShopProductVHListener shopProductVHListener) {
@@ -56,9 +58,8 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         return this;
     }
 
-    public ShopProductViewHolder(View itemView) {
-        super(itemView);
-        findViews(itemView);
+    public ShopProductViewModel getModel() {
+        return model;
     }
 
     private void findViews(View view) {
@@ -77,8 +78,8 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         wishlistImageView = view.findViewById(R.id.image_view_wishlist);
         wishlistContainer = view.findViewById(R.id.wishlist_button_container);
 
-        guideLine = view.findViewById(R.id.guideline3);
-
+        qualityRatingBar = view.findViewById(R.id.ratingBar);
+        totalReview = view.findViewById(R.id.total_review);
     }
 
     @Override
@@ -104,6 +105,29 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
                 }
             }
         });
+
+        if (qualityRatingBar != null) {
+            qualityRatingBar.setRating((float) model.getRating());
+            qualityRatingBar.setMax(ShopPageActivity.MAX_RATING_STAR);
+        }
+
+        if (totalReview != null) {
+            totalReview.setText(Integer.toString(model.getTotalReview()));
+        }
+
+        if (model.getCashback() > 0) {
+            cashbackTextView.setText(cashbackTextView.getContext().getString(
+                    R.string.product_manage_item_cashback, model.getCashback()));
+            cashbackTextView.setVisibility(View.VISIBLE);
+        } else {
+            cashbackTextView.setVisibility(View.GONE);
+        }
+
+        freeReturnImageView.setVisibility(model.isFreeReturn() ? View.VISIBLE : View.GONE);
+
+        preOrderTextView.setVisibility(model.isPo() ? View.VISIBLE : View.GONE);
+
+        wholesaleTextView.setVisibility(model.isWholesale() ? View.VISIBLE : View.GONE);
     }
 
     public interface ShopProductVHListener{

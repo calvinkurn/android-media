@@ -1,8 +1,11 @@
 package com.tokopedia.seller.product.etalase.view.fragment;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.etalase.view.adapter.EtalasePickerAdapter;
 import com.tokopedia.seller.product.etalase.view.model.MyEtalaseItemViewModel;
 import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
 
@@ -30,5 +33,19 @@ public class EtalaseDynamicPickerGeneralFragment extends EtalaseDynamicPickerFra
         myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_PREORDER, getString(R.string.product_manage_filter_preorder)));
         myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_ALL_SHOWCASE, getString(R.string.product_manage_filter_all_showcase)));
         return myEtalaseItemViewModels;
+    }
+
+    @Override
+    protected EtalasePickerAdapter getNewAdapter() {
+        EtalasePickerAdapter newAdapter = super.getNewAdapter();
+        newAdapter.setCustomLayoutRes(R.layout.item_product_etalase_picker_checked_green);
+        return newAdapter;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        menu.clear();
     }
 }

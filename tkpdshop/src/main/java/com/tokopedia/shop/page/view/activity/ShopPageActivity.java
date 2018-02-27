@@ -46,6 +46,48 @@ import javax.inject.Inject;
 
 public class ShopPageActivity extends BaseTabActivity implements HasComponent<ShopComponent>, ShopPageView {
 
+    public static final int MAX_RATING_STAR = 5;
+    public static final String SHOP_ID = "SHOP_ID";
+    public static final String SHOP_DOMAIN = "SHOP_DOMAIN";
+    private static final int REPUTATION_SPEED_LEVEL_VERY_FAST = 5;
+    private static final int REPUTATION_SPEED_LEVEL_FAST = 4;
+    private static final int REPUTATION_SPEED_LEVEL_NORMAL = 3;
+    private static final int REPUTATION_SPEED_LEVEL_SLOW = 2;
+    private static final int REPUTATION_SPEED_LEVEL_VERY_SLOW = 1;
+    private static final int REPUTATION_SPEED_LEVEL_DEFAULT = 0;
+    private static final int PAGE_LIMIT = 3;
+    @Inject
+    ShopPagePresenter shopPagePresenter;
+    private ShopProductListLimitedFragment shopProductListLimitedFragment;
+    private ImageView backgroundImageView;
+    private ImageView shopIconImageView;
+    private ImageView shopStatusImageView;
+    private ImageView locationImageView;
+    private TextView shopNameTextView;
+    private TextView shopInfoLocationTextView;
+    private LinearLayout containerClickInfo;
+    private ShopPageSubDetailView totalFavouriteDetailView;
+    private ShopPageSubDetailView totalProductDetailView;
+    private ShopPageSubDetailView reputationDetailView;
+    private ShopPageSubDetailView productQualityDetailView;
+    private ShopPageSubDetailView reputationSpeedDetailView;
+    private ShopReputationView shopReputationView;
+    private TextView totalFavouriteTextView;
+    private TextView totalProductTextView;
+    private RatingBar qualityRatingBar;
+    private TextView qualityValueTextView;
+    private ImageView speedImageView;
+    private TextView speedValueTextView;
+    private Button buttonManageShop;
+    private Button buttonAddProduct;
+    private Button buttonChatSeller;
+    private Button buttonFavouriteShop;
+    private String shopId;
+    private String shopDomain;
+    private boolean favouriteShop;
+    private ShopComponent component;
+    private ShopModuleRouter shopModuleRouter;
+
     public static Intent createIntent(Context context, String shopId) {
         Intent intent = new Intent(context, ShopPageActivity.class);
         intent.putExtra(SHOP_ID, shopId);
@@ -57,58 +99,6 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         intent.putExtra(SHOP_DOMAIN, shopDomain);
         return intent;
     }
-
-    private static final int REPUTATION_SPEED_LEVEL_VERY_FAST = 5;
-    private static final int REPUTATION_SPEED_LEVEL_FAST = 4;
-    private static final int REPUTATION_SPEED_LEVEL_NORMAL = 3;
-    private static final int REPUTATION_SPEED_LEVEL_SLOW = 2;
-    private static final int REPUTATION_SPEED_LEVEL_VERY_SLOW = 1;
-    private static final int REPUTATION_SPEED_LEVEL_DEFAULT = 0;
-
-    private static final int MAX_RATING_STAR = 5;
-    private static final int PAGE_LIMIT = 3;
-    public static final String SHOP_ID = "SHOP_ID";
-    public static final String SHOP_DOMAIN = "SHOP_DOMAIN";
-
-    private ShopProductListLimitedFragment shopProductListLimitedFragment;
-
-    private ImageView backgroundImageView;
-    private ImageView shopIconImageView;
-    private ImageView shopStatusImageView;
-    private ImageView locationImageView;
-    private TextView shopNameTextView;
-    private TextView shopInfoLocationTextView;
-    private LinearLayout containerClickInfo;
-
-    private ShopPageSubDetailView totalFavouriteDetailView;
-    private ShopPageSubDetailView totalProductDetailView;
-    private ShopPageSubDetailView reputationDetailView;
-    private ShopPageSubDetailView productQualityDetailView;
-    private ShopPageSubDetailView reputationSpeedDetailView;
-
-    private ShopReputationView shopReputationView;
-
-    private TextView totalFavouriteTextView;
-    private TextView totalProductTextView;
-    private RatingBar qualityRatingBar;
-    private TextView qualityValueTextView;
-    private ImageView speedImageView;
-    private TextView speedValueTextView;
-
-    private Button buttonManageShop;
-    private Button buttonAddProduct;
-    private Button buttonChatSeller;
-    private Button buttonFavouriteShop;
-
-    private String shopId;
-    private String shopDomain;
-    private boolean favouriteShop;
-
-    private ShopComponent component;
-    private ShopModuleRouter shopModuleRouter;
-
-    @Inject
-    ShopPagePresenter shopPagePresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

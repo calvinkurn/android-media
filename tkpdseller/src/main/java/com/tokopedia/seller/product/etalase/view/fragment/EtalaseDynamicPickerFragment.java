@@ -2,10 +2,8 @@ package com.tokopedia.seller.product.etalase.view.fragment;
 
 import android.os.Bundle;
 
-import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.etalase.view.model.MyEtalaseItemViewModel;
 import com.tokopedia.seller.product.etalase.view.model.MyEtalaseViewModel;
-import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +35,7 @@ public class EtalaseDynamicPickerFragment extends EtalasePickerFragment {
     }
 
     protected ArrayList<MyEtalaseItemViewModel> populateEtalaseViewModels() {
-        return null;
+        return new ArrayList<>();
     }
 
     @Override
