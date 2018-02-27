@@ -18,6 +18,9 @@ import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeHeaderTokoCashAndTokoPointState;
+
+import static com.tokopedia.core.var.TkpdState.RecyclerViewItem.TYPE_EMPTY;
 
 /**
  * @author anggaprasetiyo on 11/12/17.
@@ -43,7 +46,44 @@ public class HeaderHomeView extends BaseCustomView {
         super(context);
         this.headerViewModel = headerViewModel;
         this.listener = listener;
-        switch (headerViewModel.getType()) {
+        if (headerViewModel.getTokoPointDrawerData() != null && headerViewModel.getTokoPointDrawerData().getOffFlag() == 0
+                && headerViewModel.getHomeHeaderWalletActionData() != null)
+            renderHeaderTokocashWithTokopoint();
+        else if (headerViewModel.getTokoPointDrawerData() != null && headerViewModel.getTokoPointDrawerData().getOffFlag() == 0
+                && headerViewModel.getHomeHeaderWalletActionData() == null) {
+            if (headerViewModel.getTokocashNetworkStatus() == HomeHeaderTokoCashAndTokoPointState.TOKOCASH_ERROR) {
+                //rendertokocasherrorandrendertokopoint
+            } else {
+                // rendertokocashloadingandrendertokopoint
+            }
+            this.type = TYPE_TOKOPINT_ONLY;
+        } else if ((headerViewModel.getTokoPointDrawerData() == null || headerViewModel.getTokoPointDrawerData().getOffFlag() == 1)
+                && headerViewModel.getHomeHeaderWalletActionData() != null) {
+            if (headerViewModel.getTokopointNetworkStatus() == HomeHeaderTokoCashAndTokoPointState.TOKOPOINT_ERROR && headerViewModel.getTokoPointDrawerData() == null) {
+                // rendertokocashandtokopointerror
+            } else if (headerViewModel.getTokoPointDrawerData() != null && headerViewModel.getTokoPointDrawerData().getOffFlag() == 1) {
+                // rendertokocashonly
+            } else {
+                // rendertokopointloadingandrendertokocash
+            }
+            this.type = TYPE_TOKOCASH_ONLY;
+        } else if (headerViewModel.getTokoPointDrawerData() == null && headerViewModel.getHomeHeaderWalletActionData() == null) {
+            if (headerViewModel.getTokocashNetworkStatus() == HomeHeaderTokoCashAndTokoPointState.TOKOCASH_ERROR
+                    && headerViewModel.getTokopointNetworkStatus() == HomeHeaderTokoCashAndTokoPointState.TOKOPOINT_ERROR) {
+                //rendererrortokopointanderrortokocash
+            } else if (headerViewModel.getTokocashNetworkStatus() == HomeHeaderTokoCashAndTokoPointState.TOKOCASH_ERROR) {
+                //rendererrortokocashandtokopointloading
+            } else if (headerViewModel.getTokopointNetworkStatus() == HomeHeaderTokoCashAndTokoPointState.TOKOPOINT_ERROR) {
+                //rendererrortokopointandtokocashloading
+            } else {
+                //renderloadingtokopointandloadingtokocash
+            }
+            // rendertokopoint
+            this.type = TYPE_EMPTY;
+        }
+
+
+        /*switch (headerViewModel.getType()) {
             case HeaderViewModel.TYPE_TOKOCASH_ONLY:
                 renderHeaderOnlyTokocash();
                 break;
@@ -53,10 +93,19 @@ public class HeaderHomeView extends BaseCustomView {
             case HeaderViewModel.TYPE_TOKOCASH_WITH_TOKOPOINT:
                 renderHeaderTokocashWithTokopoint();
                 break;
+
             default:
                 setVisibility(GONE);
                 break;
-        }
+        }*/
+    }
+
+    public HeaderHomeView(@NonNull Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    public HeaderHomeView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
     }
 
     private void renderHeaderTokoPointOnly() {
@@ -242,13 +291,5 @@ public class HeaderHomeView extends BaseCustomView {
             renderVisibilityTitleOnlyTokoCash(headerViewModel.getHomeHeaderWalletActionData()
                     .isVisibleActionButton());
         }
-    }
-
-    public HeaderHomeView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public HeaderHomeView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
     }
 }
