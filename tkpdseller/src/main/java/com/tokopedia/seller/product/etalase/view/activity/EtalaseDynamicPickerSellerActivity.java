@@ -4,12 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.seller.product.etalase.view.fragment.EtalaseDynamicPickerFragment;
 import com.tokopedia.seller.product.etalase.view.fragment.EtalaseDynamicPickerSellerFragment;
-import com.tokopedia.seller.product.etalase.view.model.MyEtalaseItemViewModel;
 import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
-
-import java.util.ArrayList;
 
 /**
  * Created by normansyahputa on 2/23/18.
@@ -17,7 +13,7 @@ import java.util.ArrayList;
 
 public class EtalaseDynamicPickerSellerActivity extends EtalaseDynamicPickerActivity {
     public static Intent createSellerInstance(Context context, long etalaseId) {
-        if(etalaseId == Integer.MAX_VALUE){
+        if (etalaseId == Integer.MIN_VALUE) {
             etalaseId = ProductManageConstant.FILTER_ALL_PRODUK;
         }
 

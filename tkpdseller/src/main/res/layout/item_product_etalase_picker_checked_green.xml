@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/border_background_view"
+    android:background="@drawable/border_background_view_topads"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:padding="16dp">
@@ -15,9 +15,9 @@
         android:layout_weight="1" />
 
     <ImageView
-        android:id="@+id/etalase_picker_radio_button_selected"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:src="@drawable/ic_check_green" />
+        android:id="@+id/etalase_picker_radio_button"
+        android:layout_width="@dimen/image_width_xs"
+        android:layout_height="@dimen/image_width_xs"
+        android:src="@drawable/ic_check_green_24dp" />
 
 </LinearLayout>

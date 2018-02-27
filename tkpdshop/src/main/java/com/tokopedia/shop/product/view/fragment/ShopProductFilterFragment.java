@@ -2,6 +2,7 @@ package com.tokopedia.shop.product.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,18 +10,20 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.shop.common.di.component.ShopComponent;
+import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.view.activity.ShopProductFilterActivity;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
 import com.tokopedia.shop.product.view.adapter.ShopProductTypeFactory;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseSelectedViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseUnselectedViewHolder;
-import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
 import com.tokopedia.shop.product.view.listener.ShopProductFilterFragmentListener;
 import com.tokopedia.shop.product.view.model.ShopProductFilterModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductFilterPresenter;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -30,7 +33,10 @@ import javax.inject.Inject;
 
 public class ShopProductFilterFragment extends BaseListFragment<ShopProductViewModel, ShopProductTypeFactory> {
 
+    @Inject
+    ShopProductFilterPresenter shopProductFilterPresenter;
     private String sortName;
+    private ShopProductFilterFragmentListener shopFilterFragmentListener;
 
     public static ShopProductFilterFragment createInstance(String sortName){
         ShopProductFilterFragment fragment = new ShopProductFilterFragment();
@@ -39,10 +45,6 @@ public class ShopProductFilterFragment extends BaseListFragment<ShopProductViewM
         fragment.setArguments(arguments);
         return fragment;
     }
-
-    @Inject
-    ShopProductFilterPresenter shopProductFilterPresenter;
-    private ShopProductFilterFragmentListener shopFilterFragmentListener;
 
     @Override
     public void loadData(int i) {
@@ -63,6 +65,14 @@ public class ShopProductFilterFragment extends BaseListFragment<ShopProductViewM
         if(context != null && context instanceof ShopProductFilterFragmentListener){
             shopFilterFragmentListener = (ShopProductFilterFragmentListener)context;
         }
+    }
+
+    @Override
+    public void renderList(@NonNull List<ShopProductViewModel> list) {
+        if (sortName == null) {
+            sortName = ((ShopProductFilterModel) list.get(0)).getValue();
+        }
+        super.renderList(list);
     }
 
     @Override
@@ -87,7 +97,7 @@ public class ShopProductFilterFragment extends BaseListFragment<ShopProductViewM
             public int getType(ShopProductViewModel type) {
                 if (type instanceof ShopProductFilterModel) {
                     ShopProductFilterModel filterModel = (ShopProductFilterModel) type;
-                    if (sortName.contains(filterModel.getValue())) {
+                    if (sortName != null && sortName.equalsIgnoreCase(filterModel.getValue())) {
                         return ShopProductEtalaseSelectedViewHolder.LAYOUT;
                     } else {
                         return ShopProductEtalaseUnselectedViewHolder.LAYOUT;
