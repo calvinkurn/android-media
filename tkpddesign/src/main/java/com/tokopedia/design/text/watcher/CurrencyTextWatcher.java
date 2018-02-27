@@ -42,7 +42,7 @@ public class CurrencyTextWatcher extends AfterTextWatcher {
         } else {
             this.format = format;
         }
-        this.prefixLength = format.indexOf("%");
+        this.prefixLength = this.format.indexOf("%");
         if (prefixLength < 0) {
             prefixLength = 0;
         }

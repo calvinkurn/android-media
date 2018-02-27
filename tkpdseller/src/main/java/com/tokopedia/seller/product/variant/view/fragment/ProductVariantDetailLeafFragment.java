@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.design.text.SpinnerCounterInputView;
+import com.tokopedia.design.text.watcher.CurrencyTextWatcher;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.common.widget.VerticalLabelView;
@@ -35,6 +36,9 @@ public class ProductVariantDetailLeafFragment extends Fragment
 
     private ProductVariantCombinationViewModel productVariantCombinationViewModel;
     private SpinnerCounterInputView spinnerCounterInputView;
+    private @CurrencyTypeDef
+    int currencyType;
+    private CurrencyTextWatcher currencyTextWatcher;
     //    private View buttonSave;
 //    private ProductVariantDetailAdapter productVariantDetailAdapter;
 //    private boolean variantHasStock;
@@ -56,6 +60,7 @@ public class ProductVariantDetailLeafFragment extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         productVariantCombinationViewModel = listener.getProductVariantCombinationViewModel();
+        currencyType = listener.getCurrencyTypeDef();
 
 //        Intent activityIntent = getActivity().getIntent();
 //
@@ -88,7 +93,15 @@ public class ProductVariantDetailLeafFragment extends Fragment
         lvTitle = view.findViewById(R.id.lv_title);
         labelSwitchStatus = (LabelSwitch) view.findViewById(R.id.label_switch_product_status);
         spinnerCounterInputView = view.findViewById(R.id.spinner_counter_input_view_price);
+        spinnerCounterInputView.getSpinnerTextView().setEnabled(false);
+        spinnerCounterInputView.setSpinnerValue(String.valueOf(currencyType));
 
+        spinnerCounterInputView.removeTextChangedListener(currencyTextWatcher);
+        currencyTextWatcher = new CurrencyTextWatcher(
+                 spinnerCounterInputView.getCounterEditText(),
+                null,
+                currencyType == CurrencyTypeDef.TYPE_USD);
+        spinnerCounterInputView.addTextChangedListener(currencyTextWatcher);
 
         lvTitle.setTitle(listener.getVariantName());
         lvTitle.setSummary(productVariantCombinationViewModel.getLeafString());
@@ -102,6 +115,8 @@ public class ProductVariantDetailLeafFragment extends Fragment
 //        recyclerView.setAdapter(productVariantDetailAdapter);
         return view;
     }
+
+
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
