@@ -48,10 +48,15 @@ public class MethodChecker {
     }
 
     public static int getColor(Context context, int id) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return ContextCompat.getColor(context, id);
-        } else {
-            return context.getResources().getColor(id);
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                return ContextCompat.getColor(context, id);
+            } else {
+                return context.getResources().getColor(id);
+            }
+        }catch (NullPointerException e){
+            e.printStackTrace();
+            return 0;
         }
     }
 

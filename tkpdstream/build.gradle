@@ -72,4 +72,8 @@ dependencies {
         exclude group: 'com.squareup.okio'
         exclude group: 'com.android.support'
     }
+
+    compile(rootProject.ext.miscDependencies.facebook) {
+        exclude group: 'com.android.support'
+    }
 }

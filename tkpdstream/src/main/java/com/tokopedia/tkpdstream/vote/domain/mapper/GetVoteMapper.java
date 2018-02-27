@@ -49,12 +49,12 @@ public class GetVoteMapper implements Func1<Response<DataResponse>, VoteInfoView
         channelViewModel = new VoteViewModel("Lionel Messi", messi, 60, VoteViewModel.DEFAULT, VoteViewModel.IMAGE_TYPE);
         list.add(channelViewModel);
 
-        channelViewModel = new VoteViewModel("Cristiano Ronaldo",40, VoteViewModel.DEFAULT);
-        list.add(channelViewModel);
-        channelViewModel = new VoteViewModel("Lionel Messi", 60, VoteViewModel.DEFAULT);
-        list.add(channelViewModel);
+//        channelViewModel = new VoteViewModel("Cristiano Ronaldo",40, VoteViewModel.DEFAULT);
+//        list.add(channelViewModel);
+//        channelViewModel = new VoteViewModel("Lionel Messi", 60, VoteViewModel.DEFAULT);
+//        list.add(channelViewModel);
 
 
-        return new VoteInfoViewModel(title, list, 100, VoteViewModel.IMAGE_TYPE);
+        return new VoteInfoViewModel(title, list, 100, VoteViewModel.IMAGE_TYPE, "Vote", true, "Info Pemenang", "www.google.com");
     }
 }

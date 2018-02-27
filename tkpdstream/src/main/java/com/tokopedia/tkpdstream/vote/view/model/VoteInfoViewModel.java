@@ -14,17 +14,27 @@ public class VoteInfoViewModel {
 
     String voteStatus;
 
+    String voteInfoString;
+
+    String voteInfoUrl;
+
+    boolean voted;
+
     String title;
 
     List<Visitable> list;
 
     int participant;
 
-    public VoteInfoViewModel(String title, List<Visitable> list, int participant, int voteType) {
+    public VoteInfoViewModel(String title, List<Visitable> list, int participant, int voteType, String voteStatus, boolean voted, String voteInfoString, String voteInfoUrl) {
         this.title = title;
         this.list = list;
         this.participant = participant;
+        this.voteStatus = voteStatus;
         this.voteType = voteType;
+        this.voted = voted;
+        this.voteInfoString = voteInfoString;
+        this.voteInfoUrl = voteInfoUrl;
     }
 
     public int getVoteType() {
@@ -57,5 +67,37 @@ public class VoteInfoViewModel {
 
     public void setParticipant(int participant) {
         this.participant = participant;
+    }
+
+    public String getVoteStatus() {
+        return voteStatus;
+    }
+
+    public void setVoteStatus(String voteStatus) {
+        this.voteStatus = voteStatus;
+    }
+
+    public boolean isVoted() {
+        return voted;
+    }
+
+    public void setVoted(boolean voted) {
+        this.voted = voted;
+    }
+
+    public String getVoteInfoString() {
+        return voteInfoString;
+    }
+
+    public void setVoteInfoString(String voteInfoString) {
+        this.voteInfoString = voteInfoString;
+    }
+
+    public String getVoteInfoUrl() {
+        return voteInfoUrl;
+    }
+
+    public void setVoteInfoUrl(String voteInfoUrl) {
+        this.voteInfoUrl = voteInfoUrl;
     }
 }

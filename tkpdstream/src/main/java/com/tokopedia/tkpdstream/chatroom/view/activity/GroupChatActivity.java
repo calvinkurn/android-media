@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 
 import com.tokopedia.abstraction.base.view.activity.BaseEmptyActivity;
 import com.tokopedia.tkpdstream.R;
+import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
 
 /**
@@ -18,6 +19,7 @@ import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
 public class GroupChatActivity extends BaseEmptyActivity {
 
     public static final String EXTRA_CHANNEL_UUID = "CHANNEL_URL";
+    public static final String EXTRA_CHANNEL_INFO = "CHANNEL_INFO";
     public Toolbar toolbar;
 
     @Override
@@ -44,8 +46,9 @@ public class GroupChatActivity extends BaseEmptyActivity {
         fragmentTransaction.commit();
     }
 
-    public static Intent getCallingIntent(Context context) {
+    public static Intent getCallingIntent(Context context, ChannelViewModel channelViewModel) {
         Intent intent = new Intent(context, GroupChatActivity.class);
+        intent.putExtra(EXTRA_CHANNEL_INFO, channelViewModel);
         intent.putExtra(EXTRA_CHANNEL_UUID, "pub1");
         return intent;
     }

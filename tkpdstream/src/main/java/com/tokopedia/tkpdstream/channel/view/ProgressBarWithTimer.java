@@ -12,6 +12,7 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpdstream.R;
 
 /**
@@ -22,8 +23,13 @@ public class ProgressBarWithTimer extends FrameLayout{
     private TextView text;
     private ProgressBar progressBar;
     private CountDownTimer countDownTimer;
+    Listener listener;
 
     private long startTime, endTime;
+
+    public static interface Listener{
+        void onFinishTick();
+    }
 
     public ProgressBarWithTimer(@NonNull Context context) {
         super(context);
@@ -52,7 +58,6 @@ public class ProgressBarWithTimer extends FrameLayout{
         }
     }
 
-
     private String formatMilliSecondsToTime(long milliseconds) {
 
         int seconds = (int) (milliseconds / 1000) % 60;
@@ -75,6 +80,10 @@ public class ProgressBarWithTimer extends FrameLayout{
         return String.valueOf(number);
     }
 
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
+
     private void init() {
         View view = inflate(getContext(), R.layout.progress_bar_with_timer, this);
         text = view.findViewById(R.id.text_view);
@@ -94,7 +103,8 @@ public class ProgressBarWithTimer extends FrameLayout{
 
             @Override
             public void onFinish() {
-
+                if(listener != null)
+                    listener.onFinishTick();
             }
         };
         countDownTimer.start();
