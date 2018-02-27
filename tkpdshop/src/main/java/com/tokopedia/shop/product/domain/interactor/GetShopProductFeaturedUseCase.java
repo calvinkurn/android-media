@@ -47,16 +47,20 @@ public class GetShopProductFeaturedUseCase extends UseCase<List<ShopProductViewM
         return getFeatureProductListUseCase.createObservable(GetFeatureProductListUseCase.createRequestParam(shopId)).flatMap(new Func1<List<GMFeaturedProduct>, Observable<List<ShopProductViewModel>>>() {
             @Override
             public Observable<List<ShopProductViewModel>> call(final List<GMFeaturedProduct> gmFeaturedProductList) {
-                List<String> productIdList = new ArrayList<>();
-                for (GMFeaturedProduct gmFeaturedProduct : gmFeaturedProductList) {
-                    productIdList.add(gmFeaturedProduct.getProductId());
-                }
-                return getWishListUseCase.createObservable(GetWishListUseCase.createRequestParam(userSession.getUserId(), productIdList)).flatMap(new Func1<List<String>, Observable<List<ShopProductViewModel>>>() {
-                    @Override
-                    public Observable<List<ShopProductViewModel>> call(List<String> productWishList) {
-                        return Observable.just(shopProductMapper.convertFromProductFeatured(gmFeaturedProductList, productWishList));
+                if (gmFeaturedProductList.size() > 0) {
+                    List<String> productIdList = new ArrayList<>();
+                    for (GMFeaturedProduct gmFeaturedProduct : gmFeaturedProductList) {
+                        productIdList.add(gmFeaturedProduct.getProductId());
                     }
-                });
+                    return getWishListUseCase.createObservable(GetWishListUseCase.createRequestParam(userSession.getUserId(), productIdList)).flatMap(new Func1<List<String>, Observable<List<ShopProductViewModel>>>() {
+                        @Override
+                        public Observable<List<ShopProductViewModel>> call(List<String> productWishList) {
+                            return Observable.just(shopProductMapper.convertFromProductFeatured(gmFeaturedProductList, productWishList));
+                        }
+                    });
+                } else {
+                    return Observable.just(shopProductMapper.convertFromProductFeatured(gmFeaturedProductList, new ArrayList<String>()));
+                }
             }
         });
     }

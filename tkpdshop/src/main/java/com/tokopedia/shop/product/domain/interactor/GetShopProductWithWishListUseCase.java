@@ -48,21 +48,29 @@ public class GetShopProductWithWishListUseCase extends UseCase<PagingList<ShopPr
         return getShopProductListUseCase.createObservable(GetShopProductListUseCase.createRequestParam(shopProductRequestModel)).flatMap(new Func1<PagingList<ShopProduct>, Observable<PagingList<ShopProductViewModel>>>() {
             @Override
             public Observable<PagingList<ShopProductViewModel>> call(final PagingList<ShopProduct> shopProductPagingList) {
-                List<String> productIdList = new ArrayList<>();
-                for (ShopProduct shopProduct : shopProductPagingList.getList()) {
-                    productIdList.add(shopProduct.getProductId());
-                }
-                return getWishListUseCase.createObservable(GetWishListUseCase.createRequestParam(userSession.getUserId(), productIdList)).flatMap(new Func1<List<String>, Observable<PagingList<ShopProductViewModel>>>() {
-                    @Override
-                    public Observable<PagingList<ShopProductViewModel>> call(List<String> productWishList) {
-                        PagingList<ShopProductViewModel> pagingList = new PagingList<>();
-                        pagingList.setTotalData(shopProductPagingList.getTotalData());
-                        pagingList.setList(shopProductMapper.convertFromShopProduct(shopProductPagingList.getList(), productWishList));
-                        return Observable.just(pagingList);
+                if (shopProductPagingList.getList().size() > 0) {
+                    final List<String> productIdList = new ArrayList<>();
+                    for (ShopProduct shopProduct : shopProductPagingList.getList()) {
+                        productIdList.add(shopProduct.getProductId());
                     }
-                });
+                    return getWishListUseCase.createObservable(GetWishListUseCase.createRequestParam(userSession.getUserId(), productIdList)).flatMap(new Func1<List<String>, Observable<PagingList<ShopProductViewModel>>>() {
+                        @Override
+                        public Observable<PagingList<ShopProductViewModel>> call(List<String> productWishList) {
+                            return getShopProductViewModelList(shopProductPagingList, productIdList);
+                        }
+                    });
+                } else {
+                    return getShopProductViewModelList(shopProductPagingList, new ArrayList<String>());
+                }
             }
         });
+    }
+
+    private Observable<PagingList<ShopProductViewModel>> getShopProductViewModelList(PagingList<ShopProduct> shopProductPagingList, List<String> productIdList) {
+        PagingList<ShopProductViewModel> pagingList = new PagingList<>();
+        pagingList.setTotalData(shopProductPagingList.getTotalData());
+        pagingList.setList(shopProductMapper.convertFromShopProduct(shopProductPagingList.getList(), productIdList));
+        return Observable.just(pagingList);
     }
 
     public static RequestParams createRequestParam(ShopProductRequestModel shopProductRequestModel) {
