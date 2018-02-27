@@ -533,7 +533,17 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     }
 
     private void renderDropshipperView(CourierItemData courierItemData) {
-        if (courierItemData.isAllowDropshiper()) {
+        // The next 1 line is temporary
+        courierItemData.setAllowDropshiper(true);
+        if (presenter.getShipmentDetailData().isUseDropshipper() != null) {
+            renderDropshipperInput(presenter.getShipmentDetailData().isUseDropshipper());
+        } else {
+            renderDropshipperInput(courierItemData.isAllowDropshiper());
+        }
+    }
+
+    private void renderDropshipperInput(boolean visible) {
+        if (visible) {
             llDropshipper.setVisibility(View.VISIBLE);
             separatorPartialOrder.setVisibility(View.VISIBLE);
         } else {
@@ -628,6 +638,22 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
 
     @OnClick(R2.id.bt_save)
     void onSaveClick() {
+        if (!TextUtils.isEmpty(etShipperName.getText().toString())) {
+            presenter.getShipmentDetailData().setDropshipperName(etShipperName.getText().toString());
+        }
+        if (!TextUtils.isEmpty(etShipperPhone.getText().toString())) {
+            presenter.getShipmentDetailData().setDropshipperPhone(etShipperPhone.getText().toString());
+        }
+
+        if (!getLocalValidationResult()) {
+            Intent intentResult = new Intent();
+            intentResult.putExtra(EXTRA_SHIPMENT_DETAIL_DATA, presenter.getShipmentDetailData());
+            getActivity().setResult(Activity.RESULT_OK, intentResult);
+            getActivity().finish();
+        }
+    }
+
+    private boolean getLocalValidationResult() {
         boolean hasError = false;
         if (switchDropshipper.isChecked()) {
             if (TextUtils.isEmpty(etShipperName.getText().toString())) {
@@ -653,17 +679,12 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
                 hasError = true;
             }
         }
-
-        if (!hasError) {
-            Intent intentResult = new Intent();
-            intentResult.putExtra(EXTRA_SHIPMENT_DETAIL_DATA, presenter.getShipmentDetailData());
-            getActivity().setResult(Activity.RESULT_OK, intentResult);
-            getActivity().finish();
-        }
+        return hasError;
     }
 
     @OnCheckedChanged(R2.id.switch_insurance)
     void onSwitchInsuranceChanged(CompoundButton view, boolean checked) {
+        presenter.getShipmentDetailData().setUseInsurance(checked);
         if (checked) {
             llInsuranceFee.setVisibility(View.VISIBLE);
             if (presenter.getSelectedCourier().getInsuranceType() ==
@@ -710,11 +731,12 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
 
     @OnCheckedChanged(R2.id.switch_partly_accept)
     void onSwitchPartlyAcceptChanged(CompoundButton view, boolean checked) {
-
+        presenter.getShipmentDetailData().setUsePartialOrder(checked);
     }
 
     @OnCheckedChanged(R2.id.switch_dropshipper)
     void onSwitchDropshipperChanged(CompoundButton view, boolean checked) {
+        presenter.getShipmentDetailData().setUseDropshipper(checked);
         if (checked) {
             llDropshipperInfo.setVisibility(View.VISIBLE);
         } else {
@@ -762,6 +784,19 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         renderAdditionalPriceView(courierItemData);
         renderDropshipperView(courierItemData);
         updateFeesGroupLayout();
+        if (presenter.getShipmentDetailData().isUseDropshipper() != null) {
+            switchDropshipper.setChecked(presenter.getShipmentDetailData().isUseDropshipper());
+            if (presenter.getShipmentDetailData().isUseDropshipper()) {
+                etShipperName.setText(presenter.getShipmentDetailData().getDropshipperName());
+                etShipperPhone.setText(presenter.getShipmentDetailData().getDropshipperPhone());
+            }
+        }
+        if (presenter.getShipmentDetailData().isUseInsurance() != null) {
+            switchInsurance.setChecked(presenter.getShipmentDetailData().isUseInsurance());
+        }
+        if (presenter.getShipmentDetailData().isUsePartialOrder() != null) {
+            switchPartlyAccept.setChecked(presenter.getShipmentDetailData().isUsePartialOrder());
+        }
     }
 
     @Override
