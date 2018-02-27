@@ -1,9 +1,8 @@
 package com.tokopedia.tkpdcontent.common.data.source.api;
 
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
-import com.tokopedia.tkpdcontent.feature.profile.data.pojo.GetProfileKolRequest;
+import com.tokopedia.abstraction.common.data.model.request.GraphqlRequest;
 import com.tokopedia.tkpdcontent.feature.profile.data.pojo.GetProfileKolResponse;
-import com.tokopedia.tkpdcontent.feature.profile.data.pojo.ProfileKolData;
 
 import retrofit2.Response;
 import retrofit2.http.Body;
@@ -19,5 +18,5 @@ public interface KolApi {
     @POST("./")
     @Headers({"Content-Type: application/json"})
     Observable<Response<GraphqlResponse<GetProfileKolResponse>>>
-    getProfileKolData(@Body GetProfileKolRequest requestBody);
+    getProfileKolData(@Body GraphqlRequest requestBody);
 }

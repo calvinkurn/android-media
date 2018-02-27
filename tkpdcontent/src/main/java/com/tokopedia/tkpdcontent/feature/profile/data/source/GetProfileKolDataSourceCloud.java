@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.tkpdcontent.R;
 import com.tokopedia.tkpdcontent.common.data.source.api.KolApi;
 import com.tokopedia.tkpdcontent.feature.profile.data.mapper.GetProfileKolDataMapper;
-import com.tokopedia.tkpdcontent.feature.profile.data.pojo.GetProfileKolRequest;
+import com.tokopedia.abstraction.common.data.model.request.GraphqlRequest;
 import com.tokopedia.tkpdcontent.feature.profile.domain.model.KolProfileModel;
 import com.tokopedia.usecase.RequestParams;
 
@@ -54,13 +54,13 @@ public class GetProfileKolDataSourceCloud {
     }
 
 
-    private GetProfileKolRequest getRequestPayload(RequestParams requestParams) {
+    private GraphqlRequest getRequestPayload(RequestParams requestParams) {
         HashMap<String, Object> variables = new HashMap<>();
         variables.put(PARAM_USER_ID, requestParams.getInt(PARAM_USER_ID, 0));
         variables.put(PARAM_CURSOR, requestParams.getString(PARAM_CURSOR, ""));
         variables.put(PARAM_LIMIT, requestParams.getInt(PARAM_LIMIT, KOL_POST_LIMIT));
 
-        return new GetProfileKolRequest(
+        return new GraphqlRequest(
                 loadRawString(context.getResources(), R.raw.query_get_profile_kol_data),
                 variables
         );
