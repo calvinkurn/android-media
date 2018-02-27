@@ -130,6 +130,10 @@ public class SpinnerCounterInputView extends BaseCustomView {
         return counterInputView;
     }
 
+    public SpinnerTextView getSpinnerTextView() {
+        return spinnerTextView;
+    }
+
     public void setOnItemClickListener(AdapterView.OnItemClickListener onItemClickListener) {
         spinnerTextView.setOnItemClickListener(onItemClickListener);
     }

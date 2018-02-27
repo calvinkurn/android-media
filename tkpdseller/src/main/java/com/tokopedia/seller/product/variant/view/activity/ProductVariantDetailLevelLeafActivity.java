@@ -76,6 +76,11 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
     }
 
     @Override
+    public int getCurrencyTypeDef() {
+        return currencyType;
+    }
+
+    @Override
     public ProductVariantCombinationViewModel getProductVariantCombinationViewModel() {
         return productVariantCombinationViewModel;
     }
@@ -144,6 +149,7 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
 //        setResult(Activity.RESULT_OK, intent);
 //        finish();
 //    }
+
 
     @Override
     protected boolean isToolbarWhite() {

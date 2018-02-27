@@ -16,6 +16,7 @@ import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.common.widget.VerticalLabelView;
+import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardNewViewModel;
 
@@ -43,6 +44,7 @@ public class ProductVariantDetailLeafFragment extends Fragment
         void onSubmitVariant();
         ProductVariantCombinationViewModel getProductVariantCombinationViewModel();
         String getVariantName();
+        @CurrencyTypeDef int getCurrencyTypeDef();
     }
 
     public static ProductVariantDetailLeafFragment newInstance() {
@@ -86,6 +88,7 @@ public class ProductVariantDetailLeafFragment extends Fragment
         lvTitle = view.findViewById(R.id.lv_title);
         labelSwitchStatus = (LabelSwitch) view.findViewById(R.id.label_switch_product_status);
         spinnerCounterInputView = view.findViewById(R.id.spinner_counter_input_view_price);
+
 
         lvTitle.setTitle(listener.getVariantName());
         lvTitle.setSummary(productVariantCombinationViewModel.getLeafString());
