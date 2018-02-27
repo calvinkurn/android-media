@@ -46,5 +46,5 @@ public interface SellerModuleRouter {
 
     void sendEventTracking(String event, String category, String action, String label);
 
-    void goToCreateTopadsPromo(Activity activity, String productId, String sourceCreateTopadsManageProduct);
+    void goToCreateTopadsPromo(Context context, String productId, String sourceCreateTopadsManageProduct);
 }
