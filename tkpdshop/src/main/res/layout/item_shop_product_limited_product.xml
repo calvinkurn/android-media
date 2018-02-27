@@ -3,14 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
-    android:background="@color/background_apps"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/background_apps"
     android:orientation="vertical">
 
-    <TextView
-        style="@style/TextView"
-        android:text="@string/shop_page_label_featured_product" />
+    <com.tokopedia.design.label.LabelView
+        android:id="@+id/label_view_choose_etalase"
+        style="@style/LabelLayout"
+        app:lv_content="@string/shop_info_label_choose_etalase"
+        app:lv_content_color="@color/tkpd_main_green"
+        app:lv_title="@string/shop_info_default_etalase_title"
+        app:lv_title_text_style="bold" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"

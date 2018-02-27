@@ -45,6 +45,7 @@
     <string name="shop_info_physical_shop_location_only_online">Hanya Online</string>
     <string name="shop_info_success_percentage">%1$s%%</string>
     <string name="shop_info_label_default_content">-</string>
+    <string name="shop_info_label_choose_etalase">Pilih Etalase</string>
 
     <string name="product_label_variant">Varian</string>
     <string name="product_manage_item_cashback">Cashback %1$d%%</string>
