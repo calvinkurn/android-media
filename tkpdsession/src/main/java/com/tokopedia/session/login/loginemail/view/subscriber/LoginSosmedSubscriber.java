@@ -2,6 +2,7 @@ package com.tokopedia.session.login.loginemail.view.subscriber;
 
 import android.text.TextUtils;
 
+import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.network.ErrorCode;
@@ -39,6 +40,14 @@ public class LoginSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
                 && e.getLocalizedMessage().toLowerCase().contains(NOT_ACTIVATED)
                 && !TextUtils.isEmpty(email)) {
             view.onGoToActivationPage(email);
+        } else if (e instanceof RuntimeException && e.getLocalizedMessage() != null && !e.getLocalizedMessage().isEmpty()) {
+            int code = Integer.parseInt(e.getLocalizedMessage());
+            if (code == ResponseStatus.SC_FORBIDDEN) {
+                view.onForbidden();
+            } else {
+                view.dismissLoadingLogin();
+                view.onErrorLogin(ErrorHandler.getErrorMessageWithErrorCode(view.getContext(), e));
+            }
         } else {
             view.dismissLoadingLogin();
             view.onErrorLogin(ErrorHandler.getErrorMessageWithErrorCode(view.getContext(), e));

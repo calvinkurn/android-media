@@ -1,5 +1,6 @@
 package com.tokopedia.session.login.loginphonenumber.view.subscriber;
 
+import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.session.R;
 import com.tokopedia.session.login.loginphonenumber.view.viewlistener.LoginPhoneNumber;
@@ -29,7 +30,16 @@ public class CheckMsisdnTokoCashSubscriber extends Subscriber<CheckMsisdnTokoCas
     @Override
     public void onError(Throwable e) {
         view.dismissLoading();
-        view.showErrorPhoneNumber(ErrorHandler.getErrorMessage(e));
+        if (e instanceof RuntimeException && e.getLocalizedMessage() != null && !e.getLocalizedMessage().isEmpty()) {
+            int code = Integer.parseInt(e.getLocalizedMessage());
+            if (code == ResponseStatus.SC_FORBIDDEN) {
+                view.onForbidden();
+            } else {
+                view.showErrorPhoneNumber(ErrorHandler.getErrorMessage(e));
+            }
+        } else {
+            view.showErrorPhoneNumber(ErrorHandler.getErrorMessage(e));
+        }
     }
 
     @Override

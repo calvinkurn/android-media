@@ -1,5 +1,6 @@
 package com.tokopedia.session.register.view.subscriber.registerinitial;
 
+import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.network.ErrorCode;
@@ -31,7 +32,16 @@ public class RegisterSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
     @Override
     public void onError(Throwable e) {
         viewListener.dismissProgressBar();
-        viewListener.onErrorRegisterSosmed(ErrorHandler.getErrorMessage(e));
+        if (e instanceof RuntimeException && e.getLocalizedMessage() != null && !e.getLocalizedMessage().isEmpty()) {
+            int code = Integer.parseInt(e.getLocalizedMessage());
+            if (code == ResponseStatus.SC_FORBIDDEN) {
+                viewListener.onForbidden();
+            } else {
+                viewListener.onErrorRegisterSosmed(ErrorHandler.getErrorMessage(e));
+            }
+        } else {
+            viewListener.onErrorRegisterSosmed(ErrorHandler.getErrorMessage(e));
+        }
     }
 
     @Override

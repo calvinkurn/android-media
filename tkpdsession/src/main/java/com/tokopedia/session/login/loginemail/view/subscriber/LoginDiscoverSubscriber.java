@@ -13,6 +13,7 @@ import rx.Subscriber;
  */
 
 public class LoginDiscoverSubscriber extends Subscriber<DiscoverViewModel> {
+
     private final Login.View view;
 
     public LoginDiscoverSubscriber(Login.View view) {
@@ -34,6 +35,7 @@ public class LoginDiscoverSubscriber extends Subscriber<DiscoverViewModel> {
             } else {
                 view.onErrorDiscoverLogin(ErrorHandler.getErrorMessageWithErrorCode(view.getContext(), e));
             }
+        } else {
             view.onErrorDiscoverLogin(ErrorHandler.getErrorMessageWithErrorCode(view.getContext(), e));
         }
     }

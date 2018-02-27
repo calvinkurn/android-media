@@ -1,5 +1,6 @@
 package com.tokopedia.session.login.loginphonenumber.view.subscriber;
 
+import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.network.ErrorCode;
 import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.LoginTokoCashViewModel;
@@ -32,7 +33,16 @@ public class LoginTokoCashSubscriber extends Subscriber<LoginTokoCashViewModel> 
     @Override
     public void onError(Throwable e) {
         view.dismissLoadingProgress();
-        view.onErrorLoginTokoCash(ErrorHandler.getErrorMessageWithErrorCode(view.getContext(), e));
+        if (e instanceof RuntimeException && e.getLocalizedMessage() != null && !e.getLocalizedMessage().isEmpty()) {
+            int code = Integer.parseInt(e.getLocalizedMessage());
+            if (code == ResponseStatus.SC_FORBIDDEN) {
+                view.onForbidden();
+            } else {
+                view.onErrorLoginTokoCash(ErrorHandler.getErrorMessageWithErrorCode((view.getContext(), e));
+            }
+        } else {
+            view.onErrorLoginTokoCash(ErrorHandler.getErrorMessageWithErrorCode((view.getContext(), e));
+        }
     }
 
     @Override
