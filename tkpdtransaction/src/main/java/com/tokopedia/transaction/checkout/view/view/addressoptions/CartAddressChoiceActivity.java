@@ -49,7 +49,7 @@ public class CartAddressChoiceActivity extends BasePresenterActivity implements 
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-
+        this.typeRequest = extras.getInt(EXTRA_TYPE_REQUEST);
     }
 
     @Override
