@@ -535,8 +535,8 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     private void renderDropshipperView(CourierItemData courierItemData) {
         // The next 1 line is temporary
         courierItemData.setAllowDropshiper(true);
-        if (presenter.getShipmentDetailData().isUseDropshipper() != null) {
-            renderDropshipperInput(presenter.getShipmentDetailData().isUseDropshipper());
+        if (presenter.getShipmentDetailData().getUseDropshipper() != null) {
+            renderDropshipperInput(presenter.getShipmentDetailData().getUseDropshipper());
         } else {
             renderDropshipperInput(courierItemData.isAllowDropshiper());
         }
@@ -751,6 +751,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
                 presenter.getSelectedCourier().getShipperProductId() !=
                         courierItemData.getShipperProductId()) {
             resetView();
+            resetSwitch();
             presenter.setSelectedCourier(courierItemData);
             presenter.getShipmentDetailData().getShipmentCartData().setDeliveryPriceTotal(
                     courierItemData.getDeliveryPrice() + courierItemData.getAdditionalPrice());
@@ -771,6 +772,14 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         }
     }
 
+    private void resetSwitch() {
+        presenter.getShipmentDetailData().setUseDropshipper(null);
+        presenter.getShipmentDetailData().setUseInsurance(null);
+        presenter.getShipmentDetailData().setUsePartialOrder(null);
+        presenter.getShipmentDetailData().setDropshipperName(null);
+        presenter.getShipmentDetailData().setDropshipperPhone(null);
+    }
+
     @Override
     public void onSelectedCourierItemLoaded(CourierItemData courierItemData) {
         setText(tvDeliveryFeeTotal, currencyId.format(
@@ -784,18 +793,18 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         renderAdditionalPriceView(courierItemData);
         renderDropshipperView(courierItemData);
         updateFeesGroupLayout();
-        if (presenter.getShipmentDetailData().isUseDropshipper() != null) {
-            switchDropshipper.setChecked(presenter.getShipmentDetailData().isUseDropshipper());
-            if (presenter.getShipmentDetailData().isUseDropshipper()) {
+        if (presenter.getShipmentDetailData().getUseDropshipper() != null) {
+            switchDropshipper.setChecked(presenter.getShipmentDetailData().getUseDropshipper());
+            if (presenter.getShipmentDetailData().getUseDropshipper()) {
                 etShipperName.setText(presenter.getShipmentDetailData().getDropshipperName());
                 etShipperPhone.setText(presenter.getShipmentDetailData().getDropshipperPhone());
             }
         }
-        if (presenter.getShipmentDetailData().isUseInsurance() != null) {
-            switchInsurance.setChecked(presenter.getShipmentDetailData().isUseInsurance());
+        if (presenter.getShipmentDetailData().getUseInsurance() != null) {
+            switchInsurance.setChecked(presenter.getShipmentDetailData().getUseInsurance());
         }
-        if (presenter.getShipmentDetailData().isUsePartialOrder() != null) {
-            switchPartlyAccept.setChecked(presenter.getShipmentDetailData().isUsePartialOrder());
+        if (presenter.getShipmentDetailData().getUsePartialOrder() != null) {
+            switchPartlyAccept.setChecked(presenter.getShipmentDetailData().getUsePartialOrder());
         }
     }
 

@@ -440,7 +440,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/margin_vs"
                             android:imeOptions="actionNext"
-                            android:inputType="textPersonName"
+                            android:inputType="textCapWords"
                             android:textSize="@dimen/font_small" />
                     </android.support.design.widget.TextInputLayout>
 
@@ -455,7 +455,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/margin_vs"
-                            android:imeOptions="actionNext"
+                            android:imeOptions="actionDone"
                             android:inputType="phone"
                             android:textSize="@dimen/font_small" />
                     </android.support.design.widget.TextInputLayout>

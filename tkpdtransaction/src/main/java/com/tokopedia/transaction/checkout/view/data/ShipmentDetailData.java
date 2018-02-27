@@ -93,27 +93,27 @@ public class ShipmentDetailData implements Parcelable {
         this.selectedCourier = selectedCourier;
     }
 
-    public Boolean isUseInsurance() {
+    public Boolean getUseInsurance() {
         return useInsurance;
     }
 
-    public void setUseInsurance(boolean useInsurance) {
+    public void setUseInsurance(Boolean useInsurance) {
         this.useInsurance = useInsurance;
     }
 
-    public Boolean isUsePartialOrder() {
+    public Boolean getUsePartialOrder() {
         return usePartialOrder;
     }
 
-    public void setUsePartialOrder(boolean usePartialOrder) {
+    public void setUsePartialOrder(Boolean usePartialOrder) {
         this.usePartialOrder = usePartialOrder;
     }
 
-    public Boolean isUseDropshipper() {
+    public Boolean getUseDropshipper() {
         return useDropshipper;
     }
 
-    public void setUseDropshipper(boolean useDropshipper) {
+    public void setUseDropshipper(Boolean useDropshipper) {
         this.useDropshipper = useDropshipper;
     }
 
