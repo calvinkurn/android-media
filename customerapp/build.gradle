@@ -86,7 +86,7 @@ android {
 
     project.ext {
         defaultVersionCode = 218001101;
-        defaultVersionName = "2.20";
+        defaultVersionName = "2.18";
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -273,6 +273,7 @@ dependencies {
     compile project(':tkpdpdp')
     compile project(':tkpdfeed')
     compile project(':tkpdreactnative')
+    compile project(':tkpdevents')
     compile project(':tkpdloyalty')
     compile project(':tkpdreputation')
     compile project(':tkpdtokocash')
