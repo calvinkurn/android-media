@@ -25,6 +25,7 @@ import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
+import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.PasswordGenerator.PGListener;
@@ -203,16 +204,17 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
 
     private void handleBranchDefferedDeeplink() {
         Branch branch = Branch.getInstance();
-        if (branch == null){
+        if (branch == null) {
             moveToHome();
-        }else {
+        } else {
             branch.setRequestMetadata("$google_analytics_client_id", TrackingUtils.getClientID());
             branch.initSession(new Branch.BranchReferralInitListener() {
                 @Override
                 public void onInitFinished(JSONObject referringParams, BranchError error) {
                     if (error == null) {
-                        CommonUtils.dumper(referringParams.toString());
                         try {
+                            BranchSdkUtils.storeWebToAppPromoCodeIfExist(referringParams,SplashScreen.this);
+
                             String deeplink = referringParams.getString("$android_deeplink_path");
                             Uri uri = Uri.parse(Constants.Schemes.APPLINKS + "://" + deeplink);
                             Intent intent = new Intent(Intent.ACTION_VIEW);

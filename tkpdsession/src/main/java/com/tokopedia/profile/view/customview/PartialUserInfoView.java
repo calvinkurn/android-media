@@ -28,11 +28,6 @@ public class PartialUserInfoView extends BaseCustomView {
     private ImageView ivStatusInfo;
     private ImageView ivReputationInfo;
 
-    private Boolean isVerified;
-    private String reputationSummaryScore;
-    private String reputationPositiveScore;
-    private String reputationNegativeScore;
-    private String reputationNetralScore;
 
 
     public PartialUserInfoView(@NonNull Context context) {
@@ -42,10 +37,12 @@ public class PartialUserInfoView extends BaseCustomView {
 
     public PartialUserInfoView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
     public PartialUserInfoView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init();
     }
 
     @Override
@@ -68,6 +65,11 @@ public class PartialUserInfoView extends BaseCustomView {
         super.dispatchSaveInstanceState(container);
     }
 
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+    }
+
     private void init() {
         View view = inflate(getContext(), R.layout.partial_profile_user_info, this);
         partialUserStatus = view.findViewById(R.id.rl_partial_status);
@@ -80,36 +82,21 @@ public class PartialUserInfoView extends BaseCustomView {
     }
 
     public void renderData(TopProfileViewModel model){
-        partialUserStatus.setVisibility(model.isVerified() ? VISIBLE : GONE);
+        this.setVisibility(VISIBLE);
+
+        partialUserStatus.setVisibility(model.isPhoneVerified() && model.isEmailVerified() ? VISIBLE : GONE);
+
+        tvReputationSummaryScore.setVisibility(VISIBLE);
         tvReputationSummaryScore.setText(model.getSummaryScore());
+
+        tvReputationPositiveScore.setVisibility(VISIBLE);
         tvReputationPositiveScore.setText(model.getPositiveScore());
+
+        tvReputationNetralScore.setVisibility(VISIBLE);
         tvReputationNetralScore.setText(model.getNetralScore());
+
+        tvReputationNegativeScore.setVisibility(VISIBLE);
         tvReputationNegativeScore.setText(model.getNegativeScore());
     }
 
-    public void setVerified(Boolean isVerified) {
-        this.isVerified = isVerified;
-    }
-
-    public void setReputationSummaryScore(String summaryScore) {
-        this.reputationSummaryScore = summaryScore;
-    }
-
-    public void setReputationPositiveScore(String positiveScore) {
-        this.reputationPositiveScore = positiveScore;
-    }
-
-    public void setReputationNetralScore(String netralScore) {
-        this.reputationNetralScore = netralScore;
-    }
-
-    public void setReputationNegativeScore(String negativeScore) {
-        this.reputationNegativeScore = negativeScore;
-    }
-
-    public void buildView() {
-        if (isVerified) {
-            partialUserStatus.setVisibility(VISIBLE);
-        }
-    }
 }

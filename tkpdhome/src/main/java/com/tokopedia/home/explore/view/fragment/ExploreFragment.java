@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.home.SimpleWebViewActivity;
+import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
@@ -177,6 +178,11 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
                         HomePageTracking.AJUKAN_INI_ITU_CLICK,
                         data.getName()
                 );
+            case TYPE_JUAL:
+                HomePageTracking.eventClickExplorerItem(
+                        HomePageTracking.JUAL_INI_ITU_CLICK,
+                        data.getName()
+                );
                 break;
         }
     }
@@ -193,7 +199,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
         String shopId = SessionHandler.getShopID(getContext());
         if (!shopId.equals("0")) {
             HomePageTracking.eventClickEditShop();
-            onGoToShop(shopId);
+            onGoToShopSetting();
         } else {
             HomePageTracking.eventClickOpenShop();
             onGoToCreateShop();
@@ -220,7 +226,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
 
     private void openWebViewGimicURL(String url, String label, String title) {
         if (!url.equals("")) {
-            Intent intent = SimpleWebViewActivity.getIntent(getActivity(), url);
+            Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(getActivity(), url);
             intent.putExtra(BannerWebView.EXTRA_TITLE, title);
             startActivity(intent);
             UnifyTracking.eventHomeGimmick(label);
@@ -234,19 +240,18 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
             if (!shopId.equals("0")) {
                 onGoToShop(shopId);
             } else {
+                HomePageTracking.eventClickOpenShop();
                 onGoToCreateShop();
             }
         } else {
+            HomePageTracking.eventClickOpenShop();
             onGoToLogin();
         }
     }
 
     private void onGoToLogin() {
         Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getLoginIntent(getContext());
-        Intent targetIntent = new Intent(getActivity(), ExploreActivity.class);
-        targetIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        getActivity().startActivities(new Intent[]{targetIntent, intent});
-        getActivity().finish();
+        getActivity().startActivityForResult(intent, ExploreActivity.REQUEST_LOGIN);
     }
 
     private void onGoToCreateShop() {
@@ -258,6 +263,12 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     private void onGoToShop(String shopId) {
         Intent intent = new Intent(getContext(), ShopInfoActivity.class);
         intent.putExtras(ShopInfoActivity.createBundle(shopId, ""));
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        getActivity().startActivity(intent);
+    }
+
+    private void onGoToShopSetting() {
+        Intent intent = SellerRouter.getActivityManageShop(getActivity());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         getActivity().startActivity(intent);
     }

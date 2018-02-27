@@ -312,10 +312,12 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     }
 
     private void showEmptyState(String message, NetworkErrorHelper.RetryClickedListener listener) {
-        if (message != null) {
-            NetworkErrorHelper.showEmptyState(getActivity(), getView(), message, listener);
-        } else {
-            NetworkErrorHelper.showEmptyState(getActivity(), getView(), listener);
+        if (getActivity() != null) {
+            if (message != null) {
+                NetworkErrorHelper.showEmptyState(getActivity(), getView(), message, listener);
+            } else {
+                NetworkErrorHelper.showEmptyState(getActivity(), getView(), listener);
+            }
         }
     }
 
