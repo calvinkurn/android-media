@@ -31,6 +31,7 @@ import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
+import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
@@ -707,7 +708,7 @@ public class ProductListFragment extends SearchSectionFragment
     @Override
     protected void openFilterActivity() {
         if (isFilterDataAvailable()) {
-            String preFilteredSc = getSearchParameter().getDepartmentId();
+            /*String preFilteredSc = getSearchParameter().getDepartmentId();
             if (!TextUtils.isEmpty(preFilteredSc)) {
                 addPreFilteredCategory(preFilteredSc);
             }
@@ -715,7 +716,8 @@ public class ProductListFragment extends SearchSectionFragment
                     getActivity(), getScreenNameId(), getFlagFilterHelper()
             );
             startActivityForResult(intent, getFilterRequestCode());
-            getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
+            getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);*/
+            ((SearchActivity) getActivity()).launchFilterBottomSheet(getFilters());
         } else {
             NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.error_filter_data_not_ready));
         }
