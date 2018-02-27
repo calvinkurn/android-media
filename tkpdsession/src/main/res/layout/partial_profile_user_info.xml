@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/partial_profile_user_data"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -20,7 +20,7 @@
             android:layout_marginBottom="@dimen/margin_sm"
             android:lineSpacingExtra="8sp"
             android:text="@string/title_user_information"
-            android:textColor="@color/bottom_sheet_item_text_color"
+            android:textColor="@color/font_black_primary_70"
             android:textSize="@dimen/font_small"
             android:textStyle="bold" />
 
@@ -46,7 +46,7 @@
                     android:layout_marginEnd="@dimen/margin_vs"
                     android:layout_marginRight="@dimen/margin_vs"
                     android:text="@string/title_user_information_status"
-                    android:textColor="@color/font_black_disabled_38"
+                    android:textColor="@color/font_black_secondary_54"
                     android:textSize="12sp"
                     android:textStyle="normal" />
 
@@ -67,7 +67,7 @@
                 android:layout_marginTop="@dimen/margin_vs"
                 android:lineSpacingExtra="@dimen/line_spacing_6"
                 android:text="@string/status_verified"
-                android:textColor="@color/bottom_sheet_item_text_color"
+                android:textColor="@color/font_black_primary_70"
                 android:textSize="@dimen/text_size_16"
                 android:textStyle="italic" />
 
@@ -99,7 +99,7 @@
                     android:layout_marginEnd="@dimen/margin_vs"
                     android:layout_marginRight="@dimen/margin_vs"
                     android:text="@string/title_reputation"
-                    android:textColor="@color/font_black_disabled_38"
+                    android:textColor="@color/black_54"
                     android:textSize="12sp"
                     android:textStyle="normal" />
 
@@ -118,7 +118,8 @@
                 android:layout_below="@+id/ll_reputation_title"
                 android:layout_marginTop="8dp"
                 android:gravity="center_horizontal"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="visible">
 
 
                 <LinearLayout
@@ -128,8 +129,8 @@
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="44dp"
                     android:layout_marginTop="13dp"
-
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="visible">
 
                     <ImageView
                         android:id="@+id/iv_reputation_summary"
@@ -143,7 +144,9 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="10dp"
+                        android:textColor="@color/font_black_secondary_54"
                         android:textSize="@dimen/font_sub_headline"
+                        android:textStyle="bold"
                         tools:text="97%" />
                 </LinearLayout>
 
@@ -160,7 +163,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:visibility="visible">
 
                         <ImageView
                             android:id="@+id/iv_reputation_positive"
@@ -173,7 +177,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/reputation_positive"
-                            android:textColor="@color/colorSheetTitle"
+                            android:textColor="@color/font_black_secondary_54"
                             android:textSize="@dimen/text_size_14"
                             android:textStyle="normal" />
 
@@ -183,6 +187,8 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="end"
                             android:gravity="end"
+                            android:textColor="@color/font_black_secondary_54"
+                            android:textStyle="normal"
                             tools:text="32" />
                     </LinearLayout>
 
@@ -192,7 +198,8 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/ll_reputation_positive"
                         android:layout_marginBottom="8dp"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:visibility="visible">
 
                         <ImageView
                             android:layout_width="20dp"
@@ -204,7 +211,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/reputation_netral"
-                            android:textColor="@color/colorSheetTitle"
+                            android:textColor="@color/font_black_secondary_54"
                             android:textSize="@dimen/text_size_14"
                             android:textStyle="normal" />
 
@@ -214,6 +221,8 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="end"
                             android:gravity="end"
+                            android:textColor="@color/font_black_secondary_54"
+                            android:textStyle="normal"
                             tools:text="2" />
                     </LinearLayout>
 
@@ -221,7 +230,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/ll_reputation_netral"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:visibility="visible">
 
                         <ImageView
                             android:layout_width="20dp"
@@ -233,7 +243,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/reputation_negative"
-                            android:textColor="@color/colorSheetTitle"
+                            android:textColor="@color/font_black_secondary_54"
                             android:textSize="@dimen/text_size_14"
                             android:textStyle="normal" />
 
@@ -243,6 +253,8 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="end"
                             android:gravity="end"
+                            android:textColor="@color/font_black_secondary_54"
+                            android:textStyle="normal"
                             tools:text="0" />
                     </LinearLayout>
 

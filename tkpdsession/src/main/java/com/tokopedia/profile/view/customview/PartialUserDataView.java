@@ -1,12 +1,16 @@
 package com.tokopedia.profile.view.customview;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.Html;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -25,12 +29,15 @@ public class PartialUserDataView extends BaseCustomView {
     RelativeLayout partialEmail;
     RelativeLayout partialGender;
     RelativeLayout partialBirthDate;
+    TextView tvIncompleteProfile;
     TextView verifiedPhoneNumber;
     TextView verifiedEmail;
     TextView dataPhoneNumber;
     TextView dataEmail;
     TextView dataGender;
     TextView dataBirthDate;
+    TextView progressText;
+    ProgressBar progressBar;
 
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
@@ -54,10 +61,12 @@ public class PartialUserDataView extends BaseCustomView {
 
     public PartialUserDataView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init();
     }
 
     public PartialUserDataView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
     public PartialUserDataView(@NonNull Context context) {
@@ -68,6 +77,7 @@ public class PartialUserDataView extends BaseCustomView {
     private void init() {
         View view = inflate(getContext(), R.layout.partial_profile_user_data, this);
         bannerIncompleteProfile = view.findViewById(R.id.rl_incomplete_profile);
+        tvIncompleteProfile = view.findViewById(R.id.tv_incomplete_profile);
         partialPhoneNumber = view.findViewById(R.id.rl_phone_number);
         partialEmail = view.findViewById(R.id.rl_email);
         partialGender = view.findViewById(R.id.rl_gender);
@@ -78,6 +88,8 @@ public class PartialUserDataView extends BaseCustomView {
         dataEmail = view.findViewById(R.id.tv_email);
         dataGender = view.findViewById(R.id.tv_gender);
         dataBirthDate = view.findViewById(R.id.tv_birth_date);
+        progressText = view.findViewById(R.id.tv_progress);
+        progressBar = view.findViewById(R.id.circular_progress_bar);
 
         bannerIncompleteProfile.setVisibility(GONE);
         partialPhoneNumber.setVisibility(GONE);
@@ -92,9 +104,14 @@ public class PartialUserDataView extends BaseCustomView {
     }
 
     public void renderData(TopProfileViewModel model) {
-        init();
         if (model.getCompletion() < 100) {
             bannerIncompleteProfile.setVisibility(VISIBLE);
+            tvIncompleteProfile.setText(Html.fromHtml(this.getContext().getString(R.string.incomplete_profile_html)));
+            ObjectAnimator animation = ObjectAnimator.ofInt(progressBar, "progress", 0, model.getCompletion());
+            animation.setDuration(1000);
+            animation.setInterpolator(new DecelerateInterpolator());
+            animation.start();
+            progressText.setText(model.getCompletion().toString() + "%");
         }
         if (!model.getPhoneNumber().equals("")) {
             partialPhoneNumber.setVisibility(VISIBLE);
@@ -112,7 +129,7 @@ public class PartialUserDataView extends BaseCustomView {
         }
         if (!model.getBirthDate().equals("")) {
             partialBirthDate.setVisibility(VISIBLE);
-            dataBirthDate.setText(model.getGender());
+            dataBirthDate.setText(model.getBirthDate());
         }
 
         if (!model.getGender().equals("")) {

@@ -190,10 +190,12 @@
     <string name="title_user_data">Data Diri</string>
     <string name="subtitle_user_data">Info ini hanya bisa dilihat oleh Anda</string>
     <string name="incomplete_profile">Lengkapi data diri Anda untuk menjadi Verified Account. Klik di sini</string>
-    <string name="incomplete_profile_html"><![CDATA[Lengkapi data diri Anda untuk menjadi<br>Verified Account</br>. <font color = "#42b549">Klik di sini</font>]]></string>
+    <string name="incomplete_profile_html"><![CDATA[Lengkapi data diri Anda untuk menjadi <i>Verified Account</i>. <br><font color = "#42b549">Lengkapi Sekarang</font></br>]]></string>
     <string name="title_email">Email</string>
     <string name="title_gender">Jenis Kelamin</string>
     <string name="title_birth_date">Tanggal Lahir</string>
     <string name="data_verified">Terverifikasi</string>
+    <string name="fav_shop">Favoritkan</string>
+    <string name="shop_info_title">Informasi Toko</string>
 
 </resources>

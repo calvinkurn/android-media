@@ -36,8 +36,18 @@ public class TopProfileViewModel {
     private String shopLastOnline;
     private String shopAppLink;
 
+    private boolean isUser;
+
     public TopProfileViewModel() {
 
+    }
+
+    public Boolean getIsUser() {
+        return this.isUser;
+    }
+
+    public void setIsUser(boolean isUser) {
+        this.isUser = isUser;
     }
 
     public String getUserId() {
@@ -144,11 +154,11 @@ public class TopProfileViewModel {
         this.birthDate = birthDate;
     }
 
-    public Integer getCompletion(){
+    public Integer getCompletion() {
         return completion;
     }
 
-    public void setCompletion(Integer completion){
+    public void setCompletion(Integer completion) {
         this.completion = completion;
     }
 
