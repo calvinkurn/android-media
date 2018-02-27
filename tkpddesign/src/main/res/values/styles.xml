@@ -129,7 +129,7 @@
     </style>
 
     <style name="Button.Primary.Medium">
-        <item name="android:textSize">@dimen/font_medium</item>
+        <item name="android:textSize">@dimen/font_smaller</item>
         <item name="android:layout_height">@dimen/new_margin_lilbig</item>
     </style>
 
@@ -144,7 +144,7 @@
     </style>
 
     <style name="Button.Secondary.Medium">
-        <item name="android:textSize">@dimen/font_medium</item>
+        <item name="android:textSize">@dimen/font_smaller</item>
         <item name="android:layout_height">@dimen/new_margin_lilbig</item>
     </style>
 
@@ -159,7 +159,7 @@
     </style>
 
     <style name="Button.Disable.Medium">
-        <item name="android:textSize">@dimen/font_medium</item>
+        <item name="android:textSize">@dimen/font_smaller</item>
         <item name="android:layout_height">@dimen/new_margin_lilbig</item>
     </style>
 

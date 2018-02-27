@@ -137,6 +137,12 @@
             android:label="@string/title_verify"
             android:screenOrientation="portrait"
             />
+        <activity
+            android:name=".login.loginemail.view.activity.ForbiddenActivity"
+            android:label="@string/title_activity_forbidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
         <!-- ======================================================= -->
         <!-- RECEIVERS REGISTRY -->
         <!-- ======================================================= -->

@@ -43,9 +43,6 @@ public class LoginTokoCashSubscriber extends Subscriber<LoginTokoCashViewModel> 
         } else {
             view.onErrorLoginTokoCash(ErrorHandler.getErrorMessageWithErrorCode((view.getContext()), e));
         }
-
-        view.dismissLoadingProgress();
-        view.onErrorLoginTokoCash(ErrorHandler.getErrorMessageWithErrorCode(view.getContext(), e));
     }
 
     @Override

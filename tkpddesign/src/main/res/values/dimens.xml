@@ -8,7 +8,7 @@
     <dimen name="font_title_big">20sp</dimen>
     <dimen name="font_title">16sp</dimen>
     <dimen name="font_small">14sp</dimen>
-    <dimen name="font_medium">13sp</dimen>
+    <dimen name="font_smaller">13sp</dimen>
     <dimen name="font_micro">12sp</dimen>
     <dimen name="font_tiny">11sp</dimen>
     <dimen name="font_nano">8sp</dimen>

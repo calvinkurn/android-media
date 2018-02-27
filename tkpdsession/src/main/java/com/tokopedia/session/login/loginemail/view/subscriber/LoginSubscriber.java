@@ -42,6 +42,7 @@ public class LoginSubscriber extends Subscriber<LoginEmailDomain> {
         } else if (e instanceof RuntimeException && e.getLocalizedMessage() != null && !e.getLocalizedMessage().isEmpty()) {
             int code = Integer.parseInt(e.getLocalizedMessage());
             if (code == ResponseStatus.SC_FORBIDDEN) {
+                view.dismissLoadingLogin();
                 view.onForbidden();
             } else {
                 view.dismissLoadingLogin();

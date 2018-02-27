@@ -43,6 +43,12 @@ public class ForbiddenFragment extends TkpdBaseV4Fragment {
         title.setText(MethodChecker.fromHtml(getString(R.string.forbidden_title)));
         desc.setText(MethodChecker.fromHtml(getString(R.string.forbidden_msg)));
         btnRetry.setText(R.string.forbidden_button);
+        btnRetry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().finish();
+            }
+        });
 
     }
 
