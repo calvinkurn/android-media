@@ -16,9 +16,13 @@ public interface FlightBookingListPassengerContract {
         void setPassengerViewModelList(List<FlightBookingPassengerViewModel> passengerViewModelList);
 
         void renderPassengerList();
+
+        FlightBookingPassengerViewModel getCurrentPassenger();
     }
 
     interface Presenter {
         void onViewCreated();
+
+        boolean isPassengerSame(FlightBookingPassengerViewModel selectedPassenger);
     }
 }

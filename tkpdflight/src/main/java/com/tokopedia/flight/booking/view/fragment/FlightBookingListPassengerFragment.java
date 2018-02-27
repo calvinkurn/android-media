@@ -93,7 +93,7 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
 
     @Override
     public boolean isItemChecked(FlightBookingPassengerViewModel selectedItem) {
-        return false;
+        return presenter.isPassengerSame(selectedItem);
     }
 
     @Override
@@ -103,14 +103,12 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
 
     @Override
     public void onItemClicked(FlightBookingPassengerViewModel flightBookingPassengerViewModel) {
-
+        selectedPassenger = flightBookingPassengerViewModel;
+        getAdapter().notifyDataSetChanged();
     }
 
     @Override
     public void loadData(int page) {
-        if (page == -1) {
-            renderList(flightBookingPassengerViewModelList);
-        }
     }
 
     @Override
@@ -130,6 +128,11 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
 
     @Override
     public void renderPassengerList() {
-        loadData(-1);
+        renderList(flightBookingPassengerViewModelList);
+    }
+
+    @Override
+    public FlightBookingPassengerViewModel getCurrentPassenger() {
+        return selectedPassenger;
     }
 }

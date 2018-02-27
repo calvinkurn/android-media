@@ -29,6 +29,40 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
         getSavedPassengerList();
     }
 
+    @Override
+    public boolean isPassengerSame(FlightBookingPassengerViewModel selectedPassenger) {
+        FlightBookingPassengerViewModel currentPassenger = getView().getCurrentPassenger();
+
+        if (currentPassenger.getPassengerId() != null &&
+                selectedPassenger.getPassengerId() != null) {
+            if (currentPassenger.getPassengerId()
+                    .equals(selectedPassenger.getPassengerId())) {
+                return true;
+            }
+        }
+
+        if (currentPassenger.getPassengerBirthdate() != null &&
+                selectedPassenger.getPassengerBirthdate() != null) {
+            if (currentPassenger.getPassengerBirthdate()
+                    .equals(selectedPassenger.getPassengerBirthdate()) &&
+                currentPassenger.getPassengerFirstName()
+                    .equals(selectedPassenger.getPassengerFirstName()) &&
+                currentPassenger.getPassengerLastName()
+                    .equals(selectedPassenger.getPassengerLastName())) {
+                return true;
+            }
+        }
+
+        if (currentPassenger.getPassengerFirstName()
+                .equals(selectedPassenger.getPassengerFirstName()) &&
+            currentPassenger.getPassengerLastName()
+                .equals(selectedPassenger.getPassengerLastName())) {
+            return true;
+        }
+
+        return false;
+    }
+
     private void getSavedPassengerList() {
         flightBookingGetSavedPassengerUseCase.execute(
                 flightBookingGetSavedPassengerUseCase.createEmptyRequestParams(),
@@ -39,8 +73,8 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
                     }
 
                     @Override
-                    public void onError(Throwable throwable) {
-
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
                     }
 
                     @Override
