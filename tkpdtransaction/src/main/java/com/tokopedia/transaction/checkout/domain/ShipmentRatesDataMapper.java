@@ -6,8 +6,11 @@ import com.tokopedia.transaction.checkout.domain.response.rates.RatesResponse;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.view.data.CourierItemData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressShipmentAdapterData;
+import com.tokopedia.transaction.checkout.view.data.ShipmentCartData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
+import com.tokopedia.transaction.checkout.view.data.cartshipmentform.ShipProd;
+import com.tokopedia.transaction.checkout.view.data.cartshipmentform.ShopShipment;
 
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -38,23 +41,53 @@ public class ShipmentRatesDataMapper {
         if (shipmentDetailData == null) {
             shipmentDetailData = new ShipmentDetailData();
         }
-        shipmentDetailData.setShipmentItemData(getShipmentItemDataList(ratesResponse));
+        shipmentDetailData.setShipmentItemData(getShipmentItemDataList(shipmentDetailData, ratesResponse));
 
         return shipmentDetailData;
     }
 
-    private List<ShipmentItemData> getShipmentItemDataList(RatesResponse ratesResponse) {
+    private List<ShipmentItemData> getShipmentItemDataList(ShipmentDetailData shipmentDetailData,
+                                                           RatesResponse ratesResponse) {
         List<ShipmentItemData> shipmentItemDataList = new ArrayList<>();
         for (Attribute attribute : ratesResponse.getData().getAttributes()) {
-            shipmentItemDataList.add(getShipmentItemData(attribute));
+            ShipmentItemData shipmentItemData = null;
+
+            if (shipmentDetailData.getShipmentCartData() == null) {
+                ShipmentCartData shipmentCartData = new ShipmentCartData();
+                shipmentDetailData.setShipmentCartData(shipmentCartData);
+                shipmentCartData.setShopShipments(new ArrayList<ShopShipment>());
+            } else {
+                if (shipmentDetailData.getShipmentCartData().getShopShipments() == null) {
+                    shipmentDetailData.getShipmentCartData().setShopShipments(new ArrayList<ShopShipment>());
+                }
+            }
+
+            for (ShopShipment shopShipment : shipmentDetailData.getShipmentCartData().getShopShipments()) {
+                if (attribute.getServiceId() == shopShipment.getShipId()) {
+                    shipmentItemData = getShipmentItemData(shopShipment, attribute);
+                    break;
+                }
+            }
+
+            if (shipmentDetailData.getShipmentCartData() != null &&
+                    shipmentDetailData.getShipmentCartData().getShopShipments() != null) {
+                for (ShopShipment shopShipment : shipmentDetailData.getShipmentCartData().getShopShipments()) {
+                    if (shipmentItemData != null && shopShipment.getShipId() == shipmentItemData.getServiceId()) {
+                        shipmentItemData.setAllowDropshiper(shopShipment.isDropshipEnabled());
+                        break;
+                    }
+                }
+            }
+            shipmentItemDataList.add(shipmentItemData);
         }
         return shipmentItemDataList;
     }
 
-    private ShipmentItemData getShipmentItemData(Attribute attribute) {
+    private ShipmentItemData getShipmentItemData(ShopShipment shopShipment, Attribute attribute) {
         ShipmentItemData shipmentItemData = new ShipmentItemData();
         shipmentItemData.setServiceId(attribute.getServiceId());
-        shipmentItemData.setCourierItemData(getCourierItemDataList(attribute.getProducts()));
+        shipmentItemData.setCourierItemData(getCourierItemDataList(
+                shopShipment.getShipProds(), attribute.getProducts()));
         shipmentItemData.setServiceId(attribute.getServiceId());
         shipmentItemData.setType(WordUtils.capitalize(attribute.getShipperName()));
         getPriceRange(shipmentItemData, attribute);
@@ -100,15 +133,19 @@ public class ShipmentRatesDataMapper {
         }
     }
 
-    private List<CourierItemData> getCourierItemDataList(List<Product> products) {
+    private List<CourierItemData> getCourierItemDataList(List<ShipProd> shipProds, List<Product> products) {
         List<CourierItemData> courierItemDataList = new ArrayList<>();
         for (Product product : products) {
-            courierItemDataList.add(getCourierItemData(product));
+            for (ShipProd shipProd : shipProds) {
+                if (shipProd.getShipProdId() == product.getShipperProductId()) {
+                    courierItemDataList.add(getCourierItemData(shipProd, product));
+                }
+            }
         }
         return courierItemDataList;
     }
 
-    private CourierItemData getCourierItemData(Product product) {
+    private CourierItemData getCourierItemData(ShipProd shipProd, Product product) {
         CourierItemData courierItemData = new CourierItemData();
         courierItemData.setUsePinPoint(product.getIsShowMap() == 1);
         courierItemData.setName(product.getShipperName() + " " + product.getShipperProductName());
@@ -126,11 +163,10 @@ public class ShipmentRatesDataMapper {
             courierItemData.setEstimatedDayDelivery(product.getEtd());
         }
         courierItemData.setSelected(false);
+        courierItemData.setAdditionalPrice(shipProd.getAdditionalFee());
 
         // No Data
 //        courierItemData.setDeliverySchedule();
-//        courierItemData.setAdditionalPrice();
-//        courierItemData.setAllowDropshiper();
 //        courierItemData.setCourierInfo();
 
         return courierItemData;
