@@ -133,9 +133,6 @@ public class WelcomeFragment extends BaseDaggerFragment implements
 
     private void prepareView() {
 
-
-        login.setImageNextToText();
-
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

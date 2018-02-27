@@ -66,13 +66,11 @@ public class GetHomeFeedsSubscriber extends Subscriber<FeedResult> {
 
         if (feedResult.isHasNext()) {
             viewListener.updateCursor(getCurrentCursor(feedResult));
+        } else {
+            viewListener.updateCursorNoNextPageFeed();
         }
 
         viewListener.onSuccessGetFeed(list);
-
-        if (!feedResult.isHasNext()) {
-            viewListener.unsetEndlessScroll();
-        }
     }
 
     private ArrayList<Visitable> convertToViewModel(FeedDomain feedDomain) {
@@ -95,8 +93,6 @@ public class GetHomeFeedsSubscriber extends Subscriber<FeedResult> {
                                 && !inspirationViewModel.getListProduct().isEmpty()) {
 
                             positionFeedProductCard++;
-                            String eventLabel = String.format("%s - %s", "rekomendasi untuk anda", inspirationViewModel.getSource());
-                            inspirationViewModel.setEventLabel(eventLabel);
                             inspirationViewModel.setPositionFeedCard(positionFeedProductCard);
 
                             listFeedView.add(inspirationViewModel);
@@ -145,13 +141,16 @@ public class GetHomeFeedsSubscriber extends Subscriber<FeedResult> {
 
     private InspirationProductViewModel convertToRecommendationViewModel(
             InspirationItemDomain recommendationDomain) {
-        return new InspirationProductViewModel(recommendationDomain.getId(),
+        return new InspirationProductViewModel(
+                recommendationDomain.getId(),
                 recommendationDomain.getName(),
                 recommendationDomain.getPrice(),
                 recommendationDomain.getImageUrl(),
                 recommendationDomain.getUrl(),
                 page,
-                recommendationDomain.getPriceInt());
+                recommendationDomain.getPriceInt(),
+                recommendationDomain.getRecommendationType()
+        );
     }
 
     private String getCurrentCursor(FeedResult feedResult) {

@@ -82,10 +82,15 @@ public class AttachmentChatHelper {
                 }
             });
 
+            String imageUrl = attachment.getAttributes().getImageUrl();
+            if(attachment.getAttributes().getThumbnail()!=null){
+                imageUrl = attachment.getAttributes().getThumbnail();
+            }
+
             if(dummy) {
-                ImageHandler.loadImageChatBlurred(view, attachment.getAttributes().getImageUrl());
+                ImageHandler.loadImageChatBlurred(view, imageUrl);
             }else {
-                ImageHandler.loadImageChat(view, attachment.getAttributes().getImageUrl());
+                ImageHandler.loadImageChat(view, imageUrl);
                 setVisibility(progressBarSendImage, View.GONE);
             }
             message.setVisibility(View.GONE);

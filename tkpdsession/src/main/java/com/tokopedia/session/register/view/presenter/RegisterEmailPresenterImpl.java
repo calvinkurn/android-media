@@ -6,6 +6,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.network.ErrorCode;
 import com.tokopedia.session.register.RegisterConstant;
 import com.tokopedia.session.register.data.model.RegisterViewModel;
@@ -93,6 +94,7 @@ public class RegisterEmailPresenterImpl implements RegisterEmailPresenter, Regis
 
         if (registerViewModel != null) {
             UnifyTracking.eventMoRegister(registerViewModel.getName(), registerViewModel.getPhone());
+            BranchSdkUtils.sendRegisterEvent(registerViewModel.getEmail(),registerViewModel.getPhone());
         }
     }
 

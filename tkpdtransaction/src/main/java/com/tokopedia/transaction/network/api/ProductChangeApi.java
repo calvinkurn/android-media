@@ -1,9 +1,11 @@
 package com.tokopedia.transaction.network.api;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 
 import java.util.Map;
 
+import retrofit2.Response;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
@@ -17,7 +19,7 @@ public interface ProductChangeApi {
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Product.PATH_EDIT_WEIGHT_PRICE)
-    Observable<String> editWeightPrice(@FieldMap Map<String, String> params);
+    Observable<Response<TkpdResponse>> editWeightPrice(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Product.PATH_EDIT_DESCRIPTION)
