@@ -21,13 +21,15 @@ public class SavedPassengerViewModelMapper {
 
     public FlightBookingPassengerViewModel transform(SavedPassengerEntity savedPassengerEntity) {
         FlightBookingPassengerViewModel flightBookingPassengerViewModel = new FlightBookingPassengerViewModel();
-        flightBookingPassengerViewModel.setPassengerBirthdate(
-                FlightDateUtil.formatDate(
-                        FlightDateUtil.FORMAT_DATE_API,
-                        FlightDateUtil.DEFAULT_FORMAT,
-                        savedPassengerEntity.getPassengerAttribute().getDob()
-                )
-        );
+        if (savedPassengerEntity.getPassengerAttribute().getDob() != null) {
+            flightBookingPassengerViewModel.setPassengerBirthdate(
+                    FlightDateUtil.formatDate(
+                            FlightDateUtil.FORMAT_DATE_API,
+                            FlightDateUtil.DEFAULT_FORMAT,
+                            savedPassengerEntity.getPassengerAttribute().getDob()
+                    )
+            );
+        }
         flightBookingPassengerViewModel.setPassengerFirstName(savedPassengerEntity.getPassengerAttribute().getFirstName());
         flightBookingPassengerViewModel.setPassengerLastName(savedPassengerEntity.getPassengerAttribute().getLastName());
         flightBookingPassengerViewModel.setPassengerTitleId(savedPassengerEntity.getPassengerAttribute().getTitle());
