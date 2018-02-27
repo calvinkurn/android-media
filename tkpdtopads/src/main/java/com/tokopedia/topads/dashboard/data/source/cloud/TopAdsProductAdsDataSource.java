@@ -46,7 +46,7 @@ public class TopAdsProductAdsDataSource {
         return topAdsManagementApi.editProductAd(getSaveProductDetailRequest(topAdsDetailProductDomainModel)).map(topAdsDetailProductMapper);
     }
 
-    public Observable<TopAdsDetailProductDomainModel> createDetailProductList(List<TopAdsDetailProductDomainModel> topAdsDetailProductDomainModels){
+    public Observable<TopAdsDetailProductDomainModel> createDetailProductList(List<TopAdsDetailProductDomainModel> topAdsDetailProductDomainModels, String source){
         return topAdsManagementApi.createProductAd(getSaveProductDetailRequestList(topAdsDetailProductDomainModels)).map(topAdsDetailProductMapper);
     }
 

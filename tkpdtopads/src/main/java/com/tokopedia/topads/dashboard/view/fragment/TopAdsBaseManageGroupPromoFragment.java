@@ -58,6 +58,7 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
     private ProgressDialog progressDialog;
 
     protected String itemIdToAdd;
+    protected String source;
 
     protected boolean isRetainInstance() {
         return false;
@@ -83,6 +84,7 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
     protected void setupArguments(Bundle arguments) {
         if (arguments!= null) {
             itemIdToAdd = arguments.getString(TopAdsExtraConstant.EXTRA_ITEM_ID);
+            source = arguments.getString(TopAdsExtraConstant.EXTRA_SOURCE, "");
         }
     }
 

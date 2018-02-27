@@ -18,5 +18,5 @@ public interface TopAdsProductAdsRepository {
     Observable<ProductAdBulkAction> moveProductGroup(String adId, String groupId, String shopId);
 
 
-    Observable<TopAdsDetailProductDomainModel> saveDetailListProduct(List<TopAdsDetailProductDomainModel> topAdsDetailProductDomainModels);
+    Observable<TopAdsDetailProductDomainModel> saveDetailListProduct(List<TopAdsDetailProductDomainModel> topAdsDetailProductDomainModels, String source);
 }

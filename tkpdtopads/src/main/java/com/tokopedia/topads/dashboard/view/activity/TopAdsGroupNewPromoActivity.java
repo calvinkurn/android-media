@@ -12,6 +12,7 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.utils.ApplinkUtils;
+import com.tokopedia.core.network.entity.topads.TopAds;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
@@ -61,17 +62,26 @@ public class TopAdsGroupNewPromoActivity extends BaseSimpleActivity {
         }
     }
 
+    public static Intent createIntent(Context context, String itemId, String source){
+        Intent intent = getCallingIntent(context);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, itemId);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_SOURCE, source);
+        return intent;
+    }
+
     public static Intent getCallingIntent(Context context) {
         return new Intent(context, TopAdsGroupNewPromoActivity.class);
     }
 
     // from deeplink
     String itemId;
+    String source;
 
     private void initFromIntent() {
         Intent intent = getIntent();
         if (intent != null) {
             itemId = intent.getStringExtra(TopAdsExtraConstant.EXTRA_ITEM_ID);
+            source = intent.getStringExtra(TopAdsExtraConstant.EXTRA_SOURCE);
         }
     }
 
@@ -117,7 +127,7 @@ public class TopAdsGroupNewPromoActivity extends BaseSimpleActivity {
     @Override
     protected Fragment getNewFragment() {
         initFromIntent();
-        return TopAdsGroupNewPromoFragment.createInstance(itemId);
+        return TopAdsGroupNewPromoFragment.createInstance(itemId, source);
     }
 
     @Override

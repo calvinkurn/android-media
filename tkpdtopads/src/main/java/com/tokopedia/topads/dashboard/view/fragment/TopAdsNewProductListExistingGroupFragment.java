@@ -54,7 +54,7 @@ public class TopAdsNewProductListExistingGroupFragment extends TopAdsNewProductL
     @Override
     protected void goToNextPage() {
         UnifyTracking.eventTopAdsProductAddPromoExistingGroupStep1();
-        daggerPresenter.saveAdExisting(stepperModel.getGroupId(), stepperModel.getTopAdsProductViewModels());
+        daggerPresenter.saveAdExisting(stepperModel.getGroupId(), stepperModel.getTopAdsProductViewModels(), stepperModel.getSource());
     }
 
 

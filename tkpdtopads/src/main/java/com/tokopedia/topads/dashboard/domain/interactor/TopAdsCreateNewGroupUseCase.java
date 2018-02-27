@@ -7,6 +7,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.data.model.request.AdCreateGroupRequest;
 import com.tokopedia.topads.dashboard.data.model.request.CreateGroupRequest;
@@ -108,11 +109,13 @@ public class TopAdsCreateNewGroupUseCase extends UseCase<TopAdsDetailGroupViewMo
 
     public static RequestParams createRequestParams(String groupName,
                                                     TopAdsDetailGroupViewModel topAdsDetailProductViewModel,
-                                                    List<TopAdsProductViewModel> topAdsProductViewModelList) {
+                                                    List<TopAdsProductViewModel> topAdsProductViewModelList,
+                                                    String source) {
         RequestParams params = RequestParams.create();
         params.putString(REQ_GROUP_NAME, groupName);
         params.putObject(REQ_GROUP_VIEW_MODEL, topAdsDetailProductViewModel);
         params.putObject(REQ_PRODUCT_LIST, topAdsProductViewModelList);
+        params.putString(TopAdsExtraConstant.EXTRA_SOURCE, source);
         return params;
     }
 }
