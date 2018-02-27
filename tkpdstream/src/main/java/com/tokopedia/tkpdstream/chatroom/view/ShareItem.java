@@ -1,10 +1,10 @@
-package com.tokopedia.core.widgets;
+package com.tokopedia.tkpdstream.chatroom.view;
 
 import android.graphics.drawable.Drawable;
 import android.view.View;
 
 /**
- * @author by StevenFredian on 2/21/17.
+ * @author by stevenfredian on 2/21/17.
  */
 
 public class ShareItem {

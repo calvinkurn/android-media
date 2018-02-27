@@ -10,11 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.channel.data.analytics.ChannelAnalytics;
@@ -48,8 +51,6 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     @Inject
     ChannelPresenter presenter;
 
-    private CloseableBottomSheetDialog channelInfoDialog;
-
     public static Fragment createInstance(Bundle bundle) {
         return new ChannelFragment();
     }
@@ -76,13 +77,9 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_channel_list, container, false);
-        init(view);
         return view;
     }
 
-    private void init(View view) {
-        channelInfoDialog = CloseableBottomSheetDialog.createInstance(getActivity());
-    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -168,27 +165,12 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
 
     @Override
     public void onItemClicked(ChannelViewModel channelViewModel) {
+        goToChannel(channelViewModel);
 
-        channelInfoDialog.setContentView(createBottomSheetView(channelViewModel));
-        channelInfoDialog.show();
-
-    }
-
-    private View createBottomSheetView(final ChannelViewModel channelViewModel) {
-        View view = getLayoutInflater().inflate(R.layout.channel_info_bottom_sheet_dialog, null);
-        Button actionButton = view.findViewById(R.id.action_button);
-        actionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToChannel(channelViewModel);
-            }
-        });
-        actionButton.setText("Ikutan Vote Yuk!");
-        return view;
     }
 
     private void goToChannel(ChannelViewModel channelViewModel) {
-        startActivityForResult(GroupChatActivity.getCallingIntent(getActivity()),
+        startActivityForResult(GroupChatActivity.getCallingIntent(getActivity(), channelViewModel),
                 REQUEST_OPEN_GROUPCHAT);
     }
 
