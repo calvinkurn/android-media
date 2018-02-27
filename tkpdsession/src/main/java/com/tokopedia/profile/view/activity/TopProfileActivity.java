@@ -13,9 +13,9 @@ import android.view.MenuItem;
 
 import com.tokopedia.abstraction.base.view.activity.BaseEmptyActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.design.tab.Tabs;
 import com.tokopedia.profile.view.adapter.ProfileTabPagerAdapter;
 import com.tokopedia.profile.view.fragment.TopProfileFragment;
-import com.tokopedia.profile.view.fragment.TopProfileFragmenta;
 import com.tokopedia.profile.view.viewmodel.ProfileSectionItem;
 import com.tokopedia.session.R;
 
@@ -32,7 +32,7 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private Toolbar toolbar;
 
-    private TabLayout tabLayout;
+    private Tabs tabLayout;
     private ViewPager viewPager;
 
     public static Intent newInstance(Context context) {
@@ -45,7 +45,7 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
         appBarLayout = findViewById(R.id.app_bar_layout);
         collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
         toolbar = findViewById(R.id.toolbar);
-        tabLayout =findViewById(R.id.indicator);
+        tabLayout =findViewById(R.id.tab_profile);
         viewPager = findViewById(R.id.pager);
         setupToolbar();
         loadSection();
@@ -109,9 +109,7 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
         List<ProfileSectionItem> profileSectionItemList = new ArrayList<>();
 
         TopProfileFragment fragment = TopProfileFragment.newInstance();
-        TopProfileFragmenta fragmenta = TopProfileFragmenta.newInstance();
         profileSectionItemList.add(new ProfileSectionItem("Profil", fragment));
-        profileSectionItemList.add(new ProfileSectionItem("KOL", fragmenta));
 
         ProfileTabPagerAdapter profileTabPagerAdapter = new ProfileTabPagerAdapter(getSupportFragmentManager());
         profileTabPagerAdapter.setItemList(profileSectionItemList);

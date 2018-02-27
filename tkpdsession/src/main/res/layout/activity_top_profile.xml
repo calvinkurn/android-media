@@ -42,6 +42,13 @@
             <!--app:tabIndicatorColor="@color/tkpd_green_header"-->
             <!--app:tabMode="fixed"-->
             <!--app:tabSelectedTextColor="@color/tkpd_green_header" />-->
+
+            <com.tokopedia.design.tab.Tabs
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tab_profile"
+                app:tabType="secondary"
+                app:tabTextAppearance="@style/Tabs.Secondary"/>
             <include layout="@layout/layout_tab_indicator_light" />
 
         </android.support.design.widget.AppBarLayout>
