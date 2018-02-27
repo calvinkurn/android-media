@@ -38,11 +38,14 @@ public class LoginTokoCashSubscriber extends Subscriber<LoginTokoCashViewModel> 
             if (code == ResponseStatus.SC_FORBIDDEN) {
                 view.onForbidden();
             } else {
-                view.onErrorLoginTokoCash(ErrorHandler.getErrorMessageWithErrorCode((view.getContext(), e));
+                view.onErrorLoginTokoCash(ErrorHandler.getErrorMessageWithErrorCode((view.getContext()), e));
             }
         } else {
-            view.onErrorLoginTokoCash(ErrorHandler.getErrorMessageWithErrorCode((view.getContext(), e));
+            view.onErrorLoginTokoCash(ErrorHandler.getErrorMessageWithErrorCode((view.getContext()), e));
         }
+
+        view.dismissLoadingProgress();
+        view.onErrorLoginTokoCash(ErrorHandler.getErrorMessageWithErrorCode(view.getContext(), e));
     }
 
     @Override

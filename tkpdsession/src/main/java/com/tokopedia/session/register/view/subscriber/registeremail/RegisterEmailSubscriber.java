@@ -1,6 +1,6 @@
 package com.tokopedia.session.register.view.subscriber.registeremail;
 
-import com.tokopedia.core.network.retrofit.response.ResponseStatus;
+import  com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.network.ErrorMessageException;
 import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.session.R;
@@ -40,7 +40,7 @@ public class RegisterEmailSubscriber extends Subscriber<RegisterEmailModel> {
             if (code == ResponseStatus.SC_FORBIDDEN) {
                 viewListener.onForbidden();
             } else {
-                viewListener.onErrorRegister(ErrorHandler.getErrorMessageWithErrorCode(viewListener.getContext(), e));
+                viewListener.onErrorRegister(ErrorHandler.getErrorMessageWithErrorCode(viewListener.getActivity(), e));
             }
         } else {
             viewListener.onErrorRegister(
