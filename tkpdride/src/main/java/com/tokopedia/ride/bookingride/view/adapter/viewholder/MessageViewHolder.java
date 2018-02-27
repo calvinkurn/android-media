@@ -1,13 +1,15 @@
-package com.tokopedia.ride.chat.utils;
+package com.tokopedia.ride.bookingride.view.adapter.viewholder;
 
 import android.content.Context;
 import android.view.View;
+
+import com.tokopedia.ride.chat.utils.MessageView;
 
 /**
  * Created by sachinbansal on 2/13/18.
  */
 
-class MessageViewHolder {
+public class MessageViewHolder {
     public final int STATUS_SENT = 0;
     public final int STATUS_RECEIVED = 1;
 

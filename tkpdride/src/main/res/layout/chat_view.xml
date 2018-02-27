@@ -18,16 +18,14 @@
         android:stackFromBottom="false"
         android:transcriptMode="alwaysScroll" />
 
-    <com.tokopedia.ride.chat.utils.FloatingActionButton
+    <com.tokopedia.design.button.FloatingButton
         android:id="@+id/sendButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        tools:src="@drawable/ic_send_white_24dp">
-
-    </com.tokopedia.ride.chat.utils.FloatingActionButton>
+        tools:src="@drawable/ic_send_white_24dp" />
 
 
     <android.support.v7.widget.CardView

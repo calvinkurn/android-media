@@ -22,7 +22,7 @@
             android:name=".bookingride.view.activity.RideHomeActivity"
             android:theme="@style/AppTheme.Ride.NoActionBar"></activity>
         <activity
-            android:name=".bookingride.view.activity.SMSChatActivity"
+            android:name=".bookingride.view.activity.UberSMSChatActivity"
             android:theme="@style/AppTheme.Ride.NoActionBar">
         </activity>
         <activity

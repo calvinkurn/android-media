@@ -1,4 +1,4 @@
-package com.tokopedia.ride.chat.utils;
+package com.tokopedia.ride.bookingride.view.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,6 +8,11 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.bookingride.view.adapter.viewholder.MessageViewHolder;
+import com.tokopedia.ride.chat.utils.ChatMessage;
+import com.tokopedia.ride.chat.utils.ItemSentView;
+import com.tokopedia.ride.chat.utils.ViewBuilder;
+import com.tokopedia.ride.chat.utils.ViewBuilderInterface;
 
 import java.util.ArrayList;
 
@@ -29,7 +34,7 @@ public class ChatViewListAdapter extends BaseAdapter {
     private Context context;
     private LayoutInflater inflater;
 
-    ChatViewListAdapter(Context context, ViewBuilderInterface viewBuilder) {
+    public ChatViewListAdapter(Context context, ViewBuilderInterface viewBuilder) {
         this.chatMessages = new ArrayList<>();
         this.context = context;
         this.inflater = LayoutInflater.from(context);
@@ -147,28 +152,28 @@ public class ChatViewListAdapter extends BaseAdapter {
         return convertView;
     }
 
-    void addMessage(ChatMessage message) {
+    public void addMessage(ChatMessage message) {
         chatMessages.add(message);
         notifyDataSetChanged();
     }
 
-    void addMessages(ArrayList<ChatMessage> chatMessages) {
+    public void addMessages(ArrayList<ChatMessage> chatMessages) {
         this.chatMessages.addAll(chatMessages);
         notifyDataSetChanged();
     }
 
-    void removeMessage(int position) {
+    public void removeMessage(int position) {
         if (this.chatMessages.size() > position) {
             this.chatMessages.remove(position);
         }
     }
 
-    void clearMessages() {
+    public void clearMessages() {
         this.chatMessages.clear();
         notifyDataSetChanged();
     }
 
-    void setOnRetryTap(OnRetryTap onRetryTap) {
+    public void setOnRetryTap(OnRetryTap onRetryTap) {
         this.onRetryTap = onRetryTap;
     }
 

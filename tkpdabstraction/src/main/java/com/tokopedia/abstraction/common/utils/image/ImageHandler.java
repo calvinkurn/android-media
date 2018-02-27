@@ -58,7 +58,7 @@ public class ImageHandler {
      * @return
      * @throws IOException
      */
-    public static Bitmap RotatedBitmap (Bitmap bitmap, String file) throws IOException {
+    public static Bitmap RotatedBitmap(Bitmap bitmap, String file) throws IOException {
         ExifInterface exif = new ExifInterface(file);
         String orientString = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
         int orientation = orientString != null ? Integer.parseInt(orientString) : ExifInterface.ORIENTATION_NORMAL;
@@ -530,6 +530,21 @@ public class ImageHandler {
                 .error(R.drawable.error_drawable)
                 .centerCrop()
                 .into(imageView);
+    }
+
+    public static void loadUberDriverImage(final Context context, final ImageView imageView, int errorDrawable, String url) {
+        Glide.with(context).load(url)
+                .asBitmap()
+                .error(errorDrawable)
+                .into(new BitmapImageViewTarget(imageView) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        RoundedBitmapDrawable roundedBitmapDrawable =
+                                RoundedBitmapDrawableFactory.create(context.getResources(), resource);
+                        roundedBitmapDrawable.setCircular(true);
+                        imageView.setImageDrawable(roundedBitmapDrawable);
+                    }
+                });
     }
 
 }

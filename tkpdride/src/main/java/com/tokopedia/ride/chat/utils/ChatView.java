@@ -22,7 +22,9 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.design.button.FloatingButton;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.bookingride.view.adapter.ChatViewListAdapter;
 
 import java.util.ArrayList;
 
@@ -40,7 +42,7 @@ public class ChatView extends RelativeLayout {
     private EditText inputEditText;
 
     private ViewBuilderInterface viewBuilder;
-    private FloatingActionButton actionButton;
+    private FloatingButton actionButton;
     private boolean previousFocusState = false, useEditorAction, isTyping;
 
     private Runnable typingTimerRunnable = new Runnable() {
@@ -59,7 +61,6 @@ public class ChatView extends RelativeLayout {
 
     private int inputFrameBackgroundColor, backgroundColor;
     private int inputTextSize, inputTextColor, inputHintColor;
-    private int sendButtonBackgroundTint, sendButtonIconTint;
 
 
     private Drawable sendButtonIcon, buttonDrawable;
@@ -102,11 +103,10 @@ public class ChatView extends RelativeLayout {
     }
 
     private void initializeViews() {
-        chatListView = (ListView) findViewById(R.id.chat_list);
-        inputFrame = (CardView) findViewById(R.id.input_frame);
-        inputEditText = (EditText) findViewById(R.id.input_edit_text);
-//        actionsMenu = (FloatingActionsMenu) findViewById(R.id.sendButton);
-        actionButton = (FloatingActionButton) findViewById(R.id.sendButton);
+        chatListView = findViewById(R.id.chat_list);
+        inputFrame = findViewById(R.id.input_frame);
+        inputEditText = findViewById(R.id.input_edit_text);
+        actionButton = findViewById(R.id.sendButton);
     }
 
     private void getXMLAttributes(AttributeSet attrs, int defStyleAttr) {
@@ -190,8 +190,6 @@ public class ChatView extends RelativeLayout {
     }
 
     private void getAttributesForSendButton() {
-        sendButtonBackgroundTint = attributes.getColor(R.styleable.ChatView_sendBtnBackgroundTint, -1);
-        sendButtonIconTint = attributes.getColor(R.styleable.ChatView_sendBtnIconTint, Color.WHITE);
         sendButtonIcon = attributes.getDrawable(R.styleable.ChatView_sendBtnIcon);
     }
 
@@ -202,8 +200,8 @@ public class ChatView extends RelativeLayout {
         buttonDrawable = actionsMenu.getIconDrawable();
         actionsMenu.setButtonIconTint(sendButtonIconTint);*/
 
-        actionButton.setColorNormal(sendButtonBackgroundTint);
-        actionButton.setIconDrawable(sendButtonIcon);
+//        actionButton.setColorNormal(sendButtonBackgroundTint);
+//        actionButton.setIconDrawable(sendButtonIcon);
 
     }
 
@@ -423,10 +421,6 @@ public class ChatView extends RelativeLayout {
 
         chatViewListAdapter.setChatMessages(chatMessageArrayList);
     }
-
-    /*public FloatingActionsMenu getActionsMenu() {
-        return actionsMenu;
-    }*/
 
 
     public interface TypingListener {

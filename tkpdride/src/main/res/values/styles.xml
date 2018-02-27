@@ -59,8 +59,6 @@
 
         <!--<item name="sendBtnElevation">4dp</item>-->
         <item name="sendBtnIcon">@drawable/ic_send_white_24dp</item>
-        <item name="sendBtnIconTint">@color/white</item>
-        <item name="sendBtnBackgroundTint">?attr/colorAccent</item>
 
     </style>
 </resources>
