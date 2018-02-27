@@ -84,7 +84,7 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
                 super.onScrolled(recyclerView, dx, dy);
 
                 int topVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
-                if (topVisibleItemPosition <= adapter.getItemCount() - 1 &&
+                if (topVisibleItemPosition >= adapter.getItemCount() - 2 &&
                         !adapter.isLoading()) {
                     presenter.getKolPost(userId);
                 }
