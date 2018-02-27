@@ -45,14 +45,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.appsflyer.Jordan;
-import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -406,6 +402,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderCartListData(String keroToken, String ut, final List<CartItem> cartList) {
+        hasLogisticInsurance = false;
         cartItemAdapter = new CartItemAdapter(this, this);
         totalPaymentLoading.setVisibility(View.VISIBLE);
         cartItemAdapter.fillDataList(keroToken, cartList);
@@ -415,7 +412,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     private void setInsuranceTermsVisibility(CartCourierPrices cartCourierPrices) {
-        if (cartCourierPrices.getCartInsuranceProd() != 0) {
+        if (cartCourierPrices.getUseInsurance() != 0) {
             if (!hasLogisticInsurance &&
                     (cartCourierPrices.getInsuranceMode() == KeroppiConstants.InsuranceType.MUST ||
                             cartCourierPrices.getInsuranceMode() == KeroppiConstants.InsuranceType.OPTIONAL)) {
@@ -1251,4 +1248,9 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         return kursIndonesia.format(value);
     }
 
+    @Override
+    public void setListnerCancelPromoLayoutOnAutoApplyCode() {
+        cancelPromoLayout.setOnClickListener(onPromoCancelled());
+
+    }
 }

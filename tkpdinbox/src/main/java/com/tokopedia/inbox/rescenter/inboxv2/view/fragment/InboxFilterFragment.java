@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.util.MethodChecker;
@@ -35,6 +36,7 @@ public class InboxFilterFragment
 
     public static final String FORMAT_DATE = "dd/MM/yyyy";
     public static final String FORMAT_DATE_API = "dd/MM/yyyy hh:mm:ss";
+    private static final long ONE_DAY_IN_MILLIS = 86400000;
 
     private Button btnFinish;
     private EditText etDateFrom, etDateTo;
@@ -139,6 +141,7 @@ public class InboxFilterFragment
         etDateFrom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final long currentTime = System.currentTimeMillis();
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(inboxFilterModel.getDateFrom() != null ?
                         inboxFilterModel.getDateFrom() :
@@ -148,11 +151,25 @@ public class InboxFilterFragment
                             @Override
                             public void onDateUpdated(Date date) {
                                 super.onDateUpdated(date);
-                                inboxFilterModel.setDateFrom(date);
-                                updateView();
+                                if (date.getTime() > currentTime + ONE_DAY_IN_MILLIS) {
+                                    Toast.makeText(getContext(),
+                                            R.string.date_error_overflow,
+                                            Toast.LENGTH_SHORT)
+                                            .show();
+                                } else if (inboxFilterModel.getDateTo() != null &&
+                                        !isSameDay(date, inboxFilterModel.getDateTo()) &&
+                                        date.after(inboxFilterModel.getDateTo())) {
+                                    Toast.makeText(getContext(),
+                                            R.string.date_error,
+                                            Toast.LENGTH_SHORT)
+                                            .show();
+                                } else {
+                                    inboxFilterModel.setDateFrom(date);
+                                    updateView();
+                                }
                             }
                 });
-                dialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+                dialog.getDatePicker().setMaxDate(currentTime);
                 if (inboxFilterModel.getDateTo() != null) {
                     dialog.getDatePicker().setMaxDate(inboxFilterModel.getDateTo().getTime());
                 }
@@ -163,6 +180,7 @@ public class InboxFilterFragment
         etDateTo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final long currentTime = System.currentTimeMillis();
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(inboxFilterModel.getDateTo() != null ?
                         inboxFilterModel.getDateTo() :
@@ -173,11 +191,25 @@ public class InboxFilterFragment
                             @Override
                             public void onDateUpdated(Date date) {
                                 super.onDateUpdated(date);
-                                inboxFilterModel.setDateTo(date);
-                                updateView();
+                                if (date.getTime() > currentTime + ONE_DAY_IN_MILLIS) {
+                                    Toast.makeText(getContext(),
+                                            R.string.date_error_overflow,
+                                            Toast.LENGTH_SHORT)
+                                            .show();
+                                } else if (inboxFilterModel.getDateFrom() != null &&
+                                        !isSameDay(date, inboxFilterModel.getDateFrom()) &&
+                                        date.before(inboxFilterModel.getDateFrom())) {
+                                    Toast.makeText(getContext(),
+                                            R.string.date_error,
+                                            Toast.LENGTH_SHORT)
+                                            .show();
+                                } else {
+                                    inboxFilterModel.setDateTo(date);
+                                    updateView();
+                                }
                             }
                         });
-                dialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+                dialog.getDatePicker().setMaxDate(currentTime);
                 if (inboxFilterModel.getDateFrom() != null) {
                     dialog.getDatePicker().setMinDate(inboxFilterModel.getDateFrom().getTime());
                 }
@@ -249,5 +281,14 @@ public class InboxFilterFragment
         button.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
         button.setBackground(MethodChecker.getDrawable(getActivity(),
                 R.drawable.bg_button_enable));
+    }
+
+    private boolean isSameDay(Date firstDate, Date secondDate) {
+        Calendar cal1 = Calendar.getInstance();
+        Calendar cal2 = Calendar.getInstance();
+        cal1.setTime(firstDate);
+        cal2.setTime(secondDate);
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
     }
 }

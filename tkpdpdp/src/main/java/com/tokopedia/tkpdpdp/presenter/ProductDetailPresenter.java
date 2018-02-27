@@ -93,7 +93,7 @@ public interface ProductDetailPresenter {
 
     void saveStateAppBarCollapsed(Bundle outState, String key, boolean isAppBarCollapsed);
 
-    void processStateData(Bundle savedInstanceState);
+    void processStateData(Bundle savedInstanceState, Context context);
 
     void processToCatalog(Context context, String catalogId);
 
