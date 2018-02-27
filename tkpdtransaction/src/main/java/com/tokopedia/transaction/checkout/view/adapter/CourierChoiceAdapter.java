@@ -97,6 +97,7 @@ public class CourierChoiceAdapter extends RecyclerView.Adapter<CourierChoiceAdap
                     Typeface.create(FONT_FAMILY_SANS_SERIF_MEDIUM, Typeface.NORMAL));
             holder.tvDeliverySchedule.setTypeface(
                     Typeface.create(FONT_FAMILY_SANS_SERIF_MEDIUM, Typeface.NORMAL));
+            viewListener.onSelectedCourierItemLoaded(courierItemData);
         } else {
             holder.rbSelected.setChecked(false);
             holder.tvCourierName.setTypeface(
@@ -142,6 +143,8 @@ public class CourierChoiceAdapter extends RecyclerView.Adapter<CourierChoiceAdap
 
     public interface ViewListener {
         void onCourierItemClick(CourierItemData courierItemData);
+
+        void onSelectedCourierItemLoaded(CourierItemData courierItemData);
     }
 
     static class CourierViewHolder extends RecyclerView.ViewHolder {
