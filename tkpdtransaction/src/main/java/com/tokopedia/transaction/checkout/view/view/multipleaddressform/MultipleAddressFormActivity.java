@@ -10,6 +10,7 @@ import android.os.Parcelable;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.checkout.view.data.CartListData;
 import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
 
@@ -22,19 +23,16 @@ import java.util.List;
 
 public class MultipleAddressFormActivity extends BasePresenterActivity{
 
-    public static final String CART_ITEM_LIST_EXTRA = "CART_ITEM_LIST";
+    public static final String CART_DATA = "CART_DATA";
     public static final String ADDRESS_MODEL = "ADDRESS_MODEL";
 
     public static Intent createInstance(Context context,
-                                             List<CartSellerItemModel> cartSellerItemModels,
+                                             CartListData cartListData,
                                              RecipientAddressModel recipientModel) {
         Intent intent = new Intent(context, MultipleAddressFormActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(
-                CART_ITEM_LIST_EXTRA,
-                (ArrayList<? extends Parcelable>) cartSellerItemModels
-        );
         bundle.putParcelable(ADDRESS_MODEL, recipientModel);
+        bundle.putParcelable(CART_DATA, cartListData);
         intent.putExtras(bundle);
         return intent;
     }
@@ -62,12 +60,12 @@ public class MultipleAddressFormActivity extends BasePresenterActivity{
     @Override
     protected void initView() {
         FragmentManager fragmentManager = getFragmentManager();
-        List<CartSellerItemModel> cartSellerItemModels = getIntent()
+        CartListData cartListData = getIntent()
                 .getExtras()
-                .getParcelableArrayList(CART_ITEM_LIST_EXTRA);
+                .getParcelable(CART_DATA);
         RecipientAddressModel addressModel = getIntent().getExtras().getParcelable(ADDRESS_MODEL);
         Fragment fragment = MultipleAddressFragment.newInstance(
-                cartSellerItemModels,
+                cartListData,
                 addressModel
         );
 

@@ -65,10 +65,8 @@ public class CartAddressChoiceActivity extends BasePresenterActivity implements 
     @Override
     protected void initView() {
         if (typeRequest == TYPE_REQUEST_FULL_SELECTION) {
-            List<CartSellerItemModel> cartSellerItemModels = getIntent()
-                    .getParcelableArrayListExtra(CART_ITEM_LIST_EXTRA);
             CartAddressChoiceFragment fragment = CartAddressChoiceFragment
-                    .newInstance(cartSellerItemModels);
+                    .newInstance();
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             fragmentTransaction.add(R.id.container, fragment, CartAddressChoiceFragment.class.getSimpleName());

@@ -50,7 +50,6 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
         ShipmentAddressListFragment.FragmentListener {
 
     public static String INTENT_EXTRA_SELECTED_RECIPIENT_ADDRESS = "selectedAddress";
-    private static String CART_ITEM_LIST_EXTRA = "CART_ITEM_LIST_EXTRA";
 
     @BindView(R2.id.tv_choose_other_address)
     TextView tvChooseOtherAddress;
@@ -65,17 +64,8 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
 
     private ShipmentAddressListAdapter recipientAdapter;
 
-    public static CartAddressChoiceFragment newInstance(
-            List<CartSellerItemModel> cartSellerItemModelList
-    ) {
-        CartAddressChoiceFragment fragment = new CartAddressChoiceFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(
-                CART_ITEM_LIST_EXTRA,
-                (ArrayList<? extends Parcelable>) cartSellerItemModelList
-        );
-        fragment.setArguments(bundle);
-        return fragment;
+    public static CartAddressChoiceFragment newInstance() {
+        return new CartAddressChoiceFragment();
     }
 
     @Override
@@ -183,16 +173,6 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     void onAddNewAddress() {
         startActivityForResult(AddAddressActivity.createInstance(getActivity()),
                 ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
-    }
-
-    @OnClick(R2.id.ll_send_to_multiple_address)
-    void onSendToMultipleAddress() {
-        List<CartSellerItemModel> cartSellerItemModels = getArguments()
-                .getParcelableArrayList(CART_ITEM_LIST_EXTRA);
-        startActivity(MultipleAddressFormActivity.createInstance(
-                getActivity(),
-                cartSellerItemModels, presenter.getSelectedRecipientAddress())
-        );
     }
 
     @OnClick(R2.id.bt_send_to_current_address)
