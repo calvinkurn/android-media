@@ -163,6 +163,126 @@ public class Product implements Parcelable {
         this.productCatalogId = productCatalogId;
     }
 
+    public boolean isError() {
+        return isError;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public int getProductId() {
+        return productId;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public String getProductPriceFmt() {
+        return productPriceFmt;
+    }
+
+    public int getProductPrice() {
+        return productPrice;
+    }
+
+    public int getProductWholesalePrice() {
+        return productWholesalePrice;
+    }
+
+    public String getProductWholesalePriceFmt() {
+        return productWholesalePriceFmt;
+    }
+
+    public String getProductWeightFmt() {
+        return productWeightFmt;
+    }
+
+    public int getProductWeight() {
+        return productWeight;
+    }
+
+    public int getProductCondition() {
+        return productCondition;
+    }
+
+    public String getProductUrl() {
+        return productUrl;
+    }
+
+    public boolean isProductReturnable() {
+        return productReturnable;
+    }
+
+    public boolean isProductIsFreeReturns() {
+        return productIsFreeReturns;
+    }
+
+    public boolean isProductIsPreorder() {
+        return productIsPreorder;
+    }
+
+    public String getProductCashback() {
+        return productCashback;
+    }
+
+    public int getProductMinOrder() {
+        return productMinOrder;
+    }
+
+    public int getProductInvenageValue() {
+        return productInvenageValue;
+    }
+
+    public int getProductSwitchInvenage() {
+        return productSwitchInvenage;
+    }
+
+    public int getProductPriceCurrency() {
+        return productPriceCurrency;
+    }
+
+    public String getProductImageSrc200Square() {
+        return productImageSrc200Square;
+    }
+
+    public String getProductNotes() {
+        return productNotes;
+    }
+
+    public int getProductQuantity() {
+        return productQuantity;
+    }
+
+    public int getProductMenuId() {
+        return productMenuId;
+    }
+
+    public boolean isProductFinsurance() {
+        return productFinsurance;
+    }
+
+    public boolean isProductFcancelPartial() {
+        return productFcancelPartial;
+    }
+
+    public List<ProductShipment> getProductShipment() {
+        return productShipment;
+    }
+
+    public List<ProductShipmentMapping> getProductShipmentMapping() {
+        return productShipmentMapping;
+    }
+
+    public int getProductCatId() {
+        return productCatId;
+    }
+
+    public int getProductCatalogId() {
+        return productCatalogId;
+    }
+
     public Product() {
     }
 

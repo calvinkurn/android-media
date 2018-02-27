@@ -1,12 +1,19 @@
 package com.tokopedia.transaction.checkout.domain;
 
+import android.text.TextUtils;
+
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CartItemModel;
 import com.tokopedia.transaction.checkout.view.data.CartPayableDetailModel;
 import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
+import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.view.data.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.transaction.checkout.view.data.factory.CartSingleAddressDataFactory;
+import com.tokopedia.transaction.checkout.view.data.cartshipmentform.GroupAddress;
+import com.tokopedia.transaction.checkout.view.data.cartshipmentform.GroupShop;
+import com.tokopedia.transaction.checkout.view.data.cartshipmentform.Product;
+import com.tokopedia.transaction.checkout.view.data.cartshipmentform.Shop;
+import com.tokopedia.transaction.checkout.view.data.cartshipmentform.UserAddress;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,8 +26,11 @@ import javax.inject.Inject;
  * @author anggaprasetiyo on 08/02/18,
  *         Aghny A. Putra on 08/02/18.
  */
+
 public class SingleAddressShipmentDataConverter extends ConverterData<CartShipmentAddressFormData,
         CartSingleAddressData> {
+
+    private static final int FIRST_ELEMENT = 0;
 
     @Inject
     public SingleAddressShipmentDataConverter() {
@@ -28,28 +38,112 @@ public class SingleAddressShipmentDataConverter extends ConverterData<CartShipme
 
     @Override
     public CartSingleAddressData convert(CartShipmentAddressFormData cartItemDataList) {
+        GroupAddress groupAddress = cartItemDataList.getGroupAddress().get(FIRST_ELEMENT);
 
-        return null;
+        UserAddress userAddress = groupAddress.getUserAddress();
+        List<GroupShop> groupShops = groupAddress.getGroupShop();
+
+        RecipientAddressModel recipientAddressModel = convertFromUserAddress(userAddress);
+        List<CartSellerItemModel> cartSellerItemModels = convertFromGroupShopList(groupShops);
+        CartPayableDetailModel cartPayableDetailModel = getTotalPayableDetail(cartSellerItemModels);
+
+        CartSingleAddressData cartSingleAddressData = new CartSingleAddressData();
+        cartSingleAddressData.setRecipientAddressModel(recipientAddressModel);
+        cartSingleAddressData.setCartSellerItemModelList(cartSellerItemModels);
+        cartSingleAddressData.setCartPayableDetailModel(cartPayableDetailModel);
+
+        return cartSingleAddressData;
+    }
+
+    private List<CartSellerItemModel> convertFromGroupShopList(List<GroupShop> groupShops) {
+        List<CartSellerItemModel> cartSellerItemModels = new ArrayList<>();
+
+        for (GroupShop groupShop : groupShops) {
+            cartSellerItemModels.add(convertFromGroupShop(groupShop));
+        }
+
+        return cartSellerItemModels;
+    }
+
+    private CartSellerItemModel convertFromGroupShop(GroupShop groupShop) {
+        CartSellerItemModel sellerItemModel = new CartSellerItemModel();
+
+        Shop shop = groupShop.getShop();
+        sellerItemModel.setShopId(String.valueOf(shop.getShopId()));
+        sellerItemModel.setShopName(shop.getShopName());
+
+        List<Product> products = groupShop.getProducts();
+        List<CartItemModel> cartItemModels = convertFromProductList(products);
+        sellerItemModel.setCartItemModels(cartItemModels);
+
+        for (CartItemModel cartItemModel : cartItemModels) {
+            sellerItemModel.setTotalPrice(sellerItemModel.getTotalPrice() + cartItemModel.getPrice());
+            sellerItemModel.setTotalWeight(sellerItemModel.getTotalWeight() + cartItemModel.getWeight());
+            sellerItemModel.setTotalQuantity(sellerItemModel.getTotalQuantity() + cartItemModel.getQuantity());
+        }
+
+        return sellerItemModel;
+    }
+
+    private CartItemModel convertFromProduct(Product product) {
+        CartItemModel cartItemModel = new CartItemModel();
+
+        cartItemModel.setId(String.valueOf(product.getProductId()));
+        cartItemModel.setName(product.getProductName());
+        cartItemModel.setImageUrl(product.getProductImageSrc200Square());
+        cartItemModel.setCurrency(product.getProductPriceCurrency());
+        cartItemModel.setPrice(product.getProductPrice());
+        cartItemModel.setQuantity(product.getProductQuantity());
+        cartItemModel.setWeight(product.getProductWeight());
+        cartItemModel.setWeightFmt(product.getProductWeightFmt());
+        cartItemModel.setNoteToSeller(product.getProductNotes());
+        cartItemModel.setPreOrder(product.isProductIsPreorder());
+        cartItemModel.setFreeReturn(product.isProductIsFreeReturns());
+        cartItemModel.setCashback(product.getProductCashback());
+        cartItemModel.setCashback(!TextUtils.isEmpty(product.getProductCashback()));
+
+        return cartItemModel;
+    }
+
+    private List<CartItemModel> convertFromProductList(List<Product> products) {
+        List<CartItemModel> cartItemModels = new ArrayList<>();
+
+        for (Product product : products) {
+            cartItemModels.add(convertFromProduct(product));
+        }
+
+        return cartItemModels;
+    }
+
+    private RecipientAddressModel convertFromUserAddress(UserAddress userAddress) {
+        RecipientAddressModel recipientAddress = new RecipientAddressModel();
+
+        recipientAddress.setId(String.valueOf(userAddress.getAddressId()));
+        recipientAddress.setAddressStatus(userAddress.getStatus());
+        recipientAddress.setAddressName(userAddress.getAddressName());
+        recipientAddress.setAddressCountryName(userAddress.getCountry());
+        recipientAddress.setAddressProvinceName(userAddress.getProvinceName());
+        recipientAddress.setDestinationDistrictName(userAddress.getDistrictName());
+        recipientAddress.setAddressCityName(userAddress.getCityName());
+        recipientAddress.setAddressStreet(userAddress.getAddress());
+        recipientAddress.setAddressPostalCode(userAddress.getPostalCode());
+
+        recipientAddress.setRecipientName(userAddress.getReceiverName());
+        recipientAddress.setRecipientPhoneNumber(userAddress.getPhone());
+
+        return recipientAddress;
     }
 
     private CartPayableDetailModel getTotalPayableDetail(List<CartSellerItemModel> cartSellerItemModels) {
+        CartPayableDetailModel cartPayable = new CartPayableDetailModel();
 
-        int totalItem = 0;
-        double totalPrice = 0.0;
-        double totalWeight = 0.0;
-
-        for (CartSellerItemModel cartSellerItemModel : cartSellerItemModels) {
-            totalItem += cartSellerItemModel.getTotalQuantity();
-            totalPrice += cartSellerItemModel.getTotalPrice();
-            totalWeight += cartSellerItemModel.getTotalWeight();
+        for (CartSellerItemModel itemModel : cartSellerItemModels) {
+            cartPayable.setTotalItem(cartPayable.getTotalItem() + itemModel.getTotalQuantity());
+            cartPayable.setTotalPrice(cartPayable.getTotalPrice() + itemModel.getTotalPrice());
+            cartPayable.setTotalWeight(cartPayable.getTotalWeight() + itemModel.getTotalWeight());
         }
 
-        CartPayableDetailModel cartPayableDetailModel = new CartPayableDetailModel();
-        cartPayableDetailModel.setTotalPrice(totalPrice);
-        cartPayableDetailModel.setTotalWeight(totalWeight);
-        cartPayableDetailModel.setTotalItem(totalItem);
-
-        return cartPayableDetailModel;
+        return cartPayable;
     }
 
     private List<CartSellerItemModel> groupItemBySeller(List<CartItemModel> cartItemModels) {
@@ -102,15 +196,6 @@ public class SingleAddressShipmentDataConverter extends ConverterData<CartShipme
         }
 
         return cartSellerItemModels;
-    }
-
-    private List<CartItemModel> convertCartItemList(List<CartItemData> cartItemDataList) {
-        List<CartItemModel> cartItemModels = new ArrayList<>();
-        for (CartItemData cartItemData : cartItemDataList) {
-            cartItemModels.add(convertCartItem(cartItemData));
-        }
-
-        return cartItemModels;
     }
 
     private CartItemModel convertCartItem(CartItemData cartItemData) {

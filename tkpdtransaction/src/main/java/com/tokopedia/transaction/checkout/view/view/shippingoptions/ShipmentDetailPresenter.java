@@ -8,9 +8,9 @@ import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.GetRatesUseCase;
 import com.tokopedia.transaction.checkout.view.data.CourierItemData;
+import com.tokopedia.transaction.checkout.view.data.ShipmentCartData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
-import com.tokopedia.transaction.checkout.view.presenter.IShipmentDetailPresenter;
 import com.tokopedia.transaction.checkout.view.view.IShipmentDetailView;
 
 import java.net.ConnectException;
@@ -74,6 +74,11 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
 
     @Override
     public void setSelectedCourier(CourierItemData selectedCourier) {
+        for (ShipmentItemData shipmentItemData : shipmentDetailData.getShipmentItemData()) {
+            for (CourierItemData courierItemData : shipmentItemData.getCourierItemData()) {
+                courierItemData.setSelected(false);
+            }
+        }
         shipmentDetailData.setSelectedCourier(selectedCourier);
     }
 
@@ -98,6 +103,9 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
     public void loadShipmentData(ShipmentDetailData shipmentDetailData) {
         getView().showLoading();
         this.shipmentDetailData = shipmentDetailData;
+        if (shipmentDetailData.getShipmentCartData() == null) {
+            shipmentDetailData.setShipmentCartData(new ShipmentCartData());
+        }
         getRatesUseCase.setShipmentDetailData(shipmentDetailData);
         getRatesUseCase.execute(getRatesUseCase.getParams(), new Subscriber<ShipmentDetailData>() {
             @Override
