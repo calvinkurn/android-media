@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
+import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,20 +26,24 @@ public class CartAddressChoiceActivity extends BasePresenterActivity implements 
     public static final int RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM = 101;
     private static final String CART_ITEM_LIST_EXTRA = "CART_ITEM_LIST_EXTRA";
     private static final String EXTRA_TYPE_REQUEST = "EXTRA_TYPE_REQUEST";
+    private static final String EXTRA_DEFAULT_SELECTED_ADDRESS = "EXTRA_DEFAULT_SELECTED_ADDRESS";
     public static final String EXTRA_SELECTED_ADDRESS_DATA = "EXTRA_SELECTED_ADDRESS_DATA";
     public static final int TYPE_REQUEST_ONLY_ADDRESS_SELECTION = 0;
     public static final int TYPE_REQUEST_FULL_SELECTION = 1;
 
 
     private int typeRequest;
+    private RecipientAddressModel defaultRecipientAddressModel;
 
     public static Intent createInstance(Activity activity,
                                         int typeRequest,
-                                        List<CartSellerItemModel> cartSellerItemModelList) {
+                                        List<CartSellerItemModel> cartSellerItemModelList,
+                                        RecipientAddressModel recipientAddressModel) {
         Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
         intent.putExtra(EXTRA_TYPE_REQUEST, typeRequest);
         intent.putParcelableArrayListExtra(CART_ITEM_LIST_EXTRA,
                 (ArrayList<? extends Parcelable>) cartSellerItemModelList);
+        intent.putExtra(EXTRA_DEFAULT_SELECTED_ADDRESS, recipientAddressModel);
         return intent;
     }
 
@@ -50,6 +55,7 @@ public class CartAddressChoiceActivity extends BasePresenterActivity implements 
     @Override
     protected void setupBundlePass(Bundle extras) {
         this.typeRequest = extras.getInt(EXTRA_TYPE_REQUEST);
+        this.defaultRecipientAddressModel = extras.getParcelable(EXTRA_DEFAULT_SELECTED_ADDRESS);
     }
 
     @Override
@@ -101,15 +107,17 @@ public class CartAddressChoiceActivity extends BasePresenterActivity implements 
 
 
     @Override
-    public void finishSendResultActionSelectedAddress(Object selectedAddressResult) {
+    public void finishSendResultActionSelectedAddress(RecipientAddressModel selectedAddressResult) {
         Intent resultIntent = new Intent();
-        resultIntent.putExtra(EXTRA_SELECTED_ADDRESS_DATA, (Parcelable) selectedAddressResult);
+        resultIntent.putExtra(EXTRA_SELECTED_ADDRESS_DATA, selectedAddressResult);
         setResult(RESULT_CODE_ACTION_SELECT_ADDRESS, resultIntent);
         finish();
     }
 
     @Override
     public void finishSendResultActionToMultipleAddressForm() {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra(EXTRA_SELECTED_ADDRESS_DATA, defaultRecipientAddressModel);
         setResult(RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM);
         finish();
     }

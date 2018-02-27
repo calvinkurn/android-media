@@ -1,14 +1,12 @@
 package com.tokopedia.transaction.checkout.view.view.addressoptions;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -30,8 +28,6 @@ import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.view.presenter.ICartAddressChoicePresenter;
 import com.tokopedia.transaction.checkout.view.view.ICartAddressChoiceView;
-import com.tokopedia.transaction.checkout.view.view.multipleaddressform.MultipleAddressFormActivity;
-import com.tokopedia.transaction.checkout.view.view.multipleaddressform.MultipleAddressFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,8 +41,7 @@ import butterknife.OnClick;
  */
 
 public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddressChoicePresenter>
-        implements ICartAddressChoiceView, ShipmentAddressListAdapter.ActionListener,
-        ShipmentAddressListFragment.FragmentListener {
+        implements ICartAddressChoiceView, ShipmentAddressListAdapter.ActionListener {
 
     public static String INTENT_EXTRA_SELECTED_RECIPIENT_ADDRESS = "selectedAddress";
     private static String CART_ITEM_LIST_EXTRA = "CART_ITEM_LIST_EXTRA";
@@ -63,6 +58,7 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     RecyclerView rvAddress;
 
     private ShipmentAddressListAdapter recipientAdapter;
+    private ICartAddressChoiceActivityListener cartAddressChoiceListener;
 
     public static CartAddressChoiceFragment newInstance(
             List<CartSellerItemModel> cartSellerItemModelList
@@ -165,10 +161,7 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     void onChooseOtherAddressClick() {
         FragmentManager fragmentManager = getActivity().getFragmentManager();
         ShipmentAddressListFragment fragment = ShipmentAddressListFragment.newInstance();
-        fragment.setFragmentListener(this);
-
         String backStateName = fragment.getClass().getName();
-
         boolean isFragmentPopped = fragmentManager.popBackStackImmediate(backStateName, 0);
         if (!isFragmentPopped) {
             fragmentManager.beginTransaction()
@@ -186,12 +179,7 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
 
     @OnClick(R2.id.ll_send_to_multiple_address)
     void onSendToMultipleAddress() {
-        List<CartSellerItemModel> cartSellerItemModels = getArguments()
-                .getParcelableArrayList(CART_ITEM_LIST_EXTRA);
-        startActivity(MultipleAddressFormActivity.createInstance(
-                getActivity(),
-                cartSellerItemModels, presenter.getSelectedRecipientAddress())
-        );
+        cartAddressChoiceListener.finishSendResultActionToMultipleAddressForm();
     }
 
     @OnClick(R2.id.bt_send_to_current_address)
@@ -216,12 +204,6 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     }
 
     @Override
-    public void onAddressClick(RecipientAddressModel mode) {
-        // Update View
-        Log.e("Update View", "Recipient Address Model");
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
@@ -235,6 +217,11 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
         }
     }
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        cartAddressChoiceListener = (ICartAddressChoiceActivityListener) activity;
+    }
 
     private void setShowCase() {
         ShowCaseObject showCase = new ShowCaseObject(
@@ -248,7 +235,7 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
 
         ShowCaseDialog showCaseDialog = createShowCaseDialog();
 
-        if(!ShowCasePreference.hasShown(getActivity(), CartAddressChoiceFragment.class.getName()))
+        if (!ShowCasePreference.hasShown(getActivity(), CartAddressChoiceFragment.class.getName()))
             showCaseDialog.show(
                     getActivity(),
                     CartAddressChoiceFragment.class.getName(),

@@ -13,6 +13,7 @@ import com.tokopedia.transaction.checkout.domain.request.UpdateCartRequest;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CartListData;
 import com.tokopedia.transaction.checkout.view.data.DeleteCartData;
+import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.view.data.UpdateToSingleAddressShipmentData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
 
@@ -251,7 +252,7 @@ public class CartListPresenter implements ICartListPresenter {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void processToShipmentMultipleAddress() {
+    public void processToShipmentMultipleAddress(final RecipientAddressModel selectedAddress) {
         view.showProgressLoading();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("lang", "id");
@@ -299,7 +300,7 @@ public class CartListPresenter implements ICartListPresenter {
             public void onNext(CartListData cartListData) {
                 view.hideProgressLoading();
                 if (!cartListData.isError())
-                    view.renderToShipmentMultipleAddressSuccess(cartListData);
+                    view.renderToShipmentMultipleAddressSuccess(cartListData, selectedAddress);
                 else
                     view.renderErrorToShipmentMultipleAddress(cartListData.getErrorMessage());
             }
