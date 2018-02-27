@@ -36,6 +36,15 @@ public class CurrencyTextWatcher extends AfterTextWatcher {
         setFormat(format);
     }
 
+    private OnNumberChangeListener onNumberChangeListener;
+    public interface OnNumberChangeListener {
+        void onNumberChanged(double value);
+    }
+
+    public void setOnNumberChangeListener(OnNumberChangeListener onNumberChangeListener) {
+        this.onNumberChangeListener = onNumberChangeListener;
+    }
+
     public void setFormat(String format) {
         if (TextUtils.isEmpty(format)) {
             this.format = "%s";
@@ -51,9 +60,13 @@ public class CurrencyTextWatcher extends AfterTextWatcher {
     @Override
     public void afterTextChanged(Editable s) {
         String sString = s.toString();
-        double doubleString = StringUtils.convertToNumeric(sString, useCommaForThousand);
-        if (doubleString == 0) {
-            editText.setText(defaultValue);
+        double doubleValue = StringUtils.convertToNumeric(sString, useCommaForThousand);
+        if (onNumberChangeListener!= null) {
+            onNumberChangeListener.onNumberChanged(doubleValue);
+        }
+        editText.removeTextChangedListener(this);
+        if (doubleValue == 0) {
+            editText.setText(String.format(format, defaultValue));
             editText.setSelection(defaultValue.length());
         } else {
             int selectionStart = editText.getSelectionStart() - prefixLength;
@@ -62,12 +75,11 @@ public class CurrencyTextWatcher extends AfterTextWatcher {
             }
             CurrencyFormatUtil.ThousandString thousandString =
                     CurrencyFormatUtil.getThousandSeparatorString(
-                            doubleString, useCommaForThousand, selectionStart);
-            editText.removeTextChangedListener(this);
+                            doubleValue, useCommaForThousand, selectionStart);
             editText.setText(String.format(format, thousandString.getFormattedString()));
             editText.setSelection(Math.min(editText.length(), thousandString.getSelection() + prefixLength));
-            editText.addTextChangedListener(this);
         }
+        editText.addTextChangedListener(this);
     }
 
 }

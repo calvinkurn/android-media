@@ -7,13 +7,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.design.text.SpinnerCounterInputView;
+import com.tokopedia.design.text.watcher.AfterTextWatcher;
 import com.tokopedia.design.text.watcher.CurrencyTextWatcher;
+import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.common.widget.VerticalLabelView;
@@ -32,10 +36,8 @@ public class ProductVariantDetailLeafFragment extends Fragment
 
     private OnProductVariantDetailLeafFragmentListener listener;
     private LabelSwitch labelSwitchStatus;
-    private VerticalLabelView lvTitle;
 
     private ProductVariantCombinationViewModel productVariantCombinationViewModel;
-    private SpinnerCounterInputView spinnerCounterInputView;
     private @CurrencyTypeDef
     int currencyType;
     private CurrencyTextWatcher currencyTextWatcher;
@@ -46,9 +48,13 @@ public class ProductVariantDetailLeafFragment extends Fragment
     public interface OnProductVariantDetailLeafFragmentListener {
         // void onSubmitVariant(boolean isVariantHasStock, List<Long> selectedVariantValueIds);
         void onSubmitVariant();
+
         ProductVariantCombinationViewModel getProductVariantCombinationViewModel();
+
         String getVariantName();
-        @CurrencyTypeDef int getCurrencyTypeDef();
+
+        @CurrencyTypeDef
+        int getCurrencyTypeDef();
     }
 
     public static ProductVariantDetailLeafFragment newInstance() {
@@ -90,23 +96,48 @@ public class ProductVariantDetailLeafFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_product_variant_detail_leaf, container, false);
-        lvTitle = view.findViewById(R.id.lv_title);
+        VerticalLabelView lvTitle = view.findViewById(R.id.lv_title);
         labelSwitchStatus = (LabelSwitch) view.findViewById(R.id.label_switch_product_status);
-        spinnerCounterInputView = view.findViewById(R.id.spinner_counter_input_view_price);
+        View buttonSave = view.findViewById(R.id.button_save);
+
+        SpinnerCounterInputView spinnerCounterInputView = view.findViewById(R.id.spinner_counter_input_view_price);
         spinnerCounterInputView.getSpinnerTextView().setEnabled(false);
+        spinnerCounterInputView.getSpinnerTextView().setClickable(false);
         spinnerCounterInputView.setSpinnerValue(String.valueOf(currencyType));
 
-//        spinnerCounterInputView.getCounterEditText().removeTextChangedListener(currencyTextWatcher);
-//        currencyTextWatcher = new CurrencyTextWatcher(
-//                 spinnerCounterInputView.getCounterEditText(),
-//                null,
-//                currencyType == CurrencyTypeDef.TYPE_USD);
-//        spinnerCounterInputView.getCounterEditText().addTextChangedListener(currencyTextWatcher);
+        spinnerCounterInputView.removeDefaultTextWatcher();
+        spinnerCounterInputView.getCounterEditText().removeTextChangedListener(currencyTextWatcher);
+        currencyTextWatcher = new CurrencyTextWatcher(
+                spinnerCounterInputView.getCounterEditText(),
+                null,
+                currencyType == CurrencyTypeDef.TYPE_USD);
+        spinnerCounterInputView.getCounterEditText().addTextChangedListener(currencyTextWatcher);
 
         lvTitle.setTitle(listener.getVariantName());
         lvTitle.setSummary(productVariantCombinationViewModel.getLeafString());
 
-        labelSwitchStatus.setSummary(getString(R.string.product_variant_status_available));
+        labelSwitchStatus.setListenerValue(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    labelSwitchStatus.setSummary(getString(R.string.product_variant_status_available));
+                } else {
+                    labelSwitchStatus.setSummary(getString(R.string.product_variant_status_not_available));
+                }
+                productVariantCombinationViewModel.setActive(isChecked);
+            }
+        });
+
+        labelSwitchStatus.setChecked(productVariantCombinationViewModel.isActive());
+
+        buttonSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO check validation before submit
+                listener.onSubmitVariant();
+            }
+        });
+
 
 //        buttonSave = view.findViewById(R.id.button_save);
 //        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
@@ -115,7 +146,6 @@ public class ProductVariantDetailLeafFragment extends Fragment
 //        recyclerView.setAdapter(productVariantDetailAdapter);
         return view;
     }
-
 
 
     @Override

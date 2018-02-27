@@ -13,6 +13,7 @@ import com.google.gson.annotations.SerializedName;
 public class ProductVariantCombinationViewModel implements Parcelable{
 
     public static final int ACTIVE_STATUS = 1; // from API
+    public static final int NOT_ACTIVE_STATUS = 0; // from API
 
     @SerializedName("st")
     @Expose
@@ -20,7 +21,7 @@ public class ProductVariantCombinationViewModel implements Parcelable{
 
     @SerializedName("price_var")
     @Expose
-    private long priceVar;
+    private double priceVar;
 
     @SerializedName("stock")
     @Expose
@@ -53,6 +54,10 @@ public class ProductVariantCombinationViewModel implements Parcelable{
         this.st = st;
     }
 
+    public void setActive(boolean isActive) {
+        this.st = isActive? ACTIVE_STATUS: NOT_ACTIVE_STATUS;
+    }
+
     public List<Integer> getOpt() {
         return opt;
     }
@@ -61,11 +66,11 @@ public class ProductVariantCombinationViewModel implements Parcelable{
         this.opt = opt;
     }
 
-    public long getPriceVar() {
+    public double getPriceVar() {
         return priceVar;
     }
 
-    public void setPriceVar(long priceVar) {
+    public void setPriceVar(double priceVar) {
         this.priceVar = priceVar;
     }
 
@@ -113,7 +118,7 @@ public class ProductVariantCombinationViewModel implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.st);
-        dest.writeLong(this.priceVar);
+        dest.writeDouble(this.priceVar);
         dest.writeLong(this.stock);
         dest.writeString(this.sku);
         dest.writeList(this.opt);
@@ -126,7 +131,7 @@ public class ProductVariantCombinationViewModel implements Parcelable{
 
     protected ProductVariantCombinationViewModel(Parcel in) {
         this.st = in.readInt();
-        this.priceVar = in.readLong();
+        this.priceVar = in.readDouble();
         this.stock = in.readLong();
         this.sku = in.readString();
         this.opt = new ArrayList<Integer>();

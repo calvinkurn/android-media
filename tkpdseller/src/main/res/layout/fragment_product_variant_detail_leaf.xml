@@ -44,5 +44,6 @@
         android:id="@+id/button_save"
         style="@style/Button.Submit.Green"
         android:text="@string/label_variant_save"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"/>
 </LinearLayout>
