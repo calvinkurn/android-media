@@ -50,7 +50,7 @@ public class FlightBookingListPassengerViewHolder extends AbstractViewHolder<Fli
                 flightBookingPassengerViewModel.getPassengerLastName()
         ));
         // gone for now, later will use for passport ID
-        // txtPassengerId.setText("No. "); // " + flightBookingPassengerViewModel.getPassengerId());
+        // txtPassengerId.setText("No. "); // " + flightBookingPassengerViewModel.getPassengerLocalId());
         txtPassengerId.setVisibility(View.GONE);
         if (isItemChecked) {
             imgCheck.setVisibility(View.VISIBLE);
