@@ -13,8 +13,10 @@
     <dimen name="space_sm">24dp</dimen>
     <dimen name="space_large">40dp</dimen>
 
+    <dimen name="radius">5dp</dimen>
 
     <dimen name="size_icon_vote">15dp</dimen>
+    <dimen name="size_icon_share_app">32dp</dimen>
 
     <dimen name="dot_size">5sp</dimen>
     <dimen name="bar_size">40dp</dimen>

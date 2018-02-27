@@ -6,7 +6,9 @@
     <string name="error_open_group_chat">Gagal masuk ke ruangan.</string>
     <string name="dot">●</string>
     <string name="vote">Vote</string>
+    <string name="vote_has_ended">Vote telah berakhir</string>
     <string name="title_share">Share</string>
+    <string name="title_bagikan">Bagikan</string>
     <string name="default_sendbird_error">Terjadi kesalahan. Mohon coba kembali.</string>
     <string name="sendbird_error_retry">Terjadi kesalahan. Mohon coba kembali</string>
     <string name="sendbird_error_network">Terjadi kesalahan koneksi. Mohon periksa jaringan internet anda.</string>
@@ -16,5 +18,16 @@
     <string name="participant">partisipan</string>
     <string name="pending">Sedang Mengirim…</string>
     <string name="groupchat_action_exit">telah keluar dari chat</string>
+    <string name="lets_vote">"Ikutan Vote Yuk!"</string>
+
+    <string name="share_gplus">Google+</string>
+    <string name="share_fb">Facebook</string>
+    <string name="share_twitter">Twitter</string>
+    <string name="share_line">Line</string>
+    <string name="share_wa">Whatsapp</string>
+    <string name="share_sms">SMS</string>
+    <string name="share_copy">Copy Link</string>
+    <string name="share_others">Lainnya</string>
+
 
 </resources>
