@@ -25,7 +25,6 @@ import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.view.activity.ShopProductFilterActivity;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
-import com.tokopedia.shop.product.view.adapter.ShopProductTypeFactory;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductListViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductSingleViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
@@ -38,7 +37,7 @@ import javax.inject.Inject;
  * Created by nathan on 2/15/18.
  */
 
-public class ShopProductListFragment extends BaseSearchListFragment<ShopProductViewModel, ShopProductTypeFactory> {
+public class ShopProductListFragment extends BaseSearchListFragment<ShopProductViewModel, ShopProductAdapterTypeFactory> {
 
     public static final int SPAN_COUNT = 2;
     public static final int REQUEST_CODE_ETALASE = 12912;
@@ -89,7 +88,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
 
     @Override
-    protected ShopProductTypeFactory getAdapterTypeFactory() {
+    protected ShopProductAdapterTypeFactory getAdapterTypeFactory() {
         return new ShopProductAdapterTypeFactory(new ShopProductAdapterTypeFactory.TypeFactoryListener() {
             @Override
             public int getType(Object object) {
@@ -133,6 +132,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     public void onItemClicked(ShopProductViewModel shopProductViewModel) {
 
     }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -153,7 +153,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         chooseEtalaseLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(shopModuleRouter != null){
+                if (shopModuleRouter != null) {
                     Intent etalaseIntent = shopModuleRouter.getEtalaseIntent(
                             ShopProductListFragment.this.getActivity(),
                             shopId,
@@ -205,21 +205,21 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         }
     }
 
-    private RecyclerView.LayoutManager iterate(final RecyclerView recyclerView){
+    private RecyclerView.LayoutManager iterate(final RecyclerView recyclerView) {
         RecyclerView.LayoutManager layoutManager = null;
-        if(getNextIndex(currentIndex, layoutType.length) < 0 ){
-            currentLayoutType = layoutType[currentIndex = 0 ];
-        }else{
+        if (getNextIndex(currentIndex, layoutType.length) < 0) {
+            currentLayoutType = layoutType[currentIndex = 0];
+        } else {
             currentLayoutType = layoutType[currentIndex];
         }
-        switch (currentLayoutType.second){
+        switch (currentLayoutType.second) {
             case 65:
-                layoutManager = new GridLayoutManager(recyclerView.getContext(), SPAN_COUNT,  LinearLayoutManager.VERTICAL,
+                layoutManager = new GridLayoutManager(recyclerView.getContext(), SPAN_COUNT, LinearLayoutManager.VERTICAL,
                         false);
-                ((GridLayoutManager)layoutManager).setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                ((GridLayoutManager) layoutManager).setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                     @Override
                     public int getSpanSize(int position) {
-                        if (recyclerView.getAdapter().getItemViewType(position) == ShopProductViewHolder.LAYOUT){
+                        if (recyclerView.getAdapter().getItemViewType(position) == ShopProductViewHolder.LAYOUT) {
                             return ShopProductViewHolder.SPAN_LOOK_UP;
                         }
                         return SPAN_COUNT;
@@ -239,10 +239,10 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         return layoutManager;
     }
 
-    private int getNextIndex(int currentIndex, int max){
-        if(currentIndex >=  0 && currentIndex < max){
+    private int getNextIndex(int currentIndex, int max) {
+        if (currentIndex >= 0 && currentIndex < max) {
             return currentIndex;
-        }else{
+        } else {
             return -1;
         }
     }
@@ -263,7 +263,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                 break;
 
             case REQUEST_CODE_SORT:
-                if(resultCode == Activity.RESULT_OK){
+                if (resultCode == Activity.RESULT_OK) {
                     sortId = data.getStringExtra(ShopProductFilterActivity.SORT_ID);
                     sortName = data.getStringExtra(ShopProductFilterActivity.SORT_NAME);
 
@@ -281,8 +281,8 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        if(context !=null && context.getApplicationContext() instanceof ShopModuleRouter){
-            shopModuleRouter = ((ShopModuleRouter)context.getApplicationContext());
+        if (context != null && context.getApplicationContext() instanceof ShopModuleRouter) {
+            shopModuleRouter = ((ShopModuleRouter) context.getApplicationContext());
         }
     }
 

@@ -14,7 +14,6 @@ import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.view.activity.ShopProductFilterActivity;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
-import com.tokopedia.shop.product.view.adapter.ShopProductTypeFactory;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseSelectedViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseUnselectedViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
@@ -31,7 +30,7 @@ import javax.inject.Inject;
  * Created by normansyahputa on 2/23/18.
  */
 
-public class ShopProductFilterFragment extends BaseListFragment<ShopProductViewModel, ShopProductTypeFactory> {
+public class ShopProductFilterFragment extends BaseListFragment<ShopProductViewModel, ShopProductAdapterTypeFactory> {
 
     @Inject
     ShopProductFilterPresenter shopProductFilterPresenter;
@@ -91,7 +90,7 @@ public class ShopProductFilterFragment extends BaseListFragment<ShopProductViewM
     }
 
     @Override
-    protected ShopProductTypeFactory getAdapterTypeFactory() {
+    protected ShopProductAdapterTypeFactory getAdapterTypeFactory() {
         return new ShopProductAdapterTypeFactory(new ShopProductAdapterTypeFactory.TypeFactoryListener<ShopProductViewModel>() {
             @Override
             public int getType(ShopProductViewModel type) {
