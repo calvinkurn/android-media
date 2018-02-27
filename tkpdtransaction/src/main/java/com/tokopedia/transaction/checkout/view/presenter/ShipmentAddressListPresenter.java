@@ -69,7 +69,7 @@ public class ShipmentAddressListPresenter
      */
     public void getAddressList(Context context, int order, String query) {
         mGetAllAddressUseCase.execute(
-                PeopleAddressAuthUtil.getPeopleAddressRequestParams(context, order, query, mPagingHandler.getPage()),
+                PeopleAddressAuthUtil.getRequestParams(context, order, query, mPagingHandler.getPage()),
                 new Subscriber<List<RecipientAddressModel>>() {
                     @Override
                     public void onCompleted() {

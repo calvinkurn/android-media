@@ -116,6 +116,90 @@ public class Shop implements Parcelable {
         this.cityName = cityName;
     }
 
+    public int getShopId() {
+        return shopId;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public String getShopImage() {
+        return shopImage;
+    }
+
+    public String getShopUrl() {
+        return shopUrl;
+    }
+
+    public int getShopStatus() {
+        return shopStatus;
+    }
+
+    public boolean isGold() {
+        return isGold;
+    }
+
+    public boolean isGoldBadge() {
+        return isGoldBadge;
+    }
+
+    public boolean isOfficial() {
+        return isOfficial;
+    }
+
+    public boolean isFreeReturns() {
+        return isFreeReturns;
+    }
+
+    public int getAddressId() {
+        return addressId;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public int getDistrictId() {
+        return districtId;
+    }
+
+    public String getDistrictName() {
+        return districtName;
+    }
+
+    public int getOrigin() {
+        return origin;
+    }
+
+    public String getAddressStreet() {
+        return addressStreet;
+    }
+
+    public int getProvinceId() {
+        return provinceId;
+    }
+
+    public int getCityId() {
+        return cityId;
+    }
+
+    public String getCityName() {
+        return cityName;
+    }
+
     @Override
     public int describeContents() {
         return 0;

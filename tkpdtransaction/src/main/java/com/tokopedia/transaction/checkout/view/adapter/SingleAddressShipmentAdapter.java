@@ -243,18 +243,16 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         }
 
         void bindViewHolder(RecipientAddressModel model) {
-            if (model != null) {
-                mTvAddressStatus.setVisibility(model.getAddressStatus() == 1 ?
-                        View.VISIBLE : View.GONE);
-                mTvAddressName.setText(model.getAddressName());
-                mTvRecipientName.setText(model.getRecipientName());
-                mTvRecipientAddress.setText(getFullAddress(model.getAddressStreet(),
-                        model.getDestinationDistrictId(), model.getAddressCityName(),
-                        model.getAddressProvinceName()));
-                mTvRecipientPhone.setText(model.getRecipientPhoneNumber());
+            mTvAddressStatus.setVisibility(model.getAddressStatus() == 1 ?
+                    View.VISIBLE : View.GONE);
+            mTvAddressName.setText(model.getAddressName());
+            mTvRecipientName.setText(model.getRecipientName());
+            mTvRecipientAddress.setText(getFullAddress(model.getAddressStreet(),
+                    model.getDestinationDistrictName(), model.getAddressCityName(),
+                    model.getAddressProvinceName()));
+            mTvRecipientPhone.setText(model.getRecipientPhoneNumber());
 
-                renderPickupPoint(pickupPointLayout, mCartSingleAddressData.getRecipientAddressModel());
-            }
+            renderPickupPoint(pickupPointLayout, mCartSingleAddressData.getRecipientAddressModel());
 
             mTvAddOrChangeAddress.setOnClickListener(addOrChangeAddressListener());
         }
@@ -336,7 +334,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
             mTvTotalItemLabel.setText(getTotalItemFormat(model.getTotalItem()));
             mTvTotalItem.setText(getPriceFormat(model.getTotalPrice()));
-            mTvShippingFeeLabel.setText(getLabelShipmentFeeWeight(model.getTotalWeight(), 0));
+            mTvShippingFeeLabel.setText(getLabelShipmentFeeWeight(model.getTotalWeight(), 1));
             mTvShippingFee.setText(getPriceFormat(model.getShippingFee()));
             mTvInsuranceFee.setText(getPriceFormat(model.getInsuranceFee()));
             mTvPromo.setText(getPriceFormat(model.getPromoPrice()));
@@ -498,8 +496,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             ImageHandler.LoadImage(mIvProductImage, firstItem.getImageUrl());
             mTvProductName.setText(firstItem.getName());
             mTvProductPrice.setText(CURRENCY_IDR.format(firstItem.getPrice()));
-            mTvProductWeight.setText(getTotalWeightFormat(firstItem.getWeight(),
-                    firstItem.getWeightUnit()));
+            mTvProductWeight.setText(firstItem.getWeightFmt());
             mTvTotalProductItem.setText(String.valueOf(firstItem.getQuantity()));
 
             mRlExpandOtherProductContainer.setVisibility(cartItemModels.isEmpty() ?

@@ -17,6 +17,7 @@ public class CartItemModel implements Parcelable {
 
     private int weightUnit;
     private double weight;
+    private String weightFmt;
 
     private int quantity;
     private String noteToSeller;
@@ -93,6 +94,14 @@ public class CartItemModel implements Parcelable {
         this.weight = weight;
     }
 
+    public String getWeightFmt() {
+        return weightFmt;
+    }
+
+    public void setWeightFmt(String weightFmt) {
+        this.weightFmt = weightFmt;
+    }
+
     public int getQuantity() {
         return quantity;
     }
@@ -149,7 +158,6 @@ public class CartItemModel implements Parcelable {
         isFreeReturn = freeReturn;
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -165,6 +173,7 @@ public class CartItemModel implements Parcelable {
         dest.writeInt(this.currency);
         dest.writeInt(this.weightUnit);
         dest.writeDouble(this.weight);
+        dest.writeString(this.weightFmt);
         dest.writeInt(this.quantity);
         dest.writeString(this.noteToSeller);
         dest.writeString(this.imageUrl);
@@ -186,6 +195,7 @@ public class CartItemModel implements Parcelable {
         this.currency = in.readInt();
         this.weightUnit = in.readInt();
         this.weight = in.readDouble();
+        this.weightFmt = in.readString();
         this.quantity = in.readInt();
         this.noteToSeller = in.readString();
         this.imageUrl = in.readString();
@@ -206,4 +216,5 @@ public class CartItemModel implements Parcelable {
             return new CartItemModel[size];
         }
     };
+
 }
