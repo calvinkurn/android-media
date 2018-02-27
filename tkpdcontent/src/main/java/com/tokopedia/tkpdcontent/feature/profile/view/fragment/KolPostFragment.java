@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,7 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     private LinearLayoutManager layoutManager;
 
     private String userId;
+    private boolean canLoadMore = true;
 
     public static KolPostFragment newInstance(String userId) {
         KolPostFragment fragment = new KolPostFragment();
@@ -85,6 +87,7 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
 
                 int topVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
                 if (topVisibleItemPosition >= adapter.getItemCount() - 2 &&
+                        canLoadMore &&
                         !adapter.isLoading()) {
                     presenter.getKolPost(userId);
                 }
@@ -128,6 +131,7 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
 
     @Override
     public void updateCursor(String lastCursor) {
+        canLoadMore = !TextUtils.isEmpty(lastCursor);
         presenter.updateCursor(lastCursor);
     }
 
