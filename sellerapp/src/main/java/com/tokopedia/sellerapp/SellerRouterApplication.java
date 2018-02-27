@@ -13,6 +13,7 @@ import android.text.TextUtils;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -402,6 +403,11 @@ public abstract class SellerRouterApplication extends MainApplication
         } else {
             return intent;
         }
+    }
+
+    @Override
+    public BaseDaggerFragment getKolPostFragment(String userId) {
+        return null;
     }
 
     @Override

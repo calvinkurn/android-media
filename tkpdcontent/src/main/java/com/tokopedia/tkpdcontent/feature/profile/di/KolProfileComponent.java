@@ -1,8 +1,6 @@
 package com.tokopedia.tkpdcontent.feature.profile.di;
 
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.tkpdcontent.common.di.KolComponent;
-import com.tokopedia.tkpdcontent.common.di.KolModule;
 import com.tokopedia.tkpdcontent.feature.profile.view.fragment.KolPostFragment;
 
 import dagger.Component;

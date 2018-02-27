@@ -10,14 +10,18 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 
+import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseEmptyActivity;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.design.tab.Tabs;
 import com.tokopedia.profile.view.adapter.ProfileTabPagerAdapter;
 import com.tokopedia.profile.view.fragment.TopProfileFragment;
 import com.tokopedia.profile.view.viewmodel.ProfileSectionItem;
 import com.tokopedia.session.R;
+import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberWarningFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +35,7 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
     private AppBarLayout appBarLayout;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private Toolbar toolbar;
+    private BaseDaggerFragment kolPostFragment;
 
     private static final String TITLE_PROFILE = "Info Akun";
     private static final String TITLE_POST = "Post";
@@ -43,6 +48,16 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
     }
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getApplicationContext() instanceof SessionRouter) {
+            //TODO milhamj change this userid
+            kolPostFragment = ((SessionRouter) getApplicationContext()).getKolPostFragment("6543110");
+        }
+        inflateFragment();
+    }
+
+    @Override
     protected void setupLayout(Bundle savedInstanceState) {
         super.setupLayout(savedInstanceState);
         appBarLayout = findViewById(R.id.app_bar_layout);
@@ -52,6 +67,23 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
         viewPager = findViewById(R.id.pager);
         setupToolbar();
         loadSection();
+    }
+
+    //TODO milhamj remove this func
+    private void inflateFragment() {
+        if (kolPostFragment != null) {
+            String TAG = "LOL";
+            if (getSupportFragmentManager().findFragmentByTag(TAG) != null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.container,
+                                getSupportFragmentManager().findFragmentByTag(TAG))
+                        .commit();
+            } else {
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.container, kolPostFragment, TAG)
+                        .commit();
+            }
+        }
     }
 
     @Override

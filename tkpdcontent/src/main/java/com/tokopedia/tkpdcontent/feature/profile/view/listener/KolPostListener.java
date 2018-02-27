@@ -1,8 +1,13 @@
 package com.tokopedia.tkpdcontent.feature.profile.view.listener;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolViewModel;
+
+import java.util.List;
 
 /**
  * @author by milhamj on 19/02/18.
@@ -10,6 +15,12 @@ import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolViewModel;
 
 public interface KolPostListener {
     interface View extends CustomerView {
+        Context getContext();
+
+        void onSuccessGetProfileData(List<Visitable> visitableList);
+
+        void onErrorGetProfileData(String message);
+
         void onGoToKolProfile(int page, int rowNumber, String url);
 
         void onOpenKolTooltip(int page, int rowNumber, String url);
@@ -26,6 +37,10 @@ public interface KolPostListener {
     }
 
     interface Presenter extends CustomerPresenter<View> {
+        void initView(String userId);
+
+        void getKolPost(String userId);
+
         void followKol(int id, int rowNumber, View kolListener);
 
         void unfollowKol(int id, int rowNumber, View kolListener);
