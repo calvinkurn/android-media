@@ -1,10 +1,13 @@
 package com.tokopedia.shop.product.view.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.shop.R;
+import com.tokopedia.shop.product.view.adapter.ShopProductLimitedFeaturedAdapter;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModel;
 
 /**
@@ -16,21 +19,26 @@ public class ShopProductLimitedFeaturedViewHolder extends AbstractViewHolder<Sho
     @LayoutRes
     public static final int LAYOUT = R.layout.item_shop_product_limited_featured;
 
+    private RecyclerView recyclerView;
+
     public ShopProductLimitedFeaturedViewHolder(View itemView) {
         super(itemView);
         findViews(itemView);
     }
 
     private void findViews(View view) {
-//        titleTextView = view.findViewById(R.id.title);
-
+        recyclerView = view.findViewById(R.id.recycler_view);
     }
 
     @Override
-    public void bind(ShopProductLimitedFeaturedViewModel element) {
-//        titleTextView.setText(element.getProductName());
-//        priceTextView.setText(element.getProductPrice());
-//        ImageHandler.LoadImage(productImageView, element.getProductImage700());
+    public void bind(ShopProductLimitedFeaturedViewModel shopProductLimitedFeaturedViewModel) {
+        ShopProductLimitedFeaturedAdapter adapter = new ShopProductLimitedFeaturedAdapter();
+        adapter.setList(shopProductLimitedFeaturedViewModel.getShopProductViewModelList());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setNestedScrollingEnabled(false);
+        recyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
-
 }

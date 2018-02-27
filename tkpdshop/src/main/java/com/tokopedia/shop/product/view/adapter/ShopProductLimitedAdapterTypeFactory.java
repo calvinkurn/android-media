@@ -1,11 +1,9 @@
 package com.tokopedia.shop.product.view.adapter;
 
-import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedFeaturedViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedProductViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedPromoViewHolder;
@@ -17,13 +15,12 @@ import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
  * Created by alvarisi on 12/7/17.
  */
 
-public class ShopProductLimitedAdapterTypeFactory extends ShopProductAdapterTypeFactory{
-    public ShopProductLimitedAdapterTypeFactory() {
-    }
+public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory {
 
-    public ShopProductLimitedAdapterTypeFactory(@Nullable TypeFactoryListener typeFactoryListener,
-                                                @Nullable ShopProductViewHolder.ShopProductVHListener shopProductVHListener) {
-        super(typeFactoryListener, shopProductVHListener);
+    private final View.OnClickListener showMoreProductOnclickListener;
+
+    public ShopProductLimitedAdapterTypeFactory(View.OnClickListener showMoreProductOnclickListener) {
+        this.showMoreProductOnclickListener = showMoreProductOnclickListener;
     }
 
     public int type(ShopProductLimitedPromoViewModel shopProductLimitedPromoViewModel) {
@@ -45,7 +42,7 @@ public class ShopProductLimitedAdapterTypeFactory extends ShopProductAdapterType
         } else if (type == ShopProductLimitedFeaturedViewHolder.LAYOUT) {
             return new ShopProductLimitedFeaturedViewHolder(parent);
         } else if (type == ShopProductLimitedProductViewHolder.LAYOUT) {
-            return new ShopProductLimitedProductViewHolder(parent);
+            return new ShopProductLimitedProductViewHolder(parent, showMoreProductOnclickListener);
         } else {
             return super.createViewHolder(parent, type);
         }

@@ -7,7 +7,8 @@
             android:exported="true"
             android:label="@string/shop_info_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateHidden" />
 
         <activity
             android:name=".info.view.activity.ShopInfoActivity"
@@ -37,10 +38,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
-        <activity android:name=".product.view.activity.ShopProductFilterActivity"
+        <activity
+            android:name=".product.view.activity.ShopProductFilterActivity"
             android:exported="true"
             android:label="@string/shop_info_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"/>
+            android:theme="@style/Theme.White" />
     </application>
 </manifest>

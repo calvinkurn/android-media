@@ -2,6 +2,7 @@ package com.tokopedia.shop.product.view.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
 import android.view.View;
+import android.webkit.WebView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.shop.R;
@@ -17,21 +18,21 @@ public class ShopProductLimitedPromoViewHolder extends AbstractViewHolder<ShopPr
     @LayoutRes
     public static final int LAYOUT = R.layout.item_shop_product_limited_promo;
 
+    private WebView webView;
+
     public ShopProductLimitedPromoViewHolder(View itemView) {
         super(itemView);
         findViews(itemView);
     }
 
     private void findViews(View view) {
-//        titleTextView = view.findViewById(R.id.title);
-
+        webView = view.findViewById(R.id.web_view);
+        webView.getSettings().setJavaScriptEnabled(true);
     }
 
     @Override
-    public void bind(ShopProductLimitedPromoViewModel element) {
-//        titleTextView.setText(element.getProductName());
-//        priceTextView.setText(element.getProductPrice());
-//        ImageHandler.LoadImage(productImageView, element.getProductImage700());
+    public void bind(ShopProductLimitedPromoViewModel shopProductLimitedPromoViewModel) {
+        webView.loadUrl(shopProductLimitedPromoViewModel.getUrl());
     }
 
 }

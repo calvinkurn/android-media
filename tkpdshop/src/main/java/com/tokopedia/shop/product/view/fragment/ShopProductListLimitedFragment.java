@@ -2,21 +2,17 @@ package com.tokopedia.shop.product.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.widget.Toast;
+import android.view.View;
 
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
-import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.shop.common.di.component.ShopComponent;
+import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
-import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
+import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.shop.product.view.adapter.ShopProductLimitedAdapterTypeFactory;
-import com.tokopedia.shop.product.view.adapter.ShopProductTypeFactory;
 import com.tokopedia.shop.product.view.listener.ShopProductListLimitedView;
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductSingleViewHolder;
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
-import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListLimitedPresenter;
 
 import javax.inject.Inject;
@@ -25,8 +21,8 @@ import javax.inject.Inject;
  * Created by nathan on 2/15/18.
  */
 
-public class ShopProductListLimitedFragment extends
-        BaseListFragment<ShopProductBaseViewModel, ShopProductLimitedAdapterTypeFactory> implements ShopProductListLimitedView {
+public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopProductBaseViewModel, ShopProductLimitedAdapterTypeFactory>
+        implements ShopProductListLimitedView, View.OnClickListener {
 
     public static ShopProductListLimitedFragment createInstance() {
         ShopProductListLimitedFragment fragment = new ShopProductListLimitedFragment();
@@ -53,20 +49,7 @@ public class ShopProductListLimitedFragment extends
     @NonNull
     @Override
     protected ShopProductLimitedAdapterTypeFactory getAdapterTypeFactory() {
-        return new ShopProductLimitedAdapterTypeFactory(new ShopProductAdapterTypeFactory.TypeFactoryListener() {
-            @Override
-            public int getType(Object type) {
-                return ShopProductSingleViewHolder.LAYOUT;
-            }
-        }, new ShopProductViewHolder.ShopProductVHListener() {
-            @Override
-            public void onWishlist(ShopProductViewModel model) {
-                shopProductListLimitedPresenter.addToWishList(
-                        shopId,
-                        model.getId()
-                );
-            }
-        });
+        return new ShopProductLimitedAdapterTypeFactory(this);
     }
 
     @Override
@@ -81,8 +64,7 @@ public class ShopProductListLimitedFragment extends
 
     public void displayProduct(String shopId, String promotionWebViewUrl) {
         this.shopId = shopId;
-//        shopProductListLimitedPresenter.getShopPageList(shopId);
-        shopProductListLimitedPresenter.getProductLimitedList(shopId);
+        shopProductListLimitedPresenter.getProductLimitedList(shopId, promotionWebViewUrl);
     }
 
     @Override
@@ -101,5 +83,20 @@ public class ShopProductListLimitedFragment extends
     @Override
     public void onItemClicked(ShopProductBaseViewModel shopProductBaseViewModel) {
 
+    }
+
+    @Override
+    public void onSearchSubmitted(String text) {
+
+    }
+
+    @Override
+    public void onSearchTextChanged(String text) {
+
+    }
+
+    @Override
+    public void onClick(View view) {
+        startActivity(ShopProductListActivity.createIntent(getActivity(), shopId));
     }
 }

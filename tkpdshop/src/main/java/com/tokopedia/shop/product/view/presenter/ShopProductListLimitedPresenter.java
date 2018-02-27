@@ -1,13 +1,17 @@
 package com.tokopedia.shop.product.view.presenter;
 
 import android.util.Log;
+import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductLimitedUseCase;
 import com.tokopedia.shop.product.view.listener.ShopProductListLimitedView;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
+
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.wishlist.common.domain.interactor.AddToWishListUseCase;
+
+import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
 
 import java.util.List;
 
@@ -55,7 +59,7 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
         });
     }
 
-    public void getProductLimitedList(String shopId) {
+    public void getProductLimitedList(String shopId, final String promotionWebViewUrl) {
         getShopProductLimitedUseCase.execute(GetShopProductLimitedUseCase.createRequestParam(shopId), new Subscriber<List<ShopProductBaseViewModel>>() {
             @Override
             public void onCompleted() {
@@ -71,6 +75,11 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
 
             @Override
             public void onNext(List<ShopProductBaseViewModel> shopProductBaseViewModelList) {
+                if (!TextUtils.isEmpty(promotionWebViewUrl)) {
+                    ShopProductLimitedPromoViewModel shopProductLimitedPromoViewModel = new ShopProductLimitedPromoViewModel();
+                    shopProductLimitedPromoViewModel.setUrl(promotionWebViewUrl);
+                    shopProductBaseViewModelList.add(0, shopProductLimitedPromoViewModel);
+                }
                 getView().renderList(shopProductBaseViewModelList);
             }
         });
