@@ -123,7 +123,7 @@ public class AddShipmentAddressFragment extends TkpdFragment {
         ImageView decreaseButton = view.findViewById(R.id.decrease_quantity);
         ImageView increaseButton = view.findViewById(R.id.increase_quantity);
         quantityField.setText(itemData.getProductQty());
-        quantityField.addTextChangedListener(quantityTextWatcher());
+        quantityField.addTextChangedListener(quantityTextWatcher(itemData, decreaseButton));
         decreaseButton.setOnClickListener(onDecreaseButtonClickedListener(quantityField));
         increaseButton.setOnClickListener(onIncreaseButtonClickedListener(quantityField));
     }
@@ -177,7 +177,8 @@ public class AddShipmentAddressFragment extends TkpdFragment {
         };
     }
 
-    private TextWatcher quantityTextWatcher() {
+    private TextWatcher quantityTextWatcher(final MultipleAddressItemData data,
+                                            final ImageView decreaseButton) {
         return new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -186,20 +187,8 @@ public class AddShipmentAddressFragment extends TkpdFragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                if(charSequence.toString().isEmpty())
-                    quantityField.setText("1");
-                else {
-                    if (!addressLayout.isShown()) {
-                        saveChangesButton.setVisibility(View.GONE);
-                    } else if (Integer.parseInt(charSequence.toString()) > 10000) {
-                        saveChangesButton.setVisibility(View.GONE);
-                        //TODO show error message
-                    } else if (Integer.parseInt(charSequence.toString()) < 1) {
-                        saveChangesButton.setVisibility(View.GONE);
-                        //TODO show error message
-                    } else saveChangesButton.setVisibility(View.VISIBLE);
-                }
+                setDecreaseButtonAvailability(charSequence, decreaseButton);
+                setEditButtonVisibility(charSequence, data);
             }
 
             @Override
@@ -207,6 +196,39 @@ public class AddShipmentAddressFragment extends TkpdFragment {
 
             }
         };
+    }
+
+    private void setEditButtonVisibility(CharSequence charSequence, MultipleAddressItemData data) {
+        if (charSequence.toString().isEmpty()
+                || Integer.parseInt(charSequence.toString()) < 1)
+            quantityField.setText("1");
+        else {
+            if (!addressLayout.isShown()) {
+                saveChangesButton.setVisibility(View.GONE);
+            } else if (Integer.parseInt(charSequence.toString()) > 10000) {
+                saveChangesButton.setVisibility(View.GONE);
+                //TODO show error message
+            } else if (Integer.parseInt(charSequence.toString()) < 1) {
+                saveChangesButton.setVisibility(View.GONE);
+                //TODO show error message
+            } else if (Integer.parseInt(charSequence.toString()) > data.getMaxQuantity()) {
+                saveChangesButton.setVisibility(View.GONE);
+                //TODO show overquantity Error Message
+            } else if (Integer.parseInt(charSequence.toString()) < data.getMaxQuantity()) {
+                saveChangesButton.setVisibility(View.GONE);
+                //TODO show lack quantity Error Message
+            } else saveChangesButton.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void setDecreaseButtonAvailability(CharSequence charSequence, ImageView decreaseButton) {
+        if (Integer.parseInt(charSequence.toString()) == 1) {
+            decreaseButton.setClickable(false);
+            decreaseButton.setEnabled(false);
+        } else {
+            decreaseButton.setClickable(true);
+            decreaseButton.setEnabled(true);
+        }
     }
 
     private View.OnClickListener onChooseAddressClickedListener() {
@@ -225,7 +247,7 @@ public class AddShipmentAddressFragment extends TkpdFragment {
                 //TODO ALTER DATA HERE, ALSO MAKE SOME VIEWS GLOBAL VARIABLE
                 if (addressLayout.isShown()) {
                     addAddressErrorTextView.setVisibility(View.GONE);
-                    if(getArguments().getInt(MODE_EXTRA) == ADD_MODE) {
+                    if (getArguments().getInt(MODE_EXTRA) == ADD_MODE) {
                         addNewAddressItem(itemData);
                     } else {
                         insertDataToModel(itemData);

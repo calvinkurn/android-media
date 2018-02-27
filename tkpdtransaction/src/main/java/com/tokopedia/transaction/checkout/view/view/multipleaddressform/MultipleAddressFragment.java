@@ -174,6 +174,8 @@ public class MultipleAddressFragment extends TkpdFragment
                 + shipmentRecipientModel.getAddressCityName()
                 + ", "
                 + shipmentRecipientModel.getRecipientPhoneNumber());
+        addressData.setMaxQuantity(updatedData.getMaxQuantity());
+        addressData.setMinQuantity(originData.getMinimalQtyOrder());
         initialItemData.add(addressData);
         return initialItemData;
     }

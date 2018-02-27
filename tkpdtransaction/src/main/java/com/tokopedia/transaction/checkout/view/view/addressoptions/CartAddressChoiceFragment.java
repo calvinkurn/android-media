@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -24,13 +23,11 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.transaction.checkout.view.adapter.ShipmentAddressListAdapter;
-import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.view.presenter.ICartAddressChoicePresenter;
 import com.tokopedia.transaction.checkout.view.view.ICartAddressChoiceView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -60,17 +57,8 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     private ShipmentAddressListAdapter recipientAdapter;
     private ICartAddressChoiceActivityListener cartAddressChoiceListener;
 
-    public static CartAddressChoiceFragment newInstance(
-            List<CartSellerItemModel> cartSellerItemModelList
-    ) {
-        CartAddressChoiceFragment fragment = new CartAddressChoiceFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(
-                CART_ITEM_LIST_EXTRA,
-                (ArrayList<? extends Parcelable>) cartSellerItemModelList
-        );
-        fragment.setArguments(bundle);
-        return fragment;
+    public static CartAddressChoiceFragment newInstance() {
+        return new CartAddressChoiceFragment();
     }
 
     @Override

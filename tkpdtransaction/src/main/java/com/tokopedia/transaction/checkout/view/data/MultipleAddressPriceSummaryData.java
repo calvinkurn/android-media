@@ -83,11 +83,6 @@ public class MultipleAddressPriceSummaryData {
     }
 
     public long getTotalPayment() {
-        totalPayment = totalProductPrice
-                + totalShippingPrice
-                + insurancePrice
-                + additionalFee
-                + promoDiscount;
         return totalPayment;
     }
 
