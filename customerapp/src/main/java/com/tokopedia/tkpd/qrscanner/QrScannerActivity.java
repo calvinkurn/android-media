@@ -19,7 +19,6 @@ import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.tkpd.R;
@@ -135,12 +134,12 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
                     isTorchOn = false;
                     decoratedBarcodeView.setTorchOff();
                     torch.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
-                            com.tokopedia.tokocash.R.drawable.ic_flash_turn_on));
+                            com.tokopedia.tokocash.R.drawable.qrpayment_ic_flash_turn_on));
                 } else {
                     isTorchOn = true;
                     decoratedBarcodeView.setTorchOn();
                     torch.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
-                            com.tokopedia.tokocash.R.drawable.ic_flash_turn_off));
+                            com.tokopedia.tokocash.R.drawable.qrpayment_ic_flash_turn_off));
                 }
             }
         });

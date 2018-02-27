@@ -115,7 +115,7 @@ public class SuccessPaymentQRActivity extends BaseSimpleActivity implements Succ
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent();
-                    setResult(CustomScannerTokoCashActivity.RESULT_CODE__SCANNER, intent);
+                    setResult(CustomScannerTokoCashActivity.RESULT_CODE_SCANNER, intent);
                     finish();
                 }
             });
@@ -143,7 +143,6 @@ public class SuccessPaymentQRActivity extends BaseSimpleActivity implements Succ
         backToHomeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.deleteCacheTokoCashBalance();
                 onBackPressed();
             }
         });
@@ -151,8 +150,7 @@ public class SuccessPaymentQRActivity extends BaseSimpleActivity implements Succ
 
     @Override
     public void onBackPressed() {
-        GlobalCacheManager cache = new GlobalCacheManager();
-        cache.delete(TkpdCache.Key.KEY_TOKOCASH_BALANCE_CACHE);
+        presenter.deleteCacheTokoCashBalance();
         Intent intent = new Intent();
         setResult(CustomScannerTokoCashActivity.RESULT_CODE_HOME, intent);
         finish();

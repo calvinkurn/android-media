@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
 import com.tokopedia.tokocash.network.exception.WalletException;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -30,7 +31,7 @@ public class WalletErrorResponse extends BaseResponseError {
     }
 
     @Override
-    public RuntimeException createException() {
+    public IOException createException() {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < errorMessage.size(); i++) {
             stringBuilder.append(errorMessage.get(i));
@@ -39,10 +40,5 @@ public class WalletErrorResponse extends BaseResponseError {
             }
         }
         return new WalletException(stringBuilder.toString().trim());
-    }
-
-    @Override
-    public boolean hasCustomAdditionalError() {
-        return false;
     }
 }

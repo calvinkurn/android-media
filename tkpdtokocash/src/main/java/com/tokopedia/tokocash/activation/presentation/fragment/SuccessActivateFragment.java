@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.data.model.storage.GlobalCacheManager;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.di.TokoCashComponent;
@@ -31,7 +31,7 @@ public class SuccessActivateFragment extends BaseDaggerFragment {
     private ActionListener listener;
 
     @Inject
-    GlobalCacheManager globalCacheManager;
+    CacheManager globalCacheManager;
     @Inject
     WalletUserSession walletUserSession;
 

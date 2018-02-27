@@ -2,7 +2,6 @@ package com.tokopedia.tokocash.activation.data.mapper;
 
 import com.tokopedia.tokocash.activation.data.entity.ActivateTokoCashEntity;
 import com.tokopedia.tokocash.activation.presentation.model.ActivateTokoCashData;
-import com.tokopedia.tokocash.network.exception.WalletException;
 
 import javax.inject.Inject;
 
@@ -25,6 +24,6 @@ public class ActivateTokoCashMapper implements Func1<ActivateTokoCashEntity, Act
             activateTokoCashData.setSuccess(activateTokoCashEntity.getSuccess() == 1);
             return activateTokoCashData;
         }
-        throw new WalletException("empty");
+        throw new RuntimeException("empty");
     }
 }

@@ -5,8 +5,6 @@ import android.content.Context;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.di.qualifier.AuthKeyQualifier;
-import com.tokopedia.abstraction.common.di.qualifier.FreshAccessTokenQualifier;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 
@@ -22,10 +20,9 @@ import javax.inject.Inject;
 public class TokoCashAuthInterceptor extends TkpdAuthInterceptor {
 
     @Inject
-    public TokoCashAuthInterceptor(@AuthKeyQualifier String authKey, @ApplicationContext Context context,
-                                   @FreshAccessTokenQualifier String freshAccessToken,
+    public TokoCashAuthInterceptor(@ApplicationContext Context context,
                                    AbstractionRouter abstractionRouter, UserSession userSession) {
-        super(authKey, context, freshAccessToken, abstractionRouter, userSession);
+        super(context, abstractionRouter, userSession);
     }
 
     @Override

@@ -30,7 +30,7 @@ public class TokoCashBalanceMapper implements Func1<BalanceTokoCash, TokoCashDat
             tokoCashData.setBalance(balanceTokoCash.getBalance());
             tokoCashData.setHoldBalance(balanceTokoCash.getHoldBalance());
             tokoCashData.setLink(balanceTokoCash.getLink());
-            tokoCashData.setRaw_balance(balanceTokoCash.getRaw_balance());
+            tokoCashData.setRaw_balance(balanceTokoCash.getRawBalance());
             tokoCashData.setRawHoldBalance(balanceTokoCash.getRawHoldBalance());
             tokoCashData.setRawThreshold(balanceTokoCash.getRawThreshold());
             tokoCashData.setRawTotalBalance(balanceTokoCash.getRawTotalBalance());

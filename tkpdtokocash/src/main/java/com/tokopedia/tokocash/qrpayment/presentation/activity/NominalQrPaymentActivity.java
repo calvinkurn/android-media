@@ -149,7 +149,9 @@ public class NominalQrPaymentActivity extends BaseSimpleActivity implements QrPa
         progressBar.setVisibility(View.GONE);
         Intent intent = SuccessPaymentQRActivity.newInstance(getApplicationContext(), qrPaymentTokoCash,
                 infoQrTokoCash.getName(), nominalValue.getText().toString(), true);
-        startActivityForResult(intent, REQUEST_CODE_SUCCESS);
+        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -157,7 +159,9 @@ public class NominalQrPaymentActivity extends BaseSimpleActivity implements QrPa
         progressBar.setVisibility(View.GONE);
         Intent intent = SuccessPaymentQRActivity.newInstance(getApplicationContext(), new QrPaymentTokoCash(),
                 infoQrTokoCash.getName(), nominalValue.getText().toString(), false);
-        startActivityForResult(intent, REQUEST_CODE_FAILED);
+        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -225,30 +229,8 @@ public class NominalQrPaymentActivity extends BaseSimpleActivity implements QrPa
                 }).showRetrySnackbar();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_SUCCESS) {
-            Intent intent = new Intent();
-            setResult(CustomScannerTokoCashActivity.RESULT_CODE_HOME, intent);
-            finish();
-        } else {
-            Intent intent = new Intent();
-            setResult(CustomScannerTokoCashActivity.RESULT_CODE__SCANNER, intent);
-            finish();
-        }
-    }
-
-    @Override
     protected void onDestroy() {
         presenter.onDestroyPresenter();
         super.onDestroy();
-    }
-
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent();
-        setResult(CustomScannerTokoCashActivity.RESULT_CODE_HOME, intent);
-        finish();
     }
 }

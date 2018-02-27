@@ -5,11 +5,9 @@ import android.content.Context;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.di.qualifier.AuthKeyQualifier;
-import com.tokopedia.abstraction.common.di.qualifier.FreshAccessTokenQualifier;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.abstraction.common.utils.AuthUtil;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.tokocash.network.WalletUserSession;
 import com.tokopedia.tokocash.network.api.WalletUrl;
 
@@ -37,10 +35,9 @@ public class WalletAuthInterceptor extends TkpdAuthInterceptor {
     private WalletUserSession walletUserSession;
 
     @Inject
-    public WalletAuthInterceptor(@AuthKeyQualifier String authKey, @ApplicationContext Context context,
-                                 @FreshAccessTokenQualifier String freshAccessToken, AbstractionRouter abstractionRouter,
+    public WalletAuthInterceptor(@ApplicationContext Context context, AbstractionRouter abstractionRouter,
                                  UserSession userSession, WalletUserSession walletUserSession) {
-        super(authKey, context, freshAccessToken, abstractionRouter, userSession);
+        super(context, abstractionRouter, userSession);
         this.walletUserSession = walletUserSession;
         maxRetryAttempt = 0;
     }

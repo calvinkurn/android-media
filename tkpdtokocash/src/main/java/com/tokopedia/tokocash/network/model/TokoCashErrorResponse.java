@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName;
 import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
 import com.tokopedia.tokocash.network.exception.TokoCashException;
 
+import java.io.IOException;
+
 /**
  * Created by nabillasabbaha on 1/17/18.
  */
@@ -31,12 +33,7 @@ public class TokoCashErrorResponse extends BaseResponseError {
     }
 
     @Override
-    public RuntimeException createException() {
+    public IOException createException() {
         return new TokoCashException(errorMessage);
-    }
-
-    @Override
-    public boolean hasCustomAdditionalError() {
-        return false;
     }
 }

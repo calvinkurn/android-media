@@ -4,20 +4,16 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.storage.GlobalCacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.activation.data.ActivateRepository;
-import com.tokopedia.tokocash.historytokocash.domain.MoveToSaldoUseCase;
-import com.tokopedia.tokocash.historytokocash.domain.PostHelpHistoryDetailUseCase;
-import com.tokopedia.tokocash.network.model.ActivateTokoCashErrorResponse;
-import com.tokopedia.tokocash.pendingcashback.data.PendingCashbackRepository;
-import com.tokopedia.tokocash.pendingcashback.domain.GetPendingCasbackUseCase;
 import com.tokopedia.tokocash.activation.domain.LinkedTokoCashUseCase;
 import com.tokopedia.tokocash.activation.domain.RequestOtpTokoCashUseCase;
 import com.tokopedia.tokocash.historytokocash.data.repository.WalletRepository;
 import com.tokopedia.tokocash.historytokocash.domain.GetHistoryDataUseCase;
 import com.tokopedia.tokocash.historytokocash.domain.GetReasonHelpDataUseCase;
+import com.tokopedia.tokocash.historytokocash.domain.MoveToSaldoUseCase;
+import com.tokopedia.tokocash.historytokocash.domain.PostHelpHistoryDetailUseCase;
 import com.tokopedia.tokocash.network.WalletTokenRefresh;
 import com.tokopedia.tokocash.network.WalletUserSession;
 import com.tokopedia.tokocash.network.api.TokoCashApi;
@@ -27,10 +23,13 @@ import com.tokopedia.tokocash.network.interceptor.TokoCashAuthInterceptor;
 import com.tokopedia.tokocash.network.interceptor.TokoCashErrorResponseInterceptor;
 import com.tokopedia.tokocash.network.interceptor.WalletAuthInterceptor;
 import com.tokopedia.tokocash.network.interceptor.WalletErrorResponseInterceptor;
+import com.tokopedia.tokocash.network.model.ActivateTokoCashErrorResponse;
 import com.tokopedia.tokocash.network.model.TokoCashErrorResponse;
 import com.tokopedia.tokocash.network.model.WalletErrorResponse;
+import com.tokopedia.tokocash.pendingcashback.data.PendingCashbackRepository;
+import com.tokopedia.tokocash.pendingcashback.domain.GetPendingCasbackUseCase;
+import com.tokopedia.tokocash.qrpayment.data.repository.BalanceRepository;
 import com.tokopedia.tokocash.qrpayment.data.repository.QrPaymentRepository;
-import com.tokopedia.tokocash.qrpayment.data.repository.TokoCashBalanceRepository;
 import com.tokopedia.tokocash.qrpayment.domain.GetBalanceTokoCashUseCase;
 import com.tokopedia.tokocash.qrpayment.domain.GetInfoQrTokoCashUseCase;
 import com.tokopedia.tokocash.qrpayment.domain.PostQrPaymentUseCase;
@@ -53,7 +52,6 @@ public class TokoCashModule {
     }
 
     @Provides
-    @TokoCashScope
     WalletUserSession provideTokoCashSession(@ApplicationContext Context context) {
         if (context instanceof TokoCashRouter) {
             return ((TokoCashRouter) context).getTokoCashSession();
@@ -62,16 +60,6 @@ public class TokoCashModule {
     }
 
     @Provides
-    @TokoCashScope
-    GlobalCacheManager provideGlobalCacheManager(@ApplicationContext Context context) {
-        if (context instanceof TokoCashRouter) {
-            return ((TokoCashRouter) context).getGlobalCacheManager();
-        }
-        return null;
-    }
-
-    @Provides
-    @TokoCashScope
     @OkHttpTokoCashQualifier
     OkHttpClient provideOkHttpClient(TokoCashAuthInterceptor tokoCashAuthInterceptor, Gson gson) {
         return new OkHttpClient.Builder()
@@ -82,7 +70,6 @@ public class TokoCashModule {
     }
 
     @Provides
-    @TokoCashScope
     @RetrofitTokoCashQualifier
     Retrofit provideRetrofit(Retrofit.Builder retrofitBuilder, @OkHttpTokoCashQualifier OkHttpClient okHttpClient) {
         return retrofitBuilder.baseUrl(WalletUrl.BaseUrl.ACCOUNTS_DOMAIN)
@@ -91,19 +78,16 @@ public class TokoCashModule {
     }
 
     @Provides
-    @TokoCashScope
     TokoCashApi provideTokoCashApi(@RetrofitTokoCashQualifier Retrofit retrofit) {
         return retrofit.create(TokoCashApi.class);
     }
 
     @Provides
-    @TokoCashScope
     WalletTokenRefresh provideWalletTokenRefresh(WalletUserSession walletUserSession, @RetrofitTokoCashQualifier Retrofit retrofit) {
         return new WalletTokenRefresh(walletUserSession, retrofit);
     }
 
     @Provides
-    @TokoCashScope
     @OkHttpWalletQualifier
     OkHttpClient provideOkHttpClientWallet(WalletAuthInterceptor walletAuthInterceptor, AbstractionRouter abstractionRouter,
                                            WalletTokenRefresh walletTokenRefresh, WalletUserSession walletUserSession, Gson gson) {
@@ -114,7 +98,6 @@ public class TokoCashModule {
     }
 
     @Provides
-    @TokoCashScope
     @RetrofitWalletQualifier
     Retrofit provideRetrofitWallet(Retrofit.Builder retrofitBuilder,
                                    @OkHttpWalletQualifier OkHttpClient okHttpClient, Gson gson) {
@@ -126,7 +109,6 @@ public class TokoCashModule {
     }
 
     @Provides
-    @TokoCashScope
     WalletApi provideWalletApi(@RetrofitWalletQualifier Retrofit retrofit) {
         return retrofit.create(WalletApi.class);
     }
@@ -152,7 +134,7 @@ public class TokoCashModule {
     }
 
     @Provides
-    GetBalanceTokoCashUseCase provideGetBalanceTokoCashUseCase(TokoCashBalanceRepository tokoCashBalanceRepository) {
+    GetBalanceTokoCashUseCase provideGetBalanceTokoCashUseCase(BalanceRepository tokoCashBalanceRepository) {
         return new GetBalanceTokoCashUseCase(tokoCashBalanceRepository);
     }
 

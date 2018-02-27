@@ -1,7 +1,7 @@
 package com.tokopedia.tokocash.qrpayment.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.storage.GlobalCacheManager;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.tokocash.qrpayment.presentation.contract.SuccessQrPaymentContract;
 import com.tokopedia.tokocash.util.CacheUtil;
 
@@ -14,10 +14,10 @@ import javax.inject.Inject;
 public class SuccessQrPaymentPresenter extends BaseDaggerPresenter<SuccessQrPaymentContract.View>
         implements SuccessQrPaymentContract.Presenter {
 
-    private GlobalCacheManager globalCacheManager;
+    private CacheManager globalCacheManager;
 
     @Inject
-    public SuccessQrPaymentPresenter(GlobalCacheManager globalCacheManager) {
+    public SuccessQrPaymentPresenter(CacheManager globalCacheManager) {
         this.globalCacheManager = globalCacheManager;
     }
 

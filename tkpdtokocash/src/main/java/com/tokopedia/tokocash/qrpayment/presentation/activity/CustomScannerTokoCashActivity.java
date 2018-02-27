@@ -35,7 +35,7 @@ public class CustomScannerTokoCashActivity extends BaseScannerQRActivity impleme
         HasComponent<TokoCashComponent> {
 
     public static final int RESULT_CODE_HOME = 1;
-    public static final int RESULT_CODE__SCANNER = 2;
+    public static final int RESULT_CODE_SCANNER = 2;
     private static final int REQUEST_CODE_NOMINAL = 211;
 
     private TokoCashComponent tokoCashComponent;

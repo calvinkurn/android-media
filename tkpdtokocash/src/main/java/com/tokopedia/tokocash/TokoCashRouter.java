@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.abstraction.common.data.model.storage.GlobalCacheManager;
 import com.tokopedia.core.router.digitalmodule.sellermodule.PeriodRangeModelCore;
 import com.tokopedia.tokocash.network.WalletUserSession;
 
@@ -27,8 +26,6 @@ public interface TokoCashRouter {
     Intent goToQRScannerTokoCash(Context context);
 
     WalletUserSession getTokoCashSession();
-
-    GlobalCacheManager getGlobalCacheManager();
 
     Intent getWebviewActivityWithIntent(Context context, String url, String title);
 }

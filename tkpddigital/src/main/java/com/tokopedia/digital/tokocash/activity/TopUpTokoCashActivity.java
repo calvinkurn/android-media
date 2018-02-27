@@ -92,16 +92,16 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
     private String categoryId;
     private String operatorId;
 
-    @SuppressWarnings("unused")
-    @DeepLink(Constants.Applinks.WALLET_HOME)
-    public static Intent getcallingIntent(Context context, Bundle extras) {
-        boolean topUpVisible = Boolean.parseBoolean(
-                extras.getString(
-                        Constants.AppLinkQueryParameter.WALLET_TOP_UP_VISIBILITY, "false"
-                )
-        );
-        return TopUpTokoCashActivity.newInstance(context, topUpVisible);
-    }
+//    @SuppressWarnings("unused")
+//    @DeepLink(Constants.Applinks.WALLET_HOME)
+//    public static Intent getcallingIntent(Context context, Bundle extras) {
+//        boolean topUpVisible = Boolean.parseBoolean(
+//                extras.getString(
+//                        Constants.AppLinkQueryParameter.WALLET_TOP_UP_VISIBILITY, "false"
+//                )
+//        );
+//        return TopUpTokoCashActivity.newInstance(context, topUpVisible);
+//    }
 
     private static Intent newInstance(Context context, boolean topUpAvailable) {
         return new Intent(context, TopUpTokoCashActivity.class)
