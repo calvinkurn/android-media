@@ -43,9 +43,10 @@ public class TopAdsCreateDetailProductListUseCase extends UseCase<TopAdsDetailPr
                 );
     }
 
-    public static RequestParams createRequestParams(List<TopAdsDetailProductDomainModel> topAdsDetailProductDomainModels){
+    public static RequestParams createRequestParams(List<TopAdsDetailProductDomainModel> topAdsDetailProductDomainModels, String source){
         RequestParams params = RequestParams.create();
         params.putObject(TopAdsNetworkConstant.PARAM_AD, topAdsDetailProductDomainModels);
+        params.putString(TopAdsExtraConstant.EXTRA_SOURCE, source);
         return params;
     }
 

@@ -1,5 +1,7 @@
 package com.tokopedia.topads.dashboard.domain.interactor;
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
@@ -86,7 +88,12 @@ public class TopAdsCreateNewGroupUseCase extends UseCase<TopAdsDetailGroupViewMo
         createGroupRequest.setGroupStartTime(viewModel.getStartTime());
         createGroupRequest.setGroupEndTime(viewModel.getEndTime());
         createGroupRequest.setStickerId(String.valueOf(viewModel.getStickerId()));
-        createGroupRequest.setSource(TopAdsNetworkConstant.VALUE_SOURCE_ANDROID);
+        String source = requestParams.getString(TopAdsExtraConstant.EXTRA_SOURCE, "");
+        if(!TextUtils.isEmpty(source)){
+            createGroupRequest.setSource(source);
+        }else{
+            createGroupRequest.setSource(TopAdsNetworkConstant.VALUE_SOURCE_ANDROID);
+        }
 
         int productSize = productList.size();
         createGroupRequest.setGroupTotal(String.valueOf(productSize));
