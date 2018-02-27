@@ -18,12 +18,17 @@ public class BaseChatViewModel {
     private long headerTime;
     private String formattedHeaderTime;
 
+    private String senderId;
+    private String senderName;
+    private String senderIconUrl;
+    private boolean isInfluencer;
+    private boolean isAdministrator;
 
-    public BaseChatViewModel(String message, long createdAt, long updatedAt, String messageId) {
+
+    BaseChatViewModel(String message, long createdAt, long updatedAt, String messageId) {
         this.showHeaderTime = false;
         this.headerTime = 0;
         this.formattedHeaderTime = "tes";
-
         this.message = message.replace("\\n", "\n");
         this.createdAt = createdAt;
         this.updatedAt = updatedAt != 0 ? updatedAt : createdAt;
@@ -31,6 +36,30 @@ public class BaseChatViewModel {
         this.formattedUpdatedAt = TimeConverter.convertToHourFormat(this.updatedAt);
         this.messageId = messageId;
 
+        this.senderId = "";
+        this.senderName = "";
+        this.senderIconUrl = "";
+        this.isInfluencer = false;
+        this.isAdministrator = false;
+    }
+
+    BaseChatViewModel(String message, long createdAt, long updatedAt, String messageId,
+                      String senderId, String senderName, String senderIconUrl,
+                      boolean isInfluencer, boolean isAdministrator) {
+        this.showHeaderTime = false;
+        this.headerTime = 0;
+        this.formattedHeaderTime = "tes";
+        this.message = message.replace("\\n", "\n");
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt != 0 ? updatedAt : createdAt;
+        this.formattedCreatedAt = TimeConverter.convertToHourFormat(this.createdAt);
+        this.formattedUpdatedAt = TimeConverter.convertToHourFormat(this.updatedAt);
+        this.messageId = messageId;
+        this.senderId = senderId;
+        this.senderName = senderName;
+        this.senderIconUrl = senderIconUrl;
+        this.isInfluencer = isInfluencer;
+        this.isAdministrator = isAdministrator;
     }
 
     public boolean isShowHeaderTime() {
@@ -76,5 +105,25 @@ public class BaseChatViewModel {
 
     public String getFormattedHeaderTime() {
         return formattedHeaderTime;
+    }
+
+    public String getSenderId() {
+        return senderId;
+    }
+
+    public String getSenderName() {
+        return senderName;
+    }
+
+    public String getSenderIconUrl() {
+        return senderIconUrl;
+    }
+
+    public boolean isInfluencer() {
+        return isInfluencer;
+    }
+
+    public boolean isAdministrator() {
+        return isAdministrator;
     }
 }

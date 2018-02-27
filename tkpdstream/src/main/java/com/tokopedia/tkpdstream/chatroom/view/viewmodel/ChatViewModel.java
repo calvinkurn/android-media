@@ -9,45 +9,15 @@ import com.tokopedia.tkpdstream.chatroom.view.adapter.typefactory.GroupChatTypeF
 
 public class ChatViewModel extends BaseChatViewModel implements Visitable<GroupChatTypeFactory> {
 
-    private String senderId;
-    private String senderName;
-    private String senderIconUrl;
-    private boolean isInfluencer;
-    private boolean isAdministrator;
-
     public ChatViewModel(String message, long createdAt, long updatedAt,
                          String messageId, String senderId, String senderName,
                          String senderIconUrl, boolean isInfluencer, boolean isAdministrator) {
-        super(message, createdAt, updatedAt, messageId);
-        this.senderId = senderId;
-        this.senderName = senderName;
-        this.senderIconUrl = senderIconUrl;
-        this.isInfluencer = isInfluencer;
-        this.isAdministrator = isAdministrator;
+        super(message, createdAt, updatedAt, messageId, senderId, senderName, senderIconUrl,
+                isInfluencer, isAdministrator);
     }
 
     @Override
     public int type(GroupChatTypeFactory typeFactory) {
         return typeFactory.type(this);
-    }
-
-    public String getSenderId() {
-        return senderId;
-    }
-
-    public String getSenderName() {
-        return senderName;
-    }
-
-    public String getSenderIconUrl() {
-        return senderIconUrl;
-    }
-
-    public boolean isInfluencer() {
-        return isInfluencer;
-    }
-
-    public boolean isAdministrator() {
-        return isAdministrator;
     }
 }

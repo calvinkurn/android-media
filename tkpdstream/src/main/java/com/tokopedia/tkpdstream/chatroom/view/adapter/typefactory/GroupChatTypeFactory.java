@@ -8,6 +8,7 @@ import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ImageViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.UserActionViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.VoteAnnouncementViewModel;
 
 /**
  * @author by nisie on 2/7/18.
@@ -26,5 +27,8 @@ public interface GroupChatTypeFactory {
     int type(UserActionViewModel userActionViewModel);
 
     int type(ImageViewModel imageViewModel);
+
+    int type(VoteAnnouncementViewModel voteAnnouncementViewModel);
+
 
 }

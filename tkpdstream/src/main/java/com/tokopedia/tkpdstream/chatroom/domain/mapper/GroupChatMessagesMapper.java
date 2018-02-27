@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.AdminAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ImageViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.VoteAnnouncementViewModel;
 import com.tokopedia.tkpdstream.common.util.TimeConverter;
 
 import java.util.ArrayList;
@@ -86,6 +87,21 @@ public class GroupChatMessagesMapper {
                 message.getCreatedAt(),
                 message.getUpdatedAt(),
                 String.valueOf(message.getMessageId())
+        );
+    }
+
+    private Visitable mapToVoteAnnouncement(UserMessage message) {
+        return new VoteAnnouncementViewModel(
+                message.getMessage(),
+                1,
+                message.getCreatedAt(),
+                message.getUpdatedAt(),
+                String.valueOf(message.getMessageId()),
+                message.getSender().getUserId(),
+                message.getSender().getNickname(),
+                message.getSender().getProfileUrl(),
+                false,
+                true
         );
     }
 
