@@ -13,6 +13,7 @@ import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.common.widget.LabelView;
+import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
@@ -34,6 +35,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardNewActivity.EXTRA_CURRENCY_TYPE;
 import static com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardNewActivity.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST;
 import static com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardNewActivity.EXTRA_PRODUCT_VARIANT_SELECTION;
 
@@ -54,6 +56,7 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
     private ProductVariantViewModel productVariantViewModel;
     private RecyclerView recyclerView;
     private List<ProductVariantDashboardNewViewModel> productVariantDashboardNewViewModelList;
+    private @CurrencyTypeDef int currencyType;
 
     public static ProductVariantDashboardNewFragment newInstance() {
         Bundle args = new Bundle();
@@ -72,6 +75,7 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
         } else { // TODO remove this, only for test
             productVariantByCatModelList = getProductVariantByCatModelListFromJson();
         }
+        currencyType = activityIntent.getIntExtra(ProductVariantDashboardNewActivity.EXTRA_CURRENCY_TYPE, CurrencyTypeDef.TYPE_IDR);
 
         if (savedInstanceState == null) {
             if (activityIntent.hasExtra(EXTRA_PRODUCT_VARIANT_SELECTION)) {
@@ -242,11 +246,13 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
         if (productVariantDashboardNewViewModel.haslevel2()) {
             ProductVariantDetailLevel1ListActivity.start(getContext(), this, productVariantDashboardNewViewModel,
                     productVariantViewModel.getVariantOptionParent(1).getName(),
-                    productVariantViewModel.getVariantOptionParent(2).getName());
+                    productVariantViewModel.getVariantOptionParent(2).getName(),
+                    currencyType);
         } else {
             ProductVariantDetailLevelLeafActivity.start(getContext(), this,
                     productVariantDashboardNewViewModel.getProductVariantCombinationViewModelList().get(0),
-                    productVariantViewModel.getVariantOptionParent(1).getName());
+                    productVariantViewModel.getVariantOptionParent(1).getName(),
+                    currencyType);
         }
 //        ProductVariantByCatModel productVariantByCatModel = ProductVariantViewConverter.getProductVariantByCatModel(ProductVariantConstant.VARIANT_LEVEL_TWO_VALUE, productVariantByCatModelList);
 //        ArrayList<ProductVariantDetailViewModel> productVariantDetailViewModelList = new ArrayList<>();

@@ -16,6 +16,7 @@ public class ProductVariantDashboardNewActivity extends BaseSimpleActivity {
 
     public static final String EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST = "EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST";
     public static final String EXTRA_PRODUCT_VARIANT_SELECTION = "EXTRA_PRODUCT_VARIANT_SELECTION";
+    public static final String EXTRA_CURRENCY_TYPE = "EXTRA_CURR_TYPE";
 
     @Override
     protected Fragment getNewFragment() {

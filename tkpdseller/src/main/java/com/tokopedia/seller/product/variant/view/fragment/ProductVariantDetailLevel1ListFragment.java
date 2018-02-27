@@ -3,6 +3,7 @@ package com.tokopedia.seller.product.variant.view.fragment;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardNewViewModel;
 
 /**
@@ -34,6 +36,7 @@ public class ProductVariantDetailLevel1ListFragment extends Fragment
         void onSubmitVariant();
         ProductVariantDashboardNewViewModel getProductVariantDashboardNewViewModel();
         String getVariantName();
+        @CurrencyTypeDef int getCurrencyType();
     }
 
     public static ProductVariantDetailLevel1ListFragment newInstance() {
@@ -152,6 +155,12 @@ public class ProductVariantDetailLevel1ListFragment extends Fragment
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             onAttachListener(activity);
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //TODO change the model in the activity and update the flag hasLeafChanged
     }
 
     @TargetApi(23)

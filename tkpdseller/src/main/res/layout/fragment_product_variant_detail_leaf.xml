@@ -28,6 +28,15 @@
             app:ls_content_text_size="@dimen/font_title"
             app:ls_content_color="@color/font_black_primary_70"
             style="@style/LabelLayout"/>
+
+        <com.tokopedia.design.text.SpinnerCounterInputView
+            android:id="@+id/spinner_counter_input_view_price"
+            style="@style/LabelLayout"
+            app:spinner_decimal_entries="@array/product_currency_entries"
+            app:spinner_decimal_hint="@string/product_label_variant_price"
+            app:spinner_decimal_max_length="@integer/product_max_counter_length"
+            app:spinner_decimal_show_counter_button="false"
+            app:spinner_decimal_values="@array/product_currency_values" />
     </LinearLayout>
 
     <Button

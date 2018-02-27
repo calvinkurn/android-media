@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.design.label.LabelView;
+import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.common.widget.VerticalLabelView;
@@ -32,6 +33,7 @@ public class ProductVariantDetailLeafFragment extends Fragment
     private VerticalLabelView lvTitle;
 
     private ProductVariantCombinationViewModel productVariantCombinationViewModel;
+    private SpinnerCounterInputView spinnerCounterInputView;
     //    private View buttonSave;
 //    private ProductVariantDetailAdapter productVariantDetailAdapter;
 //    private boolean variantHasStock;
@@ -83,9 +85,11 @@ public class ProductVariantDetailLeafFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_product_variant_detail_leaf, container, false);
         lvTitle = view.findViewById(R.id.lv_title);
         labelSwitchStatus = (LabelSwitch) view.findViewById(R.id.label_switch_product_status);
+        spinnerCounterInputView = view.findViewById(R.id.spinner_counter_input_view_price);
 
         lvTitle.setTitle(listener.getVariantName());
         lvTitle.setSummary(productVariantCombinationViewModel.getLeafString());
+
         labelSwitchStatus.setSummary(getString(R.string.product_variant_status_available));
 
 //        buttonSave = view.findViewById(R.id.button_save);

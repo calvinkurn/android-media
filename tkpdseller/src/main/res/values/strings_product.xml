@@ -14,6 +14,7 @@
     <string name="product_label_product_recommendation">Rekomendasi Kategori</string>
     <string name="product_label_product_about">Tentang Produk</string>
     <string name="product_label_product_price">Harga Produk</string>
+    <string name="product_label_variant_price">Harga Variant</string>
     <string name="product_label_wholesale_price">Harga Grosir</string>
     <string name="product_label_product_weight">Berat Produk</string>
     <string name="product_label_add_wholesale">+ Tambah Harga Grosir</string>

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantDetailLeafFragment;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardNewViewModel;
@@ -20,6 +21,7 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
 
     public static final String EXTRA_PRODUCT_VARIANT_LEAF_DATA = "var_data";
     public static final String EXTRA_PRODUCT_VARIANT_NAME = "var_name";
+    public static final String EXTRA_CURRENCY_TYPE = "curr_type";
 //    public static final String EXTRA_VARIANT_HAS_STOCK = "var_has_stock";
 //    public static final String EXTRA_VARIANT_VALUE_LIST = "var_lst";
 //    public static final String EXTRA_SELECTED_VARIANT_ID_LIST = "sel_var_id_lst";
@@ -32,19 +34,22 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
     private ProductVariantCombinationViewModel productVariantCombinationViewModel;
     private String variantName;
 
+    private @CurrencyTypeDef int currencyType;
+
     public static void start(Context context, Fragment fragment,
                              ProductVariantCombinationViewModel productVariantCombinationViewModel,
-                             String variantName){
-        Intent intent = getIntent(context, productVariantCombinationViewModel, variantName);
+                             String variantName, @CurrencyTypeDef int currencyType){
+        Intent intent = getIntent(context, productVariantCombinationViewModel, variantName, currencyType);
         fragment.startActivityForResult(intent, VARIANT_EDIT_LEAF_REQUEST_CODE);
     }
 
     public static Intent getIntent(Context context,
                                    ProductVariantCombinationViewModel productVariantCombinationViewModel,
-                                   String variantName){
+                                   String variantName, @CurrencyTypeDef int currencyType){
         Intent intent = new Intent(context, ProductVariantDetailLevelLeafActivity.class);
         intent.putExtra(EXTRA_PRODUCT_VARIANT_LEAF_DATA, productVariantCombinationViewModel);
         intent.putExtra(EXTRA_PRODUCT_VARIANT_NAME, variantName);
+        intent.putExtra(EXTRA_CURRENCY_TYPE, currencyType);
         return intent;
     }
 
@@ -54,6 +59,8 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
         Intent intent = getIntent();
 
         variantName = intent.getStringExtra(EXTRA_PRODUCT_VARIANT_NAME);
+        currencyType = intent.getIntExtra(EXTRA_CURRENCY_TYPE, CurrencyTypeDef.TYPE_IDR);
+
         if (savedInstanceState == null) {
             productVariantCombinationViewModel = intent.getParcelableExtra(EXTRA_PRODUCT_VARIANT_LEAF_DATA);
         } else {
