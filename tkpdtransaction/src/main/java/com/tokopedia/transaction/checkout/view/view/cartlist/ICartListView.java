@@ -3,7 +3,7 @@ package com.tokopedia.transaction.checkout.view.view.cartlist;
 import com.tokopedia.transaction.base.IBaseView;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CartListData;
-import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
+import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.view.data.cartshipmentform.CartShipmentAddressFormData;
 
 import java.util.List;
@@ -47,7 +47,7 @@ public interface ICartListView extends IBaseView {
     void renderErrorTimeoutConnectionToShipmentSingleAddress(String message);
 
 
-    void renderToShipmentMultipleAddressSuccess(CartListData cartListData);
+    void renderToShipmentMultipleAddressSuccess(CartListData cartListData, RecipientAddressModel selectedAddress);
 
     void renderErrorToShipmentMultipleAddress(String message);
 

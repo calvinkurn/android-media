@@ -22,6 +22,7 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
     public static final int RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM = 1;
 
     public static final String EXTRA_SHIPMENT_FORM_DATA = "EXTRA_SHIPMENT_FORM_DATA";
+    public static final String EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA = "EXTRA_DEFAULT_ADDRESS_RECIPIENT_DATA";
     public static final String EXTRA_CART_PROMO_SUGGESTION = "EXTRA_CART_PROMO_SUGGESTION";
     public static final String EXTRA_ADDRESS_SHIPMENT_TYPE = "EXTRA_ADDRESS_SHIPMENT_TYPE";
     public static final int TYPE_ADDRESS_SHIPMENT_SINGLE = 1;
@@ -84,10 +85,11 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
                                 cartShipmentAddressFormData, cartPromoSuggestionData
                         )).commit();
             } else {
-                getFragmentManager().beginTransaction().replace(R.id.container,
+                //TODO Change Later
+                /*getFragmentManager().beginTransaction().replace(R.id.container,
                         MultipleAddressShipmentFragment.newInstance(
                                 cartShipmentAddressFormData, cartPromoSuggestionData
-                        )).commit();
+                        )).commit();*/
             }
         }
     }

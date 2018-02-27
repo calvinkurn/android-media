@@ -246,7 +246,10 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     public void onAddOrChangeAddress() {
         startActivityForResult(
                 CartAddressChoiceActivity.createInstance(
-                        getActivity(), CartAddressChoiceActivity.TYPE_REQUEST_FULL_SELECTION
+                        getActivity(),
+                        CartAddressChoiceActivity.TYPE_REQUEST_FULL_SELECTION,
+                        mCartSingleAddressData.getCartSellerItemModelList(),
+                        mCartSingleAddressData.getRecipientAddressModel()
                 ),
                 CartAddressChoiceActivity.REQUEST_CODE);
     }
@@ -313,8 +316,11 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                     //TODO render selectedAddressData
                     break;
                 case CartAddressChoiceActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM:
+                    Intent intent = new Intent();
+                    intent.putExtra(CartShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA,
+                            mCartSingleAddressData.getRecipientAddressModel());
                     cartShipmentActivityListener.closeWithResult(
-                            CartShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM, null);
+                            CartShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM, intent);
                     break;
             }
         }

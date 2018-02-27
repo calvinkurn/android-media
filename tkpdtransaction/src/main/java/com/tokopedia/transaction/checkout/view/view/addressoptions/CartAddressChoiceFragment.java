@@ -1,13 +1,12 @@
 package com.tokopedia.transaction.checkout.view.view.addressoptions;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -16,14 +15,22 @@ import android.widget.TextView;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
+import com.tokopedia.showcase.ShowCaseBuilder;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.transaction.checkout.view.adapter.ShipmentAddressListAdapter;
+import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.view.presenter.ICartAddressChoicePresenter;
 import com.tokopedia.transaction.checkout.view.view.ICartAddressChoiceView;
-import com.tokopedia.transaction.checkout.view.view.multipleaddressform.MultipleAddressFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,10 +41,10 @@ import butterknife.OnClick;
  */
 
 public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddressChoicePresenter>
-        implements ICartAddressChoiceView, ShipmentAddressListAdapter.ActionListener,
-        ShipmentAddressListFragment.FragmentListener {
+        implements ICartAddressChoiceView, ShipmentAddressListAdapter.ActionListener {
 
     public static String INTENT_EXTRA_SELECTED_RECIPIENT_ADDRESS = "selectedAddress";
+    private static String CART_ITEM_LIST_EXTRA = "CART_ITEM_LIST_EXTRA";
 
     @BindView(R2.id.tv_choose_other_address)
     TextView tvChooseOtherAddress;
@@ -51,9 +58,18 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     RecyclerView rvAddress;
 
     private ShipmentAddressListAdapter recipientAdapter;
+    private ICartAddressChoiceActivityListener cartAddressChoiceListener;
 
-    public static CartAddressChoiceFragment newInstance() {
+    public static CartAddressChoiceFragment newInstance(
+            List<CartSellerItemModel> cartSellerItemModelList
+    ) {
         CartAddressChoiceFragment fragment = new CartAddressChoiceFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(
+                CART_ITEM_LIST_EXTRA,
+                (ArrayList<? extends Parcelable>) cartSellerItemModelList
+        );
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -109,6 +125,7 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
         setupRecyclerView();
         presenter.attachView(this);
         presenter.loadAddresses();
+        setShowCase();
     }
 
     @Override
@@ -144,10 +161,7 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     void onChooseOtherAddressClick() {
         FragmentManager fragmentManager = getActivity().getFragmentManager();
         ShipmentAddressListFragment fragment = ShipmentAddressListFragment.newInstance();
-        fragment.setFragmentListener(this);
-
         String backStateName = fragment.getClass().getName();
-
         boolean isFragmentPopped = fragmentManager.popBackStackImmediate(backStateName, 0);
         if (!isFragmentPopped) {
             fragmentManager.beginTransaction()
@@ -165,18 +179,7 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
 
     @OnClick(R2.id.ll_send_to_multiple_address)
     void onSendToMultipleAddress() {
-        FragmentManager fragmentManager = getActivity().getFragmentManager();
-        Fragment fragment = MultipleAddressFragment.newInstance();
-
-        String backStateName = fragment.getClass().getName();
-
-        boolean isFragmentPopped = fragmentManager.popBackStackImmediate(backStateName, 0);
-        if (!isFragmentPopped) {
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.container, fragment)
-                    .addToBackStack(backStateName)
-                    .commit();
-        }
+        cartAddressChoiceListener.finishSendResultActionToMultipleAddressForm();
     }
 
     @OnClick(R2.id.bt_send_to_current_address)
@@ -201,12 +204,6 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     }
 
     @Override
-    public void onAddressClick(RecipientAddressModel mode) {
-        // Update View
-        Log.e("Update View", "Recipient Address Model");
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
@@ -220,4 +217,47 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
         }
     }
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        cartAddressChoiceListener = (ICartAddressChoiceActivityListener) activity;
+    }
+
+    private void setShowCase() {
+        ShowCaseObject showCase = new ShowCaseObject(
+                tvChooseOtherAddress, "Kirim Barang Sama ke Bebeberapa\n" +
+                "Alamat.", "Klik tombol untuk mengirim barang yang sama ke beda alamat.",
+                ShowCaseContentPosition.UNDEFINED);
+
+        ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
+
+        showCaseObjectList.add(showCase);
+
+        ShowCaseDialog showCaseDialog = createShowCaseDialog();
+
+        if (!ShowCasePreference.hasShown(getActivity(), CartAddressChoiceFragment.class.getName()))
+            showCaseDialog.show(
+                    getActivity(),
+                    CartAddressChoiceFragment.class.getName(),
+                    showCaseObjectList
+            );
+    }
+
+    private ShowCaseDialog createShowCaseDialog() {
+        return new ShowCaseBuilder()
+                .customView(R.layout.show_case_checkout)
+                .titleTextColorRes(R.color.white)
+                .spacingRes(R.dimen.spacing_show_case)
+                .arrowWidth(R.dimen.arrow_width_show_case)
+                .textColorRes(R.color.grey_400)
+                .shadowColorRes(R.color.shadow)
+                .backgroundContentColorRes(R.color.black)
+                .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
+                .textSizeRes(R.dimen.fontvs)
+                .finishStringRes(R.string.show_case_finish)
+                .useCircleIndicator(true)
+                .clickable(true)
+                .useArrow(true)
+                .build();
+    }
 }

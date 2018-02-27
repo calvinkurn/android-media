@@ -60,6 +60,12 @@
             android:screenOrientation="portrait"/>
 
         <activity
+            android:name=".checkout.view.view.multipleaddressform.MultipleAddressFormActivity"
+            android:label="@string/title_shipping_dest"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
+
+        <activity
             android:name=".cart.activity.ShipmentCartActivity"
             android:label="@string/title_activity_cart_shipment"
             android:screenOrientation="portrait"/>
