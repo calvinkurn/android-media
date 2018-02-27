@@ -24,8 +24,8 @@ public class ExploreRepositoryImpl implements ExploreRepository {
     }
 
     @Override
-    public Observable<List<ExploreSectionViewModel>> getExploreData() {
-        return dataSource.getExploreData(context);
+    public Observable<List<ExploreSectionViewModel>> getExploreData(String userId) {
+        return dataSource.getExploreData(userId);
     }
 
     public Observable<List<ExploreSectionViewModel>> getExploreDataCache() {

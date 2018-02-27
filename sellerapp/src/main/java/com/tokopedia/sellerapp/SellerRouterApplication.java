@@ -142,6 +142,7 @@ import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
+import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 
 import java.io.IOException;
@@ -815,6 +816,11 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public Intent goToOrderDetail(Context context, String orderId) {
+        return OrderDetailActivity.createSellerInstance(context, orderId);
+    }
+
+    @Override
     public void goToUserPaymentList(Activity activity) {
         Intent intent = new Intent(activity, ListPaymentTypeActivity.class);
         activity.startActivity(intent);
@@ -940,6 +946,19 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void sendEventTracking(String event, String category, String action, String label) {
         UnifyTracking.sendGTMEvent(new EventTracking(event, category, action, label).getEvent());
+    }
+
+    /**
+     * Temporary Solution to send custom dimension for shop
+     * should not pass the param, after tkpd common com in
+     */
+    @Override
+    public void sendEventTrackingWithShopInfo(String event, String category, String action, String label,
+                                              String shopId, boolean isGoldMerchant, boolean isOfficialStore) {
+        UnifyTracking.sendGTMEvent(new EventTracking(event, category, action, label)
+                                            .setUserId()
+                                            .setShopId(shopId)
+                                            .setShopType(isGoldMerchant, isOfficialStore).getEvent());
     }
 
     @Override
