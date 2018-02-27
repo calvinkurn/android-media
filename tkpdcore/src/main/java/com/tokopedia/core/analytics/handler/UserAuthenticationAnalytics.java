@@ -6,10 +6,6 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.data.DiskAnalyticsDataStore;
-import com.tokopedia.core.analytics.model.CustomerWrapper;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author by alvarisi on 12/28/16.

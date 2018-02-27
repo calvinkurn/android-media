@@ -1092,7 +1092,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void actionImagePicker() {
         Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
-                .getGalleryIntent(getActivity(), false, 1, false);
+                .getGalleryIntent(getActivity(), false, 1, true);
         startActivityForResult(intent, com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY);
     }
 
