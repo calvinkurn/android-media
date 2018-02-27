@@ -169,11 +169,6 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolFollowingListActivi
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
-<<<<<<< HEAD
-import com.tokopedia.tkpd.truecaller.TruecallerActivity;
-import com.tokopedia.tkpdcontent.KolRouter;
-=======
->>>>>>> 7ed92b3ea398831212c54856a180396087c09faf
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
