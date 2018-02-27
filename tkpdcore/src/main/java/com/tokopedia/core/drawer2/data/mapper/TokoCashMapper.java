@@ -21,7 +21,7 @@ public class TokoCashMapper implements Func1<Response<TkpdResponse>, TokoCashMod
             if (!response.body().isError()) {
                 TokoCashData data = response.body().convertDataObj(TokoCashData.class);
                 model.setSuccess(true);
-                model.setTokoCashData(data);
+                model.setData(data);
             } else {
                 if (response.body().getErrorMessages() == null
                         && response.body().getErrorMessages().isEmpty()) {

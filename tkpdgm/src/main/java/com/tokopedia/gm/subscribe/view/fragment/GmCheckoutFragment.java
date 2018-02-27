@@ -124,8 +124,6 @@ public class GmCheckoutFragment
         buttonContinueCheckout.setOnClickListener(getContinueCheckoutListener());
         presenter.attachView(this);
         progressDialog = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
-
-        presenter.autoApplyCouponIfAvailable(selectedProduct);
     }
 
     @Override
@@ -288,11 +286,6 @@ public class GmCheckoutFragment
     @Override
     public void clearCacheShopInfo() {
         presenter.clearCacheShopInfo();
-    }
-
-    @Override
-    public Context getContext() {
-        return super.getContext();
     }
 }
 
