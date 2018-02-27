@@ -9,6 +9,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.referral.ReferralActivity;
 import com.tokopedia.core.referral.listener.FriendsWelcomeView;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
@@ -42,6 +43,7 @@ public class ReferralFriendsWelcomePresenter implements IReferralFriendsWelcomeP
 
             LocalCacheHandler localCacheHandler = new LocalCacheHandler(view.getActivity(), TkpdCache.REFERRAL);
             if (code == null || code.equalsIgnoreCase(localCacheHandler.getString(TkpdCache.Key.REFERRAL_CODE, ""))) {
+                view.getActivity().startActivity(ReferralActivity.getCallingIntent(view.getActivity()));
                 view.closeView();
             }
             BranchSdkUtils.REFERRAL_ADVOCATE_PROMO_CODE = code;
@@ -57,9 +59,9 @@ public class ReferralFriendsWelcomePresenter implements IReferralFriendsWelcomeP
                 view.getActivity().getString(R.string.copy_coupon_code_text), voucherCode
         );
         clipboard.setPrimaryClip(clip);
-        if(TextUtils.isEmpty(voucherCode)){
+        if (TextUtils.isEmpty(voucherCode)) {
             view.showToastMessage(view.getActivity().getString(R.string.no_coupon_to_copy_text));
-        }else{
+        } else {
             view.showToastMessage(view.getActivity().getString(R.string.copy_coupon_code_text) + " " + voucherCode);
         }
 
