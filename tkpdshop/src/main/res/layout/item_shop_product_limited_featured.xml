@@ -8,9 +8,13 @@
     android:background="@color/background_apps"
     android:orientation="vertical">
 
-    <TextView
-        style="@style/TextView"
-        android:text="@string/shop_page_label_featured_product" />
+    <LinearLayout
+        style="@style/LabelLayout">
+
+        <android.support.v7.widget.AppCompatTextView
+            style="@style/TextView.Title.Bold"
+            android:text="@string/shop_page_label_featured_product" />
+    </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"

@@ -65,7 +65,8 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     private ImageView locationImageView;
     private TextView shopNameTextView;
     private TextView shopInfoLocationTextView;
-    private LinearLayout containerClickInfo;
+    private LinearLayout shopTitleLinearLayout;
+
     private ShopPageSubDetailView totalFavouriteDetailView;
     private ShopPageSubDetailView totalProductDetailView;
     private ShopPageSubDetailView reputationDetailView;
@@ -151,7 +152,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         shopNameTextView = findViewById(R.id.text_view_shop_name);
         locationImageView = findViewById(R.id.image_view_location);
         shopInfoLocationTextView = findViewById(R.id.text_view_location);
-        containerClickInfo = findViewById(R.id.container_click_info);
+        shopTitleLinearLayout = findViewById(R.id.linear_layout_header_title);
 
         totalFavouriteDetailView = findViewById(R.id.sub_detail_view_total_favourite);
         totalProductDetailView = findViewById(R.id.sub_detail_view_total_product);
@@ -172,7 +173,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         buttonChatSeller = findViewById(R.id.button_chat_seller);
         buttonFavouriteShop = findViewById(R.id.button_favourite_shop);
 
-        containerClickInfo.setOnClickListener(new View.OnClickListener() {
+        shopTitleLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = ShopInfoActivity.createIntent(view.getContext(), shopId);
