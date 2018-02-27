@@ -27,6 +27,10 @@ public class MultipleAddressItemData implements Parcelable{
 
     private String address = "";
 
+    private int maxQuantity;
+
+    private int minQuantity;
+
     public MultipleAddressItemData() {
     }
 
@@ -40,6 +44,8 @@ public class MultipleAddressItemData implements Parcelable{
         addressTitle = in.readString();
         addressReceiverName = in.readString();
         address = in.readString();
+        maxQuantity = in.readInt();
+        minQuantity = in.readInt();
     }
 
     public static final Creator<MultipleAddressItemData> CREATOR = new Creator<MultipleAddressItemData>() {
@@ -126,6 +132,22 @@ public class MultipleAddressItemData implements Parcelable{
         this.address = address;
     }
 
+    public int getMaxQuantity() {
+        return maxQuantity;
+    }
+
+    public void setMaxQuantity(int maxQuantity) {
+        this.maxQuantity = maxQuantity;
+    }
+
+    public int getMinQuantity() {
+        return minQuantity;
+    }
+
+    public void setMinQuantity(int minQuantity) {
+        this.minQuantity = minQuantity;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -142,5 +164,7 @@ public class MultipleAddressItemData implements Parcelable{
         parcel.writeString(addressTitle);
         parcel.writeString(addressReceiverName);
         parcel.writeString(address);
+        parcel.writeInt(maxQuantity);
+        parcel.writeInt(minQuantity);
     }
 }

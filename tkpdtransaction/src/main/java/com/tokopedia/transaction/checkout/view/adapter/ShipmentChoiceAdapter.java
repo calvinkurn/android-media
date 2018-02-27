@@ -48,36 +48,38 @@ public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAd
     @Override
     public void onBindViewHolder(final ShipmentViewHolder holder, final int position) {
         ShipmentItemData shipmentItemData = shipments.get(position);
-        holder.tvShipmentType.setText(shipmentItemData.getType());
+        if(shipmentItemData != null) {
+            holder.tvShipmentType.setText(shipmentItemData.getType());
 
-        if (shipmentItemData.getSinglePriceRange() != null) {
-            holder.tvPriceRange.setText(holder.tvShipmentType.getContext().getResources().getString(
-                    R.string.label_shipment_type_format, shipmentItemData.getSinglePriceRange()));
-            holder.tvPriceRange.setVisibility(View.VISIBLE);
-        } else if (shipmentItemData.getMultiplePriceRange() != null) {
-            holder.tvPriceRange.setText(holder.tvShipmentType.getContext().getResources().getString(
-                    R.string.label_shipment_type_format, shipmentItemData.getMultiplePriceRange()));
-            holder.tvPriceRange.setVisibility(View.VISIBLE);
-        } else {
-            holder.tvPriceRange.setVisibility(View.GONE);
+            if (shipmentItemData.getSinglePriceRange() != null) {
+                holder.tvPriceRange.setText(holder.tvShipmentType.getContext().getResources().getString(
+                        R.string.label_shipment_type_format, shipmentItemData.getSinglePriceRange()));
+                holder.tvPriceRange.setVisibility(View.VISIBLE);
+            } else if (shipmentItemData.getMultiplePriceRange() != null) {
+                holder.tvPriceRange.setText(holder.tvShipmentType.getContext().getResources().getString(
+                        R.string.label_shipment_type_format, shipmentItemData.getMultiplePriceRange()));
+                holder.tvPriceRange.setVisibility(View.VISIBLE);
+            } else {
+                holder.tvPriceRange.setVisibility(View.GONE);
+            }
+
+            holder.tvDeliveryTimeRange.setText(shipmentItemData.getDeliveryTimeRange());
+            holder.itemView.setOnClickListener(getItemClickListener(shipmentItemData, position));
+
+            if (shipmentItemData.isSelected()) {
+                holder.imgBtCheck.setVisibility(View.VISIBLE);
+            } else {
+                holder.imgBtCheck.setVisibility(View.GONE);
+            }
+
+            if (position == shipments.size() - 1) {
+                holder.vSeparator.setVisibility(View.GONE);
+            } else {
+                holder.vSeparator.setVisibility(View.VISIBLE);
+            }
+
+            renderTypeface(holder, shipmentItemData);
         }
-
-        holder.tvDeliveryTimeRange.setText(shipmentItemData.getDeliveryTimeRange());
-        holder.itemView.setOnClickListener(getItemClickListener(shipmentItemData, position));
-
-        if (shipmentItemData.isSelected()) {
-            holder.imgBtCheck.setVisibility(View.VISIBLE);
-        } else {
-            holder.imgBtCheck.setVisibility(View.GONE);
-        }
-
-        if (position == shipments.size() - 1) {
-            holder.vSeparator.setVisibility(View.GONE);
-        } else {
-            holder.vSeparator.setVisibility(View.VISIBLE);
-        }
-
-        renderTypeface(holder, shipmentItemData);
     }
 
     private View.OnClickListener getItemClickListener(final ShipmentItemData shipmentItemData,
