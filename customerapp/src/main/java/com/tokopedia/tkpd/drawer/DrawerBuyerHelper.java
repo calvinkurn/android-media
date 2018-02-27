@@ -67,7 +67,7 @@ public class DrawerBuyerHelper extends DrawerHelper
         implements DrawerItemDataBinder.DrawerItemListener,
         DrawerHeaderDataBinder.DrawerHeaderListener {
 
-    private static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
+    public static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
     private static final int VAL_DEFAULT = 0;
 
     private TextView shopName;
@@ -535,16 +535,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                     }
                     break;
                 case TkpdState.DrawerPosition.SELLER_TOP_ADS:
-                    Intent topadsIntent = context.getPackageManager()
-                            .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
-
-                    if (topadsIntent != null) {
-                        context.startActivity(topadsIntent);
-                        UnifyTracking.eventTopAdsSwitcher(AppEventTracking.EventLabel.OPEN_APP);
-                    } else if (context.getApplication() instanceof TkpdCoreRouter) {
-                        ((TkpdCoreRouter) context.getApplication()).goToCreateMerchantRedirect(context);
-                        UnifyTracking.eventTopAdsSwitcher(AppEventTracking.Category.SWITCHER);
-                    }
+                    goToTopadsPage(context);
                     break;
                 case TkpdState.DrawerPosition.SELLER_INFO:
                     UnifyTracking.eventClickMenuSellerInfo();
@@ -585,6 +576,19 @@ public class DrawerBuyerHelper extends DrawerHelper
             }
 
             closeDrawer();
+        }
+    }
+
+    public static void goToTopadsPage(Context context) {
+        Intent topadsIntent = context.getPackageManager()
+                .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
+
+        if (topadsIntent != null) {
+            context.startActivity(topadsIntent);
+            UnifyTracking.eventTopAdsSwitcher(AppEventTracking.EventLabel.OPEN_APP);
+        } else if (context.getApplication() instanceof TkpdCoreRouter) {
+            ((TkpdCoreRouter) context.getApplication()).goToCreateMerchantRedirect(context);
+            UnifyTracking.eventTopAdsSwitcher(AppEventTracking.Category.SWITCHER);
         }
     }
 

@@ -190,6 +190,7 @@
     <string name="product_manage_item_cashback">Cashback %1$d%%</string>
     <string name="product_manage_menu_set_price">Atur Harga</string>
     <string name="product_manage_menu_set_cashback">Atur &#37; cashback</string>
+    <string name="product_manage_menu_promo_topads">Promo Topads</string>
     <string name="product_manage_filter_menu_etalase_all">Semua Produk</string>
     <string name="product_manage_filter_menu_category_all">Semua Kategori</string>
     <string name="product_manage_filter_menu_picture_both">Dengan &amp; Tanpa Gambar</string>

@@ -22,6 +22,10 @@
             android:id="@+id/set_cashback_product_menu"
             android:icon="@drawable/ic_set_cashback_menu"/>
         <item
+            android:title="@string/product_manage_menu_promo_topads"
+            android:id="@+id/set_topads_promo"
+            android:icon="@drawable/ic_toa_topads"/>
+        <item
             android:id="@+id/change_price_product_menu"
             android:icon="@drawable/ic_menu_set_price"
             android:title="@string/product_manage_menu_set_price" />

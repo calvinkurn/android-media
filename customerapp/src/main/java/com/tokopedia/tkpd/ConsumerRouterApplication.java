@@ -160,6 +160,7 @@ import com.tokopedia.tkpd.flight.di.DaggerFlightConsumerComponent;
 import com.tokopedia.tkpd.flight.di.FlightConsumerComponent;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
+import com.tokopedia.tkpd.drawer.DrawerBuyerHelper;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
@@ -1305,5 +1306,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     public GetShopInfoUseCase getShopInfo(){
         return getShopComponent().getShopInfoUseCase();
+    }
+
+    @Override
+    public void goToCreateTopadsPromo(String productId) {
+        DrawerBuyerHelper.goToTopadsPage(this);
     }
 }

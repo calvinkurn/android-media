@@ -467,7 +467,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             NetworkErrorHelper.showCloseSnackbar(getActivity(), getString(R.string.product_manage_label_snackbar_variant));
             ((ProductManageListAdapter) adapter).setChecked(productManageViewModel.getId(), false);
             adapter.notifyDataSetChanged();
-        }else {
+        } else {
             if (actionMode != null) {
                 int totalChecked = ((ProductManageListAdapter) adapter).getTotalChecked();
                 actionMode.setTitle(String.valueOf(totalChecked));
@@ -660,9 +660,17 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                     goToShareProduct(productManageViewModel);
                 } else if (itemId == R.id.set_cashback_product_menu) {
                     onSetCashbackClicked(productManageViewModel);
+                } else if(itemId == R.id.set_topads_promo){
+                    goToCreatePromoTopads(productManageViewModel.getProductId());
                 }
             }
         };
+    }
+
+    private void goToCreatePromoTopads(String productId) {
+        if(getActivity().getApplication() instanceof SellerModuleRouter) {
+            ((SellerModuleRouter) getActivity().getApplication()).goToCreateTopadsPromo(productId);
+        }
     }
 
     private void onSetCashbackClicked(ProductManageViewModel productManageViewModel) {
