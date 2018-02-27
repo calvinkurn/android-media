@@ -49,7 +49,9 @@ public class FlightBookingListPassengerViewHolder extends AbstractViewHolder<Fli
                 flightBookingPassengerViewModel.getPassengerFirstName(),
                 flightBookingPassengerViewModel.getPassengerLastName()
         ));
-        txtPassengerId.setText("No. "); // " + flightBookingPassengerViewModel.getPassengerId());
+        // gone for now, later will use for passport ID
+        // txtPassengerId.setText("No. "); // " + flightBookingPassengerViewModel.getPassengerId());
+        txtPassengerId.setVisibility(View.GONE);
         if (isItemChecked) {
             imgCheck.setVisibility(View.VISIBLE);
             txtPassengerName.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.tkpd_main_green));
