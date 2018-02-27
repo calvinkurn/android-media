@@ -107,7 +107,7 @@ public class CategoryProductStyle1View extends
 
     @Override
     protected void onUpdateSelectedProductData() {
-        if (operatorSelected.getRule().getProductViewStyle() != 99) {
+        if (operatorSelected.getRule().getProductViewStyle() != SINGLE_PRODUCT) {
             if (source == NATIVE) {
                 this.digitalProductChooserView.renderUpdateDataSelected(productSelected);
             } else {
@@ -311,7 +311,7 @@ public class CategoryProductStyle1View extends
                 );
             }
         } else if (productSelected == null) {
-            if (operatorSelected.getRule().getProductViewStyle() == 99
+            if (operatorSelected.getRule().getProductViewStyle() == SINGLE_PRODUCT
                     && !data.getClientNumberList().isEmpty()
                     && !clientNumberInputView.isValidInput(operatorSelected.getPrefixList())) {
                 preCheckoutProduct.setErrorCheckout(
@@ -391,7 +391,7 @@ public class CategoryProductStyle1View extends
                                 clientNumberInputView.tvErrorClientNumber.setVisibility(GONE);
                                 clientNumberInputView.enableImageOperator(operator.getImage());
                                 clientNumberInputView.setFilterMaxLength(operator.getRule().getMaximumLength());
-                                if (operator.getRule().getProductViewStyle() == 99) {
+                                if (operator.getRule().getProductViewStyle() == SINGLE_PRODUCT) {
                                     renderDefaultProductSelected();
                                 } else {
                                     showProducts();
@@ -404,12 +404,7 @@ public class CategoryProductStyle1View extends
                         }
                     }
                     if (!operatorFound) {
-                        operatorSelected = null;
-                        productSelected = null;
-                        clientNumberInputView.disableImageOperator();
-                        clearHolder(holderChooserProduct);
-                        clearHolder(holderAdditionalInfoProduct);
-                        clearHolder(holderPriceInfoProduct);
+                        resetOperator();
                     }
                 } else {
                     operatorSelected = null;
@@ -449,6 +444,15 @@ public class CategoryProductStyle1View extends
                 actionListener.onItemAutocompletedSelected(orderClientNumber);
             }
         };
+    }
+
+    private void resetOperator() {
+        operatorSelected = null;
+        productSelected = null;
+        clientNumberInputView.disableImageOperator();
+        clearHolder(holderChooserProduct);
+        clearHolder(holderAdditionalInfoProduct);
+        clearHolder(holderPriceInfoProduct);
     }
 
     @NonNull

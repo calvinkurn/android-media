@@ -139,6 +139,7 @@
     <string name="tokocash_label_hold_balance">Dana Tertahan</string>
     <string name="title_waiting_transaction_tokocash">Transaksi Menunggu</string>
     <string name="back_to_top">Kembali ke Atas</string>
+    <string name="msg_verification">Verifikasi</string>
     <string name="title_menu_history_tokocash">Riwayat Transaksi</string>
     <string name="title_menu_account_setting_tokocash">Pengaturan Akun</string>
     <string name="title_menu_help_tokocash">Bantuan</string>

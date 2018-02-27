@@ -113,7 +113,7 @@ public class CategoryProductStyle2View extends
 
     @Override
     protected void onUpdateSelectedProductData() {
-        if (operatorSelected.getRule().getProductViewStyle() != 99) {
+        if (operatorSelected.getRule().getProductViewStyle() != SINGLE_PRODUCT) {
             if (source == NATIVE) {
                 this.digitalProductChooserView.renderUpdateDataSelected(productSelected);
             } else {
@@ -337,7 +337,7 @@ public class CategoryProductStyle2View extends
                 if (!operatorSelected.getClientNumberList().isEmpty()) {
                     renderClientNumberInputForm(operatorSelected);
                 }
-                if (operatorSelected.getRule().getProductViewStyle() == 99) {
+                if (operatorSelected.getRule().getProductViewStyle() == SINGLE_PRODUCT) {
                     renderDefaultProductSelected();
                 } else {
                     showProducts();
@@ -474,7 +474,7 @@ public class CategoryProductStyle2View extends
                 }
             }
         } else if (productSelected == null) {
-            if (operatorSelected.getRule().getProductViewStyle() == 99
+            if (operatorSelected.getRule().getProductViewStyle() == SINGLE_PRODUCT
                     && !operatorSelected.getClientNumberList().isEmpty()
                     && !clientNumberInputView.isValidInput(operatorSelected.getPrefixList())) {
                 preCheckoutProduct.setErrorCheckout(

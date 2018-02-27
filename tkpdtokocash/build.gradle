@@ -34,6 +34,11 @@ def getTkpdPayment() {
             rootProject.ext.tkpdDependencies.payment : project(':tkpdpayment');
 }
 
+def getTkpdUseCase() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.payment : project(':tkpdusecase');
+}
+
 def getTkpdDesign() {
     return project.hasProperty('isArtifact') ?
             rootProject.ext.tkpdDependencies.design : project(':tkpddesign');
@@ -123,6 +128,7 @@ dependencies {
     compile getTkpdCore()
     compile getTkpdDesign()
     compile getTkpdPayment()
+    compile getTkpdUseCase()
 
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'

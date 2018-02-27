@@ -103,14 +103,14 @@ public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerI
             return;
         UnifyTracking.eventClickItemSellerInfo(sellerInfoModel.getTitle());
 
-        startActivity(SellerInfoWebViewActivity.getCallingIntent(this, sellerInfoModel.getExternalLink()));
+        startActivity(SellerInfoWebViewActivity.getCallingIntent(getContext(), sellerInfoModel.getExternalLink()));
     }
 
 
     @Override
     public void onSearchLoaded(@NonNull List<SellerInfoModel> list, int totalItem, boolean hasNext) {
         onSearchLoaded(list, totalItem);
-        hasNextPage = hasNext;
+        hasNextPage = hasNext  && list != null && !list.isEmpty() && totalItem > 0;
     }
 
     @Override

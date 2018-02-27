@@ -23,7 +23,7 @@ public class BalanceTokoCashEntity {
     private String balance;
     @SerializedName("raw_balance")
     @Expose
-    private String raw_balance;
+    private int raw_balance;
     @SerializedName("total_balance")
     @Expose
     private String totalBalance;
@@ -82,11 +82,11 @@ public class BalanceTokoCashEntity {
         this.balance = balance;
     }
 
-    public String getRaw_balance() {
+    public int getRaw_balance() {
         return raw_balance;
     }
 
-    public void setRaw_balance(String raw_balance) {
+    public void setRaw_balance(int raw_balance) {
         this.raw_balance = raw_balance;
     }
 

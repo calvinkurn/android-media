@@ -132,31 +132,26 @@ public class TokoCashModule {
     }
 
     @Provides
-    @TokoCashScope
     GetHistoryDataUseCase provideGetHistoryDataUseCase(WalletRepository walletRepository) {
         return new GetHistoryDataUseCase(walletRepository);
     }
 
     @Provides
-    @TokoCashScope
     GetReasonHelpDataUseCase provideGetReasonHelpDataUseCase(WalletRepository walletRepository) {
         return new GetReasonHelpDataUseCase(walletRepository);
     }
 
     @Provides
-    @TokoCashScope
     GetInfoQrTokoCashUseCase provideGetInfoQrTokoCashUseCase(QrPaymentRepository qrPaymentRepository) {
         return new GetInfoQrTokoCashUseCase(qrPaymentRepository);
     }
 
     @Provides
-    @TokoCashScope
     PostQrPaymentUseCase providePostQrPaymentUseCase(QrPaymentRepository qrPaymentRepository) {
         return new PostQrPaymentUseCase(qrPaymentRepository);
     }
 
     @Provides
-    @TokoCashScope
     GetBalanceTokoCashUseCase provideGetBalanceTokoCashUseCase(TokoCashBalanceRepository tokoCashBalanceRepository) {
         return new GetBalanceTokoCashUseCase(tokoCashBalanceRepository);
     }

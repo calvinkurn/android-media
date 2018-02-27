@@ -1,4 +1,4 @@
-package com.tokopedia.digital.widget.domain.interactor;
+package com.tokopedia.digital.widget.domain;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.widget.data.entity.category.CategoryEntity;

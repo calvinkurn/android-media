@@ -14,7 +14,7 @@ import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.abstraction.common.utils.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.di.DaggerTokoCashComponent;

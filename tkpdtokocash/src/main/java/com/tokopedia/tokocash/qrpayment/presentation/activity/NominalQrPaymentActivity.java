@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.abstraction.common.utils.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
@@ -194,7 +194,7 @@ public class NominalQrPaymentActivity extends BaseSimpleActivity implements QrPa
             payButton.setTextColor(getColorNominal(R.color.grey_nonactive_text));
             payButton.setEnabled(false);
         } else {
-            if (nominal > Double.parseDouble(balanceTokoCash.getRaw_balance())) {
+            if (nominal > (double) balanceTokoCash.getRawBalance()) {
                 separatorNominal.setBackgroundColor(getColorNominal(R.color.separator_red));
                 tokocashValue.setTextColor(getColorNominal(R.color.separator_red));
                 payButton.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bg_grey_border_black));

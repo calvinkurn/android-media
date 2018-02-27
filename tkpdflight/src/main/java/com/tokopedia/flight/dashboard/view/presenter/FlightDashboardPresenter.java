@@ -242,25 +242,32 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         now.set(Calendar.MONTH, month);
         now.set(Calendar.DATE, dayOfMonth);
         Date newDepartureDate = now.getTime();
-        String newDepartureDateStr = FlightDateUtil.dateToString(newDepartureDate, FlightDateUtil.DEFAULT_FORMAT);
-        viewModel.setDepartureDate(newDepartureDateStr);
-        String newDepartureDateFmtStr = FlightDateUtil.dateToString(newDepartureDate, FlightDateUtil.DEFAULT_VIEW_FORMAT);
-        viewModel.setDepartureDateFmt(newDepartureDateFmtStr);
-        if (!viewModel.isOneWay()) {
-            Date currentReturnDate = FlightDateUtil.stringToDate(viewModel.getReturnDate());
-            if (currentReturnDate.compareTo(newDepartureDate) < 0) {
+        Date twoYears = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2);
+        if (newDepartureDate.after(twoYears)) {
+            getView().showDepartureDateMaxTwoYears(R.string.flight_dashboard_departure_max_two_years_from_today_error);
+        } else if (newDepartureDate.before(FlightDateUtil.getCurrentDate())) {
+            getView().showDepartureDateShouldAtLeastToday(R.string.flight_dashboard_departure_should_atleast_today_error);
+        } else {
+            String newDepartureDateStr = FlightDateUtil.dateToString(newDepartureDate, FlightDateUtil.DEFAULT_FORMAT);
+            viewModel.setDepartureDate(newDepartureDateStr);
+            String newDepartureDateFmtStr = FlightDateUtil.dateToString(newDepartureDate, FlightDateUtil.DEFAULT_VIEW_FORMAT);
+            viewModel.setDepartureDateFmt(newDepartureDateFmtStr);
+            if (!viewModel.isOneWay()) {
+                Date currentReturnDate = FlightDateUtil.stringToDate(viewModel.getReturnDate());
+                if (currentReturnDate.compareTo(newDepartureDate) < 0) {
+                    Date reAssignReturnDate = FlightDateUtil.addDate(newDepartureDate, 1);
+                    viewModel.setReturnDate(FlightDateUtil.dateToString(reAssignReturnDate, FlightDateUtil.DEFAULT_FORMAT));
+                    viewModel.setReturnDateFmt(FlightDateUtil.dateToString(reAssignReturnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT));
+                }
+                getView().setDashBoardViewModel(viewModel);
+                getView().renderRoundTripView();
+            } else {
                 Date reAssignReturnDate = FlightDateUtil.addDate(newDepartureDate, 1);
                 viewModel.setReturnDate(FlightDateUtil.dateToString(reAssignReturnDate, FlightDateUtil.DEFAULT_FORMAT));
                 viewModel.setReturnDateFmt(FlightDateUtil.dateToString(reAssignReturnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT));
+                getView().setDashBoardViewModel(viewModel);
+                getView().renderSingleTripView();
             }
-            getView().setDashBoardViewModel(viewModel);
-            getView().renderRoundTripView();
-        } else {
-            Date reAssignReturnDate = FlightDateUtil.addDate(newDepartureDate, 1);
-            viewModel.setReturnDate(FlightDateUtil.dateToString(reAssignReturnDate, FlightDateUtil.DEFAULT_FORMAT));
-            viewModel.setReturnDateFmt(FlightDateUtil.dateToString(reAssignReturnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT));
-            getView().setDashBoardViewModel(viewModel);
-            getView().renderSingleTripView();
         }
     }
 
@@ -280,12 +287,20 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         now.set(Calendar.MONTH, month);
         now.set(Calendar.DATE, dayOfMonth);
         Date newReturnDate = now.getTime();
-        String newReturnDateStr = FlightDateUtil.dateToString(newReturnDate, FlightDateUtil.DEFAULT_FORMAT);
-        viewModel.setReturnDate(newReturnDateStr);
-        String newReturnDateFmtStr = FlightDateUtil.dateToString(newReturnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT);
-        viewModel.setReturnDateFmt(newReturnDateFmtStr);
-        getView().setDashBoardViewModel(viewModel);
-        renderUi();
+        Date twoYears = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2);
+        twoYears = FlightDateUtil.addTimeToSpesificDate(twoYears, Calendar.DATE, 1);
+        if (newReturnDate.after(twoYears)) {
+            getView().showReturnDateMaxTwoYears(R.string.flight_dashboard_return_max_two_years_from_today_error);
+        } else if (newReturnDate.before(FlightDateUtil.stringToDate(viewModel.getDepartureDate()))) {
+            getView().showReturnDateShouldGreaterOrEqual(R.string.flight_dashboard_return_should_greater_equal_error);
+        } else {
+            String newReturnDateStr = FlightDateUtil.dateToString(newReturnDate, FlightDateUtil.DEFAULT_FORMAT);
+            viewModel.setReturnDate(newReturnDateStr);
+            String newReturnDateFmtStr = FlightDateUtil.dateToString(newReturnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT);
+            viewModel.setReturnDateFmt(newReturnDateFmtStr);
+            getView().setDashBoardViewModel(viewModel);
+            renderUi();
+        }
     }
 
     private void renderUi() {
@@ -398,7 +413,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
             boolean isReturnDateValid = true;
             boolean isPassengerValid = true;
 
-            // transform trip extras
+            // transformEventDetailLabel trip extras
             String[] tempExtras = getView().getTripArguments().split(",");
             String[] extrasTripDeparture = tempExtras[INDEX_DEPARTURE_TRIP].split("_");
             String[] departureTripDate = extrasTripDeparture[INDEX_DATE_TRIP].split("-");
@@ -426,10 +441,10 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                 onReturnDateChange(Integer.parseInt(returnTripDate[INDEX_DATE_YEAR]), Integer.parseInt(returnTripDate[INDEX_DATE_MONTH]) - 1, Integer.parseInt(returnTripDate[INDEX_DATE_DATE]));
                 onRoundTripChecked();
 
-                if (!validator.validateArrivalDateShouldGreaterOrEqualDeparture(getView().getCurrentDashboardViewModel())) {
+                if (!validator.validateReturnDateShouldGreaterOrEqualDeparture(getView().getCurrentDashboardViewModel())) {
                     isReturnDateValid = false;
                     if (isDepartureDateValid) {
-                        getView().showArrivalDateShouldGreaterOrEqual(R.string.flight_dashboard_arrival_should_greater_equal_error);
+                        getView().showReturnDateShouldGreaterOrEqual(R.string.flight_dashboard_return_should_greater_equal_error);
                         onReturnDateChange(Integer.parseInt(departureTripDate[INDEX_DATE_YEAR]), Integer.parseInt(departureTripDate[INDEX_DATE_MONTH]), Integer.parseInt(departureTripDate[INDEX_DATE_DATE]) + 1);
                     } else {
                         onReturnDateChange(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE) + 1);
@@ -437,7 +452,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                 } else if ((Integer.parseInt(returnTripDate[INDEX_DATE_YEAR]) - today.get(Calendar.YEAR)) > MAX_TWO_YEARS) {
                     isReturnDateValid = false;
                     if (isDepartureDateValid) {
-                        getView().showApplinkErrorMessage(R.string.flight_dashboard_arrival_max_two_years_from_today_error);
+                        getView().showApplinkErrorMessage(R.string.flight_dashboard_return_max_two_years_from_today_error);
                         onReturnDateChange(Integer.parseInt(departureTripDate[INDEX_DATE_YEAR]), Integer.parseInt(departureTripDate[INDEX_DATE_MONTH]), Integer.parseInt(departureTripDate[INDEX_DATE_DATE]) + 1);
                     } else {
                         onReturnDateChange(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE) + 1);
@@ -445,7 +460,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                 }
             }
 
-            // transform passenger count
+            // transformEventDetailLabel passenger count
             if (Integer.parseInt(getView().getChildPassengerArguments()) > Integer.parseInt(getView().getAdultPassengerArguments()) || Integer.parseInt(getView().getInfantPassengerArguments()) > Integer.parseInt(getView().getAdultPassengerArguments())) {
                 isPassengerValid = false;
                 getView().showApplinkErrorMessage(R.string.select_passenger_infant_greater_than_adult_error_message);
@@ -457,7 +472,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                 onFlightPassengerChange(flightPassengerViewModel);
             }
 
-            // transform class
+            // transformEventDetailLabel class
             int classId = Integer.parseInt(getView().getClassArguments());
 
             final boolean finalIsDepartureDateValid = isDepartureDateValid;
@@ -551,9 +566,9 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
             isValid = false;
             getView()
                     .showAirportShouldDifferentCity(R.string.flight_dashboard_departure_should_different_city_error);
-        } else if (!validator.validateArrivalDateShouldGreaterOrEqualDeparture(currentDashboardViewModel)) {
+        } else if (!validator.validateReturnDateShouldGreaterOrEqualDeparture(currentDashboardViewModel)) {
             isValid = false;
-            getView().showArrivalDateShouldGreaterOrEqual(R.string.flight_dashboard_arrival_should_greater_equal_error);
+            getView().showReturnDateShouldGreaterOrEqual(R.string.flight_dashboard_return_should_greater_equal_error);
         } else if (!validator.validatePassengerAtLeastOneAdult(currentDashboardViewModel)) {
             isValid = false;
             getView().showPassengerAtLeastOneAdult(R.string.flight_dashboard_at_least_one_adult_error);
@@ -576,4 +591,8 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         return viewModel;
     }
 
+    @Override
+    public void actionOnPromoScrolled(int position, BannerDetail bannerData) {
+        flightAnalytics.eventPromoImpression(position, bannerData);
+    }
 }

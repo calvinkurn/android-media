@@ -74,6 +74,8 @@
     <string name="failed_payment_body">Cek Koneksi dan Ulangi Proses Transfer.</string>
     <string name="failed_payment_retry">Ulangi Transaksi</string>
     <string name="scanner_info">Arahkan kode QR ke area yang telah ditentukan</string>
+    <string name="no_available_feature">Fitur akan segera hadir untuk anda.</string>
+
 
     <!-- activation -->
     <string name="benefit_tokocash_title">Kemudahan Bertransaksi \ndengan TokoCash</string>

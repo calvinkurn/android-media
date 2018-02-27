@@ -6,8 +6,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.abstraction.common.utils.MethodChecker;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.common.view.FlightMultiAirlineView;
@@ -64,7 +64,7 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightSearchViewM
         View.OnClickListener detailClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onFlightSearchListener.onDetailClicked(flightSearchViewModel);
+                onFlightSearchListener.onDetailClicked(flightSearchViewModel, getAdapterPosition());
             }
         };
         tvPrice.setOnClickListener(detailClickListener);
@@ -73,6 +73,12 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightSearchViewM
         setRefundableInfo(flightSearchViewModel);
         setSavingPrice(flightSearchViewModel);
         setArrivalAddDay(flightSearchViewModel);
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onFlightSearchListener.onItemClicked(flightSearchViewModel, getAdapterPosition());
+            }
+        });
     }
 
     private void setArrivalAddDay(FlightSearchViewModel flightSearchViewModel) {
