@@ -258,7 +258,6 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                     chooseEtalaseLabelView.setContent(MethodChecker.fromHtml(etalaseName));
 
                     this.isLoadingInitialData = true;
-
                     getShopList();
                 }
                 break;
@@ -304,7 +303,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         shopProductListPresenter.getShopPageList(
                 shopId,
                 keyword,
-                etalaseId < 0 || etalaseId == Integer.MIN_VALUE ? null : Integer.toString(etalaseId),
+                etalaseId == Integer.MIN_VALUE ? null : Integer.toString(etalaseId),
                 0,
                 1,
                 Integer.valueOf(sortName)
