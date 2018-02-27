@@ -59,6 +59,10 @@ public class KolPostAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         return list.get(position).type(typeFactory);
     }
 
+    public List<Visitable> getList() {
+        return this.list;
+    }
+
     public void setList(List<Visitable> list) {
         this.list = list;
         notifyDataSetChanged();

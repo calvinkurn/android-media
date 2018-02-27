@@ -1,5 +1,7 @@
 package com.tokopedia.tkpdcontent.feature.profile.view.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +15,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.tkpdcontent.KolComponentInstance;
+import com.tokopedia.tkpdcontent.KolRouter;
 import com.tokopedia.tkpdcontent.R;
 import com.tokopedia.tkpdcontent.feature.profile.di.DaggerKolProfileComponent;
 import com.tokopedia.tkpdcontent.feature.profile.di.KolProfileModule;
@@ -30,6 +33,7 @@ import javax.inject.Inject;
 
 public class KolPostFragment extends BaseDaggerFragment implements KolPostListener.View {
     private static final String PARAM_USER_ID = "user_id";
+    private static final int KOL_COMMENT_CODE = 13;
 
     @Inject
     KolPostListener.Presenter presenter;
@@ -37,6 +41,7 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     KolPostAdapter adapter;
     private RecyclerView kolRecyclerView;
     private LinearLayoutManager layoutManager;
+    private KolRouter kolRouter;
 
     private String userId;
     private boolean canLoadMore = true;
@@ -63,6 +68,12 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
         initView(parentView);
         setViewListener();
         presenter.initView(userId);
+
+        if (getActivity().getApplicationContext() instanceof KolRouter) {
+            kolRouter = (KolRouter) getActivity().getApplicationContext();
+        } else {
+            throw new IllegalStateException("Application must be an instance of KolRouter!");
+        }
 
         return parentView;
     }
@@ -170,6 +181,42 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
 
     @Override
     public void onGoToKolComment(int page, int rowNumber, KolPostViewModel kolPostViewModel) {
+        Intent intent = kolRouter.getKolCommentActivity(
+                getContext(), kolPostViewModel.getAvatar(), kolPostViewModel.getName(),
+                kolPostViewModel.getReview(), kolPostViewModel.getTime(),
+                String.valueOf(kolPostViewModel.getUserId()), kolPostViewModel.getKolImage(),
+                kolPostViewModel.getContentName(), kolPostViewModel.getProductPrice(),
+                kolPostViewModel.isWishlisted(), kolPostViewModel.getId(), rowNumber
+        );
+        startActivityForResult(intent, KOL_COMMENT_CODE);
+    }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case KOL_COMMENT_CODE:
+                if (resultCode == Activity.RESULT_OK) {
+                    onSuccessAddDeleteKolComment(
+                            data.getIntExtra(kolRouter.getKolCommentArgsPosition(), -1),
+                            data.getIntExtra(kolRouter.getKolCommentArgsTotalComment(), 0));
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void onSuccessAddDeleteKolComment(int rowNumber, int totalNewComment) {
+        if (rowNumber != -1) {
+            if (adapter.getList().get(rowNumber) != null
+                    && adapter.getList().get(rowNumber) instanceof KolPostViewModel) {
+                KolPostViewModel kolPostViewModel =
+                        ((KolPostViewModel) adapter.getList().get(rowNumber));
+                kolPostViewModel.setTotalComment(
+                        kolPostViewModel.getTotalComment() + totalNewComment);
+                adapter.notifyItemChanged(rowNumber);
+            }
+        }
     }
 }
