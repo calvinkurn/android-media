@@ -8,6 +8,11 @@
     android:showDividers="middle">
 
     <include
+        layout="@layout/partial_shop_page_header_background"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <include
         layout="@layout/partial_shop_page_header_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
