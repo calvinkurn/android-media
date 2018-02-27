@@ -22,6 +22,7 @@ import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressPriceSummaryData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressShipmentAdapterData;
+import com.tokopedia.transaction.checkout.view.data.ShipmentCartData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.view.data.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity;
@@ -90,7 +91,7 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
                 this);
         orderAddressList.setAdapter(shipmentAdapter);
         orderAddressList.addOnScrollListener(onRecyclerViewScrolledListener(totalPaymentLayout));
-        totalPayment.setText(dummyPriceSummaryData().getTotalPaymentText());
+        totalPayment.setText(shipmentAdapter.getTotalPayment());
         return view;
     }
 
@@ -107,11 +108,13 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
         data.setProductImageUrl("https://t00.deviantart.net/Qgvu_0dClD_BotaDpLBflGKcvbI=/300x200/filters:fixed_height(100,100):origin()/pre00/69b2/th/pre/f/2013/143/9/1/pusheen_the_cat_png_15_by_13taylorswiftlover13-d66chev.png");
         data.setProductName("Kaos Adidas Camo Tongue Tee...White & Red, XS");
         data.setProductPrice("Rp200.000");
+        data.setProductPriceNumber(200000);
         data.setDestinationDistrictId("2283");
         data.setDestinationDistrictName("Kelapa Gading");
         data.setTokenPickup("Tokopedia%2BKero:juMixO/k%2ButV%2BcQ4pVNm3FSG1pw%3D");
         data.setUnixTime("1515753331");
         data.setItemData(dummyItemData());
+        data.setShipmentCartData(dummyShipmentCartData());
         return data;
     }
 
@@ -126,6 +129,17 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
         data.setAddress("Jl. Letjen S. Parman Kav.77, Wisma 77 Tower 2,\n" +
                 "Tokopedia Lt. 2, Jakarta, 0817 1234 5678");
         return data;
+    }
+
+    private ShipmentCartData dummyShipmentCartData() {
+        ShipmentCartData shipmentCartData = new ShipmentCartData();
+        shipmentCartData.setCategoryIds("4");
+        shipmentCartData.setInsurance(2000);
+        shipmentCartData.setWeight(500);
+        shipmentCartData.setInsurancePrice(5000);
+        shipmentCartData.setAdditionalFee(1000);
+        shipmentCartData.setDeliveryPriceTotal(50000);
+        return shipmentCartData;
     }
 
     private void showCancelPickupBoothDialog(final int position) {
@@ -229,11 +243,13 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
                     int position = data.getIntExtra(INTENT_DATA_POSITION, 0);
                     shipmentAdapter.setPickupPoint(pickupBooth, position);
                     shipmentAdapter.notifyItemChanged(position);
+                    totalPayment.setText(shipmentAdapter.getTotalPayment());
                     break;
                 case REQUEST_CODE_SHIPMENT_DETAIL:
                     ShipmentDetailData shipmentDetailData = data.getParcelableExtra(EXTRA_SHIPMENT_DETAIL_DATA);
                     shipmentAdapter.setShipmentDetailData(shipmentDetailData);
                     shipmentAdapter.notifyDataSetChanged();
+                    totalPayment.setText(shipmentAdapter.getTotalPayment());
                     break;
             }
         }

@@ -97,7 +97,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
             MultipleAddressShipmentFooterTotalPayment totalPaymentHolder =
                     (MultipleAddressShipmentFooterTotalPayment) holder;
             totalPaymentHolder.totalPayment.setText(
-                    totalPriceChecker(formatPrice(priceSummaryData.getTotalPayment()),
+                    totalPriceChecker(getTotalPayment(),
                             priceSummaryData.getTotalShippingPrice()
                     )
             );
@@ -107,6 +107,11 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     private void bindFooterView(MultipleAddressShipmentFooterViewHolder holder) {
         MultipleAddressShipmentFooterViewHolder footerHolder =
                 holder;
+        priceSummaryData.setAdditionalFee(calculateAdditionalFee());
+        priceSummaryData.setTotalProductPrice(calculateTotalProductCost());
+        priceSummaryData.setInsurancePrice(calculateInsuranceCost());
+        priceSummaryData.setTotalShippingPrice(calculateTotalShippingCost());
+        priceSummaryData.setQuantity(calculateQuantity());
         footerHolder.quantityTotal.setText(footerHolder.quantityTotal.getText()
                 .toString()
                 .replace("#", priceSummaryData.getQuantityText()));
@@ -134,6 +139,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     private void bindItems(MultipleShippingAddressViewHolder holder, int position) {
         MultipleShippingAddressViewHolder itemViewHolder = holder;
         MultipleAddressShipmentAdapterData data = addressDataList.get(position - 1);
+        data.setSubTotal(calculateSubTotal(data));
         MultipleAddressItemData itemData = data.getItemData();
         itemViewHolder.senderName.setText(data.getSenderName());
         ImageHandler.LoadImage(itemViewHolder.productImage, data.getProductImageUrl());
@@ -145,7 +151,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         itemViewHolder.addressTitle.setText(itemData.getAddressTitle());
         itemViewHolder.addressReceiverName.setText(itemData.getAddressReceiverName());
         itemViewHolder.address.setText(itemData.getAddress());
-        itemViewHolder.subTotalAmount.setText(data.getSubTotalAmount());
+        itemViewHolder.subTotalAmount.setText(formatPrice(data.getSubTotal()));
         itemViewHolder.chooseCourierButton.setOnClickListener(onChooseCourierClicked(data));
         itemViewHolder.tvSelectedShipment.setOnClickListener(onChooseCourierClicked(data));
         itemViewHolder.ivChevronShipmentOption.setOnClickListener(onChooseCourierClicked(data));
@@ -418,4 +424,64 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         return formattedPrice;
     }
 
+    public String getTotalPayment() {
+        return formatPrice(calculateTotalPayment());
+    }
+
+    private long calculateTotalPayment() {
+        long totalPayment = 0;
+        for (int i = 0; i < addressDataList.size(); i++) {
+            totalPayment = totalPayment + addressDataList.get(i).getSubTotal();
+        }
+        return totalPayment;
+    }
+
+    private long calculateTotalProductCost() {
+        long totalProductPrice = 0;
+        for (int i = 0; i < addressDataList.size(); i++) {
+            totalProductPrice = totalProductPrice + addressDataList.get(i).getProductPriceNumber();
+        }
+        return totalProductPrice;
+    }
+
+    private long calculateTotalShippingCost() {
+        long totalProductPrice = 0;
+        for (int i = 0; i < addressDataList.size(); i++) {
+            totalProductPrice = totalProductPrice + addressDataList.get(i)
+                    .getShipmentCartData().getDeliveryPriceTotal();
+        }
+        return totalProductPrice;
+    }
+
+    private long calculateInsuranceCost() {
+        long totalInsuranceCost = 0;
+        for (int i = 0; i < addressDataList.size(); i++) {
+            totalInsuranceCost = totalInsuranceCost + addressDataList.get(i)
+                    .getShipmentCartData().getInsurancePrice();
+        }
+        return totalInsuranceCost;
+    }
+
+    private long calculateAdditionalFee() {
+        long totalAdditionalFee = 0;
+        for (int i = 0; i < addressDataList.size(); i++) {
+            totalAdditionalFee = totalAdditionalFee + addressDataList.get(i)
+                    .getShipmentCartData().getAdditionalFee();
+        }
+        return totalAdditionalFee;
+    }
+
+    private long calculateQuantity() {
+        long quantity = 0;
+        for (int i = 0; i < addressDataList.size(); i++) {
+            quantity = quantity + Integer.parseInt(addressDataList.get(i)
+                    .getItemData().getProductQty());
+        }
+        return quantity;
+    }
+
+    private long calculateSubTotal(MultipleAddressShipmentAdapterData data) {
+        return data.getProductPriceNumber() + data.getShipmentCartData()
+                .getDeliveryPriceTotal();
+    }
 }
