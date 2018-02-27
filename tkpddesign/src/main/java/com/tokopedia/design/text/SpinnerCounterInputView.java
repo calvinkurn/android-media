@@ -186,6 +186,10 @@ public class SpinnerCounterInputView extends BaseCustomView {
         counterInputView.removeTextChangedListener(watcher);
     }
 
+    public void removeDefaultTextWatcher(){
+        counterInputView.removeDefaultTextWatcher();
+    }
+
     public int getSpinnerPosition(){
         return spinnerTextView.getSpinnerPosition();
     }

@@ -96,12 +96,12 @@ public class ProductVariantDetailLeafFragment extends Fragment
         spinnerCounterInputView.getSpinnerTextView().setEnabled(false);
         spinnerCounterInputView.setSpinnerValue(String.valueOf(currencyType));
 
-        spinnerCounterInputView.removeTextChangedListener(currencyTextWatcher);
-        currencyTextWatcher = new CurrencyTextWatcher(
-                 spinnerCounterInputView.getCounterEditText(),
-                null,
-                currencyType == CurrencyTypeDef.TYPE_USD);
-        spinnerCounterInputView.addTextChangedListener(currencyTextWatcher);
+//        spinnerCounterInputView.getCounterEditText().removeTextChangedListener(currencyTextWatcher);
+//        currencyTextWatcher = new CurrencyTextWatcher(
+//                 spinnerCounterInputView.getCounterEditText(),
+//                null,
+//                currencyType == CurrencyTypeDef.TYPE_USD);
+//        spinnerCounterInputView.getCounterEditText().addTextChangedListener(currencyTextWatcher);
 
         lvTitle.setTitle(listener.getVariantName());
         lvTitle.setSummary(productVariantCombinationViewModel.getLeafString());

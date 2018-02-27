@@ -175,6 +175,10 @@ public class CounterInputView extends BaseCustomView {
         decimalInputView.removeTextChangedListener(watcher);
     }
 
+    public void removeDefaultTextWatcher(){
+        decimalInputView.removeDefaultTextWatcher();
+    }
+
     public void setError(String error) {
         decimalInputView.setError(error);
     }

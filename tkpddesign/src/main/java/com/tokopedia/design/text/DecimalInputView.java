@@ -108,6 +108,10 @@ public class DecimalInputView extends BaseCustomView {
         requestLayout();
     }
 
+    public void removeDefaultTextWatcher(){
+        editText.removeTextChangedListener(currentTextWatcher);
+    }
+
     public void addTextChangedListener(TextWatcher textWatcher) {
         if (textWatcher == null) {
             return;
