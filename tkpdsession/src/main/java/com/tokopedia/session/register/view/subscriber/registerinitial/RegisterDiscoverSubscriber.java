@@ -29,7 +29,7 @@ public class RegisterDiscoverSubscriber extends Subscriber<DiscoverViewModel> {
     @Override
     public void onError(Throwable e) {
         viewListener.dismissLoadingDiscover();
-        if (e instanceof RuntimeException && e.getLocalizedMessage() != null && !e.getLocalizedMessage().isEmpty()) {
+        if (e instanceof RuntimeException && e.getLocalizedMessage() != null && !e.getLocalizedMessage().isEmpty() && e.getLocalizedMessage().length() <= 3) {
             int code = Integer.parseInt(e.getLocalizedMessage());
             if (code == ResponseStatus.SC_FORBIDDEN) {
                 viewListener.onForbidden();

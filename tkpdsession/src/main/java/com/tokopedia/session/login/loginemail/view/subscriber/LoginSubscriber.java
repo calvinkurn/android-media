@@ -39,7 +39,7 @@ public class LoginSubscriber extends Subscriber<LoginEmailDomain> {
                 && e.getLocalizedMessage().toLowerCase().contains(NOT_ACTIVATED)
                 && !TextUtils.isEmpty(email)) {
             view.onGoToActivationPage(email);
-        } else if (e instanceof RuntimeException && e.getLocalizedMessage() != null && !e.getLocalizedMessage().isEmpty()) {
+        } else if (e instanceof RuntimeException && e.getLocalizedMessage() != null && !e.getLocalizedMessage().isEmpty() && e.getLocalizedMessage().length() <= 3) {
             int code = Integer.parseInt(e.getLocalizedMessage());
             if (code == ResponseStatus.SC_FORBIDDEN) {
                 view.dismissLoadingLogin();

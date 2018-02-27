@@ -35,7 +35,7 @@ public class RegisterEmailSubscriber extends Subscriber<RegisterEmailModel> {
                 && e.getLocalizedMessage() != null
                 && e.getLocalizedMessage().contains(ALREADY_REGISTERED)) {
             viewListener.showInfo();
-        } else if (e instanceof RuntimeException && e.getLocalizedMessage() != null && !e.getLocalizedMessage().isEmpty()) {
+        } else if (e instanceof RuntimeException && e.getLocalizedMessage() != null && !e.getLocalizedMessage().isEmpty() && e.getLocalizedMessage().length() <= 3) {
             int code = Integer.parseInt(e.getLocalizedMessage());
             if (code == ResponseStatus.SC_FORBIDDEN) {
                 viewListener.onForbidden();

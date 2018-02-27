@@ -30,7 +30,7 @@ public class CheckMsisdnTokoCashSubscriber extends Subscriber<CheckMsisdnTokoCas
     @Override
     public void onError(Throwable e) {
         view.dismissLoading();
-        if (e instanceof RuntimeException && e.getLocalizedMessage() != null && !e.getLocalizedMessage().isEmpty()) {
+        if (e instanceof RuntimeException && e.getLocalizedMessage() != null && !e.getLocalizedMessage().isEmpty() && e.getLocalizedMessage().length() <= 3) {
             int code = Integer.parseInt(e.getLocalizedMessage());
             if (code == ResponseStatus.SC_FORBIDDEN) {
                 view.onForbidden();

@@ -32,7 +32,7 @@ public class RegisterSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
     @Override
     public void onError(Throwable e) {
         viewListener.dismissProgressBar();
-        if (e instanceof RuntimeException && e.getLocalizedMessage() != null && !e.getLocalizedMessage().isEmpty()) {
+        if (e instanceof RuntimeException && e.getLocalizedMessage() != null && !e.getLocalizedMessage().isEmpty() && e.getLocalizedMessage().length() <= 3) {
             int code = Integer.parseInt(e.getLocalizedMessage());
             if (code == ResponseStatus.SC_FORBIDDEN) {
                 viewListener.onForbidden();
