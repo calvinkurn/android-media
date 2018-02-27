@@ -156,7 +156,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
                 onNextButtonClicked();
             }
         });
-
+      
         ShopOpenStepperModel stepperModel = stepperListener.getStepperModel();
         if (stepperModel != null) {
             ResponseIsReserveDomain responseIsReserveDomain = stepperModel.getResponseIsReserveDomain();
@@ -167,6 +167,8 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
 
                 if (shipment != null) {
                     locationShippingViewHolder.updateDistrictId(Integer.toString(shipment.getDistrictId()));
+                  
+                  if(shipment.getPostal() != 0)
                     locationShippingViewHolder.updateZipCodes(Integer.toString(shipment.getPostal()));
 
                     GoogleLocationViewModel googleLocationViewModel

@@ -85,6 +85,7 @@ import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActiv
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver;
+import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.TkpdFlight;
@@ -116,6 +117,7 @@ import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
+import com.tokopedia.ride.RideModuleRouter;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
@@ -181,6 +183,7 @@ import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tokocash.historytokocash.presentation.activity.HistoryTokoCashActivity;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.CustomScannerTokoCashActivity;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
+import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
 
@@ -208,8 +211,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TkpdCoreRouter, SellerModuleRouter, IDigitalModuleRouter, PdpRouter,
         OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter,
         TokoCashRouter, IWalletRouter, ILoyaltyRouter, ReputationRouter, SessionRouter,
-        AbstractionRouter, FlightModuleRouter, LogisticRouter, KolRouter, FeedModuleRouter,
-        IHomeRouter {
+        AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter,
+        DiscoveryRouter, RideModuleRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -814,6 +817,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent goToOrderDetail(Context context, String orderId) {
+        return OrderDetailActivity.createSellerInstance(context, orderId);
+
+    }
+
+    @Override
     public void sendAddWishlistEmitter(String productId, String userId) {
         reactUtils.sendAddWishlistEmitter(productId, userId);
     }
@@ -1044,7 +1053,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getGalleryIntent(Context context, boolean forceOpenCamera, int maxImageSelection, boolean compressToTkpd) {
-        return GalleryCropActivity.createIntent(context,1, forceOpenCamera, maxImageSelection, compressToTkpd);
+        return GalleryCropWatermarkActivity.createIntent(context,1, forceOpenCamera, maxImageSelection, compressToTkpd);
     }
 
     @Override
@@ -1055,11 +1064,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent goToHistoryTokoCash(Context context) {
         return HistoryTokoCashActivity.newInstance(context);
-    }
-
-    @Override
-    public Intent goToQRScannerTokoCash(Context context) {
-        return CustomScannerTokoCashActivity.newInstance(context);
     }
 
     @Override

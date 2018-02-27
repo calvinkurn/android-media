@@ -17,6 +17,9 @@
         android:theme="@style/Theme.Tokopedia3"
         android:networkSecurityConfig="@xml/network_security_config"
         tools:replace="android:icon">
+        <meta-data
+            android:name="net.hockeyapp.android.appIdentifier"
+            android:value="404b7bc37aeb4c5bbf0c033c1a9e1f2e " />
 
         <activity
             android:name=".SplashScreenActivity"
@@ -84,7 +87,7 @@
         <activity
             android:name=".deeplink.DeepLinkActivity"
             android:hardwareAccelerated="true"
-            android:label="@string/title_activity_deep_link"
+            android:label="@string/title_activity_deep_link_topseller"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

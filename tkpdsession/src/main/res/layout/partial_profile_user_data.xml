@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -7,7 +8,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_med">
+        android:layout_marginTop="27dp">
 
         <TextView
             android:id="@+id/tv_title_user_data"
@@ -17,7 +18,7 @@
             android:layout_marginStart="@dimen/space_med"
             android:lineSpacingExtra="8sp"
             android:text="@string/title_user_data"
-            android:textColor="@color/bottom_sheet_item_text_color"
+            android:textColor="@color/font_black_primary_70"
             android:textSize="@dimen/font_small"
             android:textStyle="bold" />
 
@@ -31,35 +32,73 @@
             android:layout_marginStart="@dimen/space_med"
             android:lineSpacingExtra="6sp"
             android:text="@string/subtitle_user_data"
-            android:textSize="@dimen/font_micro"
+            android:textColor="@color/font_black_disabled_38"
+            android:textSize="@dimen/text_size_12"
             android:textStyle="normal" />
 
         <RelativeLayout
             android:id="@+id/rl_incomplete_profile"
             android:layout_width="match_parent"
-            android:layout_height="66dp"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/tv_subtitle_user_data"
             android:layout_marginBottom="21dp"
-            android:background="@color/background_yellow_incomplete">
+            android:background="@color/background_yellow_incomplete"
+            android:paddingBottom="14dp"
+            android:paddingTop="14dp"
+            android:visibility="visible">
 
-            <ImageView
-                android:id="@+id/iv_profile_progress"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="16dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="15dp"
-                android:layout_toRightOf="@+id/iv_profile_progress"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:textColor="@color/colorSheetTitle"
-                android:textSize="@dimen/text_size_13"
-                android:textStyle="normal"
-                tools:text="@string/incomplete_profile_html" />
+                android:orientation="horizontal">
 
+                <RelativeLayout
+                    android:id="@+id/rv_progress"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp">
+
+                    <ProgressBar xmlns:android="http://schemas.android.com/apk/res/android"
+                        xmlns:tools="http://schemas.android.com/tools"
+                        android:id="@+id/circular_progress_bar"
+                        style="@style/ProgressBar.Tokopedia"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:max="100"
+                        android:progress="0"
+                        android:progressDrawable="@drawable/circular_progress_bar"
+                        android:rotation="-90"
+                        tools:progress="55"/>
+
+                    <TextView
+                        android:id="@+id/tv_progress"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:textColor="@color/font_black_secondary_54"
+                        android:textSize="13sp"
+                        android:textStyle="normal"
+                        tools:text="55%" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/tv_incomplete_profile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginRight="36dp"
+                    android:layout_marginEnd="36dp"
+                    android:gravity="center_vertical"
+                    android:lineSpacingExtra="7sp"
+                    android:textColor="@color/font_black_secondary_54"
+                    android:textSize="@dimen/text_size_13"
+                    android:textStyle="normal"
+                    tools:text="@string/incomplete_profile" />
+            </LinearLayout>
         </RelativeLayout>
 
         <RelativeLayout
@@ -75,16 +114,16 @@
                 android:id="@+id/ll_title_phone_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:gravity="center_vertical">
 
                 <TextView
                     android:id="@+id/tv_title_phone_number"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
+                    android:layout_height="match_parent"
                     android:lineSpacingExtra="2sp"
                     android:text="@string/phone_number"
-                    android:textColor="@color/font_black_disabled_38"
+                    android:textColor="@color/font_black_secondary_54"
                     android:textSize="@dimen/text_size_12"
                     android:textStyle="normal" />
 
@@ -93,9 +132,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
-                    android:layout_toRightOf="@+id/tv_title_phone_number"
+                    android:layout_marginStart="4dp"
                     android:background="@drawable/prof_comp_bg_textview_rounded_light_green"
                     android:drawableLeft="@drawable/ic_check_green_12dp"
+                    android:drawableStart="@drawable/ic_check_green_12dp"
                     android:drawablePadding="4dp"
                     android:paddingLeft="8.5dp"
                     android:paddingRight="8.5dp"
@@ -111,7 +151,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/ll_title_phone_number"
                 android:lineSpacingExtra="6sp"
-                android:textColor="@color/bottom_sheet_item_text_color"
+                android:textColor="@color/font_black_primary_70"
                 android:textSize="@dimen/text_size_16"
                 android:textStyle="normal"
                 tools:text="085643933312" />
@@ -138,16 +178,16 @@
                 android:id="@+id/ll_title_email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:gravity="center_vertical">
 
                 <TextView
                     android:id="@+id/tv_title_email"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
+                    android:layout_height="match_parent"
                     android:lineSpacingExtra="2sp"
                     android:text="@string/title_email"
-                    android:textColor="@color/font_black_disabled_38"
+                    android:textColor="@color/font_black_secondary_54"
                     android:textSize="@dimen/text_size_12"
                     android:textStyle="normal" />
 
@@ -156,9 +196,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
-                    android:layout_toRightOf="@+id/tv_title_email"
+                    android:layout_marginStart="4dp"
                     android:background="@drawable/prof_comp_bg_textview_rounded_light_green"
                     android:drawableLeft="@drawable/ic_check_green_12dp"
+                    android:drawableStart="@drawable/ic_check_green_12dp"
                     android:drawablePadding="4dp"
                     android:paddingLeft="8.5dp"
                     android:paddingRight="8.5dp"
@@ -174,7 +215,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/ll_title_email"
                 android:lineSpacingExtra="6sp"
-                android:textColor="@color/bottom_sheet_item_text_color"
+                android:textColor="@color/font_black_primary_70"
                 android:textSize="@dimen/text_size_16"
                 android:textStyle="normal"
                 tools:text="benny_alexandra@hotmail.com" />
@@ -204,7 +245,7 @@
                 android:layout_marginBottom="5dp"
                 android:lineSpacingExtra="2sp"
                 android:text="@string/title_gender"
-                android:textColor="@color/font_black_disabled_38"
+                android:textColor="@color/font_black_secondary_54"
                 android:textSize="@dimen/text_size_12"
                 android:textStyle="normal" />
 
@@ -214,7 +255,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_title_gender"
                 android:lineSpacingExtra="6sp"
-                android:textColor="@color/bottom_sheet_item_text_color"
+                android:textColor="@color/font_black_primary_70"
                 android:textSize="@dimen/text_size_16"
                 android:textStyle="normal"
                 tools:text="Pria" />
@@ -244,7 +285,7 @@
                 android:layout_marginBottom="5dp"
                 android:lineSpacingExtra="2sp"
                 android:text="@string/title_birth_date"
-                android:textColor="@color/font_black_disabled_38"
+                android:textColor="@color/font_black_secondary_54"
                 android:textSize="@dimen/text_size_12"
                 android:textStyle="normal" />
 
@@ -254,10 +295,18 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_title_birth_date"
                 android:lineSpacingExtra="6sp"
-                android:textColor="@color/bottom_sheet_item_text_color"
+                android:textColor="@color/font_black_primary_70"
                 android:textSize="@dimen/text_size_16"
                 android:textStyle="normal"
                 tools:text="7 Sep 1991" />
+
+            <View
+                android:id="@+id/separator_data"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_below="@id/tv_birth_date"
+                android:layout_marginTop="13dp"
+                android:background="@color/separator_color" />
 
         </RelativeLayout>
 

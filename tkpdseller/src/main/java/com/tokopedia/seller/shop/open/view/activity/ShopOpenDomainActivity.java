@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
@@ -26,7 +27,13 @@ public class ShopOpenDomainActivity extends BaseSimpleActivity
 
     @Override
     protected Fragment getNewFragment() {
-        return ShopOpenReserveDomainFragment.newInstance();
+
+        if (getIntent() != null) {
+            boolean isFromAppShortCut = getIntent().getBooleanExtra(Constants.FROM_APP_SHORTCUTS, false);
+            return ShopOpenReserveDomainFragment.newInstance(isFromAppShortCut);
+        } else {
+            return ShopOpenReserveDomainFragment.newInstance();
+        }
     }
 
     @Override

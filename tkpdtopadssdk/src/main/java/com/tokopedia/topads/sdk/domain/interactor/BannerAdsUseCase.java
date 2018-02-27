@@ -44,6 +44,8 @@ public class BannerAdsUseCase extends UseCase<TopAdsParams, BannerAdsContract.Vi
 
             @Override
             protected void onPreExecute() {
+                if(view == null) return;
+
                 view.showLoading();
             }
 
@@ -54,6 +56,8 @@ public class BannerAdsUseCase extends UseCase<TopAdsParams, BannerAdsContract.Vi
 
             @Override
             protected void onPostExecute(CpmModel cpmModel) {
+                if(view == null) return;
+
                 view.hideLoading();
                 if (cpmModel.getError() == null && cpmModel.getStatus().getErrorCode() == 0) {
                     view.displayAds(cpmModel);

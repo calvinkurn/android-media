@@ -13,6 +13,7 @@ public class LayoutSections {
     int typeCase;
 
     public LayoutSections(int typeCase, String title, String icon, String applink, String url) {
+        this.typeCase = typeCase;
         this.title = title;
         this.icon = icon;
         this.applink = applink;

@@ -14,11 +14,13 @@ public class TopProfileViewModel {
     private String followers;
     private String favoritedShop;
 
-    private boolean isVerified;
+    private boolean isPhoneVerified;
+    private boolean isEmailVerified;
     private String phoneNumber;
     private String email;
     private String gender;
     private String birthDate;
+    private Integer completion;
 
     private String summaryScore;
     private String positiveScore;
@@ -34,8 +36,18 @@ public class TopProfileViewModel {
     private String shopLastOnline;
     private String shopAppLink;
 
+    private boolean isUser;
+
     public TopProfileViewModel() {
 
+    }
+
+    public Boolean getIsUser() {
+        return this.isUser;
+    }
+
+    public void setIsUser(boolean isUser) {
+        this.isUser = isUser;
     }
 
     public String getUserId() {
@@ -94,12 +106,20 @@ public class TopProfileViewModel {
         this.favoritedShop = favoritedShop;
     }
 
-    public boolean isVerified() {
-        return isVerified;
+    public boolean isPhoneVerified() {
+        return isPhoneVerified;
     }
 
-    public void setVerified(boolean verified) {
-        isVerified = verified;
+    public void setPhoneVerified(boolean phoneVerified) {
+        isPhoneVerified = phoneVerified;
+    }
+
+    public boolean isEmailVerified() {
+        return isEmailVerified;
+    }
+
+    public void setEmailVerified(boolean emailVerified) {
+        isEmailVerified = emailVerified;
     }
 
     public String getPhoneNumber() {
@@ -132,6 +152,14 @@ public class TopProfileViewModel {
 
     public void setBirthDate(String birthDate) {
         this.birthDate = birthDate;
+    }
+
+    public Integer getCompletion() {
+        return completion;
+    }
+
+    public void setCompletion(Integer completion) {
+        this.completion = completion;
     }
 
     public String getSummaryScore() {

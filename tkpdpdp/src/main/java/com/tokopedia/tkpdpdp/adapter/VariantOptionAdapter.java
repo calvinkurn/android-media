@@ -96,17 +96,14 @@ public class VariantOptionAdapter extends RecyclerView.Adapter<VariantOptionAdap
                     ((GradientDrawable)background).setColor(Color.parseColor(variantOption.getHex()));
                 }
                 imageColor.setVisibility(View.VISIBLE);
-            } else if (isColor){
-                imageColor.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.group_3));
-                imageColor.setVisibility(View.VISIBLE);
             }
             Drawable background = container.getBackground();
             if (!variantOption.isEnabled()) {
                 if (background instanceof GradientDrawable) {
-                    ((GradientDrawable)background).setColor(ContextCompat.getColor(context,R.color.white));
-                    ((GradientDrawable)background).setStroke(1,ContextCompat.getColor(context,R.color.grey_hint),5,5);
+                    ((GradientDrawable)background).setColor(ContextCompat.getColor(context,R.color.grey_hint));
+                    ((GradientDrawable)background).setStroke(1,ContextCompat.getColor(context,R.color.grey_hint));
                 }
-                textOption.setTextColor(ContextCompat.getColor(context,R.color.black_38));
+                textOption.setTextColor(ContextCompat.getColor(context,R.color.black_12));
             } else {
                 textOption.setTextColor(ContextCompat.getColor(context,R.color.black_70));
                 if (isSelected) {

@@ -53,6 +53,7 @@ public interface Constants {
     String ARG_NOTIFICATION_APPLINK_LOGIN_REQUIRED = "login_required";
 
     String WEB_PLAYSTORE_BUYER_APP_URL = "https://play.google.com/store/apps/details?id=com.tokopedia.tkpd";
+    String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
 
     /**
      * @deprecated extends {@link com.tokopedia.abstraction.constant.TkpdAppLink} on module instead
@@ -126,6 +127,9 @@ public interface Constants {
         String BROWSER = "tokopedia://browser";
         String FAVORITE = "tokopedia://home/favorite";
 
+        String EVENTS = "tokopedia://events";
+        String EVENTS_ACTIVITIES = "tokopedia://events/activities";
+        String EVENTS_DETAILS = "tokopedia://events/{event}";
         String REFERRAL_WELCOME = "tokopedia://referral/{code}/{owner}";
         String KOLCOMMENT = "tokopedia://kolcomment/{id}";
         String PROMO_LIST = "tokopedia://promoNative";
@@ -154,6 +158,7 @@ public interface Constants {
         String APPLINKS_SELLER = "sellerapp";
     }
 
+    //NOTE: strings must be same with {@link pref_notification.xml}
     interface Settings {
         String NOTIFICATION_RINGTONE = "notifications_new_message_ringtone";
         String NOTIFICATION_VIBRATE = "notifications_new_message_vibrate";
@@ -165,7 +170,7 @@ public interface Constants {
         String NOTIFICATION_SALES = "notification_sales";
         String NOTIFICATION_PURCHASE = "notification_purchase";
         String NOTIFICATION_RESCENTER = "notification_receive_rescenter";
-        String NOTIFICATION_SELLER_INFO = "notification_receive_seller_info";
+        String NOTIFICATION_SELLER_INFO = "notification_seller_info";
     }
 
     interface AppLinkQueryParameter {
