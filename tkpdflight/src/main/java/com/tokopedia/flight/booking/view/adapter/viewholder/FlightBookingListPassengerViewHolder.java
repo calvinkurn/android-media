@@ -10,6 +10,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 
+import static com.tokopedia.flight.booking.constant.FlightBookingPassenger.INFANT;
+
 /**
  * @author by furqan on 23/02/18.
  */
@@ -27,39 +29,32 @@ public class FlightBookingListPassengerViewHolder extends AbstractViewHolder<Fli
     private ListenerCheckedSavedPassenger listenerCheckedSavedPassenger;
 
     private TextView txtPassengerName, txtPassengerId;
-    private ImageView imgCheck;
+    private ImageView imgPassengerType, imgEdit, imgDelete;
 
     public FlightBookingListPassengerViewHolder(View itemView, ListenerCheckedSavedPassenger listenerCheckedSavedPassenger) {
         super(itemView);
         txtPassengerName = itemView.findViewById(R.id.tv_passenger_name);
-        txtPassengerId = itemView.findViewById(R.id.tv_passenger_id);
-        imgCheck = itemView.findViewById(R.id.image_checked);
+        imgPassengerType = itemView.findViewById(R.id.image_passenger_type);
+        imgDelete = itemView.findViewById(R.id.image_passenger_delete);
+        imgEdit = itemView.findViewById(R.id.image_passenger_edit);
         this.listenerCheckedSavedPassenger = listenerCheckedSavedPassenger;
     }
 
     @Override
     public void bind(FlightBookingPassengerViewModel flightBookingPassengerViewModel) {
-        boolean isItemChecked = false;
-        if (listenerCheckedSavedPassenger != null) {
-            isItemChecked = listenerCheckedSavedPassenger.isItemChecked(flightBookingPassengerViewModel);
-        }
 
         txtPassengerName.setText(String.format(
-                "%s %s",
+                "%d. %s. %s %s",
+                flightBookingPassengerViewModel.getPassengerLocalId(),
+                flightBookingPassengerViewModel.getPassengerTitle(),
                 flightBookingPassengerViewModel.getPassengerFirstName(),
                 flightBookingPassengerViewModel.getPassengerLastName()
         ));
-        // gone for now, later will use for passport ID
-        // txtPassengerId.setText("No. "); // " + flightBookingPassengerViewModel.getPassengerLocalId());
-        txtPassengerId.setVisibility(View.GONE);
-        if (isItemChecked) {
-            imgCheck.setVisibility(View.VISIBLE);
-            txtPassengerName.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.tkpd_main_green));
-            txtPassengerId.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.tkpd_main_green));
+
+        if (flightBookingPassengerViewModel.getType() == INFANT) {
+
         } else {
-            imgCheck.setVisibility(View.INVISIBLE);
-            txtPassengerName.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.font_black_primary_70));
-            txtPassengerId.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.font_black_primary_70));
+
         }
     }
 }
