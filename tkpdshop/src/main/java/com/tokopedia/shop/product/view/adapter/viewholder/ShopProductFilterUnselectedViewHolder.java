@@ -9,11 +9,11 @@ import com.tokopedia.shop.R;
  * Created by normansyahputa on 2/24/18.
  */
 
-public class ShopProductEtalaseUnselectedViewHolder extends ShopProductEtalaseSelectedViewHolder {
+public class ShopProductFilterUnselectedViewHolder extends ShopProductFilterSelectedViewHolder {
     @LayoutRes
-    public static final int LAYOUT = R.layout.item_shop_product_etalase_picker_unselected;
+    public static final int LAYOUT = R.layout.item_shop_product_filter_picker_unselected;
 
-    public ShopProductEtalaseUnselectedViewHolder(View itemView) {
+    public ShopProductFilterUnselectedViewHolder(View itemView) {
         super(itemView);
     }
 }

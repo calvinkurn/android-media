@@ -25,6 +25,7 @@ import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.view.activity.ShopProductFilterActivity;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
+import com.tokopedia.shop.product.view.adapter.ShopProductFilterAdapterTypeFactory;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductListViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductSingleViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
@@ -89,7 +90,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     @Override
     protected ShopProductAdapterTypeFactory getAdapterTypeFactory() {
-        return new ShopProductAdapterTypeFactory(new ShopProductAdapterTypeFactory.TypeFactoryListener() {
+        return new ShopProductAdapterTypeFactory(new ShopProductFilterAdapterTypeFactory.TypeFactoryListener() {
             @Override
             public int getType(Object object) {
                 return currentLayoutType.first;

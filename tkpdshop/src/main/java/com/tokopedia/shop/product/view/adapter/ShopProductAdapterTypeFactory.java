@@ -5,8 +5,8 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseSelectedViewHolder;
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseUnselectedViewHolder;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductFilterSelectedViewHolder;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductFilterUnselectedViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductListViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductSingleViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
@@ -18,12 +18,14 @@ import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
 public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
 
-    private TypeFactoryListener typeFactoryListener;
+    private ShopProductFilterAdapterTypeFactory.TypeFactoryListener typeFactoryListener;
     private ShopProductViewHolder.ShopProductVHListener shopProductVHListener;
 
     public ShopProductAdapterTypeFactory(
-            @Nullable TypeFactoryListener typeFactoryListener,
-            @Nullable ShopProductViewHolder.ShopProductVHListener shopProductVHListener) {
+            @Nullable ShopProductFilterAdapterTypeFactory.TypeFactoryListener typeFactoryListener,
+            @Nullable ShopProductViewHolder.ShopProductVHListener shopProductVHListener
+
+    ) {
         this.typeFactoryListener = typeFactoryListener;
         this.shopProductVHListener = shopProductVHListener;
     }
@@ -44,17 +46,14 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
             viewHolder = new ShopProductListViewHolder(view).setShopProductVHListener(shopProductVHListener);
         } else if (viewType == ShopProductSingleViewHolder.LAYOUT) {
             viewHolder = new ShopProductSingleViewHolder(view).setShopProductVHListener(shopProductVHListener);
-        } else if (viewType == ShopProductEtalaseUnselectedViewHolder.LAYOUT) {
-            viewHolder = new ShopProductEtalaseUnselectedViewHolder(view);
-        } else if (viewType == ShopProductEtalaseSelectedViewHolder.LAYOUT) {
-            viewHolder = new ShopProductEtalaseSelectedViewHolder(view);
+        } else if (viewType == ShopProductFilterUnselectedViewHolder.LAYOUT) {
+            viewHolder = new ShopProductFilterUnselectedViewHolder(view);
+        } else if (viewType == ShopProductFilterSelectedViewHolder.LAYOUT) {
+            viewHolder = new ShopProductFilterSelectedViewHolder(view);
         } else {
             viewHolder = super.createViewHolder(view, viewType);
         }
         return viewHolder;
     }
 
-    public interface TypeFactoryListener<E> {
-        int getType(E type);
-    }
 }
