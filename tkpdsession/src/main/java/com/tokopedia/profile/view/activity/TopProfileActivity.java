@@ -6,11 +6,9 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseEmptyActivity;
@@ -21,7 +19,6 @@ import com.tokopedia.profile.view.adapter.ProfileTabPagerAdapter;
 import com.tokopedia.profile.view.fragment.TopProfileFragment;
 import com.tokopedia.profile.view.viewmodel.ProfileSectionItem;
 import com.tokopedia.session.R;
-import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberWarningFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +32,6 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
     private AppBarLayout appBarLayout;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private Toolbar toolbar;
-    private BaseDaggerFragment kolPostFragment;
 
     private static final String TITLE_PROFILE = "Info Akun";
     private static final String TITLE_POST = "Post";
@@ -50,11 +46,6 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getApplicationContext() instanceof SessionRouter) {
-            //TODO milhamj change this userid
-            kolPostFragment = ((SessionRouter) getApplicationContext()).getKolPostFragment("6543110");
-        }
-        inflateFragment();
     }
 
     @Override
@@ -67,23 +58,6 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
         viewPager = findViewById(R.id.pager);
         setupToolbar();
         loadSection();
-    }
-
-    //TODO milhamj remove this func
-    private void inflateFragment() {
-        if (kolPostFragment != null) {
-            String TAG = "LOL";
-            if (getSupportFragmentManager().findFragmentByTag(TAG) != null) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.container,
-                                getSupportFragmentManager().findFragmentByTag(TAG))
-                        .commit();
-            } else {
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.container, kolPostFragment, TAG)
-                        .commit();
-            }
-        }
     }
 
     @Override
@@ -143,11 +117,17 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
     private void loadSection(){
         List<ProfileSectionItem> profileSectionItemList = new ArrayList<>();
 
-        //TODO add content fragment
+        if (getApplicationContext() instanceof SessionRouter) {
+            //TODO milhamj change this userid
+            BaseDaggerFragment kolPostFragment =
+                    ((SessionRouter) getApplicationContext()).getKolPostFragment("6543110");
+            profileSectionItemList.add(new ProfileSectionItem(TITLE_POST, kolPostFragment));
+        }
         TopProfileFragment profileFragment = TopProfileFragment.newInstance();
         profileSectionItemList.add(new ProfileSectionItem(TITLE_PROFILE, profileFragment));
 
-        ProfileTabPagerAdapter profileTabPagerAdapter = new ProfileTabPagerAdapter(getSupportFragmentManager());
+        ProfileTabPagerAdapter profileTabPagerAdapter =
+                new ProfileTabPagerAdapter(getSupportFragmentManager());
         profileTabPagerAdapter.setItemList(profileSectionItemList);
         viewPager.setAdapter(profileTabPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
