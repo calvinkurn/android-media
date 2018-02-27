@@ -2,6 +2,7 @@ package com.tokopedia.tokocash.historytokocash.domain;
 
 import com.tokopedia.tokocash.historytokocash.presentation.model.HelpHistoryTokoCash;
 import com.tokopedia.tokocash.historytokocash.presentation.model.TokoCashHistoryData;
+import com.tokopedia.tokocash.historytokocash.presentation.model.WithdrawSaldo;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,4 +20,6 @@ public interface IWalletRepository {
     Observable<List<HelpHistoryTokoCash>> getHelpHistoryData();
 
     Observable<Boolean> submitHelpHistory(HashMap<String, String> mapParams);
+
+    Observable<WithdrawSaldo> withdrawTokoCashToSaldo(String url, HashMap<String, String> mapParams);
 }

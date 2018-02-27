@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.tokocash.historytokocash.data.entity.HelpHistoryTokoCashEntity;
 import com.tokopedia.tokocash.historytokocash.data.entity.TokoCashHistoryEntity;
+import com.tokopedia.tokocash.historytokocash.data.entity.WithdrawSaldoEntity;
 import com.tokopedia.tokocash.historytokocash.presentation.Util;
 import com.tokopedia.tokocash.network.api.WalletApi;
 
@@ -54,6 +55,17 @@ public class CloudWalletDataSource implements WalletDataSource {
                     @Override
                     public Boolean call(Response<DataResponse<HelpHistoryTokoCashEntity>> dataResponseResponse) {
                         return dataResponseResponse.body().getData() != null;
+                    }
+                });
+    }
+
+    @Override
+    public Observable<WithdrawSaldoEntity> withdrawTokoCashToSaldo(String url, HashMap<String, String> mapParams) {
+        return walletApi.withdrawSaldoFromTokocash(url, mapParams)
+                .map(new Func1<Response<DataResponse<WithdrawSaldoEntity>>, WithdrawSaldoEntity>() {
+                    @Override
+                    public WithdrawSaldoEntity call(Response<DataResponse<WithdrawSaldoEntity>> dataResponseResponse) {
+                        return dataResponseResponse.body().getData();
                     }
                 });
     }

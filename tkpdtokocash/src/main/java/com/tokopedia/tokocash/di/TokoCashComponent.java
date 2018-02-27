@@ -7,6 +7,7 @@ import com.tokopedia.tokocash.activation.presentation.fragment.SuccessActivateFr
 import com.tokopedia.tokocash.historytokocash.presentation.fragment.HelpHistoryDetailFragment;
 import com.tokopedia.tokocash.historytokocash.presentation.fragment.HistoryTokoCashFragment;
 import com.tokopedia.tokocash.historytokocash.presentation.fragment.HomeTokoCashFragment;
+import com.tokopedia.tokocash.historytokocash.presentation.fragment.MoveToSaldoFragment;
 import com.tokopedia.tokocash.pendingcashback.domain.GetPendingCasbackUseCase;
 import com.tokopedia.tokocash.qrpayment.domain.GetBalanceTokoCashUseCase;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.CustomScannerTokoCashActivity;
@@ -43,4 +44,6 @@ public interface TokoCashComponent {
     void inject(HomeTokoCashFragment homeTokoCashFragment);
 
     void inject(HelpHistoryDetailFragment helpHistoryDetailFragment);
+
+    void inject(MoveToSaldoFragment moveToSaldoFragment);
 }

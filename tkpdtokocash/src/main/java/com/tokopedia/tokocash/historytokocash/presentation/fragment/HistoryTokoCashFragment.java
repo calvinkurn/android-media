@@ -413,7 +413,7 @@ public class HistoryTokoCashFragment extends BaseDaggerFragment implements TokoC
                 isWaitingTransaction ? "" : startDateFormatted);
         requestParams.putString(GetHistoryDataUseCase.END_DATE,
                 isWaitingTransaction ? "" : endDateFormatted);
-        requestParams.putInt(GetHistoryDataUseCase.PAGE, page);
+        requestParams.putString(GetHistoryDataUseCase.PAGE, String.valueOf(page));
         return requestParams;
     }
 

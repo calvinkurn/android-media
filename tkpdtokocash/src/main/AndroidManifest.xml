@@ -47,6 +47,14 @@
             android:label="@string/tokocash"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
+        <activity android:name=".historytokocash.presentation.activity.MoveToSaldoActivity"
+            android:label="@string/tokocash"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
+        <activity android:name=".historytokocash.presentation.activity.ThankYouMoveToSaldoActivity"
+            android:label="@string/tokocash"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
     </application>
 
 </manifest>

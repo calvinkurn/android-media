@@ -18,8 +18,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.historytokocash.presentation.activity.HelpHistoryDetailActivity;
+import com.tokopedia.tokocash.historytokocash.presentation.activity.MoveToSaldoActivity;
 import com.tokopedia.tokocash.historytokocash.presentation.model.ActionHistory;
 import com.tokopedia.tokocash.historytokocash.presentation.model.ItemHistory;
+import com.tokopedia.tokocash.historytokocash.presentation.model.WalletToDepositPassData;
 
 /**
  * Created by nabillasabbaha on 2/12/18.
@@ -28,6 +30,8 @@ import com.tokopedia.tokocash.historytokocash.presentation.model.ItemHistory;
 public class DetailTransactionFragment extends BaseDaggerFragment {
 
     public static final String ITEM_HISTORY_KEY = "item_history";
+    public static final String KEY_BUTTON_ACTION = "button";
+    public static final String VALUE_BUTTON_ACTION = "movetosaldo";
     private static final int REQUEST_MOVE_TO_SALDO = 110;
 
     private ImageView iconItem;
@@ -72,7 +76,7 @@ public class DetailTransactionFragment extends BaseDaggerFragment {
         if (itemHistory.getActionHistoryList() != null) {
             removeView(buttonOpsiContainer);
             for (ActionHistory actionHistory : itemHistory.getActionHistoryList()) {
-                if (actionHistory.getType().equals("button")) {
+                if (actionHistory.getType().equals(KEY_BUTTON_ACTION)) {
                     LinearLayout viewItem = (LinearLayout) LayoutInflater.from(getActivity())
                             .inflate(R.layout.item_button_opsi, null);
                     Button buttonOpsi = viewItem.findViewById(R.id.opsi_btn);
@@ -128,18 +132,18 @@ public class DetailTransactionFragment extends BaseDaggerFragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                if (actionHistory.getType().equals("button") && actionHistory.getName().equals("movetosaldo")) {
-//                    WalletToDepositPassData walletToDepositPassData =
-//                            new WalletToDepositPassData.Builder()
-//                                    .amountFormatted(itemHistory.getAmountPending())
-//                                    .method(actionHistory.getMethod())
-//                                    .params(actionHistory.getParams())
-//                                    .name(actionHistory.getName())
-//                                    .url(actionHistory.getUrl())
-//                                    .title(actionHistory.getTitle())
-//                                    .build();
-//                    startActivityForResult(WalletToDepositActivity.newInstance(getApplicationContext(), walletToDepositPassData), REQUEST_MOVE_TO_SALDO);
-//                }
+                if (actionHistory.getType().equals(KEY_BUTTON_ACTION) && actionHistory.getName().equals(VALUE_BUTTON_ACTION)) {
+                    WalletToDepositPassData walletToDepositPassData =
+                            new WalletToDepositPassData.Builder()
+                                    .amountFormatted(itemHistory.getAmountPending())
+                                    .method(actionHistory.getMethod())
+                                    .params(actionHistory.getParams())
+                                    .name(actionHistory.getName())
+                                    .url(actionHistory.getUrl())
+                                    .title(actionHistory.getTitle())
+                                    .build();
+                    startActivityForResult(MoveToSaldoActivity.newInstance(getActivity(), walletToDepositPassData), REQUEST_MOVE_TO_SALDO);
+                }
             }
         };
     }
@@ -147,12 +151,12 @@ public class DetailTransactionFragment extends BaseDaggerFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == REQUEST_MOVE_TO_SALDO) {
-//            if (resultCode == WalletToDepositActivity.RESULT_WALLET_TO_DEPOSIT_SUCCESS ||
-//                    resultCode == WalletToDepositActivity.RESULT_WALLET_TO_DEPOSIT_FAILED) {
-//                finish();
-//            }
-//        }
+        if (requestCode == REQUEST_MOVE_TO_SALDO) {
+            if (resultCode == MoveToSaldoActivity.RESULT_WALLET_TO_DEPOSIT_SUCCESS ||
+                    resultCode == MoveToSaldoActivity.RESULT_WALLET_TO_DEPOSIT_FAILED) {
+                getActivity().finish();
+            }
+        }
     }
 
     @NonNull
