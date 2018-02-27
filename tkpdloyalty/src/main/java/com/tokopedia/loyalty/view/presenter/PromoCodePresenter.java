@@ -54,6 +54,16 @@ public class PromoCodePresenter implements IPromoCodePresenter {
                 makeDigitalVoucherViewModel());
     }
 
+    @Override
+    public void processCheckMarketPlaceCartListPromoCode(Context context, String voucherCode) {
+
+    }
+
+    @Override
+    public void processCheckMarketPlaceCartShipmentPromoCode(Context context, String voucherCode) {
+
+    }
+
     private Subscriber<VoucherViewModel> makeVoucherViewModel() {
         return new Subscriber<VoucherViewModel>() {
             @Override

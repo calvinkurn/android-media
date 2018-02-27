@@ -6,6 +6,9 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.checkout.domain.response.addtocart.AddToCartDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.cartlist.CartDataListResponse;
 import com.tokopedia.transaction.checkout.domain.response.checkout.CheckoutDataResponse;
+import com.tokopedia.transaction.checkout.domain.response.checkpromocodecartlist.CheckPromoCodeCartListDataResponse;
+import com.tokopedia.transaction.checkout.domain.response.checkpromocodefinal.CheckPromoCodeFinalDataResponse;
+import com.tokopedia.transaction.checkout.domain.response.couponlist.CouponDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.deletecart.DeleteCartDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.resetcart.ResetCartDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.shippingaddress.ShippingAddressDataResponse;
@@ -75,6 +78,21 @@ public class CartRepositoryDataDummy implements ICartRepository {
 
     @Override
     public Observable<CheckoutDataResponse> checkout(TKPDMapParam<String, String> param) {
+        return null;
+    }
+
+    @Override
+    public Observable<CheckPromoCodeCartListDataResponse> checkPromoCodeCartList(TKPDMapParam<String, String> param) {
+        return null;
+    }
+
+    @Override
+    public Observable<CheckPromoCodeFinalDataResponse> checkPromoCodeCartShipment(TKPDMapParam<String, String> param) {
+        return null;
+    }
+
+    @Override
+    public Observable<CouponDataResponse> getCouponList(TKPDMapParam<String, String> param) {
         return null;
     }
 
