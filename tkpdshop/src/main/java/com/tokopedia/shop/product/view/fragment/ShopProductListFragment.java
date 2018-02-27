@@ -9,6 +9,7 @@ import android.support.v4.util.Pair;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,10 +26,10 @@ import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.view.activity.ShopProductFilterActivity;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
-import com.tokopedia.shop.product.view.adapter.ShopProductFilterAdapterTypeFactory;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductListViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductSingleViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
+import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListPresenter;
 
@@ -38,7 +39,7 @@ import javax.inject.Inject;
  * Created by nathan on 2/15/18.
  */
 
-public class ShopProductListFragment extends BaseSearchListFragment<ShopProductViewModel, ShopProductAdapterTypeFactory> {
+public class ShopProductListFragment extends BaseSearchListFragment<ShopProductViewModel, ShopProductAdapterTypeFactory> implements ShopProductClickedListener {
 
     public static final int SPAN_COUNT = 2;
     public static final int REQUEST_CODE_ETALASE = 12912;
@@ -83,27 +84,19 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     }
 
     @Override
+    protected ShopProductAdapterTypeFactory getAdapterTypeFactory() {
+        return new ShopProductAdapterTypeFactory(this);
+    }
+
+    @Override
     public void loadData(int page) {
         getShopList();
     }
 
-
     @Override
-    protected ShopProductAdapterTypeFactory getAdapterTypeFactory() {
-        return new ShopProductAdapterTypeFactory(new ShopProductFilterAdapterTypeFactory.TypeFactoryListener() {
-            @Override
-            public int getType(Object object) {
-                return currentLayoutType.first;
-            }
-        }, new ShopProductViewHolder.ShopProductVHListener() {
-            @Override
-            public void onWishlist(ShopProductViewModel model) {
-                shopProductListPresenter.addToWishList(
-                        shopId,
-                        model.getId()
-                );
-            }
-        });
+    public void onWishListClicked(ShopProductViewModel shopProductViewModel) {
+        Log.d("", shopProductViewModel.getId());
+        int i = 0 + 1;
     }
 
     @Override

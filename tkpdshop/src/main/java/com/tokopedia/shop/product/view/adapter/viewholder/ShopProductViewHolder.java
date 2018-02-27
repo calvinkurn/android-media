@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
+import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
 /**
@@ -39,27 +40,15 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     private int imageGuideLineGrid;
     private int imageGuideLineList;
 
-    private ShopProductVHListener shopProductVHListener;
-    private ShopProductViewModel model;
     private AppCompatRatingBar qualityRatingBar;
     private TextView totalReview;
 
-    public ShopProductViewHolder(View itemView) {
+    private final ShopProductClickedListener shopProductClickedListener;
+
+    public ShopProductViewHolder(View itemView, ShopProductClickedListener shopProductClickedListener) {
         super(itemView);
+        this.shopProductClickedListener = shopProductClickedListener;
         findViews(itemView);
-    }
-
-    protected ShopProductVHListener getShopProductVHListener() {
-        return shopProductVHListener;
-    }
-
-    public ShopProductViewHolder setShopProductVHListener(ShopProductVHListener shopProductVHListener) {
-        this.shopProductVHListener = shopProductVHListener;
-        return this;
-    }
-
-    public ShopProductViewModel getModel() {
-        return model;
     }
 
     private void findViews(View view) {
@@ -83,54 +72,37 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     }
 
     @Override
-    public void bind(ShopProductViewModel model) {
-        this.model = model;
-
-        titleTextView.setText(getModel().getName());
-        priceTextView.setText(getModel().getPrice());
-        ImageHandler.LoadImage(productImageView, getModel().getImageUrl());
-        if (model.isWishList()) {
+    public void bind(final ShopProductViewModel shopProductViewModel) {
+        titleTextView.setText(shopProductViewModel.getName());
+        priceTextView.setText(shopProductViewModel.getPrice());
+        ImageHandler.LoadImage(productImageView, shopProductViewModel.getImageUrl());
+        if (shopProductViewModel.isWishList()) {
             wishlistImageView.setImageResource(R.drawable.ic_wishlist_red);
         } else {
             wishlistImageView.setImageResource(R.drawable.ic_wishlist);
         }
-
         wishlistContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(getShopProductVHListener()!= null){
-                    getShopProductVHListener().onWishlist(
-                            ShopProductViewHolder.this.model
-                    );
-                }
+                shopProductClickedListener.onWishListClicked(shopProductViewModel);
             }
         });
-
         if (qualityRatingBar != null) {
-            qualityRatingBar.setRating((float) model.getRating());
+            qualityRatingBar.setRating((float) shopProductViewModel.getRating());
             qualityRatingBar.setMax(ShopPageActivity.MAX_RATING_STAR);
         }
-
         if (totalReview != null) {
-            totalReview.setText(Integer.toString(model.getTotalReview()));
+            totalReview.setText(String.valueOf(shopProductViewModel.getTotalReview()));
         }
-
-        if (model.getCashback() > 0) {
+        if (shopProductViewModel.getCashback() > 0) {
             cashbackTextView.setText(cashbackTextView.getContext().getString(
-                    R.string.product_manage_item_cashback, model.getCashback()));
+                    R.string.product_manage_item_cashback, shopProductViewModel.getCashback()));
             cashbackTextView.setVisibility(View.VISIBLE);
         } else {
             cashbackTextView.setVisibility(View.GONE);
         }
-
-        freeReturnImageView.setVisibility(model.isFreeReturn() ? View.VISIBLE : View.GONE);
-
-        preOrderTextView.setVisibility(model.isPo() ? View.VISIBLE : View.GONE);
-
-        wholesaleTextView.setVisibility(model.isWholesale() ? View.VISIBLE : View.GONE);
-    }
-
-    public interface ShopProductVHListener{
-        void onWishlist(ShopProductViewModel model);
+        freeReturnImageView.setVisibility(shopProductViewModel.isFreeReturn() ? View.VISIBLE : View.GONE);
+        preOrderTextView.setVisibility(shopProductViewModel.isPo() ? View.VISIBLE : View.GONE);
+        wholesaleTextView.setVisibility(shopProductViewModel.isWholesale() ? View.VISIBLE : View.GONE);
     }
 }

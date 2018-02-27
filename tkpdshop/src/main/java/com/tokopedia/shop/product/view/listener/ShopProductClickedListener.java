@@ -6,7 +6,7 @@ import com.tokopedia.shop.product.view.model.ShopProductViewModel;
  * Created by normansyahputa on 2/24/18.
  */
 
-public interface OnShopProductClickedListener {
+public interface ShopProductClickedListener {
 
-    void clicked(ShopProductViewModel shopProductViewModel);
+    void onWishListClicked(ShopProductViewModel shopProductViewModel);
 }

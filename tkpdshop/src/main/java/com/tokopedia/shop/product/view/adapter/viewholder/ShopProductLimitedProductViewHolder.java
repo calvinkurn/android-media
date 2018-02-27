@@ -11,7 +11,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.design.button.Button;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.product.view.adapter.ShopProductLimitedProductAdapter;
+import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedProductViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -40,7 +42,12 @@ public class ShopProductLimitedProductViewHolder extends AbstractViewHolder<Shop
 
     @Override
     public void bind(ShopProductLimitedProductViewModel shopProductLimitedProductViewModel) {
-        ShopProductLimitedProductAdapter adapter = new ShopProductLimitedProductAdapter();
+        ShopProductLimitedProductAdapter adapter = new ShopProductLimitedProductAdapter(new ShopProductClickedListener() {
+            @Override
+            public void onWishListClicked(ShopProductViewModel shopProductViewModel) {
+
+            }
+        });
         adapter.setList(shopProductLimitedProductViewModel.getShopProductViewModelList());
         LinearLayoutManager layoutManager = new GridLayoutManager(itemView.getContext(), SPAN_COUNT);
         recyclerView.setLayoutManager(layoutManager);

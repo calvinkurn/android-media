@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductListViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
+import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
 import java.util.ArrayList;
@@ -18,16 +19,18 @@ import java.util.List;
 
 public class ShopProductLimitedFeaturedAdapter extends RecyclerView.Adapter<ShopProductListViewHolder> {
 
+    private final ShopProductClickedListener shopProductClickedListener;
     private List<ShopProductViewModel> list;
 
-    public ShopProductLimitedFeaturedAdapter() {
+    public ShopProductLimitedFeaturedAdapter(ShopProductClickedListener shopProductClickedListener) {
+        this.shopProductClickedListener = shopProductClickedListener;
         list = new ArrayList<>();
     }
 
     @Override
     public ShopProductListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(ShopProductListViewHolder.LAYOUT, parent, false);
-        return new ShopProductListViewHolder(view);
+        return new ShopProductListViewHolder(view, shopProductClickedListener);
     }
 
     @Override
