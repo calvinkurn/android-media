@@ -9,6 +9,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.flight.booking.constant.FlightBookingPassenger.ADULT;
+
 /**
  * @author by furqan on 23/02/18.
  */
@@ -30,10 +32,12 @@ public class SavedPassengerViewModelMapper {
                     )
             );
         }
+
         flightBookingPassengerViewModel.setPassengerFirstName(savedPassengerEntity.getPassengerAttribute().getFirstName());
         flightBookingPassengerViewModel.setPassengerLastName(savedPassengerEntity.getPassengerAttribute().getLastName());
         flightBookingPassengerViewModel.setPassengerTitleId(savedPassengerEntity.getPassengerAttribute().getTitle());
         flightBookingPassengerViewModel.setPassengerId(savedPassengerEntity.getId());
+        flightBookingPassengerViewModel.setPassengerTitleId(savedPassengerEntity.getPassengerAttribute().getTitle());
 
         return flightBookingPassengerViewModel;
     }
