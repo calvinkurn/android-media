@@ -126,7 +126,7 @@ public interface FlightBookingPassengerContract {
 
         void onMealDataChange(FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel);
 
-        void onSavedPassengerClicked(FlightBookingPassengerViewModel viewModel);
+        void onSavedPassengerClicked();
 
     }
 }

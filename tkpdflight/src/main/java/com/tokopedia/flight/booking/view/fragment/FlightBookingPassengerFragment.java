@@ -175,7 +175,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         etSavedPassenger.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.onSavedPassengerClicked(new FlightBookingPassengerViewModel());
+                presenter.onSavedPassengerClicked();
             }
         });
         return view;

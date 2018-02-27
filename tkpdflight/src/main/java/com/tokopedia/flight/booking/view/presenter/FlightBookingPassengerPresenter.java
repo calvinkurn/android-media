@@ -228,11 +228,13 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     }
 
     @Override
-    public void onSavedPassengerClicked(FlightBookingPassengerViewModel viewModel) {
-        FlightBookingPassengerViewModel existingSelected = null;
+    public void onSavedPassengerClicked() {
+        FlightBookingPassengerViewModel existingSelected = getView().getCurrentPassengerViewModel();
+
         if (existingSelected == null) {
             existingSelected = new FlightBookingPassengerViewModel();
         }
+
         getView().navigateToSavedPassengerPicker(existingSelected);
     }
 
