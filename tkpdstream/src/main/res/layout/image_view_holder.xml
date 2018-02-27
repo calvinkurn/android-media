@@ -42,7 +42,7 @@
         app:layout_constraintBottom_toTopOf="@+id/message"
         app:layout_constraintStart_toEndOf="@+id/avatar"
         app:layout_constraintTop_toBottomOf="@id/header_time"
-        tools:src="@drawable/icinf"
+        tools:src="@drawable/ic_influencer"
         tools:visibility="visible"/>
 
     <TextView
@@ -117,26 +117,21 @@
         app:layout_constraintTop_toBottomOf="@id/header_time"
         tools:text="12.00"/>
 
-    <TextView
-        android:id="@+id/message"
+    <ImageView
+        android:id="@+id/content_image"
         android:layout_width="0dp"
-        android:layout_height="21dp"
+        android:layout_height="wrap_content"
         android:layout_below="@id/nickname"
         android:layout_marginBottom="@dimen/margin_small"
         android:layout_marginEnd="@dimen/new_margin_med"
         android:layout_marginRight="@dimen/new_margin_med"
         android:layout_toEndOf="@id/avatar"
         android:layout_toRightOf="@id/avatar"
-        android:fontFamily="sans-serif"
-        android:textColor="@color/font_black_primary_70"
-        android:textColorLink="@color/font_black_primary_70"
-        android:textSize="@dimen/font_small"
-        android:textStyle="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toStartOf="@+id/nickname"
         app:layout_constraintTop_toBottomOf="@+id/nickname"
-        tools:text="Wuuu baik om! Go Brazil go!"/>
+        tools:src="@drawable/ic_loading_image"/>
 
 </android.support.constraint.ConstraintLayout>

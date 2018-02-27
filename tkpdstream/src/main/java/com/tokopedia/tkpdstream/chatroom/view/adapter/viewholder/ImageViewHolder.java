@@ -10,15 +10,19 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpdstream.R;
-import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ImageViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.UserActionViewModel;
 
 /**
- * @author by nisie on 2/7/18.
+ * @author by nisie on 2/27/18.
  */
 
-public class ChatViewHolder extends AbstractViewHolder<ChatViewModel> {
+public class ImageViewHolder extends AbstractViewHolder<ImageViewModel> {
 
-    private TextView message;
+    @LayoutRes
+    public static final int LAYOUT = R.layout.image_view_holder;
+
+    private ImageView contentImage;
     private TextView nickname;
     private TextView postTime;
     private ImageView avatar;
@@ -26,12 +30,9 @@ public class ChatViewHolder extends AbstractViewHolder<ChatViewModel> {
     private ImageView influencerBadge;
     private TextView headerTime;
 
-    @LayoutRes
-    public static final int LAYOUT = R.layout.chat_view_holder;
-
-    public ChatViewHolder(View itemView) {
+    public ImageViewHolder(View itemView) {
         super(itemView);
-        message = itemView.findViewById(R.id.message);
+        contentImage = itemView.findViewById(R.id.content_image);
         nickname = itemView.findViewById(R.id.nickname);
         postTime = itemView.findViewById(R.id.post_time);
         avatar = itemView.findViewById(R.id.avatar);
@@ -41,7 +42,7 @@ public class ChatViewHolder extends AbstractViewHolder<ChatViewModel> {
     }
 
     @Override
-    public void bind(ChatViewModel element) {
+    public void bind(ImageViewModel element) {
         ImageHandler.loadImageCircle2(avatar.getContext(), avatar, element.getSenderIconUrl());
         nickname.setText(MethodChecker.fromHtml(element.getSenderName()));
         postTime.setText(element.getFormattedUpdatedAt());
@@ -69,7 +70,7 @@ public class ChatViewHolder extends AbstractViewHolder<ChatViewModel> {
             headerTime.setVisibility(View.GONE);
         }
 
-        message.setText(MethodChecker.fromHtml(element.getMessage()));
+        ImageHandler.LoadImage(contentImage, element.getContentImageUrl());
 
     }
 }

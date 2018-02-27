@@ -373,7 +373,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     @Override
     public void onSuccessGetMessageFirstTime(List<Visitable> listChat, PreviousMessageListQuery previousMessageListQuery) {
         this.mPrevMessageListQuery = previousMessageListQuery;
-        adapter.addListPrevious(listChat);
+        adapter.setList(listChat);
         adapter.setCursor(listChat.get(0));
         adapter.setCanLoadMore(mPrevMessageListQuery.hasMore());
         scrollToBottom();

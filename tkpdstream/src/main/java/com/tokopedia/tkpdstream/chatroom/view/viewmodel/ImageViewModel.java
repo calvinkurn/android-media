@@ -4,26 +4,29 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.typefactory.GroupChatTypeFactory;
 
 /**
- * @author by nisie on 2/7/18.
+ * @author by nisie on 2/27/18.
  */
 
-public class ChatViewModel extends BaseChatViewModel implements Visitable<GroupChatTypeFactory> {
+public class ImageViewModel extends BaseChatViewModel implements Visitable<GroupChatTypeFactory> {
 
     private String senderId;
     private String senderName;
     private String senderIconUrl;
     private boolean isInfluencer;
     private boolean isAdministrator;
+    private String contentImageUrl;
 
-    public ChatViewModel(String message, long createdAt, long updatedAt,
-                         String messageId, String senderId, String senderName,
-                         String senderIconUrl, boolean isInfluencer, boolean isAdministrator) {
-        super(message, createdAt, updatedAt, messageId);
+    public ImageViewModel(String contentImageUrl, long createdAt, long updatedAt, String messageId,
+                          String senderId, String senderName, String senderIconUrl, boolean isInfluencer,
+                          boolean isAdministrator) {
+        super("", createdAt, updatedAt, messageId);
+        this.contentImageUrl = contentImageUrl;
         this.senderId = senderId;
         this.senderName = senderName;
         this.senderIconUrl = senderIconUrl;
         this.isInfluencer = isInfluencer;
         this.isAdministrator = isAdministrator;
+
     }
 
     @Override
@@ -49,5 +52,9 @@ public class ChatViewModel extends BaseChatViewModel implements Visitable<GroupC
 
     public boolean isAdministrator() {
         return isAdministrator;
+    }
+
+    public String getContentImageUrl() {
+        return contentImageUrl;
     }
 }

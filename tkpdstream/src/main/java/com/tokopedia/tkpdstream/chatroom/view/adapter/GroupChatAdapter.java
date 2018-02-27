@@ -99,6 +99,11 @@ public class GroupChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         return new GroupChatAdapter(groupChatTypeFactory);
     }
 
+    public void setList(List<Visitable> listChat) {
+        this.list.addAll(listChat);
+        notifyDataSetChanged();
+    }
+
     public void addListPrevious(List<Visitable> listChat) {
         int positionStart = this.list.size();
         this.list.addAll(listChat);
@@ -199,4 +204,5 @@ public class GroupChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     public void setCanLoadMore(boolean canLoadMore) {
         this.canLoadMore = canLoadMore;
     }
+
 }

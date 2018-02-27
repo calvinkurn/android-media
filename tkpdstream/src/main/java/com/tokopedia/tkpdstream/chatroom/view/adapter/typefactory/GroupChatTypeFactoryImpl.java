@@ -6,11 +6,13 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.viewholder.AdminAnnouncementViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.viewholder.ChatViewHolder;
+import com.tokopedia.tkpdstream.chatroom.view.adapter.viewholder.ImageViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.viewholder.PendingChatViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.viewholder.UserActionViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.AdminAnnouncementViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ImageViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.UserActionViewModel;
 
@@ -45,6 +47,11 @@ public class GroupChatTypeFactoryImpl extends BaseAdapterTypeFactory implements 
     }
 
     @Override
+    public int type(ImageViewModel imageViewModel) {
+        return ImageViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         AbstractViewHolder viewHolder;
 
@@ -56,6 +63,8 @@ public class GroupChatTypeFactoryImpl extends BaseAdapterTypeFactory implements 
             viewHolder = new PendingChatViewHolder(parent);
         } else if (type == UserActionViewHolder.LAYOUT) {
             viewHolder = new UserActionViewHolder(parent);
+        } else if (type == ImageViewHolder.LAYOUT) {
+            viewHolder = new ImageViewHolder(parent);
         } else {
             viewHolder = super.createViewHolder(parent, type);
         }
