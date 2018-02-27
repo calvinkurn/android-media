@@ -2,7 +2,6 @@ package com.tokopedia.gm.subscribe.view.presenter;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException;
 import com.tokopedia.core.util.BranchSdkUtils;
@@ -255,14 +254,14 @@ public class GmCheckoutPresenterImpl extends BaseDaggerPresenter<GmCheckoutView>
 
     @Override
     public void autoApplyCouponIfAvailable(Integer selectedProduct) {
-        String savedCoupon = BranchSdkUtils.getAutoApplyCouponIfAvailable(getView().getContext());
+        String savedCoupon = BranchSdkUtils.getAutoApplyCouponIfAvailable(getView().getActivity());
         if (!TextUtils.isEmpty(savedCoupon)) {
             checkVoucherCode(savedCoupon, selectedProduct);
         }
     }
 
     private void removeBranchPromo(){
-        BranchSdkUtils.removeCouponCode(getView().getContext());
+        BranchSdkUtils.removeCouponCode(getView().getActivity());
     }
 }
 
