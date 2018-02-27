@@ -390,8 +390,7 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
         }
 
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject("Coordinates", locationArrayList);
-
+        requestParams.putObject(GetNearbyRoadsUseCase.COORDINATES, locationArrayList);
         requestParams.putString(GetNearbyRoadsUseCase.PARAM_KEY, getView().getActivity().getResources().getString(R.string.GOOGLE_API_KEY));
 
         getNearbyRoadsUseCase.execute(requestParams, new Subscriber<NearbyRoads>() {

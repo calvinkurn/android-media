@@ -19,6 +19,7 @@ import rx.Observable;
 public class GetNearbyRoadsUseCase extends UseCase<NearbyRoads> {
     private final PlaceRepository placeRepository;
     public static final String PARAM_KEY = "key";
+    public static final String COORDINATES = "coordinates";
 
     public GetNearbyRoadsUseCase(ThreadExecutor threadExecutor,
                                  PostExecutionThread postExecutionThread,
@@ -31,7 +32,7 @@ public class GetNearbyRoadsUseCase extends UseCase<NearbyRoads> {
     @Override
     public Observable<NearbyRoads> createObservable(RequestParams requestParams) {
 
-        ArrayList<Location> locationArrayList = (ArrayList<Location>) requestParams.getObject("Coordinates");
+        ArrayList<Location> locationArrayList = (ArrayList<Location>) requestParams.getObject(COORDINATES);
         StringBuilder address = new StringBuilder();
         int size = locationArrayList.size();
         for (int i = 0; i < size; i++) {
