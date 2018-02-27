@@ -107,9 +107,9 @@ public class CartAddressChoiceActivity extends BasePresenterActivity implements 
 
 
     @Override
-    public void finishSendResultActionSelectedAddress(Object selectedAddressResult) {
+    public void finishSendResultActionSelectedAddress(RecipientAddressModel selectedAddressResult) {
         Intent resultIntent = new Intent();
-        resultIntent.putExtra(EXTRA_SELECTED_ADDRESS_DATA, (Parcelable) selectedAddressResult);
+        resultIntent.putExtra(EXTRA_SELECTED_ADDRESS_DATA, selectedAddressResult);
         setResult(RESULT_CODE_ACTION_SELECT_ADDRESS, resultIntent);
         finish();
     }
