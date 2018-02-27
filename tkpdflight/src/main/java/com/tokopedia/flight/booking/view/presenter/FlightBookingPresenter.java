@@ -474,7 +474,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         List<FlightBookingPassengerViewModel> viewModels = new ArrayList<>();
         for (int i = 1, adultTotal = passData.getFlightPassengerViewModel().getAdult(); i <= adultTotal; i++) {
             FlightBookingPassengerViewModel viewModel = new FlightBookingPassengerViewModel();
-            viewModel.setPassengerId(passengerNumber);
+            viewModel.setPassengerLocalId(passengerNumber);
             viewModel.setType(FlightBookingPassenger.ADULT);
             viewModel.setHeaderTitle(
                     formatPassengerHeader(
@@ -490,7 +490,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         }
         for (int i = 1, childTotal = passData.getFlightPassengerViewModel().getChildren(); i <= childTotal; i++) {
             FlightBookingPassengerViewModel viewModel = new FlightBookingPassengerViewModel();
-            viewModel.setPassengerId(passengerNumber);
+            viewModel.setPassengerLocalId(passengerNumber);
             viewModel.setType(FlightBookingPassenger.CHILDREN);
             viewModel.setHeaderTitle(
                     formatPassengerHeader(
@@ -506,7 +506,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         }
         for (int i = 1, infantTotal = passData.getFlightPassengerViewModel().getInfant(); i <= infantTotal; i++) {
             FlightBookingPassengerViewModel viewModel = new FlightBookingPassengerViewModel();
-            viewModel.setPassengerId(passengerNumber);
+            viewModel.setPassengerLocalId(passengerNumber);
             viewModel.setType(FlightBookingPassenger.INFANT);
             viewModel.setHeaderTitle(
                     formatPassengerHeader(
