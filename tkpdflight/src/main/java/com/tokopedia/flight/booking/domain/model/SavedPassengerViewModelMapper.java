@@ -33,6 +33,7 @@ public class SavedPassengerViewModelMapper {
         flightBookingPassengerViewModel.setPassengerFirstName(savedPassengerEntity.getPassengerAttribute().getFirstName());
         flightBookingPassengerViewModel.setPassengerLastName(savedPassengerEntity.getPassengerAttribute().getLastName());
         flightBookingPassengerViewModel.setPassengerTitleId(savedPassengerEntity.getPassengerAttribute().getTitle());
+        flightBookingPassengerViewModel.setPassengerId(savedPassengerEntity.getId());
 
         return flightBookingPassengerViewModel;
     }
