@@ -95,13 +95,13 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     private static final String DEFAULT_EMPTY_VALUE = "";
     private static final String DEFAULT_EMPTY_MARKER = "--";
 
-    private final int ETA_RADIUS_RATIO = 150;
-    private final int DEFAULT_ETA = 150;
+    private final int ETA_RADIUS_RATIO_METERS = 150;
+    private final int DEFAULT_ETA_SECONDS = 150;
     private int MAX_CABS_COUNT = 2;
     private int MAX_MOTO_COUNT = 1;
     private boolean showUberMoto = false;
     private boolean showUberCab = true;
-    private int FIXED_RADIUS = 100;
+    private int FIXED_RADIUS_METERS = 100;
 
     @BindView(R2.id.toolbar)
     Toolbar toolbar;
