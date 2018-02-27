@@ -56,7 +56,7 @@ public class GetShopProductWithWishListUseCase extends UseCase<PagingList<ShopPr
                     return getWishListUseCase.createObservable(GetWishListUseCase.createRequestParam(userSession.getUserId(), productIdList)).flatMap(new Func1<List<String>, Observable<PagingList<ShopProductViewModel>>>() {
                         @Override
                         public Observable<PagingList<ShopProductViewModel>> call(List<String> productWishList) {
-                            return getShopProductViewModelList(shopProductPagingList, productIdList);
+                            return getShopProductViewModelList(shopProductPagingList, productWishList);
                         }
                     });
                 } else {

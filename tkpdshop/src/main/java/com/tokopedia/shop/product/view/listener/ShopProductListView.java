@@ -1,8 +1,17 @@
 package com.tokopedia.shop.product.view.listener;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
+import com.tokopedia.shop.page.view.model.ShopPageViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
-public interface ShopProductListView<E extends Visitable> extends BaseListViewListener<E> {
+public interface ShopProductListView extends BaseListViewListener<ShopProductViewModel> {
+
+    void onSuccessAddToWishList(String productId, Boolean value);
+
+    void onErrorAddToWishList(Throwable e);
+
+    void onSuccessRemoveFromWishList(String productId, Boolean value);
+
+    void onErrorRemoveFromWishList(Throwable e);
 
 }

@@ -7,6 +7,7 @@ import com.tokopedia.wishlist.common.data.source.cloud.model.WishListData;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
@@ -30,18 +31,18 @@ public class WishListCommonCloudDataSource {
     }
 
     public Observable<Boolean> addToWishList(String userId, String productId) {
-        return wishListCommonApi.addToWishList(userId, productId).flatMap(new Func1<Response<DataResponse<Void>>, Observable<Boolean>>() {
+        return wishListCommonApi.addToWishList(userId, productId).flatMap(new Func1<Response<Void>, Observable<Boolean>>() {
             @Override
-            public Observable<Boolean> call(Response<DataResponse<Void>> dataResponseResponse) {
+            public Observable<Boolean> call(Response<Void> response) {
                 return Observable.just(true);
             }
         });
     }
 
     public Observable<Boolean> removeFromWishList(String userId, String productId) {
-        return wishListCommonApi.removeFromWishList(userId, productId).flatMap(new Func1<Response<DataResponse<Void>>, Observable<Boolean>>() {
+        return wishListCommonApi.removeFromWishList(userId, productId).flatMap(new Func1<Response<Void>, Observable<Boolean>>() {
             @Override
-            public Observable<Boolean> call(Response<DataResponse<Void>> dataResponseResponse) {
+            public Observable<Boolean> call(Response<Void> response) {
                 return Observable.just(true);
             }
         });

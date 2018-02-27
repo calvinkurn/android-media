@@ -16,7 +16,7 @@ import java.util.List;
 
 public class ShopProductMapper {
 
-    private static final String BADGGE_FREE_RETURN = "Free Return";
+    private static final String BADGE_FREE_RETURN = "Free Return";
 
     public List<ShopProductViewModel> convertFromShopProduct(List<ShopProduct> shopProductList, List<String> productWishList) {
         List<ShopProductViewModel> shopProductViewModelList = new ArrayList<>();
@@ -40,7 +40,7 @@ public class ShopProductMapper {
         shopProductViewModel.setPo(TextApiUtils.isValueTrue(shopProduct.getProductPreorder()));
         if (shopProduct.getBadges() != null && shopProduct.getBadges().size() > 0) {
             for (ShopProductBadge badge : shopProduct.getBadges()) {
-                if (badge.getTitle().equalsIgnoreCase(BADGGE_FREE_RETURN)){
+                if (badge.getTitle().equalsIgnoreCase(BADGE_FREE_RETURN)){
                     shopProductViewModel.setFreeReturn(true);
                     break;
                 }

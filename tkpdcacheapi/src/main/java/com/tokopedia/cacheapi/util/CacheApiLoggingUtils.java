@@ -13,18 +13,21 @@ public class CacheApiLoggingUtils {
     }
 
     public static void dumper(String str) {
-        if (logEnabled) {
-            if (str.length() > MAX_LOG_LENGTH) {
-                Log.v(TAG, "sb.length = " + str.length());
-                int chunkCount = str.length() / MAX_LOG_LENGTH;     // integer division
-                for (int i = 0; i <= chunkCount; i++) {
-                    int max = MAX_LOG_LENGTH * (i + 1);
-                    if (max >= str.length()) {
-                        Log.v(TAG, "chunk " + i + " of " + chunkCount + ":" + str.substring(MAX_LOG_LENGTH * i));
-                    } else {
-                        Log.v(TAG, "chunk " + i + " of " + chunkCount + ":" + str.substring(MAX_LOG_LENGTH * i, max));
-                    }
-                }
+        if (!logEnabled) {
+            return;
+        }
+        if (str.length() > MAX_LOG_LENGTH) {
+            Log.v(TAG, str);
+            return;
+        }
+        Log.v(TAG, "sb.length = " + str.length());
+        int chunkCount = str.length() / MAX_LOG_LENGTH;     // integer division
+        for (int i = 0; i <= chunkCount; i++) {
+            int max = MAX_LOG_LENGTH * (i + 1);
+            if (max >= str.length()) {
+                Log.v(TAG, str.substring(MAX_LOG_LENGTH * i));
+            } else {
+                Log.v(TAG, str.substring(MAX_LOG_LENGTH * i, max));
             }
         }
     }

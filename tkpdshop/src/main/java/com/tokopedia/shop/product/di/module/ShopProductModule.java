@@ -33,6 +33,7 @@ import com.tokopedia.wishlist.common.data.source.cloud.api.WishListCommonApi;
 import com.tokopedia.wishlist.common.data.source.cloud.mapper.WishListProductListMapper;
 import com.tokopedia.wishlist.common.domain.interactor.AddToWishListUseCase;
 import com.tokopedia.wishlist.common.domain.interactor.GetWishListUseCase;
+import com.tokopedia.wishlist.common.domain.interactor.RemoveFromWishListUseCase;
 import com.tokopedia.wishlist.common.domain.repository.WishListCommonRepository;
 
 import dagger.Module;
@@ -176,6 +177,12 @@ public class ShopProductModule {
     @Provides
     public AddToWishListUseCase provideAddToWishListUseCase(WishListCommonRepository wishListCommonRepository){
         return new AddToWishListUseCase(wishListCommonRepository);
+    }
+
+    @ShopProductScope
+    @Provides
+    public RemoveFromWishListUseCase provideRemoveFromWishListUseCase(WishListCommonRepository wishListCommonRepository){
+        return new RemoveFromWishListUseCase(wishListCommonRepository);
     }
 
     // Filter

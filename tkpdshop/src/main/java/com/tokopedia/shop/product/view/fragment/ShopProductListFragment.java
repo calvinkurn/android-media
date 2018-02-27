@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.GridLayoutManager;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.button.BottomActionView;
@@ -25,11 +27,13 @@ import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.view.activity.ShopProductFilterActivity;
+import com.tokopedia.shop.product.view.adapter.ShopProductAdapter;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductListViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductSingleViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
+import com.tokopedia.shop.product.view.listener.ShopProductListView;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListPresenter;
 
@@ -39,12 +43,11 @@ import javax.inject.Inject;
  * Created by nathan on 2/15/18.
  */
 
-public class ShopProductListFragment extends BaseSearchListFragment<ShopProductViewModel, ShopProductAdapterTypeFactory> implements ShopProductClickedListener {
+public class ShopProductListFragment extends BaseSearchListFragment<ShopProductViewModel, ShopProductAdapterTypeFactory> implements ShopProductListView, ShopProductClickedListener {
 
     public static final int SPAN_COUNT = 2;
     public static final int REQUEST_CODE_ETALASE = 12912;
     public static final int REQUEST_CODE_SORT = 12913;
-    public static final int NUMBER_OF_DRAWABLE = 3;
     public static final String ETALASE_ID = "ETALASE_ID";
     public static final String ETALASE_NAME = "ETALASE_NAME";
     private static final Pair<Integer, Integer>[] layoutType = new Pair[]{
@@ -52,19 +55,25 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
             new Pair<>(ShopProductSingleViewHolder.LAYOUT, 97),
             new Pair<>(ShopProductListViewHolder.LAYOUT, 97)
     };
+
+    private static final int[] LAYOUT_IMAGE_DRAWABLE_LIST = new int[]{
+            R.drawable.ic_see_grid,
+            R.drawable.ic_see_big_grid,
+            R.drawable.ic_see_list};
+
     @Inject
     ShopProductListPresenter shopProductListPresenter;
     private LabelView chooseEtalaseLabelView;
     private ShopModuleRouter shopModuleRouter;
     private String etalaseName;
     private int etalaseId = Integer.MIN_VALUE;
+
     private String shopId;
     private String keyword;
     private String sortName = Integer.toString(Integer.MIN_VALUE);
     private Pair<Integer, Integer> currentLayoutType = new Pair<>(ShopProductViewHolder.LAYOUT, 65);
     private int currentIndex = 0, currentImgBottomNav = 0;
     private String sortId;
-    private int[] drawable = new int[]{R.drawable.ic_see_grid, R.drawable.ic_see_big_grid, R.drawable.ic_see_list};
     private RecyclerView recyclerViews;
     private BottomActionView bottomActionView;
 
@@ -77,54 +86,29 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        shopId = getArguments().getString(ShopParamConstant.SHOP_ID);
-        shopProductListPresenter.attachView(this);
-    }
-
-    @Override
     protected ShopProductAdapterTypeFactory getAdapterTypeFactory() {
         return new ShopProductAdapterTypeFactory(this);
     }
 
+    @NonNull
     @Override
-    public void loadData(int page) {
-        getShopList();
+    protected BaseListAdapter<ShopProductViewModel, ShopProductAdapterTypeFactory> createAdapterInstance() {
+        return new ShopProductAdapter(getAdapterTypeFactory());
     }
 
     @Override
-    public void onWishListClicked(ShopProductViewModel shopProductViewModel) {
-        Log.d("", shopProductViewModel.getId());
-        int i = 0 + 1;
-    }
-
-    @Override
-    protected void initInjector() {
-        DaggerShopProductComponent
-                .builder()
-                .shopProductModule(new ShopProductModule())
-                .shopComponent(getComponent(ShopComponent.class))
-                .build()
-                .inject(this);
-    }
-
-    @Override
-    protected String getScreenName() {
-        return null;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (shopProductListPresenter != null) {
-            shopProductListPresenter.detachView();
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context != null && context.getApplicationContext() instanceof ShopModuleRouter) {
+            shopModuleRouter = ((ShopModuleRouter) context.getApplicationContext());
         }
     }
 
     @Override
-    public void onItemClicked(ShopProductViewModel shopProductViewModel) {
-
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        shopId = getArguments().getString(ShopParamConstant.SHOP_ID);
+        shopProductListPresenter.attachView(this);
     }
 
     @Nullable
@@ -148,18 +132,11 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
             @Override
             public void onClick(View view) {
                 if (shopModuleRouter != null) {
-                    Intent etalaseIntent = shopModuleRouter.getEtalaseIntent(
-                            ShopProductListFragment.this.getActivity(),
-                            shopId,
-                            etalaseId
-                    );
-
-                    ShopProductListFragment.this.
-                            startActivityForResult(etalaseIntent, REQUEST_CODE_ETALASE);
+                    Intent etalaseIntent = shopModuleRouter.getEtalaseIntent(getActivity(), shopId, etalaseId);
+                    ShopProductListFragment.this.startActivityForResult(etalaseIntent, REQUEST_CODE_ETALASE);
                 }
             }
         });
-
 
         bottomActionView.setButton2OnClickListener(new View.OnClickListener() {
             @Override
@@ -174,12 +151,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         bottomActionView.setButton1OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                ShopProductListFragment.this.
-                        startActivityForResult(
-                                ShopProductFilterActivity.createIntent(getActivity(), sortName),
-                                REQUEST_CODE_SORT
-                        );
+                ShopProductListFragment.this.startActivityForResult(ShopProductFilterActivity.createIntent(getActivity(), sortName), REQUEST_CODE_SORT);
             }
         });
 
@@ -191,11 +163,11 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     }
 
     private void setBottomActionViewImage(int index) {
-        if (bottomActionView != null && (index >= 0 && index < drawable.length))
-            bottomActionView.setSecondImageDrawable(drawable[index]);
+        if (bottomActionView != null && (index >= 0 && index < LAYOUT_IMAGE_DRAWABLE_LIST.length))
+            bottomActionView.setSecondImageDrawable(LAYOUT_IMAGE_DRAWABLE_LIST[index]);
         else {
             currentImgBottomNav = 0;
-            bottomActionView.setSecondImageDrawable(drawable[currentImgBottomNav]);
+            bottomActionView.setSecondImageDrawable(LAYOUT_IMAGE_DRAWABLE_LIST[currentImgBottomNav]);
         }
     }
 
@@ -208,8 +180,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         }
         switch (currentLayoutType.second) {
             case 65:
-                layoutManager = new GridLayoutManager(recyclerView.getContext(), SPAN_COUNT, LinearLayoutManager.VERTICAL,
-                        false);
+                layoutManager = new GridLayoutManager(recyclerView.getContext(), SPAN_COUNT, LinearLayoutManager.VERTICAL, false);
                 ((GridLayoutManager) layoutManager).setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                     @Override
                     public int getSpanSize(int position) {
@@ -221,10 +192,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                 });
                 break;
             default:
-                layoutManager = new LinearLayoutManager(
-                        recyclerView.getContext(),
-                        LinearLayoutManager.VERTICAL,
-                        false
+                layoutManager = new LinearLayoutManager(recyclerView.getContext(), LinearLayoutManager.VERTICAL, false
                 );
                 break;
         }
@@ -242,42 +210,42 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case REQUEST_CODE_ETALASE:
-                if (resultCode == Activity.RESULT_OK) {
-                    etalaseId = data.getIntExtra(ETALASE_ID, -1);
-                    etalaseName = data.getStringExtra(ETALASE_NAME);
-
-                    chooseEtalaseLabelView.setContent(MethodChecker.fromHtml(etalaseName));
-
-                    this.isLoadingInitialData = true;
-                    getShopList();
-                }
-                break;
-
-            case REQUEST_CODE_SORT:
-                if (resultCode == Activity.RESULT_OK) {
-                    sortId = data.getStringExtra(ShopProductFilterActivity.SORT_ID);
-                    sortName = data.getStringExtra(ShopProductFilterActivity.SORT_NAME);
-
-                    this.isLoadingInitialData = true;
-                    getShopList();
-                }
-                break;
-            default:
-                break;
-        }
-        super.onActivityResult(requestCode, resultCode, data);
+    public void loadData(int page) {
+        shopProductListPresenter.getShopPageList(shopId, keyword, etalaseId == Integer.MIN_VALUE ? null : Integer.toString(etalaseId), 0, page, Integer.valueOf(sortName));
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    public void onItemClicked(ShopProductViewModel shopProductViewModel) {
 
-        if (context != null && context.getApplicationContext() instanceof ShopModuleRouter) {
-            shopModuleRouter = ((ShopModuleRouter) context.getApplicationContext());
+    }
+
+    @Override
+    public void onWishListClicked(ShopProductViewModel shopProductViewModel) {
+        if (shopProductViewModel.isWishList()) {
+            shopProductListPresenter.removeFromWishList(shopProductViewModel.getId());
+        } else {
+            shopProductListPresenter.addToWishList(shopProductViewModel.getId());
         }
+    }
+
+    @Override
+    public void onSuccessAddToWishList(String productId, Boolean value) {
+        ((ShopProductAdapter) getAdapter()).updateWishListStatus(productId, true);
+    }
+
+    @Override
+    public void onErrorAddToWishList(Throwable e) {
+
+    }
+
+    @Override
+    public void onSuccessRemoveFromWishList(String productId, Boolean value) {
+        ((ShopProductAdapter) getAdapter()).updateWishListStatus(productId, false);
+    }
+
+    @Override
+    public void onErrorRemoveFromWishList(Throwable e) {
+
     }
 
     @Override
@@ -290,17 +258,55 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     public void onSearchTextChanged(String s) {
         this.isLoadingInitialData = true;
         keyword = s;
-
     }
 
-    private void getShopList() {
-        shopProductListPresenter.getShopPageList(
-                shopId,
-                keyword,
-                etalaseId == Integer.MIN_VALUE ? null : Integer.toString(etalaseId),
-                0,
-                1,
-                Integer.valueOf(sortName)
-        );
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CODE_ETALASE:
+                if (resultCode == Activity.RESULT_OK) {
+                    etalaseId = data.getIntExtra(ETALASE_ID, -1);
+                    etalaseName = data.getStringExtra(ETALASE_NAME);
+                    chooseEtalaseLabelView.setContent(MethodChecker.fromHtml(etalaseName));
+                    this.isLoadingInitialData = true;
+                    loadInitialData();
+                }
+                break;
+
+            case REQUEST_CODE_SORT:
+                if (resultCode == Activity.RESULT_OK) {
+                    sortId = data.getStringExtra(ShopProductFilterActivity.SORT_ID);
+                    sortName = data.getStringExtra(ShopProductFilterActivity.SORT_NAME);
+                    this.isLoadingInitialData = true;
+                    loadInitialData();
+                }
+                break;
+            default:
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void initInjector() {
+        DaggerShopProductComponent
+                .builder()
+                .shopProductModule(new ShopProductModule())
+                .shopComponent(getComponent(ShopComponent.class))
+                .build()
+                .inject(this);
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (shopProductListPresenter != null) {
+            shopProductListPresenter.detachView();
+        }
     }
 }
