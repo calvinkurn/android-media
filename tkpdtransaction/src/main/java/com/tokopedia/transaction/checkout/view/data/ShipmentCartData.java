@@ -3,6 +3,8 @@ package com.tokopedia.transaction.checkout.view.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.transaction.checkout.view.data.cartshipmentform.ShopShipment;
+
 import java.util.List;
 
 /**
@@ -10,7 +12,7 @@ import java.util.List;
  */
 
 public class ShipmentCartData implements Parcelable {
-    private List<CartShopShipment> cartShopShipments;
+    private List<ShopShipment> shopShipments;
     private int deliveryPriceTotal;
     private String shippingServices;
     private String shippingNames;
@@ -35,7 +37,7 @@ public class ShipmentCartData implements Parcelable {
     }
 
     protected ShipmentCartData(Parcel in) {
-        cartShopShipments = in.createTypedArrayList(CartShopShipment.CREATOR);
+        shopShipments = in.createTypedArrayList(ShopShipment.CREATOR);
         deliveryPriceTotal = in.readInt();
         shippingServices = in.readString();
         shippingNames = in.readString();
@@ -75,7 +77,7 @@ public class ShipmentCartData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeTypedList(cartShopShipments);
+        dest.writeTypedList(shopShipments);
         dest.writeInt(deliveryPriceTotal);
         dest.writeString(shippingServices);
         dest.writeString(shippingNames);
@@ -134,12 +136,12 @@ public class ShipmentCartData implements Parcelable {
         }
     };
 
-    public List<CartShopShipment> getCartShopShipments() {
-        return cartShopShipments;
+    public List<ShopShipment> getShopShipments() {
+        return shopShipments;
     }
 
-    public void setCartShopShipments(List<CartShopShipment> cartShopShipments) {
-        this.cartShopShipments = cartShopShipments;
+    public void setShopShipments(List<ShopShipment> shopShipments) {
+        this.shopShipments = shopShipments;
     }
 
     public int getDeliveryPriceTotal() {

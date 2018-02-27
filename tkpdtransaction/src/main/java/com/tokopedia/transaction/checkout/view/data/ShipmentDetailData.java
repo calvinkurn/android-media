@@ -16,6 +16,11 @@ public class ShipmentDetailData implements Parcelable {
     private ShipmentCartData shipmentCartData;
     private ShipmentItemData selectedShipment;
     private CourierItemData selectedCourier;
+    private Boolean useInsurance;
+    private Boolean usePartialOrder;
+    private Boolean useDropshipper;
+    private String dropshipperName;
+    private String dropshipperPhone;
 
     public ShipmentDetailData() {
     }
@@ -26,20 +31,14 @@ public class ShipmentDetailData implements Parcelable {
         shipmentCartData = in.readParcelable(ShipmentCartData.class.getClassLoader());
         selectedShipment = in.readParcelable(ShipmentItemData.class.getClassLoader());
         selectedCourier = in.readParcelable(CourierItemData.class.getClassLoader());
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeTypedList(shipmentItemData);
-        dest.writeString(shipmentTickerInfo);
-        dest.writeParcelable(shipmentCartData, flags);
-        dest.writeParcelable(selectedShipment, flags);
-        dest.writeParcelable(selectedCourier, flags);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
+        byte tmpUseInsurance = in.readByte();
+        useInsurance = tmpUseInsurance == 0 ? null : tmpUseInsurance == 1;
+        byte tmpUsePartialOrder = in.readByte();
+        usePartialOrder = tmpUsePartialOrder == 0 ? null : tmpUsePartialOrder == 1;
+        byte tmpUseDropshipper = in.readByte();
+        useDropshipper = tmpUseDropshipper == 0 ? null : tmpUseDropshipper == 1;
+        dropshipperName = in.readString();
+        dropshipperPhone = in.readString();
     }
 
     public static final Creator<ShipmentDetailData> CREATOR = new Creator<ShipmentDetailData>() {
@@ -92,5 +91,64 @@ public class ShipmentDetailData implements Parcelable {
 
     public void setSelectedCourier(CourierItemData selectedCourier) {
         this.selectedCourier = selectedCourier;
+    }
+
+    public Boolean getUseInsurance() {
+        return useInsurance;
+    }
+
+    public void setUseInsurance(Boolean useInsurance) {
+        this.useInsurance = useInsurance;
+    }
+
+    public Boolean getUsePartialOrder() {
+        return usePartialOrder;
+    }
+
+    public void setUsePartialOrder(Boolean usePartialOrder) {
+        this.usePartialOrder = usePartialOrder;
+    }
+
+    public Boolean getUseDropshipper() {
+        return useDropshipper;
+    }
+
+    public void setUseDropshipper(Boolean useDropshipper) {
+        this.useDropshipper = useDropshipper;
+    }
+
+    public String getDropshipperName() {
+        return dropshipperName;
+    }
+
+    public void setDropshipperName(String dropshipperName) {
+        this.dropshipperName = dropshipperName;
+    }
+
+    public String getDropshipperPhone() {
+        return dropshipperPhone;
+    }
+
+    public void setDropshipperPhone(String dropshipperPhone) {
+        this.dropshipperPhone = dropshipperPhone;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeTypedList(shipmentItemData);
+        parcel.writeString(shipmentTickerInfo);
+        parcel.writeParcelable(shipmentCartData, i);
+        parcel.writeParcelable(selectedShipment, i);
+        parcel.writeParcelable(selectedCourier, i);
+        parcel.writeByte((byte) (useInsurance == null ? 0 : useInsurance ? 1 : 2));
+        parcel.writeByte((byte) (usePartialOrder == null ? 0 : usePartialOrder ? 1 : 2));
+        parcel.writeByte((byte) (useDropshipper == null ? 0 : useDropshipper ? 1 : 2));
+        parcel.writeString(dropshipperName);
+        parcel.writeString(dropshipperPhone);
     }
 }
