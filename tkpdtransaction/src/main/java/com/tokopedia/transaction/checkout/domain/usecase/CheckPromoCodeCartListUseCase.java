@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.checkout.domain.usecase;
 
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.checkout.domain.ICartRepository;
 import com.tokopedia.transaction.checkout.domain.IVoucherCouponMapper;
@@ -37,7 +39,9 @@ public class CheckPromoCodeCartListUseCase extends UseCase<PromoCodeCartListData
         param.put(PARAM_PROMO_CODE, requestParams.getString(PARAM_PROMO_CODE, ""));
         param.put("lang", "id");
         param.put("suggested", "0");
-        return cartRepository.checkPromoCodeCartList(param).map(
+        return cartRepository.checkPromoCodeCartList(AuthUtil.generateParamsNetwork(
+                MainApplication.getAppContext(), param
+        )).map(
                 new Func1<CheckPromoCodeCartListDataResponse, PromoCodeCartListData>() {
                     @Override
                     public PromoCodeCartListData call(
