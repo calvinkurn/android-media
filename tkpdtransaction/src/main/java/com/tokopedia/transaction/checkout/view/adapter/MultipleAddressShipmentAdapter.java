@@ -369,7 +369,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
             this.voucherCartHachikoView = itemView
                     .findViewById(R.id.voucher_cart_holder_view);
             this.multipleAddressPromoSuggestionLayout = itemView
-                    .findViewById(R.id.promo_suggestion_holder);
+                    .findViewById(R.id.rl_free_shipment_fee_header);
             this.btnClose = itemView.findViewById(R.id.btn_close);
             this.tvAction = itemView.findViewById(R.id.tv_action);
             this.tvDesc = itemView.findViewById(R.id.tv_desc);

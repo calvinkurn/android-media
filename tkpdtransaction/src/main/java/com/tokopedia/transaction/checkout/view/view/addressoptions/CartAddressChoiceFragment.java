@@ -115,7 +115,6 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
         setupRecyclerView();
         presenter.attachView(this);
         presenter.loadAddresses();
-        setShowCase();
     }
 
     @Override
@@ -228,41 +227,4 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
         cartAddressChoiceListener = (ICartAddressChoiceActivityListener) activity;
     }
 
-    private void setShowCase() {
-        ShowCaseObject showCase = new ShowCaseObject(
-                tvChooseOtherAddress, "Kirim Barang Sama ke Bebeberapa\n" +
-                "Alamat.", "Klik tombol untuk mengirim barang yang sama ke beda alamat.",
-                ShowCaseContentPosition.UNDEFINED);
-
-        ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
-
-        showCaseObjectList.add(showCase);
-
-        ShowCaseDialog showCaseDialog = createShowCaseDialog();
-
-        if (!ShowCasePreference.hasShown(getActivity(), CartAddressChoiceFragment.class.getName()))
-            showCaseDialog.show(
-                    getActivity(),
-                    CartAddressChoiceFragment.class.getName(),
-                    showCaseObjectList
-            );
-    }
-
-    private ShowCaseDialog createShowCaseDialog() {
-        return new ShowCaseBuilder()
-                .customView(R.layout.show_case_checkout)
-                .titleTextColorRes(R.color.white)
-                .spacingRes(R.dimen.spacing_show_case)
-                .arrowWidth(R.dimen.arrow_width_show_case)
-                .textColorRes(R.color.grey_400)
-                .shadowColorRes(R.color.shadow)
-                .backgroundContentColorRes(R.color.black)
-                .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
-                .textSizeRes(R.dimen.fontvs)
-                .finishStringRes(R.string.show_case_finish)
-                .useCircleIndicator(true)
-                .clickable(true)
-                .useArrow(true)
-                .build();
-    }
 }

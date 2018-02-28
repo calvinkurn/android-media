@@ -34,6 +34,7 @@ import javax.inject.Inject;
 
 import static com.tokopedia.transaction.checkout.view.view.multipleaddressform.AddShipmentAddressFragment.ADD_MODE;
 import static com.tokopedia.transaction.checkout.view.view.multipleaddressform.AddShipmentAddressFragment.EDIT_MODE;
+import static com.tokopedia.transaction.checkout.view.view.multipleaddressform.MultipleAddressFormActivity.RESULT_CODE_SUCCESS_SET_SHIPPING;
 
 /**
  * Created by kris on 1/24/18. Tokopedia
@@ -184,12 +185,6 @@ public class MultipleAddressFragment extends TkpdFragment
     public void onGoToChooseCourier(List<MultipleAddressAdapterData> dataList) {
         //TODO release later
         presenter.sendData(getActivity(), dataList);
-
-        getFragmentManager().beginTransaction()
-                .setCustomAnimations(R.animator.slide_in_left, R.animator.slide_in_left)
-                .replace(R.id.container, MultipleAddressShipmentFragment.newInstance())
-                .addToBackStack("")
-                .commit();
     }
 
     @Override
@@ -244,16 +239,22 @@ public class MultipleAddressFragment extends TkpdFragment
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        //cartShipmentActivity = (ICartShipmentActivity) activity;
     }
 
     @Override
     public void successMakeShipmentData() {
-
+        getActivity().setResult(RESULT_CODE_SUCCESS_SET_SHIPPING);
+        getActivity().finish();
     }
 
     @Override
     public void receiveData(List<MultipleAddressAdapterData> dataList) {
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        presenter.onUnsubscribe();
+        super.onDestroyView();
     }
 }

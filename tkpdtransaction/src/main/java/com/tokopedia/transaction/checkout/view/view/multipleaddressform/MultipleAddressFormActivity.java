@@ -21,6 +21,7 @@ public class MultipleAddressFormActivity extends BasePresenterActivity {
     public static final int REQUEST_CODE = MultipleAddressFormActivity.class.hashCode();
     private static final String EXTRA_CART_LIST_DATA = "EXTRA_CART_LIST_DATA";
     private static final String EXTRA_RECIPIENT_ADDRESS_DATA = "EXTRA_RECIPIENT_ADDRESS_DATA";
+    public static final int RESULT_CODE_SUCCESS_SET_SHIPPING = 22;
 
     private CartListData cartListData;
     private RecipientAddressModel addressData;

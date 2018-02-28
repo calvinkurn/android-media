@@ -14,4 +14,6 @@ public interface IMultipleAddressPresenter {
 
     void sendData(Context context, List<MultipleAddressAdapterData> dataList);
 
+    void onUnsubscribe();
+
 }

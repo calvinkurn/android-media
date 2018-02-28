@@ -48,10 +48,15 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
             }
         }
         RequestParams requestParam = RequestParams.create();
-        requestParam.putString("cart", dataArray.toString());
+        requestParam.putString("carts", dataArray.toString());
         submitMultipleAddressUseCase.execute(
                 requestParam,
                 addMultipleAddressSubscriber());
+    }
+
+    @Override
+    public void onUnsubscribe() {
+        submitMultipleAddressUseCase.unsubscribe();
     }
 
     private Subscriber<Boolean> addMultipleAddressSubscriber() {
