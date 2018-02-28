@@ -5,19 +5,16 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.channel.data.analytics.ChannelAnalytics;
@@ -29,7 +26,6 @@ import com.tokopedia.tkpdstream.channel.view.model.ChannelListViewModel;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
 import com.tokopedia.tkpdstream.channel.view.presenter.ChannelPresenter;
 import com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity;
-import com.tokopedia.tkpdstream.common.design.CloseableBottomSheetDialog;
 import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
 
@@ -49,6 +45,8 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
 
     @Inject
     ChannelPresenter presenter;
+
+    SwipeRefreshLayout swipeRefreshLayout;
 
     public static Fragment createInstance(Bundle bundle) {
         return new ChannelFragment();
@@ -76,9 +74,13 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_channel_list, container, false);
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         return view;
     }
 
+    public SwipeRefreshLayout getSwipeRefreshLayout() {
+        return swipeRefreshLayout;
+    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -88,16 +90,6 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     @Override
     protected void loadInitialData() {
         presenter.getChannelListFirstTime();
-
-        List<ChannelViewModel> list = new ArrayList<>();
-        String dummyImage = "http://www.behindthevoiceactors.com/_img/games/banner_11.jpg";
-        String dummyProfile = "https://orig00.deviantart.net/80ce/f/2007/349/d/f/__kingdom_hearts___coded___by_mazjojo.jpg";
-        for (int i = 0; i < 10; i++) {
-            ChannelViewModel channelViewModel = new ChannelViewModel("id" + i, "name" + i, dummyImage, dummyProfile, "title" + i, "subtitle" + i, i);
-            list.add(channelViewModel);
-        }
-
-        onSuccessGetChannelFirstTime(new ChannelListViewModel(list));
     }
 
     @Override
@@ -142,7 +134,7 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     public void onSuccessGetChannelFirstTime(ChannelListViewModel channelListViewModel) {
 //        getAdapter().clearAllElements();
 //        getAdapter().addElement(channelListViewModel.getChannelViewModelList());
-        renderList(channelListViewModel.getChannelViewModelList(), true);
+        renderList(channelListViewModel.getChannelViewModelList(), channelListViewModel.isHasNextPage());
     }
 
     @Override
@@ -150,7 +142,7 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
 //        getAdapter().addElement(channelListViewModel.getChannelViewModelList());
 //        getAdapter().clearAllNonDataElement();
 //        getAdapter().addMoreData(channelListViewModel.getChannelViewModelList());
-        renderList(channelListViewModel.getChannelViewModelList(), true);
+        renderList(channelListViewModel.getChannelViewModelList(), channelListViewModel.isHasNextPage());
     }
 
     @Override
@@ -168,11 +160,32 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
         getAdapter().hideLoading();
     }
 
+    @Override
+    public void onErrorRefreshChannel(String errorMessage) {
+        swipeRefreshLayout.setRefreshing(false);
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessRefreshChannel(ChannelListViewModel channelListViewModel) {
+        swipeRefreshLayout.setRefreshing(false);
+        renderList(channelListViewModel.getChannelViewModelList(), channelListViewModel.isHasNextPage());
+    }
+
+    @Override
+    public void showLoading() {
+        super.showLoading();
+    }
+
+    @Override
+    public void hideLoading() {
+        super.hideLoading();
+    }
+
 
     @Override
     public void onItemClicked(ChannelViewModel channelViewModel) {
-                goToChannel(channelViewModel);
-
+        goToChannel(channelViewModel);
     }
 
     private void goToChannel(ChannelViewModel channelViewModel) {
@@ -199,7 +212,6 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
 
     @Override
     public void onSwipeRefresh() {
-        super.onSwipeRefresh();
-        hideLoading();
+        presenter.refreshData();
     }
 }

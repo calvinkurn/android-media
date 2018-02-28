@@ -4,11 +4,8 @@ import android.content.Context;
 
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.PreviousMessageListQuery;
-import com.sendbird.android.SendBird;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.tkpdstream.chatroom.domain.ConnectionManager;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.ChannelHandlerUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.GetChannelInfoUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.GetGroupChatMessagesFirstTimeUseCase;
@@ -25,7 +22,9 @@ import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
 import com.tokopedia.tkpdstream.common.util.GroupChatErrorHandler;
 import com.tokopedia.tkpdstream.vote.domain.usecase.GetVoteUseCase;
 import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
+import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -142,7 +141,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
     @Override
     public void refreshDataAfterReconnect(OpenChannel mChannel) {
-        if(mChannel != null){
+        if (mChannel != null) {
             getView().showReconnectingMessage();
             refreshMessageUseCase.execute(getView().getContext(), mChannel, new RefreshMessageUseCase.RefreshMessagesListener() {
                 @Override
@@ -192,22 +191,39 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
     @Override
     public void getVoteInfo(final Context context) {
-        getVoteUseCase.execute(getVoteUseCase.createParams(), new Subscriber<VoteInfoViewModel>() {
-            @Override
-            public void onCompleted() {
+//        getVoteUseCase.execute(getVoteUseCase.createParams(), new Subscriber<VoteInfoViewModel>() {
+//            @Override
+//            public void onCompleted() {
+//
+//            }
+//
+//            @Override
+//            public void onError(Throwable throwable) {
+//                GroupChatErrorHandler.getErrorMessage(context, throwable, true);
+//            }
+//
+//            @Override
+//            public void onNext(VoteInfoViewModel voteInfoViewModel) {
+//                getView().onSuccessGetVoteInfo(voteInfoViewModel);
+//            }
+//        });
 
-            }
+        List<Visitable> list = new ArrayList<>();
+        String title = "Title";
+        String cr7 = "http://01a4b5.medialib.edu.glogster.com/media/55/5527aa424a7bc417e364f92537e4daa0f366ab6a2373dfa8616f8977f7b9c685/cristiano-ronaldo-portual-goal.jpg";
+        String messi = "https://static.independent.co.uk/s3fs-public/styles/article_small/public/thumbnails/image/2014/07/09/23/10-messi.jpg";
+        VoteViewModel channelViewModel = new VoteViewModel("Cristiano Ronaldo", cr7, 40, VoteViewModel.DEFAULT, VoteViewModel.IMAGE_TYPE);
+        list.add(channelViewModel);
+        channelViewModel = new VoteViewModel("Lionel Messi", messi, 60, VoteViewModel.DEFAULT, VoteViewModel.IMAGE_TYPE);
+        list.add(channelViewModel);
 
-            @Override
-            public void onError(Throwable throwable) {
-                ErrorHandler.getErrorMessage(context, throwable);
-            }
+//        channelViewModel = new VoteViewModel("Cristiano Ronaldo",40, VoteViewModel.DEFAULT);
+//        list.add(channelViewModel);
+//        channelViewModel = new VoteViewModel("Lionel Messi", 60, VoteViewModel.DEFAULT);
+//        list.add(channelViewModel);
 
-            @Override
-            public void onNext(VoteInfoViewModel voteInfoViewModel) {
-                getView().onSuccessGetVoteInfo(voteInfoViewModel);
-            }
-        });
+        getView().onSuccessGetVoteInfo(new VoteInfoViewModel(title, list, 100, VoteViewModel.IMAGE_TYPE, "Vote",
+                true, "Info Pemenang", "www.google.com"));
     }
 
     @Override

@@ -9,9 +9,11 @@ import java.util.List;
 public class ChannelListViewModel {
 
     List<ChannelViewModel> channelViewModelList;
+    boolean hasNextPage;
 
-    public ChannelListViewModel(List<ChannelViewModel> list) {
+    public ChannelListViewModel(List<ChannelViewModel> list, boolean hasNextPage) {
         this.channelViewModelList = list;
+        this.hasNextPage = hasNextPage;
     }
 
     public List<ChannelViewModel> getChannelViewModelList() {
@@ -20,5 +22,9 @@ public class ChannelListViewModel {
 
     public void setChannelViewModelList(List<ChannelViewModel> channelViewModelList) {
         this.channelViewModelList = channelViewModelList;
+    }
+
+    public boolean isHasNextPage() {
+        return hasNextPage;
     }
 }

@@ -20,6 +20,6 @@ import rx.Observable;
 public interface ChannelApi {
 
     @GET(ChannelUrl.GET_ALL_CHANNEL)
-    Observable<Response<DataResponse<List<ChannelListPojo>>>> getAllChannel(@QueryMap Map<String,
+    Observable<Response<DataResponse<ChannelListPojo>>> getAllChannel(@QueryMap Map<String,
             Object> keyword);
 }

@@ -6,6 +6,6 @@ package com.tokopedia.tkpdstream.chatroom.data;
 
 class ChatroomUrl {
 
-    static final String GET_CHANNEL_INFO = "/api/v1/channel/{channel_uuid}";
+    static final String GET_CHANNEL_INFO = "/gcn/api/v1/channel/{channel_uuid}";
     static final String PATH_CHANNEL_UUID = "channel_uuid";
 }

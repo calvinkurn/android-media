@@ -19,7 +19,6 @@ public interface ChatroomApi {
 
     @GET(ChatroomUrl.GET_CHANNEL_INFO)
     Observable<Response<DataResponse<ChannelInfoPojo>>> getChannelInfo(
-            @Path(ChatroomUrl.PATH_CHANNEL_UUID) String channelUuid,
-            @QueryMap Map<String, Object> keyword);
+            @Path(ChatroomUrl.PATH_CHANNEL_UUID) String channelUuid);
 
 }

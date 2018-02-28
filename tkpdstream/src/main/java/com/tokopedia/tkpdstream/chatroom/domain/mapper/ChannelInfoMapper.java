@@ -21,6 +21,11 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
 
     @Override
     public ChannelInfoViewModel call(Response<DataResponse<ChannelInfoPojo>> response) {
-        return new ChannelInfoViewModel("pub1");
+        ChannelInfoPojo pojo = response.body().getData();
+        return new ChannelInfoViewModel(
+                pojo.getChannel().getChannelUrl(),
+                pojo.getChannel().getCoverUrl(),
+                pojo.getChannel().getTitle(),
+                pojo.getChannel().getTotalParticipantsOnline());
     }
 }

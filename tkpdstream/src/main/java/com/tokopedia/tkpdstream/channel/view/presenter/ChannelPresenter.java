@@ -6,6 +6,7 @@ import com.tokopedia.tkpdstream.channel.view.listener.ChannelContract;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelListViewModel;
 import com.tokopedia.tkpdstream.channel.view.subscriber.GetChannelFirstTimeSubscriber;
 import com.tokopedia.tkpdstream.channel.view.subscriber.GetChannelSubscriber;
+import com.tokopedia.tkpdstream.channel.view.subscriber.RefreshChannelSubscriber;
 
 import javax.inject.Inject;
 
@@ -32,6 +33,7 @@ public class ChannelPresenter extends BaseDaggerPresenter<ChannelContract.View> 
         getChannelListUseCase.unsubscribe();
     }
 
+    @Override
     public void getChannelListFirstTime() {
         getView().showLoadingFull();
         getChannelListUseCase.execute(getChannelListUseCase.createParamFirstTime(),
@@ -40,7 +42,14 @@ public class ChannelPresenter extends BaseDaggerPresenter<ChannelContract.View> 
 
     @Override
     public void getChannelList() {
+        getView().showLoading();
         getChannelListUseCase.execute(getChannelListUseCase.createParam(),
                 new GetChannelSubscriber(getView()));
+    }
+
+    @Override
+    public void refreshData() {
+        getChannelListUseCase.execute(getChannelListUseCase.createParamFirstTime(),
+                new RefreshChannelSubscriber(getView()));
     }
 }

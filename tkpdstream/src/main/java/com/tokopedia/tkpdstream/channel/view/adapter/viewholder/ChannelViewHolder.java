@@ -41,12 +41,13 @@ public class ChannelViewHolder extends AbstractViewHolder<ChannelViewModel>{
     public void bind(ChannelViewModel element) {
 
         participant.setText(String.valueOf(element.getParticipant()));
-        name.setText(element.getName());
+        name.setText(element.getAdminName());
         title.setText(element.getTitle());
-        subtitle.setText(element.getSubtitle());
+        subtitle.setText(element.getDescription());
 
         ImageHandler.loadImage2(image, element.getImage(), R.drawable.loading_page);
-        ImageHandler.loadImageCircle2(profile.getContext(), profile, element.getProfile(), R.drawable.loading_page);
+        ImageHandler.loadImageCircle2(profile.getContext(), profile, element.getAdminPicture(), R
+                .drawable.loading_page);
 
     }
 }

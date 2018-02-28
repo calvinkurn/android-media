@@ -1,10 +1,12 @@
 package com.tokopedia.tkpdstream.common.util;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.sendbird.android.SendBirdException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.tkpdstream.R;
+import com.tokopedia.tkpdstream.common.network.ErrorNetworkException;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -62,17 +64,30 @@ public class GroupChatErrorHandler {
         }
     }
 
-    private static String formattedString(String errorMessage, int code, boolean withCode) {
+    private static String formattedString(String errorMessage, String code, boolean withCode) {
         if (withCode)
             return errorMessage + " (" + code + ")";
         else
             return errorMessage;
     }
 
+    private static String formattedString(String errorMessage, int code, boolean withCode) {
+        return formattedString(errorMessage, String.valueOf(code), withCode);
+    }
+
     public static String getErrorMessage(Context context, Throwable e, boolean withCode) {
         if (e instanceof NullPointerException) {
             return formattedString(context.getString(R.string.default_request_error_unknown),
                     GroupChatErrorCode.MALFORMED_DATA, withCode);
+        } else if (e instanceof ErrorNetworkException
+                && !TextUtils.isEmpty(e.getMessage())
+                && !TextUtils.isEmpty(((ErrorNetworkException) e).getErrorCode())) {
+            return formattedString(e.getMessage(),
+                    ((ErrorNetworkException) e).getErrorCode(), withCode);
+        } else if (e instanceof ErrorNetworkException
+                && !TextUtils.isEmpty(e.getMessage())) {
+            return formattedString(e.getMessage(),
+                    GroupChatErrorCode.WS_ERROR, withCode);
         } else {
             return formattedString(ErrorHandler.getErrorMessage(context, e), getErrorCode(e),
                     withCode);

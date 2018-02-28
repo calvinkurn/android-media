@@ -1,11 +1,11 @@
 
-package com.tokopedia.tkpdstream.channel.domain.pojo;
+package com.tokopedia.tkpdstream.chatroom.domain.pojo;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ChannelPojo {
+public class Channel {
 
     @SerializedName("channel_id")
     @Expose
@@ -37,9 +37,18 @@ public class ChannelPojo {
     @SerializedName("is_freeze")
     @Expose
     private boolean isFreeze;
-    @SerializedName("active_poll")
+    @SerializedName("active_polls")
     @Expose
-    private ActivePollPojo activePoll;
+    private List<Object> activePolls = null;
+    @SerializedName("moderator_id")
+    @Expose
+    private String moderatorId;
+    @SerializedName("moderator_name")
+    @Expose
+    private String moderatorName;
+    @SerializedName("moderator_profile_url")
+    @Expose
+    private String moderatorProfileUrl;
 
     public int getChannelId() {
         return channelId;
@@ -79,22 +88,6 @@ public class ChannelPojo {
 
     public void setCoverUrl(String coverUrl) {
         this.coverUrl = coverUrl;
-    }
-
-    public List<Object> getParticipants() {
-        return participants;
-    }
-
-    public void setParticipants(List<Object> participants) {
-        this.participants = participants;
-    }
-
-    public List<OperatorPojo> getOperators() {
-        return operators;
-    }
-
-    public void setOperators(List<OperatorPojo> operators) {
-        this.operators = operators;
     }
 
     public int getStartTime() {
@@ -137,12 +130,36 @@ public class ChannelPojo {
         this.isFreeze = isFreeze;
     }
 
-    public ActivePollPojo getActivePoll() {
-        return activePoll;
+    public List<Object> getActivePolls() {
+        return activePolls;
     }
 
-    public void setActivePoll(ActivePollPojo activePoll) {
-        this.activePoll = activePoll;
+    public void setActivePolls(List<Object> activePolls) {
+        this.activePolls = activePolls;
+    }
+
+    public String getModeratorId() {
+        return moderatorId;
+    }
+
+    public void setModeratorId(String moderatorId) {
+        this.moderatorId = moderatorId;
+    }
+
+    public String getModeratorName() {
+        return moderatorName;
+    }
+
+    public void setModeratorName(String moderatorName) {
+        this.moderatorName = moderatorName;
+    }
+
+    public String getModeratorProfileUrl() {
+        return moderatorProfileUrl;
+    }
+
+    public void setModeratorProfileUrl(String moderatorProfileUrl) {
+        this.moderatorProfileUrl = moderatorProfileUrl;
     }
 
 }

@@ -27,7 +27,8 @@ public class GetChannelInfoUseCase extends UseCase<ChannelInfoViewModel> {
 
     @Override
     public Observable<ChannelInfoViewModel> createObservable(RequestParams requestParams) {
-        return channelInfoSource.getChannelInfo(requestParams);
+        return channelInfoSource.getChannelInfo(requestParams.getString(
+                GetChannelInfoUseCase.PARAM_CHANNEL_UUID, ""));
     }
 
     public static RequestParams createParams(String channelUuid) {
