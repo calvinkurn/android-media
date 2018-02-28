@@ -58,3 +58,4 @@ jsconfig.json
 buck-out/
 buckw
 BUCK
+.buckconfig
