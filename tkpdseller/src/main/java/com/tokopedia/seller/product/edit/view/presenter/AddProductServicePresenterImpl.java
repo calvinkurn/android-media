@@ -47,7 +47,7 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
                     updateDraftUploadingStatus(productDraftId);
                 }
                 getView().onFailedAddProduct();
-                getView().notificationFailed(e, String.valueOf(productDraftId), isAdd ? ProductStatus.ADD : ProductStatus.EDIT);
+                getView().notificationFailed(e, productDraftId, isAdd ? ProductStatus.ADD : ProductStatus.EDIT);
                 getView().sendFailedBroadcast(e);
             }
 
@@ -55,7 +55,7 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
             public void onNext(AddProductDomainModel addProductDomainModel) {
                 checkViewAttached();
                 getView().onSuccessAddProduct();
-                getView().notificationComplete(String.valueOf(productDraftId));
+                getView().notificationComplete(productDraftId);
                 getView().sendSuccessBroadcast(addProductDomainModel);
             }
         });
@@ -81,13 +81,13 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
     }
 
     @Override
-    public void createNotification(String productDraftId, String productName) {
+    public void createNotification(long productDraftId, String productName) {
         checkViewAttached();
         getView().createNotification(productDraftId, productName);
     }
 
     @Override
-    public void notificationUpdate(String productDraftId) {
+    public void notificationUpdate(long productDraftId) {
         checkViewAttached();
         getView().notificationUpdate(productDraftId);
     }

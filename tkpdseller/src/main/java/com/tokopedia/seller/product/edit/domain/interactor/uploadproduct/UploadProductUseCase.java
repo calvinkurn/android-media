@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
+import com.tokopedia.seller.product.draft.domain.interactor.FetchDraftProductUseCase;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.UploadImageModel;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
 import com.tokopedia.seller.product.edit.domain.ProductRepository;
@@ -31,9 +32,10 @@ import rx.functions.Func1;
 
 public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
 
-    public static final String UPLOAD_PRODUCT_ID = "UPLOAD_PRODUCT_ID";
-    public static final int UNSELECTED_PRODUCT_ID = -1;
+    private static final String UPLOAD_PRODUCT_ID = "UPLOAD_PRODUCT_ID";
+    private static final long UNSELECTED_PRODUCT_ID = Long.MIN_VALUE;
 
+    private final FetchDraftProductUseCase fetchDraftProductUseCase;
     private final GetProductDetailUseCase getProductDetailUseCase;
     private final ProductDraftRepository productDraftRepository;
     private final ProductRepository productRepository;
@@ -44,11 +46,14 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
     private UploadImageUseCase<UploadImageModel> uploadImageUseCase;
 
     @Inject
-    public UploadProductUseCase(GetProductDetailUseCase getProductDetailUseCase,
-                                ProductDraftRepository productDraftRepository,
-                                ProductRepository productRepository,
-                                UploadImageUseCase<UploadImageModel> uploadImageUseCase,
-                                ProductUploadMapper productUploadMapper) {
+    public UploadProductUseCase(
+            FetchDraftProductUseCase fetchDraftProductUseCase,
+            GetProductDetailUseCase getProductDetailUseCase,
+            ProductDraftRepository productDraftRepository,
+            ProductRepository productRepository,
+            UploadImageUseCase<UploadImageModel> uploadImageUseCase,
+            ProductUploadMapper productUploadMapper) {
+        this.fetchDraftProductUseCase = fetchDraftProductUseCase;
         this.getProductDetailUseCase = getProductDetailUseCase;
         this.productDraftRepository = productDraftRepository;
         this.productRepository = productRepository;
@@ -69,21 +74,7 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
     @Override
     public Observable<AddProductDomainModel> createObservable(RequestParams requestParams) {
         long draftProductId = requestParams.getLong(UPLOAD_PRODUCT_ID, UNSELECTED_PRODUCT_ID);
-        return Observable.just(draftProductId)
-                .doOnNext(new Action1<Long>() {
-                    @Override
-                    public void call(Long draftProductId) {
-                        if (draftProductId == UNSELECTED_PRODUCT_ID) {
-                            Observable.error(new RuntimeException("Input model is missing"));
-                        }
-                    }
-                })
-                .flatMap(new Func1<Long, Observable<ProductViewModel>>() {
-                    @Override
-                    public Observable<ProductViewModel> call(Long draftProductId) {
-                        return productDraftRepository.getDraft(draftProductId);
-                    }
-                })
+        return fetchDraftProductUseCase.createObservable(FetchDraftProductUseCase.createRequestParams(draftProductId))
                 .map(new Func1<ProductViewModel, ProductViewModel>() {
                     @Override
                     public ProductViewModel call(ProductViewModel productViewModel) {

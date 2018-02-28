@@ -17,6 +17,7 @@ import com.tokopedia.seller.base.domain.UploadImageRepository;
 import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
 import com.tokopedia.seller.product.draft.data.repository.ProductDraftRepositoryImpl;
 import com.tokopedia.seller.product.draft.data.source.ProductDraftDataSource;
+import com.tokopedia.seller.product.draft.domain.interactor.FetchDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
 import com.tokopedia.seller.product.edit.data.repository.GenerateHostRepositoryImpl;
@@ -120,5 +121,11 @@ public class AddProductserviceModule {
     @Provides
     ProductUploadMapper provideProductUploadMapper() {
         return new ProductUploadMapper();
+    }
+
+    @AddProductServiceScope
+    @Provides
+    FetchDraftProductUseCase provideFetchDraftProductUseCase(ProductDraftRepository productDraftRepository) {
+        return new FetchDraftProductUseCase(productDraftRepository);
     }
 }

@@ -12,18 +12,18 @@ public class NotificationManager {
 
     private final UpdateNotification updateNotification;
 
-    public NotificationManager(AddProductNotificationListener listener, long productId, String productName) {
-        listener.createNotification(String.valueOf(productId), productName);
-        updateNotification = new UpdateNotification(listener, String.valueOf(productId));
+    public NotificationManager(AddProductNotificationListener listener, long draftProductId, String productName) {
+        listener.createNotification(draftProductId, productName);
+        updateNotification = new UpdateNotification(listener, draftProductId);
     }
 
     private class UpdateNotification implements Action1<Object> {
         private final AddProductNotificationListener listener;
-        private final String productId;
+        private final long productId;
 
-        public UpdateNotification(AddProductNotificationListener listener, String productId) {
+        public UpdateNotification(AddProductNotificationListener listener, long draftProductId) {
             this.listener = listener;
-            this.productId = productId;
+            this.productId = draftProductId;
         }
 
         @Override

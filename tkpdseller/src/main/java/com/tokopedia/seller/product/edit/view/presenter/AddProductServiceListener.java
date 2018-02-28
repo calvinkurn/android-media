@@ -11,17 +11,17 @@ import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 public interface AddProductServiceListener extends CustomerView {
     void onSuccessAddProduct();
 
-    void createNotification(String productDraftId, String productName);
+    void createNotification(long productDraftId, String productName);
 
-    void notificationUpdate(String productDraftId);
+    void notificationUpdate(long productDraftId);
 
-    void notificationComplete(String productDraftId);
+    void notificationComplete(long productDraftId);
 
     void sendSuccessBroadcast(AddProductDomainModel addProductDomainModel);
 
     void onFailedAddProduct();
 
-    void notificationFailed(Throwable error, String productDraftId, @ProductStatus int productStatus);
+    void notificationFailed(Throwable error, long productDraftId, @ProductStatus int productStatus);
 
     void sendFailedBroadcast(Throwable error);
 }

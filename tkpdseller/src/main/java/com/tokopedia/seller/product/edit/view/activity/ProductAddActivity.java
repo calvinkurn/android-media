@@ -18,13 +18,10 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.edit.view.fragment.ProductAddFragment;
 
@@ -237,9 +234,9 @@ public class ProductAddActivity extends BaseProductAddEditActivity {
                 return false;
             }
         } else {
-            Intent intentLogin = OldSessionRouter.getLoginActivityIntent(this);
-            intentLogin.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-            startActivity(intentLogin);
+//            Intent intentLogin = OldSessionRouter.getLoginActivityIntent(this);
+//            intentLogin.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+//            startActivity(intentLogin);
             finish();
             return false;
         }

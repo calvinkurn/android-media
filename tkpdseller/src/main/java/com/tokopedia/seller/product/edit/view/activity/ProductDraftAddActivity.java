@@ -20,19 +20,19 @@ public class ProductDraftAddActivity extends BaseProductAddEditActivity {
 
     public static final String PRODUCT_DRAFT_ID = "PRODUCT_DRAFT_ID";
 
-    public static void start(Context context, Fragment fragment, String productId) {
-        Intent intent = createInstance(context, productId);
+    public static void start(Context context, Fragment fragment, long productDraftId) {
+        Intent intent = createInstance(context, productDraftId);
         fragment.startActivityForResult(intent, ProductAddActivity.PRODUCT_REQUEST_CODE);
     }
 
-    public static void start(Activity activity, String productId) {
-        Intent intent = createInstance(activity, productId);
+    public static void start(Activity activity, long productDraftId) {
+        Intent intent = createInstance(activity, productDraftId);
         activity.startActivityForResult(intent, ProductAddActivity.PRODUCT_REQUEST_CODE);
     }
 
-    public static Intent createInstance(Context context, String productId){
+    public static Intent createInstance(Context context, long productDraftId){
         Intent intent = new Intent(context, ProductDraftAddActivity.class);
-        intent.putExtra(PRODUCT_DRAFT_ID, productId);
+        intent.putExtra(PRODUCT_DRAFT_ID, productDraftId);
         return intent;
     }
 
@@ -52,8 +52,8 @@ public class ProductDraftAddActivity extends BaseProductAddEditActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        String productId = getIntent().getStringExtra(PRODUCT_DRAFT_ID);
-        return ProductDraftAddFragment.createInstance(productId);
+        long productDraftId = getIntent().getLongExtra(PRODUCT_DRAFT_ID, 0);
+        return ProductDraftAddFragment.createInstance(productDraftId);
     }
 
     @Override

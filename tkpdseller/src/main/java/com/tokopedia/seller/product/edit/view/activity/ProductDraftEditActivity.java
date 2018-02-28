@@ -16,15 +16,15 @@ import com.tokopedia.seller.product.edit.view.fragment.ProductDraftEditFragment;
 
 public class ProductDraftEditActivity extends ProductDraftAddActivity  {
 
-    public static Intent createInstance(Context context, String productId){
+    public static Intent createInstance(Context context, long productDraftId){
         Intent intent = new Intent(context, ProductDraftEditActivity.class);
-        intent.putExtra(PRODUCT_DRAFT_ID, productId);
+        intent.putExtra(PRODUCT_DRAFT_ID, productDraftId);
         return intent;
     }
 
     @Override
     protected Fragment getNewFragment() {
-        String productId = getIntent().getStringExtra(PRODUCT_DRAFT_ID);
+        long productId = getIntent().getLongExtra(PRODUCT_DRAFT_ID, Long.MIN_VALUE);
         return ProductDraftEditFragment.createInstance(productId);
     }
 

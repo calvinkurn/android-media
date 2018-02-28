@@ -2,7 +2,6 @@ package com.tokopedia.seller.product.edit.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +18,9 @@ public abstract class BaseProductDraftAddEditFragment<T extends ProductDraftPres
         extends BaseProductEditFragment<T>
         implements ProductDraftView {
 
-    public static final String DRAFT_PRODUCT_ID = "DRAFT_PRODUCT_ID";
+    protected static final String DRAFT_PRODUCT_ID = "DRAFT_PRODUCT_ID";
 
-    private String draftId;
+    private long productDraftId;
 
     @Override
     public boolean isNeedGetCategoryRecommendation() {
@@ -31,31 +30,30 @@ public abstract class BaseProductDraftAddEditFragment<T extends ProductDraftPres
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        draftId = getArguments().getString(DRAFT_PRODUCT_ID);
+        productDraftId = getArguments().getLong(DRAFT_PRODUCT_ID);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
     public void fetchInputData() {
         showLoading();
-        presenter.fetchDraftData(draftId);
+        presenter.fetchDraftData(productDraftId);
     }
 
     @Override
     public long getProductDraftId() {
-        if (TextUtils.isEmpty(draftId)) {
-            return 0;
-        }
-        try {
-            return Long.valueOf(draftId);
-        }
-        catch (NumberFormatException e) {
-            return 0;
-        }
+        return productDraftId;
     }
 
     @Override
     public String getErrorLoadProductString() {
         return getString(R.string.product_draft_error_cannot_load_draft);
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong(DRAFT_PRODUCT_ID, productDraftId);
     }
 }
