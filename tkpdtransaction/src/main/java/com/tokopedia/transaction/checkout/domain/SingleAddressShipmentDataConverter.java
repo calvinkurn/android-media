@@ -86,10 +86,12 @@ public class SingleAddressShipmentDataConverter extends ConverterData<CartShipme
         sellerItemModel.setCartItemModels(cartItemModels);
 
         for (CartItemModel cartItemModel : cartItemModels) {
-            sellerItemModel.setTotalPrice(sellerItemModel.getTotalPrice() + cartItemModel.getPrice());
+            sellerItemModel.setTotalItemPrice(sellerItemModel.getTotalPrice() + cartItemModel.getPrice());
             sellerItemModel.setTotalWeight(sellerItemModel.getTotalWeight() + cartItemModel.getWeight());
             sellerItemModel.setTotalQuantity(sellerItemModel.getTotalQuantity() + cartItemModel.getQuantity());
         }
+
+        sellerItemModel.setTotalPrice(sellerItemModel.getTotalItemPrice());
 
         ShipmentCartDataBuilder shipmentCartDataBuilder = new ShipmentCartDataBuilder();
         sellerItemModel.setShipmentCartData(

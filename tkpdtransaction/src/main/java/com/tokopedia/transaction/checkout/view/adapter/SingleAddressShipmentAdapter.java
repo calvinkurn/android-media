@@ -26,7 +26,8 @@ import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.view.data.CourierItemData;
 import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
-import com.tokopedia.transaction.checkout.view.data.ShipmentFeeBannerModel;
+import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
+import com.tokopedia.transaction.checkout.view.holderitemdata.CartPromo;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 import com.tokopedia.transaction.pickuppoint.view.customview.PickupPointLayout;
 
@@ -198,7 +199,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
     }
 
     private String getTotalWeightFormat(double totalWeight, int weightUnit) {
-        String unit = weightUnit == 0 ? "Kg" : "gr";
+        String unit = weightUnit == 0 ? "gr" : "Kg";
         return String.format("%s %s", (int) totalWeight, unit);
     }
 
@@ -243,11 +244,11 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
                 }
             });
 
-            if (data.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_COUPON) {
+            if (data.getTypePromo() == CartPromo.TYPE_PROMO_COUPON) {
                 voucherCartHachikoView.setCoupon(
                         data.getCouponTitle(), data.getCouponMessage(), data.getCouponCode()
                 );
-            } else if (data.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_VOUCHER) {
+            } else if (data.getTypePromo() == CartPromo.TYPE_PROMO_VOUCHER) {
                 voucherCartHachikoView.setVoucher(
                         data.getVoucherCode(), data.getVoucherMessage()
                 );
@@ -427,6 +428,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
         private void togglePromoText() {
             mTvPromoFreeShipping.setVisibility(View.GONE);
+            mTvPromoTextViewRemove.setVisibility(View.GONE);
         }
 
         View.OnClickListener togglePromoTextListener = new View.OnClickListener() {
@@ -553,18 +555,27 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
             // Assign variables
             mTvSenderName.setText(model.getShopName());
-            mTvSelectedShipment.setText(getCourierName(model.getCourierItemData()));
-            mTvSubTotalPrice.setText(getPriceFormat(model.getTotalPrice()));
-
-            mRlDetailShipmentFeeContainer.setVisibility(mIsExpandCostDetail ? View.VISIBLE : View.GONE);
 
             String insuranceFee = "-";
             String shippingFee = "-";
 
-            if (model.getCourierItemData() != null) {
-                insuranceFee = String.valueOf(model.getCourierItemData().getInsurancePrice());
-                shippingFee = String.valueOf(model.getCourierItemData().getDeliveryPrice());
+            ShipmentDetailData shipmentDetailData = model.getSelectedShipmentDetailData();
+            if (shipmentDetailData != null) {
+                CourierItemData courier = shipmentDetailData.getSelectedCourier();
+
+                mTvSelectedShipment.setText(getCourierName(courier));
+                shippingFee = CURRENCY_IDR.format(courier.getDeliveryPrice());
+                model.setTotalPrice(model.getTotalPrice() + courier.getDeliveryPrice());
+
+                if (shipmentDetailData.getUseInsurance() != null && shipmentDetailData.getUseInsurance()) {
+                    insuranceFee = CURRENCY_IDR.format(courier.getInsurancePrice());
+                    model.setTotalPrice(model.getTotalPrice() + courier.getInsurancePrice());
+                }
             }
+
+            mTvSubTotalPrice.setText(getPriceFormat(model.getTotalPrice()));
+
+            mRlDetailShipmentFeeContainer.setVisibility(mIsExpandCostDetail ? View.VISIBLE : View.GONE);
 
             mTvShippingFeePrice.setText(shippingFee);
             mTvInsuranceFeePrice.setText(insuranceFee);
@@ -572,7 +583,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             mTvTotalItem.setText(getTotalItemFormat(model.getTotalQuantity()));
             mTvShippingFee.setText(getLabelShipmentFeeWeight(model.getTotalWeight(), model.getWeightUnit()));
 
-            mTvTotalItemPrice.setText(getPriceFormat(model.getTotalPrice()));
+            mTvTotalItemPrice.setText(getPriceFormat(model.getTotalItemPrice()));
 
             ImageHandler.LoadImage(mIvProductImage, firstItem.getImageUrl());
             mTvProductName.setText(firstItem.getName());
@@ -624,11 +635,11 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             mLlNoteToSellerLayout.setVisibility(isEmptyNotes ? View.GONE : View.VISIBLE);
             mTvOptionalNote.setText(firstItem.getNoteToSeller());
 
-            if (model.getSelectedShipmentDetailData() != null &&
-                    model.getSelectedShipmentDetailData().getSelectedCourier() != null) {
+            if (shipmentDetailData != null &&
+                    shipmentDetailData.getSelectedCourier() != null) {
                 mChooseCourierButton.setVisibility(View.GONE);
                 mTvSelectedShipment.setText(
-                        model.getSelectedShipmentDetailData().getSelectedCourier().getName());
+                        shipmentDetailData.getSelectedCourier().getName());
                 mTvSelectedShipment.setVisibility(View.VISIBLE);
                 mIvChevronShipmentOption.setVisibility(View.VISIBLE);
             } else {
