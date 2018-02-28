@@ -12,6 +12,7 @@ apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
