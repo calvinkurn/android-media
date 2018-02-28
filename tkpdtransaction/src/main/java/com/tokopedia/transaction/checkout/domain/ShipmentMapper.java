@@ -8,7 +8,9 @@ import com.tokopedia.transaction.checkout.view.data.cartshipmentform.Product;
 import com.tokopedia.transaction.checkout.view.data.cartshipmentform.ProductShipment;
 import com.tokopedia.transaction.checkout.view.data.cartshipmentform.ProductShipmentMapping;
 import com.tokopedia.transaction.checkout.view.data.cartshipmentform.ServiceId;
+import com.tokopedia.transaction.checkout.view.data.cartshipmentform.ShipProd;
 import com.tokopedia.transaction.checkout.view.data.cartshipmentform.Shop;
+import com.tokopedia.transaction.checkout.view.data.cartshipmentform.ShopShipment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,6 +108,36 @@ public class ShipmentMapper implements IShipmentMapper {
                             shopResult.setCityName(groupShop.getShop().getCityName());
 
                             groupShopResult.setShop(shopResult);
+                        }
+
+                        if (!mapperUtil.isEmpty(groupShop.getShopShipments())) {
+                            List<ShopShipment> shopShipmentListResult = new ArrayList<>();
+                            for (com.tokopedia.transaction.checkout.domain.response.shippingaddressform.ShopShipment shopShipment :
+                                    groupShop.getShopShipments()) {
+                                ShopShipment shopShipmentResult = new ShopShipment();
+                                shopShipmentResult.setDropshipEnabled(shopShipment.getIsDropshipEnabled() == 1);
+                                shopShipmentResult.setShipCode(shopShipment.getShipCode());
+                                shopShipmentResult.setShipId(shopShipment.getShipId());
+                                shopShipmentResult.setShipLogo(shopShipment.getShipLogo());
+                                shopShipmentResult.setShipName(shopShipment.getShipName());
+                                if (!mapperUtil.isEmpty(shopShipment.getShipProds())) {
+                                    List<ShipProd> shipProdListResult = new ArrayList<>();
+                                    for (com.tokopedia.transaction.checkout.domain.response.shippingaddressform.ShipProd shipProd :
+                                            shopShipment.getShipProds()) {
+                                        ShipProd shipProdResult = new ShipProd();
+                                        shipProdResult.setAdditionalFee(shipProd.getAdditionalFee());
+                                        shipProdResult.setMinimumWeight(shipProd.getMinimumWeight());
+                                        shipProdResult.setShipGroupId(shipProd.getShipGroupId());
+                                        shipProdResult.setShipGroupName(shipProd.getShipGroupName());
+                                        shipProdResult.setShipProdId(shipProd.getShipProdId());
+                                        shipProdResult.setShipProdName(shipProd.getShipProdName());
+                                        shipProdListResult.add(shipProdResult);
+                                    }
+                                    shopShipmentResult.setShipProds(shipProdListResult);
+                                }
+                                shopShipmentListResult.add(shopShipmentResult);
+                            }
+                            groupShopResult.setShopShipments(shopShipmentListResult);
                         }
 
                         if (!mapperUtil.isEmpty(groupShop.getProducts())) {

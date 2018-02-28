@@ -14,12 +14,17 @@ public class CartSellerItemModel implements Parcelable {
     private String shopName;
     private List<CartItemModel> cartItemModels;
 
+    // TODO : @Aghny Remove this courierItemData variable.
+    // TODO : Use CourierItemData from (ShipmentDetailData) selectedShipmentDetailData.selectedCourier
     private CourierItemData courierItemData;
 
     private double totalPrice;
     private double totalWeight;
     private int weightUnit;
     private int totalQuantity;
+
+    private ShipmentCartData shipmentCartData;
+    private ShipmentDetailData selectedShipmentDetailData;
 
     public String getShopId() {
         return shopId;
@@ -85,6 +90,21 @@ public class CartSellerItemModel implements Parcelable {
         this.totalQuantity = totalQuantity;
     }
 
+    public ShipmentCartData getShipmentCartData() {
+        return shipmentCartData;
+    }
+
+    public void setShipmentCartData(ShipmentCartData shipmentCartData) {
+        this.shipmentCartData = shipmentCartData;
+    }
+
+    public ShipmentDetailData getSelectedShipmentDetailData() {
+        return selectedShipmentDetailData;
+    }
+
+    public void setSelectedShipmentDetailData(ShipmentDetailData selectedShipmentDetailData) {
+        this.selectedShipmentDetailData = selectedShipmentDetailData;
+    }
 
     @Override
     public int describeContents() {
@@ -100,6 +120,8 @@ public class CartSellerItemModel implements Parcelable {
         dest.writeDouble(this.totalPrice);
         dest.writeDouble(this.totalWeight);
         dest.writeInt(this.totalQuantity);
+        dest.writeParcelable(this.shipmentCartData, flags);
+        dest.writeParcelable(this.selectedShipmentDetailData, flags);
     }
 
     public CartSellerItemModel() {
@@ -113,6 +135,8 @@ public class CartSellerItemModel implements Parcelable {
         this.totalPrice = in.readDouble();
         this.totalWeight = in.readDouble();
         this.totalQuantity = in.readInt();
+        this.shipmentCartData = in.readParcelable(ShipmentCartData.class.getClassLoader());
+        this.selectedShipmentDetailData = in.readParcelable(ShipmentCartData.class.getClassLoader());
     }
 
     public static final Creator<CartSellerItemModel> CREATOR = new Creator<CartSellerItemModel>() {

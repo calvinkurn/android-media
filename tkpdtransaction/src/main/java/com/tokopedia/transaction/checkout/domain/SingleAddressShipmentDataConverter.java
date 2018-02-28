@@ -8,11 +8,13 @@ import com.tokopedia.transaction.checkout.view.data.CartPayableDetailModel;
 import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
+import com.tokopedia.transaction.checkout.view.data.ShipmentCartData;
 import com.tokopedia.transaction.checkout.view.data.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.transaction.checkout.view.data.cartshipmentform.GroupAddress;
 import com.tokopedia.transaction.checkout.view.data.cartshipmentform.GroupShop;
 import com.tokopedia.transaction.checkout.view.data.cartshipmentform.Product;
 import com.tokopedia.transaction.checkout.view.data.cartshipmentform.Shop;
+import com.tokopedia.transaction.checkout.view.data.cartshipmentform.ShopShipment;
 import com.tokopedia.transaction.checkout.view.data.cartshipmentform.UserAddress;
 
 import java.util.ArrayList;
@@ -32,6 +34,9 @@ public class SingleAddressShipmentDataConverter extends ConverterData<CartShipme
 
     private static final int FIRST_ELEMENT = 0;
     private static final int PRIME_ADDRESS = 2;
+    private UserAddress userAddress;
+    private String keroToken;
+    private String keroUnixTime;
 
     @Inject
     public SingleAddressShipmentDataConverter() {
@@ -39,9 +44,12 @@ public class SingleAddressShipmentDataConverter extends ConverterData<CartShipme
 
     @Override
     public CartSingleAddressData convert(CartShipmentAddressFormData cartItemDataList) {
+        keroToken = cartItemDataList.getKeroToken();
+        keroUnixTime = String.valueOf(cartItemDataList.getKeroUnixTime());
+
         GroupAddress groupAddress = cartItemDataList.getGroupAddress().get(FIRST_ELEMENT);
 
-        UserAddress userAddress = groupAddress.getUserAddress();
+        userAddress = groupAddress.getUserAddress();
         List<GroupShop> groupShops = groupAddress.getGroupShop();
 
         RecipientAddressModel recipientAddressModel = convertFromUserAddress(userAddress);
@@ -82,6 +90,15 @@ public class SingleAddressShipmentDataConverter extends ConverterData<CartShipme
             sellerItemModel.setTotalWeight(sellerItemModel.getTotalWeight() + cartItemModel.getWeight());
             sellerItemModel.setTotalQuantity(sellerItemModel.getTotalQuantity() + cartItemModel.getQuantity());
         }
+
+        ShipmentCartDataBuilder shipmentCartDataBuilder = new ShipmentCartDataBuilder();
+        sellerItemModel.setShipmentCartData(
+                shipmentCartDataBuilder.setShop(shop)
+                        .setShopShipments(groupShop.getShopShipments())
+                        .setProduct(groupShop.getProducts())
+                        .setTotalWeight(sellerItemModel.getTotalWeight())
+                        .setOrderValue(sellerItemModel.getTotalPrice())
+                        .build());
 
         return sellerItemModel;
     }
@@ -226,6 +243,122 @@ public class SingleAddressShipmentDataConverter extends ConverterData<CartShipme
         cartItemModel.setQuantity(cartItemData.getUpdatedData().getQuantity());
 
         return cartItemModel;
+    }
+
+    class ShipmentCartDataBuilder {
+        private Shop shop;
+        private List<Product> products;
+        private List<ShopShipment> shopShipments;
+        private ShipmentCartData shipmentCartData;
+        private Double orderValue;
+        private Double totalWeight;
+
+        public ShipmentCartDataBuilder() {
+            shipmentCartData = new ShipmentCartData();
+        }
+
+        public ShipmentCartDataBuilder setShop(Shop shop) {
+            this.shop = shop;
+            return this;
+        }
+
+        public ShipmentCartDataBuilder setShopShipments(List<ShopShipment> shopShipments) {
+            this.shopShipments = shopShipments;
+            return this;
+        }
+
+        public ShipmentCartDataBuilder setProduct(List<Product> product) {
+            this.products = product;
+            return this;
+        }
+
+        public ShipmentCartDataBuilder setOrderValue(Double orderValue) {
+            this.orderValue = orderValue;
+            return this;
+        }
+
+        public ShipmentCartDataBuilder setTotalWeight(Double totalWeight) {
+            this.totalWeight = totalWeight;
+            return this;
+        }
+
+        public ShipmentCartData build() {
+            if (userAddress != null && shop != null && products != null &&
+                    shopShipments != null && shipmentCartData != null && orderValue != null && totalWeight != null) {
+                shipmentCartData.setToken(keroToken);
+                shipmentCartData.setUt(keroUnixTime);
+                shipmentCartData.setDestinationAddress(userAddress.getAddress());
+                shipmentCartData.setDestinationDistrictId(String.valueOf(userAddress.getDistrictId()));
+                shipmentCartData.setDestinationLatitude(!TextUtils.isEmpty(userAddress.getLatitude()) ?
+                        Double.parseDouble(userAddress.getLatitude()) : null);
+                shipmentCartData.setDestinationLongitude(!TextUtils.isEmpty(userAddress.getLongitude()) ?
+                        Double.parseDouble(userAddress.getLongitude()) : null);
+                shipmentCartData.setDestinationPostalCode(userAddress.getPostalCode());
+                shipmentCartData.setOriginDistrictId(String.valueOf(shop.getDistrictId()));
+                shipmentCartData.setOriginLatitude(!TextUtils.isEmpty(shop.getLatitude()) ?
+                        Double.parseDouble(shop.getLatitude()) : null);
+                shipmentCartData.setOriginLongitude(!TextUtils.isEmpty(shop.getLongitude()) ?
+                        Double.parseDouble(shop.getLongitude()) : null);
+                shipmentCartData.setOriginPostalCode(shop.getPostalCode());
+                shipmentCartData.setCategoryIds(getCategoryIds(products));
+                shipmentCartData.setProductInsurance(isForceInsurance(products) ? 1 : 0);
+                shipmentCartData.setShopShipments(shopShipments);
+                String shippingNames = getShippingNames(shopShipments);
+                shipmentCartData.setShippingNames(shippingNames);
+                String shippingServices = getShippingServices(shopShipments);
+                shipmentCartData.setShippingServices(shippingServices);
+                shipmentCartData.setOrderValue(orderValue.intValue());
+                shipmentCartData.setWeight(totalWeight);
+                shipmentCartData.setInsurance(1);
+                shipmentCartData.setDeliveryPriceTotal(0);
+            }
+            return shipmentCartData;
+        }
+
+        private String getCategoryIds(List<Product> products) {
+            List<Integer> categoryIds = new ArrayList<>();
+            for (int i = 0; i < products.size(); i++) {
+                int categoryId = products.get(i).getProductCatId();
+                if (!categoryIds.contains(categoryId)) {
+                    categoryIds.add(categoryId);
+                }
+            }
+            return TextUtils.join(",", categoryIds);
+        }
+
+        private boolean isForceInsurance(List<Product> products) {
+            for (Product product : products) {
+                if (product.isProductFinsurance()) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private String getShippingNames(List<ShopShipment> shopShipments) {
+            List<String> shippingNames = new ArrayList<>();
+            for (int i = 0; i < shopShipments.size(); i++) {
+                String shippingName = shopShipments.get(i).getShipCode();
+                if (!shippingNames.contains(shippingName)) {
+                    shippingNames.add(shippingName);
+                }
+            }
+            return TextUtils.join(",", shippingNames);
+        }
+
+        private String getShippingServices(List<ShopShipment> shopShipments) {
+            List<String> shippingServices = new ArrayList<>();
+            for (int i = 0; i < shopShipments.size(); i++) {
+                for (int j = 0; j < shopShipments.get(i).getShipProds().size(); j++) {
+                    String shippingService = shopShipments.get(i).getShipProds().get(j).getShipGroupName();
+                    if (!shippingServices.contains(shippingService)) {
+                        shippingServices.add(shippingService);
+                    }
+                }
+            }
+            return TextUtils.join(",", shippingServices);
+        }
+
     }
 
 }

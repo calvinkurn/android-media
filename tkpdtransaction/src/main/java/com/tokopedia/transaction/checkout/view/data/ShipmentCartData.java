@@ -25,7 +25,7 @@ public class ShipmentCartData implements Parcelable {
     private Double destinationLatitude;
     private Double destinationLongitude;
     private String destinationAddress;
-    private float weight;
+    private double weight;
     private String token;
     private String ut;
     private int insurance;
@@ -68,7 +68,7 @@ public class ShipmentCartData implements Parcelable {
             destinationLongitude = in.readDouble();
         }
         destinationAddress = in.readString();
-        weight = in.readFloat();
+        weight = in.readDouble();
         token = in.readString();
         ut = in.readString();
         insurance = in.readInt();
@@ -114,7 +114,7 @@ public class ShipmentCartData implements Parcelable {
             dest.writeDouble(destinationLongitude);
         }
         dest.writeString(destinationAddress);
-        dest.writeFloat(weight);
+        dest.writeDouble(weight);
         dest.writeString(token);
         dest.writeString(ut);
         dest.writeInt(insurance);
@@ -246,11 +246,11 @@ public class ShipmentCartData implements Parcelable {
         this.destinationAddress = destinationAddress;
     }
 
-    public float getWeight() {
+    public double getWeight() {
         return weight;
     }
 
-    public void setWeight(float weight) {
+    public void setWeight(double weight) {
         this.weight = weight;
     }
 

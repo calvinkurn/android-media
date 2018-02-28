@@ -3,7 +3,7 @@ package com.tokopedia.transaction.checkout.domain;
 import com.tokopedia.transaction.checkout.domain.response.rates.Attribute;
 import com.tokopedia.transaction.checkout.domain.response.rates.Product;
 import com.tokopedia.transaction.checkout.domain.response.rates.RatesResponse;
-import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
+import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.view.data.CourierItemData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressShipmentAdapterData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentCartData;
@@ -23,9 +23,9 @@ import java.util.List;
 
 public class ShipmentRatesDataMapper {
 
-    public ShipmentDetailData getShipmentDetailData(CartSingleAddressData cartSingleAddressData) {
+    public ShipmentDetailData getShipmentDetailData(CartSellerItemModel cartSellerItemModel) {
         ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
-        shipmentDetailData.setShipmentCartData(cartSingleAddressData.getShipmentCartData());
+        shipmentDetailData.setShipmentCartData(cartSellerItemModel.getShipmentCartData());
         return shipmentDetailData;
     }
 
@@ -41,7 +41,8 @@ public class ShipmentRatesDataMapper {
         if (shipmentDetailData == null) {
             shipmentDetailData = new ShipmentDetailData();
         }
-        shipmentDetailData.setShipmentItemData(getShipmentItemDataList(shipmentDetailData, ratesResponse));
+        List<ShipmentItemData> shipmentItemDataList = getShipmentItemDataList(shipmentDetailData, ratesResponse);
+        shipmentDetailData.setShipmentItemData(shipmentItemDataList);
 
         return shipmentDetailData;
     }
@@ -63,7 +64,7 @@ public class ShipmentRatesDataMapper {
             }
 
             for (ShopShipment shopShipment : shipmentDetailData.getShipmentCartData().getShopShipments()) {
-                if (attribute.getServiceId() == shopShipment.getShipId()) {
+                if (attribute.getServiceId() == shopShipment.getShipProds().get(0).getShipGroupId()) {
                     shipmentItemData = getShipmentItemData(shopShipment, attribute);
                     break;
                 }
@@ -78,7 +79,10 @@ public class ShipmentRatesDataMapper {
                     }
                 }
             }
-            shipmentItemDataList.add(shipmentItemData);
+
+            if (shipmentItemData != null) {
+                shipmentItemDataList.add(shipmentItemData);
+            }
         }
         return shipmentItemDataList;
     }
