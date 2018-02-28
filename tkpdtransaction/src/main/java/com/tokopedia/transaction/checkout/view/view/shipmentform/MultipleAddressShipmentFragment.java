@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.TkpdFragment;
+import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.ShipmentRatesDataMapper;
 import com.tokopedia.transaction.checkout.view.adapter.MultipleAddressShipmentAdapter;
@@ -200,6 +201,25 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
                 addressAdapterData.getDestinationDistrictName(),
                 GetPickupPointsUseCase.generateParams(addressAdapterData)
         ), REQUEST_CHOOSE_PICKUP_POINT);
+    }
+
+    @Override
+    public void onPromoSuggestionClicked(MultipleAddressPriceSummaryData priceSummaryData) {
+
+    }
+
+    @Override
+    public void onHachikoClicked(MultipleAddressPriceSummaryData priceSummaryData) {
+        Intent intent;
+        if (priceSummaryData.isCouponActive()) {
+            intent = LoyaltyActivity.newInstanceCouponActive(
+                    getActivity(), "marketplace", "marketplace"
+            );
+        } else {
+            intent = LoyaltyActivity.newInstanceCouponNotActive(getActivity(),
+                    "marketplace", "marketplace");
+        }
+        startActivityForResult(intent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
     }
 
     private RecyclerView.OnScrollListener onRecyclerViewScrolledListener(

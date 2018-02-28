@@ -30,9 +30,21 @@ public class MultipleAddressPriceSummaryData {
 
     private String additionalFeeText;
 
-    private String promoDiscountText;
-
     private String totalPaymentText;
+
+    private boolean isCouponActive;
+
+    private boolean isPromoUsed;
+
+    private boolean hasPromoSuggestion;
+
+    private boolean isSuggestionVisible;
+
+    private String promoSuggestionDescription;
+
+    private String promoSuggestionCta;
+
+    private String promoCtaColor;
 
     public long getQuantity() {
         return quantity;
@@ -126,20 +138,68 @@ public class MultipleAddressPriceSummaryData {
         this.additionalFeeText = additionalFeeText;
     }
 
-    public String getPromoDiscountText() {
-        return promoDiscountText;
-    }
-
-    public void setPromoDiscountText(String promoDiscountText) {
-        this.promoDiscountText = promoDiscountText;
-    }
-
     public String getTotalPaymentText() {
         return formatPrice(getTotalPayment());
     }
 
     public void setTotalPaymentText(String totalPaymentText) {
         this.totalPaymentText = totalPaymentText;
+    }
+
+    public boolean isCouponActive() {
+        return isCouponActive;
+    }
+
+    public void setCouponActive(boolean couponActive) {
+        isCouponActive = couponActive;
+    }
+
+    public boolean isPromoUsed() {
+        return isPromoUsed;
+    }
+
+    public void setPromoUsed(boolean promoUsed) {
+        isPromoUsed = promoUsed;
+    }
+
+    public boolean isHasPromoSuggestion() {
+        return hasPromoSuggestion;
+    }
+
+    public void setHasPromoSuggestion(boolean hasPromoSuggestion) {
+        this.hasPromoSuggestion = hasPromoSuggestion;
+    }
+
+    public boolean isSuggestionVisible() {
+        return isSuggestionVisible;
+    }
+
+    public void setSuggestionVisible(boolean suggestionVisible) {
+        isSuggestionVisible = suggestionVisible;
+    }
+
+    public String getPromoSuggestionDescription() {
+        return promoSuggestionDescription;
+    }
+
+    public void setPromoSuggestionDescription(String promoSuggestionDescription) {
+        this.promoSuggestionDescription = promoSuggestionDescription;
+    }
+
+    public String getPromoSuggestionCta() {
+        return promoSuggestionCta;
+    }
+
+    public void setPromoSuggestionCta(String promoSuggestionCta) {
+        this.promoSuggestionCta = promoSuggestionCta;
+    }
+
+    public String getPromoCtaColor() {
+        return promoCtaColor;
+    }
+
+    public void setPromoCtaColor(String promoCtaColor) {
+        this.promoCtaColor = promoCtaColor;
     }
 
     private String formatPrice(long unformattedPrice) {
