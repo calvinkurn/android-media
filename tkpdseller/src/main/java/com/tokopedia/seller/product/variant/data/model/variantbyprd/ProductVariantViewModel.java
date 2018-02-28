@@ -10,6 +10,7 @@ import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionParent;
 
 public class ProductVariantViewModel implements Parcelable {
@@ -26,10 +27,19 @@ public class ProductVariantViewModel implements Parcelable {
         return variantOptionParent;
     }
 
+    public List<ProductVariantOptionChild> getProductVariantOptionChild(int index) {
+        if (variantOptionParent != null && index < variantOptionParent.size()
+                && variantOptionParent.get(index).hasProductVariantOptionChild()) {
+            return variantOptionParent.get(index).getProductVariantOptionChild();
+        }
+        return null;
+    }
+
     public ProductVariantOptionParent getVariantOptionParent(int position) {
-        return (variantOptionParent == null || variantOptionParent.size() == 0) ?
+        int index = position - 1;
+        return (variantOptionParent == null || index >= variantOptionParent.size()) ?
                 null :
-                variantOptionParent.get(0);
+                variantOptionParent.get(index);
     }
 
     public void setVariantOptionParent(List<ProductVariantOptionParent> variant) {
@@ -46,6 +56,57 @@ public class ProductVariantViewModel implements Parcelable {
 
     public void setProductVariant(List<ProductVariantCombinationViewModel> productVariant) {
         this.productVariant = productVariant;
+    }
+
+    public int removeSelectedVariantFor(String lv1Value) {
+        if (productVariant == null || productVariant.size() == 0) {
+            return - 1;
+        }
+        int firstIndex = -1;
+        for (int i = productVariant.size() - 1; i >= 0; i--) {
+            if (productVariant.get(i).getLevel1String().equalsIgnoreCase(lv1Value)) {
+                if (firstIndex == -1) {
+                    firstIndex = i;
+                }
+                productVariant.remove(i);
+            }
+        }
+        return firstIndex;
+    }
+
+    public void replaceSelectedVariantFor(String lv1Value,
+                                          List<ProductVariantCombinationViewModel> productVariantCombinationViewModelList) {
+        int index = removeSelectedVariantFor(lv1Value);
+        if (index > -1) {
+            productVariant.addAll(index, productVariantCombinationViewModelList);
+        } else {
+            productVariant.addAll(productVariantCombinationViewModelList);
+        }
+    }
+
+    public int removeSelectedVariantFor(String lv1Value, String lvl2Value) {
+        if (productVariant == null || productVariant.size() == 0) {
+            return -1;
+        }
+        for (int i = productVariant.size() - 1; i >= 0; i--) {
+            if (productVariant.get(i).getLevel1String().equalsIgnoreCase(lv1Value) &&
+                    productVariant.get(i).getLevel2String().equalsIgnoreCase(lvl2Value)) {
+                productVariant.remove(i);
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public void replaceSelectedVariantFor(ProductVariantCombinationViewModel productVariantCombinationViewModel) {
+        String lvl1String = productVariantCombinationViewModel.getLevel1String();
+        String lvl2String = productVariantCombinationViewModel.getLevel2String();
+        int removedIndex = removeSelectedVariantFor(lvl1String, lvl2String);
+        if (removedIndex > - 1) {
+            productVariant.add(removedIndex, productVariantCombinationViewModel);
+        } else {
+            productVariant.add(productVariantCombinationViewModel);
+        }
     }
 
     @Override
@@ -80,4 +141,5 @@ public class ProductVariantViewModel implements Parcelable {
             return new ProductVariantViewModel[size];
         }
     };
+
 }

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:background="@color/white"
+        android:divider="@drawable/bg_line_separator"
+        android:showDividers="beginning|middle|end">
+        <com.tokopedia.seller.common.widget.VerticalLabelView
+            android:id="@+id/lv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/LabelLayout"/>
+        <com.tokopedia.seller.common.widget.LabelSwitch
+            android:id="@+id/label_switch_product_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:ls_title="@string/product_variant_status"
+            app:ls_title_text_size="@dimen/font_small"
+            app:ls_title_color="@color/font_black_secondary_54"
+            app:ls_content_text_size="@dimen/font_title"
+            app:ls_content_color="@color/font_black_primary_70"
+            style="@style/LabelLayout"/>
+
+        <com.tokopedia.design.text.SpinnerCounterInputView
+            android:id="@+id/spinner_counter_input_view_price"
+            style="@style/LabelLayout"
+            app:spinner_decimal_entries="@array/product_currency_entries"
+            app:spinner_decimal_hint="@string/product_label_variant_price"
+            app:spinner_decimal_max_length="@integer/product_max_counter_length"
+            app:spinner_decimal_show_counter_button="false"
+            app:spinner_decimal_values="@array/product_currency_values" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button_save"
+        style="@style/Button.Submit.Green"
+        android:text="@string/label_variant_save"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"/>
+</LinearLayout>

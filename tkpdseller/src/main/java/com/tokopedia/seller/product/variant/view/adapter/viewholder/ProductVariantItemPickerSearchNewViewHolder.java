@@ -17,20 +17,23 @@ import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVaria
 /**
  * @author normansyahputa on 5/26/17.
  */
-@Deprecated
-public class ProductVariantItemPickerSearchViewHolder extends BaseMultipleCheckViewHolder<ProductVariantOption> {
+public class ProductVariantItemPickerSearchNewViewHolder extends BaseMultipleCheckViewHolder<ProductVariantOption> {
 
     private ImageView imageView;
     private TextView titleTextView;
     private CheckBox checkBox;
     private View viewStroke;
 
-    public ProductVariantItemPickerSearchViewHolder(View itemView) {
+    private boolean isColorType;
+
+    public ProductVariantItemPickerSearchNewViewHolder(View itemView, boolean isColorType) {
         super(itemView);
         imageView = (ImageView) itemView.findViewById(R.id.image_view);
         titleTextView = (TextView) itemView.findViewById(R.id.text_view_title);
         checkBox = (CheckBox) itemView.findViewById(R.id.check_box);
         viewStroke = itemView.findViewById(R.id.view_stroke);
+
+        this.isColorType = isColorType;
     }
 
     @Override
@@ -59,20 +62,29 @@ public class ProductVariantItemPickerSearchViewHolder extends BaseMultipleCheckV
 
     @Override
     public void bindObject(final ProductVariantOption productVariantOption) {
-        if (!TextUtils.isEmpty(productVariantOption.getHexCode())) {
-            imageView.setColorFilter(Color.parseColor(productVariantOption.getHexCode()), PorterDuff.Mode.SRC_ATOP);
-            imageView.setImageResource(R.drawable.circle_white_nopad);
-            imageView.setVisibility(View.VISIBLE);
-            viewStroke.setVisibility(View.VISIBLE);
-        } else if (!TextUtils.isEmpty(productVariantOption.getIcon())) {
-            imageView.clearColorFilter();
-            Glide.with(imageView.getContext()).load(productVariantOption.getIcon())
-                    .transform(new CircleTransform(imageView.getContext())).into(imageView);
-            viewStroke.setVisibility(View.GONE);
-            imageView.setVisibility(View.VISIBLE);
+        if (isColorType) {
+            if (!TextUtils.isEmpty(productVariantOption.getHexCode())) {
+                imageView.setColorFilter(Color.parseColor(productVariantOption.getHexCode()), PorterDuff.Mode.SRC_ATOP);
+                imageView.setImageResource(R.drawable.circle_white_nopad);
+                imageView.setVisibility(View.VISIBLE);
+                viewStroke.setVisibility(View.VISIBLE);
+            } else {
+                imageView.setImageResource(R.drawable.circle_white_strike);
+                imageView.clearColorFilter();
+                imageView.setVisibility(View.VISIBLE);
+                viewStroke.setVisibility(View.VISIBLE);
+            }
         } else {
-            imageView.setVisibility(View.GONE);
-            viewStroke.setVisibility(View.GONE);
+            if (!TextUtils.isEmpty(productVariantOption.getIcon())) {
+                imageView.clearColorFilter();
+                Glide.with(imageView.getContext()).load(productVariantOption.getIcon())
+                        .transform(new CircleTransform(imageView.getContext())).into(imageView);
+                viewStroke.setVisibility(View.GONE);
+                imageView.setVisibility(View.VISIBLE);
+            } else {
+                imageView.setVisibility(View.GONE);
+                viewStroke.setVisibility(View.GONE);
+            }
         }
         titleTextView.setText(productVariantOption.getValue());
     }

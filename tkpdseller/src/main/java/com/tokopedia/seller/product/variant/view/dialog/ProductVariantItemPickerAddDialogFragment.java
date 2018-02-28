@@ -1,5 +1,9 @@
 package com.tokopedia.seller.product.variant.view.dialog;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -21,18 +25,20 @@ public class ProductVariantItemPickerAddDialogFragment extends BaseTextPickerDia
 
     public static final String EXTRA_VARIANT_TITLE = "EXTRA_VARIANT_TITLE";
     public static final String EXTRA_STRING_TO_INPUT = "EXTRA_DEFAULT_INPUT";
-    public static final String EXTRA_VARIANT_RESERVED_TITLE_LIST = "EXTRA_VARIANT_RESERVED_TITLE_LIST";
     private static final int MAX_VARIANT_NAME_LENGTH = 15;
 
     private String variantTitle;
-    private ArrayList<String> reservedTitleList;
     private String initialStringToAdd;
+
+    private OnProductVariantItemPickerAddDialogFragmentListener onProductVariantItemPickerAddDialogFragmentListener;
+    public interface OnProductVariantItemPickerAddDialogFragmentListener{
+        boolean doesVariantOptionAlreadyExist(String stringToAdd);
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         variantTitle = getArguments().getString(EXTRA_VARIANT_TITLE);
-        reservedTitleList = getArguments().getStringArrayList(EXTRA_VARIANT_RESERVED_TITLE_LIST);
         if (savedInstanceState == null) {
             initialStringToAdd = getArguments().getString(EXTRA_STRING_TO_INPUT);
         }
@@ -47,7 +53,7 @@ public class ProductVariantItemPickerAddDialogFragment extends BaseTextPickerDia
         if (!TextUtils.isEmpty(initialStringToAdd)) {
             EditText editText = textInputLayout.getEditText();
             editText.setText(initialStringToAdd);
-            editText.setSelection(initialStringToAdd.length());
+            editText.setSelection(editText.getText().length());
         }
         return view;
 
@@ -64,12 +70,37 @@ public class ProductVariantItemPickerAddDialogFragment extends BaseTextPickerDia
             textInputLayout.setError(getString(R.string.product_variant_item_picker_add_variant_error_length_to_long, MAX_VARIANT_NAME_LENGTH));
             return;
         }
-        for (String reservedTitle : reservedTitleList) {
-            if (reservedTitle.equalsIgnoreCase(text.trim())) {
-                textInputLayout.setError(getString(R.string.product_variant_item_picker_add_variant_error_name_existed));
-                return;
-            }
+//        for (String reservedTitle : reservedTitleList) {
+//            if (reservedTitle.equalsIgnoreCase(text.trim())) {
+//                textInputLayout.setError(getString(R.string.product_variant_item_picker_add_variant_error_name_existed));
+//                return;
+//            }
+//        }
+        if (onProductVariantItemPickerAddDialogFragmentListener.doesVariantOptionAlreadyExist(text)) {
+            textInputLayout.setError(getString(R.string.product_variant_item_picker_add_variant_error_name_existed));
+            return;
         }
         super.onTextSubmitted(text);
+    }
+
+    @TargetApi(23)
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        onAttachActivity(context);
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            onAttachActivity(activity);
+        }
+    }
+
+    protected void onAttachActivity(Context context) {
+        // to be overriden in child
+        onProductVariantItemPickerAddDialogFragmentListener = (OnProductVariantItemPickerAddDialogFragmentListener) context;
     }
 }

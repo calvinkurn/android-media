@@ -31,8 +31,6 @@ public class ProductVariantPickerCacheNewFragment extends BaseCacheListFragment<
     //private long currentTempId;
 
     public OnProductVariantPickerCacheNewFragmentListener onProductVariantPickerCacheNewFragmentListener;
-
-
     public interface OnProductVariantPickerCacheNewFragmentListener{
         boolean isDataColorType();
     }

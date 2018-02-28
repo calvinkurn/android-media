@@ -78,6 +78,10 @@ public class ProductVariantOptionParent implements Parcelable{
         return productVariantOptionChild;
     }
 
+    public boolean hasProductVariantOptionChild() {
+        return productVariantOptionChild!= null && productVariantOptionChild.size() > 0;
+    }
+
     public void setProductVariantOptionChild(List<ProductVariantOptionChild> productVariantOptionChild) {
         this.productVariantOptionChild = productVariantOptionChild;
     }

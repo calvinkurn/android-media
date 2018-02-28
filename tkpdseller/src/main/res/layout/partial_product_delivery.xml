@@ -49,7 +49,7 @@
             style="@style/LabelLayout"
             android:visibility="gone"
             tools:visibility="visible"
-            app:title="@string/product_label_free_returns" />
+            app:ls_title="@string/product_label_free_returns" />
 
         <com.tokopedia.expandable.ExpandableOptionSwitch
             android:id="@+id/expandable_option_switch_pre_order"

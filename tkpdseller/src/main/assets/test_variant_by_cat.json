@@ -1,0 +1,336 @@
+[
+  {
+    "variant_id": 1,
+    "name": "Warna",
+    "identifier": "colour",
+    "status": 2,
+    "has_unit": 0,
+    "units": [
+      {
+        "unit_id": 0,
+        "name": "",
+        "short_name": "",
+        "values": [
+          {
+            "value_id": 1,
+            "value": "Putih",
+            "hex_code": "#ffffff",
+            "icon": ""
+          },
+          {
+            "value_id": 2,
+            "value": "Hitam",
+            "hex_code": "#000000",
+            "icon": ""
+          },
+          {
+            "value_id": 4,
+            "value": "Navy",
+            "hex_code": "#05056b",
+            "icon": ""
+          },
+          {
+            "value_id": 5,
+            "value": "Biru",
+            "hex_code": "#1d6cbb",
+            "icon": ""
+          },
+          {
+            "value_id": 6,
+            "value": "Biru Muda",
+            "hex_code": "#8ad1e8",
+            "icon": ""
+          },
+          {
+            "value_id": 8,
+            "value": "Maroon",
+            "hex_code": "#800000",
+            "icon": ""
+          },
+          {
+            "value_id": 9,
+            "value": "Merah",
+            "hex_code": "#ff0016",
+            "icon": ""
+          },
+          {
+            "value_id": 10,
+            "value": "Fuchsia",
+            "hex_code": "#f400a1",
+            "icon": ""
+          },
+          {
+            "value_id": 11,
+            "value": "Merah Muda",
+            "hex_code": "#ffb0b0",
+            "icon": ""
+          },
+          {
+            "value_id": 13,
+            "value": "Kuning",
+            "hex_code": "#ffff00",
+            "icon": ""
+          },
+          {
+            "value_id": 14,
+            "value": "Ivory",
+            "hex_code": "#faf0be",
+            "icon": ""
+          },
+          {
+            "value_id": 15,
+            "value": "Beige",
+            "hex_code": "#ebcca3",
+            "icon": ""
+          },
+          {
+            "value_id": 17,
+            "value": "Hijau muda",
+            "hex_code": "#67e52a",
+            "icon": ""
+          },
+          {
+            "value_id": 18,
+            "value": "Hijau Tua",
+            "hex_code": "#006400",
+            "icon": ""
+          },
+          {
+            "value_id": 19,
+            "value": "Ungu",
+            "hex_code": "#bf00ff",
+            "icon": ""
+          },
+          {
+            "value_id": 20,
+            "value": "Emas",
+            "hex_code": "#ffd700",
+            "icon": ""
+          },
+          {
+            "value_id": 21,
+            "value": "Perak",
+            "hex_code": "#c0c0c0",
+            "icon": ""
+          },
+          {
+            "value_id": 3,
+            "value": "Abu-abu Muda",
+            "hex_code": "#a9a9a9",
+            "icon": ""
+          },
+          {
+            "value_id": 7,
+            "value": "Turquoise",
+            "hex_code": "#71f3f3",
+            "icon": ""
+          },
+          {
+            "value_id": 12,
+            "value": "Orange",
+            "hex_code": "#ffa500",
+            "icon": ""
+          },
+          {
+            "value_id": 16,
+            "value": "Cokelat Tua",
+            "hex_code": "#8b4513",
+            "icon": ""
+          },
+          {
+            "value_id": 219,
+            "value": "Cokelat Muda",
+            "hex_code": "#dd7e28",
+            "icon": ""
+          },
+          {
+            "value_id": 220,
+            "value": "Merah Salem",
+            "hex_code": "#ff6250",
+            "icon": ""
+          },
+          {
+            "value_id": 222,
+            "value": "Titanium",
+            "hex_code": "#f9f4ef",
+            "icon": ""
+          },
+          {
+            "value_id": 223,
+            "value": "Hijau Tosca",
+            "hex_code": "#209271",
+            "icon": ""
+          },
+          {
+            "value_id": 225,
+            "value": "Tembaga",
+            "hex_code": "#cd5832",
+            "icon": ""
+          },
+          {
+            "value_id": 218,
+            "value": "Abu-abu Tua",
+            "hex_code": "#5d5d5d",
+            "icon": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "variant_id": 6,
+    "name": "Ukuran Pakaian",
+    "identifier": "size",
+    "status": 1,
+    "has_unit": 1,
+    "units": [
+      {
+        "unit_id": 7,
+        "name": "International",
+        "short_name": "Intl",
+        "values": [
+          {
+            "value_id": 22,
+            "value": "XXS",
+            "hex_code": "",
+            "icon": ""
+          },
+          {
+            "value_id": 23,
+            "value": "XS",
+            "hex_code": "",
+            "icon": ""
+          },
+          {
+            "value_id": 24,
+            "value": "S",
+            "hex_code": "",
+            "icon": ""
+          },
+          {
+            "value_id": 25,
+            "value": "M",
+            "hex_code": "",
+            "icon": ""
+          },
+          {
+            "value_id": 26,
+            "value": "L",
+            "hex_code": "",
+            "icon": ""
+          },
+          {
+            "value_id": 27,
+            "value": "XL",
+            "hex_code": "",
+            "icon": ""
+          },
+          {
+            "value_id": 28,
+            "value": "XXL",
+            "hex_code": "",
+            "icon": ""
+          }
+        ]
+      },
+      {
+        "unit_id": 8,
+        "name": "US",
+        "short_name": "US",
+        "values": [
+          {
+            "value_id": 29,
+            "value": "0",
+            "hex_code": "",
+            "icon": ""
+          },
+          {
+            "value_id": 30,
+            "value": "2",
+            "hex_code": "",
+            "icon": ""
+          },
+          {
+            "value_id": 31,
+            "value": "4",
+            "hex_code": "",
+            "icon": ""
+          },
+          {
+            "value_id": 32,
+            "value": "6",
+            "hex_code": "",
+            "icon": ""
+          },
+          {
+            "value_id": 33,
+            "value": "8",
+            "hex_code": "",
+            "icon": ""
+          },
+          {
+            "value_id": 34,
+            "value": "10",
+            "hex_code": "",
+            "icon": ""
+          },
+          {
+            "value_id": 35,
+            "value": "12",
+            "hex_code": "",
+            "icon": ""
+          }
+        ]
+      },
+      {
+        "unit_id": 9,
+        "name": "UK",
+        "short_name": "UK",
+        "values": [
+          {
+            "value_id": 36,
+            "value": "4",
+            "hex_code": "",
+            "icon": ""
+          },
+          {
+            "value_id": 37,
+            "value": "6",
+            "hex_code": "",
+            "icon": ""
+          },
+          {
+            "value_id": 38,
+            "value": "8",
+            "hex_code": "",
+            "icon": ""
+          },
+          {
+            "value_id": 39,
+            "value": "10",
+            "hex_code": "",
+            "icon": ""
+          },
+          {
+            "value_id": 40,
+            "value": "12",
+            "hex_code": "",
+            "icon": ""
+          },
+          {
+            "value_id": 41,
+            "value": "14",
+            "hex_code": "",
+            "icon": ""
+          },
+          {
+            "value_id": 42,
+            "value": "16",
+            "hex_code": "",
+            "icon": ""
+          }
+        ]
+      }
+    ]
+  }
+]

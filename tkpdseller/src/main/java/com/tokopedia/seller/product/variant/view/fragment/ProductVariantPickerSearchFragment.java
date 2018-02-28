@@ -289,8 +289,8 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
         filteredProductVariantOptionList = productVariantOptionListTemp;
     }
 
-    public long getSelectedUnitId() {
-        return selectedVariantUnitId;
+    public int getSelectedUnitId() {
+        return (int) selectedVariantUnitId;
     }
 
     @Override

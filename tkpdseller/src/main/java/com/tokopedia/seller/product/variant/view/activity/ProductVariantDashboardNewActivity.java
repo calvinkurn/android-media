@@ -16,6 +16,7 @@ public class ProductVariantDashboardNewActivity extends BaseSimpleActivity {
 
     public static final String EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST = "EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST";
     public static final String EXTRA_PRODUCT_VARIANT_SELECTION = "EXTRA_PRODUCT_VARIANT_SELECTION";
+    public static final String EXTRA_CURRENCY_TYPE = "EXTRA_CURR_TYPE";
 
     @Override
     protected Fragment getNewFragment() {
@@ -27,7 +28,7 @@ public class ProductVariantDashboardNewActivity extends BaseSimpleActivity {
         if (getFragment()!= null && getFragment() instanceof ProductVariantDashboardNewFragment) {
             Intent intent = new Intent();
             intent.putExtra(EXTRA_PRODUCT_VARIANT_SELECTION,
-                    ((ProductVariantDashboardNewFragment) getFragment()).getProductVariantViewModel());
+                    ((ProductVariantDashboardNewFragment) getFragment()).getProductVariantViewModelGenerateTid());
             setResult(RESULT_OK, intent);
             this.finish();
         } else {

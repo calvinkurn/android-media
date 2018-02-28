@@ -56,8 +56,8 @@ public class ProductVariantByCatModel implements Parcelable {
         return hasUnit;
     }
 
-    public boolean hasProductUnitItem() {
-        return unitList!= null && unitList.size() > 0;
+    public boolean hasUnit(){
+        return hasUnit > 0 && unitList!= null && unitList.size() > 0;
     }
 
     public boolean isDataColorType(){
@@ -106,4 +106,5 @@ public class ProductVariantByCatModel implements Parcelable {
             return new ProductVariantByCatModel[size];
         }
     };
+
 }

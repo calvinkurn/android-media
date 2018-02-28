@@ -30,7 +30,7 @@ public class ProductVariantItemPickerCacheViewHolder extends BaseItemPickerCache
         if (isColorType) {
             if (!TextUtils.isEmpty(productVariantViewModel.getHexCode())) {
                 imageView.setColorFilter(Color.parseColor(productVariantViewModel.getHexCode()), PorterDuff.Mode.SRC_ATOP);
-                imageView.setImageResource(R.drawable.circle_white);
+                imageView.setImageResource(R.drawable.circle_white_nopad);
                 imageView.setVisibility(View.VISIBLE);
             } else { // no hex
                 imageView.setImageResource(R.drawable.circle_white_strike);

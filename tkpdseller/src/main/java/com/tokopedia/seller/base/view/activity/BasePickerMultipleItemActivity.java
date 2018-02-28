@@ -81,6 +81,7 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
         bottomSheetContentTextView = (TextView) findViewById(R.id.text_view_bottom_sheet_content);
         arrowImageView = (ImageView) findViewById(R.id.image_view_arrow);
         submitButton = (Button) findViewById(R.id.button_submit);
+        submitButton.setText(getSubmitTextRes());
         bottomSheetHeaderView = findViewById(R.id.layout_bottom_sheet_header);
         bottomSheetHeaderView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,6 +129,10 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
         });
     }
 
+    protected int getSubmitTextRes(){
+        return R.string.next;
+    }
+
     protected void expandBottomSheet() {
         CommonUtils.hideKeyboard(this, getWindow().getDecorView());
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -164,7 +169,7 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
         return null;
     }
 
-    @CallSuper
+    //TODO @CallSuper
     @Override
     @java.lang.SuppressWarnings("unchecked")
     public void addItemFromSearch(T t) {
@@ -173,7 +178,7 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
     }
 
 
-    @CallSuper
+    // TODO enable call super
     @Override
     @java.lang.SuppressWarnings("unchecked")
     public void removeItemFromSearch(T t) {
@@ -181,7 +186,7 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
         ((BasePickerItemCacheList<T>) fragment).removeItem(t);
     }
 
-    @CallSuper
+    //TODO @CallSuper
     @Override
     @java.lang.SuppressWarnings("unchecked")
     public void removeItemFromCache(T t) {

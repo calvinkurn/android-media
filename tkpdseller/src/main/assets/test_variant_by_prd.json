@@ -1,0 +1,160 @@
+{
+  "variant": [
+    {
+      "pv": 6539,
+      "v": 1,
+      "vu": 0,
+      "pos": 1,
+      "opt": [
+        {
+          "pvo": 23495,
+          "vuv": 19,
+          "cstm": "Ungu",
+          "image": [],
+          "hex": "#bf00ff"
+        },
+        {
+          "pvo": 23496,
+          "vuv": 0,
+          "cstm": "wacus",
+          "image": [],
+          "hex": ""
+        },
+        {
+          "pvo": 23511,
+          "vuv": 0,
+          "cstm": "bbb",
+          "image": [],
+          "hex": ""
+        }
+      ],
+      "name": "Warna",
+      "unit_name": "",
+      "identifier": "colour"
+    },
+    {
+      "pv": 6540,
+      "v": 6,
+      "vu": 7,
+      "pos": 2,
+      "opt": [
+        {
+          "pvo": 23497,
+          "vuv": 28,
+          "cstm": "XXL",
+          "image": [],
+          "hex": ""
+        },
+        {
+          "pvo": 23498,
+          "vuv": 0,
+          "cstm": "ucus",
+          "image": [],
+          "hex": ""
+        },
+        {
+          "pvo": 23512,
+          "vuv": 0,
+          "cstm": "aaa",
+          "image": [],
+          "hex": ""
+        }
+      ],
+      "name": "Ukuran Pakaian",
+      "unit_name": "International",
+      "identifier": "size"
+    }
+  ],
+  "product_variant": [
+    {
+      "st": 1,
+      "stock": 11,
+      "sku": "qwer",
+      "price_var": 15000,
+      "opt": [
+        23495,
+        23497
+      ]
+    },
+    {
+      "st": 1,
+      "stock": 1,
+      "sku": "qwer",
+      "price_var": 100000000,
+      "opt": [
+        23495,
+        23498
+      ]
+    },
+    {
+      "st": 1,
+      "stock": 10000,
+      "sku": "zzz",
+      "price_var": 1000,
+      "opt": [
+        23496,
+        23497
+      ]
+    },
+    {
+      "st": 1,
+      "stock": 1,
+      "sku": "qwer",
+      "price_var": 10000,
+      "opt": [
+        23496,
+        23498
+      ]
+    },
+    {
+      "st": 1,
+      "stock": 0,
+      "sku": "qwer-001",
+      "price_var": 1000,
+      "opt": [
+        23495,
+        23512
+      ]
+    },
+    {
+      "st": 1,
+      "stock": 0,
+      "sku": "qwer-002",
+      "price_var": 1000,
+      "opt": [
+        23496,
+        23512
+      ]
+    },
+    {
+      "st": 1,
+      "stock": 0,
+      "sku": "qwer-003",
+      "price_var": 1000,
+      "opt": [
+        23511,
+        23497
+      ]
+    },
+    {
+      "st": 1,
+      "stock": 0,
+      "sku": "qwer-004",
+      "price_var": 1000,
+      "opt": [
+        23511,
+        23498
+      ]
+    },
+    {
+      "st": 1,
+      "stock": 0,
+      "sku": "qwer-005",
+      "price_var": 1000,
+      "opt": [
+        23511,
+        23512
+      ]
+    }
+  ]
+}

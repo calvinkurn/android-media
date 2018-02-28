@@ -17,9 +17,11 @@ public class ProductCategoryViewModel implements Parcelable{
     @SerializedName("category_full_name")
     @Expose
     private String categoryFullName;
-    @SerializedName("category_full_titile")
+    //TODO remove alternate, it is typo from server
+    @SerializedName(value="category_full_title", alternate={"category_full_titile"})
     @Expose
-    private String categoryFullTitile;
+    private String categoryFullTitle;
+
     @SerializedName("category_breadcrumb_url")
     @Expose
     private String categoryBreadcrumbUrl;
@@ -44,11 +46,11 @@ public class ProductCategoryViewModel implements Parcelable{
     }
 
     public String getCategoryFullTitile() {
-        return categoryFullTitile;
+        return categoryFullTitle;
     }
 
     public void setCategoryFullTitile(String categoryFullTitile) {
-        this.categoryFullTitile = categoryFullTitile;
+        this.categoryFullTitle = categoryFullTitile;
     }
 
     public String getCategoryBreadcrumbUrl() {
@@ -76,7 +78,7 @@ public class ProductCategoryViewModel implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.categoryId);
         dest.writeString(this.categoryFullName);
-        dest.writeString(this.categoryFullTitile);
+        dest.writeString(this.categoryFullTitle);
         dest.writeString(this.categoryBreadcrumbUrl);
         dest.writeList(this.categoryDetail);
     }
@@ -87,7 +89,7 @@ public class ProductCategoryViewModel implements Parcelable{
     protected ProductCategoryViewModel(Parcel in) {
         this.categoryId = in.readLong();
         this.categoryFullName = in.readString();
-        this.categoryFullTitile = in.readString();
+        this.categoryFullTitle = in.readString();
         this.categoryBreadcrumbUrl = in.readString();
         this.categoryDetail = new ArrayList<ProductCategoryDetailViewModel>();
         in.readList(this.categoryDetail, ProductCategoryDetailViewModel.class.getClassLoader());

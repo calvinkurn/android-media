@@ -10,7 +10,6 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.viewholder.BaseItemPickerCacheViewHolder;
 import com.tokopedia.seller.common.utils.CircleTransform;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantOption;
-import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
 
 /**
  * @author normansyahputa on 5/26/17.
@@ -31,7 +30,7 @@ public class ProductVariantItemPickerCacheNewViewHolder extends BaseItemPickerCa
         if (isColorType) {
             if (!TextUtils.isEmpty(productVariantOption.getHexCode())) {
                 imageView.setColorFilter(Color.parseColor(productVariantOption.getHexCode()), PorterDuff.Mode.SRC_ATOP);
-                imageView.setImageResource(R.drawable.circle_white);
+                imageView.setImageResource(R.drawable.circle_white_nopad);
                 imageView.setVisibility(View.VISIBLE);
             } else { // no hex
                 imageView.setImageResource(R.drawable.circle_white_strike);

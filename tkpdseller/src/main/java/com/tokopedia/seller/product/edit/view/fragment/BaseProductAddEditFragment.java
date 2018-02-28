@@ -420,6 +420,7 @@ public abstract class BaseProductAddEditFragment <T extends ProductAddPresenter>
         Intent intent = new Intent(getActivity(), ProductVariantDashboardNewActivity.class);
         intent.putExtra(ProductVariantDashboardNewActivity.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, productVariantByCatModelList);
         intent.putExtra(ProductVariantDashboardNewActivity.EXTRA_PRODUCT_VARIANT_SELECTION, currentProductViewModel.getProductVariant());
+        intent.putExtra(ProductVariantDashboardNewActivity.EXTRA_CURRENCY_TYPE, productPriceViewHolder.getCurrencyType());
         startActivityForResult(intent, ProductManageViewHolder.REQUEST_CODE_VARIANT);
     }
 

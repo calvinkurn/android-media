@@ -29,5 +29,5 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_med"
         style="@style/LabelLayout"
-        app:title="@string/product_label_share" />
+        app:ls_title="@string/product_label_share" />
 </LinearLayout>
