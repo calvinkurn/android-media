@@ -9,6 +9,8 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -19,8 +21,6 @@ import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeHeaderTokoCashAndTokoPointState;
-
-import static com.tokopedia.core.var.TkpdState.RecyclerViewItem.TYPE_EMPTY;
 
 /**
  * @author anggaprasetiyo on 11/12/17.
@@ -36,16 +36,28 @@ public class HeaderHomeView extends BaseCustomView {
     private TextView tvBalanceTokocash;
     private ImageView ivLogoTokocash;
     private TextView tvActionTokocash;
+    private ProgressBar tokocashProgressBar;
+    private LinearLayout tokocashActionContainer;
 
     private View tokoPointHolder;
     private TextView tvTitleTokoPoint;
     private TextView tvBalanceTokoPoint;
+    private TextView tvActionTokopoint;
     private ImageView ivLogoTokoPoint;
+    private ProgressBar tokopointProgressBar;
+    private LinearLayout tokopointActionContainer;
 
     public HeaderHomeView(@NonNull Context context, HeaderViewModel headerViewModel, HomeCategoryListener listener) {
         super(context);
         this.headerViewModel = headerViewModel;
         this.listener = listener;
+        /*if (headerViewModel.getTokoPointDrawerData() != null && headerViewModel.getTokoPointDrawerData().getOffFlag() == 1) {
+            // rendertokocashonly || this exception
+            renderHeaderOnlyTokocash();
+        }else {
+            renderHeaderTokocashWithTokopoint();
+        }*/
+
         if (headerViewModel.getTokoPointDrawerData() != null && headerViewModel.getTokoPointDrawerData().getOffFlag() == 0
                 && headerViewModel.getHomeHeaderWalletActionData() != null)
             renderHeaderTokocashWithTokopoint();
@@ -53,33 +65,41 @@ public class HeaderHomeView extends BaseCustomView {
                 && headerViewModel.getHomeHeaderWalletActionData() == null) {
             if (headerViewModel.getTokocashNetworkStatus() == HomeHeaderTokoCashAndTokoPointState.TOKOCASH_ERROR) {
                 //rendertokocasherrorandrendertokopoint
+                renderHeaderTokocashWithTokopoint();
             } else {
                 // rendertokocashloadingandrendertokopoint
+                renderHeaderTokocashWithTokopoint();
             }
-            this.type = TYPE_TOKOPINT_ONLY;
+//            this.type = TYPE_TOKOPINT_ONLY;
         } else if ((headerViewModel.getTokoPointDrawerData() == null || headerViewModel.getTokoPointDrawerData().getOffFlag() == 1)
                 && headerViewModel.getHomeHeaderWalletActionData() != null) {
             if (headerViewModel.getTokopointNetworkStatus() == HomeHeaderTokoCashAndTokoPointState.TOKOPOINT_ERROR && headerViewModel.getTokoPointDrawerData() == null) {
                 // rendertokocashandtokopointerror
+                renderHeaderTokocashWithTokopoint();
             } else if (headerViewModel.getTokoPointDrawerData() != null && headerViewModel.getTokoPointDrawerData().getOffFlag() == 1) {
-                // rendertokocashonly
+                // rendertokocashonly || this exception
+                renderHeaderOnlyTokocash();
             } else {
+                renderHeaderTokocashWithTokopoint();
                 // rendertokopointloadingandrendertokocash
             }
-            this.type = TYPE_TOKOCASH_ONLY;
+//            this.type = TYPE_TOKOCASH_ONLY;
         } else if (headerViewModel.getTokoPointDrawerData() == null && headerViewModel.getHomeHeaderWalletActionData() == null) {
             if (headerViewModel.getTokocashNetworkStatus() == HomeHeaderTokoCashAndTokoPointState.TOKOCASH_ERROR
                     && headerViewModel.getTokopointNetworkStatus() == HomeHeaderTokoCashAndTokoPointState.TOKOPOINT_ERROR) {
                 //rendererrortokopointanderrortokocash
+                renderHeaderTokocashWithTokopoint();
             } else if (headerViewModel.getTokocashNetworkStatus() == HomeHeaderTokoCashAndTokoPointState.TOKOCASH_ERROR) {
                 //rendererrortokocashandtokopointloading
+                renderHeaderTokocashWithTokopoint();
             } else if (headerViewModel.getTokopointNetworkStatus() == HomeHeaderTokoCashAndTokoPointState.TOKOPOINT_ERROR) {
                 //rendererrortokopointandtokocashloading
+                renderHeaderTokocashWithTokopoint();
             } else {
+                renderHeaderTokocashWithTokopoint();
                 //renderloadingtokopointandloadingtokocash
             }
-            // rendertokopoint
-            this.type = TYPE_EMPTY;
+//            this.type = TYPE_EMPTY;
         }
 
 
@@ -108,17 +128,6 @@ public class HeaderHomeView extends BaseCustomView {
         super(context, attrs, defStyleAttr);
     }
 
-    private void renderHeaderTokoPointOnly() {
-        View view = inflate(getContext(), R.layout.layout_item_header_home_no_tokocash, this);
-        tokoPointHolder = view.findViewById(R.id.container_tokopoint);
-        tvTitleTokoPoint = view.findViewById(R.id.tv_title_tokopoint);
-        tvBalanceTokoPoint = view.findViewById(R.id.tv_balance_tokopoint);
-        ivLogoTokoPoint = view.findViewById(R.id.iv_logo_tokopoint);
-
-        if (headerViewModel.getTokoPointDrawerData() != null) renderTokoPointLayoutListener();
-
-    }
-
     private void renderHeaderTokocashWithTokopoint() {
         View view = inflate(getContext(), R.layout.layout_item_header_home_with_tokopoint, this);
         tokoCashHolder = view.findViewById(R.id.container_tokocash);
@@ -126,35 +135,62 @@ public class HeaderHomeView extends BaseCustomView {
         tvTitleTokocash = view.findViewById(R.id.tv_title_tokocash);
         tvBalanceTokocash = view.findViewById(R.id.tv_balance_tokocash);
         ivLogoTokocash = view.findViewById(R.id.iv_logo_tokocash);
+        tokocashProgressBar = view.findViewById(R.id.progress_bar_tokocash);
+        tokocashActionContainer = view.findViewById(R.id.container_action_tokocash);
 
         tokoPointHolder = view.findViewById(R.id.container_tokopoint);
         tvTitleTokoPoint = view.findViewById(R.id.tv_title_tokopoint);
         tvBalanceTokoPoint = view.findViewById(R.id.tv_balance_tokopoint);
+        tvActionTokopoint = view.findViewById(R.id.tv_btn_action_tokopoint);
         ivLogoTokoPoint = view.findViewById(R.id.iv_logo_tokopoint);
-
-        if (headerViewModel.getHomeHeaderWalletActionData() != null) renderTokocashLayoutListener();
+        tokopointProgressBar = view.findViewById(R.id.progress_bar_tokopoint);
+        tokopointActionContainer = view.findViewById(R.id.container_action_tokopoint);
+        renderTokocashLayoutListener();
         renderTokoPointLayoutListener();
     }
 
     @SuppressLint("SetTextI18n")
     private void renderTokoPointLayoutListener() {
-        tvTitleTokoPoint.setVisibility(VISIBLE);
-        tvBalanceTokoPoint.setVisibility(VISIBLE);
-        tvTitleTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getTierNameDesc());
-        tvBalanceTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getRewardPointsStr());
-        tokoPointHolder.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                UnifyTracking.eventUserProfileTokopoints();
-                listener.actionTokoPointClicked(
-                        headerViewModel.getTokoPointDrawerData().getMainPageUrl(),
-                        TextUtils.isEmpty(headerViewModel.getTokoPointDrawerData().getMainPageTitle())
-                                ? TITLE_HEADER_WEBSITE
-                                : headerViewModel.getTokoPointDrawerData().getMainPageTitle()
-                );
-            }
-        });
+        if (headerViewModel.getTokoPointDrawerData() == null && headerViewModel.getTokopointNetworkStatus() == HomeHeaderTokoCashAndTokoPointState.TOKOPOINT_ERROR) {
+            tokoPointHolder.setOnClickListener(getOnClickRefreshTokoPoint());
+            tvBalanceTokoPoint.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            tvBalanceTokoPoint.setVisibility(VISIBLE);
+            tvBalanceTokoPoint.setText("Unable to Load");
+            tvBalanceTokoPoint.setTextColor(getContext().getResources().getColor(R.color.black_70));
+            tvBalanceTokoPoint.setTypeface(null, Typeface.BOLD);
+            tvActionTokopoint.setText("Refresh");
+            tvActionTokopoint.setVisibility(VISIBLE);
+            tvTitleTokoPoint.setVisibility(GONE);
+            tokopointProgressBar.setVisibility(GONE);
+            tokopointActionContainer.setVisibility(VISIBLE);
+        } else if (headerViewModel.getTokoPointDrawerData() == null && headerViewModel.getTokopointNetworkStatus() != HomeHeaderTokoCashAndTokoPointState.TOKOPOINT_ERROR) {
+            tokoPointHolder.setOnClickListener(null);
+            tokopointProgressBar.setVisibility(VISIBLE);
+            tokopointActionContainer.setVisibility(GONE);
+        } else {
+            tokopointProgressBar.setVisibility(GONE);
+            tokopointActionContainer.setVisibility(VISIBLE);
+            tvActionTokopoint.setVisibility(GONE);
+            tvTitleTokoPoint.setVisibility(VISIBLE);
+            tvBalanceTokoPoint.setVisibility(VISIBLE);
+            tvTitleTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getTierNameDesc());
+            tvBalanceTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getRewardPointsStr());
+            tokoPointHolder.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    UnifyTracking.eventUserProfileTokopoints();
+                    listener.actionTokoPointClicked(
+                            headerViewModel.getTokoPointDrawerData().getMainPageUrl(),
+                            TextUtils.isEmpty(headerViewModel.getTokoPointDrawerData().getMainPageTitle())
+                                    ? TITLE_HEADER_WEBSITE
+                                    : headerViewModel.getTokoPointDrawerData().getMainPageTitle()
+                    );
+                }
+            });
+        }
+
     }
+
 
     private void renderVisibilityTitleOnlyTokoCash(boolean isVisibleButtonAction) {
         if (headerViewModel.getHomeHeaderWalletActionData().getTypeAction() ==
@@ -188,44 +224,82 @@ public class HeaderHomeView extends BaseCustomView {
     private void renderTokocashLayoutListener() {
         final HomeHeaderWalletAction homeHeaderWalletAction =
                 headerViewModel.getHomeHeaderWalletActionData();
-
-        tvTitleTokocash.setText(homeHeaderWalletAction.getLabelTitle());
-        tvActionTokocash.setText(homeHeaderWalletAction.getLabelActionButton());
-
-        if (homeHeaderWalletAction.getTypeAction()
-                == HomeHeaderWalletAction.TYPE_ACTION_TOP_UP) {
-            tokoCashHolder.setOnClickListener(getOnClickTokocashBalance(homeHeaderWalletAction));
+        if (headerViewModel.getHomeHeaderWalletActionData() == null && headerViewModel.getTokocashNetworkStatus() == HomeHeaderTokoCashAndTokoPointState.TOKOCASH_ERROR) {
+            tokoCashHolder.setOnClickListener(getOnClickRefreshTokocash());
             tvBalanceTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             tvBalanceTokocash.setVisibility(VISIBLE);
-            tvBalanceTokocash.setText(homeHeaderWalletAction.getBalance());
+            tvBalanceTokocash.setText("Unable to Load");
             tvBalanceTokocash.setTextColor(getContext().getResources().getColor(R.color.black_70));
             tvBalanceTokocash.setTypeface(null, Typeface.BOLD);
-
-            tvActionTokocash.setText(getContext().getString(R.string.top_up_button));
-            tvActionTokocash.setVisibility(homeHeaderWalletAction.isVisibleActionButton() ? VISIBLE : GONE);
-            tvTitleTokocash.setVisibility(homeHeaderWalletAction.isVisibleActionButton() ? GONE : VISIBLE);
-        } else {
-            tvTitleTokocash.setTypeface(null, Typeface.NORMAL);
+            tvActionTokocash.setText("Refresh");
             tvActionTokocash.setVisibility(VISIBLE);
-            tvActionTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            tokoCashHolder.setOnClickListener(getOnClickTokocashActionButton(homeHeaderWalletAction));
-            if (headerViewModel.isPendingTokocashChecked()
-                    && headerViewModel.getCashBackData() != null) {
-                if (headerViewModel.getCashBackData().getAmount() > 0) {
-                    tvBalanceTokocash.setVisibility(VISIBLE);
-                    tvBalanceTokocash.setText(headerViewModel.getCashBackData().getAmountText());
-                    tvBalanceTokocash.setTextColor(
-                            getContext().getResources().getColor(R.color.black_38)
-                    );
-                    tvBalanceTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_info, 0);
-                    tvBalanceTokocash.setOnClickListener(
-                            getOnClickPendingCashBackListener(homeHeaderWalletAction)
-                    );
-                }
+            tvTitleTokocash.setVisibility(GONE);
+            tokocashProgressBar.setVisibility(GONE);
+            tokocashActionContainer.setVisibility(VISIBLE);
+        } else if (headerViewModel.getHomeHeaderWalletActionData() == null && headerViewModel.getTokocashNetworkStatus() != HomeHeaderTokoCashAndTokoPointState.TOKOCASH_ERROR) {
+            tokoCashHolder.setOnClickListener(null);
+            tokocashProgressBar.setVisibility(VISIBLE);
+            tokocashActionContainer.setVisibility(GONE);
+        } else {
+            tokocashProgressBar.setVisibility(GONE);
+            tokocashActionContainer.setVisibility(VISIBLE);
+            tvTitleTokocash.setText(homeHeaderWalletAction.getLabelTitle());
+            tvActionTokocash.setText(homeHeaderWalletAction.getLabelActionButton());
+            if (homeHeaderWalletAction.getTypeAction()
+                    == HomeHeaderWalletAction.TYPE_ACTION_TOP_UP) {
+                tokoCashHolder.setOnClickListener(getOnClickTokocashBalance(homeHeaderWalletAction));
+                tvBalanceTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                tvBalanceTokocash.setVisibility(VISIBLE);
+                tvBalanceTokocash.setText(homeHeaderWalletAction.getBalance());
+                tvBalanceTokocash.setTextColor(getContext().getResources().getColor(R.color.black_70));
+                tvBalanceTokocash.setTypeface(null, Typeface.BOLD);
+
+                tvActionTokocash.setText(getContext().getString(R.string.top_up_button));
+                tvActionTokocash.setVisibility(homeHeaderWalletAction.isVisibleActionButton() ? VISIBLE : GONE);
+                tvTitleTokocash.setVisibility(homeHeaderWalletAction.isVisibleActionButton() ? GONE : VISIBLE);
             } else {
-                listener.onRequestPendingCashBack();
+                tvTitleTokocash.setTypeface(null, Typeface.NORMAL);
+                tvActionTokocash.setVisibility(VISIBLE);
+                tvActionTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                tokoCashHolder.setOnClickListener(getOnClickTokocashActionButton(homeHeaderWalletAction));
+                if (headerViewModel.isPendingTokocashChecked()
+                        && headerViewModel.getCashBackData() != null) {
+                    if (headerViewModel.getCashBackData().getAmount() > 0) {
+                        tvBalanceTokocash.setVisibility(VISIBLE);
+                        tvBalanceTokocash.setText(headerViewModel.getCashBackData().getAmountText());
+                        tvBalanceTokocash.setTextColor(
+                                getContext().getResources().getColor(R.color.black_38)
+                        );
+                        tvBalanceTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_info, 0);
+                        tvBalanceTokocash.setOnClickListener(
+                                getOnClickPendingCashBackListener(homeHeaderWalletAction)
+                        );
+                    }
+                } else {
+                    listener.onRequestPendingCashBack();
+                }
             }
         }
+
+    }
+
+
+    private OnClickListener getOnClickRefreshTokoPoint() {
+        return new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onRefreshTokoPointButtonClicked();
+            }
+        };
+    }
+
+    private OnClickListener getOnClickRefreshTokocash() {
+        return new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onRefreshTokoCashButtonClicked();
+            }
+        };
     }
 
     @NonNull
@@ -285,6 +359,8 @@ public class HeaderHomeView extends BaseCustomView {
         tvTitleTokocash = view.findViewById(R.id.tv_title_tokocash);
         ivLogoTokocash = view.findViewById(R.id.iv_logo_tokocash);
         tvBalanceTokocash = view.findViewById(R.id.tv_balance_tokocash);
+        tokocashProgressBar = view.findViewById(R.id.progress_bar_tokocash);
+        tokocashActionContainer = view.findViewById(R.id.container_action_tokocash);
 
         if (headerViewModel.getHomeHeaderWalletActionData() != null) {
             renderTokocashLayoutListener();

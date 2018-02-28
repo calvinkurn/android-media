@@ -27,6 +27,7 @@ import com.tokopedia.home.beranda.listener.HomeFeedListener;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeHeaderTokoCashAndTokoPointState;
 import com.tokopedia.home.beranda.presentation.view.subscriber.GetHomeFeedsSubscriber;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetHomeFeedsUseCase;
 import com.tokopedia.usecase.RequestParams;
@@ -52,19 +53,16 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     private static final String TAG = HomePresenter.class.getSimpleName();
     private static final String CURSOR_NO_NEXT_PAGE_FEED = "CURSOR_NO_NEXT_PAGE_FEED";
-
+    private final Context context;
+    protected CompositeSubscription compositeSubscription;
+    protected Subscription subscription;
     @Inject
     GetLocalHomeDataUseCase localHomeDataUseCase;
     @Inject
     GetHomeDataUseCase getHomeDataUseCase;
     @Inject
     GetHomeFeedsUseCase getHomeFeedsUseCase;
-
-
     private SessionHandler sessionHandler;
-    protected CompositeSubscription compositeSubscription;
-    protected Subscription subscription;
-    private final Context context;
     private GetShopInfoRetrofit getShopInfoRetrofit;
     private String currentCursor = "";
     private PagingHandler pagingHandler;
@@ -112,7 +110,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         if (SessionHandler.isV4Login(context)) {
             if (headerViewModel == null) {
                 headerViewModel = new HeaderViewModel();
-                headerViewModel.setType(HeaderViewModel.TYPE_EMPTY);
             }
             headerViewModel.setPendingTokocashChecked(false);
         }
@@ -132,9 +129,19 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     public void updateHeaderTokoCashData(HomeHeaderWalletAction homeHeaderWalletAction) {
         if (headerViewModel == null) {
             headerViewModel = new HeaderViewModel();
-            headerViewModel.setType(HeaderViewModel.TYPE_EMPTY);
         }
+        headerViewModel.setTokocashNetworkStatus(HomeHeaderTokoCashAndTokoPointState.TOKOCASH_SUCCESS);
         headerViewModel.setHomeHeaderWalletActionData(homeHeaderWalletAction);
+        getView().updateHeaderItem(headerViewModel);
+    }
+
+    @Override
+    public void onHeaderTokocashErrorFromBroadcast() {
+        if (headerViewModel == null) {
+            headerViewModel = new HeaderViewModel();
+        }
+        headerViewModel.setTokocashNetworkStatus(HomeHeaderTokoCashAndTokoPointState.TOKOCASH_ERROR);
+        headerViewModel.setHomeHeaderWalletActionData(null);
         getView().updateHeaderItem(headerViewModel);
     }
 
@@ -142,8 +149,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     public void updateHeaderTokoCashPendingData(CashBackData cashBackData) {
         if (headerViewModel == null) {
             headerViewModel = new HeaderViewModel();
-            headerViewModel.setType(HeaderViewModel.TYPE_EMPTY);
         }
+        headerViewModel.setTokocashNetworkStatus(HomeHeaderTokoCashAndTokoPointState.TOKOCASH_SUCCESS);
         headerViewModel.setCashBackData(cashBackData);
         headerViewModel.setPendingTokocashChecked(true);
         getView().updateHeaderItem(headerViewModel);
@@ -153,12 +160,49 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     public void updateHeaderTokoPointData(TokoPointDrawerData tokoPointDrawerData) {
         if (headerViewModel == null) {
             headerViewModel = new HeaderViewModel();
-            headerViewModel.setType(HeaderViewModel.TYPE_EMPTY);
         }
+        headerViewModel.setTokopointNetworkStatus(HomeHeaderTokoCashAndTokoPointState.TOKOCASH_SUCCESS);
         headerViewModel.setTokoPointDrawerData(tokoPointDrawerData);
         getView().updateHeaderItem(headerViewModel);
     }
 
+    @Override
+    public void onHeaderTokopointErrorFromBroadcast() {
+        if (headerViewModel == null) {
+            headerViewModel = new HeaderViewModel();
+        }
+        headerViewModel.setTokopointNetworkStatus(HomeHeaderTokoCashAndTokoPointState.TOKOPOINT_ERROR);
+        headerViewModel.setTokoPointDrawerData(null);
+        getView().updateHeaderItem(headerViewModel);
+    }
+
+    @Override
+    public void onRefreshTokoPoint() {
+        Intent intentGetTokoPoint = new Intent(TokoPointDrawerBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP);
+        if (headerViewModel == null) {
+            headerViewModel = new HeaderViewModel();
+        }
+        headerViewModel.setTokopointNetworkStatus(HomeHeaderTokoCashAndTokoPointState.TOKOPOINT_SUCCESS);
+        headerViewModel.setTokoPointDrawerData(null);
+        getView().updateHeaderItem(headerViewModel);
+        context.sendBroadcast(intentGetTokoPoint);
+    }
+
+    @Override
+    public void onRefreshTokoCash() {
+        if (!SessionHandler.isV4Login(context)) return;
+        Intent intentGetTokocash = new Intent(DrawerActivityBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP);
+        intentGetTokocash.putExtra(DrawerActivityBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER,
+                DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_GET_TOKOCASH_DATA);
+
+        if (headerViewModel == null) {
+            headerViewModel = new HeaderViewModel();
+        }
+        headerViewModel.setTokocashNetworkStatus(HomeHeaderTokoCashAndTokoPointState.TOKOCASH_SUCCESS);
+        headerViewModel.setHomeHeaderWalletActionData(null);
+        getView().updateHeaderItem(headerViewModel);
+        context.sendBroadcast(intentGetTokocash);
+    }
 
     @Override
     public void getShopInfo(final String url, String shopDomain) {
