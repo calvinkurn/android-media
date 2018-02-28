@@ -15,13 +15,24 @@ import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
  * Created by Irfan Khoirul on 26/01/18.
  */
 
-public class ShipmentDetailActivity extends BasePresenterActivity {
+public class ShipmentDetailActivity extends BasePresenterActivity
+        implements ShipmentDetailFragment.FragmentListener {
 
     public static final String EXTRA_SHIPMENT_DETAIL_DATA = "shipmentDetailData";
+    public static final String EXTRA_CART_SELLER_ITEM_MODEL = "cartSellerItemModel";
+    public static final String EXTRA_SINGLE_ADDRESS_POSITION = "singleAddressPosition";
 
     public static Intent createInstance(Activity activity, ShipmentDetailData shipmentDetailData) {
         Intent intent = new Intent(activity, ShipmentDetailActivity.class);
         intent.putExtra(EXTRA_SHIPMENT_DETAIL_DATA, shipmentDetailData);
+        return intent;
+    }
+
+    public static Intent createInstance(Activity activity, ShipmentDetailData shipmentDetailData,
+                                        int position) {
+        Intent intent = new Intent(activity, ShipmentDetailActivity.class);
+        intent.putExtra(EXTRA_SHIPMENT_DETAIL_DATA, shipmentDetailData);
+        intent.putExtra(EXTRA_SINGLE_ADDRESS_POSITION, position);
         return intent;
     }
 
@@ -73,5 +84,17 @@ public class ShipmentDetailActivity extends BasePresenterActivity {
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+    @Override
+    public void onCourierSelected(ShipmentDetailData shipmentDetailData) {
+        Intent intentResult = new Intent();
+        intentResult.putExtra(EXTRA_SHIPMENT_DETAIL_DATA, shipmentDetailData);
+        if (getIntent().hasExtra(EXTRA_SINGLE_ADDRESS_POSITION)) {
+            intentResult.putExtra(EXTRA_SINGLE_ADDRESS_POSITION,
+                    getIntent().getIntExtra(EXTRA_SINGLE_ADDRESS_POSITION, 0));
+        }
+        setResult(Activity.RESULT_OK, intentResult);
+        finish();
     }
 }

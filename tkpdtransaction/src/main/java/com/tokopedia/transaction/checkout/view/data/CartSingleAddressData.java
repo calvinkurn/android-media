@@ -20,7 +20,6 @@ public class CartSingleAddressData implements Parcelable {
     private RecipientAddressModel recipientAddressModel;
     private List<CartSellerItemModel> cartSellerItemModelList;
     private CartPayableDetailModel cartPayableDetailModel;
-    private ShipmentCartData shipmentCartData;
 
     public CartPromo getCartPromo() {
         return cartPromo;
@@ -60,14 +59,6 @@ public class CartSingleAddressData implements Parcelable {
 
     public void setCartPayableDetailModel(CartPayableDetailModel cartPayableDetailModel) {
         this.cartPayableDetailModel = cartPayableDetailModel;
-    }
-
-    public ShipmentCartData getShipmentCartData() {
-        return shipmentCartData;
-    }
-
-    public void setShipmentCartData(ShipmentCartData shipmentCartData) {
-        this.shipmentCartData = shipmentCartData;
     }
 
     @Override

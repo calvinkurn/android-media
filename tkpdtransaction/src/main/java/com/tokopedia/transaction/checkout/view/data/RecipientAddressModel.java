@@ -24,6 +24,7 @@ public class RecipientAddressModel implements Parcelable {
     private String destinationDistrictId;
     private String destinationDistrictName;
 
+    // For PickupPoint Alfamart
     private String tokenPickup;
     private String unixTime;
     private Store store;
