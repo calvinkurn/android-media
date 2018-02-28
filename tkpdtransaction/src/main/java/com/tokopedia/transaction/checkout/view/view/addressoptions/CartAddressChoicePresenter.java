@@ -1,23 +1,38 @@
 package com.tokopedia.transaction.checkout.view.view.addressoptions;
 
+import android.content.Context;
+import android.util.Log;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.transaction.checkout.domain.usecase.GetDefaultAddressUseCase;
+import com.tokopedia.transaction.checkout.util.PeopleAddressAuthUtil;
 import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.view.presenter.ICartAddressChoicePresenter;
 import com.tokopedia.transaction.checkout.view.view.ICartAddressChoiceView;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import rx.Subscriber;
+
 /**
- * Created by Irfan Khoirul on 05/02/18.
+ * @author Irfan Khoirul on 05/02/18
+ *         Aghny A. Putra on 27/02/18
  */
 
 public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddressChoiceView>
         implements ICartAddressChoicePresenter {
 
-    private static final int ADDRESS_STATUS_DEFAULT = 2;
-    private List<RecipientAddressModel> recipientAddresses = new ArrayList<>();
-    private RecipientAddressModel selectedRecipientAddress;
+    private static final String TAG = CartAddressChoicePresenter.class.getSimpleName();
+
+    private GetDefaultAddressUseCase mGetDefaultAddressUseCase;
+    private RecipientAddressModel mSelectedRecipientAddress;
+
+    @Inject
+    public CartAddressChoicePresenter(GetDefaultAddressUseCase getDefaultAddressUseCase) {
+        mGetDefaultAddressUseCase = getDefaultAddressUseCase;
+    }
 
     @Override
     public void attachView(ICartAddressChoiceView view) {
@@ -30,70 +45,41 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
     }
 
     @Override
-    public void loadAddresses() {
-        List<RecipientAddressModel> models = DummyCreator.createDummyShipmentRecipients();
-        for (RecipientAddressModel model : models) {
-            if (model.getAddressStatus() == ADDRESS_STATUS_DEFAULT) {
-                model.setSelected(true);
-                selectedRecipientAddress = model;
-            }
-        }
-        recipientAddresses.clear();
-        recipientAddresses.addAll(models);
-        getView().renderRecipientData();
+    public void getAddressShortedList(Context context) {
+        mGetDefaultAddressUseCase.execute(
+                PeopleAddressAuthUtil.getRequestParams(context, 1, "", 1),
+                new Subscriber<List<RecipientAddressModel>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        Log.d(TAG, throwable.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(List<RecipientAddressModel> shipmentAddressModels) {
+                        if (!shipmentAddressModels.isEmpty()) {
+                            shipmentAddressModels.get(0).setSelected(true);
+                            mSelectedRecipientAddress = shipmentAddressModels.get(0);
+                            getView().renderRecipientData(shipmentAddressModels);
+                        }
+
+                        Log.d(TAG, "Size: " + shipmentAddressModels.size());
+                    }
+                });
     }
 
     @Override
-    public List<RecipientAddressModel> getRecipientAddresses() {
-        return recipientAddresses;
-    }
-
-    @Override
-    public void setSelectedRecipientAddress(RecipientAddressModel model) {
-        this.selectedRecipientAddress = model;
+    public void setSelectedRecipientAddress(RecipientAddressModel recipientAddress) {
+        this.mSelectedRecipientAddress = recipientAddress;
     }
 
     @Override
     public RecipientAddressModel getSelectedRecipientAddress() {
-        return selectedRecipientAddress;
+        return mSelectedRecipientAddress;
     }
 
-    private static class DummyCreator {
-
-        private static List<RecipientAddressModel> createDummyShipmentRecipients() {
-            List<RecipientAddressModel> models = new ArrayList<>();
-            RecipientAddressModel addressOne = new RecipientAddressModel();
-            addressOne.setAddressStatus(1);
-            addressOne.setId("1");
-            addressOne.setRecipientName("John Doe");
-            addressOne.setAddressName("Alamat Kantor");
-            addressOne.setAddressStreet("Jl. Prof. Dr. Satrio Kav. 11 No. 111");
-            addressOne.setDestinationDistrictName("Setiabudi");
-            addressOne.setAddressCityName("Jakarta Selatan");
-            addressOne.setRecipientPhoneNumber("080989999");
-            addressOne.setDestinationDistrictId("2283");
-            addressOne.setDestinationDistrictName("Setiabudi");
-            addressOne.setTokenPickup("Tokopedia%2BKero:juMixO/k%2ButV%2BcQ4pVNm3FSG1pw%3D");
-            addressOne.setUnixTime("1515753331");
-            models.add(addressOne);
-
-            RecipientAddressModel addressTwo = new RecipientAddressModel();
-            addressTwo.setId("2");
-            addressTwo.setAddressStatus(2);
-            addressTwo.setRecipientName("John Doe");
-            addressTwo.setAddressName("Alamat Rumah");
-            addressTwo.setAddressStreet("Jl. Ir. Sukarno No. 21");
-            addressTwo.setDestinationDistrictName("Tebet");
-            addressTwo.setAddressCityName("Jakarta Selatan");
-            addressTwo.setRecipientPhoneNumber("080989999");
-            addressTwo.setDestinationDistrictId("2283");
-            addressTwo.setDestinationDistrictName("tebet");
-            addressTwo.setTokenPickup("Tokopedia%2BKero:juMixO/k%2ButV%2BcQ4pVNm3FSG1pw%3D");
-            addressTwo.setUnixTime("1515753331");
-            models.add(addressTwo);
-
-            return models;
-        }
-
-    }
 }

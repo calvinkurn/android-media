@@ -23,6 +23,9 @@ import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.data.mapper.AddressModelMapper;
+import com.tokopedia.transaction.checkout.di.component.CartAddressChoiceComponent;
+import com.tokopedia.transaction.checkout.di.component.DaggerCartAddressChoiceComponent;
+import com.tokopedia.transaction.checkout.di.module.CartAddressChoiceModule;
 import com.tokopedia.transaction.checkout.view.adapter.ShipmentAddressListAdapter;
 import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
@@ -32,12 +35,15 @@ import com.tokopedia.transaction.checkout.view.view.ICartAddressChoiceView;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * Created by Irfan Khoirul on 05/02/18.
+ * @author Irfan Khoirul on 05/02/18
+ *         Aghny A. Putra on 27/02/18
  */
 
 public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddressChoicePresenter>
@@ -57,20 +63,32 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     @BindView(R2.id.rv_address)
     RecyclerView rvAddress;
 
-    private ShipmentAddressListAdapter recipientAdapter;
     private ICartAddressChoiceActivityListener cartAddressChoiceListener;
 
-    public static CartAddressChoiceFragment newInstance(
-            List<CartSellerItemModel> cartSellerItemModelList
-    ) {
-        CartAddressChoiceFragment fragment = new CartAddressChoiceFragment();
+    @Inject
+    ShipmentAddressListAdapter mShipmentAddressListAdapter;
+
+    @Inject
+    CartAddressChoicePresenter mCartAddressChoicePresenter;
+
+    public static CartAddressChoiceFragment newInstance(List<CartSellerItemModel> cartSellerItemModelList) {
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(
-                CART_ITEM_LIST_EXTRA,
-                (ArrayList<? extends Parcelable>) cartSellerItemModelList
-        );
+        bundle.putParcelableArrayList(CART_ITEM_LIST_EXTRA,
+                (ArrayList<? extends Parcelable>) cartSellerItemModelList);
+
+        CartAddressChoiceFragment fragment = new CartAddressChoiceFragment();
         fragment.setArguments(bundle);
+
         return fragment;
+    }
+
+    @Override
+    protected void initInjector() {
+        super.initInjector();
+        CartAddressChoiceComponent component = DaggerCartAddressChoiceComponent.builder()
+                .cartAddressChoiceModule(new CartAddressChoiceModule(this))
+                .build();
+        component.inject(this);
     }
 
     @Override
@@ -121,16 +139,15 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     @Override
     protected void initView(View view) {
         ButterKnife.bind(this, view);
-        presenter = new CartAddressChoicePresenter();
         setupRecyclerView();
-        presenter.attachView(this);
-        presenter.loadAddresses();
+        mCartAddressChoicePresenter.attachView(this);
         setShowCase();
     }
 
     @Override
-    public void renderRecipientData() {
-        setupRecyclerView();
+    public void renderRecipientData(List<RecipientAddressModel> recipientAddressModels) {
+        mShipmentAddressListAdapter.setAddressList(recipientAddressModels);
+        mShipmentAddressListAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -145,16 +162,15 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
 
     @Override
     protected void setActionVar() {
-
+        mCartAddressChoicePresenter.getAddressShortedList(getActivity());
     }
 
     private void setupRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL, false);
-        recipientAdapter = new ShipmentAddressListAdapter(this);
-        recipientAdapter.setAddressList(presenter.getRecipientAddresses());
+
         rvAddress.setLayoutManager(linearLayoutManager);
-        rvAddress.setAdapter(recipientAdapter);
+        rvAddress.setAdapter(mShipmentAddressListAdapter);
     }
 
     @OnClick(R2.id.tv_choose_other_address)
@@ -213,6 +229,8 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
                 case ManageAddressConstant.REQUEST_CODE_PARAM_EDIT:
                     // Reload list address
                     break;
+                default:
+                    break;
             }
         }
     }
@@ -235,12 +253,13 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
 
         ShowCaseDialog showCaseDialog = createShowCaseDialog();
 
-        if (!ShowCasePreference.hasShown(getActivity(), CartAddressChoiceFragment.class.getName()))
+        if (!ShowCasePreference.hasShown(getActivity(), CartAddressChoiceFragment.class.getName())) {
             showCaseDialog.show(
                     getActivity(),
                     CartAddressChoiceFragment.class.getName(),
                     showCaseObjectList
             );
+        }
     }
 
     private ShowCaseDialog createShowCaseDialog() {
@@ -260,4 +279,5 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
                 .useArrow(true)
                 .build();
     }
+
 }

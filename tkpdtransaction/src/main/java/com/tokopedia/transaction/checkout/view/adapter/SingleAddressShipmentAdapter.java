@@ -61,9 +61,11 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
     private static final int FIRST_ELEMENT = 0;
 
     private Context mContext;
+
     private CartSingleAddressData mCartSingleAddressData;
-    private SingleAddressShipmentAdapterListener mAdapterViewListener;
     private ShipmentDetailData shipmentDetailData;
+
+    private SingleAddressShipmentAdapterListener mAdapterViewListener;
 
     public SingleAddressShipmentAdapter() {
 
