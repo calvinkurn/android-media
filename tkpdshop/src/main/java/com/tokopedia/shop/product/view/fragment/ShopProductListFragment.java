@@ -25,6 +25,7 @@ import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
+import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductFilterActivity;
@@ -44,17 +45,19 @@ import javax.inject.Inject;
  * Created by nathan on 2/15/18.
  */
 
-public class ShopProductListFragment extends BaseSearchListFragment<ShopProductViewModel, ShopProductAdapterTypeFactory> implements ShopProductListView, ShopProductClickedListener {
+public class ShopProductListFragment extends BaseSearchListFragment<ShopProductViewModel, ShopProductAdapterTypeFactory> implements ShopProductListView, ShopProductClickedListener, ShopProductAdapterTypeFactory.TypeFactoryListener {
 
     public static final int SPAN_COUNT = 2;
     public static final int REQUEST_CODE_ETALASE = 12912;
     public static final int REQUEST_CODE_SORT = 12913;
     public static final String ETALASE_ID = "ETALASE_ID";
     public static final String ETALASE_NAME = "ETALASE_NAME";
+    public static final int LAYOUT_GRID_TYPE = 65;
+    public static final int LAYOUT_LIST_TYPE = 97;
     private static final Pair<Integer, Integer>[] layoutType = new Pair[]{
-            new Pair<>(ShopProductViewHolder.LAYOUT, 65),
-            new Pair<>(ShopProductSingleViewHolder.LAYOUT, 97),
-            new Pair<>(ShopProductListViewHolder.LAYOUT, 97)
+            new Pair<>(ShopProductViewHolder.LAYOUT, LAYOUT_GRID_TYPE),
+            new Pair<>(ShopProductSingleViewHolder.LAYOUT, LAYOUT_LIST_TYPE),
+            new Pair<>(ShopProductListViewHolder.LAYOUT, LAYOUT_LIST_TYPE)
     };
 
     private static final int[] LAYOUT_IMAGE_DRAWABLE_LIST = new int[]{
@@ -88,7 +91,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     @Override
     protected ShopProductAdapterTypeFactory getAdapterTypeFactory() {
-        return new ShopProductAdapterTypeFactory(this);
+        return new ShopProductAdapterTypeFactory(this, this);
     }
 
     @NonNull
@@ -180,7 +183,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
             currentLayoutType = layoutType[currentIndex];
         }
         switch (currentLayoutType.second) {
-            case 65:
+            case LAYOUT_GRID_TYPE:
                 layoutManager = new GridLayoutManager(recyclerView.getContext(), SPAN_COUNT, LinearLayoutManager.VERTICAL, false);
                 ((GridLayoutManager) layoutManager).setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                     @Override
@@ -200,6 +203,15 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         currentIndex++;
 
         return layoutManager;
+    }
+
+    @Override
+    protected EndlessLayoutManagerListener getEndlessLayoutManagerListener(){
+        return new EndlessLayoutManagerListener(){
+            public RecyclerView.LayoutManager getCurrentLayoutManager(){
+                return recyclerViews.getLayoutManager();
+            }
+        };
     }
 
     private int getNextIndex(int currentIndex, int max) {
@@ -309,5 +321,10 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         if (shopProductListPresenter != null) {
             shopProductListPresenter.detachView();
         }
+    }
+
+    @Override
+    public int getType(Object type) {
+        return currentLayoutType.first;
     }
 }

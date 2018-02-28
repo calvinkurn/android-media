@@ -16,7 +16,7 @@ import rx.Observable;
 
 public interface ShopProductRepository {
 
-    Observable<PagingList<ShopProduct>> getShopProductList(String baseUrl, ShopProductRequestModel shopProductRequestModel);
+    Observable<PagingList<ShopProduct>> getShopProductList(ShopProductRequestModel shopProductRequestModel);
 
     Observable<DynamicFilterModel.DataValue> getShopProductFilter();
 

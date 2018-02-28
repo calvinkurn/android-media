@@ -2,6 +2,7 @@ package com.tokopedia.shop.product.data.source.cloud;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
+import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopApi;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
@@ -25,7 +26,16 @@ public class ShopProductCloudDataSource {
         this.shopApi = shopApi;
     }
 
+    @Deprecated
     public Observable<Response<DataResponse<PagingList<ShopProduct>>>> getShopProductList(String baseUrl, ShopProductRequestModel shopProductRequestModel) {
+        return shopApi.getShopProductList(baseUrl+ ShopUrl.SHOP_PRODUCT_PATH, shopProductRequestModel.getHashMap());
+    }
+
+    public Observable<Response<DataResponse<PagingList<ShopProduct>>>> getShopProductList(ShopProductRequestModel shopProductRequestModel) {
+        String baseUrl = ShopUrl.BASE_URL;
+        if(shopProductRequestModel.isShopClosed()){
+            baseUrl = ShopCommonUrl.BASE_URL;
+        }
         return shopApi.getShopProductList(baseUrl+ ShopUrl.SHOP_PRODUCT_PATH, shopProductRequestModel.getHashMap());
     }
 }

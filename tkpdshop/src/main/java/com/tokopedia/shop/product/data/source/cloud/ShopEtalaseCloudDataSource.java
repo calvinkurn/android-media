@@ -26,6 +26,6 @@ public class ShopEtalaseCloudDataSource {
     public Observable<Response<DataResponse<PagingListOther<EtalaseModel>>>> getShopEtalaseList(
             ShopEtalaseRequestModel shopProductRequestModel
     ) {
-        return etalaseApi.getShopEtalase2(shopProductRequestModel.getHashMap());
+        return etalaseApi.getShopEtalase(shopProductRequestModel.getHashMap());
     }
 }
