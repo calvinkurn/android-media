@@ -3,7 +3,7 @@ package com.tokopedia.tkpd;
 import android.content.Context;
 
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.tokocash.network.WalletUserSession;
+import com.tokopedia.tokocash.WalletUserSession;
 
 /**
  * Created by nabillasabbaha on 1/17/18.

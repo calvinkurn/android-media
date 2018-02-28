@@ -184,7 +184,7 @@ import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
 import com.tokopedia.tokocash.di.TokoCashComponent;
 import com.tokopedia.tokocash.historytokocash.presentation.activity.HistoryTokoCashActivity;
-import com.tokopedia.tokocash.network.WalletUserSession;
+import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.network.exception.UserInactivateTokoCashException;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.CustomScannerTokoCashActivity;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
@@ -1089,6 +1089,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public String getUserEmailProfil() {
+        SessionHandler sessionHandler = new SessionHandler(this);
+        return sessionHandler.getEmail();
+    }
+
+    @Override
     public void invalidateCategoryMenuData() {
 
     }
@@ -1318,7 +1324,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                             tokoCashData.setAction(action);
                             return tokoCashData;
                         }
-                        throw new RuntimeException(throwable);
+                        return null;
                     }
                 })
                 .doOnError(new Action1<Throwable>() {
