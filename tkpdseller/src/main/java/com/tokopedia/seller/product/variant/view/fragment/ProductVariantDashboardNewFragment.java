@@ -310,10 +310,14 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
         }
 
         // TODO level1: update the product variant combination, remove data which not included in the parent
+        // TODO level1: also generate for all default matrix combination, ex: add "red" will add "red" S/M/L
+
         // TODO level2: update the product variant combination, remove data which not included in the parent,
-        // TODO level2: also generate the default matrix combination
+        // TODO level2: also add the default matrix combination, ex: add "S" will add red/yellow/green S
 
         // TODO update UI
+        initVariantLabel();
+        updateVariantItemListView();
 
 //        ProductVariantUnitSubmit productVariantUnitSubmit = data.getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_UNIT_SUBMIT);
 //        int level = ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE;
