@@ -26,6 +26,7 @@ import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
+import com.tokopedia.shop.product.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductFilterActivity;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapter;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
@@ -66,7 +67,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     private LabelView chooseEtalaseLabelView;
     private ShopModuleRouter shopModuleRouter;
     private String etalaseName;
-    private int etalaseId = Integer.MIN_VALUE;
+    private String etalaseId;
 
     private String shopId;
     private String keyword;
@@ -132,7 +133,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
             @Override
             public void onClick(View view) {
                 if (shopModuleRouter != null) {
-                    Intent etalaseIntent = shopModuleRouter.getEtalaseIntent(getActivity(), shopId, etalaseId);
+                    Intent etalaseIntent = ShopEtalaseActivity.createIntent(getActivity(), shopId, etalaseId);
                     ShopProductListFragment.this.startActivityForResult(etalaseIntent, REQUEST_CODE_ETALASE);
                 }
             }
@@ -211,7 +212,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     @Override
     public void loadData(int page) {
-        shopProductListPresenter.getShopPageList(shopId, keyword, etalaseId == Integer.MIN_VALUE ? null : Integer.toString(etalaseId), 0, page, Integer.valueOf(sortName));
+        shopProductListPresenter.getShopPageList(shopId, keyword, etalaseId, 0, page, Integer.valueOf(sortName));
     }
 
     @Override
@@ -265,7 +266,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         switch (requestCode) {
             case REQUEST_CODE_ETALASE:
                 if (resultCode == Activity.RESULT_OK) {
-                    etalaseId = data.getIntExtra(ETALASE_ID, -1);
+                    etalaseId = data.getStringExtra(ETALASE_ID);
                     etalaseName = data.getStringExtra(ETALASE_NAME);
                     chooseEtalaseLabelView.setContent(MethodChecker.fromHtml(etalaseName));
                     this.isLoadingInitialData = true;

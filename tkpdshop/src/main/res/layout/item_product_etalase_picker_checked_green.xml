@@ -5,7 +5,17 @@
     android:background="@drawable/border_background_view_topads"
     android:gravity="center_vertical"
     android:orientation="horizontal"
+    xmlns:tools="http://schemas.android.com/tools"
     android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/etalase_badge_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="15dp"
+        tools:src="@drawable/ic_check"
+        android:layout_marginRight="@dimen/margin_padding_small"
+        android:layout_marginEnd="@dimen/margin_padding_small"
+        tools:visibility="gone"/>
 
     <TextView
         android:id="@+id/etalase_picker_item_name"

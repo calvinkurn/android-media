@@ -8,6 +8,7 @@ public class ShopCommonParamApiConstant {
 
     public static final String SHOP_ID = "shop_id";
     public static final String SHOP_DOMAIN = "shop_domain";
+    public static final String SHOW_ALL = "show_all";
 
     public static final String USER_ID = "user_id";
     public static final String OS_TYPE = "os_type";

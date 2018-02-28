@@ -2,10 +2,14 @@ package com.tokopedia.shop.product.data.repository;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
+import com.tokopedia.shop.product.data.source.cloud.ShopEtalaseCloudDataSource;
 import com.tokopedia.shop.product.data.source.cloud.ShopFilterCloudDataSource;
 import com.tokopedia.shop.product.data.source.cloud.ShopProductCloudDataSource;
 import com.tokopedia.shop.product.data.source.cloud.model.DynamicFilterModel;
+import com.tokopedia.shop.product.data.source.cloud.model.EtalaseModel;
+import com.tokopedia.shop.product.data.source.cloud.model.PagingListOther;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
+import com.tokopedia.shop.product.domain.model.ShopEtalaseRequestModel;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.domain.repository.ShopProductRepository;
 
@@ -23,12 +27,15 @@ public class ShopProductRepositoryImpl implements ShopProductRepository {
 
     private final ShopProductCloudDataSource shopProductCloudDataSource;
     private ShopFilterCloudDataSource shopFilterCloudDataSource;
+    private ShopEtalaseCloudDataSource shopEtalaseCloudDataSource;
 
     @Inject
     public ShopProductRepositoryImpl(ShopProductCloudDataSource shopProductCloudDataSource,
-                                     ShopFilterCloudDataSource shopFilterCloudDataSource) {
+                                     ShopFilterCloudDataSource shopFilterCloudDataSource,
+                                     ShopEtalaseCloudDataSource shopEtalaseCloudDataSource) {
         this.shopProductCloudDataSource = shopProductCloudDataSource;
         this.shopFilterCloudDataSource = shopFilterCloudDataSource;
+        this.shopEtalaseCloudDataSource = shopEtalaseCloudDataSource;
     }
 
     @Override
@@ -49,5 +56,16 @@ public class ShopProductRepositoryImpl implements ShopProductRepository {
                 return Observable.just(response.body().getData());
             }
         });
+    }
+
+    @Override
+    public Observable<PagingListOther<EtalaseModel>> getShopEtalaseList(ShopEtalaseRequestModel shopProductRequestModel) {
+        return shopEtalaseCloudDataSource.getShopEtalaseList(shopProductRequestModel)
+                .map(new Func1<Response<DataResponse<PagingListOther<EtalaseModel>>>, PagingListOther<EtalaseModel>>() {
+                    @Override
+                    public PagingListOther<EtalaseModel> call(Response<DataResponse<PagingListOther<EtalaseModel>>> dataResponseResponse) {
+                        return dataResponseResponse.body().getData();
+                    }
+                });
     }
 }
