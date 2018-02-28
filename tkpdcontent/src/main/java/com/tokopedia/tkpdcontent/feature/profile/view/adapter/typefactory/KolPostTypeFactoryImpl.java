@@ -12,10 +12,10 @@ import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolPostViewModel
  * @author by milhamj on 20/02/18.
  */
 
-public class KolTypeFactoryImpl extends BaseAdapterTypeFactory implements KolTypeFactory {
+public class KolPostTypeFactoryImpl extends BaseAdapterTypeFactory implements KolPostTypeFactory {
     private final KolPostListener.View viewListener;
 
-    public KolTypeFactoryImpl(KolPostListener.View viewListener) {
+    public KolPostTypeFactoryImpl(KolPostListener.View viewListener) {
         this.viewListener = viewListener;
     }
 

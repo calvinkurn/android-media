@@ -9,7 +9,7 @@ import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolPostViewModel
  * @author by milhamj on 20/02/18.
  */
 
-public interface KolTypeFactory {
+public interface KolPostTypeFactory {
 
     int type(KolPostViewModel emptyFeedBeforeLoginModel);
 
