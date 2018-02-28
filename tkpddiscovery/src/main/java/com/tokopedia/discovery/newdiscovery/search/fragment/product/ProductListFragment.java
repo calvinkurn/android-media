@@ -366,6 +366,10 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void showBottomBarNavigation(boolean show) {
+        boolean isBottomSheetShown = ((SearchActivity) getActivity()).isBottomSheetShown();
+        if (show && isBottomSheetShown) {
+            return;
+        }
         super.showBottomBarNavigation(show);
     }
 
@@ -736,7 +740,6 @@ public class ProductListFragment extends SearchSectionFragment
     public void renderDynamicFilter(DynamicFilterModel pojo) {
         super.renderDynamicFilter(pojo);
         ((SearchActivity) getActivity()).loadFilterItems(getFilters());
-        showBottomBarNavigation(false);
     }
 
     private void addPreFilteredCategory(String categoryId) {

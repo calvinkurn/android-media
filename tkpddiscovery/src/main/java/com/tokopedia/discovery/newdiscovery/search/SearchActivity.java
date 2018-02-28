@@ -659,4 +659,9 @@ public class SearchActivity extends DiscoveryActivity
         }
         selectedFilterMap.put(checkBoxKey, mapValue);
     }
+
+    public boolean isBottomSheetShown() {
+        return bottomSheetBehavior != null
+                && bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_HIDDEN;
+    }
 }
