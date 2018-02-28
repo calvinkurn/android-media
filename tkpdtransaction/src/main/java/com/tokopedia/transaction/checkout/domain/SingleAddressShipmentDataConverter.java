@@ -31,6 +31,7 @@ public class SingleAddressShipmentDataConverter extends ConverterData<CartShipme
         CartSingleAddressData> {
 
     private static final int FIRST_ELEMENT = 0;
+    private static final int PRIME_ADDRESS = 2;
 
     @Inject
     public SingleAddressShipmentDataConverter() {
@@ -130,6 +131,8 @@ public class SingleAddressShipmentDataConverter extends ConverterData<CartShipme
 
         recipientAddress.setRecipientName(userAddress.getReceiverName());
         recipientAddress.setRecipientPhoneNumber(userAddress.getPhone());
+
+        recipientAddress.setSelected(userAddress.getStatus() == PRIME_ADDRESS);
 
         return recipientAddress;
     }
