@@ -27,20 +27,14 @@ public class SingleAddressShipmentModule {
 
     @Provides
     @SingleAddressShipmentScope
-    SingleAddressShipmentPresenter provideCartSingleAddressPresenter(GetDefaultAddressUseCase getDefaultAddressUseCase, PagingHandler pagingHandler) {
-        return new SingleAddressShipmentPresenter(getDefaultAddressUseCase, pagingHandler);
+    SingleAddressShipmentPresenter provideCartSingleAddressPresenter() {
+        return new SingleAddressShipmentPresenter();
     }
 
     @Provides
     @SingleAddressShipmentScope
     SingleAddressShipmentAdapter provideCartSingleAddressAdapter() {
         return new SingleAddressShipmentAdapter();
-    }
-
-    @Provides
-    @SingleAddressShipmentScope
-    GetDefaultAddressUseCase provideGetAddressListUseCase(@NonPaginatedAddressQualifier PeopleAddressRepository peopleAddressRepository) {
-        return new GetDefaultAddressUseCase(peopleAddressRepository);
     }
 
 }

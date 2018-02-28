@@ -11,4 +11,8 @@ public interface IPromoCodePresenter {
     void processCheckPromoCode(Context context, String voucherId);
 
     void processCheckDigitalPromoCode(Context context, String voucherId, String categoryId);
+
+    void processCheckMarketPlaceCartListPromoCode(Context context, String voucherCode);
+
+    void processCheckMarketPlaceCartShipmentPromoCode(Context context, String voucherCode);
 }

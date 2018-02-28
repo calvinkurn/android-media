@@ -50,7 +50,7 @@ public class ShipmentAddressListFragment extends BasePresenterFragment implement
     TextView mTvAddNewAddress;
 
     InputMethodManager mInputMethodManager;
-    ICartAddressChoiceActivityListener cartAddressChoiceActivityListener;
+    ICartAddressChoiceActivityListener mCartAddressChoiceActivityListener;
 
     @Inject
     ShipmentAddressListAdapter mShipmentAddressListAdapter;
@@ -131,7 +131,7 @@ public class ShipmentAddressListFragment extends BasePresenterFragment implement
      */
     @Override
     protected void initialListener(Activity activity) {
-        cartAddressChoiceActivityListener = (ICartAddressChoiceActivityListener) activity;
+        mCartAddressChoiceActivityListener = (ICartAddressChoiceActivityListener) activity;
     }
 
     /**
@@ -278,8 +278,8 @@ public class ShipmentAddressListFragment extends BasePresenterFragment implement
 
     @Override
     public void onAddressContainerClicked(RecipientAddressModel model) {
-        if (cartAddressChoiceActivityListener != null) {
-            cartAddressChoiceActivityListener.finishSendResultActionSelectedAddress(model);
+        if (mCartAddressChoiceActivityListener != null) {
+            mCartAddressChoiceActivityListener.finishSendResultActionSelectedAddress(model);
         }
     }
 
@@ -291,4 +291,5 @@ public class ShipmentAddressListFragment extends BasePresenterFragment implement
                 mapper.transform(model)), ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
 
     }
+
 }

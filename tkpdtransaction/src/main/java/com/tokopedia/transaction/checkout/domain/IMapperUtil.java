@@ -13,4 +13,6 @@ public interface IMapperUtil {
 
     boolean isEmpty(String string);
 
+    boolean isEmpty(Object object);
+
 }

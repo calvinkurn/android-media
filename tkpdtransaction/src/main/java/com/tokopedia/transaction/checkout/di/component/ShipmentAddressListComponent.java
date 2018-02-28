@@ -9,8 +9,11 @@ import dagger.Component;
 /**
  * @author Aghny A. Putra on 31/01/18.
  */
+
 @ShipmentAddressListScope
 @Component(modules = ShipmentAddressListModule.class)
 public interface ShipmentAddressListComponent {
+
     void inject(ShipmentAddressListFragment shipmentAddressListFragment);
+
 }

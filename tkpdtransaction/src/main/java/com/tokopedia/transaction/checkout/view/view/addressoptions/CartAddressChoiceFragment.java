@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -23,8 +22,10 @@ import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.data.mapper.AddressModelMapper;
+import com.tokopedia.transaction.checkout.di.component.CartAddressChoiceComponent;
+import com.tokopedia.transaction.checkout.di.component.DaggerCartAddressChoiceComponent;
+import com.tokopedia.transaction.checkout.di.module.CartAddressChoiceModule;
 import com.tokopedia.transaction.checkout.view.adapter.ShipmentAddressListAdapter;
-import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.view.presenter.ICartAddressChoicePresenter;
 import com.tokopedia.transaction.checkout.view.view.ICartAddressChoiceView;
@@ -32,12 +33,15 @@ import com.tokopedia.transaction.checkout.view.view.ICartAddressChoiceView;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * Created by Irfan Khoirul on 05/02/18.
+ * @author Irfan Khoirul on 05/02/18
+ *         Aghny A. Putra on 27/02/18
  */
 
 public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddressChoicePresenter>
@@ -57,20 +61,25 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     @BindView(R2.id.rv_address)
     RecyclerView rvAddress;
 
-    private ShipmentAddressListAdapter recipientAdapter;
     private ICartAddressChoiceActivityListener cartAddressChoiceListener;
 
-    public static CartAddressChoiceFragment newInstance(
-            List<CartSellerItemModel> cartSellerItemModelList
-    ) {
-        CartAddressChoiceFragment fragment = new CartAddressChoiceFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(
-                CART_ITEM_LIST_EXTRA,
-                (ArrayList<? extends Parcelable>) cartSellerItemModelList
-        );
-        fragment.setArguments(bundle);
-        return fragment;
+    @Inject
+    CartAddressChoicePresenter mCartAddressChoicePresenter;
+
+    @Inject
+    ShipmentAddressListAdapter mShipmentAddressListAdapter;
+
+    public static CartAddressChoiceFragment newInstance() {
+        return new CartAddressChoiceFragment();
+    }
+
+    @Override
+    protected void initInjector() {
+        super.initInjector();
+        CartAddressChoiceComponent component = DaggerCartAddressChoiceComponent.builder()
+                .cartAddressChoiceModule(new CartAddressChoiceModule(this))
+                .build();
+        component.inject(this);
     }
 
     @Override
@@ -121,16 +130,15 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     @Override
     protected void initView(View view) {
         ButterKnife.bind(this, view);
-        presenter = new CartAddressChoicePresenter();
         setupRecyclerView();
-        presenter.attachView(this);
-        presenter.loadAddresses();
+        mCartAddressChoicePresenter.attachView(this);
         setShowCase();
     }
 
     @Override
-    public void renderRecipientData() {
-        setupRecyclerView();
+    public void renderRecipientData(List<RecipientAddressModel> recipientAddressModels) {
+        mShipmentAddressListAdapter.setAddressList(recipientAddressModels);
+        mShipmentAddressListAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -145,16 +153,15 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
 
     @Override
     protected void setActionVar() {
-
+        mCartAddressChoicePresenter.getAddressShortedList(getActivity());
     }
 
     private void setupRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL, false);
-        recipientAdapter = new ShipmentAddressListAdapter(this);
-        recipientAdapter.setAddressList(presenter.getRecipientAddresses());
+
         rvAddress.setLayoutManager(linearLayoutManager);
-        rvAddress.setAdapter(recipientAdapter);
+        rvAddress.setAdapter(mShipmentAddressListAdapter);
     }
 
     @OnClick(R2.id.tv_choose_other_address)
@@ -185,14 +192,15 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     @OnClick(R2.id.bt_send_to_current_address)
     void onSendToCurrentAddress() {
         Intent intent = new Intent();
-        intent.putExtra(INTENT_EXTRA_SELECTED_RECIPIENT_ADDRESS, presenter.getSelectedRecipientAddress());
+        intent.putExtra(INTENT_EXTRA_SELECTED_RECIPIENT_ADDRESS,
+                mCartAddressChoicePresenter.getSelectedRecipientAddress());
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
 
     @Override
     public void onAddressContainerClicked(RecipientAddressModel model) {
-        presenter.setSelectedRecipientAddress(model);
+        mCartAddressChoicePresenter.setSelectedRecipientAddress(model);
     }
 
     @Override
@@ -212,6 +220,8 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
                     break;
                 case ManageAddressConstant.REQUEST_CODE_PARAM_EDIT:
                     // Reload list address
+                    break;
+                default:
                     break;
             }
         }
@@ -235,12 +245,13 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
 
         ShowCaseDialog showCaseDialog = createShowCaseDialog();
 
-        if (!ShowCasePreference.hasShown(getActivity(), CartAddressChoiceFragment.class.getName()))
+        if (!ShowCasePreference.hasShown(getActivity(), CartAddressChoiceFragment.class.getName())) {
             showCaseDialog.show(
                     getActivity(),
                     CartAddressChoiceFragment.class.getName(),
                     showCaseObjectList
             );
+        }
     }
 
     private ShowCaseDialog createShowCaseDialog() {
@@ -260,4 +271,5 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
                 .useArrow(true)
                 .build();
     }
+
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.apiservice;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.transaction.checkout.domain.response.couponlist.CouponDataResponse;
 
 import java.util.Map;
 
@@ -51,13 +52,20 @@ public interface CartApi {
     @POST(TkpdBaseURL.Cart.PATH_RESET_CART)
     Observable<Response<CartResponse>> resetCart(@FieldMap Map<String, String> params);
 
-//    public static final String PATH_CHECK_PROMO_CODE_CART_LIST = "api/" + VERSION + "/check_promo_code";
-//    public static final String PATH_CHECK_PROMO_CODE_CART_COURIER = "api/" + VERSION + "/check_promo_code_final";
-//    public static final String PATH_CHECKOUT = "api/" + VERSION + "/checkout";
-//    public static final String PATH_RESET_CART = "api/" + VERSION + "/reset_cart_cache";
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Cart.PATH_CHECK_PROMO_CODE_CART_LIST)
+    Observable<Response<CartResponse>> checkPromoCodeCartList(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Cart.PATH_CHECK_PROMO_CODE_CART_COURIER)
+    Observable<Response<CartResponse>> checkPromoCodeCartShipment(@FieldMap Map<String, String> params);
+
+    @GET(TkpdBaseURL.Cart.PATH_COUPON_LIST)
+    Observable<Response<CartResponse>> getCouponList(@QueryMap Map<String, String> params);
+
+
 //    public static final String PATH_UPDATE_STATE_BY_PAYMENT = "api/" + VERSION + "/update_state_by_payment";
 //    public static final String PATH_NOTIFICATION_COUNTER = "api/" + VERSION + "/counter";
-//    public static final String PATH_COUPON_LIST = "api/" + VERSION + "/coupon_list";
 //    public static final String PATH_SAVE_PICKUP_STORE_POINT = "api/" + VERSION + "/save_pickup_store_point";
 
 }
