@@ -1,4 +1,5 @@
 package com.tokopedia.profile.data.network;
+import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.profile.data.pojo.ProfileGraphql;
 
 import retrofit2.Response;
@@ -12,9 +13,7 @@ import rx.Observable;
  */
 
 public interface ProfileApi {
-    //TODO atin
-
-//    @POST("graphql")
-//    @Headers({"Content-Type: application/json"})
-//    Observable<Response<GraphqlResponse<ProfileGraphql>>> getProfile(@Body String requestBody);
+    @POST("./")
+    @Headers({"Content-Type: application/json"})
+    Observable<Response<GraphqlResponse<ProfileGraphql>>> getProfile(@Body String requestBody);
 }

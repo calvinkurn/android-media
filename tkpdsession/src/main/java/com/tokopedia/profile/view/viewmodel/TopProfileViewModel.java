@@ -6,13 +6,16 @@ package com.tokopedia.profile.view.viewmodel;
 
 public class TopProfileViewModel {
 
-    private String userId;
+    private int userId;
     private String name;
     private String title;
     private String biodata;
     private String following;
     private String followers;
+    private boolean isFollowed;
     private String favoritedShop;
+    private String userPhoto;
+    private boolean isKol;
 
     private boolean isPhoneVerified;
     private boolean isEmailVerified;
@@ -20,7 +23,7 @@ public class TopProfileViewModel {
     private String email;
     private String gender;
     private String birthDate;
-    private Integer completion;
+    private int completion;
 
     private String summaryScore;
     private String positiveScore;
@@ -29,10 +32,12 @@ public class TopProfileViewModel {
 
     private String shopName;
     private boolean isGoldShop;
+    private boolean isGoldBadge;
     private boolean isOfficialShop;
     private String shopLocation;
     private String shopLogo;
     private String shopBadge;
+    private int shopBadgeLevel;
     private String shopLastOnline;
     private String shopAppLink;
 
@@ -50,11 +55,11 @@ public class TopProfileViewModel {
         this.isUser = isUser;
     }
 
-    public String getUserId() {
+    public int getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
@@ -154,11 +159,11 @@ public class TopProfileViewModel {
         this.birthDate = birthDate;
     }
 
-    public Integer getCompletion() {
+    public int getCompletion() {
         return completion;
     }
 
-    public void setCompletion(Integer completion) {
+    public void setCompletion(int completion) {
         this.completion = completion;
     }
 
@@ -256,5 +261,53 @@ public class TopProfileViewModel {
 
     public void setShopAppLink(String shopAppLink) {
         this.shopAppLink = shopAppLink;
+    }
+
+    public boolean isFollowed() {
+        return isFollowed;
+    }
+
+    public void setFollowed(boolean followed) {
+        isFollowed = followed;
+    }
+
+    public String getUserPhoto() {
+        return userPhoto;
+    }
+
+    public void setUserPhoto(String userPhoto) {
+        this.userPhoto = userPhoto;
+    }
+
+    public boolean isKol() {
+        return isKol;
+    }
+
+    public void setKol(boolean kol) {
+        isKol = kol;
+    }
+
+    public boolean isGoldBadge() {
+        return isGoldBadge;
+    }
+
+    public void setGoldBadge(boolean goldBadge) {
+        isGoldBadge = goldBadge;
+    }
+
+    public int getShopBadgeLevel() {
+        return shopBadgeLevel;
+    }
+
+    public void setShopBadgeLevel(int shopBadgeLevel) {
+        this.shopBadgeLevel = shopBadgeLevel;
+    }
+
+    public boolean isUser() {
+        return isUser;
+    }
+
+    public void setUser(boolean user) {
+        isUser = user;
     }
 }

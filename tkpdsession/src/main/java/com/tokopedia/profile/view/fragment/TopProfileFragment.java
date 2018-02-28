@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.profile.ProfileComponentInstance;
 import com.tokopedia.profile.view.customview.PartialUserDataView;
 import com.tokopedia.profile.view.customview.PartialUserInfoView;
 import com.tokopedia.profile.view.customview.PartialUserShopView;
@@ -52,8 +53,10 @@ public class TopProfileFragment extends BaseDaggerFragment {
 
     @Override
     protected void initInjector() {
-        getChildFragmentManager().findFragmentByTag("HAI");
-        //TODO milhamj
+        DaggerProfileContentComponent.builder()
+                .profileComponent(ProfileComponentInstance.getProfileComponent(getActivity().getApplication()))
+                .build
+                .inject(this);
     }
 
     @Override

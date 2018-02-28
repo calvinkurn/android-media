@@ -6,22 +6,21 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseEmptyActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.design.tab.Tabs;
+import com.tokopedia.profile.ProfileComponentInstance;
+import com.tokopedia.profile.common.di.ProfileComponent;
 import com.tokopedia.profile.view.adapter.ProfileTabPagerAdapter;
 import com.tokopedia.profile.view.fragment.TopProfileFragment;
 import com.tokopedia.profile.view.viewmodel.ProfileSectionItem;
 import com.tokopedia.session.R;
-import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberWarningFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +42,8 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
     private Tabs tabLayout;
     private ViewPager viewPager;
 
+    private ProfileComponent profileComponent;
+
     public static Intent newInstance(Context context) {
         return new Intent(context, TopProfileActivity.class);
     }
@@ -56,6 +57,17 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
         }
         inflateFragment();
     }
+
+//    private void initjInjector(){
+//        getProfileComponent().inject(this);
+//    }
+//
+//    private ProfileComponent getProfileComponent(){
+//        if(profileComponent == null){
+//            profileComponent = ProfileComponentInstance.getProfileComponent(getApplication());
+//        }
+//        return profileComponent;
+//    }
 
     @Override
     protected void setupLayout(Bundle savedInstanceState) {

@@ -119,7 +119,8 @@ public class PartialUserDataView extends BaseCustomView {
             animation.setDuration(2000);
             animation.setInterpolator(new DecelerateInterpolator());
             animation.start();
-            progressText.setText(model.getCompletion().toString() + "%");
+            String completion = String.valueOf(model.getCompletion()) + "%";
+            progressText.setText(completion);
         } else {
             bannerIncompleteProfile.setVisibility(GONE);
         }
