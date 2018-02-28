@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:padding="@dimen/space_small">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <ProgressBar
         android:id="@+id/progress_bar"
@@ -15,7 +14,7 @@
         android:layout_alignTop="@+id/text_view"
         android:progress="80"
         android:minHeight="@dimen/bar_size"
-        android:progressDrawable="@drawable/vote_option_bar_selected"
+        android:progressDrawable="@drawable/vote_option_bar_default"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="273dp" />
 
@@ -37,6 +36,7 @@
         tools:text="Donald Duck" />
 
     <ImageView
+        android:id="@+id/icon_vote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@+id/text_view"

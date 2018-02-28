@@ -5,28 +5,24 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import java.util.List;
 
 /**
- * Created by StevenFredian on 21/02/18.
+ * @author by StevenFredian on 21/02/18.
  */
 
 public class VoteInfoViewModel {
 
-    int voteType;
+    private int voteType;
+    private String voteStatus;
+    private String voteInfoString;
+    private String voteInfoUrl;
+    private boolean voted;
+    private String title;
+    private List<Visitable> list;
+    private long startTime, endTime;
+    private String participant;
 
-    String voteStatus;
-
-    String voteInfoString;
-
-    String voteInfoUrl;
-
-    boolean voted;
-
-    String title;
-
-    List<Visitable> list;
-
-    int participant;
-
-    public VoteInfoViewModel(String title, List<Visitable> list, int participant, int voteType, String voteStatus, boolean voted, String voteInfoString, String voteInfoUrl) {
+    public VoteInfoViewModel(String title, List<Visitable> list, String participant, int voteType
+            , String voteStatus, boolean voted, String voteInfoString
+            , String voteInfoUrl, long startTime, long endTime) {
         this.title = title;
         this.list = list;
         this.participant = participant;
@@ -35,6 +31,8 @@ public class VoteInfoViewModel {
         this.voted = voted;
         this.voteInfoString = voteInfoString;
         this.voteInfoUrl = voteInfoUrl;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
     public int getVoteType() {
@@ -61,11 +59,11 @@ public class VoteInfoViewModel {
         this.list = list;
     }
 
-    public int getParticipant() {
+    public String getParticipant() {
         return participant;
     }
 
-    public void setParticipant(int participant) {
+    public void setParticipant(String participant) {
         this.participant = participant;
     }
 
@@ -99,5 +97,21 @@ public class VoteInfoViewModel {
 
     public void setVoteInfoUrl(String voteInfoUrl) {
         this.voteInfoUrl = voteInfoUrl;
+    }
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
+
+    public long getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(long endTime) {
+        this.endTime = endTime;
     }
 }

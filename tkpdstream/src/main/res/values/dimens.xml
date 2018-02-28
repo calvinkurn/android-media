@@ -4,6 +4,7 @@
     <dimen name="card_channel_elevation">3dp</dimen>
 
     <dimen name="space_atomic">0.5dp</dimen>
+    <dimen name="space_micro">1dp</dimen>
     <dimen name="space_tiny">2.5dp</dimen>
     <dimen name="space_mini">5dp</dimen>
     <dimen name="space_small">8dp</dimen>
@@ -12,6 +13,7 @@
     <dimen name="space_med">16dp</dimen>
     <dimen name="space_sm">24dp</dimen>
     <dimen name="space_large">40dp</dimen>
+    <dimen name="space_very_large">60dp</dimen>
 
     <dimen name="radius">5dp</dimen>
 

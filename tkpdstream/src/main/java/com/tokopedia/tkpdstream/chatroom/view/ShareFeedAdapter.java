@@ -27,7 +27,7 @@ public class ShareFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.sheet_feed_grid_item, parent, false);
+                .inflate(R.layout.sheet_groupchat_item, parent, false);
         return new ShareFeedViewHolder(view);
     }
 

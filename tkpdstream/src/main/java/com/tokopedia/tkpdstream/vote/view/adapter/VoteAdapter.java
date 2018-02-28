@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpdstream.vote.view.adapter.typefactory.VoteTypeFactory;
+import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +64,19 @@ public class VoteAdapter extends RecyclerView.Adapter<AbstractViewHolder>{
 
     public void addList(List<Visitable> listChat) {
         this.list.addAll(listChat);
+        notifyDataSetChanged();
+    }
+
+    public void change(VoteViewModel element) {
+        int index = list.indexOf(element);
+        for (int i = 0; i < list.size(); i++) {
+            VoteViewModel temp = (VoteViewModel) list.get(i);
+            if(index == i){
+                temp.setSelected(VoteViewModel.SELECTED);
+            }else {
+                temp.setSelected(VoteViewModel.UNSELECTED);
+            }
+        }
         notifyDataSetChanged();
     }
 }

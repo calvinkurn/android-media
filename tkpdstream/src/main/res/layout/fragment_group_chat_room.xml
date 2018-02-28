@@ -31,7 +31,7 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:subtitleTextAppearance="@style/ToolbarSubtitleGroupChat"
         app:titleTextAppearance="@style/ToolbarGroupChat"
-        tools:layout_height="64dp"/>
+        tools:layout_height="64dp" />
 
     <View
         android:id="@+id/view"
@@ -66,12 +66,8 @@
         layout="@layout/layout_vote"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/chat_list"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:layout_constraintVertical_bias="1.0"
-        tools:visibility="visible"/>
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/chat_list"
@@ -82,7 +78,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/channel_banner"
+        app:layout_constraintTop_toBottomOf="@+id/vote_bar"
         app:layout_constraintVertical_weight="1"
         tools:listitem="@layout/chat_view_holder"/>
 
@@ -106,6 +102,5 @@
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="dsajj\ndifjidfi\nidjfidj\nfdfidjidfijdfijd"/>
-
 
 </android.support.constraint.ConstraintLayout>

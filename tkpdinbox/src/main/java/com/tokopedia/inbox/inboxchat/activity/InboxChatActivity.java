@@ -2,12 +2,14 @@ package com.tokopedia.inbox.inboxchat.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -123,6 +125,7 @@ public class InboxChatActivity extends DrawerPresenterActivity
         indicatorAdapter = IndicatorAdapter.createInstance(getIndicatorList(), this);
         indicator.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager
                 .HORIZONTAL, false));
+        indicator.addItemDecoration(new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.step_size_nob)));
         indicator.setAdapter(indicatorAdapter);
 
         initTopChatFragment();
@@ -131,9 +134,9 @@ public class InboxChatActivity extends DrawerPresenterActivity
     private List<IndicatorItem> getIndicatorList() {
         List<IndicatorItem> list = new ArrayList<>();
         list.add(new IndicatorItem(getString(R.string.title_personal), R.drawable
-                .ic_google_share, true));
+                .ic_chat_personal, true));
         list.add(new IndicatorItem(getString(R.string.title_community), R.drawable
-                .ic_google_share, false));
+                .ic_chat_personal, false));
         return list;
     }
 
@@ -243,5 +246,31 @@ public class InboxChatActivity extends DrawerPresenterActivity
         }
         fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commit();
+    }
+
+    public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
+
+        private int spanCount;
+        private int space;
+
+        public SpaceItemDecoration(int verticalSpaceHeight) {
+            this.space = verticalSpaceHeight;
+            spanCount = 0;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
+                                   RecyclerView.State state) {
+
+            if (parent.getChildAdapterPosition(view) != 0) {
+                outRect.left = space / 2;
+            } else if (parent.getChildAdapterPosition(view) == parent.getAdapter().getItemCount() - 1) {
+                outRect.right = space / 2;
+            } else {
+                outRect.right = space / 2;
+                outRect.left = space / 2;
+            }
+
+        }
     }
 }

@@ -87,6 +87,13 @@ public class CloseableBottomSheetDialog extends BottomSheetDialog {
                 closeListener.onCloseDialog();
             }
         });
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+                closeListener.onCloseDialog();
+            }
+        });
         return contentView;
     }
 
