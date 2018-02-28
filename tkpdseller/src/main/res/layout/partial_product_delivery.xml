@@ -73,7 +73,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/LabelLayout"
-            app:title="@string/product_label_share" />
+            app:ls_title="@string/product_label_share" />
     </LinearLayout>
 
 </merge>
