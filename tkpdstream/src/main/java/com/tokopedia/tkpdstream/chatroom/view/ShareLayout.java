@@ -7,7 +7,6 @@ import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-
 import com.facebook.CallbackManager;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpdstream.R;
@@ -33,35 +32,6 @@ public class ShareLayout {
     private ShareData shareModel;
     private ShareFeedAdapter adapter;
     private ArrayList<ShareItem> list;
-
-    public ShareLayout(Activity activity,
-                       CallbackManager callbackManager) {
-        this.activity = activity;
-        this.fragment = null;
-        this.fragmentV4 = null;
-        this.dialog = new BottomSheetDialog(activity);
-        this.callbackManager = callbackManager;
-        this.dialog.setContentView(R.layout.share_groupchat_dialog);
-        appGrid = (RecyclerView) this.dialog.findViewById(R.id.grid);
-        initVar(activity);
-        initAdapter();
-        setListener();
-        setShareList();
-    }
-
-    public ShareLayout(Fragment fragment, CallbackManager callbackManager) {
-        this.fragment = fragment;
-        this.fragmentV4 = null;
-        this.activity = fragment.getActivity();
-        this.dialog = new BottomSheetDialog(activity);
-        this.callbackManager = callbackManager;
-        this.dialog.setContentView(R.layout.share_groupchat_dialog);
-        appGrid = (RecyclerView) this.dialog.findViewById(R.id.grid);
-        initVar(fragment.getActivity());
-        initAdapter();
-        setListener();
-        setShareList();
-    }
 
     public ShareLayout(android.support.v4.app.Fragment fragment, CallbackManager callbackManager) {
         this.fragment = null;

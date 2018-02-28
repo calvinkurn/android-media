@@ -2,8 +2,6 @@ package com.tokopedia.tkpdstream.chatroom.view.fragment;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
@@ -25,8 +23,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.EditText;
@@ -107,6 +103,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     private TextView voteInfoLink;
     private ImageView iconVote;
     private View votedView;
+    private View divider;
     private TextView voteStatus;
     private ImageView arrow;
     private GroupChatAdapter adapter;
@@ -189,6 +186,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         voteStatus = view.findViewById(R.id.vote_status);
         votedView = view.findViewById(R.id.layout_voted);
         progressBarWithTimer = view.findViewById(R.id.timer);
+        divider = view.findViewById(R.id.view);
         channelInfoDialog = CloseableBottomSheetDialog.createInstance(getActivity());
 
         setupToolbar();
@@ -197,28 +195,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     private void setupToolbar() {
-//
-//        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-//            Window w = getActivity().getWindow(); // in Activity's onCreate() for instance
-//            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-//            w.getDecorView().setSystemUiVisibility(
-//                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-//                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-//            w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-//            w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-//        }
-//
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            Window w = getActivity().getWindow();
-//            w.setNavigationBarColor(Color.BLACK);
-//            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-//            w.getDecorView().setSystemUiVisibility(
-//                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-//                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-//            w.setStatusBarColor(Color.TRANSPARENT);
-//            //setStatusBarTranslucent(true);
-//        }
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
@@ -282,7 +258,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 //        arrow.setAnimation(an);
         GroupChatTypeFactory groupChatTypeFactory = new GroupChatTypeFactoryImpl(this);
         adapter = GroupChatAdapter.createInstance(groupChatTypeFactory);
-        layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL ,false);
         layoutManager.setReverseLayout(true);
         layoutManager.setStackFromEnd(true);
         chatRecyclerView.setLayoutManager(layoutManager);
@@ -539,7 +515,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 initData();
             }
         });
-        voteBar.setVisibility(View.GONE);
+        setVisibilityHeader(View.GONE);
     }
 
     @Override
@@ -549,8 +525,14 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 userSession.getName(), "https://yt3.ggpht" +
                         ".com/-uwClWniyyFU/AAAAAAAAAAI/AAAAAAAAAAA/nVrBEY3dzuY/s176-c-k-no-mo-rj" +
                         "-c0xffffff/photo.jpg", this);
-        voteBar.setVisibility(View.VISIBLE);
+        setVisibilityHeader(View.VISIBLE);
+    }
 
+    void setVisibilityHeader(int visible){
+        voteBar.setVisibility(visible);
+        toolbar.setVisibility(visible);
+        divider.setVisibility(visible);
+        channelBanner.setVisibility(visible);
     }
 
     @Override
