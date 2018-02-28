@@ -21,11 +21,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <LinearLayout
+            <FrameLayout
                 android:id="@+id/topup_tokocash_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                android:layout_height="wrap_content" />
 
             <com.tokopedia.tokocash.historytokocash.presentation.compoundview.ReceivedTokoCashView
                 android:id="@+id/received_tokocash_layout"

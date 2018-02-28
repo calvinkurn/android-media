@@ -90,6 +90,7 @@ import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver;
 import com.tokopedia.digital.tokocash.model.CashBackData;
+import com.tokopedia.digital.tokocash.newpackage.TopupTokoCashFragment;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.flight.FlightModuleRouter;
@@ -1092,6 +1093,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public String getUserEmailProfil() {
         SessionHandler sessionHandler = new SessionHandler(this);
         return sessionHandler.getEmail();
+    }
+
+    @Override
+    public Fragment getTopupTokoCashFragment() {
+        return TopupTokoCashFragment.newInstance();
     }
 
     @Override

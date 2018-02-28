@@ -6,12 +6,11 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.view.compoundview.BaseDigitalChooserView;
 import com.tokopedia.digital.product.view.compoundview.DigitalProductChooserView;
@@ -21,21 +20,15 @@ import com.tokopedia.digital.product.view.model.Product;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * Created by nabillasabbaha on 8/18/17.
  */
 
-public class TopUpTokoCashView extends LinearLayout {
+public class TopUpTokoCashView extends FrameLayout {
 
-    @BindView(R2.id.digital_product_chooser_view)
-    DigitalProductChooserView digitalProductChooserView;
-    @BindView(R2.id.cb_instant_checkout)
-    CheckBox instantCheckoutCheckbox;
-    @BindView(R2.id.btn_topup)
-    TextView btnTopUp;
+    private DigitalProductChooserView digitalProductChooserView;
+    private CheckBox instantCheckoutCheckbox;
+    private TextView btnTopUp;
 
     private ActionListener listener;
     private Product productSelected;
@@ -44,22 +37,27 @@ public class TopUpTokoCashView extends LinearLayout {
 
     public TopUpTokoCashView(Context context) {
         super(context);
-        init();
+        init(context);
     }
 
     public TopUpTokoCashView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(context);
     }
 
     public TopUpTokoCashView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        init(context);
     }
 
-    private void init() {
-        LayoutInflater.from(getContext()).inflate(R.layout.view_tokocash_topup, this, true);
-        ButterKnife.bind(this);
+    private void init(Context context) {
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.view_tokocash_topup, this, true);
+        digitalProductChooserView = view.findViewById(R.id.digital_product_chooser_view);
+        instantCheckoutCheckbox = view.findViewById(R.id.cb_instant_checkout);
+        btnTopUp = view.findViewById(R.id.btn_topup);
+
         btnTopUp.setOnClickListener(getClickListenerTopUp());
     }
 

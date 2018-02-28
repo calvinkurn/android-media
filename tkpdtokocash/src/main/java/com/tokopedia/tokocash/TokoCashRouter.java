@@ -3,6 +3,7 @@ package com.tokopedia.tokocash;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.router.digitalmodule.sellermodule.PeriodRangeModelCore;
 
@@ -29,4 +30,6 @@ public interface TokoCashRouter {
     Intent getWebviewActivityWithIntent(Context context, String url, String title);
 
     String getUserEmailProfil();
+
+    Fragment getTopupTokoCashFragment();
 }

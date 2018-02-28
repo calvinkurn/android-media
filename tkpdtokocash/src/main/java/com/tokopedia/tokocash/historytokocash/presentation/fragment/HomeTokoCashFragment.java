@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.tokocash.R;
+import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.di.TokoCashComponent;
 import com.tokopedia.tokocash.historytokocash.presentation.compoundview.BalanceTokoCashView;
 import com.tokopedia.tokocash.historytokocash.presentation.compoundview.ReceivedTokoCashView;
@@ -39,6 +40,7 @@ public class HomeTokoCashFragment extends BaseDaggerFragment implements HomeToko
     private BalanceTokoCashView balanceTokoCashView;
     private ReceivedTokoCashView receivedTokoCashView;
     private BottomSheetView bottomSheetTokoCashView;
+    private FrameLayout topupFrameLayout;
 
     private boolean topUpAvailable;
     private ActionListener listener;
@@ -64,6 +66,7 @@ public class HomeTokoCashFragment extends BaseDaggerFragment implements HomeToko
         receivedTokoCashView = view.findViewById(R.id.received_tokocash_layout);
         mainContent = view.findViewById(R.id.main_content);
         progressLoading = view.findViewById(R.id.pb_main_loading);
+        topupFrameLayout = view.findViewById(R.id.topup_tokocash_layout);
         return view;
     }
 
@@ -73,11 +76,22 @@ public class HomeTokoCashFragment extends BaseDaggerFragment implements HomeToko
         this.topUpAvailable = getArguments().getBoolean(EXTRA_TOP_UP_AVAILABLE, true);
         bottomSheetTokoCashView = new BottomSheetView(getActivity());
         presenter.processGetBalanceTokoCash();
+
+        if (getActivity().getApplication() != null && getActivity().getApplication() instanceof TokoCashRouter) {
+            getChildFragmentManager().beginTransaction().replace(R.id.topup_tokocash_layout,
+                    ((TokoCashRouter) getActivity().getApplication()).getTopupTokoCashFragment()).commit();
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        topupFrameLayout.setVisibility(topUpAvailable ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -145,12 +159,6 @@ public class HomeTokoCashFragment extends BaseDaggerFragment implements HomeToko
     @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
         startActivityForResult(intent, requestCode);
-    }
-
-    private void clearHolder(LinearLayout holderView) {
-        if (holderView.getChildCount() > 0) {
-            holderView.removeAllViews();
-        }
     }
 
     @Override
