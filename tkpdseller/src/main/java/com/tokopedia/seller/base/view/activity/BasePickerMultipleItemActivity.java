@@ -169,7 +169,7 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
         return null;
     }
 
-    //TODO @CallSuper
+    @CallSuper
     @Override
     @java.lang.SuppressWarnings("unchecked")
     public void addItemFromSearch(T t) {
@@ -177,8 +177,20 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
         ((BasePickerItemCacheList<T>) fragment).addItem(t);
     }
 
+    @java.lang.SuppressWarnings("unchecked")
+    public BasePickerItemSearchList<T> getSearchFragment() {
+        return (BasePickerItemSearchList<T>)
+                getSupportFragmentManager().findFragmentByTag(CONTAINER_SEARCH_LIST_TAG);
+    }
 
-    // TODO enable call super
+    @java.lang.SuppressWarnings("unchecked")
+    public BasePickerItemCacheList<T> getCacheFragment() {
+        return (BasePickerItemCacheList<T>)
+                getSupportFragmentManager().findFragmentByTag(CONTAINER_CACHE_LIST_TAG);
+    }
+
+
+    @CallSuper
     @Override
     @java.lang.SuppressWarnings("unchecked")
     public void removeItemFromSearch(T t) {
@@ -186,7 +198,7 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
         ((BasePickerItemCacheList<T>) fragment).removeItem(t);
     }
 
-    //TODO @CallSuper
+    @CallSuper
     @Override
     @java.lang.SuppressWarnings("unchecked")
     public void removeItemFromCache(T t) {

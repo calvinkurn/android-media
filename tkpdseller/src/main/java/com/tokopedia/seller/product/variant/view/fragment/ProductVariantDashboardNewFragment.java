@@ -301,7 +301,19 @@ public class ProductVariantDashboardNewFragment extends BaseListFragment<BlankPr
     }
 
     private void onActivityResultFromItemPicker(int requestCode, Intent data) {
-        //TODO get variant from item picker
+        int level = requestCode ;
+        // it already been sorted. level 1 must be index 0. level 2 = index 1
+        if (data.hasExtra(ProductVariantPickerNewActivity.EXTRA_PRODUCT_VARIANT_SUBMIT_LEVEL)) {
+            ProductVariantOptionParent productVariantOptionParent =
+                    data.getParcelableExtra(ProductVariantPickerNewActivity.EXTRA_PRODUCT_VARIANT_SUBMIT_LEVEL);
+            productVariantViewModel.replaceVariantOptionParentFor (level, productVariantOptionParent);
+        }
+
+        // TODO level1: update the product variant combination, remove data which not included in the parent
+        // TODO level2: update the product variant combination, remove data which not included in the parent,
+        // TODO level2: also generate the default matrix combination
+
+        // TODO update UI
 
 //        ProductVariantUnitSubmit productVariantUnitSubmit = data.getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_UNIT_SUBMIT);
 //        int level = ProductVariantConstant.VARIANT_LEVEL_ONE_VALUE;

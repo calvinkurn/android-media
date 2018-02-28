@@ -3,6 +3,7 @@ package com.tokopedia.seller.product.variant.data.model.variantbyprd;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,17 @@ public class ProductVariantViewModel implements Parcelable {
             return variantOptionParent.get(index).getProductVariantOptionChild();
         }
         return null;
+    }
+
+    public void replaceVariantOptionParentFor (int level, @NonNull ProductVariantOptionParent productVariantOptionParent) {
+        int index = level -1;
+        if (variantOptionParent == null) {
+            variantOptionParent = new ArrayList<>();
+        }
+        if (variantOptionParent.size() > index) {
+            variantOptionParent.remove(index);
+        }
+        variantOptionParent.add(index , productVariantOptionParent);
     }
 
     public ProductVariantOptionParent getVariantOptionParent(int position) {

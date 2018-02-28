@@ -18,6 +18,7 @@ public class ProductDraftListMapper {
     public static final int MIN_COMPLETION_PERCENT = 5;
     public static final int MAX_COMPLETION_PERCENT = 95;
 
+    //TODO draft id will be removed from domain model
     public static ProductDraftViewModel mapDomainToView(ProductViewModel domainModel) {
         String primaryPhotoUrl = null;
         List<ProductPictureViewModel> imageProductInputDomainModelList = domainModel.getProductPictureViewModelList();

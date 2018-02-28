@@ -65,4 +65,9 @@ public class ProductVariantDetailViewModel implements ItemIdType, Parcelable {
             return new ProductVariantDetailViewModel[size];
         }
     };
+
+    @Override
+    public String getItemId() {
+        return String.valueOf(valueId);
+    }
 }
