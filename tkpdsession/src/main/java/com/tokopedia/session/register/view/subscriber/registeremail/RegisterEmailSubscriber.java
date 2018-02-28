@@ -31,6 +31,7 @@ public class RegisterEmailSubscriber extends Subscriber<RegisterEmailModel> {
 
     @Override
     public void onError(Throwable e) {
+        viewListener.dismissLoadingProgress();
         if (e instanceof ErrorMessageException
                 && e.getLocalizedMessage() != null
                 && e.getLocalizedMessage().contains(ALREADY_REGISTERED)) {
