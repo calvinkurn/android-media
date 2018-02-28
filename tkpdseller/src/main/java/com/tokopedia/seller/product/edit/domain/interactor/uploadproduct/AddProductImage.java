@@ -1,5 +1,7 @@
 package com.tokopedia.seller.product.edit.domain.interactor.uploadproduct;
 
+import android.text.TextUtils;
+
 import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
 import com.tokopedia.seller.base.domain.model.ImageUploadDomainModel;
 import com.tokopedia.seller.product.common.constant.ProductNetworkConstant;
@@ -44,7 +46,7 @@ public class AddProductImage implements Func1<ProductViewModel, Observable<List<
 
         @Override
         public Observable<ProductPictureViewModel> call(ProductPictureViewModel productPictureViewModel) {
-            if (productPictureViewModel.getId() <= 0) {
+            if (TextUtils.isEmpty(productPictureViewModel.getId())) {
                 return uploadImageUseCase.createObservable(uploadImageUseCase.createRequestParams(
                         ProductNetworkConstant.UPLOAD_PRODUCT_IMAGE_PATH, productPictureViewModel.getFilePath(),
                         ProductNetworkConstant.LOGO_FILENAME_IMAGE_JPG, String.valueOf(productId)))

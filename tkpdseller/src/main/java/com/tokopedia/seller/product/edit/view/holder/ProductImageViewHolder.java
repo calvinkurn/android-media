@@ -15,6 +15,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
+import com.tokopedia.seller.product.common.utils.UrlUtils;
 import com.tokopedia.seller.product.edit.view.adapter.ImageSelectorAdapter;
 import com.tokopedia.seller.product.edit.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
@@ -176,15 +177,16 @@ public class ProductImageViewHolder extends ProductViewHolder {
             productPictureViewModel.setDescription(selectModel.getDescription());
             productPictureViewModel.setX(selectModel.getWidth());
             productPictureViewModel.setY(selectModel.getHeight());
-            productPictureViewModel.setId(selectModel.getId());
 
-            if (selectModel.getId() > 0) { // means file still from server, no change from local
-                productPictureViewModel.setFilePath(selectModel.getServerFilePath());
-            } else {
+            // Update image to server
+            if (!UrlUtils.isValidURL(selectModel.getUriOrPath())) {
+                productPictureViewModel.setId("");
                 productPictureViewModel.setFilePath(selectModel.getUriOrPath());
+            } else {
+                productPictureViewModel.setId(selectModel.getId());
+                productPictureViewModel.setFilePath(selectModel.getServerFilePath());
             }
             productPictureViewModel.setFileName(selectModel.getServerFileName());
-
             listImageViewModel.add(productPictureViewModel);
         }
         return listImageViewModel;
