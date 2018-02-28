@@ -147,6 +147,8 @@ import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 import com.tokopedia.tkpd.applink.AppLinkWebsiteActivity;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
+import com.tokopedia.tkpd.content.di.ContentConsumerComponent;
+import com.tokopedia.tkpd.content.di.DaggerContentConsumerComponent;
 import com.tokopedia.tkpd.datepicker.DatePickerUtil;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -167,9 +169,12 @@ import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.FeedModuleRouter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolCommentActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolFollowingListActivity;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.KolCommentFragment;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentHeaderViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentProductViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
@@ -185,6 +190,7 @@ import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
+import com.tokopedia.usecase.UseCase;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -221,7 +227,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private DaggerProductComponent.Builder daggerProductBuilder;
     private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
     private DaggerFlightConsumerComponent.Builder daggerFlightBuilder;
+    private DaggerContentConsumerComponent.Builder daggerContentBuilder;
     private FlightConsumerComponent flightConsumerComponent;
+    private ContentConsumerComponent contentConsumerComponent;
     private ProductComponent productComponent;
     private DaggerShopComponent.Builder daggerShopBuilder;
     private ShopComponent shopComponent;
@@ -262,6 +270,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return flightConsumerComponent;
     }
 
+    private ContentConsumerComponent getContentConsumerComponent() {
+        if (contentConsumerComponent == null) {
+            contentConsumerComponent = daggerContentBuilder.build();
+        }
+        return contentConsumerComponent;
+    }
+
     private void initializeDagger() {
         daggerProductBuilder = DaggerProductComponent.builder().productModule(new ProductModule());
         daggerReactNativeBuilder = DaggerReactNativeComponent.builder()
@@ -276,6 +291,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         .build();
         daggerFlightBuilder = DaggerFlightConsumerComponent.builder()
                 .sessionComponent(sessionComponent);
+
+        FeedPlusComponent feedPlusComponent =
+                DaggerFeedPlusComponent.builder()
+                        .appComponent(getApplicationComponent())
+                        .build();
+
+        daggerContentBuilder = DaggerContentConsumerComponent.builder()
+                .feedPlusComponent(feedPlusComponent);
     }
 
     private void initRemoteConfig() {
@@ -1365,5 +1388,20 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public String getKolCommentArgsTotalComment() {
         return KolCommentFragment.ARGS_TOTAL_COMMENT;
+    }
+
+    @Override
+    public UseCase getLikeKolUseCase() {
+//        return FlightGetProfileInfoData
+//                .newInstance(getFlightConsumerComponent())
+//                .inject()
+//                .getProfileInfoPrefillBooking();
+
+        return null;
+    }
+
+    @Override
+    public UseCase getFollowKolUseCase() {
+        return null;
     }
 }

@@ -3,6 +3,8 @@ package com.tokopedia.tkpdcontent;
 import android.content.Context;
 import android.content.Intent;
 
+import com.tokopedia.usecase.UseCase;
+
 /**
  * @author by nisie on 2/6/18.
  */
@@ -17,4 +19,8 @@ public interface KolRouter {
     String getKolCommentArgsPosition();
 
     String getKolCommentArgsTotalComment();
+
+    UseCase getLikeKolUseCase();
+
+    UseCase getFollowKolUseCase();
 }
