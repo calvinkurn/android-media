@@ -247,13 +247,13 @@ dependencies {
     compile project(rootProject.ext.features.digital)
     compile project(rootProject.ext.features.productDetail)
     compile project(rootProject.ext.features.feed)
-    compile project(rootProject.ext.features.reactNative)
     compile project(rootProject.ext.features.event)
     compile project(rootProject.ext.features.loyalty)
     compile project(rootProject.ext.features.reputation)
     compile project(rootProject.ext.features.tokoCash)
     compile project(rootProject.ext.features.flight)
     compile project(rootProject.ext.features.home)
+    compile project(rootProject.ext.libraries.reactNative)
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

@@ -205,7 +205,6 @@ ext {
 
     features = [
             loyalty         : ":tkpdloyalty",
-            reactNative     : ":tkpdreactnative",
             ride            : ":tkpdride",
             feed            : ":tkpdfeed",
             digital         : ":tkpddigital",
@@ -215,17 +214,17 @@ ext {
             transaction     : ":tkpdtransaction",
             session         : ":tkpdsession",
             topAdsSdk       : ":tkpdtopadssdk",
-            payment         : ":tkpdpayment",
+            payment         : ":features:payment:payment",
             productDetail   : ":tkpdpdp",
             seller          : ":tkpdseller",
             topAdsManagement: ":tkpdtopads",
-            goldMerchant    : ":tkpdgm",
-            reputation      : ":tkpdreputation",
+            goldMerchant    : ":features:merchant:gold_merchant",
+            reputation      : ":features:merchant:reputation",
             tokoCash        : ":tkpdtokocash",
             useCase         : ":tkpdusecase",
             flight          : ":tkpdflight",
-            flightNoOp      : ":tkpdflight-no-op",
-            mitraToppers    : ":tkpdmitratoppers",
+            flightNoOp      : ":features:digital:flight_no_op",
+            mitraToppers    : ":features:fintech:mitra_toppers",
             event           : ":tkpdevents",
             home            : ":tkpdhome"
     ]
@@ -233,7 +232,8 @@ ext {
     libraries = [
             design          : ":tkpddesign",
             abstraction     : ":tkpdabstraction",
-            cacheApi        : ":tkpdcacheapi"
+            cacheApi        : ":tkpdcacheapi",
+            reactNative     : ":libraries:react_native"
     ]
 
 }
