@@ -127,7 +127,7 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
 
     public void updateStateAfterGetData() {
         loading = false;
-        int totalItemCount = layoutManager.getItemCount();
+        int totalItemCount = getLayoutManager().getItemCount();
         if (totalItemCount > currentItemCount) {
             currentItemCount = totalItemCount;
             currentPage++;
