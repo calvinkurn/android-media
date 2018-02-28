@@ -17,7 +17,9 @@ import com.tokopedia.transaction.checkout.di.component.DaggerMultipleAddressComp
 import com.tokopedia.transaction.checkout.di.component.MultipleAddressComponent;
 import com.tokopedia.transaction.checkout.di.module.MultipleAddressModule;
 import com.tokopedia.transaction.checkout.view.adapter.MultipleAddressAdapter;
+import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CartItemModel;
+import com.tokopedia.transaction.checkout.view.data.CartListData;
 import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressAdapterData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
@@ -49,22 +51,19 @@ public class MultipleAddressFragment extends TkpdFragment
     public static final int ADD_SHIPMENT_ADDRESS_REQUEST_CODE = 21;
     public static final int EDIT_SHIPMENT_ADDRESS_REQUEST_CODE = 22;
     private static final String ADD_SHIPMENT_FRAGMENT_TAG = "ADD_SHIPMENT_FRAGMENT_TAG";
-    private static final String CART_ITEM_LIST_EXTRA = "CART_ITEM_LIST_EXTRA";
+    private static final String CART_LIST_DATA = "CART_LIST_DATA";
     private static final String ADDRESS_EXTRA = "ADDRESS_EXTRA";
 
     private MultipleAddressAdapter multipleAddressAdapter;
 
     public static MultipleAddressFragment newInstance(
-            List<CartSellerItemModel> cartSellerItemModels,
+            CartListData cartListData,
             RecipientAddressModel recipientModel
     ) {
         MultipleAddressFragment fragment = new MultipleAddressFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(
-                CART_ITEM_LIST_EXTRA,
-                (ArrayList<? extends Parcelable>) cartSellerItemModels
-        );
         bundle.putParcelable(ADDRESS_EXTRA, recipientModel);
+        bundle.putParcelable(CART_LIST_DATA, cartListData);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -130,35 +129,43 @@ public class MultipleAddressFragment extends TkpdFragment
     }
 
     private List<MultipleAddressAdapterData> initiateAdapterData() {
-        List<CartSellerItemModel> cartSellerItemModels = getArguments()
-                .getParcelableArrayList(CART_ITEM_LIST_EXTRA);
+        CartListData cartListData = getArguments()
+                .getParcelable(CART_LIST_DATA);
+        List<CartItemData> cartItemDataList = cartListData.getCartItemDataList();
         List<MultipleAddressAdapterData> adapterModels = new ArrayList<>();
-        for (int i = 0; i < cartSellerItemModels.size(); i++) {
-            List<CartItemModel> cartItemModels = cartSellerItemModels.get(i).getCartItemModels();
-            for (int j = 0; j < cartItemModels.size(); j++) {
-                MultipleAddressAdapterData addressAdapterData = new MultipleAddressAdapterData();
-                addressAdapterData.setProductPrice(
-                        String.valueOf(cartItemModels.get(j).getPrice())
-                );
-                addressAdapterData.setProductName(cartItemModels.get(j).getName());
-                addressAdapterData.setProductImageUrl(cartItemModels.get(j).getImageUrl());
-                addressAdapterData
-                        .setItemListData(generateinitiatialItemData(cartItemModels.get(j)));
-                adapterModels.add(addressAdapterData);
-            }
+        for (int i = 0; i < cartItemDataList.size(); i++) {
+            MultipleAddressAdapterData addressAdapterData = new MultipleAddressAdapterData();
+            addressAdapterData.setItemListData(
+                    generateinitiatialItemData(
+                            cartItemDataList.get(i).getOriginData(),
+                            cartItemDataList.get(i).getUpdatedData())
+            );
+            addressAdapterData.setProductImageUrl(
+                    cartItemDataList.get(i).getOriginData().getProductImage()
+            );
+            addressAdapterData.setProductName(
+                    cartItemDataList.get(i).getOriginData().getProductName()
+            );
+            addressAdapterData.setProductPrice(
+                    cartItemDataList.get(i).getOriginData().getPriceFormatted()
+            );
+            addressAdapterData.setSenderName(cartItemDataList.get(i).getOriginData().getShopName());
+            adapterModels.add(addressAdapterData);
         }
         return adapterModels;
     }
 
-    private List<MultipleAddressItemData> generateinitiatialItemData(CartItemModel itemModel) {
+    private List<MultipleAddressItemData> generateinitiatialItemData(
+            CartItemData.OriginData originData,
+            CartItemData.UpdatedData updatedData) {
         List<MultipleAddressItemData> initialItemData = new ArrayList<>();
         MultipleAddressItemData addressData = new MultipleAddressItemData();
         RecipientAddressModel shipmentRecipientModel = getArguments().getParcelable(ADDRESS_EXTRA);
-        addressData.setCartId("1");
-        addressData.setProductId(itemModel.getId());
-        addressData.setProductQty(String.valueOf(itemModel.getQuantity()));
-        addressData.setProductWeight(String.valueOf(itemModel.getWeight()));
-        addressData.setProductNotes(itemModel.getNoteToSeller());
+        addressData.setCartId(String.valueOf(originData.getCartId()));
+        addressData.setProductId(originData.getProductId());
+        addressData.setProductQty(String.valueOf(updatedData.getQuantity()));
+        addressData.setProductWeight(String.valueOf(originData.getWeightFormatted()));
+        addressData.setProductNotes(updatedData.getRemark());
         addressData.setAddressId(shipmentRecipientModel.getId());
         addressData.setAddressTitle(shipmentRecipientModel.getRecipientName());
         addressData.setAddressReceiverName(shipmentRecipientModel.getRecipientName());
@@ -167,6 +174,8 @@ public class MultipleAddressFragment extends TkpdFragment
                 + shipmentRecipientModel.getAddressCityName()
                 + ", "
                 + shipmentRecipientModel.getRecipientPhoneNumber());
+        addressData.setMaxQuantity(updatedData.getMaxQuantity());
+        addressData.setMinQuantity(originData.getMinimalQtyOrder());
         initialItemData.add(addressData);
         return initialItemData;
     }

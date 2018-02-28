@@ -532,13 +532,11 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         }
     }
 
-    private void renderDropshipperView(CourierItemData courierItemData) {
-        // The next 1 line is temporary
-        courierItemData.setAllowDropshiper(true);
+    private void renderDropshipperView(ShipmentItemData shipmentItemData) {
         if (presenter.getShipmentDetailData().getUseDropshipper() != null) {
             renderDropshipperInput(presenter.getShipmentDetailData().getUseDropshipper());
         } else {
-            renderDropshipperInput(courierItemData.isAllowDropshiper());
+            renderDropshipperInput(shipmentItemData.isAllowDropshiper());
         }
     }
 
@@ -695,6 +693,10 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
                 if (presenter.getShipmentDetailData().getShipmentCartData() != null) {
                     tvInsurancePrice.setText(
                             currencyId.format(presenter.getSelectedCourier().getInsurancePrice()));
+                    presenter.getShipmentDetailData().getShipmentCartData()
+                            .setInsurancePrice(presenter.getSelectedCourier().getInsurancePrice());
+                    presenter.getShipmentDetailData().getShipmentCartData()
+                            .setAdditionalFee(presenter.getSelectedCourier().getAdditionalPrice());
                     presenter.getShipmentDetailData().getShipmentCartData().setDeliveryPriceTotal(
                             presenter.getSelectedCourier().getAdditionalPrice() +
                                     presenter.getSelectedCourier().getDeliveryPrice() +
@@ -703,6 +705,10 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
             }
         } else {
             if (presenter.getShipmentDetailData().getShipmentCartData() != null) {
+                presenter.getShipmentDetailData().getShipmentCartData()
+                        .setInsurancePrice(0);
+                presenter.getShipmentDetailData().getShipmentCartData().setAdditionalFee(presenter
+                        .getSelectedCourier().getAdditionalPrice());
                 presenter.getShipmentDetailData().getShipmentCartData().setDeliveryPriceTotal(
                         presenter.getShipmentDetailData().getShipmentCartData().getDeliveryPriceTotal() -
                                 presenter.getSelectedCourier().getInsurancePrice());
@@ -753,6 +759,10 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
             resetView();
             resetSwitch();
             presenter.setSelectedCourier(courierItemData);
+            presenter.getShipmentDetailData().getShipmentCartData()
+                    .setInsurancePrice(courierItemData.getInsurancePrice());
+            presenter.getShipmentDetailData().getShipmentCartData()
+                    .setAdditionalFee(courierItemData.getAdditionalPrice());
             presenter.getShipmentDetailData().getShipmentCartData().setDeliveryPriceTotal(
                     courierItemData.getDeliveryPrice() + courierItemData.getAdditionalPrice());
             setText(tvDeliveryFeeTotal, currencyId.format(
@@ -767,7 +777,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
             renderTickerView(courierItemData);
             renderInsuranceView(courierItemData);
             renderAdditionalPriceView(courierItemData);
-            renderDropshipperView(courierItemData);
+            renderDropshipperView(presenter.getSelectedShipment());
             updateFeesGroupLayout();
         }
     }
@@ -791,7 +801,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         renderTickerView(courierItemData);
         renderInsuranceView(courierItemData);
         renderAdditionalPriceView(courierItemData);
-        renderDropshipperView(courierItemData);
+        renderDropshipperView(presenter.getSelectedShipment());
         updateFeesGroupLayout();
         if (presenter.getShipmentDetailData().getUseDropshipper() != null) {
             switchDropshipper.setChecked(presenter.getShipmentDetailData().getUseDropshipper());

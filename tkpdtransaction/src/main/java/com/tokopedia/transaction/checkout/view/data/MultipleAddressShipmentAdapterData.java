@@ -34,6 +34,9 @@ public class MultipleAddressShipmentAdapterData {
 
     private ShipmentCartData shipmentCartData;
 
+    private long subTotal;
+
+    private long productPriceNumber;
 
     public String getSenderName() {
         return senderName;
@@ -137,5 +140,21 @@ public class MultipleAddressShipmentAdapterData {
 
     public void setShipmentCartData(ShipmentCartData shipmentCartData) {
         this.shipmentCartData = shipmentCartData;
+    }
+
+    public long getSubTotal() {
+        return subTotal;
+    }
+
+    public void setSubTotal(long subTotal) {
+        this.subTotal = subTotal;
+    }
+
+    public long getProductPriceNumber() {
+        return productPriceNumber;
+    }
+
+    public void setProductPriceNumber(long productPriceNumber) {
+        this.productPriceNumber = productPriceNumber;
     }
 }

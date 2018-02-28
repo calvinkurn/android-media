@@ -6,6 +6,9 @@ import com.tokopedia.transaction.apiservice.CartService;
 import com.tokopedia.transaction.checkout.domain.response.addtocart.AddToCartDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.cartlist.CartDataListResponse;
 import com.tokopedia.transaction.checkout.domain.response.checkout.CheckoutDataResponse;
+import com.tokopedia.transaction.checkout.domain.response.checkpromocodecartlist.CheckPromoCodeCartListDataResponse;
+import com.tokopedia.transaction.checkout.domain.response.checkpromocodefinal.CheckPromoCodeFinalDataResponse;
+import com.tokopedia.transaction.checkout.domain.response.couponlist.CouponDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.deletecart.DeleteCartDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.resetcart.ResetCartDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.shippingaddress.ShippingAddressDataResponse;
@@ -113,6 +116,40 @@ public class CartRepository implements ICartRepository {
                 return cartResponseResponse.body().convertDataObj(CheckoutDataResponse.class);
             }
         });
+    }
+
+    @Override
+    public Observable<CheckPromoCodeCartListDataResponse> checkPromoCodeCartList(TKPDMapParam<String, String> param) {
+        return cartService.getApi().checkPromoCodeCartList(param).map(
+                new Func1<Response<CartResponse>, CheckPromoCodeCartListDataResponse>() {
+                    @Override
+                    public CheckPromoCodeCartListDataResponse call(Response<CartResponse> cartResponseResponse) {
+                        return cartResponseResponse.body().convertDataObj(CheckPromoCodeCartListDataResponse.class);
+                    }
+                });
+    }
+
+    @Override
+    public Observable<CheckPromoCodeFinalDataResponse> checkPromoCodeCartShipment(TKPDMapParam<String, String> param) {
+        return cartService.getApi().checkPromoCodeCartShipment(param).map(
+                new Func1<Response<CartResponse>, CheckPromoCodeFinalDataResponse>() {
+                    @Override
+                    public CheckPromoCodeFinalDataResponse call(Response<CartResponse> cartResponseResponse) {
+                        return cartResponseResponse.body().convertDataObj(CheckPromoCodeFinalDataResponse.class);
+                    }
+                });
+    }
+
+    @Override
+    public Observable<CouponDataResponse> getCouponList(TKPDMapParam<String, String> param) {
+        return cartService.getApi().getCouponList(param).map(
+                new Func1<Response<CartResponse>, CouponDataResponse>() {
+                    @Override
+                    public CouponDataResponse call(Response<CartResponse> cartResponseResponse) {
+                        return cartResponseResponse.body().convertDataObj(CouponDataResponse.class);
+                    }
+                }
+        );
     }
 
 

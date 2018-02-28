@@ -44,4 +44,9 @@ public class MapperUtil implements IMapperUtil {
     public boolean isEmpty(String string) {
         return string == null || string.isEmpty();
     }
+
+    @Override
+    public boolean isEmpty(Object object) {
+        return object==null;
+    }
 }
