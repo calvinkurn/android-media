@@ -66,9 +66,7 @@ import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
-import com.tokopedia.seller.product.manage.di.ProductManageComponent;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
 import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
 import com.tokopedia.sellerapp.truecaller.TruecallerActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
@@ -927,9 +925,8 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void goToCreateTopadsPromo(String productId) {
-        Intent intent = TopAdsGroupNewPromoActivity.getCallingIntent(this);
-        intent.putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, productId);
+    public void goToCreateTopadsPromo(Context activity, String productId, String source) {
+        Intent intent = TopAdsGroupNewPromoActivity.createIntent(activity, productId, source);
         startActivity(intent);
     }
 

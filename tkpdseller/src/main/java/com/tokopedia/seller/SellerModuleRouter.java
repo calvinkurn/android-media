@@ -5,10 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
-import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
@@ -48,5 +46,5 @@ public interface SellerModuleRouter {
 
     void sendEventTracking(String event, String category, String action, String label);
 
-    void goToCreateTopadsPromo(String productId);
+    void goToCreateTopadsPromo(Context context, String productId, String sourceCreateTopadsManageProduct);
 }

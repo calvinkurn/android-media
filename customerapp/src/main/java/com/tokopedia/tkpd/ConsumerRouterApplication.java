@@ -1309,7 +1309,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToCreateTopadsPromo(String productId) {
-        DrawerBuyerHelper.goToTopadsPage(this);
+    public void goToCreateTopadsPromo(Context context,String productId, String source) {
+        Intent topadsIntent = context.getPackageManager()
+                .getLaunchIntentForPackage(DrawerBuyerHelper.TOP_SELLER_APPLICATION_PACKAGE);
+
+        if (topadsIntent != null) {
+            context.startActivity(topadsIntent);
+        } else {
+            goToCreateMerchantRedirect(context);
+        }
     }
 }

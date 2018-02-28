@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.drawer;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
@@ -17,6 +18,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
@@ -579,15 +581,17 @@ public class DrawerBuyerHelper extends DrawerHelper
         }
     }
 
-    public static void goToTopadsPage(Context context) {
+    private void goToTopadsPage(Activity context) {
         Intent topadsIntent = context.getPackageManager()
                 .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
 
+        if(context.getApplication() instanceof SellerModuleRouter) {
+            ((SellerModuleRouter) context.getApplication()).goToCreateTopadsPromo(context,"", "");
+        }
+
         if (topadsIntent != null) {
-            context.startActivity(topadsIntent);
             UnifyTracking.eventTopAdsSwitcher(AppEventTracking.EventLabel.OPEN_APP);
-        } else if (context.getApplication() instanceof TkpdCoreRouter) {
-            ((TkpdCoreRouter) context.getApplication()).goToCreateMerchantRedirect(context);
+        } else {
             UnifyTracking.eventTopAdsSwitcher(AppEventTracking.Category.SWITCHER);
         }
     }
