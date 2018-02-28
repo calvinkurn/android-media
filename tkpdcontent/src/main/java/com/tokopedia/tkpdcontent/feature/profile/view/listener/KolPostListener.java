@@ -43,6 +43,10 @@ public interface KolPostListener {
         void onUnlikeKolClicked(int page, int adapterPosition, int id);
 
         void onGoToKolComment(int page, int rowNumber, KolPostViewModel kolPostViewModel);
+
+        void onLikeKolSuccess(int rowNumber);
+
+        void onLikeKolError(String message);
     }
 
     interface Presenter extends CustomerPresenter<View> {

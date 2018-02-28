@@ -1,5 +1,6 @@
 package com.tokopedia.tkpdcontent.feature.profile.view.subscriber;
 
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.tkpdcontent.feature.profile.view.listener.KolPostListener;
 
 import rx.Subscriber;
@@ -24,11 +25,21 @@ public class LikeKolPostSubscriber extends Subscriber<Boolean> {
 
     @Override
     public void onError(Throwable e) {
-        view.hideLoading();
+        if (view != null) {
+            view.onLikeKolError(
+                    ErrorHandler.getErrorMessage(view.getContext(), e)
+            );
+        }
     }
 
     @Override
     public void onNext(Boolean isSuccess) {
-        view.hideLoading();
+        if (view != null) {
+            if (isSuccess) {
+                view.onLikeKolSuccess(rowNumber);
+            } else {
+                view.onLikeKolError(null);
+            }
+        }
     }
 }

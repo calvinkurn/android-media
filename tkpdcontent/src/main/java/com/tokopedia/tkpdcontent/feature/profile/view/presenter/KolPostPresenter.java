@@ -46,9 +46,7 @@ public class KolPostPresenter extends BaseDaggerPresenter<KolPostListener.View>
     //TODO milhamj do something with these actions
     @Override
     public void followKol(int id, int rowNumber, KolPostListener.View kolListener) {
-        getView().getKolRouter().doLikeKolPost(
-                null,
-                new LikeKolPostSubscriber(getView(), rowNumber));
+
     }
 
     @Override
@@ -58,11 +56,15 @@ public class KolPostPresenter extends BaseDaggerPresenter<KolPostListener.View>
 
     @Override
     public void likeKol(int id, int rowNumber, KolPostListener.View kolListener) {
-
+        getView().getKolRouter().doLikeKolPost(
+                id, 1,
+                new LikeKolPostSubscriber(getView(), rowNumber));
     }
 
     @Override
     public void unlikeKol(int id, int rowNumber, KolPostListener.View kolListener) {
-
+        getView().getKolRouter().doLikeKolPost(
+                id, 0,
+                new LikeKolPostSubscriber(getView(), rowNumber));
     }
 }
