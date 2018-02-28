@@ -27,8 +27,5 @@ import rx.Observable;
 public interface EtalaseApi {
 
     @GET(ShopUrl.SHOP_ETALASE)
-    Observable<Response<String>> getShopEtalase(@QueryMap Map<String, String> params);
-
-    @GET(ShopUrl.SHOP_ETALASE)
-    Observable<Response<DataResponse<PagingListOther<EtalaseModel>>>> getShopEtalase2(@QueryMap Map<String, String> params);
+    Observable<Response<DataResponse<PagingListOther<EtalaseModel>>>> getShopEtalase(@QueryMap Map<String, String> params);
 }

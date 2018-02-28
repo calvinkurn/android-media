@@ -39,8 +39,8 @@ public class ShopProductRepositoryImpl implements ShopProductRepository {
     }
 
     @Override
-    public Observable<PagingList<ShopProduct>> getShopProductList(String baseUrl, ShopProductRequestModel shopProductRequestModel) {
-        return shopProductCloudDataSource.getShopProductList(baseUrl, shopProductRequestModel).flatMap(new Func1<Response<DataResponse<PagingList<ShopProduct>>>, Observable<PagingList<ShopProduct>>>() {
+    public Observable<PagingList<ShopProduct>> getShopProductList(ShopProductRequestModel shopProductRequestModel) {
+        return shopProductCloudDataSource.getShopProductList( shopProductRequestModel).flatMap(new Func1<Response<DataResponse<PagingList<ShopProduct>>>, Observable<PagingList<ShopProduct>>>() {
             @Override
             public Observable<PagingList<ShopProduct>> call(Response<DataResponse<PagingList<ShopProduct>>> dataResponseResponse) {
                 return Observable.just(dataResponseResponse.body().getData());
