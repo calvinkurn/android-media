@@ -2,15 +2,22 @@ package com.tokopedia.tkpd.home;
 
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ShortcutInfo;
+import android.content.pm.ShortcutManager;
+import android.graphics.drawable.Icon;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -25,12 +32,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.anals.UserAttribute;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -55,30 +64,38 @@ import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.home.GetUserInfoListener;
+import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.retrofit.utils.DialogHockeyApp;
 import com.tokopedia.core.onboarding.NewOnboardingActivity;
+import com.tokopedia.core.referral.ReferralActivity;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.rxjava.RxUtils;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.shopinfo.models.productmodel.List;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.bottomnavigation.BottomNavigation;
-import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
-import com.tokopedia.tkpd.R;
-
-import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
+import com.tokopedia.design.tab.Tabs;
+import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
+import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
+import com.tokopedia.seller.shop.open.view.activity.ShopOpenDomainActivity;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
 import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
+import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import rx.subscriptions.CompositeSubscription;
 
@@ -105,12 +122,15 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     public static final String messageTAG = TAG + " : ";
     public static final String VIEW_PAGE_POSITION = "VIEW_PAGE_POSITION";
 
-    protected TkpdProgressDialog progressDialog;
+    private static final String SHORTCUT_BELI_ID = "Beli";
+    private static final String SHORTCUT_DIGITAL_ID = "Bayar";
+    private static final String SHORTCUT_SHARE_ID = "Share";
+    private static final String SHORTCUT_SHOP_ID = "Jual";
+    public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
     protected PagerAdapter adapter;
     protected TouchViewPager mViewPager;
-    protected BottomNavigation bottomNavigation;
+    protected Tabs tabs;
 
-    protected LocalCacheHandler cache;
     private AnalyticsCacheHandler cacheHandler;
     private CompositeSubscription subscription = new CompositeSubscription();
 
@@ -187,7 +207,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         initStateFragment = getDefaultTabPosition();
         Log.d(TAG, messageTAG + "onCreate");
         super.onCreate(arg0);
-        progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
         if (arg0 != null) {
             //be16268	commit id untuk memperjelas yang bawah
             //yang bikin nama var pake entahlah..... semoga lu segera tobat -rico-
@@ -237,10 +256,95 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         initHockeyBroadcastReceiver();
     }
 
+    private void addShortcuts() {
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
+            if (shortcutManager != null) {
+                shortcutManager.removeAllDynamicShortcuts();
+            }
+
+
+            Bundle args = new Bundle();
+            args.putBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, true);
+            args.putBoolean(Constants.FROM_APP_SHORTCUTS, true);
+
+            Intent intentHome = ((TkpdCoreRouter) getApplication()).getHomeIntent
+                    (this);
+            intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intentHome.setAction(Intent.ACTION_VIEW);
+
+            Intent productIntent = SearchActivity.newInstance(this, args);
+            productIntent.setAction(Intent.ACTION_VIEW);
+
+            ShortcutInfo productShortcut = new ShortcutInfo.Builder(this, SHORTCUT_BELI_ID)
+                    .setShortLabel(getResources().getString(R.string.longpress_beli))
+                    .setLongLabel(getResources().getString(R.string.longpress_beli))
+                    .setIcon(Icon.createWithResource(this, R.drawable.ic_beli))
+                    .setIntents(new Intent[]{
+                            intentHome, productIntent
+                    })
+                    .build();
+
+            Intent digitalIntent = DigitalCategoryListActivity.newInstance(this, args);
+            digitalIntent.setAction(Intent.ACTION_VIEW);
+
+            ShortcutInfo digitalShortcut = new ShortcutInfo.Builder(this, SHORTCUT_DIGITAL_ID)
+                    .setShortLabel(getResources().getString(R.string.longpress_bayar))
+                    .setLongLabel(getResources().getString(R.string.longpress_bayar))
+                    .setIcon(Icon.createWithResource(this, R.drawable.ic_bayar))
+                    .setIntents(new Intent[]{intentHome, digitalIntent})
+                    .build();
+
+            if (SessionHandler.isV4Login(this)) {
+                String shopID = SessionHandler.getShopID(this);
+
+                Intent shopIntent;
+                if (shopID.equalsIgnoreCase(SessionHandler.DEFAULT_EMPTY_SHOP_ID)) {
+                    shopIntent = ShopOpenDomainActivity.getIntent(this);
+                } else {
+                    shopIntent = ShopInfoActivity.getCallingIntent(this, shopID);
+                }
+
+                shopIntent.setAction(Intent.ACTION_VIEW);
+                shopIntent.putExtras(args);
+
+                ShortcutInfo shopShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHOP_ID)
+                        .setShortLabel(getResources().getString(R.string.longpress_jual))
+                        .setLongLabel(getResources().getString(R.string.longpress_jual))
+                        .setIcon(Icon.createWithResource(this, R.drawable.ic_jual))
+                        .setIntents(new Intent[]{
+                                intentHome, shopIntent
+                        })
+                        .build();
+
+                Intent referralIntent = ReferralActivity.getCallingIntent(this, args);
+                referralIntent.setAction(Intent.ACTION_VIEW);
+
+                ShortcutInfo referralShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHARE_ID)
+                        .setShortLabel(getResources().getString(R.string.longpress_share))
+                        .setLongLabel(getResources().getString(R.string.longpress_share))
+                        .setIcon(Icon.createWithResource(this, R.drawable.ic_referral))
+                        .setIntents(new Intent[]{
+                                intentHome, referralIntent
+                        })
+                        .build();
+
+                if (shortcutManager != null) {
+                    shortcutManager.addDynamicShortcuts(Arrays.asList(referralShortcut, shopShortcut, productShortcut, digitalShortcut));
+                }
+            } else {
+                if (shortcutManager != null) {
+                    shortcutManager.addDynamicShortcuts(Arrays.asList(productShortcut, digitalShortcut));
+                }
+            }
+
+        }
+    }
+
     @Override
     public void onGetProfile(DrawerProfile profile) {
         super.onGetProfile(profile);
-
         setMoengageUserAttributes();
     }
 
@@ -269,6 +373,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 } else {
                     drawerHelper.openDrawer();
                 }
+                KeyboardHandler.hideSoftKeyboard(ParentIndexHome.this);
             }
         });
         toolbar.addView(view);
@@ -303,34 +408,27 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     public void initCreate() {
 
-        adapter = new PagerAdapter(getSupportFragmentManager(), getFragments());
-        mViewPager.setAdapter(adapter);
+        adapter = new PagerAdapter(getSupportFragmentManager());
+        setupViewPager();
+        adapter.notifyDataSetChanged();// DON'T DELETE THIS BECAUSE IT WILL NOTIFY ADAPTER TO CHANGE FROM GUEST TO LOGIN
 
-        mViewPager.setSmoothScroll(false);
-        mViewPager.SetAllowPageSwitching(false);
         mViewPager.setOffscreenPageLimit(4);
 
-        bottomNavigation.setupWithViewPager(mViewPager, false);
-
-        bottomNavigation.setViewPagerPageChangeListener(new BottomNavigation.ViewPagerPageChangeListener() {
+        tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onPageScrollStateChanged(int state) {}
-
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
-
-            @Override
-            public void onPageSelected(int position) {
-                initStateFragment = position;
-                sendGTMButtonEvent(position);
+            public void onTabSelected(TabLayout.Tab tab) {
+                mViewPager.setCurrentItem(tab.getPosition());
+                sendGTMButtonEvent(tab.getPosition());
+                KeyboardHandler.hideSoftKeyboard(ParentIndexHome.this);
             }
-        });
 
-        bottomNavigation.setOnNavigationItemReselectedListener(new BottomNavigationView.OnNavigationItemReselectedListener() {
             @Override
-            public void onNavigationItemReselected(@NonNull MenuItem menuItem) {
-                if (menuItem.getItemId() == R.id.menu_feed || menuItem.getItemId() == R.id.menu_beranda) {
-                    Fragment fragment = adapter.getFragments().get(initStateFragment); // scroll to top
+            public void onTabUnselected(TabLayout.Tab tab) {}
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                if (tab.getPosition() == INIT_STATE_FRAGMENT_HOME ||tab.getPosition() == INIT_STATE_FRAGMENT_FEED) {
+                    Fragment fragment = adapter.getFragments().get(tab.getPosition()); // scroll to top
                     if (fragment != null) {
                         if (fragment instanceof FeedPlusFragment)
                             ((FeedPlusFragment) fragment).scrollToTop();
@@ -341,29 +439,16 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             }
         });
 
-        mViewPager.setCurrentItem(initStateFragment, false);
-        adapter.notifyDataSetChanged();// DON'T DELETE THIS BECAUSE IT WILL NOTIFY ADAPTER TO CHANGE FROM GUEST TO LOGIN
-    }
+        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
+        tabs.setupWithViewPager(mViewPager);
 
-    @Override
-    public void onBackPressed() {
-        if (drawerHelper.isOpened()) {
-            drawerHelper.closeDrawer();
-        } else {
-            if (bottomNavigation.getBackStackEntryCount() > 1) {
-                bottomNavigation.handleBackPressed();
-            } else {
-                this.finish();
-            }
-        }
+        mViewPager.setCurrentItem(initStateFragment);
     }
 
     private void setView() {
         inflateView(R.layout.activity_index_home_4);
         mViewPager = findViewById(R.id.index_page);
-        bottomNavigation = findViewById(R.id.bottomnav);
-
-        bottomNavigation.initBackStack();
+        tabs = findViewById(R.id.tab);
     }
 
     public ChangeTabListener changeTabListener() {
@@ -386,22 +471,26 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         return intent;
     }
 
-    private SparseArray<Fragment> getFragments() {
-        SparseArray<Fragment> fragments = new SparseArray<>();
-        fragments.put(INIT_STATE_FRAGMENT_HOME, HomeFragment.newInstance());
-        fragments.put(INIT_STATE_FRAGMENT_FEED, new FeedPlusFragment());
-        fragments.put(INIT_STATE_FRAGMENT_FAVORITE, new FragmentFavorite());
-        fragments.put(INIT_STATE_FRAGMENT_HOTLIST, new FragmentHotListV2());
-        return fragments;
+    private void setupViewPager() {
+        adapter.addFragment(HomeFragment.newInstance(), getString(R.string.title_categories));
+        adapter.addFragment(new FeedPlusFragment(), getString(R.string.title_index_prod_shop));
+        adapter.addFragment(new FragmentFavorite(), getString(R.string.title_index_favorite));
+        adapter.addFragment(new FragmentHotListV2(), getString(R.string.title_index_hot_list));
+        mViewPager.setAdapter(adapter);
     }
 
     protected class PagerAdapter extends FragmentStatePagerAdapter {
 
-        SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
+        ArrayList<Fragment> fragments = new ArrayList<>();
+        ArrayList<String> titles = new ArrayList<>();
 
-        public PagerAdapter(FragmentManager fm, SparseArray<Fragment> fragmentSparseArray) {
+        public PagerAdapter(FragmentManager fm) {
             super(fm);
-            this.registeredFragments = fragmentSparseArray;
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            fragments.add(fragment);
+            titles.add(title);
         }
 
         @Override
@@ -411,18 +500,22 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
         @Override
         public int getCount() {
-            return registeredFragments.size();
+            return fragments.size();
         }
 
         @Override
         public Fragment getItem(int position) {
-            return registeredFragments.get(position);
+            return fragments.get(position);
         }
 
-        public SparseArray<Fragment> getFragments() {
-            return registeredFragments;
+        public ArrayList<Fragment> getFragments() {
+            return fragments;
         }
 
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return titles.get(position);
+        }
     }
 
     @Override
@@ -504,17 +597,15 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         RxUtils.getNewCompositeSubIfUnsubscribed(subscription);
         FCMCacheManager.checkAndSyncFcmId(getApplicationContext());
         if (SessionHandler.isV4Login(this) && isUserFirstTimeLogin) {
-
             initStateFragment = INIT_STATE_FRAGMENT_HOME;
-            adapter = new PagerAdapter(getSupportFragmentManager(), getFragments());
-            mViewPager.setAdapter(adapter);
+            adapter = new PagerAdapter(getSupportFragmentManager());
+            setupViewPager();
             adapter.notifyDataSetChanged();
-
-            bottomNavigation.initBackStack();
-            bottomNavigation.setCurrentItem(INIT_STATE_FRAGMENT_HOME);
         }
 
         isUserFirstTimeLogin = !SessionHandler.isV4Login(this);
+
+        addShortcuts();
 
         invalidateOptionsMenu();
         MainApplication.setCurrentActivity(this);
@@ -591,7 +682,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     }
 
     private void sendGTMButtonEvent(int position) {
-        String action = "";
         String label = "";
 
         switch (position) {
@@ -609,13 +699,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 break;
         }
 
-        if (SessionHandler.isV4Login(ParentIndexHome.this)) {
-            action = String.format("%s %s %s", action, AppEventTracking.Category.HOME_BOTTOM_NAV, AppEventTracking.EventLabel.AFTER_LOGIN);
-        } else {
-            action = String.format("%s %s %s", action, AppEventTracking.Category.HOME_BOTTOM_NAV, AppEventTracking.EventLabel.BEFORE_LOGIN);
-        }
-
-        UnifyTracking.eventHomeTab(action, label);
+        UnifyTracking.eventHomeTab(label);
     }
 
     @Override
@@ -668,6 +752,18 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     private void checkIsHaveApplinkComeFromDeeplink(Intent intent) {
         if (!TextUtils.isEmpty(intent.getStringExtra(HomeRouter.EXTRA_APPLINK))) {
             String applink = intent.getStringExtra(HomeRouter.EXTRA_APPLINK);
+
+            if (intent.getStringExtra(MO_ENGAGE_COUPON_CODE) != null &&
+                    !TextUtils.isEmpty(intent.getStringExtra(MO_ENGAGE_COUPON_CODE))) {
+
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText(getResources().getString(R.string.coupon_copy_text), intent.getStringExtra(MO_ENGAGE_COUPON_CODE));
+                if (clipboard != null) {
+                    clipboard.setPrimaryClip(clip);
+                }
+
+                Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
+            }
             if (!isPausing()) {
                 try {
                     DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();

@@ -12,6 +12,6 @@ import rx.Observable;
 
 public interface ExploreRepository {
 
-    Observable<List<ExploreSectionViewModel>> getExploreData();
+    Observable<List<ExploreSectionViewModel>> getExploreData(String userId);
 
 }
