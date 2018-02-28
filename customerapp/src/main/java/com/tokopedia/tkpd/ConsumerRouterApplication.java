@@ -181,11 +181,11 @@ import com.tokopedia.tokocash.historytokocash.presentation.activity.HistoryTokoC
 import com.tokopedia.tokocash.qrpayment.presentation.activity.CustomScannerTokoCashActivity;
 import com.tokopedia.transaction.apiservice.CartService;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
-import com.tokopedia.transaction.checkout.domain.AddToCartUseCase;
-import com.tokopedia.transaction.checkout.domain.CartRepository;
-import com.tokopedia.transaction.checkout.domain.MapperUtil;
-import com.tokopedia.transaction.checkout.domain.VoucherCouponMapper;
-import com.tokopedia.transaction.checkout.domain.response.addtocart.AddToCartDataResponse;
+import com.tokopedia.transaction.checkout.data.entity.response.addtocart.AddToCartDataResponse;
+import com.tokopedia.transaction.checkout.data.repository.CartRepository;
+import com.tokopedia.transaction.checkout.domain.mapper.MapperUtil;
+import com.tokopedia.transaction.checkout.domain.mapper.VoucherCouponMapper;
+import com.tokopedia.transaction.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.transaction.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.transaction.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.transaction.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase;

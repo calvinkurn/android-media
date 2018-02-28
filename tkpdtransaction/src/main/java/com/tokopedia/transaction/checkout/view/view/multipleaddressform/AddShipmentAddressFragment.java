@@ -16,8 +16,8 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.checkout.view.data.MultipleAddressAdapterData;
-import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressAdapterData;
+import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressItemData;
 
 import static com.tokopedia.transaction.checkout.view.view.multipleaddressform.MultipleAddressFragment.ADD_SHIPMENT_ADDRESS_REQUEST_CODE;
 import static com.tokopedia.transaction.checkout.view.view.multipleaddressform.MultipleAddressFragment.EDIT_SHIPMENT_ADDRESS_REQUEST_CODE;

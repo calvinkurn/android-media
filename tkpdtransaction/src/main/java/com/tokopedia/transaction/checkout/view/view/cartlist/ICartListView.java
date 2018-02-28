@@ -1,11 +1,11 @@
 package com.tokopedia.transaction.checkout.view.view.cartlist;
 
 import com.tokopedia.transaction.base.IBaseView;
-import com.tokopedia.transaction.checkout.view.data.CartItemData;
-import com.tokopedia.transaction.checkout.view.data.CartListData;
-import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
-import com.tokopedia.transaction.checkout.view.data.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.transaction.checkout.view.data.voucher.PromoCodeCartListData;
+import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartListData;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 
 import java.util.List;
 

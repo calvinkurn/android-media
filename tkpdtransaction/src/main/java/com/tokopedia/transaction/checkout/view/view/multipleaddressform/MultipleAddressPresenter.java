@@ -6,10 +6,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.tokopedia.transaction.checkout.domain.request.MultipleAddressRequest;
+import com.tokopedia.transaction.checkout.data.entity.request.MultipleAddressRequest;
+import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressAdapterData;
+import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartmultipleshipment.SetShippingAddressData;
 import com.tokopedia.transaction.checkout.domain.usecase.SubmitMultipleAddressUseCase;
-import com.tokopedia.transaction.checkout.view.data.MultipleAddressAdapterData;
-import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
     public void sendData(Context context, List<MultipleAddressAdapterData> dataList) {
         JsonArray dataArray = new JsonArray();
         for (int i = 0; i < dataList.size(); i++) {
-            for (int j = 0; j<dataList.get(i).getItemListData().size(); j++) {
+            for (int j = 0; j < dataList.get(i).getItemListData().size(); j++) {
                 MultipleAddressRequest request = new MultipleAddressRequest();
                 MultipleAddressItemData itemData = dataList.get(i).getItemListData().get(j);
                 request.setCartId(Integer.parseInt(itemData.getCartId()));
@@ -59,8 +60,8 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
         submitMultipleAddressUseCase.unsubscribe();
     }
 
-    private Subscriber<Boolean> addMultipleAddressSubscriber() {
-        return new Subscriber<Boolean>() {
+    private Subscriber<SetShippingAddressData> addMultipleAddressSubscriber() {
+        return new Subscriber<SetShippingAddressData>() {
             @Override
             public void onCompleted() {
 
@@ -72,8 +73,9 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
             }
 
             @Override
-            public void onNext(Boolean aBoolean) {
-                view.successMakeShipmentData();
+            public void onNext(SetShippingAddressData setShippingAddressData) {
+                if (setShippingAddressData.isSuccess())
+                    view.successMakeShipmentData();
             }
         };
     }

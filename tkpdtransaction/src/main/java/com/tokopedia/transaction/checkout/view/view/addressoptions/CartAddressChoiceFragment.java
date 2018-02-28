@@ -25,14 +25,11 @@ import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.data.mapper.AddressModelMapper;
-import com.tokopedia.transaction.checkout.di.component.CartAddressChoiceComponent;
-import com.tokopedia.transaction.checkout.di.component.DaggerCartAddressChoiceComponent;
-import com.tokopedia.transaction.checkout.di.module.CartAddressChoiceModule;
+import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.view.adapter.ShipmentAddressListAdapter;
-import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
-import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
-import com.tokopedia.transaction.checkout.view.presenter.ICartAddressChoicePresenter;
-import com.tokopedia.transaction.checkout.view.view.ICartAddressChoiceView;
+import com.tokopedia.transaction.checkout.view.di.component.CartAddressChoiceComponent;
+import com.tokopedia.transaction.checkout.view.di.component.DaggerCartAddressChoiceComponent;
+import com.tokopedia.transaction.checkout.view.di.module.CartAddressChoiceModule;
 
 import java.util.ArrayList;
 import java.util.List;

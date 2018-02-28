@@ -1,7 +1,7 @@
 package com.tokopedia.transaction.checkout.view.view.cartlist;
 
-import com.tokopedia.transaction.checkout.view.data.CartItemData;
-import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
+import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
 
 import java.util.List;

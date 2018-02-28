@@ -19,8 +19,8 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.checkout.view.data.CartItemData;
-import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
 

@@ -17,8 +17,8 @@ import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.checkout.view.data.MultipleAddressAdapterData;
-import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressAdapterData;
+import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceFragment;
 
 import java.util.ArrayList;

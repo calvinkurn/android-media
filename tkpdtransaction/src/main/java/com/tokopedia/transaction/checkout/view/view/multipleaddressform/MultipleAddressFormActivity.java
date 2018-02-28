@@ -9,8 +9,8 @@ import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.checkout.view.data.CartListData;
-import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
+import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartListData;
 
 /**
  * Created by kris on 2/22/18. Tokopedia

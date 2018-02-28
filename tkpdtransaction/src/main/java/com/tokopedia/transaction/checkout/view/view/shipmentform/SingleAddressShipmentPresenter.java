@@ -1,7 +1,7 @@
 package com.tokopedia.transaction.checkout.view.view.shipmentform;
 
-import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
-import com.tokopedia.transaction.checkout.view.presenter.CartMvpPresenter;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSingleAddressData;
+import com.tokopedia.transaction.checkout.view.base.CartMvpPresenter;
 
 import javax.inject.Inject;
 

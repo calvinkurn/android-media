@@ -4,10 +4,10 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
-import com.tokopedia.transaction.checkout.domain.ICartRepository;
-import com.tokopedia.transaction.checkout.domain.IVoucherCouponMapper;
-import com.tokopedia.transaction.checkout.domain.response.checkpromocodecartlist.CheckPromoCodeCartListDataResponse;
-import com.tokopedia.transaction.checkout.view.data.voucher.PromoCodeCartListData;
+import com.tokopedia.transaction.checkout.data.entity.response.checkpromocodecartlist.CheckPromoCodeCartListDataResponse;
+import com.tokopedia.transaction.checkout.data.repository.ICartRepository;
+import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeCartListData;
+import com.tokopedia.transaction.checkout.domain.mapper.IVoucherCouponMapper;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

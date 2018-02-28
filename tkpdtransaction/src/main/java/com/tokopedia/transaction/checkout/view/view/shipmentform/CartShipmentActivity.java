@@ -9,8 +9,8 @@ import android.support.annotation.Nullable;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
-import com.tokopedia.transaction.checkout.view.data.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.transaction.checkout.view.view.multipleaddressform.MultipleAddressFragment;
 
 /**

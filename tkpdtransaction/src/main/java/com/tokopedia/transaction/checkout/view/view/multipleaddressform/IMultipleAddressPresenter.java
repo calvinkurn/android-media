@@ -2,7 +2,7 @@ package com.tokopedia.transaction.checkout.view.view.multipleaddressform;
 
 import android.content.Context;
 
-import com.tokopedia.transaction.checkout.view.data.MultipleAddressAdapterData;
+import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressAdapterData;
 
 import java.util.List;
 

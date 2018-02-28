@@ -7,7 +7,7 @@ import android.widget.RelativeLayout;
 import android.widget.Switch;
 
 import com.tokopedia.transaction.R2;
-import com.tokopedia.transaction.checkout.view.data.DropshipperShippingOptionModel;
+import com.tokopedia.transaction.checkout.domain.datamodel.DropshipperShippingOptionModel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
