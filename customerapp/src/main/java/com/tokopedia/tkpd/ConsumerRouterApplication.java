@@ -168,6 +168,7 @@ import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.FeedModuleRouter;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FollowKolDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.LikeKolDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FollowKolPostUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.LikeKolPostUseCase;
@@ -183,6 +184,7 @@ import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpdcontent.KolRouter;
 import com.tokopedia.tkpdcontent.feature.profile.view.fragment.KolPostFragment;
+import com.tokopedia.tkpdcontent.feature.profile.view.subscriber.FollowKolPostSubscriber;
 import com.tokopedia.tkpdcontent.feature.profile.view.subscriber.LikeKolPostSubscriber;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
@@ -1435,7 +1437,22 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void doFollowKolPost() {
-
+    public void doFollowKolPost(int id,
+                                int action,
+                                FollowKolPostSubscriber followKolPostSubscriber) {
+        FollowKolPostUseCase followKolPostUseCase = ContentGetFeedUseCase
+                .newInstance(getContentConsumerComponent())
+                .inject()
+                .getFollowKolPostUseCase();
+        followKolPostUseCase.createObservable(FollowKolPostUseCase.getParam(id, action))
+                .map(new Func1<FollowKolDomain, Boolean>() {
+                    @Override
+                    public Boolean call(FollowKolDomain followKolDomain) {
+                        return followKolDomain.getStatus() == FollowKolPostUseCase.SUCCESS_STATUS;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(followKolPostSubscriber);
     }
 }

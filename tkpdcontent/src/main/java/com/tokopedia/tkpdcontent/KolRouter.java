@@ -3,6 +3,7 @@ package com.tokopedia.tkpdcontent;
 import android.content.Context;
 import android.content.Intent;
 
+import com.tokopedia.tkpdcontent.feature.profile.view.subscriber.FollowKolPostSubscriber;
 import com.tokopedia.tkpdcontent.feature.profile.view.subscriber.LikeKolPostSubscriber;
 
 /**
@@ -30,5 +31,5 @@ public interface KolRouter {
 
     int getUnfollowActionParam();
 
-    void doFollowKolPost();
+    void doFollowKolPost(int id, int action, FollowKolPostSubscriber followKolPostSubscriber);
 }
