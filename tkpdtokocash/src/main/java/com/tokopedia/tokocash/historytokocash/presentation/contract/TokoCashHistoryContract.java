@@ -1,11 +1,10 @@
 package com.tokopedia.tokocash.historytokocash.presentation.contract;
 
-
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.tokocash.historytokocash.presentation.model.HeaderHistory;
 import com.tokopedia.tokocash.historytokocash.presentation.model.TokoCashHistoryData;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 

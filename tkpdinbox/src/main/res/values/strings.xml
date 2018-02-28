@@ -276,4 +276,30 @@ yang ditemukan</string>
     <string name="body_info_list_template">"Ubah dengan tekan tombol edit, atau atur urutan dengan tahan dan geser tombol drag."</string>
     <string name="caption_switch_template">"Buat hingga 5 template untuk membantu Anda melakukan Chat tanpa perlu mengetik pesan yang sama berulang kali"</string>
 
+
+    <!--reso inbox-->
+    <string name="string_buyer">Pembeli:</string>
+    <string name="string_seller">Penjual:</string>
+    <string name="string_auto_execute">Selesai Otomatis Dalam :</string>
+    <string name="string_last_reply">Terakhir Dibalas :</string>
+    <string name="string_free_return">Free Return :</string>
+    <string name="string_title_sort">Urutkan</string>
+    <string name="string_title_filter">Filter</string>
+    <string name="string_see_conv">Lihat Percakapan</string>
+    <string name="string_from_date">Dari Tanggal</string>
+    <string name="string_to_date">Sampai Tanggal</string>
+    <string name="string_choose_date">Pilih Tanggal</string>
+    <string name="string_button_finish">Selesai</string>
+    <string name="string_reset">Reset</string>
+    <string name="string_empty_inbox_1_title">Oops, Komplain Tidak Ditemukan</string>
+    <string name="string_empty_inbox_1_desc">Kami tidak dapat menemukan komplain yang anda cari.</string>
+    <string name="string_empty_inbox_2_title">Oopppsss..</string>
+    <string name="string_empty_inbox_2_desc">Kami tidak dapat menemukan komplain yang anda cari.</string>
+    <string name="string_reset_filter">Reset Filter</string>
+    <string name="string_sort_2">Komplain Terbaru</string>
+    <string name="string_sort_3">Komplain Terlama</string>
+    <string name="string_sort_1">Terakhir Dibalas</string>
+    <string name="string_other_products">Produk Lainnya</string>
+    <string name="date_error_overflow">Tidak dapat memilih tanggal melebihi hari ini.</string>
+    <string name="date_error">Tanggal yang dipilih tidak valid.</string>
 </resources>

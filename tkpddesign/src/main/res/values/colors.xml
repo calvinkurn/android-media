@@ -34,6 +34,7 @@
 
     <color name="colorGray">#DDDDDD</color>
     <color name="colorRed">#EA212D</color>
+    <color name="colorPink">#FDEBEC</color>
 
     <color name="colorSheetText">#DE000000</color>
     <color name="colorSheetTitle">#8A000000</color>
@@ -50,4 +51,6 @@
     <color name="bottomnav_active">@color/green_250</color>
     <color name="bottomnav_inactive">#8C000000</color>
 
+    <color name="snackbar_border_error">#f05f68</color>
+    <color name="snackbar_border_normal">#87d58b</color>
 </resources>

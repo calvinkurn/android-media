@@ -1,9 +1,12 @@
 package com.tokopedia.tokocash.apiservice;
 
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.tokocash.qrpayment.data.entity.BalanceTokoCashEntity;
+import com.tokopedia.tokocash.qrpayment.data.entity.TokoCashEntity;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import retrofit2.Response;
@@ -26,7 +29,7 @@ public interface WalletApi {
     String IDENTIFIER = "identifier";
 
     @GET(TkpdBaseURL.Wallet.GET_HISTORY)
-    Observable<Response<TkpdDigitalResponse>> getHistoryTokocash(@QueryMap TKPDMapParam<String, Object> params);
+    Observable<Response<TkpdDigitalResponse>> getHistoryTokocash(@QueryMap HashMap<String, Object> params);
 
     @POST(TkpdBaseURL.Wallet.POST_COMPLAINT)
     Observable<Response<TkpdDigitalResponse>> postHelpHistory(@Body Map<String, String> params);
@@ -46,8 +49,8 @@ public interface WalletApi {
     Observable<Response<TkpdDigitalResponse>> getInfoQrTokoCash(@Path(IDENTIFIER) String identifier);
 
     @POST(TkpdBaseURL.Wallet.POST_QR_PAYMENT)
-    Observable<Response<TkpdDigitalResponse>> postQrPaymentTokoCash(@Body TKPDMapParam<String, Object> params);
+    Observable<Response<TkpdDigitalResponse>> postQrPaymentTokoCash(@Body HashMap<String, Object> params);
 
     @GET(TkpdBaseURL.Wallet.GET_BALANCE)
-    Observable<Response<TkpdDigitalResponse>> getBalanceTokoCash(@QueryMap TKPDMapParam<String, Object> params);
+    Observable<Response<TokoCashEntity>> getBalanceTokoCash();
 }

@@ -159,5 +159,6 @@ dependencies {
     compile('com.exotel:verification:0.2.0@aar') {
         transitive = true;
         changing = true;
+        exclude group: 'com.google.code.gson', module: 'gson'
     }
 }
