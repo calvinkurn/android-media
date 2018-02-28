@@ -1396,6 +1396,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public int getLikeActionParam() {
+        return LikeKolPostUseCase.ACTION_LIKE;
+    }
+
+    @Override
+    public int getUnlikeActionParam() {
+        return LikeKolPostUseCase.ACTION_UNLIKE;
+    }
+
+    @Override
     public void doLikeKolPost(int id, int action, LikeKolPostSubscriber likeKolPostSubscriber) {
         LikeKolPostUseCase likeKolPostUseCase = ContentGetFeedUseCase
                 .newInstance(getContentConsumerComponent())

@@ -20,6 +20,10 @@ public interface KolRouter {
 
     String getKolCommentArgsTotalComment();
 
+    int getLikeActionParam();
+
+    int getUnlikeActionParam();
+
     void doLikeKolPost(int id, int action, LikeKolPostSubscriber likeKolPostSubscriber);
 
     void doFollowKolPost();
