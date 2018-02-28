@@ -14,15 +14,11 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFact
  */
 
 public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
-    /*public static final int TYPE_TOKOCASH_ONLY = 1;
-    public static final int TYPE_TOKOPINT_ONLY = 3;
-    public static final int TYPE_EMPTY = 4;
-    public static final int TYPE_TOKOCASH_WITH_TOKOPOINT = 2;*/
 
     public static final Creator<HeaderViewModel> CREATOR = new Creator<HeaderViewModel>() {
         @Override
-        public HeaderViewModel createFromParcel(Parcel source) {
-            return new HeaderViewModel(source);
+        public HeaderViewModel createFromParcel(Parcel in) {
+            return new HeaderViewModel(in);
         }
 
         @Override
@@ -33,20 +29,20 @@ public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
     private HomeHeaderWalletAction homeHeaderWalletActionData;
     private TokoPointDrawerData tokoPointDrawerData;
     private CashBackData cashBackData;
-    private int tokocashNetworkStatus;
-    private int tokopointNetworkStatus;
-    //    private int type;
     private boolean pendingTokocashChecked;
+    private boolean isWalletError;
+    private boolean isTokoPointError;
 
     public HeaderViewModel() {
     }
 
     protected HeaderViewModel(Parcel in) {
-        this.homeHeaderWalletActionData = in.readParcelable(HomeHeaderWalletAction.class.getClassLoader());
-        this.tokoPointDrawerData = in.readParcelable(TokoPointDrawerData.class.getClassLoader());
-        this.cashBackData = in.readParcelable(CashBackData.class.getClassLoader());
-//        this.type = in.readInt();
-        this.pendingTokocashChecked = in.readByte() != 0;
+        homeHeaderWalletActionData = in.readParcelable(HomeHeaderWalletAction.class.getClassLoader());
+        tokoPointDrawerData = in.readParcelable(TokoPointDrawerData.class.getClassLoader());
+        cashBackData = in.readParcelable(CashBackData.class.getClassLoader());
+        pendingTokocashChecked = in.readByte() != 0;
+        isWalletError = in.readByte() != 0;
+        isTokoPointError = in.readByte() != 0;
     }
 
     public HomeHeaderWalletAction getHomeHeaderWalletActionData() {
@@ -54,46 +50,16 @@ public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
     }
 
     public void setHomeHeaderWalletActionData(HomeHeaderWalletAction homeHeaderWalletActionData) {
-       /* if (homeHeaderWalletActionData != null && tokoPointDrawerData != null
-                && tokoPointDrawerData.getOffFlag() == 0)
-            this.type = TYPE_TOKOCASH_WITH_TOKOPOINT;
-        if (homeHeaderWalletActionData == null && tokoPointDrawerData != null
-                && tokoPointDrawerData.getOffFlag() == 0)
-            this.type = TYPE_TOKOPINT_ONLY;
-        if (homeHeaderWalletActionData != null &&
-                (tokoPointDrawerData == null || tokoPointDrawerData.getOffFlag() == 1))
-            this.type = TYPE_TOKOCASH_ONLY;
-        if (homeHeaderWalletActionData == null && tokoPointDrawerData == null)
-            this.type = TYPE_EMPTY;*/
         this.homeHeaderWalletActionData = homeHeaderWalletActionData;
     }
-
-    /*public int getType() {
-        return type;*/
-//    }
 
     public TokoPointDrawerData getTokoPointDrawerData() {
         return tokoPointDrawerData;
     }
 
     public void setTokoPointDrawerData(TokoPointDrawerData tokoPointDrawerData) {
-       /* if (tokoPointDrawerData != null && tokoPointDrawerData.getOffFlag() == 0
-                && homeHeaderWalletActionData != null)
-            this.type = TYPE_TOKOCASH_WITH_TOKOPOINT;
-        if (tokoPointDrawerData != null && tokoPointDrawerData.getOffFlag() == 0
-                && homeHeaderWalletActionData == null)
-            this.type = TYPE_TOKOPINT_ONLY;
-        if ((tokoPointDrawerData == null || tokoPointDrawerData.getOffFlag() == 1)
-                && homeHeaderWalletActionData != null)
-            this.type = TYPE_TOKOCASH_ONLY;
-        if (tokoPointDrawerData == null && homeHeaderWalletActionData == null)
-            this.type = TYPE_EMPTY;*/
         this.tokoPointDrawerData = tokoPointDrawerData;
     }
-
-   /* public void setType(int type) {
-        this.type = type;
-    }*/
 
     public CashBackData getCashBackData() {
         return cashBackData;
@@ -116,33 +82,43 @@ public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
         this.pendingTokocashChecked = pendingTokocashChecked;
     }
 
+
+    public void setWalletDataSuccess() {
+        this.isWalletError = false;
+    }
+
+    public void setWalletDataError() {
+        this.isWalletError = true;
+    }
+
+    public boolean isWalletDataError() {
+        return isWalletError;
+    }
+
+    public void setTokoPointDataSuccess() {
+        this.isTokoPointError = false;
+    }
+
+    public void setTokoPointDataError() {
+        this.isTokoPointError = true;
+    }
+
+    public boolean isTokoPointDataError() {
+        return isTokoPointError;
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(this.homeHeaderWalletActionData, flags);
-        dest.writeParcelable(this.tokoPointDrawerData, flags);
-        dest.writeParcelable(this.cashBackData, flags);
-//        dest.writeInt(this.type);
-        dest.writeByte(this.pendingTokocashChecked ? (byte) 1 : (byte) 0);
-    }
-
-    public int getTokocashNetworkStatus() {
-        return tokocashNetworkStatus;
-    }
-
-    public void setTokocashNetworkStatus(int tokocashNetworkStatus) {
-        this.tokocashNetworkStatus = tokocashNetworkStatus;
-    }
-
-    public int getTokopointNetworkStatus() {
-        return tokopointNetworkStatus;
-    }
-
-    public void setTokopointNetworkStatus(int tokopointNetworkStatus) {
-        this.tokopointNetworkStatus = tokopointNetworkStatus;
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeParcelable(homeHeaderWalletActionData, i);
+        parcel.writeParcelable(tokoPointDrawerData, i);
+        parcel.writeParcelable(cashBackData, i);
+        parcel.writeByte((byte) (pendingTokocashChecked ? 1 : 0));
+        parcel.writeByte((byte) (isWalletError ? 1 : 0));
+        parcel.writeByte((byte) (isTokoPointError ? 1 : 0));
     }
 }

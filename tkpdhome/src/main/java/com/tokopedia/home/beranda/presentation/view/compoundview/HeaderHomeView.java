@@ -20,7 +20,6 @@ import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeHeaderTokoCashAndTokoPointState;
 
 /**
  * @author anggaprasetiyo on 11/12/17.
@@ -51,73 +50,11 @@ public class HeaderHomeView extends BaseCustomView {
         super(context);
         this.headerViewModel = headerViewModel;
         this.listener = listener;
-        /*if (headerViewModel.getTokoPointDrawerData() != null && headerViewModel.getTokoPointDrawerData().getOffFlag() == 1) {
-            // rendertokocashonly || this exception
+        if (headerViewModel.getTokoPointDrawerData() != null && headerViewModel.getTokoPointDrawerData().getOffFlag() == 1) {
             renderHeaderOnlyTokocash();
-        }else {
+        } else {
             renderHeaderTokocashWithTokopoint();
-        }*/
-
-        if (headerViewModel.getTokoPointDrawerData() != null && headerViewModel.getTokoPointDrawerData().getOffFlag() == 0
-                && headerViewModel.getHomeHeaderWalletActionData() != null)
-            renderHeaderTokocashWithTokopoint();
-        else if (headerViewModel.getTokoPointDrawerData() != null && headerViewModel.getTokoPointDrawerData().getOffFlag() == 0
-                && headerViewModel.getHomeHeaderWalletActionData() == null) {
-            if (headerViewModel.getTokocashNetworkStatus() == HomeHeaderTokoCashAndTokoPointState.TOKOCASH_ERROR) {
-                //rendertokocasherrorandrendertokopoint
-                renderHeaderTokocashWithTokopoint();
-            } else {
-                // rendertokocashloadingandrendertokopoint
-                renderHeaderTokocashWithTokopoint();
-            }
-//            this.type = TYPE_TOKOPINT_ONLY;
-        } else if ((headerViewModel.getTokoPointDrawerData() == null || headerViewModel.getTokoPointDrawerData().getOffFlag() == 1)
-                && headerViewModel.getHomeHeaderWalletActionData() != null) {
-            if (headerViewModel.getTokopointNetworkStatus() == HomeHeaderTokoCashAndTokoPointState.TOKOPOINT_ERROR && headerViewModel.getTokoPointDrawerData() == null) {
-                // rendertokocashandtokopointerror
-                renderHeaderTokocashWithTokopoint();
-            } else if (headerViewModel.getTokoPointDrawerData() != null && headerViewModel.getTokoPointDrawerData().getOffFlag() == 1) {
-                // rendertokocashonly || this exception
-                renderHeaderOnlyTokocash();
-            } else {
-                renderHeaderTokocashWithTokopoint();
-                // rendertokopointloadingandrendertokocash
-            }
-//            this.type = TYPE_TOKOCASH_ONLY;
-        } else if (headerViewModel.getTokoPointDrawerData() == null && headerViewModel.getHomeHeaderWalletActionData() == null) {
-            if (headerViewModel.getTokocashNetworkStatus() == HomeHeaderTokoCashAndTokoPointState.TOKOCASH_ERROR
-                    && headerViewModel.getTokopointNetworkStatus() == HomeHeaderTokoCashAndTokoPointState.TOKOPOINT_ERROR) {
-                //rendererrortokopointanderrortokocash
-                renderHeaderTokocashWithTokopoint();
-            } else if (headerViewModel.getTokocashNetworkStatus() == HomeHeaderTokoCashAndTokoPointState.TOKOCASH_ERROR) {
-                //rendererrortokocashandtokopointloading
-                renderHeaderTokocashWithTokopoint();
-            } else if (headerViewModel.getTokopointNetworkStatus() == HomeHeaderTokoCashAndTokoPointState.TOKOPOINT_ERROR) {
-                //rendererrortokopointandtokocashloading
-                renderHeaderTokocashWithTokopoint();
-            } else {
-                renderHeaderTokocashWithTokopoint();
-                //renderloadingtokopointandloadingtokocash
-            }
-//            this.type = TYPE_EMPTY;
         }
-
-
-        /*switch (headerViewModel.getType()) {
-            case HeaderViewModel.TYPE_TOKOCASH_ONLY:
-                renderHeaderOnlyTokocash();
-                break;
-            case HeaderViewModel.TYPE_TOKOPINT_ONLY:
-                renderHeaderTokoPointOnly();
-                break;
-            case HeaderViewModel.TYPE_TOKOCASH_WITH_TOKOPOINT:
-                renderHeaderTokocashWithTokopoint();
-                break;
-
-            default:
-                setVisibility(GONE);
-                break;
-        }*/
     }
 
     public HeaderHomeView(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -151,19 +88,19 @@ public class HeaderHomeView extends BaseCustomView {
 
     @SuppressLint("SetTextI18n")
     private void renderTokoPointLayoutListener() {
-        if (headerViewModel.getTokoPointDrawerData() == null && headerViewModel.getTokopointNetworkStatus() == HomeHeaderTokoCashAndTokoPointState.TOKOPOINT_ERROR) {
+        if (headerViewModel.getTokoPointDrawerData() == null && headerViewModel.isTokoPointDataError()) {
             tokoPointHolder.setOnClickListener(getOnClickRefreshTokoPoint());
             tvBalanceTokoPoint.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             tvBalanceTokoPoint.setVisibility(VISIBLE);
-            tvBalanceTokoPoint.setText("Unable to Load");
+            tvBalanceTokoPoint.setText(R.string.home_header_tokopoint_unable_to_load_label);
             tvBalanceTokoPoint.setTextColor(getContext().getResources().getColor(R.color.black_70));
             tvBalanceTokoPoint.setTypeface(null, Typeface.BOLD);
-            tvActionTokopoint.setText("Refresh");
+            tvActionTokopoint.setText(R.string.home_header_tokopoint_refresh_label);
             tvActionTokopoint.setVisibility(VISIBLE);
             tvTitleTokoPoint.setVisibility(GONE);
             tokopointProgressBar.setVisibility(GONE);
             tokopointActionContainer.setVisibility(VISIBLE);
-        } else if (headerViewModel.getTokoPointDrawerData() == null && headerViewModel.getTokopointNetworkStatus() != HomeHeaderTokoCashAndTokoPointState.TOKOPOINT_ERROR) {
+        } else if (headerViewModel.getTokoPointDrawerData() == null && !headerViewModel.isTokoPointDataError()) {
             tokoPointHolder.setOnClickListener(null);
             tokopointProgressBar.setVisibility(VISIBLE);
             tokopointActionContainer.setVisibility(GONE);
@@ -224,19 +161,19 @@ public class HeaderHomeView extends BaseCustomView {
     private void renderTokocashLayoutListener() {
         final HomeHeaderWalletAction homeHeaderWalletAction =
                 headerViewModel.getHomeHeaderWalletActionData();
-        if (headerViewModel.getHomeHeaderWalletActionData() == null && headerViewModel.getTokocashNetworkStatus() == HomeHeaderTokoCashAndTokoPointState.TOKOCASH_ERROR) {
+        if (headerViewModel.getHomeHeaderWalletActionData() == null && headerViewModel.isWalletDataError()) {
             tokoCashHolder.setOnClickListener(getOnClickRefreshTokocash());
             tvBalanceTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             tvBalanceTokocash.setVisibility(VISIBLE);
-            tvBalanceTokocash.setText("Unable to Load");
+            tvBalanceTokocash.setText(R.string.home_header_tokocash_unable_to_load_label);
             tvBalanceTokocash.setTextColor(getContext().getResources().getColor(R.color.black_70));
             tvBalanceTokocash.setTypeface(null, Typeface.BOLD);
-            tvActionTokocash.setText("Refresh");
+            tvActionTokocash.setText(R.string.home_header_tokocash_refresh_label);
             tvActionTokocash.setVisibility(VISIBLE);
             tvTitleTokocash.setVisibility(GONE);
             tokocashProgressBar.setVisibility(GONE);
             tokocashActionContainer.setVisibility(VISIBLE);
-        } else if (headerViewModel.getHomeHeaderWalletActionData() == null && headerViewModel.getTokocashNetworkStatus() != HomeHeaderTokoCashAndTokoPointState.TOKOCASH_ERROR) {
+        } else if (headerViewModel.getHomeHeaderWalletActionData() == null && !headerViewModel.isWalletDataError()) {
             tokoCashHolder.setOnClickListener(null);
             tokocashProgressBar.setVisibility(VISIBLE);
             tokocashActionContainer.setVisibility(GONE);
