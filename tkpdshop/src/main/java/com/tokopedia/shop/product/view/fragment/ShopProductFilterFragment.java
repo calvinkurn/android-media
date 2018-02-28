@@ -14,11 +14,9 @@ import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.view.activity.ShopProductFilterActivity;
 import com.tokopedia.shop.product.view.adapter.ShopProductFilterAdapterTypeFactory;
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductFilterSelectedViewHolder;
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductFilterUnselectedViewHolder;
+import com.tokopedia.shop.product.view.listener.ShopFilterListView;
 import com.tokopedia.shop.product.view.listener.ShopProductFilterFragmentListener;
 import com.tokopedia.shop.product.view.model.ShopProductFilterModel;
-import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductFilterPresenter;
 
 import java.util.List;
@@ -29,7 +27,7 @@ import javax.inject.Inject;
  * Created by normansyahputa on 2/23/18.
  */
 
-public class ShopProductFilterFragment extends BaseListFragment<ShopProductViewModel, ShopProductFilterAdapterTypeFactory> {
+public class ShopProductFilterFragment extends BaseListFragment<ShopProductFilterModel, ShopProductFilterAdapterTypeFactory> implements ShopFilterListView {
 
     @Inject
     ShopProductFilterPresenter shopProductFilterPresenter;
@@ -66,17 +64,23 @@ public class ShopProductFilterFragment extends BaseListFragment<ShopProductViewM
     }
 
     @Override
-    public void renderList(@NonNull List<ShopProductViewModel> list) {
-        if (sortName == null) {
-            sortName = ((ShopProductFilterModel) list.get(0)).getValue();
-        }
-        super.renderList(list);
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         shopProductFilterPresenter.attachView(this);
+    }
+
+    @Override
+    public void renderList(@NonNull List<ShopProductFilterModel> list, boolean hasNextPage) {
+        if (sortName != null) {
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).getValue().equalsIgnoreCase(sortName)) {
+                    list.get(i).setSelected(true);
+                }
+            }
+        } else {
+            list.get(0).setSelected(true);
+        }
+        super.renderList(list, hasNextPage);
     }
 
     @Nullable
@@ -90,28 +94,7 @@ public class ShopProductFilterFragment extends BaseListFragment<ShopProductViewM
 
     @Override
     protected ShopProductFilterAdapterTypeFactory getAdapterTypeFactory() {
-        return new ShopProductFilterAdapterTypeFactory(new ShopProductFilterAdapterTypeFactory.TypeFactoryListener<ShopProductViewModel>() {
-            @Override
-            public int getType(ShopProductViewModel type) {
-                if (type instanceof ShopProductFilterModel) {
-                    ShopProductFilterModel filterModel = (ShopProductFilterModel) type;
-                    if (sortName != null && sortName.equalsIgnoreCase(filterModel.getValue())) {
-                        return ShopProductFilterSelectedViewHolder.LAYOUT;
-                    } else {
-                        return ShopProductFilterUnselectedViewHolder.LAYOUT;
-                    }
-                }
-                return 0;
-            }
-        });
-    }
-
-    @Override
-    public void onItemClicked(ShopProductViewModel shopProductViewModel) {
-        if (shopFilterFragmentListener != null && shopProductViewModel instanceof ShopProductFilterModel) {
-            ShopProductFilterModel filterModel = (ShopProductFilterModel) shopProductViewModel;
-            shopFilterFragmentListener.select(filterModel.getKey(), filterModel.getValue());
-        }
+        return new ShopProductFilterAdapterTypeFactory();
     }
 
     @Override
@@ -127,5 +110,10 @@ public class ShopProductFilterFragment extends BaseListFragment<ShopProductViewM
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @Override
+    public void onItemClicked(ShopProductFilterModel filterModel) {
+        shopFilterFragmentListener.select(filterModel.getKey(), filterModel.getValue());
     }
 }

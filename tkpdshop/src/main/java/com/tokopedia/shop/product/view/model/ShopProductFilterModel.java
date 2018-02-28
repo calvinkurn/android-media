@@ -1,14 +1,26 @@
 package com.tokopedia.shop.product.view.model;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.shop.product.view.adapter.ShopProductFilterAdapterTypeFactory;
+
 /**
  * Created by normansyahputa on 2/24/18.
  */
 
-public class ShopProductFilterModel extends ShopProductViewModel {
+public class ShopProductFilterModel implements Visitable<ShopProductFilterAdapterTypeFactory> {
     String name;
     String key;
     String value;
     String inputType;
+    boolean isSelected;
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
 
     /**
      * @return The name
@@ -70,5 +82,10 @@ public class ShopProductFilterModel extends ShopProductViewModel {
     @Override
     public String toString() {
         return getName();
+    }
+
+    @Override
+    public int type(ShopProductFilterAdapterTypeFactory shopProductFilterAdapterTypeFactory) {
+        return shopProductFilterAdapterTypeFactory.type(this);
     }
 }
