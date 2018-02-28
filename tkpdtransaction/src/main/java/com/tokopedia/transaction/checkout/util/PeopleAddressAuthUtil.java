@@ -30,7 +30,6 @@ public class PeopleAddressAuthUtil {
                                                  final int page) {
 
         // Get people address list from api requires parameter of order, keyword, and page
-        // Create a map from those parameters
         final HashMap<String, String> params = new HashMap<String, String>() {{
             put(PARAM_ORDER_BY, String.valueOf(order));
             put(PARAM_QUERY, query);
@@ -39,7 +38,6 @@ public class PeopleAddressAuthUtil {
 
         // Create network auth params from plain params using auth util generator,
         // which will retrieve another params such as device id, os type and timestamp
-        // and generate a hash based on those particular params
         final HashMap<String, Object> authParams = new HashMap<String, Object>() {{
             putAll(AuthUtil.generateParams(context, params));
         }};

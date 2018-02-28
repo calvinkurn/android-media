@@ -1,19 +1,9 @@
 package com.tokopedia.transaction.checkout.view.view.shipmentform;
 
-import android.content.Context;
-
-import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.transaction.checkout.domain.usecase.GetDefaultAddressUseCase;
-import com.tokopedia.transaction.checkout.util.PeopleAddressAuthUtil;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
-import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.view.presenter.CartMvpPresenter;
 
-import java.util.List;
-
 import javax.inject.Inject;
-
-import rx.Subscriber;
 
 /**
  * @author Aghny A. Putra on 26/01/18
@@ -24,17 +14,9 @@ public class SingleAddressShipmentPresenter
 
     private static final String TAG = SingleAddressShipmentPresenter.class.getSimpleName();
 
-    private static final String DEFAULT_KEYWORD = "";
-    private static final int DEFAULT_ORDER = 1;
-
-    private final GetDefaultAddressUseCase mGetDefaultAddressUseCase;
-    private final PagingHandler mPagingHandler;
-
     @Inject
-    public SingleAddressShipmentPresenter(GetDefaultAddressUseCase getDefaultAddressUseCase,
-                                          PagingHandler pagingHandler) {
-        mGetDefaultAddressUseCase = getDefaultAddressUseCase;
-        mPagingHandler = pagingHandler;
+    public SingleAddressShipmentPresenter() {
+
     }
 
     @Override

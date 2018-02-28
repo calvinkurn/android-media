@@ -3,6 +3,8 @@ package com.tokopedia.transaction.checkout.view.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.transaction.checkout.view.holderitemdata.CartPromo;
+
 import java.util.List;
 
 /**
@@ -13,18 +15,27 @@ import java.util.List;
 
 public class CartSingleAddressData implements Parcelable {
 
-    private ShipmentFeeBannerModel shipmentFeeBannerModel;
+    private CartPromo cartPromo;
+    private CartPromoSuggestion cartPromoSuggestion;
     private RecipientAddressModel recipientAddressModel;
     private List<CartSellerItemModel> cartSellerItemModelList;
     private CartPayableDetailModel cartPayableDetailModel;
     private ShipmentCartData shipmentCartData;
 
-    public ShipmentFeeBannerModel getShipmentFeeBannerModel() {
-        return shipmentFeeBannerModel;
+    public CartPromo getCartPromo() {
+        return cartPromo;
     }
 
-    public void setShipmentFeeBannerModel(ShipmentFeeBannerModel shipmentFeeBannerModel) {
-        this.shipmentFeeBannerModel = shipmentFeeBannerModel;
+    public void setCartPromo(CartPromo cartPromo) {
+        this.cartPromo = cartPromo;
+    }
+
+    public CartPromoSuggestion getCartPromoSuggestion() {
+        return cartPromoSuggestion;
+    }
+
+    public void setCartPromoSuggestion(CartPromoSuggestion cartPromoSuggestion) {
+        this.cartPromoSuggestion = cartPromoSuggestion;
     }
 
     public RecipientAddressModel getRecipientAddressModel() {
@@ -66,20 +77,24 @@ public class CartSingleAddressData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(this.shipmentFeeBannerModel, flags);
+        dest.writeParcelable(this.cartPromo, flags);
+        dest.writeParcelable(this.cartPromoSuggestion, flags);
         dest.writeParcelable(this.recipientAddressModel, flags);
         dest.writeTypedList(this.cartSellerItemModelList);
         dest.writeParcelable(this.cartPayableDetailModel, flags);
+        dest.writeParcelable(this.shipmentCartData, flags);
     }
 
     public CartSingleAddressData() {
     }
 
     protected CartSingleAddressData(Parcel in) {
-        this.shipmentFeeBannerModel = in.readParcelable(ShipmentFeeBannerModel.class.getClassLoader());
+        this.cartPromo = in.readParcelable(CartPromo.class.getClassLoader());
+        this.cartPromoSuggestion = in.readParcelable(CartPromoSuggestion.class.getClassLoader());
         this.recipientAddressModel = in.readParcelable(RecipientAddressModel.class.getClassLoader());
         this.cartSellerItemModelList = in.createTypedArrayList(CartSellerItemModel.CREATOR);
         this.cartPayableDetailModel = in.readParcelable(CartPayableDetailModel.class.getClassLoader());
+        this.shipmentCartData = in.readParcelable(ShipmentCartData.class.getClassLoader());
     }
 
     public static final Creator<CartSingleAddressData> CREATOR = new Creator<CartSingleAddressData>() {
@@ -93,5 +108,4 @@ public class CartSingleAddressData implements Parcelable {
             return new CartSingleAddressData[size];
         }
     };
-
 }
