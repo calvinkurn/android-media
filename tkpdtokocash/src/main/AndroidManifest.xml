@@ -55,6 +55,10 @@
             android:label="@string/tokocash"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
+        <activity android:name=".accountsetting.presentation.activity.AccountSettingActivity"
+            android:label="@string/tokocash"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
     </application>
 
 </manifest>

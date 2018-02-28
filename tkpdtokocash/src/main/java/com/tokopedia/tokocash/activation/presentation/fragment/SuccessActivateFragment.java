@@ -12,11 +12,11 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.tokocash.CacheUtil;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.di.TokoCashComponent;
-import com.tokopedia.tokocash.network.WalletUserSession;
-import com.tokopedia.tokocash.util.CacheUtil;
+import com.tokopedia.tokocash.WalletUserSession;
 
 import javax.inject.Inject;
 

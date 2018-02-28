@@ -2,6 +2,7 @@ package com.tokopedia.tokocash.historytokocash.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.tokocash.historytokocash.presentation.contract.HomeTokoCashContract;
+import com.tokopedia.tokocash.network.exception.UserInactivateTokoCashException;
 import com.tokopedia.tokocash.qrpayment.domain.GetBalanceTokoCashUseCase;
 import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
 import com.tokopedia.usecase.RequestParams;
@@ -41,7 +42,12 @@ public class HomeTokoCashPresenter extends BaseDaggerPresenter<HomeTokoCashContr
             @Override
             public void onError(Throwable e) {
                 getView().hideProgressLoading();
-                getView().showEmptyPage();
+                e.printStackTrace();
+                if (e instanceof UserInactivateTokoCashException) {
+                    getView().showErrorMessage();
+                } else {
+                    getView().showEmptyPage(e);
+                }
             }
 
             @Override

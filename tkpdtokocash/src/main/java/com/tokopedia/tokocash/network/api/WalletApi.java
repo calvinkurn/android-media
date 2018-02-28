@@ -2,6 +2,8 @@ package com.tokopedia.tokocash.network.api;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.tokocash.accountsetting.data.entity.OAuthInfoEntity;
+import com.tokopedia.tokocash.accountsetting.data.entity.RevokeTokoCashEntity;
 import com.tokopedia.tokocash.activation.data.entity.PendingCashbackEntity;
 import com.tokopedia.tokocash.historytokocash.data.entity.HelpHistoryTokoCashEntity;
 import com.tokopedia.tokocash.historytokocash.data.entity.TokoCashHistoryEntity;
@@ -15,6 +17,8 @@ import java.util.Map;
 
 import retrofit2.Response;
 import retrofit2.http.Body;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -51,4 +55,11 @@ public interface WalletApi {
 
     @GET(WalletUrl.Wallet.GET_BALANCE)
     Observable<Response<DataResponse<BalanceTokoCashEntity>>> getBalanceTokoCash();
+
+    @GET(TkpdBaseURL.Wallet.GET_OAUTH_INFO_ACCOUNT)
+    Observable<Response<DataResponse<OAuthInfoEntity>>> getOAuthInfoAccount();
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Wallet.REVOKE_ACCESS_TOKOCASH)
+    Observable<Response<RevokeTokoCashEntity>> revokeAccessAccountTokoCash(@FieldMap Map<String, String> params);
 }

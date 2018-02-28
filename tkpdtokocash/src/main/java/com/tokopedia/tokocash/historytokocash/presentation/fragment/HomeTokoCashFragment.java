@@ -10,8 +10,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.tokocash.R;
@@ -30,7 +32,6 @@ import javax.inject.Inject;
 public class HomeTokoCashFragment extends BaseDaggerFragment implements HomeTokoCashContract.View {
 
     public static final String EXTRA_TOP_UP_AVAILABLE = "EXTRA_TOP_UP_AVAILABLE";
-    public static final int REQUEST_CODE_ACCOUNT_SETTING = 112;
 
     private RelativeLayout mainContent;
     private ProgressBar progressLoading;
@@ -95,7 +96,12 @@ public class HomeTokoCashFragment extends BaseDaggerFragment implements HomeToko
 
     @Override
     public void showToastMessage(String message) {
-        NetworkErrorHelper.showSnackbar(getActivity(), message);
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showErrorMessage() {
+
     }
 
     @Override
@@ -122,8 +128,9 @@ public class HomeTokoCashFragment extends BaseDaggerFragment implements HomeToko
     }
 
     @Override
-    public void showEmptyPage() {
-        NetworkErrorHelper.showEmptyState(getActivity(), mainContent, getRetryListener());
+    public void showEmptyPage(Throwable throwable) {
+        String message = ErrorHandler.getErrorMessage(getActivity(), throwable);
+        NetworkErrorHelper.showEmptyState(getActivity(), mainContent, message, getRetryListener());
     }
 
     private NetworkErrorHelper.RetryClickedListener getRetryListener() {

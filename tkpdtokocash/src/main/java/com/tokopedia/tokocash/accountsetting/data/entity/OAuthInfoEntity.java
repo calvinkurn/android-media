@@ -1,4 +1,4 @@
-package com.tokopedia.tokocash.historytokocash.data.entity;
+package com.tokopedia.tokocash.accountsetting.data.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
-import com.tokopedia.tokocash.network.WalletUserSession;
+import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.network.api.WalletUrl;
 
 import java.io.IOException;

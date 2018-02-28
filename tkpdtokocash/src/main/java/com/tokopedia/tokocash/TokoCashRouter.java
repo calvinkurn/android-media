@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.tokopedia.core.router.digitalmodule.sellermodule.PeriodRangeModelCore;
-import com.tokopedia.tokocash.network.WalletUserSession;
 
 import java.util.List;
 
@@ -28,4 +27,6 @@ public interface TokoCashRouter {
     WalletUserSession getTokoCashSession();
 
     Intent getWebviewActivityWithIntent(Context context, String url, String title);
+
+    String getUserEmailProfil();
 }

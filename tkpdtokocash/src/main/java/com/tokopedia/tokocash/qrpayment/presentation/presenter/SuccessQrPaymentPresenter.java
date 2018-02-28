@@ -2,8 +2,8 @@ package com.tokopedia.tokocash.qrpayment.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.tokocash.CacheUtil;
 import com.tokopedia.tokocash.qrpayment.presentation.contract.SuccessQrPaymentContract;
-import com.tokopedia.tokocash.util.CacheUtil;
 
 import javax.inject.Inject;
 

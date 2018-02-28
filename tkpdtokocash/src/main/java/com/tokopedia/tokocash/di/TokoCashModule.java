@@ -6,6 +6,9 @@ import com.google.gson.Gson;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.tokocash.TokoCashRouter;
+import com.tokopedia.tokocash.accountsetting.data.AccountSettingRepository;
+import com.tokopedia.tokocash.accountsetting.domain.GetOAuthInfoTokoCashUseCase;
+import com.tokopedia.tokocash.accountsetting.domain.PostUnlinkTokoCashUseCase;
 import com.tokopedia.tokocash.activation.data.ActivateRepository;
 import com.tokopedia.tokocash.activation.domain.LinkedTokoCashUseCase;
 import com.tokopedia.tokocash.activation.domain.RequestOtpTokoCashUseCase;
@@ -15,7 +18,7 @@ import com.tokopedia.tokocash.historytokocash.domain.GetReasonHelpDataUseCase;
 import com.tokopedia.tokocash.historytokocash.domain.MoveToSaldoUseCase;
 import com.tokopedia.tokocash.historytokocash.domain.PostHelpHistoryDetailUseCase;
 import com.tokopedia.tokocash.network.WalletTokenRefresh;
-import com.tokopedia.tokocash.network.WalletUserSession;
+import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.network.api.TokoCashApi;
 import com.tokopedia.tokocash.network.api.WalletApi;
 import com.tokopedia.tokocash.network.api.WalletUrl;
@@ -166,5 +169,17 @@ public class TokoCashModule {
     @TokoCashScope
     MoveToSaldoUseCase provideMoveToSaldoUseCase(WalletRepository walletRepository) {
         return new MoveToSaldoUseCase(walletRepository);
+    }
+
+    @Provides
+    @TokoCashScope
+    GetOAuthInfoTokoCashUseCase provideGetOAuthInfoTokoCashUseCase(AccountSettingRepository accountSettingRepository) {
+        return new GetOAuthInfoTokoCashUseCase(accountSettingRepository);
+    }
+
+    @Provides
+    @TokoCashScope
+    PostUnlinkTokoCashUseCase providePostUnlinkTokoCashUseCase(AccountSettingRepository accountSettingRepository) {
+        return new PostUnlinkTokoCashUseCase(accountSettingRepository);
     }
 }

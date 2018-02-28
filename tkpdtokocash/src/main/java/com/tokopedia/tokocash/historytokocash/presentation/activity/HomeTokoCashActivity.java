@@ -1,5 +1,6 @@
 package com.tokopedia.tokocash.historytokocash.presentation.activity;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +16,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.tokocash.ApplinkConstant;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.TokoCashRouter;
+import com.tokopedia.tokocash.accountsetting.presentation.activity.AccountSettingActivity;
 import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
 import com.tokopedia.tokocash.di.TokoCashComponent;
 import com.tokopedia.tokocash.historytokocash.presentation.fragment.HomeTokoCashFragment;
@@ -84,15 +86,41 @@ public class HomeTokoCashActivity extends BaseSimpleActivity implements HomeToko
                 startActivity(intent);
             }
             return true;
+        } else if (item.getItemId() == R.id.action_account_setting_tokocash) {
+            startActivityForResult(AccountSettingActivity.newInstance(this),
+                    AccountSettingActivity.REQUEST_CODE);
+            return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
+    }
 
-//        else if (item.getItemId() == R.id.action_account_setting_tokocash) {
-//            startActivityForResult(WalletAccountSettingActivity.newInstance(this),
-//                    REQUEST_CODE_ACCOUNT_SETTING);
-//            return true;
-//        }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+//            case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER:
+//                if (resultCode == Activity.RESULT_OK && data != null)
+//                    topUpTokoCashView.renderUpdateDataSelected(
+//                            (Product) data.getParcelableExtra(
+//                                    DigitalChooserActivity.EXTRA_CALLBACK_PRODUCT_DATA));
+//                break;
+//            case IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL:
+//                if (data != null && data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
+//                    String message = data.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
+//                    if (!TextUtils.isEmpty(message)) {
+//                        showToastMessage(message);
+//                    }
+//                }
+//                break;
+            case AccountSettingActivity.REQUEST_CODE:
+                if (resultCode == Activity.RESULT_OK && data != null &&
+                        data.hasExtra(AccountSettingActivity.KEY_INTENT_RESULT)) {
+                    setResult(RESULT_OK);
+                    finish();
+                }
+                break;
+        }
     }
 
 

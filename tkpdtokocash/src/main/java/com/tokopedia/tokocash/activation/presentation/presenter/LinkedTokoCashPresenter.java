@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.tokocash.activation.domain.LinkedTokoCashUseCase;
 import com.tokopedia.tokocash.activation.presentation.contract.LinkedTokoCashContract;
 import com.tokopedia.tokocash.activation.presentation.model.ActivateTokoCashData;
-import com.tokopedia.tokocash.network.WalletUserSession;
+import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.network.exception.TokoCashException;
 import com.tokopedia.usecase.RequestParams;
 

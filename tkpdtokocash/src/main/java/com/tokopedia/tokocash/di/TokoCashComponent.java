@@ -1,6 +1,7 @@
 package com.tokopedia.tokocash.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.tokocash.accountsetting.presentation.fragment.AccountSettingFragment;
 import com.tokopedia.tokocash.activation.presentation.fragment.ActivateTokoCashFragment;
 import com.tokopedia.tokocash.activation.presentation.fragment.RequestOTPWalletFragment;
 import com.tokopedia.tokocash.activation.presentation.fragment.SuccessActivateFragment;
@@ -46,4 +47,6 @@ public interface TokoCashComponent {
     void inject(HelpHistoryDetailFragment helpHistoryDetailFragment);
 
     void inject(MoveToSaldoFragment moveToSaldoFragment);
+
+    void inject(AccountSettingFragment accountSettingFragment);
 }

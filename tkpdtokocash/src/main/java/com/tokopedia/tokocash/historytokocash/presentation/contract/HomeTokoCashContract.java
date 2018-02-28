@@ -19,9 +19,11 @@ public interface HomeTokoCashContract {
 
         void showToastMessage(String message);
 
+        void showErrorMessage();
+
         void renderBalanceTokoCash(BalanceTokoCash balanceTokoCash);
 
-        void showEmptyPage();
+        void showEmptyPage(Throwable throwable);
 
         void navigateToActivityRequest(Intent intent, int requestCode);
     }

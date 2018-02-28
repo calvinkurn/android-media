@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.tokocash.network.WalletTokenRefresh;
-import com.tokopedia.tokocash.network.WalletUserSession;
+import com.tokopedia.tokocash.WalletUserSession;
 
 import java.io.IOException;
 
