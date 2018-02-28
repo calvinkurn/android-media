@@ -24,6 +24,7 @@ public class FlightBookingPassengerViewModel implements Parcelable, Visitable<Fl
     private List<FlightBookingAmenityMetaViewModel> flightBookingLuggageMetaViewModels;
     private List<FlightBookingAmenityMetaViewModel> flightBookingMealMetaViewModels;
     private int passengerTitleId;
+    private int passengerDrawable;
 
     public FlightBookingPassengerViewModel() {
     }
@@ -41,6 +42,7 @@ public class FlightBookingPassengerViewModel implements Parcelable, Visitable<Fl
         flightBookingLuggageMetaViewModels = in.createTypedArrayList(FlightBookingAmenityMetaViewModel.CREATOR);
         flightBookingMealMetaViewModels = in.createTypedArrayList(FlightBookingAmenityMetaViewModel.CREATOR);
         passengerTitleId = in.readInt();
+        passengerDrawable = in.readInt();
     }
 
     public static final Creator<FlightBookingPassengerViewModel> CREATOR = new Creator<FlightBookingPassengerViewModel>() {
@@ -156,6 +158,14 @@ public class FlightBookingPassengerViewModel implements Parcelable, Visitable<Fl
         this.passengerId = passengerId;
     }
 
+    public int getPassengerDrawable() {
+        return passengerDrawable;
+    }
+
+    public void setPassengerDrawable(int passengerDrawable) {
+        this.passengerDrawable = passengerDrawable;
+    }
+
     @Override
     public int type(FlightBookingPassengerTypeFactory typeFactory) {
         return typeFactory.type(this);
@@ -168,7 +178,6 @@ public class FlightBookingPassengerViewModel implements Parcelable, Visitable<Fl
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-
         dest.writeInt(passengerLocalId);
         dest.writeInt(type);
         dest.writeString(passengerId);
@@ -180,6 +189,7 @@ public class FlightBookingPassengerViewModel implements Parcelable, Visitable<Fl
         dest.writeTypedList(flightBookingLuggageMetaViewModels);
         dest.writeTypedList(flightBookingMealMetaViewModels);
         dest.writeInt(passengerTitleId);
+        dest.writeInt(passengerDrawable);
     }
 
 }

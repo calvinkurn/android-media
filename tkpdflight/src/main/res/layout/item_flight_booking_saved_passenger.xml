@@ -19,10 +19,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toEndOf="@id/image_passenger_type"
-        android:layout_toLeftOf="@id/image_passenger_delete"
-        android:layout_toRightOf="@id/image_passenger_type"
-        android:layout_toStartOf="@id/image_passenger_delete"
+        android:layout_toEndOf="@+id/image_passenger_type"
+        android:layout_toLeftOf="@+id/image_passenger_delete"
+        android:layout_toRightOf="@+id/image_passenger_type"
+        android:layout_toStartOf="@+id/image_passenger_delete"
         android:orientation="vertical"
         android:paddingLeft="@dimen/padding_vs">
 
@@ -47,8 +47,8 @@
         android:layout_width="@dimen/image_width_xs"
         android:layout_height="@dimen/image_width_xs"
         android:layout_centerVertical="true"
-        android:layout_toLeftOf="@id/image_passenger_edit"
-        android:layout_toStartOf="@id/image_passenger_edit"
+        android:layout_toLeftOf="@+id/image_passenger_edit"
+        android:layout_toStartOf="@+id/image_passenger_edit"
         android:src="@drawable/ic_flight_delete" />
 
     <ImageView

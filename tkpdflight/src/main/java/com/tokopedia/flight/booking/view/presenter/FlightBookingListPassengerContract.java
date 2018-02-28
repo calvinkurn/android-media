@@ -18,6 +18,8 @@ public interface FlightBookingListPassengerContract {
         void renderPassengerList();
 
         FlightBookingPassengerViewModel getCurrentPassenger();
+
+        String getSalutationString(int resId);
     }
 
     interface Presenter {

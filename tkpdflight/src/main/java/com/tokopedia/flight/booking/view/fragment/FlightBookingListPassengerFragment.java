@@ -135,4 +135,9 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
     public FlightBookingPassengerViewModel getCurrentPassenger() {
         return selectedPassenger;
     }
+
+    @Override
+    public String getSalutationString(int resId) {
+        return getString(resId);
+    }
 }

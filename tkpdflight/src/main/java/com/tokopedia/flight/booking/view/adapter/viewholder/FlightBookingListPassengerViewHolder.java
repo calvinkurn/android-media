@@ -28,7 +28,7 @@ public class FlightBookingListPassengerViewHolder extends AbstractViewHolder<Fli
 
     private ListenerCheckedSavedPassenger listenerCheckedSavedPassenger;
 
-    private TextView txtPassengerName, txtPassengerId;
+    private TextView txtPassengerName;
     private ImageView imgPassengerType, imgEdit, imgDelete;
 
     public FlightBookingListPassengerViewHolder(View itemView, ListenerCheckedSavedPassenger listenerCheckedSavedPassenger) {
