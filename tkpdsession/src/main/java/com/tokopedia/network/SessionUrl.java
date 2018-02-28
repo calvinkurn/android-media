@@ -57,4 +57,16 @@ public class SessionUrl {
     public static class User {
         public static final String PATH_MAKE_LOGIN = "v4/session/make_login.pl";
     }
+
+    public static class Register {
+        public static final String BASE_ACCOUNTS = "/api/v1/account";
+        public static final String BASE_REGISTER = BASE_ACCOUNTS + "/register";
+        public static final String BASE_UPDATE = BASE_ACCOUNTS + "/update";
+        public static final String PATH_REGISTER_PHONE_NUMBER = BASE_REGISTER;
+        public static final String PATH_REGISTER_EMAIL = BASE_REGISTER;
+        public static final String PATH_REGISTER_MSISDN_CHECK = BASE_REGISTER + "/msisdn/check";
+        public static final String PATH_REGISTER_EMAIL_CHECK = BASE_REGISTER + "/email/check";
+        public static final String PATH_UPDATE_ACCOUNT = BASE_UPDATE;
+        public static final String PATH_SEND_VERIFICATION_EMAIL = BASE_ACCOUNTS + "/email/verify/send";
+    }
 }
