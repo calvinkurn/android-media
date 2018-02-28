@@ -30,7 +30,7 @@ import com.tokopedia.seller.product.edit.data.source.cloud.model.UploadImageMode
 import com.tokopedia.seller.product.edit.di.scope.AddProductServiceScope;
 import com.tokopedia.seller.product.edit.domain.GenerateHostRepository;
 import com.tokopedia.seller.product.edit.domain.ProductRepository;
-import com.tokopedia.seller.product.edit.domain.interactor.uploadproduct.UploadProductUseCase;
+import com.tokopedia.seller.product.edit.domain.interactor.uploadproduct.UploadDraftProductUseCase;
 import com.tokopedia.seller.product.edit.domain.mapper.ProductUploadMapper;
 import com.tokopedia.seller.product.edit.view.presenter.AddProductServicePresenter;
 import com.tokopedia.seller.product.edit.view.presenter.AddProductServicePresenterImpl;
@@ -51,7 +51,7 @@ public class AddProductserviceModule {
 
     @AddProductServiceScope
     @Provides
-    AddProductServicePresenter provideAddProductServicePresenter(UploadProductUseCase uploadProductUseCase, UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase) {
+    AddProductServicePresenter provideAddProductServicePresenter(UploadDraftProductUseCase uploadProductUseCase, UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase) {
         return new AddProductServicePresenterImpl(uploadProductUseCase, updateUploadingDraftProductUseCase);
     }
 

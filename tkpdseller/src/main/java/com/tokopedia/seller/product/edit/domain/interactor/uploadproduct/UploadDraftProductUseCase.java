@@ -7,7 +7,6 @@ import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.DeleteSingleDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchDraftProductUseCase;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.UploadImageModel;
-import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
 import com.tokopedia.seller.product.edit.domain.ProductRepository;
 import com.tokopedia.seller.product.edit.domain.interactor.GetProductDetailUseCase;
 import com.tokopedia.seller.product.edit.domain.listener.AddProductNotificationListener;
@@ -31,7 +30,7 @@ import rx.functions.Func1;
  * @author sebastianuskh on 4/10/17.
  */
 
-public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
+public class UploadDraftProductUseCase extends UseCase<AddProductDomainModel> {
 
     private static final String UPLOAD_PRODUCT_ID = "UPLOAD_PRODUCT_ID";
     private static final long UNSELECTED_PRODUCT_ID = Long.MIN_VALUE;
@@ -47,7 +46,7 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
     private UploadImageUseCase<UploadImageModel> uploadImageUseCase;
 
     @Inject
-    public UploadProductUseCase(
+    public UploadDraftProductUseCase(
             FetchDraftProductUseCase fetchDraftProductUseCase,
             GetProductDetailUseCase getProductDetailUseCase,
             DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase,
@@ -82,7 +81,7 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
                         if (productViewModel == null) {
                             Observable.error(new RuntimeException("Draft is already deleted"));
                         }
-                        UploadProductUseCase.this.productViewModel = productViewModel;
+                        UploadDraftProductUseCase.this.productViewModel = productViewModel;
                         return productViewModel;
                     }
                 })

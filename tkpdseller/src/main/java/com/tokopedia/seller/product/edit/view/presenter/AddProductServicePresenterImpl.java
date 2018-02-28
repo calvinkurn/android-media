@@ -3,7 +3,7 @@ package com.tokopedia.seller.product.edit.view.presenter;
 import com.tokopedia.seller.product.draft.data.source.db.model.DraftNotFoundException;
 import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.edit.data.exception.UploadProductException;
-import com.tokopedia.seller.product.edit.domain.interactor.uploadproduct.UploadProductUseCase;
+import com.tokopedia.seller.product.edit.domain.interactor.uploadproduct.UploadDraftProductUseCase;
 import com.tokopedia.seller.product.edit.domain.listener.AddProductNotificationListener;
 import com.tokopedia.seller.product.edit.domain.model.AddProductDomainModel;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
@@ -15,10 +15,10 @@ import rx.Subscriber;
  */
 
 public class AddProductServicePresenterImpl extends AddProductServicePresenter implements AddProductNotificationListener {
-    private final UploadProductUseCase uploadProductUseCase;
+    private final UploadDraftProductUseCase uploadProductUseCase;
     private final UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase;
 
-    public AddProductServicePresenterImpl(UploadProductUseCase uploadProductUseCase,
+    public AddProductServicePresenterImpl(UploadDraftProductUseCase uploadProductUseCase,
                                           UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase) {
         this.uploadProductUseCase = uploadProductUseCase;
         this.updateUploadingDraftProductUseCase = updateUploadingDraftProductUseCase;
@@ -28,7 +28,7 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
     @Override
     public void uploadProduct(final long draftProductId, final boolean isAdd) {
         checkViewAttached();
-        uploadProductUseCase.execute(UploadProductUseCase.generateUploadProductParam(draftProductId), new Subscriber<AddProductDomainModel>() {
+        uploadProductUseCase.execute(UploadDraftProductUseCase.generateUploadProductParam(draftProductId), new Subscriber<AddProductDomainModel>() {
             @Override
             public void onCompleted() {
 
