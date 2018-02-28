@@ -25,12 +25,12 @@ public class ShipmentCartData implements Parcelable {
     private Double destinationLatitude;
     private Double destinationLongitude;
     private String destinationAddress;
-    private float weight;
+    private double weight;
     private String token;
     private String ut;
     private int insurance;
     private int productInsurance;
-    private int orderValue;
+    private double orderValue;
     private String categoryIds;
 
     public ShipmentCartData() {
@@ -66,12 +66,12 @@ public class ShipmentCartData implements Parcelable {
             destinationLongitude = in.readDouble();
         }
         destinationAddress = in.readString();
-        weight = in.readFloat();
+        weight = in.readDouble();
         token = in.readString();
         ut = in.readString();
         insurance = in.readInt();
         productInsurance = in.readInt();
-        orderValue = in.readInt();
+        orderValue = in.readDouble();
         categoryIds = in.readString();
     }
 
@@ -110,12 +110,12 @@ public class ShipmentCartData implements Parcelable {
             dest.writeDouble(destinationLongitude);
         }
         dest.writeString(destinationAddress);
-        dest.writeFloat(weight);
+        dest.writeDouble(weight);
         dest.writeString(token);
         dest.writeString(ut);
         dest.writeInt(insurance);
         dest.writeInt(productInsurance);
-        dest.writeInt(orderValue);
+        dest.writeDouble(orderValue);
         dest.writeString(categoryIds);
     }
 
@@ -240,11 +240,11 @@ public class ShipmentCartData implements Parcelable {
         this.destinationAddress = destinationAddress;
     }
 
-    public float getWeight() {
+    public double getWeight() {
         return weight;
     }
 
-    public void setWeight(float weight) {
+    public void setWeight(double weight) {
         this.weight = weight;
     }
 
@@ -280,11 +280,11 @@ public class ShipmentCartData implements Parcelable {
         this.productInsurance = productInsurance;
     }
 
-    public int getOrderValue() {
+    public double getOrderValue() {
         return orderValue;
     }
 
-    public void setOrderValue(int orderValue) {
+    public void setOrderValue(double orderValue) {
         this.orderValue = orderValue;
     }
 

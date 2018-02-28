@@ -143,7 +143,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
         void onAddOrChangeAddress();
 
-        void onChooseShipment();
+        void onChooseShipment(CartSellerItemModel cartSellerItemModel);
 
         void onChoosePickupPoint(RecipientAddressModel addressAdapterData);
 
@@ -523,9 +523,9 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             mRlExpandOtherProductContainer.setOnClickListener(showAllProductListener(cartItemModels));
             mTvExpandOtherProduct.setOnClickListener(showAllProductListener(cartItemModels));
 
-            mChooseCourierButton.setOnClickListener(selectShippingOptionListener());
-            mTvSelectedShipment.setOnClickListener(selectShippingOptionListener());
-            mIvChevronShipmentOption.setOnClickListener(selectShippingOptionListener());
+            mChooseCourierButton.setOnClickListener(selectShippingOptionListener(model));
+            mTvSelectedShipment.setOnClickListener(selectShippingOptionListener(model));
+            mIvChevronShipmentOption.setOnClickListener(selectShippingOptionListener(model));
 
             mIvDetailOptionChevron.setOnClickListener(costDetailOptionListener());
 
@@ -607,11 +607,11 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
                     mIsExpandAllProduct));
         }
 
-        private View.OnClickListener selectShippingOptionListener() {
+        private View.OnClickListener selectShippingOptionListener(final CartSellerItemModel cartSellerItemModel) {
             return new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mAdapterViewListener.onChooseShipment();
+                    mAdapterViewListener.onChooseShipment(cartSellerItemModel);
                 }
             };
         }

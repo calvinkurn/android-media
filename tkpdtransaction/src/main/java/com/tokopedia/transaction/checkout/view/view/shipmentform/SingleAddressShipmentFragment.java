@@ -21,6 +21,7 @@ import com.tokopedia.transaction.checkout.domain.ShipmentRatesDataMapper;
 import com.tokopedia.transaction.checkout.domain.SingleAddressShipmentDataConverter;
 import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter;
 import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
+import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
@@ -255,13 +256,13 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     }
 
     @Override
-    public void onChooseShipment() {
+    public void onChooseShipment(CartSellerItemModel cartSellerItemModel) {
         ShipmentDetailData shipmentDetailData;
         if (mSingleAddressShipmentAdapter.getShipmentDetailData() != null) {
             shipmentDetailData = mSingleAddressShipmentAdapter.getShipmentDetailData();
         } else {
             ShipmentRatesDataMapper shipmentRatesDataMapper = new ShipmentRatesDataMapper();
-            shipmentDetailData = shipmentRatesDataMapper.getShipmentDetailData(mCartSingleAddressData);
+            shipmentDetailData = shipmentRatesDataMapper.getShipmentDetailData(cartSellerItemModel);
         }
         startActivityForResult(ShipmentDetailActivity.createInstance(getActivity(), shipmentDetailData),
                 REQUEST_CODE_SHIPMENT_DETAIL);

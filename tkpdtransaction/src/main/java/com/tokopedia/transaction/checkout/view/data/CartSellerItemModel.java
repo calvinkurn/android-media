@@ -21,6 +21,8 @@ public class CartSellerItemModel implements Parcelable {
     private int weightUnit;
     private int totalQuantity;
 
+    private ShipmentCartData shipmentCartData;
+
     public String getShopId() {
         return shopId;
     }
@@ -85,6 +87,13 @@ public class CartSellerItemModel implements Parcelable {
         this.totalQuantity = totalQuantity;
     }
 
+    public ShipmentCartData getShipmentCartData() {
+        return shipmentCartData;
+    }
+
+    public void setShipmentCartData(ShipmentCartData shipmentCartData) {
+        this.shipmentCartData = shipmentCartData;
+    }
 
     @Override
     public int describeContents() {
@@ -100,6 +109,7 @@ public class CartSellerItemModel implements Parcelable {
         dest.writeDouble(this.totalPrice);
         dest.writeDouble(this.totalWeight);
         dest.writeInt(this.totalQuantity);
+        dest.writeParcelable(this.shipmentCartData, flags);
     }
 
     public CartSellerItemModel() {
@@ -113,6 +123,7 @@ public class CartSellerItemModel implements Parcelable {
         this.totalPrice = in.readDouble();
         this.totalWeight = in.readDouble();
         this.totalQuantity = in.readInt();
+        this.shipmentCartData = in.readParcelable(ShipmentCartData.class.getClassLoader());
     }
 
     public static final Creator<CartSellerItemModel> CREATOR = new Creator<CartSellerItemModel>() {

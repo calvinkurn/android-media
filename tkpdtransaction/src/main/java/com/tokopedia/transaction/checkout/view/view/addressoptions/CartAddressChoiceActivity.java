@@ -71,12 +71,12 @@ public class CartAddressChoiceActivity extends BasePresenterActivity implements 
     @Override
     protected void initView() {
         if (typeRequest == TYPE_REQUEST_FULL_SELECTION) {
-            CartAddressChoiceFragment fragment = CartAddressChoiceFragment
-                    .newInstance();
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            fragmentTransaction.add(R.id.container, fragment, CartAddressChoiceFragment.class.getSimpleName());
-            fragmentTransaction.commit();
+//            CartAddressChoiceFragment fragment = CartAddressChoiceFragment
+//                    .newInstance();
+//            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+//            getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+//            fragmentTransaction.add(R.id.container, fragment, CartAddressChoiceFragment.class.getSimpleName());
+//            fragmentTransaction.commit();
         } else {
 
         }
