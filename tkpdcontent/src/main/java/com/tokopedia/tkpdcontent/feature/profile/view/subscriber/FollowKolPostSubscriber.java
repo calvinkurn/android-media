@@ -26,20 +26,14 @@ public class FollowKolPostSubscriber extends Subscriber<Boolean> {
     @Override
     public void onError(Throwable e) {
         if (view != null) {
-            view.onLikeKolError(
-                    ErrorHandler.getErrorMessage(view.getContext(), e)
-            );
+
         }
     }
 
     @Override
     public void onNext(Boolean isSuccess) {
         if (view != null) {
-            if (isSuccess) {
-                view.onLikeKolSuccess(rowNumber);
-            } else {
-                view.onLikeKolError(null);
-            }
+
         }
     }
 }
