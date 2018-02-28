@@ -38,10 +38,9 @@ public class ProductDraftAddActivity extends BaseProductAddEditActivity {
 
     @Override
     protected void setupFragment(Bundle savedInstance) {
-        String productId = getIntent().getStringExtra(PRODUCT_DRAFT_ID);
-        if (TextUtils.isEmpty(productId)){
-            Toast.makeText(this,getString(R.string.product_draft_error_cannot_load_draft),
-                    Toast.LENGTH_LONG).show();
+        long draftProductId = getIntent().getLongExtra(PRODUCT_DRAFT_ID, Long.MIN_VALUE);
+        if (draftProductId < 0){
+            Toast.makeText(this,getString(R.string.product_draft_error_cannot_load_draft), Toast.LENGTH_LONG).show();
             finish();
             return;
         }
@@ -52,7 +51,7 @@ public class ProductDraftAddActivity extends BaseProductAddEditActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        long productDraftId = getIntent().getLongExtra(PRODUCT_DRAFT_ID, 0);
+        long productDraftId = getIntent().getLongExtra(PRODUCT_DRAFT_ID, Long.MIN_VALUE);
         return ProductDraftAddFragment.createInstance(productDraftId);
     }
 

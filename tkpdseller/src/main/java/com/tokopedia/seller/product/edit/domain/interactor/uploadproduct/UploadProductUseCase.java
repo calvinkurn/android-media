@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
+import com.tokopedia.seller.product.draft.domain.interactor.DeleteSingleDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchDraftProductUseCase;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.UploadImageModel;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
@@ -37,7 +38,7 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
 
     private final FetchDraftProductUseCase fetchDraftProductUseCase;
     private final GetProductDetailUseCase getProductDetailUseCase;
-    private final ProductDraftRepository productDraftRepository;
+    private final DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase;
     private final ProductRepository productRepository;
     private ProductViewModel productViewModel;
     private ProductUploadMapper productUploadMapper;
@@ -49,15 +50,15 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
     public UploadProductUseCase(
             FetchDraftProductUseCase fetchDraftProductUseCase,
             GetProductDetailUseCase getProductDetailUseCase,
-            ProductDraftRepository productDraftRepository,
-            ProductRepository productRepository,
+            DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase,
             UploadImageUseCase<UploadImageModel> uploadImageUseCase,
+            ProductRepository productRepository,
             ProductUploadMapper productUploadMapper) {
         this.fetchDraftProductUseCase = fetchDraftProductUseCase;
         this.getProductDetailUseCase = getProductDetailUseCase;
-        this.productDraftRepository = productDraftRepository;
-        this.productRepository = productRepository;
+        this.deleteSingleDraftProductUseCase = deleteSingleDraftProductUseCase;
         this.uploadImageUseCase = uploadImageUseCase;
+        this.productRepository = productRepository;
         this.productUploadMapper = productUploadMapper;
     }
 
@@ -65,15 +66,15 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
         this.listener = listener;
     }
 
-    public static RequestParams generateUploadProductParam(long productId) {
+    public static RequestParams generateUploadProductParam(long draftProductId) {
         RequestParams params = RequestParams.create();
-        params.putLong(UPLOAD_PRODUCT_ID, productId);
+        params.putLong(UPLOAD_PRODUCT_ID, draftProductId);
         return params;
     }
 
     @Override
     public Observable<AddProductDomainModel> createObservable(RequestParams requestParams) {
-        long draftProductId = requestParams.getLong(UPLOAD_PRODUCT_ID, UNSELECTED_PRODUCT_ID);
+        final long draftProductId = requestParams.getLong(UPLOAD_PRODUCT_ID, UNSELECTED_PRODUCT_ID);
         return fetchDraftProductUseCase.createObservable(FetchDraftProductUseCase.createRequestParams(draftProductId))
                 .map(new Func1<ProductViewModel, ProductViewModel>() {
                     @Override
@@ -97,7 +98,12 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
                     }
                 })
                 .flatMap(new UploadProduct(draftProductId, listener, productRepository, uploadImageUseCase))
-                .doOnNext(new DeleteProductDraft(draftProductId, productDraftRepository))
+                .doOnNext(new Action1<AddProductDomainModel>() {
+                    @Override
+                    public void call(AddProductDomainModel addProductDomainModel) {
+                        deleteSingleDraftProductUseCase.executeSync(DeleteSingleDraftProductUseCase.createRequestParams(draftProductId));
+                    }
+                })
                 .doOnNext(new DeleteImageCacheDraftFile());
     }
 
@@ -113,40 +119,23 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
     private class DeleteImageCacheDraftFile implements Action1<AddProductDomainModel> {
         @Override
         public void call(AddProductDomainModel addProductDomainModel) {
-            List<ProductPictureViewModel> productPictureViewModels = productViewModel.getProductPictureViewModelList();
-            if (productPictureViewModels == null || productPictureViewModels.size() == 0) {
+            List<ProductPictureViewModel> productPictureViewModelList = productViewModel.getProductPictureViewModelList();
+            if (productPictureViewModelList == null || productPictureViewModelList.size() == 0) {
                 return;
             }
-            ArrayList<String> pathToDelete = new ArrayList<>();
-            for (int i = 0, sizei = productPictureViewModels.size(); i < sizei; i++) {
-                ProductPictureViewModel productPictureViewModel = productPictureViewModels.get(i);
+            ArrayList<String> pathToDeleteList = new ArrayList<>();
+            for (ProductPictureViewModel productPictureViewModel: productPictureViewModelList) {
                 if (productPictureViewModel == null) {
                     continue;
                 }
                 String imagePath = productPictureViewModel.getFilePath();
                 if (!TextUtils.isEmpty(imagePath)) {
-                    pathToDelete.add(imagePath);
+                    pathToDeleteList.add(imagePath);
                 }
             }
-            if (pathToDelete.size() > 0) {
-                FileUtils.deleteAllCacheTkpdFiles(pathToDelete);
+            if (pathToDeleteList.size() > 0) {
+                FileUtils.deleteAllCacheTkpdFiles(pathToDeleteList);
             }
         }
     }
-
-    private static class DeleteProductDraft implements Action1<AddProductDomainModel> {
-        private final long productId;
-        private final ProductDraftRepository productDraftRepository;
-
-        public DeleteProductDraft(long productId, ProductDraftRepository productDraftRepository) {
-            this.productId = productId;
-            this.productDraftRepository = productDraftRepository;
-        }
-
-        @Override
-        public void call(AddProductDomainModel addProductDomainModel) {
-            productDraftRepository.deleteDraft(productId);
-        }
-    }
-
 }

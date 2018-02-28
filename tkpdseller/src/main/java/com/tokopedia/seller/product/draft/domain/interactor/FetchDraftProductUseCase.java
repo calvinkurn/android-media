@@ -22,7 +22,7 @@ public class FetchDraftProductUseCase extends UseCase<ProductViewModel> {
 
     @Override
     public Observable<ProductViewModel> createObservable(RequestParams requestParams) {
-        return productDraftRepository.getDraft(requestParams.getLong(DRAFT_PRODUCT_ID, 0));
+        return productDraftRepository.getDraft(requestParams.getLong(DRAFT_PRODUCT_ID, Long.MIN_VALUE));
     }
 
     public static RequestParams createRequestParams(long draftProductId) {

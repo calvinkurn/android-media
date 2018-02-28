@@ -52,28 +52,20 @@ public class ProductPictureViewModel implements Parcelable{
     @Expose
     private int fromIg;
 
-    public int getFromIg() {
-        return fromIg;
-    }
-
-    public void setFromIg(int fromIg) {
-        this.fromIg = fromIg;
-    }
-
     public String getId() {
         return id;
     }
 
-    public String getUrlThumbnail() {
-        return urlThumbnail;
-    }
-
-    public String getUrlOriginal() {
-        return urlOriginal;
-    }
-
     public void setId(String id) {
         this.id = id;
+    }
+
+    public long getStatus() {
+        return status;
+    }
+
+    public void setStatus(long status) {
+        this.status = status;
     }
 
     public String getFileName() {
@@ -90,6 +82,22 @@ public class ProductPictureViewModel implements Parcelable{
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public String getUrlOriginal() {
+        return urlOriginal;
+    }
+
+    public void setUrlOriginal(String urlOriginal) {
+        this.urlOriginal = urlOriginal;
+    }
+
+    public String getUrlThumbnail() {
+        return urlThumbnail;
+    }
+
+    public void setUrlThumbnail(String urlThumbnail) {
+        this.urlThumbnail = urlThumbnail;
     }
 
     public String getDescription() {
@@ -114,6 +122,14 @@ public class ProductPictureViewModel implements Parcelable{
 
     public void setY(long y) {
         this.y = y;
+    }
+
+    public int getFromIg() {
+        return fromIg;
+    }
+
+    public void setFromIg(int fromIg) {
+        this.fromIg = fromIg;
     }
 
     @Override
