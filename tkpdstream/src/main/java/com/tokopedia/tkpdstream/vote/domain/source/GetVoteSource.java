@@ -27,6 +27,6 @@ public class GetVoteSource {
     }
 
     public Observable<VoteInfoViewModel> getVoteInfoSource(HashMap<String, Object> parameters) {
-        return voteApi.getVoteInfo(parameters).map(getVoteMapper);
+        return null;
     }
 }

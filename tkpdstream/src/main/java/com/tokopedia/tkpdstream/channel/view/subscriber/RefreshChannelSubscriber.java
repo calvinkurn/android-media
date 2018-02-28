@@ -7,14 +7,13 @@ import com.tokopedia.tkpdstream.common.util.GroupChatErrorHandler;
 import rx.Subscriber;
 
 /**
- * Created by StevenFredian on 13/02/18.
+ * @author by nisie on 2/28/18.
  */
 
-public class GetChannelSubscriber extends Subscriber<ChannelListViewModel> {
-
+public class RefreshChannelSubscriber extends Subscriber<ChannelListViewModel> {
     private final ChannelContract.View view;
 
-    public GetChannelSubscriber(ChannelContract.View view) {
+    public RefreshChannelSubscriber(ChannelContract.View view) {
         this.view = view;
     }
 
@@ -25,13 +24,12 @@ public class GetChannelSubscriber extends Subscriber<ChannelListViewModel> {
 
     @Override
     public void onError(Throwable e) {
-        view.hideLoading();
-        view.onFailedGetChannel(GroupChatErrorHandler.getErrorMessage(view.getContext(), e, true));
+        view.onErrorRefreshChannel(GroupChatErrorHandler.getErrorMessage(view.getContext(), e,
+                true));
     }
 
     @Override
     public void onNext(ChannelListViewModel channelListViewModel) {
-        view.hideLoading();
-        view.onSuccessGetChannel(channelListViewModel);
+        view.onSuccessRefreshChannel(channelListViewModel);
     }
 }

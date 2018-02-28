@@ -2,7 +2,6 @@ package com.tokopedia.tkpdstream.vote.domain.mapper;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.tkpdstream.vote.data.VoteInfoPojo;
 import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
@@ -42,7 +41,7 @@ public class GetVoteMapper implements Func1<Response<DataResponse>, VoteInfoView
     @Override
     public VoteInfoViewModel call(Response<DataResponse> dataResponseResponse) {
 
-        int voteType = IMAGE_TYPE;
+        String voteType = IMAGE_TYPE;
         List<Visitable> list = new ArrayList<>();
         String title = "Menurut Toppers, siapa ya yang akan jadi pemain MVP di Piala Dunia Tahun Ini?";
         String cr7 = "http://01a4b5.medialib.edu.glogster.com/media/55/5527aa424a7bc417e364f92537e4daa0f366ab6a2373dfa8616f8977f7b9c685/cristiano-ronaldo-portual-goal.jpg";
@@ -52,7 +51,7 @@ public class GetVoteMapper implements Func1<Response<DataResponse>, VoteInfoView
         channelViewModel = new VoteViewModel("Lionel Messi", messi, 60, VoteViewModel.DEFAULT, voteType);
         list.add(channelViewModel);
 
-        return new VoteInfoViewModel(title, list, "1000", voteType
+        return new VoteInfoViewModel("1234", title, list, "1000", voteType
                 , "Vote", false, "Info Pemenang", "www.google.com"
                 , 1519722000, 1519758000);
     }

@@ -10,14 +10,11 @@ import android.os.Parcelable;
 public class GroupChatViewModel implements Parcelable {
 
     private String channelUuid;
-    private int totalParticipant;
-    private String channelName;
-    private String channelUrl;
+    private ChannelInfoViewModel channelInfoViewModel;
 
     public GroupChatViewModel(String channelUuid) {
         this.channelUuid = channelUuid;
-        this.channelName = "";
-        this.totalParticipant = 0;
+        this.channelInfoViewModel = null;
     }
 
     protected GroupChatViewModel(Parcel in) {
@@ -51,26 +48,34 @@ public class GroupChatViewModel implements Parcelable {
     }
 
     public void setTotalParticipant(int totalParticipant) {
-        this.totalParticipant = totalParticipant;
+        if (channelInfoViewModel != null) {
+            this.channelInfoViewModel.setTotalParticipant(totalParticipant);
+        }
     }
 
     public int getTotalParticipant() {
-        return totalParticipant;
+        return channelInfoViewModel != null ? channelInfoViewModel.getTotalParticipantsOnline() : 0;
     }
 
     public String getChannelName() {
-        return channelName;
+        return channelInfoViewModel != null ? channelInfoViewModel.getTitle() : "";
     }
 
-    public void setChannelName(String channelName) {
-        this.channelName = channelName;
-    }
-
-    public void setChannelUrl(String channelUrl) {
-        this.channelUrl = channelUrl;
-    }
 
     public String getChannelUrl() {
-        return channelUrl;
+        return channelInfoViewModel != null ? channelInfoViewModel.getChannelUrl() : "";
+    }
+
+    public void setChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
+        this.channelInfoViewModel = channelInfoViewModel;
+    }
+
+    public String getPollId() {
+        if(channelInfoViewModel!= null
+                && channelInfoViewModel.getVoteInfoViewModel() != null) {
+            return this.channelInfoViewModel.getVoteInfoViewModel().getPollId();
+        }else{
+            return "";
+        }
     }
 }

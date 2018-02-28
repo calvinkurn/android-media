@@ -1,10 +1,11 @@
 
-package com.tokopedia.tkpdstream.channel.domain.pojo;
+package com.tokopedia.tkpdstream.chatroom.domain.pojo;
 
+import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ChannelPojo {
+public class Channel {
 
     @SerializedName("channel_id")
     @Expose
@@ -36,9 +37,9 @@ public class ChannelPojo {
     @SerializedName("is_freeze")
     @Expose
     private boolean isFreeze;
-    @SerializedName("active_poll")
+    @SerializedName("active_polls")
     @Expose
-    private ActivePollPojo activePoll;
+    private List<ActivePollPojo> activePolls = null;
     @SerializedName("moderator_id")
     @Expose
     private String moderatorId;
@@ -129,12 +130,12 @@ public class ChannelPojo {
         this.isFreeze = isFreeze;
     }
 
-    public ActivePollPojo getActivePoll() {
-        return activePoll;
+    public List<ActivePollPojo> getActivePolls() {
+        return activePolls;
     }
 
-    public void setActivePoll(ActivePollPojo activePoll) {
-        this.activePoll = activePoll;
+    public void setActivePolls(List<ActivePollPojo> activePolls) {
+        this.activePolls = activePolls;
     }
 
     public String getModeratorId() {
@@ -160,4 +161,5 @@ public class ChannelPojo {
     public void setModeratorProfileUrl(String moderatorProfileUrl) {
         this.moderatorProfileUrl = moderatorProfileUrl;
     }
+
 }

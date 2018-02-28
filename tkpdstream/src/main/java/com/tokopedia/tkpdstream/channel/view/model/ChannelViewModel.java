@@ -13,11 +13,11 @@ import com.tokopedia.tkpdstream.channel.view.adapter.typefactory.ChannelTypeFact
 public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactory> {
 
     private String id;
-    private String name;
+    private String adminName;
     private String image;
-    private String profile;
+    private String adminPicture;
     private String title;
-    private String subtitle;
+    private String description;
     private int participant;
 
     @Override
@@ -28,13 +28,14 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
     public ChannelViewModel() {
     }
 
-    public ChannelViewModel(String id, String name, String image, String profile, String title, String subtitle, int participant) {
+    public ChannelViewModel(String id, String adminName, String image, String adminPicture,
+                            String title, String description, int participant) {
         this.id = id;
-        this.name = name;
+        this.adminName = adminName;
         this.image = image;
-        this.profile = profile;
+        this.adminPicture = adminPicture;
         this.title = title;
-        this.subtitle = subtitle;
+        this.description = description;
         this.participant = participant;
     }
 
@@ -42,56 +43,28 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public String getAdminName() {
+        return adminName;
     }
 
     public String getImage() {
         return image;
     }
 
-    public void setImage(String image) {
-        this.image = image;
-    }
-
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getSubtitle() {
-        return subtitle;
-    }
-
-    public void setSubtitle(String subtitle) {
-        this.subtitle = subtitle;
+    public String getDescription() {
+        return description;
     }
 
     public int getParticipant() {
         return participant;
     }
 
-    public void setParticipant(int participant) {
-        this.participant = participant;
-    }
-
-    public String getProfile() {
-        return profile;
-    }
-
-    public void setProfile(String profile) {
-        this.profile = profile;
+    public String getAdminPicture() {
+        return adminPicture;
     }
 
     @Override
@@ -102,21 +75,21 @@ public class ChannelViewModel implements Parcelable, Visitable<ChannelTypeFactor
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.id);
-        dest.writeString(this.name);
+        dest.writeString(this.adminName);
         dest.writeString(this.image);
-        dest.writeString(this.profile);
+        dest.writeString(this.adminPicture);
         dest.writeString(this.title);
-        dest.writeString(this.subtitle);
+        dest.writeString(this.description);
         dest.writeInt(this.participant);
     }
 
     protected ChannelViewModel(Parcel in) {
         this.id = in.readString();
-        this.name = in.readString();
+        this.adminName = in.readString();
         this.image = in.readString();
-        this.profile = in.readString();
+        this.adminPicture = in.readString();
         this.title = in.readString();
-        this.subtitle = in.readString();
+        this.description = in.readString();
         this.participant = in.readInt();
     }
 

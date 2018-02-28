@@ -24,7 +24,7 @@ public class VoteTypeFactoryImpl extends BaseAdapterTypeFactory implements VoteT
     }
 
     public int type(VoteViewModel voteViewModel) {
-        if(voteViewModel.getType() == VoteViewModel.IMAGE_TYPE) {
+        if(voteViewModel.getType().equals( VoteViewModel.IMAGE_TYPE)) {
             return VoteImageViewHolder.LAYOUT;
         }else{
             return VoteBarViewHolder.LAYOUT;

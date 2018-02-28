@@ -25,10 +25,8 @@ public class ChannelInfoSource {
         this.mapper = mapper;
     }
 
-    public Observable<ChannelInfoViewModel> getChannelInfo(RequestParams requestParams) {
-        return chatroomApi.getChannelInfo(requestParams.getString(
-                GetChannelInfoUseCase.PARAM_CHANNEL_UUID, ""),
-                requestParams.getParameters())
+    public Observable<ChannelInfoViewModel> getChannelInfo(String channelUuid) {
+        return chatroomApi.getChannelInfo(channelUuid)
                 .map(mapper);
     }
 }

@@ -1,13 +1,13 @@
 package com.tokopedia.tkpdstream.common.data;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.tkpdstream.vote.data.VoteInfoPojo;
+import com.tokopedia.tkpdstream.vote.domain.pojo.SendVotePojo;
 
-import java.util.List;
 import java.util.Map;
 
 import retrofit2.Response;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
 import rx.Observable;
 
@@ -17,7 +17,7 @@ import rx.Observable;
 
 public interface VoteApi {
 
-    @GET(VoteUrl.GET_ALL_CHANNEL)
-    Observable<Response<DataResponse>> getVoteInfo(@QueryMap Map<String,
-                Object> keyword);
+    @GET(VoteUrl.SEND_VOTE)
+    Observable<Response<DataResponse<SendVotePojo>>> sendVote(@Path(VoteUrl.PATH_POLL_ID) String pollId,
+                                                              @QueryMap Map<String, Object> keyword);
 }

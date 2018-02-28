@@ -1,14 +1,11 @@
 package com.tokopedia.tkpdstream.chatroom.view.presenter;
 
-import android.content.Context;
+import android.util.Log;
 
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.PreviousMessageListQuery;
-import com.sendbird.android.SendBird;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.tkpdstream.chatroom.domain.ConnectionManager;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.ChannelHandlerUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.GetChannelInfoUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.GetGroupChatMessagesFirstTimeUseCase;
@@ -23,10 +20,8 @@ import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
 import com.tokopedia.tkpdstream.common.util.GroupChatErrorHandler;
-import com.tokopedia.tkpdstream.vote.domain.usecase.GetVoteUseCase;
-import com.tokopedia.tkpdstream.vote.domain.usecase.VotingUseCase;
+import com.tokopedia.tkpdstream.vote.domain.usecase.SendVoteUseCase;
 import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
-import com.tokopedia.tkpdstream.common.util.GroupChatErrorHandler;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
 import java.util.List;
@@ -50,8 +45,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     private final SendGroupChatMessageUseCase sendMessageUseCase;
     private final LogoutGroupChatUseCase logoutGroupChatUseCase;
     private final ChannelHandlerUseCase channelHandlerUseCase;
-    private final GetVoteUseCase getVoteUseCase;
-    private final VotingUseCase votingUseCase;
+    private final SendVoteUseCase sendVoteUseCase;
 
     @Inject
     public GroupChatPresenter(LoginGroupChatUseCase loginGroupChatUseCase,
@@ -63,8 +57,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                               SendGroupChatMessageUseCase sendMessageUseCase,
                               LogoutGroupChatUseCase logoutGroupChatUseCase,
                               ChannelHandlerUseCase channelHandlerUseCase,
-                              GetVoteUseCase getVoteUseCase,
-                              VotingUseCase votingUseCase) {
+                              SendVoteUseCase sendVoteUseCase) {
         this.getChannelInfoUseCase = getChannelInfoUseCase;
         this.loginGroupChatUseCase = loginGroupChatUseCase;
         this.getGroupChatMessagesFirstTimeUseCase = getGroupChatMessagesFirstTimeUseCase;
@@ -73,8 +66,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
         this.sendMessageUseCase = sendMessageUseCase;
         this.logoutGroupChatUseCase = logoutGroupChatUseCase;
         this.channelHandlerUseCase = channelHandlerUseCase;
-        this.getVoteUseCase = getVoteUseCase;
-        this.votingUseCase = votingUseCase;
+        this.sendVoteUseCase = sendVoteUseCase;
     }
 
     @Override
@@ -147,7 +139,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
     @Override
     public void refreshDataAfterReconnect(OpenChannel mChannel) {
-        if(mChannel != null){
+        if (mChannel != null) {
             getView().showReconnectingMessage();
             refreshMessageUseCase.execute(getView().getContext(), mChannel, new RefreshMessageUseCase.RefreshMessagesListener() {
                 @Override
@@ -196,34 +188,31 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     }
 
     @Override
-    public void vote(boolean voted, VoteViewModel element) {
-        if(voted){
+    public void sendVote(String pollId, boolean voted, final VoteViewModel element) {
+        if (voted) {
             getView().showHasVoted();
-        }else {
-            getView().successVote(element);
-            getView().showSuccessVoted();
-//            votingUseCase.execute();
+        } else {
+            sendVoteUseCase.execute(SendVoteUseCase.createParams(pollId,
+                    element.getSelected()), new Subscriber<VoteInfoViewModel>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    Log.d("NISNIS", "ERROR VOTE");
+                    getView().onErrorVote(GroupChatErrorHandler.getErrorMessage(getView()
+                            .getContext(), e, true));
+                }
+
+                @Override
+                public void onNext(VoteInfoViewModel voteInfoViewModel) {
+                    getView().successVote(element);
+                    getView().showSuccessVoted();
+                }
+            });
         }
-    }
-
-    @Override
-    public void getVoteInfo(final Context context) {
-        getVoteUseCase.execute(getVoteUseCase.createParams(), new Subscriber<VoteInfoViewModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                ErrorHandler.getErrorMessage(context, throwable);
-            }
-
-            @Override
-            public void onNext(VoteInfoViewModel voteInfoViewModel) {
-                getView().onSuccessGetVoteInfo(voteInfoViewModel);
-            }
-        });
     }
 
     @Override

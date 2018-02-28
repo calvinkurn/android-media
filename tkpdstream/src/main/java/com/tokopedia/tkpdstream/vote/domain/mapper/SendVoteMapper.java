@@ -2,6 +2,7 @@ package com.tokopedia.tkpdstream.vote.domain.mapper;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.tkpdstream.vote.domain.pojo.SendVotePojo;
 import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
@@ -17,27 +18,14 @@ import rx.functions.Func1;
  * @author by StevenFredian on 21/02/18.
  */
 
-public class VotingMapper implements Func1<Response<DataResponse>, VoteInfoViewModel>{
+public class SendVoteMapper implements Func1<Response<DataResponse<SendVotePojo>>, VoteInfoViewModel>{
 
     @Inject
-    public VotingMapper() {
+    public SendVoteMapper() {
     }
 
-//    @Override
-//    public VoteInfoViewModel call(Response<DataResponse<List<VoteInfoPojo>>> dataResponseResponse) {
-//
-//        List<Visitable> list = new ArrayList<>();
-//        String title = "Title";
-//        for (int i = 0; i < 10; i++) {
-//            VoteViewModel channelViewModel = new VoteViewModel("Option "+i, 10, VoteViewModel.DEFAULT);
-//            list.add(channelViewModel);
-//        }
-//
-//        return new VoteInfoViewModel(title, list, 100);
-//    }
-
     @Override
-    public VoteInfoViewModel call(Response<DataResponse> dataResponseResponse) {
+    public VoteInfoViewModel call(Response<DataResponse<SendVotePojo>> dataResponseResponse) {
 
         List<Visitable> list = new ArrayList<>();
         String title = "Title";

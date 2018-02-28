@@ -1,7 +1,6 @@
 package com.tokopedia.tkpdstream.common.network;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * @author by nisie on 2/3/18.
@@ -9,13 +8,16 @@ import java.util.List;
 
 public class ErrorNetworkException extends IOException {
 
-    private List<NetworkErrorPojo> errorList;
+    private String errorMessage;
+    private String errorCode;
 
-    public List<NetworkErrorPojo> getErrorList() {
-        return errorList;
+    public ErrorNetworkException(String errorMessage, String errorCode) {
+        super(errorMessage);
+        this.errorMessage = errorMessage;
+        this.errorCode = errorCode;
     }
 
-    public ErrorNetworkException(List<NetworkErrorPojo> errorList) {
-        this.errorList = errorList;
+    public String getErrorCode() {
+        return errorCode;
     }
 }

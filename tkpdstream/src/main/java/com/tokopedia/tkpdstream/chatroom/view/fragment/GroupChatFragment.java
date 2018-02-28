@@ -15,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -51,8 +52,8 @@ import com.tokopedia.tkpdstream.chatroom.di.DaggerChatroomComponent;
 import com.tokopedia.tkpdstream.chatroom.domain.ConnectionManager;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.ChannelHandlerUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.LoginGroupChatUseCase;
-import com.tokopedia.tkpdstream.chatroom.view.ShareLayout;
 import com.tokopedia.tkpdstream.chatroom.view.ShareData;
+import com.tokopedia.tkpdstream.chatroom.view.ShareLayout;
 import com.tokopedia.tkpdstream.chatroom.view.VoteSpaceItemDecoration;
 import com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.GroupChatAdapter;
@@ -74,9 +75,12 @@ import com.tokopedia.tkpdstream.vote.view.adapter.typefactory.VoteTypeFactoryImp
 import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.tkpdstream.vote.view.model.VoteViewModel.IMAGE_TYPE;
 
 /**
  * @author by nisie on 2/6/18.
@@ -278,6 +282,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
             }
         });
 
+        String hintText = getString(R.string.chat_as) + " " + userSession.getName() + "...";
+        replyEditText.setHint(hintText);
         replyEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -306,7 +312,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                         (replyEditText.getText().toString(),
                                 userSession.getUserId(),
                                 userSession.getName(),
-                                "https://yt3.ggpht.com/-uwClWniyyFU/AAAAAAAAAAI/AAAAAAAAAAA/nVrBEY3dzuY/s176-c-k-no-mo-rj-c0xffffff/photo.jpg",
+                                userSession.getProfilePicture(),
                                 false);
                 adapter.addDummyReply(pendingChatViewModel);
                 presenter.sendReply(pendingChatViewModel, mChannel);
@@ -337,15 +343,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         super.onViewCreated(view, savedInstanceState);
         initData();
         progressBarWithTimer.setListener(this);
-
-        toolbar.setTitle(viewModel.getChannelName());
-        setToolbarParticipantCount();
-
-        presenter.getVoteInfo(getActivity());
-
-        ImageHandler.loadImageBlur(getActivity(), channelBanner, "http://static.tvtropes" +
-                ".org/pmwiki/pub/images/kingdom_hearts_difficulties.jpg");
-
 
         ChannelViewModel model = getArguments().getParcelable(GroupChatActivity.EXTRA_CHANNEL_INFO);
         channelInfoDialog.setContentView(createBottomSheetView(model));
@@ -384,12 +381,13 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         actionButton.setText(R.string.lets_vote);
 
         participant.setText(String.valueOf(channelViewModel.getParticipant()));
-        name.setText(channelViewModel.getName());
+        name.setText(channelViewModel.getAdminName());
         title.setText(channelViewModel.getTitle());
-        subtitle.setText(channelViewModel.getSubtitle());
+        subtitle.setText(channelViewModel.getDescription());
 
         ImageHandler.loadImage2(image, channelViewModel.getImage(), R.drawable.loading_page);
-        ImageHandler.loadImageCircle2(profile.getContext(), profile, channelViewModel.getProfile(), R.drawable.loading_page);
+        ImageHandler.loadImageCircle2(profile.getContext(), profile, channelViewModel.getAdminPicture(), R
+                .drawable.loading_page);
 
         return view;
     }
@@ -435,7 +433,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                         }
                     }
                 });
-        presenter.setHandler(viewModel.getChannelUuid(), this);
+
+        if (viewModel != null && !TextUtils.isEmpty(viewModel.getChannelUrl()))
+            presenter.setHandler(viewModel.getChannelUrl(), this);
     }
 
     @Override
@@ -464,6 +464,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         adapter.setCursor(listChat.get(0));
         adapter.setCanLoadMore(mPrevMessageListQuery.hasMore());
         scrollToBottom();
+
+        presenter.setHandler(viewModel.getChannelUrl(), this);
+
     }
 
     private void scrollToBottom() {
@@ -498,17 +501,18 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     @Override
     public void onErrorGetMessageFirstTime(String errorMessage) {
+        hideVoteLayout();
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 initData();
             }
         });
-        voteBar.setVisibility(View.GONE);
     }
 
     @Override
     public void onErrorGetChannelInfo(String errorMessage) {
+        hideVoteLayout();
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
@@ -520,11 +524,17 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     @Override
     public void onSuccessGetChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
-        this.viewModel.setChannelUrl(channelInfoViewModel.getChannelUrl());
+
+        this.viewModel.setChannelInfo(channelInfoViewModel);
+        toolbar.setTitle(channelInfoViewModel.getTitle());
+        setToolbarParticipantCount();
+        ImageHandler.loadImageBlur(getActivity(), channelBanner, channelInfoViewModel
+                .getBannerUrl());
+
+        setVote(channelInfoViewModel.isHasPoll(), channelInfoViewModel.getVoteInfoViewModel());
+
         presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUrl(),
-                userSession.getName(), "https://yt3.ggpht" +
-                        ".com/-uwClWniyyFU/AAAAAAAAAAI/AAAAAAAAAAA/nVrBEY3dzuY/s176-c-k-no-mo-rj" +
-                        "-c0xffffff/photo.jpg", this);
+                userSession.getName(), userSession.getProfilePicture(), this);
         setVisibilityHeader(View.VISIBLE);
     }
 
@@ -533,6 +543,32 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         toolbar.setVisibility(visible);
         divider.setVisibility(visible);
         channelBanner.setVisibility(visible);
+    }
+
+    private void setVote(boolean hasPoll, VoteInfoViewModel voteInfoViewModel) {
+        List<Visitable> list = new ArrayList<>();
+        String title = "Title";
+        String cr7 = "http://01a4b5.medialib.edu.glogster.com/media/55/5527aa424a7bc417e364f92537e4daa0f366ab6a2373dfa8616f8977f7b9c685/cristiano-ronaldo-portual-goal.jpg";
+        String messi = "https://static.independent.co.uk/s3fs-public/styles/article_small/public/thumbnails/image/2014/07/09/23/10-messi.jpg";
+        VoteViewModel channelViewModel = new VoteViewModel("Cristiano Ronaldo", cr7, 40, VoteViewModel.DEFAULT, VoteViewModel.IMAGE_TYPE);
+        list.add(channelViewModel);
+        channelViewModel = new VoteViewModel("Lionel Messi", messi, 60, VoteViewModel.DEFAULT, VoteViewModel.IMAGE_TYPE);
+        list.add(channelViewModel);
+
+        voteInfoViewModel = new VoteInfoViewModel("123", title, list, "1000", IMAGE_TYPE
+                , "Vote", false, "Info Pemenang", "www.google.com"
+                , 1519722000, 1519758000);
+
+//        channelViewModel = new VoteViewModel("Cristiano Ronaldo",40, VoteViewModel.DEFAULT);
+//        list.add(channelViewModel);
+//        channelViewModel = new VoteViewModel("Lionel Messi", 60, VoteViewModel.DEFAULT);
+//        list.add(channelViewModel);
+
+        if (hasPoll && voteInfoViewModel != null) {
+            showVoteLayout(voteInfoViewModel);
+        } else {
+            hideVoteLayout();
+        }
     }
 
     @Override
@@ -567,9 +603,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     @Override
     public void onVoteOptionClicked(VoteViewModel element) {
 
-        boolean voted = votedView.getVisibility()==View.VISIBLE;
+        boolean voted = votedView.getVisibility() == View.VISIBLE;
 
-        presenter.vote(voted, element);
+        presenter.sendVote(viewModel.getPollId(), voted, element);
     }
 
     @Override
@@ -595,6 +631,11 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     @Override
+    public void onErrorVote(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
     public void onMessageReceived(Visitable messageItem) {
         adapter.addIncomingMessage(messageItem);
         adapter.notifyItemInserted(0);
@@ -612,17 +653,18 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     private void showNewMessageReceived(int newMessageCounter) {
+        //TODO : Implement this later
         Log.d("NISNIS", "showNewMessageReceived " + newMessageCounter);
     }
 
     @Override
     public void onMessageDeleted(long msgId) {
-//TODO : Implement this later
+        //TODO : Implement this later
     }
 
     @Override
     public void onMessageUpdated(Visitable map) {
-//TODO : Implement this later
+        //TODO : Implement this later
     }
 
     public static void expand(final View v) {
@@ -677,43 +719,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         v.startAnimation(a);
     }
 
-
-    @Override
-    public void onSuccessGetVoteInfo(final VoteInfoViewModel voteInfoViewModel) {
-        LinearLayoutManager voteLayoutManager;
-        RecyclerView.ItemDecoration itemDecoration = null;
-        if (voteInfoViewModel.getVoteType() == VoteViewModel.IMAGE_TYPE) {
-            voteLayoutManager = new GridLayoutManager(getActivity(), 2);
-            itemDecoration = new VoteSpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_mini), 2);
-        } else {
-            voteLayoutManager = new LinearLayoutManager(getActivity());
-            itemDecoration = new VoteSpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_med));
-        }
-        voteRecyclerView.addItemDecoration(itemDecoration);
-        voteRecyclerView.setLayoutManager(voteLayoutManager);
-        voteRecyclerView.setAdapter(voteAdapter);
-        voteAdapter.addList(voteInfoViewModel.getList());
-        voteStatus.setText(voteInfoViewModel.getVoteStatus());
-        voteTitle.setText(voteInfoViewModel.getTitle());
-        progressBarWithTimer.setTimer(voteInfoViewModel.getStartTime(), voteInfoViewModel.getEndTime());
-//        if(voteInfoViewModel.getVoteType()){
-//            showVoteLayout();
-//        }
-        if(voteInfoViewModel.isVoted()){
-            setVoted();
-        }
-        participant.setText(String.format("%s %s", voteInfoViewModel.getParticipant()
-                , getActivity().getString(R.string.participant)));
-        voteInfoLink.setText(voteInfoViewModel.getVoteInfoString());
-        voteInfoLink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //openwebview from getVoteInfoUrl
-            }
-        });
-    }
-
-
     @Override
     public void onUserEntered(UserActionViewModel userActionViewModel) {
 
@@ -738,14 +743,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     public void onSuccessEnterChannel(OpenChannel openChannel) {
         mChannel = openChannel;
         viewModel.setTotalParticipant(openChannel.getParticipantCount());
-        viewModel.setChannelName(mChannel.getName());
         setToolbarParticipantCount();
-        setChannelName();
         presenter.initMessageFirstTime(viewModel.getChannelUuid(), mChannel);
-    }
-
-    private void setChannelName() {
-        toolbar.setTitle(viewModel.getChannelName());
     }
 
     @Override
@@ -754,23 +753,56 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
             @Override
             public void onRetryClicked() {
                 presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUuid(),
-                        userSession.getName(), "https://yt3.ggpht" +
-                                ".com/-uwClWniyyFU/AAAAAAAAAAI/AAAAAAAAAAA/nVrBEY3dzuY/s176-c-k-no-mo-rj" +
-                                "-c0xffffff/photo.jpg", GroupChatFragment.this);
+                        userSession.getName(), userSession.getProfilePicture(),
+                        GroupChatFragment.this);
             }
         });
     }
 
-    public void showVoteLayout(){
+    public void showVoteLayout(VoteInfoViewModel voteInfoViewModel) {
         voteBar.setVisibility(View.VISIBLE);
+
+        LinearLayoutManager voteLayoutManager;
+        RecyclerView.ItemDecoration itemDecoration = null;
+        if (voteInfoViewModel.getVoteType().equals(VoteViewModel.IMAGE_TYPE)) {
+            voteLayoutManager = new GridLayoutManager(getActivity(), 2);
+            itemDecoration = new VoteSpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_mini), 2);
+        } else {
+            voteLayoutManager = new LinearLayoutManager(getActivity());
+            itemDecoration = new VoteSpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_med));
+        }
+        voteRecyclerView.addItemDecoration(itemDecoration);
+        voteRecyclerView.setLayoutManager(voteLayoutManager);
+        voteRecyclerView.setAdapter(voteAdapter);
+        voteAdapter.addList(voteInfoViewModel.getListOption());
+        voteStatus.setText(voteInfoViewModel.getVoteStatus());
+        voteTitle.setText(voteInfoViewModel.getTitle());
+        progressBarWithTimer.setTimer(voteInfoViewModel.getStartTime(), voteInfoViewModel.getEndTime());
+//        if(voteInfoViewModel.getVoteType()){
+//            showVoteLayout();
+//        }
+        if (voteInfoViewModel.isVoted()) {
+            setVoted();
+        }
+        participant.setText(String.format("%s %s", voteInfoViewModel.getParticipant()
+                , getActivity().getString(R.string.participant)));
+        voteInfoLink.setText(voteInfoViewModel.getVoteInfoString());
+        voteInfoLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //openwebview from getVoteInfoUrl
+            }
+        });
+
+
     }
 
-    public void hideVoteLayout(){
+    public void hideVoteLayout() {
         voteBar.setVisibility(View.GONE);
     }
 
-    public void setVoteHasEnded(){
-        if(getActivity() != null) {
+    public void setVoteHasEnded() {
+        if (getActivity() != null) {
             voteStatus.setText(R.string.vote_has_ended);
             voteStatus.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_54));
             DrawableCompat.setTint(iconVote.getBackground(), ContextCompat.getColor(getActivity(), R.color.black_54));
@@ -778,7 +810,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         }
     }
 
-    public void setVoted(){
+    public void setVoted() {
         votedView.setVisibility(View.VISIBLE);
     }
 

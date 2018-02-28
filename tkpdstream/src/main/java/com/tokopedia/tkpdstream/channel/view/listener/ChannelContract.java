@@ -27,10 +27,22 @@ public interface ChannelContract {
         void showLoadingFull();
 
         void dismissLoadingFull();
+
+        void onErrorRefreshChannel(String errorMessage);
+
+        void onSuccessRefreshChannel(ChannelListViewModel channelListViewModel);
+
+        void showLoading();
+
+        void hideLoading();
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
+        void getChannelListFirstTime();
+
         void getChannelList();
+
+        void refreshData();
     }
 }

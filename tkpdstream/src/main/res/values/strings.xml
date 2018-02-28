@@ -35,5 +35,6 @@
 
     <string name="title_poll_started">VOTE TELAH DIMULAI</string>
     <string name="title_poll_finished">VOTE TELAH BERAKHIR</string>
+    <string name="chat_as">Chat sebagai</string>
 
 </resources>
