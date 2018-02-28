@@ -36,9 +36,9 @@ public class NonPaginatedPeopleAddressRepositoryImpl implements PeopleAddressRep
      * Get an {@link Observable} which will emit a {@link RecipientAddressModel}
      *
      * @param params Parameters used to retrieve data
-     * @return Default address
+     * @return Shortlist Address
      */
-    public Observable<RecipientAddressModel> getDefaultAddress(Map<String, String> params) {
+    public Observable<RecipientAddressModel> getShortListedAddress(Map<String, String> params) {
         return getAllAddress(params)
                 .flatMap(new Func1<List<RecipientAddressModel>, Observable<RecipientAddressModel>>() {
                     @Override

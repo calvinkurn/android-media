@@ -85,11 +85,13 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     public static SingleAddressShipmentFragment newInstance(CartShipmentAddressFormData cartShipmentAddressFormData,
                                                             CartPromoSuggestion cartPromoSuggestionData) {
-        SingleAddressShipmentFragment fragment = new SingleAddressShipmentFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_EXTRA_SHIPMENT_FORM_DATA, cartShipmentAddressFormData);
         bundle.putParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION, cartPromoSuggestionData);
+
+        SingleAddressShipmentFragment fragment = new SingleAddressShipmentFragment();
         fragment.setArguments(bundle);
+
         return fragment;
     }
 
@@ -160,9 +162,9 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
         CartShipmentAddressFormData cartShipmentAddressFormData = arguments.getParcelable(
                 ARG_EXTRA_SHIPMENT_FORM_DATA
         );
+
         mCartSingleAddressData = mSingleAddressShipmentDataConverter.convert(cartShipmentAddressFormData);
         CartPromoSuggestion cartPromoSuggestion = arguments.getParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION);
-
     }
 
     @Override
@@ -308,21 +310,26 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         if (requestCode == CartAddressChoiceActivity.REQUEST_CODE) {
             switch (resultCode) {
                 case CartAddressChoiceActivity.RESULT_CODE_ACTION_SELECT_ADDRESS:
-                    Object thisSelectedAddressData = data.getParcelableExtra(
-                            CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA
-                    );
-                    //TODO render selectedAddressData
+                    RecipientAddressModel thisSelectedAddressData = data.getParcelableExtra(
+                            CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA);
+
+                    mCartSingleAddressData.setRecipientAddressModel(thisSelectedAddressData);
+                    mSingleAddressShipmentPresenter.getCartShipmentData(mCartSingleAddressData);
+
                     break;
+
                 case CartAddressChoiceActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM:
                     Intent intent = new Intent();
                     intent.putExtra(CartShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA,
                             mCartSingleAddressData.getRecipientAddressModel());
                     cartShipmentActivityListener.closeWithResult(
                             CartShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM, intent);
+                    break;
+
+                default:
                     break;
             }
         }
@@ -335,11 +342,13 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                     mSingleAddressShipmentAdapter.setPickupPoint(pickupBooth);
                     mSingleAddressShipmentAdapter.notifyDataSetChanged();
                     break;
+
                 case REQUEST_CODE_SHIPMENT_DETAIL:
                     ShipmentDetailData shipmentDetailData = data.getParcelableExtra(EXTRA_SHIPMENT_DETAIL_DATA);
                     int position = data.getIntExtra(EXTRA_SINGLE_ADDRESS_POSITION, 0);
                     mSingleAddressShipmentAdapter.updateSelectedShipment(position, shipmentDetailData);
                     mSingleAddressShipmentAdapter.notifyItemChanged(position);
+
                 default:
                     break;
             }

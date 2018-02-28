@@ -39,6 +39,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity.EXTRA_DEFAULT_SELECTED_ADDRESS;
+import static com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA;
+import static com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity.RESULT_CODE_ACTION_SELECT_ADDRESS;
+
 /**
  * @author Irfan Khoirul on 05/02/18
  *         Aghny A. Putra on 27/02/18
@@ -119,7 +123,8 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
 
     @Override
     protected void setupArguments(Bundle arguments) {
-
+        RecipientAddressModel model = arguments.getParcelable(EXTRA_DEFAULT_SELECTED_ADDRESS);
+        mCartAddressChoicePresenter.setSelectedRecipientAddress(model);
     }
 
     @Override
@@ -192,9 +197,9 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     @OnClick(R2.id.bt_send_to_current_address)
     void onSendToCurrentAddress() {
         Intent intent = new Intent();
-        intent.putExtra(INTENT_EXTRA_SELECTED_RECIPIENT_ADDRESS,
+        intent.putExtra(EXTRA_SELECTED_ADDRESS_DATA,
                 mCartAddressChoicePresenter.getSelectedRecipientAddress());
-        getActivity().setResult(Activity.RESULT_OK, intent);
+        getActivity().setResult(RESULT_CODE_ACTION_SELECT_ADDRESS, intent);
         getActivity().finish();
     }
 

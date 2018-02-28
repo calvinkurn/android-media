@@ -10,6 +10,7 @@ import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.view.presenter.ICartAddressChoicePresenter;
 import com.tokopedia.transaction.checkout.view.view.ICartAddressChoiceView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -25,6 +26,8 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
         implements ICartAddressChoicePresenter {
 
     private static final String TAG = CartAddressChoicePresenter.class.getSimpleName();
+
+    private static final int FIRST_ELEMENT = 0;
 
     private static final int DEFAULT_ORDER = 1;
     private static final String DEFAULT_QUERY = "";
@@ -66,7 +69,6 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
                     @Override
                     public void onNext(List<RecipientAddressModel> shipmentAddressModels) {
                         if (!shipmentAddressModels.isEmpty()) {
-                            mSelectedRecipientAddress = selectedAddress(shipmentAddressModels);
                             getView().renderRecipientData(shortList(shipmentAddressModels));
                         }
 
@@ -86,30 +88,23 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
     }
 
     /**
-     * Logic for selecting address from list
-     *
-     * @param recipientAddressModels
-     * @return
-     */
-    private RecipientAddressModel selectedAddress(List<RecipientAddressModel> recipientAddressModels) {
-        // TODO : add logic for determine index of selected address
-        int selectedIndex = 0;
-
-        RecipientAddressModel selectedAddress = recipientAddressModels.get(selectedIndex);
-        selectedAddress.setSelected(true);
-
-        return selectedAddress;
-    }
-
-    /**
      * Logic for creating short listed address
      *
      * @param recipientAddressModels
      * @return
      */
     private List<RecipientAddressModel> shortList(List<RecipientAddressModel> recipientAddressModels) {
-        // TODO : add logic for determine which address should be added to short list
-        return recipientAddressModels.subList(0,2);
+        List<RecipientAddressModel> shortList = new ArrayList<>();
+
+        if (recipientAddressModels.remove(mSelectedRecipientAddress)) {
+            shortList.add(mSelectedRecipientAddress);
+            shortList.add(recipientAddressModels.get(FIRST_ELEMENT));
+        } else {
+            shortList.addAll(recipientAddressModels.subList(0,2));
+            shortList.get(FIRST_ELEMENT).setSelected(true);
+        }
+
+        return shortList;
     }
 
 }

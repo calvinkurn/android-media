@@ -159,6 +159,52 @@ public class RecipientAddressModel implements Parcelable {
         this.selected = selected;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RecipientAddressModel)) return false;
+
+        RecipientAddressModel that = (RecipientAddressModel) o;
+
+        if (getAddressStatus() != that.getAddressStatus()) return false;
+        if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
+        if (getAddressName() != null ? !getAddressName().equals(that.getAddressName()) : that.getAddressName() != null)
+            return false;
+        if (getAddressProvinceName() != null ? !getAddressProvinceName().equals(that.getAddressProvinceName()) : that.getAddressProvinceName() != null)
+            return false;
+        if (getAddressPostalCode() != null ? !getAddressPostalCode().equals(that.getAddressPostalCode()) : that.getAddressPostalCode() != null)
+            return false;
+        if (getAddressCityName() != null ? !getAddressCityName().equals(that.getAddressCityName()) : that.getAddressCityName() != null)
+            return false;
+        if (getAddressStreet() != null ? !getAddressStreet().equals(that.getAddressStreet()) : that.getAddressStreet() != null)
+            return false;
+        if (getAddressCountryName() != null ? !getAddressCountryName().equals(that.getAddressCountryName()) : that.getAddressCountryName() != null)
+            return false;
+        if (getRecipientName() != null ? !getRecipientName().equals(that.getRecipientName()) : that.getRecipientName() != null)
+            return false;
+        if (getRecipientPhoneNumber() != null ? !getRecipientPhoneNumber().equals(that.getRecipientPhoneNumber()) : that.getRecipientPhoneNumber() != null)
+            return false;
+        if (getDestinationDistrictId() != null ? !getDestinationDistrictId().equals(that.getDestinationDistrictId()) : that.getDestinationDistrictId() != null)
+            return false;
+        return getDestinationDistrictName() != null ? getDestinationDistrictName().equals(that.getDestinationDistrictName()) : that.getDestinationDistrictName() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getId() != null ? getId().hashCode() : 0;
+        result = 31 * result + getAddressStatus();
+        result = 31 * result + (getAddressName() != null ? getAddressName().hashCode() : 0);
+        result = 31 * result + (getAddressProvinceName() != null ? getAddressProvinceName().hashCode() : 0);
+        result = 31 * result + (getAddressPostalCode() != null ? getAddressPostalCode().hashCode() : 0);
+        result = 31 * result + (getAddressCityName() != null ? getAddressCityName().hashCode() : 0);
+        result = 31 * result + (getAddressStreet() != null ? getAddressStreet().hashCode() : 0);
+        result = 31 * result + (getAddressCountryName() != null ? getAddressCountryName().hashCode() : 0);
+        result = 31 * result + (getRecipientName() != null ? getRecipientName().hashCode() : 0);
+        result = 31 * result + (getRecipientPhoneNumber() != null ? getRecipientPhoneNumber().hashCode() : 0);
+        result = 31 * result + (getDestinationDistrictId() != null ? getDestinationDistrictId().hashCode() : 0);
+        result = 31 * result + (getDestinationDistrictName() != null ? getDestinationDistrictName().hashCode() : 0);
+        return result;
+    }
 
     @Override
     public int describeContents() {

@@ -41,6 +41,8 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
     private static final String TAG = SingleAddressShipmentAdapter.class.getSimpleName();
 
+    private static final int PRIME_ADDRESS = 2;
+
     private static final NumberFormat CURRENCY_IDR =
             NumberFormat.getCurrencyInstance(new Locale("in", "ID"));
 
@@ -241,7 +243,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
         }
 
         void bindViewHolder(RecipientAddressModel model) {
-            mTvAddressStatus.setVisibility(model.getAddressStatus() == 1 ?
+            mTvAddressStatus.setVisibility(model.getAddressStatus() == PRIME_ADDRESS ?
                     View.VISIBLE : View.GONE);
             mTvAddressName.setText(model.getAddressName());
             mTvRecipientName.setText(model.getRecipientName());
