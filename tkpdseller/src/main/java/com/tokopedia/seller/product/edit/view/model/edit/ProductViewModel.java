@@ -143,13 +143,16 @@ public class ProductViewModel implements ItemType, Parcelable {
     @Expose
     private boolean productNameEditable;
 
+    //TODO remove this from model
     @Expose
     private long draftId;
 
+    @Deprecated
     public long getDraftId() {
         return draftId;
     }
 
+    @Deprecated
     public void setDraftId(long draftId) {
         this.draftId = draftId;
     }
