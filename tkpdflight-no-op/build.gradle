@@ -26,5 +26,5 @@ android {
 
 dependencies {
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
