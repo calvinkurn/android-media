@@ -20,6 +20,7 @@ public class CartSingleAddressData implements Parcelable {
     private RecipientAddressModel recipientAddressModel;
     private List<CartSellerItemModel> cartSellerItemModelList;
     private CartPayableDetailModel cartPayableDetailModel;
+    private ShipmentCartData shipmentCartData;
 
     public CartPromo getCartPromo() {
         return cartPromo;

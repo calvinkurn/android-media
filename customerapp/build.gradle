@@ -295,13 +295,13 @@ dependencies {
 //        exclude group: 'com.tokopedia.core', module: 'tkpdpayment'
 //        exclude group: 'com.tokopedia.core', module: 'tkpdloyalty'
 //    }
-//    compile(rootProject.ext.tkpdDependencies.loyalty) {
-//        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
-//        exclude group: 'com.tokopedia.core', module: 'tkpddesign'
-//        exclude group: 'com.tokopedia.core', module: 'tkpdtopadssdk'
-//        exclude group: 'com.tokopedia.core', module: 'tkpdpayment'
-//        exclude group: 'com.tokopedia.core', module: 'tkpdloyalty'
-//    }
+////    compile(rootProject.ext.tkpdDependencies.loyalty) {
+////        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
+////        exclude group: 'com.tokopedia.core', module: 'tkpddesign'
+////        exclude group: 'com.tokopedia.core', module: 'tkpdtopadssdk'
+////        exclude group: 'com.tokopedia.core', module: 'tkpdpayment'
+////        exclude group: 'com.tokopedia.core', module: 'tkpdloyalty'
+////    }
 //    compile(rootProject.ext.tkpdDependencies.reputation) {
 //        exclude group: 'com.tokopedia.core', module: 'tkpdcore'
 //        exclude group: 'com.tokopedia.core', module: 'tkpddesign'
