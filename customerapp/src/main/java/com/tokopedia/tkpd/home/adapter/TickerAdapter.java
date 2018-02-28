@@ -22,7 +22,6 @@ import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.R2;
 
 import java.util.ArrayList;
 
@@ -58,18 +57,15 @@ public class TickerAdapter extends RecyclerView.Adapter<TickerAdapter.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.announcement_ticker_container)
         RelativeLayout announcementContainer;
-
-        @BindView(R2.id.ticker_message)
         TextView message;
-
-        @BindView(R2.id.btn_close)
         ImageView btnClose;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            announcementContainer = (RelativeLayout) itemView.findViewById(R.id.announcement_ticker_container);
+            message = (TextView) itemView.findViewById(R.id.ticker_message);
+            btnClose = (ImageView) itemView.findViewById(R.id.btn_close);
         }
     }
 

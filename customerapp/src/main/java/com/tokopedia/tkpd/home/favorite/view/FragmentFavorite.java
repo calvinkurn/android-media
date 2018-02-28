@@ -61,16 +61,10 @@ public class FragmentFavorite extends BaseDaggerFragment
 
     private static final long DURATION_ANIMATOR = 1000;
 
-    @BindView(R2.id.index_favorite_recycler_view)
     RecyclerView recyclerView;
-    @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
-    @BindView(R2.id.include_loading)
     ProgressBar progressBar;
-    @BindView(R2.id.main_content)
     RelativeLayout mainContent;
-
-    @BindView(R2.id.partial_empty_wishlist)
     View wishlistNotLoggedIn;
 
     @Inject
@@ -100,7 +94,11 @@ public class FragmentFavorite extends BaseDaggerFragment
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View parentView = inflater.inflate(R.layout.fragment_index_favorite_v2, container, false);
-        unbinder = ButterKnife.bind(this, parentView);
+        recyclerView = (RecyclerView) parentView.findViewById(R.id.index_favorite_recycler_view);
+        swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
+        progressBar = (ProgressBar) parentView.findViewById(R.id.include_loading);
+        mainContent = (RelativeLayout) parentView.findViewById(R.id.main_content);
+        wishlistNotLoggedIn = parentView.findViewById(R.id.partial_empty_wishlist);
 
         if (SessionHandler.isV4Login(getActivity())) {
             prepareView();

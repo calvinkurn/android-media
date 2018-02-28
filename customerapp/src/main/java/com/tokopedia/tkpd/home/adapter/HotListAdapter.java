@@ -33,22 +33,17 @@ public class HotListAdapter extends BaseRecyclerViewAdapter {
     HotList hotList;
 
     public final class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R2.id.hotprod_img)
         ImageView mImageofProduct;
-        @BindView(R2.id.hotprod_name)
         TextView mNameOfProduct;
-        @BindView(R2.id.hotprod_price)
         TextView mPrice;
-        @BindView(R2.id.hot_list_cardview_listproduct)
         CardView cardView;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            try {
-                ButterKnife.bind(this, itemView);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            mImageofProduct = (ImageView) itemView.findViewById(R.id.hotprod_img);
+            mNameOfProduct = (TextView) itemView.findViewById(R.id.hotprod_name);
+            mPrice = (TextView) itemView.findViewById(R.id.hotprod_price);
+            cardView = (CardView) itemView.findViewById(R.id.hot_list_cardview_listproduct);
         }
 
         public Context getContext() {
