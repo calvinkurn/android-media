@@ -5,6 +5,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.transaction.checkout.domain.ICartRepository;
 import com.tokopedia.transaction.checkout.domain.IVoucherCouponMapper;
 import com.tokopedia.transaction.checkout.domain.response.checkpromocodefinal.CheckPromoCodeFinalDataResponse;
@@ -21,7 +22,7 @@ import rx.functions.Func1;
  * @author anggaprasetiyo on 27/02/18.
  */
 
-public class CheckPromoCodeCartShipmentUseCase extends UseCase<PromoCodeCartShipmentData> {
+public class CheckPromoCodeCartShipmentUseCase extends UseCase<CheckPromoCodeCartShipmentResult> {
     public static final String PARAM_CARTS = "carts";
     private final ICartRepository cartRepository;
     private final IVoucherCouponMapper voucherCouponMapper;
@@ -34,7 +35,7 @@ public class CheckPromoCodeCartShipmentUseCase extends UseCase<PromoCodeCartShip
     }
 
     @Override
-    public Observable<PromoCodeCartShipmentData> createObservable(RequestParams requestParams) {
+    public Observable<CheckPromoCodeCartShipmentResult> createObservable(RequestParams requestParams) {
         CheckPromoCodeCartShipmentRequest request =
                 (CheckPromoCodeCartShipmentRequest) requestParams.getObject(PARAM_CARTS);
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
@@ -52,6 +53,13 @@ public class CheckPromoCodeCartShipmentUseCase extends UseCase<PromoCodeCartShip
                         return voucherCouponMapper.convertPromoCodeCartShipmentData(
                                 checkPromoCodeFinalDataResponse
                         );
+                    }
+                }
+        ).map(
+                new Func1<PromoCodeCartShipmentData, CheckPromoCodeCartShipmentResult>() {
+                    @Override
+                    public CheckPromoCodeCartShipmentResult call(PromoCodeCartShipmentData promoCodeCartShipmentData) {
+                        return voucherCouponMapper.convertCheckPromoCodeCartShipmentResult(promoCodeCartShipmentData);
                     }
                 }
         );

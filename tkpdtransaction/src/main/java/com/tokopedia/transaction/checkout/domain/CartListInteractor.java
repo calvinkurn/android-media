@@ -4,6 +4,7 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.checkout.domain.exception.ResponseCartApiErrorException;
 import com.tokopedia.transaction.checkout.domain.response.cartlist.CartDataListResponse;
+import com.tokopedia.transaction.checkout.domain.response.checkpromocodecartlist.CheckPromoCodeCartListDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.deletecart.DeleteCartDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.shippingaddressform.ShipmentAddressFormDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.updatecart.UpdateCartDataResponse;
@@ -13,6 +14,7 @@ import com.tokopedia.transaction.checkout.view.data.DeleteUpdateCartData;
 import com.tokopedia.transaction.checkout.view.data.UpdateCartData;
 import com.tokopedia.transaction.checkout.view.data.UpdateToSingleAddressShipmentData;
 import com.tokopedia.transaction.checkout.view.data.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.transaction.checkout.view.data.voucher.PromoCodeCartListData;
 
 import javax.inject.Inject;
 
@@ -33,16 +35,18 @@ public class CartListInteractor implements ICartListInteractor {
     private final ICartRepository cartRepository;
     private final ICartMapper cartMapper;
     private final IShipmentMapper shipmentMapper;
+    private final IVoucherCouponMapper voucherCouponMapper;
 
     @Inject
     public CartListInteractor(CompositeSubscription compositeSubscription,
                               ICartRepository cartRepository,
                               ICartMapper cartMapper,
-                              IShipmentMapper shipmentMapper) {
+                              IShipmentMapper shipmentMapper, IVoucherCouponMapper voucherCouponMapper) {
         this.compositeSubscription = compositeSubscription;
         this.cartRepository = cartRepository;
         this.cartMapper = cartMapper;
         this.shipmentMapper = shipmentMapper;
+        this.voucherCouponMapper = voucherCouponMapper;
     }
 
 
@@ -199,6 +203,24 @@ public class CartListInteractor implements ICartListInteractor {
                                                 return updateCartListData;
                                             }
                                         });
+                            }
+                        })
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(subscriber)
+        );
+    }
+
+    @Override
+    public void checkPromoCodeCartList(Subscriber<PromoCodeCartListData> subscriber,
+                                       TKPDMapParam<String, String> param) {
+        compositeSubscription.add(
+                cartRepository.checkPromoCodeCartList(param)
+                        .map(new Func1<CheckPromoCodeCartListDataResponse, PromoCodeCartListData>() {
+                            @Override
+                            public PromoCodeCartListData call(CheckPromoCodeCartListDataResponse checkPromoCodeCartListDataResponse) {
+                                return voucherCouponMapper.convertPromoCodeCartListData(checkPromoCodeCartListDataResponse);
                             }
                         })
                         .subscribeOn(Schedulers.newThread())

@@ -10,7 +10,9 @@ import com.tokopedia.transaction.checkout.domain.ICartMapper;
 import com.tokopedia.transaction.checkout.domain.ICartRepository;
 import com.tokopedia.transaction.checkout.domain.IMapperUtil;
 import com.tokopedia.transaction.checkout.domain.IShipmentMapper;
+import com.tokopedia.transaction.checkout.domain.IVoucherCouponMapper;
 import com.tokopedia.transaction.checkout.domain.ShipmentMapper;
+import com.tokopedia.transaction.checkout.domain.VoucherCouponMapper;
 import com.tokopedia.transaction.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.transaction.checkout.view.view.cartlist.CartFragment;
 import com.tokopedia.transaction.checkout.view.view.cartlist.CartItemDecoration;
@@ -57,11 +59,18 @@ public class CartListModule {
 
     @Provides
     @CartListScope
+    IVoucherCouponMapper provideIVoucherCouponMapper(IMapperUtil mapperUtil) {
+        return new VoucherCouponMapper(mapperUtil);
+    }
+
+    @Provides
+    @CartListScope
     ICartListInteractor provideICartListInteractor(CompositeSubscription compositeSubscription,
                                                    ICartRepository cartRepository,
                                                    ICartMapper cartMapper,
-                                                   IShipmentMapper shipmentMapper) {
-        return new CartListInteractor(compositeSubscription, cartRepository, cartMapper, shipmentMapper);
+                                                   IShipmentMapper shipmentMapper,
+                                                   IVoucherCouponMapper voucherCouponMapper) {
+        return new CartListInteractor(compositeSubscription, cartRepository, cartMapper, shipmentMapper, voucherCouponMapper);
     }
 
     @Provides

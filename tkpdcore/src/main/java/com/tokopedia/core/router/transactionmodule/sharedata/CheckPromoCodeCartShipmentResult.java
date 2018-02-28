@@ -1,13 +1,14 @@
-package com.tokopedia.transaction.checkout.view.data.voucher;
+package com.tokopedia.core.router.transactionmodule.sharedata;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * @author anggaprasetiyo on 27/02/18.
+ * @author anggaprasetiyo on 28/02/18.
  */
 
-public class PromoCodeCartShipmentData implements Parcelable {
+public class CheckPromoCodeCartShipmentResult implements Parcelable {
+
     private boolean isError;
     private String errorMessage;
     private DataVoucher dataVoucher;
@@ -42,14 +43,6 @@ public class PromoCodeCartShipmentData implements Parcelable {
         private int voucherAmount;
         private int voucherStatus;
         private String voucherPromoDesc;
-
-        public String getVoucherPromoDesc() {
-            return voucherPromoDesc;
-        }
-
-        public void setVoucherPromoDesc(String voucherPromoDesc) {
-            this.voucherPromoDesc = voucherPromoDesc;
-        }
 
         public String getVoucherAmountIdr() {
             return voucherAmountIdr;
@@ -87,6 +80,14 @@ public class PromoCodeCartShipmentData implements Parcelable {
         public DataVoucher() {
         }
 
+        public String getVoucherPromoDesc() {
+            return voucherPromoDesc;
+        }
+
+        public void setVoucherPromoDesc(String voucherPromoDesc) {
+            this.voucherPromoDesc = voucherPromoDesc;
+        }
+
         @Override
         public int describeContents() {
             return 0;
@@ -122,6 +123,7 @@ public class PromoCodeCartShipmentData implements Parcelable {
         };
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -134,24 +136,24 @@ public class PromoCodeCartShipmentData implements Parcelable {
         dest.writeParcelable(this.dataVoucher, flags);
     }
 
-    public PromoCodeCartShipmentData() {
+    public CheckPromoCodeCartShipmentResult() {
     }
 
-    protected PromoCodeCartShipmentData(Parcel in) {
+    protected CheckPromoCodeCartShipmentResult(Parcel in) {
         this.isError = in.readByte() != 0;
         this.errorMessage = in.readString();
-        this.dataVoucher = in.readParcelable(PromoCodeCartListData.DataVoucher.class.getClassLoader());
+        this.dataVoucher = in.readParcelable(DataVoucher.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<PromoCodeCartShipmentData> CREATOR = new Parcelable.Creator<PromoCodeCartShipmentData>() {
+    public static final Parcelable.Creator<CheckPromoCodeCartShipmentResult> CREATOR = new Parcelable.Creator<CheckPromoCodeCartShipmentResult>() {
         @Override
-        public PromoCodeCartShipmentData createFromParcel(Parcel source) {
-            return new PromoCodeCartShipmentData(source);
+        public CheckPromoCodeCartShipmentResult createFromParcel(Parcel source) {
+            return new CheckPromoCodeCartShipmentResult(source);
         }
 
         @Override
-        public PromoCodeCartShipmentData[] newArray(int size) {
-            return new PromoCodeCartShipmentData[size];
+        public CheckPromoCodeCartShipmentResult[] newArray(int size) {
+            return new CheckPromoCodeCartShipmentResult[size];
         }
     };
 }

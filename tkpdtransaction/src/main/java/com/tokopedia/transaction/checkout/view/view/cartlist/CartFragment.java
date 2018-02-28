@@ -42,12 +42,14 @@ import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.di.component.CartListComponent;
 import com.tokopedia.transaction.checkout.di.component.DaggerCartListComponent;
 import com.tokopedia.transaction.checkout.di.module.CartListModule;
+import com.tokopedia.transaction.checkout.router.ICartCheckoutModuleRouter;
 import com.tokopedia.transaction.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CartListData;
 import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.view.data.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.transaction.checkout.view.data.voucher.PromoCodeCartListData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.transaction.checkout.view.view.multipleaddressform.MultipleAddressFormActivity;
@@ -241,12 +243,13 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     @Override
     public void onCartPromoSuggestionActionClicked(CartPromoSuggestion data, int position) {
-
+        dPresenter.processCheckPromoCodeFromSuggestedPromo(data.getPromoCode());
     }
 
     @Override
     public void onCartPromoSuggestionButtonCloseClicked(CartPromoSuggestion data, int position) {
-
+        data.setVisible(false);
+        cartListAdapter.notifyItemChanged(position);
     }
 
     @Override
@@ -256,16 +259,15 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     @Override
     public void onCartPromoUseVoucherPromoClicked(CartItemPromoHolderData cartItemPromoHolderData, int position) {
-        Intent intent;
-        if (true) {
-            intent = LoyaltyActivity.newInstanceCouponActive(
-                    getActivity(), "marketplace", "marketplace"
+
+        if (getActivity().getApplication() instanceof ICartCheckoutModuleRouter) {
+            startActivityForResult(
+                    ((ICartCheckoutModuleRouter) getActivity().getApplication())
+                            .tkpdCartCheckoutGetLoyaltyNewCheckoutMarketplaceCartListIntent(
+                                    getActivity(), true
+                            ), LoyaltyActivity.LOYALTY_REQUEST_CODE
             );
-        } else {
-            intent = LoyaltyActivity.newInstanceCouponNotActive(getActivity(),
-                    "marketplace", "marketplace");
         }
-        startActivityForResult(intent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
     }
 
     @Override
@@ -463,6 +465,35 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     @Override
     public void renderErrorTimeoutConnectionToShipmentMultipleAddress(String message) {
+
+    }
+
+    @Override
+    public void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData) {
+        CartItemPromoHolderData cartItemPromoHolderData = new CartItemPromoHolderData();
+        cartItemPromoHolderData.setPromoVoucherType(promoCodeCartListData.getDataVoucher().getCode(),
+                promoCodeCartListData.getDataVoucher().getMessageSuccess(),
+                promoCodeCartListData.getDataVoucher().getCashbackVoucherAmount());
+        cartListAdapter.updateItemPromoVoucher(cartItemPromoHolderData);
+    }
+
+    @Override
+    public void renderErrorCheckPromoCodeFromSuggestedPromo(String message) {
+
+    }
+
+    @Override
+    public void renderErrorHttpCheckPromoCodeFromSuggestedPromo(String message) {
+
+    }
+
+    @Override
+    public void renderErrorNoConnectionCheckPromoCodeFromSuggestedPromo(String message) {
+
+    }
+
+    @Override
+    public void renderErrorTimeoutConnectionCheckPromoCodeFromSuggestedPromo(String message) {
 
     }
 

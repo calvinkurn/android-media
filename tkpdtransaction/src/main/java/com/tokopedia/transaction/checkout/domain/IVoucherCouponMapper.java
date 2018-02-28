@@ -1,5 +1,8 @@
 package com.tokopedia.transaction.checkout.domain;
 
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
+import com.tokopedia.core.router.transactionmodule.sharedata.CouponListResult;
 import com.tokopedia.transaction.checkout.domain.response.checkpromocodecartlist.CheckPromoCodeCartListDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.checkpromocodefinal.CheckPromoCodeFinalDataResponse;
 import com.tokopedia.transaction.checkout.domain.response.couponlist.CouponDataResponse;
@@ -15,7 +18,21 @@ public interface IVoucherCouponMapper {
 
     CouponListData convertCouponListData(CouponDataResponse couponDataResponse);
 
-    PromoCodeCartListData convertPromoCodeCartListData(CheckPromoCodeCartListDataResponse checkPromoCodeCartListDataResponse);
+    PromoCodeCartListData convertPromoCodeCartListData(
+            CheckPromoCodeCartListDataResponse checkPromoCodeCartListDataResponse
+    );
 
-    PromoCodeCartShipmentData convertPromoCodeCartShipmentData(CheckPromoCodeFinalDataResponse checkPromoCodeFinalDataResponse);
+    PromoCodeCartShipmentData convertPromoCodeCartShipmentData(
+            CheckPromoCodeFinalDataResponse checkPromoCodeFinalDataResponse
+    );
+
+    CouponListResult convertCouponListResult(CouponListData couponListData);
+
+    CheckPromoCodeCartListResult convertCheckPromoCodeCartListResult(
+            PromoCodeCartListData promoCodeCartListData
+    );
+
+    CheckPromoCodeCartShipmentResult convertCheckPromoCodeCartShipmentResult(
+            PromoCodeCartShipmentData promoCodeCartShipmentData
+    );
 }

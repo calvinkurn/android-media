@@ -3,6 +3,7 @@ package com.tokopedia.transaction.checkout.domain.usecase;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.transaction.checkout.domain.ICartRepository;
 import com.tokopedia.transaction.checkout.domain.IVoucherCouponMapper;
 import com.tokopedia.transaction.checkout.domain.response.checkpromocodecartlist.CheckPromoCodeCartListDataResponse;
@@ -19,7 +20,7 @@ import rx.functions.Func1;
  * @author anggaprasetiyo on 27/02/18.
  */
 
-public class CheckPromoCodeCartListUseCase extends UseCase<PromoCodeCartListData> {
+public class CheckPromoCodeCartListUseCase extends UseCase<CheckPromoCodeCartListResult> {
 
     private final ICartRepository cartRepository;
     private final IVoucherCouponMapper voucherCouponMapper;
@@ -34,14 +35,14 @@ public class CheckPromoCodeCartListUseCase extends UseCase<PromoCodeCartListData
     public static final String PARAM_PROMO_CODE = "promo_code";
 
     @Override
-    public Observable<PromoCodeCartListData> createObservable(RequestParams requestParams) {
+    public Observable<CheckPromoCodeCartListResult> createObservable(RequestParams requestParams) {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put(PARAM_PROMO_CODE, requestParams.getString(PARAM_PROMO_CODE, ""));
         param.put("lang", "id");
         param.put("suggested", "0");
         return cartRepository.checkPromoCodeCartList(AuthUtil.generateParamsNetwork(
-                MainApplication.getAppContext(), param
-        )).map(
+                MainApplication.getAppContext(), param)
+        ).map(
                 new Func1<CheckPromoCodeCartListDataResponse, PromoCodeCartListData>() {
                     @Override
                     public PromoCodeCartListData call(
@@ -52,6 +53,12 @@ public class CheckPromoCodeCartListUseCase extends UseCase<PromoCodeCartListData
                         );
                     }
                 }
-        );
+        ).map(
+                new Func1<PromoCodeCartListData, CheckPromoCodeCartListResult>() {
+                    @Override
+                    public CheckPromoCodeCartListResult call(PromoCodeCartListData promoCodeCartListData) {
+                        return voucherCouponMapper.convertCheckPromoCodeCartListResult(promoCodeCartListData);
+                    }
+                });
     }
 }

@@ -74,6 +74,10 @@ import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
+import com.tokopedia.core.router.transactionmodule.sharedata.CouponListResult;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.AccessTokenRefresh;
@@ -108,6 +112,8 @@ import com.tokopedia.inbox.inboxmessageold.activity.SendMessageActivityOld;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver;
+import com.tokopedia.loyalty.router.ITkpdLoyaltyModuleRouter;
+import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
@@ -177,7 +183,13 @@ import com.tokopedia.transaction.apiservice.CartService;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.checkout.domain.AddToCartUseCase;
 import com.tokopedia.transaction.checkout.domain.CartRepository;
+import com.tokopedia.transaction.checkout.domain.MapperUtil;
+import com.tokopedia.transaction.checkout.domain.VoucherCouponMapper;
 import com.tokopedia.transaction.checkout.domain.response.addtocart.AddToCartDataResponse;
+import com.tokopedia.transaction.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
+import com.tokopedia.transaction.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
+import com.tokopedia.transaction.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase;
+import com.tokopedia.transaction.checkout.router.ICartCheckoutModuleRouter;
 import com.tokopedia.transaction.checkout.view.view.cartlist.CartActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
@@ -206,7 +218,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TkpdCoreRouter, SellerModuleRouter, IDigitalModuleRouter, PdpRouter,
         OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter,
         TokoCashRouter, IWalletRouter, ILoyaltyRouter, ReputationRouter, SessionRouter,
-        AbstractionRouter, FlightModuleRouter, LogisticRouter {
+        AbstractionRouter, FlightModuleRouter, LogisticRouter, ITkpdLoyaltyModuleRouter, ICartCheckoutModuleRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -1328,5 +1340,79 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         return cartEntity.toString();
                     }
                 });
+    }
+
+    @Override
+    public Intent tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(
+            Context context, String platform, String category
+    ) {
+        return LoyaltyActivity.newInstanceCouponActive(context, platform, category);
+    }
+
+    @Override
+    public Intent tkpdCartCheckoutGetLoyaltyOldCheckoutCouponNotActiveIntent(
+            Context context, String platform, String category
+    ) {
+        return LoyaltyActivity.newInstanceCouponNotActive(context, platform, category);
+    }
+
+    @Override
+    public Intent tkpdCartCheckoutGetLoyaltyNewCheckoutMarketplaceCartListIntent(
+            Context context, boolean couponActive
+    ) {
+        return couponActive ? LoyaltyActivity.newInstanceNewCheckoutCartListCouponActive(context)
+                : LoyaltyActivity.newInstanceNewCheckoutCartListCouponNotActive(context);
+    }
+
+    @Override
+    public Intent tkpdCartCheckoutGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
+            Context context, String additionalDataString, boolean couponActive
+    ) {
+        return couponActive ? LoyaltyActivity.newInstanceNewCheckoutCartShipmentCouponActive(
+                context, additionalDataString
+        )
+                : LoyaltyActivity.newInstanceNewCheckoutCartShipmentCouponNotActive(
+                context, additionalDataString
+        );
+    }
+
+    @Override
+    public Observable<CheckPromoCodeCartListResult> tkpdLoyaltyGetCheckPromoCodeCartListResultObservable(
+            String promoCode
+    ) {
+        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
+        requestParams.putString(CheckPromoCodeCartListUseCase.PARAM_PROMO_CODE, promoCode);
+        CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase = new CheckPromoCodeCartListUseCase(
+                new CartRepository(new CartService()),
+                new VoucherCouponMapper(new MapperUtil())
+        );
+        return checkPromoCodeCartListUseCase.createObservable(requestParams);
+    }
+
+    @Override
+    public Observable<CheckPromoCodeCartShipmentResult> tkpdLoyaltyGetCheckPromoCodeCartShipmentResultObservable(
+            CheckPromoCodeCartShipmentRequest checkPromoCodeCartShipmentRequest
+    ) {
+        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
+        requestParams.putObject(CheckPromoCodeCartShipmentUseCase.PARAM_CARTS, checkPromoCodeCartShipmentRequest);
+        CheckPromoCodeCartShipmentUseCase checkPromoCodeCartShipmentUseCase =
+                new CheckPromoCodeCartShipmentUseCase(
+                        new CartRepository(new CartService()),
+                        new VoucherCouponMapper(new MapperUtil())
+                );
+        return checkPromoCodeCartShipmentUseCase.createObservable(requestParams);
+    }
+
+    @Override
+    public Observable<CouponListResult> tkpdLoyaltyGetCouponListObservable(String page, String pageSize) {
+        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
+        requestParams.putString(GetCouponListCartMarketPlaceUseCase.PARAM_PAGE, page);
+        requestParams.putString(GetCouponListCartMarketPlaceUseCase.PARAM_PAGE_SIZE, pageSize);
+        GetCouponListCartMarketPlaceUseCase getCouponListCartMarketPlaceUseCase =
+                new GetCouponListCartMarketPlaceUseCase(
+                        new CartRepository(new CartService()),
+                        new VoucherCouponMapper(new MapperUtil())
+                );
+        return getCouponListCartMarketPlaceUseCase.createObservable(requestParams);
     }
 }

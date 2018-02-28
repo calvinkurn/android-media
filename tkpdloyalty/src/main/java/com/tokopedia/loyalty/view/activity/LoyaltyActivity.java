@@ -47,10 +47,10 @@ import butterknife.BindView;
 public class LoyaltyActivity extends BasePresenterActivity
         implements HasComponent<AppComponent>,
         PromoCodeFragment.ManualInsertCodeListener,
-        PromoCouponFragment.ChooseCouponListener
-{
+        PromoCouponFragment.ChooseCouponListener {
     public static final String EXTRA_COUPON_ACTIVE = "EXTRA_COUPON_ACTIVE";
     public static final String EXTRA_PLATFORM = "EXTRA_PLATFORM";
+    public static final String EXTRA_ADDITIONAL_DATA = "EXTRA_ADDITIONAL_DATA";
     public static final String EXTRA_CATEGORY = "EXTRA_CATEGORY";
     public static final String MARKETPLACE_STRING = "marketplace";
     public static final String MARKETPLACE_CART_LIST_STRING = "marketplace_cart_list";
@@ -147,7 +147,7 @@ public class LoyaltyActivity extends BasePresenterActivity
 
     private void setShowCase() {
         ShowCaseObject showCase = new ShowCaseObject(
-                ((ViewGroup)indicator.getChildAt(0)).getChildAt(1),
+                ((ViewGroup) indicator.getChildAt(0)).getChildAt(1),
                 getString(R.string.show_case_title),
                 getString(R.string.show_case_text),
                 ShowCaseContentPosition.UNDEFINED);
@@ -164,7 +164,7 @@ public class LoyaltyActivity extends BasePresenterActivity
                 return false;
             }
         });
-        if(!ShowCasePreference.hasShown(this, LoyaltyActivity.class.getName())) 
+        if (!ShowCasePreference.hasShown(this, LoyaltyActivity.class.getName()))
             showCaseDialog.show(this, LoyaltyActivity.class.getName(), showCaseObjectList);
 
     }
@@ -292,6 +292,48 @@ public class LoyaltyActivity extends BasePresenterActivity
         bundle.putBoolean(EXTRA_COUPON_ACTIVE, false);
         bundle.putString(EXTRA_PLATFORM, platform);
         bundle.putString(EXTRA_CATEGORY, category);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent newInstanceNewCheckoutCartListCouponNotActive(Context context) {
+        Intent intent = new Intent(context, LoyaltyActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(EXTRA_COUPON_ACTIVE, false);
+        bundle.putString(EXTRA_PLATFORM, MARKETPLACE_CART_LIST_STRING);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent newInstanceNewCheckoutCartListCouponActive(Context context) {
+        Intent intent = new Intent(context, LoyaltyActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(EXTRA_COUPON_ACTIVE, true);
+        bundle.putString(EXTRA_PLATFORM, MARKETPLACE_CART_LIST_STRING);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent newInstanceNewCheckoutCartShipmentCouponNotActive(
+            Context context, String cartShipmentDataString
+    ) {
+        Intent intent = new Intent(context, LoyaltyActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(EXTRA_COUPON_ACTIVE, false);
+        bundle.putString(EXTRA_PLATFORM, MARKETPLACE_CART_SHIPMENT_STRING);
+        bundle.putString(EXTRA_ADDITIONAL_DATA, cartShipmentDataString);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent newInstanceNewCheckoutCartShipmentCouponActive(
+            Context context, String cartShipmentDataString
+    ) {
+        Intent intent = new Intent(context, LoyaltyActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(EXTRA_COUPON_ACTIVE, true);
+        bundle.putString(EXTRA_PLATFORM, MARKETPLACE_CART_SHIPMENT_STRING);
+        bundle.putString(EXTRA_ADDITIONAL_DATA, cartShipmentDataString);
         intent.putExtras(bundle);
         return intent;
     }

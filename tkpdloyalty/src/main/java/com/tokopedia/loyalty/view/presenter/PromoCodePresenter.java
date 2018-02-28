@@ -1,13 +1,19 @@
 package com.tokopedia.loyalty.view.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
+import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.loyalty.exception.LoyaltyErrorException;
 import com.tokopedia.loyalty.exception.TokoPointResponseErrorException;
+import com.tokopedia.loyalty.router.ITkpdLoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.interactor.IPromoCodeInteractor;
 import com.tokopedia.loyalty.view.view.IPromoCodeView;
@@ -55,13 +61,78 @@ public class PromoCodePresenter implements IPromoCodePresenter {
     }
 
     @Override
-    public void processCheckMarketPlaceCartListPromoCode(Context context, String voucherCode) {
+    public void processCheckMarketPlaceCartListPromoCode(Activity activity, final String voucherCode) {
+        if (activity.getApplication() instanceof ITkpdLoyaltyModuleRouter) {
+            promoCodeInteractor.submitVoucherMarketPlaceCartList(
+                    ((ITkpdLoyaltyModuleRouter) activity.getApplication())
+                            .tkpdLoyaltyGetCheckPromoCodeCartListResultObservable(voucherCode),
+                    new Subscriber<CheckPromoCodeCartListResult>() {
+                        @Override
+                        public void onCompleted() {
 
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                            view.hideProgressLoading();
+                            if (e instanceof TokoPointResponseErrorException || e instanceof ResponseErrorException) {
+                                view.onPromoCodeError(e.getMessage());
+                            } else view.onGetGeneralError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                        }
+
+                        @Override
+                        public void onNext(CheckPromoCodeCartListResult checkPromoCodeCartListResult) {
+                            VoucherViewModel viewModel = new VoucherViewModel();
+                            viewModel.setAmount(checkPromoCodeCartListResult.getDataVoucher().getDiscountAmount());
+                            viewModel.setMessage(checkPromoCodeCartListResult.getDataVoucher().getMessageSuccess());
+                            viewModel.setCode(checkPromoCodeCartListResult.getDataVoucher().getCode());
+                            view.hideProgressLoading();
+                            view.checkVoucherSuccessfull(viewModel);
+                        }
+                    }
+            );
+        }
     }
 
     @Override
-    public void processCheckMarketPlaceCartShipmentPromoCode(Context context, String voucherCode) {
+    public void processCheckMarketPlaceCartShipmentPromoCode(
+            Activity activity, final String voucherCode, String paramCartShipment
+    ) {
+        CheckPromoCodeCartShipmentRequest data =
+                new Gson().fromJson(paramCartShipment, CheckPromoCodeCartShipmentRequest.class);
+        data.setPromoCode(voucherCode);
+        if (activity.getApplication() instanceof ITkpdLoyaltyModuleRouter) {
+            promoCodeInteractor.submitVoucherMarketPlaceCartShipment(
+                    ((ITkpdLoyaltyModuleRouter) activity.getApplication())
+                            .tkpdLoyaltyGetCheckPromoCodeCartShipmentResultObservable(data),
+                    new Subscriber<CheckPromoCodeCartShipmentResult>() {
+                        @Override
+                        public void onCompleted() {
 
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                            view.hideProgressLoading();
+                            if (e instanceof TokoPointResponseErrorException || e instanceof ResponseErrorException) {
+                                view.onPromoCodeError(e.getMessage());
+                            } else view.onGetGeneralError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                        }
+
+                        @Override
+                        public void onNext(CheckPromoCodeCartShipmentResult checkPromoCodeCartShipmentResult) {
+                            VoucherViewModel viewModel = new VoucherViewModel();
+                            viewModel.setAmount(checkPromoCodeCartShipmentResult.getDataVoucher().getVoucherAmountIdr());
+                            viewModel.setMessage(checkPromoCodeCartShipmentResult.getDataVoucher().getVoucherPromoDesc());
+                            viewModel.setCode(voucherCode);
+                            view.hideProgressLoading();
+                            view.checkVoucherSuccessfull(viewModel);
+                        }
+                    }
+            );
+        }
     }
 
     private Subscriber<VoucherViewModel> makeVoucherViewModel() {
@@ -74,7 +145,7 @@ public class PromoCodePresenter implements IPromoCodePresenter {
             @Override
             public void onError(Throwable e) {
                 view.hideProgressLoading();
-                if(e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
+                if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
                     view.onPromoCodeError(e.getMessage());
                 } else view.onGetGeneralError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
             }
@@ -97,7 +168,7 @@ public class PromoCodePresenter implements IPromoCodePresenter {
             @Override
             public void onError(Throwable e) {
                 view.hideProgressLoading();
-                if(e instanceof TokoPointResponseErrorException || e instanceof ResponseErrorException) {
+                if (e instanceof TokoPointResponseErrorException || e instanceof ResponseErrorException) {
                     view.onPromoCodeError(e.getMessage());
                 } else view.onGetGeneralError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
             }

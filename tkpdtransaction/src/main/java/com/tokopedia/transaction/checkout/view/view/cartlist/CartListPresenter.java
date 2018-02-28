@@ -15,6 +15,7 @@ import com.tokopedia.transaction.checkout.view.data.CartListData;
 import com.tokopedia.transaction.checkout.view.data.DeleteCartData;
 import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.view.data.UpdateToSingleAddressShipmentData;
+import com.tokopedia.transaction.checkout.view.data.voucher.PromoCodeCartListData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
 
 import java.net.ConnectException;
@@ -321,5 +322,34 @@ public class CartListPresenter implements ICartListPresenter {
                     * data.getCartItemData().getOriginData().getPricePlan());
         }
         view.renderDetailInfoSubTotal(String.valueOf(qty), CURRENCY_IDR.format(((int) subtotalPrice)));
+    }
+
+    @Override
+    public void processCheckPromoCodeFromSuggestedPromo(String promoCode) {
+        view.showProgressLoading();
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put("promo_code", promoCode);
+        param.put("lang", "id");
+        cartListInteractor.checkPromoCodeCartList(new Subscriber<PromoCodeCartListData>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                view.hideProgressLoading();
+            }
+
+            @Override
+            public void onNext(PromoCodeCartListData promoCodeCartListData) {
+                view.hideProgressLoading();
+                if (!promoCodeCartListData.isError())
+                    view.renderCheckPromoCodeFromSuggestedPromoSuccess(promoCodeCartListData);
+                else
+                    view.renderErrorCheckPromoCodeFromSuggestedPromo(promoCodeCartListData.getErrorMessage());
+            }
+        }, view.getGeneratedAuthParamNetwork(param));
     }
 }

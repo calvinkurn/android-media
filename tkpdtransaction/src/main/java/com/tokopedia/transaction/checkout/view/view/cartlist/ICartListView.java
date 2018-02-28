@@ -5,6 +5,7 @@ import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CartListData;
 import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.view.data.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.transaction.checkout.view.data.voucher.PromoCodeCartListData;
 
 import java.util.List;
 
@@ -56,6 +57,17 @@ public interface ICartListView extends IBaseView {
     void renderErrorNoConnectionToShipmentMultipleAddress(String message);
 
     void renderErrorTimeoutConnectionToShipmentMultipleAddress(String message);
+
+
+    void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData);
+
+    void renderErrorCheckPromoCodeFromSuggestedPromo(String message);
+
+    void renderErrorHttpCheckPromoCodeFromSuggestedPromo(String message);
+
+    void renderErrorNoConnectionCheckPromoCodeFromSuggestedPromo(String message);
+
+    void renderErrorTimeoutConnectionCheckPromoCodeFromSuggestedPromo(String message);
 
 
     void renderEmptyCartData();

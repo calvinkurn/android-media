@@ -15,6 +15,9 @@ public class CartDataListResponse {
     @SerializedName("errors")
     @Expose
     private List<String> errors = new ArrayList<>();
+    @SerializedName("is_coupon_active")
+    @Expose
+    private int isCouponActive;
     @SerializedName("max_quantity")
     @Expose
     private int maxQuantity;
@@ -30,6 +33,10 @@ public class CartDataListResponse {
     @SerializedName("cart_list")
     @Expose
     private List<CartList> cartList = new ArrayList<>();
+
+    public int getIsCouponActive() {
+        return isCouponActive;
+    }
 
     public List<String> getErrors() {
         return errors;

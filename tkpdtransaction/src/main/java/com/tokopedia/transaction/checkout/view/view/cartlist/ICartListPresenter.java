@@ -21,4 +21,6 @@ public interface ICartListPresenter {
     void processToShipmentMultipleAddress(RecipientAddressModel selectedAddress);
 
     void reCalculateSubTotal(List<CartItemHolderData> dataList);
+
+    void processCheckPromoCodeFromSuggestedPromo(String promoCode);
 }
