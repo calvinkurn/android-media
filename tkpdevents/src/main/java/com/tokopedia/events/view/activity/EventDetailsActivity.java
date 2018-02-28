@@ -273,8 +273,7 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         }
         tvExpandableTermsNCondition.setText(Html.fromHtml(tncBuffer.toString()));
 
-        if (data.getHasSeatLayout() != 1)
-            seatingLayoutCard.setVisibility(View.GONE);
+//            seatingLayoutCard.setVisibility(View.GONE);
         eventPrice.setText("Rp " + CurrencyUtil.convertToCurrencyString(data.getSalesPrice()));
     }
 
