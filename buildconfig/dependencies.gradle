@@ -203,4 +203,35 @@ ext {
             showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.5.11"
     ]
 
+    features = [
+            loyalty         : ":tkpdloyalty",
+            reactNative     : ":tkpdreactnative",
+            ride            : ":tkpdride",
+            feed            : ":tkpdfeed",
+            digital         : ":tkpddigital",
+            core            : ":tkpdcore",
+            inbox           : ":tkpdinbox",
+            discovery       : ":tkpddiscovery",
+            transaction     : ":tkpdtransaction",
+            session         : ":tkpdsession",
+            topAdsSdk       : ":tkpdtopadssdk",
+            payment         : ":tkpdpayment",
+            productDetail   : ":tkpdpdp",
+            seller          : ":tkpdseller",
+            topAdsManagement: ":tkpdtopads",
+            goldMerchant    : ":tkpdgm",
+            reputation      : ":tkpdreputation",
+            tokoCash        : ":tkpdtokocash",
+            useCase         : ":tkpdusecase",
+            flight          : ":tkpdflight",
+            flightNoOp      : ":tkpdflight-no-op",
+            mitraToppers    : ":tkpdmitratoppers"
+    ]
+
+    libraries = [
+            design          : ":tkpddesign",
+            abstraction     : ":tkpdabstraction",
+            cacheApi        : ":tkpdcacheapi"
+    ]
+
 }

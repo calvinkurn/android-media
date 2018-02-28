@@ -1,32 +1,10 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.neenbedankt.android-apt'
+apply from: '../buildconfig/module.gradle'
 
 def getTkpdUseCase() {
     return project.hasProperty('isArtifact') ?
             rootProject.ext.tkpdDependencies.usecase : project(':tkpdusecase');
-}
-
-android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion "26.0.2"
-
-
-    defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
 }
 
 apt {
@@ -36,7 +14,7 @@ apt {
 }
 
 dependencies {
-    compile getTkpdUseCase()
+    compile project(':tkpdusecase')
 
     compile rootProject.ext.networkDependencies.retrofit
 
