@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.checkout.view.view.multipleaddressform;
 
+import android.content.Context;
+
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressAdapterData;
 
 import java.util.List;
@@ -10,6 +12,8 @@ import java.util.List;
 
 public interface IMultipleAddressPresenter {
 
-    void sendData(List<MultipleAddressAdapterData> dataList);
+    void sendData(Context context, List<MultipleAddressAdapterData> dataList);
+
+    void onUnsubscribe();
 
 }

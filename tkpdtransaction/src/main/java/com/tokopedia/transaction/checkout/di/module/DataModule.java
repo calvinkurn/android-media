@@ -26,8 +26,4 @@ public class DataModule {
         return new CartRepository(cartService);
     }
 
-    @Provides
-    IMultipleAddressRepository provideMultipleAddressRepository() {
-        return new MultipleAddressRepository();
-    }
 }

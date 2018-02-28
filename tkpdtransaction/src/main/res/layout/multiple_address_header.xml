@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/margin_small">
+
+    <include
+        layout="@layout/holder_item_cart_promo" />
+
+    <include
+        android:id="@+id/promo_suggestion_holder"
+        layout="@layout/holder_item_cart_potential_promo"
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
 </LinearLayout>

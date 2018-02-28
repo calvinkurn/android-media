@@ -1,16 +1,17 @@
 package com.tokopedia.transaction.checkout.view.view.multipleaddressform;
 
+import android.content.Context;
+
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.transaction.checkout.domain.IMultipleAddressInteractor;
 import com.tokopedia.transaction.checkout.domain.request.MultipleAddressRequest;
-import com.tokopedia.transaction.checkout.domain.request.MultipleAddressRequestList;
+import com.tokopedia.transaction.checkout.domain.usecase.SubmitMultipleAddressUseCase;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressAdapterData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
+import com.tokopedia.usecase.RequestParams;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Subscriber;
@@ -21,17 +22,18 @@ import rx.Subscriber;
 
 public class MultipleAddressPresenter implements IMultipleAddressPresenter {
 
-    private IMultipleAddressInteractor interactor;
+    private SubmitMultipleAddressUseCase submitMultipleAddressUseCase;
 
-    public MultipleAddressPresenter(IMultipleAddressInteractor interactor) {
-        this.interactor = interactor;
+    private IMultipleAddressView view;
+
+    public MultipleAddressPresenter(IMultipleAddressView view, SubmitMultipleAddressUseCase submitMultipleAddressUseCase) {
+        this.submitMultipleAddressUseCase = submitMultipleAddressUseCase;
+        this.view = view;
     }
 
     @Override
-    public void sendData(List<MultipleAddressAdapterData> dataList) {
-        JsonObject dataToSend = new JsonObject();
-        MultipleAddressRequestList multipleAddressRequestList = new MultipleAddressRequestList();
-        List<MultipleAddressRequest> requestList = new ArrayList<>();
+    public void sendData(Context context, List<MultipleAddressAdapterData> dataList) {
+        JsonArray dataArray = new JsonArray();
         for (int i = 0; i < dataList.size(); i++) {
             for (int j = 0; j<dataList.get(i).getItemListData().size(); j++) {
                 MultipleAddressRequest request = new MultipleAddressRequest();
@@ -41,21 +43,24 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
                 request.setAddressId(Integer.parseInt(itemData.getAddressId()));
                 request.setNotes(itemData.getProductNotes());
                 request.setQuantity(Integer.parseInt(itemData.getProductQty()));
-                requestList.add(request);
+                JsonElement cartData = new JsonParser().parse(new Gson().toJson(request));
+                dataArray.add(cartData);
             }
-            multipleAddressRequestList.setAddressRequests(requestList);
         }
-        dataToSend = new JsonParser().parse(new Gson()
-                .toJson(multipleAddressRequestList)).getAsJsonObject();
-
-        //TODO release later
-        //interactor.sendAddressData(dataToSend, addMultipleAddressSubscriber());
-
-        CommonUtils.dumper("PORING data to send " + dataToSend.toString());
+        RequestParams requestParam = RequestParams.create();
+        requestParam.putString("carts", dataArray.toString());
+        submitMultipleAddressUseCase.execute(
+                requestParam,
+                addMultipleAddressSubscriber());
     }
 
-    private Subscriber<String> addMultipleAddressSubscriber() {
-        return new Subscriber<String>() {
+    @Override
+    public void onUnsubscribe() {
+        submitMultipleAddressUseCase.unsubscribe();
+    }
+
+    private Subscriber<Boolean> addMultipleAddressSubscriber() {
+        return new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
 
@@ -67,8 +72,8 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
             }
 
             @Override
-            public void onNext(String s) {
-
+            public void onNext(Boolean aBoolean) {
+                view.successMakeShipmentData();
             }
         };
     }
