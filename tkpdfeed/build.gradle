@@ -13,7 +13,6 @@ buildscript {
     }
     dependencies {
         classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
-        classpath 'com.apollographql.apollo:gradle-plugin:0.3.0'
     }
 }
 

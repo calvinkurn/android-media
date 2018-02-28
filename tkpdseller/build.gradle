@@ -29,6 +29,16 @@ def getTkpdPayment() {
             rootProject.ext.tkpdDependencies.payment : project(':tkpdpayment');
 }
 
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
+    }
+}
+
 publishing {
     publications {
         aar(MavenPublication) {
