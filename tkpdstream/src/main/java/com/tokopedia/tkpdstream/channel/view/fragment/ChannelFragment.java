@@ -171,9 +171,7 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
 
     @Override
     public void onItemClicked(ChannelViewModel channelViewModel) {
-
-
-                goToChannel(channelViewModel);channelInfoDialog.dismiss();
+                goToChannel(channelViewModel);
 
     }
 
