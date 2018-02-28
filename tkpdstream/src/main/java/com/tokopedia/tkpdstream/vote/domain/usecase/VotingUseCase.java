@@ -1,6 +1,7 @@
 package com.tokopedia.tkpdstream.vote.domain.usecase;
 
 import com.tokopedia.tkpdstream.vote.domain.source.GetVoteSource;
+import com.tokopedia.tkpdstream.vote.domain.source.VotingSource;
 import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -13,18 +14,18 @@ import rx.Observable;
  * @author by StevenFredian on 21/02/18.
  */
 
-public class GetVoteUseCase extends UseCase<VoteInfoViewModel>{
+public class VotingUseCase extends UseCase<VoteInfoViewModel>{
 
-    GetVoteSource getVoteSource;
+    VotingSource votingSource;
 
     @Inject
-    public GetVoteUseCase(GetVoteSource getVoteSource) {
-        this.getVoteSource = getVoteSource;
+    public VotingUseCase(VotingSource votingSource) {
+        this.votingSource = votingSource;
     }
 
     @Override
     public Observable<VoteInfoViewModel> createObservable(RequestParams requestParams) {
-        return getVoteSource.getVoteInfoSource(requestParams.getParameters());
+        return votingSource.voting(requestParams.getParameters());
     }
 
     public RequestParams createParams() {

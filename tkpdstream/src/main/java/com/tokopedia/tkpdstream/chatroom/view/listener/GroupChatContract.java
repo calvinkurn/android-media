@@ -13,6 +13,7 @@ import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
+import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
 import java.util.List;
 
@@ -47,6 +48,14 @@ public interface GroupChatContract {
         void showLoadingList();
 
         void dismissLoadingList();
+
+        void onVoteOptionClicked(VoteViewModel element);
+
+        void showHasVoted();
+
+        void showSuccessVoted();
+
+        void successVote(VoteViewModel element);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -67,5 +76,7 @@ public interface GroupChatContract {
         void getVoteInfo(Context context);
 
         void getChannelInfo(String channelUuid);
+
+        void vote(boolean voted, VoteViewModel element);
     }
 }

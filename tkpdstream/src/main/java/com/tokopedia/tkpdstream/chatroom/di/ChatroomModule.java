@@ -7,12 +7,15 @@ import com.tokopedia.tkpdstream.common.data.VoteUrl;
 import com.tokopedia.tkpdstream.common.di.qualifier.GroupChatQualifier;
 import com.tokopedia.tkpdstream.common.di.qualifier.VoteQualifier;
 import com.tokopedia.tkpdstream.vote.domain.mapper.GetVoteMapper;
+import com.tokopedia.tkpdstream.vote.domain.mapper.VotingMapper;
 import com.tokopedia.tkpdstream.vote.domain.source.GetVoteSource;
+import com.tokopedia.tkpdstream.vote.domain.source.VotingSource;
 import com.tokopedia.tkpdstream.vote.domain.usecase.GetVoteUseCase;
 
 import com.tokopedia.tkpdstream.chatroom.data.ChatroomApi;
 import com.tokopedia.tkpdstream.common.data.BaseUrl;
 import com.tokopedia.tkpdstream.common.di.qualifier.GroupChatQualifier;
+import com.tokopedia.tkpdstream.vote.domain.usecase.VotingUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -55,6 +58,19 @@ public class ChatroomModule {
     @Provides
     public GetVoteUseCase provideGetVoteUseCase(GetVoteSource getVoteSource) {
         return new GetVoteUseCase(getVoteSource);
+    }
+
+    @ChatroomScope
+    @Provides
+    public VotingSource provideVotingSource(VoteApi voteApi, VotingMapper votingMapper){
+        return new VotingSource(voteApi, votingMapper);
+    }
+
+
+    @ChatroomScope
+    @Provides
+    public VotingUseCase provideVotingUseCase(VotingSource votingSource) {
+        return new VotingUseCase(votingSource);
     }
 
 
