@@ -32,6 +32,7 @@ import com.tokopedia.network.SessionUrl;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
+import com.tokopedia.shop.common.constant.ShopUrl;
 
 import java.util.List;
 
@@ -163,6 +164,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TkpdBaseURL.WALLET_DOMAIN = SellerAppBaseUrl.BASE_WALLET;
         SessionUrl.ACCOUNTS_DOMAIN = SellerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         SessionUrl.BASE_DOMAIN = SellerAppBaseUrl.BASE_DOMAIN;
+        ShopUrl.BASE_ACE_URL = SellerAppBaseUrl.BASE_ACE_DOMAIN;
+        ShopUrl.BASE_WSV4_URL = SellerAppBaseUrl.BASE_DOMAIN;
 
         AbstractionBaseURL.JS_DOMAIN = SellerAppBaseUrl.BASE_JS_DOMAIN;
 
