@@ -235,7 +235,9 @@ public class SearchActivity extends DiscoveryActivity
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
-    public void loadFilterItems(List<Filter> list) {
+    public void loadFilterItems(List<Filter> filterList) {
+        List<Filter> list = new ArrayList<>();
+        list.addAll(filterList);
         removeFiltersWithEmptyOption(list);
         mergeSizeFilterOptionsWithSameValue(list);
         removeBrandFilterOptionsWithSameValue(list);
