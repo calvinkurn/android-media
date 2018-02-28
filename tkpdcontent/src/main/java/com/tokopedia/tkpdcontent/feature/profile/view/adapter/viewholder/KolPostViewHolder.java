@@ -18,7 +18,7 @@ import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolPostViewModel
  * @author by nisie on 10/27/17.
  */
 
-public class KolViewHolder extends AbstractViewHolder<KolPostViewModel> {
+public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.kol_layout;
@@ -43,7 +43,7 @@ public class KolViewHolder extends AbstractViewHolder<KolPostViewModel> {
     private View commentButton;
     private View likeButton;
 
-    public KolViewHolder(View itemView, KolPostListener.View viewListener) {
+    public KolPostViewHolder(View itemView, KolPostListener.View viewListener) {
         super(itemView);
         this.viewListener = viewListener;
         title = itemView.findViewById(R.id.title);
