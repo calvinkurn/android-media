@@ -21,6 +21,7 @@
         android:layout_marginRight="16dp">
 
         <ImageView
+            android:id="@+id/avatar"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_marginEnd="16dp"
@@ -34,9 +35,9 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
                 android:fontFamily="sans-serif-medium"
                 android:lineSpacingExtra="5sp"
                 android:textColor="@color/black_70"
@@ -47,13 +48,17 @@
                 tools:text="Benny Alexandra" />
 
             <LinearLayout
+                android:id="@+id/button_manage_account"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_button_white_enabled_border"
                 android:gravity="center"
                 android:orientation="horizontal"
+                android:layout_marginTop="10dp"
                 android:paddingBottom="8dp"
-                android:paddingTop="8dp">
+                android:paddingTop="8dp"
+                android:visibility="gone"
+                tools:visibility="gone">
 
                 <ImageView
                     android:layout_width="16dp"
@@ -73,11 +78,45 @@
                     android:text="@string/manage_profile"/>
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/button_follow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_button_green_enabled"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <ImageView
+                    android:id="@+id/button_follow_image"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginRight="5dp"
+                    android:gravity="center_horizontal"
+                    android:src="@drawable/ic_new_action_plus" />
+
+                <TextView
+                    android:id="@+id/button_follow_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:lineSpacingExtra="5sp"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:text="@string/follow"/>
+            </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>
 
     <TextView
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
@@ -90,6 +129,7 @@
         android:layout_marginRight="16dp"/>
 
     <TextView
+        android:id="@+id/description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -108,7 +148,8 @@
         android:orientation="horizontal"
         android:weightSum="3"
         android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp">
+        android:layout_marginRight="16dp"
+        android:gravity="center">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -118,6 +159,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/following_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
@@ -139,9 +181,10 @@
         <View
             android:layout_width="0.5dp"
             android:layout_height="match_parent"
-            android:background="@color/grey_300" />
+            android:background="@color/grey_300"/>
 
         <LinearLayout
+            android:id="@+id/followers_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -149,6 +192,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/followers_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
@@ -168,6 +212,7 @@
         </LinearLayout>
 
         <View
+            android:id="@+id/followers_separator"
             android:layout_width="0.5dp"
             android:layout_height="match_parent"
             android:background="@color/grey_300" />
@@ -180,6 +225,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/favorite_shop_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
