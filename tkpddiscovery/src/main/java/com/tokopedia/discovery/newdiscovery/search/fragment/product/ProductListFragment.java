@@ -20,6 +20,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
@@ -725,10 +726,17 @@ public class ProductListFragment extends SearchSectionFragment
             );
             startActivityForResult(intent, getFilterRequestCode());
             getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);*/
-            ((SearchActivity) getActivity()).launchFilterBottomSheet(getFilters());
+            ((SearchActivity) getActivity()).launchFilterBottomSheet();
         } else {
             NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.error_filter_data_not_ready));
         }
+    }
+
+    @Override
+    public void renderDynamicFilter(DynamicFilterModel pojo) {
+        super.renderDynamicFilter(pojo);
+        ((SearchActivity) getActivity()).loadFilterItems(getFilters());
+        showBottomBarNavigation(false);
     }
 
     private void addPreFilteredCategory(String categoryId) {

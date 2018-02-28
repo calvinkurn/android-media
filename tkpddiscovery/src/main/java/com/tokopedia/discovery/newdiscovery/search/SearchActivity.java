@@ -230,13 +230,12 @@ public class SearchActivity extends DiscoveryActivity
         });
     }
 
-    public void launchFilterBottomSheet(List<Filter> filters) {
-        loadFilterItems(filters);
+    public void launchFilterBottomSheet() {
         hideBottomNavigation();
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
-    private void loadFilterItems(List<Filter> list) {
+    public void loadFilterItems(List<Filter> list) {
         removeFiltersWithEmptyOption(list);
         mergeSizeFilterOptionsWithSameValue(list);
         removeBrandFilterOptionsWithSameValue(list);

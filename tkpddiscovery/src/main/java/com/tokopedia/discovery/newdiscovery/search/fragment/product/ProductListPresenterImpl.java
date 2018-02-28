@@ -191,6 +191,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                     @Override
                     public void onStart() {
                         getView().setTopAdsEndlessListener();
+                        getView().showRefreshLayout();
                         getView().incrementStart();
                     }
 
