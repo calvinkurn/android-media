@@ -669,7 +669,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     private void goToCreatePromoTopads(String productId) {
         if(getActivity().getApplication() instanceof SellerModuleRouter) {
-            ((SellerModuleRouter) getActivity().getApplication()).goToCreateTopadsPromo(getActivity(),productId, ProductManageConstant.SOURCE_CREATE_TOPADS_MANAGE_PRODUCT);
+            ((SellerModuleRouter) getActivity().getApplication()).goToCreateTopadsPromo(getContext(),productId, ProductManageConstant.SOURCE_CREATE_TOPADS_MANAGE_PRODUCT);
         }
     }
 
