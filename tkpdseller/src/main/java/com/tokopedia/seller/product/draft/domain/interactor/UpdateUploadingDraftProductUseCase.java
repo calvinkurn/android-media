@@ -16,8 +16,9 @@ import rx.Observable;
 
 public class UpdateUploadingDraftProductUseCase extends UseCase<Boolean> {
 
-    private static final String DRAFT_PRODUCT_ID = "prd_id";
-    private static final String IS_UPLOADING = "is_uploading";
+    private static final String DRAFT_PRODUCT_ID = "DRAFT_PRODUCT_ID";
+    private static final String IS_UPLOADING = "IS_UPLOADING";
+
     private ProductDraftRepository productDraftRepository;
 
     @Inject

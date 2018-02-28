@@ -18,27 +18,27 @@ import com.tokopedia.seller.product.edit.view.fragment.ProductDraftAddFragment;
 
 public class ProductDraftAddActivity extends BaseProductAddEditActivity {
 
-    public static final String PRODUCT_DRAFT_ID = "PRODUCT_DRAFT_ID";
+    public static final String DRAFT_PRODUCT_ID = "DRAFT_PRODUCT_ID";
 
-    public static void start(Context context, Fragment fragment, long productDraftId) {
-        Intent intent = createInstance(context, productDraftId);
+    public static void start(Context context, Fragment fragment, long draftProductId) {
+        Intent intent = createInstance(context, draftProductId);
         fragment.startActivityForResult(intent, ProductAddActivity.PRODUCT_REQUEST_CODE);
     }
 
-    public static void start(Activity activity, long productDraftId) {
-        Intent intent = createInstance(activity, productDraftId);
+    public static void start(Activity activity, long draftProductId) {
+        Intent intent = createInstance(activity, draftProductId);
         activity.startActivityForResult(intent, ProductAddActivity.PRODUCT_REQUEST_CODE);
     }
 
-    public static Intent createInstance(Context context, long productDraftId){
+    public static Intent createInstance(Context context, long draftProductId){
         Intent intent = new Intent(context, ProductDraftAddActivity.class);
-        intent.putExtra(PRODUCT_DRAFT_ID, productDraftId);
+        intent.putExtra(DRAFT_PRODUCT_ID, draftProductId);
         return intent;
     }
 
     @Override
     protected void setupFragment(Bundle savedInstance) {
-        long draftProductId = getIntent().getLongExtra(PRODUCT_DRAFT_ID, Long.MIN_VALUE);
+        long draftProductId = getIntent().getLongExtra(DRAFT_PRODUCT_ID, Long.MIN_VALUE);
         if (draftProductId < 0){
             Toast.makeText(this,getString(R.string.product_draft_error_cannot_load_draft), Toast.LENGTH_LONG).show();
             finish();
@@ -51,8 +51,8 @@ public class ProductDraftAddActivity extends BaseProductAddEditActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        long productDraftId = getIntent().getLongExtra(PRODUCT_DRAFT_ID, Long.MIN_VALUE);
-        return ProductDraftAddFragment.createInstance(productDraftId);
+        long draftProductId = getIntent().getLongExtra(DRAFT_PRODUCT_ID, Long.MIN_VALUE);
+        return ProductDraftAddFragment.createInstance(draftProductId);
     }
 
     @Override

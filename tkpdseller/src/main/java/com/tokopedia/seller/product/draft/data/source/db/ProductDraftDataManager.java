@@ -24,10 +24,10 @@ public class ProductDraftDataManager {
     public ProductDraftDataManager() {
     }
 
-    public Observable<Long> saveDraft(String json, long draftId, boolean isUploading, String shopId){
+    public Observable<Long> saveDraft(String json, long draftProductId, boolean isUploading, String shopId){
         ProductDraftDataBase productDraftDataBase = new ProductDraftDataBase();
         productDraftDataBase.setData(json);
-        productDraftDataBase.setId(draftId);
+        productDraftDataBase.setId(draftProductId);
         productDraftDataBase.setUploading(isUploading);
         productDraftDataBase.setShopId(shopId);
         productDraftDataBase.setVersion(ProductDraftDataBase.CURRENT_VERSION);
@@ -96,10 +96,10 @@ public class ProductDraftDataManager {
         }
     }
 
-    public Observable<Long> updateDraft(long productDraftId, String draftData, boolean isUploading) {
+    public Observable<Long> updateDraft(long draftProductId, String draftData, boolean isUploading) {
         ProductDraftDataBase productDraftDataBase = new Select()
                 .from(ProductDraftDataBase.class)
-                .where(ProductDraftDataBase_Table.id.is(productDraftId))
+                .where(ProductDraftDataBase_Table.id.is(draftProductId))
                 .querySingle();
         if (productDraftDataBase != null){
             productDraftDataBase.setData(draftData);

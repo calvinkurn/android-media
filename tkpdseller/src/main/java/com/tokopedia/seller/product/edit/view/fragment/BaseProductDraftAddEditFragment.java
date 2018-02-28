@@ -20,7 +20,7 @@ public abstract class BaseProductDraftAddEditFragment<T extends ProductDraftPres
 
     protected static final String DRAFT_PRODUCT_ID = "DRAFT_PRODUCT_ID";
 
-    private long productDraftId;
+    private long draftProductId;
 
     @Override
     public boolean isNeedGetCategoryRecommendation() {
@@ -30,19 +30,19 @@ public abstract class BaseProductDraftAddEditFragment<T extends ProductDraftPres
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        productDraftId = getArguments().getLong(DRAFT_PRODUCT_ID);
+        draftProductId = getArguments().getLong(DRAFT_PRODUCT_ID);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
     public void fetchInputData() {
         showLoading();
-        presenter.fetchDraftData(productDraftId);
+        presenter.fetchDraftData(draftProductId);
     }
 
     @Override
     public long getProductDraftId() {
-        return productDraftId;
+        return draftProductId;
     }
 
     @Override
@@ -54,6 +54,6 @@ public abstract class BaseProductDraftAddEditFragment<T extends ProductDraftPres
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putLong(DRAFT_PRODUCT_ID, productDraftId);
+        outState.putLong(DRAFT_PRODUCT_ID, draftProductId);
     }
 }

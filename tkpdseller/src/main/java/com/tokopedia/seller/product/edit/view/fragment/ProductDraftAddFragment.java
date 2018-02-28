@@ -15,10 +15,10 @@ import com.tokopedia.seller.product.edit.view.presenter.ProductDraftPresenter;
 
 public class ProductDraftAddFragment extends BaseProductDraftAddEditFragment<ProductDraftPresenter> {
 
-    public static Fragment createInstance(long productDraftId) {
+    public static Fragment createInstance(long draftProductId) {
         ProductDraftAddFragment fragment = new ProductDraftAddFragment();
         Bundle args = new Bundle();
-        args.putLong(DRAFT_PRODUCT_ID, productDraftId);
+        args.putLong(DRAFT_PRODUCT_ID, draftProductId);
         fragment.setArguments(args);
         return fragment;
     }

@@ -7,23 +7,23 @@ package com.tokopedia.seller.product.edit.data.exception;
 public class UploadProductException extends RuntimeException {
 
     private final Throwable throwable;
-    private long productDraftId;
+    private long draftProductId;
 
     public Throwable getThrowable() {
         return throwable;
     }
 
     public long getProductDraftId() {
-        return productDraftId;
+        return draftProductId;
     }
 
-    public void setProductDraftId(long productDraftId) {
-        this.productDraftId = productDraftId;
+    public void setProductDraftId(long draftProductId) {
+        this.draftProductId = draftProductId;
     }
 
-    public UploadProductException(long productDraftId, Throwable throwable) {
+    public UploadProductException(long draftProductId, Throwable throwable) {
         super(throwable);
-        this.productDraftId = productDraftId;
+        this.draftProductId = draftProductId;
         this.throwable = throwable;
     }
 }

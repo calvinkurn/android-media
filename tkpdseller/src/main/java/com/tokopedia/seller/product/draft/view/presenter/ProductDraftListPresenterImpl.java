@@ -52,8 +52,8 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
     }
 
     @Override
-    public void deleteProductDraft(long draftId) {
-        deleteSingleDraftProductUseCase.execute(DeleteSingleDraftProductUseCase.createRequestParams(draftId),
+    public void deleteProductDraft(long draftProductId) {
+        deleteSingleDraftProductUseCase.execute(DeleteSingleDraftProductUseCase.createRequestParams(draftProductId),
                 getDeleteSubscriber());
     }
 

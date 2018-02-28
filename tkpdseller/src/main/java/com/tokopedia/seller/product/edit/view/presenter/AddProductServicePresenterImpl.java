@@ -26,9 +26,9 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
     }
 
     @Override
-    public void uploadProduct(final long productDraftId, final boolean isAdd) {
+    public void uploadProduct(final long draftProductId, final boolean isAdd) {
         checkViewAttached();
-        uploadProductUseCase.execute(UploadProductUseCase.generateUploadProductParam(productDraftId), new Subscriber<AddProductDomainModel>() {
+        uploadProductUseCase.execute(UploadProductUseCase.generateUploadProductParam(draftProductId), new Subscriber<AddProductDomainModel>() {
             @Override
             public void onCompleted() {
 
@@ -44,10 +44,10 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
                     e = ((UploadProductException) uploadThrowable).getThrowable();
                 }
                 if (!(e instanceof DraftNotFoundException)) {
-                    updateDraftUploadingStatus(productDraftId);
+                    updateDraftUploadingStatus(draftProductId);
                 }
                 getView().onFailedAddProduct();
-                getView().notificationFailed(e, productDraftId, isAdd ? ProductStatus.ADD : ProductStatus.EDIT);
+                getView().notificationFailed(e, draftProductId, isAdd ? ProductStatus.ADD : ProductStatus.EDIT);
                 getView().sendFailedBroadcast(e);
             }
 
@@ -55,14 +55,14 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
             public void onNext(AddProductDomainModel addProductDomainModel) {
                 checkViewAttached();
                 getView().onSuccessAddProduct();
-                getView().notificationComplete(productDraftId);
+                getView().notificationComplete(draftProductId);
                 getView().sendSuccessBroadcast(addProductDomainModel);
             }
         });
     }
 
-    private void updateDraftUploadingStatus(final long productDraftId) {
-        updateUploadingDraftProductUseCase.execute(UpdateUploadingDraftProductUseCase.createRequestParams(String.valueOf(productDraftId), false), new Subscriber<Boolean>() {
+    private void updateDraftUploadingStatus(final long draftProductId) {
+        updateUploadingDraftProductUseCase.execute(UpdateUploadingDraftProductUseCase.createRequestParams(String.valueOf(draftProductId), false), new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
                 // no op
@@ -81,14 +81,14 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
     }
 
     @Override
-    public void createNotification(long productDraftId, String productName) {
+    public void createNotification(long draftProductId, String productName) {
         checkViewAttached();
-        getView().createNotification(productDraftId, productName);
+        getView().createNotification(draftProductId, productName);
     }
 
     @Override
-    public void notificationUpdate(long productDraftId) {
+    public void notificationUpdate(long draftProductId) {
         checkViewAttached();
-        getView().notificationUpdate(productDraftId);
+        getView().notificationUpdate(draftProductId);
     }
 }

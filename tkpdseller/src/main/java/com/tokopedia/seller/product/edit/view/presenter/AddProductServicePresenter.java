@@ -8,5 +8,5 @@ import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 
 public abstract class AddProductServicePresenter extends BaseDaggerPresenter<AddProductServiceListener>{
 
-    public abstract void uploadProduct(long productDraftId, boolean isAdd);
+    public abstract void uploadProduct(long draftProductId, boolean isAdd);
 }

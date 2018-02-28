@@ -24,7 +24,7 @@ public class DeleteSingleDraftProductUseCase extends UseCase<Boolean> {
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
-        return productDraftRepository.deleteDraft(requestParams.getLong(DRAFT_PRODUCT_ID, 0));
+        return productDraftRepository.deleteDraft(requestParams.getLong(DRAFT_PRODUCT_ID, Long.MIN_VALUE));
     }
 
     public static RequestParams createRequestParams(long draftProductId){

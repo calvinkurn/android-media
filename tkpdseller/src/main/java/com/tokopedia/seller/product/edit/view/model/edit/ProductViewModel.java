@@ -145,14 +145,14 @@ public class ProductViewModel implements ItemType, Parcelable {
     private boolean productNameEditable;
 
     @Expose
-    private long draftId;
+    private long draftProductId;
 
     public long getDraftId() {
-        return draftId;
+        return draftProductId;
     }
 
-    public void setDraftId(long draftId) {
-        this.draftId = draftId;
+    public void setDraftId(long draftProductId) {
+        this.draftProductId = draftProductId;
     }
 
     public String getProductId() {
@@ -471,7 +471,7 @@ public class ProductViewModel implements ItemType, Parcelable {
         dest.writeTypedList(this.productVideo);
         dest.writeParcelable(this.productVariant, flags);
         dest.writeByte(this.productNameEditable ? (byte) 1 : (byte) 0);
-        dest.writeLong(this.draftId);
+        dest.writeLong(this.draftProductId);
     }
 
     public ProductViewModel() {
@@ -510,7 +510,7 @@ public class ProductViewModel implements ItemType, Parcelable {
         this.productVideo = in.createTypedArrayList(ProductVideoViewModel.CREATOR);
         this.productVariant = in.readParcelable(ProductVariantViewModel.class.getClassLoader());
         this.productNameEditable = in.readByte() != 0;
-        this.draftId = in.readLong();
+        this.draftProductId = in.readLong();
     }
 
     public static final Creator<ProductViewModel> CREATOR = new Creator<ProductViewModel>() {
