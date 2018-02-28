@@ -9,6 +9,10 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseEmptyActivity;
@@ -28,16 +32,29 @@ import java.util.List;
  */
 
 public class TopProfileActivity extends BaseEmptyActivity implements HasComponent {
+    private static final String TITLE_PROFILE = "Info Akun";
+    private static final String TITLE_POST = "Post";
 
     private AppBarLayout appBarLayout;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private Toolbar toolbar;
-
-    private static final String TITLE_PROFILE = "Info Akun";
-    private static final String TITLE_POST = "Post";
-
     private Tabs tabLayout;
     private ViewPager viewPager;
+    private ImageView avatar;
+    private TextView name;
+    private LinearLayout buttonManageAccount;
+    private LinearLayout buttonFollow;
+    private ImageView buttonFollowImage;
+    private TextView buttonFollowText;
+    private TextView title;
+    private TextView description;
+    private LinearLayout followingLayout;
+    private TextView followingValue;
+    private LinearLayout followersLayout;
+    private TextView followersValue;
+    private View followersSeparator;
+    private LinearLayout favoriteShopLayout;
+    private TextView favoriteShopValue;
 
     public static Intent newInstance(Context context) {
         return new Intent(context, TopProfileActivity.class);
@@ -51,13 +68,37 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
         super.setupLayout(savedInstanceState);
+        initView();
+        setupToolbar();
+        setViewListener();
+        loadSection();
+    }
+
+    private void initView() {
         appBarLayout = findViewById(R.id.app_bar_layout);
         collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
         toolbar = findViewById(R.id.toolbar);
         tabLayout =findViewById(R.id.tab_profile);
         viewPager = findViewById(R.id.pager);
-        setupToolbar();
-        loadSection();
+        avatar = findViewById(R.id.avatar);
+        name = findViewById(R.id.name);
+        buttonManageAccount = findViewById(R.id.button_manage_account);
+        buttonFollow = findViewById(R.id.button_follow);
+        buttonFollowImage = findViewById(R.id.button_follow_image);
+        buttonFollowText = findViewById(R.id.button_follow_text);
+        title = findViewById(R.id.title);
+        description = findViewById(R.id.description);
+        followingLayout = findViewById(R.id.following_layout);
+        followingValue = findViewById(R.id.following_value);
+        followersLayout = findViewById(R.id.followers_layout);
+        followersValue = findViewById(R.id.followers_value);
+        followersSeparator = findViewById(R.id.followers_separator);
+        favoriteShopLayout = findViewById(R.id.favorite_shop_layout);
+        favoriteShopValue = findViewById(R.id.favorite_shop_value);
+    }
+
+    private void setViewListener() {
+
     }
 
     @Override
