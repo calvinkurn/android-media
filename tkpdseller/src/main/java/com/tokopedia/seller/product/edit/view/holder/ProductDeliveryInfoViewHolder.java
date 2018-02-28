@@ -112,7 +112,7 @@ public class ProductDeliveryInfoViewHolder extends ProductViewHolder {
         }
         setInsurance(model.isProductMustInsurance());
         setFreeReturn(model.isProductFreeReturn());
-        if (model.getProductPreorder().getPreorderProcessTime() > 0) {
+        if (model.getProductPreorder() != null && model.getProductPreorder().getPreorderProcessTime() > 0) {
             expandPreOrder(true);
             setPreOrderUnit((int)model.getProductPreorder().getPreorderTimeUnit());
             setPreOrderValue((int)model.getProductPreorder().getPreorderProcessTime());
