@@ -1,111 +1,17 @@
 apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'android-apt'
-apply plugin: 'com.jfrog.artifactory'
-apply plugin: 'maven-publish'
-
-def getArtifactVersionCode() {
-    return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
-}
-
-def getTkpdCore() {
-    return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.core : project(':tkpdcore');
-}
-
-def getTkpdDesign() {
-    return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.design : project(':tkpddesign');
-}
-
-def getTkpdUseCase() {
-    return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.usecase : project(':tkpdusecase');
-}
-
-publishing {
-    publications {
-        aar(MavenPublication) {
-            groupId 'com.tokopedia.reputation'
-            artifactId 'reputation'
-            version getArtifactVersionCode()
-            artifact("$buildDir/outputs/aar/tkpdreputation-release.aar")
-            pom.withXml {
-                def dependenciesNode = asNode().appendNode('dependencies')
-
-                configurations.compile.allDependencies.each {
-                    if (it.group != null && it.name != null) {
-                        def dependencyNode = dependenciesNode.appendNode('dependency')
-                        dependencyNode.appendNode('groupId', it.group)
-                        dependencyNode.appendNode('artifactId', it.name)
-                        dependencyNode.appendNode('version', it.version)
-                    }
-                }
-            }
-        }
-    }
-}
-
-artifactory {
-    contextUrl = rootProject.ext.artifactoryUrl
-    publish {
-        repository {
-            repoKey = 'libs-release-local'
-
-            username = artifactory_username
-            password = artifactory_password
-        }
-        defaults {
-            publications('aar')
-            publishArtifacts = true
-
-            properties = ['qa.level': 'basic', 'q.os': 'android', 'dev.team': 'core']
-            publishPom = true
-        }
-    }
-}
-
-android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion "26.0.0"
-
-    defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
-    }
-
-    configurations.all {
-        resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
-    }
-}
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-
-    compile getTkpdCore()
-    compile getTkpdDesign()
-    compile getTkpdUseCase()
+    compile project(rootProject.ext.features.core)
+    compile project(rootProject.ext.libraries.design)
+    compile project(rootProject.ext.features.useCase)
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testCompile rootProject.ext.testDependencies.mockitorCore
-    testCompile 'junit:junit:4.12'
+    testCompile rootProject.ext.testDependencies.junit
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
@@ -116,5 +22,4 @@ dependencies {
     provided rootProject.ext.miscDependencies.javaxAnnotation
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
-
 }
