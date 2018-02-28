@@ -51,7 +51,7 @@ import com.tokopedia.tkpdstream.chatroom.di.DaggerChatroomComponent;
 import com.tokopedia.tkpdstream.chatroom.domain.ConnectionManager;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.ChannelHandlerUseCase;
 import com.tokopedia.tkpdstream.chatroom.domain.usecase.LoginGroupChatUseCase;
-import com.tokopedia.tkpdstream.chatroom.view.ShareBottomDialog;
+import com.tokopedia.tkpdstream.chatroom.view.ShareLayout;
 import com.tokopedia.tkpdstream.chatroom.view.ShareData;
 import com.tokopedia.tkpdstream.chatroom.view.VoteSpaceItemDecoration;
 import com.tokopedia.tkpdstream.chatroom.view.activity.GroupChatActivity;
@@ -118,7 +118,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     private CloseableBottomSheetDialog channelInfoDialog;
 
     int newMessageCounter;
-    private ShareBottomDialog shareBottomDialog;
+    private ShareLayout shareLayout;
 
     private CallbackManager callbackManager;
 
@@ -247,14 +247,14 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                     .setType(ShareData.FEED_TYPE)
                     .build();
 
-            if (shareBottomDialog == null) {
-                shareBottomDialog = new ShareBottomDialog(
+            if (shareLayout == null) {
+                shareLayout = new ShareLayout(
                         GroupChatFragment.this,
                         callbackManager);
             }
-            shareBottomDialog.setShareModel(shareData);
+            shareLayout.setShareModel(shareData);
 
-            shareBottomDialog.show();
+            shareLayout.show();
             return true;
         } else {
             return super.onOptionsItemSelected(item);
