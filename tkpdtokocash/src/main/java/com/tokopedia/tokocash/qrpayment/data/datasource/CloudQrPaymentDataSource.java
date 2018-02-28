@@ -1,9 +1,7 @@
 package com.tokopedia.tokocash.qrpayment.data.datasource;
 
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.tokocash.apiservice.WalletService;
-import com.tokopedia.tokocash.qrpayment.data.entity.BalanceTokoCashEntity;
 import com.tokopedia.tokocash.qrpayment.data.entity.InfoQrEntity;
 import com.tokopedia.tokocash.qrpayment.data.entity.QrPaymentEntity;
 
@@ -45,17 +43,6 @@ public class CloudQrPaymentDataSource implements QrPaymentDataSource {
                     @Override
                     public Observable<QrPaymentEntity> call(Response<TkpdDigitalResponse> response) {
                         return Observable.just(response.body().convertDataObj(QrPaymentEntity.class));
-                    }
-                });
-    }
-
-    @Override
-    public Observable<BalanceTokoCashEntity> getBalanceTokoCash(HashMap<String, Object> mapParams) {
-        return walletService.getApi().getBalanceTokoCash(mapParams)
-                .flatMap(new Func1<Response<TkpdDigitalResponse>, Observable<BalanceTokoCashEntity>>() {
-                    @Override
-                    public Observable<BalanceTokoCashEntity> call(Response<TkpdDigitalResponse> response) {
-                        return Observable.just(response.body().convertDataObj(BalanceTokoCashEntity.class));
                     }
                 });
     }

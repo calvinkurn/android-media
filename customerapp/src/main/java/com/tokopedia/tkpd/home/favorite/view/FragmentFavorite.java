@@ -394,8 +394,5 @@ public class FragmentFavorite extends BaseDaggerFragment
     public void onLoginButtonClick() {
         Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getLoginIntent(getContext());
         startActivity(intent);
-
-        String label = String.format("%s %s", AppEventTracking.EventLabel.FAVORITE, AppEventTracking.EventLabel.TAB);
-        UnifyTracking.eventHomeTab(AppEventTracking.Action.LOGIN_NOW, label);
     }
 }

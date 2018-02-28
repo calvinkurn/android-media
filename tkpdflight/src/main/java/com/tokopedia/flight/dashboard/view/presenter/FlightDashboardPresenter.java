@@ -413,7 +413,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
             boolean isReturnDateValid = true;
             boolean isPassengerValid = true;
 
-            // transform trip extras
+            // transformEventDetailLabel trip extras
             String[] tempExtras = getView().getTripArguments().split(",");
             String[] extrasTripDeparture = tempExtras[INDEX_DEPARTURE_TRIP].split("_");
             String[] departureTripDate = extrasTripDeparture[INDEX_DATE_TRIP].split("-");
@@ -460,7 +460,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                 }
             }
 
-            // transform passenger count
+            // transformEventDetailLabel passenger count
             if (Integer.parseInt(getView().getChildPassengerArguments()) > Integer.parseInt(getView().getAdultPassengerArguments()) || Integer.parseInt(getView().getInfantPassengerArguments()) > Integer.parseInt(getView().getAdultPassengerArguments())) {
                 isPassengerValid = false;
                 getView().showApplinkErrorMessage(R.string.select_passenger_infant_greater_than_adult_error_message);
@@ -472,7 +472,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                 onFlightPassengerChange(flightPassengerViewModel);
             }
 
-            // transform class
+            // transformEventDetailLabel class
             int classId = Integer.parseInt(getView().getClassArguments());
 
             final boolean finalIsDepartureDateValid = isDepartureDateValid;
@@ -591,4 +591,8 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         return viewModel;
     }
 
+    @Override
+    public void actionOnPromoScrolled(int position, BannerDetail bannerData) {
+        flightAnalytics.eventPromoImpression(position, bannerData);
+    }
 }

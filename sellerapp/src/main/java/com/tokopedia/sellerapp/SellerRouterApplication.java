@@ -948,6 +948,19 @@ public abstract class SellerRouterApplication extends MainApplication
         UnifyTracking.sendGTMEvent(new EventTracking(event, category, action, label).getEvent());
     }
 
+    /**
+     * Temporary Solution to send custom dimension for shop
+     * should not pass the param, after tkpd common com in
+     */
+    @Override
+    public void sendEventTrackingWithShopInfo(String event, String category, String action, String label,
+                                              String shopId, boolean isGoldMerchant, boolean isOfficialStore) {
+        UnifyTracking.sendGTMEvent(new EventTracking(event, category, action, label)
+                                            .setUserId()
+                                            .setShopId(shopId)
+                                            .setShopType(isGoldMerchant, isOfficialStore).getEvent());
+    }
+
     @Override
     public BroadcastReceiver getBroadcastReceiverTokocashPending() {
         return new TokocashPendingDataBroadcastReceiver();

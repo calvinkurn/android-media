@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.neenbedankt.android-apt'
-apply from: '../buildconfig/module.gradle'
-
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apt {
     arguments {
         targetModuleName 'TkpdCacheApi'
@@ -9,7 +8,6 @@ apt {
 }
 
 dependencies {
-
     compile project(rootProject.ext.features.useCase)
 
     compile rootProject.ext.networkDependencies.retrofit
@@ -18,7 +16,7 @@ dependencies {
     compile rootProject.ext.miscDependencies.rxJava
     compile rootProject.ext.testDependencies.androidAnnotation
 
-    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
+    apt rootProject.ext.dbDependencies.dbFlowProcessor
     compile rootProject.ext.dbDependencies.dbFlowCore
     compile rootProject.ext.dbDependencies.dbFlow
 
