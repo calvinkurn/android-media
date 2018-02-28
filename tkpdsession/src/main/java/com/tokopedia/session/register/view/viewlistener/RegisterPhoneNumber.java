@@ -16,6 +16,8 @@ public interface RegisterPhoneNumber {
 
         void goToVerifyAccountPage(String phoneNumber);
 
+        void showConfirmationPhoneNumber(String phoneNumber);
+
         void goToNoTokocashAccountPage();
 
         void dismissLoading();

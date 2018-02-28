@@ -37,7 +37,7 @@ public class CheckMsisdnPhoneNumberUseCase extends UseCase<CheckMsisdnDomain> {
         return checkMsisdnSource.changePhoneNumber(context, requestParams.getParameters());
     }
 
-    private static RequestParams getParams(String phoneNumber) {
+    public static RequestParams getParams(String phoneNumber) {
         RequestParams params = RequestParams.create();
         params.putString(PARAMS_PHONE_NUMBER, phoneNumber);
         return params;

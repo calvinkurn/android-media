@@ -206,6 +206,26 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void showConfirmationPhoneNumber(String phoneNumber) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(String.valueOf(phoneNumber));
+        builder.setMessage(getResources().getString(R.string.phone_number_not_registered));
+        builder.setPositiveButton(getResources().getString(R.string.login), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                //go to login
+            }
+        });
+        builder.setNegativeButton(getResources().getString(R.string.change), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_VERIFY_PHONE
                 && resultCode == Activity.RESULT_OK) {

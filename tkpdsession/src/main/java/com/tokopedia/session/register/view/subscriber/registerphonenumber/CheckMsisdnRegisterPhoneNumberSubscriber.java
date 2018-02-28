@@ -1,7 +1,7 @@
 package com.tokopedia.session.register.view.subscriber.registerphonenumber;
 
 import com.tokopedia.network.ErrorHandler;
-import com.tokopedia.session.login.loginphonenumber.view.viewmodel.CheckMsisdnTokoCashViewModel;
+import com.tokopedia.session.register.domain.model.CheckMsisdnDomain;
 import com.tokopedia.session.register.view.viewlistener.RegisterPhoneNumber;
 
 import rx.Subscriber;
@@ -10,11 +10,11 @@ import rx.Subscriber;
  * @author by yfsx on 26/2/18.
  */
 
-public class CheckMsisdnTokoCashSubscriber extends Subscriber<CheckMsisdnTokoCashViewModel> {
+public class CheckMsisdnRegisterPhoneNumberSubscriber extends Subscriber<CheckMsisdnDomain> {
     private final RegisterPhoneNumber.View view;
     private final String phoneNumber;
 
-    public CheckMsisdnTokoCashSubscriber(RegisterPhoneNumber.View view, String phoneNumber) {
+    public CheckMsisdnRegisterPhoneNumberSubscriber(RegisterPhoneNumber.View view, String phoneNumber) {
         this.view = view;
         this.phoneNumber = phoneNumber;
     }
@@ -32,12 +32,12 @@ public class CheckMsisdnTokoCashSubscriber extends Subscriber<CheckMsisdnTokoCas
     }
 
     @Override
-    public void onNext(CheckMsisdnTokoCashViewModel checkMsisdnTokoCashViewModel) {
+    public void onNext(CheckMsisdnDomain model) {
         view.dismissLoading();
-        if (!checkMsisdnTokoCashViewModel.isTokopediaAccountExist()) {
+        if (!model.isExist()) {
             view.goToVerifyAccountPage(phoneNumber);
         } else {
-            view.showAlreadyRegisteredDialog();
+            view.showConfirmationPhoneNumber(phoneNumber);
         }
     }
 }

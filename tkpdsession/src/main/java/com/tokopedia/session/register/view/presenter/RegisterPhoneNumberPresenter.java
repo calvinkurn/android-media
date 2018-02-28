@@ -4,8 +4,8 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.session.R;
-import com.tokopedia.session.login.loginphonenumber.domain.interactor.CheckMsisdnTokoCashUseCase;
-import com.tokopedia.session.register.view.subscriber.registerphonenumber.CheckMsisdnTokoCashSubscriber;
+import com.tokopedia.session.register.domain.interactor.registerphonenumber.CheckMsisdnPhoneNumberUseCase;
+import com.tokopedia.session.register.view.subscriber.registerphonenumber.CheckMsisdnRegisterPhoneNumberSubscriber;
 import com.tokopedia.session.register.view.viewlistener.RegisterPhoneNumber;
 
 import javax.inject.Inject;
@@ -16,11 +16,11 @@ import javax.inject.Inject;
 
 public class RegisterPhoneNumberPresenter extends BaseDaggerPresenter<RegisterPhoneNumber.View>
         implements RegisterPhoneNumber.Presenter {
-    private final CheckMsisdnTokoCashUseCase checkMsisdnTokoCashUseCase;
+    private final CheckMsisdnPhoneNumberUseCase checkMsisdnPhoneNumberUseCase;
 
     @Inject
-    public RegisterPhoneNumberPresenter(CheckMsisdnTokoCashUseCase checkMsisdnTokoCashUseCase) {
-        this.checkMsisdnTokoCashUseCase = checkMsisdnTokoCashUseCase;
+    public RegisterPhoneNumberPresenter(CheckMsisdnPhoneNumberUseCase checkMsisdnPhoneNumberUseCase) {
+        this.checkMsisdnPhoneNumberUseCase = checkMsisdnPhoneNumberUseCase;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class RegisterPhoneNumberPresenter extends BaseDaggerPresenter<RegisterPh
     @Override
     public void detachView() {
         super.detachView();
-        checkMsisdnTokoCashUseCase.unsubscribe();
+        checkMsisdnPhoneNumberUseCase.unsubscribe();
     }
 
 
@@ -39,8 +39,8 @@ public class RegisterPhoneNumberPresenter extends BaseDaggerPresenter<RegisterPh
     public void registerWithPhoneNumber(String phoneNumber) {
         if (isValid(phoneNumber)) {
             getView().showLoading();
-            checkMsisdnTokoCashUseCase.execute(CheckMsisdnTokoCashUseCase.getParam(phoneNumber),
-                    new CheckMsisdnTokoCashSubscriber(getView(), phoneNumber));
+            checkMsisdnPhoneNumberUseCase.execute(CheckMsisdnPhoneNumberUseCase.getParams(phoneNumber),
+                    new CheckMsisdnRegisterPhoneNumberSubscriber(getView(), phoneNumber));
         }
     }
 
