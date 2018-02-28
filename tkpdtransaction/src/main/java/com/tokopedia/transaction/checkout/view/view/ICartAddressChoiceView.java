@@ -11,6 +11,6 @@ import java.util.List;
 
 public interface ICartAddressChoiceView extends CustomerView {
 
-    void renderRecipientData(List<RecipientAddressModel>  recipientAddressModels);
+    void renderRecipientData(List<RecipientAddressModel> recipientAddressModels);
 
 }

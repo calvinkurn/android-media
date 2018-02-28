@@ -88,7 +88,7 @@ public class ShipmentAddressListAdapter
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!recipientAddressModel.isSelected()) {
+                if (!recipientAddressModel.isSelected()) {
                     for (RecipientAddressModel viewModel : mAddressModelList) {
                         if (viewModel.getId().equals(recipientAddressModel.getId())) {
                             if (mAddressModelList.size() > position && position >= 0) {

@@ -31,6 +31,7 @@ import com.tokopedia.transaction.checkout.view.presenter.ICartAddressChoicePrese
 import com.tokopedia.transaction.checkout.view.view.ICartAddressChoiceView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -61,6 +62,12 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     RecyclerView rvAddress;
 
     private ICartAddressChoiceActivityListener cartAddressChoiceListener;
+
+    @Inject
+    CartAddressChoicePresenter mCartAddressChoicePresenter;
+
+    @Inject
+    ShipmentAddressListAdapter mShipmentAddressListAdapter;
 
     public static CartAddressChoiceFragment newInstance() {
         return new CartAddressChoiceFragment();
@@ -185,14 +192,15 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     @OnClick(R2.id.bt_send_to_current_address)
     void onSendToCurrentAddress() {
         Intent intent = new Intent();
-        intent.putExtra(INTENT_EXTRA_SELECTED_RECIPIENT_ADDRESS, presenter.getSelectedRecipientAddress());
+        intent.putExtra(INTENT_EXTRA_SELECTED_RECIPIENT_ADDRESS,
+                mCartAddressChoicePresenter.getSelectedRecipientAddress());
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
 
     @Override
     public void onAddressContainerClicked(RecipientAddressModel model) {
-        presenter.setSelectedRecipientAddress(model);
+        mCartAddressChoicePresenter.setSelectedRecipientAddress(model);
     }
 
     @Override

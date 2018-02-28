@@ -109,8 +109,7 @@ public class NonPaginatedPeopleAddressRepositoryImpl implements PeopleAddressRep
                     public List<RecipientAddressModel> call(List<AddressModel> addressModels) {
                         return mAddressModelMapper.transform(addressModels);
                     }
-                })
-                .take(2);
+                });
     }
     
 }

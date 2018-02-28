@@ -26,6 +26,10 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
 
     private static final String TAG = CartAddressChoicePresenter.class.getSimpleName();
 
+    private static final int DEFAULT_ORDER = 1;
+    private static final String DEFAULT_QUERY = "";
+    private static final int DEFAULT_PAGE = 1;
+
     private GetDefaultAddressUseCase mGetDefaultAddressUseCase;
     private RecipientAddressModel mSelectedRecipientAddress;
 
@@ -47,7 +51,7 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
     @Override
     public void getAddressShortedList(Context context) {
         mGetDefaultAddressUseCase.execute(
-                PeopleAddressAuthUtil.getRequestParams(context, 1, "", 1),
+                PeopleAddressAuthUtil.getRequestParams(context, DEFAULT_ORDER, DEFAULT_QUERY, DEFAULT_PAGE),
                 new Subscriber<List<RecipientAddressModel>>() {
                     @Override
                     public void onCompleted() {
@@ -62,9 +66,8 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
                     @Override
                     public void onNext(List<RecipientAddressModel> shipmentAddressModels) {
                         if (!shipmentAddressModels.isEmpty()) {
-                            shipmentAddressModels.get(0).setSelected(true);
-                            mSelectedRecipientAddress = shipmentAddressModels.get(0);
-                            getView().renderRecipientData(shipmentAddressModels);
+                            mSelectedRecipientAddress = selectedAddress(shipmentAddressModels);
+                            getView().renderRecipientData(shortList(shipmentAddressModels));
                         }
 
                         Log.d(TAG, "Size: " + shipmentAddressModels.size());
@@ -80,6 +83,33 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
     @Override
     public RecipientAddressModel getSelectedRecipientAddress() {
         return mSelectedRecipientAddress;
+    }
+
+    /**
+     * Logic for selecting address from list
+     *
+     * @param recipientAddressModels
+     * @return
+     */
+    private RecipientAddressModel selectedAddress(List<RecipientAddressModel> recipientAddressModels) {
+        // TODO : add logic for determine index of selected address
+        int selectedIndex = 0;
+
+        RecipientAddressModel selectedAddress = recipientAddressModels.get(selectedIndex);
+        selectedAddress.setSelected(true);
+
+        return selectedAddress;
+    }
+
+    /**
+     * Logic for creating short listed address
+     *
+     * @param recipientAddressModels
+     * @return
+     */
+    private List<RecipientAddressModel> shortList(List<RecipientAddressModel> recipientAddressModels) {
+        // TODO : add logic for determine which address should be added to short list
+        return recipientAddressModels.subList(0,2);
     }
 
 }
