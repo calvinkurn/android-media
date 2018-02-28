@@ -74,7 +74,6 @@ public class CartSingleAddressData implements Parcelable {
         dest.writeParcelable(this.recipientAddressModel, flags);
         dest.writeTypedList(this.cartSellerItemModelList);
         dest.writeParcelable(this.cartPayableDetailModel, flags);
-        dest.writeParcelable(this.shipmentCartData, flags);
     }
 
     public CartSingleAddressData() {
@@ -86,7 +85,6 @@ public class CartSingleAddressData implements Parcelable {
         this.recipientAddressModel = in.readParcelable(RecipientAddressModel.class.getClassLoader());
         this.cartSellerItemModelList = in.createTypedArrayList(CartSellerItemModel.CREATOR);
         this.cartPayableDetailModel = in.readParcelable(CartPayableDetailModel.class.getClassLoader());
-        this.shipmentCartData = in.readParcelable(ShipmentCartData.class.getClassLoader());
     }
 
     public static final Creator<CartSingleAddressData> CREATOR = new Creator<CartSingleAddressData>() {

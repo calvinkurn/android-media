@@ -14,10 +14,7 @@ public class CartSellerItemModel implements Parcelable {
     private String shopName;
     private List<CartItemModel> cartItemModels;
 
-    // TODO : @Aghny Remove this courierItemData variable.
-    // TODO : Use CourierItemData from (ShipmentDetailData) selectedShipmentDetailData.selectedCourier
-    private CourierItemData courierItemData;
-
+    private double totalItemPrice;
     private double totalPrice;
     private double totalWeight;
     private int weightUnit;
@@ -50,12 +47,12 @@ public class CartSellerItemModel implements Parcelable {
         this.cartItemModels = cartItemModels;
     }
 
-    public CourierItemData getCourierItemData() {
-        return courierItemData;
+    public double getTotalItemPrice() {
+        return totalItemPrice;
     }
 
-    public void setCourierItemData(CourierItemData courierItemData) {
-        this.courierItemData = courierItemData;
+    public void setTotalItemPrice(double totalItemPrice) {
+        this.totalItemPrice = totalItemPrice;
     }
 
     public double getTotalPrice() {
@@ -116,9 +113,10 @@ public class CartSellerItemModel implements Parcelable {
         dest.writeString(this.shopId);
         dest.writeString(this.shopName);
         dest.writeTypedList(this.cartItemModels);
-        dest.writeParcelable(this.courierItemData, flags);
+        dest.writeDouble(this.totalItemPrice);
         dest.writeDouble(this.totalPrice);
         dest.writeDouble(this.totalWeight);
+        dest.writeInt(this.weightUnit);
         dest.writeInt(this.totalQuantity);
         dest.writeParcelable(this.shipmentCartData, flags);
         dest.writeParcelable(this.selectedShipmentDetailData, flags);
@@ -131,12 +129,13 @@ public class CartSellerItemModel implements Parcelable {
         this.shopId = in.readString();
         this.shopName = in.readString();
         this.cartItemModels = in.createTypedArrayList(CartItemModel.CREATOR);
-        this.courierItemData = in.readParcelable(CourierItemData.class.getClassLoader());
+        this.totalItemPrice = in.readDouble();
         this.totalPrice = in.readDouble();
         this.totalWeight = in.readDouble();
+        this.weightUnit = in.readInt();
         this.totalQuantity = in.readInt();
         this.shipmentCartData = in.readParcelable(ShipmentCartData.class.getClassLoader());
-        this.selectedShipmentDetailData = in.readParcelable(ShipmentCartData.class.getClassLoader());
+        this.selectedShipmentDetailData = in.readParcelable(ShipmentDetailData.class.getClassLoader());
     }
 
     public static final Creator<CartSellerItemModel> CREATOR = new Creator<CartSellerItemModel>() {
@@ -150,4 +149,5 @@ public class CartSellerItemModel implements Parcelable {
             return new CartSellerItemModel[size];
         }
     };
+
 }
