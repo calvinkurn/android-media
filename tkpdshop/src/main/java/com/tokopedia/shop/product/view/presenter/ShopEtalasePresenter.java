@@ -1,7 +1,5 @@
 package com.tokopedia.shop.product.view.presenter;
 
-import android.util.Log;
-
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.shop.common.util.PagingListUtils;
 import com.tokopedia.shop.product.data.source.cloud.model.EtalaseModel;
@@ -9,7 +7,6 @@ import com.tokopedia.shop.product.data.source.cloud.model.PagingListOther;
 import com.tokopedia.shop.product.domain.interactor.GetShopEtalaseUseCase;
 import com.tokopedia.shop.product.domain.model.ShopEtalaseRequestModel;
 import com.tokopedia.shop.product.view.listener.ShopEtalaseView;
-import com.tokopedia.shop.product.view.listener.ShopProductListView;
 import com.tokopedia.shop.product.view.model.ShopEtalaseViewModel;
 import com.tokopedia.usecase.RequestParams;
 
@@ -26,9 +23,8 @@ import rx.Subscriber;
 
 public class ShopEtalasePresenter extends BaseDaggerPresenter<ShopEtalaseView> {
 
-    private GetShopEtalaseUseCase getShopEtalaseUseCase;
-
     private static final String TAG = "ShopEtalasePresenter";
+    private GetShopEtalaseUseCase getShopEtalaseUseCase;
 
     @Inject
     public ShopEtalasePresenter(GetShopEtalaseUseCase getShopEtalaseUseCase) {
@@ -51,7 +47,9 @@ public class ShopEtalasePresenter extends BaseDaggerPresenter<ShopEtalaseView> {
 
             @Override
             public void onError(Throwable throwable) {
-
+                if (isViewAttached()) {
+                    getView().showGetListError(throwable);
+                }
             }
 
             @Override
