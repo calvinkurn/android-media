@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
+import com.tokopedia.tkpdstream.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.vote.view.adapter.viewholder.VoteBarViewHolder;
 import com.tokopedia.tkpdstream.vote.view.adapter.viewholder.VoteImageViewHolder;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
@@ -16,11 +17,14 @@ import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
 public class VoteTypeFactoryImpl extends BaseAdapterTypeFactory implements VoteTypeFactory{
 
+    GroupChatContract.View viewListener;
+
     public VoteTypeFactoryImpl(GroupChatFragment context) {
+        viewListener = context;
     }
 
     public int type(VoteViewModel voteViewModel) {
-        if(voteViewModel.getType() == VoteViewModel.IMAGE_TYPE) {
+        if(voteViewModel.getType().equals( VoteViewModel.IMAGE_TYPE)) {
             return VoteImageViewHolder.LAYOUT;
         }else{
             return VoteBarViewHolder.LAYOUT;
@@ -30,9 +34,9 @@ public class VoteTypeFactoryImpl extends BaseAdapterTypeFactory implements VoteT
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if(type == VoteBarViewHolder.LAYOUT){
-            return new VoteBarViewHolder(parent);
+            return new VoteBarViewHolder(parent, viewListener);
         }else if(type == VoteImageViewHolder.LAYOUT){
-            return new VoteImageViewHolder(parent);
+            return new VoteImageViewHolder(parent, viewListener);
         }else {
             return super.createViewHolder(parent, type);
         }

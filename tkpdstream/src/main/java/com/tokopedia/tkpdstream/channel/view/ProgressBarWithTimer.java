@@ -19,7 +19,7 @@ import com.tokopedia.tkpdstream.R;
  * Created by StevenFredian on 14/02/18.
  */
 
-public class ProgressBarWithTimer extends FrameLayout{
+public class ProgressBarWithTimer extends FrameLayout {
     private TextView text;
     private ProgressBar progressBar;
     private CountDownTimer countDownTimer;
@@ -27,7 +27,7 @@ public class ProgressBarWithTimer extends FrameLayout{
 
     private long startTime, endTime;
 
-    public static interface Listener{
+    public static interface Listener {
         void onFinishTick();
     }
 
@@ -90,20 +90,24 @@ public class ProgressBarWithTimer extends FrameLayout{
         progressBar = view.findViewById(R.id.progress_bar);
     }
 
-    public void setDate(final long startTime, final long endTime) {
+    public void setTimer(final long startTime, final long endTime) {
         this.startTime = startTime;
         this.endTime = endTime;
-        countDownTimer = new CountDownTimer(endTime-startTime,100) {
+        long now = System.currentTimeMillis() / 1000L;
+        countDownTimer = new CountDownTimer(1000 * (endTime - now), 100) {
             @Override
             public void onTick(long l) {
+                long now = System.currentTimeMillis() / 1000L;
                 text.setText(formatMilliSecondsToTime(l));
-                int percent = (int) (l*100/(endTime-startTime));
-                progressBar.setProgress(Math.abs(percent-100));
+//                int percent = (int) ((endTime-now)*100/(endTime-startTime));
+//                progressBar.setProgress(Math.abs(percent-100));
+                int percent = (int) ((now - startTime) * 100 / (endTime - startTime));
+                progressBar.setProgress(Math.abs(percent));
             }
 
             @Override
             public void onFinish() {
-                if(listener != null)
+                if (listener != null)
                     listener.onFinishTick();
             }
         };
@@ -119,14 +123,14 @@ public class ProgressBarWithTimer extends FrameLayout{
         requestLayout();
     }
 
-    public void start(){
-        if(countDownTimer != null){
+    public void start() {
+        if (countDownTimer != null) {
             countDownTimer.start();
         }
     }
 
-    public void cancel(){
-        if(countDownTimer != null){
+    public void cancel() {
+        if (countDownTimer != null) {
             countDownTimer.cancel();
         }
     }

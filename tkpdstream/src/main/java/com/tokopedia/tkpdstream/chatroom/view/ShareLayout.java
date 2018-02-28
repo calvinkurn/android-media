@@ -2,31 +2,15 @@ package com.tokopedia.tkpdstream.chatroom.view;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.support.design.widget.BottomSheetDialog;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
 
 import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.share.Sharer;
-import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.widget.ShareDialog;
-import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpdstream.R;
-import com.tokopedia.tkpdstream.chatroom.view.ShareItem;
 
 import java.util.ArrayList;
 
@@ -34,7 +18,7 @@ import java.util.ArrayList;
  * @author by StevenFredian on 2/26/18.
  */
 
-public class ShareBottomDialog {
+public class ShareLayout {
 
     private static final int SNACKBAR_DURATION = 3500;
     private static final int SHARE_GOOGLE_REQUEST_CODE = 123;
@@ -50,14 +34,14 @@ public class ShareBottomDialog {
     private ShareFeedAdapter adapter;
     private ArrayList<ShareItem> list;
 
-    public ShareBottomDialog(Activity activity,
-                             CallbackManager callbackManager) {
+    public ShareLayout(Activity activity,
+                       CallbackManager callbackManager) {
         this.activity = activity;
         this.fragment = null;
         this.fragmentV4 = null;
         this.dialog = new BottomSheetDialog(activity);
         this.callbackManager = callbackManager;
-        this.dialog.setContentView(R.layout.share_feed_dialog);
+        this.dialog.setContentView(R.layout.share_groupchat_dialog);
         appGrid = (RecyclerView) this.dialog.findViewById(R.id.grid);
         initVar(activity);
         initAdapter();
@@ -65,13 +49,13 @@ public class ShareBottomDialog {
         setShareList();
     }
 
-    public ShareBottomDialog(Fragment fragment, CallbackManager callbackManager) {
+    public ShareLayout(Fragment fragment, CallbackManager callbackManager) {
         this.fragment = fragment;
         this.fragmentV4 = null;
         this.activity = fragment.getActivity();
         this.dialog = new BottomSheetDialog(activity);
         this.callbackManager = callbackManager;
-        this.dialog.setContentView(R.layout.share_feed_dialog);
+        this.dialog.setContentView(R.layout.share_groupchat_dialog);
         appGrid = (RecyclerView) this.dialog.findViewById(R.id.grid);
         initVar(fragment.getActivity());
         initAdapter();
@@ -79,13 +63,13 @@ public class ShareBottomDialog {
         setShareList();
     }
 
-    public ShareBottomDialog(android.support.v4.app.Fragment fragment, CallbackManager callbackManager) {
+    public ShareLayout(android.support.v4.app.Fragment fragment, CallbackManager callbackManager) {
         this.fragment = null;
         this.fragmentV4 = fragment;
         this.activity = fragment.getActivity();
         this.dialog = new BottomSheetDialog(activity);
         this.callbackManager = callbackManager;
-        this.dialog.setContentView(R.layout.share_feed_dialog);
+        this.dialog.setContentView(R.layout.share_groupchat_dialog);
         appGrid = (RecyclerView) this.dialog.findViewById(R.id.grid);
         initVar(fragment.getActivity());
         initAdapter();

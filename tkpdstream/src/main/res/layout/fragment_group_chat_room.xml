@@ -17,7 +17,6 @@
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_height="100dp"
         tools:src="@color/cardview_dark_background"/>
 
     <android.support.v7.widget.Toolbar
@@ -31,7 +30,7 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:subtitleTextAppearance="@style/ToolbarSubtitleGroupChat"
         app:titleTextAppearance="@style/ToolbarGroupChat"
-        tools:layout_height="64dp"/>
+        tools:layout_height="64dp" />
 
     <View
         android:id="@+id/view"
@@ -66,12 +65,8 @@
         layout="@layout/layout_vote"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/chat_list"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:layout_constraintVertical_bias="1.0"
-        tools:visibility="visible"/>
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@+id/channel_banner" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/chat_list"
@@ -82,8 +77,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/channel_banner"
+        app:layout_constraintTop_toBottomOf="@+id/vote_bar"
         app:layout_constraintVertical_weight="1"
+        app:stackFromEnd="true"
+        app:reverseLayout="true"
+        tools:itemCount="1"
         tools:listitem="@layout/chat_view_holder"/>
 
     <EditText
@@ -106,6 +104,5 @@
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="dsajj\ndifjidfi\nidjfidj\nfdfidjidfijdfijd"/>
-
 
 </android.support.constraint.ConstraintLayout>

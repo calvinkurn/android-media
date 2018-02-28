@@ -5,44 +5,40 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import java.util.List;
 
 /**
- * Created by StevenFredian on 21/02/18.
+ * @author by StevenFredian on 21/02/18.
  */
 
 public class VoteInfoViewModel {
 
-    int voteType;
+    private final String pollId;
+    private String voteType;
+    private String voteStatus;
+    private String voteInfoString;
+    private String voteInfoUrl;
+    private boolean voted;
+    private String title;
+    private List<Visitable> listOption;
+    private long startTime, endTime;
+    private String participant;
 
-    String voteStatus;
-
-    String voteInfoString;
-
-    String voteInfoUrl;
-
-    boolean voted;
-
-    String title;
-
-    List<Visitable> list;
-
-    int participant;
-
-    public VoteInfoViewModel(String title, List<Visitable> list, int participant, int voteType, String voteStatus, boolean voted, String voteInfoString, String voteInfoUrl) {
+    public VoteInfoViewModel(String pollId, String title, List<Visitable> listOption, String participant,
+                             String voteType, String voteStatus, boolean voted,
+                             String voteInfoString, String voteInfoUrl, long startTime, long endTime) {
+        this.pollId= pollId;
         this.title = title;
-        this.list = list;
+        this.listOption = listOption;
         this.participant = participant;
         this.voteStatus = voteStatus;
         this.voteType = voteType;
         this.voted = voted;
         this.voteInfoString = voteInfoString;
         this.voteInfoUrl = voteInfoUrl;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
-    public int getVoteType() {
+    public String getVoteType() {
         return voteType;
-    }
-
-    public void setVoteType(int voteType) {
-        this.voteType = voteType;
     }
 
     public String getTitle() {
@@ -53,19 +49,15 @@ public class VoteInfoViewModel {
         this.title = title;
     }
 
-    public List<Visitable> getList() {
-        return list;
+    public List<Visitable> getListOption() {
+        return listOption;
     }
 
-    public void setList(List<Visitable> list) {
-        this.list = list;
-    }
-
-    public int getParticipant() {
+    public String getParticipant() {
         return participant;
     }
 
-    public void setParticipant(int participant) {
+    public void setParticipant(String participant) {
         this.participant = participant;
     }
 
@@ -73,31 +65,28 @@ public class VoteInfoViewModel {
         return voteStatus;
     }
 
-    public void setVoteStatus(String voteStatus) {
-        this.voteStatus = voteStatus;
-    }
-
     public boolean isVoted() {
         return voted;
-    }
-
-    public void setVoted(boolean voted) {
-        this.voted = voted;
     }
 
     public String getVoteInfoString() {
         return voteInfoString;
     }
 
-    public void setVoteInfoString(String voteInfoString) {
-        this.voteInfoString = voteInfoString;
-    }
-
     public String getVoteInfoUrl() {
         return voteInfoUrl;
     }
 
-    public void setVoteInfoUrl(String voteInfoUrl) {
-        this.voteInfoUrl = voteInfoUrl;
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public long getEndTime() {
+        return endTime;
+    }
+
+    public String getPollId() {
+        return pollId;
     }
 }
+

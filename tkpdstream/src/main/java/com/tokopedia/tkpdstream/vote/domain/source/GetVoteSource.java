@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import rx.Observable;
 
 /**
- * Created by StevenFredian on 21/02/18.
+ * @author by StevenFredian on 21/02/18.
  */
 
 public class GetVoteSource {
@@ -27,6 +27,6 @@ public class GetVoteSource {
     }
 
     public Observable<VoteInfoViewModel> getVoteInfoSource(HashMap<String, Object> parameters) {
-        return voteApi.getVoteInfo(parameters).map(getVoteMapper);
+        return null;
     }
 }

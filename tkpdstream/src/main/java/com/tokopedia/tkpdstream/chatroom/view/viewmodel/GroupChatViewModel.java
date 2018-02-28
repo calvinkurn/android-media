@@ -69,4 +69,13 @@ public class GroupChatViewModel implements Parcelable {
     public void setChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
         this.channelInfoViewModel = channelInfoViewModel;
     }
+
+    public String getPollId() {
+        if(channelInfoViewModel!= null
+                && channelInfoViewModel.getVoteInfoViewModel() != null) {
+            return this.channelInfoViewModel.getVoteInfoViewModel().getPollId();
+        }else{
+            return "";
+        }
+    }
 }

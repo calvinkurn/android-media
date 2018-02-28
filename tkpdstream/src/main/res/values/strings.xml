@@ -19,6 +19,9 @@
     <string name="pending">Sedang Mengirim…</string>
     <string name="groupchat_action_exit">telah keluar dari chat</string>
     <string name="lets_vote">"Ikutan Vote Yuk!"</string>
+    <string name="thanks_voted_title">"Terima Kasih Telah Memilih!"</string>
+    <string name="has_voted">"Anda Telah Memilih!"</string>
+    <string name="wait_voting_winner_info">"Tunggu pengumuman pemenang setelah vote berakhir."</string>
 
     <string name="share_gplus">Google+</string>
     <string name="share_fb">Facebook</string>
@@ -32,5 +35,6 @@
 
     <string name="title_poll_started">VOTE TELAH DIMULAI</string>
     <string name="title_poll_finished">VOTE TELAH BERAKHIR</string>
+    <string name="chat_as">Chat sebagai</string>
 
 </resources>

@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import rx.Observable;
 
 /**
- * Created by StevenFredian on 21/02/18.
+ * @author by StevenFredian on 21/02/18.
  */
 
 public class GetVoteUseCase extends UseCase<VoteInfoViewModel>{

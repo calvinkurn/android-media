@@ -49,9 +49,9 @@ public class ChannelMapper implements Func1<Response<DataResponse<ChannelListPoj
     private ChannelViewModel convertToViewModel(ChannelPojo channelPojo) {
         return new ChannelViewModel(
                 String.valueOf(channelPojo.getChannelId()),
-                channelPojo.getOperators().get(0).getNickname(),
+                channelPojo.getModeratorName(),
                 channelPojo.getCoverUrl(),
-                channelPojo.getOperators().get(0).getImage(),
+                channelPojo.getModeratorProfileUrl(),
                 channelPojo.getTitle(),
                 channelPojo.getDescription(),
                 channelPojo.getTotalParticipantsOnline()

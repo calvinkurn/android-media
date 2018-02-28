@@ -1,6 +1,6 @@
 package com.tokopedia.tkpdstream.chatroom.view.presenter;
 
-import android.content.Context;
+import android.util.Log;
 
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.PreviousMessageListQuery;
@@ -20,11 +20,10 @@ import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
 import com.tokopedia.tkpdstream.common.util.GroupChatErrorHandler;
-import com.tokopedia.tkpdstream.vote.domain.usecase.GetVoteUseCase;
+import com.tokopedia.tkpdstream.vote.domain.usecase.SendVoteUseCase;
 import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -46,7 +45,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     private final SendGroupChatMessageUseCase sendMessageUseCase;
     private final LogoutGroupChatUseCase logoutGroupChatUseCase;
     private final ChannelHandlerUseCase channelHandlerUseCase;
-    private final GetVoteUseCase getVoteUseCase;
+    private final SendVoteUseCase sendVoteUseCase;
 
     @Inject
     public GroupChatPresenter(LoginGroupChatUseCase loginGroupChatUseCase,
@@ -58,7 +57,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                               SendGroupChatMessageUseCase sendMessageUseCase,
                               LogoutGroupChatUseCase logoutGroupChatUseCase,
                               ChannelHandlerUseCase channelHandlerUseCase,
-                              GetVoteUseCase getVoteUseCase) {
+                              SendVoteUseCase sendVoteUseCase) {
         this.getChannelInfoUseCase = getChannelInfoUseCase;
         this.loginGroupChatUseCase = loginGroupChatUseCase;
         this.getGroupChatMessagesFirstTimeUseCase = getGroupChatMessagesFirstTimeUseCase;
@@ -67,8 +66,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
         this.sendMessageUseCase = sendMessageUseCase;
         this.logoutGroupChatUseCase = logoutGroupChatUseCase;
         this.channelHandlerUseCase = channelHandlerUseCase;
-        this.getVoteUseCase = getVoteUseCase;
-
+        this.sendVoteUseCase = sendVoteUseCase;
     }
 
     @Override
@@ -190,40 +188,31 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     }
 
     @Override
-    public void getVoteInfo(final Context context) {
-//        getVoteUseCase.execute(getVoteUseCase.createParams(), new Subscriber<VoteInfoViewModel>() {
-//            @Override
-//            public void onCompleted() {
-//
-//            }
-//
-//            @Override
-//            public void onError(Throwable throwable) {
-//                GroupChatErrorHandler.getErrorMessage(context, throwable, true);
-//            }
-//
-//            @Override
-//            public void onNext(VoteInfoViewModel voteInfoViewModel) {
-//                getView().onSuccessGetVoteInfo(voteInfoViewModel);
-//            }
-//        });
+    public void sendVote(String pollId, boolean voted, final VoteViewModel element) {
+        if (voted) {
+            getView().showHasVoted();
+        } else {
+            sendVoteUseCase.execute(SendVoteUseCase.createParams(pollId,
+                    element.getSelected()), new Subscriber<VoteInfoViewModel>() {
+                @Override
+                public void onCompleted() {
 
-        List<Visitable> list = new ArrayList<>();
-        String title = "Title";
-        String cr7 = "http://01a4b5.medialib.edu.glogster.com/media/55/5527aa424a7bc417e364f92537e4daa0f366ab6a2373dfa8616f8977f7b9c685/cristiano-ronaldo-portual-goal.jpg";
-        String messi = "https://static.independent.co.uk/s3fs-public/styles/article_small/public/thumbnails/image/2014/07/09/23/10-messi.jpg";
-        VoteViewModel channelViewModel = new VoteViewModel("Cristiano Ronaldo", cr7, 40, VoteViewModel.DEFAULT, VoteViewModel.IMAGE_TYPE);
-        list.add(channelViewModel);
-        channelViewModel = new VoteViewModel("Lionel Messi", messi, 60, VoteViewModel.DEFAULT, VoteViewModel.IMAGE_TYPE);
-        list.add(channelViewModel);
+                }
 
-//        channelViewModel = new VoteViewModel("Cristiano Ronaldo",40, VoteViewModel.DEFAULT);
-//        list.add(channelViewModel);
-//        channelViewModel = new VoteViewModel("Lionel Messi", 60, VoteViewModel.DEFAULT);
-//        list.add(channelViewModel);
+                @Override
+                public void onError(Throwable e) {
+                    Log.d("NISNIS", "ERROR VOTE");
+                    getView().onErrorVote(GroupChatErrorHandler.getErrorMessage(getView()
+                            .getContext(), e, true));
+                }
 
-        getView().onSuccessGetVoteInfo(new VoteInfoViewModel(title, list, 100, VoteViewModel.IMAGE_TYPE, "Vote",
-                true, "Info Pemenang", "www.google.com"));
+                @Override
+                public void onNext(VoteInfoViewModel voteInfoViewModel) {
+                    getView().successVote(element);
+                    getView().showSuccessVoted();
+                }
+            });
+        }
     }
 
     @Override

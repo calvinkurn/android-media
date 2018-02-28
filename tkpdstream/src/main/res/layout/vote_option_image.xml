@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:adjustViewBounds="true"
-        android:scaleType="centerInside"
+        android:scaleType="fitXY"
         android:id="@+id/imageView"
         tools:layout_width="140dp"
         tools:src="@drawable/ic_calendar_grey"/>
@@ -65,7 +65,7 @@
             android:layout_alignBottom="@id/text_view"
             android:indeterminate="false"
             android:progress="10"
-            android:progressDrawable="@drawable/vote_option_image_selected" />
+            android:progressDrawable="@drawable/vote_option_image_default" />
 
         <ImageView
             android:id="@+id/icon"

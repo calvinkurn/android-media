@@ -12,7 +12,7 @@ import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
-import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
+import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
 import java.util.List;
 
@@ -38,8 +38,6 @@ public interface GroupChatContract {
 
         void onErrorGetMessageFirstTime(String errorMessage);
 
-        void onSuccessGetVoteInfo(VoteInfoViewModel voteInfoViewModel);
-
         void onErrorGetChannelInfo(String errorMessage);
 
         void onSuccessGetChannelInfo(ChannelInfoViewModel channelInfoViewModel);
@@ -53,6 +51,16 @@ public interface GroupChatContract {
         void dismissReconnectingMessage();
 
         void onSuccessRefreshReconnect(List<Visitable> listChat, PreviousMessageListQuery previousMessageListQuery);
+
+        void onVoteOptionClicked(VoteViewModel element);
+
+        void showHasVoted();
+
+        void showSuccessVoted();
+
+        void successVote(VoteViewModel element);
+
+        void onErrorVote(String errorMessage);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -70,9 +78,9 @@ public interface GroupChatContract {
 
         void shareChatRoom(GroupChatViewModel viewModel);
 
-        void getVoteInfo(Context context);
-
         void getChannelInfo(String channelUuid);
+
+        void sendVote(String pollId, boolean voted, VoteViewModel element);
 
         void refreshDataAfterReconnect(OpenChannel mChannel);
     }

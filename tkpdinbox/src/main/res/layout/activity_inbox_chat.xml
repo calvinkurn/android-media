@@ -16,7 +16,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/indicator_item_layout"
+        tools:itemCount="2"
+        tools:orientation="horizontal"
+        tools:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        android:paddingTop="@dimen/margin_small"
+        android:paddingBottom="@dimen/new_margin_small"
+        android:elevation="3dp"/>
 
     <FrameLayout
         android:id="@+id/container"
