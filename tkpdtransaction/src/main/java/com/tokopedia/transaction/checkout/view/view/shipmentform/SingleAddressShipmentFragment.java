@@ -41,6 +41,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_SHIPMENT_DETAIL_DATA;
+import static com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_SINGLE_ADDRESS_POSITION;
 import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DATA_STORE;
 
 /**
@@ -256,16 +257,16 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     }
 
     @Override
-    public void onChooseShipment(CartSellerItemModel cartSellerItemModel) {
+    public void onChooseShipment(int position, CartSellerItemModel cartSellerItemModel) {
         ShipmentDetailData shipmentDetailData;
-        if (mSingleAddressShipmentAdapter.getShipmentDetailData() != null) {
-            shipmentDetailData = mSingleAddressShipmentAdapter.getShipmentDetailData();
+        if (cartSellerItemModel.getSelectedShipmentDetailData() != null) {
+            shipmentDetailData = cartSellerItemModel.getSelectedShipmentDetailData();
         } else {
             ShipmentRatesDataMapper shipmentRatesDataMapper = new ShipmentRatesDataMapper();
             shipmentDetailData = shipmentRatesDataMapper.getShipmentDetailData(cartSellerItemModel);
         }
-        startActivityForResult(ShipmentDetailActivity.createInstance(getActivity(), shipmentDetailData),
-                REQUEST_CODE_SHIPMENT_DETAIL);
+        startActivityForResult(ShipmentDetailActivity.createInstance(
+                getActivity(), shipmentDetailData, position), REQUEST_CODE_SHIPMENT_DETAIL);
     }
 
     @Override
@@ -336,8 +337,9 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                     break;
                 case REQUEST_CODE_SHIPMENT_DETAIL:
                     ShipmentDetailData shipmentDetailData = data.getParcelableExtra(EXTRA_SHIPMENT_DETAIL_DATA);
-                    mSingleAddressShipmentAdapter.setShipmentDetailData(shipmentDetailData);
-                    mSingleAddressShipmentAdapter.notifyDataSetChanged();
+                    int position = data.getIntExtra(EXTRA_SINGLE_ADDRESS_POSITION, 0);
+                    mSingleAddressShipmentAdapter.updateSelectedShipment(position, shipmentDetailData);
+                    mSingleAddressShipmentAdapter.notifyItemChanged(position);
                 default:
                     break;
             }

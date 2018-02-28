@@ -41,7 +41,8 @@ public class ShipmentRatesDataMapper {
         if (shipmentDetailData == null) {
             shipmentDetailData = new ShipmentDetailData();
         }
-        shipmentDetailData.setShipmentItemData(getShipmentItemDataList(shipmentDetailData, ratesResponse));
+        List<ShipmentItemData> shipmentItemDataList = getShipmentItemDataList(shipmentDetailData, ratesResponse);
+        shipmentDetailData.setShipmentItemData(shipmentItemDataList);
 
         return shipmentDetailData;
     }
@@ -63,7 +64,7 @@ public class ShipmentRatesDataMapper {
             }
 
             for (ShopShipment shopShipment : shipmentDetailData.getShipmentCartData().getShopShipments()) {
-                if (attribute.getServiceId() == shopShipment.getShipId()) {
+                if (attribute.getServiceId() == shopShipment.getShipProds().get(0).getShipGroupId()) {
                     shipmentItemData = getShipmentItemData(shopShipment, attribute);
                     break;
                 }
@@ -78,7 +79,10 @@ public class ShipmentRatesDataMapper {
                     }
                 }
             }
-            shipmentItemDataList.add(shipmentItemData);
+
+            if (shipmentItemData != null) {
+                shipmentItemDataList.add(shipmentItemData);
+            }
         }
         return shipmentItemDataList;
     }

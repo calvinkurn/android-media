@@ -30,7 +30,7 @@ public class ShipmentCartData implements Parcelable {
     private String ut;
     private int insurance;
     private int productInsurance;
-    private double orderValue;
+    private int orderValue;
     private int insurancePrice;
     private int additionalFee;
     private String categoryIds;
@@ -73,7 +73,6 @@ public class ShipmentCartData implements Parcelable {
         ut = in.readString();
         insurance = in.readInt();
         productInsurance = in.readInt();
-        orderValue = in.readDouble();
         orderValue = in.readInt();
         insurancePrice = in.readInt();
         additionalFee = in.readInt();
@@ -120,7 +119,7 @@ public class ShipmentCartData implements Parcelable {
         dest.writeString(ut);
         dest.writeInt(insurance);
         dest.writeInt(productInsurance);
-        dest.writeDouble(orderValue);
+        dest.writeInt(orderValue);
         dest.writeInt(insurancePrice);
         dest.writeInt(additionalFee);
         dest.writeString(categoryIds);
@@ -287,11 +286,11 @@ public class ShipmentCartData implements Parcelable {
         this.productInsurance = productInsurance;
     }
 
-    public double getOrderValue() {
+    public int getOrderValue() {
         return orderValue;
     }
 
-    public void setOrderValue(double orderValue) {
+    public void setOrderValue(int orderValue) {
         this.orderValue = orderValue;
     }
 

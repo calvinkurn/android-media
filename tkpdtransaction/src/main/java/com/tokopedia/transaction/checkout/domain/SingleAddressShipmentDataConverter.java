@@ -33,7 +33,9 @@ public class SingleAddressShipmentDataConverter extends ConverterData<CartShipme
         CartSingleAddressData> {
 
     private static final int FIRST_ELEMENT = 0;
-    private ShipmentCartDataBuilder shipmentCartDataBuilder;
+    private UserAddress userAddress;
+    private String keroToken;
+    private String keroUnixTime;
 
     @Inject
     public SingleAddressShipmentDataConverter() {
@@ -41,15 +43,13 @@ public class SingleAddressShipmentDataConverter extends ConverterData<CartShipme
 
     @Override
     public CartSingleAddressData convert(CartShipmentAddressFormData cartItemDataList) {
-        shipmentCartDataBuilder = new ShipmentCartDataBuilder();
+        keroToken = cartItemDataList.getKeroToken();
+        keroUnixTime = String.valueOf(cartItemDataList.getKeroUnixTime());
 
         GroupAddress groupAddress = cartItemDataList.getGroupAddress().get(FIRST_ELEMENT);
 
-        UserAddress userAddress = groupAddress.getUserAddress();
+        userAddress = groupAddress.getUserAddress();
         List<GroupShop> groupShops = groupAddress.getGroupShop();
-
-        shipmentCartDataBuilder.setCartShipmentAddressFormData(cartItemDataList)
-                .setUserAddress(userAddress);
 
         RecipientAddressModel recipientAddressModel = convertFromUserAddress(userAddress);
         List<CartSellerItemModel> cartSellerItemModels = convertFromGroupShopList(groupShops);
@@ -90,6 +90,7 @@ public class SingleAddressShipmentDataConverter extends ConverterData<CartShipme
             sellerItemModel.setTotalQuantity(sellerItemModel.getTotalQuantity() + cartItemModel.getQuantity());
         }
 
+        ShipmentCartDataBuilder shipmentCartDataBuilder = new ShipmentCartDataBuilder();
         sellerItemModel.setShipmentCartData(
                 shipmentCartDataBuilder.setShop(shop)
                         .setShopShipments(groupShop.getShopShipments())
@@ -242,8 +243,6 @@ public class SingleAddressShipmentDataConverter extends ConverterData<CartShipme
     }
 
     class ShipmentCartDataBuilder {
-        private CartShipmentAddressFormData cartShipmentAddressFormData;
-        private UserAddress userAddress;
         private Shop shop;
         private List<Product> products;
         private List<ShopShipment> shopShipments;
@@ -253,12 +252,6 @@ public class SingleAddressShipmentDataConverter extends ConverterData<CartShipme
 
         public ShipmentCartDataBuilder() {
             shipmentCartData = new ShipmentCartData();
-        }
-
-        public ShipmentCartDataBuilder setCartShipmentAddressFormData(
-                CartShipmentAddressFormData cartShipmentAddressFormData) {
-            this.cartShipmentAddressFormData = cartShipmentAddressFormData;
-            return this;
         }
 
         public ShipmentCartDataBuilder setShop(Shop shop) {
@@ -276,11 +269,6 @@ public class SingleAddressShipmentDataConverter extends ConverterData<CartShipme
             return this;
         }
 
-        public ShipmentCartDataBuilder setUserAddress(UserAddress userAddress) {
-            this.userAddress = userAddress;
-            return this;
-        }
-
         public ShipmentCartDataBuilder setOrderValue(Double orderValue) {
             this.orderValue = orderValue;
             return this;
@@ -292,13 +280,13 @@ public class SingleAddressShipmentDataConverter extends ConverterData<CartShipme
         }
 
         public ShipmentCartData build() {
-            if (cartShipmentAddressFormData != null && userAddress != null && shop != null && products != null &&
+            if (userAddress != null && shop != null && products != null &&
                     shopShipments != null && shipmentCartData != null && orderValue != null && totalWeight != null) {
-                shipmentCartData.setToken(cartShipmentAddressFormData.getKeroToken());
-                shipmentCartData.setUt(String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()));
+                shipmentCartData.setToken(keroToken);
+                shipmentCartData.setUt(keroUnixTime);
                 shipmentCartData.setDestinationAddress(userAddress.getAddress());
                 shipmentCartData.setDestinationDistrictId(String.valueOf(userAddress.getDistrictId()));
-                shipmentCartData.setDestinationLatitude(TextUtils.isEmpty(userAddress.getLatitude()) ?
+                shipmentCartData.setDestinationLatitude(!TextUtils.isEmpty(userAddress.getLatitude()) ?
                         Double.parseDouble(userAddress.getLatitude()) : null);
                 shipmentCartData.setDestinationLongitude(!TextUtils.isEmpty(userAddress.getLongitude()) ?
                         Double.parseDouble(userAddress.getLongitude()) : null);
@@ -312,9 +300,11 @@ public class SingleAddressShipmentDataConverter extends ConverterData<CartShipme
                 shipmentCartData.setCategoryIds(getCategoryIds(products));
                 shipmentCartData.setProductInsurance(isForceInsurance(products) ? 1 : 0);
                 shipmentCartData.setShopShipments(shopShipments);
-                shipmentCartData.setShippingNames(getShippingNames(shopShipments));
-                shipmentCartData.setShippingServices(getShippingServices(shopShipments));
-                shipmentCartData.setOrderValue(orderValue);
+                String shippingNames = getShippingNames(shopShipments);
+                shipmentCartData.setShippingNames(shippingNames);
+                String shippingServices = getShippingServices(shopShipments);
+                shipmentCartData.setShippingServices(shippingServices);
+                shipmentCartData.setOrderValue(orderValue.intValue());
                 shipmentCartData.setWeight(totalWeight);
                 shipmentCartData.setInsurance(1);
                 shipmentCartData.setDeliveryPriceTotal(0);

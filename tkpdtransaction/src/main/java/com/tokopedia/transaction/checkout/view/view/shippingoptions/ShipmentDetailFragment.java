@@ -2,6 +2,7 @@ package com.tokopedia.transaction.checkout.view.view.shippingoptions;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -175,6 +176,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
 
     private ShipmentChoiceBottomSheet shipmentChoiceBottomSheet;
     private NumberFormat currencyId;
+    private FragmentListener fragmentListener;
 
     @Inject
     CourierChoiceAdapter courierChoiceAdapter;
@@ -188,6 +190,22 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         bundle.putParcelable(ARG_SHIPMENT_DETAIL_DATA, shipmentDetailData);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    interface FragmentListener {
+        void onCourierSelected(ShipmentDetailData shipmentDetailData);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        fragmentListener = (FragmentListener) context;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        fragmentListener = null;
     }
 
     @Override
@@ -267,6 +285,12 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
     }
 
     @Override
@@ -644,10 +668,9 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         }
 
         if (!getLocalValidationResult()) {
-            Intent intentResult = new Intent();
-            intentResult.putExtra(EXTRA_SHIPMENT_DETAIL_DATA, presenter.getShipmentDetailData());
-            getActivity().setResult(Activity.RESULT_OK, intentResult);
-            getActivity().finish();
+            if (fragmentListener != null) {
+                fragmentListener.onCourierSelected(presenter.getShipmentDetailData());
+            }
         }
     }
 

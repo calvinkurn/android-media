@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.checkout.domain;
 
+import android.text.TextUtils;
+
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 import com.tokopedia.usecase.RequestParams;
@@ -15,6 +17,7 @@ import rx.Observable;
 
 public class GetRatesUseCase extends UseCase<ShipmentDetailData> {
 
+    private static final int KILOGRAM_DIVIDER = 1000;
     private RatesRepository repository;
     private ShipmentDetailData shipmentDetailData;
 
@@ -36,43 +39,51 @@ public class GetRatesUseCase extends UseCase<ShipmentDetailData> {
 
     public RequestParams getParams() {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(Params.SERVICE, "instant,sameday,nextday,regular,cargo");
-        requestParams.putString(Params.NAMES, "jne,tiki,wahana,first,sicepat,grab,jnt,rex,pos,gojek");
-        requestParams.putString(Params.ORIGIN, "2271|12820|-6.231850160010124,106.84733770787717");
-        requestParams.putString(Params.DESTINATION, "2271|12820|-6.231850160010124,106.84733770787717");
-        requestParams.putString(Params.WEIGHT, "1.0");
+        requestParams.putString(Params.SERVICE, shipmentDetailData.getShipmentCartData().getShippingServices());
+        requestParams.putString(Params.NAMES, shipmentDetailData.getShipmentCartData().getShippingNames());
+        double weightInKilograms = shipmentDetailData.getShipmentCartData().getWeight() / KILOGRAM_DIVIDER;
+        requestParams.putString(Params.WEIGHT, String.valueOf(weightInKilograms));
         requestParams.putString(Params.TYPE, "android");
         requestParams.putString(Params.FROM, "client");
-        requestParams.putString(Params.TOKEN, "Tokopedia+Kero:dOONiKY6MpKDxXh1PZXbFzZVCXo=");
-        requestParams.putString(Params.UT, "1518493640");
-        requestParams.putString(Params.INSURANCE, "1");
-        requestParams.putString(Params.PRODUCT_INSURANCE, "0");
-        requestParams.putString(Params.ORDER_VALUE, "1990000");
-        requestParams.putString(Params.CAT_ID, "35,20,60");
-
-/*
-        // Params from previous page
-        requestParams.putString(Params.SERVICE, shipmentDetailData.getShippingServices());
-        requestParams.putString(Params.NAMES, shipmentDetailData.getShippingNames());
-        requestParams.putString(Params.ORIGIN, shipmentDetailData.getOriginDistrictId() +
-                "|" + shipmentDetailData.getOriginPostalCode() +
-                "|" + shipmentDetailData.getOriginLatitude() +
-                "," + shipmentDetailData.getOriginLongitude());
-        requestParams.putString(Params.DESTINATION, shipmentDetailData.getDestinationDistrictId() +
-                "|" + shipmentDetailData.getDestinationPostalCode() +
-                "|" + shipmentDetailData.getDestinationLatitude() +
-                "," + shipmentDetailData.getDestinationLongitude());
-        requestParams.putString(Params.WEIGHT, String.valueOf(shipmentDetailData.getWeight()));
-        requestParams.putString(Params.TYPE, "android");
-        requestParams.putString(Params.FROM, "client");
-        requestParams.putString(Params.TOKEN, shipmentDetailData.getToken());
-        requestParams.putString(Params.UT, shipmentDetailData.getUt());
-        requestParams.putString(Params.INSURANCE, String.valueOf(shipmentDetailData.getInsurance()));
+        requestParams.putString(Params.TOKEN, shipmentDetailData.getShipmentCartData().getToken());
+        requestParams.putString(Params.UT, shipmentDetailData.getShipmentCartData().getUt());
+        requestParams.putString(Params.INSURANCE, String.valueOf(shipmentDetailData.getShipmentCartData().getInsurance()));
         requestParams.putString(Params.PRODUCT_INSURANCE,
-                String.valueOf(shipmentDetailData.getProductInsurance()));
-        requestParams.putString(Params.ORDER_VALUE, String.valueOf(shipmentDetailData.getOrderValue()));
-        requestParams.putString(Params.CAT_ID, shipmentDetailData.getCategoryIds());
-*/
+                String.valueOf(shipmentDetailData.getShipmentCartData().getProductInsurance()));
+        requestParams.putString(Params.ORDER_VALUE, String.valueOf(shipmentDetailData.getShipmentCartData().getOrderValue()));
+        requestParams.putString(Params.CAT_ID, shipmentDetailData.getShipmentCartData().getCategoryIds());
+
+        StringBuilder originBuilder = new StringBuilder();
+        originBuilder.append(shipmentDetailData.getShipmentCartData().getOriginDistrictId());
+        if (!TextUtils.isEmpty(shipmentDetailData.getShipmentCartData().getOriginPostalCode())) {
+            originBuilder.append("|")
+                    .append(shipmentDetailData.getShipmentCartData().getOriginPostalCode());
+        }
+        if (shipmentDetailData.getShipmentCartData().getOriginLatitude() != null) {
+            originBuilder.append("|")
+                    .append(shipmentDetailData.getShipmentCartData().getOriginLatitude());
+        }
+        if (shipmentDetailData.getShipmentCartData().getOriginLongitude() != null) {
+            originBuilder.append(",")
+                    .append(shipmentDetailData.getShipmentCartData().getOriginLongitude());
+        }
+        requestParams.putString(Params.ORIGIN, originBuilder.toString());
+
+        StringBuilder destinationBuilder = new StringBuilder();
+        destinationBuilder.append(shipmentDetailData.getShipmentCartData().getDestinationDistrictId());
+        if (!TextUtils.isEmpty(shipmentDetailData.getShipmentCartData().getDestinationPostalCode())) {
+            destinationBuilder.append("|")
+                    .append(shipmentDetailData.getShipmentCartData().getDestinationPostalCode());
+        }
+        if (shipmentDetailData.getShipmentCartData().getDestinationLatitude() != null) {
+            destinationBuilder.append("|")
+                    .append(shipmentDetailData.getShipmentCartData().getDestinationLatitude());
+        }
+        if (shipmentDetailData.getShipmentCartData().getDestinationLongitude() != null) {
+            destinationBuilder.append(",")
+                    .append(shipmentDetailData.getShipmentCartData().getDestinationLongitude());
+        }
+        requestParams.putString(Params.DESTINATION, destinationBuilder.toString());
 
         return requestParams;
     }
