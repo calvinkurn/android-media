@@ -1,5 +1,6 @@
 package com.tokopedia.profile.view.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -14,14 +15,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseEmptyActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.core.ManagePeople;
+import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.peoplefave.activity.PeopleFavoritedShop;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.tab.Tabs;
 import com.tokopedia.profile.view.adapter.ProfileTabPagerAdapter;
 import com.tokopedia.profile.view.fragment.TopProfileFragment;
+import com.tokopedia.profile.view.listener.TopProfileActivityListener;
 import com.tokopedia.profile.view.viewmodel.ProfileSectionItem;
+import com.tokopedia.profile.view.viewmodel.TopProfileViewModel;
 import com.tokopedia.session.R;
 
 import java.util.ArrayList;
@@ -31,9 +39,13 @@ import java.util.List;
  * @author by milhamj on 08/02/18.
  */
 
-public class TopProfileActivity extends BaseEmptyActivity implements HasComponent {
+public class TopProfileActivity extends BaseEmptyActivity
+        implements HasComponent, TopProfileActivityListener.View {
+
     private static final String TITLE_PROFILE = "Info Akun";
     private static final String TITLE_POST = "Post";
+    private static final String ZERO = "0";
+    private static final int MANAGE_PEOPLE_CODE = 13;
 
     private AppBarLayout appBarLayout;
     private CollapsingToolbarLayout collapsingToolbarLayout;
@@ -55,6 +67,8 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
     private View followersSeparator;
     private LinearLayout favoriteShopLayout;
     private TextView favoriteShopValue;
+
+    private TopProfileViewModel topProfileViewModel;
 
     public static Intent newInstance(Context context) {
         return new Intent(context, TopProfileActivity.class);
@@ -98,7 +112,35 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
     }
 
     private void setViewListener() {
+        followingLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO milhamj userId
+                startActivity(((TkpdCoreRouter) getApplicationContext())
+                        .getKolFollowingPageIntent(
+                                TopProfileActivity.this, 0)
+                );
+            }
+        });
 
+        favoriteShopLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO milhamj userId
+                startActivity(PeopleFavoritedShop.createIntent(
+                        TopProfileActivity.this,
+                        "")
+                );
+            }
+        });
+
+        buttonManageAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TopProfileActivity.this, ManagePeople.class);
+                startActivityForResult(intent, MANAGE_PEOPLE_CODE);
+            }
+        });
     }
 
     @Override
@@ -113,6 +155,73 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
     }
 
     @Override
+    public void populateData(TopProfileViewModel viewModel) {
+        topProfileViewModel = viewModel;
+
+        ImageHandler.loadImageCircle2(avatar.getContext(), avatar, topProfileViewModel.getAvatar());
+
+        name.setText(topProfileViewModel.getName());
+        followingValue.setText(topProfileViewModel.getFollowing());
+        setTextDisabledOrNot(followingValue, topProfileViewModel.getFollowing());
+        favoriteShopValue.setText(topProfileViewModel.getFavoritedShop());
+        setTextDisabledOrNot(favoriteShopValue, topProfileViewModel.getFavoritedShop());
+
+        if (topProfileViewModel.isKol()) {
+            name.setCompoundDrawables(
+                    MethodChecker.getDrawable(this, R.drawable.ic_kol_badge), null, null, null);
+            title.setVisibility(View.VISIBLE);
+            title.setText(topProfileViewModel.getTitle());
+            description.setVisibility(View.VISIBLE);
+            description.setText(topProfileViewModel.getBiodata());
+            followersValue.setText(topProfileViewModel.getFollowers());
+            setTextDisabledOrNot(followersValue, topProfileViewModel.getFollowers());
+
+            if (!topProfileViewModel.isUser()) {
+                buttonFollow.setVisibility(View.VISIBLE);
+
+                if (topProfileViewModel.isFollowed()) {
+                    enableFollowButton();
+                } else {
+                    disableFollowButton();
+                }
+            }
+        } else {
+            followersLayout.setVisibility(View.GONE);
+            followersSeparator.setVisibility(View.GONE);
+        }
+
+        if (topProfileViewModel.isUser()) {
+            buttonManageAccount.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void setTextDisabledOrNot(TextView textView, String value) {
+        textView.setTextColor(
+                MethodChecker.getColor(
+                        this,
+                        value.trim().equals(ZERO) ? R.color.disabled_text : R.color.black_70)
+        );
+    }
+
+    private void enableFollowButton() {
+        buttonFollow.setBackground(MethodChecker.getDrawable(this,
+                R.drawable.bg_button_green_enabled));
+        buttonFollowText.setText(R.string.follow);
+        buttonFollowText.setTextColor(MethodChecker.getColor(this,
+                R.color.white));
+        buttonFollowImage.setVisibility(View.VISIBLE);
+    }
+
+    private void disableFollowButton() {
+        buttonFollow.setBackground(MethodChecker.getDrawable(this,
+                R.drawable.bg_button_white_enabled_border));
+        buttonFollowText.setText(R.string.follow);
+        buttonFollowText.setTextColor(MethodChecker.getColor(this,
+                R.color.white));
+        buttonFollowImage.setVisibility(View.GONE);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -120,6 +229,20 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case MANAGE_PEOPLE_CODE:
+                if (resultCode == Activity.RESULT_OK) {
+                    //TODO milhamj refresh on activity result
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     private void setupToolbar() {
@@ -133,7 +256,9 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbarLayout.setTitle("Kucing");
+                    collapsingToolbarLayout.setTitle(
+                            topProfileViewModel != null ? topProfileViewModel.getName() : ""
+                    );
                     isShow = true;
                 } else if (isShow) {
                     collapsingToolbarLayout.setTitle("");

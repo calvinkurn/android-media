@@ -43,8 +43,8 @@
                 android:textColor="@color/black_70"
                 android:textSize="14sp"
                 android:textStyle="normal"
+                android:drawablePadding="4dp"
                 tools:drawableLeft="@drawable/ic_kol_badge"
-                tools:drawablePadding="4dp"
                 tools:text="Benny Alexandra" />
 
             <LinearLayout
@@ -125,6 +125,8 @@
         android:textColor="@color/black_54"
         android:textSize="12sp"
         tools:text="Footballer"
+        tools:visibility="visible"
+        android:visibility="gone"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"/>
 
@@ -138,6 +140,8 @@
         android:textColor="@color/black_54"
         android:textSize="12sp"
         tools:text="I am is an English former professional footballer. He played for Manchester United."
+        tools:visibility="visible"
+        android:visibility="gone"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"/>
 

@@ -5,9 +5,6 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.profile.view.customview.PartialUserDataView;
@@ -15,8 +12,6 @@ import com.tokopedia.profile.view.customview.PartialUserInfoView;
 import com.tokopedia.profile.view.customview.PartialUserShopView;
 import com.tokopedia.profile.view.viewmodel.TopProfileViewModel;
 import com.tokopedia.session.R;
-
-import static android.view.View.VISIBLE;
 
 /**
  * @author by milhamj on 08/02/18.
@@ -92,6 +87,6 @@ public class TopProfileFragment extends BaseDaggerFragment {
         topProfileViewModel.setShopLocation("Papua");
         topProfileViewModel.setShopLastOnline("23 Jan 1992");
 
-        topProfileViewModel.setIsUser(true);
+        topProfileViewModel.setUser(true);
     }
 }
