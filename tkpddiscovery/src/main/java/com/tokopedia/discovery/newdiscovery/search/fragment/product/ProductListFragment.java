@@ -591,7 +591,7 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
-    protected void reloadData() {
+    public void reloadData() {
         adapter.clearData();
         initTopAdsParams();
         topAdsRecyclerAdapter.setConfig(topAdsConfig);

@@ -36,6 +36,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListF
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListFragment;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchSectionItem;
+import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterAdapter;
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactory;
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactoryImpl;
@@ -66,7 +67,6 @@ public class SearchActivity extends DiscoveryActivity
 
     public static final String EXTRA_SELECTED_FILTERS = "EXTRA_SELECTED_FILTERS";
     public static final String EXTRA_FILTER_LIST = "EXTRA_FILTER_LIST";
-    public static final String EXTRA_SELECTED_FLAG_FILTER = "EXTRA_SELECTED_FLAG_FILTER";
 
     public static final String FILTER_CHECKED_STATE_PREF = "filter_checked_state";
     public static final String FILTER_TEXT_PREF = "filter_text";
@@ -193,14 +193,12 @@ public class SearchActivity extends DiscoveryActivity
 
     private void initFilterBottomSheet(Bundle savedInstanceState) {
         initRecyclerView();
-        //loadLastFilterState(savedInstanceState);
+        loadLastFilterState(savedInstanceState);
     }
 
     private void loadLastFilterState(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             recoverLastFilterState(savedInstanceState);
-        } else {
-            loadLastFilterStateFromPreference();
         }
     }
 
@@ -211,17 +209,6 @@ public class SearchActivity extends DiscoveryActivity
         selectedCategoryId = savedInstanceState.getString(FILTER_SELECTED_CATEGORY_ID_PREF);
         selectedCategoryName = savedInstanceState.getString(FILTER_SELECTED_CATEGORY_NAME_PREF);
         selectedCategoryRootId = savedInstanceState.getString(FILTER_SELECTED_CATEGORY_ROOT_ID_PREF);
-    }
-
-    private void loadLastFilterStateFromPreference() {
-        FilterFlagSelectedModel model = getIntent().getParcelableExtra(EXTRA_SELECTED_FLAG_FILTER);
-        if (model != null) {
-            savedCheckedState = model.getSavedCheckedState();
-            savedTextInput = model.getSavedTextInput();
-            selectedCategoryId = model.getCategoryId();
-            selectedCategoryName = model.getSelectedCategoryName();
-            selectedCategoryRootId = model.getSelectedCategoryRootId();
-        }
     }
 
     private void initRecyclerView() {
@@ -506,6 +493,7 @@ public class SearchActivity extends DiscoveryActivity
     @Override
     public void saveCheckedState(Option option, Boolean isChecked) {
         savedCheckedState.put(option.getUniqueId(), isChecked);
+        applyFilter();
     }
 
     @Override
@@ -632,5 +620,42 @@ public class SearchActivity extends DiscoveryActivity
     protected void onDestroy() {
         searchPresenter.detachView();
         super.onDestroy();
+    }
+
+    private void applyFilter() {
+        HashMap<String, String> selectedFilter = generateSelectedFilterMap();
+        productListFragment.setSelectedFilter(selectedFilter);
+        productListFragment.clearDataFilterSort();
+        productListFragment.reloadData();
+    }
+
+    private HashMap<String, String> generateSelectedFilterMap() {
+        HashMap<String, String> selectedFilterMap = new HashMap<>();
+
+        if (!TextUtils.isEmpty(selectedCategoryId)) {
+            selectedFilterMap.put(KEY_CATEGORY, selectedCategoryId);
+        }
+
+        selectedFilterMap.putAll(savedTextInput);
+
+        for (Map.Entry<String, Boolean> entry : savedCheckedState.entrySet()) {
+            if (Boolean.TRUE.equals(entry.getValue())) {
+                appendToMap(selectedFilterMap, entry.getKey());
+            }
+        }
+
+        return selectedFilterMap;
+    }
+
+    private void appendToMap(HashMap<String, String> selectedFilterMap, String uniqueId) {
+        String checkBoxKey = OptionHelper.parseKeyFromUniqueId(uniqueId);
+        String checkBoxValue = OptionHelper.parseValueFromUniqueId(uniqueId);
+        String mapValue = selectedFilterMap.get(checkBoxKey);
+        if (TextUtils.isEmpty(mapValue)) {
+            mapValue = checkBoxValue;
+        } else {
+            mapValue += "," + checkBoxValue;
+        }
+        selectedFilterMap.put(checkBoxKey, mapValue);
     }
 }
