@@ -49,8 +49,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-import com.tokopedia.tkpd.R2;
-
 /**
  * @author Kulomady on 1/20/17.
  */
@@ -386,11 +384,5 @@ public class FragmentFavorite extends BaseDaggerFragment
                 }
             }
         }
-    }
-
-    @OnClick(R2.id.login_button)
-    public void onLoginButtonClick() {
-        Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getLoginIntent(getContext());
-        startActivity(intent);
     }
 }

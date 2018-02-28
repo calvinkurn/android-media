@@ -18,8 +18,6 @@ import com.tokopedia.core.home.presenter.HotList;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.R2;
-
 import java.util.List;
 
 import butterknife.BindView;
