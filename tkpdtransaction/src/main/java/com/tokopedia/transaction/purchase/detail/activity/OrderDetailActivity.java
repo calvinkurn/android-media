@@ -765,8 +765,6 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onAcceptOrder(String orderId) {
         presenter.acceptOrder(this, orderId);
-        setResult(Activity.RESULT_OK);
-        finish();
     }
 
     @Override

@@ -67,7 +67,7 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
             if (homeData.getDynamicHomeChannel() != null
                     && homeData.getDynamicHomeChannel().getChannels() != null
                     && !homeData.getDynamicHomeChannel().getChannels().isEmpty()) {
-                int position = 0;
+                int position = 1;
                 for(DynamicHomeChannel.Channels channel : homeData.getDynamicHomeChannel().getChannels()) {
                     if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT)) {
                         HomePageTracking.eventEnhancedImpressionSprintSaleHomePage(

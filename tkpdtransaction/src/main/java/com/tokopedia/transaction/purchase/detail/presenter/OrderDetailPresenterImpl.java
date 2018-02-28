@@ -498,7 +498,6 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
             @Override
             public void onNext(String s) {
                 mainView.dismissProgressDialog();
-                mainView.showSnackbar(s);
                 mainView.dismissRejectOrderActionFragment();
                 //TODO put action to finish activity and refresh
             }

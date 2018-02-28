@@ -39,6 +39,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.anals.UserAttribute;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -372,6 +373,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 } else {
                     drawerHelper.openDrawer();
                 }
+                KeyboardHandler.hideSoftKeyboard(ParentIndexHome.this);
             }
         });
         toolbar.addView(view);
@@ -417,6 +419,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             public void onTabSelected(TabLayout.Tab tab) {
                 mViewPager.setCurrentItem(tab.getPosition());
                 sendGTMButtonEvent(tab.getPosition());
+                KeyboardHandler.hideSoftKeyboard(ParentIndexHome.this);
             }
 
             @Override
