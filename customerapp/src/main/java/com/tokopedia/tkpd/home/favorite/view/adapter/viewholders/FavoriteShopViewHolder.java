@@ -15,11 +15,7 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.R2;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.FavoriteShopViewModel;
-
-import butterknife.BindView;
-import butterknife.OnClick;
 
 /**
  * @author kulomady on 1/24/17.
@@ -31,20 +27,31 @@ public class FavoriteShopViewHolder extends AbstractViewHolder<FavoriteShopViewM
 
     private FavoriteShopViewModel favoriteShop;
     private Context context;
-    @BindView(R2.id.shop_avatar)
-    ImageView avatarImageView;
-    @BindView(R2.id.shop_name)
-    TextView nameTextView;
-    @BindView(R2.id.location)
-    TextView locationTextview;
-    @BindView(R2.id.fav_button)
-    ImageView favoriteImageView;
-    @BindView(R2.id.image_badge)
-    ImageView badgeIcon;
+    private ImageView avatarImageView;
+    private TextView nameTextView;
+    private TextView locationTextview;
+    private ImageView favoriteImageView;
+    private ImageView badgeIcon;
 
     public FavoriteShopViewHolder(View itemView) {
         super(itemView);
+        initView(itemView);
         context = itemView.getContext();
+    }
+
+    private void initView(View itemView) {
+        avatarImageView = itemView.findViewById(R.id.shop_avatar);
+        nameTextView = itemView.findViewById(R.id.shop_name);
+        locationTextview = itemView.findViewById(R.id.location);
+        favoriteImageView = itemView.findViewById(R.id.fav_button);
+        badgeIcon = itemView.findViewById(R.id.image_badge);
+        View shopLayout = itemView.findViewById(R.id.shop_layout);
+        shopLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onShopLayoutClicked();
+            }
+        });
     }
 
     @Override
@@ -70,7 +77,6 @@ public class FavoriteShopViewHolder extends AbstractViewHolder<FavoriteShopViewM
         }
     }
 
-    @OnClick(R2.id.shop_layout)
     void onShopLayoutClicked() {
         UnifyTracking.eventFavoriteShop();
         Intent intent = new Intent(context, ShopInfoActivity.class);

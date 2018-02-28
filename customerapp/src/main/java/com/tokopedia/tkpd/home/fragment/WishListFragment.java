@@ -50,12 +50,6 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
-import com.tokopedia.tkpd.R2;
-
 /**
  * Created by m.normansyah on 01/12/2015.
  */
@@ -64,7 +58,6 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         WishListProductAdapter.OnWishlistActionButtonClicked {
 
     public static final String FRAGMENT_TAG = "WishListFragment";
-    private Unbinder unbinder;
 
     public WishListFragment() {
     }
@@ -73,15 +66,10 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         return new WishListFragment();
     }
 
-    @BindView(R2.id.swipe_refresh_layout)
-    SwipeToRefresh swipeToRefresh;
-
-    @BindView(R2.id.recycler_view)
-    RecyclerView recyclerView;
-    @BindView(R2.id.progress_bar)
-    ProgressBar progressBar;
-    @BindView(R2.id.wishlist_search_edittext)
-    SearchView searchEditText;
+    private SwipeToRefresh swipeToRefresh;
+    private RecyclerView recyclerView;
+    private ProgressBar progressBar;
+    private SearchView searchEditText;
 
     GridLayoutManager layoutManager;
     WishListProductAdapter adapter;
@@ -149,13 +137,20 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_wishlist, container, false);
-        unbinder = ButterKnife.bind(this, parentView);
+        initView(parentView);
         wishList.subscribe();
         wishList.initAnalyticsHandler(getActivity());
         prepareView();
         setListener();
         loadWishlistData();
         return parentView;
+    }
+
+    private void initView(View view) {
+        swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
+        recyclerView = view.findViewById(R.id.recycler_view);
+        progressBar = view.findViewById(R.id.progress_bar);
+        searchEditText = view.findViewById(R.id.wishlist_search_edittext);
     }
 
     private void loadWishlistData() {
@@ -175,7 +170,6 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
         wishList.unSubscribe();
     }
 

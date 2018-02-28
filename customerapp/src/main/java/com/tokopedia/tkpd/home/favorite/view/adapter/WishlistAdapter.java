@@ -21,11 +21,6 @@ import com.tokopedia.tkpd.home.favorite.view.viewmodel.WishlistItem;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
-import com.tokopedia.tkpd.R2;
-
 /**
  * @author Kulomady on 1/27/17.
  */
@@ -94,22 +89,25 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.product_name)
         TextView productName;
-        @BindView(R2.id.product_price)
         TextView productPrice;
-        @BindView(R2.id.product_shop)
         TextView shopName;
-        @BindView(R2.id.product_image)
         ImageView productImage;
-        @BindView(R2.id.main_content)
         LinearLayout productLayout;
-        @BindView(R2.id.badges_container)
         LinearLayout badgesContainer;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            initView(itemView);
+        }
+
+        private void initView(View itemView) {
+            productName = itemView.findViewById(R.id.product_name);
+            productPrice = itemView.findViewById(R.id.product_price);
+            shopName = itemView.findViewById(R.id.product_shop);
+            productImage = itemView.findViewById(R.id.product_image);
+            productLayout = itemView.findViewById(R.id.main_content);
+            badgesContainer = itemView.findViewById(R.id.badges_container);
         }
 
         public Context getContext() {
