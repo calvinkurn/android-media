@@ -1,11 +1,13 @@
 package com.tokopedia.session.register.domain.interactor.registerphonenumber;
 
+import android.content.Context;
+
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.session.register.data.model.RegisterPhoneNumberModel;
-import com.tokopedia.session.register.data.repository.RegisterPhoneNumberRepository;
+import com.tokopedia.session.register.data.source.CloudRegisterPhoneNumberSource;
 
 import rx.Observable;
 
@@ -21,18 +23,21 @@ public class RegisterPhoneNumberUseCase extends UseCase<RegisterPhoneNumberModel
     private static final String PARAMS_OS_TYPE = "os_type";
     private static final int PARAMS_OS_TYPE_ANDROID = 1;
 
-    private final RegisterPhoneNumberRepository registerPhoneNumberRepository;
+    private Context context;
+    private final CloudRegisterPhoneNumberSource registerPhoneNumberSource;
 
     public RegisterPhoneNumberUseCase(ThreadExecutor threadExecutor,
                                       PostExecutionThread postExecutionThread,
-                                      RegisterPhoneNumberRepository registerPhoneNumberRepository) {
+                                      Context context,
+                                      CloudRegisterPhoneNumberSource registerPhoneNumberSource) {
         super(threadExecutor, postExecutionThread);
-        this.registerPhoneNumberRepository = registerPhoneNumberRepository;
+        this.context = context;
+        this.registerPhoneNumberSource = registerPhoneNumberSource;
     }
 
     @Override
     public Observable<RegisterPhoneNumberModel> createObservable(RequestParams requestParams) {
-        return registerPhoneNumberRepository.registerPhoneNumber(requestParams.getParameters());
+        return registerPhoneNumberSource.registerPhoneNumber(context, requestParams.getParameters());
     }
 
     public static RequestParams getRegisterPhoneNumberRequestParams(String phoneNumber) {

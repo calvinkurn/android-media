@@ -1,4 +1,4 @@
-package com.tokopedia.session.register.data.factory;
+package com.tokopedia.session.register.data.mapper;
 
 import android.text.TextUtils;
 

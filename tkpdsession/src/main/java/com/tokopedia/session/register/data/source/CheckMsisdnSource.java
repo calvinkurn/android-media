@@ -5,7 +5,7 @@ import android.content.Context;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.network.service.AccountsService;
-import com.tokopedia.session.register.data.factory.CheckMsisdnMapper;
+import com.tokopedia.session.register.data.mapper.CheckMsisdnMapper;
 import com.tokopedia.session.register.domain.model.CheckMsisdnDomain;
 
 import rx.Observable;

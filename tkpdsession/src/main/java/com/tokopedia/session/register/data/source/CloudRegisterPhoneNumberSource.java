@@ -15,19 +15,16 @@ import rx.Observable;
  */
 
 public class CloudRegisterPhoneNumberSource {
-    private Context context;
     private final AccountsService accountsService;
     private RegisterPhoneNumberMapper registerPhoneNumberMapper;
 
-    public CloudRegisterPhoneNumberSource(Context context,
-                                          AccountsService accountsService,
+    public CloudRegisterPhoneNumberSource(AccountsService accountsService,
                                           RegisterPhoneNumberMapper registerPhoneNumberMapper) {
-        this.context = context;
         this.accountsService = accountsService;
         this.registerPhoneNumberMapper = registerPhoneNumberMapper;
     }
 
-    public Observable<RegisterPhoneNumberModel> registerPhoneNumber(TKPDMapParam<String, Object> params) {
+    public Observable<RegisterPhoneNumberModel> registerPhoneNumber(Context context, TKPDMapParam<String, Object> params) {
         return accountsService.getApi().registerPhoneNumber(AuthUtil.generateParamsNetwork2(context, params))
                 .map(registerPhoneNumberMapper);
     }
