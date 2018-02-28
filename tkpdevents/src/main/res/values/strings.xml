@@ -1,0 +1,67 @@
+<resources>
+    <string name="app_name">tkpdevents</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- need to changed -->
+    <string name="alert_payment_canceled_or_failed_digital_module">Pembayaran tidak berhasil atau dibatalkan</string>
+    <string name="alert_payment_canceled_digital_module">Pembayaran dibatalkan</string>
+    <string name="_350_u0020_ticket_u0020_sold">350+\nTicket\nSold</string>
+    <string name="bigcontent"><![CDATA[Tepat lebih dari dua dekade sejak era 1990-an, era keemasan musik, film, permainan, makanan, serta segala hal yang dirindu pada era Konser 90an siap dibawa kembali. Mesin waktu menuju masa 90an siap dibuka di The 90\'s Festival. Segala hal tentang 90an maupun musisi-musisi 90an baik internasional dan nasional akan kembali reuni mengisi ruang-ruang nostalgia di The 90\'s Festival. Setelah sukses pada gelaran pertama dan keduanya kini The 90\'s Festival, sebagai salah satu festival nostalgia terbesar, bersiap hadir kembali untuk ketiga kalinya. Mulai dari Sixpence None The Richer hingga penampilan spesial reuni band-band tahun 90an lainnya, seperti Kla Project Dewa 19 feat Ari Lasso Neo Potret Reza Artamevia Stinky P Project Warna Shaden T-five Yana Yulio Wayang Voodoo DOT dan masih banyak lagi keseruan lainnya. Tokopedia yang berperan sebagai Official Ticket Partner The 90s Festival akan memberikan harga termurah. Beli tiket Presale Konser 90s Festival lebih murah & terpercaya. Yuk temukan banyak promo tiket 90s festival hanya di Tokopedia!]]></string>
+    <string name="expand">Selengkapnya</string>
+    <string name="collapse">Sembunyikan</string>
+    <string name="ticket_details">Tiket dan Kursi</string>
+    <string name="choose_date">Pilih Tanggal</string>
+    <string name="show_tnc"><![CDATA[Syarat & Ketentuan]]></string>
+    <string name="seating_layout">Seating Plan</string>
+    <string name="book_ticket">Beli Tiket</string>
+    <string name="lanjutkan">Lanjutkan</string>
+    <string name="rp_5980000"><strike>Sample Text</strike></string>
+    <string name="total_tickets">%d Tiket</string>
+    <string name="fare_breakup">Fare Breakup for %s</string>
+    <string name="pay_button">Lanjut Pembayaran</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="x_type">%1$d x %2$s</string>
+    <string name="jumlah_tiket">Jumlah Tiket : %1$d</string>
+    <string name="some_info">Dengan menekan tombol di bawah, saya telah menyetujui Syarat dan Ketentuan untuk pembelian tiket dengan atas nama di atas.</string>
+    <string name="cek_kode">Cek Kode</string>
+    <string name="kode_promo">Kode Promo</string>
+    <string name="tujuan_pengiriman_tiket">Tujuan Pengiriman Tiket</string>
+    <string name="emailinfo_text">Alamat email dan nomor telepon yang tertulis akan menjadi tujuan pengiriman e-tiket pemesanan Anda.</string>
+    <string name="data_pelanggan_tambahan">Data Pelanggan Tambahan</string>
+    <string name="additionallinfo_text">Data pelanggan tambahan akan digunakan pada saat penukaran tiket</string>
+    <string name="promo_success_msg">Anda mendapatkan promo:</string>
+    <string name="book_ticket_title">Pilih Tiket</string>
+    <string name="seat_selection_title">Pilih Kursi</string>
+    <string name="review_title">Rincian</string>
+    <string name="price_holder">Rp %1$s</string>
+    <string name="promo_button_text">Lihat Semua Promo</string>
+    <string name="top_events">TOP EVENTS</string>
+    <string name="max_ticket_warning">Maks. 4 tiket</string>
+    <string name="zero">0</string>
+    <string name="habis_terjual">HABIS TERJUAL</string>
+    <string name="ticket_desc">Anak kecil di bawah umur 12 tahun harus didampingi orang dewasa berusia 18 tahun ke atas. Harga tiket sudah termasuk biaya layanan.</string>
+    <string name="cari">Cari</string>
+    <string name="filter">Filters</string>
+    <string name="search">Search</string>
+    <string name="daftar_transaksi">Daftar Transaksi</string>
+    <string name="bantuan">Bantuan</string>
+    <string name="promo">Promo</string>
+    <string name="nomor_kursi">Nomor Kursi:</string>
+    <string name="ubah">Ubah</string>
+    <string name="email">E-mail</string>
+    <string name="screen_this_way">SCREEN THIS WAY</string>
+    <string name="tersedia">Tersedia</string>
+    <string name="terjual">Terjual</string>
+    <string name="terpilih">Terpilih</string>
+    <string name="tiket">Tiket :</string>
+    <string name="total">Total:</string>
+    <string name="pilihan_kursi">Pilihan Kursi:</string>
+    <string name="detail_tiket">Detail Tiket</string>
+    <string name="promo_section">Gunakan Kode Promo Tokopedia</string>
+
+    <!-- need to changed -->
+
+</resources>

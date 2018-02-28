@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.MethodChecker;
@@ -30,6 +31,8 @@ import com.tokopedia.seller.shop.open.view.presenter.ShopOpenDomainPresenterImpl
 import com.tokopedia.seller.shop.open.view.watcher.AfterTextWatcher;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.core.gcm.Constants.FROM_APP_SHORTCUTS;
 
 /**
  * Created by Hendry on 3/17/2017.
@@ -51,9 +54,18 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     ShopOpenDomainPresenterImpl shopOpenDomainPresenter;
     @Inject
     ShopOpenTracking trackingOpenShop;
+    private boolean fromAppShortCut = false;
 
     public static ShopOpenReserveDomainFragment newInstance() {
         return new ShopOpenReserveDomainFragment();
+    }
+
+    public static ShopOpenReserveDomainFragment newInstance(boolean isFromAppShortcut) {
+        Bundle args = new Bundle();
+        args.putBoolean(FROM_APP_SHORTCUTS, isFromAppShortcut);
+        ShopOpenReserveDomainFragment fragment = new ShopOpenReserveDomainFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -121,6 +133,25 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
             }
         });
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if (isFromAppShortCut())
+            UnifyTracking.eventJualLongClick();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void setupArguments(Bundle arguments) {
+        if (arguments != null)
+            fromAppShortCut = arguments.getBoolean(FROM_APP_SHORTCUTS);
     }
 
     private void hideSnackBarRetry() {
@@ -242,8 +273,12 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     }
 
     private void goToShopOpenMandatory(String shopName) {
-        Intent intent = ShopOpenReserveDomainSuccessActivity.getIntent(getContext(),shopName);
+        Intent intent = ShopOpenReserveDomainSuccessActivity.getIntent(getContext(), shopName);
         startActivity(intent);
         getActivity().finish();
+    }
+
+    public boolean isFromAppShortCut() {
+        return fromAppShortCut;
     }
 }

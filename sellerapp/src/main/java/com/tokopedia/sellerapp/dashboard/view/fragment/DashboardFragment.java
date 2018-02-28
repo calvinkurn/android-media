@@ -39,6 +39,7 @@ import com.tokopedia.design.card.EmptyCardContentView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.ticker.TickerView;
+import com.tokopedia.mitratoppers.preapprove.view.fragment.MitraToppersPreApproveLabelFragment;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.constant.ShopStatusDef;
 import com.tokopedia.seller.common.widget.LabelView;
@@ -188,7 +189,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             public void onClick(View v) {
                 UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_TRANSACTION,
                         AppEventTracking.EventLabel.DASHBOARD_ITEM_PELUANG);
-                Intent intent = SellerRouter.getActivitySellingTransactionOpportunity(getActivity());
+                Intent intent = SellerRouter.getActivitySellingTransactionOpportunity(getActivity(),"");
                 startActivity(intent);
             }
         });
@@ -304,6 +305,18 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         shopScoreWidget.renderView(shopScoreViewModel);
         swipeRefreshLayout.setRefreshing(false);
         hideSnackBarRetry();
+
+        setShopInfoToLabelFragment(shopModel.info);
+    }
+
+    public void setShopInfoToLabelFragment(Info shopInfo) {
+        MitraToppersPreApproveLabelFragment mitraToppersPreApproveLabelFragment =
+                (MitraToppersPreApproveLabelFragment) getChildFragmentManager()
+                        .findFragmentById(R.id.fragment_preapprove_label);
+        if (mitraToppersPreApproveLabelFragment!=null) {
+            mitraToppersPreApproveLabelFragment.setUserInfo(shopInfo.isOfficialStore(),
+                    shopInfo.isGoldMerchant());
+        }
     }
 
     private void updateReputation(final ShopModel shopModel) {

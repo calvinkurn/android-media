@@ -172,10 +172,10 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
         }
         data.setSource(AppEventTracking.SOCIAL_MEDIA.OTHER);
         if (data.getImgUri() != null) {
-            ShareSocmedHandler.ShareIntentImageUri(data, activity, null,
+            ShareSocmedHandler.ShareIntentImageUri(data, activity, data.getName(),
                     data.getImgUri());
         } else {
-            ShareSocmedHandler.ShareIntentImageUri(data, activity, null,
+            ShareSocmedHandler.ShareIntentImageUri(data, activity, data.getName(),
                     data.getImgUri());
         }
 

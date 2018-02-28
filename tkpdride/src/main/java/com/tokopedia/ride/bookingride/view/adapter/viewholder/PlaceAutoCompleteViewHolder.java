@@ -56,7 +56,7 @@ public class PlaceAutoCompleteViewHolder extends AbstractViewHolder<PlaceAutoCom
             mDistanceTextView.setText(element.getDistance());
             mDistanceTextView.setVisibility(View.VISIBLE);
         } else {
-            mDistanceTextView.setVisibility(View.GONE);
+            mDistanceTextView.setVisibility(View.INVISIBLE);
         }
 
         mItem = element;

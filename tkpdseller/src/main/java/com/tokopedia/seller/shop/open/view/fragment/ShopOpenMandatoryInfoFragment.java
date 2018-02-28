@@ -130,6 +130,7 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
                 }
             }
         }
+
     }
 
     private void updateView(UserData userData) {
@@ -164,15 +165,16 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
     }
 
     protected void onNextButtonClicked() {
-        if (TextUtils.isEmpty(uriPathImage) && onShopStepperListener.getStepperModel().getResponseIsReserveDomain() != null
-                && onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData() != null) {
-            UserData userData = onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData();
-            presenter.submitShopInfo(uriPathImage, shopSloganEditText.getText().toString(),
-                    shopDescEditText.getText().toString(), userData.getLogo(),
-                    userData.getServerId(), userData.getPhotoObj());
-        } else {
-            presenter.submitShopInfo(uriPathImage, shopSloganEditText.getText().toString(),
-                    shopDescEditText.getText().toString(), "", "", "");
+        if (onShopStepperListener.getStepperModel().getResponseIsReserveDomain()!=null) {
+            if (TextUtils.isEmpty(uriPathImage) && onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData() != null) {
+                UserData userData = onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData();
+                presenter.submitShopInfo(uriPathImage, shopSloganEditText.getText().toString(),
+                        shopDescEditText.getText().toString(), userData.getLogo(),
+                        userData.getServerId(), userData.getPhotoObj());
+            } else {
+                presenter.submitShopInfo(uriPathImage, shopSloganEditText.getText().toString(),
+                        shopDescEditText.getText().toString(), "", "", "");
+            }
         }
     }
 
@@ -195,9 +197,10 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
     @Override
     public void onSuccessSaveInfoShop(ShopOpenSaveInfoResponseModel responseModel) {
         if(onShopStepperListener != null && onShopStepperListener.getStepperModel().getResponseIsReserveDomain() != null){
-            onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData().setShortDesc(responseModel.getShopDesc());
-            onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData().setLogo(responseModel.getPicSrc());
-            onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData().setTagLine(responseModel.getShopTagLine());
+            UserData userData = onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData();
+            userData.setShortDesc(responseModel.getShopDesc());
+            userData.setLogo(responseModel.getPicSrc());
+            userData.setTagLine(responseModel.getShopTagLine());
         }
         trackingOpenShop.eventOpenShopFormSuccess();
         if (onShopStepperListener != null) {

@@ -53,6 +53,7 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
     public static String LIST_REPORT_TYPE = "LIST_REPORT_TYPE";
     public static final String DIGITAL_WIDGET_LAST_ORDER = "DIGITAL_WIDGET_LAST_ORDER";
     public static final String APP_RATING = "APP_RATING";
+    public static final String CACHE_PROMO_CODE = "CACHE_PROMO_CODE";
     public static final String REFERRAL = "REFERRAL";
     public static final String ADVERTISINGID = "ADVERTISINGID";
 
@@ -217,8 +218,11 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String HOME_BANNER_CACHE = "HOME_BANNER_CACHE";
         public static final String HOME_TOP_PICK_CACHE = "HOME_TOP_PICK_CACHE";
         public static final String HOME_TICKER_CACHE = "HOME_TICKER_CACHE";
+        public static final String HOME_DATA_CACHE = "HOME_DATA_CACHE";
+        public static final String EXPLORE_DATA_CACHE = "EXPLORE_DATA_CACHE";
         public static final String KEY_TOKOPOINT_DRAWER_DATA = "KEY_TOKOPOINT_DRAWER_DATA";
         public static final String KEY_APP_RATING_VERSION = "APP_RATING_VERSION";
+        public static final String KEY_CACHE_PROMO_CODE = "KEY_CACHE_PROMO_CODE";
         public static final String REFERRAL_CODE = "REFERRAL_CODE";
         public static final String KEY_ADVANCED_APP_RATING_VERSION = "ADVANCED_APP_RATING_VERSION";
         public static final String KEY_ADVERTISINGID = "KEY_ADVERTISINGID";
@@ -248,7 +252,10 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String MAINAPP_SHOW_SIMPLE_APP_RATING = "mainapp_show_simple_app_rating";
         public static final String MAINAPP_SHOW_ADVANCED_APP_RATING = "mainapp_show_advanced_app_rating";
 
+        public static final String SELLERAPP_SHOW_ADVANCED_APP_RATING = "sellerapp_show_advanced_app_rating";
+
         public static final String NOTIFICATION_LOGGER = "notification_logger";
+        public static final String MAINAPP_NATIVE_PROMO_LIST ="mainapp_native_promo_list";
     }
 
 }

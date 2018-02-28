@@ -246,7 +246,7 @@
     <string name="flight_label_refund_time">Waktu Pengajuan Refund</string>
     <string name="flight_label_refund_status">Status Refund</string>
     <string name="flight_label_order_id_detail">Invoice :</string>
-    <string name="flight_label_eticket">E-TICKET</string>
+    <string name="flight_label_eticket">KIRIM E-TICKET</string>
     <string name="flight_label_cancel_ticket">Batalkan Tiket</string>
     <string name="flight_label_reschedule_ticket">Atur Ulang Jadwal</string>
     <string name="flight_label_cek_t_and_c">* Harap cek syarat dan ketentuan pada e-tiket Anda</string>
@@ -315,4 +315,15 @@
     <string name="flight_order_branch_prefix">Cabang</string>
     <string name="flight_error_pick_journey">Terjadi kesalahan, Silakan ulangi kembali.</string>
     <string name="flight_booking_passenger_last_name_should_same_error">Jika nama belakang tidak tersedia, mohon isi dengan nama depan</string>
+    <string name="flight_order_detail_due_date_label">Batas Akhir Pembayaran</string>
+    <string name="flight_resend_eticket_dialog_title">Kirim E-Ticket</string>
+    <string name="flight_resend_eticket_dialog_description">Masukkan alamat Email tujuan Anda.</string>
+    <string name="flight_resend_eticket_dialog_abort">BATAL</string>
+    <string name="flight_resend_eticket_dialog_send">KIRIM</string>
+    <string name="flight_resend_eticket_dialog_email_hint">Alamat Email</string>
+    <string name="flight_resend_eticket_dialog_email_empty_error">Alamat Email tidak boleh kosong</string>
+    <string name="flight_resend_eticket_dialog_email_invalid_error">Alamat Email tidak valid</string>
+    <string name="flight_resend_eticket_dialog_email_invalid_symbol_error">Alamat Email tidak boleh terdiri dari symbol +</string>
+    <string name="resend_eticket_success">E-Ticket anda berhasil dikirim.</string>
+    <string name="flight_order_list_button_send_eticket">Kirim E-Ticket</string>
 </resources>

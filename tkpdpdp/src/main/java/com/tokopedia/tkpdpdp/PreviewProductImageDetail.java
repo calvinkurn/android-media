@@ -24,8 +24,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -60,9 +60,12 @@ public class PreviewProductImageDetail extends TActivity {
     public static final String FILELOC = "fileloc";
     public static final String IMG_POSITION = "img_pos";
     private static final String IMAGE_DESC = "image_desc";
+    private static final String FROM_CHAT = "from_chat";
+    private static final String TITLE = "title";
     private TouchViewPager vpImage;
-    private Button tvDownload;
+    private View tvDownload;
     private ImageView closeButton;
+    private TextView title, subtitle;
     private TouchImageAdapter adapter;
     private ArrayList<String> fileLocations;
     private int lastPos = 0;
@@ -75,14 +78,24 @@ public class PreviewProductImageDetail extends TActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         hideActionBar();
-        inflateView(R.layout.activity_preview_image);
-        initView();
-        Bundle extras;
+        Bundle extras = getIntent().getExtras();
 
-        if (getIntent().getExtras() != null) {
-            extras = getIntent().getExtras();
+        if (extras != null) {
+            if(extras.getBoolean(FROM_CHAT,false)){
+                inflateView(R.layout.activity_preview_image_new);
+                initTitleView();
+                title.setText(extras.getString(TITLE));
+                subtitle.setText(extras.getString(IMG_POSITION));
+            } else {
+                inflateView(R.layout.activity_preview_image);
+            }
+        }
+
+        initView();
+
+        if (extras != null) {
             fileLocations = extras.getStringArrayList(FILELOC);
-            position = extras.getInt(IMG_POSITION);
+            position = 0;
         } else {
             fileLocations = new ArrayList<>();
         }
@@ -93,8 +106,13 @@ public class PreviewProductImageDetail extends TActivity {
 
     private void initView() {
         vpImage = (TouchViewPager) findViewById(R.id.view_pager_product);
-        tvDownload = (Button) findViewById(R.id.download_image);
+        tvDownload = findViewById(R.id.download_image);
         closeButton = (ImageView) findViewById(R.id.close_button);
+    }
+
+    private void initTitleView() {
+        title = findViewById(R.id.title);
+        subtitle = findViewById(R.id.subtitle);
     }
 
 
@@ -373,10 +391,26 @@ public class PreviewProductImageDetail extends TActivity {
                                           ArrayList<String> imageDesc, int position) {
         Intent intent = new Intent(context, PreviewProductImageDetail.class);
         Bundle bundle = new Bundle();
+        bundle.putBoolean(PreviewProductImageDetail.FROM_CHAT, false);
         bundle.putStringArrayList(PreviewProductImageDetail.FILELOC, images);
         bundle.putStringArrayList(PreviewProductImageDetail.IMAGE_DESC, imageDesc);
         bundle.putInt(PreviewProductImageDetail.IMG_POSITION, position);
         intent.putExtras(bundle);
         return intent;
     }
+
+    public static Intent getCallingIntentChat(Context context, ArrayList<String> images,
+                                              ArrayList<String> imageDesc, String title, String date) {
+        Intent intent = new Intent(context, PreviewProductImageDetail.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(PreviewProductImageDetail.FROM_CHAT, true);
+        bundle.putString(PreviewProductImageDetail.TITLE, title);
+        bundle.putStringArrayList(PreviewProductImageDetail.FILELOC, images);
+        bundle.putStringArrayList(PreviewProductImageDetail.IMAGE_DESC, imageDesc);
+        bundle.putString(PreviewProductImageDetail.IMG_POSITION, date);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+
 }

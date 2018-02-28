@@ -3,6 +3,7 @@ package com.tokopedia.flight.search.presenter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.flight.booking.domain.FlightBookingGetSingleResultUseCase;
+import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.search.data.cloud.model.response.Route;
 import com.tokopedia.flight.search.view.FlightSearchReturnView;
@@ -28,10 +29,12 @@ public class FlightSearchReturnPresenter extends BaseDaggerPresenter<FlightSearc
     private static final long ONE_HOUR = TimeUnit.HOURS.toMillis(1);
     private FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase;
     private CompositeSubscription compositeSubscription;
+    private FlightAnalytics flightAnalytics;
 
     @Inject
-    public FlightSearchReturnPresenter(FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase) {
+    public FlightSearchReturnPresenter(FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase, FlightAnalytics flightAnalytics) {
         this.flightBookingGetSingleResultUseCase = flightBookingGetSingleResultUseCase;
+        this.flightAnalytics = flightAnalytics;
         this.compositeSubscription = new CompositeSubscription();
     }
 
@@ -126,5 +129,10 @@ public class FlightSearchReturnPresenter extends BaseDaggerPresenter<FlightSearc
         if (compositeSubscription.hasSubscriptions()) {
             compositeSubscription.unsubscribe();
         }
+    }
+
+    public void onFlightSearchSelected(String selectedFlightDeparture, FlightSearchViewModel flightSearchViewModel, int adapterPosition) {
+        flightAnalytics.eventSearchProductClick(flightSearchViewModel, adapterPosition);
+        onFlightSearchSelected(selectedFlightDeparture, flightSearchViewModel);
     }
 }

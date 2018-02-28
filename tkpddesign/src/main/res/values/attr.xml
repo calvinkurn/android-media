@@ -154,8 +154,46 @@
         <attr name="dbsb_foreground_color" format="color" />
     </declare-styleable>
 
-
     <attr name="bottomSheetBuilderBackgroundColor" format="color" />
     <attr name="bottomSheetBuilderItemTextColor" format="color" />
     <attr name="bottomSheetBuilderTitleTextColor" format="color" />
+
+    <declare-styleable name="Button">
+        <attr name="type" format="enum">
+            <enum name="primary" value="1"/>
+            <enum name="secondary" value="2"/>
+        </attr>
+        <attr name="size" format="enum">
+            <enum name="big" value="3"/>
+            <enum name="medium" value="4"/>
+            <enum name="small" value="5"/>
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="FloatingButton">
+        <attr name="text" format="string" />
+        <attr name="buttonType" format="enum">
+            <enum name="primary" value="1"/>
+            <enum name="secondary" value="2"/>
+        </attr>
+        <attr name="buttonSizeType" format="enum">
+            <enum name="big" value="3"/>
+            <enum name="medium" value="4"/>
+            <enum name="small" value="5"/>
+        </attr>
+        <attr name="buttonTextAllCaps" format="boolean"/>
+        <attr name="shadow" format="boolean"/>
+        <attr name="shadowLeft" format="boolean"/>
+        <attr name="shadowTop" format="boolean"/>
+        <attr name="shadowRight" format="boolean"/>
+        <attr name="shadowBottom" format="boolean"/>
+    </declare-styleable>
+
+    <declare-styleable name="Tabs">
+        <attr name="tabType" format="enum">
+            <enum name="main" value="1"/>
+            <enum name="secondary" value="2"/>
+        </attr>
+    </declare-styleable>
+
 </resources>

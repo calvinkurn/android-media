@@ -2,16 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.tokopedia.session">
 
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission android:name="android.permission.READ_SMS"/>
+
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
-        <activity
-            android:name=".session.activity.Login"
-            android:label="@string/title_activity_login"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"/>
+
         <activity
             android:name=".forgotpassword.activity.ForgotPasswordActivity"
             android:label="@string/title_activity_forgot_password"
@@ -23,7 +22,7 @@
             android:label="@string/title_activity_register"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
         <activity
             android:name=".activation.view.activity.ActivationActivity"
             android:label="@string/title_activity_activation"
@@ -54,13 +53,10 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"/>
         <activity
-            android:name=".login.view.ReloginActivity"
-            android:theme="@style/Theme.AppCompat.Translucent"/>
-        <activity
             android:name="com.tokopedia.otp.phoneverification.view.activity.TokoCashWebViewActivity"
             android:label="@string/tokocash"
-            android:screenOrientation="portrait" />
-<activity
+            android:screenOrientation="portrait"/>
+        <activity
             android:name="com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity"
             android:label="@string/title_verify"
             android:screenOrientation="portrait"
@@ -69,13 +65,7 @@
             android:name="com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity"
             android:label="@string/profile_completion_title"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
-
-        <activity
-            android:name="com.tokopedia.otp.cotp.view.activity.VerificationActivity"
-            android:label="@string/title_verify"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize"/>
 
         <activity
             android:name=".login.loginphonenumber.view.activity.LoginPhoneNumberActivity"
@@ -96,24 +86,16 @@
             android:windowSoftInputMode="stateAlwaysHidden"/>
 
         <activity
-            android:name="com.tokopedia.otp.securityquestion.view.activity.SecurityQuestionActivity"
-            android:label="@string/bar_security_question"
+            android:name="com.tokopedia.otp.cotp.view.activity.VerificationActivity"
+            android:label="@string/title_verify"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
+            android:windowSoftInputMode="adjustResize"/>
 
-        <service
-            android:name=".session.intentservice.LoginService"
-            android:exported="false"/>
-        <service
-            android:name=".session.intentservice.ResetPasswordService"
-            android:exported="false"/>
-        <service
-            android:name=".session.intentservice.RegisterService"
-            android:exported="false"/>
-        <service
-            android:name=".session.intentservice.OTPService"
-            android:exported="false"/>
-
+        <activity
+            android:name=".login.loginemail.view.activity.LoginActivity"
+            android:label="@string/login"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
         <activity
             android:name=".register.view.activity.SmartLockActivity"
             android:screenOrientation="portrait"
@@ -121,20 +103,29 @@
         <activity
             android:name=".google.GoogleSignInActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/DialogTheme" />
+            android:theme="@style/DialogTheme"/>
 
         <activity android:name="com.tokopedia.otp.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity">
         </activity>
 
         <activity
+            android:name=".register.view.activity.RegisterInitialActivity"
+            android:label="@string/title_register"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".register.view.activity.CreatePasswordActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity
             android:name=".changephonenumber.view.activity.ChangePhoneNumberWarningActivity"
             android:label=""
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".changephonenumber.view.activity.ChangePhoneNumberInputActivity"
             android:label="@string/change_phone_number"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".changephonenumber.view.activity.ChangePhoneNumberEmailVerificationActivity"
             android:label="@string/title_verify"
@@ -146,6 +137,16 @@
             android:label="@string/title_verify"
             android:screenOrientation="portrait"
             />
+        <!-- ======================================================= -->
+        <!-- RECEIVERS REGISTRY -->
+        <!-- ======================================================= -->
+        <receiver
+            android:name="com.tokopedia.util.IncomingSmsReceiver"
+            android:permission="android.permission.BROADCAST_SMS">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

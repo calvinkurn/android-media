@@ -56,30 +56,30 @@ ext {
     ]
 
     supportLibDependencies = [
-            recyclerViewV7: "com.android.support:recyclerview-v7:${supportLibraryVersion}",
-            supportV4     : "com.android.support:support-v4:${supportLibraryVersion}",
-            appCompactV7  : "com.android.support:appcompat-v7:${supportLibraryVersion}",
-            supportV13    : "com.android.support:support-v13:${supportLibraryVersion}",
-            design        : "com.android.support:design:${supportLibraryVersion}",
-            cardViewV7    : "com.android.support:cardview-v7:${supportLibraryVersion}",
-            exifinterface : "com.android.support:exifinterface:${supportLibraryVersion}",
-            constraintLayout : "com.android.support.constraint:constraint-layout:1.0.2"
+            recyclerViewV7  : "com.android.support:recyclerview-v7:${supportLibraryVersion}",
+            supportV4       : "com.android.support:support-v4:${supportLibraryVersion}",
+            appCompactV7    : "com.android.support:appcompat-v7:${supportLibraryVersion}",
+            supportV13      : "com.android.support:support-v13:${supportLibraryVersion}",
+            design          : "com.android.support:design:${supportLibraryVersion}",
+            cardViewV7      : "com.android.support:cardview-v7:${supportLibraryVersion}",
+            exifinterface   : "com.android.support:exifinterface:${supportLibraryVersion}",
+            constraintLayout: "com.android.support.constraint:constraint-layout:1.0.2"
     ]
 
     playServicesDependencies = [
-            plus            : "com.google.android.gms:play-services-plus:${playServiceVersion}",
-            base            : "com.google.android.gms:play-services-base:${playServiceVersion}",
-            appIndexing     : "com.google.firebase:firebase-appindexing:${playServiceVersion}",
-            analytics       : "com.google.android.gms:play-services-analytics:${playServiceVersion}",
-            firebase        : "com.google.firebase:firebase-messaging:${playServiceVersion}",
-            location        : "com.google.android.gms:play-services-location:${playServiceVersion}",
-            maps            : "com.google.android.gms:play-services-maps:${playServiceVersion}",
-            auth            : "com.google.android.gms:play-services-auth:${playServiceVersion}",
-            places          : "com.google.android.gms:play-services-places:${playServiceVersion}",
-            mapsUtils       : "com.google.maps.android:android-maps-utils:0.4",
-            remoteConfig    : "com.google.firebase:firebase-config:${playServiceVersion}",
-            perfMon         : "com.google.firebase:firebase-perf:${playServiceVersion}",
-            ads             : "com.google.android.gms:play-services-ads:${playServiceVersion}"
+            plus        : "com.google.android.gms:play-services-plus:${playServiceVersion}",
+            base        : "com.google.android.gms:play-services-base:${playServiceVersion}",
+            appIndexing : "com.google.firebase:firebase-appindexing:${playServiceVersion}",
+            analytics   : "com.google.android.gms:play-services-analytics:${playServiceVersion}",
+            firebase    : "com.google.firebase:firebase-messaging:${playServiceVersion}",
+            location    : "com.google.android.gms:play-services-location:${playServiceVersion}",
+            maps        : "com.google.android.gms:play-services-maps:${playServiceVersion}",
+            auth        : "com.google.android.gms:play-services-auth:${playServiceVersion}",
+            places      : "com.google.android.gms:play-services-places:${playServiceVersion}",
+            mapsUtils   : "com.google.maps.android:android-maps-utils:0.4",
+            remoteConfig: "com.google.firebase:firebase-config:${playServiceVersion}",
+            perfMon     : "com.google.firebase:firebase-perf:${playServiceVersion}",
+            ads         : "com.google.android.gms:play-services-ads:${playServiceVersion}"
     ]
 
     butterKnifeDependencies = [
@@ -105,11 +105,12 @@ ext {
     ]
 
     analyticsDependencies = [
-            appsflyer : "com.appsflyer:af-android-sdk:4.8.6@aar",
+            appsflyer  : "com.appsflyer:af-android-sdk:4.8.6@aar",
             installRef : "com.android.installreferrer:installreferrer:1.0",
             moengage   : "com.moengage:moe-android-sdk:8.2.00",
             moengageMSG: "com.moengage:addon-messaging:2.0.03",
-            branch:"io.branch.sdk.android:library:2.+"
+            branch     : "io.branch.sdk.android:library:2.+",
+            logentries : "com.github.LogentriesCommunity:le_android:logentries-android-4.4.1"
     ]
 
     deeplinkDispatchDependencies = [
@@ -147,7 +148,7 @@ ext {
             slidinguppanel        : "com.sothree.slidinguppanel:library:3.3.1",
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
             loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.3.0",
-            imagecropper         : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
+            imagecropper          : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion",
             codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.1.3"
     ]

@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.home.favorite.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -13,10 +14,13 @@ import android.widget.RelativeLayout;
 
 import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.view.LinearLayoutManager;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
@@ -25,6 +29,7 @@ import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.favorite.di.component.DaggerFavoriteComponent;
@@ -41,6 +46,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -61,6 +67,9 @@ public class FragmentFavorite extends BaseDaggerFragment
     ProgressBar progressBar;
     @BindView(R.id.main_content)
     RelativeLayout mainContent;
+
+    @BindView(R.id.partial_empty_wishlist)
+    View wishlistNotLoggedIn;
 
     @Inject
     FavoritePresenter favoritePresenter;
@@ -90,9 +99,15 @@ public class FragmentFavorite extends BaseDaggerFragment
 
         View parentView = inflater.inflate(R.layout.fragment_index_favorite_v2, container, false);
         unbinder = ButterKnife.bind(this, parentView);
-        prepareView();
-        favoritePresenter.attachView(this);
-        checkImpressionOncreate();
+
+        if (SessionHandler.isV4Login(getActivity())) {
+            prepareView();
+            favoritePresenter.attachView(this);
+            checkImpressionOncreate();
+        } else {
+            wishlistNotLoggedIn.setVisibility(View.VISIBLE);
+            mainContent.setVisibility(View.GONE);
+        }
         return parentView;
     }
 
@@ -373,4 +388,9 @@ public class FragmentFavorite extends BaseDaggerFragment
         }
     }
 
+    @OnClick(R.id.login_button)
+    public void onLoginButtonClick() {
+        Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getLoginIntent(getContext());
+        startActivity(intent);
+    }
 }
