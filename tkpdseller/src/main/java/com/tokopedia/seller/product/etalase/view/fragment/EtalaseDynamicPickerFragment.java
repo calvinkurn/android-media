@@ -16,9 +16,8 @@ public class EtalaseDynamicPickerFragment extends EtalasePickerFragment {
 
     public static final String ADDITIONAL_OPTION = "additional_optional";
 
-    protected ArrayList<MyEtalaseItemViewModel> myEtalaseItemViewModels = new ArrayList<>();
+    private ArrayList<MyEtalaseItemViewModel> myEtalaseItemViewModels;
 
-    @Deprecated
     public static EtalaseDynamicPickerFragment createInstance(long etalaseId, ArrayList<MyEtalaseItemViewModel> myEtalaseItemViewModelList) {
         EtalaseDynamicPickerFragment fragment = new EtalaseDynamicPickerFragment();
         Bundle args = new Bundle();
@@ -30,12 +29,8 @@ public class EtalaseDynamicPickerFragment extends EtalasePickerFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        myEtalaseItemViewModels.addAll(populateEtalaseViewModels());
+        myEtalaseItemViewModels = getArguments().getParcelableArrayList(ADDITIONAL_OPTION);
         super.onCreate(savedInstanceState);
-    }
-
-    protected ArrayList<MyEtalaseItemViewModel> populateEtalaseViewModels() {
-        return new ArrayList<>();
     }
 
     @Override
