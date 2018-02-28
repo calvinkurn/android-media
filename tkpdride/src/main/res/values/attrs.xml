@@ -11,7 +11,8 @@
         <attr name="inputHintColor" format="color" />
 
         <attr name="sendBtnIcon" format="reference" />
-
+        <attr name="sendBtnIconTint" format="color" />
+        <attr name="sendBtnBackgroundTint" format="color" />
         <attr name="bubbleElevation">
             <enum name="flat" value="0" />
             <enum name="elevated" value="1" />

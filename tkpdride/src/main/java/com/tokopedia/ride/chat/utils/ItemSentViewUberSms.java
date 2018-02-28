@@ -14,7 +14,7 @@ import com.tokopedia.ride.R;
  * Created by sachinbansal on 2/13/18.
  */
 
-public class ItemSentView extends MessageView {
+public class ItemSentViewUberSms extends UberSmsMessageView {
 
     private TextView messageTextView, timestampTextView;
 
@@ -98,7 +98,7 @@ public class ItemSentView extends MessageView {
      *
      * @param context
      */
-    public ItemSentView(Context context) {
+    public ItemSentViewUberSms(Context context) {
         super(context);
         initializeView(context);
     }
@@ -110,7 +110,7 @@ public class ItemSentView extends MessageView {
      * @param context
      * @param attrs
      */
-    public ItemSentView(Context context, AttributeSet attrs) {
+    public ItemSentViewUberSms(Context context, AttributeSet attrs) {
         super(context, attrs);
         initializeView(context);
     }

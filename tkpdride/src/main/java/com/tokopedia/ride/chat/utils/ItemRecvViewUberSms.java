@@ -11,7 +11,7 @@ import com.tokopedia.ride.R;
  * Created by sachinbansal on 2/13/18.
  */
 
-public class ItemRecvView extends MessageView {
+public class ItemRecvViewUberSms extends UberSmsMessageView {
 
     private TextView messageTextView, timestampTextView;
 
@@ -55,7 +55,7 @@ public class ItemRecvView extends MessageView {
      *
      * @param context
      */
-    public ItemRecvView(Context context) {
+    public ItemRecvViewUberSms(Context context) {
 
         super(context);
         initializeView(context);
@@ -69,7 +69,7 @@ public class ItemRecvView extends MessageView {
      * @param context
      * @param attrs
      */
-    public ItemRecvView(Context context, AttributeSet attrs) {
+    public ItemRecvViewUberSms(Context context, AttributeSet attrs) {
 
         super(context, attrs);
         initializeView(context);

@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.adapter.viewholder.MessageViewHolder;
 import com.tokopedia.ride.chat.utils.ChatMessage;
-import com.tokopedia.ride.chat.utils.ItemSentView;
+import com.tokopedia.ride.chat.utils.ItemSentViewUberSms;
 import com.tokopedia.ride.chat.utils.ViewBuilder;
 import com.tokopedia.ride.chat.utils.ViewBuilderInterface;
 
@@ -105,14 +105,14 @@ public class ChatViewListAdapter extends BaseAdapter {
             holder.setMessage(chatMessage.getMessage());
             holder.setTimestamp(chatMessage.getFormattedTime());
 
-            if (holder.getMessageView() instanceof ItemSentView &&
+            if (holder.getUberSmsMessageView() instanceof ItemSentViewUberSms &&
                     chatMessage.getDeliveryStatus() != null) {
 
                 switch (chatMessage.getDeliveryStatus()) {
 
                     case SENT_FAILURE:
-                        ((ItemSentView) holder.getMessageView()).setRetryIconTag(chatMessage);
-                        ((ItemSentView) holder.getMessageView()).setRetryIcon(context.getResources().getDrawable(R.drawable.ic_error_to_send), new View.OnClickListener() {
+                        ((ItemSentViewUberSms) holder.getUberSmsMessageView()).setRetryIconTag(chatMessage);
+                        ((ItemSentViewUberSms) holder.getUberSmsMessageView()).setRetryIcon(context.getResources().getDrawable(R.drawable.ic_error_to_send), new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 if (onRetryTap != null && view.getTag() != null) {
@@ -120,27 +120,27 @@ public class ChatViewListAdapter extends BaseAdapter {
                                 }
                             }
                         });
-                        ((ItemSentView) holder.getMessageView()).setDeliveryStatusIcon(null);
+                        ((ItemSentViewUberSms) holder.getUberSmsMessageView()).setDeliveryStatusIcon(null);
                         break;
 
                     case SENT_SUCCESS:
-                        ((ItemSentView) holder.getMessageView()).setRetryIcon(null);
-                        ((ItemSentView) holder.getMessageView()).setDeliveryStatusIcon(context.getResources().getDrawable(R.drawable.ic_sms_sent));
+                        ((ItemSentViewUberSms) holder.getUberSmsMessageView()).setRetryIcon(null);
+                        ((ItemSentViewUberSms) holder.getUberSmsMessageView()).setDeliveryStatusIcon(context.getResources().getDrawable(R.drawable.ic_sms_sent));
                         break;
 
                     case DELIVER_SUCCESS:
-                        ((ItemSentView) holder.getMessageView()).setRetryIcon(null);
-                        ((ItemSentView) holder.getMessageView()).setDeliveryStatusIcon(context.getResources().getDrawable(R.drawable.ic_sms_delivered));
+                        ((ItemSentViewUberSms) holder.getUberSmsMessageView()).setRetryIcon(null);
+                        ((ItemSentViewUberSms) holder.getUberSmsMessageView()).setDeliveryStatusIcon(context.getResources().getDrawable(R.drawable.ic_sms_delivered));
                         break;
 
                     case DELIVER_FAILURE:
-                        ((ItemSentView) holder.getMessageView()).setRetryIcon(null);
-                        ((ItemSentView) holder.getMessageView()).setDeliveryStatusIcon(context.getResources().getDrawable(R.drawable.ic_sms_sent));
+                        ((ItemSentViewUberSms) holder.getUberSmsMessageView()).setRetryIcon(null);
+                        ((ItemSentViewUberSms) holder.getUberSmsMessageView()).setDeliveryStatusIcon(context.getResources().getDrawable(R.drawable.ic_sms_sent));
                         break;
 
                     default:
-                        ((ItemSentView) holder.getMessageView()).setRetryIcon(null);
-                        ((ItemSentView) holder.getMessageView()).setDeliveryStatusIcon(null);
+                        ((ItemSentViewUberSms) holder.getUberSmsMessageView()).setRetryIcon(null);
+                        ((ItemSentViewUberSms) holder.getUberSmsMessageView()).setDeliveryStatusIcon(null);
                 }
 
             }

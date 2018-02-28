@@ -3,11 +3,8 @@ package com.tokopedia.ride.bookingride.view.adapter.viewholder;
 import android.content.Context;
 import android.view.View;
 
-import com.tokopedia.ride.chat.utils.MessageView;
+import com.tokopedia.ride.chat.utils.UberSmsMessageView;
 
-/**
- * Created by sachinbansal on 2/13/18.
- */
 
 public class MessageViewHolder {
     public final int STATUS_SENT = 0;
@@ -16,27 +13,27 @@ public class MessageViewHolder {
     View row;
     Context context;
 
-    private MessageView messageView;
+    private UberSmsMessageView uberSmsMessageView;
 
     public MessageViewHolder(View convertView) {
         row = convertView;
         context = row.getContext();
-        messageView = (MessageView) convertView;
+        uberSmsMessageView = (UberSmsMessageView) convertView;
     }
 
     public void setMessage(String message) {
 
-        messageView.setMessage(message);
+        uberSmsMessageView.setMessage(message);
 
     }
 
     public void setTimestamp(String timestamp) {
 
-        messageView.setTimestamp(timestamp);
+        uberSmsMessageView.setTimestamp(timestamp);
 
     }
 
-    public MessageView getMessageView() {
-        return messageView;
+    public UberSmsMessageView getUberSmsMessageView() {
+        return uberSmsMessageView;
     }
 }

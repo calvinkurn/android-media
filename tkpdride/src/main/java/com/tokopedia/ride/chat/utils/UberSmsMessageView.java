@@ -8,7 +8,7 @@ import android.widget.FrameLayout;
  * Created by sachinbansal on 2/13/18.
  */
 
-public abstract class MessageView extends FrameLayout {
+public abstract class UberSmsMessageView extends FrameLayout {
 
     /**
      * Method to set the messages text in the view so it can be displayed on the screen.
@@ -29,7 +29,7 @@ public abstract class MessageView extends FrameLayout {
      *
      * @param context
      */
-    public MessageView(Context context) {
+    public UberSmsMessageView(Context context) {
         super(context);
     }
 
@@ -40,7 +40,7 @@ public abstract class MessageView extends FrameLayout {
      * @param context
      * @param attrs
      */
-    public MessageView(Context context, AttributeSet attrs) {
+    public UberSmsMessageView(Context context, AttributeSet attrs) {
 
         super(context, attrs);
 

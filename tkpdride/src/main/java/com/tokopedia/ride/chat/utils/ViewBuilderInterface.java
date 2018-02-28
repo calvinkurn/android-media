@@ -7,7 +7,7 @@ import android.content.Context;
  */
 
 public interface ViewBuilderInterface {
-    MessageView buildRecvView(Context context);
+    UberSmsMessageView buildRecvView(Context context);
 
-    MessageView buildSentView(Context context);
+    UberSmsMessageView buildSentView(Context context);
 }
