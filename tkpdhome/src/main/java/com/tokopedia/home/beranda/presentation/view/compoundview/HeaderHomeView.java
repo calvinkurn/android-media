@@ -43,7 +43,7 @@ public class HeaderHomeView extends BaseCustomView {
     private TextView tvBalanceTokoPoint;
     private TextView tvActionTokopoint;
     private ImageView ivLogoTokoPoint;
-    private ProgressBar tokopointProgressBar;
+    private LinearLayout tokopointProgressBarLayout;
     private LinearLayout tokopointActionContainer;
 
     public HeaderHomeView(@NonNull Context context, HeaderViewModel headerViewModel, HomeCategoryListener listener) {
@@ -80,7 +80,7 @@ public class HeaderHomeView extends BaseCustomView {
         tvBalanceTokoPoint = view.findViewById(R.id.tv_balance_tokopoint);
         tvActionTokopoint = view.findViewById(R.id.tv_btn_action_tokopoint);
         ivLogoTokoPoint = view.findViewById(R.id.iv_logo_tokopoint);
-        tokopointProgressBar = view.findViewById(R.id.progress_bar_tokopoint);
+        tokopointProgressBarLayout = view.findViewById(R.id.progress_bar_tokopoint_layout);
         tokopointActionContainer = view.findViewById(R.id.container_action_tokopoint);
         renderTokocashLayoutListener();
         renderTokoPointLayoutListener();
@@ -98,14 +98,14 @@ public class HeaderHomeView extends BaseCustomView {
             tvActionTokopoint.setText(R.string.home_header_tokopoint_refresh_label);
             tvActionTokopoint.setVisibility(VISIBLE);
             tvTitleTokoPoint.setVisibility(GONE);
-            tokopointProgressBar.setVisibility(GONE);
+            tokopointProgressBarLayout.setVisibility(GONE);
             tokopointActionContainer.setVisibility(VISIBLE);
         } else if (headerViewModel.getTokoPointDrawerData() == null && !headerViewModel.isTokoPointDataError()) {
             tokoPointHolder.setOnClickListener(null);
-            tokopointProgressBar.setVisibility(VISIBLE);
+            tokopointProgressBarLayout.setVisibility(VISIBLE);
             tokopointActionContainer.setVisibility(GONE);
         } else {
-            tokopointProgressBar.setVisibility(GONE);
+            tokopointProgressBarLayout.setVisibility(GONE);
             tokopointActionContainer.setVisibility(VISIBLE);
             tvActionTokopoint.setVisibility(GONE);
             tvTitleTokoPoint.setVisibility(VISIBLE);
