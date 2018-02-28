@@ -36,9 +36,9 @@ public class AddProductImage implements Func1<ProductViewModel, Observable<List<
 
     private class UploadSingleImage implements Func1<ProductPictureViewModel, Observable<ProductPictureViewModel>> {
 
-        private long productId;
+        private String productId;
 
-        public UploadSingleImage(long productId) {
+        public UploadSingleImage(String productId) {
             this.productId = productId;
         }
 

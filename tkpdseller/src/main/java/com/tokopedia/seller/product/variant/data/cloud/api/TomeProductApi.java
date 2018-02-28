@@ -28,13 +28,12 @@ public interface TomeProductApi {
     //TODO data response will be changed. ProductUploadResultModel no longer valid
     @Headers({"Content-Type: application/json"})
     @POST(ProductUrl.URL_ADD_PRODUCT)
-    Observable<Response<DataResponse<ProductUploadResultModel>>> addProductSubmit(@Body ProductViewModel productViewModel);
+    Observable<Response<DataResponse<ProductUploadResultModel>>> addProductSubmit(@Body String productViewModel);
 
     //TODO data response will be changed. ProductUploadResultModel no longer valid
     @Headers({"Content-Type: application/json"})
     @PATCH(ProductUrl.URL_ADD_PRODUCT + "/{" + ProductUrl.PRODUCT_ID + "}")
-    Observable<Response<DataResponse<ProductUploadResultModel>>> editProductSubmit(@Body ProductViewModel productViewModel,
-                                                                                   @Path(ProductUrl.PRODUCT_ID) String productId);
+    Observable<Response<DataResponse<ProductUploadResultModel>>> editProductSubmit(@Path(ProductUrl.PRODUCT_ID) String productId, @Body String productViewModel);
 
     @GET(ProductUrl.URL_ADD_PRODUCT + "/{" + ProductUrl.PRODUCT_ID + "}")
     Observable<Response<DataResponse<ProductViewModel>>> getProductDetail(

@@ -80,7 +80,7 @@ public class ProductDraftEditFragment extends BaseProductDraftAddEditFragment<Pr
     @Override
     protected ProductViewModel collectDataFromView() {
         ProductViewModel viewModel = super.collectDataFromView();
-        viewModel.setProductId(Long.parseLong(productId));
+        viewModel.setProductId(productId);
         return viewModel;
     }
 

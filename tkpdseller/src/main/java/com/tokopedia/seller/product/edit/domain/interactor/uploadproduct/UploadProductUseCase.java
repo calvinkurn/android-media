@@ -7,7 +7,9 @@ import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.UploadImageModel;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
 import com.tokopedia.seller.product.edit.domain.ProductRepository;
+import com.tokopedia.seller.product.edit.domain.interactor.GetProductDetailUseCase;
 import com.tokopedia.seller.product.edit.domain.listener.AddProductNotificationListener;
+import com.tokopedia.seller.product.edit.domain.mapper.ProductUploadMapper;
 import com.tokopedia.seller.product.edit.domain.model.AddProductDomainModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
@@ -32,20 +34,26 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
     public static final String UPLOAD_PRODUCT_ID = "UPLOAD_PRODUCT_ID";
     public static final int UNSELECTED_PRODUCT_ID = -1;
 
+    private final GetProductDetailUseCase getProductDetailUseCase;
     private final ProductDraftRepository productDraftRepository;
     private final ProductRepository productRepository;
     private ProductViewModel productViewModel;
+    private ProductUploadMapper productUploadMapper;
 
     private AddProductNotificationListener listener;
     private UploadImageUseCase<UploadImageModel> uploadImageUseCase;
 
     @Inject
-    public UploadProductUseCase(ProductDraftRepository productDraftRepository,
+    public UploadProductUseCase(GetProductDetailUseCase getProductDetailUseCase,
+                                ProductDraftRepository productDraftRepository,
                                 ProductRepository productRepository,
-                                UploadImageUseCase<UploadImageModel> uploadImageUseCase) {
+                                UploadImageUseCase<UploadImageModel> uploadImageUseCase,
+                                ProductUploadMapper productUploadMapper) {
+        this.getProductDetailUseCase = getProductDetailUseCase;
         this.productDraftRepository = productDraftRepository;
         this.productRepository = productRepository;
         this.uploadImageUseCase = uploadImageUseCase;
+        this.productUploadMapper = productUploadMapper;
     }
 
     public void setListener(AddProductNotificationListener listener) {
@@ -86,10 +94,29 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
                         return productViewModel;
                     }
                 })
-                .flatMap(new UploadProduct(draftProductId, listener, productRepository,
-                        uploadImageUseCase))
+                .flatMap(new Func1<ProductViewModel, Observable<ProductViewModel>>() {
+                    @Override
+                    public Observable<ProductViewModel> call(ProductViewModel productFromDraft) {
+                        if (TextUtils.isEmpty(productFromDraft.getProductId())) {
+                            return Observable.just(productFromDraft);
+                        } else {
+                            return getProductDetailUseCase.createObservable(GetProductDetailUseCase.createParams(productFromDraft.getProductId()))
+                                    .map(removeUnusedParam(productFromDraft));
+                        }
+                    }
+                })
+                .flatMap(new UploadProduct(draftProductId, listener, productRepository, uploadImageUseCase))
                 .doOnNext(new DeleteProductDraft(draftProductId, productDraftRepository))
                 .doOnNext(new DeleteImageCacheDraftFile());
+    }
+
+    private Func1<ProductViewModel, ProductViewModel> removeUnusedParam(final ProductViewModel productFromDraft) {
+        return new Func1<ProductViewModel, ProductViewModel>() {
+            @Override
+            public ProductViewModel call(ProductViewModel productFromServer) {
+                return productUploadMapper.convertUnusedParamToNull(productFromServer, productFromDraft);
+            }
+        };
     }
 
     private class DeleteImageCacheDraftFile implements Action1<AddProductDomainModel> {

@@ -34,14 +34,14 @@ public class ProductCloud {
     }
 
     //TODO no need to have mapper
-    public Observable<ProductUploadResultModel> addProductSubmit(ProductViewModel productViewModel) {
+    public Observable<ProductUploadResultModel> addProductSubmit(String productViewModel) {
         return tomeProductApi.addProductSubmit(productViewModel)
                 .map(new DataResponseMapper<ProductUploadResultModel>());
     }
 
     //TODO no need to have mapper
-    public Observable<ProductUploadResultModel> editProduct(ProductViewModel productViewModel) {
-        return tomeProductApi.editProductSubmit(productViewModel, String.valueOf(productViewModel.getProductId()))
+    public Observable<ProductUploadResultModel> editProduct(String productId, String productViewModel) {
+        return tomeProductApi.editProductSubmit(productId, productViewModel)
                 .map(new DataResponseMapper<ProductUploadResultModel>());
     }
 

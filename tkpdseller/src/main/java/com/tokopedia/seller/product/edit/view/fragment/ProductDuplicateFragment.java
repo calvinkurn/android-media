@@ -46,9 +46,10 @@ public class ProductDuplicateFragment extends ProductEditFragment implements Pro
     }
 
     @Override
-    public void onSuccessLoadProduct(ProductViewModel model) {
-        super.onSuccessLoadProduct(model);
-        productNameBeforeCopy = model.getProductName();
+    public void onSuccessLoadProduct(ProductViewModel productViewModel) {
+        super.onSuccessLoadProduct(productViewModel);
+        productViewModel.setProductId("");
+        productNameBeforeCopy = productViewModel.getProductName();
     }
 
     @Override

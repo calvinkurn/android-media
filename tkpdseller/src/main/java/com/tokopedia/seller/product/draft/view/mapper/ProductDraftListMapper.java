@@ -64,6 +64,6 @@ public class ProductDraftListMapper {
                 primaryPhotoUrl,
                 productName,
                 completionPercent,
-                domainModel.getProductId() > 0);
+                !TextUtils.isEmpty(domainModel.getProductId()));
     }
 }

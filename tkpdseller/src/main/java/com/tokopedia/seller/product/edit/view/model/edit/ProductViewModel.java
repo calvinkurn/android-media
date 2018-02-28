@@ -4,12 +4,13 @@ package com.tokopedia.seller.product.edit.view.model.edit;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 //TODO need this: from_ig
 public class ProductViewModel implements ItemType, Parcelable {
@@ -17,7 +18,7 @@ public class ProductViewModel implements ItemType, Parcelable {
     public static final int TYPE = 382;
     @SerializedName("product_id")
     @Expose
-    private long productId;
+    private String productId;
     @SerializedName("product_name")
     @Expose
     private String productName = "";
@@ -110,7 +111,7 @@ public class ProductViewModel implements ItemType, Parcelable {
 
     @SerializedName("product_preorder")
     @Expose
-    private ProductPreorderViewModel productPreorder = null;
+    private ProductPreOrderViewModel productPreorder = null;
 
     @SerializedName("product_position")
     @Expose
@@ -154,11 +155,11 @@ public class ProductViewModel implements ItemType, Parcelable {
         this.draftId = draftId;
     }
 
-    public long getProductId() {
+    public String getProductId() {
         return productId;
     }
 
-    public void setProductId(long productId) {
+    public void setProductId(String productId) {
         this.productId = productId;
     }
 
@@ -373,11 +374,11 @@ public class ProductViewModel implements ItemType, Parcelable {
         this.productWholesale = productWholesale;
     }
 
-    public ProductPreorderViewModel getProductPreorder() {
+    public ProductPreOrderViewModel getProductPreorder() {
         return productPreorder;
     }
 
-    public void setProductPreorder(ProductPreorderViewModel productPreorder) {
+    public void setProductPreorder(ProductPreOrderViewModel productPreorder) {
         this.productPreorder = productPreorder;
     }
 
@@ -438,7 +439,7 @@ public class ProductViewModel implements ItemType, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(this.productId);
+        dest.writeString(this.productId);
         dest.writeString(this.productName);
         dest.writeString(this.productAlias);
         dest.writeLong(this.productCondition);
@@ -477,7 +478,7 @@ public class ProductViewModel implements ItemType, Parcelable {
     }
 
     protected ProductViewModel(Parcel in) {
-        this.productId = in.readLong();
+        this.productId = in.readString();
         this.productName = in.readString();
         this.productAlias = in.readString();
         this.productCondition = in.readLong();
@@ -501,7 +502,7 @@ public class ProductViewModel implements ItemType, Parcelable {
         this.productCategory = in.readParcelable(ProductCategoryViewModel.class.getClassLoader());
         this.productEtalase = in.readParcelable(ProductEtalaseViewModel.class.getClassLoader());
         this.productPictureViewModelList = in.createTypedArrayList(ProductPictureViewModel.CREATOR);
-        this.productPreorder = in.readParcelable(ProductPreorderViewModel.class.getClassLoader());
+        this.productPreorder = in.readParcelable(ProductPreOrderViewModel.class.getClassLoader());
         this.productPosition = in.readParcelable(ProductPositionViewModel.class.getClassLoader());
         this.productShop = in.readParcelable(ProductShopViewModel.class.getClassLoader());
         this.productSizeChart = in.createTypedArrayList(ProductPictureViewModel.CREATOR);
