@@ -115,22 +115,25 @@ public class TopProfileActivity extends BaseEmptyActivity
         followingLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO milhamj userId
-                startActivity(((TkpdCoreRouter) getApplicationContext())
-                        .getKolFollowingPageIntent(
-                                TopProfileActivity.this, 0)
-                );
+                if (topProfileViewModel != null) {
+                    startActivity(((TkpdCoreRouter) getApplicationContext())
+                            .getKolFollowingPageIntent(
+                                    TopProfileActivity.this,
+                                    Integer.valueOf(topProfileViewModel.getUserId()))
+                    );
+                }
             }
         });
 
         favoriteShopLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO milhamj userId
-                startActivity(PeopleFavoritedShop.createIntent(
-                        TopProfileActivity.this,
-                        "")
-                );
+                if (topProfileViewModel != null) {
+                    startActivity(PeopleFavoritedShop.createIntent(
+                            TopProfileActivity.this,
+                            topProfileViewModel.getUserId())
+                    );
+                }
             }
         });
 
