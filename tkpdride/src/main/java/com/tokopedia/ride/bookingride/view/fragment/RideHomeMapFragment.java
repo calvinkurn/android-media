@@ -381,13 +381,13 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
                     showUberMoto = true;
                 } else {
                     showUberCab = true;
-                    estimate = productEstimate.getTimesEstimate() != null ? productEstimate.getTimesEstimate().getEstimate() : DEFAULT_ETA;
+                    estimate = productEstimate.getTimesEstimate() != null ? productEstimate.getTimesEstimate().getEstimate() : DEFAULT_ETA_SECONDS;
                     if (estimate < min) {
                         min = estimate;
                     }
                 }
             }
-            radius = FIXED_RADIUS + (ETA_RADIUS_RATIO * min / 60);
+            radius = FIXED_RADIUS_METERS + (ETA_RADIUS_RATIO_METERS * min / 60);
             if (googleMap != null && getVisibleCabsMarkerCount() < MAX_CABS_COUNT) {
                 double latitude = googleMap.getCameraPosition().target.latitude;
                 double longitude = googleMap.getCameraPosition().target.longitude;
