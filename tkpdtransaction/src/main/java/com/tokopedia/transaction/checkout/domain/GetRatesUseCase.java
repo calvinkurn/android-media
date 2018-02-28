@@ -43,8 +43,8 @@ public class GetRatesUseCase extends UseCase<ShipmentDetailData> {
         requestParams.putString(Params.NAMES, shipmentDetailData.getShipmentCartData().getShippingNames());
         double weightInKilograms = shipmentDetailData.getShipmentCartData().getWeight() / KILOGRAM_DIVIDER;
         requestParams.putString(Params.WEIGHT, String.valueOf(weightInKilograms));
-        requestParams.putString(Params.TYPE, "android");
-        requestParams.putString(Params.FROM, "client");
+        requestParams.putString(Params.TYPE, Params.VALUE_ANDROID);
+        requestParams.putString(Params.FROM, Params.VALUE_CLIENT);
         requestParams.putString(Params.TOKEN, shipmentDetailData.getShipmentCartData().getToken());
         requestParams.putString(Params.UT, shipmentDetailData.getShipmentCartData().getUt());
         requestParams.putString(Params.INSURANCE, String.valueOf(shipmentDetailData.getShipmentCartData().getInsurance()));
@@ -102,6 +102,8 @@ public class GetRatesUseCase extends UseCase<ShipmentDetailData> {
         String PRODUCT_INSURANCE = "product_insurance";
         String ORDER_VALUE = "order_value";
         String CAT_ID = "cat_id";
+        String VALUE_ANDROID = "android";
+        String VALUE_CLIENT = "client";
     }
 
 }

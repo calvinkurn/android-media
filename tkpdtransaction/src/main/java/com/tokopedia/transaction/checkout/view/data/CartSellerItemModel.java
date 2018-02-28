@@ -14,6 +14,8 @@ public class CartSellerItemModel implements Parcelable {
     private String shopName;
     private List<CartItemModel> cartItemModels;
 
+    // TODO : @Aghny Remove this courierItemData variable.
+    // TODO : Use CourierItemData from (ShipmentDetailData) selectedShipmentDetailData.selectedCourier
     private CourierItemData courierItemData;
 
     private double totalPrice;
