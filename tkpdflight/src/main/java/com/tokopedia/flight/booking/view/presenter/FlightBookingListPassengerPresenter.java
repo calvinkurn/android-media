@@ -8,7 +8,6 @@ import com.tokopedia.flight.common.util.FlightDateUtil;
 
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -90,15 +89,15 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
 
                     @Override
                     public void onNext(List<FlightBookingPassengerViewModel> flightBookingPassengerViewModels) {
-                        formatPassenger();
+                        formatPassenger(flightBookingPassengerViewModels);
                     }
                 }
         );
     }
 
-    private void formatPassenger() {
+    private void formatPassenger(List<FlightBookingPassengerViewModel> data) {
         int localId = 1;
-        List<FlightBookingPassengerViewModel> flightBookingPassengerViewModelList = getView().getPassengerViewModelList();
+        List<FlightBookingPassengerViewModel> flightBookingPassengerViewModelList = data;
 
         for (FlightBookingPassengerViewModel flightBookingPassengerViewModel : flightBookingPassengerViewModelList) {
             flightBookingPassengerViewModel.setPassengerLocalId(localId);
@@ -136,8 +135,8 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
     private int getImageRes(String birthdate, int salutationId) {
         if (birthdate != null) {
             Date now = FlightDateUtil.getCurrentDate();
-            Date birth = FlightDateUtil.stringToDate(birthdate, FlightDateUtil.DEFAULT_FORMAT);
-            long diff = TimeUnit.DAYS.convert(now.getTime() - birth.getTime(), TimeUnit.MILLISECONDS);
+            Date birth = FlightDateUtil.stringToDate(birthdate);
+            long diff = now.getTime() - birth.getTime();
             long year = (1000 * 60 * 60 * 24 * 365);
 
             if (diff > (TWELVE_YEARS * year)) {

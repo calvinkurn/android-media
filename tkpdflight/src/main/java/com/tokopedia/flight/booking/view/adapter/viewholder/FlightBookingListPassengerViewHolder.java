@@ -1,6 +1,8 @@
 package com.tokopedia.flight.booking.view.adapter.viewholder;
 
+import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
@@ -28,6 +30,7 @@ public class FlightBookingListPassengerViewHolder extends AbstractViewHolder<Fli
 
     private ListenerCheckedSavedPassenger listenerCheckedSavedPassenger;
 
+    private Context context;
     private TextView txtPassengerName;
     private ImageView imgPassengerType, imgEdit, imgDelete;
 
@@ -38,6 +41,7 @@ public class FlightBookingListPassengerViewHolder extends AbstractViewHolder<Fli
         imgDelete = itemView.findViewById(R.id.image_passenger_delete);
         imgEdit = itemView.findViewById(R.id.image_passenger_edit);
         this.listenerCheckedSavedPassenger = listenerCheckedSavedPassenger;
+        this.context = itemView.getContext();
     }
 
     @Override
@@ -51,10 +55,6 @@ public class FlightBookingListPassengerViewHolder extends AbstractViewHolder<Fli
                 flightBookingPassengerViewModel.getPassengerLastName()
         ));
 
-        if (flightBookingPassengerViewModel.getType() == INFANT) {
-
-        } else {
-
-        }
+        imgPassengerType.setImageDrawable(VectorDrawableCompat.create(context.getResources(), flightBookingPassengerViewModel.getPassengerDrawable(), context.getTheme()));
     }
 }

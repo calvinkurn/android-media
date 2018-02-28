@@ -52,7 +52,6 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
     public void onCreate(Bundle savedInstanceState) {
         selectedPassenger = getArguments().getParcelable(EXTRA_SELECTED_PASSENGER);
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
         flightBookingPassengerViewModelList = new ArrayList<>();
     }
 
@@ -60,17 +59,7 @@ public class FlightBookingListPassengerFragment extends BaseListFragment<FlightB
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // karena layout yang di butuhkan sama, maka digunakan layout yg sama dengan booking luggage
-        View view = inflater.inflate(R.layout.fragment_booking_luggage, container, false);
-        Button button = (Button) view.findViewById(R.id.button_save);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.putExtra(EXTRA_SELECTED_PASSENGER, selectedPassenger);
-                getActivity().setResult(Activity.RESULT_OK, intent);
-                getActivity().finish();
-            }
-        });
+        View view = inflater.inflate(R.layout.fragment_booking_list_passenger, container, false);
         return view;
     }
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -13,7 +14,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/ic_passenger_male" />
+        app:srcCompat="@drawable/ic_passenger_male" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -49,7 +50,9 @@
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/image_passenger_edit"
         android:layout_toStartOf="@+id/image_passenger_edit"
-        android:src="@drawable/ic_flight_delete" />
+        android:layout_marginLeft="@dimen/margin_vs"
+        android:layout_marginRight="@dimen/margin_vs"
+        app:srcCompat="@drawable/ic_flight_delete" />
 
     <ImageView
         android:id="@+id/image_passenger_edit"
@@ -58,6 +61,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/ic_flight_edit" />
+        android:layout_marginLeft="@dimen/margin_vs"
+        app:srcCompat="@drawable/ic_flight_edit" />
 
 </RelativeLayout>
