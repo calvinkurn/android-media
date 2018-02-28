@@ -34,6 +34,7 @@ import javax.inject.Inject;
 public class KolPostFragment extends BaseDaggerFragment implements KolPostListener.View {
     private static final String PARAM_USER_ID = "user_id";
     private static final int KOL_COMMENT_CODE = 13;
+    private static final int LOAD_MORE_THRESHOLD = 2;
 
     @Inject
     KolPostListener.Presenter presenter;
@@ -97,7 +98,7 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
                 super.onScrolled(recyclerView, dx, dy);
 
                 int topVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
-                if (topVisibleItemPosition >= adapter.getItemCount() - 2 &&
+                if (topVisibleItemPosition >= adapter.getItemCount() - LOAD_MORE_THRESHOLD &&
                         canLoadMore &&
                         !adapter.isLoading()) {
                     presenter.getKolPost(userId);
