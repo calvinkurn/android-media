@@ -1,10 +1,13 @@
 package com.tokopedia.transaction.checkout.di.module;
 
 import com.tokopedia.transaction.checkout.di.scope.MultipleAddressScope;
+import com.tokopedia.transaction.checkout.domain.ICartRepository;
 import com.tokopedia.transaction.checkout.domain.IMultipleAddressInteractor;
 import com.tokopedia.transaction.checkout.domain.IMultipleAddressRepository;
 import com.tokopedia.transaction.checkout.domain.MultipleAddressInteractor;
+import com.tokopedia.transaction.checkout.domain.usecase.SubmitMultipleAddressUseCase;
 import com.tokopedia.transaction.checkout.view.view.multipleaddressform.IMultipleAddressPresenter;
+import com.tokopedia.transaction.checkout.view.view.multipleaddressform.IMultipleAddressView;
 import com.tokopedia.transaction.checkout.view.view.multipleaddressform.MultipleAddressPresenter;
 
 import dagger.Module;
@@ -18,6 +21,12 @@ import rx.subscriptions.CompositeSubscription;
 @Module(includes = {DataModule.class})
 public class MultipleAddressModule {
 
+    private final IMultipleAddressView view;
+
+    public MultipleAddressModule(IMultipleAddressView view) {
+        this.view = view;
+    }
+
     @MultipleAddressScope
     @Provides
     CompositeSubscription provideCompositeSubscription() {
@@ -26,14 +35,14 @@ public class MultipleAddressModule {
 
     @MultipleAddressScope
     @Provides
-    IMultipleAddressPresenter providePresenter(IMultipleAddressInteractor interactor) {
-        return new MultipleAddressPresenter(interactor);
+    SubmitMultipleAddressUseCase provideMultipleAddressUseCase(ICartRepository repository) {
+        return new SubmitMultipleAddressUseCase(repository);
     }
 
     @MultipleAddressScope
     @Provides
-    IMultipleAddressInteractor provideInteractor(IMultipleAddressRepository repository) {
-        return new MultipleAddressInteractor(provideCompositeSubscription(), repository);
+    IMultipleAddressPresenter providePresenter(SubmitMultipleAddressUseCase useCase) {
+        return new MultipleAddressPresenter(view, useCase);
     }
 
 }

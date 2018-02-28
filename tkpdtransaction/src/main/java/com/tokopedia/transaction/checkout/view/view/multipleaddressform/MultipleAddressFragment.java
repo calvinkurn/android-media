@@ -88,7 +88,7 @@ public class MultipleAddressFragment extends TkpdFragment
     private void initInjector() {
         MultipleAddressComponent component = DaggerMultipleAddressComponent
                 .builder()
-                .multipleAddressModule(new MultipleAddressModule()).build();
+                .multipleAddressModule(new MultipleAddressModule(this)).build();
         component.inject(this);
     }
 
@@ -183,7 +183,7 @@ public class MultipleAddressFragment extends TkpdFragment
     @Override
     public void onGoToChooseCourier(List<MultipleAddressAdapterData> dataList) {
         //TODO release later
-        presenter.sendData(dataList);
+        presenter.sendData(getActivity(), dataList);
 
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.animator.slide_in_left, R.animator.slide_in_left)
@@ -245,6 +245,11 @@ public class MultipleAddressFragment extends TkpdFragment
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         //cartShipmentActivity = (ICartShipmentActivity) activity;
+    }
+
+    @Override
+    public void successMakeShipmentData() {
+
     }
 
     @Override

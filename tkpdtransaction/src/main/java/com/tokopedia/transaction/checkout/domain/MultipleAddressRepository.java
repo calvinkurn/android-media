@@ -10,6 +10,9 @@ import rx.Observable;
 
 public class MultipleAddressRepository implements IMultipleAddressRepository{
 
+    public MultipleAddressRepository() {
+    }
+
     @Override
     public Observable<String> sendMultipleAddressData(JsonObject dataToSend) {
         return null;
