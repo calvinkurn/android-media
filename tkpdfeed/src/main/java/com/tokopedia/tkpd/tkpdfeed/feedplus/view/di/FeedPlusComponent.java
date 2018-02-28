@@ -1,6 +1,8 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.di;
 
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FollowKolPostUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusDetailFragment;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.KolCommentFragment;
@@ -27,5 +29,7 @@ public interface FeedPlusComponent {
 
     void inject(KolFollowingListFragment kolFollowingListFragment);
 
+    LikeKolPostUseCase getLikeKolPostUseCase();
 
+    FollowKolPostUseCase getFollowKolPostUseCase();
 }
