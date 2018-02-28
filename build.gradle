@@ -46,10 +46,14 @@ okbuck {
     buildToolVersion = "25.0.0"
     target = "android-26"
     linearAllocHardLimit = [
-            customerapp: 10130000
+            customerapp: 10130000,
+            sellerapp: 10130000
     ]
     extraBuckOpts = [
             'customerappDebug': [
+                    "android_binary": ["trim_resource_ids = True"]
+            ],
+            'sellerappDebug': [
                     "android_binary": ["trim_resource_ids = True"]
             ]
     ]
