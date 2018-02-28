@@ -104,7 +104,11 @@ public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsCon
                 getView().renderFromCloud(detailsViewModel);   //chained using map
                 if (eventsDetailsViewModel.getSeatMapImage() != null && !eventsDetailsViewModel.getSeatMapImage().isEmpty())
                     getView().renderSeatmap(eventsDetailsViewModel.getSeatMapImage());
-                hasSeatLayout = eventsDetailsViewModel.getHasSeatLayout();
+                if (eventsDetailsViewModel.getHasSeatLayout() != null) {
+                    hasSeatLayout = eventsDetailsViewModel.getHasSeatLayout();
+                } else {
+                    hasSeatLayout = 0;
+                }
                 getView().hideProgressBar();
                 CommonUtils.dumper("enter onNext");
             }
