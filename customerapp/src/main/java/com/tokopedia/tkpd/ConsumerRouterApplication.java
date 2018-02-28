@@ -169,6 +169,7 @@ import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.FeedModuleRouter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.LikeKolDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FollowKolPostUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolCommentActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolFollowingListActivity;
@@ -1421,6 +1422,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(likeKolPostSubscriber);
+    }
+
+    @Override
+    public int getFollowActionParam() {
+        return FollowKolPostUseCase.PARAM_FOLLOW;
+    }
+
+    @Override
+    public int getUnfollowActionParam() {
+        return FollowKolPostUseCase.PARAM_UNFOLLOW;
     }
 
     @Override

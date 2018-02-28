@@ -26,5 +26,9 @@ public interface KolRouter {
 
     void doLikeKolPost(int id, int action, LikeKolPostSubscriber likeKolPostSubscriber);
 
+    int getFollowActionParam();
+
+    int getUnfollowActionParam();
+
     void doFollowKolPost();
 }
