@@ -237,60 +237,29 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
 
-//    compile(rootProject.ext.tkpdDependencies.inbox) {
-//        exclude group: 'com.tokopedia.core'
-//    }
-//    compile(rootProject.ext.tkpdDependencies.discovery) {
-//        exclude group: 'com.tokopedia.core'
-//    }
-//    compile(rootProject.ext.tkpdDependencies.transaction) {
-//        exclude group: 'com.tokopedia.core'
-//    }
-//    compile(rootProject.ext.tkpdDependencies.seller) {
-//        exclude group: 'com.tokopedia.core'
-//    }
-//    compile(rootProject.ext.tkpdDependencies.session) {
-//        exclude group: 'com.tokopedia.core'
-//    }
-//    compile(rootProject.ext.tkpdDependencies.tkpdpdp) {
-//        exclude group: 'com.tokopedia.core'
-//    }
-//    compile(rootProject.ext.tkpdDependencies.feed) {
-//        exclude group: 'com.tokopedia.core'
-//    }
-//    compile(rootProject.ext.tkpdDependencies.ride) {
-//        exclude group: 'com.tokopedia.core'
-//    }
-//    compile(rootProject.ext.tkpdDependencies.digital) {
-//        exclude group: 'com.tokopedia.core'
-//    }
-//    compile(rootProject.ext.tkpdDependencies.reactNative) {
-//        exclude group: 'com.tokopedia.core'
-//    }
-//    compile (rootProject.ext.tkpdDependencies.core)
-    compile project(':tkpdcore')
-    compile project(':tkpddiscovery')
-    compile project(':tkpdtransaction')
-    compile project(':tkpdseller')
-    compile project(':tkpdsession')
-    compile project(':tkpdinbox')
-    compile project(':tkpdride')
-    compile project(':tkpddigital')
-    compile project(':tkpdpdp')
-    compile project(':tkpdfeed')
-    compile project(':tkpdreactnative')
-    compile project(':tkpdevents')
-    compile project(':tkpdloyalty')
-    compile project(':tkpdreputation')
-    compile project(':tkpdtokocash')
-    compile project(':tkpdflight')
-    compile project(':tkpdhome')
+    compile project(rootProject.ext.features.core)
+    compile project(rootProject.ext.features.discovery)
+    compile project(rootProject.ext.features.transaction)
+    compile project(rootProject.ext.features.seller)
+    compile project(rootProject.ext.features.session)
+    compile project(rootProject.ext.features.inbox)
+    compile project(rootProject.ext.features.ride)
+    compile project(rootProject.ext.features.digital)
+    compile project(rootProject.ext.features.productDetail)
+    compile project(rootProject.ext.features.feed)
+    compile project(rootProject.ext.features.reactNative)
+    compile project(rootProject.ext.features.event)
+    compile project(rootProject.ext.features.loyalty)
+    compile project(rootProject.ext.features.reputation)
+    compile project(rootProject.ext.features.tokoCash)
+    compile project(rootProject.ext.features.flight)
+    compile project(rootProject.ext.features.home)
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testCompile rootProject.ext.testDependencies.mockitorCore
-    testCompile 'junit:junit:4.12'
+    testCompile rootProject.ext.testDependencies.junit
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
@@ -302,7 +271,7 @@ dependencies {
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
 
-    compile 'com.android.support:multidex:1.0.1'
+    compile rootProject.ext.miscDependencies.multiDex
 
     compile(rootProject.ext.miscDependencies.trueCaller) {
         exclude group: 'com.android.support'

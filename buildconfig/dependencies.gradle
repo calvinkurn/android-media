@@ -225,7 +225,9 @@ ext {
             useCase         : ":tkpdusecase",
             flight          : ":tkpdflight",
             flightNoOp      : ":tkpdflight-no-op",
-            mitraToppers    : ":tkpdmitratoppers"
+            mitraToppers    : ":tkpdmitratoppers",
+            event           : ":tkpdevents",
+            home            : ":tkpdhome"
     ]
 
     libraries = [
