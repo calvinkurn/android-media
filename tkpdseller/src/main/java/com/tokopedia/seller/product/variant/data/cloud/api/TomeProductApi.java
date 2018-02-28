@@ -25,15 +25,13 @@ import rx.Observable;
 
 public interface TomeProductApi {
 
-    //TODO data response will be changed. ProductUploadResultModel no longer valid
     @Headers({"Content-Type: application/json"})
     @POST(ProductUrl.URL_ADD_PRODUCT)
-    Observable<Response<DataResponse<ProductUploadResultModel>>> addProductSubmit(@Body String productViewModel);
+    Observable<Response<DataResponse<ProductViewModel>>> addProductSubmit(@Body String productViewModel);
 
-    //TODO data response will be changed. ProductUploadResultModel no longer valid
     @Headers({"Content-Type: application/json"})
     @PATCH(ProductUrl.URL_ADD_PRODUCT + "/{" + ProductUrl.PRODUCT_ID + "}")
-    Observable<Response<DataResponse<ProductUploadResultModel>>> editProductSubmit(@Path(ProductUrl.PRODUCT_ID) String productId, @Body String productViewModel);
+    Observable<Response<DataResponse<ProductViewModel>>> editProductSubmit(@Path(ProductUrl.PRODUCT_ID) String productId, @Body String productViewModel);
 
     @GET(ProductUrl.URL_ADD_PRODUCT + "/{" + ProductUrl.PRODUCT_ID + "}")
     Observable<Response<DataResponse<ProductViewModel>>> getProductDetail(

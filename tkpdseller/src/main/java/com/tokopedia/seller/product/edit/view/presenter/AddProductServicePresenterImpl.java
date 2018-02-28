@@ -4,8 +4,8 @@ import com.tokopedia.seller.product.draft.data.source.db.model.DraftNotFoundExce
 import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.edit.data.exception.UploadProductException;
 import com.tokopedia.seller.product.edit.domain.interactor.uploadproduct.UploadDraftProductUseCase;
-import com.tokopedia.seller.product.edit.domain.listener.AddProductNotificationListener;
-import com.tokopedia.seller.product.edit.domain.model.AddProductDomainModel;
+import com.tokopedia.seller.product.edit.domain.listener.NotificationCountListener;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 
 import rx.Subscriber;
@@ -14,7 +14,7 @@ import rx.Subscriber;
  * @author sebastianuskh on 4/20/17.
  */
 
-public class AddProductServicePresenterImpl extends AddProductServicePresenter implements AddProductNotificationListener {
+public class AddProductServicePresenterImpl extends AddProductServicePresenter {
     private final UploadDraftProductUseCase uploadProductUseCase;
     private final UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase;
 
@@ -22,13 +22,11 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
                                           UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase) {
         this.uploadProductUseCase = uploadProductUseCase;
         this.updateUploadingDraftProductUseCase = updateUploadingDraftProductUseCase;
-        uploadProductUseCase.setListener(this);
     }
 
     @Override
-    public void uploadProduct(final long draftProductId, final boolean isAdd) {
-        checkViewAttached();
-        uploadProductUseCase.execute(UploadDraftProductUseCase.generateUploadProductParam(draftProductId), new Subscriber<AddProductDomainModel>() {
+    public void uploadProduct(final long draftProductId, final boolean isAdd, NotificationCountListener notificationCountListener) {
+        uploadProductUseCase.execute(UploadDraftProductUseCase.createParams(draftProductId, notificationCountListener), new Subscriber<ProductViewModel>() {
             @Override
             public void onCompleted() {
 
@@ -52,17 +50,16 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
             }
 
             @Override
-            public void onNext(AddProductDomainModel addProductDomainModel) {
-                checkViewAttached();
+            public void onNext(ProductViewModel productViewModel) {
                 getView().onSuccessAddProduct();
                 getView().notificationComplete(draftProductId);
-                getView().sendSuccessBroadcast(addProductDomainModel);
+                getView().sendSuccessBroadcast(productViewModel);
             }
         });
     }
 
     private void updateDraftUploadingStatus(final long draftProductId) {
-        updateUploadingDraftProductUseCase.execute(UpdateUploadingDraftProductUseCase.createRequestParams(String.valueOf(draftProductId), false), new Subscriber<Boolean>() {
+        updateUploadingDraftProductUseCase.execute(UpdateUploadingDraftProductUseCase.createRequestParams(draftProductId, false), new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
                 // no op
@@ -78,17 +75,5 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
                 // no op
             }
         });
-    }
-
-    @Override
-    public void createNotification(long draftProductId, String productName) {
-        checkViewAttached();
-        getView().createNotification(draftProductId, productName);
-    }
-
-    @Override
-    public void notificationUpdate(long draftProductId) {
-        checkViewAttached();
-        getView().notificationUpdate(draftProductId);
     }
 }

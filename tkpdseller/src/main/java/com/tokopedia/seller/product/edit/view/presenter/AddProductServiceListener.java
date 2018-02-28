@@ -2,6 +2,7 @@ package com.tokopedia.seller.product.edit.view.presenter;
 
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.seller.product.edit.domain.model.AddProductDomainModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 
 /**
@@ -11,13 +12,9 @@ import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 public interface AddProductServiceListener extends CustomerView {
     void onSuccessAddProduct();
 
-    void createNotification(long draftProductId, String productName);
-
-    void notificationUpdate(long draftProductId);
-
     void notificationComplete(long draftProductId);
 
-    void sendSuccessBroadcast(AddProductDomainModel addProductDomainModel);
+    void sendSuccessBroadcast(ProductViewModel productViewModel);
 
     void onFailedAddProduct();
 

@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.edit.data.source.cloud;
 
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.network.mapper.DataResponseMapper;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.ProductUploadResultModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
@@ -16,6 +17,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -33,16 +35,24 @@ public class ProductCloud {
         this.tomeProductApi = tomeProductApi;
     }
 
-    //TODO no need to have mapper
-    public Observable<ProductUploadResultModel> addProductSubmit(String productViewModel) {
+    public Observable<ProductViewModel> addProductSubmit(String productViewModel) {
         return tomeProductApi.addProductSubmit(productViewModel)
-                .map(new DataResponseMapper<ProductUploadResultModel>());
+                .map(new Func1<Response<DataResponse<ProductViewModel>>, ProductViewModel>() {
+                    @Override
+                    public ProductViewModel call(Response<DataResponse<ProductViewModel>> dataResponse) {
+                        return dataResponse.body().getData();
+                    }
+                });
     }
 
-    //TODO no need to have mapper
-    public Observable<ProductUploadResultModel> editProduct(String productId, String productViewModel) {
+    public Observable<ProductViewModel> editProduct(String productId, String productViewModel) {
         return tomeProductApi.editProductSubmit(productId, productViewModel)
-                .map(new DataResponseMapper<ProductUploadResultModel>());
+                .map(new Func1<Response<DataResponse<ProductViewModel>>, ProductViewModel>() {
+                    @Override
+                    public ProductViewModel call(Response<DataResponse<ProductViewModel>> dataResponse) {
+                        return dataResponse.body().getData();
+                    }
+                });
     }
 
     public Observable<ProductViewModel> getProductDetail(String productId) {
@@ -53,8 +63,7 @@ public class ProductCloud {
                     public ProductViewModel call(ProductViewModel productViewModel) {
                         ProductVariantViewModel productVariantViewModel = productViewModel.getProductVariant();
                         if (productVariantViewModel != null) {
-                            List<ProductVariantOptionParent> productVariantOptionParentList =
-                                    productVariantViewModel.getVariantOptionParent();
+                            List<ProductVariantOptionParent> productVariantOptionParentList = productVariantViewModel.getVariantOptionParent();
                             Collections.sort(productVariantOptionParentList, new Comparator<ProductVariantOptionParent>() {
                                 @Override
                                 public int compare(ProductVariantOptionParent o1, ProductVariantOptionParent o2) {

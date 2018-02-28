@@ -24,11 +24,11 @@ public class ProductDataSource {
         this.productUploadMapper = productUploadMapper;
     }
 
-    public Observable<ProductUploadResultModel> addProductSubmit(ProductViewModel productViewModel) {
+    public Observable<ProductViewModel> addProductSubmit(ProductViewModel productViewModel) {
         return productCloud.addProductSubmit(productUploadMapper.removeUnusedParam(productViewModel));
     }
 
-    public Observable<ProductUploadResultModel> editProduct(ProductViewModel productViewModel) {
+    public Observable<ProductViewModel> editProduct(ProductViewModel productViewModel) {
         return productCloud.editProduct(productViewModel.getProductId(), productUploadMapper.removeUnusedParam(productViewModel));
     }
 

@@ -23,15 +23,15 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.edit.di.component.DaggerAddProductServiceComponent;
 import com.tokopedia.seller.product.edit.di.module.AddProductserviceModule;
-import com.tokopedia.seller.product.edit.domain.model.AddProductDomainModel;
+import com.tokopedia.seller.product.edit.domain.listener.NotificationCountListener;
 import com.tokopedia.seller.product.edit.view.activity.ProductDraftAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductDraftEditActivity;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 import com.tokopedia.seller.product.edit.view.presenter.AddProductServiceListener;
 import com.tokopedia.seller.product.edit.view.presenter.AddProductServicePresenter;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageActivity;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.inject.Inject;
@@ -44,13 +44,11 @@ public class UploadProductService extends BaseService implements AddProductServi
 
     public static final String ACTION_DRAFT_CHANGED = "com.tokopedia.draft.changed";
 
-    private static final int MAX_NOTIFICATION_PROGRESS = 3;
+    private static final int MAX_NOTIFICATION_PROGRESS = 6;
 
     private NotificationManager notificationManager;
 
-    ArrayList<Long> draftProductIdList = new ArrayList<>();
     HashMap<Long, NotificationCompat.Builder> notificationBuilderMap = new HashMap<>();
-    HashMap<Long, Integer> progressMap = new HashMap<>();
 
     public static Intent getIntent(Context context, long draftProductId, boolean isAdd) {
         Intent intent = new Intent(context, UploadProductService.class);
@@ -76,9 +74,21 @@ public class UploadProductService extends BaseService implements AddProductServi
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        long draftProductId = intent.getLongExtra(DRAFT_PRODUCT_ID, Long.MIN_VALUE);
+        final long draftProductId = intent.getLongExtra(DRAFT_PRODUCT_ID, Long.MIN_VALUE);
         boolean isAdd = intent.getBooleanExtra(IS_ADD, true);
-        presenter.uploadProduct(draftProductId, isAdd);
+        presenter.uploadProduct(draftProductId, isAdd, new NotificationCountListener((int) draftProductId, MAX_NOTIFICATION_PROGRESS) {
+            @Override
+            public void addProgress() {
+                super.addProgress();
+                notificationUpdate(draftProductId, getCurrentCount());
+            }
+
+            @Override
+            public void setProductName(String productName) {
+                super.addProgress();
+                createNotification(draftProductId, productName);
+            }
+        });
         return START_NOT_STICKY;
     }
 
@@ -109,10 +119,8 @@ public class UploadProductService extends BaseService implements AddProductServi
     }
 
     private void removeNotificationFromList(long draftProductId) {
-        draftProductIdList.remove(draftProductId);
         notificationBuilderMap.remove(draftProductId);
-        progressMap.remove(draftProductId);
-        if (draftProductIdList.size() == 0) {
+        if (notificationBuilderMap.size() <= 0) {
             stopSelf();
         }
     }
@@ -121,24 +129,16 @@ public class UploadProductService extends BaseService implements AddProductServi
         return (int) draftProductId;
     }
 
-    @Override
     public void createNotification(long draftProductId, String productName) {
         NotificationCompat.Builder builder = buildBaseNotification(productName);
         Notification notification = buildStartNotification(builder);
 
         notificationManager.notify(TAG, getNotificationIdByDraft(draftProductId), notification);
-
-        draftProductIdList.add(draftProductId);
         notificationBuilderMap.put(draftProductId, builder);
-        progressMap.put(draftProductId, 0);
     }
 
-    @Override
-    public void notificationUpdate(long draftProductId) {
-        //get progress from list and update the progress
-        int stepNotification = progressMap.get(draftProductId);
-        progressMap.put(draftProductId, stepNotification++);
-        Notification notification = buildProgressNotification(draftProductId, stepNotification);
+    public void notificationUpdate(long draftProductId, int currentCount) {
+        Notification notification = buildProgressNotification(draftProductId, currentCount);
         notificationManager.notify(TAG, getNotificationIdByDraft(draftProductId), notification);
     }
 
@@ -170,15 +170,15 @@ public class UploadProductService extends BaseService implements AddProductServi
 
     //TODO no need to send bundle, only need the String action to refresh page
     @Override
-    public void sendSuccessBroadcast(AddProductDomainModel domainModel) {
+    public void sendSuccessBroadcast(ProductViewModel productViewModel) {
         Intent result = new Intent(TkpdState.ProductService.BROADCAST_ADD_PRODUCT);
         Bundle bundle = new Bundle();
         bundle.putInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_DONE);
-        bundle.putString(TkpdState.ProductService.PRODUCT_NAME, domainModel.getProductName());
-        bundle.putString(TkpdState.ProductService.IMAGE_URI, domainModel.getProductPrimaryPic());
-        bundle.putString(TkpdState.ProductService.PRODUCT_URI, domainModel.getProductUrl());
-        bundle.putString(TkpdState.ProductService.PRODUCT_DESCRIPTION, domainModel.getProductDesc());
-        bundle.putString(TkpdState.ProductService.PRODUCT_ID, domainModel.getProductId() + "");
+        bundle.putString(TkpdState.ProductService.PRODUCT_NAME, productViewModel.getProductName());
+//        bundle.putString(TkpdState.ProductService.IMAGE_URI, productViewModel.getProductPrimaryPic());
+        bundle.putString(TkpdState.ProductService.PRODUCT_URI, productViewModel.getProductUrl());
+//        bundle.putString(TkpdState.ProductService.PRODUCT_DESCRIPTION, productViewModel.getProductDesc());
+        bundle.putString(TkpdState.ProductService.PRODUCT_ID, productViewModel.getProductId() + "");
         result.putExtras(bundle);
         sendBroadcast(result);
     }
