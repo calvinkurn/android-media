@@ -100,19 +100,21 @@ public class Utils {
         if (source != null) {
             SearchViewModel searchModelItem;
             for (CategoryViewModel item : source) {
-                List<CategoryItemsViewModel> sourceModels = item.getItems();
-                for (CategoryItemsViewModel sourceItem : sourceModels) {
-                    if (sourceItem.getIsTop() == 1) {
-                        searchModelItem = new SearchViewModel();
-                        searchModelItem.setCityName(sourceItem.getCityName());
-                        searchModelItem.setDisplayName(sourceItem.getDisplayName());
-                        searchModelItem.setImageApp(sourceItem.getImageApp());
-                        searchModelItem.setMaxEndDate(sourceItem.getMaxEndDate());
-                        searchModelItem.setMinStartDate(sourceItem.getMinStartDate());
-                        searchModelItem.setSalesPrice(sourceItem.getSalesPrice());
-                        searchModelItem.setTitle(sourceItem.getTitle());
-                        searchModelItem.setUrl(sourceItem.getUrl());
-                        searchViewModels.add(searchModelItem);
+                if (item.getItems() != null) {
+                    List<CategoryItemsViewModel> sourceModels = item.getItems();
+                    for (CategoryItemsViewModel sourceItem : sourceModels) {
+                        if (sourceItem.getIsTop() == 1) {
+                            searchModelItem = new SearchViewModel();
+                            searchModelItem.setCityName(sourceItem.getCityName());
+                            searchModelItem.setDisplayName(sourceItem.getDisplayName());
+                            searchModelItem.setImageApp(sourceItem.getImageApp());
+                            searchModelItem.setMaxEndDate(sourceItem.getMaxEndDate());
+                            searchModelItem.setMinStartDate(sourceItem.getMinStartDate());
+                            searchModelItem.setSalesPrice(sourceItem.getSalesPrice());
+                            searchModelItem.setTitle(sourceItem.getTitle());
+                            searchModelItem.setUrl(sourceItem.getUrl());
+                            searchViewModels.add(searchModelItem);
+                        }
                     }
                 }
 

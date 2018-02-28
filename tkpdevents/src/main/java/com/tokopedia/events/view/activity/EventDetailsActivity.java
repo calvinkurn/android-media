@@ -62,10 +62,6 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     TextView seemorebuttonTnC;
     @BindView(R2.id.down_arrow)
     ImageView ivArrowSeating;
-    @BindView(R2.id.btn_show_seating)
-    LinearLayout btnShowSeating;
-    @BindView(R2.id.imgv_seating_layout)
-    ImageView imgvSeatingLayout;
     @BindView(R2.id.tv_expandable_tnc)
     ExpandableTextView tvExpandableTermsNCondition;
     @BindView(R2.id.app_bar)
@@ -78,8 +74,6 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     LinearLayout addressView;
     @BindView(R2.id.text_view_title)
     TextView textViewTitle;
-    @BindView(R2.id.seating_layout_card)
-    View seatingLayoutCard;
     @BindView(R2.id.btn_book)
     View btnBook;
     @BindView(R2.id.progress_bar_layout)
@@ -238,7 +232,7 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
 
     @Override
     public void renderSeatmap(String url) {
-        ImageHandler.loadImageCover2(imgvSeatingLayout, url);
+//        ImageHandler.loadImageCover2(imgvSeatingLayout, url);
     }
 
     @Override
@@ -273,8 +267,7 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         }
         tvExpandableTermsNCondition.setText(Html.fromHtml(tncBuffer.toString()));
 
-        if (data.getHasSeatLayout() != 1)
-            seatingLayoutCard.setVisibility(View.GONE);
+//            seatingLayoutCard.setVisibility(View.GONE);
         eventPrice.setText("Rp " + CurrencyUtil.convertToCurrencyString(data.getSalesPrice()));
     }
 
