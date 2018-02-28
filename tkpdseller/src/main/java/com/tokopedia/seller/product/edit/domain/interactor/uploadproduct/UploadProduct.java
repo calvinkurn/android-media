@@ -16,14 +16,14 @@ import rx.functions.Func1;
  */
 
 public class UploadProduct implements Func1<ProductViewModel, Observable<AddProductDomainModel>> {
-    private final long productId;
+    private final long draftProductId;
     private final AddProductNotificationListener listener;
     private final ProductRepository productRepository;
     private UploadImageUseCase<UploadImageModel> uploadImageUseCase;
 
     public UploadProduct(long productId, AddProductNotificationListener listener,
                          ProductRepository productRepository, UploadImageUseCase<UploadImageModel> uploadImageUseCase) {
-        this.productId = productId;
+        this.draftProductId = productId;
         this.listener = listener;
         this.productRepository = productRepository;
         this.uploadImageUseCase = uploadImageUseCase;
@@ -31,14 +31,14 @@ public class UploadProduct implements Func1<ProductViewModel, Observable<AddProd
 
     @Override
     public Observable<AddProductDomainModel> call(final ProductViewModel productViewModel) {
-        NotificationManager notificationManager = new NotificationManager(listener, productId, productViewModel.getProductName());
+        NotificationManager notificationManager = new NotificationManager(listener, draftProductId, productViewModel.getProductName());
         return Observable.just(productViewModel)
                 .doOnNext(notificationManager.getUpdateNotification())
                 .flatMap(new ProceedUploadProduct(notificationManager, productRepository, uploadImageUseCase))
                 .onErrorResumeNext(new Func1<Throwable, Observable<? extends AddProductDomainModel>>() {
                     @Override
                     public Observable<? extends AddProductDomainModel> call(Throwable throwable) {
-                        throw new UploadProductException(String.valueOf(productId), throwable);
+                        throw new UploadProductException(draftProductId, throwable);
                     }
                 });
     }

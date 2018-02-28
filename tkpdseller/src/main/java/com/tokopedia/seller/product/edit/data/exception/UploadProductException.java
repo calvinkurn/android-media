@@ -1,7 +1,5 @@
 package com.tokopedia.seller.product.edit.data.exception;
 
-import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
-
 /**
  * Created by zulfikarrahman on 4/27/17.
  */
@@ -9,21 +7,21 @@ import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 public class UploadProductException extends RuntimeException {
 
     private final Throwable throwable;
-    private String productDraftId;
+    private long productDraftId;
 
     public Throwable getThrowable() {
         return throwable;
     }
 
-    public String getProductDraftId() {
+    public long getProductDraftId() {
         return productDraftId;
     }
 
-    public void setProductDraftId(String productDraftId) {
+    public void setProductDraftId(long productDraftId) {
         this.productDraftId = productDraftId;
     }
 
-    public UploadProductException(String productDraftId, Throwable throwable) {
+    public UploadProductException(long productDraftId, Throwable throwable) {
         super(throwable);
         this.productDraftId = productDraftId;
         this.throwable = throwable;
