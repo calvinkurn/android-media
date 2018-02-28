@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="wrap_content"
+                                             tools:layout_editor_absoluteY="81dp">
+
+    <include
+        android:id="@+id/chat_header"
+        layout="@layout/chat_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <ImageView
+        android:id="@+id/content_image"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nickname"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_marginEnd="@dimen/new_margin_med"
+        android:layout_marginLeft="@dimen/margin_vote_chat"
+        android:layout_marginRight="@dimen/new_margin_med"
+        android:layout_marginStart="@dimen/margin_vote_chat"
+        android:layout_toEndOf="@id/avatar"
+        android:layout_toRightOf="@id/avatar"
+        android:background="@drawable/chat_vote_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="@+id/chat_header"
+        app:layout_constraintTop_toBottomOf="@+id/chat_header"
+
+        tools:src="@drawable/ic_loading_image"/>
+
+</android.support.constraint.ConstraintLayout>

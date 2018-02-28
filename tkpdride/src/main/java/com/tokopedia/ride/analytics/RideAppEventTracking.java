@@ -49,6 +49,7 @@ public interface RideAppEventTracking extends AppEventTracking {
         String EventClickSignup = "click sign up uber";
         String EventOpenInterrupt = "open interrupt screen";
         String EventOpenUberUsingShortcut = "open via shortcut";
+        String EventCreateShortcut = "add shortcut";
     }
 
     interface Label {

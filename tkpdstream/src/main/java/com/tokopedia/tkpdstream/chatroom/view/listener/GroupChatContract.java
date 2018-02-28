@@ -27,7 +27,7 @@ public interface GroupChatContract {
 
         Context getContext();
 
-        void onSuccessGetMessage(List<Visitable> listChat);
+        void onSuccessGetPreviousMessage(List<Visitable> listChat);
 
         void onSuccessGetMessageFirstTime(List<Visitable> listChat, PreviousMessageListQuery previousMessageListQuery);
 
@@ -45,9 +45,15 @@ public interface GroupChatContract {
 
         void onSuccessGetChannelInfo(ChannelInfoViewModel channelInfoViewModel);
 
-        void showLoadingList();
+        void showLoadingPreviousList();
 
-        void dismissLoadingList();
+        void dismissLoadingPreviousList();
+
+        void showReconnectingMessage();
+
+        void dismissReconnectingMessage();
+
+        void onSuccessRefreshReconnect(List<Visitable> listChat, PreviousMessageListQuery previousMessageListQuery);
 
         void onVoteOptionClicked(VoteViewModel element);
 
@@ -78,5 +84,7 @@ public interface GroupChatContract {
         void getChannelInfo(String channelUuid);
 
         void vote(boolean voted, VoteViewModel element);
+
+        void refreshDataAfterReconnect(OpenChannel mChannel);
     }
 }

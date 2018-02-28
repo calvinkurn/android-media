@@ -15,7 +15,7 @@ public class PendingChatViewModel extends BaseChatViewModel implements Visitable
     boolean isInfluencer;
     private boolean isRetry;
 
-    public PendingChatViewModel(String message, String createdAt, String updatedAt,
+    public PendingChatViewModel(String message, long createdAt, long updatedAt,
                                 String messageId, String senderId, String senderName,
                                 String senderIconUrl, boolean isInfluencer) {
         super(message, createdAt, updatedAt, messageId);
@@ -27,7 +27,7 @@ public class PendingChatViewModel extends BaseChatViewModel implements Visitable
     }
 
     public PendingChatViewModel(String message, String senderId, String senderName, String senderIconUrl, boolean isInfluencer) {
-        super(message, "", "", "");
+        super(message, 0, 0, "");
         this.senderId = senderId;
         this.senderName = senderName;
         this.senderIconUrl = senderIconUrl;

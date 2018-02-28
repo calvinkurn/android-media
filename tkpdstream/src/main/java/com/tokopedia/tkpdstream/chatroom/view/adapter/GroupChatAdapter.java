@@ -2,6 +2,7 @@ package com.tokopedia.tkpdstream.chatroom.view.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +12,13 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpdstream.chatroom.view.adapter.typefactory.GroupChatTypeFactory;
+import com.tokopedia.tkpdstream.chatroom.view.viewmodel.BaseChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.UserActionViewModel;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -30,6 +33,7 @@ public class GroupChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     private EmptyModel emptyModel;
     private LoadingModel loadingModel;
     private boolean canLoadMore;
+    private long mLastCursor = 0;
 
     public GroupChatAdapter(GroupChatTypeFactory typeFactory) {
         this.list = new ArrayList<>();
@@ -37,7 +41,8 @@ public class GroupChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         this.typeFactory = typeFactory;
         this.emptyModel = new EmptyModel();
         this.loadingModel = new LoadingModel();
-        this.canLoadMore = false;
+        this.canLoadMore = true;
+        this.mLastCursor = 0;
     }
 
     @Override
@@ -49,8 +54,35 @@ public class GroupChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
+
+        if (list.get(position) instanceof BaseChatViewModel
+                && position == list.size() - 1
+                && !canLoadMore) {
+            ((BaseChatViewModel) list.get(position)).setShowHeaderTime(true);
+            ((BaseChatViewModel) list.get(position)).setHeaderTime(
+                    ((BaseChatViewModel) list.get(position)).getUpdatedAt());
+        } else if (list.get(position) instanceof BaseChatViewModel
+                && position != list.size() - 1
+                && headerTimeIsDifferent(
+                ((BaseChatViewModel) list.get(position)).getUpdatedAt(),
+                ((BaseChatViewModel) list.get(position + 1)).getUpdatedAt())) {
+            ((BaseChatViewModel) list.get(position)).setShowHeaderTime(true);
+            ((BaseChatViewModel) list.get(position)).setHeaderTime(
+                    ((BaseChatViewModel) list.get(position)).getUpdatedAt());
+        } else if (list.get(position) instanceof BaseChatViewModel) {
+            ((BaseChatViewModel) list.get(position)).setShowHeaderTime(false);
+        }
+
         holder.bind(list.get(position));
 
+    }
+
+    private boolean headerTimeIsDifferent(long headerTimeNow, long headerTimeAbovePost) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(headerTimeNow);
+        Calendar newCalendar = Calendar.getInstance();
+        newCalendar.setTimeInMillis(headerTimeAbovePost);
+        return newCalendar.get(Calendar.DAY_OF_YEAR) - calendar.get(Calendar.DAY_OF_YEAR) != 0;
     }
 
     @Override
@@ -67,13 +99,34 @@ public class GroupChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         return new GroupChatAdapter(groupChatTypeFactory);
     }
 
-    public void addList(List<Visitable> listChat) {
+    public void setList(List<Visitable> listChat) {
         this.list.addAll(listChat);
         notifyDataSetChanged();
     }
 
+    public void addListPrevious(List<Visitable> listChat) {
+        int positionStart = this.list.size();
+        this.list.addAll(listChat);
+        notifyItemRangeInserted(positionStart, listChat.size());
+
+        if (positionStart != 0) {
+            notifyItemChanged(positionStart - 1);
+        }
+
+    }
+
+    public void addListNext(List<Visitable> listChat) {
+        this.list.addAll(0, listChat);
+        notifyItemRangeInserted(0, listChat.size());
+        notifyItemChanged(listChat.size());
+
+    }
+
     public void addReply(ChatViewModel chatItem) {
         this.list.add(0, chatItem);
+        if (!TextUtils.isEmpty(chatItem.getMessageId())) {
+            mLastCursor = Long.parseLong(chatItem.getMessageId());
+        }
     }
 
     public void addDummyReply(PendingChatViewModel pendingChatViewModel) {
@@ -100,19 +153,56 @@ public class GroupChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         this.list.add(0, userActionViewModel);
     }
 
-    public void showLoading() {
+    public void showLoadingPrevious() {
         if (!this.list.contains(loadingModel)) {
             this.list.add(list.size(), loadingModel);
             notifyItemInserted(list.size());
         }
     }
 
-    public void dismissLoading() {
+    public void showLoadingNext() {
+        if (!this.list.contains(loadingModel)) {
+            this.list.add(0, loadingModel);
+            notifyItemInserted(0);
+        }
+    }
+
+    public void dismissLoadingNext() {
         this.list.remove(loadingModel);
-        notifyItemRemoved(list.size());
+        notifyItemRemoved(0);
+
     }
 
     public boolean isLoading() {
         return this.list.contains(loadingModel);
     }
+
+    public long getlastCursor() {
+        return mLastCursor;
+    }
+
+    public void setCursor(Visitable chatItem) {
+        if (chatItem instanceof BaseChatViewModel
+                && !TextUtils.isEmpty(((BaseChatViewModel) chatItem).getMessageId())) {
+            mLastCursor = Long.parseLong(((BaseChatViewModel) chatItem).getMessageId());
+        }
+    }
+
+
+    public void dismissLoadingPrevious() {
+        this.list.remove(loadingModel);
+        notifyItemRemoved(list.size());
+
+    }
+
+    public void replaceData(List<Visitable> listChat) {
+        this.list.clear();
+        this.list.addAll(listChat);
+        this.notifyDataSetChanged();
+    }
+
+    public void setCanLoadMore(boolean canLoadMore) {
+        this.canLoadMore = canLoadMore;
+    }
+
 }

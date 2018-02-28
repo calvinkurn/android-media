@@ -33,4 +33,7 @@
     <string name="share_others">Lainnya</string>
 
 
+    <string name="title_poll_started">VOTE TELAH DIMULAI</string>
+    <string name="title_poll_finished">VOTE TELAH BERAKHIR</string>
+
 </resources>

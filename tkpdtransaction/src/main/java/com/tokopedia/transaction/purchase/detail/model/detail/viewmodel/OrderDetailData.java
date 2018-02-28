@@ -9,7 +9,7 @@ import java.util.List;
  * Created by kris on 11/2/17. Tokopedia
  */
 
-public class OrderDetailData implements Parcelable {
+public class OrderDetailData implements Parcelable{
 
     private String orderId;
 
@@ -27,6 +27,10 @@ public class OrderDetailData implements Parcelable {
 
     private String deadlineColorString;
 
+    private boolean isRequestCancel;
+
+    private String requestCancelReason;
+
     private String shopId;
 
     private String shopName;
@@ -35,9 +39,25 @@ public class OrderDetailData implements Parcelable {
 
     private String buyerName;
 
+    private String buyerUserName;
+
+    private String buyerId;
+
+    private String buyerLogo = "";
+
     private String courierName;
 
+    private String shipmentName;
+
+    private String shipmentId;
+
+    private String shipmentServiceName;
+
+    private String shipmentServiceId;
+
     private String shippingAddress;
+
+    private String awb;
 
     private String partialOrderStatus;
 
@@ -59,6 +79,8 @@ public class OrderDetailData implements Parcelable {
 
     private String totalItemQuantity;
 
+    private String totalItemWeight;
+
     private String productPrice;
 
     private String deliveryPrice;
@@ -79,55 +101,12 @@ public class OrderDetailData implements Parcelable {
 
     private String driverVehicle;
 
+    private boolean showInsuranceNotification;
+
+    private String insuranceNotification;
+
     public OrderDetailData() {
     }
-
-    protected OrderDetailData(Parcel in) {
-        orderId = in.readString();
-        orderCode = in.readString();
-        orderStatus = in.readString();
-        resoId = in.readString();
-        orderImage = in.readString();
-        purchaseDate = in.readString();
-        responseTimeLimit = in.readString();
-        deadlineColorString = in.readString();
-        shopId = in.readString();
-        shopName = in.readString();
-        shopLogo = in.readString();
-        buyerName = in.readString();
-        courierName = in.readString();
-        shippingAddress = in.readString();
-        partialOrderStatus = in.readString();
-        preorderPeriod = in.readString();
-        preorderPeriodText = in.readString();
-        isPreorder = in.readByte() != 0;
-        dropshipperName = in.readString();
-        dropshipperPhone = in.readString();
-        invoiceNumber = in.readString();
-        invoiceUrl = in.readString();
-        totalItemQuantity = in.readString();
-        productPrice = in.readString();
-        deliveryPrice = in.readString();
-        insurancePrice = in.readString();
-        additionalFee = in.readString();
-        totalPayment = in.readString();
-        driverName = in.readString();
-        driverPhone = in.readString();
-        driverImage = in.readString();
-        driverVehicle = in.readString();
-    }
-
-    public static final Creator<OrderDetailData> CREATOR = new Creator<OrderDetailData>() {
-        @Override
-        public OrderDetailData createFromParcel(Parcel in) {
-            return new OrderDetailData(in);
-        }
-
-        @Override
-        public OrderDetailData[] newArray(int size) {
-            return new OrderDetailData[size];
-        }
-    };
 
     public String getOrderId() {
         return orderId;
@@ -135,6 +114,14 @@ public class OrderDetailData implements Parcelable {
 
     public void setOrderId(String orderId) {
         this.orderId = orderId;
+    }
+
+    public String getOrderCode() {
+        return orderCode;
+    }
+
+    public void setOrderCode(String orderCode) {
+        this.orderCode = orderCode;
     }
 
     public String getOrderStatus() {
@@ -185,6 +172,22 @@ public class OrderDetailData implements Parcelable {
         this.deadlineColorString = deadlineColorString;
     }
 
+    public boolean isRequestCancel() {
+        return isRequestCancel;
+    }
+
+    public void setRequestCancel(boolean requestCancel) {
+        isRequestCancel = requestCancel;
+    }
+
+    public String getRequestCancelReason() {
+        return requestCancelReason;
+    }
+
+    public void setRequestCancelReason(String requestCancelReason) {
+        this.requestCancelReason = requestCancelReason;
+    }
+
     public String getShopId() {
         return shopId;
     }
@@ -217,6 +220,30 @@ public class OrderDetailData implements Parcelable {
         this.buyerName = buyerName;
     }
 
+    public String getBuyerUserName() {
+        return buyerUserName;
+    }
+
+    public void setBuyerUserName(String buyerUserName) {
+        this.buyerUserName = buyerUserName;
+    }
+
+    public String getBuyerId() {
+        return buyerId;
+    }
+
+    public void setBuyerId(String buyerId) {
+        this.buyerId = buyerId;
+    }
+
+    public String getBuyerLogo() {
+        return buyerLogo;
+    }
+
+    public void setBuyerLogo(String buyerLogo) {
+        this.buyerLogo = buyerLogo;
+    }
+
     public String getCourierName() {
         return courierName;
     }
@@ -225,28 +252,60 @@ public class OrderDetailData implements Parcelable {
         this.courierName = courierName;
     }
 
+    public String getShipmentName() {
+        return shipmentName;
+    }
+
+    public void setShipmentName(String shipmentName) {
+        this.shipmentName = shipmentName;
+    }
+
+    public String getShipmentId() {
+        return shipmentId;
+    }
+
+    public void setShipmentId(String shipmentId) {
+        this.shipmentId = shipmentId;
+    }
+
+    public String getShipmentServiceName() {
+        return shipmentServiceName;
+    }
+
+    public void setShipmentServiceName(String shipmentServiceName) {
+        this.shipmentServiceName = shipmentServiceName;
+    }
+
+    public String getShipmentServiceId() {
+        return shipmentServiceId;
+    }
+
+    public void setShipmentServiceId(String shipmentServiceId) {
+        this.shipmentServiceId = shipmentServiceId;
+    }
+
     public String getShippingAddress() {
         return shippingAddress;
     }
 
-    public void setShippingAddress(String ShippingAddress) {
-        this.shippingAddress = ShippingAddress;
+    public void setShippingAddress(String shippingAddress) {
+        this.shippingAddress = shippingAddress;
+    }
+
+    public String getAwb() {
+        return awb;
+    }
+
+    public void setAwb(String awb) {
+        this.awb = awb;
     }
 
     public String getPartialOrderStatus() {
         return partialOrderStatus;
     }
 
-    public void setPartialOrderStatus(String PartialOrderStatus) {
-        this.partialOrderStatus = PartialOrderStatus;
-    }
-
-    public boolean isPreorder() {
-        return isPreorder;
-    }
-
-    public void setPreorder(boolean preorder) {
-        isPreorder = preorder;
+    public void setPartialOrderStatus(String partialOrderStatus) {
+        this.partialOrderStatus = partialOrderStatus;
     }
 
     public String getPreorderPeriod() {
@@ -263,6 +322,14 @@ public class OrderDetailData implements Parcelable {
 
     public void setPreorderPeriodText(String preorderPeriodText) {
         this.preorderPeriodText = preorderPeriodText;
+    }
+
+    public boolean isPreorder() {
+        return isPreorder;
+    }
+
+    public void setPreorder(boolean preorder) {
+        isPreorder = preorder;
     }
 
     public String getDropshipperName() {
@@ -313,6 +380,14 @@ public class OrderDetailData implements Parcelable {
         this.totalItemQuantity = totalItemQuantity;
     }
 
+    public String getTotalItemWeight() {
+        return totalItemWeight;
+    }
+
+    public void setTotalItemWeight(String totalItemWeight) {
+        this.totalItemWeight = totalItemWeight;
+    }
+
     public String getProductPrice() {
         return productPrice;
     }
@@ -361,14 +436,6 @@ public class OrderDetailData implements Parcelable {
         this.buttonData = buttonData;
     }
 
-    public String getOrderCode() {
-        return orderCode;
-    }
-
-    public void setOrderCode(String orderCode) {
-        this.orderCode = orderCode;
-    }
-
     public String getDriverName() {
         return driverName;
     }
@@ -401,6 +468,23 @@ public class OrderDetailData implements Parcelable {
         this.driverVehicle = driverVehicle;
     }
 
+    public boolean isShowInsuranceNotification() {
+        return showInsuranceNotification;
+    }
+
+    public void setShowInsuranceNotification(boolean showInsuranceNotification) {
+        this.showInsuranceNotification = showInsuranceNotification;
+    }
+
+    public String getInsuranceNotification() {
+        return insuranceNotification;
+    }
+
+    public void setInsuranceNotification(String insuranceNotification) {
+        this.insuranceNotification = insuranceNotification;
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -408,37 +492,114 @@ public class OrderDetailData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(orderId);
-        dest.writeString(orderCode);
-        dest.writeString(orderStatus);
-        dest.writeString(resoId);
-        dest.writeString(orderImage);
-        dest.writeString(purchaseDate);
-        dest.writeString(responseTimeLimit);
-        dest.writeString(deadlineColorString);
-        dest.writeString(shopId);
-        dest.writeString(shopName);
-        dest.writeString(shopLogo);
-        dest.writeString(buyerName);
-        dest.writeString(courierName);
-        dest.writeString(shippingAddress);
-        dest.writeString(partialOrderStatus);
-        dest.writeString(preorderPeriod);
-        dest.writeString(preorderPeriodText);
-        dest.writeByte((byte) (isPreorder ? 1 : 0));
-        dest.writeString(dropshipperName);
-        dest.writeString(dropshipperPhone);
-        dest.writeString(invoiceNumber);
-        dest.writeString(invoiceUrl);
-        dest.writeString(totalItemQuantity);
-        dest.writeString(productPrice);
-        dest.writeString(deliveryPrice);
-        dest.writeString(insurancePrice);
-        dest.writeString(additionalFee);
-        dest.writeString(totalPayment);
-        dest.writeString(driverName);
-        dest.writeString(driverPhone);
-        dest.writeString(driverImage);
-        dest.writeString(driverVehicle);
+        dest.writeString(this.orderId);
+        dest.writeString(this.orderCode);
+        dest.writeString(this.orderStatus);
+        dest.writeString(this.resoId);
+        dest.writeString(this.orderImage);
+        dest.writeString(this.purchaseDate);
+        dest.writeString(this.responseTimeLimit);
+        dest.writeString(this.deadlineColorString);
+        dest.writeByte(this.isRequestCancel ? (byte) 1 : (byte) 0);
+        dest.writeString(this.requestCancelReason);
+        dest.writeString(this.shopId);
+        dest.writeString(this.shopName);
+        dest.writeString(this.shopLogo);
+        dest.writeString(this.buyerName);
+        dest.writeString(this.buyerUserName);
+        dest.writeString(this.buyerId);
+        dest.writeString(this.buyerLogo);
+        dest.writeString(this.courierName);
+        dest.writeString(this.shipmentName);
+        dest.writeString(this.shipmentId);
+        dest.writeString(this.shipmentServiceName);
+        dest.writeString(this.shipmentServiceId);
+        dest.writeString(this.shippingAddress);
+        dest.writeString(this.awb);
+        dest.writeString(this.partialOrderStatus);
+        dest.writeString(this.preorderPeriod);
+        dest.writeString(this.preorderPeriodText);
+        dest.writeByte(this.isPreorder ? (byte) 1 : (byte) 0);
+        dest.writeString(this.dropshipperName);
+        dest.writeString(this.dropshipperPhone);
+        dest.writeString(this.invoiceNumber);
+        dest.writeString(this.invoiceUrl);
+        dest.writeTypedList(this.itemList);
+        dest.writeString(this.totalItemQuantity);
+        dest.writeString(this.totalItemWeight);
+        dest.writeString(this.productPrice);
+        dest.writeString(this.deliveryPrice);
+        dest.writeString(this.insurancePrice);
+        dest.writeString(this.additionalFee);
+        dest.writeString(this.totalPayment);
+        dest.writeParcelable(this.buttonData, flags);
+        dest.writeString(this.driverName);
+        dest.writeString(this.driverPhone);
+        dest.writeString(this.driverImage);
+        dest.writeString(this.driverVehicle);
+        dest.writeByte(this.showInsuranceNotification ? (byte) 1 : (byte) 0);
+        dest.writeString(this.insuranceNotification);
     }
+
+    protected OrderDetailData(Parcel in) {
+        this.orderId = in.readString();
+        this.orderCode = in.readString();
+        this.orderStatus = in.readString();
+        this.resoId = in.readString();
+        this.orderImage = in.readString();
+        this.purchaseDate = in.readString();
+        this.responseTimeLimit = in.readString();
+        this.deadlineColorString = in.readString();
+        this.isRequestCancel = in.readByte() != 0;
+        this.requestCancelReason = in.readString();
+        this.shopId = in.readString();
+        this.shopName = in.readString();
+        this.shopLogo = in.readString();
+        this.buyerName = in.readString();
+        this.buyerUserName = in.readString();
+        this.buyerId = in.readString();
+        this.buyerLogo = in.readString();
+        this.courierName = in.readString();
+        this.shipmentName = in.readString();
+        this.shipmentId = in.readString();
+        this.shipmentServiceName = in.readString();
+        this.shipmentServiceId = in.readString();
+        this.shippingAddress = in.readString();
+        this.awb = in.readString();
+        this.partialOrderStatus = in.readString();
+        this.preorderPeriod = in.readString();
+        this.preorderPeriodText = in.readString();
+        this.isPreorder = in.readByte() != 0;
+        this.dropshipperName = in.readString();
+        this.dropshipperPhone = in.readString();
+        this.invoiceNumber = in.readString();
+        this.invoiceUrl = in.readString();
+        this.itemList = in.createTypedArrayList(OrderDetailItemData.CREATOR);
+        this.totalItemQuantity = in.readString();
+        this.totalItemWeight = in.readString();
+        this.productPrice = in.readString();
+        this.deliveryPrice = in.readString();
+        this.insurancePrice = in.readString();
+        this.additionalFee = in.readString();
+        this.totalPayment = in.readString();
+        this.buttonData = in.readParcelable(ButtonData.class.getClassLoader());
+        this.driverName = in.readString();
+        this.driverPhone = in.readString();
+        this.driverImage = in.readString();
+        this.driverVehicle = in.readString();
+        this.showInsuranceNotification = in.readByte() != 0;
+        this.insuranceNotification = in.readString();
+    }
+
+    public static final Creator<OrderDetailData> CREATOR = new Creator<OrderDetailData>() {
+        @Override
+        public OrderDetailData createFromParcel(Parcel source) {
+            return new OrderDetailData(source);
+        }
+
+        @Override
+        public OrderDetailData[] newArray(int size) {
+            return new OrderDetailData[size];
+        }
+    };
 }

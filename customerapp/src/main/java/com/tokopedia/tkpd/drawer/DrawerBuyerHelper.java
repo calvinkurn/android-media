@@ -34,6 +34,7 @@ import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
@@ -50,8 +51,8 @@ import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
-import com.tokopedia.tkpd.ConsumerRouterApplication;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.home.ParentIndexHome;
 
 import java.util.ArrayList;
 
@@ -437,10 +438,20 @@ public class DrawerBuyerHelper extends DrawerHelper
         adapter.notifyDataSetChanged();
     }
 
+    private void selectTabHome() {
+        if (context instanceof ParentIndexHome) {
+            ((ParentIndexHome) context).changeTabListener()
+                    .onChangeTab(ParentIndexHome.INIT_STATE_FRAGMENT_HOME);
+        }
+    }
+
     @Override
     public void onItemClicked(DrawerItem item) {
         if (item.getId() == selectedPosition) {
-            closeDrawer();
+                if (item.getId() == TkpdState.DrawerPosition.INDEX_HOME) {
+                    selectTabHome();
+                }
+                closeDrawer();
         } else {
             Intent intent;
             switch (item.getId()) {
@@ -578,12 +589,12 @@ public class DrawerBuyerHelper extends DrawerHelper
                     break;
                 case TkpdState.DrawerPosition.INBOX_MESSAGE:
 
-                        intent = ((ConsumerRouterApplication) context.getApplication())
-                                .getGroupChatIntent(context);
-    //                        intent = ((TkpdInboxRouter) context.getApplication()).getInboxMessageIntent
-//                                (context);
-                        context.startActivity(intent);
-                        sendGTMNavigationEvent(AppEventTracking.EventLabel.MESSAGE);
+//                        intent = ((ConsumerRouterApplication) context.getApplication())
+//                                .getGroupChatIntent(context);
+                    intent = ((TkpdInboxRouter) context.getApplication()).getInboxMessageIntent
+                            (context);
+                    context.startActivity(intent);
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.MESSAGE);
 
                     break;
                 default:

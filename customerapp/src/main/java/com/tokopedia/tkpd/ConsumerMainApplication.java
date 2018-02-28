@@ -33,6 +33,7 @@ import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpdstream.common.data.SendbirdKey;
+import com.tokopedia.tkpdstream.common.data.StreamUrl;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -104,6 +105,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TkpdBaseURL.CHAT_WEBSOCKET_DOMAIN = ConsumerAppBaseUrl.CHAT_WEBSOCKET_DOMAIN;
         TkpdBaseURL.MAPS_DOMAIN = ConsumerAppBaseUrl.MAPS_DOMAIN;
         TkpdBaseURL.WALLET_DOMAIN = ConsumerAppBaseUrl.BASE_WALLET;
+        TkpdBaseURL.EVENTS_DOMAIN = ConsumerAppBaseUrl.EVENT_DOMAIN;
         TkpdBaseURL.TOKOPOINT_API_DOMAIN = ConsumerAppBaseUrl.TOKOPOINT_API_DOMAIN;
         FlightUrl.BASE_URL = ConsumerAppBaseUrl.BASE_API_DOMAIN;
         FlightUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
@@ -115,6 +117,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         FlightUrl.CONTACT_US_FLIGHT_PREFIX_GLOBAL = FlightUrl.CONTACT_US + FlightUrl.CONTACT_US_FLIGHT_PREFIX;
         SessionUrl.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         SessionUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
+        StreamUrl.BASE_URL = ConsumerAppBaseUrl.CHAT_DOMAIN;
     }
 
     private void generateConsumerAppNetworkKeys() {
@@ -131,8 +134,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public boolean onClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
-        CommonUtils.dumper("GAv4 MOE NGGAGE on notif click "+deepLinkUri+" bundle "+extras);
-        return handleClick(screenName,extras,deepLinkUri);
+        CommonUtils.dumper("GAv4 MOE NGGAGE on notif click " + deepLinkUri + " bundle " + extras);
+        return handleClick(screenName, extras, deepLinkUri);
     }
 
     @Override
@@ -153,32 +156,35 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public boolean onInAppClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
-        return handleClick(screenName,extras,deepLinkUri);
+        return handleClick(screenName, extras, deepLinkUri);
     }
 
-    private boolean handleClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri){
+    private boolean handleClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
 
-        if(deepLinkUri!=null){
+        if (deepLinkUri != null) {
 
-            if(deepLinkUri.getScheme().equals(Constants.Schemes.HTTP)||deepLinkUri.getScheme().equals(Constants.Schemes.HTTPS))
-            {
+            if (deepLinkUri.getScheme().equals(Constants.Schemes.HTTP) || deepLinkUri.getScheme().equals(Constants.Schemes.HTTPS)) {
                 Intent intent = new Intent(this, DeepLinkActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setData(Uri.parse(deepLinkUri.toString()));
+                if (extras != null) intent.putExtras(extras);
+
                 startActivity(intent);
 
-            }else if(deepLinkUri.getScheme().equals(Constants.Schemes.APPLINKS)){
+            } else if (deepLinkUri.getScheme().equals(Constants.Schemes.APPLINKS)) {
                 Intent intent = new Intent(this, DeeplinkHandlerActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setData(Uri.parse(deepLinkUri.toString()));
+                if (extras != null) intent.putExtras(extras);
+
                 startActivity(intent);
 
-            }else{
+            } else {
                 CommonUtils.dumper("FCM entered no one");
             }
 
             return true;
-        }else{
+        } else {
             return false;
         }
     }

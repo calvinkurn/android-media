@@ -17,28 +17,28 @@ import javax.inject.Inject;
  * @author by nisie on 2/21/18.
  */
 
-public class GetGroupChatMessagesUseCase {
+public class LoadPreviousChatMessagesUseCase {
 
     public static final int PARAM_LIMIT_MESSAGE = 30;
     public static final boolean PARAM_IS_REVERSE = true;
 
     GroupChatMessagesMapper mapper;
 
-    public interface GetGroupChatMessagesListener {
-        void onGetMessages(List<Visitable> map);
+    public interface LoadPreviousChatMessagesListener {
+        void onGetPreviousMessages(List<Visitable> map);
 
-        void onErrorGetMessages(String errorMessage);
+        void onErrorGetPreviousMessages(String errorMessage);
     }
 
     @Inject
-    public GetGroupChatMessagesUseCase(GroupChatMessagesMapper mapper) {
+    public LoadPreviousChatMessagesUseCase(GroupChatMessagesMapper mapper) {
         this.mapper = mapper;
     }
 
 
     public void execute(final Context context,
                         PreviousMessageListQuery previousMessageListQuery,
-                        final GetGroupChatMessagesListener listener) {
+                        final LoadPreviousChatMessagesListener listener) {
         previousMessageListQuery.load(PARAM_LIMIT_MESSAGE, PARAM_IS_REVERSE, new PreviousMessageListQuery
                 .MessageListQueryResult() {
             @Override
@@ -46,15 +46,15 @@ public class GetGroupChatMessagesUseCase {
                 if (e != null) {
                     // Error!
                     e.printStackTrace();
-                    listener.onErrorGetMessages(GroupChatErrorHandler.getSendBirdErrorMessage
+                    listener.onErrorGetPreviousMessages(GroupChatErrorHandler.getSendBirdErrorMessage
                             (context, e, true));
                     return;
                 }
 
                 try {
-                    listener.onGetMessages(mapper.map(list));
+                    listener.onGetPreviousMessages(mapper.map(list));
                 } catch (NullPointerException npe) {
-                    listener.onErrorGetMessages(GroupChatErrorHandler.getErrorMessage
+                    listener.onErrorGetPreviousMessages(GroupChatErrorHandler.getErrorMessage
                             (context, npe, true));
                 }
             }

@@ -25,4 +25,6 @@
     <dimen name="channel_banner_height">104dp</dimen>
     <dimen name="badge_size">10dp</dimen>
     <dimen name="font_label">10sp</dimen>
+    <dimen name="vote_icon_size">13dp</dimen>
+    <dimen name="margin_vote_chat">44dp</dimen>
 </resources>

@@ -45,7 +45,6 @@ import javax.inject.Inject;
 
 public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelTypeFactory> implements ChannelContract.View {
 
-
     private static final int REQUEST_OPEN_GROUPCHAT = 111;
 
     @Inject
@@ -88,10 +87,7 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
 
     @Override
     protected void loadInitialData() {
-//        if(getAdapter().getItemCount() == 0){
-//            showLoading();
-//        }
-//        presenter.getChannelListFirstTime();
+        presenter.getChannelListFirstTime();
 
         List<ChannelViewModel> list = new ArrayList<>();
         String dummyImage = "http://www.behindthevoiceactors.com/_img/games/banner_11.jpg";
@@ -162,10 +158,20 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
 
     }
 
+    @Override
+    public void showLoadingFull() {
+        getAdapter().showLoading();
+    }
+
+    @Override
+    public void dismissLoadingFull() {
+        getAdapter().hideLoading();
+    }
+
 
     @Override
     public void onItemClicked(ChannelViewModel channelViewModel) {
-        goToChannel(channelViewModel);
+                goToChannel(channelViewModel);
 
     }
 
