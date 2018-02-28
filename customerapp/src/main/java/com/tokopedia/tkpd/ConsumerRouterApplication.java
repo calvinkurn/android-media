@@ -1399,17 +1399,17 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public int getLikeActionParam() {
-        return LikeKolPostUseCase.ACTION_LIKE;
+    public void doLikeKolPost(int id, LikeKolPostSubscriber likeKolPostSubscriber) {
+        likeUnlikeKolPost(id, LikeKolPostUseCase.ACTION_LIKE, likeKolPostSubscriber);
     }
 
     @Override
-    public int getUnlikeActionParam() {
-        return LikeKolPostUseCase.ACTION_UNLIKE;
+    public void doUnlikeKolPost(int id, LikeKolPostSubscriber likeKolPostSubscriber) {
+        likeUnlikeKolPost(id, LikeKolPostUseCase.ACTION_UNLIKE, likeKolPostSubscriber);
     }
 
-    @Override
-    public void doLikeKolPost(int id, int action, LikeKolPostSubscriber likeKolPostSubscriber) {
+    private void likeUnlikeKolPost(int id, int action,
+                                   LikeKolPostSubscriber likeKolPostSubscriber) {
         LikeKolPostUseCase likeKolPostUseCase = ContentGetFeedUseCase
                 .newInstance(getContentConsumerComponent())
                 .inject()
@@ -1427,19 +1427,17 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public int getFollowActionParam() {
-        return FollowKolPostUseCase.PARAM_FOLLOW;
+    public void doFollowKolPost(int id, FollowKolPostSubscriber followKolPostSubscriber) {
+        followUnfollowKolPost(id, FollowKolPostUseCase.PARAM_FOLLOW, followKolPostSubscriber);
     }
 
     @Override
-    public int getUnfollowActionParam() {
-        return FollowKolPostUseCase.PARAM_UNFOLLOW;
+    public void doUnfollowKolPost(int id, FollowKolPostSubscriber followKolPostSubscriber) {
+        followUnfollowKolPost(id, FollowKolPostUseCase.PARAM_UNFOLLOW, followKolPostSubscriber);
     }
 
-    @Override
-    public void doFollowKolPost(int id,
-                                int action,
-                                FollowKolPostSubscriber followKolPostSubscriber) {
+    private void followUnfollowKolPost(int id, int action,
+                                       FollowKolPostSubscriber followKolPostSubscriber) {
         FollowKolPostUseCase followKolPostUseCase = ContentGetFeedUseCase
                 .newInstance(getContentConsumerComponent())
                 .inject()

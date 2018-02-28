@@ -21,15 +21,11 @@ public interface KolRouter {
 
     String getKolCommentArgsTotalComment();
 
-    int getLikeActionParam();
+    void doLikeKolPost(int id, LikeKolPostSubscriber likeKolPostSubscriber);
 
-    int getUnlikeActionParam();
+    void doUnlikeKolPost(int id, LikeKolPostSubscriber likeKolPostSubscriber);
 
-    void doLikeKolPost(int id, int action, LikeKolPostSubscriber likeKolPostSubscriber);
+    void doFollowKolPost(int id, FollowKolPostSubscriber followKolPostSubscriber);
 
-    int getFollowActionParam();
-
-    int getUnfollowActionParam();
-
-    void doFollowKolPost(int id, int action, FollowKolPostSubscriber followKolPostSubscriber);
+    void doUnfollowKolPost(int id, FollowKolPostSubscriber followKolPostSubscriber);
 }
