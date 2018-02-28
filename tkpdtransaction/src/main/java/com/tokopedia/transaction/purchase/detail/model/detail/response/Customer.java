@@ -21,6 +21,10 @@ public class Customer {
     @Expose
     String phone;
 
+    @SerializedName("picture")
+    @Expose
+    String picture = "";
+
     public String getId() {
         return id;
     }
@@ -43,5 +47,13 @@ public class Customer {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
     }
 }

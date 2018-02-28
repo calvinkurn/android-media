@@ -41,7 +41,13 @@ public class OrderCourierAdapter extends RecyclerView.Adapter<OrderCourierAdapte
     @Override
     public void onBindViewHolder(OrderCourierViewHolder holder, int position) {
         final CourierViewModel currentViewModel = modelList.get(position);
-        ImageHandler.LoadImage(holder.courierLogo, currentViewModel.getCourierImageUrl());
+        if(currentViewModel.getCourierImageUrl() == null
+                || currentViewModel.getCourierImageUrl().isEmpty())
+            holder.courierLogo.setVisibility(View.GONE);
+        else {
+            holder.courierLogo.setVisibility(View.VISIBLE);
+            ImageHandler.LoadImage(holder.courierLogo, currentViewModel.getCourierImageUrl());
+        }
         holder.courierName.setText(currentViewModel.getCourierName());
         holder.courierCheckBox.setChecked(currentViewModel.isSelected());
         holder.courierPlaceHolder.setOnClickListener(onCourierSelectedListener(currentViewModel));

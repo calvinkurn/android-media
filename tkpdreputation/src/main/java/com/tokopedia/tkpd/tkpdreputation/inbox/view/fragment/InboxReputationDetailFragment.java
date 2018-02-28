@@ -20,6 +20,7 @@ import android.view.Window;
 import com.facebook.CallbackManager;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.apprating.AdvancedAppRatingDialog;
@@ -356,7 +357,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessSendSmiley(int score) {
-        if (score == PUAS_SCORE) {
+        if (GlobalConfig.isSellerApp() && score == PUAS_SCORE) {
             AdvancedAppRatingDialog.show(getActivity(), null);
         }
         refreshPage();

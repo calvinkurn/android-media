@@ -1031,6 +1031,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_remaining_tokopedia">Saldo tersedia</string>
     <string name="msg_payment_success">Terima kasih, Anda telah sukses mengkonfirmasi dengan menggunakan metode pembayaran</string>
     <string name="title_activity_people_tx_details">Detil Transaksi</string>
+    <string name="title_activity_people_tx_history">Detil Status</string>
     <string name="title_activity_cart_shipment">Ubah Pengiriman</string>
     <string name="title_payment_confirmation">KONFIRMASI</string>
     <!-- <string name="title_payment_verification">VERIFIKASI</string> -->
@@ -1134,6 +1135,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_index_favorite">FAVORIT</string>
 
     <string name="title_done">Selesai</string>
+    <string name="title_understand">Mengerti</string>
     <string name="msg_new_update">Harap segera perbarui aplikasi anda</string>
     <string name="msg_server_error">Halaman sebelum nya tidak dapat dibuka karena kendala server, silakan coba beberapa saat lagi</string>
     <string name="title_activity_maintenance_page">Server Maintenance</string>
@@ -2050,7 +2052,7 @@ di Tokopedia Sekarang!</string>
 
     <string name="label_new">Baru</string>
 
-    <string name="drawer_title_home">Beranda</string>
+    <string name="drawer_title_home">Home</string>
     <string name="drawer_title_login">Masuk</string>
     <string name="drawer_title_register">Daftar</string>
     <string name="drawer_title_report">Laporkan</string>
@@ -2103,7 +2105,7 @@ di Tokopedia Sekarang!</string>
     <string name="appupdate_update">Update</string>
     <string name="appupdate_later">Nanti</string>
     <string name="appupdate_close">Tutup</string>
-    <string name="webview_home_navigation_text">Beranda</string>
+    <string name="webview_home_navigation_text">Home</string>
     <string name="webview_help_menu_text">Bantuan</string>
     <string name="webview_toolbar_menu_text">Toolbar Menu</string>
     <string name="title_activity_promo">Promo</string>
@@ -2173,6 +2175,7 @@ di Tokopedia Sekarang!</string>
     <string name="referral_phone_number_verify_screen_name">Phone Number Verification</string>
     <string name="phone_not_verified_error_message">Silakan verifikasi nomor handphone Anda untuk masuk ke halaman berikutnya.</string>
     <string name="copy_coupon_code_text">Kode voucher telah tersalin</string>
+    <string name="cek_label"> Cek - </string>
 
 
     <!--QR CODE-->
