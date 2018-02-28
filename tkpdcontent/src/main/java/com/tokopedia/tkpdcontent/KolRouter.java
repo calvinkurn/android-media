@@ -3,7 +3,7 @@ package com.tokopedia.tkpdcontent;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.usecase.UseCase;
+import com.tokopedia.tkpdcontent.feature.profile.view.subscriber.LikeKolPostSubscriber;
 
 /**
  * @author by nisie on 2/6/18.
@@ -20,7 +20,7 @@ public interface KolRouter {
 
     String getKolCommentArgsTotalComment();
 
-    UseCase getLikeKolUseCase();
+    void doLikeKolPost(int id, int action, LikeKolPostSubscriber likeKolPostSubscriber);
 
-    UseCase getFollowKolUseCase();
+    void doFollowKolPost();
 }

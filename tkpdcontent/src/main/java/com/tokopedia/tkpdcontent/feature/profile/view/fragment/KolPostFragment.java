@@ -122,6 +122,11 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     }
 
     @Override
+    public KolRouter getKolRouter() {
+        return kolRouter;
+    }
+
+    @Override
     public void showLoading() {
         adapter.showLoading();
     }

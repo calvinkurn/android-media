@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.tkpdcontent.feature.profile.domain.interactor.GetProfileKolDataUseCase;
 import com.tokopedia.tkpdcontent.feature.profile.view.listener.KolPostListener;
 import com.tokopedia.tkpdcontent.feature.profile.view.subscriber.GetProfileKolDataSubscriber;
+import com.tokopedia.tkpdcontent.feature.profile.view.subscriber.LikeKolPostSubscriber;
 
 import javax.inject.Inject;
 
@@ -45,7 +46,9 @@ public class KolPostPresenter extends BaseDaggerPresenter<KolPostListener.View>
     //TODO milhamj do something with these actions
     @Override
     public void followKol(int id, int rowNumber, KolPostListener.View kolListener) {
-
+        getView().getKolRouter().doLikeKolPost(
+                null,
+                new LikeKolPostSubscriber(getView(), rowNumber));
     }
 
     @Override
