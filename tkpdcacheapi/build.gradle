@@ -2,11 +2,6 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.neenbedankt.android-apt'
 apply from: '../buildconfig/module.gradle'
 
-def getTkpdUseCase() {
-    return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.usecase : project(':tkpdusecase');
-}
-
 apt {
     arguments {
         targetModuleName 'TkpdCacheApi'
@@ -14,7 +9,8 @@ apt {
 }
 
 dependencies {
-    compile project(':tkpdusecase')
+
+    compile project(rootProject.ext.features.useCase)
 
     compile rootProject.ext.networkDependencies.retrofit
 
