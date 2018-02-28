@@ -35,6 +35,7 @@ public class FlightSearchReturnFragment extends FlightSearchFragment implements 
     private TextView duration;
     private String selectedFlightDeparture;
 
+
     public static FlightSearchReturnFragment newInstance(FlightSearchPassDataViewModel passDataViewModel, String selectedDepartureID) {
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_PASS_DATA, passDataViewModel);
@@ -104,6 +105,12 @@ public class FlightSearchReturnFragment extends FlightSearchFragment implements 
     @Override
     public void onItemClicked(FlightSearchViewModel flightSearchViewModel) {
         flightSearchReturnPresenter.onFlightSearchSelected(selectedFlightDeparture, flightSearchViewModel);
+    }
+
+
+    @Override
+    public void onItemClicked(FlightSearchViewModel flightSearchViewModel, int adapterPosition) {
+        flightSearchReturnPresenter.onFlightSearchSelected(selectedFlightDeparture, flightSearchViewModel, adapterPosition);
     }
 
     @Override

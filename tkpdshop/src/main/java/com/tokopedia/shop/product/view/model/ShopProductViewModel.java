@@ -1,13 +1,13 @@
 package com.tokopedia.shop.product.view.model;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.shop.product.view.adapter.ShopProductTypeFactory;
+import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
 
 /**
  * Created by nathan on 2/6/18.
  */
 
-public class ShopProductViewModel implements Visitable<ShopProductTypeFactory> {
+public class ShopProductViewModel implements Visitable<ShopProductAdapterTypeFactory> {
 
     private String id;
     private String name;
@@ -110,7 +110,7 @@ public class ShopProductViewModel implements Visitable<ShopProductTypeFactory> {
     }
 
     @Override
-    public int type(ShopProductTypeFactory typeFactory) {
+    public int type(ShopProductAdapterTypeFactory typeFactory) {
         return typeFactory.type(this);
     }
 }

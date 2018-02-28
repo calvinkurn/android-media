@@ -6,7 +6,12 @@
     android:background="@color/white"
     android:baselineAligned="false"
     android:orientation="horizontal"
-    android:padding="@dimen/padding_small">
+    android:paddingBottom="@dimen/padding_small"
+    android:paddingEnd="@dimen/padding_med"
+    android:paddingLeft="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/padding_med"
+    android:paddingStart="@dimen/activity_vertical_margin"
+    android:paddingTop="@dimen/padding_small">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -23,36 +28,61 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/label_transaction_date_purchase"
-                android:textStyle="bold" />
+                android:textColor="@color/label_text_color" />
 
             <TextView
                 android:id="@+id/description_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_vs"
-                android:textColor="@color/label_text_color"
+                android:textColor="@color/black_70"
                 tools:text="1 Sep 2017" />
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/buyer_description_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_small"
-            android:orientation="vertical">
+            android:layout_marginTop="@dimen/margin_med"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/label_purchase_of"
-                android:textStyle="bold" />
+                android:textColor="@color/label_text_color" />
 
             <TextView
                 android:id="@+id/description_buyer_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_vs"
-                android:textColor="@color/label_text_color"
+                android:textColor="@color/black_70"
+                tools:text="Ryan Handy" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/seller_description_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_med"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/label_seller_shop"
+                android:textColor="@color/label_text_color" />
+
+            <TextView
+                android:id="@+id/description_shop_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black_70"
                 tools:text="Ryan Handy" />
 
         </LinearLayout>
@@ -60,21 +90,21 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginTop="@dimen/margin_med"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/label_order_shipping_address"
-                android:textStyle="bold" />
+                android:textColor="@color/label_text_color" />
 
             <TextView
                 android:id="@+id/description_shipping_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_vs"
-                android:textColor="@color/label_text_color"
+                android:textColor="@color/black_70"
+                android:textIsSelectable="true"
                 tools:text="I make you break you move I take love is the answer so they said, but if I went awaaaaay what would you say would be enough to make you stay" />
 
         </LinearLayout>
@@ -100,13 +130,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/label_response_limit"
-                android:textStyle="bold" />
+                android:textColor="@color/label_text_color" />
 
             <TextView
                 android:id="@+id/description_response_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_vvvs"
                 android:background="@drawable/dark_blue_rounded_label"
                 android:padding="@dimen/padding_vvs"
                 android:textColor="@color/white"
@@ -126,14 +155,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/label_order_detail_shipping_courier"
-                android:textStyle="bold" />
+                android:textColor="@color/label_text_color" />
 
             <TextView
                 android:id="@+id/description_courier_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_vs"
-                android:textColor="@color/label_text_color"
+                android:textColor="@color/black_70"
                 tools:text="Wahana Express" />
 
         </LinearLayout>
@@ -143,21 +171,20 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_med"
             android:layout_marginStart="@dimen/margin_med"
-            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginTop="@dimen/margin_med"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/label_accept_partial_order"
-                android:textStyle="bold" />
+                android:textColor="@color/label_text_color" />
 
             <TextView
                 android:id="@+id/description_partial_order_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_vs"
-                android:textColor="@color/label_text_color"
+                android:textColor="@color/black_70"
                 tools:text="Tidak" />
 
         </LinearLayout>
@@ -168,21 +195,20 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_med"
             android:layout_marginStart="@dimen/margin_med"
-            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginTop="@dimen/margin_med"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/label_tag_product_item_cart_preorder"
-                android:textStyle="bold" />
+                android:textColor="@color/label_text_color" />
 
             <TextView
                 android:id="@+id/preorder_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_vs"
-                android:textColor="@color/label_text_color"
+                android:textColor="@color/black_70"
                 tools:text="Tidak" />
 
         </LinearLayout>
@@ -192,21 +218,20 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_med"
             android:layout_marginStart="@dimen/margin_med"
-            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginTop="@dimen/margin_med"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/label_dropshipper"
-                android:textStyle="bold" />
+                android:textColor="@color/label_text_color" />
 
             <TextView
                 android:id="@+id/dropshipper_mode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_vs"
-                android:textColor="@color/label_text_color"
+                android:textColor="@color/black_70"
                 tools:text="Tidak" />
 
         </LinearLayout>
@@ -217,22 +242,22 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_med"
             android:layout_marginStart="@dimen/margin_med"
-            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginTop="@dimen/margin_med"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/label_dropshipper_name"
-                android:textStyle="bold" />
+                android:textColor="@color/label_text_color" />
 
             <TextView
                 android:id="@+id/dropshipper_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_vs"
-                android:textColor="@color/label_text_color"
-                tools:text="Tidak" />
+                android:textColor="@color/black_70"
+                android:textIsSelectable="true"
+                tools:text="Obama" />
 
         </LinearLayout>
 
@@ -242,22 +267,22 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_med"
             android:layout_marginStart="@dimen/margin_med"
-            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginTop="@dimen/margin_med"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/label_dropshipper_number"
-                android:textStyle="bold" />
+                android:textColor="@color/label_text_color" />
 
             <TextView
                 android:id="@+id/dropshipper_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_vs"
-                android:textColor="@color/label_text_color"
-                tools:text="Tidak" />
+                android:textColor="@color/black_70"
+                android:textIsSelectable="true"
+                tools:text="081269696969" />
 
         </LinearLayout>
 

@@ -1,5 +1,5 @@
-include ':tkpdinterface'
 include ':customerapp'
+include ':tkpdhome'
 include ':react-native-codepush'
 include ':tkpdloyalty'
 include ':tkpdreactnative'

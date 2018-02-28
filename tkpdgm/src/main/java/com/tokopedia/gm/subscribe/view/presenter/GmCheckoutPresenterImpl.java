@@ -1,6 +1,5 @@
 package com.tokopedia.gm.subscribe.view.presenter;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException;
 import com.tokopedia.gm.subscribe.domain.cart.exception.GmVoucherCheckException;

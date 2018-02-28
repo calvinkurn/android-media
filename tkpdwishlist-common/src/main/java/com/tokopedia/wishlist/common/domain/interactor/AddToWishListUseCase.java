@@ -30,9 +30,9 @@ public class AddToWishListUseCase extends UseCase<Boolean> {
         return wishListCommonRepository.addToWishList(userId, productId);
     }
 
-    public static RequestParams createRequestParam(String shopId, String productId) {
+    public static RequestParams createRequestParam(String userId, String productId) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(USER_ID, shopId);
+        requestParams.putString(USER_ID, userId);
         requestParams.putObject(PRODUCT_ID, productId);
         return requestParams;
     }

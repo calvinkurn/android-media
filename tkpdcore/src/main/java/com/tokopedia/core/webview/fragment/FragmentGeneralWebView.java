@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
 import android.webkit.SslErrorHandler;
+import android.webkit.ValueCallback;
 import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -26,18 +28,17 @@ import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.service.DownloadService;
-import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.TkpdWebView;
-import com.tokopedia.core.var.TkpdState;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Use webview fragment from tkpd abstraction
@@ -58,6 +59,9 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     private OnFragmentInteractionListener mListener;
     private ProgressBar progressBar;
     private String url;
+    private ValueCallback<Uri> callbackBeforeL;
+    public ValueCallback<Uri[]> callbackAfterL;
+    public final static int ATTACH_FILE_REQUEST = 1;
 
     public FragmentGeneralWebView() {
         // Required empty public constructor
@@ -108,6 +112,56 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         WebViewGeneral.getSettings().setDomStorageEnabled(true);
         WebViewGeneral.setWebViewClient(new MyWebClient());
         WebViewGeneral.setWebChromeClient(new WebChromeClient() {
+            //For Android 3.0+
+            public void openFileChooser(ValueCallback<Uri> uploadMsg) {
+                callbackBeforeL = uploadMsg;
+                Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+                i.addCategory(Intent.CATEGORY_OPENABLE);
+                i.setType("*/*");
+                startActivityForResult(Intent.createChooser(i, "File Chooser"), ATTACH_FILE_REQUEST);
+            }
+
+            // For Android 3.0+, above method not supported in some android 3+ versions, in such case we use this
+            public void openFileChooser(ValueCallback uploadMsg, String acceptType) {
+                callbackBeforeL = uploadMsg;
+                Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+                i.addCategory(Intent.CATEGORY_OPENABLE);
+                i.setType("*/*");
+                startActivityForResult(
+                        Intent.createChooser(i, "File Browser"), ATTACH_FILE_REQUEST);
+            }
+
+            //For Android 4.1+
+            public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
+                callbackBeforeL = uploadMsg;
+                Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+                i.addCategory(Intent.CATEGORY_OPENABLE);
+                i.setType("*/*");
+                startActivityForResult(Intent.createChooser(i, "File Chooser"), ATTACH_FILE_REQUEST);
+            }
+
+            //For Android 5.0+
+            public boolean onShowFileChooser(
+                    WebView webView, ValueCallback<Uri[]> filePathCallback,
+                    WebChromeClient.FileChooserParams fileChooserParams) {
+                if (callbackAfterL != null) {
+                    callbackAfterL.onReceiveValue(null);
+                }
+                callbackAfterL = filePathCallback;
+
+                Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
+                contentSelectionIntent.setType("*/*");
+                Intent[] intentArray = new Intent[0];
+
+                Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
+                chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
+                chooserIntent.putExtra(Intent.EXTRA_TITLE, "File Chooser");
+                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
+                startActivityForResult(chooserIntent, ATTACH_FILE_REQUEST);
+                return true;
+
+            }
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 //  progressBar.setProgress(newProgress);
@@ -248,9 +302,8 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     public boolean onOverrideUrl(String url) {
         String query = Uri.parse(url).getQueryParameter(LOGIN_TYPE);
         if (query != null && query.equals(QUERY_PARAM_PLUS)) {
-            Intent intent = OldSessionRouter.getLoginActivityIntent(getActivity());
-            intent.putExtra("login", DownloadService.GOOGLE);
-            intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+            Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext())
+                    .getLoginGoogleIntent(getActivity());
             startActivityForResult(intent, LOGIN_GPLUS);
             return true;
         }
@@ -265,6 +318,32 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (Build.VERSION.SDK_INT >= 21) {
+            Uri[] results = null;
+            //Check if response is positive
+            if (resultCode == Activity.RESULT_OK) {
+                if (requestCode == ATTACH_FILE_REQUEST) {
+                    if (null == callbackAfterL) {
+                        return;
+                    }
+
+                    String dataString = data.getDataString();
+                    if (dataString != null) {
+                        results = new Uri[]{Uri.parse(dataString)};
+
+                    }
+                }
+            }
+            callbackAfterL.onReceiveValue(results);
+            callbackAfterL = null;
+        } else {
+            if (requestCode == ATTACH_FILE_REQUEST) {
+                if (null == callbackBeforeL) return;
+                Uri result = data == null || resultCode != RESULT_OK ? null : data.getData();
+                callbackBeforeL.onReceiveValue(result);
+                callbackBeforeL = null;
+            }
+        }
         if (requestCode == LOGIN_GPLUS) {
             String historyUrl = "";
             WebBackForwardList mWebBackForwardList = WebViewGeneral.copyBackForwardList();

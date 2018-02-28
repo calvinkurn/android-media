@@ -30,6 +30,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         implements BaseListViewListener<T>, BaseListAdapter.OnAdapterInteractionListener<T>,
         ErrorNetworkModel.OnRetryListener{
 
+    private static final int DEFAULT_INITIAL_PAGE = 1;
     private BaseListAdapter<T, F> adapter;
     private SwipeRefreshLayout swipeToRefresh;
     private SnackbarRetry snackBarRetry;
@@ -115,13 +116,17 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         // instead, we just set the flag, so that the data is still there
         // do this flag check on renderList.
         isLoadingInitialData = true;
-        loadData(1);
+        loadData(getDefaultInitialPage());
     }
 
     /**
      * need for data with paging, page = 1 is initial load
      */
     public abstract void loadData(int page);
+
+    public int getDefaultInitialPage() {
+        return DEFAULT_INITIAL_PAGE;
+    }
 
     protected boolean callInitialLoadAutomatically() {
         return true;

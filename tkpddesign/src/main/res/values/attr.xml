@@ -190,4 +190,11 @@
         <attr name="shadowBottom" format="boolean"/>
     </declare-styleable>
 
+    <declare-styleable name="Tabs">
+        <attr name="tabType" format="enum">
+            <enum name="main" value="1"/>
+            <enum name="secondary" value="2"/>
+        </attr>
+    </declare-styleable>
+
 </resources>

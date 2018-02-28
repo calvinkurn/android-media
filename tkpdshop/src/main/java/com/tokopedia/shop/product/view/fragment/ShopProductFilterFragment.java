@@ -13,11 +13,9 @@ import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.view.activity.ShopProductFilterActivity;
-import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
-import com.tokopedia.shop.product.view.adapter.ShopProductTypeFactory;
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseSelectedViewHolder;
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseUnselectedViewHolder;
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
+import com.tokopedia.shop.product.view.adapter.ShopProductFilterAdapterTypeFactory;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductFilterSelectedViewHolder;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductFilterUnselectedViewHolder;
 import com.tokopedia.shop.product.view.listener.ShopProductFilterFragmentListener;
 import com.tokopedia.shop.product.view.model.ShopProductFilterModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
@@ -31,14 +29,14 @@ import javax.inject.Inject;
  * Created by normansyahputa on 2/23/18.
  */
 
-public class ShopProductFilterFragment extends BaseListFragment<ShopProductViewModel, ShopProductTypeFactory> {
+public class ShopProductFilterFragment extends BaseListFragment<ShopProductViewModel, ShopProductFilterAdapterTypeFactory> {
 
     @Inject
     ShopProductFilterPresenter shopProductFilterPresenter;
     private String sortName;
     private ShopProductFilterFragmentListener shopFilterFragmentListener;
 
-    public static ShopProductFilterFragment createInstance(String sortName){
+    public static ShopProductFilterFragment createInstance(String sortName) {
         ShopProductFilterFragment fragment = new ShopProductFilterFragment();
         Bundle arguments = new Bundle();
         arguments.putString(ShopProductFilterActivity.SORT_NAME, sortName);
@@ -62,8 +60,8 @@ public class ShopProductFilterFragment extends BaseListFragment<ShopProductViewM
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if(context != null && context instanceof ShopProductFilterFragmentListener){
-            shopFilterFragmentListener = (ShopProductFilterFragmentListener)context;
+        if (context != null && context instanceof ShopProductFilterFragmentListener) {
+            shopFilterFragmentListener = (ShopProductFilterFragmentListener) context;
         }
     }
 
@@ -84,41 +82,34 @@ public class ShopProductFilterFragment extends BaseListFragment<ShopProductViewM
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if(getArguments()!= null && savedInstanceState == null){
+        if (getArguments() != null && savedInstanceState == null) {
             sortName = getArguments().getString(ShopProductFilterActivity.SORT_NAME);
         }
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
-    protected ShopProductTypeFactory getAdapterTypeFactory() {
-        return new ShopProductAdapterTypeFactory(new ShopProductAdapterTypeFactory.TypeFactoryListener<ShopProductViewModel>() {
+    protected ShopProductFilterAdapterTypeFactory getAdapterTypeFactory() {
+        return new ShopProductFilterAdapterTypeFactory(new ShopProductFilterAdapterTypeFactory.TypeFactoryListener<ShopProductViewModel>() {
             @Override
             public int getType(ShopProductViewModel type) {
                 if (type instanceof ShopProductFilterModel) {
                     ShopProductFilterModel filterModel = (ShopProductFilterModel) type;
                     if (sortName != null && sortName.equalsIgnoreCase(filterModel.getValue())) {
-                        return ShopProductEtalaseSelectedViewHolder.LAYOUT;
+                        return ShopProductFilterSelectedViewHolder.LAYOUT;
                     } else {
-                        return ShopProductEtalaseUnselectedViewHolder.LAYOUT;
+                        return ShopProductFilterUnselectedViewHolder.LAYOUT;
                     }
                 }
                 return 0;
-            }
-        }, new ShopProductViewHolder.ShopProductVHListener() {
-            @Override
-            public void onWishlist(ShopProductViewModel model) {
-
             }
         });
     }
 
     @Override
     public void onItemClicked(ShopProductViewModel shopProductViewModel) {
-        if(shopFilterFragmentListener != null && shopProductViewModel instanceof ShopProductFilterModel){
-
+        if (shopFilterFragmentListener != null && shopProductViewModel instanceof ShopProductFilterModel) {
             ShopProductFilterModel filterModel = (ShopProductFilterModel) shopProductViewModel;
-
             shopFilterFragmentListener.select(filterModel.getKey(), filterModel.getValue());
         }
     }

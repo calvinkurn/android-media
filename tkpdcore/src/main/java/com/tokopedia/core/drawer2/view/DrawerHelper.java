@@ -15,6 +15,7 @@ import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
@@ -36,6 +37,7 @@ import java.util.ArrayList;
 
 public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemListener {
     public static final String DRAWER_CACHE = "DRAWER_CACHE";
+    public static final int REQUEST_LOGIN = 345;
     protected LocalCacheHandler drawerCache;
 
     public DrawerAdapter adapter;
@@ -66,35 +68,17 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
 
     public abstract void initDrawer(Activity activity);
 
-//    public abstract ToolbarBuyerHandler.OnDrawerToggleClickListener onDrawerToggleClick();
-
     @Override
     public void onItemClicked(DrawerItem item) {
         Intent intent;
         switch (item.getId()) {
             case TkpdState.DrawerPosition.LOGIN:
                 intent = ((TkpdCoreRouter) context.getApplication()).getLoginIntent(context);
-                Intent intentHome = ((TkpdCoreRouter) context.getApplication()).getHomeIntent
-                        (context);
-                intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                context.startActivities(new Intent[]
-                        {
-                                intentHome,
-                                intent
-                        });
-                context.finish();
+                context.startActivityForResult(intent, REQUEST_LOGIN);
                 break;
             case TkpdState.DrawerPosition.REGISTER:
                 intent = ((TkpdCoreRouter) context.getApplication()).getRegisterIntent(context);
-                intentHome = ((TkpdCoreRouter) context.getApplication()).getHomeIntent
-                        (context);
-                intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                context.startActivities(new Intent[]
-                        {
-                                intentHome,
-                                intent
-                        });
-                context.finish();
+                context.startActivityForResult(intent, REQUEST_LOGIN);
                 break;
             case TkpdState.DrawerPosition.INBOX_MESSAGE:
                 if (context.getApplication() instanceof TkpdInboxRouter) {
@@ -120,14 +104,6 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                 intent = InboxRouter.getInboxTicketActivityIntent(context);
                 context.startActivity(intent);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.HELP);
-                break;
-            case TkpdState.DrawerPosition.RESOLUTION_CENTER:
-                if (context.getApplication() instanceof TkpdCoreRouter) {
-                    context.startActivity(((TkpdCoreRouter) context.getApplication())
-                            .getResolutionCenterIntent(context));
-                    sendGTMNavigationEvent(AppEventTracking.EventLabel.RESOLUTION_CENTER);
-
-                }
                 break;
             case TkpdState.DrawerPosition.DEVELOPER_OPTIONS:
                 startIntent(context, DeveloperOptions.class);

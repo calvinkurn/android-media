@@ -50,7 +50,7 @@ public class TruecallerActivity extends Activity implements ITrueCallback {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if(mTrueClient.onActivityResult(requestCode,resultCode,data)){
+        if (mTrueClient.onActivityResult(requestCode, resultCode, data)) {
             return;
         }
 

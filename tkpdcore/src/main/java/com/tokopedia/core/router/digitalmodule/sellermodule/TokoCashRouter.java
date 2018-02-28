@@ -19,6 +19,4 @@ public interface TokoCashRouter {
 
     //TODO will continue using this method in next sprint
     Intent goToHistoryTokoCash(Context context);
-
-    Intent goToQRScannerTokoCash(Context context);
 }

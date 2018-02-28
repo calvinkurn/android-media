@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:id="@+id/view_empty_state_with_reset"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/margin_small"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="top"
+        android:layout_marginTop="@dimen/margin_med">
+
+        <ImageView
+            android:src="@drawable/ic_empty_search"
+            android:layout_width="match_parent"
+            android:layout_height="150dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/black_54"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:text="@string/string_empty_inbox_2_title"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/black_54"
+            android:layout_marginTop="@dimen/margin_vs"
+            android:gravity="center"
+            android:text="@string/string_empty_inbox_2_desc"/>
+
+        <Button
+            android:id="@+id/btn_reset_filter"
+            android:layout_marginTop="@dimen/margin_med"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:text="@string/string_reset_filter"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:background="@drawable/bg_button_enable"
+            />
+    </LinearLayout>
+</FrameLayout>
