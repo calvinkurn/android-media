@@ -229,4 +229,22 @@ public class CartListInteractor implements ICartListInteractor {
                         .subscribe(subscriber)
         );
     }
+
+    @Override
+    public void getShipmentForm(Subscriber<CartShipmentAddressFormData> subscriber,
+                                TKPDMapParam<String, String> param) {
+        compositeSubscription.add(
+                cartRepository.getShipmentAddressForm(param)
+                        .map(new Func1<ShipmentAddressFormDataResponse, CartShipmentAddressFormData>() {
+                            @Override
+                            public CartShipmentAddressFormData call(ShipmentAddressFormDataResponse shipmentAddressFormDataResponse) {
+                                return shipmentMapper.convertToShipmentAddressFormData(shipmentAddressFormDataResponse);
+                            }
+                        })
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(subscriber)
+        );
+    }
 }

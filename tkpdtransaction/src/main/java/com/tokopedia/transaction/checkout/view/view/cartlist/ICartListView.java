@@ -37,15 +37,15 @@ public interface ICartListView extends IBaseView {
     void renderErrorTimeoutConnectionActionDeleteCartData(String message);
 
 
-    void renderToShipmentSingleAddressSuccess(CartShipmentAddressFormData shipmentAddressFormData);
+    void renderToShipmentFormSuccess(CartShipmentAddressFormData shipmentAddressFormData);
 
-    void renderErrorToShipmentSingleAddress(String message);
+    void renderErrorToShipmentForm(String message);
 
-    void renderErrorHttpToShipmentSingleAddress(String message);
+    void renderErrorHttpToShipmentForm(String message);
 
-    void renderErrorNoConnectionToShipmentSingleAddress(String message);
+    void renderErrorNoConnectionToShipmentForm(String message);
 
-    void renderErrorTimeoutConnectionToShipmentSingleAddress(String message);
+    void renderErrorTimeoutConnectionToShipmentForm(String message);
 
 
     void renderToShipmentMultipleAddressSuccess(CartListData cartListData, RecipientAddressModel selectedAddress);

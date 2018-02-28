@@ -412,32 +412,42 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     }
 
     @Override
-    public void renderToShipmentSingleAddressSuccess(CartShipmentAddressFormData shipmentAddressFormData) {
-        Intent intent = CartShipmentActivity.createInstanceSingleAddress(
-                getActivity(),
-                shipmentAddressFormData,
-                this.cartListData.getCartPromoSuggestion()
-        );
-        startActivityForResult(intent, CartShipmentActivity.REQUEST_CODE);
-    }
-
-    @Override
-    public void renderErrorToShipmentSingleAddress(String message) {
-
-    }
-
-    @Override
-    public void renderErrorHttpToShipmentSingleAddress(String message) {
-
-    }
-
-    @Override
-    public void renderErrorNoConnectionToShipmentSingleAddress(String message) {
+    public void renderToShipmentFormSuccess(CartShipmentAddressFormData shipmentAddressFormData) {
+        if (shipmentAddressFormData.isMultiple()) {
+            Intent intent = CartShipmentActivity.createInstanceMultipleAddress(
+                    getActivity(),
+                    shipmentAddressFormData,
+                    this.cartListData.getCartPromoSuggestion()
+            );
+            startActivityForResult(intent, CartShipmentActivity.REQUEST_CODE);
+        } else {
+            Intent intent = CartShipmentActivity.createInstanceSingleAddress(
+                    getActivity(),
+                    shipmentAddressFormData,
+                    this.cartListData.getCartPromoSuggestion()
+            );
+            startActivityForResult(intent, CartShipmentActivity.REQUEST_CODE);
+        }
 
     }
 
     @Override
-    public void renderErrorTimeoutConnectionToShipmentSingleAddress(String message) {
+    public void renderErrorToShipmentForm(String message) {
+
+    }
+
+    @Override
+    public void renderErrorHttpToShipmentForm(String message) {
+
+    }
+
+    @Override
+    public void renderErrorNoConnectionToShipmentForm(String message) {
+
+    }
+
+    @Override
+    public void renderErrorTimeoutConnectionToShipmentForm(String message) {
 
     }
 
@@ -691,6 +701,10 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
                         CartShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA
                 );
                 dPresenter.processToShipmentMultipleAddress(selectedAddress);
+            }
+        } else if (requestCode == MultipleAddressFormActivity.REQUEST_CODE) {
+            if (resultCode == MultipleAddressFormActivity.RESULT_CODE_SUCCESS_SET_SHIPPING) {
+                dPresenter.processToShipmentForm();
             }
         }
     }
