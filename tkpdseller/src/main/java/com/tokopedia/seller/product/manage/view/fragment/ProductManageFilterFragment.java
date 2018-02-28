@@ -24,8 +24,9 @@ import com.tokopedia.seller.common.bottomsheet.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.product.category.view.activity.CategoryDynamicPickerActivity;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
-import com.tokopedia.seller.product.etalase.view.activity.EtalaseDynamicPickerSellerActivity;
+import com.tokopedia.seller.product.etalase.view.activity.EtalaseDynamicPickerActivity;
 import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
+import com.tokopedia.seller.product.etalase.view.model.MyEtalaseItemViewModel;
 import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
 import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
 import com.tokopedia.seller.product.manage.constant.PictureStatusProductOption;
@@ -193,7 +194,15 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
     }
 
     private void showEtalaseOption() {
-        Intent intent = EtalaseDynamicPickerSellerActivity.createInstance(getActivity(), productManageFilterModel.getEtalaseProductOption());
+        ArrayList<MyEtalaseItemViewModel> myEtalaseItemViewModels = new ArrayList<>();
+        myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_ALL_PRODUK, getString(R.string.product_manage_filter_menu_etalase_all)));
+        myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_SOLD_PRODUK, getString(R.string.product_manage_filter_sold)));
+        myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_EMPTY_STOK, getString(R.string.product_manage_filter_empty_stok)));
+        myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_PENDING, getString(R.string.product_manage_filter_pending)));
+        myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_FREE_RETURNS, getString(R.string.product_manage_filter_free_returns)));
+        myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_PREORDER, getString(R.string.product_manage_filter_preorder)));
+        myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_ALL_SHOWCASE, getString(R.string.product_manage_filter_all_showcase)));
+        Intent intent = EtalaseDynamicPickerActivity.createInstance(getActivity(), productManageFilterModel.getEtalaseProductOption(), myEtalaseItemViewModels);
         startActivityForResult(intent, ProductManageConstant.REQUEST_CODE_ETALASE);
     }
 

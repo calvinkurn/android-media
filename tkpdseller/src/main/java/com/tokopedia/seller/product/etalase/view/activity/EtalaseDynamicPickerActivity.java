@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * Created by zulfikarrahman on 10/9/17.
  */
 
-public abstract class EtalaseDynamicPickerActivity extends EtalasePickerActivity {
+public class EtalaseDynamicPickerActivity extends EtalasePickerActivity {
 
     public static final String ADDITIONAL_OPTION = "additional_option";
 
