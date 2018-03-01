@@ -29,6 +29,10 @@ public class ProductVariantViewModel implements ItemPickerType, Parcelable {
     }
 
     @Override
+    public String getItemId() {
+        return String.valueOf(temporaryId);
+    }
+
     public String getId() {
         return String.valueOf(temporaryId);
     }

@@ -2,6 +2,7 @@ package com.tokopedia.seller.product.variant.data.model.variantbyprd.variantopti
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -35,6 +36,15 @@ public class ProductVariantOptionChild implements Parcelable{
     @Expose
     private String hex; // ex; "#bf00ff"
 
+    public ProductVariantOptionChild(int pvo, int vuv, String value, String hex,
+                                     List<ProductPictureViewModel> productPictureViewModelList){
+        this.pvo = pvo;
+        this.vuv = vuv;
+        this.value = value;
+        this.hex = hex;
+        this.productPictureViewModelList = productPictureViewModelList;
+    }
+
     public int getPvo() {
         return pvo;
     }
@@ -45,6 +55,10 @@ public class ProductVariantOptionChild implements Parcelable{
 
     public int getVuv() {
         return vuv;
+    }
+
+    public boolean isCustomVariant(){
+        return vuv == 0;
     }
 
     public void setVuv(int vuv) {

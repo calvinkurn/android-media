@@ -18,7 +18,7 @@ public class ProductVariantOption implements Parcelable, ItemIdType, ItemPickerT
 
     @SerializedName("value_id")
     @Expose
-    private long valueId;
+    private int valueId;
     @SerializedName("value")
     @Expose
     private String value;
@@ -29,11 +29,23 @@ public class ProductVariantOption implements Parcelable, ItemIdType, ItemPickerT
     @Expose
     private String icon;
 
+    public ProductVariantOption(int id, String value, String hex, String icon){
+        this.valueId = id;
+        this.value = value;
+        this.hexCode = hex;
+        this.icon = icon;
+    }
+
     public String getId() {
         return String.valueOf(valueId);
     }
 
-    public long getValueId() {
+    @Override
+    public String getItemId() {
+        return value;
+    }
+
+    public int getValueId() {
         return valueId;
     }
 
@@ -56,26 +68,31 @@ public class ProductVariantOption implements Parcelable, ItemIdType, ItemPickerT
     }
 
     @Override
+    public int getType() {
+        return TYPE;
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(this.valueId);
+        dest.writeInt(this.valueId);
         dest.writeString(this.value);
         dest.writeString(this.hexCode);
         dest.writeString(this.icon);
     }
 
     protected ProductVariantOption(Parcel in) {
-        this.valueId = (Long) in.readValue(Integer.class.getClassLoader());
+        this.valueId = in.readInt();
         this.value = in.readString();
         this.hexCode = in.readString();
         this.icon = in.readString();
     }
 
-    public static final Parcelable.Creator<ProductVariantOption> CREATOR = new Parcelable.Creator<ProductVariantOption>() {
+    public static final Creator<ProductVariantOption> CREATOR = new Creator<ProductVariantOption>() {
         @Override
         public ProductVariantOption createFromParcel(Parcel source) {
             return new ProductVariantOption(source);
@@ -86,9 +103,4 @@ public class ProductVariantOption implements Parcelable, ItemIdType, ItemPickerT
             return new ProductVariantOption[size];
         }
     };
-
-    @Override
-    public int getType() {
-        return TYPE;
-    }
 }

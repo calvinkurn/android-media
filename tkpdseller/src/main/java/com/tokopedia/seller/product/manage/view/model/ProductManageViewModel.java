@@ -108,8 +108,12 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         this.productStatus = productStatus;
     }
 
-    @Override
     public String getId() {
+        return productId;
+    }
+
+    @Override
+    public String getItemId() {
         return productId;
     }
 

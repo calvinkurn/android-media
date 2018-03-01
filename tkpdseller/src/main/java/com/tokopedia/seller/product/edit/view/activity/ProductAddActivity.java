@@ -23,6 +23,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.edit.view.fragment.ProductAddFragment;
 
 import java.io.File;
@@ -234,9 +235,8 @@ public class ProductAddActivity extends BaseProductAddEditActivity {
                 return false;
             }
         } else {
-//            Intent intentLogin = OldSessionRouter.getLoginActivityIntent(this);
-//            intentLogin.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-//            startActivity(intentLogin);
+            Intent intentLogin = ((SellerModuleRouter)(getApplication())).getLoginIntent (this);
+            startActivity(intentLogin);
             finish();
             return false;
         }
