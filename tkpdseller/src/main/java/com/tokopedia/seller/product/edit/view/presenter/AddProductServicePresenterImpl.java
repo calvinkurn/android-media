@@ -2,13 +2,19 @@ package com.tokopedia.seller.product.edit.view.presenter;
 
 import android.text.TextUtils;
 
+import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.seller.product.draft.data.source.db.model.DraftNotFoundException;
-import com.tokopedia.seller.product.edit.data.exception.UploadProductException;
+import com.tokopedia.seller.product.draft.domain.interactor.DeleteSingleDraftProductUseCase;
+import com.tokopedia.seller.product.draft.domain.interactor.FetchDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
-import com.tokopedia.seller.product.edit.domain.interactor.uploadproduct.UploadProductUseCase;
-import com.tokopedia.seller.product.edit.domain.listener.AddProductNotificationListener;
-import com.tokopedia.seller.product.edit.domain.model.AddProductDomainModel;
-import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
+import com.tokopedia.seller.product.edit.data.exception.UploadProductException;
+import com.tokopedia.seller.product.edit.domain.interactor.uploadproduct.SubmitProductUseCase;
+import com.tokopedia.seller.product.edit.domain.listener.ProductSubmitNotificationListener;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import rx.Subscriber;
 
@@ -16,91 +22,113 @@ import rx.Subscriber;
  * @author sebastianuskh on 4/20/17.
  */
 
-public class AddProductServicePresenterImpl extends AddProductServicePresenter implements AddProductNotificationListener {
-    private final UploadProductUseCase uploadProductUseCase;
-    private UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase;
+public class AddProductServicePresenterImpl extends AddProductServicePresenter {
 
-    public AddProductServicePresenterImpl(UploadProductUseCase uploadProductUseCase,
+    private static final int MIN_NOTIFICATION_PROGRESS = 6;
+
+    private final FetchDraftProductUseCase fetchDraftProductUseCase;
+    private final SubmitProductUseCase uploadProductUseCase;
+    private final DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase;
+    private final UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase;
+
+    public AddProductServicePresenterImpl(FetchDraftProductUseCase fetchDraftProductUseCase,
+                                          SubmitProductUseCase uploadProductUseCase,
+                                          DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase,
                                           UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase) {
+        this.fetchDraftProductUseCase = fetchDraftProductUseCase;
         this.uploadProductUseCase = uploadProductUseCase;
+        this.deleteSingleDraftProductUseCase = deleteSingleDraftProductUseCase;
         this.updateUploadingDraftProductUseCase = updateUploadingDraftProductUseCase;
-        uploadProductUseCase.setListener(this);
     }
 
     @Override
-    public void uploadProduct(long productDraftId, boolean isAdd) {
-        checkViewAttached();
-        uploadProductUseCase.execute(UploadProductUseCase.generateUploadProductParam(productDraftId),
-                new AddProductSubscriber(String.valueOf(productDraftId), isAdd));
+    public void uploadProduct(final long draftProductId, final ProductSubmitNotificationListener notificationCountListener) {
+        fetchDraftProductUseCase.execute(FetchDraftProductUseCase.createRequestParams(draftProductId), new Subscriber<ProductViewModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable uploadThrowable) {
+                Throwable e = uploadThrowable;
+                if (!(e instanceof DraftNotFoundException)) {
+                    updateUploadingDraftProductUseCase.executeSync(UpdateUploadingDraftProductUseCase.createRequestParams(draftProductId, false));
+                }
+                if (isViewAttached()) {
+                    getView().onFailedAddProduct(e, notificationCountListener);
+                }
+            }
+
+            @Override
+            public void onNext(ProductViewModel productViewModel) {
+                notificationCountListener.setProductViewModel(productViewModel);
+                notificationCountListener.setMaxCount(MIN_NOTIFICATION_PROGRESS + getUploadPictureCount(productViewModel));
+                notificationCountListener.addProgress();
+                submitProduct(draftProductId, productViewModel, notificationCountListener);
+            }
+        });
     }
 
-    @Override
-    public void createNotification(String productDraftId, String productName) {
-        checkViewAttached();
-        getView().createNotification(productDraftId, productName);
+    private void submitProduct(final long draftProductId, final ProductViewModel productViewModel, final ProductSubmitNotificationListener notificationCountListener) {
+        uploadProductUseCase.execute(SubmitProductUseCase.createParams(productViewModel, notificationCountListener), new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable uploadThrowable) {
+                Throwable e = uploadThrowable;
+                if (e instanceof UploadProductException) {
+                    e = ((UploadProductException) uploadThrowable).getThrowable();
+                }
+                if (isViewAttached()) {
+                    getView().onFailedAddProduct(e, notificationCountListener);
+                }
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                notificationCountListener.addProgress();
+                deleteSingleDraftProductUseCase.executeSync(DeleteSingleDraftProductUseCase.createRequestParams(draftProductId));
+                deletePictureCacheList(productViewModel);
+                notificationCountListener.addProgress();
+                getView().onSuccessAddProduct(notificationCountListener);
+            }
+        });
     }
 
-    @Override
-    public void notificationUpdate(String productDraftId) {
-        checkViewAttached();
-        getView().notificationUpdate(productDraftId);
+    private void deletePictureCacheList(ProductViewModel productViewModel) {
+        List<ProductPictureViewModel> productPictureViewModelList = productViewModel.getProductPictureViewModelList();
+        if (productPictureViewModelList == null || productPictureViewModelList.size() == 0) {
+            return;
+        }
+        ArrayList<String> pathToDeleteList = new ArrayList<>();
+        for (ProductPictureViewModel productPictureViewModel : productPictureViewModelList) {
+            if (productPictureViewModel == null) {
+                continue;
+            }
+            String imagePath = productPictureViewModel.getFilePath();
+            if (!TextUtils.isEmpty(imagePath)) {
+                pathToDeleteList.add(imagePath);
+            }
+        }
+        if (pathToDeleteList.size() > 0) {
+            FileUtils.deleteAllCacheTkpdFiles(pathToDeleteList);
+        }
     }
 
-    private class AddProductSubscriber extends Subscriber<AddProductDomainModel> {
-
-        private String productDraftId;
-        private boolean isAdd;
-
-        public AddProductSubscriber(String productDraftId, boolean isAdd) {
-            this.productDraftId = productDraftId;
-            this.isAdd = isAdd;
-        }
-
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable uploadThrowable) {
-            Throwable e = uploadThrowable;
-            if (!isViewAttached()) {
-                return;
+    private int getUploadPictureCount(ProductViewModel productViewModel) {
+        int count = 0;
+        List<ProductPictureViewModel> productPictureViewModelList = productViewModel.getProductPictureViewModelList();
+        if (productPictureViewModelList != null) {
+            for (ProductPictureViewModel productPictureViewModel: productPictureViewModelList) {
+                if (TextUtils.isEmpty(productPictureViewModel.getId())) {
+                    count++;
+                }
             }
-            if (uploadThrowable instanceof UploadProductException) {
-                e = ((UploadProductException) uploadThrowable).getThrowable();
-            }
-            if (!(e instanceof DraftNotFoundException)) {
-                updateUploadingDraftProductUseCase.execute(
-                        UpdateUploadingDraftProductUseCase.createRequestParams(
-                                this.productDraftId, false), new Subscriber<Boolean>() {
-                            @Override
-                            public void onCompleted() {
-                                // no op
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                // no op
-                            }
-
-                            @Override
-                            public void onNext(Boolean aBoolean) {
-                                // no op
-                            }
-                        });
-            }
-            getView().onFailedAddProduct();
-            getView().notificationFailed(e, this.productDraftId, isAdd ? ProductStatus.ADD : ProductStatus.EDIT);
-            getView().sendFailedBroadcast(e);
         }
-
-        @Override
-        public void onNext(AddProductDomainModel addProductDomainModel) {
-            checkViewAttached();
-            getView().onSuccessAddProduct();
-            getView().notificationComplete(productDraftId);
-            getView().sendSuccessBroadcast(addProductDomainModel);
-        }
+        return count;
     }
 }

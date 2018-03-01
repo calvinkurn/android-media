@@ -3,10 +3,10 @@ package com.tokopedia.seller.product.edit.view.model;
 import android.graphics.BitmapFactory;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
+
+import com.tokopedia.seller.product.common.utils.UrlUtils;
 
 import java.io.File;
-import java.net.URI;
 
 /**
  * Created by m.normansyah on 03/12/2015.
@@ -19,16 +19,16 @@ public class ImageSelectModel implements Parcelable{
     private long width;
     private long height;
     private boolean isValidURL;
-    private long id;
+    private String id;
 
     private String serverFileName;
     private String serverFilePath;
 
     public ImageSelectModel(String uriOrPath) {
-        this(uriOrPath, null, 0, 0, 0, null, null);
+        this(uriOrPath, null, 0, 0, "", null, null);
     }
 
-    public ImageSelectModel(String uriOrPath, String description, long width, long height, long id,
+    public ImageSelectModel(String uriOrPath, String description, long width, long height, String id,
                             String serverFilePath, String serverFileName) {
         this.description = description;
         this.width = width;
@@ -53,20 +53,11 @@ public class ImageSelectModel implements Parcelable{
         return serverFilePath;
     }
 
-    public boolean isValidURL(String urlStr) {
-        try {
-            URI uri = new URI(urlStr);
-            return uri.getScheme().equals("http") || uri.getScheme().equals("https");
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
     public void setUriOrPath(String uriOrPath) {
         this.uriOrPath = uriOrPath;
 
         // when uri change, recalculate its width/height
-        this.isValidURL = isValidURL(uriOrPath);
+        this.isValidURL = UrlUtils.isValidURL(uriOrPath);
         calculateWidthAndHeight(isValidURL);
     }
 
@@ -112,7 +103,7 @@ public class ImageSelectModel implements Parcelable{
         }
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
@@ -128,7 +119,7 @@ public class ImageSelectModel implements Parcelable{
         dest.writeLong(this.width);
         dest.writeLong(this.height);
         dest.writeByte(this.isValidURL ? (byte) 1 : (byte) 0);
-        dest.writeLong(this.id);
+        dest.writeString(this.id);
         dest.writeString(this.serverFileName);
         dest.writeString(this.serverFilePath);
     }
@@ -139,7 +130,7 @@ public class ImageSelectModel implements Parcelable{
         this.width = in.readLong();
         this.height = in.readLong();
         this.isValidURL = in.readByte() != 0;
-        this.id = in.readLong();
+        this.id = in.readString();
         this.serverFileName = in.readString();
         this.serverFilePath = in.readString();
     }

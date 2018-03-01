@@ -13,7 +13,7 @@ public class ProductPictureViewModel implements Parcelable{
 
     @SerializedName(value="product_pic_id", alternate={"id"})
     @Expose
-    private long id;
+    private String id;
 
     // currently not used in UI, only for backend
     //0 -> deleted
@@ -52,28 +52,20 @@ public class ProductPictureViewModel implements Parcelable{
     @Expose
     private int fromIg;
 
-    public int getFromIg() {
-        return fromIg;
-    }
-
-    public void setFromIg(int fromIg) {
-        this.fromIg = fromIg;
-    }
-
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public String getUrlThumbnail() {
-        return urlThumbnail;
-    }
-
-    public String getUrlOriginal() {
-        return urlOriginal;
-    }
-
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
+    }
+
+    public long getStatus() {
+        return status;
+    }
+
+    public void setStatus(long status) {
+        this.status = status;
     }
 
     public String getFileName() {
@@ -90,6 +82,22 @@ public class ProductPictureViewModel implements Parcelable{
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public String getUrlOriginal() {
+        return urlOriginal;
+    }
+
+    public void setUrlOriginal(String urlOriginal) {
+        this.urlOriginal = urlOriginal;
+    }
+
+    public String getUrlThumbnail() {
+        return urlThumbnail;
+    }
+
+    public void setUrlThumbnail(String urlThumbnail) {
+        this.urlThumbnail = urlThumbnail;
     }
 
     public String getDescription() {
@@ -116,6 +124,14 @@ public class ProductPictureViewModel implements Parcelable{
         this.y = y;
     }
 
+    public int getFromIg() {
+        return fromIg;
+    }
+
+    public void setFromIg(int fromIg) {
+        this.fromIg = fromIg;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -123,7 +139,7 @@ public class ProductPictureViewModel implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(this.id);
+        dest.writeString(this.id);
         dest.writeLong(this.status);
         dest.writeString(this.fileName);
         dest.writeString(this.filePath);
@@ -139,7 +155,7 @@ public class ProductPictureViewModel implements Parcelable{
     }
 
     protected ProductPictureViewModel(Parcel in) {
-        this.id = in.readLong();
+        this.id = in.readString();
         this.status = in.readLong();
         this.fileName = in.readString();
         this.filePath = in.readString();

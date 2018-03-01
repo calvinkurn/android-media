@@ -9,15 +9,15 @@ import com.tokopedia.seller.base.view.adapter.ItemType;
 public class ProductDraftViewModel implements ItemType {
     public static final int TYPE = 1;
 
-    private long productDraftId;
+    private long draftProductId;
     private String primaryImageUrl;
     private String productName;
     private int completionPercent;
     private boolean isEdit;
 
-    public ProductDraftViewModel(long draftId, String primaryImageUrl,
+    public ProductDraftViewModel(long draftProductId, String primaryImageUrl,
                                  String productName, int completionPercent, boolean isEdit) {
-        this.productDraftId = draftId;
+        this.draftProductId = draftProductId;
         this.primaryImageUrl = primaryImageUrl;
         this.productName = productName;
         this.completionPercent = completionPercent;
@@ -25,7 +25,7 @@ public class ProductDraftViewModel implements ItemType {
     }
 
     public long getProductDraftId() {
-        return productDraftId;
+        return draftProductId;
     }
 
     public String getPrimaryImageUrl() {

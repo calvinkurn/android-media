@@ -33,8 +33,8 @@ public class ProductDraftPresenter extends ProductAddPresenterImpl<ProductDraftV
         this.fetchDraftProductUseCase = fetchDraftProductUseCase;
     }
 
-    public void fetchDraftData(String draftId) {
-        fetchDraftProductUseCase.execute(FetchDraftProductUseCase.createRequestParams(draftId), getSubsriberFetchDraft());
+    public void fetchDraftData(long draftProductId) {
+        fetchDraftProductUseCase.execute(FetchDraftProductUseCase.createRequestParams(draftProductId), getSubsriberFetchDraft());
     }
 
     public Subscriber<ProductViewModel> getSubsriberFetchDraft() {

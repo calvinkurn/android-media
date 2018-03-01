@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.util.Pair;
 import android.view.View;
 
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -15,6 +14,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
+import com.tokopedia.seller.product.common.utils.UrlUtils;
 import com.tokopedia.seller.product.edit.view.adapter.ImageSelectorAdapter;
 import com.tokopedia.seller.product.edit.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
@@ -117,13 +117,31 @@ public class ProductImageViewHolder extends ProductViewHolder {
     }
 
     @Override
-    public void renderData(ProductViewModel model) {
-        setProductPhotos(model.getProductPictureViewModelList());
+    public void renderData(ProductViewModel productViewModel) {
+        ArrayList<ImageSelectModel> images = new ArrayList<>();
+
+        for (ProductPictureViewModel productPictureViewModel: productViewModel.getProductPictureViewModelList()) {
+            String url = productPictureViewModel.getUrlOriginal();
+            if (TextUtils.isEmpty(url)) {
+                url = productPictureViewModel.getFilePath();
+            }
+            ImageSelectModel image = new ImageSelectModel(
+                    url,
+                    productPictureViewModel.getDescription(),
+                    productPictureViewModel.getX(),
+                    productPictureViewModel.getY(),
+                    productPictureViewModel.getId(),
+                    productPictureViewModel.getFilePath(),
+                    productPictureViewModel.getFileName()
+            );
+            images.add(image);
+        }
+        imagesSelectView.setImage(images);
     }
 
     @Override
-    public void updateModel(ProductViewModel model) {
-        model.setProductPictureViewModelList(getProductPhotos());
+    public void updateModel(ProductViewModel productViewModel) {
+        productViewModel.setProductPictureViewModelList(getProductPhotoList());
     }
 
     public ImagesSelectView getImagesSelectView() {
@@ -166,9 +184,8 @@ public class ProductImageViewHolder extends ProductViewHolder {
         }
     }
 
-    public List<ProductPictureViewModel> getProductPhotos() {
-        List<ProductPictureViewModel> listImageViewModel = new ArrayList<>();
-
+    public List<ProductPictureViewModel> getProductPhotoList() {
+        List<ProductPictureViewModel> pictureViewModelList = new ArrayList<>();
         List<ImageSelectModel> selectModelList = imagesSelectView.getImageList();
         for (int i = 0; i < selectModelList.size(); i++) {
             ProductPictureViewModel productPictureViewModel = new ProductPictureViewModel();
@@ -176,42 +193,26 @@ public class ProductImageViewHolder extends ProductViewHolder {
             productPictureViewModel.setDescription(selectModel.getDescription());
             productPictureViewModel.setX(selectModel.getWidth());
             productPictureViewModel.setY(selectModel.getHeight());
-            productPictureViewModel.setId(selectModel.getId());
 
-            if (selectModel.getId() > 0) { // means file still from server, no change from local
-                productPictureViewModel.setFilePath(selectModel.getServerFilePath());
-            } else {
+            // Update image to server
+            if (!UrlUtils.isValidURL(selectModel.getUriOrPath())) {
+                productPictureViewModel.setId("");
                 productPictureViewModel.setFilePath(selectModel.getUriOrPath());
+            } else {
+                productPictureViewModel.setId(selectModel.getId());
+                productPictureViewModel.setFilePath(selectModel.getServerFilePath());
+                productPictureViewModel.setUrlOriginal(selectModel.getUriOrPath());
+                productPictureViewModel.setUrlThumbnail(selectModel.getUriOrPath());
             }
             productPictureViewModel.setFileName(selectModel.getServerFileName());
-
-            listImageViewModel.add(productPictureViewModel);
+            pictureViewModelList.add(productPictureViewModel);
         }
-        return listImageViewModel;
-    }
-
-    public void setProductPhotos(List<ProductPictureViewModel> productPhotos) {
-        ArrayList<ImageSelectModel> images = new ArrayList<>();
-        for (int i = 0; i < productPhotos.size(); i++) {
-            ProductPictureViewModel productPhoto = productPhotos.get(i);
-            String url = productPhoto.getUrlOriginal();
-            ImageSelectModel image = new ImageSelectModel(
-                    url,
-                    productPhoto.getDescription(),
-                    productPhoto.getX(),
-                    productPhoto.getY(),
-                    productPhoto.getId(),
-                    productPhoto.getFilePath(),
-                    productPhoto.getFileName()
-            );
-            images.add(image);
-        }
-        imagesSelectView.setImage(images);
+        return pictureViewModelList;
     }
 
     @Override
     public boolean isDataValid() {
-        if (getProductPhotos().size() < 1) {
+        if (getProductPhotoList().size() < 1) {
             Snackbar.make(imagesSelectView.getRootView().findViewById(android.R.id.content), R.string.product_error_product_picture_empty, Snackbar.LENGTH_LONG)
                     .setActionTextColor(ContextCompat.getColor(imagesSelectView.getContext(), R.color.green_400))
                     .show();

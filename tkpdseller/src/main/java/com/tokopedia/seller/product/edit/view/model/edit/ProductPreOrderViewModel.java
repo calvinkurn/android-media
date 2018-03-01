@@ -7,7 +7,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ProductPreorderViewModel implements Parcelable {
+public class ProductPreOrderViewModel implements Parcelable {
 
     @SerializedName("preorder_process_time")
     @Expose
@@ -55,24 +55,24 @@ public class ProductPreorderViewModel implements Parcelable {
         dest.writeLong(this.preorderStatus);
     }
 
-    public ProductPreorderViewModel() {
+    public ProductPreOrderViewModel() {
     }
 
-    protected ProductPreorderViewModel(Parcel in) {
+    protected ProductPreOrderViewModel(Parcel in) {
         this.preorderProcessTime = in.readLong();
         this.preorderTimeUnit = in.readLong();
         this.preorderStatus = in.readLong();
     }
 
-    public static final Creator<ProductPreorderViewModel> CREATOR = new Creator<ProductPreorderViewModel>() {
+    public static final Creator<ProductPreOrderViewModel> CREATOR = new Creator<ProductPreOrderViewModel>() {
         @Override
-        public ProductPreorderViewModel createFromParcel(Parcel source) {
-            return new ProductPreorderViewModel(source);
+        public ProductPreOrderViewModel createFromParcel(Parcel source) {
+            return new ProductPreOrderViewModel(source);
         }
 
         @Override
-        public ProductPreorderViewModel[] newArray(int size) {
-            return new ProductPreorderViewModel[size];
+        public ProductPreOrderViewModel[] newArray(int size) {
+            return new ProductPreOrderViewModel[size];
         }
     };
 }

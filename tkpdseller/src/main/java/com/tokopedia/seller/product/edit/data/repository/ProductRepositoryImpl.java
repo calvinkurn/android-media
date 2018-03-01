@@ -1,11 +1,9 @@
 package com.tokopedia.seller.product.edit.data.repository;
 
 import com.tokopedia.core.product.model.goldmerchant.Video;
-import com.tokopedia.seller.product.edit.data.mapper.AddProductSubmitMapper;
 import com.tokopedia.seller.product.edit.data.source.FetchVideoEditProductDataSource;
 import com.tokopedia.seller.product.edit.data.source.ProductDataSource;
 import com.tokopedia.seller.product.edit.domain.ProductRepository;
-import com.tokopedia.seller.product.edit.domain.model.AddProductDomainModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductVideoViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 
@@ -29,17 +27,14 @@ public class ProductRepositoryImpl implements ProductRepository {
         this.fetchVideoEditProductDataSource = fetchVideoEditProductDataSource;
     }
 
-    //TODO no need to have mapper
     @Override
-    public Observable<AddProductDomainModel> addProductSubmit(ProductViewModel productViewModel) {
-        return productDataSource.addProductSubmit(productViewModel)
-                .map(new AddProductSubmitMapper());
+    public Observable<Boolean> addProductSubmit(ProductViewModel productViewModel) {
+        return productDataSource.addProductSubmit(productViewModel);
     }
 
     @Override
-    public Observable<AddProductDomainModel> editProductSubmit(ProductViewModel productViewModel) {
-        return productDataSource.editProduct(productViewModel)
-                .map(new AddProductSubmitMapper());
+    public Observable<Boolean> editProductSubmit(ProductViewModel productViewModel) {
+        return productDataSource.editProduct(productViewModel);
     }
 
     @Override

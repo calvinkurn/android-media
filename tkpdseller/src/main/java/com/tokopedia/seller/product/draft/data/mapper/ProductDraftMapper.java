@@ -16,7 +16,7 @@ import com.tokopedia.seller.product.edit.view.model.edit.ProductCategoryViewMode
 import com.tokopedia.seller.product.edit.view.model.edit.ProductEtalaseViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureResultUploadedViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
-import com.tokopedia.seller.product.edit.view.model.edit.ProductPreorderViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductPreOrderViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductVideoViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductWholesaleViewModel;
@@ -88,7 +88,7 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
         productViewModel.setProductWeightUnit(draftModel.getProductWeightUnit());
         productViewModel.setProductPreorder(generateProductPreorder(draftModel));
 //        domainModel.setServerId(draftModel.getServerId());
-        productViewModel.setProductId(Long.parseLong(draftModel.getProductId()));
+        productViewModel.setProductId(draftModel.getProductId());
         productViewModel.setProductNameEditable(draftModel.getProductNameEditable() != 0);
         //todo hendry map old draft model to new draft model variant
 //        domainModel.setProductVariantDataSubmit(draftModel.getProductVariantDataSubmit());
@@ -96,8 +96,8 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
         return productViewModel;
     }
 
-    private ProductPreorderViewModel generateProductPreorder(ProductDraftModel draftModel) {
-        ProductPreorderViewModel productPreorderViewModel= new ProductPreorderViewModel();
+    private ProductPreOrderViewModel generateProductPreorder(ProductDraftModel draftModel) {
+        ProductPreOrderViewModel productPreorderViewModel= new ProductPreOrderViewModel();
         productPreorderViewModel.setPreorderProcessTime(draftModel.getPoProcessValue());
         productPreorderViewModel.setPreorderTimeUnit(draftModel.getPoProcessType());
         return productPreorderViewModel;

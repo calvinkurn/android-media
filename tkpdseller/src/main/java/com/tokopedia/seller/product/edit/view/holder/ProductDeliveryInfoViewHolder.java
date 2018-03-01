@@ -3,7 +3,6 @@ package com.tokopedia.seller.product.edit.view.holder;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
@@ -21,7 +20,7 @@ import com.tokopedia.seller.product.edit.constant.ProductInsuranceValueTypeDef;
 import com.tokopedia.seller.product.edit.view.fragment.ProductAddFragment;
 import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
-import com.tokopedia.seller.product.edit.view.model.edit.ProductPreorderViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductPreOrderViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 
 /**
@@ -171,8 +170,8 @@ public class ProductDeliveryInfoViewHolder extends ProductViewHolder {
         }
     }
 
-    public ProductPreorderViewModel getPreOrder() {
-        ProductPreorderViewModel productPreorderViewModel = new ProductPreorderViewModel();
+    public ProductPreOrderViewModel getPreOrder() {
+        ProductPreOrderViewModel productPreorderViewModel = new ProductPreOrderViewModel();
         if(getPreOrderValue() > 0) {
             productPreorderViewModel.setPreorderStatus(PREORDER_STATUS_ACTIVE);
             productPreorderViewModel.setPreorderProcessTime(getPreOrderValue());

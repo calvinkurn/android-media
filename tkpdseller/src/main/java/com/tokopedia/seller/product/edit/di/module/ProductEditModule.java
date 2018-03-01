@@ -12,6 +12,7 @@ import com.tokopedia.seller.product.edit.data.source.cloud.api.EditProductFormAp
 import com.tokopedia.seller.product.edit.di.scope.ProductAddScope;
 import com.tokopedia.seller.product.edit.domain.EditProductFormRepository;
 import com.tokopedia.seller.product.edit.domain.ProductRepository;
+import com.tokopedia.seller.product.edit.domain.mapper.ProductUploadMapper;
 
 import dagger.Module;
 import dagger.Provides;
@@ -57,5 +58,11 @@ public class ProductEditModule extends ProductDraftModule {
     ProductRepository provideProductRepository(ProductDataSource productDataSource,
                                                FetchVideoEditProductDataSource fetchVideoEditProductDataSource) {
         return new ProductRepositoryImpl(productDataSource, fetchVideoEditProductDataSource);
+    }
+
+    @ProductAddScope
+    @Provides
+    ProductUploadMapper provideProductUploadMapper() {
+        return new ProductUploadMapper();
     }
 }
