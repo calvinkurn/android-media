@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.checkout.view.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,10 +11,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.showcase.ShowCaseBuilder;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.checkout.view.data.MultipleAddressAdapterData;
-import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressAdapterData;
+import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressItemData;
+import com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,6 +38,7 @@ public class MultipleAddressAdapter
     private static final int MULTIPLE_ADDRESS_FOOTER_LAYOUT = R.layout.multiple_address_footer;
     private static final int HEADER_SIZE = 1;
     private static final int FOOTER_SIZE = 1;
+    private static final int FIRST_ITEM_POSITION = 1;
 
     private List<MultipleAddressAdapterData> addressData;
 
@@ -79,6 +88,8 @@ public class MultipleAddressAdapter
             itemViewHolder.addNewShipmentAddressButton.setOnClickListener(
                     onAddAddressClickedListener(data, data.getItemListData().get(0))
             );
+            if (position == FIRST_ITEM_POSITION) setShowCase(itemViewHolder.context,
+                    itemViewHolder.addNewShipmentAddressButton);
         } else if (holder instanceof MultipleAddressFooterViewHolder)
             ((MultipleAddressFooterViewHolder) holder).goToCourierPageButton
                     .setOnClickListener(onGoToCourierPageButtonClicked(addressData));
@@ -183,6 +194,44 @@ public class MultipleAddressAdapter
 
         void onAddNewShipmentAddress(MultipleAddressAdapterData data,
                                      MultipleAddressItemData addressData);
+    }
+
+    private void setShowCase(Context context, ViewGroup addAddress) {
+        ShowCaseObject showCase = new ShowCaseObject(
+                addAddress, "Kirim Barang Sama ke Bebeberapa\n" +
+                "Alamat.", "Klik tombol untuk mengirim barang yang sama ke beda alamat.",
+                ShowCaseContentPosition.UNDEFINED);
+
+        ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
+
+        showCaseObjectList.add(showCase);
+
+        ShowCaseDialog showCaseDialog = createShowCaseDialog();
+
+        if (!ShowCasePreference.hasShown(context, CartAddressChoiceFragment.class.getName()))
+            showCaseDialog.show(
+                    (Activity) context,
+                    CartAddressChoiceFragment.class.getName(),
+                    showCaseObjectList
+            );
+    }
+
+    private ShowCaseDialog createShowCaseDialog() {
+        return new ShowCaseBuilder()
+                .customView(R.layout.show_case_checkout)
+                .titleTextColorRes(R.color.white)
+                .spacingRes(R.dimen.spacing_show_case)
+                .arrowWidth(R.dimen.arrow_width_show_case)
+                .textColorRes(R.color.grey_400)
+                .shadowColorRes(R.color.shadow)
+                .backgroundContentColorRes(R.color.black)
+                .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
+                .textSizeRes(R.dimen.fontvs)
+                .finishStringRes(R.string.show_case_finish)
+                .useCircleIndicator(true)
+                .clickable(true)
+                .useArrow(true)
+                .build();
     }
 
 }

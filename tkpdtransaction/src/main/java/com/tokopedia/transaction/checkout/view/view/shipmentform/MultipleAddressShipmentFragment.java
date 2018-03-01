@@ -15,16 +15,17 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.TkpdFragment;
+import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.checkout.domain.ShipmentRatesDataMapper;
+import com.tokopedia.transaction.checkout.data.mapper.ShipmentRatesDataMapper;
+import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressPriceSummaryData;
+import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
+import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentCartData;
+import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.transaction.checkout.view.adapter.MultipleAddressShipmentAdapter;
-import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
-import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
-import com.tokopedia.transaction.checkout.view.data.MultipleAddressPriceSummaryData;
-import com.tokopedia.transaction.checkout.view.data.MultipleAddressShipmentAdapterData;
-import com.tokopedia.transaction.checkout.view.data.ShipmentCartData;
-import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
-import com.tokopedia.transaction.checkout.view.data.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
@@ -200,6 +201,25 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
                 addressAdapterData.getDestinationDistrictName(),
                 GetPickupPointsUseCase.generateParams(addressAdapterData)
         ), REQUEST_CHOOSE_PICKUP_POINT);
+    }
+
+    @Override
+    public void onPromoSuggestionClicked(MultipleAddressPriceSummaryData priceSummaryData) {
+
+    }
+
+    @Override
+    public void onHachikoClicked(MultipleAddressPriceSummaryData priceSummaryData) {
+        Intent intent;
+        if (priceSummaryData.isCouponActive()) {
+            intent = LoyaltyActivity.newInstanceCouponActive(
+                    getActivity(), "marketplace", "marketplace"
+            );
+        } else {
+            intent = LoyaltyActivity.newInstanceCouponNotActive(getActivity(),
+                    "marketplace", "marketplace");
+        }
+        startActivityForResult(intent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
     }
 
     private RecyclerView.OnScrollListener onRecyclerViewScrolledListener(

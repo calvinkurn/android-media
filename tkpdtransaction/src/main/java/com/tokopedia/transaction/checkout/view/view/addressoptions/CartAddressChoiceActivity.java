@@ -1,7 +1,6 @@
 package com.tokopedia.transaction.checkout.view.view.addressoptions;
 
 import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,8 +9,8 @@ import android.support.v4.app.FragmentManager;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
-import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
+import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
 
 import java.util.ArrayList;
 import java.util.List;

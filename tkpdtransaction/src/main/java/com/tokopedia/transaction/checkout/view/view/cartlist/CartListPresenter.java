@@ -6,15 +6,17 @@ import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.transaction.checkout.domain.ICartListInteractor;
-import com.tokopedia.transaction.checkout.domain.exception.ResponseCartApiErrorException;
-import com.tokopedia.transaction.checkout.domain.request.RemoveCartRequest;
-import com.tokopedia.transaction.checkout.domain.request.UpdateCartRequest;
-import com.tokopedia.transaction.checkout.view.data.CartItemData;
-import com.tokopedia.transaction.checkout.view.data.CartListData;
-import com.tokopedia.transaction.checkout.view.data.DeleteCartData;
-import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
-import com.tokopedia.transaction.checkout.view.data.UpdateToSingleAddressShipmentData;
+import com.tokopedia.transaction.checkout.data.entity.request.RemoveCartRequest;
+import com.tokopedia.transaction.checkout.data.entity.request.UpdateCartRequest;
+import com.tokopedia.transaction.checkout.data.exception.ResponseCartApiErrorException;
+import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartListData;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.DeleteCartData;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.UpdateToSingleAddressShipmentData;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeCartListData;
+import com.tokopedia.transaction.checkout.domain.usecase.ICartListInteractor;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
 
 import java.net.ConnectException;
@@ -203,30 +205,30 @@ public class CartListPresenter implements ICartListPresenter {
                         view.hideProgressLoading();
                         if (e instanceof UnknownHostException) {
                     /* Ini kalau ga ada internet */
-                            view.renderErrorNoConnectionToShipmentSingleAddress(
+                            view.renderErrorNoConnectionToShipmentForm(
                                     ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
                             );
                         } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
                     /* Ini kalau timeout */
-                            view.renderErrorTimeoutConnectionToShipmentSingleAddress(
+                            view.renderErrorTimeoutConnectionToShipmentForm(
                                     ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                             );
                         } else if (e instanceof ResponseErrorException) {
                      /* Ini kalau error dari API kasih message error */
-                            view.renderErrorToShipmentSingleAddress(e.getMessage());
+                            view.renderErrorToShipmentForm(e.getMessage());
                         } else if (e instanceof ResponseDataNullException) {
                     /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
-                            view.renderErrorToShipmentSingleAddress(e.getMessage());
+                            view.renderErrorToShipmentForm(e.getMessage());
                         } else if (e instanceof HttpErrorException) {
                     /* Ini Http error, misal 403, 500, 404,
                      code http errornya bisa diambil
                      e.getErrorCode */
-                            view.renderErrorHttpToShipmentSingleAddress(e.getMessage());
+                            view.renderErrorHttpToShipmentForm(e.getMessage());
                         } else if (e instanceof ResponseCartApiErrorException) {
-                            view.renderErrorToShipmentSingleAddress(e.getMessage());
+                            view.renderErrorToShipmentForm(e.getMessage());
                         } else {
                     /* Ini diluar dari segalanya hahahaha */
-                            view.renderErrorHttpToShipmentSingleAddress(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                            view.renderErrorHttpToShipmentForm(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                         }
 
                     }
@@ -235,12 +237,12 @@ public class CartListPresenter implements ICartListPresenter {
                     public void onNext(UpdateToSingleAddressShipmentData data) {
                         view.hideProgressLoading();
                         if (data.getUpdateCartData().isSuccess() && !data.getShipmentAddressFormData().isError()) {
-                            view.renderToShipmentSingleAddressSuccess(data.getShipmentAddressFormData());
+                            view.renderToShipmentFormSuccess(data.getShipmentAddressFormData());
                         } else {
                             String messageError = !data.getShipmentAddressFormData().getErrorMessage().isEmpty()
                                     ? data.getShipmentAddressFormData().getErrorMessage()
                                     : data.getUpdateCartData().getMessage();
-                            view.renderErrorToShipmentSingleAddress(messageError);
+                            view.renderErrorToShipmentForm(messageError);
                         }
                     }
                 },
@@ -321,5 +323,90 @@ public class CartListPresenter implements ICartListPresenter {
                     * data.getCartItemData().getOriginData().getPricePlan());
         }
         view.renderDetailInfoSubTotal(String.valueOf(qty), CURRENCY_IDR.format(((int) subtotalPrice)));
+    }
+
+    @Override
+    public void processCheckPromoCodeFromSuggestedPromo(String promoCode) {
+        view.showProgressLoading();
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put("promo_code", promoCode);
+        param.put("lang", "id");
+        cartListInteractor.checkPromoCodeCartList(new Subscriber<PromoCodeCartListData>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                view.hideProgressLoading();
+            }
+
+            @Override
+            public void onNext(PromoCodeCartListData promoCodeCartListData) {
+                view.hideProgressLoading();
+                if (!promoCodeCartListData.isError())
+                    view.renderCheckPromoCodeFromSuggestedPromoSuccess(promoCodeCartListData);
+                else
+                    view.renderErrorCheckPromoCodeFromSuggestedPromo(promoCodeCartListData.getErrorMessage());
+            }
+        }, view.getGeneratedAuthParamNetwork(param));
+    }
+
+    @Override
+    public void processToShipmentForm() {
+        view.showProgressLoading();
+        TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
+        paramGetShipmentForm.put("lang", "id");
+        cartListInteractor.getShipmentForm(new Subscriber<CartShipmentAddressFormData>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                view.hideProgressLoading();
+                if (e instanceof UnknownHostException) {
+                    /* Ini kalau ga ada internet */
+                    view.renderErrorNoConnectionToShipmentForm(
+                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+                    );
+                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+                    /* Ini kalau timeout */
+                    view.renderErrorTimeoutConnectionToShipmentForm(
+                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                    );
+                } else if (e instanceof ResponseErrorException) {
+                     /* Ini kalau error dari API kasih message error */
+                    view.renderErrorToShipmentForm(e.getMessage());
+                } else if (e instanceof ResponseDataNullException) {
+                    /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
+                    view.renderErrorToShipmentForm(e.getMessage());
+                } else if (e instanceof HttpErrorException) {
+                    /* Ini Http error, misal 403, 500, 404,
+                     code http errornya bisa diambil
+                     e.getErrorCode */
+                    view.renderErrorHttpToShipmentForm(e.getMessage());
+                } else if (e instanceof ResponseCartApiErrorException) {
+                    view.renderErrorToShipmentForm(e.getMessage());
+                } else {
+                    /* Ini diluar dari segalanya hahahaha */
+                    view.renderErrorHttpToShipmentForm(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
+            }
+
+            @Override
+            public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
+                view.hideProgressLoading();
+                if (cartShipmentAddressFormData.isError()) {
+                    view.renderErrorToShipmentForm(cartShipmentAddressFormData.getErrorMessage());
+                } else {
+                    view.renderToShipmentFormSuccess(cartShipmentAddressFormData);
+                }
+            }
+        }, view.getGeneratedAuthParamNetwork(paramGetShipmentForm));
     }
 }

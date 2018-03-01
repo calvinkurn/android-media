@@ -1,15 +1,19 @@
 package com.tokopedia.transaction.checkout.view.view.addressoptions;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.domain.usecase.GetDefaultAddressUseCase;
-import com.tokopedia.transaction.checkout.util.PeopleAddressAuthUtil;
-import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
-import com.tokopedia.transaction.checkout.view.presenter.ICartAddressChoicePresenter;
-import com.tokopedia.transaction.checkout.view.view.ICartAddressChoiceView;
+import com.tokopedia.transaction.checkout.view.util.PeopleAddressAuthUtil;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,11 +52,13 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
 
     @Override
     public void detachView() {
-
+        super.detachView();
+        mGetDefaultAddressUseCase.unsubscribe();
     }
 
     @Override
     public void getAddressShortedList(Context context) {
+        getView().showLoading();
         mGetDefaultAddressUseCase.execute(
                 PeopleAddressAuthUtil.getRequestParams(context, DEFAULT_ORDER, DEFAULT_QUERY, DEFAULT_PAGE),
                 new Subscriber<List<RecipientAddressModel>>() {
@@ -63,13 +69,35 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
 
                     @Override
                     public void onError(Throwable throwable) {
-                        Log.d(TAG, throwable.getMessage());
+                        throwable.printStackTrace();
+                        if (isViewAttached()) {
+                            getView().hideLoading();
+                            String message;
+                            if (throwable instanceof UnknownHostException ||
+                                    throwable instanceof ConnectException ||
+                                    throwable instanceof SocketTimeoutException) {
+                                message = getView().getActivity().getResources().getString(
+                                        R.string.msg_no_connection);
+                            } else if (throwable instanceof UnProcessableHttpException) {
+                                message = TextUtils.isEmpty(throwable.getMessage()) ?
+                                        getView().getActivity().getResources().getString(
+                                                R.string.msg_no_connection) :
+                                        throwable.getMessage();
+                            } else {
+                                message = getView().getActivity().getResources().getString(
+                                        R.string.default_request_error_unknown);
+                            }
+                            getView().showNoConnection(message);
+                        }
                     }
 
                     @Override
                     public void onNext(List<RecipientAddressModel> shipmentAddressModels) {
                         if (!shipmentAddressModels.isEmpty()) {
-                            getView().renderRecipientData(shortList(shipmentAddressModels));
+                            if (isViewAttached()) {
+                                getView().hideLoading();
+                                getView().renderRecipientData(shortList(shipmentAddressModels));
+                            }
                         }
 
                         Log.d(TAG, "Size: " + shipmentAddressModels.size());
@@ -100,7 +128,7 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
             shortList.add(mSelectedRecipientAddress);
             shortList.add(recipientAddressModels.get(FIRST_ELEMENT));
         } else {
-            shortList.addAll(recipientAddressModels.subList(0,2));
+            shortList.addAll(recipientAddressModels.subList(0, 2));
             shortList.get(FIRST_ELEMENT).setSelected(true);
         }
 

@@ -1,10 +1,11 @@
 package com.tokopedia.transaction.checkout.view.view.cartlist;
 
 import com.tokopedia.transaction.base.IBaseView;
-import com.tokopedia.transaction.checkout.view.data.CartItemData;
-import com.tokopedia.transaction.checkout.view.data.CartListData;
-import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
-import com.tokopedia.transaction.checkout.view.data.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartListData;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 
 import java.util.List;
 
@@ -36,15 +37,15 @@ public interface ICartListView extends IBaseView {
     void renderErrorTimeoutConnectionActionDeleteCartData(String message);
 
 
-    void renderToShipmentSingleAddressSuccess(CartShipmentAddressFormData shipmentAddressFormData);
+    void renderToShipmentFormSuccess(CartShipmentAddressFormData shipmentAddressFormData);
 
-    void renderErrorToShipmentSingleAddress(String message);
+    void renderErrorToShipmentForm(String message);
 
-    void renderErrorHttpToShipmentSingleAddress(String message);
+    void renderErrorHttpToShipmentForm(String message);
 
-    void renderErrorNoConnectionToShipmentSingleAddress(String message);
+    void renderErrorNoConnectionToShipmentForm(String message);
 
-    void renderErrorTimeoutConnectionToShipmentSingleAddress(String message);
+    void renderErrorTimeoutConnectionToShipmentForm(String message);
 
 
     void renderToShipmentMultipleAddressSuccess(CartListData cartListData, RecipientAddressModel selectedAddress);
@@ -56,6 +57,17 @@ public interface ICartListView extends IBaseView {
     void renderErrorNoConnectionToShipmentMultipleAddress(String message);
 
     void renderErrorTimeoutConnectionToShipmentMultipleAddress(String message);
+
+
+    void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData);
+
+    void renderErrorCheckPromoCodeFromSuggestedPromo(String message);
+
+    void renderErrorHttpCheckPromoCodeFromSuggestedPromo(String message);
+
+    void renderErrorNoConnectionCheckPromoCodeFromSuggestedPromo(String message);
+
+    void renderErrorTimeoutConnectionCheckPromoCodeFromSuggestedPromo(String message);
 
 
     void renderEmptyCartData();

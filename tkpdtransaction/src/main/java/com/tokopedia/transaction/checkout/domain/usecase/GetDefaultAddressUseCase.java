@@ -1,8 +1,8 @@
 package com.tokopedia.transaction.checkout.domain.usecase;
 
-import com.tokopedia.transaction.checkout.di.qualifier.NonPaginatedAddressQualifier;
-import com.tokopedia.transaction.checkout.domain.repository.PeopleAddressRepository;
-import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
+import com.tokopedia.transaction.checkout.data.repository.PeopleAddressRepository;
+import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.transaction.checkout.view.di.qualifier.NonPaginatedAddressQualifier;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

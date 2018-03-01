@@ -2,13 +2,13 @@ package com.tokopedia.transaction.checkout.view.view.cartlist;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.transaction.checkout.domain.ICartListInteractor;
-import com.tokopedia.transaction.checkout.domain.request.RemoveCartRequest;
-import com.tokopedia.transaction.checkout.domain.request.UpdateCartRequest;
-import com.tokopedia.transaction.checkout.view.data.CartItemData;
-import com.tokopedia.transaction.checkout.view.data.DeleteCartData;
-import com.tokopedia.transaction.checkout.view.data.DeleteUpdateCartData;
-import com.tokopedia.transaction.checkout.view.presenter.CartMvpPresenter;
+import com.tokopedia.transaction.checkout.data.entity.request.RemoveCartRequest;
+import com.tokopedia.transaction.checkout.data.entity.request.UpdateCartRequest;
+import com.tokopedia.transaction.checkout.domain.datamodel.DeleteUpdateCartData;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.DeleteCartData;
+import com.tokopedia.transaction.checkout.domain.usecase.ICartListInteractor;
+import com.tokopedia.transaction.checkout.view.base.CartMvpPresenter;
 
 import java.util.ArrayList;
 import java.util.List;

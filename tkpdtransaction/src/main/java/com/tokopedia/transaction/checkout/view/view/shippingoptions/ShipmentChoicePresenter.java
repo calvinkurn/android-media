@@ -1,9 +1,8 @@
 package com.tokopedia.transaction.checkout.view.view.shippingoptions;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
-import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
-import com.tokopedia.transaction.checkout.view.view.IShipmentChoiceView;
+import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
+import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentItemData;
 
 import java.util.ArrayList;
 import java.util.List;

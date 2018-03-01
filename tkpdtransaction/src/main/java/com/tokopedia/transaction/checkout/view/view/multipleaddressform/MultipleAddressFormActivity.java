@@ -9,8 +9,8 @@ import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.checkout.view.data.CartListData;
-import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
+import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartListData;
 
 /**
  * Created by kris on 2/22/18. Tokopedia
@@ -21,6 +21,7 @@ public class MultipleAddressFormActivity extends BasePresenterActivity {
     public static final int REQUEST_CODE = MultipleAddressFormActivity.class.hashCode();
     private static final String EXTRA_CART_LIST_DATA = "EXTRA_CART_LIST_DATA";
     private static final String EXTRA_RECIPIENT_ADDRESS_DATA = "EXTRA_RECIPIENT_ADDRESS_DATA";
+    public static final int RESULT_CODE_SUCCESS_SET_SHIPPING = 22;
 
     private CartListData cartListData;
     private RecipientAddressModel addressData;

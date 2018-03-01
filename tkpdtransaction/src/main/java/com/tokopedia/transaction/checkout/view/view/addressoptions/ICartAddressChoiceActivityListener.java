@@ -1,6 +1,6 @@
 package com.tokopedia.transaction.checkout.view.view.addressoptions;
 
-import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
+import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 
 /**
  * @author anggaprasetiyo on 26/02/18.

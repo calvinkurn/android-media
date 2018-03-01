@@ -4,13 +4,16 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
@@ -22,13 +25,11 @@ import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.data.mapper.AddressModelMapper;
-import com.tokopedia.transaction.checkout.di.component.CartAddressChoiceComponent;
-import com.tokopedia.transaction.checkout.di.component.DaggerCartAddressChoiceComponent;
-import com.tokopedia.transaction.checkout.di.module.CartAddressChoiceModule;
+import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.view.adapter.ShipmentAddressListAdapter;
-import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
-import com.tokopedia.transaction.checkout.view.presenter.ICartAddressChoicePresenter;
-import com.tokopedia.transaction.checkout.view.view.ICartAddressChoiceView;
+import com.tokopedia.transaction.checkout.view.di.component.CartAddressChoiceComponent;
+import com.tokopedia.transaction.checkout.view.di.component.DaggerCartAddressChoiceComponent;
+import com.tokopedia.transaction.checkout.view.di.module.CartAddressChoiceModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +65,12 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     Button btSendToCurrentAddress;
     @BindView(R2.id.rv_address)
     RecyclerView rvAddress;
+    @BindView(R2.id.pb_loading)
+    ProgressBar pbLoading;
+    @BindView(R2.id.ll_network_error_view)
+    LinearLayout llNetworkErrorView;
+    @BindView(R2.id.ll_content)
+    LinearLayout llContent;
 
     private ICartAddressChoiceActivityListener cartAddressChoiceListener;
 
@@ -161,6 +168,30 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
         mCartAddressChoicePresenter.getAddressShortedList(getActivity());
     }
 
+    @Override
+    public void showLoading() {
+        llContent.setVisibility(View.GONE);
+        pbLoading.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoading() {
+        pbLoading.setVisibility(View.GONE);
+        llContent.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showNoConnection(@NonNull String message) {
+        llContent.setVisibility(View.GONE);
+        NetworkErrorHelper.showEmptyState(getActivity(), llNetworkErrorView, message,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        mCartAddressChoicePresenter.getAddressShortedList(getActivity());
+                    }
+                });
+    }
+
     private void setupRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL, false);
@@ -221,10 +252,10 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case ManageAddressConstant.REQUEST_CODE_PARAM_CREATE:
-                    // Reload list address
+                    mCartAddressChoicePresenter.getAddressShortedList(getActivity());
                     break;
                 case ManageAddressConstant.REQUEST_CODE_PARAM_EDIT:
-                    // Reload list address
+                    mCartAddressChoicePresenter.getAddressShortedList(getActivity());
                     break;
                 default:
                     break;

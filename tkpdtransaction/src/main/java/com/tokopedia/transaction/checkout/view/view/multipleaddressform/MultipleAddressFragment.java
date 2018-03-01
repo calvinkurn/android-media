@@ -3,7 +3,6 @@ package com.tokopedia.transaction.checkout.view.view.multipleaddressform;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,19 +12,16 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.checkout.di.component.DaggerMultipleAddressComponent;
-import com.tokopedia.transaction.checkout.di.component.MultipleAddressComponent;
-import com.tokopedia.transaction.checkout.di.module.MultipleAddressModule;
+import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressAdapterData;
+import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.transaction.checkout.view.adapter.MultipleAddressAdapter;
-import com.tokopedia.transaction.checkout.view.data.CartItemData;
-import com.tokopedia.transaction.checkout.view.data.CartItemModel;
-import com.tokopedia.transaction.checkout.view.data.CartListData;
-import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
-import com.tokopedia.transaction.checkout.view.data.MultipleAddressAdapterData;
-import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
-import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
+import com.tokopedia.transaction.checkout.view.di.component.DaggerMultipleAddressComponent;
+import com.tokopedia.transaction.checkout.view.di.component.MultipleAddressComponent;
+import com.tokopedia.transaction.checkout.view.di.module.MultipleAddressModule;
 import com.tokopedia.transaction.checkout.view.view.shipmentform.ICartShipmentActivity;
-import com.tokopedia.transaction.checkout.view.view.shipmentform.MultipleAddressShipmentFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +30,7 @@ import javax.inject.Inject;
 
 import static com.tokopedia.transaction.checkout.view.view.multipleaddressform.AddShipmentAddressFragment.ADD_MODE;
 import static com.tokopedia.transaction.checkout.view.view.multipleaddressform.AddShipmentAddressFragment.EDIT_MODE;
+import static com.tokopedia.transaction.checkout.view.view.multipleaddressform.MultipleAddressFormActivity.RESULT_CODE_SUCCESS_SET_SHIPPING;
 
 /**
  * Created by kris on 1/24/18. Tokopedia
@@ -88,7 +85,7 @@ public class MultipleAddressFragment extends TkpdFragment
     private void initInjector() {
         MultipleAddressComponent component = DaggerMultipleAddressComponent
                 .builder()
-                .multipleAddressModule(new MultipleAddressModule()).build();
+                .multipleAddressModule(new MultipleAddressModule(this)).build();
         component.inject(this);
     }
 
@@ -183,13 +180,7 @@ public class MultipleAddressFragment extends TkpdFragment
     @Override
     public void onGoToChooseCourier(List<MultipleAddressAdapterData> dataList) {
         //TODO release later
-        presenter.sendData(dataList);
-
-        getFragmentManager().beginTransaction()
-                .setCustomAnimations(R.animator.slide_in_left, R.animator.slide_in_left)
-                .replace(R.id.container, MultipleAddressShipmentFragment.newInstance())
-                .addToBackStack("")
-                .commit();
+        presenter.sendData(getActivity(), dataList);
     }
 
     @Override
@@ -244,11 +235,22 @@ public class MultipleAddressFragment extends TkpdFragment
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        //cartShipmentActivity = (ICartShipmentActivity) activity;
+    }
+
+    @Override
+    public void successMakeShipmentData() {
+        getActivity().setResult(RESULT_CODE_SUCCESS_SET_SHIPPING);
+        getActivity().finish();
     }
 
     @Override
     public void receiveData(List<MultipleAddressAdapterData> dataList) {
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        presenter.onUnsubscribe();
+        super.onDestroyView();
     }
 }

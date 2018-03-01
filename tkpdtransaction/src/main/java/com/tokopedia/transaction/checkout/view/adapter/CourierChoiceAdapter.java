@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
-import com.tokopedia.transaction.checkout.view.data.CourierItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.CourierItemData;
 
 import java.text.NumberFormat;
 import java.util.List;

@@ -6,6 +6,7 @@ import com.tokopedia.loyalty.view.data.VoucherViewModel;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -46,6 +47,28 @@ public class PromoCodeInteractor implements IPromoCodeInteractor {
         compositeSubscription.add(
                 tokoplusRepositoy.checkDigitalVoucherValidity(param, voucherCode)
                         .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(subscriber)
+        );
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void submitVoucherMarketPlaceCartList(Observable observable, Subscriber<?> subscriber) {
+        compositeSubscription.add(
+                observable.subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(subscriber)
+        );
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void submitVoucherMarketPlaceCartShipment(Observable observable, Subscriber<?> subscriber) {
+        compositeSubscription.add(
+                observable.subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.newThread())
                         .subscribe(subscriber)

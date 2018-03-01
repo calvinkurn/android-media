@@ -16,13 +16,11 @@ import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.data.mapper.AddressModelMapper;
-import com.tokopedia.transaction.checkout.di.component.DaggerShipmentAddressListComponent;
-import com.tokopedia.transaction.checkout.di.component.ShipmentAddressListComponent;
-import com.tokopedia.transaction.checkout.di.module.ShipmentAddressListModule;
+import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.view.adapter.ShipmentAddressListAdapter;
-import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
-import com.tokopedia.transaction.checkout.view.presenter.ShipmentAddressListPresenter;
-import com.tokopedia.transaction.checkout.view.view.ISearchAddressListView;
+import com.tokopedia.transaction.checkout.view.di.component.DaggerShipmentAddressListComponent;
+import com.tokopedia.transaction.checkout.view.di.component.ShipmentAddressListComponent;
+import com.tokopedia.transaction.checkout.view.di.module.ShipmentAddressListModule;
 
 import java.util.ArrayList;
 import java.util.HashMap;

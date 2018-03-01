@@ -1,7 +1,6 @@
 package com.tokopedia.transaction.apiservice;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.transaction.checkout.domain.response.couponlist.CouponDataResponse;
 
 import java.util.Map;
 

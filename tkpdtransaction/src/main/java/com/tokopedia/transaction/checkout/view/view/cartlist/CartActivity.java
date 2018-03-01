@@ -8,7 +8,7 @@ import android.view.MenuItem;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.checkout.view.data.CartItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartItemData;
 
 import java.util.ArrayList;
 import java.util.List;
