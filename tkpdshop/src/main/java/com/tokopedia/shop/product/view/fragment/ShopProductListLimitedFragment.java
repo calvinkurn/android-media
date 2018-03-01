@@ -1,18 +1,30 @@
 package com.tokopedia.shop.product.view.fragment;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.shop.R;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
+import com.tokopedia.shop.product.view.adapter.ShopProductAdapter;
+import com.tokopedia.shop.product.view.adapter.ShopProductLimitedAdapter;
 import com.tokopedia.shop.product.view.adapter.ShopProductLimitedAdapterTypeFactory;
+import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.listener.ShopProductListLimitedView;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListLimitedPresenter;
 
 import javax.inject.Inject;
@@ -22,16 +34,27 @@ import javax.inject.Inject;
  */
 
 public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopProductBaseViewModel, ShopProductLimitedAdapterTypeFactory>
-        implements ShopProductListLimitedView, View.OnClickListener {
+        implements ShopProductListLimitedView, View.OnClickListener, ShopProductClickedListener {
 
     public static ShopProductListLimitedFragment createInstance() {
         ShopProductListLimitedFragment fragment = new ShopProductListLimitedFragment();
         return fragment;
     }
 
+    private ProgressDialog progressDialog;
+
     @Inject
     ShopProductListLimitedPresenter shopProductListLimitedPresenter;
     private String shopId;
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_shop_product_limited_list, container, false);
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getString(R.string.title_loading));
+        return view;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,7 +70,13 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     @NonNull
     @Override
     protected ShopProductLimitedAdapterTypeFactory getAdapterTypeFactory() {
-        return new ShopProductLimitedAdapterTypeFactory(this);
+        return new ShopProductLimitedAdapterTypeFactory(this, this);
+    }
+
+    @NonNull
+    @Override
+    protected BaseListAdapter<ShopProductBaseViewModel, ShopProductLimitedAdapterTypeFactory> createAdapterInstance() {
+        return new ShopProductLimitedAdapter(getAdapterTypeFactory());
     }
 
     @Override
@@ -96,5 +125,44 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     @Override
     public void onClick(View view) {
         startActivity(ShopProductListActivity.createIntent(getActivity(), shopId));
+    }
+
+    @Override
+    public void onWishListClicked(ShopProductViewModel shopProductViewModel) {
+        if (shopProductViewModel.isWishList()) {
+            shopProductListLimitedPresenter.removeFromWishList(shopProductViewModel.getId());
+        } else {
+            shopProductListLimitedPresenter.addToWishList(shopProductViewModel.getId());
+        }
+    }
+
+    @Override
+    public void onErrorRemoveFromWishList(Throwable e) {
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(),e));
+    }
+
+    @Override
+    public void onSuccessRemoveFromWishList(String productId, Boolean value) {
+        ((ShopProductLimitedAdapter) getAdapter()).updateWishListStatus(productId, false);
+    }
+
+    @Override
+    public void onErrorAddToWishList(Throwable e) {
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(),e));
+    }
+
+    @Override
+    public void onSuccessAddToWishList(String productId, Boolean value) {
+        ((ShopProductLimitedAdapter) getAdapter()).updateWishListStatus(productId, true);
+    }
+
+    @Override
+    public void showLoading() {
+        progressDialog.show();
+    }
+
+    @Override
+    public void hideLoading() {
+        progressDialog.dismiss();
     }
 }

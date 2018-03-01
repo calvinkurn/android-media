@@ -17,4 +17,12 @@ public interface ShopModuleRouter {
     Intent getEtalaseIntent(Context context, String shopId, int currentChoosen);
 
     boolean isMyOwnShop(String shopId);
+
+    void goToManageShop(Context context);
+
+    void goToAddProduct(Context context);
+
+    void goToChatSeller(Context context, String shopId, String shopName);
+
+    void goToShareShop(Context context, String shopId, String shopUrl, String shareLabel);
 }

@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedFeaturedViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedProductViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedPromoViewHolder;
+import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedProductViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
@@ -18,9 +19,12 @@ import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
 public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory {
 
     private final View.OnClickListener showMoreProductOnclickListener;
+    private ShopProductClickedListener shopProductClickedListener;
 
-    public ShopProductLimitedAdapterTypeFactory(View.OnClickListener showMoreProductOnclickListener) {
+    public ShopProductLimitedAdapterTypeFactory(View.OnClickListener showMoreProductOnclickListener,
+                                                ShopProductClickedListener shopProductClickedListener) {
         this.showMoreProductOnclickListener = showMoreProductOnclickListener;
+        this.shopProductClickedListener = shopProductClickedListener;
     }
 
     public int type(ShopProductLimitedPromoViewModel shopProductLimitedPromoViewModel) {
@@ -40,9 +44,9 @@ public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory
         if (type == ShopProductLimitedPromoViewHolder.LAYOUT) {
             return new ShopProductLimitedPromoViewHolder(parent);
         } else if (type == ShopProductLimitedFeaturedViewHolder.LAYOUT) {
-            return new ShopProductLimitedFeaturedViewHolder(parent);
+            return new ShopProductLimitedFeaturedViewHolder(parent,shopProductClickedListener);
         } else if (type == ShopProductLimitedProductViewHolder.LAYOUT) {
-            return new ShopProductLimitedProductViewHolder(parent, showMoreProductOnclickListener);
+            return new ShopProductLimitedProductViewHolder(parent, showMoreProductOnclickListener, shopProductClickedListener);
         } else {
             return super.createViewHolder(parent, type);
         }
