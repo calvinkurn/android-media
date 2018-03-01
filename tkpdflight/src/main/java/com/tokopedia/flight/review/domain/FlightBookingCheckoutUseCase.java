@@ -58,7 +58,7 @@ public class FlightBookingCheckoutUseCase extends UseCase<FlightCheckoutEntity> 
         configuration.setPrice(requestParams.getInt(PARAM_PRICE, 0));
         item.setConfiguration(configuration);
         FlightCheckoutMetaData metaData = new FlightCheckoutMetaData();
-        metaData.setDid(4);
+        metaData.setDid(5);
         metaData.setFlightId(requestParams.getString(PARAM_FLIGHT_ID, ""));
         metaData.setIpAddress(FlightRequestUtil.getLocalIpAddress());
         metaData.setUserAgent(FlightRequestUtil.getUserAgentForApiCall());
