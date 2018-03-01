@@ -14,6 +14,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.TextUtils;
@@ -113,14 +114,14 @@ public class ImageHandler {
         if (url != null && !TextUtils.isEmpty(url)) {
             Glide.with(imageview.getContext())
                     .load(url)
-                    .placeholder(resId)
+                    .placeholder(ContextCompat.getDrawable(imageview.getContext(), resId))
                     .dontAnimate()
                     .error(resId)
                     .into(imageview);
         } else {
             Glide.with(imageview.getContext())
                     .load(url)
-                    .placeholder(resId)
+                    .placeholder(ContextCompat.getDrawable(imageview.getContext(), resId))
                     .error(resId)
                     .into(imageview);
         }
