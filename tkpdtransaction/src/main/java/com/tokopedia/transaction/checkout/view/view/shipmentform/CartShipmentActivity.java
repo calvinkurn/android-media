@@ -120,4 +120,10 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
         else setResult(resultCode, intent);
         finish();
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        // TODO add reset cart shipment dialog here
+    }
 }

@@ -10,6 +10,7 @@ import android.os.Parcelable;
 public class CartPayableDetailModel implements Parcelable {
 
     private int totalItem;
+    private double totalItemPrice;
     private double totalPrice;
     private double totalWeight;
     private double shippingFee;
@@ -22,6 +23,14 @@ public class CartPayableDetailModel implements Parcelable {
 
     public void setTotalItem(int totalItem) {
         this.totalItem = totalItem;
+    }
+
+    public double getTotalItemPrice() {
+        return totalItemPrice;
+    }
+
+    public void setTotalItemPrice(double totalItemPrice) {
+        this.totalItemPrice = totalItemPrice;
     }
 
     public double getTotalPrice() {
@@ -64,7 +73,6 @@ public class CartPayableDetailModel implements Parcelable {
         this.promoPrice = promoPrice;
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -73,6 +81,7 @@ public class CartPayableDetailModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.totalItem);
+        dest.writeDouble(this.totalItemPrice);
         dest.writeDouble(this.totalPrice);
         dest.writeDouble(this.totalWeight);
         dest.writeDouble(this.shippingFee);
@@ -85,6 +94,7 @@ public class CartPayableDetailModel implements Parcelable {
 
     protected CartPayableDetailModel(Parcel in) {
         this.totalItem = in.readInt();
+        this.totalItemPrice = in.readDouble();
         this.totalPrice = in.readDouble();
         this.totalWeight = in.readDouble();
         this.shippingFee = in.readDouble();
