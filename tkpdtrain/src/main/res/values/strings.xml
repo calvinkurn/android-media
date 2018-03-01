@@ -12,4 +12,7 @@
 
     <string name="kai_homepage_adult_passenger">Dewasa</string>
     <string name="kai_homepage_adult_infant">Bayi</string>
+    <string name="train_homepage_toolbar_title">Tiket Kereta</string>
+    <string name="train_homepage_origin_station_hint">Kota/Stasiun Asal</string>
+    <string name="train_homepage_destination_station_hint">Kota/Stasiun Tujuan</string>
 </resources>

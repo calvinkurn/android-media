@@ -7,30 +7,30 @@ import android.os.Parcelable;
  * Created by Rizky on 21/02/18.
  */
 
-public class KAIPassengerViewModel implements Parcelable, Cloneable {
+public class TrainPassengerViewModel implements Parcelable, Cloneable {
 
     private int adult;
     private int infant;
 
-    public KAIPassengerViewModel(Parcel in) {
+    public TrainPassengerViewModel(Parcel in) {
         adult = in.readInt();
         infant = in.readInt();
     }
 
-    public KAIPassengerViewModel(int adult, int infant) {
+    public TrainPassengerViewModel(int adult, int infant) {
         this.adult = adult;
         this.infant = infant;
     }
 
-    public static final Parcelable.Creator<KAIPassengerViewModel> CREATOR = new Parcelable.Creator<KAIPassengerViewModel>() {
+    public static final Parcelable.Creator<TrainPassengerViewModel> CREATOR = new Parcelable.Creator<TrainPassengerViewModel>() {
         @Override
-        public KAIPassengerViewModel createFromParcel(Parcel in) {
-            return new KAIPassengerViewModel(in);
+        public TrainPassengerViewModel createFromParcel(Parcel in) {
+            return new TrainPassengerViewModel(in);
         }
 
         @Override
-        public KAIPassengerViewModel[] newArray(int size) {
-            return new KAIPassengerViewModel[size];
+        public TrainPassengerViewModel[] newArray(int size) {
+            return new TrainPassengerViewModel[size];
         }
     };
 
@@ -80,8 +80,8 @@ public class KAIPassengerViewModel implements Parcelable, Cloneable {
             return this;
         }
 
-        public KAIPassengerViewModel build() {
-            return new KAIPassengerViewModel(adult, infant);
+        public TrainPassengerViewModel build() {
+            return new TrainPassengerViewModel(adult, infant);
         }
     }
 

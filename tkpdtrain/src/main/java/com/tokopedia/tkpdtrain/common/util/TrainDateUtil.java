@@ -13,7 +13,7 @@ import java.util.TimeZone;
  * Created by Rizky on 21/02/18.
  */
 
-public class KAIDateUtil {
+public class TrainDateUtil {
     public static final String FORMAT_DATE_API = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     public static final String FORMAT_TIME = "HH:mm";
     public static final String FORMAT_DATE = "EEEE, dd LLLL yyyy";

@@ -201,13 +201,6 @@
             android:layout_marginRight="@dimen/margin_small"
             android:background="@drawable/bg_line_separator" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
-            android:background="@drawable/bg_line_separator" />
-
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/button_search_ticket"
             style="@style/Button.Submit.Orange"

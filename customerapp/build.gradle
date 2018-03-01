@@ -242,7 +242,7 @@ dependencies {
 //    }
 //    compile(rootProject.ext.tkpdDependencies.seller) {
 //        exclude group: 'com.tokopedia.core'
-//    }
+//    }cha
 //    compile(rootProject.ext.tkpdDependencies.session) {
 //        exclude group: 'com.tokopedia.core'
 //    }

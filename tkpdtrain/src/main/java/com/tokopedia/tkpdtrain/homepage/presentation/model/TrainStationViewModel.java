@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by Rizky on 21/02/18.
  */
 
-public class KAIStationViewModel implements Parcelable {
+public class TrainStationViewModel implements Parcelable {
 
     private String stationId;
     private String stationCode;
@@ -46,18 +46,18 @@ public class KAIStationViewModel implements Parcelable {
         this.cityName = cityName;
     }
 
-    protected KAIStationViewModel(Parcel in) {
+    protected TrainStationViewModel(Parcel in) {
     }
 
-    public static final Creator<KAIStationViewModel> CREATOR = new Creator<KAIStationViewModel>() {
+    public static final Creator<TrainStationViewModel> CREATOR = new Creator<TrainStationViewModel>() {
         @Override
-        public KAIStationViewModel createFromParcel(Parcel in) {
-            return new KAIStationViewModel(in);
+        public TrainStationViewModel createFromParcel(Parcel in) {
+            return new TrainStationViewModel(in);
         }
 
         @Override
-        public KAIStationViewModel[] newArray(int size) {
-            return new KAIStationViewModel[size];
+        public TrainStationViewModel[] newArray(int size) {
+            return new TrainStationViewModel[size];
         }
     };
 

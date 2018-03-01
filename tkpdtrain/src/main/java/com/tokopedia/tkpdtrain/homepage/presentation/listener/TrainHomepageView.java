@@ -1,8 +1,10 @@
 package com.tokopedia.tkpdtrain.homepage.presentation.listener;
 
+import android.app.Activity;
 import android.support.annotation.StringRes;
 
-import com.tokopedia.tkpdtrain.homepage.presentation.model.KAIHomepageViewModel;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.tkpdtrain.homepage.presentation.model.TrainHomepageViewModel;
 
 import java.util.Date;
 
@@ -10,11 +12,11 @@ import java.util.Date;
  * Created by Rizky on 21/02/18.
  */
 
-public interface ITrainHomepageView {
+public interface TrainHomepageView extends CustomerView{
 
-    void renderSingleTripView(KAIHomepageViewModel kaiHomepageViewModel);
+    void renderSingleTripView(TrainHomepageViewModel trainHomepageViewModel);
 
-    void renderRoundTripView(KAIHomepageViewModel kaiHomepageViewModel);
+    void renderRoundTripView(TrainHomepageViewModel trainHomepageViewModel);
 
     void showDepartureDatePickerDialog(Date selectedDate, Date minDate, Date maxDate);
 
@@ -28,4 +30,9 @@ public interface ITrainHomepageView {
 
     void showReturnDateMax100Days(@StringRes int resId);
 
+    TrainHomepageViewModel getHomepageViewModel();
+
+    Activity getActivity();
+
+    void setHomepageViewModel(TrainHomepageViewModel viewModel);
 }

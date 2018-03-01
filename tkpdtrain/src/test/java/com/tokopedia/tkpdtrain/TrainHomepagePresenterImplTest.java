@@ -1,9 +1,9 @@
 package com.tokopedia.tkpdtrain;
 
-import com.tokopedia.tkpdtrain.common.util.KAIDateUtil;
-import com.tokopedia.tkpdtrain.homepage.presentation.listener.ITrainHomepageView;
-import com.tokopedia.tkpdtrain.homepage.presentation.model.KAIHomepageViewModel;
-import com.tokopedia.tkpdtrain.homepage.presentation.presenter.TrainHomepagePresenter;
+import com.tokopedia.tkpdtrain.common.util.TrainDateUtil;
+import com.tokopedia.tkpdtrain.homepage.presentation.listener.TrainHomepageView;
+import com.tokopedia.tkpdtrain.homepage.presentation.model.TrainHomepageViewModel;
+import com.tokopedia.tkpdtrain.homepage.presentation.presenter.TrainHomepagePresenterImpl;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -23,83 +23,83 @@ import static org.mockito.Mockito.when;
  * Created by Rizky on 22/02/18.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(KAIDateUtil.class)
-public class TrainHomepagePresenterTest {
+@PrepareForTest(TrainDateUtil.class)
+public class TrainHomepagePresenterImplTest {
 
     private Calendar fakeCurrentCalendar;
 
-    private KAIHomepageViewModel kaiHomepageViewModel;
-    private ITrainHomepageView trainHomepageView;
+    private TrainHomepageViewModel trainHomepageViewModel;
+    private TrainHomepageView trainHomepageView;
 
-    private TrainHomepagePresenter trainHomepagePresenter;
+    private TrainHomepagePresenterImpl trainHomepagePresenterImpl;
 
     @Before
     public void setupTrainHomepagePresenterTest() {
-        kaiHomepageViewModel = mock(KAIHomepageViewModel.class);
-        trainHomepageView = mock(ITrainHomepageView.class);
+        trainHomepageViewModel = mock(TrainHomepageViewModel.class);
+        trainHomepageView = mock(TrainHomepageView.class);
 
-        PowerMockito.mockStatic(KAIDateUtil.class);
+        PowerMockito.mockStatic(TrainDateUtil.class);
 
         // setup today's date
         int fakeYear = 1994;
         int fakeMonth = 9;
         int fakeDate = 17;
         fakeCurrentCalendar = setupFakeCalendar(fakeYear, fakeMonth, fakeDate);
-        when(KAIDateUtil.getCurrentCalendar()).thenReturn(fakeCurrentCalendar);
+        when(TrainDateUtil.getCurrentCalendar()).thenReturn(fakeCurrentCalendar);
         Date fakeCurrentDate = fakeCurrentCalendar.getTime();
-        when(KAIDateUtil.getCurrentDate()).thenReturn(fakeCurrentDate); // 17-9-1994
+        when(TrainDateUtil.getCurrentDate()).thenReturn(fakeCurrentDate); // 17-9-1994
 
-        trainHomepagePresenter = new TrainHomepagePresenter(kaiHomepageViewModel);
-        trainHomepagePresenter.takeView(trainHomepageView);
+        trainHomepagePresenterImpl = new TrainHomepagePresenterImpl();
+        trainHomepagePresenterImpl.attachView(trainHomepageView);
     }
 
     @Test
     public void singleTrip() {
-        trainHomepagePresenter.singleTrip();
+        trainHomepagePresenterImpl.singleTrip();
 
-        verify(kaiHomepageViewModel).setOneWay(true);
-        verify(trainHomepageView).renderSingleTripView(kaiHomepageViewModel);
+        verify(trainHomepageViewModel).setOneWay(true);
+        verify(trainHomepageView).renderSingleTripView(trainHomepageViewModel);
     }
 
     @Test
     public void roundTrip() {
-        trainHomepagePresenter.roundTrip();
+        trainHomepagePresenterImpl.roundTrip();
 
-        verify(kaiHomepageViewModel).setOneWay(false);
-        verify(trainHomepageView).renderRoundTripView(kaiHomepageViewModel);
+        verify(trainHomepageViewModel).setOneWay(false);
+        verify(trainHomepageView).renderRoundTripView(trainHomepageViewModel);
     }
 
     @Test
     public void onDepartureDateButtonClicked() {
-        Date departureDate = KAIDateUtil.addTimeToCurrentDate(Calendar.DATE, 1);
-        String departureDateString = KAIDateUtil.dateToString(departureDate, KAIDateUtil.DEFAULT_FORMAT);
+        Date departureDate = TrainDateUtil.addTimeToCurrentDate(Calendar.DATE, 1);
+        String departureDateString = TrainDateUtil.dateToString(departureDate, TrainDateUtil.DEFAULT_FORMAT);
 
-        when(kaiHomepageViewModel.getDepartureDate()).thenReturn(departureDateString);
+        when(trainHomepageViewModel.getDepartureDate()).thenReturn(departureDateString);
 
-        Date minDate = KAIDateUtil.getCurrentDate();
-        Date maxDate = KAIDateUtil.addTimeToCurrentDate(Calendar.DATE, 100);
-        Date selectedDate = KAIDateUtil.stringToDate(kaiHomepageViewModel.getDepartureDate());
+        Date minDate = TrainDateUtil.getCurrentDate();
+        Date maxDate = TrainDateUtil.addTimeToCurrentDate(Calendar.DATE, 100);
+        Date selectedDate = TrainDateUtil.stringToDate(trainHomepageViewModel.getDepartureDate());
 
-        trainHomepagePresenter.onDepartureDateButtonClicked();
+        trainHomepagePresenterImpl.onDepartureDateButtonClicked();
 
         verify(trainHomepageView).showDepartureDatePickerDialog(selectedDate, minDate, maxDate);
     }
 
     @Test
     public void onReturnDateButtonClicked() {
-        Date departureDate = KAIDateUtil.addTimeToCurrentDate(Calendar.DATE, 1);
-        String departureDateString = KAIDateUtil.dateToString(departureDate, KAIDateUtil.DEFAULT_FORMAT);
-        Date returnDate = KAIDateUtil.addTimeToSpesificDate(departureDate, Calendar.DATE, 2);
-        String returnDateString = KAIDateUtil.dateToString(returnDate, KAIDateUtil.DEFAULT_FORMAT);
+        Date departureDate = TrainDateUtil.addTimeToCurrentDate(Calendar.DATE, 1);
+        String departureDateString = TrainDateUtil.dateToString(departureDate, TrainDateUtil.DEFAULT_FORMAT);
+        Date returnDate = TrainDateUtil.addTimeToSpesificDate(departureDate, Calendar.DATE, 2);
+        String returnDateString = TrainDateUtil.dateToString(returnDate, TrainDateUtil.DEFAULT_FORMAT);
 
-        when(kaiHomepageViewModel.getReturnDate()).thenReturn(returnDateString);
-        when(kaiHomepageViewModel.getDepartureDate()).thenReturn(departureDateString);
+        when(trainHomepageViewModel.getReturnDate()).thenReturn(returnDateString);
+        when(trainHomepageViewModel.getDepartureDate()).thenReturn(departureDateString);
 
-        Date selectedDate = KAIDateUtil.stringToDate(kaiHomepageViewModel.getReturnDate());
-        Date minDate = KAIDateUtil.stringToDate(kaiHomepageViewModel.getDepartureDate());
-        Date maxDate = KAIDateUtil.addTimeToCurrentDate(Calendar.DATE, 100);
+        Date selectedDate = TrainDateUtil.stringToDate(trainHomepageViewModel.getReturnDate());
+        Date minDate = TrainDateUtil.stringToDate(trainHomepageViewModel.getDepartureDate());
+        Date maxDate = TrainDateUtil.addTimeToCurrentDate(Calendar.DATE, 100);
 
-        trainHomepagePresenter.onReturnDateButtonClicked();
+        trainHomepagePresenterImpl.onReturnDateButtonClicked();
 
         verify(trainHomepageView).showReturnDatePickerDialog(selectedDate, minDate, maxDate);
     }
@@ -111,17 +111,17 @@ public class TrainHomepagePresenterTest {
         // set limit date: today's date + 100
         fakeCurrentCalendar.add(Calendar.DATE, 100);
         Date limitDate = fakeCurrentCalendar.getTime();
-        when(KAIDateUtil.addTimeToCurrentDate(Calendar.DATE, 100)).thenReturn(limitDate); // 25-1-1995
+        when(TrainDateUtil.addTimeToCurrentDate(Calendar.DATE, 100)).thenReturn(limitDate); // 25-1-1995
 
-        when(kaiHomepageViewModel.isOneWay()).thenReturn(true);
+        when(trainHomepageViewModel.isOneWay()).thenReturn(true);
 
         int newFakeDepartureYear = 1994;
         int newFakeDepartureMonth = 9;
         int newFakeDepartureDate = 18;
 
-        trainHomepagePresenter.onDepartureDateChange(newFakeDepartureYear, newFakeDepartureMonth, newFakeDepartureDate);
+        trainHomepagePresenterImpl.onDepartureDateChange(newFakeDepartureYear, newFakeDepartureMonth, newFakeDepartureDate);
 
-        verify(trainHomepageView).renderSingleTripView(kaiHomepageViewModel);
+        verify(trainHomepageView).renderSingleTripView(trainHomepageViewModel);
     }
 
     // today's date   = 17 Oct 1994
@@ -132,7 +132,7 @@ public class TrainHomepagePresenterTest {
         // set limit date: today's date + 100
         fakeCurrentCalendar.add(Calendar.DATE, 100);
         Date limitDate = fakeCurrentCalendar.getTime();
-        when(KAIDateUtil.addTimeToCurrentDate(Calendar.DATE, 100)).thenReturn(limitDate); // 25-1-1995
+        when(TrainDateUtil.addTimeToCurrentDate(Calendar.DATE, 100)).thenReturn(limitDate); // 25-1-1995
 
         // set return date
         int fakeReturnYear = 1994;
@@ -140,18 +140,18 @@ public class TrainHomepagePresenterTest {
         int fakeReturnDate = 22;
         Calendar returnCalendar = setupFakeCalendar(fakeReturnYear, fakeReturnMonth, fakeReturnDate);
         Date returnDate = returnCalendar.getTime();
-        when(kaiHomepageViewModel.getReturnDate()).thenReturn("22-09-1994");
-        when(KAIDateUtil.stringToDate("22-09-1994")).thenReturn(returnDate); // 22-9-1994
+        when(trainHomepageViewModel.getReturnDate()).thenReturn("22-09-1994");
+        when(TrainDateUtil.stringToDate("22-09-1994")).thenReturn(returnDate); // 22-9-1994
 
-        when(kaiHomepageViewModel.isOneWay()).thenReturn(false);
+        when(trainHomepageViewModel.isOneWay()).thenReturn(false);
 
         int newFakeDepartureYear = 1994;
         int newFakeDepartureMonth = 9;
         int newFakeDepartureDate = 18;
 
-        trainHomepagePresenter.onDepartureDateChange(newFakeDepartureYear, newFakeDepartureMonth, newFakeDepartureDate);
+        trainHomepagePresenterImpl.onDepartureDateChange(newFakeDepartureYear, newFakeDepartureMonth, newFakeDepartureDate);
 
-        verify(trainHomepageView).renderRoundTripView(kaiHomepageViewModel);
+        verify(trainHomepageView).renderRoundTripView(trainHomepageViewModel);
     }
 
     // today's date   = 17 Oct 1994
@@ -161,13 +161,13 @@ public class TrainHomepagePresenterTest {
         // set limit date: today's date + 100
         fakeCurrentCalendar.add(Calendar.DATE, 100);
         Date limitDate = fakeCurrentCalendar.getTime();
-        when(KAIDateUtil.addTimeToCurrentDate(Calendar.DATE, 100)).thenReturn(limitDate); // 25-1-1995
+        when(TrainDateUtil.addTimeToCurrentDate(Calendar.DATE, 100)).thenReturn(limitDate); // 25-1-1995
 
         int newFakeDepartureYear = 1995;
         int newFakeDepartureMonth = 1;
         int newFakeDepartureDate = 26;
 
-        trainHomepagePresenter.onDepartureDateChange(newFakeDepartureYear, newFakeDepartureMonth, newFakeDepartureDate);
+        trainHomepagePresenterImpl.onDepartureDateChange(newFakeDepartureYear, newFakeDepartureMonth, newFakeDepartureDate);
 
         verify(trainHomepageView).showDepartureDateMax100Days(R.string.kai_homepage_departure_max_100_days_from_today_error);
     }
@@ -179,13 +179,13 @@ public class TrainHomepagePresenterTest {
         // set limit date
         fakeCurrentCalendar.add(Calendar.DATE, 100);
         Date fakeLimitDate = fakeCurrentCalendar.getTime();
-        when(KAIDateUtil.addTimeToCurrentDate(Calendar.DATE, 100)).thenReturn(fakeLimitDate); // 25-1-1995
+        when(TrainDateUtil.addTimeToCurrentDate(Calendar.DATE, 100)).thenReturn(fakeLimitDate); // 25-1-1995
 
         int newFakeDepartureYear = 1994;
         int newFakeDepartureMonth = 9;
         int newFakeDepartureDate = 16;
 
-        trainHomepagePresenter.onDepartureDateChange(newFakeDepartureYear, newFakeDepartureMonth, newFakeDepartureDate);
+        trainHomepagePresenterImpl.onDepartureDateChange(newFakeDepartureYear, newFakeDepartureMonth, newFakeDepartureDate);
 
         verify(trainHomepageView).showDepartureDateShouldAtLeastToday(R.string.kai_homepage_departure_should_atleast_today_error);
     }
@@ -198,21 +198,21 @@ public class TrainHomepagePresenterTest {
         // set limit date
         fakeCurrentCalendar.add(Calendar.DATE, 100);
         Date limitDate = fakeCurrentCalendar.getTime();
-        when(KAIDateUtil.addTimeToCurrentDate(Calendar.DATE, 100)).thenReturn(limitDate); // 17-9-1994
+        when(TrainDateUtil.addTimeToCurrentDate(Calendar.DATE, 100)).thenReturn(limitDate); // 17-9-1994
 
         // set departure date
         Calendar fakeDepartureCalendar = setupFakeCalendar(1994, 9, 19);
         Date fakeDepartureDate = fakeDepartureCalendar.getTime();
-        when(kaiHomepageViewModel.getDepartureDate()).thenReturn("19-09-1994");
-        when(KAIDateUtil.stringToDate("19-09-1994")).thenReturn(fakeDepartureDate);
+        when(trainHomepageViewModel.getDepartureDate()).thenReturn("19-09-1994");
+        when(TrainDateUtil.stringToDate("19-09-1994")).thenReturn(fakeDepartureDate);
 
         int newFakeReturnYear = 1994;
         int newFakeReturnMonth = 9;
         int newFakeReturnDate = 21;
 
-        trainHomepagePresenter.onReturnDateChange(newFakeReturnYear, newFakeReturnMonth, newFakeReturnDate);
+        trainHomepagePresenterImpl.onReturnDateChange(newFakeReturnYear, newFakeReturnMonth, newFakeReturnDate);
 
-        verify(trainHomepageView).renderRoundTripView(kaiHomepageViewModel);
+        verify(trainHomepageView).renderRoundTripView(trainHomepageViewModel);
     }
 
     // today's date   = 17 Oct 1994
@@ -223,19 +223,19 @@ public class TrainHomepagePresenterTest {
         // set limit date
         fakeCurrentCalendar.add(Calendar.DATE, 100);
         Date limitDate = fakeCurrentCalendar.getTime();
-        when(KAIDateUtil.addTimeToCurrentDate(Calendar.DATE, 100)).thenReturn(limitDate); // 17-9-1994
+        when(TrainDateUtil.addTimeToCurrentDate(Calendar.DATE, 100)).thenReturn(limitDate); // 17-9-1994
 
         // set departure date
         Calendar fakeDepartureCalendar = setupFakeCalendar(1994, 9, 19);
         Date fakeDepartureDate = fakeDepartureCalendar.getTime();
-        when(kaiHomepageViewModel.getDepartureDate()).thenReturn("19-09-1994");
-        when(KAIDateUtil.stringToDate("19-09-1994")).thenReturn(fakeDepartureDate);
+        when(trainHomepageViewModel.getDepartureDate()).thenReturn("19-09-1994");
+        when(TrainDateUtil.stringToDate("19-09-1994")).thenReturn(fakeDepartureDate);
 
         int newFakeReturnYear = 1995;
         int newFakeReturnMonth = 9;
         int newFakeReturnDate = 26;
 
-        trainHomepagePresenter.onReturnDateChange(newFakeReturnYear, newFakeReturnMonth, newFakeReturnDate);
+        trainHomepagePresenterImpl.onReturnDateChange(newFakeReturnYear, newFakeReturnMonth, newFakeReturnDate);
 
         verify(trainHomepageView).showReturnDateMax100Days(R.string.kai_homepage_return_max_100_days_from_today_error);
     }
@@ -248,19 +248,19 @@ public class TrainHomepagePresenterTest {
         // set limit date
         fakeCurrentCalendar.add(Calendar.DATE, 100);
         Date limitDate = fakeCurrentCalendar.getTime();
-        when(KAIDateUtil.addTimeToCurrentDate(Calendar.DATE, 100)).thenReturn(limitDate); // 17-9-1994
+        when(TrainDateUtil.addTimeToCurrentDate(Calendar.DATE, 100)).thenReturn(limitDate); // 17-9-1994
 
         // set departure date
         Calendar fakeDepartureCalendar = setupFakeCalendar(1994, 9, 19);
         Date fakeDepartureDate = fakeDepartureCalendar.getTime();
-        when(kaiHomepageViewModel.getDepartureDate()).thenReturn("19-09-1994");
-        when(KAIDateUtil.stringToDate("19-09-1994")).thenReturn(fakeDepartureDate);
+        when(trainHomepageViewModel.getDepartureDate()).thenReturn("19-09-1994");
+        when(TrainDateUtil.stringToDate("19-09-1994")).thenReturn(fakeDepartureDate);
 
         int newFakeReturnYear = 1994;
         int newFakeReturnMonth = 9;
         int newFakeReturnDate = 18;
 
-        trainHomepagePresenter.onReturnDateChange(newFakeReturnYear, newFakeReturnMonth, newFakeReturnDate);
+        trainHomepagePresenterImpl.onReturnDateChange(newFakeReturnYear, newFakeReturnMonth, newFakeReturnDate);
 
         verify(trainHomepageView).showReturnDateShouldGreaterOrEqual(R.string.kai_homepage_return_should_greater_equal_error);
     }

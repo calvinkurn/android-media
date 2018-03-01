@@ -3,7 +3,6 @@ package com.tokopedia.tkpdtrain.homepage.presentation.view;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
@@ -18,46 +17,46 @@ import android.view.animation.AnimationUtils;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.tkpdtrain.R;
+import com.tokopedia.tkpdtrain.common.constant.TrainAppScreen;
 import com.tokopedia.tkpdtrain.common.presentation.TextInputView;
-import com.tokopedia.tkpdtrain.common.util.KAIDateUtil;
-import com.tokopedia.tkpdtrain.homepage.presentation.listener.ITrainHomepageView;
-import com.tokopedia.tkpdtrain.homepage.presentation.model.KAIHomepageViewModel;
-import com.tokopedia.tkpdtrain.homepage.presentation.model.KAIPassengerViewModel;
-import com.tokopedia.tkpdtrain.homepage.presentation.presenter.TrainHomepagePresenter;
+import com.tokopedia.tkpdtrain.homepage.di.TrainHomepageComponent;
+import com.tokopedia.tkpdtrain.homepage.presentation.listener.TrainHomepageView;
+import com.tokopedia.tkpdtrain.homepage.presentation.model.TrainHomepageViewModel;
+import com.tokopedia.tkpdtrain.homepage.presentation.presenter.TrainHomepagePresenterImpl;
 
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.inject.Inject;
+
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TrainHomepageFragment extends Fragment implements ITrainHomepageView {
+public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHomepageView {
 
     private final int DEFAULT_RANGE_OF_DEPARTURE_AND_ARRIVAL = 2;
 
     private AppCompatButton buttonOneWayTrip;
     private AppCompatButton buttonRoundTrip;
-
     private LinearLayout layoutOriginStation;
     private LinearLayout layoutDestinationStation;
-
     private AppCompatTextView tvOriginStationLabel;
     private AppCompatTextView tvDestinationStationLabel;
-
     private AppCompatImageView imageReverseOriginDestitation;
-
     private TextInputView textInputViewDateDeparture;
     private TextInputView textInputViewDateReturn;
-
     private TextInputView textInputViewPassenger;
-
     private AppCompatButton buttonSearchTicket;
-
     private View separatorDateReturn;
 
-    private TrainHomepagePresenter trainHomepagePresenter;
+
+    private TrainHomepageViewModel viewModel;
+
+    @Inject
+    TrainHomepagePresenterImpl trainHomepagePresenterImpl;
 
     public TrainHomepageFragment() {
         // Required empty public constructor
@@ -87,14 +86,14 @@ public class TrainHomepageFragment extends Fragment implements ITrainHomepageVie
         buttonOneWayTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                trainHomepagePresenter.singleTrip();
+                trainHomepagePresenterImpl.singleTrip();
             }
         });
 
         buttonRoundTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                trainHomepagePresenter.roundTrip();
+                trainHomepagePresenterImpl.roundTrip();
             }
         });
 
@@ -125,69 +124,31 @@ public class TrainHomepageFragment extends Fragment implements ITrainHomepageVie
         textInputViewDateDeparture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                trainHomepagePresenter.onDepartureDateButtonClicked();
+                trainHomepagePresenterImpl.onDepartureDateButtonClicked();
             }
         });
 
         textInputViewDateReturn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                trainHomepagePresenter.onReturnDateButtonClicked();
+                trainHomepagePresenterImpl.onReturnDateButtonClicked();
             }
         });
 
-        KAIHomepageViewModel kaiHomepageViewModel = initializeViewModel();
-        trainHomepagePresenter = new TrainHomepagePresenter(kaiHomepageViewModel);
+        trainHomepagePresenterImpl = new TrainHomepagePresenterImpl();
 
         return view;
-    }
-
-    private KAIHomepageViewModel initializeViewModel() {
-        Date departureDate = KAIDateUtil.addTimeToCurrentDate(Calendar.DATE, 1); // departure date = today + 1
-        String departureDateString = KAIDateUtil.dateToString(departureDate, KAIDateUtil.DEFAULT_FORMAT);
-        String departureDateFmtString = KAIDateUtil.dateToString(departureDate, KAIDateUtil.DEFAULT_VIEW_FORMAT);
-
-        Date returnDate = KAIDateUtil.addTimeToSpesificDate(departureDate, Calendar.DATE, DEFAULT_RANGE_OF_DEPARTURE_AND_ARRIVAL); // return date = departure date + 2
-        String returnDateString = KAIDateUtil.dateToString(returnDate, KAIDateUtil.DEFAULT_FORMAT);
-        String returnDateFmtString = KAIDateUtil.dateToString(returnDate, KAIDateUtil.DEFAULT_VIEW_FORMAT);
-
-        KAIPassengerViewModel passData = new KAIPassengerViewModel.Builder()
-                .setAdult(1)
-                .build();
-        String passengerFmt = buildPassengerTextFormatted(passData);
-
-        return new KAIHomepageViewModel.Builder()
-                .setKAIPassengerViewModel(passData)
-                .setIsOneWay(true)
-                .setDepartureDate(departureDateString)
-                .setReturnDate(returnDateString)
-                .setDepartureDateFmt(departureDateFmtString)
-                .setReturnDateFmt(returnDateFmtString)
-                .setPassengerFmt(passengerFmt)
-                .build();
-    }
-
-    @NonNull
-    private String buildPassengerTextFormatted(KAIPassengerViewModel passData) {
-        String passengerFmt = "";
-        if (passData.getAdult() > 0) {
-            passengerFmt = passData.getAdult() + " " + getString(R.string.kai_homepage_adult_passenger);
-            if (passData.getInfant() > 0) {
-                passengerFmt += ", " + passData.getInfant() + " " + getString(R.string.kai_homepage_adult_infant);
-            }
-        }
-        return passengerFmt;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        trainHomepagePresenter.takeView(this);
-        buttonOneWayTrip.performClick();
+        trainHomepagePresenterImpl.attachView(this);
+        trainHomepagePresenterImpl.initialize();
     }
 
     @Override
-    public void renderSingleTripView(KAIHomepageViewModel kaiHomepageViewModel) {
+    public void renderSingleTripView(TrainHomepageViewModel trainHomepageViewModel) {
         buttonOneWayTrip.setTextColor(getResources().getColor(R.color.white));
         buttonRoundTrip.setTextColor(getResources().getColor(R.color.grey_400));
         buttonOneWayTrip.setSelected(true);
@@ -195,24 +156,24 @@ public class TrainHomepageFragment extends Fragment implements ITrainHomepageVie
         textInputViewDateReturn.setVisibility(View.GONE);
         separatorDateReturn.setVisibility(View.GONE);
 
-        textInputViewDateDeparture.setText(kaiHomepageViewModel.getDepartureDateFmt());
-        textInputViewPassenger.setText(kaiHomepageViewModel.getPassengerFmt());
-        if (kaiHomepageViewModel.getOriginStation() != null) {
-            tvOriginStationLabel.setText(kaiHomepageViewModel.getStationTextForView(getContext(), true));
+        textInputViewDateDeparture.setText(trainHomepageViewModel.getDepartureDateFmt());
+        textInputViewPassenger.setText(trainHomepageViewModel.getPassengerFmt());
+        if (trainHomepageViewModel.getOriginStation() != null) {
+            tvOriginStationLabel.setText(trainHomepageViewModel.getStationTextForView(getContext(), true));
         } else {
             tvOriginStationLabel.setText(null);
-            tvOriginStationLabel.setHint("Kota/Stasiun Asal");
+            tvOriginStationLabel.setHint(R.string.train_homepage_origin_station_hint);
         }
-        if (kaiHomepageViewModel.getDestinationStation() != null) {
-            tvDestinationStationLabel.setText(kaiHomepageViewModel.getStationTextForView(getContext(), false));
+        if (trainHomepageViewModel.getDestinationStation() != null) {
+            tvDestinationStationLabel.setText(trainHomepageViewModel.getStationTextForView(getContext(), false));
         } else {
             tvDestinationStationLabel.setText(null);
-            tvDestinationStationLabel.setHint("Kota/Stasiun Tujuan");
+            tvDestinationStationLabel.setHint(R.string.train_homepage_destination_station_hint);
         }
     }
 
     @Override
-    public void renderRoundTripView(KAIHomepageViewModel kaiHomepageViewModel) {
+    public void renderRoundTripView(TrainHomepageViewModel trainHomepageViewModel) {
         buttonOneWayTrip.setTextColor(getResources().getColor(R.color.grey_400));
         buttonRoundTrip.setTextColor(getResources().getColor(R.color.white));
         buttonOneWayTrip.setSelected(false);
@@ -220,20 +181,20 @@ public class TrainHomepageFragment extends Fragment implements ITrainHomepageVie
         textInputViewDateReturn.setVisibility(View.VISIBLE);
         separatorDateReturn.setVisibility(View.VISIBLE);
 
-        textInputViewDateDeparture.setText(kaiHomepageViewModel.getDepartureDateFmt());
-        textInputViewDateReturn.setText(kaiHomepageViewModel.getReturnDateFmt());
-        textInputViewPassenger.setText(kaiHomepageViewModel.getPassengerFmt());
-        if (kaiHomepageViewModel.getOriginStation() != null) {
-            tvOriginStationLabel.setText(kaiHomepageViewModel.getStationTextForView(getContext(), true));
+        textInputViewDateDeparture.setText(trainHomepageViewModel.getDepartureDateFmt());
+        textInputViewDateReturn.setText(trainHomepageViewModel.getReturnDateFmt());
+        textInputViewPassenger.setText(trainHomepageViewModel.getPassengerFmt());
+        if (trainHomepageViewModel.getOriginStation() != null) {
+            tvOriginStationLabel.setText(trainHomepageViewModel.getStationTextForView(getContext(), true));
         } else {
             tvOriginStationLabel.setText(null);
-            tvOriginStationLabel.setHint("Kota/Stasiun Asal");
+            tvOriginStationLabel.setHint(R.string.train_homepage_origin_station_hint);
         }
-        if (kaiHomepageViewModel.getDestinationStation() != null) {
-            tvDestinationStationLabel.setText(kaiHomepageViewModel.getStationTextForView(getContext(), false));
+        if (trainHomepageViewModel.getDestinationStation() != null) {
+            tvDestinationStationLabel.setText(trainHomepageViewModel.getStationTextForView(getContext(), false));
         } else {
             tvDestinationStationLabel.setText(null);
-            tvDestinationStationLabel.setHint("Kota/Stasiun Tujuan");
+            tvDestinationStationLabel.setHint(R.string.train_homepage_destination_station_hint);
         }
     }
 
@@ -244,7 +205,7 @@ public class TrainHomepageFragment extends Fragment implements ITrainHomepageVie
         DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                trainHomepagePresenter.onDepartureDateChange(year, month, dayOfMonth);
+                trainHomepagePresenterImpl.onDepartureDateChange(year, month, dayOfMonth);
             }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
         DatePicker datePicker1 = datePicker.getDatePicker();
@@ -260,7 +221,7 @@ public class TrainHomepageFragment extends Fragment implements ITrainHomepageVie
         DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                trainHomepagePresenter.onReturnDateChange(year, month, dayOfMonth);
+                trainHomepagePresenterImpl.onReturnDateChange(year, month, dayOfMonth);
             }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
         DatePicker datePicker1 = datePicker.getDatePicker();
@@ -289,9 +250,28 @@ public class TrainHomepageFragment extends Fragment implements ITrainHomepageVie
         showMessageErrorInSnackBar(resId);
     }
 
+    @Override
+    public void setHomepageViewModel(TrainHomepageViewModel viewModel) {
+        this.viewModel = viewModel;
+    }
+
+    @Override
+    public TrainHomepageViewModel getHomepageViewModel() {
+        return viewModel;
+    }
+
     @SuppressWarnings("Range")
     private void showMessageErrorInSnackBar(int resId) {
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(resId));
     }
 
+    @Override
+    protected String getScreenName() {
+        return TrainAppScreen.HOMEPAGE;
+    }
+
+    @Override
+    protected void initInjector() {
+        getComponent(TrainHomepageComponent.class).inject(this);
+    }
 }

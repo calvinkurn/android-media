@@ -14,30 +14,30 @@ import android.text.style.RelativeSizeSpan;
  * Created by Rizky on 21/02/18.
  */
 
-public class KAIHomepageViewModel implements Parcelable, Cloneable {
+public class TrainHomepageViewModel implements Parcelable, Cloneable {
 
     private boolean isOneWay;
-    private KAIStationViewModel originStation;
-    private KAIStationViewModel destinationStation;
+    private TrainStationViewModel originStation;
+    private TrainStationViewModel destinationStation;
     private String departureDate;
     private String departureDateFmt;
     private String returnDate;
     private String returnDateFmt;
-    private KAIPassengerViewModel kaiPassengerViewModel;
+    private TrainPassengerViewModel kaiPassengerViewModel;
     private String passengerFmt;
 
-    public KAIHomepageViewModel() {
+    public TrainHomepageViewModel() {
     }
 
-    public KAIHomepageViewModel(boolean isOneWay,
-                                KAIStationViewModel originStation,
-                                KAIStationViewModel destinationStation,
-                                String departureDate,
-                                String departureDateFmt,
-                                String returnDate,
-                                String returnDateFmt,
-                                KAIPassengerViewModel kaiPassengerViewModel,
-                                String passengerFmt
+    public TrainHomepageViewModel(boolean isOneWay,
+                                  TrainStationViewModel originStation,
+                                  TrainStationViewModel destinationStation,
+                                  String departureDate,
+                                  String departureDateFmt,
+                                  String returnDate,
+                                  String returnDateFmt,
+                                  TrainPassengerViewModel kaiPassengerViewModel,
+                                  String passengerFmt
     ) {
         this.isOneWay = isOneWay;
         this.originStation = originStation;
@@ -50,27 +50,27 @@ public class KAIHomepageViewModel implements Parcelable, Cloneable {
         this.passengerFmt = passengerFmt;
     }
 
-    protected KAIHomepageViewModel(Parcel in) {
+    protected TrainHomepageViewModel(Parcel in) {
         isOneWay = in.readByte() != 0;
-        originStation = in.readParcelable(KAIStationViewModel.class.getClassLoader());
-        destinationStation = in.readParcelable(KAIStationViewModel.class.getClassLoader());
+        originStation = in.readParcelable(TrainStationViewModel.class.getClassLoader());
+        destinationStation = in.readParcelable(TrainStationViewModel.class.getClassLoader());
         departureDate = in.readString();
         departureDateFmt = in.readString();
         returnDate = in.readString();
         returnDateFmt = in.readString();
-        kaiPassengerViewModel = in.readParcelable(KAIPassengerViewModel.class.getClassLoader());
+        kaiPassengerViewModel = in.readParcelable(TrainPassengerViewModel.class.getClassLoader());
         passengerFmt = in.readString();
     }
 
-    public static final Creator<KAIHomepageViewModel> CREATOR = new Creator<KAIHomepageViewModel>() {
+    public static final Creator<TrainHomepageViewModel> CREATOR = new Creator<TrainHomepageViewModel>() {
         @Override
-        public KAIHomepageViewModel createFromParcel(Parcel in) {
-            return new KAIHomepageViewModel(in);
+        public TrainHomepageViewModel createFromParcel(Parcel in) {
+            return new TrainHomepageViewModel(in);
         }
 
         @Override
-        public KAIHomepageViewModel[] newArray(int size) {
-            return new KAIHomepageViewModel[size];
+        public TrainHomepageViewModel[] newArray(int size) {
+            return new TrainHomepageViewModel[size];
         }
     };
 
@@ -82,19 +82,19 @@ public class KAIHomepageViewModel implements Parcelable, Cloneable {
         isOneWay = oneWay;
     }
 
-    public KAIStationViewModel getOriginStation() {
+    public TrainStationViewModel getOriginStation() {
         return originStation;
     }
 
-    public void setOriginStation(KAIStationViewModel originStation) {
+    public void setOriginStation(TrainStationViewModel originStation) {
         this.originStation = originStation;
     }
 
-    public KAIStationViewModel getDestinationStation() {
+    public TrainStationViewModel getDestinationStation() {
         return destinationStation;
     }
 
-    public void setDestinationStation(KAIStationViewModel destinationStation) {
+    public void setDestinationStation(TrainStationViewModel destinationStation) {
         this.destinationStation = destinationStation;
     }
 
@@ -130,11 +130,11 @@ public class KAIHomepageViewModel implements Parcelable, Cloneable {
         this.returnDateFmt = returnDateFmt;
     }
 
-    public KAIPassengerViewModel getKaiPassengerViewModel() {
+    public TrainPassengerViewModel getKaiPassengerViewModel() {
         return kaiPassengerViewModel;
     }
 
-    public void setKaiPassengerViewModel(KAIPassengerViewModel kaiPassengerViewModel) {
+    public void setKaiPassengerViewModel(TrainPassengerViewModel kaiPassengerViewModel) {
         this.kaiPassengerViewModel = kaiPassengerViewModel;
     }
 
@@ -147,15 +147,15 @@ public class KAIHomepageViewModel implements Parcelable, Cloneable {
     }
 
     public CharSequence getStationTextForView(Context context, boolean isDeparture){
-        KAIStationViewModel kaiStationViewModel = isDeparture? originStation: destinationStation;
+        TrainStationViewModel trainStationViewModel = isDeparture? originStation: destinationStation;
 
         SpannableStringBuilder text = new SpannableStringBuilder();
-        String stationId = kaiStationViewModel.getStationId();
+        String stationId = trainStationViewModel.getStationId();
         if (TextUtils.isEmpty(stationId)) {
             // id is more than one
-            String cityCode = kaiStationViewModel.getCityCode();
+            String cityCode = trainStationViewModel.getCityCode();
             if (TextUtils.isEmpty(cityCode)) {
-                text.append(kaiStationViewModel.getCityName());
+                text.append(trainStationViewModel.getCityName());
                 return makeBold(context, text);
             } else {
                 text.append(cityCode);
@@ -164,7 +164,7 @@ public class KAIHomepageViewModel implements Parcelable, Cloneable {
             text.append(stationId);
         }
         makeBold(context, text);
-        String cityName = kaiStationViewModel.getCityName();
+        String cityName = trainStationViewModel.getCityName();
         if (!TextUtils.isEmpty(cityName)) {
             SpannableStringBuilder cityNameText = new SpannableStringBuilder(cityName);
             makeSmall(cityNameText);
@@ -226,9 +226,9 @@ public class KAIHomepageViewModel implements Parcelable, Cloneable {
         private String returnDate;
         private String returnDateFmt;
         private boolean isOneWay;
-        private KAIPassengerViewModel kaiPassengerViewModel;
-        private KAIStationViewModel originStation;
-        private KAIStationViewModel destinationStation;
+        private TrainPassengerViewModel kaiPassengerViewModel;
+        private TrainStationViewModel originStation;
+        private TrainStationViewModel destinationStation;
         private String passengerFmt;
 
         public Builder() {
@@ -239,12 +239,12 @@ public class KAIHomepageViewModel implements Parcelable, Cloneable {
             return this;
         }
 
-        public Builder setOriginStation(KAIStationViewModel originStation) {
+        public Builder setOriginStation(TrainStationViewModel originStation) {
             this.originStation = originStation;
             return this;
         }
 
-        public Builder setDestinationStation(KAIStationViewModel destinationStation) {
+        public Builder setDestinationStation(TrainStationViewModel destinationStation) {
             this.destinationStation = destinationStation;
             return this;
         }
@@ -269,7 +269,7 @@ public class KAIHomepageViewModel implements Parcelable, Cloneable {
             return this;
         }
 
-        public Builder setKAIPassengerViewModel(KAIPassengerViewModel kaiPassengerViewModel) {
+        public Builder setKAIPassengerViewModel(TrainPassengerViewModel kaiPassengerViewModel) {
             this.kaiPassengerViewModel = kaiPassengerViewModel;
             return this;
         }
@@ -279,8 +279,8 @@ public class KAIHomepageViewModel implements Parcelable, Cloneable {
             return this;
         }
 
-        public KAIHomepageViewModel build() {
-            return new KAIHomepageViewModel(
+        public TrainHomepageViewModel build() {
+            return new TrainHomepageViewModel(
                     isOneWay,
                     originStation,
                     destinationStation,
