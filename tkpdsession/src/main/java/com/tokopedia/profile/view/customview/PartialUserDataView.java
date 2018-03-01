@@ -19,7 +19,7 @@ import com.tokopedia.profile.view.viewmodel.TopProfileViewModel;
 import com.tokopedia.session.R;
 
 /**
- * Created by alvinatin on 13/02/18.
+ * @author by alvinatin on 13/02/18.
  */
 
 public class PartialUserDataView extends BaseCustomView {
@@ -38,6 +38,9 @@ public class PartialUserDataView extends BaseCustomView {
     TextView dataBirthDate;
     TextView progressText;
     ProgressBar progressBar;
+    View separatorPhone;
+    View separatorEmail;
+    View separatorGender;
 
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
@@ -59,7 +62,8 @@ public class PartialUserDataView extends BaseCustomView {
         super.dispatchSaveInstanceState(container);
     }
 
-    public PartialUserDataView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public PartialUserDataView(@NonNull Context context, @Nullable AttributeSet attrs, int
+            defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
@@ -90,6 +94,9 @@ public class PartialUserDataView extends BaseCustomView {
         dataBirthDate = view.findViewById(R.id.tv_birth_date);
         progressText = view.findViewById(R.id.tv_progress);
         progressBar = view.findViewById(R.id.circular_progress_bar);
+        separatorPhone = view.findViewById(R.id.separator_phone_number);
+        separatorEmail = view.findViewById(R.id.separator_email);
+        separatorGender = view.findViewById(R.id.separator_gender);
 
         bannerIncompleteProfile.setVisibility(GONE);
         partialPhoneNumber.setVisibility(GONE);
@@ -119,8 +126,10 @@ public class PartialUserDataView extends BaseCustomView {
     private void renderIncompleteBanner(TopProfileViewModel model) {
         if (model.getCompletion() < 100) {
             bannerIncompleteProfile.setVisibility(VISIBLE);
-            tvIncompleteProfile.setText(Html.fromHtml(this.getContext().getString(R.string.incomplete_profile_html)));
-            ObjectAnimator animation = ObjectAnimator.ofInt(progressBar, "progress", 0, model.getCompletion());
+            tvIncompleteProfile.setText(Html.fromHtml(this.getContext().getString(R.string
+                    .incomplete_profile_html)));
+            ObjectAnimator animation = ObjectAnimator.ofInt(progressBar, "progress", 0, model
+                    .getCompletion());
             animation.setDuration(2000);
             animation.setInterpolator(new DecelerateInterpolator());
             animation.start();
@@ -140,6 +149,14 @@ public class PartialUserDataView extends BaseCustomView {
             } else {
                 verifiedPhoneNumber.setVisibility(GONE);
             }
+
+            if (model.getEmail().equals("")
+                    && model.getGender().equals("")
+                    && model.getBirthDate().equals("")) {
+                separatorPhone.setVisibility(GONE);
+            } else {
+                separatorPhone.setVisibility(VISIBLE);
+            }
         } else {
             partialPhoneNumber.setVisibility(GONE);
         }
@@ -153,6 +170,12 @@ public class PartialUserDataView extends BaseCustomView {
                 verifiedEmail.setVisibility(VISIBLE);
             } else {
                 verifiedEmail.setVisibility(GONE);
+            }
+
+            if (model.getGender().equals("") && model.getBirthDate().equals("")) {
+                separatorEmail.setVisibility(GONE);
+            } else {
+                separatorEmail.setVisibility(VISIBLE);
             }
         } else {
             partialEmail.setVisibility(GONE);
@@ -172,8 +195,16 @@ public class PartialUserDataView extends BaseCustomView {
         if (!model.getGender().equals("")) {
             partialGender.setVisibility(VISIBLE);
             dataGender.setText(model.getGender());
+
+            if (model.getBirthDate().equals("")) {
+                separatorGender.setVisibility(GONE);
+            } else {
+                separatorGender.setVisibility(VISIBLE);
+            }
         } else {
             partialGender.setVisibility(GONE);
         }
+
+
     }
 }

@@ -1,7 +1,7 @@
 package com.tokopedia.profile.view.subscriber;
 
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.profile.view.listener.TopProfileFragmentListener;
+import com.tokopedia.profile.view.listener.TopProfileActivityListener;
 import com.tokopedia.profile.view.viewmodel.TopProfileViewModel;
 
 import rx.Subscriber;
@@ -12,9 +12,9 @@ import rx.Subscriber;
 
 public class GetTopProfileSubscriber extends Subscriber<TopProfileViewModel>{
 
-    private final TopProfileFragmentListener.View view;
+    private final TopProfileActivityListener.View view;
 
-    public GetTopProfileSubscriber(TopProfileFragmentListener.View view){
+    public GetTopProfileSubscriber(TopProfileActivityListener.View view){
         this.view = view;
     }
 
