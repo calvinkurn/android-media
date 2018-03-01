@@ -49,11 +49,11 @@ public class ChannelMapper implements Func1<Response<DataResponse<ChannelListPoj
     private ChannelViewModel convertToViewModel(ChannelPojo channelPojo) {
         return new ChannelViewModel(
                 String.valueOf(channelPojo.getChannelId()),
-                channelPojo.getModeratorName(),
-                channelPojo.getCoverUrl(),
-                channelPojo.getModeratorProfileUrl(),
-                channelPojo.getTitle(),
-                channelPojo.getDescription(),
+                channelPojo.getModeratorName()!= null ? channelPojo.getModeratorName() : "",
+                channelPojo.getCoverUrl()!= null ? channelPojo.getCoverUrl() : "",
+                channelPojo.getModeratorProfileUrl() != null ? channelPojo.getModeratorProfileUrl() : "",
+                channelPojo.getTitle() != null? channelPojo.getTitle() : "",
+                channelPojo.getDescription() != null ? channelPojo.getDescription() : "",
                 channelPojo.getTotalParticipantsOnline()
         );
     }

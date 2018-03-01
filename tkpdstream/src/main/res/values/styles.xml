@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Transparent" parent="Base.Theme.AppCompat">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
+    <style name="Theme.Transparent" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/pure_transparent</item>
     </style>
 
     <style name="ToolbarGroupChat" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">

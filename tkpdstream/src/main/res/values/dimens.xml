@@ -22,7 +22,7 @@
 
     <dimen name="dot_size">5sp</dimen>
     <dimen name="bar_size">40dp</dimen>
-    <dimen name="channel_banner_height">64dp</dimen>
+    <dimen name="channel_banner_height">75dp</dimen>
     <dimen name="badge_size">10dp</dimen>
     <dimen name="font_label">10sp</dimen>
     <dimen name="vote_icon_size">13dp</dimen>

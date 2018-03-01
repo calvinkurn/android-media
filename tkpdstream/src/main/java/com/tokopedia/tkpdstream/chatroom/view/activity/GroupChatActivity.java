@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseEmptyActivity;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
+import com.tokopedia.tkpdstream.common.util.TransparentStatusBarHelper;
 
 /**
  * @author by nisie on 2/6/18.
@@ -20,13 +21,14 @@ public class GroupChatActivity extends BaseEmptyActivity {
 
     public static final String EXTRA_CHANNEL_UUID = "CHANNEL_UUID";
     public static final String EXTRA_CHANNEL_INFO = "CHANNEL_INFO";
+    private static final String EXTRA_SHOW_BOTTOM_DIALOG = "SHOW_BOTTOM";
     public Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
-
+        TransparentStatusBarHelper.assistActivity(this);
     }
 
     private void initView() {
@@ -50,6 +52,13 @@ public class GroupChatActivity extends BaseEmptyActivity {
         Intent intent = new Intent(context, GroupChatActivity.class);
         intent.putExtra(EXTRA_CHANNEL_INFO, channelViewModel);
         intent.putExtra(EXTRA_CHANNEL_UUID, channelViewModel.getId());
+        return intent;
+    }
+
+    public static Intent getCallingIntent(Context context, String channelId) {
+        Intent intent = new Intent(context, GroupChatActivity.class);
+        intent.putExtra(EXTRA_CHANNEL_UUID, channelId);
+        intent.putExtra(EXTRA_SHOW_BOTTOM_DIALOG, true);
         return intent;
     }
 
