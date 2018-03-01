@@ -608,12 +608,8 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     @Override
     public void onGoToProfile() {
-        //TODO milhamj
-//        context.startActivity(
-//                PeopleInfoNoDrawerActivity.createInstance(context, sessionHandler.getLoginID())
-//        );
         context.startActivity(
-                TopProfileActivity.newInstance(context)
+                TopProfileActivity.newInstance(context, sessionHandler.getLoginID())
         );
         sendGTMNavigationEvent(AppEventTracking.EventLabel.PROFILE);
 

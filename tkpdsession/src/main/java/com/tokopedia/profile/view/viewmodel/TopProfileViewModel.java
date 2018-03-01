@@ -17,7 +17,6 @@ public class TopProfileViewModel {
     private String favoritedShop;
     private String userPhoto;
     private boolean isKol;
-    private boolean isFollowed;
 
     private boolean isPhoneVerified;
     private boolean isEmailVerified;
@@ -298,28 +297,12 @@ public class TopProfileViewModel {
         this.shopAppLink = shopAppLink;
     }
 
-    public boolean isFollowed() {
-        return isFollowed;
-    }
-
-    public void setFollowed(boolean followed) {
-        isFollowed = followed;
-    }
-
     public String getUserPhoto() {
         return userPhoto;
     }
 
     public void setUserPhoto(String userPhoto) {
         this.userPhoto = userPhoto;
-    }
-
-    public boolean isKol() {
-        return isKol;
-    }
-
-    public void setKol(boolean kol) {
-        isKol = kol;
     }
 
     public boolean isGoldBadge() {
