@@ -24,26 +24,17 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     public static final int LAYOUT = R.layout.item_product_grid;
 
     public static final int SPAN_LOOK_UP = 1;
-
+    private final ShopProductClickedListener shopProductClickedListener;
     private TextView titleTextView;
-    private TextView originalPriceTextView;
     private TextView priceTextView;
-    private TextView discountTextView;
-    private TextView variantTextView;
     private TextView cashbackTextView;
     private TextView wholesaleTextView;
     private TextView preOrderTextView;
-
-    private ImageView featuredProductImageView, freeReturnImageView, productImageView;
+    private ImageView freeReturnImageView, productImageView;
     private ImageView wishlistImageView;
     private FrameLayout wishlistContainer;
-    private int imageGuideLineGrid;
-    private int imageGuideLineList;
-
     private AppCompatRatingBar qualityRatingBar;
     private TextView totalReview;
-
-    private final ShopProductClickedListener shopProductClickedListener;
 
     public ShopProductViewHolder(View itemView, ShopProductClickedListener shopProductClickedListener) {
         super(itemView);
@@ -53,15 +44,11 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
 
     private void findViews(View view) {
         titleTextView = view.findViewById(R.id.title);
-        originalPriceTextView = view.findViewById(R.id.text_original_price);
         priceTextView = view.findViewById(R.id.price);
-        variantTextView = view.findViewById(R.id.text_view_variant);
         cashbackTextView = view.findViewById(R.id.text_view_cashback);
         wholesaleTextView = view.findViewById(R.id.text_view_wholesale);
         preOrderTextView = view.findViewById(R.id.text_view_pre_order);
-        discountTextView = view.findViewById(R.id.text_discount);
 
-        featuredProductImageView = view.findViewById(R.id.image_view_featured);
         freeReturnImageView = view.findViewById(R.id.image_view_free_return);
         productImageView = view.findViewById(R.id.product_image);
         wishlistImageView = view.findViewById(R.id.image_view_wishlist);

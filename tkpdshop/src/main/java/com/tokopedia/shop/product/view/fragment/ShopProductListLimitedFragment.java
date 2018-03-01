@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -14,9 +15,9 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.common.di.component.ShopComponent;
-import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
+import com.tokopedia.shop.product.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapter;
 import com.tokopedia.shop.product.view.adapter.ShopProductLimitedAdapter;
@@ -34,12 +35,8 @@ import javax.inject.Inject;
  */
 
 public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopProductBaseViewModel, ShopProductLimitedAdapterTypeFactory>
-        implements ShopProductListLimitedView, View.OnClickListener, ShopProductClickedListener {
+        implements ShopProductListLimitedView, ShopProductClickedListener {
 
-    public static ShopProductListLimitedFragment createInstance() {
-        ShopProductListLimitedFragment fragment = new ShopProductListLimitedFragment();
-        return fragment;
-    }
 
     private ProgressDialog progressDialog;
 
@@ -56,6 +53,11 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
         return view;
     }
 
+    public static ShopProductListLimitedFragment createInstance() {
+        ShopProductListLimitedFragment fragment = new ShopProductListLimitedFragment();
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +72,17 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     @NonNull
     @Override
     protected ShopProductLimitedAdapterTypeFactory getAdapterTypeFactory() {
-        return new ShopProductLimitedAdapterTypeFactory(this, this);
+        return new ShopProductLimitedAdapterTypeFactory(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(ShopProductListActivity.createIntent(getActivity(), shopId));
+            }
+        }, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(ShopEtalaseActivity.createIntent(getActivity(), shopId, null, true));
+            }
+        });
     }
 
     @NonNull
@@ -114,17 +126,21 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
 
     @Override
     public void onSearchSubmitted(String text) {
+        if (TextUtils.isEmpty(text))
+            return;
 
+        startActivity(ShopProductListActivity.createIntent(
+                getActivity(),
+                shopId,
+                text,
+                null,
+                null
+        ));
     }
 
     @Override
     public void onSearchTextChanged(String text) {
 
-    }
-
-    @Override
-    public void onClick(View view) {
-        startActivity(ShopProductListActivity.createIntent(getActivity(), shopId));
     }
 
     @Override

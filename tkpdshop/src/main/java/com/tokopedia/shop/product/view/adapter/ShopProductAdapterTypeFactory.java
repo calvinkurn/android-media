@@ -1,5 +1,6 @@
 package com.tokopedia.shop.product.view.adapter;
 
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
@@ -17,12 +18,18 @@ import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
 
     private final ShopProductClickedListener shopProductClickedListener;
+    private TypeFactoryListener typeFactoryListener;
 
-    public ShopProductAdapterTypeFactory(ShopProductClickedListener shopProductClickedListener) {
+    public ShopProductAdapterTypeFactory(@Nullable TypeFactoryListener typeFactoryListener,
+                                         ShopProductClickedListener shopProductClickedListener) {
+        this.typeFactoryListener = typeFactoryListener;
         this.shopProductClickedListener = shopProductClickedListener;
     }
 
     public int type(ShopProductViewModel shopProductViewModel) {
+        if (typeFactoryListener != null) {
+            return typeFactoryListener.getType(shopProductViewModel);
+        }
         return ShopProductViewHolder.LAYOUT;
     }
 
@@ -41,4 +48,7 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
         return viewHolder;
     }
 
+    public interface TypeFactoryListener<E> {
+        int getType(E type);
+    }
 }

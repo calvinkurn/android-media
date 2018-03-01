@@ -20,11 +20,14 @@ public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory
 
     private final View.OnClickListener showMoreProductOnclickListener;
     private ShopProductClickedListener shopProductClickedListener;
+    private View.OnClickListener showMoreEtalaseOnclickListener;
 
     public ShopProductLimitedAdapterTypeFactory(View.OnClickListener showMoreProductOnclickListener,
-                                                ShopProductClickedListener shopProductClickedListener) {
+                                                ShopProductClickedListener shopProductClickedListener,
+                                                View.OnClickListener showMoreEtalaseOnclickListener) {
         this.showMoreProductOnclickListener = showMoreProductOnclickListener;
         this.shopProductClickedListener = shopProductClickedListener;
+        this.showMoreEtalaseOnclickListener = showMoreEtalaseOnclickListener;
     }
 
     public int type(ShopProductLimitedPromoViewModel shopProductLimitedPromoViewModel) {
@@ -46,7 +49,10 @@ public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory
         } else if (type == ShopProductLimitedFeaturedViewHolder.LAYOUT) {
             return new ShopProductLimitedFeaturedViewHolder(parent,shopProductClickedListener);
         } else if (type == ShopProductLimitedProductViewHolder.LAYOUT) {
-            return new ShopProductLimitedProductViewHolder(parent, showMoreProductOnclickListener, shopProductClickedListener);
+            return new ShopProductLimitedProductViewHolder(parent,
+                    showMoreProductOnclickListener,
+                    showMoreEtalaseOnclickListener,
+                    shopProductClickedListener);
         } else {
             return super.createViewHolder(parent, type);
         }
