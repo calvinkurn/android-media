@@ -163,5 +163,6 @@
     <string name="label_sim">SIM</string>
     <string name="label_no_signal">No signal</string>
     <string name="label_no_service">No service</string>
+    <string name="digital_product_help_menu_label">Bantuan</string>
 
 </resources>

@@ -1041,10 +1041,13 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getDefaultContactUsIntent(Activity activity, String url) {
+    public Intent getDefaultContactUsIntent(Activity activity, String url, String toolbarTitle) {
         Intent intent = new Intent(activity, ContactUsActivity.class);
         intent.putExtra(InboxRouter.PARAM_URL,
                 URLGenerator.generateURLContactUs(Uri.encode(url), activity));
+        intent.putExtra(ContactUsActivity.PARAM_TOOLBAR_TITLE, toolbarTitle);
         return intent;
     }
+
+
 }

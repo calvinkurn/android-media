@@ -9,5 +9,5 @@ import android.content.Intent;
 
 public interface DigitalModuleRouter {
 
-    Intent getDefaultContactUsIntent(Activity activity, String url);
+    Intent getDefaultContactUsIntent(Activity activity, String url, String toolbarTitle);
 }

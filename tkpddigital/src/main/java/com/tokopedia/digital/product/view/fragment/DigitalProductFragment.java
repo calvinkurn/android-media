@@ -429,7 +429,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public void navigateToWebview(String helpUrl) {
         if (getActivity() != null && getActivity().getApplication() instanceof DigitalModuleRouter) {
             Intent intent = ((DigitalModuleRouter) getActivity().getApplication())
-                    .getDefaultContactUsIntent(getActivity(), helpUrl);
+                    .getDefaultContactUsIntent(getActivity(), helpUrl, getString(R.string.digital_product_help_menu_label));
             if (intent != null) {
                 startActivity(intent);
             }
