@@ -59,7 +59,7 @@ public class ProductVariantPickerNewActivity extends BasePickerMultipleItemActiv
                 productVariantOptionParent.setProductVariantOptionChild(new ArrayList<ProductVariantOptionChild>());
                 productVariantOptionParent.setVu(productVariantByCatModel.getUnitList().get(0).getUnitId());
                 productVariantOptionParent.setV(productVariantByCatModel.getVariantId());
-                productVariantOptionParent.setPosition(productVariantByCatModel.getStatus() == 2 ? 1 : 0);
+                productVariantOptionParent.setPosition(productVariantByCatModel.getLevel());
             }
         } else {
             productVariantOptionParent = savedInstanceState.getParcelable(EXTRA_PRODUCT_VARIANT_SUBMIT_LEVEL);

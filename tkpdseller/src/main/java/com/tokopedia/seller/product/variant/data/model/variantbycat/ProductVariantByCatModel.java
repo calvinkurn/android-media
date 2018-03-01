@@ -17,6 +17,8 @@ public class ProductVariantByCatModel implements Parcelable {
 
     public static final int COLOR_ID = 1; // from API
 
+    public static final int STATUS_LEVEL_1 = 2; // from API
+
     @SerializedName("variant_id")
     @Expose
     private int variantId;
@@ -50,6 +52,10 @@ public class ProductVariantByCatModel implements Parcelable {
 
     public int getStatus() {
         return status;
+    }
+
+    public int getLevel(){
+        return status == STATUS_LEVEL_1 ? 1: 2;
     }
 
     public int getHasUnit() {
