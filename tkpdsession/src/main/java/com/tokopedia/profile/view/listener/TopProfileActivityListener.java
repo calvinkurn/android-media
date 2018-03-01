@@ -3,6 +3,7 @@ package com.tokopedia.profile.view.listener;
 
 import android.content.Context;
 
+import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.profile.view.viewmodel.TopProfileViewModel;
@@ -15,7 +16,7 @@ public interface TopProfileActivityListener {
     interface View extends CustomerView {
         Context getContext();
 
-        void populateData(TopProfileViewModel viewModel);
+        SessionRouter getSessionRouter();
 
         void showMainView();
 
@@ -42,6 +43,10 @@ public interface TopProfileActivityListener {
     interface Presenter extends CustomerPresenter<View>{
         void initView(String userId);
 
-        void getTopProfile(String userId);
+        void getTopProfileData(String userId);
+
+        void followKol(String userId);
+
+        void unfollowKol(String userId);
     }
 }

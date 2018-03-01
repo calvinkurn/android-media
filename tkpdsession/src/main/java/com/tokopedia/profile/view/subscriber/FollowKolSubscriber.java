@@ -24,19 +24,21 @@ public class FollowKolSubscriber extends Subscriber<Boolean> {
 
     @Override
     public void onError(Throwable throwable) {
-        view.hideLoading();
-        view.onErrorFollowKol(
-                ErrorHandler.getErrorMessage(view.getContext(), throwable)
-        );
+        if (view != null) {
+            view.onErrorFollowKol(
+                    ErrorHandler.getErrorMessage(view.getContext(), throwable)
+            );
+        }
     }
 
     @Override
     public void onNext(Boolean isSuccess) {
-        view.hideLoading();
-        if (isSuccess) {
-            view.onSuccessFollowKol();
-        } else {
-            view.onErrorFollowKol(null);
+        if (view != null) {
+            if (isSuccess) {
+                view.onSuccessFollowKol();
+            } else {
+                view.onErrorFollowKol(null);
+            }
         }
     }
 }
