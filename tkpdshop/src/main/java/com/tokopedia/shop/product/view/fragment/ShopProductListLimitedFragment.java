@@ -42,8 +42,6 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     @Override
     public void loadData(int i) {
         displayProduct(shopId, null);
-
-
     }
 
     @NonNull

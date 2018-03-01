@@ -2,12 +2,18 @@ package com.tokopedia.shop.page.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -16,8 +22,10 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.reputation.ShopReputationView;
@@ -25,6 +33,7 @@ import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopComponentInstance;
 import com.tokopedia.shop.ShopModuleRouter;
+import com.tokopedia.shop.common.constant.ShopAppLink;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.common.util.TextApiUtils;
@@ -47,8 +56,8 @@ import javax.inject.Inject;
 public class ShopPageActivity extends BaseTabActivity implements HasComponent<ShopComponent>, ShopPageView {
 
     public static final int MAX_RATING_STAR = 5;
-    public static final String SHOP_ID = "SHOP_ID";
-    public static final String SHOP_DOMAIN = "SHOP_DOMAIN";
+    public static final String SHOP_ID = "shop_id";
+    public static final String SHOP_DOMAIN = "shop_domain";
     private static final int REPUTATION_SPEED_LEVEL_VERY_FAST = 5;
     private static final int REPUTATION_SPEED_LEVEL_FAST = 4;
     private static final int REPUTATION_SPEED_LEVEL_NORMAL = 3;
@@ -56,6 +65,11 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     private static final int REPUTATION_SPEED_LEVEL_VERY_SLOW = 1;
     private static final int REPUTATION_SPEED_LEVEL_DEFAULT = 0;
     private static final int PAGE_LIMIT = 3;
+    private static final String EXTRA_STATE_TAB_POSITION = "extra_tab_position";
+    private static final int TAB_POSITION_HOME = 0;
+    private static final int TAB_POSITION_TALK = 1;
+    private static final int TAB_POSITION_REVIEW = 2;
+
     @Inject
     ShopPagePresenter shopPagePresenter;
     private ShopProductListLimitedFragment shopProductListLimitedFragment;
@@ -66,6 +80,8 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     private TextView shopNameTextView;
     private TextView shopInfoLocationTextView;
     private LinearLayout shopTitleLinearLayout;
+    private AppBarLayout appBarLayout;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
 
     private ShopPageSubDetailView totalFavouriteDetailView;
     private ShopPageSubDetailView totalProductDetailView;
@@ -88,6 +104,8 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     private boolean favouriteShop;
     private ShopComponent component;
     private ShopModuleRouter shopModuleRouter;
+    private int tabPosition;
+    private Menu menu;
 
     public static Intent createIntent(Context context, String shopId) {
         Intent intent = new Intent(context, ShopPageActivity.class);
@@ -101,6 +119,35 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         return intent;
     }
 
+
+    @DeepLink(ShopAppLink.SHOP)
+    public static Intent getCallingIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, ShopPageActivity.class)
+                .setData(uri.build())
+                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME)
+                .putExtras(extras);
+    }
+
+
+    @DeepLink(ShopAppLink.SHOP_TALK)
+    public static Intent getCallingIntentTalkSelected(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, ShopPageActivity.class)
+                .setData(uri.build())
+                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_TALK)
+                .putExtras(extras);
+    }
+
+    @DeepLink(ShopAppLink.SHOP_REVIEW)
+    public static Intent getCallingIntentReviewSelected(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, ShopInfoActivity.class)
+                .setData(uri.build())
+                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_REVIEW)
+                .putExtras(extras);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,6 +155,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         shopPagePresenter.attachView(this);
         shopId = getIntent().getStringExtra(SHOP_ID);
         shopDomain = getIntent().getStringExtra(SHOP_DOMAIN);
+        tabPosition = getIntent().getIntExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME);
         if (!TextUtils.isEmpty(shopId)) {
             shopPagePresenter.getShopInfo(shopId);
         } else {
@@ -172,6 +220,8 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         buttonAddProduct = findViewById(R.id.button_add_product);
         buttonChatSeller = findViewById(R.id.button_chat_seller);
         buttonFavouriteShop = findViewById(R.id.button_favourite_shop);
+        appBarLayout = findViewById(R.id.app_bar_layout);
+        collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
 
         shopTitleLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -207,7 +257,54 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
             }
         });
         tabLayout.setupWithViewPager(viewPager);
+        viewPager.setCurrentItem(tabPosition);
         shopProductListLimitedFragment = ShopProductListLimitedFragment.createInstance();
+        appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
+        collapsingToolbarLayout.setTitle("");
+    }
+
+    private AppBarLayout.OnOffsetChangedListener onAppbarOffsetChange() {
+        return new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = false;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    setCollapsedToolbar();
+                    isShow = true;
+                } else if (isShow) {
+                    setExpandedToolbar();
+                    isShow = false;
+                }
+            }
+        };
+    }
+
+    private void setExpandedToolbar() {
+        collapsingToolbarLayout.setTitle("");
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_action_back);
+        if (menu != null && menu.size() > 0) {
+            menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(this, R.drawable.ic_share_white));
+        }
+    }
+
+    public void setCollapsedToolbar() {
+        collapsingToolbarLayout.setTitle(shopNameTextView.getText());
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_action_back_grey);
+        if (menu != null && menu.size() > 0) {
+            menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(this, R.drawable.ic_share_grey));
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_shop_info, menu);
+        this.menu = menu;
+        return true;
     }
 
     @Override

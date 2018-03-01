@@ -75,6 +75,6 @@
         android:id="@+id/shop_info"
         android:layout_width="@dimen/image_width_xxs"
         android:layout_height="@dimen/image_width_xxs"
-        android:src="@color/background_star_review" />
+        android:src="@drawable/ic_info" />
 
 </LinearLayout>
