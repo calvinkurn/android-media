@@ -396,7 +396,6 @@ public class TopProfileActivity extends BaseEmptyActivity
     }
 
     private void enableFollowButton() {
-        buttonFollow.setEnabled(true);
         buttonFollow.setBackground(MethodChecker.getDrawable(this,
                 R.drawable.bg_button_green_enabled));
         buttonFollowText.setText(R.string.follow);
@@ -406,12 +405,11 @@ public class TopProfileActivity extends BaseEmptyActivity
     }
 
     private void disableFollowButton() {
-        buttonFollow.setEnabled(false);
         buttonFollow.setBackground(MethodChecker.getDrawable(this,
                 R.drawable.bg_button_white_enabled_border));
         buttonFollowText.setText(R.string.follow);
         buttonFollowText.setTextColor(MethodChecker.getColor(this,
-                R.color.white));
+                R.color.black_54));
         buttonFollowImage.setVisibility(View.GONE);
     }
 
