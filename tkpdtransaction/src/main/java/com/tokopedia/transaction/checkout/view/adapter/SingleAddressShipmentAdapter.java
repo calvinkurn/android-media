@@ -84,6 +84,12 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
                 .setSelectedShipmentDetailData(shipmentDetailData);
     }
 
+    public void resetSelectedShipment() {
+        for (CartSellerItemModel cartSellerItemModel : mCartSingleAddressData.getCartSellerItemModelList()) {
+            cartSellerItemModel.setSelectedShipmentDetailData(null);
+        }
+    }
+
     public void setViewListener(SingleAddressShipmentAdapterListener shipmentAdapterListener) {
         this.mAdapterViewListener = shipmentAdapterListener;
     }
@@ -131,7 +137,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             ((ShippedProductDetailsHolder) viewHolder)
                     .bindViewHolder(mCartSingleAddressData.getCartPayableDetailModel(),
                             mCartSingleAddressData.getCartSellerItemModelList()
-                            .get(position - ALL_HEADER_SIZE));
+                                    .get(position - ALL_HEADER_SIZE));
         }
     }
 

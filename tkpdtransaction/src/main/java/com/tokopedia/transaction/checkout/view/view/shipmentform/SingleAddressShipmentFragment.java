@@ -356,9 +356,13 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                     RecipientAddressModel thisSelectedAddressData = data.getParcelableExtra(
                             CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA);
 
-                    mCartSingleAddressData.setRecipientAddressModel(thisSelectedAddressData);
-                    mSingleAddressShipmentPresenter.getCartShipmentData(mCartSingleAddressData);
-
+                    if (!thisSelectedAddressData.getId().equals(
+                            mCartSingleAddressData.getRecipientAddressModel().getId())) {
+                        mCartSingleAddressData.setRecipientAddressModel(thisSelectedAddressData);
+                        mSingleAddressShipmentPresenter.getCartShipmentData(mCartSingleAddressData);
+                        mSingleAddressShipmentAdapter.resetSelectedShipment();
+                        mSingleAddressShipmentAdapter.notifyDataSetChanged();
+                    }
                     break;
 
                 case CartAddressChoiceActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM:
