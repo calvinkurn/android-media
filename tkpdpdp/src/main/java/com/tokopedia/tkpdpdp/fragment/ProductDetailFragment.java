@@ -1230,7 +1230,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void showProductCampaign() {
-        headerInfoView.renderProductCampaign(productData.getCampaign());
+        if (headerInfoView != null && productData != null) {
+            headerInfoView.renderProductCampaign(productData.getCampaign());
+        }
     }
 
     @Override
