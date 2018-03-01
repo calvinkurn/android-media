@@ -185,7 +185,6 @@ import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpdcontent.KolRouter;
 import com.tokopedia.tkpdcontent.feature.profile.view.fragment.KolPostFragment;
-import com.tokopedia.tkpdcontent.feature.profile.view.subscriber.FollowKolPostSubscriber;
 import com.tokopedia.tkpdcontent.feature.profile.view.subscriber.LikeKolPostSubscriber;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
