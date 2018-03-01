@@ -84,6 +84,7 @@ import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActiv
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver;
+import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.TkpdFlight;
@@ -123,6 +124,7 @@ import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
+import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
@@ -203,7 +205,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter,
         TokoCashRouter, IWalletRouter, ILoyaltyRouter, ReputationRouter, SessionRouter,
         AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter,
-        RideModuleRouter {
+        DiscoveryRouter, RideModuleRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -1039,7 +1041,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getGalleryIntent(Context context, boolean forceOpenCamera, int maxImageSelection, boolean compressToTkpd) {
-        return GalleryCropActivity.createIntent(context, 1, forceOpenCamera, maxImageSelection, compressToTkpd);
+        return GalleryCropWatermarkActivity.createIntent(context,1, forceOpenCamera, maxImageSelection, compressToTkpd);
     }
 
     @Override
@@ -1050,11 +1052,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent goToHistoryTokoCash(Context context) {
         return HistoryTokoCashActivity.newInstance(context);
-    }
-
-    @Override
-    public Intent goToQRScannerTokoCash(Context context) {
-        return CustomScannerTokoCashActivity.newInstance(context);
     }
 
     @Override

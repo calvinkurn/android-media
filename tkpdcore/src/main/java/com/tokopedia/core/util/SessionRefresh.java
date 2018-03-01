@@ -54,9 +54,9 @@ public class SessionRefresh {
         return responseCall.execute().body();
     }
 
-    public String gcmUpdate() throws IOException{
+    public void gcmUpdate() throws IOException{
         Context context = MainApplication.getAppContext();
-        FCMCacheManager.checkAndSyncFcmId(context);
+        FCMCacheManager.updateGcmId(context);
     }
 
     private Retrofit getRetrofit(String authKey) {

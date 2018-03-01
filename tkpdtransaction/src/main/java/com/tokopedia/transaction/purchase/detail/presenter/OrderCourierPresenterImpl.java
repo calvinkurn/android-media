@@ -75,7 +75,9 @@ public class OrderCourierPresenterImpl implements OrderCourierPresenter {
                                  OrderDetailShipmentModel editableModel,
                                  boolean isChangeCourier) {
         if (isChangeCourier) {
-            onChangeCourier(context, editableModel);
+            //TODO Relese Later when ws ready
+            //onChangeCourier(context, editableModel);
+            onConfirmShipping(context, editableModel);
         } else onConfirmShipping(context, editableModel);
     }
 

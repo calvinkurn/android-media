@@ -21,15 +21,20 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@id/reject_order_confirm_button"
         android:orientation="vertical"
-        android:layout_above="@id/reject_order_confirm_button">
+        android:paddingEnd="@dimen/side_padding"
+        android:paddingLeft="@dimen/side_padding"
+        android:paddingRight="@dimen/side_padding"
+        android:paddingStart="@dimen/side_padding">
 
         <LinearLayout
             android:id="@+id/product_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
-            android:padding="@dimen/padding_small">
+            android:paddingTop="@dimen/padding_small"
+            android:paddingBottom="@dimen/padding_small">
 
             <ImageView
                 android:id="@+id/product_image"
@@ -70,9 +75,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginStart="@dimen/margin_small"
-            android:text="Deskripsi" />
+            android:text="@string/prompt_desc" />
 
         <EditText
             android:id="@+id/description"

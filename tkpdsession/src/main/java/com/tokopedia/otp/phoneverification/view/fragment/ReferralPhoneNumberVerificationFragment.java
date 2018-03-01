@@ -65,7 +65,7 @@ public class ReferralPhoneNumberVerificationFragment extends BasePresenterFragme
 
     @Override
     protected void onFirstTimeLaunched() {
-        if(sessionHandler == null){
+        if (sessionHandler == null) {
             sessionHandler = new SessionHandler(getActivity());
         }
         tvPhoneNumber.setText(CustomPhoneNumberUtil.transform(
@@ -100,7 +100,7 @@ public class ReferralPhoneNumberVerificationFragment extends BasePresenterFragme
 
     @Override
     protected void initView(View view) {
-        if(sessionHandler == null){
+        if (sessionHandler == null) {
             sessionHandler = new SessionHandler(getActivity());
         }
         tvPhoneNumber = (EditText) view.findViewById(R.id.tv_phone_number);
@@ -126,7 +126,7 @@ public class ReferralPhoneNumberVerificationFragment extends BasePresenterFragme
             @Override
             public void onClick(View view) {
                 if (listener != null) {
-                    UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_VERIFY_NUMBER,tvPhoneNumber.getText().toString().replace("-", ""));
+                    UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_VERIFY_NUMBER, tvPhoneNumber.getText().toString().replace("-", ""));
 
                     listener.onClickVerification(tvPhoneNumber.getText().toString());
                 }
