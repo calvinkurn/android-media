@@ -175,6 +175,7 @@
     <string name="product_variant_item_picker_add_variant_error_name_existed">Nama varian sudah ada</string>
     <string name="product_variant_stock_empty">Kosong</string>
     <string name="product_variant_stock_available">Tersedia</string>
+    <string name="product_variant_stock_always_available">Selalu Tersedia</string>
     <string name="product_variant_dialog_cancel_title">Perubahan tidak akan tersimpan</string>
     <string name="product_variant_dialog_cancel_message">Yakin untuk keluar?</string>
     <string name="product_variant_status">Status Produk</string>
@@ -185,6 +186,9 @@
     <string name="product_variant_standard_unit_x">Standar %1$s</string>
     <string name="product_variant_manage_variant">Atur Varian</string>
     <string name="product_variant_add_new_x">Tambah %1$s baru</string>
+    <string name="product_variant_see_detail">Lihat Detil</string>
+    <string name="product_variant_price_label">Harga</string>
+    <string name="product_variant_stock_total_label">Jumlah Stok</string>
     <string name="product_variant_max_limit">%1$d batas maksimum varian</string>
     <string name="product_variant_max_variant_has_been_reached">Jumlah variant yang ditambahkan sudah mencapai maksimum</string>
     <string name="product_variant_search_x">Cari %1$s</string>

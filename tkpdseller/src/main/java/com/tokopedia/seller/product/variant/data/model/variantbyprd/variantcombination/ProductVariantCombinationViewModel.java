@@ -38,6 +38,15 @@ public class ProductVariantCombinationViewModel implements Parcelable{
     private String level1String;
     private String level2String;
 
+    public ProductVariantCombinationViewModel(double priceVar, int stock, String sku, String level1String, String level2String) {
+        this.st = ACTIVE_STATUS;
+        this.priceVar = priceVar;
+        this.stock = stock;
+        this.sku = sku;
+        this.level1String = level1String;
+        this.level2String = level2String;
+    }
+
     public boolean isActive(){
         return st == ACTIVE_STATUS;
     }

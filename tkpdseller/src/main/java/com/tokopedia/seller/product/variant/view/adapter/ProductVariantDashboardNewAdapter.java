@@ -5,11 +5,9 @@ import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
+import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.variant.view.adapter.viewholder.ProductVariantDashboardNewViewHolder;
-import com.tokopedia.seller.product.variant.view.adapter.viewholder.ProductVariantDashboardViewHolder;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardNewViewModel;
-import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardViewModel;
-import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
 
 /**
  * @author normansyahputa on 5/26/17.
@@ -17,11 +15,19 @@ import com.tokopedia.seller.product.variant.view.model.ProductVariantViewModel;
 
 public class ProductVariantDashboardNewAdapter extends BaseListAdapter<ProductVariantDashboardNewViewModel> {
 
+    private int currencyType;
+
+    public ProductVariantDashboardNewAdapter(@CurrencyTypeDef int currencyType) {
+        this.currencyType = currencyType;
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case ProductVariantDashboardNewViewModel.TYPE:
-                return new ProductVariantDashboardNewViewHolder(getLayoutView(parent, R.layout.item_product_variant_manage));
+                return new ProductVariantDashboardNewViewHolder(getLayoutView(parent,
+                        R.layout.item_product_variant_manage_new),
+                        currencyType);
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }
