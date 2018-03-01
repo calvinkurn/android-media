@@ -1,8 +1,6 @@
 package com.tokopedia.gm.subscribe.view.fragment;
 
 
-import android.content.Context;
-
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.gm.subscribe.view.viewmodel.GmAutoSubscribeViewModel;
 import com.tokopedia.gm.subscribe.view.viewmodel.GmCheckoutCurrentSelectedViewModel;
@@ -41,6 +39,4 @@ public interface GmCheckoutView extends CustomerView {
     void showMessageError(String string);
 
     void clearCacheShopInfo();
-
-    Context getContext();
 }
