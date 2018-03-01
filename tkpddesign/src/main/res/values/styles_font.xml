@@ -145,10 +145,6 @@
     <style name="TextView.Micro.BlackSecondary">
         <item name="android:textColor">@color/font_black_secondary_54</item>
     </style>
-
-    <style name="TextView.Micro.Black">
-        <item name="android:textColor">@color/font_black_primary_70</item>
-    </style>
     <style name="TextView.Micro.BlackSecondary.Bold">
         <item name="android:textStyle">bold</item>
     </style>
