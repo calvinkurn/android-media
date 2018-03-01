@@ -26,6 +26,10 @@ public class SessionRefresh {
     private static final String USER_ID = "user_id";
     private static final String UUID_KEY = "uuid";
 
+    private static final String DEVICE_ID_NEW = "device_id_new";
+    private static final String OS_TYPE = "os_type";
+    private static final String DEFAULT_ANDROID_OS_TYPE = "1";
+
     private final String accessToken;
 
     public SessionRefresh(String accessToken) {
@@ -54,9 +58,29 @@ public class SessionRefresh {
         return responseCall.execute().body();
     }
 
-    public void gcmUpdate() throws IOException{
+    public String gcmUpdate() throws IOException {
         Context context = MainApplication.getAppContext();
+        SessionHandler sessionHandler = new SessionHandler(context);
+
         FCMCacheManager.updateGcmId(context);
+
+        String authKey;
+        if (TextUtils.isEmpty(accessToken)) {
+            authKey = sessionHandler.getTokenType(context)
+                    + " " + sessionHandler.getAccessToken(context);
+        } else {
+            authKey = accessToken;
+        }
+
+        RequestParams params = RequestParams.create();
+        params.putString(DEVICE_ID_NEW, FCMCacheManager.getRegistrationId(context));
+        params.putString(OS_TYPE, DEFAULT_ANDROID_OS_TYPE);
+        params.putString(USER_ID, sessionHandler.getLoginID());
+        Call<String> responseCall = getRetrofit(authKey)
+                .create(AccountsApi.class).gcmUpdate(
+                        AuthUtil.generateParamsNetwork2(
+                                MainApplication.getAppContext(), params.getParameters()));
+        return responseCall.execute().body();
     }
 
     private Retrofit getRetrofit(String authKey) {
