@@ -11,9 +11,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -25,6 +30,8 @@ import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.design.list.widget.AlphabeticalSideBar;
+import com.tokopedia.design.search.EmptySearchResultView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
@@ -36,12 +43,13 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListF
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListFragment;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchSectionItem;
-import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
+import com.tokopedia.discovery.newdynamicfilter.AbstractDynamicFilterDetailActivity;
 import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterAdapter;
+import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterDetailAdapter;
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactory;
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactoryImpl;
-import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
+import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterDetailView;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 
@@ -63,7 +71,7 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEA
  */
 
 public class SearchActivity extends DiscoveryActivity
-        implements SearchContract.View, RedirectionListener, DynamicFilterView {
+        implements SearchContract.View, RedirectionListener, DynamicFilterView, DynamicFilterDetailView {
 
     public static final String EXTRA_SELECTED_FILTERS = "EXTRA_SELECTED_FILTERS";
     public static final String EXTRA_FILTER_LIST = "EXTRA_FILTER_LIST";
@@ -92,8 +100,21 @@ public class SearchActivity extends DiscoveryActivity
     private String catalogTabTitle;
     private String shopTabTitle;
 
-    private RecyclerView recyclerView;
-    private DynamicFilterAdapter adapter;
+    private LinearLayout bottomSheetFilterMain;
+    private LinearLayout bottomSheetFilterDetail;
+    private ImageButton filterDetailTopBarCloseButton;
+    private TextView filterDetailTopBarTitle;
+    private TextView filterDetailTopBarButtonReset;
+    private FrameLayout filterDetailSearchContainer;
+    private EditText filterDetailSearch;
+    private RecyclerView filterDetailRecyclerView;
+    private AlphabeticalSideBar filterDetailSidebar;
+    private EmptySearchResultView filterDetailEmptySearchResultView;
+    private TextView filterResultCountText;
+    private RecyclerView filterMainRecyclerView;
+    private DynamicFilterAdapter filterMainAdapter;
+    private DynamicFilterDetailAdapter filterDetailAdapter;
+    private OptionSearchFilter searchFilter;
     private TextView buttonReset;
     private View buttonClose;
     private LinearLayout bottomSheetLayout;
@@ -106,6 +127,7 @@ public class SearchActivity extends DiscoveryActivity
     private String selectedCategoryId;
     private String selectedCategoryName;
     private String selectedCategoryRootId;
+    private boolean isAutoTextChange = false;
 
     @Inject
     SearchPresenter searchPresenter;
@@ -172,6 +194,7 @@ public class SearchActivity extends DiscoveryActivity
             setLastQuerySearchView(productViewModel.getQuery());
             loadSection(productViewModel, forceSwipeToShop);
             setToolbarTitle(productViewModel.getQuery());
+            setFilterResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
         } else if (!TextUtils.isEmpty(searchQuery)) {
             onProductQuerySubmit(searchQuery);
         } else {
@@ -191,8 +214,12 @@ public class SearchActivity extends DiscoveryActivity
         initFilterBottomSheet(savedInstanceState);
     }
 
+    public void setFilterResultCount(String formattedResultCount) {
+        filterResultCountText.setText(formattedResultCount);
+    }
+
     private void initFilterBottomSheet(Bundle savedInstanceState) {
-        initRecyclerView();
+        initFilterMainRecyclerView();
         loadLastFilterState(savedInstanceState);
     }
 
@@ -211,16 +238,16 @@ public class SearchActivity extends DiscoveryActivity
         selectedCategoryRootId = savedInstanceState.getString(FILTER_SELECTED_CATEGORY_ROOT_ID_PREF);
     }
 
-    private void initRecyclerView() {
+    private void initFilterMainRecyclerView() {
         DynamicFilterTypeFactory dynamicFilterTypeFactory = new DynamicFilterTypeFactoryImpl(this);
-        adapter = new DynamicFilterAdapter(dynamicFilterTypeFactory);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        filterMainAdapter = new DynamicFilterAdapter(dynamicFilterTypeFactory);
+        filterMainRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         DividerItemDecoration dividerItemDecoration
-                = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
+                = new DividerItemDecoration(filterMainRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
         dividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.bg_line_separator));
-        recyclerView.addItemDecoration(dividerItemDecoration);
-        recyclerView.setAdapter(adapter);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        filterMainRecyclerView.addItemDecoration(dividerItemDecoration);
+        filterMainRecyclerView.setAdapter(filterMainAdapter);
+        filterMainRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
@@ -241,7 +268,7 @@ public class SearchActivity extends DiscoveryActivity
         removeFiltersWithEmptyOption(list);
         mergeSizeFilterOptionsWithSameValue(list);
         removeBrandFilterOptionsWithSameValue(list);
-        adapter.setFilterList(list);
+        filterMainAdapter.setFilterList(list);
     }
 
     private void removeFiltersWithEmptyOption(List<Filter> filterList) {
@@ -454,24 +481,21 @@ public class SearchActivity extends DiscoveryActivity
         super.initView();
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         viewPager = (ViewPager) findViewById(R.id.pager);
-        recyclerView = (RecyclerView) findViewById(R.id.dynamic_filter_recycler_view);
+        filterMainRecyclerView = (RecyclerView) findViewById(R.id.dynamic_filter_recycler_view);
         buttonClose = findViewById(R.id.top_bar_close_button);
-        buttonClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                closeFilterBottomSheet();
-            }
-        });
         buttonReset = (TextView) findViewById(R.id.top_bar_button_reset);
-        buttonReset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
         bottomSheetLayout = findViewById(R.id.bottomSheet);
-        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        bottomSheetFilterMain = (LinearLayout)findViewById( R.id.bottom_sheet_filter_main );
+        bottomSheetFilterDetail = (LinearLayout)findViewById( R.id.bottom_sheet_filter_detail );
+        filterDetailTopBarCloseButton = (ImageButton)findViewById( R.id.filter_detail_top_bar_close_button );
+        filterDetailTopBarTitle = (TextView)findViewById( R.id.filter_detail_top_bar_title );
+        filterDetailTopBarButtonReset = (TextView)findViewById( R.id.filter_detail_top_bar_button_reset );
+        filterDetailSearchContainer = (FrameLayout)findViewById( R.id.filter_detail_search_container );
+        filterDetailSearch = (EditText)findViewById( R.id.filter_detail_search );
+        filterDetailRecyclerView = (RecyclerView)findViewById( R.id.filter_detail_recycler_view );
+        filterDetailSidebar = (AlphabeticalSideBar)findViewById( R.id.filter_detail_sidebar );
+        filterDetailEmptySearchResultView = (EmptySearchResultView)findViewById( R.id.filter_detail_empty_search_result_view );
+        filterResultCountText = findViewById(R.id.filter_result_count);
     }
 
     public void closeFilterBottomSheet() {
@@ -483,7 +507,11 @@ public class SearchActivity extends DiscoveryActivity
 
     @Override
     public void onExpandableItemClicked(Filter filter) {
-
+        initFilterDetailTopBar(filter);
+        initFilterDetailSearchView(filter);
+        initFilterDetailRecyclerView();
+        loadFilterDetailItems(filter.getOptions());
+        showFilterDetailPage(filter);
     }
 
     @Override
@@ -572,7 +600,7 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private Filter getPriceFilter() {
-        List<Filter> filterList = adapter.getFilterList();
+        List<Filter> filterList = filterMainAdapter.getFilterList();
         for (Filter filter : filterList) {
             if (filter.isPriceFilter()) return filter;
         }
@@ -601,6 +629,121 @@ public class SearchActivity extends DiscoveryActivity
 
             }
         });
+        initBottomSheetListener();
+    }
+
+    @Override
+    public void onItemCheckedChanged(Option option, boolean isChecked) {
+        option.setInputState(Boolean.toString(isChecked));
+        OptionHelper.saveOptionInputState(option, savedCheckedState, savedTextInput);
+        hideKeyboard();
+    }
+
+    private void initBottomSheetListener() {
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        buttonClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeFilterBottomSheet();
+            }
+        });
+        buttonReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        filterDetailTopBarCloseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                hideFilterDetailPage();
+                applyFilter();
+            }
+        });
+    }
+
+    private void showFilterDetailPage(Filter filter) {
+        bottomSheetFilterDetail.setVisibility(View.VISIBLE);
+        bottomSheetFilterMain.setVisibility(View.GONE);
+    }
+
+    private void initFilterDetailTopBar(Filter filter) {
+        filterDetailTopBarTitle.setText(filter.getTitle());
+    }
+
+    private void initFilterDetailSearchView(final Filter filter) {
+        boolean isSearchable = filter.getSearch().getSearchable() == 1;
+        if (!isSearchable) {
+            filterDetailSearchContainer.setVisibility(View.GONE);
+            return;
+        }
+        filterDetailSearchContainer.setVisibility(View.VISIBLE);
+        searchFilter = null;
+        filterDetailSearch.setHint(filter.getSearch().getPlaceholder());
+        filterDetailSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (!isAutoTextChange) {
+                    getSearchFilter(filter).filter(charSequence);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+    }
+
+    private OptionSearchFilter getSearchFilter(Filter filter) {
+        if (searchFilter == null) {
+            searchFilter = new OptionSearchFilter(filter.getOptions());
+        }
+        return searchFilter;
+    }
+
+    private void initFilterDetailRecyclerView() {
+        filterDetailAdapter = new DynamicFilterDetailAdapter(this);
+        filterDetailRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        DividerItemDecoration dividerItemDecoration
+                = new DividerItemDecoration(filterDetailRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
+        dividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.bg_line_separator));
+        filterDetailRecyclerView.addItemDecoration(dividerItemDecoration);
+        filterDetailRecyclerView.setAdapter(filterDetailAdapter);
+        filterDetailRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    hideKeyboard();
+                }
+            }
+        });
+    }
+
+    private void hideKeyboard() {
+        KeyboardHandler.hideSoftKeyboard(this);
+    }
+
+    private void clearSearchInput() {
+        isAutoTextChange = true;
+        filterDetailSearch.setText("");
+        isAutoTextChange = false;
+    }
+
+    private void hideFilterDetailPage() {
+        bottomSheetFilterDetail.setVisibility(View.GONE);
+        bottomSheetFilterMain.setVisibility(View.VISIBLE);
+        refreshFilterMainPage();
+    }
+
+    private void refreshFilterMainPage() {
+        filterMainAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -660,8 +803,68 @@ public class SearchActivity extends DiscoveryActivity
         selectedFilterMap.put(checkBoxKey, mapValue);
     }
 
+    private void loadFilterDetailItems(List<Option> resultList) {
+        filterDetailAdapter.setOptionList(resultList);
+    }
+
     public boolean isBottomSheetShown() {
         return bottomSheetBehavior != null
                 && bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_HIDDEN;
+    }
+
+    private class OptionSearchFilter extends android.widget.Filter {
+        private ArrayList<Option> sourceData;
+
+        public OptionSearchFilter(List<Option> optionList) {
+            sourceData = new ArrayList<>();
+            synchronized (this) {
+                sourceData.addAll(optionList);
+            }
+        }
+
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+
+            String filterSeq = constraint.toString().toLowerCase();
+
+            FilterResults result = new FilterResults();
+
+            if (!TextUtils.isEmpty(filterSeq)) {
+
+                ArrayList<Option> filter = new ArrayList<>();
+
+                for (Option option : sourceData) {
+                    if (option.getName().toLowerCase().contains(filterSeq)) {
+                        filter.add(option);
+                    }
+                }
+
+                result.values = filter;
+                result.count = filter.size();
+
+            } else {
+
+                synchronized (this) {
+                    result.values = sourceData;
+                    result.count = sourceData.size();
+                }
+            }
+            return result;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            List<Option> resultList = (List<Option>) results.values;
+
+            if (resultList.isEmpty()) {
+                filterDetailEmptySearchResultView.setSearchCategory(filterDetailTopBarTitle.getText().toString());
+                filterDetailEmptySearchResultView.setSearchQuery(constraint.toString());
+                filterDetailEmptySearchResultView.setVisibility(View.VISIBLE);
+            } else {
+                filterDetailEmptySearchResultView.setVisibility(View.GONE);
+            }
+
+            loadFilterDetailItems(resultList);
+        }
     }
 }

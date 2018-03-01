@@ -1,33 +1,188 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottomSheet"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/filter_bottom_sheet_height"
     android:orientation="vertical"
     android:focusableInTouchMode="true"
     android:animateLayoutChanges="true"
     app:behavior_hideable="true"
-    app:behavior_peekHeight="300dp"
+    app:behavior_peekHeight="@dimen/filter_bottom_sheet_height"
     app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
-    <include layout="@layout/filter_top_bar_layout"/>
-
-    <RelativeLayout
+    <LinearLayout android:id="@+id/bottom_sheet_filter_main"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/dynamic_filter_recycler_view"
+        <LinearLayout
+            android:orientation="horizontal"
+            android:background="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            />
+            android:padding="16dp"
+            android:gravity="center_vertical">
 
-        <View
+            <ImageButton
+                android:id="@+id/top_bar_close_button"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/ic_filter_detail_close" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="32dp"
+                android:orientation="vertical"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/top_bar_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/filter"
+                    style="@style/TextView.TitleBig.Bold" />
+
+                <TextView
+                    android:id="@+id/filter_result_count"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="200 Produk"
+                    style="@style/TextView.Small.BlackDisabled"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/top_bar_button_reset"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/filter_button_reset_text"
+                style="@style/TextView.Small.Green.Bold"
+                />
+
+        </LinearLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@drawable/top_bar_shadow" />
+            android:layout_height="wrap_content">
 
-    </RelativeLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/dynamic_filter_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@drawable/top_bar_shadow" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/bottom_sheet_filter_detail"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <ImageButton
+                android:id="@+id/filter_detail_top_bar_close_button"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/icon_back" />
+
+            <TextView
+                android:id="@+id/filter_detail_top_bar_title"
+                style="@style/TextView.TitleBig.Bold"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="32dp"
+                android:layout_weight="1"
+                android:text="@string/filter" />
+
+            <TextView
+                android:id="@+id/filter_detail_top_bar_button_reset"
+                style="@style/TextView.Small.Green.Bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/filter_button_reset_text" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <FrameLayout
+                android:id="@+id/filter_detail_search_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dynamic_filter_item_padding"
+                android:background="@color/grey_200">
+
+                <EditText
+                    android:id="@+id/filter_detail_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/TextView.Small"
+                    android:textColorHint="@color/font_black_disabled_38"
+                    android:paddingTop="@dimen/filter_detail_search_padding_top_bottom"
+                    android:paddingBottom="@dimen/filter_detail_search_padding_top_bottom"
+                    android:paddingStart="@dimen/filter_detail_search_padding_side"
+                    android:paddingEnd="@dimen/filter_detail_search_padding_side"
+                    android:background="@color/white"
+                    android:drawableLeft="@drawable/ic_search_icon"
+                    android:drawablePadding="16dp"
+                    android:maxLines="1"
+                    android:imeOptions="actionSearch" />
+
+            </FrameLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/filter_detail_recycler_view"
+                android:layout_below="@id/filter_detail_search_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+            <com.tokopedia.design.list.widget.AlphabeticalSideBar
+                android:id="@+id/filter_detail_sidebar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/filter_detail_search_container"
+                android:layout_alignParentRight="true"
+                android:paddingRight="@dimen/filter_detail_sidebar_padding_right"
+                android:layout_marginTop="@dimen/filter_detail_sidebar_margin_top"
+                android:visibility="gone"/>
+
+            <com.tokopedia.design.search.EmptySearchResultView
+                android:id="@+id/filter_detail_empty_search_result_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/filter_detail_search_container"
+                android:visibility="gone"
+                />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@drawable/top_bar_shadow" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
 
 </LinearLayout>

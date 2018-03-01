@@ -719,6 +719,11 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
+    public void setTotalSearchResultCount(String formattedResultCount) {
+        ((SearchActivity) getActivity()).setFilterResultCount(formattedResultCount);
+    }
+
+    @Override
     protected void openFilterActivity() {
         if (isFilterDataAvailable()) {
             /*String preFilteredSc = getSearchParameter().getDepartmentId();

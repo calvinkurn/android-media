@@ -224,6 +224,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                                 list.add(headerViewModel);
                                 list.addAll(productViewModel.getProductList());
                                 getView().setProductList(list);
+                                getView().setTotalSearchResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
                                 getView().showBottomBarNavigation(true);
                                 if (getView().getStartFrom() > searchResultModel.getTotalData()) {
                                     getView().unSetTopAdsEndlessListener();
