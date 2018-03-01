@@ -83,11 +83,13 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     private RecyclerView recyclerViews;
     private BottomActionView bottomActionView;
 
-    public static ShopProductListFragment createInstance(String shopId, String keyword) {
+    public static ShopProductListFragment createInstance(String shopId, String keyword, String etalaseId, String etalaseName) {
         ShopProductListFragment shopProductListFragment = new ShopProductListFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ShopParamConstant.SHOP_ID, shopId);
         bundle.putString(ShopProductListActivity.KEYWORD_EXTRAS, keyword);
+        bundle.putString(ShopProductListFragment.ETALASE_ID, etalaseId);
+        bundle.putString(ShopProductListFragment.ETALASE_NAME, etalaseName);
         shopProductListFragment.setArguments(bundle);
         return shopProductListFragment;
     }
@@ -116,6 +118,8 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         super.onCreate(savedInstanceState);
         shopId = getArguments().getString(ShopParamConstant.SHOP_ID);
         keyword = getArguments().getString(ShopProductListActivity.KEYWORD_EXTRAS);
+        etalaseId = getArguments().getString(ShopProductListFragment.ETALASE_ID);
+        etalaseName = getArguments().getString(ShopProductListFragment.ETALASE_NAME);
         shopProductListPresenter.attachView(this);
     }
 
@@ -141,6 +145,10 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         recyclerViews = view.findViewById(R.id.recycler_view);
         chooseEtalaseLabelView = view.findViewById(R.id.label_view_choose_etalase);
         bottomActionView = view.findViewById(R.id.bottom_action_view);
+
+        if (!TextUtils.isEmpty(etalaseName)) {
+            chooseEtalaseLabelView.setContent(etalaseName);
+        }
 
         setBottomActionViewImage(currentImgBottomNav);
         RecyclerView.LayoutManager layoutManager = iterate(recyclerViews);

@@ -27,6 +27,8 @@ public class ShopProductListActivity extends BaseSimpleActivity implements HasCo
     private String shopDomain;
     private String keyword;
     private ShopComponent component;
+    private String etalaseId;
+    private String etalaseName;
 
     public static Intent createIntent(Context context, String shopId, String keyword, String etalaseId, String etalaseName) {
         Intent intent = new Intent(context, ShopProductListActivity.class);
@@ -63,12 +65,14 @@ public class ShopProductListActivity extends BaseSimpleActivity implements HasCo
         shopId = getIntent().getStringExtra(SHOP_ID);
         shopDomain = getIntent().getStringExtra(SHOP_DOMAIN);
         keyword = getIntent().getStringExtra(KEYWORD_EXTRAS);
+        etalaseId = getIntent().getStringExtra(ShopProductListFragment.ETALASE_ID);
+        etalaseName = getIntent().getStringExtra(ShopProductListFragment.ETALASE_NAME);
         super.onCreate(savedInstanceState);
     }
 
     @Override
     protected Fragment getNewFragment() {
-        return ShopProductListFragment.createInstance(shopId, keyword);
+        return ShopProductListFragment.createInstance(shopId, keyword, etalaseId, etalaseName);
     }
 
     @Override
