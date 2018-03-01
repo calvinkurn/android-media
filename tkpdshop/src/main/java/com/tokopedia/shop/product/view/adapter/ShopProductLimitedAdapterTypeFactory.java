@@ -23,8 +23,8 @@ public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory
     private View.OnClickListener showMoreEtalaseOnclickListener;
 
     public ShopProductLimitedAdapterTypeFactory(View.OnClickListener showMoreProductOnclickListener,
-                                                ShopProductClickedListener shopProductClickedListener,
-                                                View.OnClickListener showMoreEtalaseOnclickListener) {
+                                                View.OnClickListener showMoreEtalaseOnclickListener,
+                                                ShopProductClickedListener shopProductClickedListener) {
         this.showMoreProductOnclickListener = showMoreProductOnclickListener;
         this.shopProductClickedListener = shopProductClickedListener;
         this.showMoreEtalaseOnclickListener = showMoreEtalaseOnclickListener;
