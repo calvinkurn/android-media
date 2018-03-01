@@ -112,7 +112,6 @@ public class FragmentFavorite extends BaseDaggerFragment
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
         favoritePresenter.detachView();
     }
 
