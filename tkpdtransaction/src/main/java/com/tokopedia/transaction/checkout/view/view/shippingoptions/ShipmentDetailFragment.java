@@ -547,7 +547,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     private void renderAdditionalPriceView(CourierItemData courierItemData) {
         if (courierItemData.getAdditionalPrice() != 0) {
             llAdditionalFee.setVisibility(View.VISIBLE);
-            setText(tvAdditionalFee, String.valueOf(courierItemData.getAdditionalPrice()));
+            setText(tvAdditionalFee, currencyId.format(courierItemData.getAdditionalPrice()));
         } else {
             llAdditionalFee.setVisibility(View.GONE);
         }

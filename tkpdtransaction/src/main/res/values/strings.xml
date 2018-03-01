@@ -231,6 +231,7 @@
     <string name="message_error_dropshipper_name">Nama terlalu pendek</string>
     <string name="message_error_dropshipper_phone">Nomor telepon yang dimasukkan tidak sesuai</string>
     <string name="message_error_no_pinpoint">Anda belum menandai lokasi tujuan dalam peta</string>
+    <string name="label_main_address">Utama</string>
 
     <string name="show_case_finish">Mengerti</string>
     <string name="title_promo_code">Kode Promo</string>
