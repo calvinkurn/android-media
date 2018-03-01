@@ -34,7 +34,6 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
     private AppBarLayout appBarLayout;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private Toolbar toolbar;
-    private BaseDaggerFragment kolPostFragment;
 
     private static final String TITLE_PROFILE = "Info Akun";
     private static final String TITLE_POST = "Post";
@@ -51,11 +50,6 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getApplicationContext() instanceof SessionRouter) {
-            //TODO milhamj change this userid
-            kolPostFragment = ((SessionRouter) getApplicationContext()).getKolPostFragment("6543110");
-        }
-        inflateFragment();
     }
 
 //    private void initjInjector(){
@@ -79,23 +73,6 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
         viewPager = findViewById(R.id.pager);
         setupToolbar();
         loadSection();
-    }
-
-    //TODO milhamj remove this func
-    private void inflateFragment() {
-        if (kolPostFragment != null) {
-            String TAG = "LOL";
-            if (getSupportFragmentManager().findFragmentByTag(TAG) != null) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.container,
-                                getSupportFragmentManager().findFragmentByTag(TAG))
-                        .commit();
-            } else {
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.container, kolPostFragment, TAG)
-                        .commit();
-            }
-        }
     }
 
     @Override
@@ -155,11 +132,17 @@ public class TopProfileActivity extends BaseEmptyActivity implements HasComponen
     private void loadSection(){
         List<ProfileSectionItem> profileSectionItemList = new ArrayList<>();
 
-        //TODO add content fragment
-        TopProfileFragment profileFragment = TopProfileFragment.newInstance();
+        if (getApplicationContext() instanceof SessionRouter) {
+            //TODO milhamj change this userid
+            BaseDaggerFragment kolPostFragment =
+                    ((SessionRouter) getApplicationContext()).getKolPostFragment("6543110");
+            profileSectionItemList.add(new ProfileSectionItem(TITLE_POST, kolPostFragment));
+        }
+        TopProfileFragment profileFragment = TopProfileFragment.newInstance("5510248");
         profileSectionItemList.add(new ProfileSectionItem(TITLE_PROFILE, profileFragment));
 
-        ProfileTabPagerAdapter profileTabPagerAdapter = new ProfileTabPagerAdapter(getSupportFragmentManager());
+        ProfileTabPagerAdapter profileTabPagerAdapter =
+                new ProfileTabPagerAdapter(getSupportFragmentManager());
         profileTabPagerAdapter.setItemList(profileSectionItemList);
         viewPager.setAdapter(profileTabPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);

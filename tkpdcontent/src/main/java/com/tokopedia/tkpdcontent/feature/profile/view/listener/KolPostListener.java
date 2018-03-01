@@ -5,7 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolViewModel;
+import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolPostViewModel;
 
 import java.util.List;
 
@@ -17,9 +17,15 @@ public interface KolPostListener {
     interface View extends CustomerView {
         Context getContext();
 
+        void showLoading();
+
+        void hideLoading();
+
         void onSuccessGetProfileData(List<Visitable> visitableList);
 
         void onErrorGetProfileData(String message);
+
+        void updateCursor(String lastCursor);
 
         void onGoToKolProfile(int page, int rowNumber, String url);
 
@@ -33,13 +39,15 @@ public interface KolPostListener {
 
         void onUnlikeKolClicked(int page, int adapterPosition, int id);
 
-        void onGoToKolComment(int page, int rowNumber, KolViewModel kolViewModel);
+        void onGoToKolComment(int page, int rowNumber, KolPostViewModel kolPostViewModel);
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void initView(String userId);
 
         void getKolPost(String userId);
+
+        void updateCursor(String lastCursor);
 
         void followKol(int id, int rowNumber, View kolListener);
 

@@ -1,4 +1,5 @@
 package com.tokopedia.profile.data.network;
+import com.tokopedia.abstraction.common.data.model.request.GraphqlRequest;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.profile.data.pojo.ProfileGraphql;
 
@@ -15,5 +16,6 @@ import rx.Observable;
 public interface ProfileApi {
     @POST("./")
     @Headers({"Content-Type: application/json"})
-    Observable<Response<GraphqlResponse<ProfileGraphql>>> getProfile(@Body String requestBody);
+    Observable<Response<GraphqlResponse<ProfileGraphql>>>
+    getProfileContent(@Body GraphqlRequest request);
 }

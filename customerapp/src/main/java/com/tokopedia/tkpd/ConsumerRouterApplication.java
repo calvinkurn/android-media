@@ -124,7 +124,6 @@ import com.tokopedia.seller.TkpdSeller;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
-import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
 import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.instoped.InstopedActivity;
@@ -166,11 +165,14 @@ import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.FeedModuleRouter;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolCommentActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolFollowingListActivity;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.KolCommentFragment;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentHeaderViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentProductViewModel;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
-import com.tokopedia.tkpd.truecaller.TruecallerActivity;
 import com.tokopedia.tkpdcontent.KolRouter;
 import com.tokopedia.tkpdcontent.feature.profile.view.fragment.KolPostFragment;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
@@ -179,7 +181,6 @@ import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tokocash.historytokocash.presentation.activity.HistoryTokoCashActivity;
-import com.tokopedia.tokocash.qrpayment.presentation.activity.CustomScannerTokoCashActivity;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
@@ -197,7 +198,8 @@ import rx.Observable;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
-import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter
+        .ARG_PARAM_PRODUCT_PASS_DATA;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_DATA;
 
 /**
@@ -209,7 +211,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter,
         TokoCashRouter, IWalletRouter, ILoyaltyRouter, ReputationRouter, SessionRouter,
         AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter,
-        DiscoveryRouter, RideModuleRouter {
+        DiscoveryRouter, RideModuleRouter, KolRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -1339,5 +1341,29 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         startActivity(ReactNativeOfficialStoreActivity.createCallingIntent(
                 activity, ReactConst.Screen.OFFICIAL_STORE,
                 getString(R.string.react_native_banner_official_title)));
+    }
+
+    @Override
+    public Intent getKolCommentActivity(Context context, String avatarUrl, String name,
+                                        String review, String time, String userId,
+                                        String productImageUrl, String contentName,
+                                        String price, boolean isWishlishted, int postId,
+                                        int rowNumber) {
+        return KolCommentActivity.getCallingIntent(context,
+                new KolCommentHeaderViewModel(avatarUrl, name, review, time, userId),
+                new KolCommentProductViewModel(productImageUrl, contentName, price, isWishlishted),
+                postId,
+                rowNumber
+        );
+    }
+
+    @Override
+    public String getKolCommentArgsPosition() {
+        return KolCommentActivity.ARGS_POSITION;
+    }
+
+    @Override
+    public String getKolCommentArgsTotalComment() {
+        return KolCommentFragment.ARGS_TOTAL_COMMENT;
     }
 }

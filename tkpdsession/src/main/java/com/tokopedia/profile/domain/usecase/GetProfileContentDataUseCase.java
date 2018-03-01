@@ -5,6 +5,8 @@ import com.tokopedia.profile.view.viewmodel.TopProfileViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -13,16 +15,23 @@ import rx.Observable;
 
 public class GetProfileContentDataUseCase extends UseCase<TopProfileViewModel> {
 
-    public static final String PARAM_USER_ID = "user_id";
+    public static final String PARAM_USER_ID = "userID";
 
     private final GetProfileContentDataSourceCloud getProfileContentDataSourceCloud;
 
+    @Inject
     public GetProfileContentDataUseCase(GetProfileContentDataSourceCloud getProfileContentDataSourceCloud){
         this.getProfileContentDataSourceCloud = getProfileContentDataSourceCloud;
     }
 
     @Override
     public Observable<TopProfileViewModel> createObservable(RequestParams requestParams) {
-        return null;
+        return getProfileContentDataSourceCloud.getProfileContentData(requestParams);
+    }
+
+    public static RequestParams getParams(String userId){
+        RequestParams param = RequestParams.create();
+        param.putInt(PARAM_USER_ID, Integer.valueOf(userId));
+        return param;
     }
 }

@@ -1,18 +1,11 @@
 package com.tokopedia.tkpdcontent.feature.profile.view.presenter;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.tkpdcontent.feature.profile.domain.interactor.GetProfileKolDataUseCase;
 import com.tokopedia.tkpdcontent.feature.profile.view.listener.KolPostListener;
-import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.tokopedia.tkpdcontent.feature.profile.view.subscriber.GetProfileKolDataSubscriber;
 
 import javax.inject.Inject;
-
-import rx.Subscriber;
 
 /**
  * @author by milhamj on 20/02/18.
@@ -21,6 +14,8 @@ import rx.Subscriber;
 public class KolPostPresenter extends BaseDaggerPresenter<KolPostListener.View>
         implements KolPostListener.Presenter {
     private final GetProfileKolDataUseCase getProfileKolDataUseCase;
+
+    private String lastCursor = "";
 
     @Inject
     public KolPostPresenter(GetProfileKolDataUseCase getProfileKolDataUseCase) {
@@ -34,26 +29,17 @@ public class KolPostPresenter extends BaseDaggerPresenter<KolPostListener.View>
 
     @Override
     public void getKolPost(String userId) {
+        getView().showLoading();
         getProfileKolDataUseCase.execute(
-                GetProfileKolDataUseCase.getParams(userId),
-                new Subscriber<List<KolViewModel>>() {
-                    @Override
-                    public void onCompleted() {
+                GetProfileKolDataUseCase.getParams(userId, lastCursor),
+                new GetProfileKolDataSubscriber(getView())
+        );
 
-                    }
+    }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        getView().onErrorGetProfileData(
-                                ErrorHandler.getErrorMessage(getView().getContext(), e)
-                        );
-                    }
-
-                    @Override
-                    public void onNext(List<KolViewModel> kolViewModels) {
-                        getView().onSuccessGetProfileData(new ArrayList<Visitable>(kolViewModels));
-                    }
-                });
+    @Override
+    public void updateCursor(String lastCursor) {
+        this.lastCursor = lastCursor;
     }
 
     //TODO milhamj do something with these actions

@@ -7,7 +7,7 @@ import com.tokopedia.tkpdcontent.feature.profile.view.adapter.typefactory.KolTyp
  * @author by nisie on 10/27/17.
  */
 
-public class KolViewModel implements Visitable<KolTypeFactory> {
+public class KolPostViewModel implements Visitable<KolTypeFactory> {
     private final String tagsType;
     private final String contentLink;
     private final int userId;
@@ -35,12 +35,12 @@ public class KolViewModel implements Visitable<KolTypeFactory> {
     private boolean wishlisted;
     private boolean isShowComment;
 
-    public KolViewModel(String title, String name, String avatar, String label,
-                        boolean followed, String kolImage, String productTooltip,
-                        String review, boolean liked, int totalLike, int totalComment,
-                        int page, String kolProfileUrl, int contentId, int id, String time,
-                        String contentName, String productPrice, boolean wishlisted, String tagsType,
-                        String contentLink, int userId, boolean isShowComment, String cardType) {
+    public KolPostViewModel(String title, String name, String avatar, String label,
+                            boolean followed, String kolImage, String productTooltip,
+                            String review, boolean liked, int totalLike, int totalComment,
+                            int page, String kolProfileUrl, int contentId, int id, String time,
+                            String contentName, String productPrice, boolean wishlisted, String tagsType,
+                            String contentLink, int userId, boolean isShowComment, String cardType) {
         this.title = title;
         this.name = name;
         this.avatar = avatar;

@@ -1,7 +1,7 @@
-{
-    get_user_profile_data(userID: %s) {
+query GetProfileContent($userID: Int!){
+    get_user_profile_data(userID: $userID) {
 		error
-    data {
+        data {
             followers
             following
             followed
@@ -17,7 +17,7 @@
             following_fmt
             is_me
         }
-}
+    }
     profile {
             email_verified
             gender_name
@@ -35,7 +35,7 @@
             profile_picture
             created_password
     }
-        shopInfoByUserId(user_id: %s) {
+        shopInfoByUserId(user_id: $userID) {
             data {
                 shop_id
                 shop_url
@@ -69,7 +69,7 @@
                 applink
             }
         }
-    reputationByUserId(user_id: %s) {
+    reputationByUserId(user_id: $userID) {
         active
         positive
         neutral

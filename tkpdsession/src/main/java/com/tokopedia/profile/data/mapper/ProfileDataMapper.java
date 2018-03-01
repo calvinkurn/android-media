@@ -71,6 +71,7 @@ public class ProfileDataMapper
     }
 
     private void setShopInfo(TopProfileViewModel model, ProfileShopInfo.Data data){
+        model.setShopId(data.getShopId());
         model.setShopName(data.getShopName());
         model.setGoldShop(data.getIsGold()==1);
         model.setGoldBadge(data.isGoldBadge());
@@ -89,7 +90,7 @@ public class ProfileDataMapper
                 && graphqlResponse.body() != null
                 && graphqlResponse.body().getData() != null) {
             if (graphqlResponse.isSuccessful()) {
-                if (!TextUtils.isEmpty(graphqlResponse.body().getData().getProfileData().getError())) {
+                if (TextUtils.isEmpty(graphqlResponse.body().getData().getProfileData().getError())) {
                     return graphqlResponse.body().getData();
                 } else {
                     throw new RuntimeException("Server error");

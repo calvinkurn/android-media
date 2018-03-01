@@ -1,5 +1,9 @@
 package com.tokopedia.profile.di;
 
+import com.tokopedia.profile.domain.usecase.GetProfileContentDataUseCase;
+import com.tokopedia.profile.view.listener.ProfileContentListener;
+import com.tokopedia.profile.view.presenter.ProfileContentPresenter;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -9,5 +13,11 @@ import dagger.Provides;
 
 @Module
 public class ProfileContentModule {
+
+    @ProfileContentScope
+    @Provides
+    ProfileContentListener.Presenter providesPresenter(GetProfileContentDataUseCase getProfileContentDataUseCase){
+        return new ProfileContentPresenter(getProfileContentDataUseCase);
+    }
 
 }

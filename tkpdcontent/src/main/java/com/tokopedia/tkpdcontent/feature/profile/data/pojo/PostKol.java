@@ -10,9 +10,9 @@ public final class PostKol {
   @Expose
   public Boolean isLiked;
 
-  @SerializedName("isFollow")
+  @SerializedName("isFollowed")
   @Expose
-  public Boolean isFollow;
+  public Boolean isFollowed;
 
   @SerializedName("id")
   @Expose

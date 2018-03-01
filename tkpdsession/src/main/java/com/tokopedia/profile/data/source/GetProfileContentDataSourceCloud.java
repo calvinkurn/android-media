@@ -3,6 +3,7 @@ package com.tokopedia.profile.data.source;
 import android.content.Context;
 import android.content.res.Resources;
 
+import com.tokopedia.abstraction.common.data.model.request.GraphqlRequest;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.profile.data.mapper.ProfileDataMapper;
 import com.tokopedia.profile.data.network.ProfileApi;
@@ -14,9 +15,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Observable;
+import java.util.HashMap;
 
 import javax.inject.Inject;
+
+import rx.Observable;
 
 import static com.tokopedia.profile.domain.usecase.GetProfileContentDataUseCase.PARAM_USER_ID;
 
@@ -38,13 +41,18 @@ public class GetProfileContentDataSourceCloud {
         this.getProfileDataMapper = getProfileDataMapper;
     }
 
-    public Observable<TopProfileViewModel>
+    public Observable<TopProfileViewModel> getProfileContentData(RequestParams requestParams){
+        return profileApi.getProfileContent(getRequestPayload(requestParams))
+                .map(getProfileDataMapper);
+    }
 
-    private String getRequestPayload(RequestParams requestParams) {
-        return String.format(
+    private GraphqlRequest getRequestPayload(RequestParams requestParams) {
+        HashMap<String, Object> requestVariable = new HashMap<>();
+        requestVariable.put(PARAM_USER_ID, requestParams.getInt(PARAM_USER_ID, 0));
+
+        return new GraphqlRequest(
                 loadRawString(context.getResources(), R.raw.query_get_profile_content_data),
-                requestParams.getString(PARAM_USER_ID, "0")
-        );
+                requestVariable);
     }
 
     private String loadRawString(Resources resources, int resId) {

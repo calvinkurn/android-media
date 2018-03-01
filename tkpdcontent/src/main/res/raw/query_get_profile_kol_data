@@ -1,5 +1,5 @@
-{
-	get_profile_kol_data(userID: %s, cursor: %s, limit: %s) {
+query GetProfileKol($userID: Int!, $limit: Int!, $cursor: String) {
+    get_profile_kol_data(userID: $userID, cursor: $cursor, limit: $limit) {
 		error
 		profileKol {
 			followers

@@ -7,14 +7,15 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.tkpdcontent.R;
 import com.tokopedia.tkpdcontent.common.data.source.api.KolApi;
 import com.tokopedia.tkpdcontent.feature.profile.data.mapper.GetProfileKolDataMapper;
-import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolViewModel;
+import com.tokopedia.abstraction.common.data.model.request.GraphqlRequest;
+import com.tokopedia.tkpdcontent.feature.profile.domain.model.KolProfileModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.List;
+import java.util.HashMap;
 
 import javax.inject.Inject;
 
@@ -47,18 +48,21 @@ public class GetProfileKolDataSourceCloud {
         this.getProfileKolDataMapper = getProfileKolDataMapper;
     }
 
-    public Observable<List<KolViewModel>> getProfileKolData(RequestParams params) {
+    public Observable<KolProfileModel> getProfileKolData(RequestParams params) {
         return kolApi.getProfileKolData(getRequestPayload(params))
                 .map(getProfileKolDataMapper);
     }
 
 
-    private String getRequestPayload(RequestParams requestParams) {
-        return String.format(
+    private GraphqlRequest getRequestPayload(RequestParams requestParams) {
+        HashMap<String, Object> variables = new HashMap<>();
+        variables.put(PARAM_USER_ID, requestParams.getInt(PARAM_USER_ID, 0));
+        variables.put(PARAM_CURSOR, requestParams.getString(PARAM_CURSOR, ""));
+        variables.put(PARAM_LIMIT, requestParams.getInt(PARAM_LIMIT, KOL_POST_LIMIT));
+
+        return new GraphqlRequest(
                 loadRawString(context.getResources(), R.raw.query_get_profile_kol_data),
-                requestParams.getString(PARAM_USER_ID, "0"),
-                requestParams.getString(PARAM_CURSOR, ""),
-                requestParams.getString(PARAM_LIMIT, KOL_POST_LIMIT)
+                variables
         );
     }
 

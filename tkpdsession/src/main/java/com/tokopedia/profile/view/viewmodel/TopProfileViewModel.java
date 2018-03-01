@@ -30,6 +30,7 @@ public class TopProfileViewModel {
     private String netralScore;
     private String negativeScore;
 
+    private int shopId;
     private String shopName;
     private boolean isGoldShop;
     private boolean isGoldBadge;
@@ -197,6 +198,14 @@ public class TopProfileViewModel {
 
     public void setNegativeScore(String negativeScore) {
         this.negativeScore = negativeScore;
+    }
+
+    public int getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(int shopId) {
+        this.shopId = shopId;
     }
 
     public String getShopName() {

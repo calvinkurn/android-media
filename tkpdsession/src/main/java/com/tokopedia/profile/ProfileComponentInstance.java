@@ -3,6 +3,7 @@ package com.tokopedia.profile;
 import android.app.Application;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.profile.common.di.DaggerProfileComponent;
 import com.tokopedia.profile.common.di.ProfileComponent;
 
 /**

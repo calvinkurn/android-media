@@ -1,9 +1,12 @@
 package com.tokopedia.tkpdcontent.feature.profile.view.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +15,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.tkpdcontent.KolComponentInstance;
+import com.tokopedia.tkpdcontent.KolRouter;
 import com.tokopedia.tkpdcontent.R;
 import com.tokopedia.tkpdcontent.feature.profile.di.DaggerKolProfileComponent;
-import com.tokopedia.tkpdcontent.feature.profile.di.KolProfileComponent;
+import com.tokopedia.tkpdcontent.feature.profile.di.KolProfileModule;
 import com.tokopedia.tkpdcontent.feature.profile.view.adapter.KolPostAdapter;
 import com.tokopedia.tkpdcontent.feature.profile.view.listener.KolPostListener;
-import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolViewModel;
+import com.tokopedia.tkpdcontent.feature.profile.view.viewmodel.KolPostViewModel;
 
 import java.util.List;
 
@@ -29,6 +33,8 @@ import javax.inject.Inject;
 
 public class KolPostFragment extends BaseDaggerFragment implements KolPostListener.View {
     private static final String PARAM_USER_ID = "user_id";
+    private static final int KOL_COMMENT_CODE = 13;
+    private static final int LOAD_MORE_THRESHOLD = 2;
 
     @Inject
     KolPostListener.Presenter presenter;
@@ -36,8 +42,10 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     KolPostAdapter adapter;
     private RecyclerView kolRecyclerView;
     private LinearLayoutManager layoutManager;
+    private KolRouter kolRouter;
 
     private String userId;
+    private boolean canLoadMore = true;
 
     public static KolPostFragment newInstance(String userId) {
         KolPostFragment fragment = new KolPostFragment();
@@ -62,6 +70,12 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
         setViewListener();
         presenter.initView(userId);
 
+        if (getActivity().getApplicationContext() instanceof KolRouter) {
+            kolRouter = (KolRouter) getActivity().getApplicationContext();
+        } else {
+            throw new IllegalStateException("Application must be an instance of KolRouter!");
+        }
+
         return parentView;
     }
 
@@ -78,7 +92,19 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     }
 
     private void setViewListener() {
+        kolRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
 
+                int topVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+                if (topVisibleItemPosition >= adapter.getItemCount() - LOAD_MORE_THRESHOLD &&
+                        canLoadMore &&
+                        !adapter.isLoading()) {
+                    presenter.getKolPost(userId);
+                }
+            }
+        });
     }
 
     @Override
@@ -90,19 +116,35 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     protected void initInjector() {
         DaggerKolProfileComponent.builder()
                 .kolComponent(KolComponentInstance.getKolComponent(getActivity().getApplication()))
+                .kolProfileModule(new KolProfileModule(this))
                 .build()
                 .inject(this);
     }
 
     @Override
+    public void showLoading() {
+        adapter.showLoading();
+    }
+
+    @Override
+    public void hideLoading() {
+        adapter.removeLoading();
+    }
+
+    @Override
     public void onSuccessGetProfileData(List<Visitable> visitableList) {
-        NetworkErrorHelper.showSnackbar(getActivity(), "Success");
         adapter.addList(visitableList);
     }
 
     @Override
     public void onErrorGetProfileData(String message) {
         NetworkErrorHelper.showSnackbar(getActivity(), message);
+    }
+
+    @Override
+    public void updateCursor(String lastCursor) {
+        canLoadMore = !TextUtils.isEmpty(lastCursor);
+        presenter.updateCursor(lastCursor);
     }
 
     //TODO milhamj do something with these actions
@@ -139,7 +181,43 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     }
 
     @Override
-    public void onGoToKolComment(int page, int rowNumber, KolViewModel kolViewModel) {
+    public void onGoToKolComment(int page, int rowNumber, KolPostViewModel kolPostViewModel) {
+        Intent intent = kolRouter.getKolCommentActivity(
+                getContext(), kolPostViewModel.getAvatar(), kolPostViewModel.getName(),
+                kolPostViewModel.getReview(), kolPostViewModel.getTime(),
+                String.valueOf(kolPostViewModel.getUserId()), kolPostViewModel.getKolImage(),
+                kolPostViewModel.getContentName(), kolPostViewModel.getProductPrice(),
+                kolPostViewModel.isWishlisted(), kolPostViewModel.getId(), rowNumber
+        );
+        startActivityForResult(intent, KOL_COMMENT_CODE);
+    }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case KOL_COMMENT_CODE:
+                if (resultCode == Activity.RESULT_OK) {
+                    onSuccessAddDeleteKolComment(
+                            data.getIntExtra(kolRouter.getKolCommentArgsPosition(), -1),
+                            data.getIntExtra(kolRouter.getKolCommentArgsTotalComment(), 0));
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void onSuccessAddDeleteKolComment(int rowNumber, int totalNewComment) {
+        if (rowNumber != -1) {
+            if (adapter.getList().get(rowNumber) != null
+                    && adapter.getList().get(rowNumber) instanceof KolPostViewModel) {
+                KolPostViewModel kolPostViewModel =
+                        ((KolPostViewModel) adapter.getList().get(rowNumber));
+                kolPostViewModel.setTotalComment(
+                        kolPostViewModel.getTotalComment() + totalNewComment);
+                adapter.notifyItemChanged(rowNumber);
+            }
+        }
     }
 }

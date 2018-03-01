@@ -36,10 +36,10 @@ public class KolPostAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     @Override
-    public AbstractViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public AbstractViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         Context context = viewGroup.getContext();
-        View view = LayoutInflater.from(context).inflate(i, viewGroup, false);
-        return typeFactory.createViewHolder(view, i);
+        View view = LayoutInflater.from(context).inflate(viewType, viewGroup, false);
+        return typeFactory.createViewHolder(view, viewType);
     }
 
     @SuppressWarnings("unchecked")
@@ -53,36 +53,53 @@ public class KolPostAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         return list.size();
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public int getItemViewType(int position) {
+        return list.get(position).type(typeFactory);
+    }
+
+    public List<Visitable> getList() {
+        return this.list;
+    }
+
     public void setList(List<Visitable> list) {
         this.list = list;
+        notifyDataSetChanged();
     }
 
     public void addList(List<Visitable> list) {
+        int originalSize = this.list.size();
         this.list.addAll(list);
-    }
-
-    public void addItem(Visitable item) {
-        this.list.add(item);
+        notifyItemRangeInserted(
+                originalSize,
+                Math.abs(originalSize - list.size())
+        );
     }
 
     public void clearData() {
         this.list.clear();
+        notifyDataSetChanged();
     }
 
     public void showEmpty() {
         this.list.add(emptyModel);
+        notifyDataSetChanged();
     }
 
     public void removeEmpty() {
         this.list.remove(emptyModel);
+        notifyDataSetChanged();
     }
 
     public void showLoading() {
         this.list.add(loadingModel);
+        notifyDataSetChanged();
     }
 
     public void removeLoading() {
         this.list.remove(loadingModel);
+        notifyDataSetChanged();
     }
 
     public boolean isLoading() {
