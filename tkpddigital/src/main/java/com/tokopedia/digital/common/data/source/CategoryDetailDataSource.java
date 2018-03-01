@@ -105,32 +105,46 @@ public class CategoryDetailDataSource {
                 break;
             case "2":
                 result = DigitalUrl.HelpUrl.PAKET_DATA;
+                break;
             case "3":
                 result = DigitalUrl.HelpUrl.PLN;
+                break;
             case "4":
                 result = DigitalUrl.HelpUrl.BPJS;
+                break;
             case "5":
                 result = DigitalUrl.HelpUrl.PDAM;
+                break;
             case "6":
                 result = DigitalUrl.HelpUrl.GAME;
+                break;
             case "7":
                 result = DigitalUrl.HelpUrl.CREDIT;
+                break;
             case "8":
                 result = DigitalUrl.HelpUrl.TV;
+                break;
             case "9":
                 result = DigitalUrl.HelpUrl.POSTPAID;
+                break;
             case "10":
                 result = DigitalUrl.HelpUrl.TELKOM;
+                break;
             case "13":
                 result = DigitalUrl.HelpUrl.STREAMING;
+                break;
             case "14":
                 result = DigitalUrl.HelpUrl.PGN;
+                break;
             case "20":
                 result = DigitalUrl.HelpUrl.ROAMING;
+                break;
             case "22":
                 result = DigitalUrl.HelpUrl.TAX;
+                break;
             case "24":
                 result = DigitalUrl.HelpUrl.GIFT_CARD;
+                break;
             case "25":
                 result = DigitalUrl.HelpUrl.RETRIBUTION;
                 break;
