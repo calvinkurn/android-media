@@ -35,11 +35,11 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:paddingTop="4dp"
+            android:text="@string/label_main_address"
             android:textColor="@color/medium_green"
             android:textSize="10sp"
             android:textStyle="normal"
             android:visibility="gone"
-            android:text="Utama"
             tools:ignore="SmallSp" />
 
     </LinearLayout>
@@ -84,10 +84,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_recipient_phone"
         android:layout_marginTop="@dimen/margin_ms"
-        android:drawableLeft="@drawable/ic_action_edit"
+        android:drawableLeft="@drawable/ic_edit_grey"
         android:drawablePadding="@dimen/padding_ms"
-        android:drawableStart="@drawable/ic_action_edit"
+        android:drawableStart="@drawable/ic_edit_grey"
+        android:gravity="center_vertical"
         android:text="@string/action_edit"
-        android:visibility="gone" />
+        android:textSize="11sp"
+        android:visibility="visible" />
 
 </RelativeLayout>

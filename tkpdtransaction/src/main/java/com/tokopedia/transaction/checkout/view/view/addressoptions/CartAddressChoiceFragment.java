@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -51,8 +54,6 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
 
     @BindView(R2.id.tv_choose_other_address)
     TextView tvChooseOtherAddress;
-    @BindView(R2.id.ll_add_new_address)
-    LinearLayout llAddNewAddress;
     @BindView(R2.id.ll_send_to_multiple_address)
     LinearLayout llSendToMultipleAddress;
     @BindView(R2.id.bt_send_to_current_address)
@@ -85,6 +86,28 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
                 .cartAddressChoiceModule(new CartAddressChoiceModule(this))
                 .build();
         component.inject(this);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_address_choice, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_add_address) {
+            startActivityForResult(AddAddressActivity.createInstance(getActivity()),
+                    ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -164,6 +187,7 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     @Override
     public void showLoading() {
         llContent.setVisibility(View.GONE);
+        btSendToCurrentAddress.setVisibility(View.GONE);
         pbLoading.setVisibility(View.VISIBLE);
     }
 
@@ -171,11 +195,13 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
     public void hideLoading() {
         pbLoading.setVisibility(View.GONE);
         llContent.setVisibility(View.VISIBLE);
+        btSendToCurrentAddress.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showNoConnection(@NonNull String message) {
         llContent.setVisibility(View.GONE);
+        btSendToCurrentAddress.setVisibility(View.GONE);
         NetworkErrorHelper.showEmptyState(getActivity(), llNetworkErrorView, message,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
@@ -205,12 +231,6 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
                     .addToBackStack(backStateName)
                     .commit();
         }
-    }
-
-    @OnClick(R2.id.ll_add_new_address)
-    void onAddNewAddress() {
-        startActivityForResult(AddAddressActivity.createInstance(getActivity()),
-                ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
     }
 
     @OnClick(R2.id.ll_send_to_multiple_address)
