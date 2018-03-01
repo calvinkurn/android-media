@@ -10,10 +10,10 @@ import com.tokopedia.profile.view.viewmodel.TopProfileViewModel;
 import java.util.List;
 
 /**
- * Created by nakama on 28/02/18.
+ * @author by alvinatin on 28/02/18.
  */
 
-public interface ProfileContentListener {
+public interface TopProfileFragmentListener {
 
     interface View extends CustomerView{
         Context getContext();

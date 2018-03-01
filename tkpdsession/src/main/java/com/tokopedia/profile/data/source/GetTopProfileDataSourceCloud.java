@@ -5,7 +5,7 @@ import android.content.res.Resources;
 
 import com.tokopedia.abstraction.common.data.model.request.GraphqlRequest;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.profile.data.mapper.ProfileDataMapper;
+import com.tokopedia.profile.data.mapper.TopProfileDataMapper;
 import com.tokopedia.profile.data.network.ProfileApi;
 import com.tokopedia.profile.view.viewmodel.TopProfileViewModel;
 import com.tokopedia.session.R;
@@ -21,29 +21,29 @@ import javax.inject.Inject;
 
 import rx.Observable;
 
-import static com.tokopedia.profile.domain.usecase.GetProfileContentDataUseCase.PARAM_USER_ID;
+import static com.tokopedia.profile.domain.usecase.GetTopProfileDataUseCase.PARAM_USER_ID;
 
 /**
- * Created by alvinatin on 20/02/18.
+ * @author by alvinatin on 20/02/18.
  */
 
-public class GetProfileContentDataSourceCloud {
+public class GetTopProfileDataSourceCloud {
     private final Context context;
     private final ProfileApi profileApi;
-    private final ProfileDataMapper getProfileDataMapper;
+    private final TopProfileDataMapper getTopProfileDataMapper;
 
     @Inject
-    public GetProfileContentDataSourceCloud(@ApplicationContext Context context,
-                                            ProfileApi profileApi,
-                                            ProfileDataMapper getProfileDataMapper){
+    public GetTopProfileDataSourceCloud(@ApplicationContext Context context,
+                                        ProfileApi profileApi,
+                                        TopProfileDataMapper getTopProfileDataMapper){
         this.context = context;
         this.profileApi = profileApi;
-        this.getProfileDataMapper = getProfileDataMapper;
+        this.getTopProfileDataMapper = getTopProfileDataMapper;
     }
 
     public Observable<TopProfileViewModel> getProfileContentData(RequestParams requestParams){
         return profileApi.getProfileContent(getRequestPayload(requestParams))
-                .map(getProfileDataMapper);
+                .map(getTopProfileDataMapper);
     }
 
     private GraphqlRequest getRequestPayload(RequestParams requestParams) {

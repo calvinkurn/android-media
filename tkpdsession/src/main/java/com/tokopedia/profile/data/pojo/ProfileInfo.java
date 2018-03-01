@@ -4,11 +4,14 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by nakama on 28/02/18.
+ * @author by alvinatin on 28/02/18.
  */
 
 public class ProfileInfo {
 
+    @SerializedName("apps_bday")
+    @Expose
+    private String appsBday;
     @SerializedName("email_verified")
     @Expose
     private boolean emailVerified;
@@ -51,6 +54,14 @@ public class ProfileInfo {
     @SerializedName("created_password")
     @Expose
     private boolean createdPassword;
+
+    public String getAppsBday() {
+        return appsBday;
+    }
+
+    public void setAppsBday(String appsBday) {
+        this.appsBday = appsBday;
+    }
 
     public boolean isEmailVerified() {
         return emailVerified;

@@ -15,7 +15,7 @@ import com.tokopedia.profile.view.viewmodel.TopProfileViewModel;
 import com.tokopedia.session.R;
 
 /**
- * Created by alvinatin on 13/02/18.
+ * @author by alvinatin on 13/02/18.
  */
 
 public class PartialUserInfoView extends BaseCustomView {

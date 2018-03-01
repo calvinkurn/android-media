@@ -9,22 +9,22 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.profile.ProfileComponentInstance;
-import com.tokopedia.profile.di.DaggerProfileContentComponent;
-import com.tokopedia.profile.di.ProfileContentModule;
+import com.tokopedia.profile.di.DaggerTopProfileComponent;
+import com.tokopedia.profile.di.TopProfileModule;
 import com.tokopedia.profile.view.customview.PartialUserDataView;
 import com.tokopedia.profile.view.customview.PartialUserInfoView;
 import com.tokopedia.profile.view.customview.PartialUserShopView;
-import com.tokopedia.profile.view.listener.ProfileContentListener;
+import com.tokopedia.profile.view.listener.TopProfileFragmentListener;
+import com.tokopedia.profile.view.listener.TopProfileActivityListener;
 import com.tokopedia.profile.view.viewmodel.TopProfileViewModel;
 import com.tokopedia.session.R;
 import javax.inject.Inject;
-import static android.view.View.VISIBLE;
 
 /**
  * @author by milhamj on 08/02/18.
  */
 
-public class TopProfileFragment extends BaseDaggerFragment implements ProfileContentListener.View{
+public class TopProfileFragment extends BaseDaggerFragment implements TopProfileFragmentListener.View{
 
     private static final String PARAM_USER_ID = "user_id";
 
@@ -35,7 +35,7 @@ public class TopProfileFragment extends BaseDaggerFragment implements ProfileCon
     private String userId;
 
     @Inject
-    ProfileContentListener.Presenter presenter;
+    TopProfileFragmentListener.Presenter presenter;
 
     public static TopProfileFragment newInstance(String userId) {
         TopProfileFragment fragment = new TopProfileFragment();
@@ -60,9 +60,9 @@ public class TopProfileFragment extends BaseDaggerFragment implements ProfileCon
 
     @Override
     protected void initInjector() {
-        DaggerProfileContentComponent.builder()
+        DaggerTopProfileComponent.builder()
                 .profileComponent(ProfileComponentInstance.getProfileComponent(getActivity().getApplication()))
-                .profileContentModule(new ProfileContentModule())
+                .topProfileModule(new TopProfileModule())
                 .build()
                 .inject(this);
     }
@@ -99,6 +99,7 @@ public class TopProfileFragment extends BaseDaggerFragment implements ProfileCon
         partialUserDataView.renderData(topProfileViewModel);
         partialUserInfoView.renderData(topProfileViewModel);
         partialUserShopView.renderData(topProfileViewModel);
+        ((TopProfileActivityListener.View) getActivity()).populateData(topProfileViewModel);
     }
 
     @Override

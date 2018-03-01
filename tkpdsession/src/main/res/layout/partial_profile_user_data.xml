@@ -300,14 +300,6 @@
                 android:textStyle="normal"
                 tools:text="7 Sep 1991" />
 
-            <View
-                android:id="@+id/separator_data"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_below="@id/tv_birth_date"
-                android:layout_marginTop="13dp"
-                android:background="@color/separator_color" />
-
         </RelativeLayout>
 
     </RelativeLayout>
