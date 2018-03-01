@@ -107,6 +107,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     private TextView voteInfoLink;
     private ImageView iconVote;
     private View votedView;
+    private View divider;
     private TextView voteStatus;
     private ImageView arrow;
     private GroupChatAdapter adapter;
@@ -189,6 +190,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         voteStatus = view.findViewById(R.id.vote_status);
         votedView = view.findViewById(R.id.layout_voted);
         progressBarWithTimer = view.findViewById(R.id.timer);
+        divider = view.findViewById(R.id.view);
         channelInfoDialog = CloseableBottomSheetDialog.createInstance(getActivity());
 
         setupToolbar();
@@ -197,18 +199,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     }
 
     private void setupToolbar() {
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            Window window = getActivity().getWindow();
-//            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-//            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-//            window.setStatusBarColor(getResources()
-//                    .getColor(R.color.grey_transparent_background));
-//        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            Window w = getActivity().getWindow(); // in Activity's onCreate() for instance
-//            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-//            toolbar.setPadding(0, getStatusBarHeight(), 0, 0);
-//        }
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
@@ -272,7 +262,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 //        arrow.setAnimation(an);
         GroupChatTypeFactory groupChatTypeFactory = new GroupChatTypeFactoryImpl(this);
         adapter = GroupChatAdapter.createInstance(groupChatTypeFactory);
-        layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL ,false);
         layoutManager.setReverseLayout(true);
         layoutManager.setStackFromEnd(true);
         chatRecyclerView.setLayoutManager(layoutManager);
@@ -529,6 +519,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
                 initData();
             }
         });
+        setVisibilityHeader(View.GONE);
     }
 
     @Override
@@ -544,6 +535,14 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
         presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUrl(),
                 userSession.getName(), userSession.getProfilePicture(), this);
+        setVisibilityHeader(View.VISIBLE);
+    }
+
+    void setVisibilityHeader(int visible){
+        voteBar.setVisibility(visible);
+        toolbar.setVisibility(visible);
+        divider.setVisibility(visible);
+        channelBanner.setVisibility(visible);
     }
 
     private void setVote(boolean hasPoll, VoteInfoViewModel voteInfoViewModel) {

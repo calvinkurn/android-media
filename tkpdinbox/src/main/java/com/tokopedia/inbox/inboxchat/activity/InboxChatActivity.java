@@ -250,12 +250,10 @@ public class InboxChatActivity extends DrawerPresenterActivity
 
     public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
 
-        private int spanCount;
         private int space;
 
-        public SpaceItemDecoration(int verticalSpaceHeight) {
+        SpaceItemDecoration(int verticalSpaceHeight) {
             this.space = verticalSpaceHeight;
-            spanCount = 0;
         }
 
         @Override

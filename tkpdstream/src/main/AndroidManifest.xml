@@ -12,7 +12,6 @@
             android:name=".chatroom.view.activity.GroupChatActivity"
             android:label="@string/activity_channel"
             android:screenOrientation="portrait"
-
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
     </application>
 
