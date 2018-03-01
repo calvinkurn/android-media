@@ -5,6 +5,10 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.widget.Button;
+
+import com.tokopedia.transaction.R;
 
 /**
  * @author Aghny A. Putra on 28/02/18.
@@ -30,7 +34,7 @@ public class ResetShipmentFormDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        return new AlertDialog.Builder(getActivity())
+        final AlertDialog dialog =  new AlertDialog.Builder(getActivity())
                 .setTitle("Kembali Ke Keranjang")
                 .setMessage("Perubahan yang Anda lakukan di halaman ini tidak akan disimpan")
                 .setPositiveButton("Kembali & Hapus Perubahan",
@@ -50,6 +54,21 @@ public class ResetShipmentFormDialog extends DialogFragment {
                             }
                         })
                 .create();
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                Button btnPositive = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                btnPositive.setTextColor(ContextCompat.getColor(getActivity(), R.color.medium_green));
+                btnPositive.setAllCaps(false);
+
+                Button btnNegative = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+                btnNegative.setTextColor(ContextCompat.getColor(getActivity(), R.color.black_54));
+                btnNegative.setAllCaps(false);
+            }
+        });
+
+        return dialog;
     }
 
     public interface ResetShipmentFormCallbackAction {

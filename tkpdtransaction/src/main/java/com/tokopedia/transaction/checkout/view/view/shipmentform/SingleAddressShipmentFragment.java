@@ -253,13 +253,9 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     public void onAddOrChangeAddress() {
-        startActivityForResult(
-                CartAddressChoiceActivity.createInstance(
-                        getActivity(),
+        startActivityForResult(CartAddressChoiceActivity.createInstance(getActivity(),
                         CartAddressChoiceActivity.TYPE_REQUEST_FULL_SELECTION,
-                        mCartSingleAddressData.getCartSellerItemModelList(),
-                        mCartSingleAddressData.getRecipientAddressModel()
-                ),
+                        mCartSingleAddressData.getRecipientAddressModel()),
                 CartAddressChoiceActivity.REQUEST_CODE);
     }
 
@@ -272,6 +268,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
             ShipmentRatesDataMapper shipmentRatesDataMapper = new ShipmentRatesDataMapper();
             shipmentDetailData = shipmentRatesDataMapper.getShipmentDetailData(cartSellerItemModel);
         }
+
         startActivityForResult(ShipmentDetailActivity.createInstance(
                 getActivity(), shipmentDetailData, position), REQUEST_CODE_SHIPMENT_DETAIL);
     }
