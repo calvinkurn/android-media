@@ -114,14 +114,14 @@ public class ImageHandler {
         if (url != null && !TextUtils.isEmpty(url)) {
             Glide.with(imageview.getContext())
                     .load(url)
-                    .placeholder(ContextCompat.getDrawable(imageview.getContext(), resId))
+                    .placeholder(resId)
                     .dontAnimate()
                     .error(resId)
                     .into(imageview);
         } else {
             Glide.with(imageview.getContext())
                     .load(url)
-                    .placeholder(ContextCompat.getDrawable(imageview.getContext(), resId))
+                    .placeholder(resId)
                     .error(resId)
                     .into(imageview);
         }
