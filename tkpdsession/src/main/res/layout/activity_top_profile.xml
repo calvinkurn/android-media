@@ -22,7 +22,7 @@
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                 <include layout="@layout/partial_header_top_profile"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:id="@+id/header"
                     />
 
