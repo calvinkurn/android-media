@@ -190,14 +190,17 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         ImageHandler.loadImageCover2(eventDetailBanner, homedata.getImageApp());
         String dateRange = "";
 
-        if (homedata.getMinStartDate() == 0) {
-            timeView.setVisibility(View.GONE);
-        } else if (homedata.getMinStartDate().equals(homedata.getMaxEndDate())) {
-            dateRange = Utils.convertEpochToString(homedata.getMinStartDate());
+        if (homedata.getMinStartDate() > 0) {
+            if (homedata.getMinStartDate().equals(homedata.getMaxEndDate())) {
+                dateRange = Utils.convertEpochToString(homedata.getMinStartDate());
+            } else {
+                dateRange = Utils.convertEpochToString(homedata.getMinStartDate())
+                        + " - " + Utils.convertEpochToString(homedata.getMaxEndDate());
+            }
         } else {
-            dateRange = Utils.convertEpochToString(homedata.getMinStartDate())
-                    + " - " + Utils.convertEpochToString(homedata.getMaxEndDate());
+            timeView.setVisibility(View.GONE);
         }
+
         setHolder(R.drawable.ic_time, dateRange, timeHolder);
         setHolder(R.drawable.ic_placeholder, homedata.getCityName(), locationHolder);
         setHolder(R.drawable.ic_skyline, homedata.getCityName(), addressHolder);
@@ -251,21 +254,23 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         tvExpandableDescription.setText(Html.fromHtml(data.getLongRichDesc()));
 
         String tnc = data.getTnc();
-        String splitArray[] = tnc.split("~");
-        int flag = 1;
+        if (Utils.isNotNullOrEmpty(tnc)) {
+            String splitArray[] = tnc.split("~");
+            int flag = 1;
 
-        StringBuilder tncBuffer = new StringBuilder();
+            StringBuilder tncBuffer = new StringBuilder();
 
-        for (String line : splitArray) {
-            if (flag == 1) {
-                tncBuffer.append("<i>").append(line).append("</i>").append("<br>");
-                flag = 2;
-            } else {
-                tncBuffer.append("<b>").append(line).append("</b>").append("<br>");
-                flag = 1;
+            for (String line : splitArray) {
+                if (flag == 1) {
+                    tncBuffer.append("<i>").append(line).append("</i>").append("<br>");
+                    flag = 2;
+                } else {
+                    tncBuffer.append("<b>").append(line).append("</b>").append("<br>");
+                    flag = 1;
+                }
             }
+            tvExpandableTermsNCondition.setText(Html.fromHtml(tncBuffer.toString()));
         }
-        tvExpandableTermsNCondition.setText(Html.fromHtml(tncBuffer.toString()));
 
 //            seatingLayoutCard.setVisibility(View.GONE);
         eventPrice.setText("Rp " + CurrencyUtil.convertToCurrencyString(data.getSalesPrice()));
