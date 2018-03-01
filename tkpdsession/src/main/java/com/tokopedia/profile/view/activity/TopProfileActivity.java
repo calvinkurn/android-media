@@ -26,16 +26,22 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.peoplefave.activity.PeopleFavoritedShop;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.tab.Tabs;
+import com.tokopedia.profile.ProfileComponentInstance;
 import com.tokopedia.profile.common.di.ProfileComponent;
+import com.tokopedia.profile.di.DaggerTopProfileComponent;
+import com.tokopedia.profile.di.TopProfileModule;
 import com.tokopedia.profile.view.adapter.TopProfileTabPagerAdapter;
 import com.tokopedia.profile.view.fragment.TopProfileFragment;
 import com.tokopedia.profile.view.listener.TopProfileActivityListener;
+import com.tokopedia.profile.view.listener.TopProfileFragmentListener;
 import com.tokopedia.profile.view.viewmodel.TopProfileSectionItem;
 import com.tokopedia.profile.view.viewmodel.TopProfileViewModel;
 import com.tokopedia.session.R;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * @author by milhamj on 08/02/18.
@@ -79,8 +85,12 @@ public class TopProfileActivity extends BaseEmptyActivity
     private String userId;
     private TopProfileViewModel topProfileViewModel;
     private TopProfileTabPagerAdapter topProfileTabPagerAdapter;
+    private TopProfileFragmentListener.View fragmentListener;
 
     private ProfileComponent profileComponent;
+
+    @Inject
+    TopProfileActivityListener.Presenter presenter;
 
     public static Intent newInstance(@NonNull Context context, @NonNull String userId) {
         Intent intent = new Intent(context, TopProfileActivity.class);
@@ -96,16 +106,34 @@ public class TopProfileActivity extends BaseEmptyActivity
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
+    }
+
+    @Override
     protected void setupLayout(Bundle savedInstanceState) {
         super.setupLayout(savedInstanceState);
+        initInjector();
+
+        presenter.attachView(this);
         initVar();
         initView();
         setupToolbar();
         setViewListener();
-        initTabLoad();
+        presenter.initView(userId);
     }
 
-    private void initVar(){
+    private void initInjector() {
+        DaggerTopProfileComponent.builder()
+                .profileComponent(ProfileComponentInstance.getProfileComponent(this
+                        .getApplication()))
+                .topProfileModule(new TopProfileModule())
+                .build()
+                .inject(this);
+    }
+
+    private void initVar() {
         if (getIntent().getExtras() != null) {
             userId = getIntent().getExtras().getString(EXTRA_PARAM_USER_ID, "");
         }
@@ -115,7 +143,7 @@ public class TopProfileActivity extends BaseEmptyActivity
         appBarLayout = findViewById(R.id.app_bar_layout);
         collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
         toolbar = findViewById(R.id.toolbar);
-        tabLayout =findViewById(R.id.tab_profile);
+        tabLayout = findViewById(R.id.tab_profile);
         viewPager = findViewById(R.id.pager);
         avatar = findViewById(R.id.avatar);
         name = findViewById(R.id.name);
@@ -180,15 +208,133 @@ public class TopProfileActivity extends BaseEmptyActivity
     }
 
     @Override
-    public void populateData(TopProfileViewModel viewModel) {
-        topProfileViewModel = viewModel;
+    public Context getContext() {
+        return null;
+    }
 
-        if (topProfileViewModel.isKol()) {
-            loadKolTab();
-            tabLayout.setVisibility(View.VISIBLE);
-        } else {
-            tabLayout.setVisibility(View.GONE);
+    @Override
+    public void showMainView() {
+        header.setVisibility(View.VISIBLE);
+        viewPager.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideMainView() {
+        header.setVisibility(View.GONE);
+        viewPager.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showLoading() {
+        hideErrorScreen();
+        header.setVisibility(View.GONE);
+        tabLayout.setVisibility(View.GONE);
+        progressView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoading() {
+        header.setVisibility(View.VISIBLE);
+        tabLayout.setVisibility(View.VISIBLE);
+        progressView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showErrorScreen(String errorMessage, View.OnClickListener onClickListener) {
+        header.setVisibility(View.GONE);
+        tabLayout.setVisibility(View.GONE);
+        errorView.setVisibility(View.VISIBLE);
+
+        if (errorMessage != null) errorText.setText(errorMessage);
+        else errorText.setText(R.string.server_busy);
+
+        buttonTryAgain.setOnClickListener(onClickListener);
+    }
+
+    @Override
+    public void hideErrorScreen() {
+        header.setVisibility(View.VISIBLE);
+        tabLayout.setVisibility(View.VISIBLE);
+        errorText.setText(R.string.server_busy);
+        errorView.setVisibility(View.GONE);
+        buttonTryAgain.setOnClickListener(null);
+    }
+
+    @Override
+    public void onSuccessGetProfileData(TopProfileViewModel topProfileViewModel) {
+        this.topProfileViewModel = topProfileViewModel;
+
+        initTabLoad();
+        populateData();
+        fragmentListener.renderData(topProfileViewModel);
+    }
+
+    @Override
+    public void onErrorGetProfileData(String message) {
+        showErrorScreen(message, tryAgainOnlickListener());
+    }
+
+    private void setTextDisabledOrNot(TextView textView, String value) {
+        textView.setTextColor(
+                MethodChecker.getColor(
+                        this,
+                        value.trim().equals(ZERO) ? R.color.disabled_text : R.color.black_70)
+        );
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_top_profile, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
         }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case MANAGE_PEOPLE_CODE:
+                if (resultCode == Activity.RESULT_OK) {
+                    //TODO milhamj refresh on activity result
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void initTabLoad() {
+        List<TopProfileSectionItem> topProfileSectionItemList = new ArrayList<>();
+
+        if (topProfileViewModel.isKol() && getApplicationContext() instanceof SessionRouter) {
+            BaseDaggerFragment kolPostFragment =
+                    ((SessionRouter) getApplicationContext()).getKolPostFragment(userId);
+            topProfileSectionItemList.add(new TopProfileSectionItem(TITLE_POST, kolPostFragment));
+        }
+
+        TopProfileFragment profileFragment = TopProfileFragment.newInstance();
+        topProfileSectionItemList.add(new TopProfileSectionItem(TITLE_PROFILE, profileFragment));
+
+        topProfileTabPagerAdapter = new TopProfileTabPagerAdapter(getSupportFragmentManager());
+        topProfileTabPagerAdapter.setItemList(topProfileSectionItemList);
+        viewPager.setAdapter(topProfileTabPagerAdapter);
+        tabLayout.setupWithViewPager(viewPager);
+        fragmentListener = profileFragment;
+    }
+
+
+
+    private void populateData() {
+        tabLayout.setVisibility(topProfileViewModel.isKol() ? View.VISIBLE : View.GONE);
 
         ImageHandler.loadImageCircle2(avatar.getContext(),
                 avatar,
@@ -229,61 +375,6 @@ public class TopProfileActivity extends BaseEmptyActivity
         }
     }
 
-    @Override
-    public void showMainView() {
-        header.setVisibility(View.VISIBLE);
-        viewPager.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideMainView() {
-        header.setVisibility(View.GONE);
-        viewPager.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void showLoading() {
-        header.setVisibility(View.GONE);
-        tabLayout.setVisibility(View.GONE);
-        progressView.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideLoading() {
-        header.setVisibility(View.VISIBLE);
-        tabLayout.setVisibility(View.VISIBLE);
-        progressView.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void showErrorScreen(String errorMessage, View.OnClickListener onClickListener) {
-        header.setVisibility(View.GONE);
-        tabLayout.setVisibility(View.GONE);
-        errorView.setVisibility(View.VISIBLE);
-
-        if (errorMessage != null) errorText.setText(errorMessage);
-        else errorText.setText(R.string.server_busy);
-
-        buttonTryAgain.setOnClickListener(onClickListener);
-    }
-
-    @Override
-    public void hideErrorScreen() {
-        header.setVisibility(View.VISIBLE);
-        tabLayout.setVisibility(View.VISIBLE);
-        errorText.setText(R.string.server_busy);
-        errorView.setVisibility(View.GONE);
-        buttonTryAgain.setOnClickListener(null);
-    }
-
-    private void setTextDisabledOrNot(TextView textView, String value) {
-        textView.setTextColor(
-                MethodChecker.getColor(
-                        this,
-                        value.trim().equals(ZERO) ? R.color.disabled_text : R.color.black_70)
-        );
-    }
-
     private void enableFollowButton() {
         buttonFollow.setBackground(MethodChecker.getDrawable(this,
                 R.drawable.bg_button_green_enabled));
@@ -300,36 +391,6 @@ public class TopProfileActivity extends BaseEmptyActivity
         buttonFollowText.setTextColor(MethodChecker.getColor(this,
                 R.color.white));
         buttonFollowImage.setVisibility(View.GONE);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_top_profile, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case MANAGE_PEOPLE_CODE:
-                if (resultCode == Activity.RESULT_OK) {
-                    //TODO milhamj refresh on activity result
-                }
-                break;
-            default:
-                break;
-        }
     }
 
     private void setupToolbar() {
@@ -367,28 +428,12 @@ public class TopProfileActivity extends BaseEmptyActivity
         }
     }
 
-    private void initTabLoad() {
-        List<TopProfileSectionItem> topProfileSectionItemList = new ArrayList<>();
-
-        TopProfileFragment profileFragment = TopProfileFragment.newInstance(userId);
-        topProfileSectionItemList.add(new TopProfileSectionItem(TITLE_PROFILE, profileFragment));
-
-        topProfileTabPagerAdapter = new TopProfileTabPagerAdapter(getSupportFragmentManager());
-        topProfileTabPagerAdapter.setItemList(topProfileSectionItemList);
-        viewPager.setAdapter(topProfileTabPagerAdapter);
-        tabLayout.setupWithViewPager(viewPager);
-
-    }
-
-    private void loadKolTab() {
-        if (topProfileViewModel.isKol() && getApplicationContext() instanceof SessionRouter) {
-            BaseDaggerFragment kolPostFragment =
-                    ((SessionRouter) getApplicationContext()).getKolPostFragment(userId);
-            topProfileTabPagerAdapter.addItem(0,
-                    new TopProfileSectionItem(TITLE_POST, kolPostFragment));
-
-            tabLayout.setScrollPosition(0,0f,true);
-            viewPager.setCurrentItem(0);
-        }
+    private View.OnClickListener tryAgainOnlickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.getTopProfile(userId);
+            }
+        };
     }
 }
