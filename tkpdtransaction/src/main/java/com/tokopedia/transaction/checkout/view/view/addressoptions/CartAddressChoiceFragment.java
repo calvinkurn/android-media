@@ -25,9 +25,6 @@ import com.tokopedia.transaction.checkout.view.adapter.ShipmentAddressListAdapte
 import com.tokopedia.transaction.checkout.view.di.component.CartAddressChoiceComponent;
 import com.tokopedia.transaction.checkout.view.di.component.DaggerCartAddressChoiceComponent;
 import com.tokopedia.transaction.checkout.view.di.module.CartAddressChoiceModule;
-import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
-import com.tokopedia.transaction.checkout.view.presenter.ICartAddressChoicePresenter;
-import com.tokopedia.transaction.checkout.view.view.ICartAddressChoiceView;
 
 import java.util.List;
 
