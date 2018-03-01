@@ -22,7 +22,7 @@
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                 <include layout="@layout/partial_header_top_profile"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:id="@+id/header"
                     />
 
@@ -51,7 +51,7 @@
         android:layout_height="wrap_content"
         android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 
     <LinearLayout
         android:id="@+id/progress_view"

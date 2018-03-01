@@ -6,42 +6,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.profile.ProfileComponentInstance;
-import com.tokopedia.profile.di.DaggerTopProfileComponent;
-import com.tokopedia.profile.di.TopProfileModule;
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.profile.view.customview.PartialUserDataView;
 import com.tokopedia.profile.view.customview.PartialUserInfoView;
 import com.tokopedia.profile.view.customview.PartialUserShopView;
-import com.tokopedia.profile.view.listener.TopProfileActivityListener;
 import com.tokopedia.profile.view.listener.TopProfileFragmentListener;
 import com.tokopedia.profile.view.viewmodel.TopProfileViewModel;
 import com.tokopedia.session.R;
-
-import javax.inject.Inject;
 
 /**
  * @author by milhamj on 08/02/18.
  */
 
-public class TopProfileFragment extends BaseDaggerFragment implements TopProfileFragmentListener.View{
+public class TopProfileFragment extends TkpdBaseV4Fragment
+        implements TopProfileFragmentListener.View {
 
-    private static final String PARAM_USER_ID = "user_id";
-
-    private TopProfileActivityListener.View activityListener;
     private PartialUserDataView partialUserDataView;
     private PartialUserInfoView partialUserInfoView;
     private PartialUserShopView partialUserShopView;
 
-    private String userId;
-
-    @Inject
-    TopProfileFragmentListener.Presenter presenter;
-
-    public static TopProfileFragment newInstance(String userId) {
+    public static TopProfileFragment newInstance() {
         TopProfileFragment fragment = new TopProfileFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(PARAM_USER_ID, userId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -53,28 +39,8 @@ public class TopProfileFragment extends BaseDaggerFragment implements TopProfile
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_top_profile, container, false);
 
-        activityListener = (TopProfileActivityListener.View) getActivity();
-
-        presenter.attachView(this);
-        initVar();
         initView(view);
-        presenter.initView(userId);
         return view;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        presenter.detachView();
-    }
-
-    @Override
-    protected void initInjector() {
-        DaggerTopProfileComponent.builder()
-                .profileComponent(ProfileComponentInstance.getProfileComponent(getActivity().getApplication()))
-                .topProfileModule(new TopProfileModule())
-                .build()
-                .inject(this);
     }
 
     @Override
@@ -83,47 +49,18 @@ public class TopProfileFragment extends BaseDaggerFragment implements TopProfile
         return null;
     }
 
-    private void initVar() {
-        userId = getArguments().getString(PARAM_USER_ID);
-    }
-
-    private void initView(View view){
+    private void initView(View view) {
         partialUserDataView = view.findViewById(R.id.profile_data);
         partialUserInfoView = view.findViewById(R.id.profile_info);
         partialUserShopView = view.findViewById(R.id.profile_shop);
-
     }
 
     @Override
-    public void showLoading() {
-        activityListener.hideErrorScreen();
-        activityListener.showLoading();
-    }
-
-    @Override
-    public void hideLoading() {
-        activityListener.hideLoading();
-    }
-
-    @Override
-    public void onSuccessGetProfileData(TopProfileViewModel topProfileViewModel) {
-        activityListener.populateData(topProfileViewModel);
+    public void renderData(TopProfileViewModel topProfileViewModel) {
         partialUserDataView.renderData(topProfileViewModel);
         partialUserInfoView.renderData(topProfileViewModel);
         partialUserShopView.renderData(topProfileViewModel);
     }
 
-    @Override
-    public void onErrorGetProfileData(String message) {
-        activityListener.showErrorScreen(message, tryAgainOnlickListener());
-    }
 
-    private View.OnClickListener tryAgainOnlickListener(){
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.getProfileContent(userId);
-            }
-        };
-    }
 }
