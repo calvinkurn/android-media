@@ -82,7 +82,7 @@ public class ShopEtalaseFragment extends BaseListFragment<ShopEtalaseViewModel, 
         }else{
             list.get(DEFAULT_INDEX_SELECTION).setSelected(true);
         }
-        super.renderList(list);
+        super.renderList(list, isHasNext);
     }
 
     @Override

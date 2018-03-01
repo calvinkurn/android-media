@@ -2,6 +2,7 @@ package com.tokopedia.shop.product.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
@@ -56,7 +57,7 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
         }, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(ShopEtalaseActivity.createIntent(getActivity(), shopId, null));
+                startActivity(ShopEtalaseActivity.createIntent(getActivity(), shopId, null, false));
             }
         });
     }
@@ -96,6 +97,9 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
 
     @Override
     public void onSearchSubmitted(String text) {
+        if (TextUtils.isEmpty(text))
+            return;
+
         startActivity(ShopProductListActivity.createIntent(
                 getActivity(),
                 shopId,
