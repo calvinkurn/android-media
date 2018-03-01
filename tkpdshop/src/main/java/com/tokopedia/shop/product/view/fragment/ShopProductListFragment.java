@@ -7,16 +7,17 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
+import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.label.LabelView;
@@ -25,7 +26,6 @@ import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
-import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductFilterActivity;
@@ -113,6 +113,12 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         super.onCreate(savedInstanceState);
         shopId = getArguments().getString(ShopParamConstant.SHOP_ID);
         shopProductListPresenter.attachView(this);
+    }
+
+    @Nullable
+    @Override
+    public SwipeRefreshLayout getSwipeRefreshLayout(View view) {
+        return view.findViewById(R.id.swipe_refresh_layout);
     }
 
     @Nullable
@@ -263,14 +269,14 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     @Override
     public void onSearchSubmitted(String s) {
-        this.isLoadingInitialData = true;
         keyword = s;
+        loadInitialData();
     }
 
     @Override
     public void onSearchTextChanged(String s) {
-        this.isLoadingInitialData = true;
         keyword = s;
+        loadInitialData();
     }
 
     @Override
