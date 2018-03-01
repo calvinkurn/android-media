@@ -14,10 +14,12 @@ public class ChannelInfoViewModel {
     private String channelUrl;
     private String bannerUrl;
     private boolean hasPoll;
+
+    @Nullable
     private VoteInfoViewModel voteInfoViewModel;
 
     public ChannelInfoViewModel(String channelUrl, String bannerUrl, String title, int
-            totalParticipantsOnline, boolean hasPoll, VoteInfoViewModel voteInfoViewModel) {
+            totalParticipantsOnline, boolean hasPoll, @Nullable VoteInfoViewModel voteInfoViewModel) {
         this.channelUrl = channelUrl;
         this.bannerUrl = bannerUrl;
         this.title = title;

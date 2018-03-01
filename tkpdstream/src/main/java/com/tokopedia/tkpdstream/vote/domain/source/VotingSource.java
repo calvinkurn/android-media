@@ -4,6 +4,7 @@ import com.tokopedia.tkpdstream.common.data.VoteApi;
 import com.tokopedia.tkpdstream.common.di.scope.StreamScope;
 import com.tokopedia.tkpdstream.vote.domain.mapper.SendVoteMapper;
 import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
+import com.tokopedia.tkpdstream.vote.view.model.VoteStatisticViewModel;
 
 import java.util.HashMap;
 
@@ -26,8 +27,8 @@ public class VotingSource {
         this.votingMapper = votingMapper;
     }
 
-    public Observable<VoteInfoViewModel> sendVote(String pollId,
-                                                  HashMap<String, Object> parameters) {
+    public Observable<VoteStatisticViewModel> sendVote(String pollId,
+                                                       HashMap<String, Object> parameters) {
         return voteApi.sendVote(pollId, parameters).map(votingMapper);
     }
 }

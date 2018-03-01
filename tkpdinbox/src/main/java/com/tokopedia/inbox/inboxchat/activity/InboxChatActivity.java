@@ -45,6 +45,8 @@ public class InboxChatActivity extends DrawerPresenterActivity
 
     private static final int POSITION_TOP_CHAT = 0;
     private static final int POSITION_GROUP_CHAT = 1;
+
+    private static final String ACTIVE_INDICATOR_POSITION = "active";
     IndicatorAdapter indicatorAdapter;
     RecyclerView indicator;
 
@@ -128,7 +130,15 @@ public class InboxChatActivity extends DrawerPresenterActivity
         indicator.addItemDecoration(new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.step_size_nob)));
         indicator.setAdapter(indicatorAdapter);
 
-        initTopChatFragment();
+        if (getIntent().getExtras() != null
+                && getIntent().getExtras().getInt(ACTIVE_INDICATOR_POSITION, -1) != -1) {
+            indicatorAdapter.setActiveIndicator(getIntent().getExtras().getInt
+                    (ACTIVE_INDICATOR_POSITION, 0));
+            initGroupChatFragment();
+        } else {
+            initTopChatFragment();
+        }
+
     }
 
     private List<IndicatorItem> getIndicatorList() {
@@ -246,6 +256,12 @@ public class InboxChatActivity extends DrawerPresenterActivity
         }
         fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commit();
+    }
+
+    public static Intent getChannelCallingIntent(Context context) {
+        Intent intent = new Intent(context, InboxChatActivity.class);
+        intent.putExtra(ACTIVE_INDICATOR_POSITION, POSITION_GROUP_CHAT);
+        return intent;
     }
 
     public class SpaceItemDecoration extends RecyclerView.ItemDecoration {

@@ -12,6 +12,7 @@ import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.GroupChatViewModel;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
+import com.tokopedia.tkpdstream.vote.view.model.VoteStatisticViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
 import java.util.List;
@@ -58,7 +59,7 @@ public interface GroupChatContract {
 
         void showSuccessVoted();
 
-        void successVote(VoteViewModel element);
+        void onSuccessVote(VoteViewModel element, VoteStatisticViewModel voteStatisticViewModel);
 
         void onErrorVote(String errorMessage);
     }

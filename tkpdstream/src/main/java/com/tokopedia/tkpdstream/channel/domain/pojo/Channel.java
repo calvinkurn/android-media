@@ -4,7 +4,7 @@ package com.tokopedia.tkpdstream.channel.domain.pojo;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ChannelPojo {
+public class Channel {
 
     @SerializedName("channel_id")
     @Expose
@@ -23,10 +23,10 @@ public class ChannelPojo {
     private String coverUrl;
     @SerializedName("start_time")
     @Expose
-    private int startTime;
+    private long startTime;
     @SerializedName("end_time")
     @Expose
-    private int endTime;
+    private long endTime;
     @SerializedName("total_participants_online")
     @Expose
     private int totalParticipantsOnline;
@@ -38,16 +38,16 @@ public class ChannelPojo {
     private boolean isFreeze;
     @SerializedName("active_poll")
     @Expose
-    private ActivePollPojo activePoll;
-    @SerializedName("moderator_id")
+    private ActivePoll activePoll;
+    @SerializedName("moderator_sendbird_id")
     @Expose
-    private String moderatorId;
+    private String moderatorSendbirdId;
     @SerializedName("moderator_name")
     @Expose
     private String moderatorName;
-    @SerializedName("moderator_profile_url")
+    @SerializedName("moderator_thumb_url")
     @Expose
-    private String moderatorProfileUrl;
+    private String moderatorThumbUrl;
 
     public int getChannelId() {
         return channelId;
@@ -89,19 +89,19 @@ public class ChannelPojo {
         this.coverUrl = coverUrl;
     }
 
-    public int getStartTime() {
+    public long getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(int startTime) {
+    public void setStartTime(long startTime) {
         this.startTime = startTime;
     }
 
-    public int getEndTime() {
+    public long getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(int endTime) {
+    public void setEndTime(long endTime) {
         this.endTime = endTime;
     }
 
@@ -129,20 +129,20 @@ public class ChannelPojo {
         this.isFreeze = isFreeze;
     }
 
-    public ActivePollPojo getActivePoll() {
+    public ActivePoll getActivePoll() {
         return activePoll;
     }
 
-    public void setActivePoll(ActivePollPojo activePoll) {
+    public void setActivePoll(ActivePoll activePoll) {
         this.activePoll = activePoll;
     }
 
-    public String getModeratorId() {
-        return moderatorId;
+    public String getModeratorSendbirdId() {
+        return moderatorSendbirdId;
     }
 
-    public void setModeratorId(String moderatorId) {
-        this.moderatorId = moderatorId;
+    public void setModeratorSendbirdId(String moderatorSendbirdId) {
+        this.moderatorSendbirdId = moderatorSendbirdId;
     }
 
     public String getModeratorName() {
@@ -153,11 +153,12 @@ public class ChannelPojo {
         this.moderatorName = moderatorName;
     }
 
-    public String getModeratorProfileUrl() {
-        return moderatorProfileUrl;
+    public String getModeratorThumbUrl() {
+        return moderatorThumbUrl;
     }
 
-    public void setModeratorProfileUrl(String moderatorProfileUrl) {
-        this.moderatorProfileUrl = moderatorProfileUrl;
+    public void setModeratorThumbUrl(String moderatorThumbUrl) {
+        this.moderatorThumbUrl = moderatorThumbUrl;
     }
+
 }

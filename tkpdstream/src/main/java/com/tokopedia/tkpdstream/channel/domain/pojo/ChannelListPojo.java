@@ -12,7 +12,7 @@ public class ChannelListPojo {
     private String cursor;
     @SerializedName("channels")
     @Expose
-    private List<ChannelPojo> channels = null;
+    private List<Channel> channels = null;
 
     public String getCursor() {
         return cursor;
@@ -22,11 +22,11 @@ public class ChannelListPojo {
         this.cursor = cursor;
     }
 
-    public List<ChannelPojo> getChannels() {
+    public List<Channel> getChannels() {
         return channels;
     }
 
-    public void setChannels(List<ChannelPojo> channels) {
+    public void setChannels(List<Channel> channels) {
         this.channels = channels;
     }
 

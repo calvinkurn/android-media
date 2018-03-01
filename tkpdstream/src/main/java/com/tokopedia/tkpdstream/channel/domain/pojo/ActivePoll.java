@@ -1,11 +1,11 @@
 
-package com.tokopedia.tkpdstream.chatroom.domain.pojo;
+package com.tokopedia.tkpdstream.channel.domain.pojo;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ActivePollPojo {
+public class ActivePoll {
 
     @SerializedName("poll_id")
     @Expose

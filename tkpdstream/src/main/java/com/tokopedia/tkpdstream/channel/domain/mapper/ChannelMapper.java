@@ -1,8 +1,8 @@
 package com.tokopedia.tkpdstream.channel.domain.mapper;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.tkpdstream.channel.domain.pojo.Channel;
 import com.tokopedia.tkpdstream.channel.domain.pojo.ChannelListPojo;
-import com.tokopedia.tkpdstream.channel.domain.pojo.ChannelPojo;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelListViewModel;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
 
@@ -40,18 +40,18 @@ public class ChannelMapper implements Func1<Response<DataResponse<ChannelListPoj
 
     private List<ChannelViewModel> getListChannel(ChannelListPojo pojo) {
         List<ChannelViewModel> list = new ArrayList<>();
-        for (ChannelPojo channelPojo : pojo.getChannels()) {
+        for (Channel channelPojo : pojo.getChannels()) {
             list.add(convertToViewModel(channelPojo));
         }
         return list;
     }
 
-    private ChannelViewModel convertToViewModel(ChannelPojo channelPojo) {
+    private ChannelViewModel convertToViewModel(Channel channelPojo) {
         return new ChannelViewModel(
                 String.valueOf(channelPojo.getChannelId()),
                 channelPojo.getModeratorName()!= null ? channelPojo.getModeratorName() : "",
                 channelPojo.getCoverUrl()!= null ? channelPojo.getCoverUrl() : "",
-                channelPojo.getModeratorProfileUrl() != null ? channelPojo.getModeratorProfileUrl() : "",
+                channelPojo.getModeratorThumbUrl() != null ? channelPojo.getModeratorThumbUrl() : "",
                 channelPojo.getTitle() != null? channelPojo.getTitle() : "",
                 channelPojo.getDescription() != null ? channelPojo.getDescription() : "",
                 channelPojo.getTotalParticipantsOnline()

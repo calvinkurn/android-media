@@ -15,7 +15,7 @@ import rx.Observable;
 
 public class GetChannelListUseCase extends UseCase<ChannelListViewModel> {
 
-    ChannelSource channelSource;
+    private ChannelSource channelSource;
 
     @Inject
     public GetChannelListUseCase(ChannelSource channelSource) {

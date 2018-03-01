@@ -1,9 +1,10 @@
 package com.tokopedia.tkpdstream.vote.domain.mapper;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.tkpdstream.vote.domain.pojo.SendVotePojo;
-import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
+import com.tokopedia.tkpdstream.vote.domain.pojo.Statistic;
+import com.tokopedia.tkpdstream.vote.domain.pojo.StatisticOption;
+import com.tokopedia.tkpdstream.vote.view.model.VoteStatisticViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
 import java.util.ArrayList;
@@ -18,30 +19,34 @@ import rx.functions.Func1;
  * @author by StevenFredian on 21/02/18.
  */
 
-public class SendVoteMapper implements Func1<Response<DataResponse<SendVotePojo>>, VoteInfoViewModel>{
+public class SendVoteMapper implements Func1<Response<DataResponse<SendVotePojo>>, VoteStatisticViewModel> {
 
     @Inject
     public SendVoteMapper() {
     }
 
     @Override
-    public VoteInfoViewModel call(Response<DataResponse<SendVotePojo>> dataResponseResponse) {
+    public VoteStatisticViewModel call(Response<DataResponse<SendVotePojo>> dataResponseResponse) {
+        SendVotePojo pojo = dataResponseResponse.body().getData();
+        return mappingToViewModel(pojo.getStatistic());
+    }
 
-        List<Visitable> list = new ArrayList<>();
-        String title = "Title";
-        String cr7 = "http://01a4b5.medialib.edu.glogster.com/media/55/5527aa424a7bc417e364f92537e4daa0f366ab6a2373dfa8616f8977f7b9c685/cristiano-ronaldo-portual-goal.jpg";
-        String messi = "https://static.independent.co.uk/s3fs-public/styles/article_small/public/thumbnails/image/2014/07/09/23/10-messi.jpg";
-        VoteViewModel channelViewModel = new VoteViewModel("Cristiano Ronaldo", cr7,40, VoteViewModel.DEFAULT, VoteViewModel.IMAGE_TYPE);
-        list.add(channelViewModel);
-        channelViewModel = new VoteViewModel("Lionel Messi", messi, 60, VoteViewModel.DEFAULT, VoteViewModel.IMAGE_TYPE);
-        list.add(channelViewModel);
+    private VoteStatisticViewModel mappingToViewModel(Statistic statistic) {
+        return new VoteStatisticViewModel(
+                String.valueOf(statistic.getTotalVoter()),
+                mappingToListOption(statistic.getStatisticOptions())
+        );
+    }
 
-//        channelViewModel = new VoteViewModel("Cristiano Ronaldo",40, VoteViewModel.DEFAULT);
-//        list.add(channelViewModel);
-//        channelViewModel = new VoteViewModel("Lionel Messi", 60, VoteViewModel.DEFAULT);
-//        list.add(channelViewModel);
-
-
-        return null;
+    private List<VoteViewModel> mappingToListOption(List<StatisticOption> statisticOptions) {
+        List<VoteViewModel> list = new ArrayList<>();
+        for (StatisticOption option : statisticOptions) {
+            list.add(new VoteViewModel(
+                    option.getOptionId() != null ? option.getOptionId() : "",
+                    option.getOption() != null ? option.getOption() : "",
+                    option.getPercentage(),
+                    0));
+        }
+        return list;
     }
 }

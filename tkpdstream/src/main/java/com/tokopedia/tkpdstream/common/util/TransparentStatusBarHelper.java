@@ -53,7 +53,7 @@ public class TransparentStatusBarHelper {
     private int computeUsableHeight() {
         Rect r = new Rect();
         mChildOfContent.getWindowVisibleDisplayFrame(r);
-        return (r.bottom - r.top);
+        return r.bottom;
     }
 
 }

@@ -1,7 +1,7 @@
 package com.tokopedia.tkpdstream.vote.domain.usecase;
 
 import com.tokopedia.tkpdstream.vote.domain.source.VotingSource;
-import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
+import com.tokopedia.tkpdstream.vote.view.model.VoteStatisticViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -15,7 +15,7 @@ import rx.Observable;
  * @author by StevenFredian on 21/02/18.
  */
 
-public class SendVoteUseCase extends UseCase<VoteInfoViewModel> {
+public class SendVoteUseCase extends UseCase<VoteStatisticViewModel> {
 
     private static final String PARAM_OPTION_ID = "option_id";
     private static final String PARAM_POLL_ID = "poll_id";
@@ -27,7 +27,7 @@ public class SendVoteUseCase extends UseCase<VoteInfoViewModel> {
     }
 
     @Override
-    public Observable<VoteInfoViewModel> createObservable(RequestParams requestParams) {
+    public Observable<VoteStatisticViewModel> createObservable(RequestParams requestParams) {
         return votingSource.sendVote(requestParams.getString(PARAM_POLL_ID, ""),
                 getRequestParamToSend(requestParams));
     }
@@ -37,11 +37,10 @@ public class SendVoteUseCase extends UseCase<VoteInfoViewModel> {
         return requestParams.getParameters();
     }
 
-    public static RequestParams createParams(String pollId, int optionId) {
+    public static RequestParams createParams(String pollId, String optionId) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putInt(PARAM_OPTION_ID, optionId);
+        requestParams.putString(PARAM_OPTION_ID, optionId);
         requestParams.putString(PARAM_POLL_ID, pollId);
-
         return requestParams;
     }
 }

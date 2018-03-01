@@ -25,11 +25,11 @@
         android:gravity="top"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/channel_banner"
+        app:layout_constraintTop_toTopOf="parent"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:subtitleTextAppearance="@style/ToolbarSubtitleGroupChat"
         app:titleTextAppearance="@style/ToolbarGroupChat"
-        android:layout_marginTop="@dimen/new_margin_med"
+
         tools:layout_height="64dp" />
 
     <View

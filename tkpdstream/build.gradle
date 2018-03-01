@@ -60,6 +60,9 @@ dependencies {
     }
     compile rootProject.ext.supportLibDependencies.supportV4
 
+    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     provided rootProject.ext.miscDependencies.javaxAnnotation
     compile rootProject.ext.miscDependencies.dagger

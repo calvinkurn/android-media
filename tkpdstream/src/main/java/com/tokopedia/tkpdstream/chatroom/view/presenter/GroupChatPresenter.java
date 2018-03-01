@@ -22,6 +22,7 @@ import com.tokopedia.tkpdstream.chatroom.view.viewmodel.PendingChatViewModel;
 import com.tokopedia.tkpdstream.common.util.GroupChatErrorHandler;
 import com.tokopedia.tkpdstream.vote.domain.usecase.SendVoteUseCase;
 import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
+import com.tokopedia.tkpdstream.vote.view.model.VoteStatisticViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteViewModel;
 
 import java.util.List;
@@ -38,6 +39,8 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
         GroupChatContract.Presenter {
 
     private final GetChannelInfoUseCase getChannelInfoUseCase;
+    private final SendVoteUseCase sendVoteUseCase;
+
     private final GetGroupChatMessagesFirstTimeUseCase getGroupChatMessagesFirstTimeUseCase;
     private final RefreshMessageUseCase refreshMessageUseCase;
     private final LoadPreviousChatMessagesUseCase loadPreviousChatMessagesUseCase;
@@ -45,7 +48,6 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     private final SendGroupChatMessageUseCase sendMessageUseCase;
     private final LogoutGroupChatUseCase logoutGroupChatUseCase;
     private final ChannelHandlerUseCase channelHandlerUseCase;
-    private final SendVoteUseCase sendVoteUseCase;
 
     @Inject
     public GroupChatPresenter(LoginGroupChatUseCase loginGroupChatUseCase,
@@ -193,7 +195,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
             getView().showHasVoted();
         } else {
             sendVoteUseCase.execute(SendVoteUseCase.createParams(pollId,
-                    element.getSelected()), new Subscriber<VoteInfoViewModel>() {
+                    element.getOptionId()), new Subscriber<VoteStatisticViewModel>() {
                 @Override
                 public void onCompleted() {
 
@@ -207,8 +209,8 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                 }
 
                 @Override
-                public void onNext(VoteInfoViewModel voteInfoViewModel) {
-                    getView().successVote(element);
+                public void onNext(VoteStatisticViewModel voteStatisticViewModel) {
+                    getView().onSuccessVote(element, voteStatisticViewModel );
                     getView().showSuccessVoted();
                 }
             });
@@ -218,6 +220,8 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     @Override
     public void detachView() {
         super.detachView();
+        sendVoteUseCase.unsubscribe();
+        getChannelInfoUseCase.unsubscribe();
     }
 
     public void setHandler(String channelUrl, ChannelHandlerUseCase.ChannelHandlerListener listener) {

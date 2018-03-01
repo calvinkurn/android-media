@@ -174,6 +174,7 @@ import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
+import com.tokopedia.tkpdstream.StreamModuleRouter;
 import com.tokopedia.tkpdstream.channel.view.activity.ChannelActivity;
 import com.tokopedia.tkpdstream.channel.view.fragment.ChannelFragment;
 import com.tokopedia.tkpdstream.chatroom.view.fragment.GroupChatFragment;
@@ -208,7 +209,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter,
         TokoCashRouter, IWalletRouter, ILoyaltyRouter, ReputationRouter, SessionRouter,
         AbstractionRouter, FlightModuleRouter, LogisticRouter, FeedModuleRouter, IHomeRouter,
-        DiscoveryRouter, RideModuleRouter {
+        DiscoveryRouter, RideModuleRouter, StreamModuleRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -1346,5 +1347,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public String getChannelFragmentTag() {
         return ChannelFragment.class.getSimpleName();
+    }
+
+    @Override
+    public Intent getInboxChannelsIntent(Context context) {
+        return InboxChatActivity.getChannelCallingIntent(context);
     }
 }
