@@ -148,13 +148,11 @@ dependencies {
     compile getTopAdsSdk()
     compile getTkpdPayment()
     compile getTkpdDesign()
-    compile getTkpdLoyalty()
 
 //    compile getTkpdCoreLocalMaven()
 //    compile getTopAdsSdkLocalMaven()
 //    compile getTkpdPaymentLocalMaven()
 //    compile getTkpdDesignLocalMaven()
-//       compile getTkpdLoyaltyLocalMaven()
 
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -172,6 +170,9 @@ dependencies {
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    compile(rootProject.ext.tkpdLibDependencies.showcase) {
+        exclude group: "com.android.support"
+    }
 
     //compile rootProject.ext.miscDependencies.bcaOneClick
     compile(group: 'com.bca.widget', name: 'oneclick', version: '1.0', ext: 'aar')

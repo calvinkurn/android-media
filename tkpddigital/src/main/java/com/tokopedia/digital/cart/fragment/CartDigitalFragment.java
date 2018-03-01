@@ -21,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.apprating.AdvancedAppRatingDialog;
@@ -699,7 +700,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         } else {
                 intent = LoyaltyActivity.newInstanceCouponNotActive(context, "digital", passData.getCategoryId());
             }
-            navigateToActivityRequest(intent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
+            navigateToActivityRequest(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
         } else {
             voucherCartHachikoView.setVisibility(View.GONE);
         }
@@ -767,13 +768,16 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
             }
         } else if (requestCode == InstantCheckoutActivity.REQUEST_CODE) {
             closeView();
-        } else if (requestCode == LoyaltyActivity.LOYALTY_REQUEST_CODE) {
-            if (resultCode == LoyaltyActivity.VOUCHER_RESULT_CODE) {
+        } else if (requestCode == IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.VOUCHER_RESULT_CODE) {
                 Bundle bundle = data.getExtras();
                 if (bundle != null) {
-                    String voucherCode = bundle.getString(LoyaltyActivity.VOUCHER_CODE, "");
-                    String voucherMessage = bundle.getString(LoyaltyActivity.VOUCHER_MESSAGE, "");
-                    long voucherDiscountAmount = bundle.getLong(LoyaltyActivity.VOUCHER_DISCOUNT_AMOUNT);
+                    String voucherCode = bundle.getString(
+                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE, "");
+                    String voucherMessage = bundle.getString(
+                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE, "");
+                    long voucherDiscountAmount = bundle.getLong(
+                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_DISCOUNT_AMOUNT);
 
                     VoucherDigital voucherDigital = new VoucherDigital();
                     VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
@@ -790,13 +794,17 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                         checkoutHolderView.enableVoucherDiscount(voucherDiscountAmount);
                     }
                 }
-            } else if (resultCode == LoyaltyActivity.COUPON_RESULT_CODE) {
+            } else if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.COUPON_RESULT_CODE) {
                 Bundle bundle = data.getExtras();
                 if (bundle != null) {
-                    String couponTitle = bundle.getString(LoyaltyActivity.COUPON_TITLE, "");
-                    String couponMessage = bundle.getString(LoyaltyActivity.COUPON_MESSAGE, "");
-                    String couponCode = bundle.getString(LoyaltyActivity.COUPON_CODE, "");
-                    long couponDiscountAmount = bundle.getLong(LoyaltyActivity.COUPON_DISCOUNT_AMOUNT);
+                    String couponTitle = bundle.getString(
+                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_TITLE, "");
+                    String couponMessage = bundle.getString(
+                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_MESSAGE, "");
+                    String couponCode = bundle.getString(
+                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CODE, "");
+                    long couponDiscountAmount = bundle.getLong(
+                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_DISCOUNT_AMOUNT);
 
                     VoucherDigital voucherDigital = new VoucherDigital();
                     VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();

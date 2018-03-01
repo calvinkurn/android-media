@@ -11,8 +11,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.data.mapper.ShipmentRatesDataMapper;
@@ -23,6 +23,7 @@ import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.Cart
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.domain.mapper.SingleAddressShipmentDataConverter;
+import com.tokopedia.transaction.checkout.router.ICartCheckoutModuleRouter;
 import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter;
 import com.tokopedia.transaction.checkout.view.di.component.DaggerSingleAddressShipmentComponent;
 import com.tokopedia.transaction.checkout.view.di.component.SingleAddressShipmentComponent;
@@ -308,16 +309,14 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     public void onCartPromoUseVoucherPromoClicked(CartPromo cartPromo, int position) {
-        String tag = "marketplace";
-
-        Intent intent;
-        if (cartPromo.getTypePromo() == CartPromo.TYPE_PROMO_NOT_ACTIVE) {
-            intent = LoyaltyActivity.newInstanceCouponActive(getActivity(), tag, tag);
-        } else {
-            intent = LoyaltyActivity.newInstanceCouponNotActive(getActivity(), tag, tag);
+        if (getActivity().getApplication() instanceof ICartCheckoutModuleRouter) {
+            startActivityForResult(
+                    ((ICartCheckoutModuleRouter) getActivity().getApplication())
+                            .tkpdCartCheckoutGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
+                                    getActivity(), "", true
+                            ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
+            );
         }
-
-        startActivityForResult(intent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
     }
 
     @Override
