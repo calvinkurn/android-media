@@ -25,6 +25,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.network.SessionUrl;
+import com.tokopedia.profile.data.network.ProfileUrl;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.common.constant.FlightUrl;
@@ -110,6 +111,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         SessionUrl.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         SessionUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
         KolUrl.BASE_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
+        ProfileUrl.BASE_URL = ConsumerAppBaseUrl.TOPPROFILE_DOMAIN;
     }
 
     private void generateConsumerAppNetworkKeys() {
