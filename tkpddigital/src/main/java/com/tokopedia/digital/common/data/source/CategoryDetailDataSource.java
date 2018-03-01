@@ -151,6 +151,9 @@ public class CategoryDetailDataSource {
             case "31":
                 result = DigitalUrl.HelpUrl.MTIX;
                 break;
+            case "26":
+                result = DigitalUrl.HelpUrl.CREDIT_CARD;
+                break;
             default:
                 result = "";
         }
