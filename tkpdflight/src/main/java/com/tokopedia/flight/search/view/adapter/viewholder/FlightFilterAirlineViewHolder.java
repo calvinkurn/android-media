@@ -77,3 +77,4 @@ public class FlightFilterAirlineViewHolder extends BaseCheckableViewHolder<Airli
         }
     }
 }
+
