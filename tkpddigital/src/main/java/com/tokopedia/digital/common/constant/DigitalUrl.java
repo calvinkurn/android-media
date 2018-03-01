@@ -5,7 +5,7 @@ package com.tokopedia.digital.common.constant;
  */
 
 public class DigitalUrl {
-    public static String WEB_DOMAIN = "https://staging.tokopedia.com/";
+    public static String WEB_DOMAIN = "https://www.tokopedia.com/";
     public static String DIGITAL_BANTUAN = WEB_DOMAIN + "bantuan/produk-digital/";
 
     public static class HelpUrl {
