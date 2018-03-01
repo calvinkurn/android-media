@@ -116,7 +116,7 @@ public class ProductInfo implements Parcelable {
 
     @SerializedName("has_variant")
     @Expose
-    private Boolean hasVariant;
+    private Boolean hasVariant = false;
 
 
     public ProductInfo() {
