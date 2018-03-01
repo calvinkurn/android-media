@@ -436,4 +436,8 @@ public class TopProfileActivity extends BaseEmptyActivity
             }
         };
     }
+
+    private void followKol(String userId) {
+
+    }
 }

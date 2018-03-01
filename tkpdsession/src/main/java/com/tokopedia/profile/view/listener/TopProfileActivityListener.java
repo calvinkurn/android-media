@@ -15,6 +15,8 @@ public interface TopProfileActivityListener {
     interface View extends CustomerView {
         Context getContext();
 
+        void populateData(TopProfileViewModel viewModel);
+
         void showMainView();
 
         void hideMainView();
@@ -27,6 +29,10 @@ public interface TopProfileActivityListener {
                              android.view.View.OnClickListener onClickListener);
 
         void hideErrorScreen();
+
+        void onSuccessFollowKol();
+
+        void onErrorFollowKol(String message);
 
         void onSuccessGetProfileData(TopProfileViewModel topProfileViewModel);
 
