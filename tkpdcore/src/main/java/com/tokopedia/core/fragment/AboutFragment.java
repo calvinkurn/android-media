@@ -62,7 +62,7 @@ public class AboutFragment extends TkpdBasePreferenceFragment {
     }
 
     private void setListener() {
-        prefVersion.setSummary(GlobalConfig.VERSION_NAME + " / " +  GlobalConfig.VERSION_CODE);
+        prefVersion.setSummary(GlobalConfig.VERSION_NAME + "." +  GlobalConfig.VERSION_CODE);
         prefTerm.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
