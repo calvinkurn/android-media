@@ -76,7 +76,7 @@ android {
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion '25'
+    buildToolsVersion rootProject.ext.
     useLibrary 'org.apache.http.legacy'
     sourceSets {
 
