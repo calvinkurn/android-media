@@ -103,6 +103,13 @@ public class GetCategoryByIdUseCase extends UseCase<ProductDigitalData> {
         } else {
             List<OrderClientNumber> orderClientNumbers = new ArrayList<>();
             DigitalNumberList digitalNumberList = new DigitalNumberList(orderClientNumbers, null);
+            if (paramQueryLastNumber.get(PARAM_CATEGORY_ID) != null && paramQueryLastNumber.get(PARAM_OPERATOR_ID) != null) {
+                OrderClientNumber clientNumber = new OrderClientNumber.Builder()
+                        .categoryId(paramQueryLastNumber.get(PARAM_CATEGORY_ID))
+                        .operatorId(paramQueryLastNumber.get(PARAM_OPERATOR_ID))
+                        .build();
+                digitalNumberList = new DigitalNumberList(orderClientNumbers, clientNumber);
+            }
             return Observable.just(digitalNumberList);
         }
     }
