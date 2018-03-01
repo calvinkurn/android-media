@@ -488,7 +488,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         for (ProductImage productImage : productData.getProductImages()) {
             arrayList.add(productImage.getImageSrc());
         }
-        if (productData.getInfo().getHasVariant() && productVariant!=null && productVariant.getChildren()!=null) {
+        if (productData.getInfo() != null && productData.getInfo().getHasVariant()
+                && productVariant!=null && productVariant.getChildren()!=null) {
             for (Child child: productVariant.getChildren()) {
                 if (!TextUtils.isEmpty(child.getPicture().getOriginal()) && child.getProductId()!=productData.getInfo().getProductId()) {
                    arrayList.add(child.getPicture().getOriginal());
