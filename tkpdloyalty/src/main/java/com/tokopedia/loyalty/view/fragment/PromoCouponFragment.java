@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -33,7 +34,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.DIGITAL_STRING;
 
 /**
  * @author anggaprasetiyo on 29/11/17.
@@ -345,7 +345,8 @@ public class PromoCouponFragment extends BasePresenterFragment
     public void onVoucherChosen(CouponData data) {
         adapter.clearError();
         UnifyTracking.eventCouponChosen(data.getTitle());
-        if (getArguments().getString(PLATFORM_KEY).equals(DIGITAL_STRING)) {
+        if (getArguments().getString(PLATFORM_KEY).equals(
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING)) {
             dPresenter.submitDigitalVoucher(data, getArguments().getString(CATEGORY_KEY));
         } else {
             dPresenter.submitVoucher(data);

@@ -6,6 +6,8 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.content.ContextCompat;
+import android.widget.Button;
 
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartItemData;
@@ -49,7 +51,7 @@ public class CartRemoveItemDialog extends DialogFragment {
         final boolean isListNotNull = dataRemoved != null;
         final boolean hasSingleElement = isListNotNull && dataRemoved.size() == 1;
 
-        return new AlertDialog.Builder(getActivity())
+        final AlertDialog dialog = new AlertDialog.Builder(getActivity())
                 .setTitle("Hapus Barang")
                 .setMessage(getMessage(hasSingleElement, dataRemoved))
                 .setPositiveButton("Tambah Wishlist",
@@ -81,6 +83,21 @@ public class CartRemoveItemDialog extends DialogFragment {
                             }
                         })
                 .create();
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                Button btnPositive = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                btnPositive.setTextColor(ContextCompat.getColor(getActivity(), R.color.medium_green));
+                btnPositive.setAllCaps(false);
+
+                Button btnNegative = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+                btnNegative.setTextColor(ContextCompat.getColor(getActivity(), R.color.black_54));
+                btnNegative.setAllCaps(false);
+            }
+        });
+
+        return dialog;
     }
 
     private String getMessage(boolean isRemoveSingle, List<CartItemData> cartItemDataList) {

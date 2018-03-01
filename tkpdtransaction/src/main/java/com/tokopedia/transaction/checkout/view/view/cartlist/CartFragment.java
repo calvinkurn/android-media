@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -27,7 +28,6 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
-import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -259,13 +259,12 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
 
     @Override
     public void onCartPromoUseVoucherPromoClicked(CartItemPromoHolderData cartItemPromoHolderData, int position) {
-
         if (getActivity().getApplication() instanceof ICartCheckoutModuleRouter) {
             startActivityForResult(
                     ((ICartCheckoutModuleRouter) getActivity().getApplication())
                             .tkpdCartCheckoutGetLoyaltyNewCheckoutMarketplaceCartListIntent(
-                                    getActivity(), true
-                            ), LoyaltyActivity.LOYALTY_REQUEST_CODE
+                                    getActivity(), cartListData.isPromoCouponActive()
+                            ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
             );
         }
     }
@@ -668,26 +667,33 @@ public class CartFragment extends BasePresenterFragment implements CartListAdapt
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == LoyaltyActivity.LOYALTY_REQUEST_CODE) {
-            if (resultCode == LoyaltyActivity.VOUCHER_RESULT_CODE) {
+        if (requestCode == IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.VOUCHER_RESULT_CODE) {
                 Bundle bundle = data.getExtras();
                 if (bundle != null) {
-                    String voucherCode = bundle.getString(LoyaltyActivity.VOUCHER_CODE, "");
-                    String voucherMessage = bundle.getString(LoyaltyActivity.VOUCHER_MESSAGE, "");
-                    long voucherDiscountAmount = bundle.getLong(LoyaltyActivity.VOUCHER_DISCOUNT_AMOUNT);
+                    String voucherCode = bundle.getString(
+                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE, "");
+                    String voucherMessage = bundle.getString(
+                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE, "");
+                    long voucherDiscountAmount = bundle.getLong(
+                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_DISCOUNT_AMOUNT);
 
                     CartItemPromoHolderData cartItemPromoHolderData = new CartItemPromoHolderData();
                     cartItemPromoHolderData.setPromoVoucherType(voucherCode, voucherMessage, voucherDiscountAmount);
 
                     cartListAdapter.updateItemPromoVoucher(cartItemPromoHolderData);
                 }
-            } else if (resultCode == LoyaltyActivity.COUPON_RESULT_CODE) {
+            } else if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.COUPON_RESULT_CODE) {
                 Bundle bundle = data.getExtras();
                 if (bundle != null) {
-                    String couponTitle = bundle.getString(LoyaltyActivity.COUPON_TITLE, "");
-                    String couponMessage = bundle.getString(LoyaltyActivity.COUPON_MESSAGE, "");
-                    String couponCode = bundle.getString(LoyaltyActivity.COUPON_CODE, "");
-                    long couponDiscountAmount = bundle.getLong(LoyaltyActivity.COUPON_DISCOUNT_AMOUNT);
+                    String couponTitle = bundle.getString(
+                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_TITLE, "");
+                    String couponMessage = bundle.getString(
+                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_MESSAGE, "");
+                    String couponCode = bundle.getString(
+                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CODE, "");
+                    long couponDiscountAmount = bundle.getLong(
+                            IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_DISCOUNT_AMOUNT);
 
                     CartItemPromoHolderData cartItemPromoHolderData = new CartItemPromoHolderData();
                     cartItemPromoHolderData.setPromoCouponType(couponTitle, couponCode, couponMessage, couponDiscountAmount);

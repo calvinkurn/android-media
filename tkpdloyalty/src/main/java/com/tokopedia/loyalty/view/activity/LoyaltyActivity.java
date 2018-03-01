@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
+import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -48,28 +49,7 @@ public class LoyaltyActivity extends BasePresenterActivity
         implements HasComponent<AppComponent>,
         PromoCodeFragment.ManualInsertCodeListener,
         PromoCouponFragment.ChooseCouponListener {
-    public static final String EXTRA_COUPON_ACTIVE = "EXTRA_COUPON_ACTIVE";
-    public static final String EXTRA_PLATFORM = "EXTRA_PLATFORM";
-    public static final String EXTRA_ADDITIONAL_DATA = "EXTRA_ADDITIONAL_DATA";
-    public static final String EXTRA_CATEGORY = "EXTRA_CATEGORY";
-    public static final String MARKETPLACE_STRING = "marketplace";
-    public static final String MARKETPLACE_CART_LIST_STRING = "marketplace_cart_list";
-    public static final String MARKETPLACE_CART_SHIPMENT_STRING = "marketplace_cart_shipment";
-    public static final String DIGITAL_STRING = "digital";
-    public static final String VOUCHER_CODE = "voucher_code";
-    public static final String VOUCHER_MESSAGE = "voucher_message";
-    public static final String VOUCHER_AMOUNT = "voucher_amount";
-    public static final int LOYALTY_REQUEST_CODE = 77;
-    public static final int VOUCHER_RESULT_CODE = 12;
-    public static final int COUPON_RESULT_CODE = 15;
-    public static final String COUPON_CODE = "coupon_code";
-    public static final String COUPON_MESSAGE = "coupon_message";
-    public static final String COUPON_AMOUNT = "coupon_amount";
-    public static final String COUPON_TITLE = "coupon_title";
-    public static final String VOUCHER_CASHBACK_AMOUNT = "VOUCHER_CASHBACK_AMOUNT";
-    public static final String VOUCHER_DISCOUNT_AMOUNT = "VOUCHER_DISCOUNT_AMOUNT";
-    public static final String COUPON_DISCOUNT_AMOUNT = "COUPON_DISCOUNT_AMOUNT";
-    public static final String COUPON_CASHBACK_AMOUNT = "COUPON_CASHBACK_AMOUNT";
+
 
     @BindView(R2.id.pager)
     ViewPager viewPager;
@@ -95,7 +75,9 @@ public class LoyaltyActivity extends BasePresenterActivity
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-        this.isCouponActive = extras.getBoolean(EXTRA_COUPON_ACTIVE);
+        this.isCouponActive = extras.getBoolean(
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE
+        );
     }
 
     @Override
@@ -198,11 +180,17 @@ public class LoyaltyActivity extends BasePresenterActivity
     public void onCodeSuccess(String voucherCode, String voucherMessage, String voucherAmount) {
         Intent intent = new Intent();
         Bundle bundle = new Bundle();
-        bundle.putString(VOUCHER_CODE, voucherCode);
-        bundle.putString(VOUCHER_MESSAGE, voucherMessage);
-        bundle.putString(VOUCHER_AMOUNT, voucherAmount);
+        bundle.putString(
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE, voucherCode
+        );
+        bundle.putString(
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE, voucherMessage
+        );
+        bundle.putString(
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_AMOUNT, voucherAmount
+        );
         intent.putExtras(bundle);
-        setResult(VOUCHER_RESULT_CODE, intent);
+        setResult(IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.VOUCHER_RESULT_CODE, intent);
         finish();
     }
 
@@ -213,12 +201,12 @@ public class LoyaltyActivity extends BasePresenterActivity
                                      long cashBackAmount) {
         Intent intent = new Intent();
         Bundle bundle = new Bundle();
-        bundle.putString(VOUCHER_CODE, voucherCode);
-        bundle.putString(VOUCHER_MESSAGE, voucherMessage);
-        bundle.putLong(VOUCHER_DISCOUNT_AMOUNT, discountAmount);
-        bundle.putLong(VOUCHER_CASHBACK_AMOUNT, cashBackAmount);
+        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE, voucherCode);
+        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE, voucherMessage);
+        bundle.putLong(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_DISCOUNT_AMOUNT, discountAmount);
+        bundle.putLong(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CASHBACK_AMOUNT, cashBackAmount);
         intent.putExtras(bundle);
-        setResult(VOUCHER_RESULT_CODE, intent);
+        setResult(IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.VOUCHER_RESULT_CODE, intent);
         finish();
     }
 
@@ -231,12 +219,12 @@ public class LoyaltyActivity extends BasePresenterActivity
     ) {
         Intent intent = new Intent();
         Bundle bundle = new Bundle();
-        bundle.putString(COUPON_CODE, promoCode);
-        bundle.putString(COUPON_MESSAGE, promoMessage);
-        bundle.putString(COUPON_AMOUNT, amount);
-        bundle.putString(COUPON_TITLE, couponTitle);
+        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CODE, promoCode);
+        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_MESSAGE, promoMessage);
+        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_AMOUNT, amount);
+        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_TITLE, couponTitle);
         intent.putExtras(bundle);
-        setResult(COUPON_RESULT_CODE, intent);
+        setResult(IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.COUPON_RESULT_CODE, intent);
         finish();
     }
 
@@ -248,13 +236,13 @@ public class LoyaltyActivity extends BasePresenterActivity
                                        long cashbackAmount) {
         Intent intent = new Intent();
         Bundle bundle = new Bundle();
-        bundle.putString(COUPON_CODE, promoCode);
-        bundle.putString(COUPON_MESSAGE, promoMessage);
-        bundle.putLong(COUPON_DISCOUNT_AMOUNT, discountAmount);
-        bundle.putLong(COUPON_CASHBACK_AMOUNT, cashbackAmount);
-        bundle.putString(COUPON_TITLE, couponTitle);
+        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CODE, promoCode);
+        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_MESSAGE, promoMessage);
+        bundle.putLong(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_DISCOUNT_AMOUNT, discountAmount);
+        bundle.putLong(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CASHBACK_AMOUNT, cashbackAmount);
+        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_TITLE, couponTitle);
         intent.putExtras(bundle);
-        setResult(COUPON_RESULT_CODE, intent);
+        setResult(IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.COUPON_RESULT_CODE, intent);
         finish();
     }
 
@@ -279,9 +267,9 @@ public class LoyaltyActivity extends BasePresenterActivity
     public static Intent newInstanceCouponActive(Context context, String platform, String category) {
         Intent intent = new Intent(context, LoyaltyActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putBoolean(EXTRA_COUPON_ACTIVE, true);
-        bundle.putString(EXTRA_PLATFORM, platform);
-        bundle.putString(EXTRA_CATEGORY, category);
+        bundle.putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, true);
+        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM, platform);
+        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORY, category);
         intent.putExtras(bundle);
         return intent;
     }
@@ -289,9 +277,9 @@ public class LoyaltyActivity extends BasePresenterActivity
     public static Intent newInstanceCouponNotActive(Context context, String platform, String category) {
         Intent intent = new Intent(context, LoyaltyActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putBoolean(EXTRA_COUPON_ACTIVE, false);
-        bundle.putString(EXTRA_PLATFORM, platform);
-        bundle.putString(EXTRA_CATEGORY, category);
+        bundle.putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, false);
+        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM, platform);
+        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORY, category);
         intent.putExtras(bundle);
         return intent;
     }
@@ -299,8 +287,9 @@ public class LoyaltyActivity extends BasePresenterActivity
     public static Intent newInstanceNewCheckoutCartListCouponNotActive(Context context) {
         Intent intent = new Intent(context, LoyaltyActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putBoolean(EXTRA_COUPON_ACTIVE, false);
-        bundle.putString(EXTRA_PLATFORM, MARKETPLACE_CART_LIST_STRING);
+        bundle.putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, false);
+        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM,
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_CART_LIST_STRING);
         intent.putExtras(bundle);
         return intent;
     }
@@ -308,8 +297,9 @@ public class LoyaltyActivity extends BasePresenterActivity
     public static Intent newInstanceNewCheckoutCartListCouponActive(Context context) {
         Intent intent = new Intent(context, LoyaltyActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putBoolean(EXTRA_COUPON_ACTIVE, true);
-        bundle.putString(EXTRA_PLATFORM, MARKETPLACE_CART_LIST_STRING);
+        bundle.putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, true);
+        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM,
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_CART_LIST_STRING);
         intent.putExtras(bundle);
         return intent;
     }
@@ -319,9 +309,11 @@ public class LoyaltyActivity extends BasePresenterActivity
     ) {
         Intent intent = new Intent(context, LoyaltyActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putBoolean(EXTRA_COUPON_ACTIVE, false);
-        bundle.putString(EXTRA_PLATFORM, MARKETPLACE_CART_SHIPMENT_STRING);
-        bundle.putString(EXTRA_ADDITIONAL_DATA, cartShipmentDataString);
+        bundle.putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, false);
+        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM,
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_CART_SHIPMENT_STRING);
+        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_ADDITIONAL_DATA,
+                cartShipmentDataString);
         intent.putExtras(bundle);
         return intent;
     }
@@ -331,9 +323,11 @@ public class LoyaltyActivity extends BasePresenterActivity
     ) {
         Intent intent = new Intent(context, LoyaltyActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putBoolean(EXTRA_COUPON_ACTIVE, true);
-        bundle.putString(EXTRA_PLATFORM, MARKETPLACE_CART_SHIPMENT_STRING);
-        bundle.putString(EXTRA_ADDITIONAL_DATA, cartShipmentDataString);
+        bundle.putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, true);
+        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM,
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_CART_SHIPMENT_STRING);
+        bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_ADDITIONAL_DATA,
+                cartShipmentDataString);
         intent.putExtras(bundle);
         return intent;
     }

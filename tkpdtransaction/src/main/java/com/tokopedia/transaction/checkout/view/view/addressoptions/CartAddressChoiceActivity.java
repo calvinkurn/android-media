@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.checkout.view.view.addressoptions;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -36,12 +37,9 @@ public class CartAddressChoiceActivity extends BasePresenterActivity implements 
 
     public static Intent createInstance(Activity activity,
                                         int typeRequest,
-                                        List<CartSellerItemModel> cartSellerItemModelList,
                                         RecipientAddressModel recipientAddressModel) {
         Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
         intent.putExtra(EXTRA_TYPE_REQUEST, typeRequest);
-        intent.putParcelableArrayListExtra(CART_ITEM_LIST_EXTRA,
-                (ArrayList<? extends Parcelable>) cartSellerItemModelList);
         intent.putExtra(EXTRA_DEFAULT_SELECTED_ADDRESS, recipientAddressModel);
         return intent;
     }
@@ -63,27 +61,35 @@ public class CartAddressChoiceActivity extends BasePresenterActivity implements 
     }
 
     @Override
+    public void setTitle(CharSequence title) {
+        super.setTitle(title);
+        setupToolbar();
+    }
+
+    @Override
     protected int getLayoutId() {
         return R.layout.activity_simple_fragment;
     }
 
     @Override
     protected void initView() {
+        Fragment fragment;
+
         if (typeRequest == TYPE_REQUEST_FULL_SELECTION) {
             Bundle bundle = new Bundle();
             bundle.putParcelable(EXTRA_DEFAULT_SELECTED_ADDRESS, defaultRecipientAddressModel);
 
-            CartAddressChoiceFragment fragment = CartAddressChoiceFragment.newInstance();
+            fragment = CartAddressChoiceFragment.newInstance();
             fragment.setArguments(bundle);
 
-            getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-
-            getFragmentManager().beginTransaction()
-                    .add(R.id.container, fragment, CartAddressChoiceFragment.class.getSimpleName())
-                    .commit();
         } else {
-
+            fragment = ShipmentAddressListFragment.newInstance();
         }
+
+        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        getFragmentManager().beginTransaction()
+                .add(R.id.container, fragment, fragment.getClass().getSimpleName())
+                .commit();
 
     }
 
