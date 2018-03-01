@@ -190,12 +190,10 @@ public class DriverDetailFragment extends BaseFragment {
     public void actionSMSDriver() {
         RideGATracking.eventClickSMS(status);
 
-        driver.setPhoneNumber("+919896386254");
         Bundle bundle = new Bundle();
         bundle.putParcelable(UberSMSChatActivity.DRIVER_INFO, driver);
         bundle.putParcelable(UberSMSChatActivity.VEHICLE_INFO, vehicle);
         startActivity(UberSMSChatActivity.newInstance(getActivity(), bundle));
-//        openSmsIntent(driver.getPhoneNumber());
     }
 
     @NeedsPermission({Manifest.permission.CALL_PHONE})
@@ -203,14 +201,6 @@ public class DriverDetailFragment extends BaseFragment {
         Intent callIntent = new Intent(Intent.ACTION_CALL);
         callIntent.setData(Uri.parse("tel:" + phoneNumber));
         startActivity(callIntent);
-    }
-
-    public void openSmsIntent(String smsNumber) {
-        if (!TextUtils.isEmpty(smsNumber)) {
-            startActivity(new Intent(Intent.ACTION_VIEW,
-                    Uri.fromParts("sms", smsNumber, null))
-            );
-        }
     }
 
     /**
