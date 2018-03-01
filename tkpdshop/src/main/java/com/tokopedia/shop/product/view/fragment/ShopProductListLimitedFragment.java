@@ -6,9 +6,9 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.shop.common.di.component.ShopComponent;
-import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
+import com.tokopedia.shop.product.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.shop.product.view.adapter.ShopProductLimitedAdapterTypeFactory;
 import com.tokopedia.shop.product.view.listener.ShopProductListLimitedView;
@@ -22,16 +22,17 @@ import javax.inject.Inject;
  */
 
 public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopProductBaseViewModel, ShopProductLimitedAdapterTypeFactory>
-        implements ShopProductListLimitedView, View.OnClickListener {
+        implements ShopProductListLimitedView {
+
+
+    @Inject
+    ShopProductListLimitedPresenter shopProductListLimitedPresenter;
+    private String shopId;
 
     public static ShopProductListLimitedFragment createInstance() {
         ShopProductListLimitedFragment fragment = new ShopProductListLimitedFragment();
         return fragment;
     }
-
-    @Inject
-    ShopProductListLimitedPresenter shopProductListLimitedPresenter;
-    private String shopId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,7 +48,17 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
     @NonNull
     @Override
     protected ShopProductLimitedAdapterTypeFactory getAdapterTypeFactory() {
-        return new ShopProductLimitedAdapterTypeFactory(this);
+        return new ShopProductLimitedAdapterTypeFactory(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(ShopProductListActivity.createIntent(getActivity(), shopId));
+            }
+        }, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(ShopEtalaseActivity.createIntent(getActivity(), shopId, null));
+            }
+        });
     }
 
     @Override
@@ -85,16 +96,17 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
 
     @Override
     public void onSearchSubmitted(String text) {
-
+        startActivity(ShopProductListActivity.createIntent(
+                getActivity(),
+                shopId,
+                text,
+                null,
+                null
+        ));
     }
 
     @Override
     public void onSearchTextChanged(String text) {
 
-    }
-
-    @Override
-    public void onClick(View view) {
-        startActivity(ShopProductListActivity.createIntent(getActivity(), shopId));
     }
 }

@@ -22,9 +22,20 @@ public class ShopProductListActivity extends BaseSimpleActivity implements HasCo
 
     public static final String SHOP_ID = "shop_id";
     public static final String SHOP_DOMAIN = "SHOP_DOMAIN";
+    public static final String KEYWORD_EXTRAS = "KEYWORD_EXTRAS";
     private String shopId;
     private String shopDomain;
+    private String keyword;
     private ShopComponent component;
+
+    public static Intent createIntent(Context context, String shopId, String keyword, String etalaseId, String etalaseName) {
+        Intent intent = new Intent(context, ShopProductListActivity.class);
+        intent.putExtra(SHOP_ID, shopId);
+        intent.putExtra(KEYWORD_EXTRAS, keyword);
+        intent.putExtra(ShopProductListFragment.ETALASE_ID, etalaseId);
+        intent.putExtra(ShopProductListFragment.ETALASE_NAME, etalaseName);
+        return intent;
+    }
 
     public static Intent createIntent(Context context, String shopId) {
         Intent intent = new Intent(context, ShopProductListActivity.class);
@@ -51,12 +62,13 @@ public class ShopProductListActivity extends BaseSimpleActivity implements HasCo
     protected void onCreate(Bundle savedInstanceState) {
         shopId = getIntent().getStringExtra(SHOP_ID);
         shopDomain = getIntent().getStringExtra(SHOP_DOMAIN);
+        keyword = getIntent().getStringExtra(KEYWORD_EXTRAS);
         super.onCreate(savedInstanceState);
     }
 
     @Override
     protected Fragment getNewFragment() {
-        return ShopProductListFragment.createInstance(shopId);
+        return ShopProductListFragment.createInstance(shopId, keyword);
     }
 
     @Override

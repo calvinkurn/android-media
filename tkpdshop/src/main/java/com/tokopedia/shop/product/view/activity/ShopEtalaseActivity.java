@@ -20,22 +20,19 @@ import com.tokopedia.shop.product.view.model.ShopEtalaseViewModel;
  */
 
 public class ShopEtalaseActivity extends BaseSimpleActivity implements HasComponent<ShopComponent>, ShopEtalaseFragmentListener {
+    public static final String IS_GO_TO_SHOP_PRODUCT_LIST = "IS_GO_TO_SHOP_PRODUCT_LIST";
+    public static final String SELECTED_ETALASE_ID = "SELECTED_ETALASE_ID";
     private ShopComponent component;
     private String shopDomain;
     private String shopId;
-
-    public static final String SELECTED_ETALASE_ID = "SELECTED_ETALASE_ID";
+    private boolean isGoToShopProductList;
     private String selectedEtalaseId;
 
-    @Override
-    protected Fragment getNewFragment() {
-        return ShopEtalaseFragment.createInstance(shopId, shopDomain, selectedEtalaseId);
-    }
-
-    public static Intent createIntent(Context context, String shopId, String selectedEtalaseId) {
+    public static Intent createIntent(Context context, String shopId, String selectedEtalaseId, boolean isGoToShopProductList) {
         Intent intent = new Intent(context, ShopEtalaseActivity.class);
         intent.putExtra(ShopProductListActivity.SHOP_ID, shopId);
         intent.putExtra(SELECTED_ETALASE_ID, selectedEtalaseId);
+        intent.putExtra(IS_GO_TO_SHOP_PRODUCT_LIST, isGoToShopProductList);
         return intent;
     }
 
@@ -47,10 +44,16 @@ public class ShopEtalaseActivity extends BaseSimpleActivity implements HasCompon
     }
 
     @Override
+    protected Fragment getNewFragment() {
+        return ShopEtalaseFragment.createInstance(shopId, shopDomain, selectedEtalaseId);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         shopId = getIntent().getStringExtra(ShopProductListActivity.SHOP_ID);
         shopDomain = getIntent().getStringExtra(ShopProductListActivity.SHOP_DOMAIN);
         selectedEtalaseId = getIntent().getStringExtra(SELECTED_ETALASE_ID);
+        isGoToShopProductList = getIntent().getBooleanExtra(IS_GO_TO_SHOP_PRODUCT_LIST, false);
         super.onCreate(savedInstanceState);
     }
 
@@ -68,6 +71,14 @@ public class ShopEtalaseActivity extends BaseSimpleActivity implements HasCompon
         intent.putExtra(ShopProductListFragment.ETALASE_ID, shopEtalaseViewModel.getEtalaseId());
         intent.putExtra(ShopProductListFragment.ETALASE_NAME, shopEtalaseViewModel.getEtalaseName());
         setResult(Activity.RESULT_OK, intent);
+
+        if (isGoToShopProductList) {
+            startActivity(ShopProductListActivity.createIntent(this,
+                    shopId,
+                    null,
+                    shopEtalaseViewModel.getEtalaseId(),
+                    shopEtalaseViewModel.getEtalaseName()));
+        }
         finish();
     }
 }

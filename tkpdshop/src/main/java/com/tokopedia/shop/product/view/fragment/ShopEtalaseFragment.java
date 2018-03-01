@@ -8,18 +8,14 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.shop.common.constant.ShopParamApiConstant;
-import com.tokopedia.shop.common.constant.ShopParamConstant;
-import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.common.di.component.ShopComponent;
+import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.product.view.adapter.ShopEtalaseAdapterTypeFactory;
-import com.tokopedia.shop.product.view.adapter.ShopProductFilterAdapterTypeFactory;
 import com.tokopedia.shop.product.view.listener.ShopEtalaseFragmentListener;
 import com.tokopedia.shop.product.view.listener.ShopEtalaseView;
 import com.tokopedia.shop.product.view.model.ShopEtalaseViewModel;
-import com.tokopedia.shop.product.view.model.ShopProductFilterModel;
-import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopEtalasePresenter;
 
 import java.util.List;
@@ -78,7 +74,7 @@ public class ShopEtalaseFragment extends BaseListFragment<ShopEtalaseViewModel, 
     }
 
     @Override
-    public void renderList(@NonNull List<ShopEtalaseViewModel> list) {
+    public void renderList(@NonNull List<ShopEtalaseViewModel> list, boolean isHasNext) {
         if(selectedEtalaseId != null){
             for(int i=0;i<list.size();i++)
                 if(list.get(i).getEtalaseId().equalsIgnoreCase(selectedEtalaseId))

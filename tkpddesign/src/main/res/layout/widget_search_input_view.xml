@@ -2,8 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/background_apps"
+    android:background="@drawable/rect_white_rounded_stroke_gray"
     android:paddingBottom="@dimen/padding_small"
     android:paddingLeft="@dimen/padding_small"
     android:paddingRight="@dimen/padding_small"
@@ -12,7 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/rect_white_rounded_stroke_gray"
+        android:background="@color/background_apps"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingBottom="@dimen/padding_small"
@@ -33,14 +32,14 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_sm"
             android:layout_marginRight="@dimen/margin_sm"
-            android:textSize="@dimen/font_small"
             android:layout_weight="1"
             android:background="@null"
             android:ellipsize="end"
             android:hint="@string/search_input_hint"
             android:imeOptions="actionSearch"
             android:inputType="text"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:textSize="@dimen/font_small" />
 
         <ImageButton
             android:id="@+id/image_button_close"
