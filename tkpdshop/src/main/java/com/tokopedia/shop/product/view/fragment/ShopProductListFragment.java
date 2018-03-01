@@ -135,7 +135,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (TextUtils.isEmpty(keyword))
+        if (!TextUtils.isEmpty(keyword))
             searchInputView.getSearchTextView().setText(keyword);
 
         recyclerViews = view.findViewById(R.id.recycler_view);

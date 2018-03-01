@@ -57,7 +57,7 @@ public class ShopProductListLimitedFragment extends BaseSearchListFragment<ShopP
         }, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(ShopEtalaseActivity.createIntent(getActivity(), shopId, null, false));
+                startActivity(ShopEtalaseActivity.createIntent(getActivity(), shopId, null, true));
             }
         });
     }
