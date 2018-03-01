@@ -28,8 +28,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.transaction.checkout.view.view.multipleaddressform.AddShipmentAddressFragment.ADD_MODE;
-import static com.tokopedia.transaction.checkout.view.view.multipleaddressform.AddShipmentAddressFragment.EDIT_MODE;
+import static com.tokopedia.transaction.checkout.view.view.multipleaddressform.AddShipmentAddressActivity.ADD_MODE;
+import static com.tokopedia.transaction.checkout.view.view.multipleaddressform.AddShipmentAddressActivity.EDIT_MODE;
 import static com.tokopedia.transaction.checkout.view.view.multipleaddressform.MultipleAddressFormActivity.RESULT_CODE_SUCCESS_SET_SHIPPING;
 
 /**
@@ -42,8 +42,6 @@ public class MultipleAddressFragment extends TkpdFragment
 
     @Inject
     IMultipleAddressPresenter presenter;
-
-    private ICartShipmentActivity cartShipmentActivity;
 
     public static final int ADD_SHIPMENT_ADDRESS_REQUEST_CODE = 21;
     public static final int EDIT_SHIPMENT_ADDRESS_REQUEST_CODE = 22;
@@ -87,42 +85,6 @@ public class MultipleAddressFragment extends TkpdFragment
                 .builder()
                 .multipleAddressModule(new MultipleAddressModule(this)).build();
         component.inject(this);
-    }
-
-    private MultipleAddressItemData dummyItemData() {
-        MultipleAddressItemData data = new MultipleAddressItemData();
-        data.setCartId("2");
-        data.setAddressId("654321");
-        data.setProductId("123456");
-        data.setProductWeight("3Kg");
-        data.setProductQty("1");
-        data.setProductNotes("Saya pesan warna merah yah min.. jangan sampai salah\n" +
-                "kirim barangnya gan!");
-        data.setAddressTitle("Alamat Kantor");
-        data.setAddressReceiverName("Agus Maulana");
-        data.setAddress("Jl. Letjen S. Parman Kav.77, Wisma 77 Tower 2,\n" +
-                "Tokopedia Lt. 2, Jakarta, 0817 1234 5678");
-        return data;
-    }
-
-    private MultipleAddressAdapterData dummyAdapterData() {
-        MultipleAddressAdapterData data = new MultipleAddressAdapterData();
-        data.setSenderName("Adidas");
-        data.setProductImageUrl("https://t00.deviantart.net/Qgvu_0dClD_BotaDpLBflGKcvbI=/300x200/filters:fixed_height(100,100):origin()/pre00/69b2/th/pre/f/2013/143/9/1/pusheen_the_cat_png_15_by_13taylorswiftlover13-d66chev.png");
-        data.setProductName("Kaos Adidas Camo Tongue Tee...White & Red, XS");
-        data.setProductPrice("Rp200.000");
-        List<MultipleAddressItemData> itemDataList = new ArrayList<>();
-        itemDataList.add(dummyItemData());
-        itemDataList.add(dummyItemData());
-        data.setItemListData(itemDataList);
-        return data;
-    }
-
-    private List<MultipleAddressAdapterData> dummyDataList() {
-        List<MultipleAddressAdapterData> list = new ArrayList<>();
-        list.add(dummyAdapterData());
-        list.add(dummyAdapterData());
-        return list;
     }
 
     private List<MultipleAddressAdapterData> initiateAdapterData() {
@@ -181,36 +143,23 @@ public class MultipleAddressFragment extends TkpdFragment
     public void onGoToChooseCourier(List<MultipleAddressAdapterData> dataList) {
         //TODO release later
         presenter.sendData(getActivity(), dataList);
+
     }
 
     @Override
     public void onAddNewShipmentAddress(MultipleAddressAdapterData data,
                                         MultipleAddressItemData addressData) {
-        AddShipmentAddressFragment fragment = AddShipmentAddressFragment.newInstance(
-                data,
-                addressData,
-                ADD_MODE);
-        fragment.setTargetFragment(this, ADD_SHIPMENT_ADDRESS_REQUEST_CODE);
-        getFragmentManager().beginTransaction()
-                .setCustomAnimations(R.animator.slide_in_left, R.animator.slide_in_left)
-                .replace(R.id.container, fragment, ADD_SHIPMENT_FRAGMENT_TAG)
-                .addToBackStack("")
-                .commit();
+        startActivityForResult(AddShipmentAddressActivity
+                .createIntent(getActivity(), data, addressData, ADD_MODE),
+                ADD_SHIPMENT_ADDRESS_REQUEST_CODE);
     }
 
     @Override
     public void onItemChoosen(MultipleAddressAdapterData productData,
                               MultipleAddressItemData addressData) {
-        AddShipmentAddressFragment fragment = AddShipmentAddressFragment.newInstance(
-                productData,
-                addressData,
-                EDIT_MODE);
-        fragment.setTargetFragment(this, EDIT_SHIPMENT_ADDRESS_REQUEST_CODE);
-        getFragmentManager().beginTransaction()
-                .setCustomAnimations(R.animator.slide_in_left, R.animator.slide_in_left)
-                .replace(R.id.container, fragment, ADD_SHIPMENT_FRAGMENT_TAG)
-                .addToBackStack("")
-                .commit();
+        startActivityForResult(AddShipmentAddressActivity
+                .createIntent(getActivity(), productData, addressData, EDIT_MODE),
+                EDIT_SHIPMENT_ADDRESS_REQUEST_CODE);
     }
 
     @Override
@@ -218,18 +167,9 @@ public class MultipleAddressFragment extends TkpdFragment
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == EDIT_SHIPMENT_ADDRESS_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             multipleAddressAdapter.notifyDataSetChanged();
-            removeAddAddressFragment();
         } else if (requestCode == ADD_SHIPMENT_ADDRESS_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             multipleAddressAdapter.notifyDataSetChanged();
-            removeAddAddressFragment();
         }
-    }
-
-    private void removeAddAddressFragment() {
-        getFragmentManager()
-                .beginTransaction()
-                .remove(getFragmentManager().findFragmentByTag(ADD_SHIPMENT_FRAGMENT_TAG))
-                .commit();
     }
 
     @Override

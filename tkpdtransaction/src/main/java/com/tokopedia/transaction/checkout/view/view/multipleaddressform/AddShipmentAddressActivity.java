@@ -1,12 +1,12 @@
 package com.tokopedia.transaction.checkout.view.view.multipleaddressform;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -14,25 +14,33 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.app.TkpdFragment;
+import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressItemData;
+import com.tokopedia.transaction.checkout.view.di.component.AddShipmentAddressComponent;
+import com.tokopedia.transaction.checkout.view.di.component.DaggerAddShipmentAddressComponent;
+import com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity;
 
-import static com.tokopedia.transaction.checkout.view.view.multipleaddressform.MultipleAddressFragment.ADD_SHIPMENT_ADDRESS_REQUEST_CODE;
-import static com.tokopedia.transaction.checkout.view.view.multipleaddressform.MultipleAddressFragment.EDIT_SHIPMENT_ADDRESS_REQUEST_CODE;
+import javax.inject.Inject;
+
+import static com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity.TYPE_REQUEST_ONLY_ADDRESS_SELECTION;
 
 /**
  * Created by kris on 1/25/18. Tokopedia
  */
 
-public class AddShipmentAddressFragment extends TkpdFragment {
+public class AddShipmentAddressActivity extends BasePresenterActivity {
 
     private static final String PRODUCT_DATA_EXTRAS = "PRODUCT_DATA_EXTRAS";
     private static final String ADDRESS_DATA_EXTRAS = "ADDRESS_DATA_EXTRAS";
     private static final String MODE_EXTRA = "MODE_EXTRAS";
     public static final int ADD_MODE = 1;
     public static final int EDIT_MODE = 2;
+
+    private MultipleAddressAdapterData multipleAddressAdapterData;
+    private MultipleAddressItemData multipleAddressItemData;
+    private int formMode;
 
     private EditText quantityField;
     private EditText notesEditText;
@@ -44,69 +52,99 @@ public class AddShipmentAddressFragment extends TkpdFragment {
     private TextView saveChangesButton;
     private TextView addAddressErrorTextView;
 
-    public static AddShipmentAddressFragment newInstance(MultipleAddressAdapterData data,
-                                                         MultipleAddressItemData addressData,
-                                                         int mode) {
+    @Inject
+    IAddShipmentAddressPresenter presenter;
 
-        AddShipmentAddressFragment fragment = new AddShipmentAddressFragment();
+    public static Intent createIntent(Context context,
+                                      MultipleAddressAdapterData data,
+                                      MultipleAddressItemData addressData,
+                                      int mode) {
+        Intent intent = new Intent(context, AddShipmentAddressActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(PRODUCT_DATA_EXTRAS, data);
         bundle.putParcelable(ADDRESS_DATA_EXTRAS, addressData);
         bundle.putInt(MODE_EXTRA, mode);
-        fragment.setArguments(bundle);
-        return fragment;
+        intent.putExtras(bundle);
+        return intent;
     }
 
     @Override
-    protected String getScreenName() {
-        return null;
+    protected void setupURIPass(Uri data) {
+
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater
-                .inflate(R.layout.add_shipping_address_fragment, container, false);
-        MultipleAddressAdapterData productData = getArguments().getParcelable(PRODUCT_DATA_EXTRAS);
-        MultipleAddressItemData itemData = getArguments().getParcelable(ADDRESS_DATA_EXTRAS);
-        TextView senderName = view.findViewById(R.id.sender_name);
-        setProductView(view, productData, senderName);
-        setProductQuantityView(view, itemData);
-        setNotesView(view, itemData);
-        setAddressView(view, itemData);
-        addAddressErrorTextView = view.findViewById(R.id.add_address_error_warning);
-        saveChangesButton = view.findViewById(R.id.save_changes_button);
+    protected void setupBundlePass(Bundle extras) {
+        multipleAddressAdapterData = extras.getParcelable(PRODUCT_DATA_EXTRAS);
+        multipleAddressItemData = extras.getParcelable(ADDRESS_DATA_EXTRAS);
+        formMode = extras.getInt(MODE_EXTRA);
+    }
+
+    @Override
+    protected void initialPresenter() {
+
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.add_shipping_address_fragment;
+    }
+
+    @Override
+    protected void initView() {
+        initInjector();
+        MultipleAddressAdapterData productData = multipleAddressAdapterData;
+        MultipleAddressItemData itemData = multipleAddressItemData;
+        TextView senderName = findViewById(R.id.sender_name);
+        setProductView(productData, senderName);
+        setProductQuantityView(itemData);
+        setNotesView(itemData);
+        setAddressView(itemData);
+        addAddressErrorTextView = findViewById(R.id.add_address_error_warning);
+        saveChangesButton = findViewById(R.id.save_changes_button);
         saveChangesButton.setOnClickListener(onSaveChangesClickedListener(itemData));
-        if (getArguments().getInt(MODE_EXTRA) == ADD_MODE) showChooseAddressButton(view);
-        return view;
+        if (formMode == ADD_MODE) showChooseAddressButton();
     }
 
-    private void showChooseAddressButton(View view) {
-        ViewGroup chooseAddressButton = view.findViewById(R.id.choose_address_button);
+    @Override
+    protected void setViewListener() {
+
+    }
+
+    @Override
+    protected void initVar() {
+
+    }
+
+    @Override
+    protected void setActionVar() {
+
+    }
+
+    private void showChooseAddressButton() {
+        ViewGroup chooseAddressButton = findViewById(R.id.choose_address_button);
         chooseAddressButton.setOnClickListener(onChooseAddressClickedListener());
         addressLayout.setVisibility(View.GONE);
         chooseAddressButton.setVisibility(View.VISIBLE);
         saveChangesButton.setVisibility(View.GONE);
     }
 
-    private void setAddressView(View view, MultipleAddressItemData itemData) {
-        addressLayout = view.findViewById(R.id.address_layout);
-        addressTitle = view.findViewById(R.id.address_title);
-        addressReceiverName = view.findViewById(R.id.address_receiver_name);
-        address = view.findViewById(R.id.address);
+    private void setAddressView(MultipleAddressItemData itemData) {
+        addressLayout = findViewById(R.id.address_layout);
+        addressTitle = findViewById(R.id.address_title);
+        addressReceiverName = findViewById(R.id.address_receiver_name);
+        address = findViewById(R.id.address);
         addressTitle.setText(itemData.getAddressTitle());
         addressReceiverName.setText(itemData.getAddressReceiverName());
         address.setText(itemData.getAddress());
         addressLayout.setOnClickListener(onAddressLayoutClickedListener());
     }
 
-    private void setNotesView(View view, MultipleAddressItemData itemData) {
-        ViewGroup emptyNotesLayout = view.findViewById(R.id.empty_notes_layout);
-        TextView insertNotesButton = view.findViewById(R.id.insert_notes_button);
-        notesLayout = view.findViewById(R.id.notes_layout);
-        notesEditText = view.findViewById(R.id.notes_edit_text);
+    private void setNotesView(MultipleAddressItemData itemData) {
+        ViewGroup emptyNotesLayout = findViewById(R.id.empty_notes_layout);
+        TextView insertNotesButton = findViewById(R.id.insert_notes_button);
+        notesLayout = findViewById(R.id.notes_layout);
+        notesEditText = findViewById(R.id.notes_edit_text);
         if (itemData.getProductNotes().isEmpty()) {
             emptyNotesLayout.setVisibility(View.VISIBLE);
             insertNotesButton.setOnClickListener(
@@ -118,21 +156,21 @@ public class AddShipmentAddressFragment extends TkpdFragment {
         }
     }
 
-    private void setProductQuantityView(View view, MultipleAddressItemData itemData) {
-        quantityField = view.findViewById(R.id.quantity_field);
-        ImageView decreaseButton = view.findViewById(R.id.decrease_quantity);
-        ImageView increaseButton = view.findViewById(R.id.increase_quantity);
+    private void setProductQuantityView(MultipleAddressItemData itemData) {
+        quantityField = findViewById(R.id.quantity_field);
+        ImageView decreaseButton = findViewById(R.id.decrease_quantity);
+        ImageView increaseButton = findViewById(R.id.increase_quantity);
         quantityField.setText(itemData.getProductQty());
         quantityField.addTextChangedListener(quantityTextWatcher(itemData, decreaseButton));
         decreaseButton.setOnClickListener(onDecreaseButtonClickedListener(quantityField));
         increaseButton.setOnClickListener(onIncreaseButtonClickedListener(quantityField));
     }
 
-    private void setProductView(View view, MultipleAddressAdapterData productData, TextView senderName) {
+    private void setProductView(MultipleAddressAdapterData productData, TextView senderName) {
         senderName.setText(productData.getSenderName());
-        ImageView productImage = view.findViewById(R.id.product_image);
+        ImageView productImage = findViewById(R.id.product_image);
         ImageHandler.LoadImage(productImage, productData.getProductImageUrl());
-        TextView productName = view.findViewById(R.id.product_name);
+        TextView productName = findViewById(R.id.product_name);
         productName.setText(productData.getProductName());
     }
 
@@ -177,27 +215,6 @@ public class AddShipmentAddressFragment extends TkpdFragment {
         };
     }
 
-    private TextWatcher quantityTextWatcher(final MultipleAddressItemData data,
-                                            final ImageView decreaseButton) {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                setDecreaseButtonAvailability(charSequence, decreaseButton);
-                setEditButtonVisibility(charSequence, data);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        };
-    }
-
     private void setEditButtonVisibility(CharSequence charSequence, MultipleAddressItemData data) {
         if (charSequence.toString().isEmpty()
                 || Integer.parseInt(charSequence.toString()) < 1)
@@ -235,7 +252,7 @@ public class AddShipmentAddressFragment extends TkpdFragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                CartAddressChoiceActivity.createInstance(AddShipmentAddressActivity.this, TYPE_REQUEST_ONLY_ADDRESS_SELECTION);
             }
         };
     }
@@ -247,15 +264,11 @@ public class AddShipmentAddressFragment extends TkpdFragment {
                 //TODO ALTER DATA HERE, ALSO MAKE SOME VIEWS GLOBAL VARIABLE
                 if (addressLayout.isShown()) {
                     addAddressErrorTextView.setVisibility(View.GONE);
-                    if (getArguments().getInt(MODE_EXTRA) == ADD_MODE) {
+                    if (formMode == ADD_MODE) {
                         addNewAddressItem(itemData);
                     } else {
                         insertDataToModel(itemData);
-                        getTargetFragment().onActivityResult(
-                                EDIT_SHIPMENT_ADDRESS_REQUEST_CODE,
-                                Activity.RESULT_OK,
-                                new Intent()
-                        );
+                        setResult(Activity.RESULT_OK);
                     }
                 } else {
                     //TODO Show error here
@@ -269,14 +282,9 @@ public class AddShipmentAddressFragment extends TkpdFragment {
         MultipleAddressItemData newAddressData = new MultipleAddressItemData();
         newAddressData.setProductWeight(itemData.getProductWeight());
         insertDataToModel(newAddressData);
-        MultipleAddressAdapterData productData = getArguments()
-                .getParcelable(PRODUCT_DATA_EXTRAS);
+        MultipleAddressAdapterData productData = multipleAddressAdapterData;
         productData.getItemListData().add(newAddressData);
-        getTargetFragment().onActivityResult(
-                ADD_SHIPMENT_ADDRESS_REQUEST_CODE,
-                Activity.RESULT_OK,
-                new Intent()
-        );
+        setResult(Activity.RESULT_OK);
     }
 
     private void insertDataToModel(MultipleAddressItemData itemData) {
@@ -287,5 +295,31 @@ public class AddShipmentAddressFragment extends TkpdFragment {
         itemData.setCartId("0");
         if (notesLayout.isShown())
             itemData.setProductNotes(notesEditText.getText().toString());
+    }
+
+    private void initInjector() {
+        AddShipmentAddressComponent component = DaggerAddShipmentAddressComponent.builder().build();
+        component.inject(this);
+    }
+
+    private TextWatcher quantityTextWatcher(final MultipleAddressItemData data,
+                                            final ImageView decreaseButton) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                setDecreaseButtonAvailability(charSequence, decreaseButton);
+                setEditButtonVisibility(charSequence, data);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        };
     }
 }
