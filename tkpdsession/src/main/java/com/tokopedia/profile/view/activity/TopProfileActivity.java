@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.ViewPager;
@@ -25,7 +26,6 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.peoplefave.activity.PeopleFavoritedShop;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.tab.Tabs;
-import com.tokopedia.profile.ProfileComponentInstance;
 import com.tokopedia.profile.common.di.ProfileComponent;
 import com.tokopedia.profile.view.adapter.ProfileTabPagerAdapter;
 import com.tokopedia.profile.view.fragment.TopProfileFragment;
@@ -44,6 +44,7 @@ import java.util.List;
 public class TopProfileActivity extends BaseEmptyActivity
         implements HasComponent, TopProfileActivityListener.View {
 
+    private static final String EXTRA_PARAM_USER_ID = "user_id";
     private static final String TITLE_PROFILE = "Info Akun";
     private static final String TITLE_POST = "Post";
     private static final String ZERO = "0";
@@ -70,12 +71,17 @@ public class TopProfileActivity extends BaseEmptyActivity
     private LinearLayout favoriteShopLayout;
     private TextView favoriteShopValue;
 
+    private String userId;
     private TopProfileViewModel topProfileViewModel;
 
     private ProfileComponent profileComponent;
 
-    public static Intent newInstance(Context context) {
-        return new Intent(context, TopProfileActivity.class);
+    public static Intent newInstance(@NonNull Context context, @NonNull String userId) {
+        Intent intent = new Intent(context, TopProfileActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_PARAM_USER_ID, userId);
+        intent.putExtras(bundle);
+        return intent;
     }
 
     @Override
@@ -97,10 +103,17 @@ public class TopProfileActivity extends BaseEmptyActivity
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
         super.setupLayout(savedInstanceState);
+        initVar();
         initView();
         setupToolbar();
         setViewListener();
         loadSection();
+    }
+
+    private void initVar(){
+        if (getIntent().getExtras() != null) {
+            userId = getIntent().getExtras().getString(EXTRA_PARAM_USER_ID, "");
+        }
     }
 
     private void initView() {
@@ -134,7 +147,7 @@ public class TopProfileActivity extends BaseEmptyActivity
                     startActivity(((TkpdCoreRouter) getApplicationContext())
                             .getKolFollowingPageIntent(
                                     TopProfileActivity.this,
-                                    Integer.valueOf(topProfileViewModel.getUserId()))
+                                    topProfileViewModel.getUserId())
                     );
                 }
             }
@@ -146,7 +159,7 @@ public class TopProfileActivity extends BaseEmptyActivity
                 if (topProfileViewModel != null) {
                     startActivity(PeopleFavoritedShop.createIntent(
                             TopProfileActivity.this,
-                            topProfileViewModel.getUserId())
+                            String.valueOf(topProfileViewModel.getUserId()))
                     );
                 }
             }
@@ -304,10 +317,10 @@ public class TopProfileActivity extends BaseEmptyActivity
         if (getApplicationContext() instanceof SessionRouter) {
             //TODO milhamj change this userid
             BaseDaggerFragment kolPostFragment =
-                    ((SessionRouter) getApplicationContext()).getKolPostFragment("6543110");
+                    ((SessionRouter) getApplicationContext()).getKolPostFragment(userId);
             profileSectionItemList.add(new ProfileSectionItem(TITLE_POST, kolPostFragment));
         }
-        TopProfileFragment profileFragment = TopProfileFragment.newInstance("5510248");
+        TopProfileFragment profileFragment = TopProfileFragment.newInstance(userId);
         profileSectionItemList.add(new ProfileSectionItem(TITLE_PROFILE, profileFragment));
 
         ProfileTabPagerAdapter profileTabPagerAdapter =
