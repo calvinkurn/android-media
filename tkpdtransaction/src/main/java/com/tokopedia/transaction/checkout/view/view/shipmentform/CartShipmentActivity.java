@@ -71,6 +71,12 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
     }
 
     @Override
+    public void setTitle(CharSequence title) {
+        super.setTitle(title);
+        setupToolbar();
+    }
+
+    @Override
     protected int getLayoutId() {
         return R.layout.activity_shipment_cart_tx_module;
     }

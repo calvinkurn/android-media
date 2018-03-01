@@ -63,6 +63,12 @@ public class CartAddressChoiceActivity extends BasePresenterActivity implements 
     }
 
     @Override
+    public void setTitle(CharSequence title) {
+        super.setTitle(title);
+        setupToolbar();
+    }
+
+    @Override
     protected int getLayoutId() {
         return R.layout.activity_simple_fragment;
     }
