@@ -23,6 +23,7 @@ import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.Cart
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartPayableDetailModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSingleAddressData;
+import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.transaction.checkout.domain.mapper.SingleAddressShipmentDataConverter;
 import com.tokopedia.transaction.checkout.router.ICartCheckoutModuleRouter;
 import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter;
@@ -58,6 +59,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     public static final String ARG_EXTRA_SHIPMENT_FORM_DATA = "ARG_EXTRA_SHIPMENT_FORM_DATA";
     public static final String ARG_EXTRA_CART_PROMO_SUGGESTION = "ARG_EXTRA_CART_PROMO_SUGGESTION";
+    public static final String ARG_EXTRA_PROMO_CODE_APPLIED_DATA = "ARG_EXTRA_PROMO_CODE_APPLIED_DATA";
 
     private static final Locale LOCALE_ID = new Locale("in", "ID");
     private static final NumberFormat CURRENCY_ID = NumberFormat.getCurrencyInstance(LOCALE_ID);
@@ -86,12 +88,15 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     ICartShipmentActivity cartShipmentActivityListener;
 
     private CartSingleAddressData mCartSingleAddressData;
+    private PromoCodeCartListData promoCodeAppliedData;
 
     public static SingleAddressShipmentFragment newInstance(CartShipmentAddressFormData cartShipmentAddressFormData,
+                                                            PromoCodeCartListData promoCodeCartListData,
                                                             CartPromoSuggestion cartPromoSuggestionData) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_EXTRA_SHIPMENT_FORM_DATA, cartShipmentAddressFormData);
         bundle.putParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION, cartPromoSuggestionData);
+        bundle.putParcelable(ARG_EXTRA_PROMO_CODE_APPLIED_DATA, promoCodeCartListData);
 
         SingleAddressShipmentFragment fragment = new SingleAddressShipmentFragment();
         fragment.setArguments(bundle);
@@ -165,10 +170,9 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     protected void setupArguments(Bundle arguments) {
         CartShipmentAddressFormData cartShipmentAddressFormData
                 = arguments.getParcelable(ARG_EXTRA_SHIPMENT_FORM_DATA);
-
+        promoCodeAppliedData = arguments.getParcelable(ARG_EXTRA_PROMO_CODE_APPLIED_DATA);
         mCartSingleAddressData = mSingleAddressShipmentDataConverter.convert(cartShipmentAddressFormData);
         CartPromoSuggestion cartPromoSuggestion = arguments.getParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION);
-
         mCartSingleAddressData.setCartPromoSuggestion(cartPromoSuggestion);
         mCartSingleAddressData.setCartPromo(new CartPromo());
     }
@@ -180,8 +184,6 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     protected void initView(View view) {
-        ButterKnife.bind(this, view);
-
         mRvCartOrderDetails.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRvCartOrderDetails.setAdapter(mSingleAddressShipmentAdapter);
         mRvCartOrderDetails.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -194,7 +196,6 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                 }
             }
         });
-
         mSingleAddressShipmentPresenter.attachView(this);
 
         onTotalPaymentChange(mCartSingleAddressData.getCartPayableDetailModel());
@@ -255,8 +256,8 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     @Override
     public void onAddOrChangeAddress() {
         startActivityForResult(CartAddressChoiceActivity.createInstance(getActivity(),
-                        CartAddressChoiceActivity.TYPE_REQUEST_FULL_SELECTION,
-                        mCartSingleAddressData.getRecipientAddressModel()),
+                CartAddressChoiceActivity.TYPE_REQUEST_FULL_SELECTION,
+                mCartSingleAddressData.getRecipientAddressModel()),
                 CartAddressChoiceActivity.REQUEST_CODE);
     }
 
