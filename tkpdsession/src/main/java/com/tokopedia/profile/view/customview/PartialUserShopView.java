@@ -83,6 +83,7 @@ public class PartialUserShopView extends BaseCustomView {
     }
 
     public void renderData(TopProfileViewModel model) {
+
         ImageHandler.loadImage2(ivShopProfile, model.getShopLogo(), R.drawable.ic_default_shop_ava);
         ivGoldShop.setVisibility(model.isGoldShop() ? VISIBLE : GONE);
         switchOfficialStoreBadge(model.isOfficialShop());
@@ -93,7 +94,11 @@ public class PartialUserShopView extends BaseCustomView {
 
         favouriteButton.setVisibility(model.isUser() ? GONE : VISIBLE);
 
-        this.setVisibility(VISIBLE);
+        if (model.getShopId() != 0)
+            this.setVisibility(VISIBLE);
+        else {
+            this.setVisibility(GONE);
+        }
     }
 
     private void switchOfficialStoreBadge(boolean isOfficialStore) {

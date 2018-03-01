@@ -87,7 +87,8 @@ public class PartialUserInfoView extends BaseCustomView {
         partialUserStatus.setVisibility(model.isPhoneVerified() && model.isEmailVerified() ? VISIBLE : GONE);
 
         tvReputationSummaryScore.setVisibility(VISIBLE);
-        tvReputationSummaryScore.setText(model.getSummaryScore());
+        String summary =  model.getSummaryScore() + "%";
+        tvReputationSummaryScore.setText(summary);
 
         tvReputationPositiveScore.setVisibility(VISIBLE);
         tvReputationPositiveScore.setText(model.getPositiveScore());

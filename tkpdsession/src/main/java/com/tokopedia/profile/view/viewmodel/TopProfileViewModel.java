@@ -6,14 +6,16 @@ package com.tokopedia.profile.view.viewmodel;
 
 public class TopProfileViewModel {
 
-    private String userId;
+    private int userId;
     private String name;
     private String avatar;
     private String title;
     private String biodata;
     private String following;
     private String followers;
+    private boolean isFollowed;
     private String favoritedShop;
+    private String userPhoto;
     private boolean isKol;
     private boolean isFollowed;
 
@@ -23,19 +25,22 @@ public class TopProfileViewModel {
     private String email;
     private String gender;
     private String birthDate;
-    private Integer completion;
+    private int completion;
 
     private String summaryScore;
     private String positiveScore;
     private String netralScore;
     private String negativeScore;
 
+    private int shopId;
     private String shopName;
     private boolean isGoldShop;
+    private boolean isGoldBadge;
     private boolean isOfficialShop;
     private String shopLocation;
     private String shopLogo;
     private String shopBadge;
+    private int shopBadgeLevel;
     private String shopLastOnline;
     private String shopAppLink;
 
@@ -45,11 +50,19 @@ public class TopProfileViewModel {
 
     }
 
-    public String getUserId() {
+    public Boolean getIsUser() {
+        return this.isUser;
+    }
+
+    public void setIsUser(boolean isUser) {
+        this.isUser = isUser;
+    }
+
+    public int getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
@@ -173,11 +186,11 @@ public class TopProfileViewModel {
         this.birthDate = birthDate;
     }
 
-    public Integer getCompletion() {
+    public int getCompletion() {
         return completion;
     }
 
-    public void setCompletion(Integer completion) {
+    public void setCompletion(int completion) {
         this.completion = completion;
     }
 
@@ -211,6 +224,14 @@ public class TopProfileViewModel {
 
     public void setNegativeScore(String negativeScore) {
         this.negativeScore = negativeScore;
+    }
+
+    public int getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(int shopId) {
+        this.shopId = shopId;
     }
 
     public String getShopName() {
@@ -275,6 +296,46 @@ public class TopProfileViewModel {
 
     public void setShopAppLink(String shopAppLink) {
         this.shopAppLink = shopAppLink;
+    }
+
+    public boolean isFollowed() {
+        return isFollowed;
+    }
+
+    public void setFollowed(boolean followed) {
+        isFollowed = followed;
+    }
+
+    public String getUserPhoto() {
+        return userPhoto;
+    }
+
+    public void setUserPhoto(String userPhoto) {
+        this.userPhoto = userPhoto;
+    }
+
+    public boolean isKol() {
+        return isKol;
+    }
+
+    public void setKol(boolean kol) {
+        isKol = kol;
+    }
+
+    public boolean isGoldBadge() {
+        return isGoldBadge;
+    }
+
+    public void setGoldBadge(boolean goldBadge) {
+        isGoldBadge = goldBadge;
+    }
+
+    public int getShopBadgeLevel() {
+        return shopBadgeLevel;
+    }
+
+    public void setShopBadgeLevel(int shopBadgeLevel) {
+        this.shopBadgeLevel = shopBadgeLevel;
     }
 
     public boolean isUser() {

@@ -25,6 +25,8 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.peoplefave.activity.PeopleFavoritedShop;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.tab.Tabs;
+import com.tokopedia.profile.ProfileComponentInstance;
+import com.tokopedia.profile.common.di.ProfileComponent;
 import com.tokopedia.profile.view.adapter.ProfileTabPagerAdapter;
 import com.tokopedia.profile.view.fragment.TopProfileFragment;
 import com.tokopedia.profile.view.listener.TopProfileActivityListener;
@@ -70,6 +72,8 @@ public class TopProfileActivity extends BaseEmptyActivity
 
     private TopProfileViewModel topProfileViewModel;
 
+    private ProfileComponent profileComponent;
+
     public static Intent newInstance(Context context) {
         return new Intent(context, TopProfileActivity.class);
     }
@@ -78,6 +82,17 @@ public class TopProfileActivity extends BaseEmptyActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
+
+//    private void initjInjector(){
+//        getProfileComponent().inject(this);
+//    }
+//
+//    private ProfileComponent getProfileComponent(){
+//        if(profileComponent == null){
+//            profileComponent = ProfileComponentInstance.getProfileComponent(getApplication());
+//        }
+//        return profileComponent;
+//    }
 
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
@@ -292,7 +307,7 @@ public class TopProfileActivity extends BaseEmptyActivity
                     ((SessionRouter) getApplicationContext()).getKolPostFragment("6543110");
             profileSectionItemList.add(new ProfileSectionItem(TITLE_POST, kolPostFragment));
         }
-        TopProfileFragment profileFragment = TopProfileFragment.newInstance();
+        TopProfileFragment profileFragment = TopProfileFragment.newInstance("5510248");
         profileSectionItemList.add(new ProfileSectionItem(TITLE_PROFILE, profileFragment));
 
         ProfileTabPagerAdapter profileTabPagerAdapter =
