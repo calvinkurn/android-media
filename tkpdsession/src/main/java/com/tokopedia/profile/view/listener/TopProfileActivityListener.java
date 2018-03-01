@@ -20,8 +20,6 @@ public interface TopProfileActivityListener {
 
         void showMainView();
 
-        void hideMainView();
-
         void showLoading();
 
         void hideLoading();

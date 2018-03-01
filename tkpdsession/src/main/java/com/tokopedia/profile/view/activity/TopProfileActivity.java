@@ -230,14 +230,7 @@ public class TopProfileActivity extends BaseEmptyActivity
     }
 
     @Override
-    public void hideMainView() {
-        header.setVisibility(View.GONE);
-        viewPager.setVisibility(View.GONE);
-    }
-
-    @Override
     public void showLoading() {
-        hideMainView();
         hideErrorScreen();
         header.setVisibility(View.GONE);
         tabLayout.setVisibility(View.GONE);
@@ -253,7 +246,6 @@ public class TopProfileActivity extends BaseEmptyActivity
 
     @Override
     public void showErrorScreen(String errorMessage, View.OnClickListener onClickListener) {
-        hideMainView();
         hideLoading();
         header.setVisibility(View.GONE);
         tabLayout.setVisibility(View.GONE);
