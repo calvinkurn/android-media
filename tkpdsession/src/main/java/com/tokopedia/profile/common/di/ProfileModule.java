@@ -2,6 +2,7 @@ package com.tokopedia.profile.common.di;
 
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.profile.data.network.ProfileApi;
 import com.tokopedia.profile.data.network.ProfileUrl;
 
@@ -12,7 +13,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 /**
- * Created by alvinatin on 20/02/18.
+ * @author by alvinatin on 20/02/18.
  */
 
 @ProfileScope
@@ -26,6 +27,7 @@ public class ProfileModule {
         return new OkHttpClient.Builder()
                 .addInterceptor(httpLoggingInterceptor)
                 .addInterceptor(tkpdAuthInterceptor)
+                .addInterceptor(new FingerprintInterceptor())
                 .build();
     }
 

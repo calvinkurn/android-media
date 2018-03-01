@@ -104,11 +104,16 @@ public class PartialUserDataView extends BaseCustomView {
     }
 
     public void renderData(TopProfileViewModel model) {
-        renderIncompleteBanner(model);
-        renderPhoneNumber(model);
-        renderEmail(model);
-        renderBirthDate(model);
-        renderGender(model);
+        if (model.isUser()) {
+            renderIncompleteBanner(model);
+            renderPhoneNumber(model);
+            renderEmail(model);
+            renderBirthDate(model);
+            renderGender(model);
+            this.setVisibility(VISIBLE);
+        } else {
+            this.setVisibility(GONE);
+        }
     }
 
     private void renderIncompleteBanner(TopProfileViewModel model) {

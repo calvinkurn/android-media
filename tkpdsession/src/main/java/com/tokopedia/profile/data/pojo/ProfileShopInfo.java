@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 /**
- * Created by nakama on 28/02/18.
+ * @author by alvinatin on 28/02/18.
  */
 
 public class ProfileShopInfo {

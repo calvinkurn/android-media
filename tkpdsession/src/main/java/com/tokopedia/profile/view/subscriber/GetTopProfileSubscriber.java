@@ -1,23 +1,20 @@
 package com.tokopedia.profile.view.subscriber;
 
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.core.gcm.Visitable;
-import com.tokopedia.profile.view.listener.ProfileContentListener;
+import com.tokopedia.profile.view.listener.TopProfileFragmentListener;
 import com.tokopedia.profile.view.viewmodel.TopProfileViewModel;
-
-import java.util.ArrayList;
 
 import rx.Subscriber;
 
 /**
- * Created by nakama on 28/02/18.
+ * @author by alvinatin on 28/02/18.
  */
 
-public class GetProfileContentSubscriber extends Subscriber<TopProfileViewModel>{
+public class GetTopProfileSubscriber extends Subscriber<TopProfileViewModel>{
 
-    private final ProfileContentListener.View view;
+    private final TopProfileFragmentListener.View view;
 
-    public GetProfileContentSubscriber(ProfileContentListener.View view){
+    public GetTopProfileSubscriber(TopProfileFragmentListener.View view){
         this.view = view;
     }
 

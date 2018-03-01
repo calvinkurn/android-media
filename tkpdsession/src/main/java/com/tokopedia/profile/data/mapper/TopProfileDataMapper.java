@@ -16,14 +16,14 @@ import retrofit2.Response;
 import rx.functions.Func1;
 
 /**
- * Created by nakama on 27/02/18.
+ * @author alvinatin on 27/02/18.
  */
 
-public class ProfileDataMapper
+public class TopProfileDataMapper
         implements Func1<Response<GraphqlResponse<ProfileGraphql>>, TopProfileViewModel>{
 
     @Inject
-    public ProfileDataMapper(){
+    public TopProfileDataMapper(){
 
     }
 
@@ -59,7 +59,7 @@ public class ProfileDataMapper
         model.setPhoneNumber(data.getPhone());
         model.setEmail(data.getEmail());
         model.setGender(data.getGenderName());
-        model.setBirthDate(data.getBday());
+        model.setBirthDate(data.getAppsBday());
         model.setCompletion(data.getCompletion());
     }
 

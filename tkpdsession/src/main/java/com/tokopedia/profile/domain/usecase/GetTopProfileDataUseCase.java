@@ -1,6 +1,6 @@
 package com.tokopedia.profile.domain.usecase;
 
-import com.tokopedia.profile.data.source.GetProfileContentDataSourceCloud;
+import com.tokopedia.profile.data.source.GetTopProfileDataSourceCloud;
 import com.tokopedia.profile.view.viewmodel.TopProfileViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -10,23 +10,23 @@ import javax.inject.Inject;
 import rx.Observable;
 
 /**
- * Created by nakama on 28/02/18.
+ * @author by alvinatin on 28/02/18.
  */
 
-public class GetProfileContentDataUseCase extends UseCase<TopProfileViewModel> {
+public class GetTopProfileDataUseCase extends UseCase<TopProfileViewModel> {
 
     public static final String PARAM_USER_ID = "userID";
 
-    private final GetProfileContentDataSourceCloud getProfileContentDataSourceCloud;
+    private final GetTopProfileDataSourceCloud getTopProfileDataSourceCloud;
 
     @Inject
-    public GetProfileContentDataUseCase(GetProfileContentDataSourceCloud getProfileContentDataSourceCloud){
-        this.getProfileContentDataSourceCloud = getProfileContentDataSourceCloud;
+    public GetTopProfileDataUseCase(GetTopProfileDataSourceCloud getTopProfileDataSourceCloud){
+        this.getTopProfileDataSourceCloud = getTopProfileDataSourceCloud;
     }
 
     @Override
     public Observable<TopProfileViewModel> createObservable(RequestParams requestParams) {
-        return getProfileContentDataSourceCloud.getProfileContentData(requestParams);
+        return getTopProfileDataSourceCloud.getProfileContentData(requestParams);
     }
 
     public static RequestParams getParams(String userId){
