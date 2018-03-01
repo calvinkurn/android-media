@@ -11,6 +11,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductFilterActivity;
+import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapter;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductListViewHolder;
@@ -81,10 +83,13 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     private RecyclerView recyclerViews;
     private BottomActionView bottomActionView;
 
-    public static ShopProductListFragment createInstance(String shopId) {
+    public static ShopProductListFragment createInstance(String shopId, String keyword, String etalaseId, String etalaseName) {
         ShopProductListFragment shopProductListFragment = new ShopProductListFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ShopParamConstant.SHOP_ID, shopId);
+        bundle.putString(ShopProductListActivity.KEYWORD_EXTRAS, keyword);
+        bundle.putString(ShopProductListFragment.ETALASE_ID, etalaseId);
+        bundle.putString(ShopProductListFragment.ETALASE_NAME, etalaseName);
         shopProductListFragment.setArguments(bundle);
         return shopProductListFragment;
     }
@@ -112,6 +117,9 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         shopId = getArguments().getString(ShopParamConstant.SHOP_ID);
+        keyword = getArguments().getString(ShopProductListActivity.KEYWORD_EXTRAS);
+        etalaseId = getArguments().getString(ShopProductListFragment.ETALASE_ID);
+        etalaseName = getArguments().getString(ShopProductListFragment.ETALASE_NAME);
         shopProductListPresenter.attachView(this);
     }
 
@@ -130,9 +138,17 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (!TextUtils.isEmpty(keyword))
+            searchInputView.getSearchTextView().setText(keyword);
+
         recyclerViews = view.findViewById(R.id.recycler_view);
         chooseEtalaseLabelView = view.findViewById(R.id.label_view_choose_etalase);
         bottomActionView = view.findViewById(R.id.bottom_action_view);
+
+        if (!TextUtils.isEmpty(etalaseName)) {
+            chooseEtalaseLabelView.setContent(etalaseName);
+        }
 
         setBottomActionViewImage(currentImgBottomNav);
         RecyclerView.LayoutManager layoutManager = iterate(recyclerViews);
@@ -142,7 +158,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
             @Override
             public void onClick(View view) {
                 if (shopModuleRouter != null) {
-                    Intent etalaseIntent = ShopEtalaseActivity.createIntent(getActivity(), shopId, etalaseId);
+                    Intent etalaseIntent = ShopEtalaseActivity.createIntent(getActivity(), shopId, etalaseId, false);
                     ShopProductListFragment.this.startActivityForResult(etalaseIntent, REQUEST_CODE_ETALASE);
                 }
             }
@@ -165,7 +181,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
             }
         });
 
-        if (shopModuleRouter != null && !shopModuleRouter.isMyOwnShop(shopId)) {
+        if (shopModuleRouter != null && !shopModuleRouter.isMyOwnShop(shopId) && TextUtils.isEmpty(etalaseName)) {
             chooseEtalaseLabelView.setContent(getString(R.string.shop_info_filter_all_showcase));
         } else {
             chooseEtalaseLabelView.setContent(getString(R.string.shop_info_filter_menu_etalase_all));

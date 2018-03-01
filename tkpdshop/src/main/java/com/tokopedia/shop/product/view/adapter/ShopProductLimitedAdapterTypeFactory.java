@@ -18,9 +18,12 @@ import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
 public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory {
 
     private final View.OnClickListener showMoreProductOnclickListener;
+    private View.OnClickListener showMoreEtalaseOnclickListener;
 
-    public ShopProductLimitedAdapterTypeFactory(View.OnClickListener showMoreProductOnclickListener) {
+    public ShopProductLimitedAdapterTypeFactory(View.OnClickListener showMoreProductOnclickListener,
+                                                View.OnClickListener showMoreEtalaseOnclickListener) {
         this.showMoreProductOnclickListener = showMoreProductOnclickListener;
+        this.showMoreEtalaseOnclickListener = showMoreEtalaseOnclickListener;
     }
 
     public int type(ShopProductLimitedPromoViewModel shopProductLimitedPromoViewModel) {
@@ -42,7 +45,9 @@ public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory
         } else if (type == ShopProductLimitedFeaturedViewHolder.LAYOUT) {
             return new ShopProductLimitedFeaturedViewHolder(parent);
         } else if (type == ShopProductLimitedProductViewHolder.LAYOUT) {
-            return new ShopProductLimitedProductViewHolder(parent, showMoreProductOnclickListener);
+            return new ShopProductLimitedProductViewHolder(parent,
+                    showMoreProductOnclickListener,
+                    showMoreEtalaseOnclickListener);
         } else {
             return super.createViewHolder(parent, type);
         }
