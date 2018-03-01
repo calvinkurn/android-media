@@ -387,7 +387,7 @@ public class ShopInfoActivity extends BaseActivity
         Intent resultIntent = new Intent();
         resultIntent.putExtra(SHOP_STATUS_IS_FAVORITED, shopAlreadyFavorited);
         resultIntent.putExtra(FAVORITE_STATUS_UPDATED, true);
-        setResult(RESULT_CANCELED, resultIntent);
+        setResult(RESULT_OK, resultIntent);
     }
 
     private GetShopInfoRetrofit.OnGetShopInfoListener onGetShopInfoRetro() {

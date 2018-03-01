@@ -26,7 +26,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.R;
@@ -517,10 +517,8 @@ public class CatalogFragment extends SearchSectionFragment implements
 
     @Override
     public void onShopItemClicked(Shop shop) {
-        Bundle bundle = ShopInfoActivity.createBundle(shop.getId(), "");
-        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-        intent.putExtras(bundle);
-        getActivity().startActivity(intent);
+        Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shop.getId());
+        startActivity(intent);
     }
 
     @Override

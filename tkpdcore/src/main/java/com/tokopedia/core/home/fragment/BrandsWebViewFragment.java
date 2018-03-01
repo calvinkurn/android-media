@@ -24,7 +24,6 @@ import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.TkpdWebView;
 
