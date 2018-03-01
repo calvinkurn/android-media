@@ -160,7 +160,7 @@ public class CartAddressChoiceFragment extends BasePresenterFragment<ICartAddres
 
     @Override
     protected void initialVar() {
-
+        getActivity().setTitle("Tujuan Pengiriman");
     }
 
     @Override

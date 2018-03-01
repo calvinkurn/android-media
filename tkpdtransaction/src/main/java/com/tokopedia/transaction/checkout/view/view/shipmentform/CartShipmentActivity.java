@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.checkout.view.view.shipmentform;
 
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -70,6 +71,12 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
     }
 
     @Override
+    public void setTitle(CharSequence title) {
+        super.setTitle(title);
+        setupToolbar();
+    }
+
+    @Override
     protected int getLayoutId() {
         return R.layout.activity_shipment_cart_tx_module;
     }
@@ -119,5 +126,29 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
         if (intent == null) setResult(resultCode);
         else setResult(resultCode, intent);
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        // TODO add reset cart shipment dialog here
+        showResetDialog();
+    }
+
+    void showResetDialog() {
+        DialogFragment dialog = ResetShipmentFormDialog.newInstance(
+                new ResetShipmentFormDialog.ResetShipmentFormCallbackAction() {
+
+                    @Override
+                    public void onResetCartShipmentForm() {
+                        finish();
+                    }
+
+                    @Override
+                    public void onCancelResetCartShipmentForm() {
+
+                    }
+                });
+
+        dialog.show(getFragmentManager(), "dialog");
     }
 }

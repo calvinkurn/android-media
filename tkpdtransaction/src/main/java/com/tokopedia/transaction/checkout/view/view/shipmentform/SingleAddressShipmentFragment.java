@@ -20,6 +20,7 @@ import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartPayableDetailModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.domain.mapper.SingleAddressShipmentDataConverter;
@@ -196,8 +197,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
         mSingleAddressShipmentPresenter.attachView(this);
 
-        double price = mCartSingleAddressData.getCartPayableDetailModel().getTotalPrice();
-        mTvTotalPayment.setText(CURRENCY_ID.format(price));
+        onTotalPaymentChange(mCartSingleAddressData.getCartPayableDetailModel());
     }
 
     /**
@@ -214,6 +214,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
      */
     @Override
     protected void initialVar() {
+        getActivity().setTitle("Kurir Pengiriman");
     }
 
     /**
@@ -253,13 +254,9 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     public void onAddOrChangeAddress() {
-        startActivityForResult(
-                CartAddressChoiceActivity.createInstance(
-                        getActivity(),
+        startActivityForResult(CartAddressChoiceActivity.createInstance(getActivity(),
                         CartAddressChoiceActivity.TYPE_REQUEST_FULL_SELECTION,
-                        mCartSingleAddressData.getCartSellerItemModelList(),
-                        mCartSingleAddressData.getRecipientAddressModel()
-                ),
+                        mCartSingleAddressData.getRecipientAddressModel()),
                 CartAddressChoiceActivity.REQUEST_CODE);
     }
 
@@ -272,6 +269,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
             ShipmentRatesDataMapper shipmentRatesDataMapper = new ShipmentRatesDataMapper();
             shipmentDetailData = shipmentRatesDataMapper.getShipmentDetailData(cartSellerItemModel);
         }
+
         startActivityForResult(ShipmentDetailActivity.createInstance(
                 getActivity(), shipmentDetailData, position), REQUEST_CODE_SHIPMENT_DETAIL);
     }
@@ -336,6 +334,12 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     }
 
     @Override
+    public void onTotalPaymentChange(CartPayableDetailModel cartPayableDetailModel) {
+        double price = cartPayableDetailModel.getTotalPrice();
+        mTvTotalPayment.setText(CURRENCY_ID.format(price));
+    }
+
+    @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         this.cartShipmentActivityListener = (ICartShipmentActivity) activity;
@@ -380,8 +384,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                     ShipmentDetailData shipmentDetailData = data.getParcelableExtra(EXTRA_SHIPMENT_DETAIL_DATA);
                     int position = data.getIntExtra(EXTRA_SINGLE_ADDRESS_POSITION, 0);
                     mSingleAddressShipmentAdapter.updateSelectedShipment(position, shipmentDetailData);
-                    mSingleAddressShipmentAdapter.notifyItemChanged(position);
-
+                    mSingleAddressShipmentAdapter.notifyDataSetChanged();
                 default:
                     break;
             }
