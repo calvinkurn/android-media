@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:divider="@drawable/bg_line_separator_shop_page_button"
     android:gravity="center"
     android:orientation="horizontal"
     android:padding="@dimen/margin_ms"
+    android:layout_marginRight="@dimen/margin_ms"
     android:showDividers="middle">
 
     <Button
@@ -16,7 +16,9 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:text="@string/shop_page_label_manage_shop"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:layout_marginRight="@dimen/margin_ms"
+        tools:visibility="visible"/>
 
     <Button
         android:id="@+id/button_add_product"
@@ -24,7 +26,8 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:text="@string/shop_page_label_add_product"
-        android:visibility="gone" />
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
     <Button
         android:id="@+id/button_chat_seller"
@@ -32,7 +35,8 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:text="@string/shop_page_label_chat_to_seller"
-        android:visibility="gone" />
+        android:layout_marginRight="@dimen/margin_ms"
+        android:visibility="gone"/>
 
     <Button
         android:id="@+id/button_favourite_shop"

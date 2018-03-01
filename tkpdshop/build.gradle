@@ -49,6 +49,9 @@ dependencies {
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
 
+    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
     compile rootProject.ext.supportLibDependencies.constraintLayout
 
     testCompile 'junit:junit:4.12'

@@ -58,6 +58,7 @@
     <string name="shop_info_sort_label">Urutkan</string>
     <string name="shop_info_filter_all_showcase">Semua Etalase</string>
     <string name="shop_info_filter_menu_etalase_all">Semua Produk</string>
+    <string name="shop_info_label_share">Bagikan</string>
 
 
 </resources>

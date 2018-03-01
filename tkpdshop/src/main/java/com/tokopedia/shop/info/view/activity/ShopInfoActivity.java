@@ -2,6 +2,7 @@ package com.tokopedia.shop.info.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,10 +11,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopComponentInstance;
+import com.tokopedia.shop.common.constant.ShopAppLink;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment;
@@ -26,6 +29,9 @@ import com.tokopedia.shop.note.view.fragment.ShopNoteListFragment;
 public class ShopInfoActivity extends BaseTabActivity implements HasComponent<ShopComponent> {
 
     private static final int PAGE_LIMIT = 2;
+    private static final String EXTRA_STATE_TAB_POSITION = "extra_tab_position";
+    private static final int TAB_POSITION_NOTE = 2;
+    private static final int TAB_POSITION_INFO = 1;
 
     public static Intent createIntent(Context context, String shopId) {
         Intent intent = new Intent(context, ShopInfoActivity.class);
@@ -33,12 +39,33 @@ public class ShopInfoActivity extends BaseTabActivity implements HasComponent<Sh
         return intent;
     }
 
+
+    @DeepLink(ShopAppLink.SHOP_NOTE)
+    public static Intent getCallingIntentNoteSelected(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, ShopInfoActivity.class)
+                .setData(uri.build())
+                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_NOTE)
+                .putExtras(extras);
+    }
+
+    @DeepLink(ShopAppLink.SHOP_INFO)
+    public static Intent getCallingIntentInfoSelected(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, ShopInfoActivity.class)
+                .setData(uri.build())
+                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_INFO)
+                .putExtras(extras);
+    }
+
     private String shopId;
+    private int tabPosition;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         shopId = getIntent().getStringExtra(ShopParamConstant.SHOP_ID);
+        tabPosition = getIntent().getIntExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_INFO);
     }
 
     @Override
@@ -46,6 +73,7 @@ public class ShopInfoActivity extends BaseTabActivity implements HasComponent<Sh
         super.setupLayout(savedInstanceState);
         tabLayout.addOnTabSelectedListener(getTabsListener());
         tabLayout.setupWithViewPager(viewPager);
+        viewPager.setCurrentItem(tabPosition);
     }
 
     @NonNull
