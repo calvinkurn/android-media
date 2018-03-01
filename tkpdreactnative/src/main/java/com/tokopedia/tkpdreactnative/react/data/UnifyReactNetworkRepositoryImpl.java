@@ -1,5 +1,6 @@
 package com.tokopedia.tkpdreactnative.react.data;
 
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.data.datasource.UnifyReactNetworkAuthDataSource;
 import com.tokopedia.tkpdreactnative.react.data.datasource.UnifyReactNetworkBearerDataSource;
@@ -44,6 +45,6 @@ public class UnifyReactNetworkRepositoryImpl implements UnifyReactNetworkReposit
     }
 
     private Boolean isWsV4Url(String url) {
-        return url.contains("ws.tokopedia.com");
+        return url.contains("ws.tokopedia.com") || url.contains(TkpdBaseURL.DIGITAL_API_DOMAIN);
     }
 }
