@@ -10,6 +10,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,7 +21,6 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseEmptyActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.ManagePeople;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.peoplefave.activity.PeopleFavoritedShop;
@@ -42,7 +42,7 @@ import java.util.List;
  */
 
 public class TopProfileActivity extends BaseEmptyActivity
-        implements HasComponent, TopProfileActivityListener.View {
+        implements TopProfileActivityListener.View {
 
     private static final String EXTRA_PARAM_USER_ID = "user_id";
     private static final String TITLE_PROFILE = "Info Akun";
@@ -88,17 +88,6 @@ public class TopProfileActivity extends BaseEmptyActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
-//    private void initjInjector(){
-//        getProfileComponent().inject(this);
-//    }
-//
-//    private ProfileComponent getProfileComponent(){
-//        if(profileComponent == null){
-//            profileComponent = ProfileComponentInstance.getProfileComponent(getApplication());
-//        }
-//        return profileComponent;
-//    }
 
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
@@ -180,12 +169,6 @@ public class TopProfileActivity extends BaseEmptyActivity
     }
 
     @Override
-    public Object getComponent() {
-        //TODO milhamj
-        return null;
-    }
-
-    @Override
     public void populateData(TopProfileViewModel viewModel) {
         topProfileViewModel = viewModel;
 
@@ -250,6 +233,12 @@ public class TopProfileActivity extends BaseEmptyActivity
         buttonFollowText.setTextColor(MethodChecker.getColor(this,
                 R.color.white));
         buttonFollowImage.setVisibility(View.GONE);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_top_profile, menu);
+        return true;
     }
 
     @Override
