@@ -363,7 +363,7 @@ public class ProductInfo implements Parcelable {
     }
 
     public Boolean getHasVariant() {
-        return hasVariant;
+        return hasVariant != null ? hasVariant : false;
     }
 
     public void setHasVariant(Boolean hasVariant) {
