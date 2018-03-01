@@ -6,6 +6,9 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.widget.Button;
 
 import com.tokopedia.transaction.R;
@@ -34,9 +37,24 @@ public class ResetShipmentFormDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        final AlertDialog dialog =  new AlertDialog.Builder(getActivity())
-                .setTitle("Kembali Ke Keranjang")
-                .setMessage("Perubahan yang Anda lakukan di halaman ini tidak akan disimpan")
+        ForegroundColorSpan fgSpanBlack70 =
+                new ForegroundColorSpan(ContextCompat.getColor(getActivity(), R.color.black_70));
+        ForegroundColorSpan fgSpanBlack54 =
+                new ForegroundColorSpan(ContextCompat.getColor(getActivity(), R.color.black_54));
+
+        String textTitle = "Kembali Ke Keranjang";
+        SpannableStringBuilder ssBuilderTitle = new SpannableStringBuilder(textTitle);
+        ssBuilderTitle.setSpan(fgSpanBlack70, 0, textTitle.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        String textMessage = "Perubahan yang Anda lakukan di halaman ini tidak akan disimpan";
+        SpannableStringBuilder ssBuilderMessage = new SpannableStringBuilder(textMessage);
+        ssBuilderMessage.setSpan(fgSpanBlack54, 0, textMessage.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
+
+        final AlertDialog dialog = dialogBuilder.setTitle(ssBuilderTitle)
+                .setMessage(ssBuilderMessage)
                 .setPositiveButton("Kembali & Hapus Perubahan",
                         new DialogInterface.OnClickListener() {
                             @Override
@@ -44,7 +62,7 @@ public class ResetShipmentFormDialog extends DialogFragment {
                                 mCallbackAction.onResetCartShipmentForm();
                                 dismiss();
                             }
-                })
+                        })
                 .setNegativeButton("Tetap di Halaman Ini",
                         new DialogInterface.OnClickListener() {
                             @Override
