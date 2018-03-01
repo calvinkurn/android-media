@@ -794,7 +794,6 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
                 renderShipmentWithoutMap(presenter.getShipmentDetailData());
             }
             switchInsurance.setChecked(false);
-            renderTickerView(courierItemData);
             renderInsuranceView(courierItemData);
             renderAdditionalPriceView(courierItemData);
             renderDropshipperView(presenter.getSelectedShipment());
@@ -818,7 +817,6 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         if (courierItemData.isUsePinPoint()) {
             showPinPointMap(presenter.getShipmentDetailData());
         }
-        renderTickerView(courierItemData);
         renderInsuranceView(courierItemData);
         renderAdditionalPriceView(courierItemData);
         renderDropshipperView(presenter.getSelectedShipment());
