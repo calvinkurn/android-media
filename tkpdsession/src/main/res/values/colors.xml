@@ -33,4 +33,6 @@
 
     <color name="background_yellow_incomplete">#fffcd3</color>
     <color name="background_green_verified">#d4efd5</color>
+
+    <color name="disabled_text">#42000000</color>
 </resources>

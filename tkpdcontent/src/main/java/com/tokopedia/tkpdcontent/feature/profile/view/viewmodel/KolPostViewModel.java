@@ -1,13 +1,13 @@
 package com.tokopedia.tkpdcontent.feature.profile.view.viewmodel;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.tkpdcontent.feature.profile.view.adapter.typefactory.KolTypeFactory;
+import com.tokopedia.tkpdcontent.feature.profile.view.adapter.typefactory.KolPostTypeFactory;
 
 /**
  * @author by nisie on 10/27/17.
  */
 
-public class KolPostViewModel implements Visitable<KolTypeFactory> {
+public class KolPostViewModel implements Visitable<KolPostTypeFactory> {
     private final String tagsType;
     private final String contentLink;
     private final int userId;
@@ -222,7 +222,7 @@ public class KolPostViewModel implements Visitable<KolTypeFactory> {
     }
 
     @Override
-    public int type(KolTypeFactory typeFactory) {
+    public int type(KolPostTypeFactory typeFactory) {
         return typeFactory.type(this);
     }
 }

@@ -40,6 +40,7 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     KolPostListener.Presenter presenter;
     @Inject
     KolPostAdapter adapter;
+    private View mainView;
     private RecyclerView kolRecyclerView;
     private LinearLayoutManager layoutManager;
     private KolRouter kolRouter;
@@ -84,6 +85,7 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     }
 
     private void initView(View view) {
+        mainView = view.findViewById(R.id.main_view);
         kolRecyclerView = view.findViewById(R.id.kol_rv);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
 
@@ -122,6 +124,11 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
     }
 
     @Override
+    public KolRouter getKolRouter() {
+        return kolRouter;
+    }
+
+    @Override
     public void showLoading() {
         adapter.showLoading();
     }
@@ -138,7 +145,13 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
 
     @Override
     public void onErrorGetProfileData(String message) {
-        NetworkErrorHelper.showSnackbar(getActivity(), message);
+        NetworkErrorHelper.showEmptyState(getContext(), mainView,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.getKolPost(userId);
+                    }
+        });
     }
 
     @Override
@@ -205,6 +218,35 @@ public class KolPostFragment extends BaseDaggerFragment implements KolPostListen
                 break;
             default:
                 break;
+        }
+    }
+
+    @Override
+    public void onLikeKolSuccess(int rowNumber) {
+        if (adapter.getList().get(rowNumber) != null
+                && adapter.getList().get(rowNumber) instanceof KolPostViewModel) {
+            KolPostViewModel kolPostViewModel =
+                    ((KolPostViewModel) adapter.getList().get(rowNumber));
+            kolPostViewModel.setLiked(!kolPostViewModel.isLiked());
+            if (kolPostViewModel.isLiked()) {
+                kolPostViewModel.setTotalLike(kolPostViewModel.getTotalLike() + 1);
+            } else {
+                kolPostViewModel.setTotalLike(kolPostViewModel.getTotalLike() - 1);
+            }
+            adapter.notifyItemChanged(rowNumber);
+        }
+    }
+
+    @Override
+    public void onLikeKolError(String message) {
+        showError(message);
+    }
+
+    private void showError(String message) {
+        if (message == null) {
+            NetworkErrorHelper.showSnackbar(getActivity());
+        } else {
+            NetworkErrorHelper.showSnackbar(getActivity(), message);
         }
     }
 
