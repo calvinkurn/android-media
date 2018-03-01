@@ -37,9 +37,9 @@ public class Channel {
     @SerializedName("is_freeze")
     @Expose
     private boolean isFreeze;
-    @SerializedName("active_polls")
+    @SerializedName("active_poll")
     @Expose
-    private List<ActivePollPojo> activePolls = null;
+    private ActivePollPojo activePolls = null;
     @SerializedName("moderator_id")
     @Expose
     private String moderatorId;
@@ -130,11 +130,11 @@ public class Channel {
         this.isFreeze = isFreeze;
     }
 
-    public List<ActivePollPojo> getActivePolls() {
+    public ActivePollPojo getActivePolls() {
         return activePolls;
     }
 
-    public void setActivePolls(List<ActivePollPojo> activePolls) {
+    public void setActivePolls(ActivePollPojo activePolls) {
         this.activePolls = activePolls;
     }
 
