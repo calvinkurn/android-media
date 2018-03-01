@@ -38,7 +38,7 @@ public class GetProfileKolDataMapper
                     postKol.userName != null ? postKol.userName  : "",
                     postKol.userPhoto != null ? postKol.userPhoto  : "",
                     postKol.userInfo != null ? postKol.userInfo : "",
-                    postKol.isFollowed != null ? postKol.isFollowed : false,
+                    true,
                     getImageUrl(postKol),
                     getTagCaption(postKol),
                     postKol.description != null ? postKol.description : "",

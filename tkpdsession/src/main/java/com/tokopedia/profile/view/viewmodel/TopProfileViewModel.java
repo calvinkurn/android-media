@@ -8,6 +8,7 @@ public class TopProfileViewModel {
 
     private int userId;
     private String name;
+    private String avatar;
     private String title;
     private String biodata;
     private String following;
@@ -16,6 +17,7 @@ public class TopProfileViewModel {
     private String favoritedShop;
     private String userPhoto;
     private boolean isKol;
+    private boolean isFollowed;
 
     private boolean isPhoneVerified;
     private boolean isEmailVerified;
@@ -72,6 +74,14 @@ public class TopProfileViewModel {
         this.name = name;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -110,6 +120,22 @@ public class TopProfileViewModel {
 
     public void setFavoritedShop(String favoritedShop) {
         this.favoritedShop = favoritedShop;
+    }
+
+    public boolean isKol() {
+        return isKol;
+    }
+
+    public void setKol(boolean kol) {
+        isKol = kol;
+    }
+
+    public boolean isFollowed() {
+        return isFollowed;
+    }
+
+    public void setFollowed(boolean followed) {
+        isFollowed = followed;
     }
 
     public boolean isPhoneVerified() {

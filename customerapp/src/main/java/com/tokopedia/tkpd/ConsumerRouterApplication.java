@@ -147,6 +147,9 @@ import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 import com.tokopedia.tkpd.applink.AppLinkWebsiteActivity;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
+import com.tokopedia.tkpd.content.ContentGetFeedUseCase;
+import com.tokopedia.tkpd.content.di.ContentConsumerComponent;
+import com.tokopedia.tkpd.content.di.DaggerContentConsumerComponent;
 import com.tokopedia.tkpd.datepicker.DatePickerUtil;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -165,8 +168,14 @@ import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.FeedModuleRouter;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FollowKolDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.LikeKolDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FollowKolPostUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolCommentActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolFollowingListActivity;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.KolCommentFragment;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentHeaderViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentProductViewModel;
@@ -175,6 +184,8 @@ import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpdcontent.KolRouter;
 import com.tokopedia.tkpdcontent.feature.profile.view.fragment.KolPostFragment;
+import com.tokopedia.tkpdcontent.feature.profile.view.subscriber.FollowKolPostSubscriber;
+import com.tokopedia.tkpdcontent.feature.profile.view.subscriber.LikeKolPostSubscriber;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
@@ -195,6 +206,9 @@ import javax.inject.Inject;
 
 import okhttp3.Response;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
@@ -221,7 +235,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private DaggerProductComponent.Builder daggerProductBuilder;
     private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
     private DaggerFlightConsumerComponent.Builder daggerFlightBuilder;
+    private DaggerContentConsumerComponent.Builder daggerContentBuilder;
     private FlightConsumerComponent flightConsumerComponent;
+    private ContentConsumerComponent contentConsumerComponent;
     private ProductComponent productComponent;
     private DaggerShopComponent.Builder daggerShopBuilder;
     private ShopComponent shopComponent;
@@ -262,6 +278,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return flightConsumerComponent;
     }
 
+    private ContentConsumerComponent getContentConsumerComponent() {
+        if (contentConsumerComponent == null) {
+            contentConsumerComponent = daggerContentBuilder.build();
+        }
+        return contentConsumerComponent;
+    }
+
     private void initializeDagger() {
         daggerProductBuilder = DaggerProductComponent.builder().productModule(new ProductModule());
         daggerReactNativeBuilder = DaggerReactNativeComponent.builder()
@@ -276,6 +299,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         .build();
         daggerFlightBuilder = DaggerFlightConsumerComponent.builder()
                 .sessionComponent(sessionComponent);
+
+        FeedPlusComponent feedPlusComponent =
+                DaggerFeedPlusComponent.builder()
+                        .appComponent(getApplicationComponent())
+                        .build();
+
+        daggerContentBuilder = DaggerContentConsumerComponent.builder()
+                .feedPlusComponent(feedPlusComponent);
     }
 
     private void initRemoteConfig() {
@@ -1365,5 +1396,61 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public String getKolCommentArgsTotalComment() {
         return KolCommentFragment.ARGS_TOTAL_COMMENT;
+    }
+
+    @Override
+    public void doLikeKolPost(int id, LikeKolPostSubscriber likeKolPostSubscriber) {
+        likeUnlikeKolPost(id, LikeKolPostUseCase.ACTION_LIKE, likeKolPostSubscriber);
+    }
+
+    @Override
+    public void doUnlikeKolPost(int id, LikeKolPostSubscriber likeKolPostSubscriber) {
+        likeUnlikeKolPost(id, LikeKolPostUseCase.ACTION_UNLIKE, likeKolPostSubscriber);
+    }
+
+    private void likeUnlikeKolPost(int id, int action,
+                                   LikeKolPostSubscriber likeKolPostSubscriber) {
+        LikeKolPostUseCase likeKolPostUseCase = ContentGetFeedUseCase
+                .newInstance(getContentConsumerComponent())
+                .inject()
+                .getLikeKolPostUseCase();
+        likeKolPostUseCase.createObservable(LikeKolPostUseCase.getParam(id, action))
+                .map(new Func1<LikeKolDomain, Boolean>() {
+                    @Override
+                    public Boolean call(LikeKolDomain likeKolDomain) {
+                        return likeKolDomain.isSuccess();
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(likeKolPostSubscriber);
+    }
+
+    @Override
+    public void doFollowKolPost(int id, FollowKolPostSubscriber followKolPostSubscriber) {
+        followUnfollowKolPost(id, FollowKolPostUseCase.PARAM_FOLLOW, followKolPostSubscriber);
+    }
+
+    @Override
+    public void doUnfollowKolPost(int id, FollowKolPostSubscriber followKolPostSubscriber) {
+        followUnfollowKolPost(id, FollowKolPostUseCase.PARAM_UNFOLLOW, followKolPostSubscriber);
+    }
+
+    private void followUnfollowKolPost(int id, int action,
+                                       FollowKolPostSubscriber followKolPostSubscriber) {
+        FollowKolPostUseCase followKolPostUseCase = ContentGetFeedUseCase
+                .newInstance(getContentConsumerComponent())
+                .inject()
+                .getFollowKolPostUseCase();
+        followKolPostUseCase.createObservable(FollowKolPostUseCase.getParam(id, action))
+                .map(new Func1<FollowKolDomain, Boolean>() {
+                    @Override
+                    public Boolean call(FollowKolDomain followKolDomain) {
+                        return followKolDomain.getStatus() == FollowKolPostUseCase.SUCCESS_STATUS;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(followKolPostSubscriber);
     }
 }

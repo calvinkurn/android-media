@@ -89,11 +89,9 @@ public class PartialUserShopView extends BaseCustomView {
             ImageHandler.loadImage2(ivShopProfile, model.getShopLogo(), R.drawable.ic_default_shop_ava);
             ivGoldShop.setVisibility(model.isGoldShop() ? VISIBLE : GONE);
             switchOfficialStoreBadge(model.isOfficialShop());
-
             tvShopName.setText(model.getShopName());
             tvShopLocation.setText(model.getShopLocation());
             tvLastOnline.setText(model.getShopLastOnline());
-
             favouriteButton.setVisibility(model.getIsUser() ? GONE : VISIBLE);}
         else {
             this.setVisibility(GONE);

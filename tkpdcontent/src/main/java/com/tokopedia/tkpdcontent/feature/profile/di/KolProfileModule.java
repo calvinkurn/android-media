@@ -1,8 +1,8 @@
 package com.tokopedia.tkpdcontent.feature.profile.di;
 
 import com.tokopedia.tkpdcontent.feature.profile.domain.interactor.GetProfileKolDataUseCase;
-import com.tokopedia.tkpdcontent.feature.profile.view.adapter.typefactory.KolTypeFactory;
-import com.tokopedia.tkpdcontent.feature.profile.view.adapter.typefactory.KolTypeFactoryImpl;
+import com.tokopedia.tkpdcontent.feature.profile.view.adapter.typefactory.KolPostTypeFactoryImpl;
+import com.tokopedia.tkpdcontent.feature.profile.view.adapter.typefactory.KolPostTypeFactory;
 import com.tokopedia.tkpdcontent.feature.profile.view.listener.KolPostListener;
 import com.tokopedia.tkpdcontent.feature.profile.view.presenter.KolPostPresenter;
 
@@ -29,7 +29,7 @@ public class KolProfileModule {
 
     @KolProfileScope
     @Provides
-    KolTypeFactory provideKolTypeFactory() {
-        return new KolTypeFactoryImpl(viewListener);
+    KolPostTypeFactory provideKolTypeFactory() {
+        return new KolPostTypeFactoryImpl(viewListener);
     }
 }

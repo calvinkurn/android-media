@@ -178,6 +178,7 @@
     <!-- TopProfile -->
     <string name="manage_profile">Atur Akun</string>
     <string name="favorite_shop">Toko Favorit</string>
+    <string name="follow">Follow</string>
     <string name="followers">Followers</string>
     <string name="following">Following</string>
     <string name="title_user_information">Informasi Pengguna</string>
