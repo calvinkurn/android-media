@@ -177,6 +177,8 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
         void onCartPromoTrackingCancelled(CartPromo cartPromo, int position);
 
+        void onTotalPaymentChange(CartPayableDetailModel cartPayableDetailModel);
+
     }
 
     public void setPickupPoint(Store store) {
@@ -428,6 +430,8 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
             mTvPromoFreeShipping.setVisibility(View.VISIBLE);
             mTvPromoTextViewRemove.setOnClickListener(togglePromoTextListener);
+
+            mAdapterViewListener.onTotalPaymentChange(model);
         }
 
         private void togglePromoText() {
