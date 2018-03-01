@@ -121,10 +121,14 @@ public class EventBookTicketActivity
         appBar.setTitle(detailsViewModel.getTitle());
         appBar.setNavigationIcon(R.drawable.ic_arrow_back_black);
         title = detailsViewModel.getTitle();
-        if (detailsViewModel.getSchedulesViewModels().size() > 1) {
-            tvUbahJadwal.setVisibility(View.VISIBLE);
-        } else
+        if (detailsViewModel.getSchedulesViewModels() != null) {
+            if (detailsViewModel.getSchedulesViewModels().size() > 1) {
+                tvUbahJadwal.setVisibility(View.VISIBLE);
+            } else
+                tvUbahJadwal.setVisibility(View.GONE);
+        } else {
             tvUbahJadwal.setVisibility(View.GONE);
+        }
         tvLocation.setText(detailsViewModel.getSchedulesViewModels().get(0).getCityName());
         tvDate.setText(Utils.convertEpochToString(detailsViewModel.getSchedulesViewModels().get(0).getStartDate()));
         setFragmentData(detailsViewModel.getSchedulesViewModels().get(0));
