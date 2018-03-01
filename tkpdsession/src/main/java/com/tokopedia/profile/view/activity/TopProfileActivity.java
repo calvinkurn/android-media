@@ -209,6 +209,26 @@ public class TopProfileActivity extends BaseEmptyActivity
         }
     }
 
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void hideLoading() {
+
+    }
+
+    @Override
+    public void showErrorScreen(String errorMessage, View.OnClickListener onClickListener) {
+
+    }
+
+    @Override
+    public void hideErrorScreen() {
+
+    }
+
     private void setTextDisabledOrNot(TextView textView, String value) {
         textView.setTextColor(
                 MethodChecker.getColor(

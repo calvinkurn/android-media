@@ -4,14 +4,14 @@
     android:id="@+id/main_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:background="@color/font_white_primary_70">
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="4dp"
-            android:background="@color/font_white_primary_70"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
             <android.support.design.widget.CollapsingToolbarLayout
@@ -21,7 +21,10 @@
                 android:fitsSystemWindows="true"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-                <include layout="@layout/partial_header_top_profile" />
+                <include layout="@layout/partial_header_top_profile"
+                    android:visibility="gone"
+                    android:id="@+id/header"
+                    />
 
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"
@@ -47,7 +50,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/progress_view"
@@ -62,6 +66,57 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:indeterminate="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/error_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <ImageView
+            android:layout_width="@dimen/default_big_icon"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_network_error"
+            android:layout_marginBottom="@dimen/padding_large"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_16"
+            android:fontFamily="sans-serif-medium"
+            android:textStyle="normal"
+            android:textColor="@color/black_54"
+            android:gravity="center_horizontal"
+            android:text="@string/error_occured"
+            android:layout_marginBottom="@dimen/new_margin_small"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_12"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:textColor="@color/black_54"
+            android:gravity="center_horizontal"
+            android:text="@string/server_busy"
+            android:layout_marginBottom="@dimen/new_margin_sm"
+            />
+
+        <TextView
+            android:layout_width="@dimen/default_big_icon"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/new_margin_med"
+            android:background="@drawable/bg_button_green_enabled"
+            android:textSize="@dimen/text_size_13"
+            android:fontFamily="sans-serif-medium"
+            android:textStyle="normal"
+            android:textColor="@color/white"
+            android:gravity="center_horizontal"
+            android:text="@string/try_again"
+            />
 
     </LinearLayout>
 
