@@ -8,11 +8,11 @@ import com.tokopedia.flight.airport.data.source.db.FlightAirportVersionDBSource;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.banner.data.source.BannerDataSource;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
+import com.tokopedia.flight.booking.data.FlightPassengerDataListSource;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
-import com.tokopedia.flight.booking.data.cloud.FlightSavedPassengerDataSource;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
-import com.tokopedia.flight.booking.data.cloud.entity.SavedPassengerEntity;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
+import com.tokopedia.flight.booking.data.db.model.FlightPassengerDB;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
@@ -58,7 +58,6 @@ public class FlightRepositoryImpl implements FlightRepository {
     private FlightSearchSingleDataSource flightSearchSingleDataListSource;
     private FlightSearchReturnDataSource flightSearchReturnDataListSource;
     private FlightCartDataSource flightCartDataSource;
-    private FlightSavedPassengerDataSource flightSavedPassengerDataSource;
     private FlightMetaDataDBSource flightMetaDataDBSource;
     private FlightAirportDataListBackgroundSource flightAirportDataListBackgroundSource;
     private FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource;
@@ -66,6 +65,7 @@ public class FlightRepositoryImpl implements FlightRepository {
     private FlightAirportVersionDBSource flightAirportVersionDBSource;
     private FlightOrderDataSource flightOrderDataSource;
     private FlightOrderMapper flightOrderMapper;
+    private FlightPassengerDataListSource flightPassengerDataListSource;
 
     public FlightRepositoryImpl(BannerDataSource bannerDataSource,
                                 FlightAirportDataListSource flightAirportDataListSource,
@@ -74,14 +74,14 @@ public class FlightRepositoryImpl implements FlightRepository {
                                 FlightSearchReturnDataSource flightSearchReturnDataListSource,
                                 FlightClassesDataSource flightClassesDataSource,
                                 FlightCartDataSource flightCartDataSource,
-                                FlightSavedPassengerDataSource flightSavedPassengerDataSource,
                                 FlightMetaDataDBSource flightMetaDataDBSource,
                                 FlightAirportDataListBackgroundSource flightAirportDataListBackgroundSource,
                                 FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource,
                                 FlightBookingDataSource flightBookingDataSource,
                                 FlightAirportVersionDBSource flightAirportVersionDBSource,
                                 FlightOrderDataSource flightOrderDataSource,
-                                FlightOrderMapper flightOrderMapper) {
+                                FlightOrderMapper flightOrderMapper,
+                                FlightPassengerDataListSource flightPassengerDataListSource) {
         this.bannerDataSource = bannerDataSource;
         this.flightAirportDataListSource = flightAirportDataListSource;
         this.flightAirlineDataListSource = flightAirlineDataListSource;
@@ -89,7 +89,6 @@ public class FlightRepositoryImpl implements FlightRepository {
         this.flightSearchReturnDataListSource = flightSearchReturnDataListSource;
         this.flightClassesDataSource = flightClassesDataSource;
         this.flightCartDataSource = flightCartDataSource;
-        this.flightSavedPassengerDataSource = flightSavedPassengerDataSource;
         this.flightMetaDataDBSource = flightMetaDataDBSource;
         this.flightAirportDataListBackgroundSource = flightAirportDataListBackgroundSource;
         this.flightCheckVoucheCodeDataSource = flightCheckVoucheCodeDataSource;
@@ -97,6 +96,7 @@ public class FlightRepositoryImpl implements FlightRepository {
         this.flightAirportVersionDBSource = flightAirportVersionDBSource;
         this.flightOrderDataSource = flightOrderDataSource;
         this.flightOrderMapper = flightOrderMapper;
+        this.flightPassengerDataListSource = flightPassengerDataListSource;
     }
 
     @Override
@@ -332,7 +332,6 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
-    public Observable<List<SavedPassengerEntity>> getSavedPassenger() {
-        return flightSavedPassengerDataSource.getSavedPassenger();
+    public Observable<List<FlightPassengerDB>> getSavedPassenger() {return flightPassengerDataListSource.getPassengerList();
     }
 }

@@ -1,0 +1,95 @@
+package com.tokopedia.flight.booking.data.db;
+
+import com.raizlabs.android.dbflow.sql.language.Method;
+import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.structure.Model;
+import com.tokopedia.flight.booking.data.cloud.entity.SavedPassengerEntity;
+import com.tokopedia.flight.booking.data.db.model.FlightPassengerDB;
+import com.tokopedia.flight.common.data.db.BaseDataListDBSource;
+
+import java.util.HashMap;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.functions.Func1;
+
+/**
+ * @author by furqan on 28/02/18.
+ */
+
+public class FlightPassengerDataListDBSource extends BaseDataListDBSource<SavedPassengerEntity, FlightPassengerDB> {
+
+    public static final String ID = "id";
+
+    @Inject
+    public FlightPassengerDataListDBSource() {
+    }
+
+    @Override
+    protected Class<? extends Model> getDBClass() {
+        return FlightPassengerDB.class;
+    }
+
+    @Override
+    public Observable<Boolean> insertAll(List<SavedPassengerEntity> list) {
+        return Observable.from(list)
+                .flatMap(new Func1<SavedPassengerEntity, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(SavedPassengerEntity savedPassengerEntity) {
+                        FlightPassengerDB flightPassengerDB = new FlightPassengerDB(savedPassengerEntity);
+                        flightPassengerDB.insert();
+                        return Observable.just(true);
+                    }
+                })
+                .toList()
+                .flatMap(new Func1<List<Boolean>, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(List<Boolean> booleans) {
+                        return Observable.just(new Select(Method.count())
+                                .from(FlightPassengerDB.class)
+                                .hasData());
+                    }
+                });
+    }
+
+    public Observable<Boolean> insert(SavedPassengerEntity savedPassengerEntity) {
+        return Observable.just(savedPassengerEntity)
+                .map(new Func1<SavedPassengerEntity, Boolean>() {
+                    @Override
+                    public Boolean call(SavedPassengerEntity savedPassengerEntity) {
+                        FlightPassengerDB flightPassengerDB = new FlightPassengerDB(savedPassengerEntity);
+                        flightPassengerDB.insert();
+                        return true;
+                    }
+                });
+    }
+
+    @Override
+    public Observable<List<FlightPassengerDB>> getData(HashMap<String, Object> params) {
+        return Observable.unsafeCreate(new Observable.OnSubscribe<List<FlightPassengerDB>>() {
+            @Override
+            public void call(Subscriber<? super List<FlightPassengerDB>> subscriber) {
+                List<FlightPassengerDB> flightPassengerDBList;
+                flightPassengerDBList = new Select().from(FlightPassengerDB.class)
+                        .queryList();
+                subscriber.onNext(flightPassengerDBList);
+            }
+        });
+    }
+
+    @Override
+    public Observable<Integer> getDataCount(HashMap<String, Object> params) {
+        return Observable.unsafeCreate(new Observable.OnSubscribe<Integer>() {
+            @Override
+            public void call(Subscriber<? super Integer> subscriber) {
+                long count = new Select(Method.count())
+                        .from(getDBClass())
+                        .count();
+                subscriber.onNext((int) count);
+            }
+        });
+    }
+}

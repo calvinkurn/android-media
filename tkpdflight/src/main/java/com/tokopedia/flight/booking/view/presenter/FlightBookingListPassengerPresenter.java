@@ -1,7 +1,10 @@
 package com.tokopedia.flight.booking.view.presenter;
 
+import android.util.Log;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.booking.domain.FlightBookingGetSavedPassengerUseCase;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
@@ -13,6 +16,9 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
+import static com.tokopedia.flight.booking.constant.FlightBookingPassenger.ADULT;
+import static com.tokopedia.flight.booking.constant.FlightBookingPassenger.CHILDREN;
+import static com.tokopedia.flight.booking.constant.FlightBookingPassenger.INFANT;
 import static com.tokopedia.flight.common.util.FlightPassengerTitleType.NONA;
 import static com.tokopedia.flight.common.util.FlightPassengerTitleType.NYONYA;
 import static com.tokopedia.flight.common.util.FlightPassengerTitleType.TUAN;
@@ -85,6 +91,7 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+                        Log.e("ERROR", e.getLocalizedMessage());
                     }
 
                     @Override
@@ -104,11 +111,15 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
             flightBookingPassengerViewModel.setPassengerTitle(
                     getSalutationById(flightBookingPassengerViewModel.getPassengerTitleId())
             );
-
             flightBookingPassengerViewModel.setPassengerDrawable(
                     getImageRes(
                             flightBookingPassengerViewModel.getPassengerBirthdate(),
                             flightBookingPassengerViewModel.getPassengerTitleId()
+                    )
+            );
+            flightBookingPassengerViewModel.setType(
+                    getType(
+                            flightBookingPassengerViewModel.getPassengerBirthdate()
                     )
             );
 
@@ -117,6 +128,25 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
 
         getView().setPassengerViewModelList(flightBookingPassengerViewModelList);
         getView().renderPassengerList();
+    }
+
+    private int getType(String birthdate) {
+        if (birthdate != null) {
+            Date now = FlightDateUtil.getCurrentDate();
+            Date birth = FlightDateUtil.stringToDate(birthdate);
+            long diff = now.getTime() - birth.getTime();
+            long year = (1000 * 60 * 60 * 24 * 365);
+
+            if (diff > (TWELVE_YEARS * year)) {
+                return ADULT;
+            } else if (diff > (TWO_YEARS * year)) {
+                return CHILDREN;
+            } else if (diff < (TWO_YEARS * year)) {
+                return INFANT;
+            }
+        }
+
+        return ADULT;
     }
 
     private String getSalutationById(int salutationId) {
@@ -154,4 +184,6 @@ public class FlightBookingListPassengerPresenter extends BaseDaggerPresenter<Fli
 
         return R.drawable.ic_passenger_male;
     }
+
 }
+

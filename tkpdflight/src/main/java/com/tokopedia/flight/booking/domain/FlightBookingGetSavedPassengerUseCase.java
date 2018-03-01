@@ -1,6 +1,7 @@
 package com.tokopedia.flight.booking.domain;
 
 import com.tokopedia.flight.booking.data.cloud.entity.SavedPassengerEntity;
+import com.tokopedia.flight.booking.data.db.model.FlightPassengerDB;
 import com.tokopedia.flight.booking.domain.model.SavedPassengerViewModelMapper;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.common.domain.FlightRepository;
@@ -32,10 +33,10 @@ public class FlightBookingGetSavedPassengerUseCase extends UseCase<List<FlightBo
     @Override
     public Observable<List<FlightBookingPassengerViewModel>> createObservable(RequestParams requestParams) {
         return flightRepository.getSavedPassenger()
-                .map(new Func1<List<SavedPassengerEntity>, List<FlightBookingPassengerViewModel>>() {
+                .map(new Func1<List<FlightPassengerDB>, List<FlightBookingPassengerViewModel>>() {
                     @Override
-                    public List<FlightBookingPassengerViewModel> call(List<SavedPassengerEntity> savedPassengerEntities) {
-                        return savedPassengerViewModelMapper.transform(savedPassengerEntities);
+                    public List<FlightBookingPassengerViewModel> call(List<FlightPassengerDB> flightPassengerDBS) {
+                        return savedPassengerViewModelMapper.transform(flightPassengerDBS);
                     }
                 });
     }

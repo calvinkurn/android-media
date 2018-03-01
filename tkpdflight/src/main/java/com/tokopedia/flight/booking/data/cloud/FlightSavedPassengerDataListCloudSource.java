@@ -1,9 +1,11 @@
 package com.tokopedia.flight.booking.data.cloud;
 
+import com.tokopedia.abstraction.base.data.source.cloud.DataListCloudSource;
 import com.tokopedia.flight.booking.data.cloud.entity.SavedPassengerEntity;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
 import com.tokopedia.flight.search.data.cloud.model.response.FlightDataResponse;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -16,7 +18,7 @@ import rx.functions.Func1;
  * @author by furqan on 22/02/18.
  */
 
-public class FlightSavedPassengerDataListCloudSource {
+public class FlightSavedPassengerDataListCloudSource extends DataListCloudSource<SavedPassengerEntity> {
     private FlightApi flightApi;
 
     @Inject
@@ -24,12 +26,13 @@ public class FlightSavedPassengerDataListCloudSource {
         this.flightApi = flightApi;
     }
 
-    public Observable<List<SavedPassengerEntity>> getSavedPassenger() {
+    @Override
+    public Observable<List<SavedPassengerEntity>> getData(HashMap<String, Object> params) {
         return this.flightApi.getSavedPassengerData()
-                .map(new Func1<Response<FlightDataResponse<List<SavedPassengerEntity>>>, List<SavedPassengerEntity>>() {
+                .flatMap(new Func1<Response<FlightDataResponse<List<SavedPassengerEntity>>>, Observable<List<SavedPassengerEntity>>>() {
                     @Override
-                    public List<SavedPassengerEntity> call(Response<FlightDataResponse<List<SavedPassengerEntity>>> flightDataResponseResponse) {
-                        return flightDataResponseResponse.body().getData();
+                    public Observable<List<SavedPassengerEntity>> call(Response<FlightDataResponse<List<SavedPassengerEntity>>> flightDataResponseResponse) {
+                        return Observable.just(flightDataResponseResponse.body().getData());
                     }
                 });
     }
