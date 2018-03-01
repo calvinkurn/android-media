@@ -16,11 +16,11 @@ import rx.functions.Func1;
  * @author by furqan on 22/02/18.
  */
 
-public class FlightSavedPassengerDataSource {
+public class FlightSavedPassengerDataListCloudSource {
     private FlightApi flightApi;
 
     @Inject
-    public FlightSavedPassengerDataSource(FlightApi flightApi) {
+    public FlightSavedPassengerDataListCloudSource(FlightApi flightApi) {
         this.flightApi = flightApi;
     }
 
