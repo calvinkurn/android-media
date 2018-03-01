@@ -195,8 +195,7 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
         mSingleAddressShipmentPresenter.attachView(this);
 
-        double price = mCartSingleAddressData.getCartPayableDetailModel().getTotalPrice();
-        mTvTotalPayment.setText(CURRENCY_ID.format(price));
+        calculateTotalPayment();
     }
 
     /**
@@ -381,13 +380,18 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
                     ShipmentDetailData shipmentDetailData = data.getParcelableExtra(EXTRA_SHIPMENT_DETAIL_DATA);
                     int position = data.getIntExtra(EXTRA_SINGLE_ADDRESS_POSITION, 0);
                     mSingleAddressShipmentAdapter.updateSelectedShipment(position, shipmentDetailData);
-                    mSingleAddressShipmentAdapter.notifyItemChanged(position);
-
+                    mSingleAddressShipmentAdapter.notifyDataSetChanged();
+                    calculateTotalPayment();
                 default:
                     break;
             }
         }
 
+    }
+
+    void calculateTotalPayment() {
+        double price = mCartSingleAddressData.getCartPayableDetailModel().getTotalPrice();
+        mTvTotalPayment.setText(CURRENCY_ID.format(price));
     }
 
 }

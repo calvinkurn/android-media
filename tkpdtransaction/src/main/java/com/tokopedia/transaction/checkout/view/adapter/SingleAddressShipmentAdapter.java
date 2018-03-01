@@ -129,7 +129,8 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
                     .bindViewHolder(mCartSingleAddressData.getCartPayableDetailModel());
         } else {
             ((ShippedProductDetailsHolder) viewHolder)
-                    .bindViewHolder(mCartSingleAddressData.getCartSellerItemModelList()
+                    .bindViewHolder(mCartSingleAddressData.getCartPayableDetailModel(),
+                            mCartSingleAddressData.getCartSellerItemModelList()
                             .get(position - ALL_HEADER_SIZE));
         }
     }
@@ -415,11 +416,14 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             mRlDetailShipmentFee.setVisibility(View.VISIBLE);
 
             mTvTotalItemLabel.setText(getTotalItemFormat(model.getTotalItem()));
-            mTvTotalItem.setText(getPriceFormat(model.getTotalPrice()));
-            mTvShippingFeeLabel.setText(getLabelShipmentFeeWeight(model.getTotalWeight(), 1));
+            mTvTotalItem.setText(getPriceFormat(model.getTotalItemPrice()));
+            mTvShippingFeeLabel.setText(getLabelShipmentFeeWeight(model.getTotalWeight(), 0));
             mTvShippingFee.setText(getPriceFormat(model.getShippingFee()));
             mTvInsuranceFee.setText(getPriceFormat(model.getInsuranceFee()));
             mTvPromo.setText(getPriceFormat(model.getPromoPrice()));
+
+            model.setTotalPrice(model.getTotalItemPrice() + model.getInsuranceFee() + model.getShippingFee());
+
             mTvPayable.setText(getPriceFormat(model.getTotalPrice()));
 
             mTvPromoFreeShipping.setVisibility(View.VISIBLE);
@@ -544,7 +548,7 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             mLlNoteToSellerLayout = itemView.findViewById(R.id.ll_note_to_seller);
         }
 
-        void bindViewHolder(CartSellerItemModel model) {
+        void bindViewHolder(CartPayableDetailModel cost, CartSellerItemModel model) {
             // Initialize variables
             List<CartItemModel> cartItemModels = new ArrayList<>(model.getCartItemModels());
 
@@ -566,10 +570,12 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
                 mTvSelectedShipment.setText(getCourierName(courier));
                 shippingFee = CURRENCY_IDR.format(courier.getDeliveryPrice());
                 model.setTotalPrice(model.getTotalPrice() + courier.getDeliveryPrice());
+                cost.setShippingFee(cost.getShippingFee() + courier.getDeliveryPrice());
 
                 if (shipmentDetailData.getUseInsurance() != null && shipmentDetailData.getUseInsurance()) {
                     insuranceFee = CURRENCY_IDR.format(courier.getInsurancePrice());
                     model.setTotalPrice(model.getTotalPrice() + courier.getInsurancePrice());
+                    cost.setInsuranceFee(cost.getInsuranceFee() + courier.getInsurancePrice());
                 }
             }
 
