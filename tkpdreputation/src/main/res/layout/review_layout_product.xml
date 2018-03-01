@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/review_layout"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/margin_small_sm"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/margin_small_sm"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <RelativeLayout
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_width="match_parent">
+
+        <RatingBar
+            style="@style/Small.RatingBar"
+            android:id="@+id/product_rating"
+            android:isIndicator="true"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_vs"
+            android:layout_width="wrap_content"
+            android:numStars="5"
+            android:rating="4" />
+
+        <LinearLayout
+            android:id="@+id/container_reply"
+            android:layout_toLeftOf="@+id/review_overflow"
+            android:layout_below="@+id/product_rating"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_marginRight="@dimen/margin_vs"
+                android:text="@string/product_review_label_by"
+                style="@style/TextView.Small.BlackSecondary"/>
+
+            <TextView
+                style="@style/TextView.Small.Bold.BlackSecondary"
+                android:ellipsize="end"
+                android:id="@+id/reviewer_name"
+                android:maxLines="1"
+                tools:text="Sarah Elizabeth" />
+        </LinearLayout>
+
+        <TextView
+            style="@style/TextView.Micro.BlackDisabled"
+            android:id="@+id/review_time"
+            android:layout_below="@+id/container_reply"
+            tools:text="31 Jul 2016, pukul 11:48" />
+
+        <ImageView
+            android:id="@+id/review_overflow"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_more_vert_grey" />
+
+    </RelativeLayout>
+
+    <TextView
+        style="@style/TextView.Small.BlackSecondary"
+        android:enabled="true"
+        android:focusable="true"
+        android:id="@+id/review"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:longClickable="true"
+        android:textIsSelectable="true"
+        tools:text="One morning, when Gregor Samsa woke from troubled dreams, he found himself…Selengkapnya" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/product_review_image"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent" />
+
+</LinearLayout>

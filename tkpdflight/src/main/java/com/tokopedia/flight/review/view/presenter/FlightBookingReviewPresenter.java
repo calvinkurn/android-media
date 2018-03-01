@@ -59,6 +59,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                               List<FlightBookingPassengerViewModel> flightPassengerViewModels,
                               String contactName, String country, String email, String phone) {
         getView().showCheckoutLoading();
+        flightAnalytics.eventReviewNextClick();
         flightBookingVerifyUseCase.createObservable(
                 flightBookingVerifyUseCase.createRequestParams(
                         promoCode,
@@ -122,13 +123,11 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                             } else {
                                 getView().showErrorInEmptyState(FlightErrorUtil.getMessageFromException(getView().getActivity(), e));
                             }
-                            flightAnalytics.eventFailedPurchaseAttempt();
                         }
                     }
 
                     @Override
                     public void onNext(FlightCheckoutViewModel flightCheckoutViewModel) {
-                        flightAnalytics.eventPurchaseAttempt(flightCheckoutViewModel);
                         getView().setNeedToRefreshOnPassengerInfo();
                         getView().navigateToTopPay(flightCheckoutViewModel);
                     }
@@ -139,7 +138,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
     public void checkVoucherCode(String cartId, String voucherCode) {
         getView().showProgressDialog();
         flightAnalytics.eventVoucherClick(voucherCode);
-        flightCheckVoucherCodeUseCase.execute(flightCheckVoucherCodeUseCase.createRequestParams(cartId, voucherCode), getSubscriberCheckVoucherCode());
+        flightCheckVoucherCodeUseCase.execute(flightCheckVoucherCodeUseCase.createRequestParams(cartId, voucherCode), getSubscriberCheckVoucherCode(voucherCode));
     }
 
     @Override
@@ -150,17 +149,20 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
     @Override
     public void onPaymentSuccess() {
         getView().navigateToOrderList();
+        flightAnalytics.eventPurchaseAttemptSuccess();
     }
 
     @Override
     public void onPaymentFailed() {
         getView().showPaymentFailedErrorMessage(R.string.flight_review_failed_checkout_message);
+        flightAnalytics.eventPurchaseAttemptFailed();
     }
 
     @Override
     public void onPaymentCancelled() {
         getView().setNeedToRefreshOnPassengerInfo();
         getView().showPaymentFailedErrorMessage(R.string.flight_review_cancel_checkout_message);
+        flightAnalytics.eventPurchaseAttemptCancelled();
     }
 
     private Subscriber<DataResponseVerify> getSubscriberVerifyBooking() {
@@ -186,7 +188,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
         };
     }
 
-    private Subscriber<AttributesVoucher> getSubscriberCheckVoucherCode() {
+    private Subscriber<AttributesVoucher> getSubscriberCheckVoucherCode(final String voucherCode) {
         return new Subscriber<AttributesVoucher>() {
             @Override
             public void onCompleted() {
@@ -198,7 +200,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                 if (isViewAttached()) {
                     getView().hideProgressDialog();
                     getView().onErrorCheckVoucherCode(e);
-                    flightAnalytics.eventVoucherErrors(getView().getVoucherCode(), e.getMessage());
+                    flightAnalytics.eventVoucherErrors(voucherCode, e.getMessage());
                 }
             }
 

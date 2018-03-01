@@ -7,8 +7,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
@@ -89,7 +89,8 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
     protected void onResume() {
         super.onResume();
         if (!SessionHandler.isMsisdnVerified()) {
-            Intent intent = OldSessionRouter.getPhoneVerificationActivationActivityIntent(this);
+            Intent intent = ((SellerModuleRouter) MainApplication.getAppContext())
+                    .getPhoneVerificationActivityIntent(this);
             startActivityForResult(intent, REQUEST_PHONE_VERIFICATION);
         }
     }

@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
-import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.kero.KeroAuthService;
 import com.tokopedia.core.network.apiservices.transaction.TXActService;
@@ -430,7 +429,7 @@ public class CartDataInteractor implements ICartDataInteractor {
         cartRatesData.setCartAdditionalLogisticFee(Integer
                 .parseInt(cartItem.getCartLogisticFee()));
         cartRatesData.setKeroRatesKey(cartItem.getCartRatesString());
-        cartRatesData.setInsuranced(isInsuranced(cartItem));
+        cartRatesData.setInsuranced(isProductUseInsurance(cartItem));
     }
 
     private Subscriber<CartRatesData> responseList(final KeroRatesListener keroRatesListener) {
@@ -460,16 +459,12 @@ public class CartDataInteractor implements ICartDataInteractor {
         return KeroppiParam.paramsKeroCart(token, ut, cartItem);
     }
 
-    private boolean isInsuranced(CartItem cartItem) {
-        return (cartItem.getCartForceInsurance() == 1
-                || cartItem.getCartInsuranceProd() == 1
-                || isProductUseInsurance(cartItem.getCartProducts()));
-    }
-
-    private boolean isProductUseInsurance(List<CartProduct> cartProducts) {
-        for (CartProduct cartProduct : cartProducts) {
-            if (cartProduct.getProductMustInsurance().equals("1")
-                    || cartProduct.getProductUseInsurance() == 1) return true;
+    private boolean isProductUseInsurance(CartItem cartItem) {
+        for (CartProduct cartProduct : cartItem.getCartProducts()) {
+            if (cartProduct.getProductMustInsurance().equals("1") ||
+                    cartProduct.getProductUseInsurance() == 1) {
+                return true;
+            }
         }
         return false;
     }

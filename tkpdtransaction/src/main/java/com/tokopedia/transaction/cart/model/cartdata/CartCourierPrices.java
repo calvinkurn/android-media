@@ -31,9 +31,7 @@ public class CartCourierPrices {
 
     private int cartSubtotal = 0;
 
-    private int cartForceInsurance = 0;
-
-    private int cartInsuranceProd = 0;
+    private int useInsurance;
 
     private List<Integer> cartProductInsurances = new ArrayList<>();
 
@@ -167,14 +165,6 @@ public class CartCourierPrices {
         this.cartProductPrice = cartProductPrice;
     }
 
-    public int getCartForceInsurance() {
-        return cartForceInsurance;
-    }
-
-    public void setCartForceInsurance(int cartForceInsurance) {
-        this.cartForceInsurance = cartForceInsurance;
-    }
-
     public String getKeroValue() {
         return keroValue;
     }
@@ -188,14 +178,6 @@ public class CartCourierPrices {
 
     private String getStringIdrFormat(int value) {
         return ValueConverter.getStringIdrFormat(value);
-    }
-
-    public int getCartInsuranceProd() {
-        return cartInsuranceProd;
-    }
-
-    public void setCartInsuranceProd(int cartInsuranceProd) {
-        this.cartInsuranceProd = cartInsuranceProd;
     }
 
     public List<Integer> getCartProductInsurances() {
@@ -222,4 +204,11 @@ public class CartCourierPrices {
         this.insuranceUsedInfo = insuranceUsedInfo;
     }
 
+    public int getUseInsurance() {
+        return useInsurance;
+    }
+
+    public void setUseInsurance(int useInsurance) {
+        this.useInsurance = useInsurance;
+    }
 }
