@@ -15,10 +15,10 @@ public class MultipleAddressInteractor implements IMultipleAddressInteractor{
 
     private CompositeSubscription compositeSubscription;
 
-    private IMultipleAddressRepository repository;
+    private ICartRepository repository;
 
     public MultipleAddressInteractor(CompositeSubscription compositeSubscription,
-                                     IMultipleAddressRepository repository) {
+                                     ICartRepository repository) {
         this.compositeSubscription = compositeSubscription;
         this.repository = repository;
     }
@@ -26,11 +26,7 @@ public class MultipleAddressInteractor implements IMultipleAddressInteractor{
     @Override
     public void sendAddressData(JsonObject dataToSend,
                                 Subscriber<String> subscriber) {
-        compositeSubscription.add(repository.sendMultipleAddressData(dataToSend)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .subscribe(subscriber));
+
     }
 
 }
