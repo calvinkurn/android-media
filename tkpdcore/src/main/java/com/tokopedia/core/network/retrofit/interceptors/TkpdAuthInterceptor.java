@@ -24,7 +24,7 @@ import okio.Buffer;
 
 /**
  * @author Angga.Prasetiyo on 27/11/2015.
- * refer {@link com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor}
+ *         refer {@link com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor}
  */
 @Deprecated
 public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
@@ -72,18 +72,9 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     protected Response checkForceLogout(Chain chain, Response response, Request finalRequest) throws
             IOException {
         if (isNeedGcmUpdate(response)) {
-            refreshTokenAndGcmUpdate();
-            if (finalRequest.header(AUTHORIZATION).contains(BEARER)) {
-                Request newestRequest = recreateRequestWithNewAccessToken(chain);
-                return checkShowForceLogout(chain, newestRequest);
-            } else {
-                Request newestRequest = recreateRequestWithNewAccessTokenAccountsAuth(chain);
-                return checkShowForceLogout(chain, newestRequest);
-            }
+            return refreshTokenAndGcmUpdate(chain, response, finalRequest);
         } else if (isUnauthorized(finalRequest, response)) {
-            refreshToken();
-            Request newest = recreateRequestWithNewAccessToken(chain);
-            return checkShowForceLogout(chain, newest);
+            return refreshToken(chain, response);
         }
         return response;
     }
@@ -352,24 +343,39 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
-    protected void refreshToken() {
+    protected Response refreshToken(Chain chain, Response response) {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
         try {
             accessTokenRefresh.refreshToken();
+            Request newest = recreateRequestWithNewAccessToken(chain);
+            return checkShowForceLogout(chain, newest);
         } catch (IOException e) {
             e.printStackTrace();
+            return response;
         }
     }
 
-    protected void refreshTokenAndGcmUpdate() {
+    protected Response refreshTokenAndGcmUpdate(Chain chain, Response response, Request finalRequest) {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
         try {
             String newAccessToken = accessTokenRefresh.refreshToken();
             doRelogin(newAccessToken);
+
+            if (finalRequest.header(AUTHORIZATION).contains(BEARER)) {
+                Request newestRequest = recreateRequestWithNewAccessToken(chain);
+                return checkShowForceLogout(chain, newestRequest);
+            } else {
+                Request newestRequest = recreateRequestWithNewAccessTokenAccountsAuth(chain);
+                return checkShowForceLogout(chain, newestRequest);
+            }
         } catch (IOException e) {
             e.printStackTrace();
+            return response;
         }
-    }private Request recreateRequestWithNewAccessToken(Chain chain) throws IOException{
+
+    }
+
+    private Request recreateRequestWithNewAccessToken(Chain chain) throws IOException {
         Request newest = chain.request();
         Request.Builder newestRequestBuilder = chain.request().newBuilder();
         generateHmacAuthRequest(newest, newestRequestBuilder);

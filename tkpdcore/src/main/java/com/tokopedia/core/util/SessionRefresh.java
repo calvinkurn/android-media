@@ -62,8 +62,6 @@ public class SessionRefresh {
         Context context = MainApplication.getAppContext();
         SessionHandler sessionHandler = new SessionHandler(context);
 
-        FCMCacheManager.updateGcmId(context);
-
         String authKey;
         if (TextUtils.isEmpty(accessToken)) {
             authKey = sessionHandler.getTokenType(context)
@@ -85,7 +83,7 @@ public class SessionRefresh {
 
     private Retrofit getRetrofit(String authKey) {
         return new Retrofit.Builder()
-                .baseUrl(TkpdBaseURL.BASE_DOMAIN)
+                .baseUrl(TkpdBaseURL.ACCOUNTS_DOMAIN)
                 .addConverterFactory(new StringResponseConverter())
                 .client(OkHttpFactory.create().buildClientAccountsAuth(authKey, false, false))
                 .build();
