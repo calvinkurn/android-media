@@ -48,14 +48,13 @@ import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
-import com.tokopedia.transaction.checkout.di.component.DaggerShipmentDetailComponent;
-import com.tokopedia.transaction.checkout.di.component.ShipmentDetailComponent;
-import com.tokopedia.transaction.checkout.view.InsuranceConstant;
+import com.tokopedia.transaction.checkout.domain.datamodel.CourierItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
+import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentItemData;
 import com.tokopedia.transaction.checkout.view.adapter.CourierChoiceAdapter;
-import com.tokopedia.transaction.checkout.view.data.CourierItemData;
-import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
-import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
-import com.tokopedia.transaction.checkout.view.view.IShipmentDetailView;
+import com.tokopedia.transaction.checkout.view.constants.InsuranceConstant;
+import com.tokopedia.transaction.checkout.view.di.component.DaggerShipmentDetailComponent;
+import com.tokopedia.transaction.checkout.view.di.component.ShipmentDetailComponent;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
 
 import java.text.NumberFormat;
@@ -67,8 +66,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
-
-import static com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity.EXTRA_SHIPMENT_DETAIL_DATA;
 
 /**
  * Created by Irfan Khoirul on 24/01/18.

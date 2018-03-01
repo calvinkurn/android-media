@@ -28,12 +28,15 @@ import com.tokopedia.loyalty.view.view.IPromoCodeView;
 import javax.inject.Inject;
 
 import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.DIGITAL_STRING;
+import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.MARKETPLACE_CART_LIST_STRING;
+import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.MARKETPLACE_CART_SHIPMENT_STRING;
 
 /**
  * @author anggaprasetiyo on 24/11/17.
  */
 
 public class PromoCodeFragment extends BasePresenterFragment implements IPromoCodeView {
+
 
     @Inject
     IPromoCodePresenter dPresenter;
@@ -47,6 +50,8 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
     private static final String PLATFORM_KEY = "PLATFORM_KEY";
 
     private static final String CATEGORY_KEY = "CATEGORY_KEY";
+
+    private static final String ADDITIONAL_DATA_KEY = "ADDITIONAL_DATA_KEY";
 
     @Override
     protected boolean isRetainInstance() {
@@ -100,15 +105,27 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
         final EditText voucherCodeField = view.findViewById(R.id.et_voucher_code);
         TextView submitVoucherButton = view.findViewById(R.id.btn_check_voucher);
 
-        if (getArguments().getString(PLATFORM_KEY).equals(DIGITAL_STRING))
+        if (getArguments().getString(PLATFORM_KEY, "").equals(DIGITAL_STRING)) {
             submitVoucherButton.setOnClickListener(onSubmitDigitalVoucher(
                     voucherCodeField,
                     voucherCodeFieldHolder)
             );
-        else submitVoucherButton.setOnClickListener(onSubmitMarketplaceVoucher(
-                voucherCodeField,
-                voucherCodeFieldHolder)
-        );
+        } else if (getArguments().getString(PLATFORM_KEY, "").equals(MARKETPLACE_CART_LIST_STRING)) {
+            submitVoucherButton.setOnClickListener(onSubmitMarketPlaceCartListVoucher(
+                    voucherCodeField,
+                    voucherCodeFieldHolder)
+            );
+        } else if (getArguments().getString(PLATFORM_KEY, "").equals(MARKETPLACE_CART_SHIPMENT_STRING)) {
+            submitVoucherButton.setOnClickListener(onSubmitMarketPlaceCartShipmentVoucher(
+                    voucherCodeField,
+                    voucherCodeFieldHolder)
+            );
+        } else {
+            submitVoucherButton.setOnClickListener(onSubmitMarketplaceVoucher(
+                    voucherCodeField,
+                    voucherCodeFieldHolder)
+            );
+        }
 
     }
 
@@ -119,12 +136,12 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
             @Override
             public void onClick(View view) {
                 voucherCodeFieldHolder.setError(null);
-                if(voucherCodeField.getText().toString().isEmpty()) {
+                if (voucherCodeField.getText().toString().isEmpty()) {
                     textHolder.setError(getActivity().getString(R.string.error_empty_voucher_code));
                 } else
-                dPresenter.processCheckPromoCode(
-                        getActivity(),
-                        voucherCodeField.getText().toString());
+                    dPresenter.processCheckPromoCode(
+                            getActivity(),
+                            voucherCodeField.getText().toString());
             }
         };
     }
@@ -136,13 +153,51 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
             @Override
             public void onClick(View view) {
                 voucherCodeFieldHolder.setError(null);
-                if(voucherCodeField.getText().toString().isEmpty()) {
+                if (voucherCodeField.getText().toString().isEmpty()) {
                     textHolder.setError(getActivity().getString(R.string.error_empty_voucher_code));
                 } else {
                     dPresenter.processCheckDigitalPromoCode(
                             getActivity(),
                             voucherCodeField.getText().toString(),
                             getArguments().getString(CATEGORY_KEY));
+                }
+            }
+        };
+    }
+
+
+    private View.OnClickListener onSubmitMarketPlaceCartListVoucher(
+            final EditText voucherCodeField,
+            final TextInputLayout textHolder) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                voucherCodeFieldHolder.setError(null);
+                if (voucherCodeField.getText().toString().isEmpty()) {
+                    textHolder.setError(getActivity().getString(R.string.error_empty_voucher_code));
+                } else {
+                    dPresenter.processCheckMarketPlaceCartListPromoCode(
+                            getActivity(),
+                            voucherCodeField.getText().toString());
+                }
+            }
+        };
+    }
+
+    private View.OnClickListener onSubmitMarketPlaceCartShipmentVoucher(
+            final EditText voucherCodeField,
+            final TextInputLayout textHolder) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                voucherCodeFieldHolder.setError(null);
+                if (voucherCodeField.getText().toString().isEmpty()) {
+                    textHolder.setError(getActivity().getString(R.string.error_empty_voucher_code));
+                } else {
+                    dPresenter.processCheckMarketPlaceCartShipmentPromoCode(
+                            getActivity(),
+                            voucherCodeField.getText().toString(),
+                            getArguments().getString(ADDITIONAL_DATA_KEY));
                 }
             }
         };
@@ -179,6 +234,18 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
         Bundle bundle = new Bundle();
         bundle.putString(PLATFORM_KEY, platform);
         bundle.putString(CATEGORY_KEY, categoryKey);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    public static Fragment newInstanceCartCheckoutMarketPlace(
+            String platform, String categoryKey, String additionalDataString
+    ) {
+        PromoCodeFragment fragment = new PromoCodeFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(PLATFORM_KEY, platform);
+        bundle.putString(CATEGORY_KEY, categoryKey);
+        bundle.putString(ADDITIONAL_DATA_KEY, additionalDataString);
         fragment.setArguments(bundle);
         return fragment;
     }

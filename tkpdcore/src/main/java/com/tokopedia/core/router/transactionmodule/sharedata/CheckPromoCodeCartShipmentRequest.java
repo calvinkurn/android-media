@@ -19,6 +19,10 @@ public class CheckPromoCodeCartShipmentRequest {
     @Expose
     private List<Data> data = new ArrayList<>();
 
+    public void setPromoCode(String promoCode) {
+        this.promoCode = promoCode;
+    }
+
     private CheckPromoCodeCartShipmentRequest(Builder builder) {
         promoCode = builder.promoCode;
         data = builder.data;

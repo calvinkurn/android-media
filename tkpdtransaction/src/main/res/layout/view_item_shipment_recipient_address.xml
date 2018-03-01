@@ -4,12 +4,14 @@
     android:id="@+id/rl_shipment_recipient_address_header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white">
+    android:paddingTop="16dp"
+    android:background="@color/grey_200">
 
     <RelativeLayout android:id="@+id/rl_image_address_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:background="@color/white">
 
         <ImageView android:id="@+id/iv_image_address_house"
             android:layout_width="36dp"

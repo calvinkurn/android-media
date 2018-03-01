@@ -18,12 +18,11 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
-import com.tokopedia.transaction.checkout.di.component.DaggerShipmentChoiceComponent;
-import com.tokopedia.transaction.checkout.di.component.ShipmentChoiceComponent;
+import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
+import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentItemData;
 import com.tokopedia.transaction.checkout.view.adapter.ShipmentChoiceAdapter;
-import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
-import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
-import com.tokopedia.transaction.checkout.view.view.IShipmentChoiceView;
+import com.tokopedia.transaction.checkout.view.di.component.DaggerShipmentChoiceComponent;
+import com.tokopedia.transaction.checkout.view.di.component.ShipmentChoiceComponent;
 
 import javax.inject.Inject;
 

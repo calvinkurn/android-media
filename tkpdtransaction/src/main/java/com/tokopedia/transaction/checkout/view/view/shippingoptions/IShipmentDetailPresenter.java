@@ -1,13 +1,10 @@
 package com.tokopedia.transaction.checkout.view.view.shippingoptions;
 
-import android.content.Context;
-
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
-import com.tokopedia.transaction.checkout.view.data.CourierItemData;
-import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
-import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
-import com.tokopedia.transaction.checkout.view.view.IShipmentDetailView;
+import com.tokopedia.transaction.checkout.domain.datamodel.CourierItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
+import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentItemData;
 
 import java.util.List;
 

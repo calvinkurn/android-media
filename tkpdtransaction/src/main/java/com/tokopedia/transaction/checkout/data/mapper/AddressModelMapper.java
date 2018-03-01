@@ -1,7 +1,7 @@
 package com.tokopedia.transaction.checkout.data.mapper;
 
 import com.tokopedia.core.manage.people.address.model.AddressModel;
-import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
+import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 
 import java.util.ArrayList;
 import java.util.List;

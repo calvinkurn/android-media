@@ -1,5 +1,6 @@
 package com.tokopedia.loyalty.view.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 
 /**
@@ -12,7 +13,7 @@ public interface IPromoCodePresenter {
 
     void processCheckDigitalPromoCode(Context context, String voucherId, String categoryId);
 
-    void processCheckMarketPlaceCartListPromoCode(Context context, String voucherCode);
+    void processCheckMarketPlaceCartListPromoCode(Activity activity, String voucherCode);
 
-    void processCheckMarketPlaceCartShipmentPromoCode(Context context, String voucherCode);
+    void processCheckMarketPlaceCartShipmentPromoCode(Activity activity, String voucherCode, String paramCartShipment);
 }

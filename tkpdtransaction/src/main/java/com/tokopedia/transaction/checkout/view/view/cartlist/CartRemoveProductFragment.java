@@ -15,12 +15,12 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
-import com.tokopedia.transaction.checkout.di.component.CartRemoveProductComponent;
-import com.tokopedia.transaction.checkout.di.component.DaggerCartRemoveProductComponent;
-import com.tokopedia.transaction.checkout.di.module.CartRemoveProductModule;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CheckedCartItemData;
 import com.tokopedia.transaction.checkout.view.adapter.CartRemoveProductAdapter;
-import com.tokopedia.transaction.checkout.view.data.CartItemData;
-import com.tokopedia.transaction.checkout.view.data.CheckedCartItemData;
+import com.tokopedia.transaction.checkout.view.di.component.CartRemoveProductComponent;
+import com.tokopedia.transaction.checkout.view.di.component.DaggerCartRemoveProductComponent;
+import com.tokopedia.transaction.checkout.view.di.module.CartRemoveProductModule;
 
 import java.util.ArrayList;
 import java.util.Collections;

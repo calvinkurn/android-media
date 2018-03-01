@@ -1,13 +1,11 @@
 package com.tokopedia.transaction.checkout.domain.usecase;
 
-import android.content.Context;
-
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.transaction.checkout.domain.ICartRepository;
-import com.tokopedia.transaction.checkout.domain.response.shippingaddress.ShippingAddressDataResponse;
+import com.tokopedia.transaction.checkout.data.entity.response.shippingaddress.ShippingAddressDataResponse;
+import com.tokopedia.transaction.checkout.data.repository.ICartRepository;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartmultipleshipment.SetShippingAddressData;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
-
 
 import javax.inject.Inject;
 
@@ -18,7 +16,7 @@ import rx.functions.Func1;
  * Created by kris on 2/28/18. Tokopedia
  */
 
-public class SubmitMultipleAddressUseCase extends UseCase<Boolean>{
+public class SubmitMultipleAddressUseCase extends UseCase<SetShippingAddressData> {
 
     private ICartRepository repository;
 
@@ -28,14 +26,17 @@ public class SubmitMultipleAddressUseCase extends UseCase<Boolean>{
     }
 
     @Override
-    public Observable<Boolean> createObservable(RequestParams requestParams) {
+    public Observable<SetShippingAddressData> createObservable(RequestParams requestParams) {
         TKPDMapParam<String, String> mapParam = new TKPDMapParam<>();
         mapParam.putAll(requestParams.getParamsAllValueInString());
-        return repository.shippingAddress(mapParam).map(new Func1<ShippingAddressDataResponse, Boolean>() {
-            @Override
-            public Boolean call(ShippingAddressDataResponse shippingAddressDataResponse) {
-                return shippingAddressDataResponse.getSuccess() == 1;
-            }
-        });
+        return repository.shippingAddress(mapParam).map(
+                new Func1<ShippingAddressDataResponse, SetShippingAddressData>() {
+                    @Override
+                    public SetShippingAddressData call(ShippingAddressDataResponse shippingAddressDataResponse) {
+                        return new SetShippingAddressData.Builder()
+                                .success(shippingAddressDataResponse.getSuccess() == 1)
+                                .build();
+                    }
+                });
     }
 }

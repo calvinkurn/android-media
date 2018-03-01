@@ -1,7 +1,7 @@
 package com.tokopedia.transaction.checkout.view.view.shipmentform;
 
-import com.tokopedia.transaction.checkout.view.data.MultipleAddressPriceSummaryData;
-import com.tokopedia.transaction.checkout.view.data.MultipleAddressShipmentAdapterData;
+import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressPriceSummaryData;
+import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressShipmentAdapterData;
 
 import java.util.List;
 

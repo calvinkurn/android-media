@@ -3,7 +3,7 @@ package com.tokopedia.transaction.checkout.view.holderitemdata;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.transaction.checkout.view.data.CartItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartItemData;
 
 /**
  * @author anggaprasetiyo on 18/01/18.

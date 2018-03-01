@@ -5,8 +5,7 @@ import com.tokopedia.core.manage.people.address.model.GetPeopleAddress;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.transaction.checkout.data.mapper.AddressModelMapper;
-import com.tokopedia.transaction.checkout.domain.repository.PeopleAddressRepository;
-import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
+import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 
 import java.util.List;
 import java.util.Map;

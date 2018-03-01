@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
-import com.tokopedia.transaction.checkout.view.data.CartItemModel;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 
 import java.text.NumberFormat;
 import java.util.List;

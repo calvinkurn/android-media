@@ -12,20 +12,22 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
-import com.tokopedia.transaction.checkout.di.component.DaggerSingleAddressShipmentComponent;
-import com.tokopedia.transaction.checkout.di.component.SingleAddressShipmentComponent;
-import com.tokopedia.transaction.checkout.di.module.SingleAddressShipmentModule;
-import com.tokopedia.transaction.checkout.domain.ShipmentRatesDataMapper;
-import com.tokopedia.transaction.checkout.domain.SingleAddressShipmentDataConverter;
+import com.tokopedia.transaction.checkout.data.mapper.ShipmentRatesDataMapper;
+import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
+import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSingleAddressData;
+import com.tokopedia.transaction.checkout.domain.mapper.SingleAddressShipmentDataConverter;
 import com.tokopedia.transaction.checkout.view.adapter.SingleAddressShipmentAdapter;
-import com.tokopedia.transaction.checkout.view.data.CartPromoSuggestion;
-import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
-import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
-import com.tokopedia.transaction.checkout.view.data.RecipientAddressModel;
-import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
-import com.tokopedia.transaction.checkout.view.data.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.transaction.checkout.view.di.component.DaggerSingleAddressShipmentComponent;
+import com.tokopedia.transaction.checkout.view.di.component.SingleAddressShipmentComponent;
+import com.tokopedia.transaction.checkout.view.di.module.SingleAddressShipmentModule;
+import com.tokopedia.transaction.checkout.view.holderitemdata.CartPromo;
 import com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity;
 import com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
@@ -159,12 +161,14 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
      */
     @Override
     protected void setupArguments(Bundle arguments) {
-        CartShipmentAddressFormData cartShipmentAddressFormData = arguments.getParcelable(
-                ARG_EXTRA_SHIPMENT_FORM_DATA
-        );
+        CartShipmentAddressFormData cartShipmentAddressFormData
+                = arguments.getParcelable(ARG_EXTRA_SHIPMENT_FORM_DATA);
 
         mCartSingleAddressData = mSingleAddressShipmentDataConverter.convert(cartShipmentAddressFormData);
         CartPromoSuggestion cartPromoSuggestion = arguments.getParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION);
+
+        mCartSingleAddressData.setCartPromoSuggestion(cartPromoSuggestion);
+        mCartSingleAddressData.setCartPromo(new CartPromo());
     }
 
     @Override
@@ -293,12 +297,42 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     }
 
     @Override
-    public void onTotalPaymentUpdate(String priceFormat) {
-        mTvTotalPayment.setText(priceFormat);
+    public void onCartPromoSuggestionActionClicked(CartPromoSuggestion data, int position) {
+
     }
 
     @Override
-    public void onRecyclerViewReachBottom() {
+    public void onCartPromoSuggestionButtonCloseClicked(CartPromoSuggestion data, int position) {
+
+    }
+
+    @Override
+    public void onCartPromoUseVoucherPromoClicked(CartPromo cartPromo, int position) {
+        String tag = "marketplace";
+
+        Intent intent;
+        if (cartPromo.getTypePromo() == CartPromo.TYPE_PROMO_NOT_ACTIVE) {
+            intent = LoyaltyActivity.newInstanceCouponActive(getActivity(), tag, tag);
+        } else {
+            intent = LoyaltyActivity.newInstanceCouponNotActive(getActivity(), tag, tag);
+        }
+
+        startActivityForResult(intent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
+    }
+
+    @Override
+    public void onCartPromoCancelVoucherPromoClicked(CartPromo cartPromo, int position) {
+        cartPromo.setPromoNotActive();
+        mSingleAddressShipmentAdapter.notifyItemChanged(position);
+    }
+
+    @Override
+    public void onCartPromoTrackingSuccess(CartPromo cartPromo, int position) {
+
+    }
+
+    @Override
+    public void onCartPromoTrackingCancelled(CartPromo cartPromo, int position) {
 
     }
 

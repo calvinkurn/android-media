@@ -1,6 +1,6 @@
 package com.tokopedia.transaction.checkout.domain.usecase;
 
-import com.tokopedia.transaction.checkout.view.data.cartcheckout.CheckoutData;
+import com.tokopedia.transaction.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
