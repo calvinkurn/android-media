@@ -38,30 +38,28 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 mapToVoteViewModel(pojo.getChannel().getActivePolls()));
     }
 
-    private boolean hasPoll(List<ActivePollPojo> activePolls) {
+    private boolean hasPoll(ActivePollPojo activePolls) {
 //        return !activePolls.isEmpty();
         return true;
     }
 
-    private VoteInfoViewModel mapToVoteViewModel(List<ActivePollPojo> activePolls) {
-        if (!activePolls.isEmpty()) {
-            ActivePollPojo activePollPojo = activePolls.get(0);
+    private VoteInfoViewModel mapToVoteViewModel(ActivePollPojo activePollPojo) {
+        activePollPojo.setStartTime(1519873200);
+        activePollPojo.setEndTime(1519880400);
 
-            return new VoteInfoViewModel(
-                    String.valueOf(activePollPojo.getPollId()),
-                    activePollPojo.getQuestion(),
-                    mapToListOptions(activePollPojo.getOptions()),
-                    "10",
-                    activePollPojo.getPollType(),
-                    activePollPojo.getStatus(),
-                    false,
-                    "INFO YG PERLU DI UPDATE",
-                    "Belon ada",
-                    activePollPojo.getStartTime(),
-                    activePollPojo.getEndTime()
-            );
-        }
-        return null;
+        return new VoteInfoViewModel(
+                String.valueOf(activePollPojo.getPollId()),
+                activePollPojo.getQuestion(),
+                mapToListOptions(activePollPojo.getOptions()),
+                "10",
+                activePollPojo.getPollType(),
+                activePollPojo.getStatus(),
+                false,
+                "INFO YG PERLU DI UPDATE",
+                "Belon ada",
+                activePollPojo.getStartTime(),
+                activePollPojo.getEndTime()
+        );
     }
 
     private List<Visitable> mapToListOptions(List<Object> options) {
