@@ -35,22 +35,22 @@ public class ProductCloud {
         this.tomeProductApi = tomeProductApi;
     }
 
-    public Observable<ProductViewModel> addProductSubmit(String productViewModel) {
+    public Observable<Boolean> addProductSubmit(String productViewModel) {
         return tomeProductApi.addProductSubmit(productViewModel)
-                .map(new Func1<Response<DataResponse<ProductViewModel>>, ProductViewModel>() {
+                .map(new Func1<Response<DataResponse<Void>>, Boolean>() {
                     @Override
-                    public ProductViewModel call(Response<DataResponse<ProductViewModel>> dataResponse) {
-                        return dataResponse.body().getData();
+                    public Boolean call(Response<DataResponse<Void>> dataResponse) {
+                        return true;
                     }
                 });
     }
 
-    public Observable<ProductViewModel> editProduct(String productId, String productViewModel) {
+    public Observable<Boolean> editProduct(String productId, String productViewModel) {
         return tomeProductApi.editProductSubmit(productId, productViewModel)
-                .map(new Func1<Response<DataResponse<ProductViewModel>>, ProductViewModel>() {
+                .map(new Func1<Response<DataResponse<Void>>, Boolean>() {
                     @Override
-                    public ProductViewModel call(Response<DataResponse<ProductViewModel>> dataResponse) {
-                        return dataResponse.body().getData();
+                    public Boolean call(Response<DataResponse<Void>> dataResponse) {
+                        return true;
                     }
                 });
     }

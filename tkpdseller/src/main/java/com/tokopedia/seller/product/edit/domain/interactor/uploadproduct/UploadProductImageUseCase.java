@@ -7,7 +7,7 @@ import com.tokopedia.seller.base.domain.model.ImageUploadDomainModel;
 import com.tokopedia.seller.product.common.constant.ProductNetworkConstant;
 import com.tokopedia.seller.product.draft.data.mapper.ProductDraftMapper;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.UploadImageModel;
-import com.tokopedia.seller.product.edit.domain.listener.NotificationCountListener;
+import com.tokopedia.seller.product.edit.domain.listener.ProductSubmitNotificationListener;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureResultUploadedViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
@@ -28,7 +28,7 @@ public class UploadProductImageUseCase extends UseCase<List<ProductPictureViewMo
     private static final String NOTIFICATION_COUNT_LISTENER = "NOTIFICATION_COUNT_LISTENER";
 
     private final UploadImageUseCase<UploadImageModel> uploadImageUseCase;
-    private NotificationCountListener notificationCountListener;
+    private ProductSubmitNotificationListener notificationCountListener;
 
     @Inject
     public UploadProductImageUseCase(UploadImageUseCase<UploadImageModel> uploadImageUseCase) {
@@ -38,7 +38,7 @@ public class UploadProductImageUseCase extends UseCase<List<ProductPictureViewMo
     @Override
     public Observable<List<ProductPictureViewModel>> createObservable(RequestParams requestParams) {
         ProductViewModel productViewModel = (ProductViewModel) requestParams.getObject(PRODUCT_VIEW_MODEL);
-        notificationCountListener = (NotificationCountListener) requestParams.getObject(NOTIFICATION_COUNT_LISTENER);
+        notificationCountListener = (ProductSubmitNotificationListener) requestParams.getObject(NOTIFICATION_COUNT_LISTENER);
         return Observable.from(productViewModel.getProductPictureViewModelList())
                 .flatMap(new UploadSingleImage(productViewModel.getProductId()))
                 .toList();
@@ -97,7 +97,7 @@ public class UploadProductImageUseCase extends UseCase<List<ProductPictureViewMo
         return createParams(productViewModel, null);
     }
 
-    public static RequestParams createParams(ProductViewModel productViewModel, NotificationCountListener notificationCountListener) {
+    public static RequestParams createParams(ProductViewModel productViewModel, ProductSubmitNotificationListener notificationCountListener) {
         RequestParams params = RequestParams.create();
         params.putObject(PRODUCT_VIEW_MODEL, productViewModel);
         params.putObject(NOTIFICATION_COUNT_LISTENER, notificationCountListener);

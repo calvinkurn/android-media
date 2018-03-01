@@ -28,12 +28,12 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public Observable<ProductViewModel> addProductSubmit(ProductViewModel productViewModel) {
+    public Observable<Boolean> addProductSubmit(ProductViewModel productViewModel) {
         return productDataSource.addProductSubmit(productViewModel);
     }
 
     @Override
-    public Observable<ProductViewModel> editProductSubmit(ProductViewModel productViewModel) {
+    public Observable<Boolean> editProductSubmit(ProductViewModel productViewModel) {
         return productDataSource.editProduct(productViewModel);
     }
 

@@ -17,6 +17,7 @@ import com.tokopedia.seller.base.domain.UploadImageRepository;
 import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
 import com.tokopedia.seller.product.draft.data.repository.ProductDraftRepositoryImpl;
 import com.tokopedia.seller.product.draft.data.source.ProductDraftDataSource;
+import com.tokopedia.seller.product.draft.domain.interactor.DeleteSingleDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
@@ -30,7 +31,7 @@ import com.tokopedia.seller.product.edit.data.source.cloud.model.UploadImageMode
 import com.tokopedia.seller.product.edit.di.scope.AddProductServiceScope;
 import com.tokopedia.seller.product.edit.domain.GenerateHostRepository;
 import com.tokopedia.seller.product.edit.domain.ProductRepository;
-import com.tokopedia.seller.product.edit.domain.interactor.uploadproduct.UploadDraftProductUseCase;
+import com.tokopedia.seller.product.edit.domain.interactor.uploadproduct.SubmitProductUseCase;
 import com.tokopedia.seller.product.edit.domain.mapper.ProductUploadMapper;
 import com.tokopedia.seller.product.edit.view.presenter.AddProductServicePresenter;
 import com.tokopedia.seller.product.edit.view.presenter.AddProductServicePresenterImpl;
@@ -51,8 +52,11 @@ public class AddProductserviceModule {
 
     @AddProductServiceScope
     @Provides
-    AddProductServicePresenter provideAddProductServicePresenter(UploadDraftProductUseCase uploadProductUseCase, UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase) {
-        return new AddProductServicePresenterImpl(uploadProductUseCase, updateUploadingDraftProductUseCase);
+    AddProductServicePresenter provideAddProductServicePresenter(FetchDraftProductUseCase fetchDraftProductUseCase,
+                                                                 SubmitProductUseCase uploadProductUseCase,
+                                                                 DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase,
+                                                                 UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase) {
+        return new AddProductServicePresenterImpl(fetchDraftProductUseCase, uploadProductUseCase, deleteSingleDraftProductUseCase, updateUploadingDraftProductUseCase);
     }
 
     @AddProductServiceScope

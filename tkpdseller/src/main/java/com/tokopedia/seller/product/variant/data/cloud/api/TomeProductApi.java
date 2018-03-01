@@ -2,7 +2,6 @@ package com.tokopedia.seller.product.variant.data.cloud.api;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.seller.product.edit.constant.ProductUrl;
-import com.tokopedia.seller.product.edit.data.source.cloud.model.ProductUploadResultModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprdold.ProductVariantByPrdModel;
@@ -27,16 +26,14 @@ public interface TomeProductApi {
 
     @Headers({"Content-Type: application/json"})
     @POST(ProductUrl.URL_ADD_PRODUCT)
-    Observable<Response<DataResponse<ProductViewModel>>> addProductSubmit(@Body String productViewModel);
+    Observable<Response<DataResponse<Void>>> addProductSubmit(@Body String productViewModel);
 
     @Headers({"Content-Type: application/json"})
     @PATCH(ProductUrl.URL_ADD_PRODUCT + "/{" + ProductUrl.PRODUCT_ID + "}")
-    Observable<Response<DataResponse<ProductViewModel>>> editProductSubmit(@Path(ProductUrl.PRODUCT_ID) String productId, @Body String productViewModel);
+    Observable<Response<DataResponse<Void>>> editProductSubmit(@Path(ProductUrl.PRODUCT_ID) String productId, @Body String productViewModel);
 
     @GET(ProductUrl.URL_ADD_PRODUCT + "/{" + ProductUrl.PRODUCT_ID + "}")
-    Observable<Response<DataResponse<ProductViewModel>>> getProductDetail(
-            @Path(ProductUrl.PRODUCT_ID) String productId,
-            @Query("show_variant") int showVariant);
+    Observable<Response<DataResponse<ProductViewModel>>> getProductDetail(@Path(ProductUrl.PRODUCT_ID) String productId, @Query("show_variant") int showVariant);
 
     @GET(ProductUrl.GET_VARIANT_BY_CAT_PATH)
     Observable<Response<DataResponse<List<ProductVariantByCatModel>>>> getProductVariantByCat(@Query(ProductUrl.CAT_ID) long categoryId);
