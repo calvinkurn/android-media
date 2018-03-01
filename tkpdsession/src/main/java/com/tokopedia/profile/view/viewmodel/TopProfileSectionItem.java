@@ -3,14 +3,14 @@ package com.tokopedia.profile.view.viewmodel;
 import android.support.v4.app.Fragment;
 
 /**
- * Created by alvinatin on 21/02/18.
+ * @author by alvinatin on 21/02/18.
  */
 
-public class ProfileSectionItem {
+public class TopProfileSectionItem {
     String title;
     Fragment fragment;
 
-    public ProfileSectionItem(String title, Fragment fragment) {
+    public TopProfileSectionItem(String title, Fragment fragment) {
         this.title = title;
         this.fragment = fragment;
     }

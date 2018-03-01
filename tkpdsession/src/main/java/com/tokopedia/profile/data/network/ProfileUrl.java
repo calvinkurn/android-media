@@ -1,7 +1,7 @@
 package com.tokopedia.profile.data.network;
 
 /**
- * Created by nakama on 27/02/18.
+ * @author by alvinatin on 27/02/18.
  */
 
 public class ProfileUrl {

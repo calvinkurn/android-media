@@ -1,14 +1,13 @@
 package com.tokopedia.profile.view.viewmodel;
 
 /**
- * Created by alvinatin on 15/02/18.
+ * @author by alvinatin on 15/02/18.
  */
 
 public class TopProfileViewModel {
 
     private int userId;
     private String name;
-    private String avatar;
     private String title;
     private String biodata;
     private String following;
@@ -71,14 +70,6 @@ public class TopProfileViewModel {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
     }
 
     public String getTitle() {

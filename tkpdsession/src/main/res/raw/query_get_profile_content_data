@@ -28,6 +28,7 @@ query GetProfileContent($userID: Int!){
             email
 			gender
             gender_name
+            apps_bday
             bday
             age
             phone

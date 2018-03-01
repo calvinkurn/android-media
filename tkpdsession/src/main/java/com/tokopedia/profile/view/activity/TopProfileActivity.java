@@ -27,10 +27,10 @@ import com.tokopedia.core.peoplefave.activity.PeopleFavoritedShop;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.tab.Tabs;
 import com.tokopedia.profile.common.di.ProfileComponent;
-import com.tokopedia.profile.view.adapter.ProfileTabPagerAdapter;
+import com.tokopedia.profile.view.adapter.TopProfileTabPagerAdapter;
 import com.tokopedia.profile.view.fragment.TopProfileFragment;
 import com.tokopedia.profile.view.listener.TopProfileActivityListener;
-import com.tokopedia.profile.view.viewmodel.ProfileSectionItem;
+import com.tokopedia.profile.view.viewmodel.TopProfileSectionItem;
 import com.tokopedia.profile.view.viewmodel.TopProfileViewModel;
 import com.tokopedia.session.R;
 
@@ -182,7 +182,9 @@ public class TopProfileActivity extends BaseEmptyActivity
     public void populateData(TopProfileViewModel viewModel) {
         topProfileViewModel = viewModel;
 
-        ImageHandler.loadImageCircle2(avatar.getContext(), avatar, topProfileViewModel.getAvatar());
+        ImageHandler.loadImageCircle2(avatar.getContext(),
+                avatar,
+                topProfileViewModel.getUserPhoto());
 
         name.setText(topProfileViewModel.getName());
         followingValue.setText(topProfileViewModel.getFollowing());
@@ -346,21 +348,21 @@ public class TopProfileActivity extends BaseEmptyActivity
     }
 
     private void loadSection(){
-        List<ProfileSectionItem> profileSectionItemList = new ArrayList<>();
+        List<TopProfileSectionItem> topProfileSectionItemList = new ArrayList<>();
 
         if (getApplicationContext() instanceof SessionRouter) {
             //TODO milhamj change this userid
             BaseDaggerFragment kolPostFragment =
                     ((SessionRouter) getApplicationContext()).getKolPostFragment(userId);
-            profileSectionItemList.add(new ProfileSectionItem(TITLE_POST, kolPostFragment));
+            topProfileSectionItemList.add(new TopProfileSectionItem(TITLE_POST, kolPostFragment));
         }
         TopProfileFragment profileFragment = TopProfileFragment.newInstance(userId);
-        profileSectionItemList.add(new ProfileSectionItem(TITLE_PROFILE, profileFragment));
+        topProfileSectionItemList.add(new TopProfileSectionItem(TITLE_PROFILE, profileFragment));
 
-        ProfileTabPagerAdapter profileTabPagerAdapter =
-                new ProfileTabPagerAdapter(getSupportFragmentManager());
-        profileTabPagerAdapter.setItemList(profileSectionItemList);
-        viewPager.setAdapter(profileTabPagerAdapter);
+        TopProfileTabPagerAdapter topProfileTabPagerAdapter =
+                new TopProfileTabPagerAdapter(getSupportFragmentManager());
+        topProfileTabPagerAdapter.setItemList(topProfileSectionItemList);
+        viewPager.setAdapter(topProfileTabPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
     }

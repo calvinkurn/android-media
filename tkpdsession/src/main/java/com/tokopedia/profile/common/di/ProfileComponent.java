@@ -10,7 +10,7 @@ import com.tokopedia.profile.view.activity.TopProfileActivity;
 import dagger.Component;
 
 /**
- * Created by nakama on 27/02/18.
+ * @author by alvinatin on 27/02/18.
  */
 
 @ProfileScope

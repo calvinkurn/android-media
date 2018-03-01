@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by alvinatin on 20/02/18.
+ * @author by alvinatin on 20/02/18.
  */
 
 public final class ProfileGraphql {

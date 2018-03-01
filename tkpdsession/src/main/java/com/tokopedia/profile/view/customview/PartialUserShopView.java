@@ -17,7 +17,7 @@ import com.tokopedia.profile.view.viewmodel.TopProfileViewModel;
 import com.tokopedia.session.R;
 
 /**
- * Created by nakama on 27/02/18.
+ * @author by alvinatin on 27/02/18.
  */
 
 public class PartialUserShopView extends BaseCustomView {
@@ -84,18 +84,15 @@ public class PartialUserShopView extends BaseCustomView {
 
     public void renderData(TopProfileViewModel model) {
 
-        ImageHandler.loadImage2(ivShopProfile, model.getShopLogo(), R.drawable.ic_default_shop_ava);
-        ivGoldShop.setVisibility(model.isGoldShop() ? VISIBLE : GONE);
-        switchOfficialStoreBadge(model.isOfficialShop());
-
-        tvShopName.setText(model.getShopName());
-        tvShopLocation.setText(model.getShopLocation());
-        tvLastOnline.setText(model.getShopLastOnline());
-
-        favouriteButton.setVisibility(model.isUser() ? GONE : VISIBLE);
-
-        if (model.getShopId() != 0)
+        if (model.getShopId() != 0){
             this.setVisibility(VISIBLE);
+            ImageHandler.loadImage2(ivShopProfile, model.getShopLogo(), R.drawable.ic_default_shop_ava);
+            ivGoldShop.setVisibility(model.isGoldShop() ? VISIBLE : GONE);
+            switchOfficialStoreBadge(model.isOfficialShop());
+            tvShopName.setText(model.getShopName());
+            tvShopLocation.setText(model.getShopLocation());
+            tvLastOnline.setText(model.getShopLastOnline());
+            favouriteButton.setVisibility(model.getIsUser() ? GONE : VISIBLE);}
         else {
             this.setVisibility(GONE);
         }

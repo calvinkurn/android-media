@@ -10,7 +10,7 @@ import retrofit2.http.POST;
 import rx.Observable;
 
 /**
- * Created by alvinatin on 19/02/18.
+ * @author by alvinatin on 19/02/18.
  */
 
 public interface ProfileApi {

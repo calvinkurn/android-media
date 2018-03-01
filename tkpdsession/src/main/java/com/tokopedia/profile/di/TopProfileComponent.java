@@ -6,11 +6,11 @@ import com.tokopedia.profile.view.fragment.TopProfileFragment;
 import dagger.Component;
 
 /**
- * Created by nakama on 28/02/18.
+ * @author by alvinatin on 28/02/18.
  */
 
-@ProfileContentScope
-@Component(modules = ProfileContentModule.class, dependencies = ProfileComponent.class)
-public interface ProfileContentComponent {
+@TopProfileScope
+@Component(modules = TopProfileModule.class, dependencies = ProfileComponent.class)
+public interface TopProfileComponent {
     void inject(TopProfileFragment topProfileFragment);
 }
