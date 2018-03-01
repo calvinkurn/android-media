@@ -2,6 +2,7 @@ package com.tokopedia.abstraction.base.app;
 
 import android.support.multidex.MultiDexApplication;
 
+import android.support.v7.app.AppCompatDelegate;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.DaggerBaseAppComponent;
 import com.tokopedia.abstraction.common.di.module.AppModule;
@@ -11,6 +12,9 @@ import com.tokopedia.abstraction.common.di.module.AppModule;
  */
 
 public class BaseMainApplication extends MultiDexApplication {
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
 
     private BaseAppComponent baseAppComponent;
 
