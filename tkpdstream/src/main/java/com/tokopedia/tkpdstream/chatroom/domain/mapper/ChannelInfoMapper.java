@@ -2,7 +2,9 @@ package com.tokopedia.tkpdstream.chatroom.domain.mapper;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.tkpdstream.channel.view.model.ChannelViewModel;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.ActivePollPojo;
+import com.tokopedia.tkpdstream.chatroom.domain.pojo.Channel;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.ChannelInfoPojo;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.tkpdstream.vote.view.model.VoteInfoViewModel;
@@ -35,8 +37,10 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 pojo.getChannel().getTitle(),
                 pojo.getChannel().getTotalParticipantsOnline(),
                 hasPoll(pojo.getChannel().getActivePolls()),
-                mapToVoteViewModel(pojo.getChannel().getActivePolls()));
+                mapToVoteViewModel(pojo.getChannel().getActivePolls()),
+                mapToChannelDesc(pojo.getChannel()));
     }
+
 
     private boolean hasPoll(ActivePollPojo activePolls) {
 //        return !activePolls.isEmpty();
@@ -65,5 +69,12 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
     private List<Visitable> mapToListOptions(List<Object> options) {
         List<Visitable> list = new ArrayList<>();
         return list;
+    }
+
+
+    private ChannelViewModel mapToChannelDesc(Channel pojo) {
+
+        return new ChannelViewModel(String.valueOf(pojo.getChannelId()), pojo.getModeratorName()
+                , pojo.getCoverUrl(), pojo.getModeratorProfileUrl(), pojo.getTitle(), pojo.getDescription(), pojo.getTotalParticipantsOnline());
     }
 }

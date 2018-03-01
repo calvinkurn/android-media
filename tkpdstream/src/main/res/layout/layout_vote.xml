@@ -11,9 +11,7 @@
     <RelativeLayout
         android:id="@+id/vote_header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/space_med"
-        android:paddingBottom="@dimen/space_med">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -34,14 +32,16 @@
             <TextView
                 android:id="@+id/vote_status"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
+                android:gravity="center"
                 android:text="@string/vote_has_ended"
                 android:textAllCaps="true"
                 android:textColor="@color/medium_green"
                 android:textSize="@dimen/font_micro"
-                android:gravity="center"
-                android:textStyle="normal" />
+                android:textStyle="normal"
+                android:paddingTop="@dimen/space_med"
+                android:paddingBottom="@dimen/space_med"/>
 
             <Space
                 android:layout_width="@dimen/space_small"
@@ -56,10 +56,11 @@
                 android:id="@+id/layout_voted"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:orientation="horizontal"
-                android:visibility="gone"
-                tools:visibility="visible"
-                android:gravity="center">
+                android:paddingTop="@dimen/space_average"
+                android:paddingBottom="@dimen/space_average"
+                android:visibility="gone">
 
                 <View
                     android:layout_width="@dimen/space_micro"
@@ -71,18 +72,20 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/ic_choose"/>
+                    android:background="@drawable/ic_choose" />
+
                 <Space
                     android:layout_width="@dimen/space_mini"
                     android:layout_height="match_parent"
+                    android:background="@color/red_50"
                     android:paddingLeft="@dimen/space_avg_small"
-                    android:paddingRight="@dimen/space_avg_small"
-                    android:background="@color/red_50"/>
+                    android:paddingRight="@dimen/space_avg_small" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/font_micro"
-                    android:text="Sudah\nMemilih"/>
+                    android:text="Sudah\nMemilih"
+                    android:textSize="@dimen/font_micro" />
 
             </LinearLayout>
 

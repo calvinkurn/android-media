@@ -31,10 +31,10 @@ public class VoteSpaceItemDecoration extends RecyclerView.ItemDecoration {
                 outRect.top = space;
             }
         }else {
-            if (parent.getChildAdapterPosition(view) != 0) {
-                outRect.left = space/2;
-            }else if(parent.getChildAdapterPosition(view) == parent.getAdapter().getItemCount()-1){
+            if (parent.getChildAdapterPosition(view) == 0) {
                 outRect.right = space/2;
+            }else if(parent.getChildAdapterPosition(view) == parent.getAdapter().getItemCount()-1){
+                outRect.left = space/2;
             }else {
                 outRect.right = space/2;
                 outRect.left = space/2;

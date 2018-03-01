@@ -11,6 +11,11 @@ def getTkpdUseCase() {
             rootProject.ext.tkpdDependencies.usecase : project(':tkpdusecase');
 }
 
+def getTkpdDesign() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.usecase : project(':tkpddesign');
+}
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -54,6 +59,7 @@ dependencies {
 
     compile getTkpdAbstraction()
     compile getTkpdUseCase()
+    compile getTkpdDesign()
 
     compile(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"

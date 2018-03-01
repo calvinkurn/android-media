@@ -1,5 +1,6 @@
 package com.tokopedia.tkpdstream.chatroom.view.fragment;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -14,24 +15,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.CallbackManager;
@@ -111,6 +113,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     private ImageView iconVote;
     private View votedView;
     private View divider;
+    private View main, loading;
     private TextView voteStatus;
     private ImageView arrow;
     private GroupChatAdapter adapter;
@@ -194,6 +197,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         votedView = view.findViewById(R.id.layout_voted);
         progressBarWithTimer = view.findViewById(R.id.timer);
         divider = view.findViewById(R.id.view);
+        loading = view.findViewById(R.id.loading);
+        main = view.findViewById(R.id.main_content);
         channelInfoDialog = CloseableBottomSheetDialog.createInstance(getActivity());
 
         setupToolbar();
@@ -260,6 +265,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
             shareLayout.setShareModel(shareData);
 
             shareLayout.show();
+            return true;
+        } else if (item.getItemId() == R.id.action_info) {
+            channelInfoDialog.show();
             return true;
         } else {
             return super.onOptionsItemSelected(item);
@@ -398,6 +406,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     private void initData() {
         callbackManager = CallbackManager.Factory.create();
         presenter.getChannelInfo(viewModel.getChannelUuid());
+        showLoading();
     }
 
     @Override
@@ -416,6 +425,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     @Override
     public void onResume() {
         super.onResume();
+
+        progressBarWithTimer.restart();
 
         ConnectionManager.addConnectionManagementHandler(userSession.getUserId(), ConnectionManager
                 .CONNECTION_HANDLER_ID, new
@@ -438,6 +449,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     public void onPause() {
         ConnectionManager.removeConnectionManagementHandler(ConnectionManager.CONNECTION_HANDLER_ID);
         SendBird.removeChannelHandler(ConnectionManager.CHANNEL_HANDLER_ID);
+        progressBarWithTimer.cancel();
         super.onPause();
     }
 
@@ -466,7 +478,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         if (getArguments() != null
                 && getArguments().getParcelable(GroupChatActivity.EXTRA_CHANNEL_INFO) != null) {
             ChannelViewModel model = getArguments().getParcelable(GroupChatActivity.EXTRA_CHANNEL_INFO);
-            channelInfoDialog.setContentView(createBottomSheetView(model));
+//            channelInfoDialog.setContentView(createBottomSheetView(model));
             channelInfoDialog.setOnShowListener(new DialogInterface.OnShowListener() {
                 @Override
                 public void onShow(DialogInterface dialog) {
@@ -539,6 +551,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     @Override
     public void onSuccessGetChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
 
+        hideLoading();
         this.viewModel.setChannelInfo(channelInfoViewModel);
         toolbar.setTitle(channelInfoViewModel.getTitle());
         setToolbarParticipantCount();
@@ -550,6 +563,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUrl(),
                 userSession.getName(), userSession.getProfilePicture(), this);
         setVisibilityHeader(View.VISIBLE);
+        channelInfoDialog.setContentView(createBottomSheetView(channelInfoViewModel.getChannelViewModel()));
     }
 
     void setVisibilityHeader(int visible){
@@ -571,7 +585,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
         voteInfoViewModel = new VoteInfoViewModel("123", title, list, "1000", IMAGE_TYPE
                 , "Vote", false, "Info Pemenang", "www.google.com"
-                , 1519722000, 1519758000);
+                , 1519887600, 1519898400);
 
 //        channelViewModel = new VoteViewModel("Cristiano Ronaldo",40, VoteViewModel.DEFAULT);
 //        list.add(channelViewModel);
@@ -617,7 +631,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     @Override
     public void onVoteOptionClicked(VoteViewModel element) {
 
-        boolean voted = votedView.getVisibility() == View.VISIBLE;
+        boolean voted = (votedView.getVisibility() == View.VISIBLE);
 
         presenter.sendVote(viewModel.getPollId(), voted, element);
     }
@@ -788,6 +802,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         voteRecyclerView.addItemDecoration(itemDecoration);
         voteRecyclerView.setLayoutManager(voteLayoutManager);
         voteRecyclerView.setAdapter(voteAdapter);
+        ((SimpleItemAnimator) voteRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
         voteAdapter.addList(voteInfoViewModel.getListOption());
         voteStatus.setText(voteInfoViewModel.getVoteStatus());
         voteTitle.setText(voteInfoViewModel.getTitle());
@@ -837,5 +852,15 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void showLoading(){
+        loading.setVisibility(View.VISIBLE);
+        main.setVisibility(View.GONE);
+    }
+
+    public void hideLoading(){
+        loading.setVisibility(View.GONE);
+        main.setVisibility(View.VISIBLE);
     }
 }
