@@ -10,6 +10,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,7 +21,6 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseEmptyActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.ManagePeople;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.peoplefave.activity.PeopleFavoritedShop;
@@ -42,7 +42,7 @@ import java.util.List;
  */
 
 public class TopProfileActivity extends BaseEmptyActivity
-        implements HasComponent, TopProfileActivityListener.View {
+        implements TopProfileActivityListener.View {
 
     private static final String EXTRA_PARAM_USER_ID = "user_id";
     private static final String TITLE_PROFILE = "Info Akun";
@@ -70,9 +70,15 @@ public class TopProfileActivity extends BaseEmptyActivity
     private View followersSeparator;
     private LinearLayout favoriteShopLayout;
     private TextView favoriteShopValue;
+    private View header;
+    private View progressView;
+    private View errorView;
+    private TextView errorText;
+    private TextView buttonTryAgain;
 
     private String userId;
     private TopProfileViewModel topProfileViewModel;
+    private TopProfileTabPagerAdapter topProfileTabPagerAdapter;
 
     private ProfileComponent profileComponent;
 
@@ -89,17 +95,6 @@ public class TopProfileActivity extends BaseEmptyActivity
         super.onCreate(savedInstanceState);
     }
 
-//    private void initjInjector(){
-//        getProfileComponent().inject(this);
-//    }
-//
-//    private ProfileComponent getProfileComponent(){
-//        if(profileComponent == null){
-//            profileComponent = ProfileComponentInstance.getProfileComponent(getApplication());
-//        }
-//        return profileComponent;
-//    }
-
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
         super.setupLayout(savedInstanceState);
@@ -107,7 +102,7 @@ public class TopProfileActivity extends BaseEmptyActivity
         initView();
         setupToolbar();
         setViewListener();
-        loadSection();
+        initTabLoad();
     }
 
     private void initVar(){
@@ -137,6 +132,11 @@ public class TopProfileActivity extends BaseEmptyActivity
         followersSeparator = findViewById(R.id.followers_separator);
         favoriteShopLayout = findViewById(R.id.favorite_shop_layout);
         favoriteShopValue = findViewById(R.id.favorite_shop_value);
+        header = findViewById(R.id.header);
+        progressView = findViewById(R.id.progress_view);
+        errorView = findViewById(R.id.error_view);
+        errorText = findViewById(R.id.error_text);
+        buttonTryAgain = findViewById(R.id.button_try_again);
     }
 
     private void setViewListener() {
@@ -180,14 +180,15 @@ public class TopProfileActivity extends BaseEmptyActivity
     }
 
     @Override
-    public Object getComponent() {
-        //TODO milhamj
-        return null;
-    }
-
-    @Override
     public void populateData(TopProfileViewModel viewModel) {
         topProfileViewModel = viewModel;
+
+        if (topProfileViewModel.isKol()) {
+            loadKolTab();
+            tabLayout.setVisibility(View.VISIBLE);
+        } else {
+            tabLayout.setVisibility(View.GONE);
+        }
 
         ImageHandler.loadImageCircle2(avatar.getContext(),
                 avatar,
@@ -228,6 +229,41 @@ public class TopProfileActivity extends BaseEmptyActivity
         }
     }
 
+    @Override
+    public void showLoading() {
+        header.setVisibility(View.GONE);
+        tabLayout.setVisibility(View.GONE);
+        progressView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoading() {
+        header.setVisibility(View.VISIBLE);
+        tabLayout.setVisibility(View.VISIBLE);
+        progressView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showErrorScreen(String errorMessage, View.OnClickListener onClickListener) {
+        header.setVisibility(View.GONE);
+        tabLayout.setVisibility(View.GONE);
+        errorView.setVisibility(View.VISIBLE);
+
+        if (errorMessage != null) errorText.setText(errorMessage);
+        else errorText.setText(R.string.server_busy);
+
+        buttonTryAgain.setOnClickListener(onClickListener);
+    }
+
+    @Override
+    public void hideErrorScreen() {
+        header.setVisibility(View.VISIBLE);
+        tabLayout.setVisibility(View.VISIBLE);
+        errorText.setText(R.string.server_busy);
+        errorView.setVisibility(View.GONE);
+        buttonTryAgain.setOnClickListener(null);
+    }
+
     private void setTextDisabledOrNot(TextView textView, String value) {
         textView.setTextColor(
                 MethodChecker.getColor(
@@ -252,6 +288,12 @@ public class TopProfileActivity extends BaseEmptyActivity
         buttonFollowText.setTextColor(MethodChecker.getColor(this,
                 R.color.white));
         buttonFollowImage.setVisibility(View.GONE);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_top_profile, menu);
+        return true;
     }
 
     @Override
@@ -313,23 +355,28 @@ public class TopProfileActivity extends BaseEmptyActivity
         }
     }
 
-    private void loadSection(){
+    private void initTabLoad() {
         List<TopProfileSectionItem> topProfileSectionItemList = new ArrayList<>();
 
-        if (getApplicationContext() instanceof SessionRouter) {
-            //TODO milhamj change this userid
-            BaseDaggerFragment kolPostFragment =
-                    ((SessionRouter) getApplicationContext()).getKolPostFragment(userId);
-            topProfileSectionItemList.add(new TopProfileSectionItem(TITLE_POST, kolPostFragment));
-        }
         TopProfileFragment profileFragment = TopProfileFragment.newInstance(userId);
         topProfileSectionItemList.add(new TopProfileSectionItem(TITLE_PROFILE, profileFragment));
 
-        TopProfileTabPagerAdapter topProfileTabPagerAdapter =
-                new TopProfileTabPagerAdapter(getSupportFragmentManager());
+        topProfileTabPagerAdapter = new TopProfileTabPagerAdapter(getSupportFragmentManager());
         topProfileTabPagerAdapter.setItemList(topProfileSectionItemList);
         viewPager.setAdapter(topProfileTabPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
+    }
+
+    private void loadKolTab() {
+        if (topProfileViewModel.isKol() && getApplicationContext() instanceof SessionRouter) {
+            BaseDaggerFragment kolPostFragment =
+                    ((SessionRouter) getApplicationContext()).getKolPostFragment(userId);
+            topProfileTabPagerAdapter.addItem(0,
+                    new TopProfileSectionItem(TITLE_POST, kolPostFragment));
+
+            tabLayout.setScrollPosition(0,0f,true);
+            viewPager.setCurrentItem(0);
+        }
     }
 }

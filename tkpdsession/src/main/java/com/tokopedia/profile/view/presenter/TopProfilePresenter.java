@@ -34,4 +34,10 @@ public class TopProfilePresenter extends BaseDaggerPresenter<TopProfileFragmentL
                 new GetTopProfileSubscriber(getView())
         );
     }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        getTopProfileDataUseCase.unsubscribe();
+    }
 }
