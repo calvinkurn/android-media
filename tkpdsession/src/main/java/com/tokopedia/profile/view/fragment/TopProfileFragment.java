@@ -7,17 +7,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.profile.ProfileComponentInstance;
 import com.tokopedia.profile.di.DaggerTopProfileComponent;
 import com.tokopedia.profile.di.TopProfileModule;
 import com.tokopedia.profile.view.customview.PartialUserDataView;
 import com.tokopedia.profile.view.customview.PartialUserInfoView;
 import com.tokopedia.profile.view.customview.PartialUserShopView;
-import com.tokopedia.profile.view.listener.TopProfileFragmentListener;
 import com.tokopedia.profile.view.listener.TopProfileActivityListener;
+import com.tokopedia.profile.view.listener.TopProfileFragmentListener;
 import com.tokopedia.profile.view.viewmodel.TopProfileViewModel;
 import com.tokopedia.session.R;
+
 import javax.inject.Inject;
 
 /**
@@ -28,6 +28,7 @@ public class TopProfileFragment extends BaseDaggerFragment implements TopProfile
 
     private static final String PARAM_USER_ID = "user_id";
 
+    private TopProfileActivityListener.View activityListener;
     private PartialUserDataView partialUserDataView;
     private PartialUserInfoView partialUserInfoView;
     private PartialUserShopView partialUserShopView;
@@ -51,11 +52,20 @@ public class TopProfileFragment extends BaseDaggerFragment implements TopProfile
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_top_profile, container, false);
+
+        activityListener = (TopProfileActivityListener.View) getActivity();
+
         presenter.attachView(this);
         initVar();
         initView(view);
         presenter.initView(userId);
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
     }
 
     @Override
@@ -86,12 +96,13 @@ public class TopProfileFragment extends BaseDaggerFragment implements TopProfile
 
     @Override
     public void showLoading() {
-
+        activityListener.hideErrorScreen();
+        activityListener.showLoading();
     }
 
     @Override
     public void hideLoading() {
-
+        activityListener.hideLoading();
     }
 
     @Override
@@ -99,11 +110,20 @@ public class TopProfileFragment extends BaseDaggerFragment implements TopProfile
         partialUserDataView.renderData(topProfileViewModel);
         partialUserInfoView.renderData(topProfileViewModel);
         partialUserShopView.renderData(topProfileViewModel);
-        ((TopProfileActivityListener.View) getActivity()).populateData(topProfileViewModel);
+        activityListener.populateData(topProfileViewModel);
     }
 
     @Override
     public void onErrorGetProfileData(String message) {
-        NetworkErrorHelper.showSnackbar(getActivity(), message);
+        activityListener.showErrorScreen(message, tryAgainOnlickListener());
+    }
+
+    private View.OnClickListener tryAgainOnlickListener(){
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.getProfileContent(userId);
+            }
+        };
     }
 }
