@@ -25,5 +25,6 @@ public class DigitalUrl {
         public static String TAX = DIGITAL_BANTUAN + "pajak/";
         public static String GIFT_CARD = DIGITAL_BANTUAN + "voucher-gift-card/";
         public static String RETRIBUTION = DIGITAL_BANTUAN + "retribusi/";
+        public static String MTIX = DIGITAL_BANTUAN + "m-tix-xxi/";
     }
 }

@@ -148,6 +148,9 @@ public class CategoryDetailDataSource {
             case "25":
                 result = DigitalUrl.HelpUrl.RETRIBUTION;
                 break;
+            case "31":
+                result = DigitalUrl.HelpUrl.MTIX;
+                break;
             default:
                 result = "";
         }
