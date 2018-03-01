@@ -96,6 +96,7 @@ public class TopProfileFragment extends BaseDaggerFragment implements TopProfile
 
     @Override
     public void showLoading() {
+        activityListener.hideMainView();
         activityListener.hideErrorScreen();
         activityListener.showLoading();
     }
@@ -107,6 +108,7 @@ public class TopProfileFragment extends BaseDaggerFragment implements TopProfile
 
     @Override
     public void onSuccessGetProfileData(TopProfileViewModel topProfileViewModel) {
+        activityListener.showMainView();
         activityListener.populateData(topProfileViewModel);
         partialUserDataView.renderData(topProfileViewModel);
         partialUserInfoView.renderData(topProfileViewModel);

@@ -12,6 +12,10 @@ public interface TopProfileActivityListener {
     interface View extends CustomerView {
         void populateData(TopProfileViewModel viewModel);
 
+        void showMainView();
+
+        void hideMainView();
+
         void showLoading();
 
         void hideLoading();

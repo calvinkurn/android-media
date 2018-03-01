@@ -230,6 +230,18 @@ public class TopProfileActivity extends BaseEmptyActivity
     }
 
     @Override
+    public void showMainView() {
+        header.setVisibility(View.VISIBLE);
+        viewPager.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideMainView() {
+        header.setVisibility(View.GONE);
+        viewPager.setVisibility(View.GONE);
+    }
+
+    @Override
     public void showLoading() {
         header.setVisibility(View.GONE);
         tabLayout.setVisibility(View.GONE);
