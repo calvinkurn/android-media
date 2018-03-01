@@ -55,7 +55,6 @@
                     android:layout_alignParentRight="true"
                     android:layout_gravity="right"
                     android:background="@drawable/btn_share"
-                    android:contentDescription="@+string/image_product_desc"
                     android:gravity="center"
                     android:src="@drawable/ic_share_6"
                     android:visibility="gone" />
@@ -178,8 +177,7 @@
                 android:layout_height="@dimen/small_dp"
                 android:layout_gravity="right"
                 android:layout_marginBottom="@dimen/margin_small"
-                android:layout_marginRight="@dimen/margin_small"
-                android:contentDescription="@+string/image_product_desc" />
+                android:layout_marginRight="@dimen/margin_small" />
 
             <!--
                        <View
