@@ -107,10 +107,10 @@ public class TopProfileFragment extends BaseDaggerFragment implements TopProfile
 
     @Override
     public void onSuccessGetProfileData(TopProfileViewModel topProfileViewModel) {
+        activityListener.populateData(topProfileViewModel);
         partialUserDataView.renderData(topProfileViewModel);
         partialUserInfoView.renderData(topProfileViewModel);
         partialUserShopView.renderData(topProfileViewModel);
-        activityListener.populateData(topProfileViewModel);
     }
 
     @Override

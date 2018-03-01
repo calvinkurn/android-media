@@ -78,6 +78,7 @@ public class TopProfileActivity extends BaseEmptyActivity
 
     private String userId;
     private TopProfileViewModel topProfileViewModel;
+    private TopProfileTabPagerAdapter topProfileTabPagerAdapter;
 
     private ProfileComponent profileComponent;
 
@@ -101,7 +102,7 @@ public class TopProfileActivity extends BaseEmptyActivity
         initView();
         setupToolbar();
         setViewListener();
-        loadSection();
+        initTabLoad();
     }
 
     private void initVar(){
@@ -181,6 +182,13 @@ public class TopProfileActivity extends BaseEmptyActivity
     @Override
     public void populateData(TopProfileViewModel viewModel) {
         topProfileViewModel = viewModel;
+
+        if (topProfileViewModel.isKol()) {
+            loadKolTab();
+            tabLayout.setVisibility(View.VISIBLE);
+        } else {
+            tabLayout.setVisibility(View.GONE);
+        }
 
         ImageHandler.loadImageCircle2(avatar.getContext(),
                 avatar,
@@ -347,23 +355,28 @@ public class TopProfileActivity extends BaseEmptyActivity
         }
     }
 
-    private void loadSection(){
+    private void initTabLoad() {
         List<TopProfileSectionItem> topProfileSectionItemList = new ArrayList<>();
 
-        if (getApplicationContext() instanceof SessionRouter) {
-            //TODO milhamj change this userid
-            BaseDaggerFragment kolPostFragment =
-                    ((SessionRouter) getApplicationContext()).getKolPostFragment(userId);
-            topProfileSectionItemList.add(new TopProfileSectionItem(TITLE_POST, kolPostFragment));
-        }
         TopProfileFragment profileFragment = TopProfileFragment.newInstance(userId);
         topProfileSectionItemList.add(new TopProfileSectionItem(TITLE_PROFILE, profileFragment));
 
-        TopProfileTabPagerAdapter topProfileTabPagerAdapter =
-                new TopProfileTabPagerAdapter(getSupportFragmentManager());
+        topProfileTabPagerAdapter = new TopProfileTabPagerAdapter(getSupportFragmentManager());
         topProfileTabPagerAdapter.setItemList(topProfileSectionItemList);
         viewPager.setAdapter(topProfileTabPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
+    }
+
+    private void loadKolTab() {
+        if (topProfileViewModel.isKol() && getApplicationContext() instanceof SessionRouter) {
+            BaseDaggerFragment kolPostFragment =
+                    ((SessionRouter) getApplicationContext()).getKolPostFragment(userId);
+            topProfileTabPagerAdapter.addItem(0,
+                    new TopProfileSectionItem(TITLE_POST, kolPostFragment));
+
+            tabLayout.setScrollPosition(0,0f,true);
+            viewPager.setCurrentItem(0);
+        }
     }
 }

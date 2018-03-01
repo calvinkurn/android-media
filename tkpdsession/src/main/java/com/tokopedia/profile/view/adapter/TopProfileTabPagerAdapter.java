@@ -26,6 +26,11 @@ public class TopProfileTabPagerAdapter extends FragmentPagerAdapter {
         notifyDataSetChanged();
     }
 
+    public void addItem(int position, TopProfileSectionItem topProfileSectionItem) {
+        this.topProfileSectionItemList.add(position, topProfileSectionItem);
+        notifyDataSetChanged();
+    }
+
     @Override
     public Fragment getItem(int position) {
         return topProfileSectionItemList.get(position).getFragment();
