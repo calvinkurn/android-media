@@ -94,6 +94,7 @@
             android:layout_marginBottom="@dimen/new_margin_small"/>
 
         <TextView
+            android:id="@+id/error_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/text_size_12"
@@ -106,6 +107,7 @@
             />
 
         <TextView
+            android:id="@+id/button_try_again"
             android:layout_width="@dimen/default_big_icon"
             android:layout_height="wrap_content"
             android:padding="@dimen/new_margin_med"

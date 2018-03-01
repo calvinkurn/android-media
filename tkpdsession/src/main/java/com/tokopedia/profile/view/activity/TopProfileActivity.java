@@ -70,6 +70,11 @@ public class TopProfileActivity extends BaseEmptyActivity
     private View followersSeparator;
     private LinearLayout favoriteShopLayout;
     private TextView favoriteShopValue;
+    private View header;
+    private View progressView;
+    private View errorView;
+    private TextView errorText;
+    private TextView buttonTryAgain;
 
     private String userId;
     private TopProfileViewModel topProfileViewModel;
@@ -126,6 +131,11 @@ public class TopProfileActivity extends BaseEmptyActivity
         followersSeparator = findViewById(R.id.followers_separator);
         favoriteShopLayout = findViewById(R.id.favorite_shop_layout);
         favoriteShopValue = findViewById(R.id.favorite_shop_value);
+        header = findViewById(R.id.header);
+        progressView = findViewById(R.id.progress_view);
+        errorView = findViewById(R.id.error_view);
+        errorText = findViewById(R.id.error_text);
+        buttonTryAgain = findViewById(R.id.button_try_again);
     }
 
     private void setViewListener() {
@@ -211,22 +221,37 @@ public class TopProfileActivity extends BaseEmptyActivity
 
     @Override
     public void showLoading() {
-
+        header.setVisibility(View.GONE);
+        tabLayout.setVisibility(View.GONE);
+        progressView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideLoading() {
-
+        header.setVisibility(View.VISIBLE);
+        tabLayout.setVisibility(View.VISIBLE);
+        progressView.setVisibility(View.GONE);
     }
 
     @Override
     public void showErrorScreen(String errorMessage, View.OnClickListener onClickListener) {
+        header.setVisibility(View.GONE);
+        tabLayout.setVisibility(View.GONE);
+        errorView.setVisibility(View.VISIBLE);
 
+        if (errorMessage != null) errorText.setText(errorMessage);
+        else errorText.setText(R.string.server_busy);
+
+        buttonTryAgain.setOnClickListener(onClickListener);
     }
 
     @Override
     public void hideErrorScreen() {
-
+        header.setVisibility(View.VISIBLE);
+        tabLayout.setVisibility(View.VISIBLE);
+        errorText.setText(R.string.server_busy);
+        errorView.setVisibility(View.GONE);
+        buttonTryAgain.setOnClickListener(null);
     }
 
     private void setTextDisabledOrNot(TextView textView, String value) {
