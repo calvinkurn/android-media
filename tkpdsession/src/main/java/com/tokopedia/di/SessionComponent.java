@@ -9,8 +9,8 @@ import com.tokopedia.otp.phoneverification.view.fragment.ChangePhoneNumberFragme
 import com.tokopedia.otp.phoneverification.view.fragment.PhoneVerificationFragment;
 import com.tokopedia.otp.tokocashotp.view.fragment.ChooseTokocashVerificationMethodFragment;
 import com.tokopedia.otp.tokocashotp.view.fragment.TokoCashVerificationFragment;
-import com.tokopedia.profilecompletion.view.fragment.ProfileCompletionPhoneVerificationFragment;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
+import com.tokopedia.profilecompletion.view.fragment.ProfileCompletionPhoneVerificationFragment;
 import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberEmailVerificationFragment;
 import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberInputFragment;
 import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberWarningFragment;
@@ -21,6 +21,7 @@ import com.tokopedia.session.login.loginphonenumber.view.fragment.NotConnectedTo
 import com.tokopedia.session.register.view.fragment.CreatePasswordFragment;
 import com.tokopedia.session.register.view.fragment.RegisterEmailFragment;
 import com.tokopedia.session.register.view.fragment.RegisterInitialFragment;
+import com.tokopedia.session.register.view.fragment.RegisterPhoneNumberFragment;
 
 import dagger.Component;
 
@@ -69,6 +70,8 @@ public interface SessionComponent {
     void inject(ChooseTokocashAccountFragment chooseTokocashAccountFragment);
 
     void inject(NotConnectedTokocashFragment notConnectedTokocashFragment);
+
+    void inject(RegisterPhoneNumberFragment registerPhoneNumberFragment);
 
     GetUserInfoUseCase getUserInfoUseCase();
 

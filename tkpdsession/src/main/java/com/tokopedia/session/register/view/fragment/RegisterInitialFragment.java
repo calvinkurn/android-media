@@ -52,6 +52,7 @@ import com.tokopedia.session.google.GoogleSignInActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.view.activity.CreatePasswordActivity;
 import com.tokopedia.session.register.view.activity.RegisterEmailActivity;
+import com.tokopedia.session.register.view.activity.RegisterPhoneNumberActivity;
 import com.tokopedia.session.register.view.presenter.RegisterInitialPresenter;
 import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
 import com.tokopedia.session.register.view.viewlistener.RegisterInitial;
@@ -74,6 +75,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     private static final int REQUEST_REGISTER_WEBVIEW = 100;
     private static final int REQUEST_REGISTER_EMAIL = 101;
+    private static final int REQUEST_REGISTER_PHONE_NUMBER = 104;
     private static final int REQUEST_CREATE_PASSWORD = 102;
     private static final int REQUEST_SECURITY_QUESTION = 103;
 
@@ -85,7 +87,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     public static final int TYPE_SQ_EMAIL = 2;
 
     LinearLayout registerContainer;
-    LoginTextView registerButton;
+    LoginTextView registerButton, registerPhoneNumberButton;
     TextView loginButton;
     ScrollView container;
     RelativeLayout progressBar;
@@ -144,6 +146,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
         registerContainer = (LinearLayout) view.findViewById(R.id.register_container);
         registerButton = (LoginTextView) view.findViewById(R.id.register);
+        registerPhoneNumberButton = (LoginTextView) view.findViewById(R.id.register_phone_number);
         loginButton = (TextView) view.findViewById(R.id.login_button);
         container = (ScrollView) view.findViewById(R.id.container);
         progressBar = (RelativeLayout) view.findViewById(R.id.progress_bar);
@@ -176,6 +179,19 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 showProgressBar();
                 Intent intent = RegisterEmailActivity.getCallingIntent(getActivity());
                 startActivityForResult(intent, REQUEST_REGISTER_EMAIL);
+
+            }
+        });
+        registerPhoneNumberButton.setColor(Color.WHITE);
+        registerPhoneNumberButton.setBorderColor(R.color.black);
+        registerPhoneNumberButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                UnifyTracking.eventTracking(LoginAnalytics.getEventClickRegisterEmail());
+//                UnifyTracking.eventMoRegistrationStart(AppEventTracking.GTMCacheValue.EMAIL);
+                showProgressBar();
+                Intent intent = RegisterPhoneNumberActivity.getCallingIntent(getActivity());
+                startActivityForResult(intent, REQUEST_REGISTER_PHONE_NUMBER);
 
             }
         });
@@ -225,6 +241,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             String accessToken = data.getStringExtra(KEY_GOOGLE_ACCOUNT_TOKEN);
             presenter.registerGoogle(accessToken);
         } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity.RESULT_OK) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        }  else if (requestCode == REQUEST_REGISTER_PHONE_NUMBER && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
         } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity.RESULT_CANCELED) {

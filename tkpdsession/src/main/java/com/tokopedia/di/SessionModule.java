@@ -9,15 +9,14 @@ import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.network.service.AccountsBasicService;
+import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.otp.data.source.OtpSource;
 import com.tokopedia.otp.domain.mapper.RequestOtpMapper;
 import com.tokopedia.otp.domain.mapper.ValidateOtpMapper;
 import com.tokopedia.otp.phoneverification.data.source.ChangeMsisdnSource;
-
 import com.tokopedia.otp.phoneverification.data.source.VerifyMsisdnSource;
 import com.tokopedia.otp.phoneverification.domain.mapper.ChangePhoneNumberMapper;
 import com.tokopedia.otp.phoneverification.domain.mapper.VerifyPhoneNumberMapper;
@@ -27,17 +26,6 @@ import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepository;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
-import com.tokopedia.session.data.source.CloudDiscoverDataSource;
-import com.tokopedia.session.data.source.CreatePasswordDataSource;
-import com.tokopedia.session.data.source.GetTokenDataSource;
-import com.tokopedia.session.data.source.MakeLoginDataSource;
-import com.tokopedia.session.domain.interactor.DiscoverUseCase;
-import com.tokopedia.session.domain.mapper.DiscoverMapper;
-import com.tokopedia.session.domain.mapper.MakeLoginMapper;
-import com.tokopedia.session.domain.mapper.TokenMapper;
-import com.tokopedia.session.login.loginemail.domain.interactor.LoginEmailUseCase;
-import com.tokopedia.session.login.loginemail.view.presenter.LoginPresenter;
-import com.tokopedia.session.register.data.mapper.CreatePasswordMapper;
 import com.tokopedia.session.changephonenumber.data.repository.ChangePhoneNumberRepositoryImpl;
 import com.tokopedia.session.changephonenumber.data.source.CloudGetWarningSource;
 import com.tokopedia.session.changephonenumber.data.source.CloudSendEmailSource;
@@ -54,10 +42,20 @@ import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWa
 import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberEmailVerificationPresenter;
 import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberInputPresenter;
 import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberWarningPresenter;
+import com.tokopedia.session.data.source.CloudDiscoverDataSource;
+import com.tokopedia.session.data.source.CreatePasswordDataSource;
 import com.tokopedia.session.data.source.GetTokenDataSource;
 import com.tokopedia.session.data.source.MakeLoginDataSource;
+import com.tokopedia.session.domain.mapper.DiscoverMapper;
 import com.tokopedia.session.domain.mapper.MakeLoginMapper;
 import com.tokopedia.session.domain.mapper.TokenMapper;
+import com.tokopedia.session.register.data.mapper.CheckMsisdnMapper;
+import com.tokopedia.session.register.data.mapper.CreatePasswordMapper;
+import com.tokopedia.session.register.data.mapper.RegisterPhoneNumberMapper;
+import com.tokopedia.session.register.data.source.CheckMsisdnSource;
+import com.tokopedia.session.register.data.source.CloudRegisterPhoneNumberSource;
+import com.tokopedia.session.register.domain.interactor.registerphonenumber.CheckMsisdnPhoneNumberUseCase;
+import com.tokopedia.session.register.domain.interactor.registerphonenumber.RegisterPhoneNumberUseCase;
 
 import javax.inject.Named;
 
@@ -271,6 +269,52 @@ SessionModule {
     @Named(LOGIN_CACHE)
     LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context) {
         return new LocalCacheHandler(context, LOGIN_CACHE);
+    }
+
+    @SessionScope
+    @Provides
+    CheckMsisdnMapper provideCheckMsisdnMapper() {
+        return new CheckMsisdnMapper();
+    }
+
+    @SessionScope
+    @Provides
+    CheckMsisdnSource provideCheckMsisdnSource(@Named(BEARER_SERVICE) AccountsService accountsService,
+                                               CheckMsisdnMapper checkMsisdnMapper) {
+        return new CheckMsisdnSource(accountsService, checkMsisdnMapper);
+    }
+
+    @SessionScope
+    @Provides
+    CheckMsisdnPhoneNumberUseCase provideCheckMsisdnPhoneNumberUseCase(ThreadExecutor threadExecutor,
+                                                                       PostExecutionThread postExecutionThread,
+                                                                       @ApplicationContext Context context,
+                                                                       CheckMsisdnSource checkMsisdnSource) {
+        return new CheckMsisdnPhoneNumberUseCase(threadExecutor, postExecutionThread, context, checkMsisdnSource);
+    }
+
+    @SessionScope
+    @Provides
+    RegisterPhoneNumberMapper provideRegisterPhoneNumberMapper() {
+        return new RegisterPhoneNumberMapper();
+    }
+
+    @SessionScope
+    @Provides
+    CloudRegisterPhoneNumberSource provideCloudRegisterPhoneNumberSource(
+            @Named(HMAC_SERVICE) AccountsService accountsService,
+            RegisterPhoneNumberMapper mapper) {
+        return new CloudRegisterPhoneNumberSource(accountsService, mapper);
+    }
+
+    @SessionScope
+    @Provides
+    RegisterPhoneNumberUseCase provideRegisterPhoneNumberUseCase(
+            ThreadExecutor threadExecutor,
+            PostExecutionThread postExecutionThread,
+            @ApplicationContext Context context,
+            CloudRegisterPhoneNumberSource source) {
+        return new RegisterPhoneNumberUseCase(threadExecutor, postExecutionThread, context, source);
     }
 
 }

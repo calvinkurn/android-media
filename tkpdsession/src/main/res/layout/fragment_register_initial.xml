@@ -89,6 +89,21 @@
                 app:iconButton="@drawable/ic_register_icon"
                 app:textColor="@color/black_70" />
 
+            <com.tokopedia.core.customView.LoginTextView
+                android:id="@+id/register_phone_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/register"
+                android:layout_marginBottom="@dimen/padding_med"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                app:backgroundColor="@color/black"
+                app:cornerSize="5"
+                app:customText="Daftar dengan Nomor Telepon"
+                app:iconButton="@drawable/ic_register_icon"
+                app:textColor="@color/black_70" />
+
+
         </LinearLayout>
     </ScrollView>
 
