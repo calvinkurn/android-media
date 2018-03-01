@@ -14,14 +14,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_end="50dp" />
+        app:layout_constraintGuide_end="@dimen/progbar_height" />
 
     <android.support.v7.widget.CardView
         android:id="@+id/image_card"
-        android:layout_width="105dp"
-        android:layout_height="105dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="@dimen/image_width_product_list"
+        android:layout_height="@dimen/image_width_product_list"
+        android:layout_marginLeft="@dimen/new_margin_med"
+        android:layout_marginStart="@dimen/new_margin_med"
+        android:layout_marginTop="@dimen/new_margin_small"
         app:cardElevation="0dp"
         app:cardUseCompatPadding="true"
         app:layout_constraintStart_toStartOf="parent"
@@ -41,9 +42,10 @@
 
     <FrameLayout
         android:id="@+id/wishlist_button_container"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_marginStart="8dp"
+        android:layout_width="@dimen/icon_size"
+        android:layout_height="@dimen/icon_size"
+        android:layout_marginEnd="@dimen/margin_ms"
+        android:layout_marginRight="@dimen/margin_ms"
         android:background="@drawable/circle_white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline7"
@@ -52,8 +54,8 @@
 
         <ImageView
             android:id="@+id/image_view_wishlist"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="@dimen/small_icon_size"
+            android:layout_height="@dimen/small_icon_size"
             android:layout_gravity="center"
             android:background="@drawable/ic_wishlist" />
 
@@ -61,16 +63,15 @@
 
     <TextView
         android:id="@+id/title"
+        style="@style/TextView.Micro.Black"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginEnd="@dimen/margin_ms"
+        android:layout_marginStart="@dimen/margin_ms"
+        android:layout_marginTop="@dimen/margin_ms"
         android:ellipsize="end"
-        android:fontFamily="sans-serif-medium"
         android:lineSpacingExtra="5sp"
         android:maxLines="2"
-        android:textColor="@color/font_black_primary_70"
-        android:textSize="@dimen/font_micro"
         android:textStyle="normal"
         app:layout_constraintEnd_toStartOf="@+id/guideline7"
         app:layout_constraintStart_toEndOf="@+id/space"
@@ -79,15 +80,15 @@
 
     <TextView
         android:id="@+id/price"
+        style="@style/TextView.Small.Orange"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="6dp"
+        android:layout_marginLeft="@dimen/margin_ms"
+        android:layout_marginStart="@dimen/margin_ms"
+        android:layout_marginTop="@dimen/price_margin_top"
         android:fontFamily="sans-serif-medium"
         android:gravity="center_vertical"
         android:lineSpacingExtra="5sp"
-        android:textColor="#ff5722"
-        android:textSize="@dimen/font_small"
         android:textStyle="normal"
         app:layout_constraintStart_toEndOf="@+id/image_card"
         app:layout_constraintTop_toBottomOf="@+id/title"
@@ -165,7 +166,7 @@
         style="@style/Small.RatingBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="7dp"
+        android:layout_marginTop="@dimen/new_margin_med"
         app:layout_constraintStart_toStartOf="@+id/price"
         app:layout_constraintTop_toBottomOf="@+id/price" />
 
@@ -173,17 +174,18 @@
         android:id="@+id/total_review"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="TextView"
+        android:layout_marginLeft="@dimen/new_margin_med"
+        android:layout_marginStart="@dimen/new_margin_med"
         app:layout_constraintStart_toEndOf="@+id/ratingBar"
-        app:layout_constraintTop_toTopOf="@+id/ratingBar" />
+        app:layout_constraintTop_toTopOf="@+id/ratingBar"
+        tools:text="TextView" />
 
     <Space
         android:id="@+id/space"
-        android:layout_width="3dp"
+        android:layout_width="@dimen/padding_vvs"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="@dimen/new_margin_med"
+        android:layout_marginTop="@dimen/new_margin_med"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/image_card"
         app:layout_constraintTop_toTopOf="parent"
