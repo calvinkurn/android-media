@@ -2,12 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'android-apt'
 
-android {
-    lintOptions {
-        abortOnError false
-    }
-}
-
 dependencies {
     compile project(rootProject.ext.features.core)
     compile project(rootProject.ext.libraries.design)
