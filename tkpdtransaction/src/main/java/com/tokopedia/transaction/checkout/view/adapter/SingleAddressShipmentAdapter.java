@@ -163,7 +163,8 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
 
         void onAddOrChangeAddress();
 
-        void onChooseShipment(int position, CartSellerItemModel cartSellerItemModel);
+        void onChooseShipment(int position, CartSellerItemModel cartSellerItemModel,
+                              RecipientAddressModel recipientAddressModel);
 
         void onChoosePickupPoint(RecipientAddressModel addressAdapterData);
 
@@ -631,9 +632,12 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
             mRlExpandOtherProductContainer.setOnClickListener(showAllProductListener(cartItemModels));
             mTvExpandOtherProduct.setOnClickListener(showAllProductListener(cartItemModels));
 
-            mChooseCourierButton.setOnClickListener(selectShippingOptionListener(getAdapterPosition(), model));
-            mTvSelectedShipment.setOnClickListener(selectShippingOptionListener(getAdapterPosition(), model));
-            mIvChevronShipmentOption.setOnClickListener(selectShippingOptionListener(getAdapterPosition(), model));
+            mChooseCourierButton.setOnClickListener(selectShippingOptionListener(
+                    mCartSingleAddressData.getRecipientAddressModel(), model));
+            mTvSelectedShipment.setOnClickListener(selectShippingOptionListener(
+                    mCartSingleAddressData.getRecipientAddressModel(), model));
+            mIvChevronShipmentOption.setOnClickListener(selectShippingOptionListener(
+                    mCartSingleAddressData.getRecipientAddressModel(), model));
 
             mIvDetailOptionChevron.setOnClickListener(costDetailOptionListener());
 
@@ -716,12 +720,13 @@ public class SingleAddressShipmentAdapter extends RecyclerView.Adapter<RecyclerV
                     mIsExpandAllProduct));
         }
 
-        private View.OnClickListener selectShippingOptionListener(final int position,
+        private View.OnClickListener selectShippingOptionListener(final RecipientAddressModel recipientAddressModel,
                                                                   final CartSellerItemModel cartSellerItemModel) {
             return new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mAdapterViewListener.onChooseShipment(position, cartSellerItemModel);
+                    mAdapterViewListener.onChooseShipment(getAdapterPosition(), cartSellerItemModel,
+                            recipientAddressModel);
                 }
             };
         }

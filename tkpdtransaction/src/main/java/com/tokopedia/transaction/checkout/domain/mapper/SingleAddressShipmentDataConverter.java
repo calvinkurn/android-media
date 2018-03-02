@@ -146,6 +146,10 @@ public class SingleAddressShipmentDataConverter extends ConverterData<CartShipme
 
         recipientAddress.setRecipientName(userAddress.getReceiverName());
         recipientAddress.setRecipientPhoneNumber(userAddress.getPhone());
+        recipientAddress.setLatitude(!TextUtils.isEmpty(userAddress.getLatitude()) ?
+                Double.parseDouble(userAddress.getLatitude()) : null);
+        recipientAddress.setLongitude(!TextUtils.isEmpty(userAddress.getLongitude()) ?
+                Double.parseDouble(userAddress.getLongitude()) : null);
 
         recipientAddress.setSelected(userAddress.getStatus() == PRIME_ADDRESS);
 
