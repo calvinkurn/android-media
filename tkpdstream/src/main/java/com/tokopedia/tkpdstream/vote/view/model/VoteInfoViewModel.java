@@ -35,8 +35,8 @@ public class VoteInfoViewModel {
         this.voted = voted;
         this.voteInfoString = voteInfoString;
         this.voteInfoUrl = voteInfoUrl;
-        this.startTime = 1486098000;
-        this.endTime = 1486108800;
+        this.startTime = 1519970400;
+        this.endTime = 1519981200;
     }
 
     public String getVoteOptionType() {

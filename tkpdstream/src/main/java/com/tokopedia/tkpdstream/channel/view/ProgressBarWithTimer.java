@@ -28,6 +28,8 @@ public class ProgressBarWithTimer extends FrameLayout {
     private long startTime, endTime;
 
     public static interface Listener {
+        void onStartTick();
+
         void onFinishTick();
     }
 
@@ -94,6 +96,8 @@ public class ProgressBarWithTimer extends FrameLayout {
         this.startTime = startTime;
         this.endTime = endTime;
         long now = System.currentTimeMillis() / 1000L;
+        getRootView().setVisibility(VISIBLE);
+        listener.onStartTick();
         countDownTimer = new CountDownTimer(1000 * (endTime - now), 100) {
             @Override
             public void onTick(long l) {
@@ -105,6 +109,7 @@ public class ProgressBarWithTimer extends FrameLayout {
 
             @Override
             public void onFinish() {
+                getRootView().setVisibility(View.GONE);
                 if (listener != null)
                     listener.onFinishTick();
             }
