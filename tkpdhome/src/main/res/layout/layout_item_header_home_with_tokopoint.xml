@@ -173,21 +173,43 @@
                 android:paddingTop="@dimen/padding_vs"
                 android:visibility="visible">
 
-                <TextView
-                    android:id="@+id/tv_balance_tokopoint"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:ellipsize="end"
-                    android:lineSpacingExtra="4sp"
-                    android:lines="1"
-                    android:singleLine="true"
-                    android:textColor="@color/black_70"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:visibility="gone"
-                    tools:text="900000000000000000 Poin"
-                    tools:visibility="visible" />
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_balance_tokopoint"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:baselineAligned="false"
+                        android:ellipsize="end"
+                        android:lineSpacingExtra="4sp"
+                        android:lines="1"
+                        android:singleLine="true"
+                        android:textColor="@color/black_70"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:visibility="gone"
+                        tools:text="900000000000000000 Poin"
+                        tools:visibility="visible" />
+
+                    <TextView
+                        style="@style/TokoPointHeaderNewLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="@dimen/new_margin_med"
+                        android:layout_marginLeft="@dimen/margin_vs"
+                        android:layout_marginRight="@dimen/new_margin_med"
+                        android:layout_marginStart="@dimen/margin_vs"
+                        android:layout_marginBottom="2dp"
+                        android:gravity="center"
+                        android:text="@string/home_header_tokopoint_new_label" />
+
+                </LinearLayout>
+
 
                 <TextView
                     android:id="@+id/tv_title_tokopoint"
@@ -210,24 +232,16 @@
                     android:layout_weight="1"
                     android:gravity="center_vertical"
                     android:lineSpacingExtra="4sp"
+                    android:lines="1"
+                    android:singleLine="true"
                     android:textColor="#42b549"
                     android:textSize="12sp"
                     android:visibility="gone"
-                    tools:text="Top Up"
+                    tools:text="Top Up panjaaaaaaaaaangaanannn"
                     tools:visibility="visible" />
 
             </LinearLayout>
 
-            <TextView
-                style="@style/TokoPointHeaderNewLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/new_margin_med"
-                android:layout_marginLeft="@dimen/margin_vs"
-                android:layout_marginRight="@dimen/new_margin_med"
-                android:layout_marginStart="@dimen/margin_vs"
-                android:layout_marginTop="@dimen/margin_small"
-                android:text="@string/home_header_tokopoint_new_label" />
 
         </LinearLayout>
 
