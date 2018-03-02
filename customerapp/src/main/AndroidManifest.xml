@@ -7,12 +7,19 @@
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
 
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         tools:node="remove"
         tools:selector="com.google.firebase" />
+    <uses-permission
+        android:name="android.permission.WRITE_CALL_LOG"
+        tools:node="remove" />
+    <uses-permission
+        android:name="android.permission.READ_CALL_LOG"
+        tools:node="remove" />
+    <uses-permission android:name="android.permission.WRITE_CONTACTS"
+        tools:node="remove"/>
 
     <application
         android:name=".ConsumerMainApplication"
@@ -23,6 +30,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Tokopedia3"
         tools:replace="android:name">
+        <meta-data
+            android:name="net.hockeyapp.android.appIdentifier"
+            android:value="528b17702bf941a581f15e188677306b " />
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="d02324f74e70ffcd2dc00ab722d32baecf1884b4"
@@ -157,7 +167,6 @@
             android:exported="true"
             android:label="Tokopedia"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="APPS_HOME"
@@ -197,7 +206,9 @@
 
         <activity
             android:name="com.tokopedia.otp.phoneverification.view.activity.RidePhoneNumberVerificationActivity"
-            android:screenOrientation="portrait" />
+            android:label="@string/title_activity_phone_verification"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
 
         <service
             android:name=".home.feed.data.source.cloud.AddFavoriteShopService"
@@ -248,7 +259,8 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3" />
 
-        <activity android:name=".qrscanner.QrScannerActivity"
+        <activity
+            android:name=".qrscanner.QrScannerActivity"
             android:label="@string/title_scan_qr"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />

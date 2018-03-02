@@ -8,7 +8,10 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
+import com.tokopedia.core.drawer2.data.source.CloudProfileSource;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.util.SessionHandler;
@@ -37,6 +40,7 @@ import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
 
 /**
  * Created by errysuprayogi on 2/2/18.
@@ -46,19 +50,41 @@ public class ExploreDataSource {
     private Context context;
     private HomeDataApi homeDataApi;
     private GlobalCacheManager cacheManager;
+    private CloudProfileSource profileSource;
     private Gson gson;
 
     public ExploreDataSource(Context context, HomeDataApi homeDataApi,
                              GlobalCacheManager cacheManager,
+                             CloudProfileSource profileSource,
                              Gson gson) {
         this.context = context;
         this.homeDataApi = homeDataApi;
         this.cacheManager = cacheManager;
+        this.profileSource = profileSource;
         this.gson = gson;
     }
 
-    public Observable<List<ExploreSectionViewModel>> getExploreData(Context context) {
-        return homeDataApi.getExploreData(String.format(getRequestPayload(), SessionHandler.getShopDomain(context)))
+    public Observable<List<ExploreSectionViewModel>> getExploreData(String userId) {
+        if (userId.isEmpty()) {
+            return getData("");
+        } else {
+            return profileSource.getProfile(RequestParams.EMPTY.getParameters())
+                    .flatMap(new Func1<ProfileModel, Observable<List<ExploreSectionViewModel>>>() {
+                        @Override
+                        public Observable<List<ExploreSectionViewModel>> call(ProfileModel profileModel) {
+                            if (profileModel.getProfileData().getShopInfo() != null) {
+                                return getData(profileModel.getProfileData().getShopInfo().getShopDomain());
+                            } else {
+                                return getData("");
+                            }
+                        }
+                    });
+        }
+    }
+
+    @NonNull
+    private Observable<List<ExploreSectionViewModel>> getData(String shopDomain) {
+        return homeDataApi.getExploreData(String.format(getRequestPayload(), shopDomain))
                 .doOnNext(saveToCache())
                 .map(getMapper());
     }
