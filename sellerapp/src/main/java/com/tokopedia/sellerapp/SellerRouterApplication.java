@@ -60,6 +60,7 @@ import com.tokopedia.mitratoppers.MitraToppersRouterInternal;
 import com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
 import com.tokopedia.network.service.AccountsService;
+import com.tokopedia.profile.view.activity.TopProfileActivity;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -1061,5 +1062,10 @@ public abstract class SellerRouterApplication extends MainApplication
                 });
             }
         };
+    }
+
+    @Override
+    public Intent getTopProfileIntent(Context context, String userId) {
+        return TopProfileActivity.newInstance(context, userId);
     }
 }

@@ -13,12 +13,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.app.V2BaseFragment;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.tkpd.tkpdreputation.shopreputation.view.adapter.ShopReputationAdapterR;
 import com.tokopedia.tkpd.tkpdreputation.shopreputation.domain.ActionReputationLikeRetrofit;
 import com.tokopedia.tkpd.tkpdreputation.shopreputation.domain.GetShopReputationRetrofit;
+import com.tokopedia.tkpd.tkpdreputation.shopreputation.view.adapter.ShopReputationAdapterR;
 import com.tokopedia.tkpd.tkpdreputation.shopreputation.view.viewmodel.ReputationModel;
 
 import java.util.ArrayList;
@@ -272,9 +272,9 @@ public class ShopReputationList extends V2BaseFragment {
 
             @Override
             public void onUserClick(int pos) {
-                startActivity(
-                        PeopleInfoNoDrawerActivity.createInstance(getActivity(), listReputation.get(pos).userId)
-                );
+                startActivity(((TkpdCoreRouter) getActivity().getApplicationContext())
+                        .getTopProfileIntent(getActivity(),
+                                listReputation.get(pos).userId));
             }
 
             @Override

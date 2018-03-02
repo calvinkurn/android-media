@@ -7,7 +7,10 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.apiservices.chat.ChatService;
+import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.inboxchat.data.factory.MessageFactory;
 import com.tokopedia.inbox.inboxchat.data.mapper.DeleteMessageMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.GetMessageMapper;
@@ -18,7 +21,6 @@ import com.tokopedia.inbox.inboxchat.domain.usecase.GetMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.ListenWebSocketUseCase;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
-import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.inboxmessage.fragment.InboxMessageFragment;
 import com.tokopedia.inbox.inboxmessage.interactor.InboxMessageCacheInteractor;
 import com.tokopedia.inbox.inboxmessage.interactor.InboxMessageCacheInteractorImpl;
@@ -29,8 +31,6 @@ import com.tokopedia.inbox.inboxmessage.model.ActInboxMessagePass;
 import com.tokopedia.inbox.inboxmessage.model.InboxMessagePass;
 import com.tokopedia.inbox.inboxmessage.model.inboxmessage.InboxMessage;
 import com.tokopedia.inbox.inboxmessage.model.inboxmessage.InboxMessageItem;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
-import com.tokopedia.core.util.PagingHandler;
 
 import java.util.ArrayList;
 
@@ -454,7 +454,8 @@ public class InboxMessageFragmentPresenterImpl implements InboxMessageFragmentPr
     @Override
     public void goToProfile(int userId) {
         viewListener.startActivity(
-                PeopleInfoNoDrawerActivity.createInstance(viewListener.getActivity(), String.valueOf(userId))
+                ((TkpdCoreRouter) viewListener.getActivity().getApplicationContext())
+                        .getTopProfileIntent(viewListener.getActivity(), String.valueOf(userId))
         );
     }
 

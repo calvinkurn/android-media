@@ -34,8 +34,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.v4.NetworkConfig;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
-import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -490,9 +488,8 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
     }
 
     private void actionOpenBuyer() {
-        startActivity(
-                PeopleInfoNoDrawerActivity.createInstance(getActivity(), userId)
-        );
+        startActivity(((TkpdCoreRouter) getActivity().getApplicationContext())
+                .getTopProfileIntent(getActivity(), userId));
     }
 
 

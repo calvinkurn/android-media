@@ -28,13 +28,13 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.product.ReviewActService;
 import com.tokopedia.core.network.apiservices.shop.ReputationActService;
 import com.tokopedia.core.network.apiservices.shop.ShopService;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.LabelUtils;
@@ -783,9 +783,9 @@ public class ReputationProductFragment extends BasePresenterFragment<ReputationP
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(
-                        PeopleInfoNoDrawerActivity.createInstance(getActivity(), model.getReviewUserId())
-                );
+                startActivity(((TkpdCoreRouter) getActivity().getApplicationContext())
+                        .getTopProfileIntent(getActivity(),
+                                model.getReviewUserId()));
             }
         };
     }
