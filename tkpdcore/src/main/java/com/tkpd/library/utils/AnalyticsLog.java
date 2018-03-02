@@ -168,9 +168,7 @@ public class AnalyticsLog {
                 + " DeviceModel=" + android.os.Build.MODEL
                 + " DeviceId=" + "'" + GCMHandler.getRegistrationId(MainApplication.getAppContext()) + "'"
                 + " Environment=" + isStaging(baseUrl)
-                + " RefreshToken=" + (SessionHandler.getRefreshToken(MainApplication.getAppContext())
-
-
+                + " RefreshToken=" + "'" + (SessionHandler.getRefreshToken(MainApplication.getAppContext())) + "'"
         );
     }
 }
