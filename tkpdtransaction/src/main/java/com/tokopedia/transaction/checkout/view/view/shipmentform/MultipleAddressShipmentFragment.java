@@ -14,8 +14,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.app.TkpdFragment;
-import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.data.mapper.ShipmentRatesDataMapper;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressItemData;
@@ -25,6 +25,7 @@ import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentCartData;
 import com.tokopedia.transaction.checkout.domain.datamodel.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.transaction.checkout.router.ICartCheckoutModuleRouter;
 import com.tokopedia.transaction.checkout.view.adapter.MultipleAddressShipmentAdapter;
 import com.tokopedia.transaction.checkout.view.view.shippingoptions.ShipmentDetailActivity;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
@@ -69,7 +70,7 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
         return fragment;
     }
 
-    public static MultipleAddressShipmentFragment newInstance(){
+    public static MultipleAddressShipmentFragment newInstance() {
         return new MultipleAddressShipmentFragment();
     }
 
@@ -209,17 +210,15 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
     }
 
     @Override
-    public void onHachikoClicked(MultipleAddressPriceSummaryData priceSummaryData) {
-        Intent intent;
-        if (priceSummaryData.isCouponActive()) {
-            intent = LoyaltyActivity.newInstanceCouponActive(
-                    getActivity(), "marketplace", "marketplace"
+    public void onHachikoClicked(MultipleAddressPriceSummaryData addressPriceSummaryData) {
+        if (getActivity().getApplication() instanceof ICartCheckoutModuleRouter) {
+            startActivityForResult(
+                    ((ICartCheckoutModuleRouter) getActivity().getApplication())
+                            .tkpdCartCheckoutGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
+                                    getActivity(), "", addressPriceSummaryData.isCouponActive()
+                            ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
             );
-        } else {
-            intent = LoyaltyActivity.newInstanceCouponNotActive(getActivity(),
-                    "marketplace", "marketplace");
         }
-        startActivityForResult(intent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
     }
 
     private RecyclerView.OnScrollListener onRecyclerViewScrolledListener(

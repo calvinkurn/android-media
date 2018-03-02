@@ -83,7 +83,7 @@ public class CartListModule {
     @Provides
     @CartListScope
     RecyclerView.ItemDecoration provideCartItemDecoration() {
-        return new CartItemDecoration(20, true, 0);
+        return new CartItemDecoration(40, false, 0);
     }
 
 

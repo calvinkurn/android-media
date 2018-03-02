@@ -233,6 +233,10 @@
     <string name="message_error_no_pinpoint">Anda belum menandai lokasi tujuan dalam peta</string>
     <string name="label_main_address">Utama</string>
 
+    <string name="show_case_finish">Mengerti</string>
+    <string name="title_promo_code">Kode Promo</string>
+    <string name="title_coupon_code">Kode Kupon</string>
+
     <string-array name="pickup_point">
         <item>Alfamart</item>
     </string-array>
