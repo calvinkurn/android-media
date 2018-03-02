@@ -7,6 +7,8 @@ import android.view.View;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.inbox.inboxmessageold.InboxMessageConstant;
 import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageDetailActivity;
 import com.tokopedia.inbox.inboxmessageold.fragment.InboxMessageFragment;
@@ -20,8 +22,6 @@ import com.tokopedia.inbox.inboxmessageold.model.InboxMessagePass;
 import com.tokopedia.inbox.inboxmessageold.model.inboxmessage.InboxMessage;
 import com.tokopedia.inbox.inboxmessageold.model.inboxmessage.InboxMessageItem;
 import com.tokopedia.inbox.inboxmessageold.model.inboxmessagedetail.InboxMessageDetailItem;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
-import com.tokopedia.core.util.PagingHandler;
 
 import java.util.ArrayList;
 
@@ -396,7 +396,8 @@ public class InboxMessageFragmentPresenterImpl implements InboxMessageFragmentPr
     @Override
     public void goToProfile(int userId) {
         viewListener.startActivity(
-                PeopleInfoNoDrawerActivity.createInstance(viewListener.getActivity(), String.valueOf(userId))
+                ((TkpdCoreRouter) viewListener.getActivity().getApplicationContext())
+                        .getTopProfileIntent(viewListener.getActivity(), String.valueOf(userId))
         );
     }
 

@@ -160,4 +160,6 @@ public interface TkpdCoreRouter {
     Intent getLoginFacebookIntent(Context context);
 
     Intent getLoginWebviewIntent(Context context, String name, String url);
+
+    Intent getTopProfileIntent(Context context, String userId);
 }

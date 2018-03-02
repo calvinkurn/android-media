@@ -6,16 +6,17 @@ import android.os.CountDownTimer;
 import android.util.Pair;
 
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketListenerImpl;
+import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.inboxchat.analytics.TopChatTrackingEventLabel;
 import com.tokopedia.inbox.inboxchat.domain.usecase.DeleteMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetMessageListUseCase;
@@ -26,7 +27,6 @@ import com.tokopedia.inbox.inboxchat.presenter.subscriber.SearchMessageSubscribe
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
-import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.inboxmessage.model.InboxMessagePass;
 
 import java.util.ArrayList;
@@ -279,7 +279,8 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
 
     public void goToProfile(int userId) {
         getView().startActivity(
-                PeopleInfoNoDrawerActivity.createInstance(getView().getActivity(), String.valueOf(userId))
+                ((TkpdCoreRouter) getView().getActivity().getApplicationContext())
+                        .getTopProfileIntent(getView().getActivity(), String.valueOf(userId))
         );
     }
 

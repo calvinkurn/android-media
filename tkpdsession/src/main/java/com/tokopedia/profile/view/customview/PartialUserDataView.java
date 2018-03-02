@@ -2,10 +2,10 @@ package com.tokopedia.profile.view.customview;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.Html;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.View;
@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.profile.view.viewmodel.TopProfileViewModel;
+import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.session.R;
 
 /**
@@ -126,8 +127,9 @@ public class PartialUserDataView extends BaseCustomView {
     private void renderIncompleteBanner(TopProfileViewModel model) {
         if (model.getCompletion() < 100) {
             bannerIncompleteProfile.setVisibility(VISIBLE);
-            tvIncompleteProfile.setText(Html.fromHtml(this.getContext().getString(R.string
-                    .incomplete_profile_html)));
+
+            tvIncompleteProfile.setOnClickListener(new ClickProfileCompletion());
+
             ObjectAnimator animation = ObjectAnimator.ofInt(progressBar, "progress", 0, model
                     .getCompletion());
             animation.setDuration(2000);
@@ -204,7 +206,17 @@ public class PartialUserDataView extends BaseCustomView {
         } else {
             partialGender.setVisibility(GONE);
         }
+    }
 
+    private class ClickProfileCompletion implements OnClickListener {
 
+        ClickProfileCompletion() {
+        }
+
+        @Override
+        public void onClick(View v) {
+            getContext().startActivity(
+                    new Intent(getContext(), ProfileCompletionActivity.class));
+        }
     }
 }

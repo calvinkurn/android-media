@@ -7,8 +7,11 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
+import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.util.getproducturlutil.GetProductUrlUtil;
 import com.tokopedia.inbox.inboxmessageold.InboxMessageConstant;
 import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageDetailActivity;
 import com.tokopedia.inbox.inboxmessageold.fragment.InboxMessageDetailFragment;
@@ -25,9 +28,6 @@ import com.tokopedia.inbox.inboxmessageold.model.inboxmessage.InboxMessageItem;
 import com.tokopedia.inbox.inboxmessageold.model.inboxmessagedetail.ConversationBetween;
 import com.tokopedia.inbox.inboxmessageold.model.inboxmessagedetail.InboxMessageDetail;
 import com.tokopedia.inbox.inboxmessageold.model.inboxmessagedetail.InboxMessageDetailItem;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
-import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.core.util.getproducturlutil.GetProductUrlUtil;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -237,7 +237,8 @@ public class InboxMessageDetailFragmentPresenterImpl implements InboxMessageDeta
     @Override
     public void onGoToProfile(String userId) {
         viewListener.getActivity().startActivity(
-                PeopleInfoNoDrawerActivity.createInstance(viewListener.getActivity(), userId)
+                ((TkpdCoreRouter) viewListener.getActivity().getApplicationContext())
+                        .getTopProfileIntent(viewListener.getActivity(), userId)
         );
     }
 

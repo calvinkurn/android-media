@@ -18,6 +18,7 @@ import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
@@ -527,7 +528,9 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
     @Override
     public void openPeople(String url) {
-        startActivity(PeopleInfoNoDrawerActivity.createInstance(context, Uri.parse(url).getQueryParameter("id")));
+        startActivity(
+                ((TkpdCoreRouter) getActivity().getApplicationContext())
+                        .getTopProfileIntent(getActivity(), Uri.parse(url).getQueryParameter("id")));
     }
 
     @Override
