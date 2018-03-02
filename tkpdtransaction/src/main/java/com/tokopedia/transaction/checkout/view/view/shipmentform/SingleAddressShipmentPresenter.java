@@ -1,7 +1,8 @@
 package com.tokopedia.transaction.checkout.view.view.shipmentform;
 
-import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.view.base.CartMvpPresenter;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -10,7 +11,7 @@ import javax.inject.Inject;
  */
 
 public class SingleAddressShipmentPresenter
-        extends CartMvpPresenter<ICartSingleAddressView<CartSingleAddressData>> {
+        extends CartMvpPresenter<ICartSingleAddressView> {
 
     private static final String TAG = SingleAddressShipmentPresenter.class.getSimpleName();
 
@@ -20,7 +21,7 @@ public class SingleAddressShipmentPresenter
     }
 
     @Override
-    public void attachView(ICartSingleAddressView<CartSingleAddressData> mvpView) {
+    public void attachView(ICartSingleAddressView mvpView) {
         super.attachView(mvpView);
     }
 
@@ -29,13 +30,8 @@ public class SingleAddressShipmentPresenter
         super.checkViewAttached();
     }
 
-    /**
-     *
-     * @param context
-     * @param cartSingleAddressData
-     */
-    public void getCartShipmentData(final CartSingleAddressData cartSingleAddressData) {
-        getMvpView().show(cartSingleAddressData);
+    public void getCartShipmentData(final List<Object> shipmentDataList) {
+        getMvpView().show(shipmentDataList);
     }
 
 }
