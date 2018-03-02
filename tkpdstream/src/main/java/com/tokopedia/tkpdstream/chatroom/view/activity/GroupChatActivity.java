@@ -2,6 +2,7 @@ package com.tokopedia.tkpdstream.chatroom.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -26,9 +27,9 @@ public class GroupChatActivity extends BaseEmptyActivity {
     @DeepLink(ApplinkConstant.GROUPCHAT_ROOM)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
         String id = extras.getString(ApplinkConstant.PARAM_CHANNEL_ID);
-        Intent homeIntent = ((StreamModuleRouter)context.getApplicationContext()).getHomeIntent(context);
-        Intent detailsIntent  = GroupChatActivity.getCallingIntent(context, id);
-        Intent parentIntent = ((StreamModuleRouter)context.getApplicationContext())
+        Intent homeIntent = ((StreamModuleRouter) context.getApplicationContext()).getHomeIntent(context);
+        Intent detailsIntent = GroupChatActivity.getCallingIntent(context, id);
+        Intent parentIntent = ((StreamModuleRouter) context.getApplicationContext())
                 .getInboxChannelsIntent(context);
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
@@ -47,7 +48,9 @@ public class GroupChatActivity extends BaseEmptyActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
-        TransparentStatusBarHelper.assistActivity(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            TransparentStatusBarHelper.assistActivity(this);
+        }
     }
 
     private void initView() {

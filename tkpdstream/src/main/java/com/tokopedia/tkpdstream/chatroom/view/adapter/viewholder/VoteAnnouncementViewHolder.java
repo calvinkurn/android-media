@@ -34,23 +34,23 @@ public class VoteAnnouncementViewHolder extends BaseChatViewHolder<VoteAnnouncem
     public void bind(VoteAnnouncementViewModel element) {
         super.bind(element);
         switch (element.getVoteType()) {
-            case VoteAnnouncementViewModel.VOTE_ACTIVE:
+            case VoteAnnouncementViewModel.POLLING_START:
                 setVoteStarted(element);
                 break;
-            case VoteAnnouncementViewModel.VOTE_FINISHED:
+            case VoteAnnouncementViewModel.POLLING_FINISHED:
                 setVoteFinished(element);
                 break;
             default:
                 break;
         }
+
+        voteQuestion.setText(MethodChecker.fromHtml(element.getMessage()));
     }
 
     private void setVoteFinished(VoteAnnouncementViewModel element) {
         ImageHandler.loadImageWithIdWithoutPlaceholder(voteIcon, R.drawable.ic_vote_inactive);
         voteTitle.setText(R.string.title_poll_finished);
         voteTitle.setTextColor(MethodChecker.getColor(voteTitle.getContext(), R.color.black_54));
-        voteQuestion.setText(element.getMessage()
-        );
     }
 
     private void setVoteStarted(VoteAnnouncementViewModel element) {

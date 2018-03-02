@@ -835,7 +835,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         if (getActivity() != null) {
             voteStatus.setText(R.string.vote_has_ended);
             voteStatus.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_54));
-            DrawableCompat.setTint(iconVote.getBackground(), ContextCompat.getColor(getActivity(), R.color.black_54));
+            if(iconVote!=null && iconVote.getBackground()!=null) {
+                DrawableCompat.setTint(iconVote.getBackground(), ContextCompat.getColor(getActivity(), R.color.black_54));
+            }
         }
     }
 
@@ -843,7 +845,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
         if (getActivity() != null) {
             voteStatus.setText(R.string.vote);
             voteStatus.setTextColor(MethodChecker.getColor(getActivity(), R.color.medium_green));
-            DrawableCompat.setTint(iconVote.getBackground(), ContextCompat.getColor(getActivity(), R.color.medium_green));
+            if(iconVote!=null && iconVote.getBackground()!=null) {
+                DrawableCompat.setTint(iconVote.getBackground(), ContextCompat.getColor(getActivity(), R.color.medium_green));
+            }
         }
     }
 

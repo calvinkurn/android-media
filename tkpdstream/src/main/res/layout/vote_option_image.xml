@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -73,7 +74,7 @@
             android:layout_height="wrap_content"
             android:scaleType="fitCenter"
             android:layout_centerVertical="true"
-            android:background="@drawable/ic_checked_inverse"
+            app:srcCompat="@drawable/ic_checked_inverse"
             android:layout_toRightOf="@id/text_view"
             android:padding="@dimen/space_small" />
         <TextView

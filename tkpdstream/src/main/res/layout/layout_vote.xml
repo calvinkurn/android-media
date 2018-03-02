@@ -24,7 +24,7 @@
                 android:id="@+id/icon_vote"
                 android:layout_width="@dimen/size_icon_vote"
                 android:layout_height="@dimen/size_icon_vote"
-                android:background="@drawable/ic_vote"/>
+                app:srcCompat="@drawable/ic_vote"/>
 
             <Space
                 android:layout_width="@dimen/space_mini"
@@ -74,7 +74,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/ic_choose" />
+                    app:srcCompat="@drawable/ic_choose" />
                 <Space
                     android:layout_width="@dimen/space_mini"
                     android:layout_height="match_parent"
@@ -100,7 +100,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/space_med"
-            android:background="@drawable/ic_chevron"/>
+            app:srcCompat="@drawable/ic_chevron"/>
     </RelativeLayout>
 
     <LinearLayout
@@ -171,7 +171,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:background="@drawable/ic_voting_gift"/>
+                app:srcCompat="@drawable/ic_voting_gift"/>
 
             <TextView
                 android:id="@+id/vote_info_link"
