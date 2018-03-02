@@ -59,7 +59,7 @@ public class SingleAddressShipmentDataConverter
         ShipmentCostModel shipmentCostModel = getTotalPayableDetail(cartSellerItemModels);
 
         shipmentDataList.add(recipientAddressModel);
-        shipmentDataList.add(cartSellerItemModels);
+        shipmentDataList.addAll(cartSellerItemModels);
         shipmentDataList.add(shipmentCostModel);
 
         return shipmentDataList;

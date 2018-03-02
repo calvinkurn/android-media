@@ -22,7 +22,6 @@ import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartPromoSug
 import com.tokopedia.transaction.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSellerItemModel;
-import com.tokopedia.transaction.checkout.domain.datamodel.cartsingleshipment.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.transaction.checkout.domain.mapper.SingleAddressShipmentDataConverter;
 import com.tokopedia.transaction.checkout.router.ICartCheckoutModuleRouter;
@@ -89,7 +88,6 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
     ICartShipmentActivity cartShipmentActivityListener;
 
     private List<Object> mShipmentDataList;
-    private CartSingleAddressData mCartSingleAddressData;
     private PromoCodeCartListData promoCodeAppliedData;
 
     public static SingleAddressShipmentFragment newInstance(CartShipmentAddressFormData cartShipmentAddressFormData,
@@ -175,13 +173,10 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
         mShipmentDataList = mSingleAddressShipmentDataConverter.convert(cartShipmentAddressFormData);
         promoCodeAppliedData = arguments.getParcelable(ARG_EXTRA_PROMO_CODE_APPLIED_DATA);
-        mCartSingleAddressData = mSingleAddressShipmentDataConverter.convert(cartShipmentAddressFormData);
         CartPromoSuggestion cartPromoSuggestion = arguments.getParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION);
 
-        mShipmentDataList.add(cartPromoSuggestion);
-        mShipmentDataList.add(new CartPromo());
-        mCartSingleAddressData.setCartPromoSuggestion(cartPromoSuggestion);
-        mCartSingleAddressData.setCartPromo(new CartPromo());
+        mShipmentDataList.add(0, new CartPromo());
+        mShipmentDataList.add(1, cartPromoSuggestion);
     }
 
     @Override
@@ -261,11 +256,10 @@ public class SingleAddressShipmentFragment extends BasePresenterFragment
 
     @Override
     public void onAddOrChangeAddress() {
-        startActivityForResult(CartAddressChoiceActivity.createInstance(getActivity(),
-                        CartAddressChoiceActivity.TYPE_REQUEST_FULL_SELECTION),
-                CartAddressChoiceActivity.TYPE_REQUEST_FULL_SELECTION,
-                mCartSingleAddressData.getRecipientAddressModel()),
-                CartAddressChoiceActivity.REQUEST_CODE);
+        Intent intent = CartAddressChoiceActivity.createInstance(getActivity(),
+                CartAddressChoiceActivity.TYPE_REQUEST_FULL_SELECTION);
+
+        startActivityForResult(intent, CartAddressChoiceActivity.REQUEST_CODE);
     }
 
     @Override
