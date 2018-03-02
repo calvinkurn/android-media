@@ -1,5 +1,6 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
+import com.tkpd.library.utils.AnalyticsLog;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;
@@ -36,6 +37,10 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private static final String TOKEN = "token";
     private static final String ACCOUNTS_AUTHORIZATION = "accounts-authorization";
     private final String authKey;
+
+    private static final String RESPONSE_STATUS_INVALID_GRANT = "INVALID_GRANT";
+    private static final String RESPONSE_PARAM_TOKEN = "token";
+    private static final String REQUEST_PARAM_REFRESH_TOKEN = "refresh_token";
 
     public TkpdAuthInterceptor(String authKey) {
         this.authKey = authKey;
@@ -75,8 +80,27 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             return refreshTokenAndGcmUpdate(chain, response, finalRequest);
         } else if (isUnauthorized(finalRequest, response)) {
             return refreshToken(chain, response);
+        } else if (isInvalidGrantWhenRefreshToken(finalRequest, response)){
+            logInvalidGrant(response);
+            return response;
         }
         return response;
+    }
+
+    private boolean isInvalidGrantWhenRefreshToken(Request request, Response response) {
+        try {
+            String responseString = response.peekBody(512).string();
+            return responseString.toUpperCase().contains(RESPONSE_STATUS_INVALID_GRANT)
+                    && response.request().url().encodedPath().contains(RESPONSE_PARAM_TOKEN)
+                    && request.toString().contains(REQUEST_PARAM_REFRESH_TOKEN);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private void logInvalidGrant(Response response) {
+        AnalyticsLog.logInvalidGrant(response.request().url().toString());
     }
 
     protected Response checkShowForceLogout(Chain chain, Request newestRequest) throws IOException {

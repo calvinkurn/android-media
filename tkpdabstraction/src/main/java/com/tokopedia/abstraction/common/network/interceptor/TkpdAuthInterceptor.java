@@ -42,6 +42,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private static final String RESPONSE_STATUS_UNDER_MAINTENANCE = "UNDER_MAINTENANCE";
     private static final String RESPONSE_STATUS_REQUEST_DENIED = "REQUEST_DENIED";
     private static final String RESPONSE_STATUS_INVALID_REQUEST = "INVALID_REQUEST";
+    private static final String RESPONSE_STATUS_INVALID_GRANT = "INVALID_GRANT";
     private static final String HEADER_PARAM_AUTHORIZATION = "authorization";
     private static final String HEADER_PARAM_BEARER = "Bearer";
     private static final String RESPONSE_PARAM_MAKE_LOGIN = "make_login";
@@ -55,6 +56,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private static final String HEADER_PARAM_IS_BETA = "is_beta";
     private static final String PARAM_DEFAULT_BETA = "0";
     private static final String PARAM_BETA_TRUE = "1";
+    private static final String RESPONSE_PARAM_TOKEN = "token";
+    private static final String REQUEST_PARAM_REFRESH_TOKEN = "refresh_token";
 
     private Context context;
     private AbstractionRouter abstractionRouter;
@@ -297,8 +300,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     }
 
     @Deprecated
-    protected void showForceLogoutDialog() {
-        abstractionRouter.showForceLogoutDialog();
+    protected void showForceLogoutDialog(Response response) {
+        abstractionRouter.showForceLogoutDialog(response);
     }
 
     @Deprecated
@@ -330,11 +333,24 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
-    protected void refreshTokenAndGcmUpdate() {
+    private boolean isInvalidGrantWhenRefreshToken(Request request, Response response) {
+        try {
+            String responseString = response.peekBody(512).string();
+            return responseString.toUpperCase().contains(RESPONSE_STATUS_INVALID_GRANT)
+                    && response.request().url().encodedPath().contains(RESPONSE_PARAM_TOKEN)
+                    && request.toString().contains(REQUEST_PARAM_REFRESH_TOKEN);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    protected void refreshTokenAndGcmUpdate() throws IOException {
+        abstractionRouter.refreshToken();
         abstractionRouter.gcmUpdate();
     }
 
-    protected void refreshToken() {
+    protected void refreshToken() throws IOException {
         abstractionRouter.refreshToken();
     }
 
@@ -348,22 +364,32 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     protected Response checkForceLogout(Chain chain, Response response, Request finalRequest) throws
             IOException {
-        if (isNeedGcmUpdate(response)) {
-            refreshTokenAndGcmUpdate();
-            if (finalRequest.header(HEADER_PARAM_AUTHORIZATION).contains(HEADER_PARAM_BEARER)) {
-                Request newestRequest = recreateRequestWithNewAccessToken(chain);
-                return checkShowForceLogout(chain, newestRequest);
+        try {
+            if (isNeedGcmUpdate(response)) {
+                refreshTokenAndGcmUpdate();
+                if (finalRequest.header(HEADER_PARAM_AUTHORIZATION).contains(HEADER_PARAM_BEARER)) {
+                    Request newestRequest = recreateRequestWithNewAccessToken(chain);
+                    return checkShowForceLogout(chain, newestRequest);
+                } else {
+                    Request newestRequest = recreateRequestWithNewAccessTokenAccountsAuth(chain);
+                    return checkShowForceLogout(chain, newestRequest);
+                }
+            } else if (isUnauthorized(finalRequest, response)) {
+                refreshToken();
+                Request newest = recreateRequestWithNewAccessToken(chain);
+                return checkShowForceLogout(chain, newest);
+            } else if (isInvalidGrantWhenRefreshToken(finalRequest, response)) {
+                abstractionRouter.logInvalidGrant(response);
+                return response;
             } else {
-                Request newestRequest = recreateRequestWithNewAccessTokenAccountsAuth(chain);
-                return checkShowForceLogout(chain, newestRequest);
+                return response;
             }
-        } else if (isUnauthorized(finalRequest, response)) {
-            refreshToken();
-            Request newest = recreateRequestWithNewAccessToken(chain);
-            return checkShowForceLogout(chain, newest);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return response;
         }
-        return response;
     }
+
 
     private Request recreateRequestWithNewAccessTokenAccountsAuth(Chain chain) {
         String freshAccessToken = userSession.getFreshToken();
@@ -376,7 +402,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private Response checkShowForceLogout(Chain chain, Request newestRequest) throws IOException {
         Response response = chain.proceed(newestRequest);
         if (isUnauthorized(newestRequest, response) || isNeedGcmUpdate(response)) {
-            abstractionRouter.showForceLogoutDialog();
+            abstractionRouter.showForceLogoutDialog(response);
         }
         return response;
     }
