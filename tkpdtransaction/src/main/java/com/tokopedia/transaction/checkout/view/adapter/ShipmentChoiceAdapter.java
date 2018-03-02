@@ -63,7 +63,8 @@ public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAd
         }
 
         if (shipmentItemData.isLessThanADayDelivery()) {
-            String deliveryHour = shipmentItemData.getDeliveryTimeRange() +
+            String deliveryHour = holder.tvDeliveryTimeRange.getContext().getString(R.string.label_max_delivery) +
+                    shipmentItemData.getDeliveryTimeRange() +
                     holder.tvDeliveryTimeRange.getContext().getString(R.string.label_delivery_hour);
             holder.tvDeliveryTimeRange.setText(deliveryHour);
         } else {

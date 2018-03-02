@@ -72,12 +72,17 @@ public class CourierChoiceAdapter extends RecyclerView.Adapter<CourierChoiceAdap
         }
 
         if (!TextUtils.isEmpty(courierItemData.getEstimatedDayDelivery())) {
-            String estimatedDelivery = courierItemData.getEstimatedDayDelivery() +
+            String estimatedDelivery = "";
+            if (courierItemData.isUsePinPoint()) {
+                estimatedDelivery += holder.tvDeliveryTimeRange.getContext().getString(R.string.label_max_delivery);
+            }
+            estimatedDelivery += courierItemData.getEstimatedDayDelivery() +
                     holder.tvDeliveryTimeRange.getContext().getString(R.string.label_delivery_day_with_asterisk);
             holder.tvDeliveryTimeRange.setText(estimatedDelivery);
             holder.tvDeliveryTimeRange.setVisibility(View.VISIBLE);
         } else if (!TextUtils.isEmpty(courierItemData.getEstimatedHourDelivery())) {
-            String estimatedDelivery = courierItemData.getEstimatedHourDelivery() +
+            String estimatedDelivery = holder.tvDeliveryTimeRange.getContext().getString(R.string.label_max_delivery) +
+                    courierItemData.getEstimatedHourDelivery() +
                     holder.tvDeliveryTimeRange.getContext().getString(R.string.label_delivery_hour_with_asterisk);
             holder.tvDeliveryTimeRange.setText(estimatedDelivery);
             holder.tvDeliveryTimeRange.setVisibility(View.VISIBLE);

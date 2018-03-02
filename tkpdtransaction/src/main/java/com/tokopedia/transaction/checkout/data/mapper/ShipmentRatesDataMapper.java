@@ -192,7 +192,7 @@ public class ShipmentRatesDataMapper {
                         shipmentItemData.setLessThanADayDelivery(false);
                     }
                 } else {
-                    deliveryTimeRange = minEtd / HOUR_IN_SECONDS + "-" + maxEtd / HOUR_IN_SECONDS;
+                    deliveryTimeRange = String.valueOf(maxEtd / HOUR_IN_SECONDS);
                     if (shipmentItemData != null) {
                         shipmentItemData.setLessThanADayDelivery(true);
                     }
@@ -235,7 +235,7 @@ public class ShipmentRatesDataMapper {
         if (product.getMaxHoursId() != null && product.getMaxHoursId().length() > 0) {
             String formattedEtd = formatEtd(null, product, courierItemData.getMinEtd(),
                     courierItemData.getMaxEtd());
-            if (courierItemData.getMaxEtd() >= DAY_IN_SECONDS) {
+            if (courierItemData.getMaxEtd() < DAY_IN_SECONDS) {
                 if (!TextUtils.isEmpty(formattedEtd)) {
                     courierItemData.setEstimatedHourDelivery(formattedEtd);
                 } else {
