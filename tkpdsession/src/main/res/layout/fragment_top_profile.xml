@@ -14,7 +14,7 @@
             android:id="@+id/profile_data"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:background="@color/font_white_primary_70"
             android:elevation="4dp"
             android:visibility="visible" />
@@ -24,7 +24,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:layout_marginTop="16dp"
             android:background="@color/font_white_primary_70"
             android:elevation="4dp"
             android:visibility="visible" />
