@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.checkout.view.di.module;
 
+import android.support.v7.widget.RecyclerView;
+
 import com.tokopedia.transaction.checkout.data.repository.ICartRepository;
 import com.tokopedia.transaction.checkout.domain.mapper.CartMapper;
 import com.tokopedia.transaction.checkout.domain.mapper.ICartMapper;
@@ -11,7 +13,9 @@ import com.tokopedia.transaction.checkout.domain.mapper.VoucherCouponMapper;
 import com.tokopedia.transaction.checkout.domain.usecase.CartListInteractor;
 import com.tokopedia.transaction.checkout.domain.usecase.ICartListInteractor;
 import com.tokopedia.transaction.checkout.view.adapter.CartRemoveProductAdapter;
+import com.tokopedia.transaction.checkout.view.di.scope.CartListScope;
 import com.tokopedia.transaction.checkout.view.di.scope.CartRemoveProductScope;
+import com.tokopedia.transaction.checkout.view.view.cartlist.CartItemDecoration;
 import com.tokopedia.transaction.checkout.view.view.cartlist.CartRemoveProductFragment;
 import com.tokopedia.transaction.checkout.view.view.cartlist.CartRemoveProductPresenter;
 
@@ -63,6 +67,12 @@ public class CartRemoveProductModule {
                                                    IShipmentMapper shipmentMapper,
                                                    IVoucherCouponMapper voucherCouponMapper) {
         return new CartListInteractor(compositeSubscription, cartRepository, cartMapper, shipmentMapper, voucherCouponMapper);
+    }
+
+    @Provides
+    @CartRemoveProductScope
+    RecyclerView.ItemDecoration provideCartItemDecoration() {
+        return new CartItemDecoration(40, false, 0);
     }
 
     @Provides

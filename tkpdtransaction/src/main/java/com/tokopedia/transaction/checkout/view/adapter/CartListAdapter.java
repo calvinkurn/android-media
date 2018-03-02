@@ -2,6 +2,7 @@ package com.tokopedia.transaction.checkout.view.adapter;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -11,12 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.cartlist.CartItemData;
@@ -110,9 +111,11 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     && !data.isEditableRemark()) {
                 holderView.etRemark.setVisibility(View.GONE);
                 holderView.tvLabelRemarkOption.setVisibility(View.VISIBLE);
+                holderView.lineBottom.setVisibility(View.VISIBLE);
             } else {
                 holderView.etRemark.setVisibility(View.VISIBLE);
                 holderView.tvLabelRemarkOption.setVisibility(View.GONE);
+                holderView.lineBottom.setVisibility(View.GONE);
                 holderView.etRemark.setText(data.getCartItemData().getUpdatedData().getRemark());
             }
 
@@ -266,15 +269,25 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private void renderErrorItemHeader(CartItemHolderData data, CartItemHolder holderView, int position) {
-        if (!data.getCartItemData().isError()) {
-            holderView.errorContainer.setVisibility(View.GONE);
-            holderView.tvError.setVisibility(View.GONE);
-            holderView.tvErrorDetail.setVisibility(View.GONE);
-        } else {
+        if (data.getCartItemData().isError()) {
+            holderView.errorContainer.setBackgroundResource(R.color.bg_cart_item_error);
+            holderView.tvError.setTextColor(MainApplication.getAppContext().getResources().getColor(R.color.text_cart_item_error_red));
             holderView.errorContainer.setVisibility(View.VISIBLE);
             holderView.tvError.setVisibility(View.VISIBLE);
             holderView.tvErrorDetail.setVisibility(View.GONE);
             holderView.tvError.setText(data.getCartItemData().getErrorMessage());
+        } else if (data.getCartItemData().isWarning()) {
+            holderView.errorContainer.setBackgroundResource(R.color.bg_cart_item_warning);
+            holderView.tvError.setTextColor(MainApplication.getAppContext().getResources().getColor(R.color.black_54));
+            holderView.errorContainer.setVisibility(View.VISIBLE);
+            holderView.tvError.setVisibility(View.VISIBLE);
+            holderView.tvErrorDetail.setVisibility(View.GONE);
+            holderView.tvError.setText(data.getCartItemData().getWarningMessage());
+        } else {
+            holderView.errorContainer.setVisibility(View.GONE);
+            holderView.tvError.setVisibility(View.GONE);
+            holderView.tvErrorDetail.setVisibility(View.GONE);
+
         }
     }
 
@@ -430,13 +443,13 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         private TextView tvProductPrice;
         private TextView tvProductWeight;
         private TextView tvShopName;
-        private EditText etQty;
+        private AppCompatEditText etQty;
         private ImageView btnQtyPlus;
         private ImageView btnQtyMinus;
         private TextView tvInfoRFreeReturn;
         private TextView tvInfoPreOrder;
         private TextView tvInfoCashBack;
-        private EditText etRemark;
+        private AppCompatEditText etRemark;
         private TextView tvLabelRemarkOption;
         private ImageView btnDelete;
         private ImageView ivWishlistBadge;
@@ -445,6 +458,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         private LinearLayout errorContainer;
         private TextView tvError;
         private TextView tvErrorDetail;
+        private View lineBottom;
 
         CartItemHolder(View itemView) {
             super(itemView);
@@ -467,6 +481,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             this.errorContainer = itemView.findViewById(R.id.ll_warning_container);
             this.tvError = itemView.findViewById(R.id.tv_warning);
             this.tvErrorDetail = itemView.findViewById(R.id.tv_warning_detail);
+            this.lineBottom = itemView.findViewById(R.id.line_bottom_remark);
         }
     }
 

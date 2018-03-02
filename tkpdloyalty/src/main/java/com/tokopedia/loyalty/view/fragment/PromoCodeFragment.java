@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -26,10 +27,6 @@ import com.tokopedia.loyalty.view.presenter.IPromoCodePresenter;
 import com.tokopedia.loyalty.view.view.IPromoCodeView;
 
 import javax.inject.Inject;
-
-import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.DIGITAL_STRING;
-import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.MARKETPLACE_CART_LIST_STRING;
-import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.MARKETPLACE_CART_SHIPMENT_STRING;
 
 /**
  * @author anggaprasetiyo on 24/11/17.
@@ -105,17 +102,20 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
         final EditText voucherCodeField = view.findViewById(R.id.et_voucher_code);
         TextView submitVoucherButton = view.findViewById(R.id.btn_check_voucher);
 
-        if (getArguments().getString(PLATFORM_KEY, "").equals(DIGITAL_STRING)) {
+        if (getArguments().getString(PLATFORM_KEY, "").equals(
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING)) {
             submitVoucherButton.setOnClickListener(onSubmitDigitalVoucher(
                     voucherCodeField,
                     voucherCodeFieldHolder)
             );
-        } else if (getArguments().getString(PLATFORM_KEY, "").equals(MARKETPLACE_CART_LIST_STRING)) {
+        } else if (getArguments().getString(PLATFORM_KEY, "").equals(
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_CART_LIST_STRING)) {
             submitVoucherButton.setOnClickListener(onSubmitMarketPlaceCartListVoucher(
                     voucherCodeField,
                     voucherCodeFieldHolder)
             );
-        } else if (getArguments().getString(PLATFORM_KEY, "").equals(MARKETPLACE_CART_SHIPMENT_STRING)) {
+        } else if (getArguments().getString(PLATFORM_KEY, "").equals(
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_CART_SHIPMENT_STRING)) {
             submitVoucherButton.setOnClickListener(onSubmitMarketPlaceCartShipmentVoucher(
                     voucherCodeField,
                     voucherCodeFieldHolder)

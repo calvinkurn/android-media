@@ -54,6 +54,8 @@ public class CartRemoveProductFragment extends BasePresenterFragment
     CartRemoveProductAdapter mCartRemoveProductAdapter;
     @Inject
     CartRemoveProductPresenter mCartRemoveProductPresenter;
+    @Inject
+    RecyclerView.ItemDecoration itemDecoration;
 
     private OnPassingCartDataListener mDataPasserListener;
 
@@ -182,7 +184,7 @@ public class CartRemoveProductFragment extends BasePresenterFragment
 
         mRvCartRemoveProduct.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRvCartRemoveProduct.setAdapter(mCartRemoveProductAdapter);
-
+        mRvCartRemoveProduct.addItemDecoration(itemDecoration);
         mCartRemoveProductPresenter.attachView(this);
     }
 

@@ -547,17 +547,17 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
     private void renderAdditionalPriceView(CourierItemData courierItemData) {
         if (courierItemData.getAdditionalPrice() != 0) {
             llAdditionalFee.setVisibility(View.VISIBLE);
-            setText(tvAdditionalFee, String.valueOf(courierItemData.getAdditionalPrice()));
+            setText(tvAdditionalFee, currencyId.format(courierItemData.getAdditionalPrice()));
         } else {
             llAdditionalFee.setVisibility(View.GONE);
         }
     }
 
-    private void renderDropshipperView(ShipmentItemData shipmentItemData) {
+    private void renderDropshipperView(CourierItemData courierItemData) {
         if (presenter.getShipmentDetailData().getUseDropshipper() != null) {
             renderDropshipperInput(presenter.getShipmentDetailData().getUseDropshipper());
         } else {
-            renderDropshipperInput(shipmentItemData.isAllowDropshiper());
+            renderDropshipperInput(courierItemData.isAllowDropshiper());
         }
     }
 
@@ -794,10 +794,9 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
                 renderShipmentWithoutMap(presenter.getShipmentDetailData());
             }
             switchInsurance.setChecked(false);
-            renderTickerView(courierItemData);
             renderInsuranceView(courierItemData);
             renderAdditionalPriceView(courierItemData);
-            renderDropshipperView(presenter.getSelectedShipment());
+            renderDropshipperView(courierItemData);
             updateFeesGroupLayout();
         }
     }
@@ -818,10 +817,9 @@ public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetai
         if (courierItemData.isUsePinPoint()) {
             showPinPointMap(presenter.getShipmentDetailData());
         }
-        renderTickerView(courierItemData);
         renderInsuranceView(courierItemData);
         renderAdditionalPriceView(courierItemData);
-        renderDropshipperView(presenter.getSelectedShipment());
+        renderDropshipperView(courierItemData);
         updateFeesGroupLayout();
         if (presenter.getShipmentDetailData().getUseDropshipper() != null) {
             switchDropshipper.setChecked(presenter.getShipmentDetailData().getUseDropshipper());

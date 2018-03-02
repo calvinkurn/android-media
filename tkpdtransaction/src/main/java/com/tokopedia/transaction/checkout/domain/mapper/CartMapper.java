@@ -56,6 +56,9 @@ public class CartMapper implements ICartMapper {
             cartItemDataOrigin.setFavorite(false);
             cartItemDataOrigin.setMinimalQtyOrder(data.getProduct().getProductMinOrder());
             cartItemDataOrigin.setFreeReturn(data.getProduct().getIsFreereturns() == 1);
+            if (!mapperUtil.isEmpty(data.getProduct().getFreeReturns())) {
+                cartItemDataOrigin.setFreeReturnLogo(data.getProduct().getFreeReturns().getFreeReturnsLogo());
+            }
             cartItemDataOrigin.setCashBackInfo(data.getProduct().getProductCashback());
             cartItemDataOrigin.setProductImage(data.getProduct().getProductImage().getImageSrc200Square());
 
@@ -82,6 +85,10 @@ public class CartMapper implements ICartMapper {
 
             cartItemData.setError(!mapperUtil.isEmpty(data.getErrors()));
             cartItemData.setErrorMessage(mapperUtil.convertToString(data.getErrors()));
+
+
+            cartItemData.setWarning(!mapperUtil.isEmpty(data.getMessages()));
+            cartItemData.setWarningMessage(mapperUtil.convertToString(data.getMessages()));
 
             cartItemDataList.add(cartItemData);
         }

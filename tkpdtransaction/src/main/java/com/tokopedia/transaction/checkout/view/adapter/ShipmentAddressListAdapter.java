@@ -50,6 +50,12 @@ public class ShipmentAddressListAdapter
 
     @Override
     public void onBindViewHolder(final RecipientAddressViewHolder holder, int position) {
+        if (position == getItemCount() - 1) {
+            holder.vSeparator.setVisibility(View.GONE);
+        } else {
+            holder.vSeparator.setVisibility(View.VISIBLE);
+        }
+
         RecipientAddressModel address = mAddressModelList.get(position);
 
         holder.mTvAddressName.setText(address.getAddressName());
@@ -118,6 +124,7 @@ public class ShipmentAddressListAdapter
 
         RelativeLayout mRlAddressContainer;
         LinearLayout mLlRadioButtonContainer;
+        View vSeparator;
 
         RecipientAddressViewHolder(View view) {
             super(view);
@@ -133,6 +140,7 @@ public class ShipmentAddressListAdapter
 
             mRlAddressContainer = view.findViewById(R.id.rl_address_container);
             mLlRadioButtonContainer = view.findViewById(R.id.ll_radio_button_container);
+            vSeparator = view.findViewById(R.id.v_separator);
         }
 
     }

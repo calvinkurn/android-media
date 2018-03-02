@@ -48,6 +48,7 @@ import com.bumptech.glide.Glide;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
@@ -64,7 +65,6 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.topads.sdk.base.Config;
@@ -97,6 +97,7 @@ import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import com.tokopedia.transaction.cart.presenter.CartPresenter;
 import com.tokopedia.transaction.cart.presenter.ICartPresenter;
 import com.tokopedia.transaction.cart.receivers.TopPayBroadcastReceiver;
+import com.tokopedia.transaction.checkout.router.ICartCheckoutModuleRouter;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
 import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
@@ -799,14 +800,24 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             @Override
             public void onClick(View view) {
 
-                Intent intent;
-                if (isCouponActive) {
-                    intent = LoyaltyActivity.newInstanceCouponActive(
-                            getActivity(), "marketplace", "marketplace"
-                    );
-                } else intent = LoyaltyActivity.newInstanceCouponNotActive(getActivity(),
-                        "marketplace", "marketplace");
-                startActivityForResult(intent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
+                if (getActivity().getApplication() instanceof ICartCheckoutModuleRouter) {
+                    if (isCouponActive) {
+                        startActivityForResult(
+                                ((ICartCheckoutModuleRouter) getActivity().getApplication())
+                                        .tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(
+                                                getActivity(), "marketplace", "marketplace"
+                                        ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
+                        );
+                    } else {
+                        startActivityForResult(
+                                ((ICartCheckoutModuleRouter) getActivity().getApplication())
+                                        .tkpdCartCheckoutGetLoyaltyOldCheckoutCouponNotActiveIntent(
+                                                getActivity(), "marketplace", "marketplace"
+                                        ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
+                        );
+                    }
+
+                }
             }
         });
     }
@@ -1052,24 +1063,24 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                     );
                     break;
             }
-        } else if (requestCode == LoyaltyActivity.LOYALTY_REQUEST_CODE) {
-            if (resultCode == LoyaltyActivity.VOUCHER_RESULT_CODE) {
+        } else if (requestCode == IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.VOUCHER_RESULT_CODE) {
                 Bundle bundle = data.getExtras();
                 setVoucherResultLayout(
-                        bundle.getString(LoyaltyActivity.VOUCHER_CODE, ""),
-                        bundle.getString(LoyaltyActivity.VOUCHER_AMOUNT, ""),
-                        bundle.getString(LoyaltyActivity.VOUCHER_MESSAGE, "")
+                        bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE, ""),
+                        bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_AMOUNT, ""),
+                        bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE, "")
                 );
                 cancelPromoLayout.setOnClickListener(onPromoCancelled());
-            } else if (resultCode == LoyaltyActivity.COUPON_RESULT_CODE) {
+            } else if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.COUPON_RESULT_CODE) {
                 Bundle bundle = data.getExtras();
                 promoResultLayout.setVisibility(View.VISIBLE);
                 labelPromoType.setText(getString(R.string.title_coupon_code) + " : ");
-                promoVoucherCode.setText(bundle.getString(LoyaltyActivity.COUPON_TITLE, ""));
-                voucherDescription.setText(bundle.getString(LoyaltyActivity.COUPON_MESSAGE, ""));
+                promoVoucherCode.setText(bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_TITLE, ""));
+                voucherDescription.setText(bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_MESSAGE, ""));
 
                 //TODO check state
-                voucherCode = bundle.getString(LoyaltyActivity.COUPON_CODE);
+                voucherCode = bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CODE);
                 instantPromoPlaceHolder.setVisibility(View.GONE);
                 promoCodeLayout.setVisibility(View.GONE);
                 cancelPromoLayout.setOnClickListener(onPromoCancelled());
