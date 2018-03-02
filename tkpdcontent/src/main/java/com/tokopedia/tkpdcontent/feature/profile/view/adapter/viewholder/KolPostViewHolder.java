@@ -144,8 +144,6 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
         avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO milhamj tracking?
-//                UnifyTracking.eventKolContentGoToProfilePage(element.isFollowed(), element.getTagsType());
                 viewListener.onGoToKolProfile(element.getPage(), getAdapterPosition(), element
                         .getKolProfileUrl());
             }
@@ -154,7 +152,6 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
         name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                UnifyTracking.eventKolContentGoToProfilePage(element.isFollowed(), element.getTagsType());
                 viewListener.onGoToKolProfile(element.getPage(), getAdapterPosition(), element
                         .getKolProfileUrl());
             }
@@ -164,11 +161,9 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
             @Override
             public void onClick(View v) {
                 if (element.isFollowed()) {
-//                    UnifyTracking.eventKolContentUnfollowClick(element.getTagsType());
                     viewListener.onUnfollowKolClicked(element.getPage(), getAdapterPosition(),
                             element.getUserId());
                 } else {
-//                    UnifyTracking.eventKolContentFollowClick(element.getTagsType());
                     viewListener.onFollowKolClicked(element.getPage(), getAdapterPosition(),
                             element.getUserId());
                 }
@@ -180,7 +175,6 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
             public void onClick(View v) {
                 if (kolText.getText().toString().endsWith(kolText.getContext().getString(R
                         .string.read_more_english))) {
-//                    UnifyTracking.eventKolContentReadMoreClick(element.isFollowed(), element.getTagsType());
                     kolText.setText(element.getReview());
                     element.setReviewExpanded(true);
                 }
@@ -191,11 +185,9 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
             @Override
             public void onClick(View v) {
                 if (element.isLiked()) {
-//                    UnifyTracking.eventKolContentUnlike(element.isFollowed(), element.getTagsType());
                     viewListener.onUnlikeKolClicked(element.getPage(), getAdapterPosition(),
                             element.getId());
                 } else {
-//                    UnifyTracking.eventKolContentLike(element.isFollowed(), element.getTagsType());
                     viewListener.onLikeKolClicked(element.getPage(), getAdapterPosition(), element.getId());
                 }
             }
@@ -204,7 +196,6 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
         commentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                UnifyTracking.eventKolContentCommentClick(element.isFollowed(), element.getTagsType());
                 viewListener.onGoToKolComment(element.getPage(), getAdapterPosition(), element);
             }
         });
@@ -242,23 +233,6 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel> {
     }
 
     private void tooltipAreaClicked(KolPostViewModel element) {
-//        UnifyTracking.eventKolContentCtaClick(element.isFollowed(), element.getTagsType());
-//        List<KolTracking.Promotion> list = new ArrayList<>();
-//        list.add(new KolTracking.Promotion(
-//                element.getId(),
-//                KolTracking.Promotion.createContentName(
-//                        element.getTagsType(),
-//                        element.getCardType()),
-//                element.getName().equals("")? "-" : element.getName(),
-//                getAdapterPosition(),
-//                element.getLabel().equals("")? "-" : element.getLabel(),
-//                element.getContentId(),
-//                element.getContentLink().equals("")? "-" : element.getContentLink()
-//        ));
-//
-//        TrackingUtils.eventTrackingEnhancedEcommerce(KolTracking.getKolClickTracking(list,
-//                Integer.parseInt(SessionHandler.getLoginID(avatar.getContext()))));
-
         viewListener.onOpenKolTooltip(element.getPage(), getAdapterPosition(),
                 element.getContentLink());
     }
