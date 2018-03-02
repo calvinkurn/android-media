@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.checkout.data.mapper;
 
+import android.text.TextUtils;
+
 import com.tokopedia.transaction.checkout.data.entity.response.rates.Attribute;
 import com.tokopedia.transaction.checkout.data.entity.response.rates.Product;
 import com.tokopedia.transaction.checkout.data.entity.response.rates.RatesResponse;
@@ -18,11 +20,16 @@ import org.apache.commons.lang3.text.WordUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 /**
  * Created by Irfan Khoirul on 20/02/18.
  */
 
 public class ShipmentRatesDataMapper {
+
+    private static final int DAY_IN_SECONDS = 86400;
+    private static final int HOUR_IN_SECONDS = 3600;
 
     public ShipmentDetailData getShipmentDetailData(CartSellerItemModel cartSellerItemModel,
                                                     RecipientAddressModel recipientAddressModel) {
@@ -92,9 +99,7 @@ public class ShipmentRatesDataMapper {
         shipmentItemData.setServiceId(attribute.getServiceId());
         shipmentItemData.setType(WordUtils.capitalize(attribute.getShipperName()));
         getPriceRange(shipmentItemData, attribute);
-
-        // No data
-//        shipmentItemData.setDeliveryTimeRange();
+        getEstimatedDeliveryTimeRange(shipmentItemData);
 
         return shipmentItemData;
     }
@@ -134,6 +139,73 @@ public class ShipmentRatesDataMapper {
         }
     }
 
+    private void getEstimatedDeliveryTimeRange(ShipmentItemData shipmentItemData) {
+        int minEtd;
+        int maxEtd;
+        if (shipmentItemData.getCourierItemData().size() > 0) {
+            minEtd = shipmentItemData.getCourierItemData().get(0).getMinEtd();
+            maxEtd = shipmentItemData.getCourierItemData().get(0).getMaxEtd();
+            if (minEtd == 0) {
+                shipmentItemData.setDeliveryTimeRange(
+                        shipmentItemData.getCourierItemData().get(0).getDefaultEtd());
+            }
+            if (shipmentItemData.getCourierItemData().size() > 1) {
+                for (CourierItemData courierItemData : shipmentItemData.getCourierItemData()) {
+                    if (courierItemData.getMinEtd() != 0) {
+                        minEtd = courierItemData.getMinEtd();
+                        break;
+                    }
+                }
+                if (minEtd == 0) {
+                    shipmentItemData.setDeliveryTimeRange(
+                            shipmentItemData.getCourierItemData().get(0).getDefaultEtd());
+                } else {
+                    for (CourierItemData courierItemData : shipmentItemData.getCourierItemData()) {
+                        if (courierItemData.getMinEtd() != 0 && courierItemData.getMaxEtd() != 0) {
+                            if (courierItemData.getMinEtd() < minEtd) {
+                                minEtd = courierItemData.getMinEtd();
+                            }
+                        }
+                        if (courierItemData.getMinEtd() != 0 && courierItemData.getMaxEtd() != 0) {
+                            if (courierItemData.getMaxEtd() > maxEtd) {
+                                maxEtd = courierItemData.getMaxEtd();
+                            }
+                        }
+                    }
+                    shipmentItemData.setDeliveryTimeRange(formatEtd(shipmentItemData, minEtd, maxEtd));
+                }
+            } else {
+                shipmentItemData.setDeliveryTimeRange(formatEtd(shipmentItemData, minEtd, maxEtd));
+            }
+        }
+    }
+
+    private String formatEtd(@Nullable ShipmentItemData shipmentItemData, int minEtd, int maxEtd) {
+        String deliveryTimeRange = "";
+        if (minEtd != 0 && maxEtd != 0) {
+            if (minEtd != maxEtd) {
+                if (minEtd >= DAY_IN_SECONDS) {
+                    deliveryTimeRange = minEtd / DAY_IN_SECONDS + "-" + maxEtd / DAY_IN_SECONDS;
+                    if (shipmentItemData != null) {
+                        shipmentItemData.setLessThanADayDelivery(false);
+                    }
+                } else {
+                    deliveryTimeRange = minEtd / HOUR_IN_SECONDS + "-" + maxEtd / HOUR_IN_SECONDS;
+                    if (shipmentItemData != null) {
+                        shipmentItemData.setLessThanADayDelivery(true);
+                    }
+                }
+            } else {
+                if (minEtd >= DAY_IN_SECONDS) {
+                    deliveryTimeRange = String.valueOf(minEtd / DAY_IN_SECONDS);
+                } else {
+                    deliveryTimeRange = String.valueOf(minEtd / HOUR_IN_SECONDS);
+                }
+            }
+        }
+        return deliveryTimeRange;
+    }
+
     private List<CourierItemData> getCourierItemDataList(List<Product> products) {
         List<CourierItemData> courierItemDataList = new ArrayList<>();
         for (Product product : products) {
@@ -155,10 +227,23 @@ public class ShipmentRatesDataMapper {
         courierItemData.setCourierInfo(product.getShipperProductDesc());
         courierItemData.setInsuranceUsedType(product.getInsuranceUsedType());
         courierItemData.setDeliveryPrice(product.getPrice());
+        courierItemData.setDefaultEtd(product.getEtd());
+        courierItemData.setMinEtd(product.getMinEtd());
+        courierItemData.setMaxEtd(product.getMaxEtd());
         if (product.getMaxHoursId() != null && product.getMaxHoursId().length() > 0) {
-            courierItemData.setEstimatedHourDelivery(product.getMaxHoursId());
+            String formattedEtd = formatEtd(null, product.getMinEtd(), product.getMaxEtd());
+            if (!TextUtils.isEmpty(formattedEtd)) {
+                courierItemData.setEstimatedHourDelivery(formattedEtd);
+            } else {
+                courierItemData.setEstimatedHourDelivery(product.getMaxHoursId());
+            }
         } else {
-            courierItemData.setEstimatedDayDelivery(product.getEtd());
+            String formattedEtd = formatEtd(null, product.getMinEtd(), product.getMaxEtd());
+            if (!TextUtils.isEmpty(formattedEtd)) {
+                courierItemData.setEstimatedDayDelivery(formattedEtd);
+            } else {
+                courierItemData.setEstimatedDayDelivery(product.getEtd());
+            }
         }
         courierItemData.setSelected(false);
 
