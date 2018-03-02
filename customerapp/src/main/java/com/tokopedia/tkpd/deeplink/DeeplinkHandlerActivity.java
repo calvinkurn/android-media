@@ -48,6 +48,8 @@ import com.tokopedia.tkpdpdp.applink.PdpApplinkModule;
 import com.tokopedia.tkpdpdp.applink.PdpApplinkModuleLoader;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
+import com.tokopedia.shop.applink.ShopAppLinkModule;
+import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
 
 import org.json.JSONObject;
 
@@ -70,7 +72,8 @@ import io.branch.referral.BranchError;
         FlightApplinkModule.class,
         ReputationApplinkModule.class,
         EventsDeepLinkModule.class,
-        LoyaltyAppLinkModule.class
+        LoyaltyAppLinkModule.class,
+        ShopAppLinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
@@ -92,7 +95,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new FlightApplinkModuleLoader(),
                 new ReputationApplinkModuleLoader(),
                 new EventsDeepLinkModuleLoader(),
-                new LoyaltyAppLinkModuleLoader()
+                new LoyaltyAppLinkModuleLoader(),
+                new ShopAppLinkModuleLoader()
         );
     }
 

@@ -17,13 +17,7 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RatingBar;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.widget.*;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
@@ -129,6 +123,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ShopPageActivity.class)
                 .setData(uri.build())
+                .putExtra(SHOP_ID, extras.getString(SHOP_ID))
                 .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME)
                 .putExtras(extras);
     }
@@ -139,6 +134,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ShopPageActivity.class)
                 .setData(uri.build())
+                .putExtra(SHOP_ID, extras.getString(SHOP_ID))
                 .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_TALK)
                 .putExtras(extras);
     }
@@ -146,8 +142,9 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
     @DeepLink(ShopAppLink.SHOP_REVIEW)
     public static Intent getCallingIntentReviewSelected(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ShopInfoActivity.class)
+        return new Intent(context, ShopPageActivity.class)
                 .setData(uri.build())
+                .putExtra(SHOP_ID, extras.getString(SHOP_ID))
                 .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_REVIEW)
                 .putExtras(extras);
     }
@@ -160,6 +157,7 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
         shopId = getIntent().getStringExtra(SHOP_ID);
         shopDomain = getIntent().getStringExtra(SHOP_DOMAIN);
         tabPosition = getIntent().getIntExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME);
+        viewPager.setCurrentItem(tabPosition);
         if (!TextUtils.isEmpty(shopId)) {
             shopPagePresenter.getShopInfo(shopId);
         } else {
@@ -286,7 +284,6 @@ public class ShopPageActivity extends BaseTabActivity implements HasComponent<Sh
             }
         });
         tabLayout.setupWithViewPager(viewPager);
-        viewPager.setCurrentItem(tabPosition);
         setSupportActionBar(toolbar);
         shopProductListLimitedFragment = ShopProductListLimitedFragment.createInstance();
         appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
