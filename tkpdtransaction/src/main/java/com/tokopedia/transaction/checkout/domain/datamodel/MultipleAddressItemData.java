@@ -9,6 +9,10 @@ import android.os.Parcelable;
 
 public class MultipleAddressItemData implements Parcelable{
 
+    private int cartPosition;
+
+    private int addressPosition;
+
     private String cartId = "";
 
     private String productId = "";
@@ -25,7 +29,21 @@ public class MultipleAddressItemData implements Parcelable{
 
     private String addressReceiverName = "";
 
-    private String address = "";
+    private String addressProvinceName = "";
+
+    private String addressPostalCode = "";
+
+    private String addressCityName = "";
+
+    private String addressStreet = "";
+
+    private String addressCountryName = "";
+
+    private String recipientPhoneNumber = "";
+
+    private String destinationDistrictId = "";
+
+    private String destinationDistrictName = "";
 
     private int maxQuantity;
 
@@ -35,6 +53,8 @@ public class MultipleAddressItemData implements Parcelable{
     }
 
     protected MultipleAddressItemData(Parcel in) {
+        cartPosition = in.readInt();
+        addressPosition = in.readInt();
         cartId = in.readString();
         productId = in.readString();
         productWeight = in.readString();
@@ -43,7 +63,14 @@ public class MultipleAddressItemData implements Parcelable{
         addressId = in.readString();
         addressTitle = in.readString();
         addressReceiverName = in.readString();
-        address = in.readString();
+        addressProvinceName = in.readString();
+        addressPostalCode = in.readString();
+        addressCityName = in.readString();
+        addressStreet = in.readString();
+        addressCountryName = in.readString();
+        recipientPhoneNumber = in.readString();
+        destinationDistrictId = in.readString();
+        destinationDistrictName = in.readString();
         maxQuantity = in.readInt();
         minQuantity = in.readInt();
     }
@@ -59,6 +86,22 @@ public class MultipleAddressItemData implements Parcelable{
             return new MultipleAddressItemData[size];
         }
     };
+
+    public void setCartPosition(int cartPosition) {
+        this.cartPosition = cartPosition;
+    }
+
+    public int getCartPosition() {
+        return cartPosition;
+    }
+
+    public int getAddressPosition() {
+        return addressPosition;
+    }
+
+    public void setAddressPosition(int addressPosition) {
+        this.addressPosition = addressPosition;
+    }
 
     public String getCartId() {
         return cartId;
@@ -124,12 +167,68 @@ public class MultipleAddressItemData implements Parcelable{
         this.addressReceiverName = addressReceiverName;
     }
 
-    public String getAddress() {
-        return address;
+    public String getAddressProvinceName() {
+        return addressProvinceName;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setAddressProvinceName(String addressProvinceName) {
+        this.addressProvinceName = addressProvinceName;
+    }
+
+    public String getAddressPostalCode() {
+        return addressPostalCode;
+    }
+
+    public void setAddressPostalCode(String addressPostalCode) {
+        this.addressPostalCode = addressPostalCode;
+    }
+
+    public String getAddressCityName() {
+        return addressCityName;
+    }
+
+    public void setAddressCityName(String addressCityName) {
+        this.addressCityName = addressCityName;
+    }
+
+    public String getAddressStreet() {
+        return addressStreet;
+    }
+
+    public void setAddressStreet(String addressStreet) {
+        this.addressStreet = addressStreet;
+    }
+
+    public String getAddressCountryName() {
+        return addressCountryName;
+    }
+
+    public void setAddressCountryName(String addressCountryName) {
+        this.addressCountryName = addressCountryName;
+    }
+
+    public String getRecipientPhoneNumber() {
+        return recipientPhoneNumber;
+    }
+
+    public void setRecipientPhoneNumber(String recipientPhoneNumber) {
+        this.recipientPhoneNumber = recipientPhoneNumber;
+    }
+
+    public String getDestinationDistrictId() {
+        return destinationDistrictId;
+    }
+
+    public void setDestinationDistrictId(String destinationDistrictId) {
+        this.destinationDistrictId = destinationDistrictId;
+    }
+
+    public String getDestinationDistrictName() {
+        return destinationDistrictName;
+    }
+
+    public void setDestinationDistrictName(String destinationDistrictName) {
+        this.destinationDistrictName = destinationDistrictName;
     }
 
     public int getMaxQuantity() {
@@ -155,6 +254,8 @@ public class MultipleAddressItemData implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(cartPosition);
+        parcel.writeInt(addressPosition);
         parcel.writeString(cartId);
         parcel.writeString(productId);
         parcel.writeString(productWeight);
@@ -163,7 +264,14 @@ public class MultipleAddressItemData implements Parcelable{
         parcel.writeString(addressId);
         parcel.writeString(addressTitle);
         parcel.writeString(addressReceiverName);
-        parcel.writeString(address);
+        parcel.writeString(addressProvinceName);
+        parcel.writeString(addressPostalCode);
+        parcel.writeString(addressCityName);
+        parcel.writeString(addressStreet);
+        parcel.writeString(addressCountryName);
+        parcel.writeString(recipientPhoneNumber);
+        parcel.writeString(destinationDistrictId);
+        parcel.writeString(destinationDistrictName);
         parcel.writeInt(maxQuantity);
         parcel.writeInt(minQuantity);
     }

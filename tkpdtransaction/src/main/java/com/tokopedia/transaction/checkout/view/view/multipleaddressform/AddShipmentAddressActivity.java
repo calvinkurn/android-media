@@ -18,12 +18,15 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.transaction.checkout.domain.datamodel.MultipleAddressItemData;
+import com.tokopedia.transaction.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.transaction.checkout.view.di.component.AddShipmentAddressComponent;
 import com.tokopedia.transaction.checkout.view.di.component.DaggerAddShipmentAddressComponent;
 import com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA;
+import static com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity.REQUEST_CODE;
 import static com.tokopedia.transaction.checkout.view.view.addressoptions.CartAddressChoiceActivity.TYPE_REQUEST_ONLY_ADDRESS_SELECTION;
 
 /**
@@ -35,11 +38,10 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
     private static final String PRODUCT_DATA_EXTRAS = "PRODUCT_DATA_EXTRAS";
     private static final String ADDRESS_DATA_EXTRAS = "ADDRESS_DATA_EXTRAS";
     private static final String MODE_EXTRA = "MODE_EXTRAS";
+    public static final String ADDRESS_DATA_RESULT = "ADDRESS_DATA_RESULT";
     public static final int ADD_MODE = 1;
     public static final int EDIT_MODE = 2;
 
-    private MultipleAddressAdapterData multipleAddressAdapterData;
-    private MultipleAddressItemData multipleAddressItemData;
     private int formMode;
 
     private EditText quantityField;
@@ -51,6 +53,7 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
     private TextView address;
     private TextView saveChangesButton;
     private TextView addAddressErrorTextView;
+    private ViewGroup chooseAddressButton;
 
     @Inject
     IAddShipmentAddressPresenter presenter;
@@ -75,8 +78,6 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-        multipleAddressAdapterData = extras.getParcelable(PRODUCT_DATA_EXTRAS);
-        multipleAddressItemData = extras.getParcelable(ADDRESS_DATA_EXTRAS);
         formMode = extras.getInt(MODE_EXTRA);
     }
 
@@ -93,16 +94,19 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
     @Override
     protected void initView() {
         initInjector();
-        MultipleAddressAdapterData productData = multipleAddressAdapterData;
-        MultipleAddressItemData itemData = multipleAddressItemData;
+        presenter.initiateData(
+                (MultipleAddressAdapterData) getIntent().getExtras()
+                        .getParcelable(PRODUCT_DATA_EXTRAS),
+                (MultipleAddressItemData) getIntent().getExtras()
+                        .getParcelable(ADDRESS_DATA_EXTRAS));
         TextView senderName = findViewById(R.id.sender_name);
-        setProductView(productData, senderName);
-        setProductQuantityView(itemData);
-        setNotesView(itemData);
-        setAddressView(itemData);
+        setProductView(presenter.getMultipleAddressAdapterData(), senderName);
+        setProductQuantityView(presenter.getMultipleItemData());
+        setNotesView(presenter.getMultipleItemData());
+        setAddressView(presenter.getMultipleItemData());
         addAddressErrorTextView = findViewById(R.id.add_address_error_warning);
         saveChangesButton = findViewById(R.id.save_changes_button);
-        saveChangesButton.setOnClickListener(onSaveChangesClickedListener(itemData));
+        saveChangesButton.setOnClickListener(onSaveChangesClickedListener());
         if (formMode == ADD_MODE) showChooseAddressButton();
     }
 
@@ -122,11 +126,17 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
     }
 
     private void showChooseAddressButton() {
-        ViewGroup chooseAddressButton = findViewById(R.id.choose_address_button);
+        chooseAddressButton = findViewById(R.id.choose_address_button);
         chooseAddressButton.setOnClickListener(onChooseAddressClickedListener());
         addressLayout.setVisibility(View.GONE);
         chooseAddressButton.setVisibility(View.VISIBLE);
         saveChangesButton.setVisibility(View.GONE);
+    }
+
+    private void showAddressLayout() {
+        addressLayout.setVisibility(View.VISIBLE);
+        chooseAddressButton.setVisibility(View.GONE);
+        saveChangesButton.setVisibility(View.VISIBLE);
     }
 
     private void setAddressView(MultipleAddressItemData itemData) {
@@ -136,8 +146,20 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
         address = findViewById(R.id.address);
         addressTitle.setText(itemData.getAddressTitle());
         addressReceiverName.setText(itemData.getAddressReceiverName());
-        address.setText(itemData.getAddress());
+        address.setText(itemData.getAddressStreet()
+                + ", " + itemData.getAddressCityName()
+                + ", " +itemData.getAddressProvinceName()
+                + ", " + itemData.getRecipientPhoneNumber());
         addressLayout.setOnClickListener(onAddressLayoutClickedListener());
+    }
+
+    private void updateAddressView(RecipientAddressModel editableAddress) {
+        addressTitle.setText(editableAddress.getAddressName());
+        addressReceiverName.setText(editableAddress.getRecipientName());
+        address.setText(editableAddress.getAddressStreet()
+                + ", " + editableAddress.getAddressCityName()
+                + ", " + editableAddress.getAddressProvinceName()
+                + ", " + editableAddress.getRecipientPhoneNumber());
     }
 
     private void setNotesView(MultipleAddressItemData itemData) {
@@ -231,7 +253,7 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
             } else if (Integer.parseInt(charSequence.toString()) > data.getMaxQuantity()) {
                 saveChangesButton.setVisibility(View.GONE);
                 //TODO show overquantity Error Message
-            } else if (Integer.parseInt(charSequence.toString()) < data.getMaxQuantity()) {
+            } else if (Integer.parseInt(charSequence.toString()) < data.getMinQuantity()) {
                 saveChangesButton.setVisibility(View.GONE);
                 //TODO show lack quantity Error Message
             } else saveChangesButton.setVisibility(View.VISIBLE);
@@ -252,12 +274,16 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CartAddressChoiceActivity.createInstance(AddShipmentAddressActivity.this, TYPE_REQUEST_ONLY_ADDRESS_SELECTION);
+                Intent intent = CartAddressChoiceActivity.createInstance(
+                        AddShipmentAddressActivity.this,
+                        TYPE_REQUEST_ONLY_ADDRESS_SELECTION, presenter.getEditableModel()
+                );
+                startActivityForResult(intent, REQUEST_CODE);
             }
         };
     }
 
-    private View.OnClickListener onSaveChangesClickedListener(final MultipleAddressItemData itemData) {
+    private View.OnClickListener onSaveChangesClickedListener() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -265,10 +291,9 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
                 if (addressLayout.isShown()) {
                     addAddressErrorTextView.setVisibility(View.GONE);
                     if (formMode == ADD_MODE) {
-                        addNewAddressItem(itemData);
+                        addNewAddressItem();
                     } else {
-                        insertDataToModel(itemData);
-                        setResult(Activity.RESULT_OK);
+                        changeAddressData();
                     }
                 } else {
                     //TODO Show error here
@@ -278,29 +303,33 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
         };
     }
 
-    private void addNewAddressItem(MultipleAddressItemData itemData) {
-        MultipleAddressItemData newAddressData = new MultipleAddressItemData();
-        newAddressData.setProductWeight(itemData.getProductWeight());
-        insertDataToModel(newAddressData);
-        MultipleAddressAdapterData productData = multipleAddressAdapterData;
-        productData.getItemListData().add(newAddressData);
-        setResult(Activity.RESULT_OK);
+    private void addNewAddressItem() {
+        Intent intent = new Intent();
+        MultipleAddressItemData newItemData = presenter.confirmAddData(
+                quantityField.getText().toString(),
+                checkNotesAvailability(notesLayout.isShown(), notesEditText)
+        );
+        intent.putExtra(ADDRESS_DATA_RESULT, newItemData);
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 
-    private void insertDataToModel(MultipleAddressItemData itemData) {
-        itemData.setProductQty(quantityField.getText().toString());
-        itemData.setAddressTitle(addressTitle.getText().toString());
-        itemData.setAddressReceiverName(addressReceiverName.getText().toString());
-        itemData.setAddress(address.getText().toString());
-        itemData.setCartId("0");
-        if (notesLayout.isShown())
-            itemData.setProductNotes(notesEditText.getText().toString());
+    private void changeAddressData() {
+        Intent intent = new Intent();
+        MultipleAddressItemData editedItemData = presenter.confirmEditData(
+                quantityField.getText().toString(),
+                checkNotesAvailability(notesLayout.isShown(), notesEditText)
+        );
+        intent.putExtra(ADDRESS_DATA_RESULT, editedItemData);
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 
     private void initInjector() {
         AddShipmentAddressComponent component = DaggerAddShipmentAddressComponent.builder().build();
         component.inject(this);
     }
+
 
     private TextWatcher quantityTextWatcher(final MultipleAddressItemData data,
                                             final ImageView decreaseButton) {
@@ -321,5 +350,22 @@ public class AddShipmentAddressActivity extends BasePresenterActivity {
 
             }
         };
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_CODE) {
+            presenter.setEditableModel((RecipientAddressModel) data
+                    .getParcelableExtra(EXTRA_SELECTED_ADDRESS_DATA));
+            showAddressLayout();
+            updateAddressView(presenter.getEditableModel());
+        }
+    }
+
+    private String checkNotesAvailability(boolean notesFieldShown, EditText notesEditText) {
+        if(notesFieldShown)
+            return notesEditText.getText().toString();
+        else return "";
     }
 }

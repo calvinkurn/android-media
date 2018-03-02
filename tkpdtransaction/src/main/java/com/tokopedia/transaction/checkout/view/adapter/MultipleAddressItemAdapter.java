@@ -54,7 +54,10 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
         holder.notesForSeller.setText(itemData.getProductNotes());
         holder.addressTitle.setText(itemData.getAddressTitle());
         holder.addressReceiverName.setText(itemData.getAddressReceiverName());
-        holder.address.setText(itemData.getAddress());
+        holder.address.setText(itemData.getAddressStreet()
+                + ", " + itemData.getAddressCityName()
+                + ", " + itemData.getAddressProvinceName()
+                + ", " + itemData.getRecipientPhoneNumber());
         holder.editButton.setOnClickListener(onEditOrderClickedListener(itemData));
         holder.deleteButton.setOnClickListener(onDeleteOrderClickedListener(position));
         holder.addressLayout.setOnClickListener(
