@@ -10,14 +10,16 @@ import com.tokopedia.tkpdstream.chatroom.view.adapter.typefactory.GroupChatTypeF
 public class ImageViewModel extends BaseChatViewModel implements Visitable<GroupChatTypeFactory> {
 
     public static final String ADMIN_ANNOUNCEMENT = "announcement";
+    private final String redirectUrl;
     private String contentImageUrl;
 
     public ImageViewModel(String contentImageUrl, long createdAt, long updatedAt, String messageId,
                           String senderId, String senderName, String senderIconUrl, boolean isInfluencer,
-                          boolean isAdministrator) {
+                          boolean isAdministrator, String redirectUrl) {
         super("", createdAt, updatedAt, messageId, senderId, senderName, senderIconUrl,
                 isInfluencer, isAdministrator);
         this.contentImageUrl = contentImageUrl;
+        this.redirectUrl = redirectUrl;
     }
 
     @Override
@@ -27,5 +29,9 @@ public class ImageViewModel extends BaseChatViewModel implements Visitable<Group
 
     public String getContentImageUrl() {
         return contentImageUrl;
+    }
+
+    public String getRedirectUrl() {
+        return redirectUrl;
     }
 }

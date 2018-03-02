@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Telephony;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewCompat;
@@ -19,8 +21,7 @@ import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.ValueCallback;
 import android.webkit.WebSettings;
-
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import android.widget.ImageView;
 
 import java.io.File;
 
@@ -54,7 +55,7 @@ public class MethodChecker {
             } else {
                 return context.getResources().getColor(id);
             }
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
             return 0;
         }
@@ -156,4 +157,5 @@ public class MethodChecker {
         }
         return smsIntent;
     }
+
 }

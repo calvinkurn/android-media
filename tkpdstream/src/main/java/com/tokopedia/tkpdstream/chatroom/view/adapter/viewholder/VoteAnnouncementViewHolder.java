@@ -1,11 +1,11 @@
 package com.tokopedia.tkpdstream.chatroom.view.adapter.viewholder;
 
+import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.VoteAnnouncementViewModel;
@@ -22,6 +22,7 @@ public class VoteAnnouncementViewHolder extends BaseChatViewHolder<VoteAnnouncem
     ImageView voteIcon;
     TextView voteTitle;
     TextView voteQuestion;
+    Context context;
 
     public VoteAnnouncementViewHolder(View itemView) {
         super(itemView);
@@ -45,16 +46,17 @@ public class VoteAnnouncementViewHolder extends BaseChatViewHolder<VoteAnnouncem
         }
 
         voteQuestion.setText(MethodChecker.fromHtml(element.getMessage()));
+
     }
 
     private void setVoteFinished(VoteAnnouncementViewModel element) {
-        ImageHandler.loadImageWithIdWithoutPlaceholder(voteIcon, R.drawable.ic_vote_inactive);
+//        MethodChecker.setImageDrawable(context, voteIcon, R.drawable.ic_vote_inactive);
         voteTitle.setText(R.string.title_poll_finished);
         voteTitle.setTextColor(MethodChecker.getColor(voteTitle.getContext(), R.color.black_54));
     }
 
     private void setVoteStarted(VoteAnnouncementViewModel element) {
-        ImageHandler.loadImageWithIdWithoutPlaceholder(voteIcon, R.drawable.ic_vote);
+//        MethodChecker.setImageDrawable(context, voteIcon, R.drawable.ic_vote);
         voteTitle.setText(R.string.title_poll_started);
         voteTitle.setTextColor(MethodChecker.getColor(voteTitle.getContext(), R.color.medium_green));
     }

@@ -9,6 +9,7 @@ import com.sendbird.android.FileMessage;
 import com.sendbird.android.UserMessage;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.ActivePollPojo;
+import com.tokopedia.tkpdstream.chatroom.domain.pojo.AdminImagePojo;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.Option;
 import com.tokopedia.tkpdstream.chatroom.domain.pojo.StatisticOption;
 import com.tokopedia.tkpdstream.chatroom.view.viewmodel.AdminAnnouncementViewModel;
@@ -73,8 +74,8 @@ public class GroupChatMessagesMapper {
                 message.getSender().getNickname(),
                 message.getSender().getProfileUrl(),
                 false,
-                false
-        );
+                false,
+                pojo.getRedirectUrl());
     }
 
     private Visitable mapToUserMessage(UserMessage message) {
@@ -84,11 +85,11 @@ public class GroupChatMessagesMapper {
             case VoteAnnouncementViewModel.POLLING_CANCEL:
             case VoteAnnouncementViewModel.POLLING_UPDATE:
                 return mapToPollingViewModel(message,
-                        message.getData().replace("\\\"", "\""));
+                        message.getData());
             case ChatViewModel.ADMIN_MESSAGE:
                 return mapToAdminChat(message);
             case ImageViewModel.ADMIN_ANNOUNCEMENT:
-                return mapToAdminImageChat(message);
+                return mapToAdminImageChat(message, message.getData());
             default:
                 return mapToUserChat(message);
         }
@@ -108,9 +109,12 @@ public class GroupChatMessagesMapper {
         );
     }
 
-    private Visitable mapToAdminImageChat(UserMessage message) {
+    private Visitable mapToAdminImageChat(UserMessage message, String json) {
+        Gson gson = new Gson();
+        AdminImagePojo pojo = gson.fromJson(json, AdminImagePojo.class);
+
         return new ImageViewModel(
-                "",
+                pojo.getImageUrl(),
                 message.getCreatedAt(),
                 message.getUpdatedAt(),
                 String.valueOf(message.getMessageId()),
@@ -118,7 +122,8 @@ public class GroupChatMessagesMapper {
                 message.getSender().getNickname(),
                 message.getSender().getProfileUrl(),
                 false,
-                true
+                true,
+                pojo.getRedirectUrl()
         );
     }
 
