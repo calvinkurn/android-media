@@ -1,5 +1,8 @@
 package com.tokopedia.flight.common.data.repository;
 
+import android.text.TextUtils;
+
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.flight.airline.data.FlightAirlineDataListSource;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListBackgroundSource;
@@ -111,8 +114,23 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
-    public Observable<List<FlightAirportDB>> getAirportList(String query, String idCountry) {
-        return flightAirportDataListSource.getAirportList(query, idCountry);
+    public Observable<List<FlightAirportDB>> getAirportList(final String query, final String idCountry) {
+        if (query != null && query.length() > 0 && idCountry != null && idCountry.length() > 0) {
+            return flightAirportDataListSource.getAirportList(query, idCountry);
+        } else {
+            return flightAirportDataListSource.getAirportCount(query, idCountry)
+                    .flatMap(new Func1<Integer, Observable<List<FlightAirportDB>>>() {
+                        @Override
+                        public Observable<List<FlightAirportDB>> call(Integer integer) {
+                            CommonUtils.dumper("Size Airport " + integer);
+                            if (integer == 0) {
+                                flightAirportDataListSource.deleteCache();
+                                flightAirlineDataListSource.setCacheExpired();
+                            }
+                            return flightAirportDataListSource.getAirportList(query, idCountry);
+                        }
+                    });
+        }
     }
 
     @Override

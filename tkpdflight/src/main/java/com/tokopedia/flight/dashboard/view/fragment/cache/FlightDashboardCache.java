@@ -43,7 +43,7 @@ public class FlightDashboardCache {
     }
 
     public String getDepartureAirport() {
-        return sharedPrefs.getString(DEPARTURE, DEFAULT_EMPTY_VALUE);
+        return sharedPrefs.getString(DEPARTURE, DEFAULT_DEPARTURE_AIRPORT_ID);
     }
 
     public void putArrivalAirport(String airportId) {
@@ -53,7 +53,7 @@ public class FlightDashboardCache {
     }
 
     public String getArrivalAirport() {
-        return sharedPrefs.getString(ARRIVAL, DEFAULT_EMPTY_VALUE);
+        return sharedPrefs.getString(ARRIVAL, DEFAULT_ARRIVAL_AIRPORT_ID);
     }
 
     public void putDepartureDate(String departureDate) {
