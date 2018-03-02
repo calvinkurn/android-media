@@ -13,10 +13,28 @@ public class CartItemData implements Parcelable {
     private UpdatedData updatedData;
     private MessageErrorData errorData;
     private boolean isError;
+    private boolean isWarning;
+    private String warningMessage;
     private String errorMessage;
 
     public boolean isError() {
         return isError;
+    }
+
+    public boolean isWarning() {
+        return isWarning;
+    }
+
+    public void setWarning(boolean warning) {
+        isWarning = warning;
+    }
+
+    public String getWarningMessage() {
+        return warningMessage;
+    }
+
+    public void setWarningMessage(String warningMessage) {
+        this.warningMessage = warningMessage;
     }
 
     public void setError(boolean error) {
@@ -81,6 +99,7 @@ public class CartItemData implements Parcelable {
         private boolean isCashBack;
         private boolean isFavorite;
         private String cashBackInfo;
+        private String freeReturnLogo;
 
         public int getCartId() {
             return cartId;
@@ -168,6 +187,14 @@ public class CartItemData implements Parcelable {
 
         public void setMinimalQtyOrder(int minimalQtyOrder) {
             this.minimalQtyOrder = minimalQtyOrder;
+        }
+
+        public String getFreeReturnLogo() {
+            return freeReturnLogo;
+        }
+
+        public void setFreeReturnLogo(String freeReturnLogo) {
+            this.freeReturnLogo = freeReturnLogo;
         }
 
         public double getPricePlan() {
@@ -264,6 +291,7 @@ public class CartItemData implements Parcelable {
             dest.writeByte(this.isCashBack ? (byte) 1 : (byte) 0);
             dest.writeByte(this.isFavorite ? (byte) 1 : (byte) 0);
             dest.writeString(this.cashBackInfo);
+            dest.writeString(this.freeReturnLogo);
         }
 
         protected OriginData(Parcel in) {
@@ -286,6 +314,7 @@ public class CartItemData implements Parcelable {
             this.isCashBack = in.readByte() != 0;
             this.isFavorite = in.readByte() != 0;
             this.cashBackInfo = in.readString();
+            this.freeReturnLogo = in.readString();
         }
 
         public static final Creator<OriginData> CREATOR = new Creator<OriginData>() {
@@ -516,6 +545,8 @@ public class CartItemData implements Parcelable {
         dest.writeParcelable(this.updatedData, flags);
         dest.writeParcelable(this.errorData, flags);
         dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isWarning ? (byte) 1 : (byte) 0);
+        dest.writeString(this.warningMessage);
         dest.writeString(this.errorMessage);
     }
 
@@ -524,6 +555,8 @@ public class CartItemData implements Parcelable {
         this.updatedData = in.readParcelable(UpdatedData.class.getClassLoader());
         this.errorData = in.readParcelable(MessageErrorData.class.getClassLoader());
         this.isError = in.readByte() != 0;
+        this.isWarning = in.readByte() != 0;
+        this.warningMessage = in.readString();
         this.errorMessage = in.readString();
     }
 
